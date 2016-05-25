@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{e9d37014-71ca-48d2-bb47-8a75c022449e}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\PublicCounterCompilerInputFiles\CounterNamesGLGfx6.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\PublicCounterCompilerInputFiles\CounterNamesGLGfx7.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\PublicCounterCompilerInputFiles\CounterNamesGLGfx8.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\GPUPerfAPIGLES\GPUPerfAPIGLES.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\GPUPerfAPIGL\ASICInfo.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPIGL\GLCounterDataRequest.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPIGL\GLPerfMonitorCache.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPIGL\GPUPerfAPIGL.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPIGL\GLCounterDataRequestManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\GPUPerfAPIGL\ASICInfo.h" />
+    <ClInclude Include="..\..\GPUPerfAPIGL\GPAContextStateGL.h" />
+    <ClInclude Include="..\..\GPUPerfAPIGL\GLCounterDataRequest.h" />
+    <ClInclude Include="..\..\GPUPerfAPIGL\GLPerfMonitorCache.h" />
+    <ClInclude Include="..\..\GPUPerfAPIGL\GPUPerfAPIGL.h" />
+    <ClInclude Include="..\..\GPUPerfAPIGLES\resource.h" />
+    <ClInclude Include="..\..\GPUPerfAPIGL\GLCounterDataRequestManager.h" />
+  </ItemGroup>
+</Project>

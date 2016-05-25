@@ -1,0 +1,131 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Common\Src\DeviceInfo\DeviceInfo.h" />
+    <ClInclude Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.h" />
+    <ClInclude Include="..\..\..\Common\Src\DynamicLibraryModule\DynamicLibraryModule.h" />
+    <ClInclude Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIRegistry.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\Adapter.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\APIRTModuleLoader.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\CircularBuffer.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPAContextState.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPACounterDataRequestManager.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPACustomHWValidationManager.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPADataRequest.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPAFunctions.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPAHWInfo.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPASessionRequests.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPUPerfAPI-Private.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPUPerfAPI.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPUPerfAPIFunctionTypes-Private.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPUPerfAPIFunctionTypes.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPUPerfAPIImp.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPUPerfAPIOS.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPUPerfAPITypes-Private.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPUPerfAPITypes.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\Logging.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPAProfiler.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\Utility.h" />
+    <ClInclude Include="..\..\GPUPerfAPI-Common\GPAVersion.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\Common\Src\ADLUtil\ADLUtil.cpp" />
+    <ClCompile Include="..\..\..\Common\Src\AMDTMutex\AMDTMutex.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoInternal.cpp" />
+    <ClCompile Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.cpp" />
+    <ClCompile Include="..\..\..\Common\Src\DynamicLibraryModule\DynamicLibraryModule.cpp" />
+    <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIRegistry.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPI-Common\GPACustomHWValidationManager.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPI-Common\Adapter.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPI-Common\GPAContextState.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPI-Common\GPAHWInfo.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPI-Common\GPASessionRequests.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPI-Common\GPUPerfAPI.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPI-Common\Logging.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPI-Common\GPAProfiler.cpp" />
+    <ClCompile Include="..\..\GPUPerfAPI-Common\Utility.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{CFC8AB83-E03A-43E5-A9B1-AD073AEFE8C0}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GPUPerfAPICommon</RootNamespace>
+    <ProjectName>GPUPerfAPI-Common</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="GPA-Common.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Lib>
+      <AdditionalDependencies>dxgi.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Lib>
+      <AdditionalDependencies>dxgi.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Lib>
+      <AdditionalDependencies>dxgi.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Lib>
+      <AdditionalDependencies>dxgi.lib</AdditionalDependencies>
+    </Lib>
+  </ItemDefinitionGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
