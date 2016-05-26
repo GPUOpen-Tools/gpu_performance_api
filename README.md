@@ -10,6 +10,7 @@ is used by both CodeXL and GPU PerfStudio.
 * [Major Features](#Major)
 * [What's New](#WhatsNew)
 * [System Requirements](#System)
+* [Cloning the Repository](#Cloning)
 * [Source Code Directory Layout](#Source)
 * ["Public" vs "Internal" Versions](#PublicInternal)
 * [Building the Source Code](BUILD.md)
@@ -49,6 +50,15 @@ is used by both CodeXL and GPU PerfStudio.
 * Pre-GCN-based GPUs or APUs are no longer supported by GPUPerfAPI. Please use an older version ([2.17](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/)) with older hardware.
 * Windows 7, 8.1, and 10
 * Ubuntu (14.04 and later) and RHEL (7 and later) distributions
+
+<A NAME="Cloning">
+## Cloning the Repository
+To clone the GPA repository, execute the following git commands
+ * git clone https://github.com/GPUOpen-Tools/GPA.git
+ * git submodule init
+ * git submodule update
+ * cd Common
+ * git checkout master
 
 <A NAME="Source">
 ## Source Code Directory Layout
