@@ -34,7 +34,7 @@ GPA_CounterGeneratorDX11::GPA_CounterGeneratorDX11()
 {
     SetAllowedCounters(true, true, true); //enable all counters
 
-    for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen = gen++)
+    for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
     {
         CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_DIRECTX_11, static_cast<GDT_HW_GENERATION>(gen), this);
     }

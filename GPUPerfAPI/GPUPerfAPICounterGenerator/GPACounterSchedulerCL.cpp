@@ -10,7 +10,7 @@
 
 GPA_CounterSchedulerCL::GPA_CounterSchedulerCL()
 {
-    for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen = gen++)
+    for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
     {
         CounterGeneratorSchedulerManager::Instance()->RegisterCounterScheduler(GPA_API_OPENCL, static_cast<GDT_HW_GENERATION>(gen), this);
     }

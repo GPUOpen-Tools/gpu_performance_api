@@ -12,7 +12,7 @@
 
 GPA_CounterSchedulerDX11::GPA_CounterSchedulerDX11()
 {
-    for (int gen = GDT_HW_GENERATION_NVIDIA; gen < GDT_HW_GENERATION_LAST; gen = gen++)
+    for (int gen = GDT_HW_GENERATION_NVIDIA; gen < GDT_HW_GENERATION_LAST; gen++)
     {
         CounterGeneratorSchedulerManager::Instance()->RegisterCounterScheduler(GPA_API_DIRECTX_11, static_cast<GDT_HW_GENERATION>(gen), this, false);
     }

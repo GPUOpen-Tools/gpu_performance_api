@@ -32,13 +32,13 @@ GPA_CounterGeneratorGL::GPA_CounterGeneratorGL() :
     SetAllowedCounters(true, true, false); // TODO: investigate allowing software counters in public build (i.e. GPUTime for all hardware)
 
     // TODO: need to make some changes to support GPUTime counter on Intel and NVidia in public build
-    for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen = gen++)
+    for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
     {
         CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_OPENGL, static_cast<GDT_HW_GENERATION>(gen), this);
     }
 
     // AMD only for GLES (for now) -- will allow Intel and NVidia once GPUTime is supported in public builds
-    for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen = gen++)
+    for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
     {
         CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_OPENGLES, static_cast<GDT_HW_GENERATION>(gen), this);
     }
