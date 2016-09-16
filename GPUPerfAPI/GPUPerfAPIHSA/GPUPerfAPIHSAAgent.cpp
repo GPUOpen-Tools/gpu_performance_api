@@ -11,6 +11,7 @@
 
 #include <hsa_api_trace.h>
 
+#include "HSAAPITable1_0.h"
 #include "GPUPerfAPIHSAGlobals.h"
 
 #ifndef GPADLL_EXPORT
@@ -29,8 +30,7 @@
     #endif
 #endif //DLL_EXPORT
 
-ApiTable* g_pOriginalApiTable; ///< original api table
-ExtTable* g_pOriginalExtTable; ///< original extesion table
+decltype(hsa_queue_create)* g_realQueueCreateFn = nullptr;
 
 std::map<hsa_queue_t*, hsa_agent_t> g_queueAgentMap; ///< typedef for a map from queue to agent
 
@@ -41,7 +41,7 @@ my_hsa_queue_create(hsa_agent_t agent, uint32_t size, hsa_queue_type_t type,
                     void* pData, uint32_t private_segment_size,
                     uint32_t group_segment_size, hsa_queue_t** ppQueue)
 {
-    hsa_status_t retVal = g_pOriginalApiTable->hsa_queue_create_fn(agent, size, type, pCallback, pData, private_segment_size, group_segment_size, ppQueue);
+    hsa_status_t retVal = g_realQueueCreateFn(agent, size, type, pCallback, pData, private_segment_size, group_segment_size, ppQueue);
 
     if (HSA_STATUS_SUCCESS == retVal)
     {
@@ -52,15 +52,19 @@ my_hsa_queue_create(hsa_agent_t agent, uint32_t size, hsa_queue_type_t type,
 }
 
 /// exported function called when tools libs are loaded
-extern "C" bool GPADLL_EXPORT OnLoad(ApiTable* pTable, uint64_t /*runtimeVersion*/, uint64_t /*failedToolCount*/, const char* const* /*pFailedToolNames*/)
+extern "C" bool GPADLL_EXPORT OnLoad(void* pTable, uint64_t runtimeVersion, uint64_t /*failedToolCount*/, const char* const* /*pFailedToolNames*/)
 {
-    g_pOriginalApiTable = (ApiTable*)malloc(sizeof(ApiTable));
-    memcpy(g_pOriginalApiTable, pTable, sizeof(ApiTable));
 
-    g_pOriginalExtTable = (ExtTable*)malloc(sizeof(ExtTable));
-    memcpy(g_pOriginalExtTable, pTable->std_exts_, sizeof(ExtTable));
-
-    pTable->hsa_queue_create_fn = my_hsa_queue_create;
+    if (0 == runtimeVersion)
+    {
+        g_realQueueCreateFn = reinterpret_cast<ApiTable1_0*>(pTable)->hsa_queue_create_fn;
+        reinterpret_cast<ApiTable1_0*>(pTable)->hsa_queue_create_fn = my_hsa_queue_create;
+    }
+    else
+    {
+        g_realQueueCreateFn = reinterpret_cast<HsaApiTable*>(pTable)->core_->hsa_queue_create_fn;
+        reinterpret_cast<HsaApiTable*>(pTable)->core_->hsa_queue_create_fn = my_hsa_queue_create;
+    }
 
     return true;
 }
@@ -68,6 +72,4 @@ extern "C" bool GPADLL_EXPORT OnLoad(ApiTable* pTable, uint64_t /*runtimeVersion
 /// exported function called when tools libs are unloaded
 extern "C" void GPADLL_EXPORT OnUnload()
 {
-    free(g_pOriginalApiTable);
-    free(g_pOriginalExtTable);
 }
