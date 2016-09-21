@@ -287,6 +287,8 @@ GPA_Status GPA_IMP_CompareHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
         (strTranslatedDeviceName.compare("Carrizo") == 0 && asic == GDT_CARRIZO) ||
         (strTranslatedDeviceName.compare("Fiji") == 0 && asic == GDT_FIJI) ||
         (strTranslatedDeviceName.compare("Stoney") == 0 && asic == GDT_STONEY) ||
+        (strTranslatedDeviceName.compare("Ellesmere") == 0 && asic == GDT_ELLESMERE) ||
+        (strTranslatedDeviceName.compare("Baffin") == 0 && asic == GDT_BAFFIN) ||
         (strTranslatedDeviceName.compare("AMD HSA Device") == 0 && (asic == GDT_SPOOKY || asic == GDT_SPECTRE || asic == GDT_SPECTRE_LITE || asic == GDT_SPECTRE_SL))
        )
     {
