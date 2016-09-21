@@ -22,6 +22,7 @@
     <ProjectName>GPUPerfAPICL</ProjectName>
     <ProjectGuid>{1BB75961-ED5E-459C-8BA7-BD22682A98B5}</ProjectGuid>
     <RootNamespace>GPUPerfAPICL</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">
@@ -36,9 +37,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="GPA-Common.props" />
     <Import Project="GPA-DLL.props" />
-    <Import  Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Deliverable-CodeXL.props" />
-    <Import  Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Deliverable.props" />
-    <Import  Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Internal.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Deliverable-CodeXL.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Deliverable.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Internal.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>

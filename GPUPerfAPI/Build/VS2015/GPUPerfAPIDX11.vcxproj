@@ -22,6 +22,7 @@
     <ProjectName>GPUPerfAPIDX11</ProjectName>
     <ProjectGuid>{3F0EB093-266D-4300-8EF3-F66B30681043}</ProjectGuid>
     <RootNamespace>GPUPerfAPIDX11</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">

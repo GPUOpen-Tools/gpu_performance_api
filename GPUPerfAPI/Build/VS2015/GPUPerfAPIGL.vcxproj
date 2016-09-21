@@ -22,6 +22,7 @@
     <ProjectName>GPUPerfAPIGL</ProjectName>
     <ProjectGuid>{51B54ABC-4A07-46FD-B7E0-38E4147EA1A8}</ProjectGuid>
     <RootNamespace>GPUPerfAPIGL</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Label="Configuration">

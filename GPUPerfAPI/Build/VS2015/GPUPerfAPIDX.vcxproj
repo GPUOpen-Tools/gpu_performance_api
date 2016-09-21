@@ -28,6 +28,7 @@
     <ProjectGuid>{305A7A16-9C7A-4E86-BA74-3492E2C824C9}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>GPUPerfAPIDX</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup>
