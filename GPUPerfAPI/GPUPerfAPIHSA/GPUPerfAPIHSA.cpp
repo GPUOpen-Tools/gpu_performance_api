@@ -123,11 +123,10 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
     bool bSupported = false;
 
     // TODO: requested that the HSA runtime allows us to get revID -- for now hardcode to zero
-    if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(deviceId, 0, cardInfo))
+    if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(deviceId, REVISION_ID_ANY, cardInfo))
     {
-        // TODO: for now, don't compare the device name -- the HSA runtime does not distinguish between Kaveri and Carrizo in the device name currently
-        if (static_cast<unsigned int>(cardInfo.m_generation) >= static_cast<unsigned int>(GDT_HW_GENERATION_SEAISLAND) /* &&
-            _strcmpi(deviceName, cardInfo.m_szCALName) == 0*/)
+        if (static_cast<unsigned int>(cardInfo.m_generation) >= static_cast<unsigned int>(GDT_HW_GENERATION_SEAISLAND) &&
+            _strcmpi(deviceName, cardInfo.m_szCALName) == 0)
         {
             pHwInfo->SetDeviceName(cardInfo.m_szCALName);
             pHwInfo->SetDeviceID(static_cast<gpa_uint32>(cardInfo.m_deviceID));
