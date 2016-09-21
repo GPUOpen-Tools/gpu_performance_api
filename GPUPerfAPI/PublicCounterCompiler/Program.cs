@@ -8,12 +8,6 @@
 // <summary>
 //    Given an ordered internal counter definition file and the public counter definitions,
 //    produces c++ code to define them for the run-time.
-//    Usage: PCC [Internal counter definition file] [Public counter definition file] [output dir] [Optional active section label]
-//    Internal counter definition file format is: number , name , type.
-//    One counter per line.
-//    Example parameters:
-//       ..\..\..\PublicCounterCompilerInputFiles\NamesDX11R8xx.txt ..\..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsR8xx.txt ..\..\..\GPUPerfAPIDX11 dx11
-//       ..\..\..\PublicCounterCompilerInputFiles\CounterNamesDX11R9xx.txt ..\..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsR9xx.txt ..\..\..\GPUPerfAPIDX11 dx11r9xx
 // </summary>
 // =====================================================================
 namespace PublicCounterCompiler

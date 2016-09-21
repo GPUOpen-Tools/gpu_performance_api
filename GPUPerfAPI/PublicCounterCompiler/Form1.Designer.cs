@@ -71,16 +71,16 @@ namespace PublicCounterCompiler
          // m_output
          // 
          this.m_output.AcceptsReturn = true;
-         this.m_output.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
-                     | System.Windows.Forms.AnchorStyles.Left)
-                     | System.Windows.Forms.AnchorStyles.Right)));
+         this.m_output.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
          this.m_output.BackColor = System.Drawing.SystemColors.Window;
          this.m_output.Location = new System.Drawing.Point(15, 115);
          this.m_output.Multiline = true;
          this.m_output.Name = "m_output";
          this.m_output.ReadOnly = true;
          this.m_output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-         this.m_output.Size = new System.Drawing.Size(517, 164);
+         this.m_output.Size = new System.Drawing.Size(750, 164);
          this.m_output.TabIndex = 11;
          // 
          // IgnoreInvalidCountersCheckBox
@@ -129,7 +129,7 @@ namespace PublicCounterCompiler
          // 
          this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
          this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-         this.ClientSize = new System.Drawing.Size(544, 291);
+         this.ClientSize = new System.Drawing.Size(777, 291);
          this.Controls.Add(this.GPUFamily);
          this.Controls.Add(this.apiName);
          this.Controls.Add(this.label6);
