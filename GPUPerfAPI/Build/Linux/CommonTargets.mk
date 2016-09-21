@@ -40,13 +40,13 @@ all: default x86 Internal Internalx86 Dbg Dbgx86 DbgInternal DbgInternalx86
 
 BUILD_SRC=$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
+$(OBJ_DIR)/%.o: ../Non-OpenSource/GPUPerfAPICounterGenerator/%.cpp
+	$(BUILD_SRC)
+
 $(OBJ_DIR)/%.o: %.cpp
 	$(BUILD_SRC)
 
 $(OBJ_DIR)/%.o: ../GPUPerfAPI-Common/%.cpp
-	$(BUILD_SRC)
-
-$(OBJ_DIR)/%.o: ../Non-OpenSource/GPUPerfAPICounterGenerator/%.cpp
 	$(BUILD_SRC)
 
 $(OBJ_DIR)/%.o: ../GPUPerfAPICounterGenerator/%.cpp
