@@ -8,6 +8,8 @@
 #ifndef _GPA_COUNTER_GENERATOR_BASE_H_
 #define _GPA_COUNTER_GENERATOR_BASE_H_
 
+#include <unordered_map>
+
 #include "GPAHardwareCounters.h"
 #include "GPASoftwareCounters.h"
 #include "GPAICounterAccessor.h"
@@ -34,6 +36,7 @@ public:
     virtual vector<gpa_uint32> GetInternalCountersRequired(gpa_uint32 index);
     virtual void ComputePublicCounterValue(gpa_uint32 counterIndex, std::vector<char*>& results, std::vector<GPA_Type>& internalCounterTypes, void* pResult, GPA_HWInfo* pHwInfo);
     virtual GPACounterTypeInfo GetCounterTypeInfo(gpa_uint32 globalIndex);
+    virtual bool GetCounterIndex(const char* pName, gpa_uint32* pIndex);
     // end Implementation of GPA_ICounterAccessor
 
     /// Generate the counters for the specified generation
@@ -93,6 +96,10 @@ private:
     bool m_doAllowPublicCounters;   ///< flag indicating whether or not public counters are allowed
     bool m_doAllowHardwareCounters; ///< flag indicating whether or not hardware counters are allowed
     bool m_doAllowSoftwareCounters; ///< flag indicating whether or not software counters are allowed
+
+    typedef std::unordered_map<std::string, gpa_uint32> CounterNameIndexMap;    ///< typedef for an unordered_map from counter name to index
+    static const gpa_uint32 ms_COUNTER_NOT_FOUND = static_cast<gpa_uint32>(-1); ///< const indicating that a counter was not found
+    CounterNameIndexMap m_counterIndexCache;                                    ///< cache of counter indexes, so we don't have to look up a counter more than once (it can be expensive)
 };
 
 #endif //_GPA_COUNTER_GENERATOR_BASE_H_

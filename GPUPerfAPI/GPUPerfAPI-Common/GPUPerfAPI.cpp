@@ -800,38 +800,36 @@ GPALIB_DECL GPA_Status GPA_GetCounterIndex(const char* pCounter, gpa_uint32* pIn
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
-    gpa_uint32 numCounters;
-    GPA_Status status = GPA_GetNumCounters(&numCounters);
-
-    if (status != GPA_STATUS_OK)
-    {
-        return status;
-    }
-
     if (nullptr == pIndex)
     {
         GPA_LogDebugError("Parameter 'pIndex' is NULL.");
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
-    const char* name;
-
-    for (gpa_uint32 i = 0 ; i < numCounters ; i++)
+    if (nullptr == g_pCurrentContext)
     {
-        status = GPA_GetCounterName(i, &name);
-
-        if (_strcmpi(pCounter, name) == 0)
-        {
-            *pIndex = i;
-            return GPA_STATUS_OK;
-        }
+        GPA_LogError("GPA_OpenContext must return successfully before calling GPA_GetCounterIndex.");
+        return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
     }
 
-    std::string message = "Specified counter '";
-    message += pCounter;
-    message += "' was not found. Please check spelling or availability.";
-    GPA_LogError(message.c_str());
-    return GPA_STATUS_ERROR_NOT_FOUND;
+    if (nullptr == g_pCurrentContext->m_pCounterAccessor)
+    {
+        GPA_LogError("GPA_OpenContext must return successfully before calling GPA_GetCounterIndex.");
+        return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
+    }
+
+    bool counterFound = g_pCurrentContext->m_pCounterAccessor->GetCounterIndex(pCounter, pIndex);
+
+    if (!counterFound)
+    {
+        std::string message = "Specified counter '";
+        message += pCounter;
+        message += "' was not found. Please check spelling or availability.";
+        GPA_LogError(message.c_str());
+        return GPA_STATUS_ERROR_NOT_FOUND;
+    }
+
+    return GPA_STATUS_OK;
 }
 
 //-----------------------------------------------------------------------------

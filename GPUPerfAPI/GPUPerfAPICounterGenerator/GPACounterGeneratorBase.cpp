@@ -153,6 +153,49 @@ const char* GPA_CounterGeneratorBase::GetCounterName(gpa_uint32 index)
     return nullptr;
 }
 
+bool GPA_CounterGeneratorBase::GetCounterIndex(const char* pName, gpa_uint32* pIndex)
+{
+
+    bool retVal = false;
+
+    if (nullptr != pIndex)
+    {
+        CounterNameIndexMap::iterator it = m_counterIndexCache.find(pName);
+        if (m_counterIndexCache.end() != it)
+        {
+            *pIndex = m_counterIndexCache[pName];
+            retVal = ms_COUNTER_NOT_FOUND != *pIndex;
+        }
+    }
+
+    if (!retVal)
+    {
+        gpa_uint32 numCounters = GetNumCounters();
+
+        for (gpa_uint32 i = 0; i < numCounters; i++)
+        {
+            const char* pCounterName = GetCounterName(i);
+
+            if (0 == _strcmpi(pName, pCounterName))
+            {
+                m_counterIndexCache[pName] = i;
+                *pIndex = i;
+                retVal = true;
+                break;
+            }
+        }
+    }
+
+    if (!retVal)
+    {
+        // cache the fact that it wasn't found
+        m_counterIndexCache[pName] = ms_COUNTER_NOT_FOUND;
+    }
+
+    return retVal;
+
+}
+
 const char* GPA_CounterGeneratorBase::GetCounterDescription(gpa_uint32 index)
 {
     if (m_doAllowPublicCounters)
