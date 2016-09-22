@@ -54,13 +54,8 @@ is used by both CodeXL and GPU PerfStudio.
 <A NAME="Cloning">
 ## Cloning the Repository
 To clone the GPA repository, execute the following git commands
- * git clone https://github.com/GPUOpen-Tools/GPA.git
- * cd GPA
- * git submodule init
- * git submodule update
- * cd Common
- * git checkout master
-
+ * git clone --recursive https://github.com/GPUOpen-Tools/GPA.git
+ 
 <A NAME="Source">
 ## Source Code Directory Layout
 * [Build](GPUPerfAPI/Build) -- contains both Linux and Windows build-related files
