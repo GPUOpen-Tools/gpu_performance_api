@@ -78,39 +78,39 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>../../GPUPerfAPI-Common;../../../Common/Src;../../GPUPerfAPICounters/;../../GPUPerfAPICounterGenerator/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../Src/GPUPerfAPI-Common;../../../Common/Src;../../Src/GPUPerfAPICounters/;../../Src/GPUPerfAPICounterGenerator/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx6.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx7.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx8.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx6.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx7.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx8.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx6.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx7.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx8.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx7.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx8.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\SWCountersDX11.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorDX11Tests.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorGLTests.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorCLTests.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorHSATests.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorTests.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterSchedulerTests.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\GPUPerfAPIUnitTests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\SWCountersDX11.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorDX11Tests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorGLTests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorCLTests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorHSATests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorTests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterSchedulerTests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\GPUPerfAPIUnitTests.cpp" />
     <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPILoader.cpp" />
     <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIUtil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPILoader.h" />
     <ClInclude Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIUtil.h" />
-    <ClInclude Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorTests.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorTests.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GPUPerfAPI-Common.vcxproj">

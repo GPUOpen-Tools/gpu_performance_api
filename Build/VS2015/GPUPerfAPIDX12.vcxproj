@@ -44,34 +44,34 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>_USRDLL;GPUPERFAPIDX12_EXPORTS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\..\GPUPerfAPICounterGenerator;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\..\Src\GPUPerfAPICounterGenerator;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12CommandListSwQueries.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12CounterDataRequestProxy.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12DataRequest.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12Utils.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIDX12\GPAContextStateDX12.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIDX12\GPUPerfAPIDX12.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSwQueries.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CounterDataRequestProxy.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12DataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12Utils.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\GPAContextStateDX12.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12CommandListSwQueries.h" />
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.h" />
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12ComSmartPtrs.h" />
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12CounterDataRequestProxy.h" />
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12DataRequest.h" />
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.h" />
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12SoftwareCountersResults.h" />
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12Utils.h" />
-    <ClInclude Include="..\..\GPUPerfAPIDX12\GPAContextStateDX12.h" />
-    <ClInclude Include="..\..\GPUPerfAPIDX12\GPUPerfAPIDX12.h" />
-    <ClInclude Include="..\..\GPUPerfAPIDX12\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSwQueries.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12ComSmartPtrs.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CounterDataRequestProxy.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12DataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCountersResults.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12Utils.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\GPAContextStateDX12.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\GPUPerfAPIDX12\GPUPerfAPIDX12.rc" />
+    <ResourceCompile Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.rc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GPUPerfAPI-Common.vcxproj">

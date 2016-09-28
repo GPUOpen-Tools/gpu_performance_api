@@ -38,7 +38,7 @@ PROJECT_NUMBER         = 2.11
 # If a relative path is entered, it will be relative to the location 
 # where doxygen was started. If left blank the current directory will be used.
 
-OUTPUT_DIRECTORY       = ../../doc/public
+OUTPUT_DIRECTORY       = ../../Doc/public
 
 # If the CREATE_SUBDIRS tag is set to YES, then doxygen will create 
 # 4096 sub-directories (in 2 levels) under the output directory of each output 
@@ -520,7 +520,7 @@ WARN_FORMAT            = "$file:$line: $text"
 # and error messages should be written. If left blank the output is written 
 # to stderr.
 
-WARN_LOGFILE           = ../../doc/public/PublicWarnings.txt
+WARN_LOGFILE           = ../../Doc/public/PublicWarnings.txt
 
 #---------------------------------------------------------------------------
 # configuration options related to the input files
@@ -531,16 +531,16 @@ WARN_LOGFILE           = ../../doc/public/PublicWarnings.txt
 # directories like "/usr/src/myproject". Separate the files or directories 
 # with spaces.
 
-INPUT                  = ..\..\GPUPerfAPIDX\ \
-                         ..\..\GPUPerfAPIDX11\ \
-                         ..\..\GPUPerfAPIDX12\ \
-                         ..\..\GPUPerfAPIGL\ \
-                         ..\..\GPUPerfAPIGLES\ \
-                         ..\..\GPUPerfAPICL\ \
-                         ..\..\GPUPerfAPIHSA\ \
-                         ..\..\GPUPerfAPI-Common\ \
-                         ..\..\GPUPerfAPICounterGenerator\ \
-                         ..\..\GPUPerfAPICounters\ \
+INPUT                  = ..\..\Src\GPUPerfAPIDX\ \
+                         ..\..\Src\GPUPerfAPIDX11\ \
+                         ..\..\Src\GPUPerfAPIDX12\ \
+                         ..\..\Src\GPUPerfAPIGL\ \
+                         ..\..\Src\GPUPerfAPIGLES\ \
+                         ..\..\Src\GPUPerfAPICL\ \
+                         ..\..\Src\GPUPerfAPIHSA\ \
+                         ..\..\Src\GPUPerfAPI-Common\ \
+                         ..\..\Src\GPUPerfAPICounterGenerator\ \
+                         ..\..\Src\GPUPerfAPICounters\ \
 
 # This tag can be used to specify the character encoding of the source files 
 # that doxygen parses. Internally doxygen uses the UTF-8 encoding, which is 
@@ -1383,7 +1383,7 @@ DOT_IMAGE_FORMAT       = png
 # The tag DOT_PATH can be used to specify the path where the dot tool can be 
 # found. If left blank, it is assumed the dot tool can be found in the path.
 
-DOT_PATH               = ..\..\..\Common\DK\GraphViz\Graphviz2.20\bin
+DOT_PATH               = ..\..\Common\DK\GraphViz\Graphviz2.32\bin
 
 # The DOTFILE_DIRS tag can be used to specify one or more directories that 
 # contain dot files that are included in the documentation (see the 

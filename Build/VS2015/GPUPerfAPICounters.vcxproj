@@ -43,13 +43,13 @@
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Internal.props" />
   </ImportGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GPUPerfAPICounters\GPUPerfAPICounters.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounters\GPUPerfAPICounters.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\GPUPerfAPICounters\GPUPerfAPICounters.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounters\GPUPerfAPICounters.h" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\GPUPerfAPICounters\GPUPerfAPICounters.rc" />
+    <ResourceCompile Include="..\..\Src\GPUPerfAPICounters\GPUPerfAPICounters.rc" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GPUPerfAPI-Common.vcxproj">

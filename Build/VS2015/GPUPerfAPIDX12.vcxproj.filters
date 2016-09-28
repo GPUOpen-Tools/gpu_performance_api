@@ -15,68 +15,68 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GPUPerfAPIDX12\GPUPerfAPIDX12.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12CounterDataRequestProxy.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CounterDataRequestProxy.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12DataRequest.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12DataRequest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12Utils.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12Utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12CommandListSwQueries.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSwQueries.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIDX12\GPAContextStateDX12.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\GPAContextStateDX12.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\GPUPerfAPIDX12.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\resource.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12CounterDataRequestProxy.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CounterDataRequestProxy.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12DataRequest.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12DataRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12SoftwareCountersResults.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCountersResults.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12Utils.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12Utils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12CommandListSwQueries.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSwQueries.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12ComSmartPtrs.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12ComSmartPtrs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIDX12\GPAContextStateDX12.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\GPAContextStateDX12.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\GPUPerfAPIDX12\GPUPerfAPIDX12.rc">
+    <ResourceCompile Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

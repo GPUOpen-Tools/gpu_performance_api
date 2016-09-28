@@ -14,17 +14,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GPUPerfAPICounters\GPUPerfAPICounters.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPICounters\GPUPerfAPICounters.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\GPUPerfAPICounters\GPUPerfAPICounters.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPICounters\GPUPerfAPICounters.h">
       <Filter>Internal Exposed Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\GPUPerfAPICounters\GPUPerfAPICounters.rc">
+    <ResourceCompile Include="..\..\Src\GPUPerfAPICounters\GPUPerfAPICounters.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>

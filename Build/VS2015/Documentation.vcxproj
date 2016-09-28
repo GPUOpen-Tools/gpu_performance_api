@@ -43,11 +43,11 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <CustomBuild Include="../../doc/DoxyfilePublic">
+    <CustomBuild Include="../../Doc/DoxyfilePublic">
       <FileType>Document</FileType>
-      <Message Condition="exists('../../../Common/DK/doxygen/doxygen-1.8.4/bin/doxygen.exe')">Generating Public Doxygen documentation</Message>
-      <Command Condition="exists('../../../Common/DK/doxygen/doxygen-1.8.4/bin/doxygen.exe')">"../../../Common/DK/Doxygen/doxygen-1.8.4/bin/doxygen.exe" "%(FullPath)"</Command>
-      <Outputs Condition="exists('../../../Common/DK/doxygen/doxygen-1.8.4/bin/doxygen.exe')">$(ProjectDir)public\html\index.html;%(Outputs)</Outputs>
+      <Message Condition="exists('../../../Common/DK/doxygen/doxygen-1.8.11/bin/doxygen.exe')">Generating Public Doxygen documentation</Message>
+      <Command Condition="exists('../../../Common/DK/doxygen/doxygen-1.8.11/bin/doxygen.exe')">"../../../Common/DK/Doxygen/doxygen-1.8.11/bin/doxygen.exe" "%(FullPath)"</Command>
+      <Outputs Condition="exists('../../../Common/DK/doxygen/doxygen-1.8.11/bin/doxygen.exe')">$(ProjectDir)public\html\index.html;%(Outputs)</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

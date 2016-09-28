@@ -59,23 +59,23 @@
     <None Include="..\PublicCounterCompilerInputFiles\CounterNamesGLGfx8.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\GPUPerfAPIGLES\GPUPerfAPIGLES.rc" />
+    <ResourceCompile Include="..\..\Src\GPUPerfAPIGLES\GPUPerfAPIGLES.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GPUPerfAPIGL\ASICInfo.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIGL\GLCounterDataRequest.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIGL\GLCounterDataRequestManager.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIGL\GLPerfMonitorCache.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPIGL\GPUPerfAPIGL.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\ASICInfo.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\GPUPerfAPIGL\ASICInfo.h" />
-    <ClInclude Include="..\..\GPUPerfAPIGL\GLCounterDataRequest.h" />
-    <ClInclude Include="..\..\GPUPerfAPIGL\GLCounterDataRequestManager.h" />
-    <ClInclude Include="..\..\GPUPerfAPIGL\GLPerfMonitorCache.h" />
-    <ClInclude Include="..\..\GPUPerfAPIGL\GPAContextStateGL.h" />
-    <ClInclude Include="..\..\GPUPerfAPIGL\GPUPerfAPIGL.h" />
-    <ClInclude Include="..\..\GPUPerfAPIGLES\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\ASICInfo.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GPAContextStateGL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGLES\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GPUPerfAPI-Common.vcxproj">

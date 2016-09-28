@@ -3,7 +3,7 @@
     <PropertyGroup Label="UserMacros">
         <BaseDir Condition="'$(SolutionName)'=='GPUPerfAPI'">$(SolutionDir)..\..\..\</BaseDir>
         <BaseDir Condition="'$(SolutionName)'!='GPUPerfAPI'">$(SolutionDir)..\..\..\..\</BaseDir>
-		<GPUPerfAPIBaseDir>$(BaseDir)GPUPerfAPI\</GPUPerfAPIBaseDir>
+		<GPUPerfAPIBaseDir>$(BaseDir)GPA\</GPUPerfAPIBaseDir>
         <CommonDir>$(BaseDir)Common\</CommonDir>
     </PropertyGroup>
     <PropertyGroup>
@@ -11,7 +11,7 @@
     </PropertyGroup>
     <ItemDefinitionGroup>
         <ClCompile>
-            <AdditionalIncludeDirectories>$(GPUPerfAPIBaseDir)GPUPerfAPI-Common\</AdditionalIncludeDirectories>
+            <AdditionalIncludeDirectories>$(GPUPerfAPIBaseDir)Src\GPUPerfAPI-Common\</AdditionalIncludeDirectories>
         </ClCompile>
     </ItemDefinitionGroup>
     <ItemGroup>

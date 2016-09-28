@@ -25,7 +25,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\GPUPerfAPIUnitTests.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\GPUPerfAPIUnitTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPILoader.cpp">
@@ -34,58 +34,58 @@
     <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIUtil.cpp">
       <Filter>Utils</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorGLTests.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorGLTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorCLTests.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorCLTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorTests.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorDX11Tests.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorDX11Tests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorHSATests.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorHSATests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\CounterSchedulerTests.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterSchedulerTests.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx6.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx6.cpp">
       <Filter>Source Files\GeneratedTestFiles\CL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx7.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx7.cpp">
       <Filter>Source Files\GeneratedTestFiles\CL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx8.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx8.cpp">
       <Filter>Source Files\GeneratedTestFiles\CL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx6.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx6.cpp">
       <Filter>Source Files\GeneratedTestFiles\DX11</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx7.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx7.cpp">
       <Filter>Source Files\GeneratedTestFiles\DX11</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx8.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx8.cpp">
       <Filter>Source Files\GeneratedTestFiles\DX11</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\SWCountersDX11.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\SWCountersDX11.cpp">
       <Filter>Source Files\GeneratedTestFiles\DX11</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx6.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx6.cpp">
       <Filter>Source Files\GeneratedTestFiles\GL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx7.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx7.cpp">
       <Filter>Source Files\GeneratedTestFiles\GL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx8.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx8.cpp">
       <Filter>Source Files\GeneratedTestFiles\GL</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx7.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx7.cpp">
       <Filter>Source Files\GeneratedTestFiles\HSA</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx8.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx8.cpp">
       <Filter>Source Files\GeneratedTestFiles\HSA</Filter>
     </ClCompile>
   </ItemGroup>
@@ -96,7 +96,7 @@
     <ClInclude Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIUtil.h">
       <Filter>Utils</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPIUnitTests\CounterGeneratorTests.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorTests.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -19,10 +19,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GPUPerfAPIDX\DXUtils.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX\DXUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\GPUPerfAPIDX\DXUtils.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX\DXUtils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{305A7A16-9C7A-4E86-BA74-3492E2C824C9}</ProjectGuid>

@@ -15,12 +15,12 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GPUPerfAPIDX\DXUtils.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX\DXUtils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\GPUPerfAPIDX\DXUtils.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX\DXUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

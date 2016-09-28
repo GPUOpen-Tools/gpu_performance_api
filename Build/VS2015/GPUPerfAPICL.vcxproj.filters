@@ -21,29 +21,29 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="..\..\GPUPerfAPICL\GPUPerfAPICL.rc">
+    <ResourceCompile Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\GPUPerfAPICL\CLCounterDataRequest.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPICL\CLPerfCounterAMDExtension.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPICL\CLPerfCounterBlock.cpp" />
-    <ClCompile Include="..\..\GPUPerfAPICL\GPUPerfAPICL.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLCounterDataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.cpp" />
     <ClCompile Include="..\..\..\Common\Src\DynamicLibraryModule\OpenCLModule.cpp">
       <Filter>DynamicLibraryModule</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\GPUPerfAPICL\CLCounterDataRequest.h" />
-    <ClInclude Include="..\..\GPUPerfAPICL\CLPerfCounterAMDExtension.h" />
-    <ClInclude Include="..\..\GPUPerfAPICL\CLPerfCounterBlock.h" />
-    <ClInclude Include="..\..\GPUPerfAPICL\GPAContextStateCL.h" />
-    <ClInclude Include="..\..\GPUPerfAPICL\GPUPerfAPICL.h" />
-    <ClInclude Include="..\..\GPUPerfAPICL\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLCounterDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\GPAContextStateCL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\resource.h" />
     <ClInclude Include="..\..\..\Common\Src\DynamicLibraryModule\OpenCLModule.h">
       <Filter>DynamicLibraryModule</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\GPUPerfAPICL\CLRTModuleLoader.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLRTModuleLoader.h" />
   </ItemGroup>
 </Project>
