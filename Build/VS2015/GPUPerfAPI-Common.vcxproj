@@ -49,7 +49,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\Common\Src\ADLUtil\ADLUtil.cpp" />
     <ClCompile Include="..\..\..\Common\Src\AMDTMutex\AMDTMutex.cpp" />
-    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoInternal.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\Common\Src\DeviceInfo-Internal\DeviceInfoInternal.cpp" />
     <ClCompile Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.cpp" />
     <ClCompile Include="..\..\..\Common\Src\DynamicLibraryModule\DynamicLibraryModule.cpp" />
     <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIRegistry.cpp" />

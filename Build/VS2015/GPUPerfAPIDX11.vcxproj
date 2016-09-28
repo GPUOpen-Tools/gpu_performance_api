@@ -38,10 +38,10 @@
     <Import Project="GPA-Common.props" />
     <Import Project="GPA-DLL.props" />
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI'" Project="$(CommonDir)/Lib/AMD/GPUPerfAPI/Global-GPUPerfAPI.props" />
-    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Deliverable-CodeXL.props" />
-    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Deliverable-PerfStudio.props" />
-    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Deliverable.props" />
-    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Internal.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable-CodeXL.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable-PerfStudio.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Internal.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -70,7 +70,7 @@
     <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DxxExtUtils.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX11\GPAContextStateDX11.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX11\GPUPerfAPIDX11.cpp" />
-    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\Non-OpenSource\GPUPerfAPIInternalRegistration\DX11GPAInternalCounterGeneratorRegistration.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPIInternalRegistration\DX11GPAInternalCounterGeneratorRegistration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExt.h" />
@@ -93,7 +93,7 @@
     <ResourceCompile Include="..\..\Src\GPUPerfAPIDX11\GPUPerfAPIDX11.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\Non-OpenSource\Build\VS2015\GPUPerfAPINVPerfkit.vcxproj">
+    <ProjectReference Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Build\VS2015\GPUPerfAPINVPerfkit.vcxproj">
       <Project>{918f0693-23f7-473a-82c5-f832039bec45}</Project>
     </ProjectReference>
     <ProjectReference Include="GPUPerfAPI-Common.vcxproj">

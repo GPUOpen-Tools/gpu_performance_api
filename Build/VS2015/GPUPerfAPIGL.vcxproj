@@ -37,9 +37,9 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="GPA-Common.props" />
     <Import Project="GPA-DLL.props" />
-    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Deliverable-PerfStudio.props" />
-    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Deliverable.props" />
-    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="../../Non-OpenSource/Build/VS2015/GPA-Internal.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable-PerfStudio.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Internal.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
@@ -64,7 +64,7 @@
     <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.cpp" />
-    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\Non-OpenSource\GPUPerfAPIInternalRegistration\GLGPAInternalCounterGeneratorRegistration.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPIInternalRegistration\GLGPAInternalCounterGeneratorRegistration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\GPUPerfAPIGL\ASICInfo.h" />
@@ -76,7 +76,7 @@
     <ClInclude Include="..\..\Src\GPUPerfAPIGL\resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\Non-OpenSource\Build\VS2015\GPUPerfAPINVPerfkit.vcxproj">
+    <ProjectReference Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Build\VS2015\GPUPerfAPINVPerfkit.vcxproj">
       <Project>{918f0693-23f7-473a-82c5-f832039bec45}</Project>
     </ProjectReference>
     <ProjectReference Include="GPUPerfAPI-Common.vcxproj">

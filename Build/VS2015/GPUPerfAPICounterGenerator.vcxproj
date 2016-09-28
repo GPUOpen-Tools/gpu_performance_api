@@ -102,12 +102,12 @@
     <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI'" Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.cpp">
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\Non-OpenSource\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.cpp" />
-    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\Non-OpenSource\GPUPerfAPICounterGenerator\GPAInternalCountersGfx6.cpp" />
-    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\Non-OpenSource\GPUPerfAPICounterGenerator\GPAInternalCountersGfx7.cpp">
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx6.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx7.cpp">
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\Non-OpenSource\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.cpp">
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.cpp">
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAPublicCounters.cpp" />

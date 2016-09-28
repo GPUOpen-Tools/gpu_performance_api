@@ -126,7 +126,7 @@
     <ClCompile Include="..\..\..\Common\Src\AMDTMutex\AMDTMutex.cpp">
       <Filter>CommonSrc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoInternal.cpp">
+    <ClCompile Include="..\..\..\Common\Src\DeviceInfo-Internal\DeviceInfoInternal.cpp">
       <Filter>CommonSrc</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.cpp">
