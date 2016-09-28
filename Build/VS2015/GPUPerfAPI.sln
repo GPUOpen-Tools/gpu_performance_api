@@ -65,14 +65,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{CCAE5569
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublicCounterDefinitionFiles", "PublicCounterDefinitionFiles", "{F7B24265-E56B-4F18-A486-AC50CFBB5FB9}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx6.txt = ..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx6.txt
-		..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx7.txt = ..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx7.txt
-		..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx8.txt = ..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx8.txt
-		..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx6.txt = ..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx6.txt
-		..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx7.txt = ..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx7.txt
-		..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx8.txt = ..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx8.txt
-		..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx7.txt = ..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx7.txt
-		..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx8.txt = ..\..\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx6.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx6.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx8.txt
 	EndProjectSection
 EndProject
 Global
