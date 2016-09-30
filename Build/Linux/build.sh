@@ -213,12 +213,12 @@ if $bZip ; then
    cp $GL/$GLLIB32 ./Bin/Linx86/
    cp $GLES/$GLESLIB32 ./Bin/Linx86/
    mkdir Include
-   cp ../../../GPUPerfAPI-Common/GPUPerfAPI.h ./Include/
-   cp ../../../GPUPerfAPI-Common/GPUPerfAPIFunctionTypes.h ./Include/
-   cp ../../../GPUPerfAPI-Common/GPUPerfAPITypes.h ./Include/
-   cp ../../../doc/GPUPerfAPI-UserGuide.pdf .
+   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI.h ./Include/
+   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes.h ./Include/
+   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPITypes.h ./Include/
+   cp ../../../Doc/GPUPerfAPI-UserGuide.pdf .
    cp ../../../LICENSE .
-   cp ../../../doc/thirdpartylicenses.txt .
+   cp ../../../Doc/thirdpartylicenses.txt .
    cd ..
    tar cvzf GPUPerfAPI.$VER-lnx.tgz GPUPerfAPI-$VER-lnx/
 
@@ -247,16 +247,16 @@ if $bZip ; then
       cp $GLES/$GLESLIB32_INTERNAL ./Bin-Internal/Linx86/
       cp $COUNTERS/$COUNTERSLIB32_INTERNAL ./Bin-Internal/Linx86/
 
-      cp ../../../GPUPerfAPI-Common/GPUPerfAPI-Private.h ./Include/
-      cp ../../../GPUPerfAPI-Common/GPUPerfAPIFunctionTypes-Private.h ./Include/
-      cp ../../../GPUPerfAPI-Common/GPUPerfAPITypes-Private.h ./Include/
-      cp ../../../GPUPerfAPI-Common/GPAFunctions.h ./Include/
-      cp ../../../GPUPerfAPI-Common/GPUPerfAPI-HSA.h ./Include/
-      cp ../../../GPUPerfAPI-Common/GPUPerfAPIOS.h ./Include/
-      cp ../../../GPUPerfAPICounters/GPUPerfAPICounters.h ./Include/
-      cp ../../../GPUPerfAPICounterGenerator/GPACounterGenerator.h ./Include/
-      cp ../../../GPUPerfAPICounterGenerator/GPAICounterAccessor.h ./Include/
-      cp ../../../GPUPerfAPICounterGenerator/GPAICounterScheduler.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-Private.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes-Private.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPITypes-Private.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPAFunctions.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-HSA.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIOS.h ./Include/
+      cp ../../../Src/GPUPerfAPICounters/GPUPerfAPICounters.h ./Include/
+      cp ../../../Src/GPUPerfAPICounterGenerator/GPACounterGenerator.h ./Include/
+      cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterAccessor.h ./Include/
+      cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterScheduler.h ./Include/
       cd ..
       tar cvzf GPUPerfAPI.$VER-lnx-Promotion.tgz GPUPerfAPI-$VER-lnx/
    fi
