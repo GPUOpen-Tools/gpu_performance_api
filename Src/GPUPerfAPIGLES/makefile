@@ -1,6 +1,6 @@
 # makefile for GPUPerfAPIGLES
 
-DEPTH = ..
+DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
 TARGETSO = libGPUPerfAPIGLES$(TARGET_SUFFIX).so

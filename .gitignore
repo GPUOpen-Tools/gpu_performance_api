@@ -25,6 +25,9 @@ bld/
 [Oo]bj/
 [Ll]og/
 Doc/public
+*.so
+*.a
+*.pyc
 
 # Visual Studo 2015 cache/options directory
 .vs/

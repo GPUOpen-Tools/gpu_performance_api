@@ -1,6 +1,6 @@
 # Makefile for GPUPerfAPICounterGenerator
 
-DEPTH = ..
+DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
 TARGETLIB = libGPUPerfAPICounterGenerator$(TARGET_SUFFIX).a

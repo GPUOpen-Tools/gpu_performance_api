@@ -40,7 +40,7 @@ all: default x86 Internal Internalx86 Dbg Dbgx86 DbgInternal DbgInternalx86
 
 BUILD_SRC=$(CC) $(CFLAGS) $(INCLUDES) $(DEFINES) -c $< -o $@
 
-$(OBJ_DIR)/%.o: ../Non-OpenSource/GPUPerfAPICounterGenerator/%.cpp
+$(OBJ_DIR)/%.o: ../../../GPA-Internal/Src/GPUPerfAPICounterGenerator/%.cpp
 	$(BUILD_SRC)
 
 $(OBJ_DIR)/%.o: %.cpp
@@ -62,6 +62,9 @@ $(OBJ_DIR)/%.o: $(AMDTMUTEX_DIR)/%.cpp
 	$(BUILD_SRC)
 
 $(OBJ_DIR)/%.o: $(DEVICEINFO_DIR)/%.cpp
+	$(BUILD_SRC)
+
+$(OBJ_DIR)/%.o: $(DEVICEINFOINTERNAL_DIR)/%.cpp
 	$(BUILD_SRC)
 
 $(OBJ_DIR)/%.o: $(GPUPERFAPIUTILS_DIR)/%.cpp

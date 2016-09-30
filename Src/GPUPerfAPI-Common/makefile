@@ -1,6 +1,6 @@
 # Makefile for GPUPerfAPI-Common
 
-DEPTH = ..
+DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
 TARGETLIB = libGPUPerfAPI-Common$(TARGET_SUFFIX).a
