@@ -23,6 +23,7 @@ typedef enum
     ASIC_Gfx6,     ///< GFX6 Family
     ASIC_Gfx7,     ///< GFX7 Family
     ASIC_Gfx8,     ///< GFX8 Family
+    ASIC_Gfx9,     ///< GFX9 Family
     ASIC_UNKNOWN   ///< unknown asic family
 } ASICType;
 
@@ -78,7 +79,7 @@ typedef enum ATIAsicIDEnum
     ATIASIC_ID_FIJI_P,                  ///< ATIASICID for Fiji (GFX8)
     ATIASIC_ID_ELLESMERE,               ///< ATIASICID for Ellesmere (GFX8)
     ATIASIC_ID_BAFFIN,                  ///< ATIASICID for Baffin (GFX8)
-    ATIASIC_ID_GREENLAND,               ///< ATIASICID for Greenland (GFX8)
+    ATIASIC_ID_GREENLAND,               ///< ATIASICID for Greenland (GFX9)
     ATIASIC_ID_UNKNOWN,                 ///< Unknown Asic
     ATIAsicId_First = ATIASIC_ID_R600,  ///< First place holder
     ATIAsicId_LAST = ATIASIC_ID_UNKNOWN ///< Last place holder
