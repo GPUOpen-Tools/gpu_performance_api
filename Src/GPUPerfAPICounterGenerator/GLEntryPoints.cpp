@@ -8,6 +8,12 @@
 
 #include "GLEntryPoints.h"
 
+decltype(glFlush)*                      _oglFlush                          = nullptr;
+decltype(glGetString)*                  _oglGetString                      = nullptr;
+decltype(glGetIntegerv)*                _oglGetIntegerv                    = nullptr;
+#ifdef _WIN32
+decltype(wglGetCurrentContext)*         _wglGetCurrentContext              = nullptr;
+#endif
 PFNGLGETPERFMONITORGROUPSAMDPROC        _oglGetPerfMonitorGroupsAMD        = nullptr;
 PFNGLGETPERFMONITORCOUNTERSAMDPROC      _oglGetPerfMonitorCountersAMD      = nullptr;
 PFNGLGETPERFMONITORGROUPSTRINGAMDPROC   _oglGetPerfMonitorGroupStringAMD   = nullptr;

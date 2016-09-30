@@ -11,6 +11,10 @@
 #include <assert.h>
 #include <sstream>
 
+#ifdef _LINUX
+#include <dlfcn.h>
+#endif
+
 #include "../GPUPerfAPI-Common/GPUPerfAPIImp.h"
 #include "../GPUPerfAPI-Common/GPACustomHWValidationManager.h"
 
@@ -202,6 +206,21 @@ gpa_uint32 GPA_IMP_GetPreferredCheckResultFrequency()
     return 50;
 }
 
+
+#ifndef GLES
+
+#ifdef _WIN32
+decltype(wglGetProcAddress)* _wglGetProcAddress = nullptr;
+#endif
+
+#ifdef _LINUX
+decltype(glXGetProcAddressARB)* _glXGetProcAddressARB = nullptr;
+#endif
+
+#else
+decltype(eglGetProcAddress)* _eglGetProcAddress = nullptr;
+#endif
+
 /// Checks the OpenGL extensions and initializes the various function pointers.  The extensions queried are:
 ///    -- GL_AMD_performance_monitor
 ///    -- GL_ARB_timer_query (OpenGL)
@@ -219,6 +238,77 @@ GPA_Status InitializeGLFunctions()
     bool bDebugOutputExtFound = false;
     bool bMesaQueryRendererExtFound = false;
 
+#ifdef _WIN32
+    HMODULE module = LoadLibraryA("opengl32.dll");
+#else
+    void* module = dlopen("libGL.so", RTLD_LAZY);
+#endif
+
+    if (nullptr == module)
+    {
+        return GPA_STATUS_ERROR_NULL_POINTER;
+    }
+
+#ifndef GLES
+
+#ifdef _WIN32
+    _wglGetCurrentContext = reinterpret_cast<decltype(wglGetCurrentContext)*>(GetProcAddress(module, "wglGetCurrentContext"));
+
+    _wglGetProcAddress = reinterpret_cast<decltype(wglGetProcAddress)*>(GetProcAddress(module, "wglGetProcAddress"));
+
+    if (nullptr == _wglGetProcAddress || nullptr == _wglGetCurrentContext)
+    {
+        return GPA_STATUS_ERROR_NULL_POINTER;
+    }
+#endif
+
+#ifdef _LINUX
+    _glXGetProcAddressARB = reinterpret_cast<decltype(glXGetProcAddressARB)*>(dlsym(module, "glXGetProcAddressARB"));
+
+    if (nullptr == _glXGetProcAddressARB)
+    {
+        return GPA_STATUS_ERROR_NULL_POINTER;
+    }
+#endif
+
+#else // GLES
+
+#ifdef _WIN32
+    _eglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(GetProcAddress(module, "eglGetProcAddress"));
+
+    if (nullptr == _eglGetProcAddress)
+    {
+        return GPA_STATUS_ERROR_NULL_POINTER;
+    }
+#endif
+
+#ifdef _LINUX
+    _eglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(dlsym(module, "eglGetProcAddress"));
+
+    if (nullptr == _eglGetProcAddress)
+    {
+        return GPA_STATUS_ERROR_NULL_POINTER;
+    }
+#endif
+
+#endif // GLES
+
+#ifdef _WIN32
+    _oglFlush = reinterpret_cast<decltype(glFlush)*>(GetProcAddress(module, "glFlush"));
+    _oglGetString = reinterpret_cast<decltype(glGetString)*>(GetProcAddress(module, "glGetString"));
+    _oglGetIntegerv = reinterpret_cast<decltype(glGetIntegerv)*>(GetProcAddress(module, "glGetIntegerv"));
+#endif
+#ifdef _LINUX
+    _oglFlush = reinterpret_cast<decltype(glFlush)*>(dlsym(module, "glFlush"));
+    _oglGetString = reinterpret_cast<decltype(glGetString)*>(dlsym(module, "glGetString"));
+    _oglGetIntegerv = reinterpret_cast<decltype(glGetIntegerv)*>(dlsym(module, "glGetIntegerv"));
+#endif
+
+    if (nullptr == _oglFlush || nullptr == _oglGetString || nullptr == _oglGetIntegerv )
+    {
+        return GPA_STATUS_ERROR_NULL_POINTER;
+    }
+
     GET_PROC_ADDRESS(_oglGetStringi, PFNGLGETSTRINGIPROC, "glGetStringi");
 
     // if OpenGL 3.x method of getting the extensions is available, use that, otherwise try the old method
@@ -227,7 +317,7 @@ GPA_Status InitializeGLFunctions()
         GPA_LogMessage("Using OpenGL 3.x method to query extensions.");
 
         GLint numExtensions = 0;
-        glGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
+        _oglGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
 
         for (GLint i = 0; i < numExtensions; i++)
         {
@@ -276,7 +366,7 @@ GPA_Status InitializeGLFunctions()
     else
     {
         GPA_LogMessage("Using OpenGL 1.x method to query extensions.");
-        const GLubyte* pExtensions = glGetString(GL_EXTENSIONS);
+        const GLubyte* pExtensions = _oglGetString(GL_EXTENSIONS);
 
         if (nullptr != pExtensions)
         {
@@ -476,11 +566,11 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
         return status;
     }
 
-    const GLubyte* pRenderer = glGetString(GL_RENDERER);
+    const GLubyte* pRenderer = _oglGetString(GL_RENDERER);
     pHwInfo->SetDeviceName(reinterpret_cast<const char*>(pRenderer));
 
     // Handle non-AMD GPU vendors
-    const GLubyte* pVendor = glGetString(GL_VENDOR);
+    const GLubyte* pVendor = _oglGetString(GL_VENDOR);
 
     //TODO: should at least support GPUTime for these vendors then
     if (nullptr != strstr(reinterpret_cast<const char*>(pVendor), pNVIDIARenderer))
@@ -693,7 +783,7 @@ GPA_Status GPA_IMP_CompareHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
         return status;
     }
 
-    const GLubyte* pRenderer = glGetString(GL_RENDERER);
+    const GLubyte* pRenderer = _oglGetString(GL_RENDERER);
 
     const char* deviceName = nullptr;
     pHwInfo->GetDeviceName(deviceName);
@@ -717,7 +807,7 @@ GPA_Status GPA_IMP_CompareHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
         return GPA_STATUS_OK;
     }
 
-    const GLubyte* pVendor = glGetString(GL_VENDOR);
+    const GLubyte* pVendor = _oglGetString(GL_VENDOR);
 
     if (strstr(reinterpret_cast<const char*>(pVendor), pNVIDIARenderer))
     {

@@ -269,7 +269,7 @@ bool GetASICInfo(ASICInfo& rASICInfo)
     // Since GL ES didn't exist before version 9551, there's no need to check the
     // version number. For now, it is assumed the version number will be >9551
 
-    const GLubyte* pVersion = glGetString(GL_VERSION);
+    const GLubyte* pVersion = _oglGetString(GL_VERSION);
     int nVersion = extractVersionNumber(pVersion);
 
     std::stringstream message;

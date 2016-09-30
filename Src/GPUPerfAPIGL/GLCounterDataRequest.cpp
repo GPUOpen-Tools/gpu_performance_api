@@ -11,6 +11,7 @@
 #include "GLPerfMonitorCache.h"
 
 #include "../GPUPerfAPI-Common/Logging.h"
+#include "../GPUPerfAPICounterGenerator/GLEntryPoints.h"
 #include <sstream>
 #ifdef _LINUX
     #include <string.h>
@@ -586,12 +587,12 @@ bool GLCounterDataRequest::EndRequest()
         // The effects of the first glFlush() is extremely noticeable with the GLFiveQuarterQuads test and the PostZSamplesPassing counter.
         // The effects of the second glFlush() are noticeable with last draw call of the GLFiveQuarterQuads test and the PreZSamplesPassing counter.
         // The effects of the second glFlush() are also noticeable with last draw call of the GLFiveQuarterQuads test and the CBMemWritten counter.
-        glFlush();
+        _oglFlush();
 
         _oglEndPerfMonitorAMD(m_monitor);
         GPA_LogDebugMessage("glEndPerfMonitorAMD: %u", m_monitor);
 
-        glFlush();
+        _oglFlush();
 
     }
 

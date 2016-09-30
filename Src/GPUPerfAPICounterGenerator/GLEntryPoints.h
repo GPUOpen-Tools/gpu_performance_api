@@ -23,19 +23,18 @@
 
 // used for defining the proc addresses which are initialized below
 #ifdef _WIN32
+extern decltype(wglGetProcAddress)* _wglGetProcAddress; ///< function pointer for wglGetProcAddress
 #define GET_PROC_ADDRESS(f,type,name)\
-    (f) = (type) wglGetProcAddress(name);
+    (f) = (type) _wglGetProcAddress(name);
 #endif
 
 #ifdef _LINUX
+extern decltype(glXGetProcAddressARB)* _glXGetProcAddressARB; ///< function pointer for glXGetProcAddressARB
 #define GET_PROC_ADDRESS(f,type,name)\
-    (f) = (type) glXGetProcAddressARB( (const GLubyte*) name);
+    (f) = (type) _glXGetProcAddressARB( (const GLubyte*) name);
 #endif
 
 #else
-// used for defining the proc addresses which are initialized below
-#define GET_PROC_ADDRESS(f,type,name)\
-    (f) = (type) eglGetProcAddress(name);
 
 #ifdef _WIN32
     typedef unsigned __int64 uint64_t;
@@ -49,10 +48,21 @@
 #include <GLES3/gl3.h>
 #include <GLES2/gl2ext.h>
 
+// used for defining the proc addresses which are initialized below
+extern decltype(eglGetProcAddress)* _eglGetProcAddress; ///< function pointer for eglGetProcAddress
+#define GET_PROC_ADDRESS(f,type,name)\
+    (f) = (type) _eglGetProcAddress(name);
+
 #endif // GLES
 
 typedef unsigned int GLhandle; ///< Workaround missing def in headers
 
+extern decltype(glFlush)*                      _oglFlush;                           ///< function pointer for glFlush
+extern decltype(glGetString)*                  _oglGetString;                       ///< function pointer for glGetString
+extern decltype(glGetIntegerv)*                _oglGetIntegerv;                     ///< function pointer for glGetIntegerv
+#ifdef _WIN32
+extern decltype(wglGetCurrentContext)*         _wglGetCurrentContext;               ///< function pointer for wglGetCurrentContext
+#endif
 extern PFNGLGETPERFMONITORGROUPSAMDPROC        _oglGetPerfMonitorGroupsAMD;         ///< function pointer for glGetPerfMonitorGroupsAMD
 extern PFNGLGETPERFMONITORCOUNTERSAMDPROC      _oglGetPerfMonitorCountersAMD;       ///< function pointer for glGetPerfMonitorCountersAMD
 extern PFNGLGETPERFMONITORGROUPSTRINGAMDPROC   _oglGetPerfMonitorGroupStringAMD;    ///< function pointer for glGetPerfMonitorGroupStringAMD

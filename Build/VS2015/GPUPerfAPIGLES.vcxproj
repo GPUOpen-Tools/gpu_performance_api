@@ -46,9 +46,6 @@
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
   </PropertyGroup>
   <ItemDefinitionGroup>
-    <Link>
-      <AdditionalDependencies>libEGL.lib;libGLESv2.lib;%(AdditionalDependencies)</AdditionalDependencies>
-    </Link>
     <ClCompile>
       <PreprocessorDefinitions>BOOST_MEM_FN_ENABLE_STDCALL;GLES;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
