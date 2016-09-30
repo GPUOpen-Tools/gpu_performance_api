@@ -1,6 +1,6 @@
 # UpdateCommonMap.py
 #
-#    Map of GitHub project names to clone target paths, relative to the GPUPerfAPI 
+#    Map of GitHub project names to clone target paths, relative to the GPUPerfAPI
 #    project root on the local disk.
 
 # GitHub GPUOpen-Tools projects map
@@ -9,8 +9,6 @@ GitHubMapping = {
     "common-dk-Doxygen"                      : "../Common/DK/Doxygen",
     "common-lib-amd-ADL"                     : "../Common/Lib/AMD/ADL",
     "common-lib-amd-APPSDK-3.0"              : "../Common/Lib/AMD/APPSDK",
-    "common-lib-amd-HSA"                     : "../Common/Lib/AMD/HSA",
-	"common-lib-ext-Boost-1.59"              : "../Common/Lib/Ext/Boost",
     "common-lib-ext-GoogleTest-1.7"          : "../Common/Lib/Ext/GoogleTest",
     "common-lib-ext-OpenGL"                  : "../Common/Lib/Ext/OpenGL",
     "common-lib-ext-OpenGLES"                : "../Common/Lib/Ext/OpenGLES",
