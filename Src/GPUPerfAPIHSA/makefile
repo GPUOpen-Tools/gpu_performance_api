@@ -1,6 +1,6 @@
 # Makefile for GPUPerfAPIHSA
 
-DEPTH = ..
+DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
 TARGETSO = libGPUPerfAPIHSA$(TARGET_SUFFIX).so

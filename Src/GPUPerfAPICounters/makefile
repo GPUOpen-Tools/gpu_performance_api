@@ -1,6 +1,6 @@
 # Makefile for GPUPerfAPICounters
 
-DEPTH = ..
+DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
 TARGETSO = libGPUPerfAPICounters$(TARGET_SUFFIX).so

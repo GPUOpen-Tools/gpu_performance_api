@@ -1,6 +1,6 @@
 #MAKE FILE FOR DeviceInfo
 
-DEPTH = ..
+DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
 TARGETLIB = libDeviceInfo$(TARGET_SUFFIX).a
@@ -14,7 +14,7 @@ INCLUDES =	-I. \
 		-I$(DYNAMICLIBRARYMODULE_DIR)
 
 # for AMD-internal builds
-ifneq ("$(wildcard $(DEVICEINFO_DIR)/DeviceInfoInternal.cpp)","")
+ifneq ("$(wildcard $(DEVICEINFOINTERNAL_DIR)/DeviceInfoInternal.cpp)","")
     INTERNAL_OBJ := ./$(OBJ_DIR)/DeviceInfoInternal.o
 endif
 
