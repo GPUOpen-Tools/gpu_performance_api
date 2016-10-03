@@ -5,8 +5,6 @@
 
 # GitHub GPUOpen-Tools projects map
 GitHubMapping = {
-    "common-dk-GraphViz"                     : "../Common/DK/GraphViz",
-    "common-dk-Doxygen"                      : "../Common/DK/Doxygen",
     "common-lib-amd-ADL"                     : "../Common/Lib/AMD/ADL",
     "common-lib-amd-APPSDK-3.0"              : "../Common/Lib/AMD/APPSDK",
     "common-lib-ext-GoogleTest-1.7"          : "../Common/Lib/Ext/GoogleTest",
