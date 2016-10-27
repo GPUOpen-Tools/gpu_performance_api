@@ -125,8 +125,7 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
     // TODO: requested that the HSA runtime allows us to get revID -- for now hardcode to zero
     if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(deviceId, REVISION_ID_ANY, cardInfo))
     {
-        if (static_cast<unsigned int>(cardInfo.m_generation) >= static_cast<unsigned int>(GDT_HW_GENERATION_SEAISLAND) &&
-            _strcmpi(deviceName, cardInfo.m_szCALName) == 0)
+        if (static_cast<unsigned int>(cardInfo.m_generation) >= static_cast<unsigned int>(GDT_HW_GENERATION_SEAISLAND))
         {
             pHwInfo->SetDeviceName(cardInfo.m_szCALName);
             pHwInfo->SetDeviceID(static_cast<gpa_uint32>(cardInfo.m_deviceID));
@@ -138,6 +137,7 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
             message << "Device ID: 0x" << hex << cardInfo.m_deviceID << ", ";
             message << "Rev ID: 0x" << hex << cardInfo.m_revID << ", ";
             message << "Device Name: " << cardInfo.m_szCALName << ".";
+            message << "HSA RT Device Name: " << deviceName << ".";
             GPA_LogDebugMessage(message.str().c_str());
         }
     }
