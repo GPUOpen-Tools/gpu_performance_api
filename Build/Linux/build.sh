@@ -155,7 +155,7 @@ for SUBDIR in $BUILD_DIRS; do
    if !($bIncrementalBuild) ; then
       make -C $SUBDIR spotless >> $LOGFILE 2>&1
    fi
-   
+
    #make 64 bit
    echo "Build ${BASENAME}, 64-bit..." | tee -a $LOGFILE
 
@@ -199,9 +199,10 @@ done
 
 if $bZip ; then
    echo "Generate tarball..." | tee -a $LOGFILE
+   ZIP_DIR_NAME=${VER_MAJOR}_${VER_MINOR}
    cd $BUILD_DIR
-   mkdir GPUPerfAPI-$VER-lnx
-   cd GPUPerfAPI-$VER-lnx
+   mkdir $ZIP_DIR_NAME
+   cd $ZIP_DIR_NAME
    mkdir Bin
    mkdir Bin/Linx64
    mkdir Bin/Linx86
@@ -220,7 +221,7 @@ if $bZip ; then
    cp ../../../LICENSE .
    cp ../../../Doc/thirdpartylicenses.txt .
    cd ..
-   tar cvzf GPUPerfAPI.$VER-lnx.tgz GPUPerfAPI-$VER-lnx/
+   tar cvzf GPUPerfAPI.$VER-lnx.tgz $ZIP_DIR_NAME/
 
    #-----------------------------------------
    #copy to bin-Internal folder
@@ -258,7 +259,7 @@ if $bZip ; then
       cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterAccessor.h ./Include/
       cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterScheduler.h ./Include/
       cd ..
-      tar cvzf GPUPerfAPI.$VER-lnx-Promotion.tgz GPUPerfAPI-$VER-lnx/
+      tar cvzf GPUPerfAPI.$VER-lnx-Promotion.tgz $ZIP_DIR_NAME/
    fi
 fi
 
