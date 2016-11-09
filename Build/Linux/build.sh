@@ -237,7 +237,7 @@ if $bZip ; then
    #copy to bin-Internal folder
    #-----------------------------------------
    if $bBuildInternal ; then
-      cd GPUPerfAPI-$VER-lnx
+      cd $ZIP_DIR_NAME
       mkdir Bin-Internal
       mkdir Bin-Internal/Linx64
       mkdir Bin-Internal/Linx86
