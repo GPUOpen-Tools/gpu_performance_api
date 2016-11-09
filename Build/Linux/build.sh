@@ -213,6 +213,8 @@ if $bZip ; then
    cp $CL/$CLLIB32 ./Bin/Linx86/
    cp $GL/$GLLIB32 ./Bin/Linx86/
    cp $GLES/$GLESLIB32 ./Bin/Linx86/
+   cp $COUNTERS/$COUNTERSLIB ./Bin/Linx64/
+   cp $COUNTERS/$COUNTERSLIB32 ./Bin/Linx86/
    mkdir Include
    cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI.h ./Include/
    cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes.h ./Include/
@@ -241,10 +243,6 @@ if $bZip ; then
       mkdir Bin-Internal
       mkdir Bin-Internal/Linx64
       mkdir Bin-Internal/Linx86
-
-      # public libs that only appear in the promotion tarball
-      cp $COUNTERS/$COUNTERSLIB ./Bin/Linx64/
-      cp $COUNTERS/$COUNTERSLIB32 ./Bin/Linx86/
 
       # internal libs
       cp $CL/$CLLIB_INTERNAL ./Bin-Internal/Linx64/
