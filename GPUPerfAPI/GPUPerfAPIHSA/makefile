@@ -10,6 +10,7 @@ INCLUDES =	-I. \
 		-I$(GPACOMMON_DIR) \
 		-I$(GPACG_DIR) \
 		-I$(HSA_DIR)/include \
+		-I$(HSA_DIR)/include/hsa \
 		-I$(ADL_DIR)/include \
 		-I$(ADLUTIL_DIR) \
 		-I$(DEVICEINFO_DIR) \
