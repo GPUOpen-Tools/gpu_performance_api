@@ -632,50 +632,6 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
             // ASICInfo from gl driver; HWInfo from http://ati.amd.com/developer/ATI_Device_IDs.txt
             switch (asicInfo.eAsicRev)
             {
-                case ATIASIC_ID_R870:
-                    pHwInfo->SetDeviceID(0x6898);
-                    break;
-
-                case ATIASIC_ID_R830:
-                    pHwInfo->SetDeviceID(0x68B8);
-                    break;
-
-                case ATIASIC_ID_REDWOOD:
-                    pHwInfo->SetDeviceID(0x68D8);
-                    break;
-
-                case ATIASIC_ID_CEDAR:
-                    pHwInfo->SetDeviceID(0x68F8);
-                    break;
-
-                case ATIASIC_ID_CAYMAN:
-                    pHwInfo->SetDeviceID(0x6718);
-                    break;
-
-                case ATIASIC_ID_BARTS:
-                    pHwInfo->SetDeviceID(0x6738);
-                    break;
-
-                case ATIASIC_ID_TURKS:
-                    pHwInfo->SetDeviceID(0x6758);
-                    break;
-
-                case ATIASIC_ID_CAICOS:
-                    pHwInfo->SetDeviceID(0x6779);
-                    break;
-
-                case ATIASIC_ID_WRESTLER:
-                    pHwInfo->SetDeviceID(0x9802);
-                    break;
-
-                case ATIASIC_ID_BONAIRE_M:
-                    pHwInfo->SetDeviceID(0x665C);
-                    break;
-
-                case ATIASIC_ID_KALINDI:
-                    pHwInfo->SetDeviceID(0x9830);
-                    break;
-
                 case ATIASIC_ID_TAHITI_P:
                     pHwInfo->SetDeviceID(0x6779);
                     break;
@@ -696,12 +652,8 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
                     pHwInfo->SetDeviceID(0x6660);
                     break;
 
-                case ATIASIC_ID_DEVASTATOR:
-                    pHwInfo->SetDeviceID(0x9900);
-                    break;
-
-                case ATIASIC_ID_SCRAPPER:
-                    pHwInfo->SetDeviceID(0x9990);
+                case ATIASIC_ID_BONAIRE_M:
+                    pHwInfo->SetDeviceID(0x665C);
                     break;
 
                 case ATIASIC_ID_SPECTRE:
@@ -710,6 +662,10 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
 
                 case ATIASIC_ID_SPOOKY:
                     pHwInfo->SetDeviceID(0x1312);
+                    break;
+
+                case ATIASIC_ID_KALINDI:
+                    pHwInfo->SetDeviceID(0x9830);
                     break;
 
                 case ATIASIC_ID_HAWAII_P:
@@ -724,20 +680,20 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
                     pHwInfo->SetDeviceID(0x6920);
                     break;
 
-                case ATIASIC_ID_CARRIZO:
-                    pHwInfo->SetDeviceID(0x9870);
-                    break;
-
-                case ATIASIC_ID_FIJI_P:
-                    pHwInfo->SetDeviceID(0x7300);
-                    break;
-
                 case ATIASIC_ID_GODAVARI:
                     pHwInfo->SetDeviceID(0x9855);
                     break;
 
+                case ATIASIC_ID_CARRIZO:
+                    pHwInfo->SetDeviceID(0x9870);
+                    break;
+
                 case ATIASIC_ID_STONEY:
                     pHwInfo->SetDeviceID(0x98E4);
+                    break;
+
+                case ATIASIC_ID_FIJI_P:
+                    pHwInfo->SetDeviceID(0x7300);
                     break;
 
                 case ATIASIC_ID_ELLESMERE:

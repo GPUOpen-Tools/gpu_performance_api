@@ -279,111 +279,31 @@ bool GetASICInfo(ASICInfo& rASICInfo)
     int nVersion = INT_MAX;
 #endif
 
-    if (nVersion >= 13252)
+    if (nVersion < 13452)
     {
-        // starting in the 14.50 driver (GL version 13252), Kauai, Tiran, and Maui were removed from the driver
-        if (nAsicType >= ATIASIC_ID_KAUAI)
-        {
-            nAsicType++;
-        }
-
-        if (nAsicType >= ATIASIC_ID_TIRAN_P)
-        {
-            nAsicType++;
-        }
-
-        if (nAsicType >= ATIASIC_ID_MAUI_P)
-        {
-            nAsicType++;
-        }
-    }
-
-    if (nVersion < 13393)
-    {
-        /// Stoney was added to driver starting in 15.20
-        if (nAsicType >= ATIASIC_ID_STONEY)
-        {
-            nAsicType--;
-        }
-    }
-    else
-    {
-        /// Bermuda was removed from driver starting in 15.20
-        if (nAsicType >= ATIASIC_ID_BERMUDA_P)
-        {
-            nAsicType++;
-        }
+        // pre-GCN devices were removed from the driver starting with version 13452.
+        // if the driver version is earlier than that we will return an error.
+        GPA_LogError("OpenGL driver version is too old. Please update your driver.");
+        return false;
     }
 
     // store the Asic Revision ID
     rASICInfo.eAsicRev = (ATIAsicID) nAsicType;
 
     // Decode the ASIC Type
-    if (nAsicType == ATIASIC_ID_R600 ||
-        nAsicType == ATIASIC_ID_RV630 ||
-        nAsicType == ATIASIC_ID_RV610 ||
-        nAsicType == ATIASIC_ID_RV670)
+    if (nAsicType == ATIASIC_ID_TAHITI_P ||
+        nAsicType == ATIASIC_ID_PITCAIRN_PM ||
+        nAsicType == ATIASIC_ID_CAPEVERDE_M ||
+        nAsicType == ATIASIC_ID_OLAND_M ||
+        nAsicType == ATIASIC_ID_HAINAN_M)
     {
-        GPA_LogMessage("Recognized an ATI Radeon HD 2000 or 3000 series card.");
-        rASICInfo.eAsicType = ASIC_R6xx;
-    }
-    else if (nAsicType == ATIASIC_ID_RS780 ||
-             nAsicType == ATIASIC_ID_RV770 ||
-             nAsicType == ATIASIC_ID_RV740 ||
-             nAsicType == ATIASIC_ID_RV730 ||
-             nAsicType == ATIASIC_ID_RV710)
-    {
-        GPA_LogMessage("Recognized an ATI Radeon HD 4000 series card.");
-        rASICInfo.eAsicType = ASIC_R7xx;
-    }
-    else if (nAsicType == ATIASIC_ID_R870 ||
-             nAsicType == ATIASIC_ID_R830 ||
-             nAsicType == ATIASIC_ID_REDWOOD ||
-             nAsicType == ATIASIC_ID_CEDAR)
-    {
-        GPA_LogMessage("Recognized an Evergreen card.");
-        rASICInfo.eAsicType = ASIC_R8xx;
-    }
-    else if (nAsicType == ATIASIC_ID_SUPERSUMO ||
-             nAsicType == ATIASIC_ID_SUMO ||
-             nAsicType == ATIASIC_ID_WRESTLER)
-    {
-        GPA_LogMessage("Recognized an APU with Evergreen graphics.");
-        rASICInfo.eAsicType = ASIC_R8xx;
-    }
-    else if (nAsicType == ATIASIC_ID_BARTS ||
-             nAsicType == ATIASIC_ID_TURKS ||
-             nAsicType == ATIASIC_ID_CAICOS)
-    {
-        // Barts, Turks, and Caicos are based on R8xx, and have R8xx perf counters,
-        // so report it as R8xx.
-        GPA_LogMessage("Recognized an Evergreen (NI) card.");
-        rASICInfo.eAsicType = ASIC_R8xx;
-    }
-    else if (nAsicType == ATIASIC_ID_CAYMAN)
-    {
-        GPA_LogMessage("Recognized a Northern Islands card.");
-        rASICInfo.eAsicType = ASIC_R9xx;
-    }
-    else if (nAsicType == ATIASIC_ID_DEVASTATOR ||
-             nAsicType == ATIASIC_ID_SCRAPPER)
-    {
-        GPA_LogMessage("Recognized an APU with Northern Islands graphics.");
-        rASICInfo.eAsicType = ASIC_R9xx;
-    }
-    else if (nAsicType == ATIASIC_ID_TAHITI_P ||
-             nAsicType == ATIASIC_ID_PITCAIRN_PM ||
-             nAsicType == ATIASIC_ID_CAPEVERDE_M ||
-             nAsicType == ATIASIC_ID_OLAND_M ||
-             nAsicType == ATIASIC_ID_HAINAN_M)
-    {
-        GPA_LogMessage("Recognized a Southern Islands card.");
+        GPA_LogMessage("Recognized a GFX6 card.");
         rASICInfo.eAsicType = ASIC_Gfx6;
     }
     else if (nAsicType == ATIASIC_ID_BONAIRE_M ||
              nAsicType == ATIASIC_ID_HAWAII_P)
     {
-        GPA_LogMessage("Recognized a Sea Islands card.");
+        GPA_LogMessage("Recognized a GFX7 card.");
         rASICInfo.eAsicType = ASIC_Gfx7;
     }
     else if (nAsicType == ATIASIC_ID_KALINDI ||
@@ -391,7 +311,7 @@ bool GetASICInfo(ASICInfo& rASICInfo)
              nAsicType == ATIASIC_ID_SPECTRE ||
              nAsicType == ATIASIC_ID_SPOOKY)
     {
-        GPA_LogMessage("Recognized an APU with Sea Islands graphics.");
+        GPA_LogMessage("Recognized an APU with GFX7 graphics.");
         rASICInfo.eAsicType = ASIC_Gfx7;
     }
     else if (nAsicType == ATIASIC_ID_ICELAND_M ||
@@ -400,13 +320,13 @@ bool GetASICInfo(ASICInfo& rASICInfo)
              nAsicType == ATIASIC_ID_ELLESMERE ||
              nAsicType == ATIASIC_ID_BAFFIN)
     {
-        GPA_LogMessage("Recognized a Volcanic Islands card.");
+        GPA_LogMessage("Recognized a GFX8 card.");
         rASICInfo.eAsicType = ASIC_Gfx8;
     }
     else if (nAsicType == ATIASIC_ID_CARRIZO ||
              nAsicType == ATIASIC_ID_STONEY)
     {
-        GPA_LogMessage("Recognized an APU with Volcanic Islands graphics.");
+        GPA_LogMessage("Recognized an APU with GFX8 graphics.");
         rASICInfo.eAsicType = ASIC_Gfx8;
     }
     else
@@ -422,10 +342,6 @@ bool GetASICInfo(ASICInfo& rASICInfo)
     // Now, fill in the rest of the ASIC structure
     switch (rASICInfo.eAsicType)
     {
-        case ASIC_R6xx:
-        case ASIC_R7xx:
-        case ASIC_R8xx:
-        case ASIC_R9xx:
         case ASIC_Gfx6:
         case ASIC_Gfx7:
         case ASIC_Gfx8:
