@@ -71,7 +71,7 @@ namespace PublicCounterCompiler
       public static bool CompileCounters(string api, string generation)
       {
          // calculate the proper path to output to
-         string gpaFolder = "GPUPerfAPI\\";
+         string gpaFolder = "GPA\\GPA\\";
          int endPath = Application.StartupPath.IndexOf(gpaFolder) + gpaFolder.Length;
 
          if (gpaFolder.Length == endPath)
@@ -81,7 +81,7 @@ namespace PublicCounterCompiler
          }
 
          string gpaPath = Application.StartupPath.Substring(0, endPath);
-         string compilerInputPath = gpaPath + "PublicCounterCompilerInputFiles\\";
+         string compilerInputPath = gpaPath + "Src\\PublicCounterCompilerInputFiles\\";
          //string apiPath = gpaPath + "GPUPerfAPI" + api + "\\";
 
          // file names
@@ -101,8 +101,8 @@ namespace PublicCounterCompiler
          }
 
          string counterDefsFile = compilerInputPath + "PublicCounterDefinitions" + suffix + generation + ".txt";
-         string outputDirectory = gpaPath + "GPUPerfAPICounterGenerator\\";
-         string testOutputDirectory = gpaPath + "GPUPerfAPIUnitTests\\counters\\";
+         string outputDirectory = gpaPath + "Src\\GPUPerfAPICounterGenerator\\";
+         string testOutputDirectory = gpaPath + "Src\\GPUPerfAPIUnitTests\\counters\\";
          string section = api + generation;
 
          ////if (MessageBox.Show("CounterNamesFile: " + counterNamesFile + Environment.NewLine +

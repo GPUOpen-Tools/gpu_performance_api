@@ -18,7 +18,7 @@ namespace PublicCounterCompiler
    using System.Drawing;
    using System.Text;
    using System.Windows.Forms;
-   
+
    /// <summary>
    /// the main form of the PublicCounterCompiler
    /// </summary>
