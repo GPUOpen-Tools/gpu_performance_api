@@ -13,7 +13,7 @@
 #include "counters/PublicCountersCLGfx7.h"
 #include "counters/PublicCountersCLGfx8.h"
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
     #include "InternalCountersCLGfx6.h"
     #include "InternalCountersCLGfx7.h"
     #include "InternalCountersCLGfx8.h"
@@ -35,7 +35,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
         case GPA_HW_GENERATION_SOUTHERNISLAND:
             pPublicCounters = CLGFX6_PUBLIC_COUNTERS;
             publicCounterCount = CLGFX6_PUBLIC_COUNTER_COUNT;
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
             pHardwareGroups = HWCLGroupsGfx6;
             hwGroupCount = HWCLGroupCountGfx6;
             ppHardwareCounters = CLCounterGroupArrayGfx6;
@@ -45,7 +45,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
         case GPA_HW_GENERATION_SEAISLAND:
             pPublicCounters = CLGFX7_PUBLIC_COUNTERS;
             publicCounterCount = CLGFX7_PUBLIC_COUNTER_COUNT;
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
             pHardwareGroups = HWCLGroupsGfx7;
             hwGroupCount = HWCLGroupCountGfx7;
             ppHardwareCounters = CLCounterGroupArrayGfx7;
@@ -55,7 +55,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
         case GPA_HW_GENERATION_VOLCANICISLAND:
             pPublicCounters = CLGFX8_PUBLIC_COUNTERS;
             publicCounterCount = CLGFX8_PUBLIC_COUNTER_COUNT;
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
             pHardwareGroups = HWCLGroupsGfx8;
             hwGroupCount = HWCLGroupCountGfx8;
             ppHardwareCounters = CLCounterGroupArrayGfx8;
@@ -109,7 +109,7 @@ TEST(CounterDLLTests, OpenCLCounterNamesByGeneration)
 TEST(CounterDLLTests, OpenCLMultipleGenerations)
 {
     // open the DLL
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
 
     // get the entrypoints

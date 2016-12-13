@@ -198,7 +198,7 @@ bool GPA_CounterGeneratorGL::GenerateInternalCounters(GPA_HardwareCounters* pHar
     // declare this outside the loops
     GPA_HardwareCounterDescExt counter;
 
-#if defined(_DEBUG) && defined(_WIN32) && defined(GDT_INTERNAL)
+#if defined(_DEBUG) && defined(_WIN32) && defined(AMDT_INTERNAL)
     // Debug builds will generate a file that lists the counter names in a format that can be
     // easily copy/pasted into the GPUPerfAPIUnitTests project
     FILE* pFile = nullptr;
@@ -223,7 +223,7 @@ bool GPA_CounterGeneratorGL::GenerateInternalCounters(GPA_HardwareCounters* pHar
             counter.m_groupIdDriver = g;
             counter.m_counterIdDriver = 0;
 
-#if defined(_DEBUG) && defined(_WIN32) && defined(GDT_INTERNAL)
+#if defined(_DEBUG) && defined(_WIN32) && defined(AMDT_INTERNAL)
 
             if (pFile != nullptr)
             {
@@ -255,7 +255,7 @@ bool GPA_CounterGeneratorGL::GenerateInternalCounters(GPA_HardwareCounters* pHar
     // now add extra groups/counters exposed by the driver
     GenerateDriverSuppliedInternalCounters(pHardwareCounters);
 
-#if defined(_DEBUG) && defined(_WIN32) && defined(GDT_INTERNAL)
+#if defined(_DEBUG) && defined(_WIN32) && defined(AMDT_INTERNAL)
 
     if (pFile != nullptr)
     {

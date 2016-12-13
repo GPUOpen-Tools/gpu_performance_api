@@ -19,8 +19,8 @@
         <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
     </PropertyGroup>
     <PropertyGroup Label="UserMacros">
-        <MyBinDir>$(GDTOutDir)$(Configuration)-$(Platform)$(GDT_BUILD_SUFFIX)</MyBinDir>
-        <GDTCRT>MT</GDTCRT>
+        <MyBinDir>$(AMDTOutDir)$(Configuration)-$(Platform)$(AMDT_BUILD_SUFFIX)</MyBinDir>
+        <AMDTCRT>MT</AMDTCRT>
     </PropertyGroup>
     <PropertyGroup>
         <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
@@ -33,15 +33,15 @@
             <RuntimeLibrary Condition="$([System.Convert]::ToBoolean($(IsRelease)))">MultiThreaded</RuntimeLibrary>
         </ClCompile>
         <Link>
-            <OutputFile>$(OutDir)$(GDTProjectName).exe</OutputFile>
+            <OutputFile>$(OutDir)$(AMDTProjectName).exe</OutputFile>
         </Link>
     </ItemDefinitionGroup>
     <ItemGroup>
         <BuildMacro Include="MyBinDir">
             <Value>$(MyBinDir)</Value>
         </BuildMacro>
-        <BuildMacro Include="GDTCRT">
-            <Value>$(GDTCRT)</Value>
+        <BuildMacro Include="AMDTCRT">
+            <Value>$(AMDTCRT)</Value>
         </BuildMacro>
     </ItemGroup>
 </Project>

@@ -147,7 +147,7 @@ bool GPA_HWInfo::UpdateDeviceInfoBasedOnDeviceID()
         }
     }
 
-#if defined(WIN32) && defined(GDT_INTERNAL)
+#if defined(WIN32) && defined(AMDT_INTERNAL)
 
     //only emit an error for AMD devices
     if (IsAMD())

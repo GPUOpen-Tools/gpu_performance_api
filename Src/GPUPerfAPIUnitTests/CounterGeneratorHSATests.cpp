@@ -12,7 +12,7 @@
 #include "counters/PublicCountersHSAGfx7.h"
 #include "counters/PublicCountersHSAGfx8.h"
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
     #include "InternalCountersHSAGfx7.h"
     #include "InternalCountersHSAGfx8.h"
 #endif
@@ -34,7 +34,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
         case GPA_HW_GENERATION_SEAISLAND:
             pPublicCounters = HSAGFX7_PUBLIC_COUNTERS;
             publicCounterCount = HSAGFX7_PUBLIC_COUNTER_COUNT;
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
             pHardwareGroups = HWHSAGroupsGfx7;
             hwGroupCount = HWHSAGroupCountGfx7;
             ppHardwareCounters = HSACounterGroupArrayGfx7;
@@ -44,7 +44,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
         case GPA_HW_GENERATION_VOLCANICISLAND:
             pPublicCounters = HSAGFX8_PUBLIC_COUNTERS;
             publicCounterCount = HSAGFX8_PUBLIC_COUNTER_COUNT;
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
             pHardwareGroups = HWHSAGroupsGfx8;
             hwGroupCount = HWHSAGroupCountGfx8;
             ppHardwareCounters = HSACounterGroupArrayGfx8;

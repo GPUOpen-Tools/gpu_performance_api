@@ -33,14 +33,14 @@ using std::string;
     #undef TRACE_FUNCTION
     /// macro for tracing function calls
     #define TRACE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func)
-    #ifdef GDT_INTERNAL
+    #ifdef AMDT_INTERNAL
         #undef TRACE_PRIVATE_FUNCTION
         #define TRACE_PRIVATE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func)
     #else // public build
         #undef TRACE_PRIVATE_FUNCTION
         /// macro for tracing private function calls
         #define TRACE_PRIVATE_FUNCTION(func)
-    #endif // GDT_INTERNAL / public build
+    #endif // AMDT_INTERNAL / public build
 #else // disable trace functions
     #undef TRACE_FUNCTION
     #define TRACE_FUNCTION(func)
@@ -65,12 +65,12 @@ public:
     /// \param loggingCallback a pointer to the callback function
     void SetLoggingCallback(GPA_Logging_Type loggingType, GPA_LoggingCallbackPtrType loggingCallback);
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
     /// Sets the type of message the user would like to be informed of and a pointer to the callback function.
     /// \param loggingType the type of messages to pass on to the callback function
     /// \param loggingCallback a pointer to the callback function
     void SetLoggingDebugCallback(GPA_Log_Debug_Type loggingType, GPA_LoggingDebugCallbackPtrType loggingDebugCallback);
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
 
     /// Passes the supplied message to the callback function if the user has accepted that type of message.
     /// \param logType the type of message being supplied
@@ -102,7 +102,7 @@ public:
     /// \param pMsgFmt the message to format and pass along
     void LogDebugMessage(const char* pMsgFmt, ...)
     {
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
 
         // if the supplied message type is among those that the user wants be notified of,
         // then pass the message along.
@@ -128,14 +128,14 @@ public:
 
 #else
         UNREFERENCED_PARAMETER(pMsgFmt);
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
     }
 
     /// Logs a formatted error message in debug builds; does nothing in release.
     /// \param pMsgFmt the message to format and pass along
     void LogDebugError(const char* pMsgFmt, ...)
     {
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
 
         // if the supplied message type is among those that the user wants be notified of,
         // then pass the message along.
@@ -161,7 +161,7 @@ public:
 
 #else
         UNREFERENCED_PARAMETER(pMsgFmt);
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
     }
 
 
@@ -169,7 +169,7 @@ public:
     /// \param pMsgFmt the message to format and pass along
     void LogDebugTrace(const char* pMsgFmt, ...)
     {
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
 
         // if the supplied message type is among those that the user wants be notified of,
         // then pass the message along.
@@ -195,14 +195,14 @@ public:
 
 #else
         UNREFERENCED_PARAMETER(pMsgFmt);
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
     }
 
     /// Logs a formatted message in internal builds; does nothing in public builds.
     /// \param pMsgFmt the message to format and pass along
     void LogDebugCounterDefs(const char* pMsgFmt, ...)
     {
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
 
         // if the supplied message type is among those that the user wants be notified of,
         // then pass the message along.
@@ -228,7 +228,7 @@ public:
 
 #else
         UNREFERENCED_PARAMETER(pMsgFmt);
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
     }
 
 protected:
@@ -239,13 +239,13 @@ protected:
     /// User-supplied callback function
     GPA_LoggingCallbackPtrType m_loggingCallback;
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
     /// User selected logging type that defines what debug messages they want to be notified of
     GPA_Log_Debug_Type m_loggingDebugType;
 
     /// User-supplied debug callback function
     GPA_LoggingDebugCallbackPtrType m_loggingDebugCallback;
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
 
 #ifdef _WIN32
     CRITICAL_SECTION m_hLock;  ///< lock for thread-safe access
