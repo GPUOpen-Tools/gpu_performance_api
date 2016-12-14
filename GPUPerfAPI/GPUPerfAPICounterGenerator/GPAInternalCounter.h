@@ -17,7 +17,7 @@
 //      This split requires regenerating all the counter files.
 
 /// macro to remove counter names from public builds
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
     #define GPA_HIDE_NAME(_CounterName) (_CounterName)
 #else
     #define GPA_HIDE_NAME(_CounterName) ""

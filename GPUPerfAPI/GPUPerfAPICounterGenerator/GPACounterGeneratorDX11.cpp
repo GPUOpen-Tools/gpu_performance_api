@@ -343,7 +343,7 @@ static bool generateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GD
     pHardwareCounters->m_counters.clear();
 
     GPA_HardwareCounterDescExt counter;
-#if defined(_DEBUG) && defined(GDT_INTERNAL)
+#if defined(_DEBUG) && defined(AMDT_INTERNAL)
     // Debug builds will generate a file that lists the counter names in a format that can be
     // easily copy/pasted into the GPUPerfAPIUnitTests project
     FILE* pFile = nullptr;
@@ -390,7 +390,7 @@ static bool generateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GD
                 counter.m_counterIdDriver = 0;
             }
 
-#if defined(_DEBUG) && defined(GDT_INTERNAL)
+#if defined(_DEBUG) && defined(AMDT_INTERNAL)
 
             if (nullptr != pFile)
             {
@@ -416,7 +416,7 @@ static bool generateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GD
         }
     }
 
-#if defined(_DEBUG) && defined(GDT_INTERNAL)
+#if defined(_DEBUG) && defined(AMDT_INTERNAL)
 
     if (nullptr != pFile)
     {

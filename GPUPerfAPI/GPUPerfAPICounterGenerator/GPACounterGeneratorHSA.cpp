@@ -88,7 +88,7 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION d
         pHardwareCounters->m_counters.clear();
 
         GPA_HardwareCounterDescExt counter;
-#if defined(_DEBUG) && defined(_WIN32) && defined(GDT_INTERNAL)
+#if defined(_DEBUG) && defined(_WIN32) && defined(AMDT_INTERNAL)
         // Debug builds will generate a file that lists the counter names in a format that can be
         // easily copy/pasted into the GPUPerfAPIUnitTests project
         FILE* pFile = nullptr;
@@ -110,7 +110,7 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION d
                 counter.m_groupIdDriver = i;
                 counter.m_counterIdDriver = 0;
 
-#if defined(_DEBUG) && defined(_WIN32) && defined(GDT_INTERNAL)
+#if defined(_DEBUG) && defined(_WIN32) && defined(AMDT_INTERNAL)
 
                 if (nullptr != pFile)
                 {
@@ -135,7 +135,7 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION d
             }
         }
 
-#if defined(_DEBUG) && defined(_WIN32) && defined(GDT_INTERNAL)
+#if defined(_DEBUG) && defined(_WIN32) && defined(AMDT_INTERNAL)
 
         if (nullptr != pFile)
         {

@@ -477,7 +477,7 @@ void GPA_CounterGeneratorBase::SetAllowedCounters(bool bAllowPublicCounters, boo
 {
     m_doAllowPublicCounters = bAllowPublicCounters;
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
     // Only allow HW counters for internal builds
     m_doAllowHardwareCounters = bAllowHardwareCounters;
 #else

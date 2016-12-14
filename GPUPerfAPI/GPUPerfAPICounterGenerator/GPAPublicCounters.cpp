@@ -526,7 +526,7 @@ void GPA_PublicCounters::ComputeCounterValue(gpa_uint32 counterIndex, vector< ch
 {
     if (nullptr != m_counters[counterIndex].m_pComputeExpression)
     {
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
         GPA_LogDebugCounterDefs("'%s' equation is %s", m_counters[counterIndex].m_pName, m_counters[counterIndex].m_pComputeExpression);
 #endif
 

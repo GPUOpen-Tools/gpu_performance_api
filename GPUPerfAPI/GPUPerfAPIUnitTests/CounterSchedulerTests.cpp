@@ -414,7 +414,7 @@ void TestD3D11QueryCounter(unsigned int deviceId, unsigned int D3DQueryCounterIn
     // the D3D query counters appear after the public counters
     unsigned int queryCounterIndex = publicCounterCount + D3DQueryCounterIndex;
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
     // in the internal build, the D3D query counters are also after the hardware counters
     queryCounterIndex += hardwareCounterCount;
 #endif
@@ -578,7 +578,7 @@ void TestAllD3D11QueryCounters(unsigned int deviceId, unsigned int D3DQueryCount
         // the D3D query counters appear after the public counters
         unsigned int queryCounterIndex = publicCounterCount + i;
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
         // in the internal build, the D3D query counters are also after the hardware counters
         queryCounterIndex += hardwareCounterCount;
 #endif
@@ -724,7 +724,7 @@ TEST(CounterDLLTests, DX11EnableAndDisable)
     GPA_API_Type api = GPA_API_DIRECTX_11;
     unsigned int deviceId = gDevIdVI;
 
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
 
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetProcAddress(hDll, "GPA_GetAvailableCounters");

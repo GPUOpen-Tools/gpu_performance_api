@@ -216,7 +216,7 @@ GPALIB_DECL GPA_Status GPA_RegisterLoggingCallback(GPA_Logging_Type loggingType,
 }
 
 //-----------------------------------------------------------------------------
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
 GPALIB_DECL GPA_Status GPA_RegisterLoggingDebugCallback(GPA_Log_Debug_Type loggingType, GPA_LoggingDebugCallbackPtrType pCallbackFuncPtr)
 {
     if (nullptr == pCallbackFuncPtr &&
@@ -231,7 +231,7 @@ GPALIB_DECL GPA_Status GPA_RegisterLoggingDebugCallback(GPA_Log_Debug_Type loggi
     GPA_Log(GPA_LOG_DEBUG_MESSAGE, "Debug logging callback registered successfully.");
     return GPA_STATUS_OK;
 }
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
 
 //-----------------------------------------------------------------------------
 GPALIB_DECL GPA_Status GPA_Initialize()
@@ -1581,7 +1581,7 @@ static GPA_Status GPA_GetSample(gpa_uint32 sessionID, gpa_uint32 sampleID, gpa_u
 
             status = checkSession->GetResult(resultLocationIter->second.m_pass, sampleID, resultLocationIter->second.m_offset, pResultBuffer);
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
             const char* pInternalName = g_pCurrentContext->m_pCounterAccessor->GetCounterName(numPublicCounters + *requiredCounterIter);
             const char* pPublicName = g_pCurrentContext->m_pCounterAccessor->GetCounterName(counterIndex);
 
@@ -2011,7 +2011,7 @@ GPALIB_DECL GPA_Status GPA_GetDeviceDesc(const char** ppDesc)
     return GPA_STATUS_ERROR_NOT_FOUND;
 }
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
 //This function must be called before GPA_BeginSession()
 GPALIB_DECL GPA_Status GPA_InternalSetDrawCallCounts(const int iCounts)
 {

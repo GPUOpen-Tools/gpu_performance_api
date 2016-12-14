@@ -12,7 +12,7 @@
 
 void VerifyNotImplemented(GPA_API_Type api, unsigned int deviceId)
 {
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
 
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetProcAddress(hDll, "GPA_GetAvailableCounters");
@@ -29,7 +29,7 @@ void VerifyNotImplemented(GPA_API_Type api, unsigned int deviceId)
 
 void VerifyNotImplemented(GPA_API_Type api, GPA_HW_GENERATION generation)
 {
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
 
     GPA_GetAvailableCountersByGenerationProc GPA_GetAvailableCountersByGeneration_fn = (GPA_GetAvailableCountersByGenerationProc)GetProcAddress(hDll, "GPA_GetAvailableCountersByGeneration");
@@ -45,7 +45,7 @@ void VerifyNotImplemented(GPA_API_Type api, GPA_HW_GENERATION generation)
 
 void VerifyHardwareNotSupported(GPA_API_Type api, unsigned int deviceId)
 {
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetProcAddress(hDll, "GPA_GetAvailableCounters");
     ASSERT_NE((GPA_GetAvailableCountersProc)nullptr, GPA_GetAvailableCounters_fn);
@@ -63,7 +63,7 @@ void VerifyHardwareNotSupported(GPA_API_Type api, unsigned int deviceId)
 
 void VerifyHardwareNotSupported(GPA_API_Type api, GPA_HW_GENERATION generation)
 {
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
 
     GPA_GetAvailableCountersByGenerationProc GPA_GetAvailableCountersByGeneration_fn = (GPA_GetAvailableCountersByGenerationProc)GetProcAddress(hDll, "GPA_GetAvailableCountersByGeneration");
@@ -80,7 +80,7 @@ void VerifyHardwareNotSupported(GPA_API_Type api, GPA_HW_GENERATION generation)
 
 void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, std::vector<const char*> expectedNames)
 {
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
 
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetProcAddress(hDll, "GPA_GetAvailableCounters");
@@ -99,7 +99,7 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, std::vector<con
     // verify as many counter names as possible.
     numCounters = min(expectedNames.size(), numCounters);
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
 
     for (unsigned int i = 0; i < numCounters; ++i)
     {
@@ -119,7 +119,7 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, std::vector<con
         EXPECT_EQ('#', pDesc[0]);
     }
 
-#else // not GDT_INTERNAL
+#else // not AMDT_INTERNAL
 
     if (expectedNames.size() == numCounters)
     {
@@ -137,7 +137,7 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, std::vector<con
         }
     }
 
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
 
     BOOL freed = FreeLibrary(hDll);
     EXPECT_EQ(TRUE, freed);
@@ -145,7 +145,7 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, std::vector<con
 
 void VerifyCounterNames(GPA_API_Type api, GPA_HW_GENERATION generation, std::vector<const char*> expectedNames)
 {
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
 
     GPA_GetAvailableCountersByGenerationProc GPA_GetAvailableCountersByGeneration_fn = (GPA_GetAvailableCountersByGenerationProc)GetProcAddress(hDll, "GPA_GetAvailableCountersByGeneration");
@@ -162,7 +162,7 @@ void VerifyCounterNames(GPA_API_Type api, GPA_HW_GENERATION generation, std::vec
     // verify as many counter names as possible.
     numCounters = min(expectedNames.size(), numCounters);
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
 
     for (unsigned int i = 0; i < numCounters; ++i)
     {
@@ -182,7 +182,7 @@ void VerifyCounterNames(GPA_API_Type api, GPA_HW_GENERATION generation, std::vec
         EXPECT_EQ('#', pDesc[0]);
     }
 
-#else // not GDT_INTERNAL
+#else // not AMDT_INTERNAL
 
     if (expectedNames.size() == numCounters)
     {
@@ -200,7 +200,7 @@ void VerifyCounterNames(GPA_API_Type api, GPA_HW_GENERATION generation, std::vec
         }
     }
 
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
 
     BOOL freed = FreeLibrary(hDll);
     EXPECT_EQ(TRUE, freed);
@@ -209,7 +209,7 @@ void VerifyCounterNames(GPA_API_Type api, GPA_HW_GENERATION generation, std::vec
 
 void VerifyPassCount(GPA_API_Type api, unsigned int deviceId, std::vector<unsigned int> countersToEnable, unsigned int expectedNumPasses)
 {
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
 
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetProcAddress(hDll, "GPA_GetAvailableCounters");
@@ -245,7 +245,7 @@ void VerifyCountersInPass(GPA_API_Type api,
                           std::vector< std::vector<unsigned int> >& expectedHwCountersPerPass,
                           std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> >& expectedResultLocations)
 {
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
 
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetProcAddress(hDll, "GPA_GetAvailableCounters");
@@ -332,7 +332,7 @@ void VerifyCountersInPass(GPA_API_Type api,
 
 void VerifyCounterCalculation(GPA_API_Type api, unsigned int deviceId, char* counterName, std::vector<char*>& sampleResults, gpa_float64 expectedResult)
 {
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" GDT_PROJECT_SUFFIX ".dll");
+    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE)nullptr, hDll);
 
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetProcAddress(hDll, "GPA_GetAvailableCounters");

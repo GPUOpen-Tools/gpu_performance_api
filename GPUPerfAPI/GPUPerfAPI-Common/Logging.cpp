@@ -20,13 +20,13 @@ GPATracer::GPATracer()
 {
     m_logTab = 0;
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
     // in internal builds, we want all the tracing to be displayed
     m_topLevelOnly = false;
 #else
     // in public builds, the end-user should only see the functions they call
     m_topLevelOnly = true;
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
 }
 
 
@@ -44,7 +44,7 @@ void GPATracer::EnterFunction(const char* pFunctionName)
         message += "Entering: ";
         message += pFunctionName;
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
         GPA_LogDebugTrace(message.c_str());
 
         if (m_logTab == 0)
@@ -55,7 +55,7 @@ void GPATracer::EnterFunction(const char* pFunctionName)
 
 #else
         GPA_LogTrace(message.c_str());
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
     }
 
     m_logTab++;
@@ -78,7 +78,7 @@ void GPATracer::LeaveFunction(const char* pFunctionName)
         message += "Leaving: ";
         message += pFunctionName;
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
         GPA_LogDebugTrace(message.c_str());
 
         if (m_logTab == 0)
@@ -89,7 +89,7 @@ void GPATracer::LeaveFunction(const char* pFunctionName)
 
 #else
         GPA_LogTrace(message.c_str());
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
     }
 }
 
@@ -141,7 +141,7 @@ void GPALogger::SetLoggingCallback(GPA_Logging_Type loggingType, GPA_LoggingCall
     }
 }
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
 void GPALogger::SetLoggingDebugCallback(GPA_Log_Debug_Type loggingType, GPA_LoggingDebugCallbackPtrType loggingDebugCallback)
 {
     if (nullptr == loggingDebugCallback)
@@ -155,13 +155,13 @@ void GPALogger::SetLoggingDebugCallback(GPA_Log_Debug_Type loggingType, GPA_Logg
         m_loggingDebugType = loggingType;
     }
 }
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
 
 void GPALogger::Log(GPA_Log_Debug_Type logType, const char* pMessage)
 {
     EnterCriticalSection(&m_hLock);
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
 
     if (logType > GPA_LOG_ALL)
     {
@@ -175,7 +175,7 @@ void GPALogger::Log(GPA_Log_Debug_Type logType, const char* pMessage)
 
     }
     else
-#endif // GDT_INTERNAL
+#endif // AMDT_INTERNAL
     {
         // convert from private GPA_Log_Debug_type to public GPA_Logging_Type
         GPA_Logging_Type messageType = (GPA_Logging_Type)logType;

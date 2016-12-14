@@ -13,7 +13,7 @@
 #include "counters/PublicCountersGLGfx7.h"
 #include "counters/PublicCountersGLGfx8.h"
 
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
     #include "InternalCountersGLGfx6.h"
     #include "InternalCountersGLGfx7.h"
     #include "InternalCountersGLGfx8.h"
@@ -38,7 +38,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
         case GPA_HW_GENERATION_SOUTHERNISLAND:
             pPublicCounters = GLGFX6_PUBLIC_COUNTERS;
             publicCounterCount = GLGFX6_PUBLIC_COUNTER_COUNT;
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
             pHardwareGroups = HWGLGroupsGfx6;
             hwGroupCount = HWGLGroupCountGfx6;
             ppHardwareCounters = GLCounterGroupArrayGfx6;
@@ -48,7 +48,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
         case GPA_HW_GENERATION_SEAISLAND:
             pPublicCounters = GLGFX7_PUBLIC_COUNTERS;
             publicCounterCount = GLGFX7_PUBLIC_COUNTER_COUNT;
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
             pHardwareGroups = HWGLGroupsGfx7;
             hwGroupCount = HWGLGroupCountGfx7;
             ppHardwareCounters = GLCounterGroupArrayGfx7;
@@ -58,7 +58,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
         case GPA_HW_GENERATION_VOLCANICISLAND:
             pPublicCounters = GLGFX8_PUBLIC_COUNTERS;
             publicCounterCount = GLGFX8_PUBLIC_COUNTER_COUNT;
-#ifdef GDT_INTERNAL
+#ifdef AMDT_INTERNAL
             pHardwareGroups = HWGLGroupsGfx8;
             hwGroupCount = HWGLGroupCountGfx8;
             ppHardwareCounters = GLCounterGroupArrayGfx8;
