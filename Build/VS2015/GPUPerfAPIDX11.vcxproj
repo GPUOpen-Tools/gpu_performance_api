@@ -50,7 +50,6 @@
   <ItemDefinitionGroup>
     <Link>
       <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(MyBinDir)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
       <Command Condition="'$(SolutionName)'=='GPUPerfAPI'">copy $(GPUPerfAPIDir)\Bin\$(AMDTPlatform)\GPUPerfAPIDXGetAMDDeviceInfo$(AMDTPlatformSuffix).dll $(OutDir)</Command>
