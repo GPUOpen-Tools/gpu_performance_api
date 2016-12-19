@@ -2,6 +2,7 @@
 #
 #    Map of GitHub project names to clone target paths, relative to the GPUPerfAPI
 #    project root on the local disk.
+#    This script is used by the UpdateCommon.py script
 
 # GitHub GPUOpen-Tools projects map
 GitHubMapping = {

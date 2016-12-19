@@ -1,6 +1,7 @@
 #! /usr/bin/python
 #
-# Simple script to update a set of common directories that are needed as dependencies of the current project
+# Simple script to clone or update a set of common directories that are needed as dependencies of the GPUPerfAPI.
+# This script should be run after cloning the GPA repository.
 
 import os
 import string
@@ -14,7 +15,7 @@ from UpdateCommonMap import *
 # to allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file
 scriptRoot = os.path.dirname(os.path.realpath(__file__))
 
-# for each GitHub dependency - test if it has already been fetched - if not, then fetch it, 
+# for each GitHub dependency - test if it has already been fetched - if not, then fetch it,
 # otherwise update it to top of tree
 
 for key in GitHubMapping:

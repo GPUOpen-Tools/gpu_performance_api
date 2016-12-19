@@ -23,7 +23,7 @@ this script everytime you pull new changes from GPA repository.
 ## Windows Build Information
 
 ##### Prerequisites
- * Microsoft Visual Studio 2015 Community Edition or higher + Update 1
+ * Microsoft Visual Studio 2015 Community Edition or higher + Update 3
  * Windows 10 SDK Version 10.0.10586.0 from https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk
    * You can override the version of the Windows 10 SDK used by modifying Common/Lib/Ext/Windows-Kits/Global-WindowsSDK.props
 
