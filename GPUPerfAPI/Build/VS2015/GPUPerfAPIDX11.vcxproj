@@ -53,7 +53,7 @@
       <AdditionalLibraryDirectories>$(MyBinDir)\;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PreBuildEvent>
-      <Command Condition="'$(SolutionName)'=='GPUPerfAPI'">copy $(GPUPerfAPIDir)\Bin\$(GDTPlatform)\GPUPerfAPIDXGetAMDDeviceInfo$(GDTPlatformSuffix).dll $(OutDir)</Command>
+      <Command Condition="'$(SolutionName)'=='GPUPerfAPI'">copy $(GPUPerfAPIDir)\Bin\$(AMDTPlatform)\GPUPerfAPIDXGetAMDDeviceInfo$(AMDTPlatformSuffix).dll $(OutDir)</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
