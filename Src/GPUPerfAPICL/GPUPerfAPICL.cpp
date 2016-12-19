@@ -156,6 +156,10 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
     {
         pHwInfo->SetDeviceID(0x9870);
     }
+    else if (realDeviceName.compare("Bristol Ridge") == 0)
+    {
+        pHwInfo->SetDeviceID(0x9874);
+    }
     else if (realDeviceName.compare("Fiji") == 0)
     {
         pHwInfo->SetDeviceID(0x7300);
@@ -285,6 +289,7 @@ GPA_Status GPA_IMP_CompareHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
         (strTranslatedDeviceName.compare("Iceland") == 0 && asic == GDT_ICELAND) ||
         (strTranslatedDeviceName.compare("Tonga") == 0 && asic == GDT_TONGA) ||
         (strTranslatedDeviceName.compare("Carrizo") == 0 && asic == GDT_CARRIZO) ||
+        (strTranslatedDeviceName.compare("Bristol Ridge") == 0 && asic == GDT_CARRIZO) ||
         (strTranslatedDeviceName.compare("Fiji") == 0 && asic == GDT_FIJI) ||
         (strTranslatedDeviceName.compare("Stoney") == 0 && asic == GDT_STONEY) ||
         (strTranslatedDeviceName.compare("Ellesmere") == 0 && asic == GDT_ELLESMERE) ||
