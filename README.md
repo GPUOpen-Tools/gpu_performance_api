@@ -22,7 +22,7 @@ is used by both CodeXL and GPU PerfStudio.
 ## Major Features
 * Provides a standard API for accessing GPU Performance counters for both graphics and compute workloads across multiple GPU APIs.
 * Supports DirectX11, OpenGL, OpenGLES, OpenCL™, and ROCm/HSA
-* Alpha/Prototype support for DirectX12 (no hardware-based performance counter support yet)
+* Developer Preview for DirectX12 (no hardware-based performance counter support yet)
 * Supports all current GCN-based Radeon graphics cards and APUs.
 * Supports both Windows and Linux
 * Provides derived "public" counters based on raw HW counters
@@ -63,7 +63,7 @@ UpdateCommon has replaced the use of git submodules in the GPA repository
 * [GPUPerfAPICounters](Src/GPUPerfAPICounters) - contains the source code for a library that can be used to query counters without an active GPUPerfAPI context
 * [GPUPerfAPIDX](Src/GPUPerfAPIDX) - contains source code shared by the DirectX versions of GPUPerfAPI
 * [GPUPerfAPIDX11](Src/GPUPerfAPIDX11) - contains the source for the DirectX11 version of GPUPerfAPI
-* [GPUPerfAPIDX12](Src/GPUPerfAPIDX12) - contains the source for the DirectX12 version of GPUPerfAPI (prototype/alpha)
+* [GPUPerfAPIDX12](Src/GPUPerfAPIDX12) - contains the source for the DirectX12 version of GPUPerfAPI (Developer Preview)
 * [GPUPerfAPIGL](Src/GPUPerfAPIGL) - contains the source for the OpenGL version of GPUPerfAPI
 * [GPUPerfAPIGLES](Src/GPUPerfAPIGLES) - contains the source for the OpenGLES version of GPUPerfAPI
 * [GPUPerfAPIHSA](Src/GPUPerfAPIHSA) - contains the source for the ROCm/HSA version of GPUPerfAPI
