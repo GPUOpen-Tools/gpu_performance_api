@@ -50,7 +50,7 @@ To clone the GPA repository, execute the following git commands
 After cloning the repository, please run the following python script to retrieve the required dependencies (see [BUILD.md](BUILD.md) for more information):
  * python Utils/UpdateCommon.py
 UpdateCommon has replaced the use of git submodules in the GPA repository
- 
+
 <A NAME="Source">
 ## Source Code Directory Layout
 * [Build]Build) -- contains both Linux and Windows build-related files
@@ -90,7 +90,7 @@ no longer actually Internal-to-AMD can be a bit confusing, and we will aim to ch
 * Version 2.20 (5/12/16)
   * Add support for additional GPUs and APUs.
   * Initial Public release of ROCm/HSA support
-  * Alpha/Prototype for DirectX12 (no hardware-based performance counter support)
+  * Developer Preview for DirectX12 (no hardware-based performance counter support)
   * Removed support for pre-GCN-based devices
   * Improve accuracy of the various *VALUBusy and *SALUBusy counters (all APIs)
   * OpenGL: Fixed possibly wrong GPUTime values for some applications
