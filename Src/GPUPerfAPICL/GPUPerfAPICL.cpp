@@ -274,7 +274,7 @@ GPA_Status GPA_IMP_CompareHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
 
     std::string strTranslatedDeviceName = AMDTDeviceInfoUtils::Instance()->TranslateDeviceName(str);
 
-    // get the device ID (only support RV7xx and Evergreen)
+    // get the device ID
     // the string comes from maswp4p1.amd.com:1666 \\depot\stg\opencl\drivers\opencl\runtime\device\gpu\gpudefs.hpp as the static const char* TargetName[] array
     if ((strTranslatedDeviceName.compare("Tahiti") == 0 && (asic == GDT_TAHITI_PRO || asic == GDT_TAHITI_XT)) ||
         (strTranslatedDeviceName.compare("Pitcairn") == 0 && (asic == GDT_PITCAIRN_PRO || asic == GDT_PITCAIRN_XT)) ||
