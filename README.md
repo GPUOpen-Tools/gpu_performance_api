@@ -53,23 +53,23 @@ UpdateCommon has replaced the use of git submodules in the GPA repository
 
 <A NAME="Source">
 ## Source Code Directory Layout
-* [Build]Build) -- contains both Linux and Windows build-related files
+* [Build](Build) -- contains both Linux and Windows build-related files
 * [Common](Common) -- Common libs, header and source code not found in other repositories
 * [Doc](Doc) -- contains User Guide and Doxygen configuration files
-* [DeviceInfo](Src/DeviceInfo) -- builds a lib containing the Common/Src/DeviceInfo code (Linux only)
-* [GPUPerfAPI-Common](Src/GPUPerfAPI-Common) -- contains source code for a Common library shared by all versions of GPUPerfAPI
-* [GPUPerfAPICL](Src/GPUPerfAPICL) - contains the source for the OpenCL™ version of GPUPerfAPI
-* [GPUPerfAPICounterGenerator](Src/GPUPerfAPICounterGenerator) - contains the source code for a Common library providing all counter data
-* [GPUPerfAPICounters](Src/GPUPerfAPICounters) - contains the source code for a library that can be used to query counters without an active GPUPerfAPI context
-* [GPUPerfAPIDX](Src/GPUPerfAPIDX) - contains source code shared by the DirectX versions of GPUPerfAPI
-* [GPUPerfAPIDX11](Src/GPUPerfAPIDX11) - contains the source for the DirectX11 version of GPUPerfAPI
-* [GPUPerfAPIDX12](Src/GPUPerfAPIDX12) - contains the source for the DirectX12 version of GPUPerfAPI (Developer Preview)
-* [GPUPerfAPIGL](Src/GPUPerfAPIGL) - contains the source for the OpenGL version of GPUPerfAPI
-* [GPUPerfAPIGLES](Src/GPUPerfAPIGLES) - contains the source for the OpenGLES version of GPUPerfAPI
-* [GPUPerfAPIHSA](Src/GPUPerfAPIHSA) - contains the source for the ROCm/HSA version of GPUPerfAPI
-* [GPUPerfAPIUnitTests](Src/GPUPerfAPIUnitTests) - contains a small set of unit tests for GPUPerfAPI
-* [PublicCounterCompiler](Src/PublicCounterCompiler) - source code for a tool to generate C++ code for public counters from text files defining the counters.
-* [PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) - input files that can be fed as input to the PublicCounterCompiler tool
+* [Src/DeviceInfo](Src/DeviceInfo) -- builds a lib containing the Common/Src/DeviceInfo code (Linux only)
+* [Src/GPUPerfAPI-Common](Src/GPUPerfAPI-Common) -- contains source code for a Common library shared by all versions of GPUPerfAPI
+* [Src/GPUPerfAPICL](Src/GPUPerfAPICL) - contains the source for the OpenCL™ version of GPUPerfAPI
+* [Src/GPUPerfAPICounterGenerator](Src/GPUPerfAPICounterGenerator) - contains the source code for a Common library providing all counter data
+* [Src/GPUPerfAPICounters](Src/GPUPerfAPICounters) - contains the source code for a library that can be used to query counters without an active GPUPerfAPI context
+* [Src/GPUPerfAPIDX](Src/GPUPerfAPIDX) - contains source code shared by the DirectX versions of GPUPerfAPI
+* [Src/GPUPerfAPIDX11](Src/GPUPerfAPIDX11) - contains the source for the DirectX11 version of GPUPerfAPI
+* [Src/GPUPerfAPIDX12](Src/GPUPerfAPIDX12) - contains the source for the DirectX12 version of GPUPerfAPI (Developer Preview)
+* [Src/GPUPerfAPIGL](Src/GPUPerfAPIGL) - contains the source for the OpenGL version of GPUPerfAPI
+* [Src/GPUPerfAPIGLES](Src/GPUPerfAPIGLES) - contains the source for the OpenGLES version of GPUPerfAPI
+* [Src/GPUPerfAPIHSA](Src/GPUPerfAPIHSA) - contains the source for the ROCm/HSA version of GPUPerfAPI
+* [Src/GPUPerfAPIUnitTests](Src/GPUPerfAPIUnitTests) - contains a small set of unit tests for GPUPerfAPI
+* [Src/PublicCounterCompiler](Src/PublicCounterCompiler) - source code for a tool to generate C++ code for public counters from text files defining the counters.
+* [Src/PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) - input files that can be fed as input to the PublicCounterCompiler tool
 * [Scripts](Scripts) -- scripts to use to clone/update dependent repositories
 
 <A NAME="PublicInternal">
