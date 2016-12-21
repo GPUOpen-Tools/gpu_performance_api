@@ -1,34 +1,47 @@
 # GPUPerfAPI Build Instructions
 ---
 ## Table of Contents
+* [Cloning/Updating Dependent Repositories](#DependentRepos)
 * [Windows Build Information](#Windows)
 * [Linux Build Information](#Linux)
 * [PublicCounterCompiler Tool](#PublicCounterCompiler)
+
+<A Name="DependentRepos">
+## Cloning/Updating Dependent Repositories
+GPUPerfAPI no longer uses git submodules to reference dependent repositories. Instead, you need to follow these instructions in
+order to clone/update any dependent repositories.
+#### Prerequisites
+  * This step requires that python be installed on the system. Python can be installed from https://www.python.org/
+#### Instructions
+ * Simply execute the [UpdateCommon.py](Scripts/UpdateCommon.py) python script located in the [Scripts](Scripts) directory:
+   * __python Scripts/UpdateCommon.py__
+This script will clone any dependent repositories that are not present on the system. If any of the dependent repositories are already
+present on the system, this script will instead do a "git pull" on those repositories to ensure that they are up to date. Please re-run
+this script everytime you pull new changes from GPA repository.
 
 <A Name="Windows">
 ## Windows Build Information
 
 ##### Prerequisites
- * Microsoft Visual Studio 2015 Community Edition or higher + Update 1
+ * Microsoft Visual Studio 2015 Community Edition or higher + Update 3
  * Windows 10 SDK Version 10.0.10586.0 from https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk
    * You can override the version of the Windows 10 SDK used by modifying Common/Lib/Ext/Windows-Kits/Global-WindowsSDK.props
 
 ##### Build Instructions
  * Load Build\VS2015\GPUPerfAPI.sln into Visual Studio
  * Build the 64-bit and/or 32-bit configuration
- * After a successful build, the GPUPerfAPI binaries can be found in __Build\VS2015\\$(Configuration)-$(Platform)__ (for example Build\VS2015\Release-x64)
+ * After a successful build, the GPUPerfAPI binaries can be found in __GPA\Output\\$(Configuration)\bin__ (for example GPA\Output\Release\bin)
 
 #### Additional Information
  * The Visual Studio solution includes a Documentation project that allows you to generate the HTML-based source code documentation using Doxygen. In order
-   to build that project, you'll need to modify [Documentation.vcxproj](GPUPerfAPI/Build/VS2015/Documentation.vcxproj) and modify the paths to the doxygen executable.
+   to build that project, you'll need to modify [Documentation.vcxproj](Build/VS2015/Documentation.vcxproj) and modify the paths to the doxygen executable.
  * The Windows projects each include a .rc file that embeds the VERSIONINFO resource into the final binary. Internally within AMD, a Jenkins build system will dynamically update
-   the build number. The version and build numbers can be manually updated by modifying the [GPAVersion.h](GPUPerfAPI/GPUPerfAPI-Common/GPAVersion.h) file.
+   the build number. The version and build numbers can be manually updated by modifying the [GPAVersion.h](Src/GPUPerfAPI-Common/GPAVersion.h) file.
  * Information on building the Internal version:
     * To generate the internal version, two environment variables are required to be set prior to building in Visual Studio:
-      * GDT_BUILD=GDT_INTERNAL
-	  * GDT_BUILD_SUFFIX=-Internal
-    * The output location of the binaries will be __Build\VS2015\\$(Configuration)-$(Platform)-Internal__ (for example Build\VS2015\Release-x64-Internal)
-	* Each binary filename will also have a "-Internal" suffix (for example GPUPerfAPIDX11-x64-Internal.dll)
+      * AMDT_BUILD=AMDT_INTERNAL
+      * AMDT_BUILD_SUFFIX=-Internal
+    * Each binary filename will have a "-Internal" suffix (for example GPUPerfAPIDX11-x64-Internal.dll)
 
 <A Name="Linux">
 ## Linux Build Information
@@ -47,7 +60,7 @@
    * __quick__ or __incremental__: performs an incremental build (as opposed to a from-scratch build)
    * __buildinternal__: builds the internal versions of GPUPerfAPI
    * __hsadir__: overrides the location of the ROCm/HSA header files (by default they are expected to be in /opt/rocm/hsa)
- * After a successful build, the GPUPerfAPI binaries can be found in their respective source file directories. For instance, the binaries for the OpenGL version of GPUPerfAPI (libGPUPerfAPIGL.so) can be found in the GPUPerfAPIGL subdirectory.
+ * After a successful build, the GPUPerfAPI binaries can be found in their respective source file directories. For instance, the binaries for the OpenGL version of GPUPerfAPI (libGPUPerfAPIGL.so) can be found in the Src/GPUPerfAPIGL subdirectory.
  * Example build command line (builds the debug versions of the binaries, skipping the HSA library):
    * ./build.sh debug skiphsa
  * In addition to using the build.sh build script to build all of GPUPerfAPI, you can also build a single API library by executing __make__ in that library's directory. This is useful when making localized changes in a single version of GPUPerfAPI. When using __make__, the following default targets are supported:
@@ -76,8 +89,8 @@
 ## PublicCounterCompiler Tool
 
 The PublicCounterCompiler Tool is a utility, written in C#, that will generate C++ code to define the public (or derived) counters.
-It takes as input text files contained in the [PublicCounterCompilerInputFiles](GPUPerfAPI/PublicCounterCompilerInputFiles) directory and
-outputs files in the [GPUPerfAPICounterGenerator](GPUPerfAPI/GPUPerfAPICounterGenerator) and [GPUPerfAPIUnitTests](GPUPerfAPI/GPUPerfAPIUnitTests) directories.
+It takes as input text files contained in the [PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) directory and
+outputs files in the [GPUPerfAPICounterGenerator](Src/GPUPerfAPICounterGenerator) and [GPUPerfAPIUnitTests](Src/GPUPerfAPIUnitTests) directories.
 
 There are three ways to execute the tool:
 * With no parameters - it opens the user interface with no fields prepopulated
@@ -91,7 +104,7 @@ There are three ways to execute the tool:
   * Param 4: Test output Dir - the directory to generate the test output in (Ex: the path to the GPUPerfAPIUnitTests/counters directory)
   * Param 5: Active section label - the label to take the counter names from (ex: dx11gfx6)
 
-See the various PublicCounterDefinitions\*.txt files in the [PublicCounterCompilerInputFiles](GPUPerfAPI/PublicCounterCompilerInputFiles) directory. These contain all the counter definitions.
+See the various PublicCounterDefinitions\*.txt files in the [PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) directory. These contain all the counter definitions.
 Each counter is given a name, a description, a type, an optional usage type, a list of hardware counters required and a formula applied to the values of the hardware counters to calculate the value of the counter.
 
 Counter formulas are expressed in a Reverse Polish Notation and are made up the following elements:
@@ -101,5 +114,5 @@ Counter formulas are expressed in a Reverse Polish Notation and are made up the 
 * functions: The supported functions are: min, max, sum, and ifnotzero. "max and "sum" have variants that work on multiple items at once (i.e. sum16, sum63, etc.)
 * hardware params: The supported hardware params are "num_shader_engines". "num_simds", "su_clock_prim", "num_prim_pipes", and "TS_FREQ"
 
-For more details, see the "EvaluateExpression" function in the [GPAPublicCounters.cpp](GPUPerfAPI/GPUPerfAPICounterGenerator/GPAPublicCounters.cpp) file.
+For more details, see the "EvaluateExpression" function in the [GPAPublicCounters.cpp](Src/GPUPerfAPICounterGenerator/GPAPublicCounters.cpp) file.
 

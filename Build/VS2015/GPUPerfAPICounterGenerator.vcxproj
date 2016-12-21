@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GLEntryPoints.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCommon.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11Base.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11NonAMD.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX12.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorGL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorHSA.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorSchedulerManager.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerBase.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerCL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerDX11.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerDX12.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerGL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerHSA.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAHardwareCounters.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAICounterScheduler.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCounter.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx6.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAPublicCounters.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASoftwareCounters.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCounterFactory.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersConsolidated.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersConsolidatedDX12.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersInterfaces.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersMaxPerPass.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersOnePerPass.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASwCounterManager.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx6.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx6.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx6.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx6.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAICounterAccessor.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorBase.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGenerator.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx6.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx6.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GLEntryPoints.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorBase.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCommon.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11Base.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11NonAMD.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX12.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorGL.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorHSA.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorSchedulerManager.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerBase.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerCL.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerDX11.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerDX12.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerGL.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerHSA.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI'" Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI'" Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx6.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI'" Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx7.cpp">
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI'" Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.cpp">
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx6.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx7.cpp">
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.cpp">
+      <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAPublicCounters.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersConsolidatedDX12.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPASwCounterManager.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCL.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGenerator.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8.cpp" />
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C1E8ADA1-400C-45EB-A6E1-F0FFCE7DDD1A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>GPUPerfAPICounterGenerator</RootNamespace>
+    <ProjectName>GPUPerfAPICounterGenerator</ProjectName>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="GPA-Common.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

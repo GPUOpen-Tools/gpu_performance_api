@@ -14,7 +14,7 @@ is used by both CodeXL and GPU PerfStudio.
 * [Source Code Directory Layout](#Source)
 * ["Public" vs "Internal" Versions](#PublicInternal)
 * [Building the Source Code](BUILD.md)
-* [GPUPerfAPI User Guide](GPUPerfAPI/doc/GPUPerfAPI-UserGuide.pdf)
+* [GPUPerfAPI User Guide](Doc/GPUPerfAPI-UserGuide.pdf)
 * [License](LICENSE)
 * [Historical Release Notes](#HistoricalNotes)
 
@@ -22,7 +22,7 @@ is used by both CodeXL and GPU PerfStudio.
 ## Major Features
 * Provides a standard API for accessing GPU Performance counters for both graphics and compute workloads across multiple GPU APIs.
 * Supports DirectX11, OpenGL, OpenGLES, OpenCL™, and ROCm/HSA
-* Alpha/Prototype support for DirectX12 (no hardware-based performance counter support yet)
+* Developer Preview for DirectX12 (no hardware-based performance counter support yet)
 * Supports all current GCN-based Radeon graphics cards and APUs.
 * Supports both Windows and Linux
 * Provides derived "public" counters based on raw HW counters
@@ -30,23 +30,15 @@ is used by both CodeXL and GPU PerfStudio.
 
 <A NAME="WhatsNew">
 ## What's New
-* Version 2.20 (5/12/16)
+* Version 2.21 (12/21/16)
   * Add support for additional GPUs and APUs.
-  * Initial Public release of ROCm/HSA support
-  * Alpha/Prototype for DirectX12 (no hardware-based performance counter support)
-  * Removed support for pre-GCN-based devices
-  * Improve accuracy of the various *VALUBusy and *SALUBusy counters (all APIs)
-  * OpenGL: Fixed possibly wrong GPUTime values for some applications
-  * OpenGL: Add support for open source OpenGL driver
-  * OpenGL: Fix value of TexUnitBusy counter for 3rd generation GCN hardware
-  * DirectX 11: Fix incorrect type returned for D3DGPUTime counter
-  * DirectX 11: Fix PSVALUBusy counter on 2nd and 3rd generation GCN hardware
-  * DirectX 11: A separate DLL (GPUPerfAPIDXGetAMDDeviceInfo\*.dll) is required in order to support certain multi-GPU configurations. This DLL will need to be deployed alongside GPUPerfAPIDX11\*.dll on multi-GPU systems. See the [User Guide](GPUPerfAPI/doc/GPUPerfAPI-UserGuide.pdf) for more information.
+  * ROCm/HSA: Support for ROCm 1.3 and ROCm 1.4
+  * OpenGL: Fixed an issue with GPU/APU detection with newer Radeon Crimson drivers
 
 <A NAME="System">
 ## System Requirements
 * An AMD Radeon GCN-based GPU or APU
-* Radeon Software Crimson Edition 16.2.1 or later (Driver Packaging Version 16.15 or later).
+* Radeon Software Crimson Edition 16.2.1 or later (Driver Packaging Version 16.40 or later).
 * Pre-GCN-based GPUs or APUs are no longer supported by GPUPerfAPI. Please use an older version ([2.17](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/)) with older hardware.
 * Windows 7, 8.1, and 10
 * Ubuntu (14.04 and later) and RHEL (7 and later) distributions
@@ -54,26 +46,31 @@ is used by both CodeXL and GPU PerfStudio.
 <A NAME="Cloning">
 ## Cloning the Repository
 To clone the GPA repository, execute the following git commands
- * git clone --recursive https://github.com/GPUOpen-Tools/GPA.git
- 
+ * git clone https://github.com/GPUOpen-Tools/GPA.git
+After cloning the repository, please run the following python script to retrieve the required dependencies (see [BUILD.md](BUILD.md) for more information):
+ * python Scripts/UpdateCommon.py
+UpdateCommon has replaced the use of git submodules in the GPA repository
+
 <A NAME="Source">
 ## Source Code Directory Layout
-* [Build](GPUPerfAPI/Build) -- contains both Linux and Windows build-related files
-* [DeviceInfo](GPUPerfAPI/DeviceInfo) -- builds a lib containing the Common/Src/DeviceInfo code (Linux only)
-* [doc](GPUPerfAPI/doc) -- contains User Guide and Doxygen configuration files
-* [GPUPerfAPICL](GPUPerfAPI/GPUPerfAPICL) - contains the source for the OpenCL™ version of GPUPerfAPI
-* [GPUPerfAPI-Common](GPUPerfAPI/GPUPerfAPI-Common) -- contains source code for a Common library shared by all versions of GPUPerfAPI
-* [GPUPerfAPICounterGenerator](GPUPerfAPI/GPUPerfAPICounterGenerator) - contains the source code for a Common library providing all counter data
-* [GPUPerfAPICounters](GPUPerfAPI/GPUPerfAPICounters) - contains the source code for a library that can be used to query counters without an active GPUPerfAPI context
-* [GPUPerfAPIDX](GPUPerfAPI/GPUPerfAPIDX) - contains source code shared by the DirectX versions of GPUPerfAPI
-* [GPUPerfAPIDX11](GPUPerfAPI/GPUPerfAPIDX11) - contains the source for the DirectX11 version of GPUPerfAPI
-* [GPUPerfAPIDX12](GPUPerfAPI/GPUPerfAPIDX12) - contains the source for the DirectX12 version of GPUPerfAPI (prototype/alpha)
-* [GPUPerfAPIGL](GPUPerfAPI/GPUPerfAPIGL) - contains the source for the OpenGL version of GPUPerfAPI
-* [GPUPerfAPIGLES](GPUPerfAPI/GPUPerfAPIGLES) - contains the source for the OpenGLES version of GPUPerfAPI
-* [GPUPerfAPIHSA](GPUPerfAPI/GPUPerfAPIHSA) - contains the source for the ROCm/HSA version of GPUPerfAPI
-* [GPUPerfAPIUnitTests](GPUPerfAPI/GPUPerfAPIUnitTests) - contains a small set of unit tests for GPUPerfAPI
-* [PublicCounterCompiler](GPUPerfAPI/PublicCounterCompiler) - source code for a tool to generate C++ code for public counters from text files defining the counters.
-* [PublicCounterCompilerInputFiles](GPUPerfAPI/PublicCounterCompilerInputFiles) - input files that can be fed as input to the PublicCounterCompiler tool
+* [Build]Build) -- contains both Linux and Windows build-related files
+* [Common](Common) -- Common libs, header and source code not found in other repositories
+* [Doc](Doc) -- contains User Guide and Doxygen configuration files
+* [DeviceInfo](Src/DeviceInfo) -- builds a lib containing the Common/Src/DeviceInfo code (Linux only)
+* [GPUPerfAPI-Common](Src/GPUPerfAPI-Common) -- contains source code for a Common library shared by all versions of GPUPerfAPI
+* [GPUPerfAPICL](Src/GPUPerfAPICL) - contains the source for the OpenCL™ version of GPUPerfAPI
+* [GPUPerfAPICounterGenerator](Src/GPUPerfAPICounterGenerator) - contains the source code for a Common library providing all counter data
+* [GPUPerfAPICounters](Src/GPUPerfAPICounters) - contains the source code for a library that can be used to query counters without an active GPUPerfAPI context
+* [GPUPerfAPIDX](Src/GPUPerfAPIDX) - contains source code shared by the DirectX versions of GPUPerfAPI
+* [GPUPerfAPIDX11](Src/GPUPerfAPIDX11) - contains the source for the DirectX11 version of GPUPerfAPI
+* [GPUPerfAPIDX12](Src/GPUPerfAPIDX12) - contains the source for the DirectX12 version of GPUPerfAPI (Developer Preview)
+* [GPUPerfAPIGL](Src/GPUPerfAPIGL) - contains the source for the OpenGL version of GPUPerfAPI
+* [GPUPerfAPIGLES](Src/GPUPerfAPIGLES) - contains the source for the OpenGLES version of GPUPerfAPI
+* [GPUPerfAPIHSA](Src/GPUPerfAPIHSA) - contains the source for the ROCm/HSA version of GPUPerfAPI
+* [GPUPerfAPIUnitTests](Src/GPUPerfAPIUnitTests) - contains a small set of unit tests for GPUPerfAPI
+* [PublicCounterCompiler](Src/PublicCounterCompiler) - source code for a tool to generate C++ code for public counters from text files defining the counters.
+* [PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) - input files that can be fed as input to the PublicCounterCompiler tool
+* [Scripts](Scripts) -- scripts to use to clone/update dependent repositories
 
 <A NAME="PublicInternal">
 ## "Public" vs "Internal" Versions
@@ -82,13 +79,25 @@ will produce what is referred to as the "Public" version of GPUPerfAPI. This ver
 using a set of hardware counters. Until now, only the Public the version of GPUPerfAPI was available on the AMD Developer website. As part of the open-source effort,
 we are also providing the ability to build the "Internal" versions of GPUPerfAPI. In addition to exposing the same counters as the Public version, the Internal version
 also exposes some of the hardware Counters available in the GPU/APU. It's important to note that not all hardware counters receive the same validation as other parts of
-the hardware on all GPUs, so in some cases accuracy of counter data cannot be guaranteed.  The usage of the Internal version is identical to the Public version. The only difference will be in the
-name of the library an application loads at runtime and the list of counters exposed by the library. See the [Build Instructions](BUILD.md) for more information on how
-to build and use the Internal version. In the future, we see there being only a single version of GPUPerfAPI, with perhaps a change in the API to allow users of GPA to
-indicate whether the library exposes just the Derived counters or both the Derived and the Hardware counters.  We realize using the term "Internal" for something which is
-no longer actually Internal-to-AMD can be a bit confusing, and we will aim to change this in the future.
+the hardware on all GPUs, so in some cases accuracy of counter data cannot be guaranteed.  The usage of the Internal version is identical to the Public version. The only
+difference will be in the name of the library an application loads at runtime and the list of counters exposed by the library. See the [Build Instructions](BUILD.md) for
+more information on how to build and use the Internal version. In the future, we see there being only a single version of GPUPerfAPI, with perhaps a change in the API to
+allow users of GPA to indicate whether the library exposes just the Derived counters or both the Derived and the Hardware counters.  We realize using the term "Internal"
+for something which is no longer actually Internal-to-AMD can be a bit confusing, and we will aim to change this in the future.
 
 <A NAME="HistoricalNotes">
 ## Historical Release Notes
+* Version 2.20 (5/12/16)
+  * Add support for additional GPUs and APUs.
+  * Initial Public release of ROCm/HSA support
+  * Developer Preview for DirectX12 (no hardware-based performance counter support)
+  * Removed support for pre-GCN-based devices
+  * Improve accuracy of the various *VALUBusy and *SALUBusy counters (all APIs)
+  * OpenGL: Fixed possibly wrong GPUTime values for some applications
+  * OpenGL: Add support for open source OpenGL driver
+  * OpenGL: Fix value of TexUnitBusy counter for 3rd generation GCN hardware
+  * DirectX 11: Fix incorrect type returned for D3DGPUTime counter
+  * DirectX 11: Fix PSVALUBusy counter on 2nd and 3rd generation GCN hardware
+  * DirectX 11: A separate DLL (GPUPerfAPIDXGetAMDDeviceInfo\*.dll) is required in order to support certain multi-GPU configurations. This DLL will need to be deployed alongside GPUPerfAPIDX11\*.dll on multi-GPU systems. See the [User Guide](Doc/GPUPerfAPI-UserGuide.pdf) for more information.
 * [Version 2.17](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/)
 * [Earlier Releases](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/gpuperfapi-historical-release-notes/)

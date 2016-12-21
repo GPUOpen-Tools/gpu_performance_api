@@ -1,0 +1,89 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>GPUPerfAPIGL</ProjectName>
+    <ProjectGuid>{51B54ABC-4A07-46FD-B7E0-38E4147EA1A8}</ProjectGuid>
+    <RootNamespace>GPUPerfAPIGL</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="GPA-Common.props" />
+    <Import Project="GPA-DLL.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable-PerfStudio.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Internal.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesGLGfx6.txt" />
+    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesGLGfx7.txt" />
+    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesGLGfx8.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\ASICInfo.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPIInternalRegistration\GLGPAInternalCounterGeneratorRegistration.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\ASICInfo.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GPAContextStateGL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Build\VS2015\GPUPerfAPINVPerfkit.vcxproj">
+      <Project>{918f0693-23f7-473a-82c5-f832039bec45}</Project>
+    </ProjectReference>
+    <ProjectReference Include="GPUPerfAPI-Common.vcxproj">
+      <Project>{cfc8ab83-e03a-43e5-a9b1-ad073aefe8c0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="GPUPerfAPICounterGenerator.vcxproj">
+      <Project>{c1e8ada1-400c-45eb-a6e1-f0ffce7ddd1a}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

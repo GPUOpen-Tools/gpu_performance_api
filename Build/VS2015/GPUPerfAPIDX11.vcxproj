@@ -1,0 +1,111 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>GPUPerfAPIDX11</ProjectName>
+    <ProjectGuid>{3F0EB093-266D-4300-8EF3-F66B30681043}</ProjectGuid>
+    <RootNamespace>GPUPerfAPIDX11</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="GPA-Common.props" />
+    <Import Project="GPA-DLL.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI'" Project="$(BaseDir)GPA/Common/Lib/AMD/GPUPerfAPI/Global-GPUPerfAPI.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable-CodeXL.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable-PerfStudio.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Internal.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <Link>
+      <AdditionalDependencies>d3d11.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+    <PreBuildEvent>
+      <Command Condition="'$(SolutionName)'=='GPUPerfAPI'">copy $(GPUPerfAPIDir)\Bin\$(AMDTPlatform)\GPUPerfAPIDXGetAMDDeviceInfo$(AMDTPlatformSuffix).dll $(OutDir)</Command>
+    </PreBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="..\..\PublicCounterCounterCompilerInputFiles\CounterNamesDX11NV.txt" />
+    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesDX11Gfx6.txt" />
+    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesDX11Gfx7.txt" />
+    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesDX11Gfx8.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\D3D11SoftwareCounterDataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11CounterDataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11SoftwareCounterDataRequestManager.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11_PerfExperimentDataRequestHandler.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DxxExtUtils.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\GPAContextStateDX11.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\GPUPerfAPIDX11.cpp" />
+    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPIInternalRegistration\DX11GPAInternalCounterGeneratorRegistration.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExt.h" />
+    <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExtApi.h" />
+    <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExtIface.h" />
+    <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExtPerfProfile.h" />
+    <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExtPerfProfileApi.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\D3D11SoftwareCounterDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11ComSmartPtrs.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11CounterDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11SoftwareCounterDataRequestManager.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11_PerfExperimentDataRequestHandler.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DxxExtUtils.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\GPAContextStateDX11.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\GPUPerfAPIDX11.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\ICounterDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\resource.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Src\GPUPerfAPIDX11\GPUPerfAPIDX11.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Build\VS2015\GPUPerfAPINVPerfkit.vcxproj">
+      <Project>{918f0693-23f7-473a-82c5-f832039bec45}</Project>
+    </ProjectReference>
+    <ProjectReference Include="GPUPerfAPI-Common.vcxproj">
+      <Project>{cfc8ab83-e03a-43e5-a9b1-ad073aefe8c0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="GPUPerfAPICounterGenerator.vcxproj">
+      <Project>{c1e8ada1-400c-45eb-a6e1-f0ffce7ddd1a}</Project>
+    </ProjectReference>
+    <ProjectReference Include="GPUPerfAPIDX.vcxproj">
+      <Project>{305a7a16-9c7a-4e86-ba74-3492e2c824c9}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

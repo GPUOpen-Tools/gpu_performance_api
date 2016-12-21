@@ -1,0 +1,49 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
+    </Filter>
+    <Filter Include="DynamicLibraryModule">
+      <UniqueIdentifier>{77328a2b-f39d-4eaa-98c9-cacf8d42f8fb}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesCLGfx6.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesCLGfx7.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesCLGfx8.txt">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLCounterDataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.cpp" />
+    <ClCompile Include="..\..\..\Common\Src\DynamicLibraryModule\OpenCLModule.cpp">
+      <Filter>DynamicLibraryModule</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLCounterDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\GPAContextStateCL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\resource.h" />
+    <ClInclude Include="..\..\..\Common\Src\DynamicLibraryModule\OpenCLModule.h">
+      <Filter>DynamicLibraryModule</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLRTModuleLoader.h" />
+  </ItemGroup>
+</Project>

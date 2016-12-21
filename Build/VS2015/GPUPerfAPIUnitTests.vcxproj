@@ -1,0 +1,109 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>GPUPerfAPIUnitTests</ProjectName>
+    <ProjectGuid>{EBFA5625-DD99-43E5-B607-5C8231A8B932}</ProjectGuid>
+    <RootNamespace>GPUPerfAPIUnitTests</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0.10586.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v140</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="GPA-Common.props" />
+    <Import Project="..\..\..\Common\Lib\Ext\GoogleTest\Global-GoogleTest-1.7-2015.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</LinkIncremental>
+    <LinkIncremental Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</LinkIncremental>
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" />
+    <CodeAnalysisRuleSet Condition="'$(Configuration)|$(Platform)'=='Release|x64'">AllRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+    <CodeAnalysisRuleAssemblies Condition="'$(Configuration)|$(Platform)'=='Release|x64'" />
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>../../Src/GPUPerfAPI-Common;../../../Common/Src;../../Src/GPUPerfAPICounters/;../../Src/GPUPerfAPICounterGenerator/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <SubSystem>Console</SubSystem>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersCLGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersDX11Gfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx6.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersGLGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\SWCountersDX11.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorDX11Tests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorGLTests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorCLTests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorHSATests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorTests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterSchedulerTests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\GPUPerfAPIUnitTests.cpp" />
+    <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPILoader.cpp" />
+    <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIUtil.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPILoader.h" />
+    <ClInclude Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIUtil.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIUnitTests\CounterGeneratorTests.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="GPUPerfAPI-Common.vcxproj">
+      <Project>{cfc8ab83-e03a-43e5-a9b1-ad073aefe8c0}</Project>
+    </ProjectReference>
+    <ProjectReference Include="GPUPerfAPICounterGenerator.vcxproj">
+      <Project>{c1e8ada1-400c-45eb-a6e1-f0ffce7ddd1a}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
