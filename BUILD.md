@@ -10,8 +10,10 @@
 ## Cloning/Updating Dependent Repositories
 GPUPerfAPI no longer uses git submodules to reference dependent repositories. Instead, you need to follow these instructions in
 order to clone/update any dependent repositories.
+
 #### Prerequisites
   * This step requires that python be installed on the system. Python can be installed from https://www.python.org/
+
 #### Instructions
  * Simply execute the [UpdateCommon.py](Scripts/UpdateCommon.py) python script located in the [Scripts](Scripts) directory:
    * __python Scripts/UpdateCommon.py__
