@@ -13,8 +13,8 @@ order to clone/update any dependent repositories.
 #### Prerequisites
   * This step requires that python be installed on the system. Python can be installed from https://www.python.org/
 #### Instructions
- * Simply execute the [UpdateCommon.py](Utils/UpdateCommon.py) python script located in the [Utils](Utils) directory:
-   * __python Utils/UpdateCommon.py__
+ * Simply execute the [UpdateCommon.py](Scripts/UpdateCommon.py) python script located in the [Scripts](Scripts) directory:
+   * __python Scripts/UpdateCommon.py__
 This script will clone any dependent repositories that are not present on the system. If any of the dependent repositories are already
 present on the system, this script will instead do a "git pull" on those repositories to ensure that they are up to date. Please re-run
 this script everytime you pull new changes from GPA repository.

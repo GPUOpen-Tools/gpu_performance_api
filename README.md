@@ -48,7 +48,7 @@ is used by both CodeXL and GPU PerfStudio.
 To clone the GPA repository, execute the following git commands
  * git clone https://github.com/GPUOpen-Tools/GPA.git
 After cloning the repository, please run the following python script to retrieve the required dependencies (see [BUILD.md](BUILD.md) for more information):
- * python Utils/UpdateCommon.py
+ * python Scripts/UpdateCommon.py
 UpdateCommon has replaced the use of git submodules in the GPA repository
 
 <A NAME="Source">
@@ -70,7 +70,7 @@ UpdateCommon has replaced the use of git submodules in the GPA repository
 * [GPUPerfAPIUnitTests](Src/GPUPerfAPIUnitTests) - contains a small set of unit tests for GPUPerfAPI
 * [PublicCounterCompiler](Src/PublicCounterCompiler) - source code for a tool to generate C++ code for public counters from text files defining the counters.
 * [PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) - input files that can be fed as input to the PublicCounterCompiler tool
-* [Utils](Utils) -- scripts to use to clone/update dependent repositories
+* [Scripts](Scripts) -- scripts to use to clone/update dependent repositories
 
 <A NAME="PublicInternal">
 ## "Public" vs "Internal" Versions
