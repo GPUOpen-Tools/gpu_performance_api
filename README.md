@@ -79,11 +79,11 @@ will produce what is referred to as the "Public" version of GPUPerfAPI. This ver
 using a set of hardware counters. Until now, only the Public the version of GPUPerfAPI was available on the AMD Developer website. As part of the open-source effort,
 we are also providing the ability to build the "Internal" versions of GPUPerfAPI. In addition to exposing the same counters as the Public version, the Internal version
 also exposes some of the hardware Counters available in the GPU/APU. It's important to note that not all hardware counters receive the same validation as other parts of
-the hardware on all GPUs, so in some cases accuracy of counter data cannot be guaranteed.  The usage of the Internal version is identical to the Public version. The only difference will be in the
-name of the library an application loads at runtime and the list of counters exposed by the library. See the [Build Instructions](BUILD.md) for more information on how
-to build and use the Internal version. In the future, we see there being only a single version of GPUPerfAPI, with perhaps a change in the API to allow users of GPA to
-indicate whether the library exposes just the Derived counters or both the Derived and the Hardware counters.  We realize using the term "Internal" for something which is
-no longer actually Internal-to-AMD can be a bit confusing, and we will aim to change this in the future.
+the hardware on all GPUs, so in some cases accuracy of counter data cannot be guaranteed.  The usage of the Internal version is identical to the Public version. The only
+difference will be in the name of the library an application loads at runtime and the list of counters exposed by the library. See the [Build Instructions](BUILD.md) for
+more information on how to build and use the Internal version. In the future, we see there being only a single version of GPUPerfAPI, with perhaps a change in the API to
+allow users of GPA to indicate whether the library exposes just the Derived counters or both the Derived and the Hardware counters.  We realize using the term "Internal"
+for something which is no longer actually Internal-to-AMD can be a bit confusing, and we will aim to change this in the future.
 
 <A NAME="HistoricalNotes">
 ## Historical Release Notes
