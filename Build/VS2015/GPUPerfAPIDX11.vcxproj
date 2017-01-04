@@ -37,7 +37,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="GPA-Common.props" />
     <Import Project="GPA-DLL.props" />
-    <Import Condition="'$(SolutionName)'=='GPUPerfAPI'" Project="$(BaseDir)GPA/Common/Lib/AMD/GPUPerfAPI/Global-GPUPerfAPI.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI'" Project="$(GPUPerfAPIBaseDir)/Common/Lib/AMD/GPUPerfAPI/Global-GPUPerfAPI.props" />
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable-CodeXL.props" />
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable-PerfStudio.props" />
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable.props" />

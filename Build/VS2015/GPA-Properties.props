@@ -2,7 +2,8 @@
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
     <PropertyGroup Label="UserMacros">
         <BaseDir>$(SolutionDir)..\..\..\</BaseDir>
-        <GPUPerfAPIBaseDir>$(BaseDir)GPA\</GPUPerfAPIBaseDir>
+        <GPUPerfAPIBaseDir Condition="'$(SolutionName)'=='GPUPerfAPI'">$(SolutionDir)..\..\</GPUPerfAPIBaseDir>
+        <GPUPerfAPIBaseDir Condition="'$(SolutionName)'=='GPUPerfAPI-Full'">$(BaseDir)GPA\</GPUPerfAPIBaseDir>
         <CommonDir>$(BaseDir)Common\</CommonDir>
     </PropertyGroup>
     <PropertyGroup>
