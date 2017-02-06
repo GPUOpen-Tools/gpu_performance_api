@@ -16,7 +16,7 @@ is used by both CodeXL and GPU PerfStudio.
 * [Building the Source Code](BUILD.md)
 * [GPUPerfAPI User Guide](Doc/GPUPerfAPI-UserGuide.pdf)
 * [License](LICENSE)
-* [Historical Release Notes](#HistoricalNotes)
+* [Historical Release Notes](ReleaseNotes.md)
 
 <A NAME="Major">
 ## Major Features
@@ -84,20 +84,3 @@ difference will be in the name of the library an application loads at runtime an
 more information on how to build and use the Internal version. In the future, we see there being only a single version of GPUPerfAPI, with perhaps a change in the API to
 allow users of GPA to indicate whether the library exposes just the Derived counters or both the Derived and the Hardware counters.  We realize using the term "Internal"
 for something which is no longer actually Internal-to-AMD can be a bit confusing, and we will aim to change this in the future.
-
-<A NAME="HistoricalNotes">
-## Historical Release Notes
-* Version 2.20 (5/12/16)
-  * Add support for additional GPUs and APUs.
-  * Initial Public release of ROCm/HSA support
-  * Developer Preview for DirectX12 (no hardware-based performance counter support)
-  * Removed support for pre-GCN-based devices
-  * Improve accuracy of the various *VALUBusy and *SALUBusy counters (all APIs)
-  * OpenGL: Fixed possibly wrong GPUTime values for some applications
-  * OpenGL: Add support for open source OpenGL driver
-  * OpenGL: Fix value of TexUnitBusy counter for 3rd generation GCN hardware
-  * DirectX 11: Fix incorrect type returned for D3DGPUTime counter
-  * DirectX 11: Fix PSVALUBusy counter on 2nd and 3rd generation GCN hardware
-  * DirectX 11: A separate DLL (GPUPerfAPIDXGetAMDDeviceInfo\*.dll) is required in order to support certain multi-GPU configurations. This DLL will need to be deployed alongside GPUPerfAPIDX11\*.dll on multi-GPU systems. See the [User Guide](Doc/GPUPerfAPI-UserGuide.pdf) for more information.
-* [Version 2.17](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/)
-* [Earlier Releases](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/gpuperfapi-historical-release-notes/)
