@@ -17,7 +17,7 @@
  * OpenGL: Fix value of TexUnitBusy counter for 3rd generation GCN hardware
  * DirectX 11: Fix incorrect type returned for D3DGPUTime counter
  * DirectX 11: Fix PSVALUBusy counter on 2nd and 3rd generation GCN hardware
- * DirectX 11: A separate DLL (GPUPerfAPIDXGetAMDDeviceInfo*.dll) is required in order to support certain multi-GPU configurations. This DLL will need to be deployed alongside GPUPerfAPIDX11*.dll on multi-GPU systems. See the [User Guide](Doc/GPUPerfAPI-UserGuide.pdf) for more information.
+ * DirectX 11: A separate DLL (GPUPerfAPIDXGetAMDDeviceInfo\*.dll) is required in order to support certain multi-GPU configurations. This DLL will need to be deployed alongside GPUPerfAPIDX11\*.dll on multi-GPU systems. See the [User Guide](Doc/GPUPerfAPI-UserGuide.pdf) for more information.
 
 ## Version 2.17 (8/12/15)
  * Add support for additional GPUs and APUs.
