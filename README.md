@@ -7,18 +7,17 @@ It can help analyze the performance and execution characteristics of application
 is used by both CodeXL and GPU PerfStudio.
 
 ## Table of Contents
-* [Major Features](#Major)
-* [What's New](#WhatsNew)
-* [System Requirements](#System)
-* [Cloning the Repository](#Cloning)
-* [Source Code Directory Layout](#Source)
-* ["Public" vs "Internal" Versions](#PublicInternal)
+* [Major Features](#major-features)
+* [What's New](#whats-new)
+* [System Requirements](#system-requirements)
+* [Cloning the Repository](#cloning-the-repository)
+* [Source Code Directory Layout](#source-code-directory-layout)
+* ["Public" vs "Internal" Versions](#public-vs-internal-versions)
 * [Building the Source Code](BUILD.md)
 * [GPUPerfAPI User Guide](Doc/GPUPerfAPI-UserGuide.pdf)
 * [License](LICENSE)
 * [Historical Release Notes](ReleaseNotes.md)
 
-<A NAME="Major">
 ## Major Features
 * Provides a standard API for accessing GPU Performance counters for both graphics and compute workloads across multiple GPU APIs.
 * Supports DirectX11, OpenGL, OpenGLES, OpenCL™, and ROCm/HSA
@@ -28,14 +27,12 @@ is used by both CodeXL and GPU PerfStudio.
 * Provides derived "public" counters based on raw HW counters
 * "Internal" version provides access to some raw hardware counters. See ["Public" vs "Internal" Versions](#PublicInternal) for more information.
 
-<A NAME="WhatsNew">
 ## What's New
 * Version 2.21 (12/21/16)
   * Add support for additional GPUs and APUs.
   * ROCm/HSA: Support for ROCm 1.3 and ROCm 1.4
   * OpenGL: Fixed an issue with GPU/APU detection with newer Radeon Crimson drivers
 
-<A NAME="System">
 ## System Requirements
 * An AMD Radeon GCN-based GPU or APU
 * Radeon Software Crimson Edition 16.2.1 or later (Driver Packaging Version 16.40 or later).
@@ -43,7 +40,6 @@ is used by both CodeXL and GPU PerfStudio.
 * Windows 7, 8.1, and 10
 * Ubuntu (14.04 and later) and RHEL (7 and later) distributions
 
-<A NAME="Cloning">
 ## Cloning the Repository
 To clone the GPA repository, execute the following git commands
  * git clone https://github.com/GPUOpen-Tools/GPA.git
@@ -51,7 +47,6 @@ After cloning the repository, please run the following python script to retrieve
  * python Scripts/UpdateCommon.py
 UpdateCommon has replaced the use of git submodules in the GPA repository
 
-<A NAME="Source">
 ## Source Code Directory Layout
 * [Build](Build) -- contains both Linux and Windows build-related files
 * [Common](Common) -- Common libs, header and source code not found in other repositories
@@ -72,7 +67,6 @@ UpdateCommon has replaced the use of git submodules in the GPA repository
 * [Src/PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) - input files that can be fed as input to the PublicCounterCompiler tool
 * [Scripts](Scripts) -- scripts to use to clone/update dependent repositories
 
-<A NAME="PublicInternal">
 ## "Public" vs "Internal" Versions
 This open source release supports building both the "Public" and "Internal" versions of GPUPerfAPI. By default the Visual Studio solution and the Linux build scripts
 will produce what is referred to as the "Public" version of GPUPerfAPI. This version exposes "Public", or "Derived", counters. These are counters that are computed
