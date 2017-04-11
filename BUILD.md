@@ -51,7 +51,7 @@ this script everytime you pull new changes from GPA repository.
    * By default this performs a from-scratch build of the release versions of GPUPerfAPI, both 32-bit and 64-bit binaries.
  * The following arguments can be passed to build.sh to alter the build:
    * __debug__: performs a debug build
-   * __skip32buildbuild__: skips building the 32-bit binaries
+   * __skip32bitbuild__: skips building the 32-bit binaries
    * __skipopengl__: skips building the OpenGL version of GPUPerfAPI
    * __skipopengles__: skips building the OpenGLES version of GPUPerfAPI
    * __skipopencl__: skips building the OpenCL version of GPUPerfAPI
