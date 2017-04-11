@@ -1,12 +1,11 @@
 # GPUPerfAPI Build Instructions
 ---
 ## Table of Contents
-* [Cloning/Updating Dependent Repositories](#DependentRepos)
-* [Windows Build Information](#Windows)
-* [Linux Build Information](#Linux)
-* [PublicCounterCompiler Tool](#PublicCounterCompiler)
+* [Cloning/Updating Dependent Repositories](#cloningupdating-dependent-repositories)
+* [Windows Build Information](#windows-build-information)
+* [Linux Build Information](#linux-build-information)
+* [PublicCounterCompiler Tool](#publiccountercompiler-tool)
 
-<A Name="DependentRepos">
 ## Cloning/Updating Dependent Repositories
 GPUPerfAPI no longer uses git submodules to reference dependent repositories. Instead, you need to follow these instructions in
 order to clone/update any dependent repositories.
@@ -21,7 +20,6 @@ This script will clone any dependent repositories that are not present on the sy
 present on the system, this script will instead do a "git pull" on those repositories to ensure that they are up to date. Please re-run
 this script everytime you pull new changes from GPA repository.
 
-<A Name="Windows">
 ## Windows Build Information
 
 ##### Prerequisites
@@ -45,7 +43,6 @@ this script everytime you pull new changes from GPA repository.
       * AMDT_BUILD_SUFFIX=-Internal
     * Each binary filename will have a "-Internal" suffix (for example GPUPerfAPIDX11-x64-Internal.dll)
 
-<A Name="Linux">
 ## Linux Build Information
 
 ##### Build Instructions
@@ -87,7 +84,6 @@ this script everytime you pull new changes from GPA repository.
    * Example: make Dbg HSA_DIR=/home/user/hsa_dir
  * When building the internal version, each binary filename will also have a "-Internal" suffix (for example libGPUPerfAPIGL-Internal.so)
 
-<A NAME="PublicCounterCompiler">
 ## PublicCounterCompiler Tool
 
 The PublicCounterCompiler Tool is a utility, written in C#, that will generate C++ code to define the public (or derived) counters.
