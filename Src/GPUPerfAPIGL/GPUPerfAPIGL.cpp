@@ -629,7 +629,6 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
             }
 
             // switch between values in ASICInfo.h and GPAHWInfo.cpp
-            // ASICInfo from gl driver; HWInfo from http://ati.amd.com/developer/ATI_Device_IDs.txt
             switch (asicInfo.eAsicRev)
             {
                 case ATIASIC_ID_TAHITI_P:
@@ -702,6 +701,10 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
 
                 case ATIASIC_ID_BAFFIN:
                     pHwInfo->SetDeviceID(0x67FF);
+                    break;
+
+                case ATIASIC_ID_LEXA:
+                    pHwInfo->SetDeviceID(0x699F);
                     break;
 
                 default:
