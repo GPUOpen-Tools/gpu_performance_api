@@ -29,7 +29,7 @@ is used by both CodeXL and GPU PerfStudio.
 
 ## What's New
 * Version 2.22 (4/26/17)
- * Add support for additional GPUs and APUs, including RX 500 series GPUs
+  * Add support for additional GPUs and APUs, including RX 500 series GPUs
 
 ## System Requirements
 * An AMD Radeon GCN-based GPU or APU
