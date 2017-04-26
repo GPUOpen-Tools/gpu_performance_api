@@ -20,7 +20,7 @@ scriptRoot = os.path.dirname(os.path.realpath(__file__))
 
 for key in GitHubMapping:
     # convert targetPath to OS specific format
-    tmppath = os.path.join(scriptRoot, "..", GitHubMapping[key])
+    tmppath = os.path.join(scriptRoot, "..", GitHubMapping[key][0])
     # clean up path, collapsing any ../ and converting / to \ for Windows
     targetPath = os.path.normpath(tmppath)
     if os.path.isdir(targetPath):
@@ -33,4 +33,5 @@ for key in GitHubMapping:
         commandArgs = ["git", "clone", gitamdRoot, targetPath]
         p = subprocess.Popen( commandArgs )
         p.wait()
-
+        p = subprocess.Popen(["git","reset","--hard",GitHubMapping[key][1]], cwd=targetPath)
+        p.wait()
