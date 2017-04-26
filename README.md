@@ -28,14 +28,12 @@ is used by both CodeXL and GPU PerfStudio.
 * "Internal" version provides access to some raw hardware counters. See ["Public" vs "Internal" Versions](#PublicInternal) for more information.
 
 ## What's New
-* Version 2.21 (12/21/16)
-  * Add support for additional GPUs and APUs.
-  * ROCm/HSA: Support for ROCm 1.3 and ROCm 1.4
-  * OpenGL: Fixed an issue with GPU/APU detection with newer Radeon Crimson drivers
+* Version 2.22 (4/26/17)
+  * Add support for additional GPUs and APUs, including RX 500 series GPUs
 
 ## System Requirements
 * An AMD Radeon GCN-based GPU or APU
-* Radeon Software Crimson Edition 16.2.1 or later (Driver Packaging Version 16.40 or later).
+* Radeon Software Crimson ReLive Edition 17.4.3 or later (Driver Packaging Version 17.10 or later).
 * Pre-GCN-based GPUs or APUs are no longer supported by GPUPerfAPI. Please use an older version ([2.17](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/)) with older hardware.
 * Windows 7, 8.1, and 10
 * Ubuntu (14.04 and later) and RHEL (7 and later) distributions
