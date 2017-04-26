@@ -219,16 +219,6 @@ if $bZip ; then
    cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI.h ./Include/
    cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes.h ./Include/
    cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPITypes.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-Private.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes-Private.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPITypes-Private.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPAFunctions.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-HSA.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIOS.h ./Include/
-   cp ../../../Src/GPUPerfAPICounters/GPUPerfAPICounters.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/GPACounterGenerator.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterAccessor.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterScheduler.h ./Include/
    cp ../../../Doc/GPUPerfAPI-UserGuide.pdf .
    cp ../../../LICENSE .
    cp ../../../Doc/thirdpartylicenses.txt .
@@ -255,6 +245,17 @@ if $bZip ; then
       cp $GL/$GLLIB32_INTERNAL ./Bin-Internal/Linx86/
       cp $GLES/$GLESLIB32_INTERNAL ./Bin-Internal/Linx86/
       cp $COUNTERS/$COUNTERSLIB32_INTERNAL ./Bin-Internal/Linx86/
+
+      cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-Private.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes-Private.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPITypes-Private.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPAFunctions.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-HSA.h ./Include/
+      cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIOS.h ./Include/
+      cp ../../../Src/GPUPerfAPICounters/GPUPerfAPICounters.h ./Include/
+      cp ../../../Src/GPUPerfAPICounterGenerator/GPACounterGenerator.h ./Include/
+      cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterAccessor.h ./Include/
+      cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterScheduler.h ./Include/
 
       cd ..
       tar cvzf GPUPerfAPI.$VER-lnx-Promotion.tgz $ZIP_DIR_NAME/
