@@ -98,6 +98,10 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
     message << "Device name from Queue: " << str << ".";
     GPA_LogDebugMessage(message.str().c_str());
 
+    // Note for some ASICs, there isn't a revision 0, so we default to zero
+    // here, but then override the revision id to a valid non-zero value below
+    pHwInfo->SetRevisionID(0);
+
     // get the device ID
     // the string comes from maswp4p1.amd.com:1666 \\depot\stg\opencl\drivers\opencl\runtime\device\gpu\gpudefs.hpp as the static const char* TargetName[] array
     if (realDeviceName.compare("Tahiti") == 0)
@@ -135,6 +139,7 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
     else if (realDeviceName.compare("Mullins") == 0)
     {
         pHwInfo->SetDeviceID(0x9855);
+        pHwInfo->SetRevisionID(0x02);
     }
     else if (realDeviceName.compare("Spectre") == 0)
     {
@@ -167,10 +172,17 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
     else if (realDeviceName.compare("Ellesmere") == 0)
     {
         pHwInfo->SetDeviceID(0x67DF);
+        pHwInfo->SetRevisionID(0x04);
     }
     else if (realDeviceName.compare("Baffin") == 0)
     {
         pHwInfo->SetDeviceID(0x67FF);
+        pHwInfo->SetRevisionID(0x08);
+    }
+    else if (realDeviceName.compare("gfx804") == 0)
+    {
+        pHwInfo->SetDeviceID(0x699F);
+        pHwInfo->SetRevisionID(0x81);
     }
     else
     {
@@ -178,7 +190,6 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
         return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
     }
 
-    pHwInfo->SetRevisionID(0);
     pHwInfo->SetDeviceName(str);
 
     cl_uint vendorID;
@@ -294,6 +305,7 @@ GPA_Status GPA_IMP_CompareHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
         (strTranslatedDeviceName.compare("Stoney") == 0 && asic == GDT_STONEY) ||
         (strTranslatedDeviceName.compare("Ellesmere") == 0 && asic == GDT_ELLESMERE) ||
         (strTranslatedDeviceName.compare("Baffin") == 0 && asic == GDT_BAFFIN) ||
+        (strTranslatedDeviceName.compare("gfx804") == 0 && asic == GDT_GFX8_0_4) ||
         (strTranslatedDeviceName.compare("AMD HSA Device") == 0 && (asic == GDT_SPOOKY || asic == GDT_SPECTRE || asic == GDT_SPECTRE_LITE || asic == GDT_SPECTRE_SL))
        )
     {
