@@ -42,6 +42,11 @@
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Deliverable.props" />
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Internal.props" />
   </ImportGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>..\..\Src\GPUPerfAPICounterGenerator;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\GPUPerfAPICounters\GPUPerfAPICounters.cpp" />
   </ItemGroup>

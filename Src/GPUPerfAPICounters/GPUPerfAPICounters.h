@@ -8,6 +8,10 @@
 #ifndef _GPUPERFAPI_COUNTERS_H_
 #define _GPUPERFAPI_COUNTERS_H_
 
+#include "GPUPerfAPITypes-Private.h"
+#include "GPAICounterAccessor.h"
+#include "GPAICounterScheduler.h"
+
 /// macro to export public API functions
 #ifndef GPUPERFAPI_COUNTERS_DECL
     #ifdef _WIN32
