@@ -36,7 +36,7 @@ std::map<hsa_queue_t*, hsa_agent_t> g_queueAgentMap; ///< typedef for a map from
 
 /// replacement function for hsa_queue_create
 hsa_status_t HSA_API
-my_hsa_queue_create(hsa_agent_t agent, uint32_t size, hsa_queue_type_t type,
+my_hsa_queue_create(hsa_agent_t agent, uint32_t size, hsa_queue_type32_t type,
                     void(*pCallback)(hsa_status_t status, hsa_queue_t* pSource, void* pData),
                     void* pData, uint32_t private_segment_size,
                     uint32_t group_segment_size, hsa_queue_t** ppQueue)
