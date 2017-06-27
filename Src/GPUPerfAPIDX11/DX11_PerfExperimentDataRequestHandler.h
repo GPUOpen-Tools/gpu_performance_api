@@ -10,7 +10,7 @@
 #define _DX11_PERF_EXPERIMENT_DATA_REQUEST_HANDLER_H_
 
 #include <d3d11.h>
-#include "..\GPUPerfAPI-Common\GPUPerfAPIImp.h"
+#include "GPUPerfAPIImp.h"
 #include "GPUPerfAPIDX11.h"
 #include "ICounterDataRequest.h"
 #include "AmdDxExtPerfProfileApi.h"

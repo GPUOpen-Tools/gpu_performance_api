@@ -8,6 +8,7 @@
 #ifndef _GPA_TESTS_COUNTERS_GPACOUNTERDESC_H_
 #define _GPA_TESTS_COUNTERS_GPACOUNTERDESC_H_
 
+#include <cstddef>
 #include <GPUPerfAPITypes.h>
 
 /// GPA public counter description
@@ -17,6 +18,6 @@ struct GPACounterDesc
     const char*    m_pDescription; ///< Counter description
     GPA_Type       m_type;         ///< Counter type
     GPA_Usage_Type m_usage;        ///< Counter usage
-}; // end of struct GPAPublicCounterDesc
+};
 
 #endif // _GPA_TESTS_COUNTERS_GPACOUNTERDESC_H_

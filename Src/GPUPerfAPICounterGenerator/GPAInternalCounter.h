@@ -109,8 +109,8 @@ public:
             {
                 // this group contains the desired counter index.
                 // this is the right group, and we can calculate the right counter.
-                this->m_groupIndex = i;
-                this->m_counterIndex = index - prevGroupCounters;
+                m_groupIndex = i;
+                m_counterIndex = index - prevGroupCounters;
 
                 // This is a HW counter
                 m_isHW = true;
@@ -139,8 +139,8 @@ public:
             {
                 // this group contains the desired counter index.
                 // this is the right group, and we can calculate the right counter.
-                this->m_groupIndex = i;
-                this->m_counterIndex = index - prevGroupCounters;
+                m_groupIndex = i;
+                m_counterIndex = index - prevGroupCounters;
 
                 // This is an additional HW counter
                 m_isAdditionalHW = true;
@@ -163,16 +163,16 @@ public:
 
 #if defined(WIN32)
 
-        this->m_groupIndex = 0;
+        m_groupIndex = 0;
         m_isSW = true;
 
         if (index >= internalCounters)
         {
-            this->m_counterIndex = index - internalCounters;
+            m_counterIndex = index - internalCounters;
         }
         else
         {
-            this->m_counterIndex = index;
+            m_counterIndex = index;
         }
 
         return;
@@ -185,14 +185,14 @@ public:
     /// \return The group index.
     virtual unsigned int GroupIndex() const
     {
-        return this->m_groupIndex;
+        return m_groupIndex;
     };
 
     /// Get the 0-based counter index of the internal counter.
     /// \return The counter index.
     virtual unsigned int CounterIndex() const
     {
-        return this->m_counterIndex;
+        return m_counterIndex;
     };
 
     /// Get the hardware counter bool

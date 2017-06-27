@@ -10,8 +10,8 @@
 #include "GLCounterDataRequest.h"
 #include "GLPerfMonitorCache.h"
 
-#include "../GPUPerfAPI-Common/Logging.h"
-#include "../GPUPerfAPICounterGenerator/GLEntryPoints.h"
+#include "Logging.h"
+#include "GLEntryPoints.h"
 #include <sstream>
 #ifdef _LINUX
     #include <string.h>
@@ -172,7 +172,7 @@ bool GLCounterDataRequest::CollectResults(GPA_CounterResults& resultStorage)
         {
             if (!GetResults(this))
             {
-                GPA_LogError("GL Counter results not collected");
+                GPA_LogError("GL Counter results not collected.");
                 return false;
             }
         }
@@ -205,7 +205,7 @@ void GLCounterDataRequest::Reset(gpa_uint32 selectionID, const vector<gpa_uint32
 
             if (nullptr == m_counters)
             {
-                GPA_LogError("Unable to allocate memory for counters");
+                GPA_LogError("Unable to allocate memory for counters.");
                 return;
             }
         }
@@ -223,7 +223,7 @@ void GLCounterDataRequest::Reset(gpa_uint32 selectionID, const vector<gpa_uint32
     // Only create the type of object that is needed.
     if (GPUTimeTopToBottomPresent() || GPUTimeBottomToBottomPresent())
     {
-        this->CreateGPUTimeQuery();
+        CreateGPUTimeQuery();
     }
 
 #ifdef DEBUG_GL_ERRORS
@@ -248,7 +248,7 @@ bool GLCounterDataRequest::GetResults(GLCounterDataRequest* pRequest)
     // clear GL errors that may have been caused by the app
     if (glGetError() != GL_NO_ERROR)
     {
-        GPA_LogDebugMessage("Error before GLCounterDataRequest::GetResults");
+        GPA_LogDebugMessage("Error before GLCounterDataRequest::GetResults.");
     }
 
 #endif
@@ -265,7 +265,7 @@ bool GLCounterDataRequest::GetResults(GLCounterDataRequest* pRequest)
         if (uResultsAvailable == GL_FALSE && glGetError() != GL_NO_ERROR)
         {
             std::stringstream error;
-            error << "glGetError:" << glGetError() << " from _oglGetPerfMonitorCounterDataAMD";
+            error << "glGetError:" << glGetError() << " from _oglGetPerfMonitorCounterDataAMD.";
             GPA_LogDebugMessage(error.str().c_str());
             return false; // return on error to avoid infinite loop
         }
@@ -398,7 +398,7 @@ bool GLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
     // clear GL errors that may have been caused by the app
     if (glGetError() != GL_NO_ERROR)
     {
-        GPA_LogDebugMessage("Error before GLCounterDataRequest::Begin");
+        GPA_LogDebugMessage("Error before GLCounterDataRequest::Begin.");
     }
 
 #endif
@@ -512,12 +512,12 @@ bool GLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
                     }
                 }
 
-                GPA_LogDebugMessage("CheckCounter failed on counter %d: %s (%d) - %s (%d)", (*counters)[i], groupName, pCounter->m_groupIdDriver, counterName, pCounter->m_pHardwareCounter->m_counterIndexInGroup);
+                GPA_LogDebugMessage("CheckCounter failed on counter %d: %s (%d) - %s (%d).", (*counters)[i], groupName, pCounter->m_groupIdDriver, counterName, pCounter->m_pHardwareCounter->m_counterIndexInGroup);
                 return false;
             }
 
 #endif
-            GPA_LogDebugMessage("ENABLED COUNTER: %u", (*pCounters)[i]);
+            GPA_LogDebugMessage("ENABLED COUNTER: %u.", (*pCounters)[i]);
             m_counters[i].m_counterType = resultType;
             m_counters[i].m_counterID = (*pCounters)[i];
             m_counters[i].m_counterGroup = pCounter->m_groupIdDriver;
@@ -533,7 +533,7 @@ bool GLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
     {
         if (!GetResults(pPreviousRequest)) // if there was a previous pending request, we need to get the results from the driver now before starting this new request.
         {
-            GPA_LogError("GL Counter results for previous request not collected");
+            GPA_LogError("GL Counter results for previous request not collected.");
             return false;
         }
     }
@@ -542,7 +542,7 @@ bool GLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
     if (GPUTimeTopToBottomPresent() == false && GPUTimeBottomToBottomPresent() == false)
     {
         _oglBeginPerfMonitorAMD(m_monitor);
-        GPA_LogDebugMessage("glBeginPerfMonitorAMD: %u", m_monitor);
+        GPA_LogDebugMessage("glBeginPerfMonitorAMD: %u.", m_monitor);
 
 #ifdef DEBUG_GL_ERRORS
 
@@ -590,7 +590,7 @@ bool GLCounterDataRequest::EndRequest()
         _oglFlush();
 
         _oglEndPerfMonitorAMD(m_monitor);
-        GPA_LogDebugMessage("glEndPerfMonitorAMD: %u", m_monitor);
+        GPA_LogDebugMessage("glEndPerfMonitorAMD: %u.", m_monitor);
 
         _oglFlush();
 

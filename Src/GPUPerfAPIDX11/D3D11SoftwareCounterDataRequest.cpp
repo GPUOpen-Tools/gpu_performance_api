@@ -482,7 +482,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(timeStampFirstQuery) failed");
+                GPA_LogError("CreateQuery(timeStampFirstQuery) failed.");
                 return false;
             }
 
@@ -490,7 +490,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(m_TimeStampSecondQuery) failed");
+                GPA_LogError("CreateQuery(m_TimeStampSecondQuery) failed.");
                 return false;
             }
 
@@ -499,7 +499,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(timeStampDisjointQuery) failed");
+                GPA_LogError("CreateQuery(timeStampDisjointQuery) failed.");
                 return false;
             }
 
@@ -515,7 +515,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(occlusionQuery) failed");
+                GPA_LogError("CreateQuery(occlusionQuery) failed.");
                 return false;
             }
 
@@ -524,7 +524,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(pipelineStatsQuery) failed");
+                GPA_LogError("CreateQuery(pipelineStatsQuery) failed.");
                 return false;
             }
 
@@ -533,7 +533,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(occlusionPredQuery) failed");
+                GPA_LogError("CreateQuery(occlusionPredQuery) failed.");
                 return false;
             }
 
@@ -542,7 +542,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(soStatsQuery) failed");
+                GPA_LogError("CreateQuery(soStatsQuery) failed.");
                 return false;
             }
 
@@ -551,7 +551,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(soOverflowPredQuery) failed");
+                GPA_LogError("CreateQuery(soOverflowPredQuery) failed.");
                 return false;
             }
 
@@ -560,7 +560,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(soStatsS0Query) failed");
+                GPA_LogError("CreateQuery(soStatsS0Query) failed.");
                 return false;
             }
 
@@ -569,7 +569,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(soOverflowPredS0Query) failed");
+                GPA_LogError("CreateQuery(soOverflowPredS0Query) failed.");
                 return false;
             }
 
@@ -578,7 +578,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(soStatsS1Query) failed");
+                GPA_LogError("CreateQuery(soStatsS1Query) failed.");
                 return false;
             }
 
@@ -587,7 +587,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(soOverflowPredS1Query) failed");
+                GPA_LogError("CreateQuery(soOverflowPredS1Query) failed.");
                 return false;
             }
 
@@ -596,7 +596,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(soStatsS2Query) failed");
+                GPA_LogError("CreateQuery(soStatsS2Query) failed.");
                 return false;
             }
 
@@ -605,7 +605,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(soOverflowPredS2Query) failed");
+                GPA_LogError("CreateQuery(soOverflowPredS2Query) failed.");
                 return false;
             }
 
@@ -614,7 +614,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(soStatsS3Query) failed");
+                GPA_LogError("CreateQuery(soStatsS3Query) failed.");
                 return false;
             }
 
@@ -623,7 +623,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
 
             if (S_OK != hr)
             {
-                GPA_LogError("CreateQuery(soOverflowPredS3Query) failed");
+                GPA_LogError("CreateQuery(soOverflowPredS3Query) failed.");
                 return false;
             }
 

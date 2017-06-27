@@ -12,11 +12,13 @@
 #include "counters/PublicCountersGLGfx6.h"
 #include "counters/PublicCountersGLGfx7.h"
 #include "counters/PublicCountersGLGfx8.h"
+#include "counters/PublicCountersGLGfx9.h"
 
 #ifdef AMDT_INTERNAL
     #include "InternalCountersGLGfx6.h"
     #include "InternalCountersGLGfx7.h"
     #include "InternalCountersGLGfx8.h"
+    #include "InternalCountersGLGfx9.h"
 #endif
 
 static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<const char*>& counterNames)
@@ -35,7 +37,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
         case GPA_HW_GENERATION_NVIDIA:
             break;
 
-        case GPA_HW_GENERATION_SOUTHERNISLAND:
+        case GPA_HW_GENERATION_GFX6:
             pPublicCounters = GLGFX6_PUBLIC_COUNTERS;
             publicCounterCount = GLGFX6_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
@@ -45,7 +47,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
 #endif
             break;
 
-        case GPA_HW_GENERATION_SEAISLAND:
+        case GPA_HW_GENERATION_GFX7:
             pPublicCounters = GLGFX7_PUBLIC_COUNTERS;
             publicCounterCount = GLGFX7_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
@@ -55,13 +57,23 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
 #endif
             break;
 
-        case GPA_HW_GENERATION_VOLCANICISLAND:
+        case GPA_HW_GENERATION_GFX8:
             pPublicCounters = GLGFX8_PUBLIC_COUNTERS;
             publicCounterCount = GLGFX8_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
             pHardwareGroups = HWGLGroupsGfx8;
             hwGroupCount = HWGLGroupCountGfx8;
             ppHardwareCounters = GLCounterGroupArrayGfx8;
+#endif
+            break;
+
+        case GPA_HW_GENERATION_GFX9:
+            pPublicCounters = GLGFX9_PUBLIC_COUNTERS;
+            publicCounterCount = GLGFX9_PUBLIC_COUNTER_COUNT;
+#ifdef AMDT_INTERNAL
+            pHardwareGroups = HWGLGroupsGfx9;
+            hwGroupCount = HWGLGroupCountGfx9;
+            ppHardwareCounters = GLCounterGroupArrayGfx9;
 #endif
             break;
     }
@@ -86,12 +98,14 @@ TEST(CounterDLLTests, OpenGLCounterNames)
     VerifyHardwareNotSupported(GPA_API_OPENGL, gDevIdUnknown);
 
     std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SOUTHERNISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
     VerifyCounterNames(GPA_API_OPENGL, gDevIdSI, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SEAISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
     VerifyCounterNames(GPA_API_OPENGL, gDevIdCI, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_VOLCANICISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
     VerifyCounterNames(GPA_API_OPENGL, gDevIdVI, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
+    VerifyCounterNames(GPA_API_OPENGL, gDevIdGfx9, counterNames);
 }
 
 // Test the OpenGL counter names on all generations
@@ -101,10 +115,12 @@ TEST(CounterDLLTests, OpenGLCounterNamesByGeneration)
     VerifyHardwareNotSupported(GPA_API_OPENGL, GPA_HW_GENERATION_INTEL);
 
     std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SOUTHERNISLAND, counterNames);
-    VerifyCounterNames(GPA_API_OPENGL, GPA_HW_GENERATION_SOUTHERNISLAND, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SEAISLAND, counterNames);
-    VerifyCounterNames(GPA_API_OPENGL, GPA_HW_GENERATION_SEAISLAND, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_VOLCANICISLAND, counterNames);
-    VerifyCounterNames(GPA_API_OPENGL, GPA_HW_GENERATION_VOLCANICISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
+    VerifyCounterNames(GPA_API_OPENGL, GPA_HW_GENERATION_GFX6, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
+    VerifyCounterNames(GPA_API_OPENGL, GPA_HW_GENERATION_GFX7, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
+    VerifyCounterNames(GPA_API_OPENGL, GPA_HW_GENERATION_GFX8, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
+    VerifyCounterNames(GPA_API_OPENGL, GPA_HW_GENERATION_GFX9, counterNames);
 }

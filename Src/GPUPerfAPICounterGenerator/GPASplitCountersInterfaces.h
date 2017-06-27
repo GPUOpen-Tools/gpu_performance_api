@@ -14,6 +14,11 @@
 #include <map>
 #include <algorithm>
 
+#ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
+    #include "Logging.h"
+    #include <sstream>
+#endif
+
 /// enum to represent the different SQ shader stages
 enum GPA_SQShaderStage
 {
@@ -197,6 +202,11 @@ protected:
         location.m_pass = (gpa_uint16)passIndex;
 
         m_counterResultLocationMap[publicCounterIndex][hardwareCounterIndex] = location;
+#ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
+        std::stringstream ss;
+        ss << "Result location for public counter: " << publicCounterIndex << ", hardwarecounter: " << hardwareCounterIndex << " is offset: " << offset << " in pass: " << passIndex;
+        GPA_LogDebugCounterDefs(ss.str().c_str());
+#endif
     }
 
     /// Scans a vector to determine if it contains a specified element.
@@ -337,10 +347,9 @@ protected:
     /// Checks if there are timestamp counters -- the counters need to go in their own pass.
     /// This is because idle's must not be active when they are read, and when measuring counters idles are used.
     /// \param pAccessor counter accessor that describes the counter that needs to be scheduled.
-    /// \param counterIndex the counter index of the counter beign checked.
     /// \param currentPassCounters list of counters in current pass.
     /// \return true if the counter passes this check (not a timestamp, or it is a timestamp and can be added); false if the counter is a timestamp and cannot be added.
-    bool CheckForTimestampCounters(const IGPACounterAccessor* pAccessor, const unsigned int counterIndex, const GPACounterPass& currentPassCounters)
+    bool CheckForTimestampCounters(const IGPACounterAccessor* pAccessor, const GPACounterPass& currentPassCounters)
     {
         unsigned int blockIndex = pAccessor->GlobalGroupIndex();
 
@@ -371,16 +380,6 @@ protected:
         if (numCountersInPass == 0)
         {
             //it's the first counter so it's ok
-            return true;
-        }
-        else if (numCountersInPass == 1 && counterIndex == m_gpuTimestampBottomToBottomCounterIndex && currentPassCounters.m_counters[0] == m_gpuTimestampTopToBottomCounterIndex)
-        {
-            // the other counter is a timestamp, so these two can go together
-            return true;
-        }
-        else if (numCountersInPass == 1 && counterIndex == m_gpuTimestampTopToBottomCounterIndex && currentPassCounters.m_counters[0] == m_gpuTimestampBottomToBottomCounterIndex)
-        {
-            // the other counter is a timestamp, so these two can go together
             return true;
         }
 

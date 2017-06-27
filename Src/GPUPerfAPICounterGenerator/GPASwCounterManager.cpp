@@ -90,7 +90,7 @@ void SwCounterManager::SetNumAmdCounters(const gpa_uint32 counters)
     m_amdCounters = counters;
 }
 
-const gpa_uint32  SwCounterManager::GetNumAmdCounters() const
+const gpa_uint32 SwCounterManager::GetNumAmdCounters() const
 {
     return m_amdCounters;
 }

@@ -13,7 +13,7 @@
 #include <TSingleton.h>
 #include <DeviceInfo.h>
 
-#include "../GPUPerfAPI-Common/GPACounterDataRequestManager.h"
+#include "GPACounterDataRequestManager.h"
 
 class GPA_DataRequest; ///< forward decalration
 

@@ -9,7 +9,7 @@
 #define _DX11_COUNTER_DATA_REQUEST_H_
 
 #include <d3d11.h>
-#include "..\GPUPerfAPI-Common\GPUPerfAPIImp.h"
+#include "GPUPerfAPIImp.h"
 #include "GPUPerfAPIDX11.h"
 #include "ICounterDataRequest.h"
 

@@ -109,9 +109,9 @@ public:
                         unsigned int groupIndex = accessor->GroupIndex();
 
                         // try to add the counter to the current pass
-                        if (this->CheckForTimestampCounters(accessor, *counterIter, *counterPassIter) &&
-                            this->CanCounterBeAdded(accessor, *countersUsedIter, maxCountersPerGroup) &&
-                            this->CheckForSQCounters(accessor, *countersUsedIter, m_maxSQCounters) &&
+                        if (CheckForTimestampCounters(accessor, *counterPassIter) &&
+                            CanCounterBeAdded(accessor, *countersUsedIter, maxCountersPerGroup) &&
+                            CheckForSQCounters(accessor, *countersUsedIter, m_maxSQCounters) &&
                             counterPassIter->m_counters.size() < 300)
                         {
                             counterPassIter->m_counters.push_back(*counterIter);
@@ -198,9 +198,9 @@ private:
 
             for (std::list<GPACounterPass>::iterator passIter = passPartitions.begin(); passIter != passPartitions.end(); ++passIter)
             {
-                if (this->CheckForTimestampCounters(accessor, internalCounterIter->m_hardwareIndex, *passIter) == true &&
-                    this->CanCounterBeAdded(accessor, *countersUsedIter, maxCountersPerGroup) == true &&
-                    this->CheckForSQCounters(accessor, *countersUsedIter, m_maxSQCounters) == true)
+                if (CheckForTimestampCounters(accessor, *passIter) == true &&
+                    CanCounterBeAdded(accessor, *countersUsedIter, maxCountersPerGroup) == true &&
+                    CheckForSQCounters(accessor, *countersUsedIter, m_maxSQCounters) == true)
                 {
                     // the counter can be scheduled here.
                     passIter->m_counters.push_back(internalCounterIter->m_hardwareIndex);

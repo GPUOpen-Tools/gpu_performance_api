@@ -63,29 +63,40 @@ public:
 
         if (MAX_PER_PASS == algorithm)
         {
-            pSplitter = new(std::nothrow) GPASplitCountersMaxPerPass(gpuTimestampGroupIndex, gpuTimestampBottomToBottomCounterIndex,
-                                                       gpuTimestampTopToBottomCounterIndex, maxSQCounters,
-                                                       numSQGroups, pSQCounterBlockInfo);
+            pSplitter = new(std::nothrow) GPASplitCountersMaxPerPass(gpuTimestampGroupIndex,
+                                                                     gpuTimestampBottomToBottomCounterIndex,
+                                                                     gpuTimestampTopToBottomCounterIndex,
+                                                                     maxSQCounters,
+                                                                     numSQGroups,
+                                                                     pSQCounterBlockInfo);
         }
         else if (ONE_PUBLIC_COUNTER_PER_PASS == algorithm)
         {
-            pSplitter = new(std::nothrow) GPASplitCountersOnePerPass(gpuTimestampGroupIndex, gpuTimestampBottomToBottomCounterIndex,
-                                                       gpuTimestampTopToBottomCounterIndex, maxSQCounters,
-                                                       numSQGroups, pSQCounterBlockInfo);
+            pSplitter = new(std::nothrow) GPASplitCountersOnePerPass(gpuTimestampGroupIndex,
+                                                                     gpuTimestampBottomToBottomCounterIndex,
+                                                                     gpuTimestampTopToBottomCounterIndex,
+                                                                     maxSQCounters,
+                                                                     numSQGroups,
+                                                                     pSQCounterBlockInfo);
         }
         else if (CONSOLIDATED == algorithm)
         {
-            pSplitter = new(std::nothrow) GPASplitCountersConsolidated(gpuTimestampGroupIndex, gpuTimestampBottomToBottomCounterIndex,
-                                                         gpuTimestampTopToBottomCounterIndex, maxSQCounters,
-                                                         numSQGroups, pSQCounterBlockInfo);
+            pSplitter = new(std::nothrow) GPASplitCountersConsolidated(gpuTimestampGroupIndex,
+                                                                       gpuTimestampBottomToBottomCounterIndex,
+                                                                       gpuTimestampTopToBottomCounterIndex,
+                                                                       maxSQCounters,
+                                                                       numSQGroups,
+                                                                       pSQCounterBlockInfo);
         }
-
 #ifdef _WIN32
         else if (CONSOLIDATED_DX12 == algorithm)
         {
-            pSplitter = new(std::nothrow) GPASplitCountersConsolidatedDX12(gpuTimestampGroupIndex, gpuTimestampBottomToBottomCounterIndex,
-                                                             gpuTimestampTopToBottomCounterIndex, maxSQCounters,
-                                                             numSQGroups, pSQCounterBlockInfo);
+            pSplitter = new(std::nothrow) GPASplitCountersConsolidatedDX12(gpuTimestampGroupIndex,
+                                                                           gpuTimestampBottomToBottomCounterIndex,
+                                                                           gpuTimestampTopToBottomCounterIndex,
+                                                                           maxSQCounters,
+                                                                           numSQGroups,
+                                                                           pSQCounterBlockInfo);
         }
 
 #endif // _WIN32

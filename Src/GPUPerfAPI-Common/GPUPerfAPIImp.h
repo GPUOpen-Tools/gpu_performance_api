@@ -17,8 +17,8 @@
 #include "GPASessionRequests.h"
 
 #include "GPAHWInfo.h"
-#include "../GPUPerfAPICounterGenerator/GPAICounterAccessor.h"
-#include "../GPUPerfAPICounterGenerator/GPASplitCounterFactory.h"
+#include "GPAICounterAccessor.h"
+#include "GPASplitCounterFactory.h"
 
 // Functions which a GPA implementation layer must support
 

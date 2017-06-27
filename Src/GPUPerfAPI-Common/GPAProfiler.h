@@ -8,7 +8,7 @@
 #ifndef _GPA_PROFILER_H_
 #define _GPA_PROFILER_H_
 
-// To use, add this header and the Profiler.cpp file to your project. Use the PROFILER_FUNCTION() macro
+// To use, add this header and the GPAProfiler.cpp file to your project. Use the PROFILER_FUNCTION() macro
 // giving the name of the function as a parameter at the very beginning of each function to include in profiling.
 // Use START_PROFILING() to begin measurements, and STOP_PROFILING() to finish.
 // Use WRITE_PROFILE_REPORT(filename) to write a text report to the specified filename. a csv extension is a good choice.

@@ -13,7 +13,7 @@ GPA_Status DXGetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& adapterDesc)
 
     if (nullptr == pDevice)
     {
-        GPA_LogError("NULL device");
+        GPA_LogError("NULL device.");
         status = GPA_STATUS_ERROR_NULL_POINTER;
     }
     else
@@ -56,7 +56,7 @@ GPA_Status DXGetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& adapterDesc)
     }
 
     return status;
-} // end of DXGetAdapterDesc
+}
 
 HMONITOR DXGetDeviceMonitor(IUnknown* pDevice)
 {
@@ -64,7 +64,7 @@ HMONITOR DXGetDeviceMonitor(IUnknown* pDevice)
 
     if (nullptr == pDevice)
     {
-        GPA_LogError("NULL device");
+        GPA_LogError("NULL device.");
     }
     else
     {
@@ -118,4 +118,4 @@ HMONITOR DXGetDeviceMonitor(IUnknown* pDevice)
     }
 
     return hMonitor;
-} // end of DXGetDeviceMonitor
+}

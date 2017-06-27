@@ -34,8 +34,20 @@ bBuildOpenGLES=true
 bBuildOpenCL=true
 bBuildHSA=true
 
+# Tests build control
+bBuildTests=true
+
 REL_ROOT=
 BUILD=0
+
+# GoogleTest Lib directory override
+GTEST_LIB_DIR_OVERRIDE=
+
+# GoogleTest 32-bit Lib directory override
+GTEST_LIB_DIR_OVERRIDE32=
+
+# Additional compiler defines override
+ADDITIONAL_COMPILER_DEFINES_OVERRIDE="ADDITIONAL_COMPILER_DEFINES_FROM_BUILD_SCRIPT="
 
 # Set build flag
 while [ "$*" != "" ]
@@ -64,10 +76,21 @@ do
       bBuildOpenCL=false
    elif [ "$1" = "skiphsa" ]; then
       bBuildHSA=false
+   elif [ "$1" = "skiptests" ]; then
+      bBuildTests=false
    elif [ "$1" = "incremental" ]; then
       bIncrementalBuild=true
    elif [ "$1" = "quick" ]; then
       bIncrementalBuild=true
+   elif [ "$1" = "gtestlibdir" ]; then
+      shift
+      GTEST_LIB_DIR_OVERRIDE="GTEST_LIBS=$1/libgtest.a"
+   elif [ "$1" = "gtestlibdir32" ]; then
+      shift
+      GTEST_LIB_DIR_OVERRIDE32="GTEST_LIBS32=$1/libgtest.a"
+   elif [ "$1" = "additionaldefines" ]; then
+      shift
+      ADDITIONAL_COMPILER_DEFINES_OVERRIDE="ADDITIONAL_COMPILER_DEFINES_FROM_BUILD_SCRIPT=$1"
    fi
    shift
 done
@@ -82,6 +105,7 @@ COUNTERS=$GPASRC/GPUPerfAPICounters
 COUNTERGENERATOR=$GPASRC/GPUPerfAPICounterGenerator
 GPA_COMMON=$GPASRC/GPUPerfAPI-Common
 GPA_DEVICEINFO=$GPASRC/DeviceInfo
+UNITTESTS=$GPASRC/GPUPerfAPIUnitTests
 
 GLLIB=libGPUPerfAPIGL$DEBUG_SUFFIX.so
 GLESLIB=libGPUPerfAPIGLES$DEBUG_SUFFIX.so
@@ -117,6 +141,11 @@ COUNTERGENERATORLIB32_INTERNAL=libGPUPerfAPICounterGenerator32$DEBUG_SUFFIX-Inte
 GPA_COMMONLIB32_INTERNAL=libGPUPerfAPI-Common32$DEBUG_SUFFIX-Internal.a
 GPA_DEVICEINFOLIB32_INTERNAL=libDeviceInfo32$DEBUG_SUFFIX-Internal.a
 
+UNITTEST=GPUPerfAPIUnitTests$DEBUG_SUFFIX
+UNITTEST32=GPUPerfAPIUnitTests32$DEBUG_SUFFIX
+UNITTEST_INTERNAL=GPUPerfAPIUnitTests$DEBUG_SUFFIX-Internal
+UNITTEST32_INTERNAL=GPUPerfAPIUnitTests32$DEBUG_SUFFIX-Internal
+
 BUILD_DIR_BASE=$GPAROOT/Build
 BUILD_DIR=$BUILD_DIR_BASE/Linux
 
@@ -148,6 +177,10 @@ if $bBuildHSA ; then
    BUILD_DIRS="$BUILD_DIRS $HSA"
 fi
 
+if $bBuildTests ; then
+   BUILD_DIRS="$BUILD_DIRS $UNITTESTS"
+fi
+
 for SUBDIR in $BUILD_DIRS; do
    BASENAME=`basename $SUBDIR`
 
@@ -159,14 +192,14 @@ for SUBDIR in $BUILD_DIRS; do
    #make 64 bit
    echo "Build ${BASENAME}, 64-bit..." | tee -a $LOGFILE
 
-   if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE ${MAKE_TARGET} >> $LOGFILE 2>&1; then
+   if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET} >> $LOGFILE 2>&1; then
       echo "Failed to build ${BASENAME}, 64 bit"
       exit 1
    fi
 
    #make 64 bit Internal
    if $bBuildInternal ; then
-      if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE ${MAKE_TARGET}Internal  >> $LOGFILE 2>&1; then
+      if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internal  >> $LOGFILE 2>&1; then
          echo "Failed to build ${BASENAME}, 64 bit, Internal"
          exit 1
       fi
@@ -177,14 +210,14 @@ for SUBDIR in $BUILD_DIRS; do
          #make 32 bit
          echo "Build ${BASENAME}, 32-bit..." | tee -a $LOGFILE
 
-         if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE ${MAKE_TARGET}x86 >> $LOGFILE 2>&1; then
+         if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}x86 >> $LOGFILE 2>&1; then
             echo "Failed to build ${BASENAME}, 32 bit"
             exit 1
          fi
 
          #make 32 bit Internal
          if $bBuildInternal ; then
-            if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE ${MAKE_TARGET}Internalx86  >> $LOGFILE 2>&1; then
+            if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internalx86  >> $LOGFILE 2>&1; then
                echo "Failed to build ${BASENAME}, 32 bit, Internal"
                exit 1
             fi
@@ -258,6 +291,22 @@ if $bZip ; then
 
       cd ..
       tar cvzf GPUPerfAPI.$VER-lnx-Promotion.tgz $ZIP_DIR_NAME/
+   fi
+fi
+
+if $bBuildTests ; then
+   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST --gtest_output=xml:$UNITTEST.xml
+
+   if $b32bitbuild ; then
+      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST32 --gtest_output=xml:$UNITTEST32.xml
+   fi
+
+   if $bBuildInternal ; then
+      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST_INTERNAL --gtest_output=xml:$UNITTEST_INTERNAL.xml
+
+      if $b32bitbuild ; then
+         LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST32_INTERNAL --gtest_output=xml:$UNITTEST32_INTERNAL.xml
+      fi
    fi
 fi
 

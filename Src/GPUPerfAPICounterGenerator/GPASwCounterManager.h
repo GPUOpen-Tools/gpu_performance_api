@@ -152,8 +152,7 @@ private:
     gpa_uint32                m_swGPUTimeCounter;       ///< SW GPUTime counter public index
     bool                      m_swGPUTimeEnabled;       ///< Indicates if SW GPUTime counter is enabled
     bool                      m_swCountersGenerated;    ///< Indicates if SW counters have been generated
-
-};  // end of class SwCounterManager
+};
 
 /// declare singleton SwCounterManager object as extern
 extern SwCounterManager* s_pSwCounterManager;

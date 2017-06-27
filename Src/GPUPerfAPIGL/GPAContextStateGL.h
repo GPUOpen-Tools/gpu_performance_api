@@ -8,7 +8,7 @@
 #ifndef _GPA_CONTEXT_STATE_GL_H_
 #define _GPA_CONTEXT_STATE_GL_H_
 
-#include "../GPUPerfAPI-Common/GPAContextState.h"
+#include "GPAContextState.h"
 
 //#include "GPUPerfAPIGL.h"
 

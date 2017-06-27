@@ -12,7 +12,7 @@ decltype(glFlush)*                      _oglFlush                          = nul
 decltype(glGetString)*                  _oglGetString                      = nullptr;
 decltype(glGetIntegerv)*                _oglGetIntegerv                    = nullptr;
 #ifdef _WIN32
-decltype(wglGetCurrentContext)*         _wglGetCurrentContext              = nullptr;
+    decltype(wglGetCurrentContext)*     _wglGetCurrentContext              = nullptr;
 #endif
 PFNGLGETPERFMONITORGROUPSAMDPROC        _oglGetPerfMonitorGroupsAMD        = nullptr;
 PFNGLGETPERFMONITORCOUNTERSAMDPROC      _oglGetPerfMonitorCountersAMD      = nullptr;

@@ -12,7 +12,8 @@
 #include "hsa_ext_image.h"
 #include "hsa_ext_finalize.h"
 
-struct ExtTable1_0 {
+struct ExtTable1_0
+{
     decltype(hsa_ext_program_create)* hsa_ext_program_create_fn;
     decltype(hsa_ext_program_destroy)* hsa_ext_program_destroy_fn;
     decltype(hsa_ext_program_add_module)* hsa_ext_program_add_module_fn;
@@ -31,7 +32,8 @@ struct ExtTable1_0 {
     decltype(hsa_ext_sampler_destroy)* hsa_ext_sampler_destroy_fn;
 };
 
-struct ApiTable1_0 {
+struct ApiTable1_0
+{
     decltype(hsa_init)* hsa_init_fn;
     decltype(hsa_shut_down)* hsa_shut_down_fn;
     decltype(hsa_system_get_info)* hsa_system_get_info_fn;

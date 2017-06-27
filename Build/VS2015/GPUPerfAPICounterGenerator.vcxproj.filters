@@ -93,19 +93,10 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.h">
       <Filter>Source Files\InternalCounters</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx9.h">
+      <Filter>Source Files\InternalCounters</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.h">
-      <Filter>Source Files\InternalCounters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx6.h">
-      <Filter>Source Files\InternalCounters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx7.h">
-      <Filter>Source Files\InternalCounters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.h">
-      <Filter>Source Files\InternalCounters</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.h">
       <Filter>Source Files\InternalCounters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx6.h">
@@ -216,6 +207,30 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8.h">
       <Filter>Source Files\PublicCounters\HSA</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx9.h">
+      <Filter>Source Files\InternalCounters\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx9.h">
+      <Filter>Source Files\InternalCounters\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx9.h">
+      <Filter>Source Files\InternalCounters\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx9.h">
+      <Filter>Source Files\InternalCounters\HSA</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx9.h">
+      <Filter>Source Files\PublicCounters\CL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx9.h">
+      <Filter>Source Files\PublicCounters\DX11</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx9.h">
+      <Filter>Source Files\PublicCounters\GL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx9.h">
+      <Filter>Source Files\PublicCounters\HSA</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCommon.h">
       <Filter>Source Files\CounterGenerators</Filter>
     </ClInclude>
@@ -278,6 +293,9 @@
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.cpp">
       <Filter>Source Files\InternalCounters</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx9.cpp">
+      <Filter>Source Files\InternalCounters</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.cpp">
       <Filter>Source Files\InternalCounters</Filter>
     </ClCompile>
@@ -288,6 +306,9 @@
       <Filter>Source Files\InternalCounters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.cpp">
+      <Filter>Source Files\InternalCounters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx9.cpp">
       <Filter>Source Files\InternalCounters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.cpp">
@@ -363,6 +384,30 @@
       <Filter>Source Files\PublicCounters\GL</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8.cpp">
+      <Filter>Source Files\PublicCounters\HSA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx9.cpp">
+      <Filter>Source Files\InternalCounters\CL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx9.cpp">
+      <Filter>Source Files\InternalCounters\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx9.cpp">
+      <Filter>Source Files\InternalCounters\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx9.cpp">
+      <Filter>Source Files\InternalCounters\HSA</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx9.cpp">
+      <Filter>Source Files\PublicCounters\CL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx9.cpp">
+      <Filter>Source Files\PublicCounters\DX11</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx9.cpp">
+      <Filter>Source Files\PublicCounters\GL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx9.cpp">
       <Filter>Source Files\PublicCounters\HSA</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCommon.cpp">

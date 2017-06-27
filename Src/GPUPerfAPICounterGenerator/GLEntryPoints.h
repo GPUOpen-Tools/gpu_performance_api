@@ -61,7 +61,7 @@ extern decltype(glFlush)*                      _oglFlush;                       
 extern decltype(glGetString)*                  _oglGetString;                       ///< function pointer for glGetString
 extern decltype(glGetIntegerv)*                _oglGetIntegerv;                     ///< function pointer for glGetIntegerv
 #ifdef _WIN32
-extern decltype(wglGetCurrentContext)*         _wglGetCurrentContext;               ///< function pointer for wglGetCurrentContext
+    extern decltype(wglGetCurrentContext)*     _wglGetCurrentContext;               ///< function pointer for wglGetCurrentContext
 #endif
 extern PFNGLGETPERFMONITORGROUPSAMDPROC        _oglGetPerfMonitorGroupsAMD;         ///< function pointer for glGetPerfMonitorGroupsAMD
 extern PFNGLGETPERFMONITORCOUNTERSAMDPROC      _oglGetPerfMonitorCountersAMD;       ///< function pointer for glGetPerfMonitorCountersAMD

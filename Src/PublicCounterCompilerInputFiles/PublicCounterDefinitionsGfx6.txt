@@ -10,7 +10,6 @@ type=gpa_float64
 usage=milliseconds
 countertype=GPA_COUNTER_TYPE_API_DYNAMIC
 [GLGfx6]
-GPUTime_Bottom_To_Bottom
 [DX11Gfx6]
 GPUTime_Bottom_To_Bottom
 comp=0,TS_FREQ,/,(1000),*
@@ -20,8 +19,6 @@ usage=percentage
 desc=#Timing#The percentage of time GPU was busy.
 type=gpa_float64
 [GLGfx6]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
-GRBM_GRBM_PERF_SEL_COUNT
 [DX11Gfx6]
 GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 GRBM_GRBM_PERF_SEL_COUNT

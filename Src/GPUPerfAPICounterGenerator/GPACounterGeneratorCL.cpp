@@ -15,10 +15,12 @@
 #include "PublicCounterDefsCLGfx6.h"
 #include "PublicCounterDefsCLGfx7.h"
 #include "PublicCounterDefsCLGfx8.h"
+#include "PublicCounterDefsCLGfx9.h"
 
 #include "InternalCountersCLGfx6.h"
 #include "InternalCountersCLGfx7.h"
 #include "InternalCountersCLGfx8.h"
+#include "InternalCountersCLGfx9.h"
 
 #include "GPACounterGeneratorSchedulerManager.h"
 
@@ -45,6 +47,10 @@ GPA_Status GPA_CounterGeneratorCL::GeneratePublicCounters(GDT_HW_GENERATION desi
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
         AutoDefinePublicCountersCLGfx8(*pPublicCounters);
+    }
+    else if(desiredGeneration == GDT_HW_GENERATION_GFX9)
+    {
+        AutoDefinePublicCountersCLGfx9(*pPublicCounters);
     }
     else
     {
@@ -81,6 +87,14 @@ GPA_Status GPA_CounterGeneratorCL::GenerateHardwareCounters(GDT_HW_GENERATION de
         pHardwareCounters->m_pSQCounterGroups   = HWCLSQGroupsGfx8;
         pHardwareCounters->m_sqGroupCount      = HWCLSQGroupCountGfx8;
     }
+    else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
+    {
+        pHardwareCounters->m_ppCounterGroupArray = CLCounterGroupArrayGfx9;
+        pHardwareCounters->m_pGroups = HWCLGroupsGfx9;
+        pHardwareCounters->m_groupCount = HWCLGroupCountGfx9;
+        pHardwareCounters->m_pSQCounterGroups = HWCLSQGroupsGfx9;
+        pHardwareCounters->m_sqGroupCount = HWCLSQGroupCountGfx9;
+    }
     else
     {
         GPA_LogError("Unrecognized or unhandled hardware generation.");
@@ -103,7 +117,7 @@ GPA_Status GPA_CounterGeneratorCL::GenerateHardwareCounters(GDT_HW_GENERATION de
         for (gpa_uint32 i = 0; i < pHardwareCounters->m_groupCount; i++)
         {
             GPA_HardwareCounterDesc* pClGroup = (*(pHardwareCounters->m_ppCounterGroupArray + i));
-            const int numGroupCounters = (int)pHardwareCounters->m_pGroups[i].m_numCounters;
+            const int numGroupCounters = static_cast<int>(pHardwareCounters->m_pGroups[i].m_numCounters);
 
             for (int j = 0; j < numGroupCounters; j++)
             {

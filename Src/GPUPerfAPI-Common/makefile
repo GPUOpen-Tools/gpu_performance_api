@@ -6,6 +6,7 @@ include $(DEPTH)/Build/Linux/Common.mk
 TARGETLIB = libGPUPerfAPI-Common$(TARGET_SUFFIX).a
 
 INCLUDES =	-I. \
+		-I$(GPACG_DIR) \
 		-I$(ADL_DIR)/include \
 		-I$(ADLUTIL_DIR) \
 		-I$(DEVICEINFO_DIR) \

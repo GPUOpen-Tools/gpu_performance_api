@@ -8,14 +8,16 @@
 #include "CounterGeneratorTests.h"
 #include "GPASplitCountersInterfaces.h"
 
-#include "counters/PublicCountersDX11Gfx6.h"
-#include "counters/PublicCountersDX11Gfx7.h"
-#include "counters/PublicCountersDX11Gfx8.h"
+#ifdef _WIN32
+    #include "counters/PublicCountersDX11Gfx6.h"
+    #include "counters/PublicCountersDX11Gfx7.h"
+    #include "counters/PublicCountersDX11Gfx8.h"
 
-#include "GPAInternalCounter.h"
-#include "InternalCountersDX11Gfx6.h"
-#include "InternalCountersDX11Gfx7.h"
-#include "InternalCountersDX11Gfx8.h"
+    #include "GPAInternalCounter.h"
+    #include "InternalCountersDX11Gfx6.h"
+    #include "InternalCountersDX11Gfx7.h"
+    #include "InternalCountersDX11Gfx8.h"
+#endif
 
 GPA_CounterResultLocation MakeLocation(gpa_uint16 pass, gpa_uint16 offset)
 {
@@ -144,6 +146,8 @@ TEST(CounterDLLTests, OpenGLCounterScheduling)
     VerifyPassCount(GPA_API_OPENGL, gDevIdCI,   counters, 2);
     VerifyPassCount(GPA_API_OPENGL, gDevIdVI,   counters, 2);
 }
+
+#ifdef _WIN32
 
 TEST(CounterDLLTests, DX11CounterScheduling)
 {
@@ -477,21 +481,21 @@ static unsigned int GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERA
 
     switch (generation)
     {
-        case GPA_HW_GENERATION_SOUTHERNISLAND:
+        case GPA_HW_GENERATION_GFX6:
             pHardwareGroups = HWDX11GroupsGfx6;
             hwGroupCount = HWDX11GroupCountGfx6;
             ppHardwareCounters = DX11CounterGroupArrayGfx6;
             hwGPUTimeGroupIndex = HWDX11GPUTimeIndexGfx6;
             break;
 
-        case GPA_HW_GENERATION_SEAISLAND:
+        case GPA_HW_GENERATION_GFX7:
             pHardwareGroups = HWDX11GroupsGfx7;
             hwGroupCount = HWDX11GroupCountGfx7;
             ppHardwareCounters = DX11CounterGroupArrayGfx7;
             hwGPUTimeGroupIndex = HWDX11GPUTimeIndexGfx7;
             break;
 
-        case GPA_HW_GENERATION_VOLCANICISLAND:
+        case GPA_HW_GENERATION_GFX8:
             pHardwareGroups = HWDX11GroupsGfx8;
             hwGroupCount = HWDX11GroupCountGfx8;
             ppHardwareCounters = DX11CounterGroupArrayGfx8;
@@ -523,19 +527,19 @@ TEST(CounterDLLTests, DX11D3DCounters)
     // Gfx6
     D3DCounterIndex      = 1;
     publicCounterCount  = DX11GFX6_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_SOUTHERNISLAND, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6, dummyGpuTimeHWIndex);
     TestD3D11QueryCounter(gDevIdSI, D3DCounterIndex, publicCounterCount, hardwareCounterCount);
 
     // Gfx7
     D3DCounterIndex      = 1;
     publicCounterCount  = DX11GFX7_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_SEAISLAND, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7, dummyGpuTimeHWIndex);
     TestD3D11QueryCounter(gDevIdCI, D3DCounterIndex, publicCounterCount, hardwareCounterCount);
 
     // Gfx8
     D3DCounterIndex      = 1;
     publicCounterCount  = DX11GFX8_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_VOLCANICISLAND, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8, dummyGpuTimeHWIndex);
     TestD3D11QueryCounter(gDevIdVI, D3DCounterIndex, publicCounterCount, hardwareCounterCount);
 }
 
@@ -549,19 +553,19 @@ TEST(CounterDLLTests, DX11D3DCountersAndGPUTime)
     // Gfx6
     D3DCounterIndex      = 1;
     publicCounterCount   = DX11GFX6_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_SOUTHERNISLAND, gpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6, gpuTimeHWIndex);
     TestD3D11QueryCounter(gDevIdSI, D3DCounterIndex, publicCounterCount, hardwareCounterCount, gpuTimeHWIndex);
 
     // Gfx7
     D3DCounterIndex      = 1;
     publicCounterCount   = DX11GFX7_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_SEAISLAND, gpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7, gpuTimeHWIndex);
     TestD3D11QueryCounter(gDevIdCI, D3DCounterIndex, publicCounterCount, hardwareCounterCount, gpuTimeHWIndex);
 
     // Gfx8
     D3DCounterIndex      = 1;
     publicCounterCount   = DX11GFX8_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_VOLCANICISLAND, gpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8, gpuTimeHWIndex);
     TestD3D11QueryCounter(gDevIdVI, D3DCounterIndex, publicCounterCount, hardwareCounterCount, gpuTimeHWIndex);
 }
 
@@ -616,17 +620,17 @@ TEST(CounterDLLTests, AllDX11D3DCounters)
 
     // Gfx6
     publicCounterCount   = DX11GFX6_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_SOUTHERNISLAND, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6, dummyGpuTimeHWIndex);
     TestAllD3D11QueryCounters(gDevIdSI, D3DQueryCounterCount, publicCounterCount, hardwareCounterCount);
 
     // Gfx7
     publicCounterCount   = DX11GFX7_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_SEAISLAND, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7, dummyGpuTimeHWIndex);
     TestAllD3D11QueryCounters(gDevIdCI, D3DQueryCounterCount, publicCounterCount, hardwareCounterCount);
 
     // Gfx8
     publicCounterCount   = DX11GFX8_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_VOLCANICISLAND, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8, dummyGpuTimeHWIndex);
     TestAllD3D11QueryCounters(gDevIdVI, D3DQueryCounterCount, publicCounterCount, hardwareCounterCount);
 }
 
@@ -700,20 +704,6 @@ TEST(CounterDLLTests, DX11VIPSBusyCounterResult)
 
 }
 
-TEST(CounterDLLTests, HSACounterScheduling)
-{
-    std::vector<unsigned int> counters;
-    counters.push_back(0);
-    counters.push_back(1);
-    counters.push_back(2);
-
-    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdUnknown);
-    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdSI);
-
-    VerifyPassCount(GPA_API_HSA, gDevIdCI, counters, 1);
-    VerifyPassCount(GPA_API_HSA, gDevIdVI, counters, 1);
-}
-
 TEST(CounterDLLTests, DX11EnableAndDisable)
 {
     std::vector<unsigned int> counters;
@@ -732,7 +722,7 @@ TEST(CounterDLLTests, DX11EnableAndDisable)
 
     GPA_ICounterAccessor* pCounterAccessor = nullptr;
     GPA_ICounterScheduler* pCounterScheduler = nullptr;
-    GPA_Status status = GPA_GetAvailableCounters_fn(api, AMD_VENDOR_ID, deviceId, 0, &pCounterAccessor, &pCounterScheduler);
+    GPA_Status status = GPA_GetAvailableCounters_fn(api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, &pCounterAccessor, &pCounterScheduler);
     EXPECT_EQ(GPA_STATUS_OK, status);
     EXPECT_NE((GPA_ICounterAccessor*)nullptr, pCounterAccessor);
     ASSERT_NE((GPA_ICounterScheduler*)nullptr, pCounterScheduler);
@@ -768,4 +758,20 @@ TEST(CounterDLLTests, DX11EnableAndDisable)
     passCountStatus = pCounterScheduler->GetNumRequiredPasses(&requiredPasses);
     EXPECT_EQ(GPA_STATUS_OK, passCountStatus);
     EXPECT_EQ(1, requiredPasses);
+}
+
+#endif
+
+TEST(CounterDLLTests, HSACounterScheduling)
+{
+    std::vector<unsigned int> counters;
+    counters.push_back(0);
+    counters.push_back(1);
+    counters.push_back(2);
+
+    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdUnknown);
+    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdSI);
+
+    VerifyPassCount(GPA_API_HSA, gDevIdCI, counters, 1);
+    VerifyPassCount(GPA_API_HSA, gDevIdVI, counters, 1);
 }

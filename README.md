@@ -13,6 +13,7 @@ is used by both CodeXL and GPU PerfStudio.
 * [Cloning the Repository](#cloning-the-repository)
 * [Source Code Directory Layout](#source-code-directory-layout)
 * ["Public" vs "Internal" Versions](#public-vs-internal-versions)
+* [Known Issues](#known-issues)
 * [Building the Source Code](BUILD.md)
 * [GPUPerfAPI User Guide](Doc/GPUPerfAPI-UserGuide.pdf)
 * [License](LICENSE)
@@ -28,15 +29,17 @@ is used by both CodeXL and GPU PerfStudio.
 * "Internal" version provides access to some raw hardware counters. See ["Public" vs "Internal" Versions](#PublicInternal) for more information.
 
 ## What's New
-* Version 2.22 (4/26/17)
-  * Add support for additional GPUs and APUs, including RX 500 series GPUs
+* Version 2.23 (6/27/17)
+  * Add support for additional GPUs, including Vega series GPUs
+  * Allow unit tests to be built and run on Linux
 
 ## System Requirements
 * An AMD Radeon GCN-based GPU or APU
 * Radeon Software Crimson ReLive Edition 17.4.3 or later (Driver Packaging Version 17.10 or later).
+  * For Vega support, a driver with Driver Packaging Version 17.20 or later is required
 * Pre-GCN-based GPUs or APUs are no longer supported by GPUPerfAPI. Please use an older version ([2.17](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/)) with older hardware.
 * Windows 7, 8.1, and 10
-* Ubuntu (14.04 and later) and RHEL (7 and later) distributions
+* Ubuntu (16.04 and later) and RHEL (7 and later) distributions
 
 ## Cloning the Repository
 To clone the GPA repository, execute the following git commands
@@ -76,3 +79,6 @@ difference will be in the name of the library an application loads at runtime an
 more information on how to build and use the Internal version. In the future, we see there being only a single version of GPUPerfAPI, with perhaps a change in the API to
 allow users of GPA to indicate whether the library exposes just the Derived counters or both the Derived and the Hardware counters.  We realize using the term "Internal"
 for something which is no longer actually Internal-to-AMD can be a bit confusing, and we will aim to change this in the future.
+
+## Known Issues
+ * The OpenCL™ version of GPUPerfAPI is not currently working for Vega GPUs on Windows when using a 17.20-based driver. This is due to missing driver support in the 17.20 driver. Future driver versions should provide the support needed.

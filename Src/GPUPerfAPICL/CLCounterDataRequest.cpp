@@ -17,7 +17,7 @@
 #include "CLCounterDataRequest.h"
 
 #ifndef _LINUX
-    #include "../GPUPerfAPI-Common/Logging.h"
+    #include "Logging.h"
 #endif
 
 CLCounterDataRequest::CLCounterDataRequest()
@@ -159,7 +159,7 @@ void CLCounterDataRequest::Reset(gpa_uint32 uSelectionID, const vector<gpa_uint3
 
             if (nullptr == m_counters)
             {
-                GPA_LogError("Unable to allocate memory for CL counters");
+                GPA_LogError("Unable to allocate memory for CL counters.");
                 return;
             }
 
@@ -230,7 +230,7 @@ bool CLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
 
         if (nullptr == cBlock)
         {
-            GPA_LogError("Unable to allocate memory for CL counter blocks");
+            GPA_LogError("Unable to allocate memory for CL counter blocks.");
             Reset(selectionID, pCounters);
             return false;
         }
@@ -261,7 +261,7 @@ bool CLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
     {
         GPA_HardwareCounterDescExt* pCounter = getCurrentContext()->m_pCounterAccessor->GetHardwareCounterExt((*pCounters)[i]);
 
-        // GPA_LogDebugMessage( "ENABLED COUNTER: %x", m_counters[i] );
+        // GPA_LogDebugMessage( "ENABLED COUNTER: %x.", m_counters[i] );
 
         m_counters[i].uCounterID    = (*pCounters)[i];
         m_counters[i].uCounterGroup = pCounter->m_groupIdDriver;

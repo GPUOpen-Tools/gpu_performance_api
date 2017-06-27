@@ -8,9 +8,9 @@
 #ifndef _GPUPERFAPI_GL_H_
 #define _GPUPERFAPI_GL_H_
 
-#include "../GPUPerfAPI-Common/GPUPerfAPI.h"
+#include "GPUPerfAPI.h"
 
-#include "../GPUPerfAPICounterGenerator/GLEntryPoints.h"
+#include "GLEntryPoints.h"
 #include "GPAContextStateGL.h"
 
 /// Gets the current GL ContextState

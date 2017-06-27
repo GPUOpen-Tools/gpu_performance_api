@@ -12,7 +12,7 @@
 
 #include <map>
 
-#include "../GPUPerfAPI-Common/GPUPerfAPITypes.h"
+#include "GPUPerfAPITypes.h"
 
 /// Singleton class containing globals used by the HSA version of GPUPerfAPI
 class HSAGlobalFlags : public TSingleton <HSAGlobalFlags>
@@ -24,7 +24,7 @@ public:
     bool                 m_softCPModeEnabled = false;         ///< flag indicating whether SoftCP mode is enabled
     bool                 m_isToolsLibSet = false;             ///< flag indicating whether the tools lib env variable is set
     bool                 m_wasInitializeCalled = false;       ///< flag indicating whether GPA_Initialize was called
-    gpa_uint32           m_sampleID = ms_UNDEFINED_SAMPLE_ID; ///< the sample id fo rthe active sample
+    gpa_uint32           m_sampleID = ms_UNDEFINED_SAMPLE_ID; ///< the sample id for the active sample
     HSAQueueAgentMapType m_queueAgentMap;                     ///< map of queue to agent
 };
 

@@ -5,7 +5,7 @@
 /// \brief  This file contains the main entrypoints into GPA
 //==============================================================================
 
-    /// macro to mark a function for exporting
+/// macro to mark a function for exporting
 #ifdef _LINUX
     #define GPALIB_DECL extern "C"
 #else
@@ -265,7 +265,7 @@ GPALIB_DECL GPA_Status GPA_OpenContext(void* pContext)
     // sets the current context to be device
     // performs any initialization
 
-    GPA_LogDebugMessage("GPA_OpenContext( 0x%08x )", pContext);
+    GPA_LogDebugMessage("GPA_OpenContext( 0x%08x ).", pContext);
 
     if (!pContext)
     {
@@ -392,7 +392,7 @@ GPALIB_DECL GPA_Status GPA_CloseContext()
         return GPA_STATUS_ERROR_SAMPLING_NOT_ENDED;
     }
 
-    GPA_LogDebugMessage("GPA_CloseContext 0x%08x", g_pCurrentContext->m_pContext);
+    GPA_LogDebugMessage("GPA_CloseContext( 0x%08x ).", g_pCurrentContext->m_pContext);
 
     g_pCurrentContext->m_pCounterScheduler->Reset();
 
@@ -957,7 +957,6 @@ GPALIB_DECL GPA_Status GPA_BeginSession(gpa_uint32* pSessionID)
     assert(lockedOk == true);
     g_pCurrentContext->m_profileSessions.addLockedItem();
 
-    //   g_pCurrentContext->RecycleCurrentSession();
     g_pCurrentContext->m_pCurrentSessionRequests->SetPassCount(passCount);
 
     // prepare the current session for data requests
@@ -1146,6 +1145,13 @@ GPALIB_DECL GPA_Status GPA_BeginSample(gpa_uint32 sampleID)
     if (g_pCurrentContext->m_sampleStarted)
     {
         GPA_LogError("The previous sample must be ended with GPA_EndSample before a new one can be started.");
+        return GPA_STATUS_ERROR_SAMPLE_ALREADY_STARTED;
+    }
+
+    //check if sample id is already in use for this pass
+    if (g_pCurrentContext->m_pCurrentSessionRequests->ContainsSampleRequest(g_pCurrentContext->m_currentPass - 1, sampleID))
+    {
+        GPA_LogError("This pass already contains a sample with this sample id. Please ensure all sample ids are unique.");
         return GPA_STATUS_ERROR_SAMPLE_ALREADY_STARTED;
     }
 
@@ -1453,31 +1459,6 @@ GPALIB_DECL GPA_Status GPA_GetUsageTypeAsStr(GPA_Usage_Type counterUsageType, co
 }
 
 //-----------------------------------------------------------------------------
-/// gets the byte size of an internal counter
-/// \param counterIndex the index of the counter whose size is needed
-/// \param[out] type the type of the specified counter
-/// \param[out] size the size of the specified counter
-/// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
-static GPA_Status GetCounterSize(gpa_uint32 counterIndex, GPA_Type& type, gpa_uint32& size)
-{
-    assert(g_typeSizeArraySize == GPA_TYPE__LAST);
-
-    // Confirm that enum matches assumed ordering of gTypeSizeArray
-    assert(GPA_TYPE_FLOAT32 == 0);
-    assert(GPA_TYPE_FLOAT64 == 1);
-    assert(GPA_TYPE_UINT32 == 2);
-    assert(GPA_TYPE_UINT64 == 3);
-    assert(GPA_TYPE_INT32 == 4);
-    assert(GPA_TYPE_INT64 == 5);
-
-    type = g_pCurrentContext->m_pCounterAccessor->GetCounterDataType(counterIndex);
-
-    size = g_typeSizeArray[type];
-
-    return GPA_STATUS_OK;
-}
-
-//-----------------------------------------------------------------------------
 /// Template function to get counter sample result
 /// \param sessionID the session ID whose sample data is needed
 /// \param sampleID the sample ID whose counter result is needed
@@ -1545,7 +1526,7 @@ static GPA_Status GPA_GetSample(gpa_uint32 sessionID, gpa_uint32 sampleID, gpa_u
 
         if (nullptr == pAllResults)
         {
-            GPA_LogError("Unable to allocate memory for results");
+            GPA_LogError("Unable to allocate memory for results.");
             return GPA_STATUS_ERROR_FAILED;
         }
 
@@ -1555,20 +1536,10 @@ static GPA_Status GPA_GetSample(gpa_uint32 sessionID, gpa_uint32 sampleID, gpa_u
 
         for (std::vector<gpa_uint32>::iterator requiredCounterIter = internalCountersRequired.begin(); requiredCounterIter != internalCountersRequired.end(); ++requiredCounterIter)
         {
-            // Gather each individual hardware counter result that is needed to calculate the public counter result and put them into a buffer
-            GPA_Type type;
-            gpa_uint32 typeSize;
-            status = GetCounterSize(*requiredCounterIter, type, typeSize);
-
-            if (status != GPA_STATUS_OK)
-            {
-                delete[] pAllResults;
-                return status;
-            }
-
             char* pResultBuffer = &(pAllResults[resultIndex]);
             resultIndex += 8;
             results.push_back(pResultBuffer);
+            GPA_Type type = GPA_TYPE_UINT64; // all hardware counters are UINT64
             types.push_back(type);
 
             std::map<unsigned int, GPA_CounterResultLocation>::iterator resultLocationIter = pResultLocations->find(*requiredCounterIter);
@@ -1618,6 +1589,7 @@ static GPA_Status GPA_GetSample(gpa_uint32 sessionID, gpa_uint32 sampleID, gpa_u
                 assert(false);
             }
 
+            message << ".";
             GPA_LogDebugCounterDefs(message.str().c_str());
 #endif
 
@@ -1675,14 +1647,14 @@ static GPA_Status GPA_GetSample(gpa_uint32 sessionID, gpa_uint32 sampleID, gpa_u
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSampleCount(gpa_uint32 sessionID, gpa_uint32* pSamples)
+GPALIB_DECL GPA_Status GPA_GetSampleCount(gpa_uint32 sessionID, gpa_uint32* pSampleCount)
 {
     PROFILE_FUNCTION(GPA_GetSampleCount);
     TRACE_FUNCTION(GPA_GetSampleCount);
 
-    if (nullptr == pSamples)
+    if (nullptr == pSampleCount)
     {
-        GPA_LogError("Parameter 'pSamples' is NULL.");
+        GPA_LogError("Parameter 'pSampleCount' is NULL.");
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
@@ -1696,14 +1668,11 @@ GPALIB_DECL GPA_Status GPA_GetSampleCount(gpa_uint32 sessionID, gpa_uint32* pSam
         return GPA_STATUS_ERROR_SESSION_NOT_FOUND;
     }
 
-    GPA_Status status = checkSession->GetSampleCount(pSamples);
+    GPA_Status status = checkSession->GetSampleCount(pSampleCount);
     return status;
 }
 
 //-----------------------------------------------------------------------------
-// maybe just have get samples - all counters for a sample, problem with different types then.
-// maybe can only do for same type
-// in counterID order
 GPALIB_DECL GPA_Status GPA_GetSampleUInt64(gpa_uint32 sessionID, gpa_uint32 sampleID, gpa_uint32 counterIndex, gpa_uint64* pResult)
 {
     PROFILE_FUNCTION(GPA_GetSampleUInt64);
@@ -1711,7 +1680,7 @@ GPALIB_DECL GPA_Status GPA_GetSampleUInt64(gpa_uint32 sessionID, gpa_uint32 samp
 
     if (nullptr == pResult)
     {
-        GPA_LogError("Parameter 'pResult' cannot be NULL");
+        GPA_LogError("Parameter 'pResult' cannot be NULL.");
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
@@ -1745,7 +1714,7 @@ GPALIB_DECL GPA_Status GPA_GetSampleUInt32(gpa_uint32 sessionID, gpa_uint32 samp
 
     if (nullptr == pResult)
     {
-        GPA_LogError("Parameter 'pResult' cannot be NULL");
+        GPA_LogError("Parameter 'pResult' cannot be NULL.");
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
@@ -1779,7 +1748,7 @@ GPALIB_DECL GPA_Status GPA_GetSampleFloat32(gpa_uint32 sessionID, gpa_uint32 sam
 
     if (nullptr == pResult)
     {
-        GPA_LogError("Parameter 'pResult' cannot be NULL");
+        GPA_LogError("Parameter 'pResult' cannot be NULL.");
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
@@ -1813,7 +1782,7 @@ GPALIB_DECL GPA_Status GPA_GetSampleFloat64(gpa_uint32 sessionID, gpa_uint32 sam
 
     if (nullptr == pResult)
     {
-        GPA_LogError("Parameter 'pResult' cannot be NULL");
+        GPA_LogError("Parameter 'pResult' cannot be NULL.");
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
@@ -1931,6 +1900,8 @@ GPALIB_DECL const char* GPA_GetStatusAsStr(GPA_Status status)
         case GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED:
             return "Hardware Not Supported";
 
+        case GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED:
+            return "Driver Not Supported";
         default:
             break;
     }
@@ -2012,6 +1983,7 @@ GPALIB_DECL GPA_Status GPA_GetDeviceDesc(const char** ppDesc)
 }
 
 #ifdef AMDT_INTERNAL
+//---------------------------------------------------------------------------------
 //This function must be called before GPA_BeginSession()
 GPALIB_DECL GPA_Status GPA_InternalSetDrawCallCounts(const int iCounts)
 {

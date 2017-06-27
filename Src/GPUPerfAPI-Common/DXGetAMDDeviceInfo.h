@@ -9,7 +9,6 @@
 #define _DX_GET_AMD_DEVICE_INFO_H_
 
 #include <windows.h>
-#include "GPUPerfAPI.h"
 
 /// Get the vendor id and device id of the GPU associated with the monitor
 /// \param[in] hMonitor the monitor whose device is needed

@@ -5,8 +5,6 @@ include $(DEPTH)/Build/Linux/Common.mk
 
 TARGETSO = libGPUPerfAPICL$(TARGET_SUFFIX).so
 
-TARGET = $(GPATARGET)
-
 INCLUDES =	-I. \
 		-I$(GPACOMMON_DIR) \
 		-I$(GPACG_DIR) \

@@ -1,7 +1,7 @@
 // Microsoft Visual C++ generated resource script.
 //
 #include "resource.h"
-#include "../GPUPerfAPI-Common/GPAVersion.h"
+#include "GPAVersion.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
 /////////////////////////////////////////////////////////////////////////////
@@ -75,7 +75,7 @@ BEGIN
             VALUE "FileVersion", GPA_MAJOR_VERSION_STR "." GPA_MINOR_VERSION_STR "." GPA_BUILD_NUMBER_STR "." GPA_UPDATE_VERSION_STR
             VALUE "InternalName", "GPUPerfAPIHSA"
             VALUE "LegalCopyright", GPA_COPYRIGHT_STR
-            VALUE "OriginalFilename", "GPUPerfAPIHSA.dll"
+            VALUE "OriginalFilename", "GPUPerfAPIHSA" AMDT_PROJECT_SUFFIX_STR ".dll"
             VALUE "ProductName", "GPUPerfAPIHSA"
             VALUE "ProductVersion", GPA_MAJOR_VERSION_STR "." GPA_MINOR_VERSION_STR "." GPA_BUILD_NUMBER_STR "." GPA_UPDATE_VERSION_STR
         END

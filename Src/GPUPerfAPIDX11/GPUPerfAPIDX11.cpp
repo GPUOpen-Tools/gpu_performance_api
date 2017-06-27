@@ -5,8 +5,8 @@
 /// \brief  DX11 version of GPUPerfAPI
 //==============================================================================
 
-#include "..\GPUPerfAPI-Common\GPUPerfAPIImp.h"
-#include "..\GPUPerfAPICounterGenerator\GPACounterGenerator.h"
+#include "GPUPerfAPIImp.h"
+#include "GPACounterGenerator.h"
 
 #include "DX11CounterDataRequest.h"
 #include "D3D11SoftwareCounterDataRequest.h"
@@ -22,8 +22,8 @@
 #include <DeviceInfoUtils.h>
 #include <GPUPerfAPIRegistry.h>
 #include "../GPUPerfAPIDX/dxUtils.h"
-#include "../GPUPerfAPI-Common/DXGetAMDDeviceInfo.h"
-#include "../GPUPerfAPI-Common/GPACustomHWValidationManager.h"
+#include "DXGetAMDDeviceInfo.h"
+#include "GPACustomHWValidationManager.h"
 
 using std::string;
 
@@ -54,7 +54,7 @@ bool queryTimeStampFrequency(void* context, gpa_uint64& frequency)
 
     if (hr != S_OK)
     {
-        GPA_LogError("Call to ID3D11Device::CreateQuery failed");
+        GPA_LogError("Call to ID3D11Device::CreateQuery failed.");
         return false;
     }
 
@@ -233,6 +233,7 @@ static GPA_Status GetAmdHwInfo(
                         strLogErrorMsg.append(pEntryPointName);
                         strLogErrorMsg.append("' could not be found in ");
                         strLogErrorMsg.append(strDLLName);
+                        strLogErrorMsg.append(".");
                         GPA_LogError(strLogErrorMsg.c_str());
                     }
                 }
@@ -241,6 +242,7 @@ static GPA_Status GetAmdHwInfo(
                     string strLogErrorMsg = strDLLName;
                     strLogErrorMsg.append(" could not be loaded. Make sure it is in the same location as ");
                     strLogErrorMsg.append(szThisModuleName);
+                    strLogErrorMsg.append(".");
                     GPA_LogError(strLogErrorMsg.c_str());
                 }
 
@@ -419,8 +421,8 @@ GPA_Status GPA_IMP_VerifyHWSupport(void* pContext, GPA_HWInfo* pHwInfo)
 
     // DX9 feature level is not supported
     if (level == D3D_FEATURE_LEVEL_9_1      ||
-            level == D3D_FEATURE_LEVEL_9_2  ||
-            level == D3D_FEATURE_LEVEL_9_3)
+        level == D3D_FEATURE_LEVEL_9_2  ||
+        level == D3D_FEATURE_LEVEL_9_3)
     {
         GPA_LogError("GPUPerfAPI does not support D3D_FEATURE_LEVEL_9_1, _9_2, and _9_3.");
         return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
@@ -464,7 +466,7 @@ GPA_Status GPA_IMP_CreateContext(GPA_ContextState** ppNewContext)
 
     if (nullptr == pContext)
     {
-        GPA_LogError("Unable to create context");
+        GPA_LogError("Unable to create context.");
         result = GPA_STATUS_ERROR_FAILED;
     }
     else
@@ -560,14 +562,13 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
     return GenerateCounters(GPA_API_DIRECTX_11, vendorId, deviceId, revisionId, (GPA_ICounterAccessor**) & (g_pCurrentContext->m_pCounterAccessor), &(getCurrentContext()->m_pCounterScheduler));
 }
 
-
+//-----------------------------------------------------------------------------
 GPA_Status GPA_IMP_CloseContext()
 {
     return GPA_STATUS_OK;
 }
 
-
-// Context
+//-----------------------------------------------------------------------------
 GPA_Status GPA_IMP_SelectContext(void* pContext)
 {
     UNREFERENCED_PARAMETER(pContext);
@@ -575,7 +576,7 @@ GPA_Status GPA_IMP_SelectContext(void* pContext)
     return GPA_STATUS_OK;
 }
 
-
+//-----------------------------------------------------------------------------
 GPA_Status GPA_IMP_BeginSession(gpa_uint32* pSessionID, bool counterSelectionChanged)
 {
     UNREFERENCED_PARAMETER(pSessionID);
@@ -584,19 +585,19 @@ GPA_Status GPA_IMP_BeginSession(gpa_uint32* pSessionID, bool counterSelectionCha
     return GPA_STATUS_OK;
 }
 
-
+//-----------------------------------------------------------------------------
 GPA_Status GPA_IMP_EndSession()
 {
     return GPA_STATUS_OK;
 }
 
-
+//-----------------------------------------------------------------------------
 GPA_Status GPA_IMP_BeginPass()
 {
     return GPA_STATUS_OK;
 }
 
-
+//-----------------------------------------------------------------------------
 GPA_Status GPA_IMP_EndPass()
 {
     return GPA_STATUS_OK;
@@ -623,31 +624,14 @@ gpa_uint32 GPA_IMP_GetDefaultMaxSessions()
     return 32;
 }
 
-// Creates a DataRequest object based on the hardware generation.
-// on Gfx6, the DX driver started using the AMD Performance Experiment
-// extension to expose the counters, but on previous generations the
-// ID3D11Counter interface was used.
+//-----------------------------------------------------------------------------
 GPA_DataRequest* GPA_IMP_CreateDataRequest()
 {
-    GDT_HW_GENERATION gen = GDT_HW_GENERATION_NONE;
-
     if (nullptr == g_pCurrentContext)
     {
         GPA_LogError("No context available. Unable to create a data request.");
         return nullptr;
     }
-    else if (g_pCurrentContext->m_hwInfo.GetHWGeneration(gen) == false)
-    {
-        GPA_LogError("Unable to get hardware generation, but we need it to create the correct data request.");
-        return nullptr;
-    }
-
-    if (gen == GDT_HW_GENERATION_NONE)
-    {
-        GPA_LogError("Invalid hardware generation, but we need it to create the correct data request.");
-        return nullptr;
-    }
 
     return new(std::nothrow) DX11CounterDataRequest();
 }
-

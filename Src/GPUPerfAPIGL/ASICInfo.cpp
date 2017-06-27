@@ -17,12 +17,12 @@
     #include <windows.h>
 #endif
 
-#include "../GPUPerfAPICounterGenerator/GLEntryPoints.h"
+#include "GLEntryPoints.h"
 #include <assert.h>
 #include <string>
 #include <sstream>
 
-#include "../GPUPerfAPI-Common/Logging.h"
+#include "Logging.h"
 
 #ifdef _LINUX
     #include <string.h>
@@ -273,7 +273,7 @@ bool GetASICInfo(ASICInfo& rASICInfo)
     int nVersion = extractVersionNumber(pVersion);
 
     std::stringstream message;
-    message << "ASIC ID returned from driver is: " << nAsicType << " and GL_VERSION is: " << reinterpret_cast<const char*>(pVersion);
+    message << "ASIC ID returned from driver is: " << nAsicType << " and GL_VERSION is: " << reinterpret_cast<const char*>(pVersion) << ".";
     GPA_LogMessage(message.str().c_str());
 #else
     int nVersion = INT_MAX;

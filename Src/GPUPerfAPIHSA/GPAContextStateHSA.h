@@ -8,7 +8,7 @@
 #ifndef _GPA_CONTEXTSTATE_HSA_H_
 #define _GPA_CONTEXTSTATE_HSA_H_
 
-#include "../GPUPerfAPI-Common/GPAContextState.h"
+#include "GPAContextState.h"
 
 #include "GPUPerfAPIHSA.h"
 

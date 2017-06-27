@@ -283,7 +283,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
             default:
             {
                 // do something sensible
-                GPA_LogError("UNKNOWN_COUNTER");
+                GPA_LogError("UNKNOWN_COUNTER.");
                 return GPA_STATUS_ERROR_FAILED;
             }
 

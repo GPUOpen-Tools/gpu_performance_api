@@ -208,7 +208,7 @@ void DX11_PerfExperimentDataRequestHandler::Reset(gpa_uint32 selectionID, const 
 
     if (nullptr == m_counters)
     {
-        GPA_LogError("Unable to allocate memory for counters");
+        GPA_LogError("Unable to allocate memory for counters.");
     }
     else
     {
@@ -243,7 +243,7 @@ bool DX11_PerfExperimentDataRequestHandler::BeginRequest(GPA_ContextState* pCont
 
     if (bottomToBottomPresent || topToBottomPresent || timestampTopPresent)
     {
-        if (this->m_GPUTimeCounter == nullptr)
+        if (nullptr == m_GPUTimeCounter)
         {
             // counter not created, create here
             D3D11_COUNTER_DESC ctrDesc;
@@ -279,7 +279,7 @@ bool DX11_PerfExperimentDataRequestHandler::BeginRequest(GPA_ContextState* pCont
                 // make sure any counters which worked are released
                 Reset(selectionID, pCounters);
                 GPA_LogDebugError("Call to ID3D11Device::CreateCounter failed on the GPUTime counter.");
-                GPA_LogError("Call to ID3D11Device::CreateCounter failed");
+                GPA_LogError("Call to ID3D11Device::CreateCounter failed.");
                 pDeviceContext->Release();
                 return false;
             }
@@ -309,7 +309,7 @@ bool DX11_PerfExperimentDataRequestHandler::BeginRequest(GPA_ContextState* pCont
             GPA_HardwareCounterDescExt* pCounter = &pHardwareCounters->m_counters[(*pCounters)[i]];
             unsigned int instance = (unsigned int)pHardwareCounters->m_pGroups[pCounter->m_groupIndex].m_blockInstance;
 
-            if (pCounter->m_groupIdDriver + 1 == PE_BLOCK_SQ)
+            if (pCounter->m_groupIdDriver == PE_BLOCK_SQ)
             {
                 // set the engine parameter if the SQ block is being used
                 // convert the instance to a shader mask
@@ -346,10 +346,10 @@ bool DX11_PerfExperimentDataRequestHandler::BeginRequest(GPA_ContextState* pCont
                 // reset the instance because there is only 1 SQ
                 //instance = 0;
             }
-            else if (pCounter->m_groupIdDriver + 1 == PE_BLOCK_RLC)
+            else if (pCounter->m_groupIdDriver == PE_BLOCK_RLC)
             {
                 // RLC counters cause a reboot, so don't allow them to be enabled.
-                this->Reset(selectionID, pCounters);
+                Reset(selectionID, pCounters);
                 GPA_LogError("An unstable counter is included in the counter selection. Please remove it and re-profile.");
                 pDeviceContext->Release();
                 return false;
@@ -362,7 +362,7 @@ bool DX11_PerfExperimentDataRequestHandler::BeginRequest(GPA_ContextState* pCont
             if (ms_blockInstanceLimits.find(m_gpuToCheckBlockLimits) != ms_blockInstanceLimits.end())
             {
                 BlockInstanceLimitMap blockLimits = ms_blockInstanceLimits[m_gpuToCheckBlockLimits];
-                PE_BLOCK_ID blockId = static_cast<PE_BLOCK_ID>(pCounter->m_groupIdDriver + 1);
+                PE_BLOCK_ID blockId = static_cast<PE_BLOCK_ID>(pCounter->m_groupIdDriver);
 
                 if (instance >= blockLimits[blockId])
                 {
@@ -382,29 +382,29 @@ bool DX11_PerfExperimentDataRequestHandler::BeginRequest(GPA_ContextState* pCont
 
             if (nullptr != m_pExperiment)
             {
-                result = m_pExperiment->AddCounter((PE_BLOCK_ID)(pCounter->m_groupIdDriver + 1), instance, (UINT)pCounter->m_pHardwareCounter->m_counterIndexInGroup, &m_counters[i]);
+                result = m_pExperiment->AddCounter((PE_BLOCK_ID)(pCounter->m_groupIdDriver), instance, (UINT)pCounter->m_pHardwareCounter->m_counterIndexInGroup, &m_counters[i]);
             }
 
             if (result != PE_OK)
             {
-                this->Reset(selectionID, pCounters);
+                Reset(selectionID, pCounters);
 
                 if (result == PE_ERROR_OUT_OF_MEMORY) { GPA_LogError("Counter could not be enabled due to an Out Of Memory error."); }
 
                 ASSERT_ON_PE_ERROR(result);
-                GPA_LogDebugError("Call to IPerfExperiment::AddCounter failed on block %d, instance %d, counter %d", pCounter->m_groupIdDriver, instance, pCounter->m_pHardwareCounter->m_counterIndexInGroup);
+                GPA_LogDebugError("Call to IPerfExperiment::AddCounter failed on block %d, instance %d, counter %d.", pCounter->m_groupIdDriver, instance, pCounter->m_pHardwareCounter->m_counterIndexInGroup);
                 pDeviceContext->Release();
                 return false;
             }
 
-            if (pCounter->m_groupIdDriver + 1 == PE_BLOCK_SQ)
+            if (pCounter->m_groupIdDriver == PE_BLOCK_SQ)
             {
                 result = m_counters[i]->SetParam(PE_COUNTER_SQ_SIMD_MASK, 0xF);
 
                 if (result != PE_OK)
                 {
                     ASSERT_ON_PE_ERROR(result);
-                    GPA_LogDebugError("call to IAmdDxExtPerfCounter::SetParam failed");
+                    GPA_LogDebugError("call to IAmdDxExtPerfCounter::SetParam failed.");
                 }
             }
         }
@@ -424,7 +424,7 @@ bool DX11_PerfExperimentDataRequestHandler::BeginRequest(GPA_ContextState* pCont
             if (result == PE_ERROR_OUT_OF_MEMORY) { GPA_LogError("Counter could not be enabled due to an Out Of Memory error."); }
 
             ASSERT_ON_PE_ERROR(result);
-            GPA_LogDebugError("Call to IPerfExperiment::Finalize failed");
+            GPA_LogDebugError("Call to IPerfExperiment::Finalize failed.");
             pDeviceContext->Release();
             return false;
         }
@@ -440,7 +440,7 @@ bool DX11_PerfExperimentDataRequestHandler::BeginRequest(GPA_ContextState* pCont
             if (result == PE_ERROR_OUT_OF_MEMORY) { GPA_LogError("Unable to begin the profile pass due to an Out Of Memory error."); }
 
             ASSERT_ON_PE_ERROR(result);
-            GPA_LogDebugError("Call to IPerfExperiment::Begin failed");
+            GPA_LogDebugError("Call to IPerfExperiment::Begin failed.");
             pDeviceContext->Release();
             return false;
         }
@@ -566,8 +566,8 @@ bool DX11_PerfExperimentDataRequestHandler::GetBlockCounterInfo(UINT gpuID, PE_B
 
     if (PE_OK != result)
     {
-        GPA_LogError("Error querying Block Counter Info");
-        GPA_LogDebugError("  GPU: %d, Block %d", gpuID, block);
+        GPA_LogError("Error querying Block Counter Info.");
+        GPA_LogDebugError("  GPU: %d, Block %d.", gpuID, block);
     }
 
     return result == PE_OK;
@@ -630,7 +630,7 @@ unsigned int DX11_PerfExperimentDataRequestHandler::GetActiveGpu() const
     }
 
     return activeGpu;
-} // end of DX11_PerfExperimentDataRequestHandler::GetActiveGpu
+}
 
 void DX11_PerfExperimentDataRequestHandler::PopulateBlockInstanceLimits(UINT activeGpu)
 {

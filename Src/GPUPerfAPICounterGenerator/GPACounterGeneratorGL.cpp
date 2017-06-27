@@ -16,12 +16,15 @@
 #include "PublicCounterDefsGLGfx6.h"
 #include "PublicCounterDefsGLGfx7.h"
 #include "PublicCounterDefsGLGfx8.h"
+#include "PublicCounterDefsGLGfx9.h"
 
 #include "InternalCountersGLGfx6.h"
 #include "InternalCountersGLGfx7.h"
 #include "InternalCountersGLGfx8.h"
+#include "InternalCountersGLGfx9.h"
 
 #include "GPACounterGeneratorSchedulerManager.h"
+
 
 static const char* gs_pDriverSuppliedCounter = GPA_HIDE_NAME("OpenGL Driver-Supplied Counter"); ///< default counter name for a driver-supplied counter
 
@@ -104,7 +107,7 @@ bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_Hardware
 
             if (m_pDriverSuppliedGroups[i].m_pName == nullptr)
             {
-                GPA_LogError("Unable to allocate memory to store the counter group name");
+                GPA_LogError("Unable to allocate memory to store the counter group name.");
                 return false;
             }
 
@@ -127,7 +130,7 @@ bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_Hardware
 
                 if (counter.m_pHardwareCounter == nullptr)
                 {
-                    GPA_LogError("Unable to allocate memory to store the hardwareCounter");
+                    GPA_LogError("Unable to allocate memory to store the hardwareCounter.");
                     return false;
                 }
 
@@ -206,7 +209,7 @@ bool GPA_CounterGeneratorGL::GenerateInternalCounters(GPA_HardwareCounters* pHar
 #endif
 
     // for each group, get the group name, number of counters, and max counters (and maybe validate them)
-    for (int g = 0; g < (int)pHardwareCounters->m_groupCount; g++)
+    for (int g = 0; g < static_cast<int>(pHardwareCounters->m_groupCount); g++)
     {
         GPA_HardwareCounterDesc* pGlGroup = pHardwareCounters->m_ppCounterGroupArray[g];
 
@@ -249,8 +252,8 @@ bool GPA_CounterGeneratorGL::GenerateInternalCounters(GPA_HardwareCounters* pHar
     }
 
     // In openGL we always tack the GPUTime counters onto the end
-    pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = (gpa_int32)pHardwareCounters->m_counters.size() - 2;
-    pHardwareCounters->m_gpuTimeTopToBottomCounterIndex = (gpa_uint32)pHardwareCounters->m_counters.size() - 1;
+    pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = static_cast<gpa_int32>(pHardwareCounters->m_counters.size()) - 2;
+    pHardwareCounters->m_gpuTimeTopToBottomCounterIndex = static_cast<gpa_uint32>(pHardwareCounters->m_counters.size()) - 1;
 
     // now add extra groups/counters exposed by the driver
     GenerateDriverSuppliedInternalCounters(pHardwareCounters);
@@ -310,6 +313,9 @@ GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(GDT_HW_GENERATION desi
             AutoDefinePublicCountersGLGfx8(*pPublicCounters);
             break;
 
+        case GDT_HW_GENERATION_GFX9:
+            AutoDefinePublicCountersGLGfx9(*pPublicCounters);
+            break;
         default:
             GPA_LogError("Unsupported or unrecognized hardware generation. Cannot generate public counters.");
             return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
@@ -347,6 +353,15 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
             pHardwareCounters->m_pSQCounterGroups    = HWGLSQGroupsGfx8;
             pHardwareCounters->m_sqGroupCount        = HWGLSQGroupCountGfx8;
             pHardwareCounters->m_gpuTimeIndex        = HWGLGPUTimeIndexGfx8;
+            break;
+
+        case GDT_HW_GENERATION_GFX9:
+            pHardwareCounters->m_ppCounterGroupArray = GLCounterGroupArrayGfx9;
+            pHardwareCounters->m_pGroups             = HWGLGroupsGfx9;
+            pHardwareCounters->m_groupCount          = HWGLGroupCountGfx9;
+            pHardwareCounters->m_pSQCounterGroups    = HWGLSQGroupsGfx9;
+            pHardwareCounters->m_sqGroupCount        = HWGLSQGroupCountGfx9;
+            pHardwareCounters->m_gpuTimeIndex        = HWGLGPUTimeIndexGfx9;
             break;
 
         default:

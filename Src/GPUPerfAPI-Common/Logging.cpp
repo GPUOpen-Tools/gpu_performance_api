@@ -43,6 +43,7 @@ void GPATracer::EnterFunction(const char* pFunctionName)
 
         message += "Entering: ";
         message += pFunctionName;
+        message += ".";
 
 #ifdef AMDT_INTERNAL
         GPA_LogDebugTrace(message.c_str());
@@ -77,6 +78,7 @@ void GPATracer::LeaveFunction(const char* pFunctionName)
 
         message += "Leaving: ";
         message += pFunctionName;
+        message += ".";
 
 #ifdef AMDT_INTERNAL
         GPA_LogDebugTrace(message.c_str());

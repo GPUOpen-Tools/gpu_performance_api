@@ -14,9 +14,9 @@
 #include "CircularBuffer.h"
 #include "GPAHWInfo.h"
 
-#include "../GPUPerfAPICounterGenerator/GPAInternalCounter.h"
-#include "../GPUPerfAPICounterGenerator/GPACounterGeneratorBase.h"
-#include "../GPUPerfAPICounterGenerator/GPAICounterScheduler.h"
+#include "GPAInternalCounter.h"
+#include "GPACounterGeneratorBase.h"
+#include "GPAICounterScheduler.h"
 
 /// Creates a new data request.
 /// \return A pointer to a new data request.
@@ -41,14 +41,6 @@ public:
     /// \param passNumber The pass number for which to get a data request.
     /// \return A data request object that can be used for the specified pass.
     virtual GPA_DataRequest* GetDataRequest(gpa_uint32 passNumber);
-
-    ///// called by BeginSampling when a newSession is allocated
-    ///// this session could be brand new, or an existing session which needs to be recycled
-    ///// m_requests should not contain any objects upon return
-    ///// m_expiredRequests is used to store expired requests by default
-    ///// an alternative implementation could be to just delete the expired requests,
-    ///// and always allocate new
-    //virtual void RecycleCurrentSession();
 
     /// Finds the specified session if it is available.
     /// \param sessionID The ID of the session to find.

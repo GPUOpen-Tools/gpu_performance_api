@@ -11,9 +11,8 @@
 #include <CL/cl.h>
 #include <CL/internal/cl_profile_amd.h>
 
-#include "../GPUPerfAPI-Common/GPUPerfAPIImp.h"
-#include "../GPUPerfAPI-Common/GPUPerfAPI-Private.h"
-#include "../GPUPerfAPICounterGenerator/GPACounterGenerator.h"
+#include "GPUPerfAPIImp.h"
+#include "GPACounterGenerator.h"
 
 #include "DeviceInfoUtils.h"
 #include "CLRTModuleLoader.h"
@@ -184,6 +183,16 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
         pHwInfo->SetDeviceID(0x699F);
         pHwInfo->SetRevisionID(0x81);
     }
+    else if (realDeviceName.compare("gfx900") == 0)
+    {
+        pHwInfo->SetDeviceID(0x687F);
+        pHwInfo->SetRevisionID(0xC1);
+    }
+    else if (realDeviceName.compare("gfx901") == 0)
+    {
+        pHwInfo->SetDeviceID(0x687F);
+        pHwInfo->SetRevisionID(0xC1);
+    }
     else
     {
         GPA_LogError("Available device is not supported.");
@@ -285,6 +294,10 @@ GPA_Status GPA_IMP_CompareHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
 
     std::string strTranslatedDeviceName = AMDTDeviceInfoUtils::Instance()->TranslateDeviceName(str);
 
+    std::stringstream devName;
+    devName << "Translated Device name from Queue: " << str << ".";
+    GPA_LogDebugMessage(devName.str().c_str());
+
     // get the device ID
     // the string comes from maswp4p1.amd.com:1666 \\depot\stg\opencl\drivers\opencl\runtime\device\gpu\gpudefs.hpp as the static const char* TargetName[] array
     if ((strTranslatedDeviceName.compare("Tahiti") == 0 && (asic == GDT_TAHITI_PRO || asic == GDT_TAHITI_XT)) ||
@@ -306,6 +319,8 @@ GPA_Status GPA_IMP_CompareHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
         (strTranslatedDeviceName.compare("Ellesmere") == 0 && asic == GDT_ELLESMERE) ||
         (strTranslatedDeviceName.compare("Baffin") == 0 && asic == GDT_BAFFIN) ||
         (strTranslatedDeviceName.compare("gfx804") == 0 && asic == GDT_GFX8_0_4) ||
+        (strTranslatedDeviceName.compare("gfx900") == 0 && asic == GDT_GFX9_0_0) ||
+        (strTranslatedDeviceName.compare("gfx901") == 0 && asic == GDT_GFX9_0_0) ||
         (strTranslatedDeviceName.compare("AMD HSA Device") == 0 && (asic == GDT_SPOOKY || asic == GDT_SPECTRE || asic == GDT_SPECTRE_LITE || asic == GDT_SPECTRE_SL))
        )
     {
@@ -353,7 +368,7 @@ GPA_Status GPA_IMP_CreateContext(GPA_ContextState** ppNewContext)
 
     if (nullptr == pContext)
     {
-        GPA_LogError("Unable to create context");
+        GPA_LogError("Unable to create context.");
         result = GPA_STATUS_ERROR_FAILED;
     }
     else

@@ -11,10 +11,12 @@
 
 #include "counters/PublicCountersHSAGfx7.h"
 #include "counters/PublicCountersHSAGfx8.h"
+#include "counters/PublicCountersHSAGfx9.h"
 
 #ifdef AMDT_INTERNAL
     #include "InternalCountersHSAGfx7.h"
     #include "InternalCountersHSAGfx8.h"
+    #include "InternalCountersHSAGfx9.h"
 #endif
 
 static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<const char*>& counterNames)
@@ -31,7 +33,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
     switch (gen)
     {
 
-        case GPA_HW_GENERATION_SEAISLAND:
+        case GPA_HW_GENERATION_GFX7:
             pPublicCounters = HSAGFX7_PUBLIC_COUNTERS;
             publicCounterCount = HSAGFX7_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
@@ -41,13 +43,23 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
 #endif
             break;
 
-        case GPA_HW_GENERATION_VOLCANICISLAND:
+        case GPA_HW_GENERATION_GFX8:
             pPublicCounters = HSAGFX8_PUBLIC_COUNTERS;
             publicCounterCount = HSAGFX8_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
             pHardwareGroups = HWHSAGroupsGfx8;
             hwGroupCount = HWHSAGroupCountGfx8;
             ppHardwareCounters = HSACounterGroupArrayGfx8;
+#endif
+            break;
+
+        case GPA_HW_GENERATION_GFX9:
+            pPublicCounters = HSAGFX9_PUBLIC_COUNTERS;
+            publicCounterCount = HSAGFX9_PUBLIC_COUNTER_COUNT;
+#ifdef AMDT_INTERNAL
+            pHardwareGroups = HWHSAGroupsGfx9;
+            hwGroupCount = HWHSAGroupCountGfx9;
+            ppHardwareCounters = HSACounterGroupArrayGfx9;
 #endif
             break;
     }
@@ -73,10 +85,12 @@ TEST(CounterDLLTests, HSACounterNames)
     VerifyHardwareNotSupported(GPA_API_HSA, gDevIdSI);
 
     std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SEAISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
     VerifyCounterNames(GPA_API_HSA, gDevIdCI, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_VOLCANICISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
     VerifyCounterNames(GPA_API_HSA, gDevIdVI, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
+    VerifyCounterNames(GPA_API_HSA, gDevIdGfx9, counterNames);
 }
 
 // Test the HSA counter names on all generations
@@ -84,11 +98,13 @@ TEST(CounterDLLTests, HSACounterNamesByGeneration)
 {
     VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_NVIDIA);
     VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_INTEL);
-    VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_SOUTHERNISLAND);
+    VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_GFX6);
     std::vector<const char*> counterNames;
 
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SEAISLAND, counterNames);
-    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_SEAISLAND, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_VOLCANICISLAND, counterNames);
-    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_VOLCANICISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
+    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_GFX7, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
+    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_GFX8, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
+    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_GFX9, counterNames);
 }

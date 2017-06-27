@@ -71,19 +71,18 @@ namespace PublicCounterCompiler
       public static bool CompileCounters(string api, string generation)
       {
          // calculate the proper path to output to
-         string gpaFolder = "GPA\\GPA\\";
-         int endPath = Application.StartupPath.IndexOf(gpaFolder) + gpaFolder.Length;
+         string CompilerOutputFolder = "Output\\";
+         int endPath = Application.StartupPath.IndexOf(CompilerOutputFolder) + CompilerOutputFolder.Length;
 
-         if (gpaFolder.Length == endPath)
+         if (CompilerOutputFolder.Length == endPath)
          {
             Output(Application.ProductName + " was started out of unexpected folder.");
             return false;
          }
 
-         string gpaPath = Application.StartupPath.Substring(0, endPath);
+         string gpaPath = Application.StartupPath.Substring(0, endPath - CompilerOutputFolder.Length);
          string compilerInputPath = gpaPath + "Src\\PublicCounterCompilerInputFiles\\";
-         //string apiPath = gpaPath + "GPUPerfAPI" + api + "\\";
-
+		 
          // file names
          string counterNamesFile = compilerInputPath + "CounterNames" + api + generation + ".txt";
          string suffix;
@@ -102,6 +101,7 @@ namespace PublicCounterCompiler
 
          string counterDefsFile = compilerInputPath + "PublicCounterDefinitions" + suffix + generation + ".txt";
          string outputDirectory = gpaPath + "Src\\GPUPerfAPICounterGenerator\\";
+         string counterListOutputDirectory = gpaPath + "Output\\CounterListFiles\\";
          string testOutputDirectory = gpaPath + "Src\\GPUPerfAPIUnitTests\\counters\\";
          string section = api + generation;
 
@@ -115,7 +115,7 @@ namespace PublicCounterCompiler
          ////}
 
          string strError;
-         if (LoadFilesAndGenerateOutput(counterNamesFile, counterDefsFile, outputDirectory, testOutputDirectory, section, out strError) == false)
+         if (LoadFilesAndGenerateOutput(counterNamesFile, counterDefsFile, outputDirectory, counterListOutputDirectory, testOutputDirectory, section, out strError) == false)
          {
             Output(strError);
             return false;
@@ -135,17 +135,19 @@ namespace PublicCounterCompiler
       /// <param name="counterNamesFile"></param>
       /// <param name="counterDefsFile"></param>
       /// <param name="outputDir"></param>
+      /// <param name="counterListOutputDirectory"></param>
+      /// <param name="testOutputDirectory"></param>
       /// <param name="sectionLabel"></param>
       /// <param name="strError"></param>
       /// <returns></returns>
-      public static bool LoadFilesAndGenerateOutput(string counterNamesFile, string counterDefsFile, string outputDir, string testOutputDirectory, string sectionLabel, out string strError)
+      public static bool LoadFilesAndGenerateOutput(string counterNamesFile, string counterDefsFile, string outputDir, string counterListOutputDirectory, string testOutputDirectory, string sectionLabel, out string strError)
       {
          // load the internal counters using filename in first param
          List<InternalCounterDef> internalCounterList = new List<InternalCounterDef>();
          bool readOk = LoadInternalCounters(counterNamesFile, ref internalCounterList, out strError);
          if (!readOk)
          {
-            strError = "Error reading file counter name file (" + counterNamesFile + ").\n" + strError;
+            strError = "Error reading counter name file (" + counterNamesFile + ").\n" + strError;
             return false;
          }
 
@@ -170,7 +172,7 @@ namespace PublicCounterCompiler
             Output("Read " + publicCounterList.Count + " public counters from " + counterDefsFile + ".");
          }
 
-         if (GenerateOutputFiles(ref internalCounterList, ref publicCounterList, sectionLabel, outputDir) == false)
+         if (GenerateOutputFiles(ref internalCounterList, ref publicCounterList, sectionLabel, outputDir, counterListOutputDirectory) == false)
          {
             return false;
          }
@@ -218,7 +220,7 @@ namespace PublicCounterCompiler
 
             if (s.Contains("="))
             {
-               strError = "Error: Internal counter names may not contain = symbols. Change the counter name or change PCC public connter parsing to support = in names.";
+               strError = "Error: Internal counter names may not contain = symbols. Change the counter name or change PCC public counter parsing to support = in names.";
                return false;
             }
 
@@ -555,20 +557,26 @@ namespace PublicCounterCompiler
                   // found section label
                   if (insideMatchingSection)
                   {
-                     // if was already in matching section close it
-                     doneMatchingSection = true;
-                     insideMatchingSection = false;
+                     if (counterDef.GetCounterCount() > 0)
+                     {
+                        // if was already in matching section close it
+                        doneMatchingSection = true;
+                        insideMatchingSection = false;
+                     }
                   }
 
-                  // looking for specific section label, check for match
-                  if (string.Equals(lineSplit[0], "[" + activeSectionLabel + "]", StringComparison.OrdinalIgnoreCase))
+                  if (!insideMatchingSection)
                   {
-                     // hit the section to use
-                     insideMatchingSection = true;
-                  }
-                  else
-                  {
-                     insideMatchingSection = false;
+                     // looking for specific section label, check for match
+                     if (string.Equals(lineSplit[0], "[" + activeSectionLabel + "]", StringComparison.OrdinalIgnoreCase))
+                     {
+                        // hit the section to use
+                        insideMatchingSection = true;
+                     }
+                     else
+                     {
+                        insideMatchingSection = false;
+                     }
                   }
 
                   // done the section label
@@ -697,16 +705,24 @@ namespace PublicCounterCompiler
       /// <param name="counterDefList"></param>
       /// <param name="activeSectionLabel"></param>
       /// <param name="outputDir"></param>
+      /// <param name="counterListOutputDirectory"></param>
       /// <returns>True if the files could be generated; false on error.</returns>
-      public static bool GenerateOutputFiles(ref List<InternalCounterDef> internalCounterList, ref List<PublicCounterDef> counterDefList, string activeSectionLabel, string outputDir)
+      public static bool GenerateOutputFiles(ref List<InternalCounterDef> internalCounterList, ref List<PublicCounterDef> counterDefList, string activeSectionLabel, string outputDir, string counterListOutputDirectory)
       {
          if (outputDir.Length > 0 && !outputDir.EndsWith("\\"))
          {
             outputDir = outputDir + "\\";
          }
 
+         if (counterListOutputDirectory.Length > 0 && !counterListOutputDirectory.EndsWith("\\"))
+         {
+            counterListOutputDirectory = counterListOutputDirectory + "\\";
+         }
+
+         Directory.CreateDirectory(counterListOutputDirectory);
+
          string filename = string.Format("{0}PublicCounterDefs{1}.h", outputDir, activeSectionLabel);
-         string listFilename = string.Format("{0}PublicCounterNameList.txt", outputDir);
+         string listFilename = string.Format("{0}PublicCounterNameList{1}.txt", counterListOutputDirectory, activeSectionLabel);
 
          // Write header file
          Output("Writing header to " + filename);
@@ -913,8 +929,9 @@ namespace PublicCounterCompiler
             Console.WriteLine("Usage: PublicCounterCompiler [counter names file] [Public counter definition file] [output dir] [active section label]");
             Console.WriteLine("   [counter names file] - text file containing hardware counter names and type (CounterNames[API][GEN].txt)");
             Console.WriteLine("   [Public counter definition file] - text file defining how the public counters are calculated (PublicCounterDefinitions*.txt)");
-            Console.WriteLine("   [Output Dir] - the directory to generate the output in (Ex: the path to the GPUPerfAPICounterGenerator directory)");
-            Console.WriteLine("   [Test output Dir] - the directory to generate the test output in (Ex: the path to the GPUPerfAPIUnitTests/counters directory)");
+            Console.WriteLine("   [Output Dir] - the directory to generate the output in (Ex: the path to the Src/GPUPerfAPICounterGenerator directory)");
+            Console.WriteLine("   [Counter List Output Dir] - the directory to generate the counter list text files in (Ex: the path to the Output/CounterListFiles directory)");
+            Console.WriteLine("   [Test output Dir] - the directory to generate the test output in (Ex: the path to the Src/GPUPerfAPIUnitTests/counters directory)");
             Console.WriteLine("   [Active section label] - the label to take the counter names from (ex: dx11r10xx)");
             return;
          }
@@ -932,7 +949,7 @@ namespace PublicCounterCompiler
          else if (args.Length == 5)
          {
             string strError;
-            if (LoadFilesAndGenerateOutput(args[0], args[1], args[2], args[3], args[4], out strError) == false)
+            if (LoadFilesAndGenerateOutput(args[0], args[1], args[2], args[3], args[4], args[5], out strError) == false)
             {
                Output(strError);
             }

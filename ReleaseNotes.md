@@ -1,9 +1,13 @@
 # GPU Performance API Release Notes
 ---
 
+## Version 2.23 (6/27/17)
+ * Add support for additional GPUs, including Vega series GPUs
+ * Allow unit tests to be built and run on Linux
+
 ## Version 2.22 (4/26/17)
  * Add support for additional GPUs and APUs, including RX 500 series GPUs
-  
+
 ## Version 2.21 (12/21/16)
  * Add support for additional GPUs and APUs.
  * ROCm/HSA: Support for ROCm 1.3 and ROCm 1.4

@@ -88,7 +88,7 @@ GPA_Status GPA_SessionRequests::GetSampleCount(gpa_uint32* pSamples)
 
     if (nullptr == pSamples)
     {
-        GPA_LogDebugError("pSamples is NULL in GPA_SessionRequests::GetSampleCount");
+        GPA_LogDebugError("pSamples is NULL in GPA_SessionRequests::GetSampleCount.");
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
@@ -127,7 +127,7 @@ void GPA_SessionRequests::Begin(gpa_uint32 passIndex, gpa_uint32 sampleId, GPA_D
 
     if (nullptr == result.m_pResultBuffer)
     {
-        GPA_LogError("Unable to allocate memory for session results");
+        GPA_LogError("Unable to allocate memory for session results.");
     }
     else
     {
@@ -191,7 +191,7 @@ GPA_Status GPA_SessionRequests::IsSampleReady(gpa_uint32 sampleId, bool* pIsSamp
 
     if (nullptr == pIsSampleReady)
     {
-        GPA_LogDebugError("pIsSampleReady is NULL in GPA_SessionRequests::IsSampleReady");
+        GPA_LogDebugError("pIsSampleReady is NULL in GPA_SessionRequests::IsSampleReady.");
         status = GPA_STATUS_ERROR_NULL_POINTER;
     }
     else
@@ -288,7 +288,7 @@ GPA_Status GPA_SessionRequests::GetResult(gpa_uint32 passIndex, gpa_uint32 sampl
 
     if (nullptr == pResult)
     {
-        GPA_LogDebugError("pResult is NULL in GPA_SessionRequests::GetResult");
+        GPA_LogDebugError("pResult is NULL in GPA_SessionRequests::GetResult.");
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 

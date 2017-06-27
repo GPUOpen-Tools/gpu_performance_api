@@ -14,9 +14,11 @@
 
 #include "PublicCounterDefsHSAGfx7.h"
 #include "PublicCounterDefsHSAGfx8.h"
+#include "PublicCounterDefsHSAGfx9.h"
 
 #include "InternalCountersHSAGfx7.h"
 #include "InternalCountersHSAGfx8.h"
+#include "InternalCountersHSAGfx9.h"
 
 GPA_CounterGeneratorHSA::GPA_CounterGeneratorHSA()
 {
@@ -42,6 +44,10 @@ GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(GDT_HW_GENERATION des
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
         AutoDefinePublicCountersHSAGfx8(*pPublicCounters);
+    }
+    else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
+    {
+        AutoDefinePublicCountersHSAGfx9(*pPublicCounters);
     }
     else
     {
@@ -75,6 +81,14 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION d
         pHardwareCounters->m_groupCount          = HWHSAGroupCountGfx8;
         pHardwareCounters->m_pSQCounterGroups    = HWHSASQGroupsGfx8;
         pHardwareCounters->m_sqGroupCount        = HWHSASQGroupCountGfx8;
+    }
+    else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
+    {
+        pHardwareCounters->m_ppCounterGroupArray = HSACounterGroupArrayGfx9;
+        pHardwareCounters->m_pGroups = HWHSAGroupsGfx9;
+        pHardwareCounters->m_groupCount = HWHSAGroupCountGfx9;
+        pHardwareCounters->m_pSQCounterGroups = HWHSASQGroupsGfx9;
+        pHardwareCounters->m_sqGroupCount = HWHSASQGroupCountGfx9;
     }
     else
     {

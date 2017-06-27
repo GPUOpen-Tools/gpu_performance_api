@@ -130,19 +130,19 @@ bool GPA_HWInfo::UpdateDeviceInfoBasedOnDeviceID()
 
     if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(m_deviceId, m_revisionId, cardInfo))
     {
-        GPA_LogDebugMessage("Found device ID: %X which is generation %d", cardInfo.m_deviceID, cardInfo.m_generation);
+        GPA_LogDebugMessage("Found device ID: %X which is generation %d.", cardInfo.m_deviceID, cardInfo.m_generation);
 
         GDT_DeviceInfo deviceInfo;
 
         if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(m_deviceId, m_revisionId, deviceInfo))
         {
-            this->m_numShaderEngines = deviceInfo.m_nNumShaderEngines;
-            this->m_numSIMDs = deviceInfo.numberSIMDs();
-            this->m_suClockPrim = deviceInfo.m_suClocksPrim;
-            this->m_numPrimPipes = deviceInfo.m_nNumPrimPipes;
-            this->m_asicType = cardInfo.m_asicType;
-            this->SetDeviceName(cardInfo.m_szMarketingName);
-            this->SetHWGeneration(cardInfo.m_generation);
+            m_numShaderEngines = deviceInfo.m_nNumShaderEngines;
+            m_numSIMDs = deviceInfo.numberSIMDs();
+            m_suClockPrim = deviceInfo.m_suClocksPrim;
+            m_numPrimPipes = deviceInfo.m_nNumPrimPipes;
+            m_asicType = cardInfo.m_asicType;
+            SetDeviceName(cardInfo.m_szMarketingName);
+            SetHWGeneration(cardInfo.m_generation);
             return true;
         }
     }
@@ -152,12 +152,12 @@ bool GPA_HWInfo::UpdateDeviceInfoBasedOnDeviceID()
     //only emit an error for AMD devices
     if (IsAMD())
     {
-        GPA_LogDebugError("Unrecognized device ID %X", this->m_deviceId);
+        GPA_LogDebugError("Unrecognized device ID %X", m_deviceId);
         GPA_LogError("Unrecognized device ID.");
     }
 
 #else
-    GPA_LogDebugError("Unrecognized device ID %X", this->m_deviceId);
+    GPA_LogDebugError("Unrecognized device ID %X.", m_deviceId);
     GPA_LogError("Unrecognized device ID.");
 #endif
     return false;
@@ -175,7 +175,7 @@ bool GPA_HWInfo::UpdateRevisionIdBasedOnDeviceIDAndName()
             {
                 string thisMarketingName(it->m_szMarketingName);
 
-                if (thisMarketingName.compare(this->m_deviceName) == 0)
+                if (thisMarketingName.compare(m_deviceName) == 0)
                 {
                     SetRevisionID(static_cast<gpa_uint32>(it->m_revID));
                     return true;
@@ -208,7 +208,7 @@ GPA_Status CompareHwInfo(GPA_HWInfo* pFirst, GPA_HWInfo* pSecond)
             {
                 if (firstVendorId != secondVendorId)
                 {
-                    GPA_LogError("Vendor ID mismatch");
+                    GPA_LogError("Vendor ID mismatch.");
                     result = GPA_STATUS_ERROR_FAILED;
                 }
                 else
@@ -225,7 +225,7 @@ GPA_Status CompareHwInfo(GPA_HWInfo* pFirst, GPA_HWInfo* pSecond)
                             {
                                 if (firstDeviceId != secondDeviceId)
                                 {
-                                    GPA_LogError("Device ID mismatch");
+                                    GPA_LogError("Device ID mismatch.");
                                     result = GPA_STATUS_ERROR_FAILED;
                                 }
                                 else
@@ -240,19 +240,19 @@ GPA_Status CompareHwInfo(GPA_HWInfo* pFirst, GPA_HWInfo* pSecond)
                                         {
                                             if (firstRevisionId != secondRevisionId)
                                             {
-                                                GPA_LogError("Revision ID mismatch");
+                                                GPA_LogError("Revision ID mismatch.");
                                                 result = GPA_STATUS_ERROR_FAILED;
                                             }
                                         }
                                         else
                                         {
-                                            GPA_LogError("Failed to get revision ID");
+                                            GPA_LogError("Failed to get revision ID.");
                                             result = GPA_STATUS_ERROR_FAILED;
                                         }
                                     }
                                     else
                                     {
-                                        GPA_LogError("Failed to get revision ID");
+                                        GPA_LogError("Failed to get revision ID.");
                                         result = GPA_STATUS_ERROR_FAILED;
                                     }
 
@@ -260,13 +260,13 @@ GPA_Status CompareHwInfo(GPA_HWInfo* pFirst, GPA_HWInfo* pSecond)
                             }
                             else
                             {
-                                GPA_LogError("Failed to get device ID");
+                                GPA_LogError("Failed to get device ID.");
                                 result = GPA_STATUS_ERROR_FAILED;
                             }
                         }
                         else
                         {
-                            GPA_LogError("Failed to get device ID");
+                            GPA_LogError("Failed to get device ID.");
                             result = GPA_STATUS_ERROR_FAILED;
                         }
                     }
@@ -274,13 +274,13 @@ GPA_Status CompareHwInfo(GPA_HWInfo* pFirst, GPA_HWInfo* pSecond)
             }
             else
             {
-                GPA_LogError("Failed to get vendor ID");
+                GPA_LogError("Failed to get vendor ID.");
                 result = GPA_STATUS_ERROR_FAILED;
             }
         }
         else
         {
-            GPA_LogError("Failed to get vendor ID");
+            GPA_LogError("Failed to get vendor ID.");
             result = GPA_STATUS_ERROR_FAILED;
         }
     }

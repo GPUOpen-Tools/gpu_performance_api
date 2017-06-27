@@ -10,7 +10,7 @@
 #include "HSACounterDataRequest.h"
 #include "HSARTModuleLoader.h"
 
-#include "../GPUPerfAPI-Common/Logging.h"
+#include "Logging.h"
 #include <sstream>
 #include <string>
 
@@ -69,7 +69,7 @@ bool HSACounterDataRequest::CollectResults(GPA_CounterResults& resultStorage)
 
     HSAToolsRTModule* pHsaToolsRTModule = HSAToolsRTModuleLoader::Instance()->GetAPIRTModule();
 
-    if (nullptr == pHsaToolsRTModule)
+    if (nullptr == pHsaToolsRTModule || !pHsaToolsRTModule->IsModuleLoaded())
     {
         GPA_LogError("HSA runtime module is NULL.");
         return false;
@@ -172,7 +172,7 @@ void HSACounterDataRequest::Reset(
 
             if (nullptr == m_pCounters)
             {
-                GPA_LogError("Unable to allocate memory for HSA counters");
+                GPA_LogError("Unable to allocate memory for HSA counters.");
                 return;
             }
         }
@@ -227,7 +227,7 @@ bool HSACounterDataRequest::BeginRequest(
 
     HSAToolsRTModule* pHsaToolsRTModule = HSAToolsRTModuleLoader::Instance()->GetAPIRTModule();
 
-    if (nullptr == pHsaToolsRTModule)
+    if (nullptr == pHsaToolsRTModule || !pHsaToolsRTModule->IsModuleLoaded())
     {
         GPA_LogError("HSA runtime module is NULL.");
         return false;

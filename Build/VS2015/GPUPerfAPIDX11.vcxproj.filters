@@ -30,7 +30,7 @@
     <ClCompile Include="..\..\Src\GPUPerfAPIDX11\GPAContextStateDX11.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DxxExtUtils.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11SoftwareCounterDataRequestManager.cpp" />
-    <ClCompile Include="..\..\Non-OpenSource\GPUPerfAPIInternalRegistration\DX11GPAInternalCounterGeneratorRegistration.cpp" />
+    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPIInternalRegistration\DX11GPAInternalCounterGeneratorRegistration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11CounterDataRequest.h" />

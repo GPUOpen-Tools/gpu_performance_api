@@ -31,8 +31,7 @@
 
 #ifdef __linux__
 
-    #ifdef GPALIB_DECL
-    #else
+    #ifndef GPALIB_DECL
         #ifdef __cplusplus
             #define GPALIB_DECL extern "C"
         #else
@@ -56,12 +55,12 @@
     #endif
 
     #define UNREFERENCED_PARAMETER(x)
-    #define UNREFERECED_VAR(x)
 
     #define _strcmpi(a, b) strcasecmp(a, b)
 
     // for now, just use non secure version for Linux
     #define strcpy_s(dst, ndst, src) strcpy(dst, src)
+    #define strcat_s(dst, ndst, src) strcat(dst, src)
     #define strtok_s(a, b, c) strtok(a, b)
 
 #endif // __linux__

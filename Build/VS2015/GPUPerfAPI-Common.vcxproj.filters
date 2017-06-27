@@ -94,6 +94,9 @@
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAVersion.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\DXGetAMDDeviceInfo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAContextState.cpp">

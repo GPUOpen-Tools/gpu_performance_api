@@ -527,7 +527,7 @@ void GPA_PublicCounters::ComputeCounterValue(gpa_uint32 counterIndex, vector< ch
     if (nullptr != m_counters[counterIndex].m_pComputeExpression)
     {
 #ifdef AMDT_INTERNAL
-        GPA_LogDebugCounterDefs("'%s' equation is %s", m_counters[counterIndex].m_pName, m_counters[counterIndex].m_pComputeExpression);
+        GPA_LogDebugCounterDefs("'%s' equation is %s.", m_counters[counterIndex].m_pName, m_counters[counterIndex].m_pComputeExpression);
 #endif
 
         if (internalCounterTypes[0] == GPA_TYPE_UINT64)
@@ -559,6 +559,7 @@ void GPA_PublicCounters::ComputeCounterValue(gpa_uint32 counterIndex, vector< ch
             else
             {
                 // public counter type not recognized or not currently supported.
+                GPA_LogError("Unable to compute counter value: unrecognized public counter type.");
                 assert(false);
             }
         }
@@ -591,13 +592,20 @@ void GPA_PublicCounters::ComputeCounterValue(gpa_uint32 counterIndex, vector< ch
             else
             {
                 // public counter type not recognized or not currently supported.
+                GPA_LogError("Unable to compute counter value: unrecognized public counter type.");
                 assert(false);
             }
+        }
+        else
+        {
+            GPA_LogError("Unable to compute counter value: unrecognized internal counter type.");
+            assert(false);
         }
     }
     else
     {
         // no method of evaluation specified for counter
+        GPA_LogError("Unable to compute counter value: unrecognized compute expression.");
         assert(false);
     }
 }

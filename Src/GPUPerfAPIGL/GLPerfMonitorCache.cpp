@@ -53,7 +53,7 @@ void GLPerfMonitorCache::EnableCounterInMonitor(GLuint monitor, gpa_uint32 uiGro
     if (m_monitorInfoMap.end() != iter)
     {
         _oglSelectPerfMonitorCountersAMD(monitor, GL_TRUE, uiGroupId, 1, (GLuint*)&uiCounterIndex);
-        GPA_LogDebugMessage("Enabled counter: group %u, counter %u", uiGroupId, uiCounterIndex);
+        GPA_LogDebugMessage("Enabled counter: group %u, counter %u.", uiGroupId, uiCounterIndex);
 #ifdef DEBUG_GL_ERRORS
         CheckForGLErrors("Error detected after glSelectPerfMonitorCountersAMD(..).");
 #endif
@@ -78,7 +78,7 @@ void GLPerfMonitorCache::DoneMonitor(GLuint monitor)
             for (vector<GLHardwareCounter>::iterator hwcIter = monitorInfo->m_hwCounters.begin(); hwcIter != monitorInfo->m_hwCounters.end(); ++hwcIter)
             {
                 _oglSelectPerfMonitorCountersAMD(monitor, GL_FALSE, hwcIter->m_groupId, 1, (GLuint*)&hwcIter->m_counterIndex);
-                GPA_LogDebugMessage("Disabled counter: group %u, counter %u", hwcIter->m_groupId, hwcIter->m_counterIndex);
+                GPA_LogDebugMessage("Disabled counter: group %u, counter %u.", hwcIter->m_groupId, hwcIter->m_counterIndex);
 #ifdef DEBUG_GL_ERRORS
                 CheckForGLErrors("Error detected after glSelectPerfMonitorCountersAMD(..).");
 #endif

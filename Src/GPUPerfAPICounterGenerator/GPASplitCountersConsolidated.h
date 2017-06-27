@@ -10,6 +10,9 @@
 #define _GPA_SPLITCOUNTERSCONSOLIDATED_H_
 
 #include <vector>
+#ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
+    #include <sstream>
+#endif
 #include "GPASplitCountersInterfaces.h"
 #include "GPAInternalCounter.h"
 
@@ -160,7 +163,7 @@ private:
 
             for (auto passIter = pass.m_counters.cbegin(); passIter != pass.m_counters.cend(); ++passIter)
             {
-                if (this->VectorContains<unsigned int>(iterator->m_counters, *passIter) == -1)
+                if (VectorContains<unsigned int>(iterator->m_counters, *passIter) == -1)
                 {
                     allCountersInSamePass = false;
                     break;
@@ -193,7 +196,9 @@ private:
                               unsigned int& numScheduledCounters,
                               unsigned int maxInternalCountersPerPass)
     {
-
+#ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
+        std::stringstream ss;
+#endif
         // iterate through each public counter
         for (auto publicIter = publicCountersToSplit.cbegin(); publicIter != publicCountersToSplit.cend(); ++publicIter)
         {
@@ -209,6 +214,11 @@ private:
 
             // find out the minimum required passes for the public counter
             const std::list<GPACounterPass> singleCounterPasses = SplitSingleCounter(*publicIter, accessor, maxCountersPerGroup);
+#ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
+            ss.str("");
+            ss << "Splitting Counter: " << (*publicIter)->m_pName << ". counterIndex: " << (*publicIter)->m_index << " numpasses: " << singleCounterPasses.size();
+            GPA_LogDebugCounterDefs(ss.str().c_str());
+#endif
 
             /// contains a map between the pass index for a single split public counter and the pass index
             /// for a previously scheduled pass that contains all of the hw counters for that pass
@@ -274,15 +284,15 @@ private:
                         for (auto internalCounterIter = singleCounterPassIter->m_counters.cbegin(); internalCounterIter != singleCounterPassIter->m_counters.cend(); ++internalCounterIter)
                         {
                             // if the counter is already there, no need to add it
-                            if (this->VectorContains<unsigned int>(tmpCounterPassIter->m_counters, *internalCounterIter) == -1)
+                            if (VectorContains<unsigned int>(tmpCounterPassIter->m_counters, *internalCounterIter) == -1)
                             {
                                 // check to see if the counter can be added
                                 accessor->SetCounterIndex(*internalCounterIter);
                                 unsigned int groupIndex = accessor->GroupIndex();
 
-                                if (this->CheckForTimestampCounters(accessor, *internalCounterIter, *counterPassIter) == false ||
-                                    this->CanCounterBeAdded(accessor, tmpCurCountersUsed, maxCountersPerGroup) == false ||
-                                    this->CheckForSQCounters(accessor, tmpCurCountersUsed, m_maxSQCounters) == false)
+                                if (CheckForTimestampCounters(accessor, *tmpCounterPassIter) == false || //use tmpCounterPassIter
+                                    CanCounterBeAdded(accessor, tmpCurCountersUsed, maxCountersPerGroup) == false ||
+                                    CheckForSQCounters(accessor, tmpCurCountersUsed, m_maxSQCounters) == false)
                                 {
                                     allPassesAreGood = false;
                                     break;
@@ -357,7 +367,7 @@ private:
                             }
                         }
 
-                        int existingIndex = this->VectorContains<unsigned int>(it->m_counters, hardwareCounterIndex);
+                        int existingIndex = VectorContains<unsigned int>(it->m_counters, hardwareCounterIndex);
 
                         // we don't expect this to fail since we found these counters in "existingPasses"
                         assert(-1 != existingIndex);
@@ -374,7 +384,7 @@ private:
                         unsigned int hardwareCounterIndex = *internalCounterIter;
 
                         // only add the counter if it is not already there
-                        int existingIndex = this->VectorContains<unsigned int>(counterPassIter->m_counters, hardwareCounterIndex);
+                        int existingIndex = VectorContains<unsigned int>(counterPassIter->m_counters, hardwareCounterIndex);
 
                         if (existingIndex == -1)
                         {
@@ -402,6 +412,26 @@ private:
                 passIndex++;
             }
         }
+
+#ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
+        ss.str("");
+        ss << "total passes: " << passPartitions.size();
+        GPA_LogDebugCounterDefs(ss.str().c_str());
+
+        for (auto it : passPartitions)
+        {
+            ss.str("*****PASS*****");
+            GPA_LogDebugCounterDefs(ss.str().c_str());
+
+            for (auto it1 : it.m_counters)
+            {
+                ss.str("");
+                ss << it1;
+                GPA_LogDebugCounterDefs(ss.str().c_str());
+            }
+
+        }
+#endif
     }
 
     /// Inserts each hardware counter into the earliest possible pass.
@@ -461,9 +491,9 @@ private:
 
             for (auto passIter = passPartitions.begin(); passIter != passPartitions.end(); ++passIter)
             {
-                if (this->CheckForTimestampCounters(pAccessor, internalCounterIter->m_hardwareIndex, *passIter) == true &&
-                    this->CanCounterBeAdded(pAccessor, *countersUsedIter, maxCountersPerGroup) == true &&
-                    this->CheckForSQCounters(pAccessor, *countersUsedIter, m_maxSQCounters) == true)
+                if (CheckForTimestampCounters(pAccessor, *passIter) == true &&
+                    CanCounterBeAdded(pAccessor, *countersUsedIter, maxCountersPerGroup) == true &&
+                    CheckForSQCounters(pAccessor, *countersUsedIter, m_maxSQCounters) == true)
                 {
                     // the counter can be scheduled here.
                     passIter->m_counters.push_back(internalCounterIter->m_hardwareIndex);
@@ -632,9 +662,9 @@ private:
                 unsigned int groupIndex = pAccessor->GroupIndex();
 
                 // try to add the counter to the current pass
-                if (this->CheckForTimestampCounters(pAccessor, *counterIter, *counterPassIter) &&
-                    this->CanCounterBeAdded(pAccessor, *countersUsedIter, maxCountersPerGroup) &&
-                    this->CheckForSQCounters(pAccessor, *countersUsedIter, m_maxSQCounters))
+                if (CheckForTimestampCounters(pAccessor, *counterPassIter) &&
+                    CanCounterBeAdded(pAccessor, *countersUsedIter, maxCountersPerGroup) &&
+                    CheckForSQCounters(pAccessor, *countersUsedIter, m_maxSQCounters))
                 {
                     counterPassIter->m_counters.push_back(*counterIter);
                     countersUsedIter->m_numUsedCountersPerBlock[groupIndex].push_back(pAccessor->CounterIndex());

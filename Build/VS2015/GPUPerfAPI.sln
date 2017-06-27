@@ -68,11 +68,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublicCounterDefinitionFile
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx6.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx7.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx9.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx6.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx7.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx9.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx7.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx9.txt
 	EndProjectSection
 EndProject
 Global

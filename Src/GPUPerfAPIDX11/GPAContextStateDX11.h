@@ -9,7 +9,7 @@
 #ifndef _GPA_CONTEXTSTATE_DX11_H_
 #define _GPA_CONTEXTSTATE_DX11_H_
 
-#include "../GPUPerfAPI-Common/GPAContextState.h"
+#include "GPAContextState.h"
 #include <d3d11.h>
 
 /// Maintains the available DX11 internal counters for the currently installed hardware.

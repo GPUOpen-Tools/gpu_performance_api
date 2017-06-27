@@ -11,8 +11,11 @@
     </PropertyGroup>
     <ItemDefinitionGroup>
         <ClCompile>
-            <AdditionalIncludeDirectories>$(GPUPerfAPIBaseDir)Src\GPUPerfAPI-Common\</AdditionalIncludeDirectories>
+            <AdditionalIncludeDirectories>$(GPUPerfAPIBaseDir)Src\GPUPerfAPI-Common\;$(GPUPerfAPIBaseDir)Src\GPUPerfAPICounterGenerator;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
         </ClCompile>
+        <ResourceCompile>
+            <AdditionalIncludeDirectories>$(GPUPerfAPIBaseDir)Src\GPUPerfAPI-Common\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+        </ResourceCompile>
     </ItemDefinitionGroup>
     <ItemGroup>
         <BuildMacro Include="BaseDir">

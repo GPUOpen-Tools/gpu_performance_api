@@ -288,9 +288,9 @@ GPALIB_DECL GPA_Status GPA_EndSample();
 ///
 /// This is useful if samples are conditionally created and a count is not kept.
 /// \param sessionID The session to get the number of samples for.
-/// \param pSamples The value that will be set to the number of samples contained within the session.
+/// \param pSampleCount The value that will be set to the number of samples contained within the session.
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
-GPALIB_DECL GPA_Status GPA_GetSampleCount(gpa_uint32 sessionID, gpa_uint32* pSamples);
+GPALIB_DECL GPA_Status GPA_GetSampleCount(gpa_uint32 sessionID, gpa_uint32* pSampleCount);
 
 
 /// \brief Determine if an individual sample result is available.

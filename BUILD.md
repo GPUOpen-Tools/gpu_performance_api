@@ -15,7 +15,7 @@ order to clone/update any dependent repositories.
 
 #### Instructions
  * Simply execute the [UpdateCommon.py](Scripts/UpdateCommon.py) python script located in the [Scripts](Scripts) directory:
-   * __python Scripts/UpdateCommon.py__
+   * `python Scripts/UpdateCommon.py`
 This script will clone any dependent repositories that are not present on the system. If any of the dependent repositories are already
 present on the system, this script will instead do a "git pull" on those repositories to ensure that they are up to date. Please re-run
 this script everytime you pull new changes from GPA repository.
@@ -30,7 +30,7 @@ this script everytime you pull new changes from GPA repository.
 ##### Build Instructions
  * Load Build\VS2015\GPUPerfAPI.sln into Visual Studio
  * Build the 64-bit and/or 32-bit configuration
- * After a successful build, the GPUPerfAPI binaries can be found in __GPA\Output\\$(Configuration)\bin__ (for example GPA\Output\Release\bin)
+ * After a successful build, the GPUPerfAPI binaries can be found in `GPA\Output\\$(Configuration)\bin` (for example GPA\Output\Release\bin)
 
 #### Additional Information
  * The Visual Studio solution includes a Documentation project that allows you to generate the HTML-based source code documentation using Doxygen. In order
@@ -47,31 +47,33 @@ this script everytime you pull new changes from GPA repository.
 
 ##### Build Instructions
  * cd into the Build\Linux directory
- * Execute __./build.sh__
+ * Execute `./build.sh`
    * By default this performs a from-scratch build of the release versions of GPUPerfAPI, both 32-bit and 64-bit binaries.
  * The following arguments can be passed to build.sh to alter the build:
-   * __debug__: performs a debug build
-   * __skip32bitbuild__: skips building the 32-bit binaries
-   * __skipopengl__: skips building the OpenGL version of GPUPerfAPI
-   * __skipopengles__: skips building the OpenGLES version of GPUPerfAPI
-   * __skipopencl__: skips building the OpenCL version of GPUPerfAPI
-   * __skiphsa__: skips building the ROCm/HSA version of GPUPerfAPI
-   * __quick__ or __incremental__: performs an incremental build (as opposed to a from-scratch build)
-   * __buildinternal__: builds the internal versions of GPUPerfAPI
-   * __hsadir__: overrides the location of the ROCm/HSA header files (by default they are expected to be in /opt/rocm/hsa)
+   * `debug`: performs a debug build
+   * `skip32buildbuild`: skips building the 32-bit binaries
+   * `skipopengl`: skips building the OpenGL version of GPUPerfAPI
+   * `skipopengles`: skips building the OpenGLES version of GPUPerfAPI
+   * `skipopencl`: skips building the OpenCL version of GPUPerfAPI
+   * `skiphsa`: skips building the ROCm/HSA version of GPUPerfAPI
+   * `quick` or `incremental`: performs an incremental build (as opposed to a from-scratch build)
+   * `buildinternal`: builds the internal versions of GPUPerfAPI
+   * `hsadir`: overrides the location of the ROCm/HSA header files (by default they are expected to be in /opt/rocm/hsa)
+   * `gtestlibdir`: overrides the location of the GoogleTest libraries (by default they are expected to be in Common/Lib/Ext/GoogleTest/1-7/lib/gcc5/x64. There is also a gcc4.x-compatible version in Common/Lib/Ext/GoogleTest/1-7/lib/x64 for use when building on a system with gcc 4.x)
+   * `gtestlibdir32`: overrides the location of the 32-bit GoogleTest libraries (by default they are expected to be in Common/Lib/Ext/GoogleTest/1-7/lib/gcc5/x86. There is also a gcc4.x-compatible version in Common/Lib/Ext/GoogleTest/1-7/lib/x86 for use when building on a system with gcc 4.x)
  * After a successful build, the GPUPerfAPI binaries can be found in their respective source file directories. For instance, the binaries for the OpenGL version of GPUPerfAPI (libGPUPerfAPIGL.so) can be found in the Src/GPUPerfAPIGL subdirectory.
  * Example build command line (builds the debug versions of the binaries, skipping the HSA library):
    * ./build.sh debug skiphsa
- * In addition to using the build.sh build script to build all of GPUPerfAPI, you can also build a single API library by executing __make__ in that library's directory. This is useful when making localized changes in a single version of GPUPerfAPI. When using __make__, the following default targets are supported:
-   * __\<default\>__: makes the 64-bit release version
-   * __x86__: makes the 32-bit release version
-   * __Dbg__: makes the 64-bit debug version
-   * __Dbgx86__: makes the 32-bit debug version
-   * __Internal__: makes the 64-bit release Internal version
-   * __Internalx86__: makes the 32-bit release Internal version
-   * __DbgInternal__: makes the 64-bit debug Internal version
-   * __DbgInternalx86__: makes the 32-bit debug Internal version
- * __Make__ is supported in the following directories (those marked with (*) are required to be built before the others, as they produce static libraries used by the others):
+ * In addition to using the build.sh build script to build all of GPUPerfAPI, you can also build a single API library by executing `make` in that library's directory. This is useful when making localized changes in a single version of GPUPerfAPI. When using `make`, the following default targets are supported:
+   * `\<default\>`: makes the 64-bit release version
+   * `x86`: makes the 32-bit release version
+   * `Dbg`: makes the 64-bit debug version
+   * `Dbgx86`: makes the 32-bit debug version
+   * `Internal`: makes the 64-bit release Internal version
+   * `Internalx86`: makes the 32-bit release Internal version
+   * `DbgInternal`: makes the 64-bit debug Internal version
+   * `DbgInternalx86`: makes the 32-bit debug Internal version
+ * `Make` is supported in the following directories (those marked with (*) are required to be built before the others, as they produce static libraries used by the others):
    * DeviceInfo (*)
    * GPUPerfAPI-Common (*)
    * GPUPerfAPICounterGenerator (*)
@@ -80,7 +82,7 @@ this script everytime you pull new changes from GPA repository.
    * GPUPerfAPIGL
    * GPUPerfAPIGLES
    * GPUPerfAPIHSA
- * When using __make__ to build the ROCM/HSA version of GPUPerfAPI, by default the HSA headers are expected to be in /opt/rocm/hsa. You can override this by specifying "HSA_DIR=<dir>" on the make command line:
+ * When using `make` to build the ROCM/HSA version of GPUPerfAPI, by default the HSA headers are expected to be in /opt/rocm/hsa. You can override this by specifying "HSA_DIR=<dir>" on the make command line:
    * Example: make Dbg HSA_DIR=/home/user/hsa_dir
  * When building the internal version, each binary filename will also have a "-Internal" suffix (for example libGPUPerfAPIGL-Internal.so)
 

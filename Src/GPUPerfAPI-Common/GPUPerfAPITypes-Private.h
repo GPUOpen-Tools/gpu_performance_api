@@ -47,14 +47,19 @@ enum GPA_Log_Debug_Type
 };
 
 /// this enum needs to be kept up to date with GDT_HW_GENERATION in DeviceInfo.h
+/// this enum needs to be kept up to date with GDT_HW_GENERATION in DeviceInfo.h
 enum GPA_HW_GENERATION
 {
-    GPA_HW_GENERATION_NONE,             ///< undefined hw generation
-    GPA_HW_GENERATION_NVIDIA,           ///< Used for nvidia cards by GPA
-    GPA_HW_GENERATION_INTEL,            ///< Used for Intel cards by GPA
-    GPA_HW_GENERATION_SOUTHERNISLAND,   ///< GFX IP 6
-    GPA_HW_GENERATION_SEAISLAND,        ///< GFX IP 7
-    GPA_HW_GENERATION_VOLCANICISLAND,   ///< GFX IP 8
+    GPA_HW_GENERATION_NONE,                                    ///< undefined hw generation
+    GPA_HW_GENERATION_NVIDIA,                                  ///< Used for nvidia cards by GPA
+    GPA_HW_GENERATION_INTEL,                                   ///< Used for Intel cards by GPA
+    GPA_HW_GENERATION_GFX6,                                    ///< GFX IP 6
+    GPA_HW_GENERATION_SOUTHERNISLAND = GPA_HW_GENERATION_GFX6, ///< For backwards compatibility
+    GPA_HW_GENERATION_GFX7,                                    ///< GFX IP 7
+    GPA_HW_GENERATION_SEAISLAND = GPA_HW_GENERATION_GFX7,      ///< For backwards compatibility
+    GPA_HW_GENERATION_GFX8,                                    ///< GFX IP 8
+    GPA_HW_GENERATION_VOLCANICISLAND = GPA_HW_GENERATION_GFX8, ///< For backwards compatibility
+    GPA_HW_GENERATION_GFX9,                                    ///< GFX IP 9
     GPA_HW_GENERATION_LAST
 };
 

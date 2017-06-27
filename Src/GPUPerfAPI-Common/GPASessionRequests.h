@@ -93,17 +93,16 @@ public:
     ///    GPA_STATUS_OK on success and pResult will point to the counter result.
     GPA_Status GetResult(gpa_uint32 passIndex, gpa_uint32 sampleId, gpa_uint16 counterOffset, void* pResult);
 
-    /// The session ID of this session.
-    unsigned int m_sessionID;
-
-private:
-
     /// Checks whether or not the session contains the specified pass and sample request.
     /// \param passIndex The pass index to check for.
     /// \param sampleId The sample ID to check for.
     /// \return true if the session contains the sample in the pass; false otherwise.
     bool ContainsSampleRequest(gpa_uint32 passIndex, gpa_uint32 sampleId);
 
+    /// The session ID of this session.
+    unsigned int m_sessionID;
+
+private:
     /// Checks whether or not the session contains the specified pass and sample result.
     /// \param passIndex The pass index to check for.
     /// \param sampleId The sample ID to check for.

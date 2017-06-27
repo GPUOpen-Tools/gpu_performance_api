@@ -8,7 +8,7 @@
 #ifndef _CL_COUNTER_DATA_REQUEST_H_
 #define _CL_COUNTER_DATA_REQUEST_H_
 
-#include "../GPUPerfAPI-Common/GPUPerfAPIImp.h"
+#include "GPUPerfAPIImp.h"
 #include "GPUPerfAPICL.h"
 
 //-----------------------------------------------------------------------------

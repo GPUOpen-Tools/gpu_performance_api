@@ -93,11 +93,14 @@ public:
                     accessor->SetCounterIndex(*counterIter);
                     unsigned int groupIndex = accessor->GroupIndex();
 
+                    size_t countersSize = counterPassIter->m_counters.size();
+
                     // try to add the counter to the current pass
-                    if (this->CheckForTimestampCounters(accessor, *counterIter, *counterPassIter) &&
-                        this->CanCounterBeAdded(accessor, *countersUsedIter, maxCountersPerGroup) &&
-                        this->CheckForSQCounters(accessor, *countersUsedIter, m_maxSQCounters) &&
-                        counterPassIter->m_counters.size() < 300)
+                    if (countersSize == 0 ||
+                        (CheckForTimestampCounters(accessor, *counterPassIter) &&
+                        CanCounterBeAdded(accessor, *countersUsedIter, maxCountersPerGroup) &&
+                        CheckForSQCounters(accessor, *countersUsedIter, m_maxSQCounters) &&
+                        countersSize < 300))
                     {
                         counterPassIter->m_counters.push_back(*counterIter);
                         countersUsedIter->m_numUsedCountersPerBlock[groupIndex].push_back(accessor->CounterIndex());
@@ -136,8 +139,11 @@ public:
                 PerPassData newPass;
                 numUsedCountersPerPassPerBlock.push_back(newPass);
 
-                ++countersUsedIter;
-                ++counterPassIter;
+                // point to the last item in this case so the next public counter can start at the pass just added
+                countersUsedIter = numUsedCountersPerPassPerBlock.end();
+                --countersUsedIter;
+                counterPassIter = passPartitions.end();
+                --counterPassIter;
             }
         }
 

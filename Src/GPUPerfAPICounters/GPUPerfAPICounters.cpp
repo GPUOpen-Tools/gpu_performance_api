@@ -12,7 +12,7 @@
     #define GPUPERFAPI_COUNTERS_DECL extern "C" __declspec( dllexport )
 #endif
 
-#include "../GPUPerfAPICounterGenerator/GPACounterGenerator.h"
+#include "GPACounterGenerator.h"
 #include "DeviceInfo.h"
 #include "DeviceInfoUtils.h"
 #include "GPAHWInfo.h"
@@ -26,6 +26,8 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCounters(GPA_API_Type api, g
 
 GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API_Type api, GPA_HW_GENERATION generation, GPA_ICounterAccessor** ppCounterAccessorOut)
 {
+    GPA_Status retVal = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+
     // pick a device Id that falls into the desired HW generation.
     gpa_uint32 vendorId = 0;
     gpa_uint32 deviceId = 0;
@@ -34,10 +36,12 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API
     if (GPA_HW_GENERATION_NVIDIA == generation)
     {
         vendorId = NVIDIA_VENDOR_ID;
+        retVal = GenerateCounters(api, vendorId, deviceId, revisionId, ppCounterAccessorOut, nullptr);
     }
     else if (GPA_HW_GENERATION_INTEL == generation)
     {
         vendorId = INTEL_VENDOR_ID;
+        retVal = GenerateCounters(api, vendorId, deviceId, revisionId, ppCounterAccessorOut, nullptr);
     }
     else if (GPA_HW_GENERATION_NONE != generation)
     {
@@ -45,11 +49,18 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API
 
         if (AMDTDeviceInfoUtils::Instance()->GetAllCardsInHardwareGeneration(static_cast<GDT_HW_GENERATION>(generation), cardList))
         {
-            if (cardList.size() > 0)
+            vendorId = AMD_VENDOR_ID;
+
+            for (auto card : cardList)
             {
-                vendorId = AMD_VENDOR_ID;
-                deviceId = static_cast<gpa_uint32>(cardList[0].m_deviceID);
-                revisionId = static_cast<gpa_uint32>(cardList[0].m_revID);
+                deviceId = static_cast<gpa_uint32>(card.m_deviceID);
+                revisionId = static_cast<gpa_uint32>(card.m_revID);
+                retVal = GenerateCounters(api, vendorId, deviceId, revisionId, ppCounterAccessorOut, nullptr);
+
+                if (GPA_STATUS_OK == retVal)
+                {
+                    break;
+                }
             }
         }
 
@@ -60,5 +71,5 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API
         }
     }
 
-    return GenerateCounters(api, vendorId, deviceId, revisionId, ppCounterAccessorOut, nullptr);
+    return retVal;
 };

@@ -8,7 +8,9 @@
 #ifndef _GPA_COUNTER_GENERATOR_COMMON_H_
 #define _GPA_COUNTER_GENERATOR_COMMON_H_
 
-#include <windows.h>
+#ifdef WIN32
+    #include <windows.h>
+#endif
 
 #include "GPUPerfAPITypes.h"
 #include "GPASplitCountersInterfaces.h"

@@ -31,7 +31,7 @@ clPerfCounterBlock::clPerfCounterBlock(cl_device_id    clDevice,
 
 clPerfCounterBlock::~clPerfCounterBlock()
 {
-    this->ReleaseCounters();
+    ReleaseCounters();
 }
 
 void clPerfCounterBlock::ReleaseCounters()

@@ -5,8 +5,8 @@
 /// \brief  HSA version of GPUPerfAPI
 //==============================================================================
 
-#include "../GPUPerfAPI-Common/GPUPerfAPIImp.h"
-#include "../GPUPerfAPICounterGenerator/GPACounterGenerator.h"
+#include "GPUPerfAPIImp.h"
+#include "GPACounterGenerator.h"
 #include "DeviceInfoUtils.h"
 #include "GPUPerfAPIRegistry.h"
 
@@ -25,7 +25,7 @@
 using namespace std;
 
 #ifdef _LINUX
-    #include "../GPUPerfAPI-Common/Logging.h"
+    #include "Logging.h"
 #endif
 
 GPA_ContextStateHSA* getCurrentContext()
@@ -72,13 +72,13 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
 
     if (nullptr == pHSAContext->m_pAgent)
     {
-        GPA_LogError("Invalid context");
+        GPA_LogError("Invalid context.");
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
     HSAModule* pHsaModule = HSARTModuleLoader::Instance()->GetAPIRTModule();
 
-    if (nullptr == pHsaModule)
+    if (nullptr == pHsaModule || !pHsaModule->IsModuleLoaded())
     {
         GPA_LogError("HSA runtime module is NULL.");
         return GPA_STATUS_ERROR_FAILED;
@@ -136,7 +136,7 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
             message << "Vendor ID: 0x" << hex << AMD_VENDOR_ID << ", ";
             message << "Device ID: 0x" << hex << cardInfo.m_deviceID << ", ";
             message << "Rev ID: 0x" << hex << cardInfo.m_revID << ", ";
-            message << "Device Name: " << cardInfo.m_szCALName << ".";
+            message << "Device Name: " << cardInfo.m_szCALName << ", ";
             message << "HSA RT Device Name: " << deviceName << ".";
             GPA_LogDebugMessage(message.str().c_str());
         }
@@ -203,6 +203,7 @@ GPA_Status GPA_IMP_VerifyHWSupport(void* pContext, GPA_HWInfo* pHwInfo)
     {
         case GDT_HW_GENERATION_SEAISLAND :
         case GDT_HW_GENERATION_VOLCANICISLAND :
+        case GDT_HW_GENERATION_GFX9:
             break;
 
         default:
@@ -227,7 +228,7 @@ GPA_Status GPA_IMP_CreateContext(GPA_ContextState** ppNewContext)
 
     if (nullptr == pContext)
     {
-        GPA_LogError("Unable to create context");
+        GPA_LogError("Unable to create context.");
         result = GPA_STATUS_ERROR_FAILED;
     }
     else
@@ -428,7 +429,8 @@ void HSA_PostDispatchCallback(const hsa_dispatch_callback_t* pRTParam, void* pUs
 }
 
 // Startup / exit
-// Note: "pContext" is GPA_HSA_Context (for now anyway....)
+// Note: "pContext" is hsa_queue_t* or GPA_HSA_Context
+//       See the note in GPUPerfAPI-HSA.h for details
 GPA_Status GPA_IMP_OpenContext(void* pContext)
 {
     assert(nullptr != pContext);
@@ -458,7 +460,6 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
     // Get context
     GPA_ContextStateHSA* pContextState = getCurrentContext();
 
-
     GPA_HSA_Context* pHSAContext = nullptr;
     GPA_HSA_Context localHSAContext;
 
@@ -476,7 +477,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
 
     if (nullptr == pHSAContext->m_pAgent || nullptr == pHSAContext->m_pQueue)
     {
-        GPA_LogError("Invalid context");
+        GPA_LogError("Invalid context.");
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
@@ -488,7 +489,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
 
         if (HSA_STATUS_SUCCESS != status)
         {
-            GPA_LogError("Unable to set dispatch callback functions");
+            GPA_LogError("Unable to set dispatch callback functions.");
             return GPA_STATUS_ERROR_FAILED;
         }
     }
@@ -562,7 +563,7 @@ GPA_Status GPA_IMP_CloseContext()
 
         if (HSA_STATUS_SUCCESS != status)
         {
-            GPA_LogError("Unable to set dispatch callback functions");
+            GPA_LogError("Unable to set dispatch callback functions.");
             return GPA_STATUS_ERROR_FAILED;
         }
     }
@@ -652,4 +653,3 @@ GPA_DataRequest* GPA_IMP_CreateDataRequest()
 {
     return new(std::nothrow) HSACounterDataRequest();
 }
-

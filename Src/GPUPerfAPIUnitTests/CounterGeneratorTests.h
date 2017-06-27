@@ -6,11 +6,20 @@
 //==============================================================================
 
 #include <gtest/gtest.h>
+#include "GPUPerfAPI.h"
 #include "GPACounterGenerator.h"
 #include "GPUPerfAPICounters.h"
-#include "GPAHwInfo.h"
+#include "GPAHWInfo.h"
 #ifdef _WIN32
     #include <windows.h>
+#else
+    #include <dlfcn.h>
+#endif
+
+#ifdef _WIN32
+    typedef HMODULE LibHandle; /// typedef for HMODULE for loading the library on windows
+#else
+    typedef void* LibHandle; /// typedef for void* for loading the library on linux
 #endif
 
 typedef decltype(GPA_GetAvailableCounters)* GPA_GetAvailableCountersProc;
@@ -18,8 +27,20 @@ typedef decltype(GPA_GetAvailableCountersByGeneration)* GPA_GetAvailableCounters
 
 static const unsigned int gDevIdUnknown = 0xFFFFFFFF; //< bogus device id
 static const unsigned int gDevIdSI = 0x6798;
-static const unsigned int gDevIdCI = 0x6650;
+static const unsigned int gDevIdCI = 0x6649;
+static const unsigned int gDevIdCIHawaii = 0x67A0;
 static const unsigned int gDevIdVI = 0x6900;
+static const unsigned int gDevIdGfx9 = 0x6863;
+
+#ifdef _WIN32
+static const char* countersLibName = "GPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX ".dll";
+#else
+static const char* countersLibName = "libGPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX ".so";
+#endif
+
+LibHandle LoadLib(const char* pLibName);
+void UnloadLib(LibHandle libHandle);
+void* GetEntryPoint(LibHandle libHandle, const char* pEntrypointName);
 
 void VerifyNotImplemented(GPA_API_Type api, unsigned int deviceId);
 void VerifyNotImplemented(GPA_API_Type api, GPA_HW_GENERATION generation);

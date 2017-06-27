@@ -12,14 +12,14 @@
 #include <sstream>
 
 #ifdef _LINUX
-#include <dlfcn.h>
+    #include <dlfcn.h>
 #endif
 
-#include "../GPUPerfAPI-Common/GPUPerfAPIImp.h"
-#include "../GPUPerfAPI-Common/GPACustomHWValidationManager.h"
+#include "GPUPerfAPIImp.h"
+#include "GPACustomHWValidationManager.h"
 
 #include "GLCounterDataRequestManager.h"
-#include "../GPUPerfAPICounterGenerator/GPACounterGenerator.h"
+#include "GPACounterGenerator.h"
 #include "GPUPerfAPIGL.h"
 #include "ASICInfo.h"
 #include "ADLUtil.h"
@@ -172,6 +172,8 @@ GLvoid __stdcall DebugCallback(GLenum source,
         string += (GLchar*)userParam;
     }
 
+    string += ".";
+
     GPA_LogMessage(string.c_str());
 }
 
@@ -209,16 +211,16 @@ gpa_uint32 GPA_IMP_GetPreferredCheckResultFrequency()
 
 #ifndef GLES
 
-#ifdef _WIN32
-decltype(wglGetProcAddress)* _wglGetProcAddress = nullptr;
-#endif
+    #ifdef _WIN32
+        decltype(wglGetProcAddress)* _wglGetProcAddress = nullptr;
+    #endif
 
-#ifdef _LINUX
-decltype(glXGetProcAddressARB)* _glXGetProcAddressARB = nullptr;
-#endif
+    #ifdef _LINUX
+        decltype(glXGetProcAddressARB)* _glXGetProcAddressARB = nullptr;
+    #endif
 
 #else
-decltype(eglGetProcAddress)* _eglGetProcAddress = nullptr;
+    decltype(eglGetProcAddress)* _eglGetProcAddress = nullptr;
 #endif
 
 /// Checks the OpenGL extensions and initializes the various function pointers.  The extensions queried are:
@@ -260,6 +262,7 @@ GPA_Status InitializeGLFunctions()
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
+
 #endif
 
 #ifdef _LINUX
@@ -269,6 +272,7 @@ GPA_Status InitializeGLFunctions()
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
+
 #endif
 
 #else // GLES
@@ -280,6 +284,7 @@ GPA_Status InitializeGLFunctions()
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
+
 #endif
 
 #ifdef _LINUX
@@ -289,6 +294,7 @@ GPA_Status InitializeGLFunctions()
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
+
 #endif
 
 #endif // GLES
@@ -304,7 +310,7 @@ GPA_Status InitializeGLFunctions()
     _oglGetIntegerv = reinterpret_cast<decltype(glGetIntegerv)*>(dlsym(module, "glGetIntegerv"));
 #endif
 
-    if (nullptr == _oglFlush || nullptr == _oglGetString || nullptr == _oglGetIntegerv )
+    if (nullptr == _oglFlush || nullptr == _oglGetString || nullptr == _oglGetIntegerv)
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
@@ -849,7 +855,7 @@ GPA_Status GPA_IMP_CreateContext(GPA_ContextState** ppNewContext)
 
     if (nullptr == pContext)
     {
-        GPA_LogError("Unable to create context");
+        GPA_LogError("Unable to create context.");
         result = GPA_STATUS_ERROR_FAILED;
     }
     else
@@ -988,7 +994,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
                 if (generation == GDT_HW_GENERATION_SEAISLAND && strncmp(strName, "TCS", 64) == 0)
                 {
                     // skip the TCS counter group because it is only exposed on Kabini and GPA GL does not currently support it.
-                    GPA_LogMessage("Skipping TCS group");
+                    GPA_LogMessage("Skipping TCS group.");
                     driverGroupNum++;
                     _oglGetPerfMonitorGroupStringAMD(pPerfGroups[driverGroupNum], 64, nullptr, strName);
 

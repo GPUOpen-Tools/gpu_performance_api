@@ -5,6 +5,9 @@
 /// \brief  Unit Tests for CL Counter Generator
 //==============================================================================
 
+#define NOMINMAX
+#include <algorithm>
+
 #include "CounterGeneratorTests.h"
 #include "GPUPerfAPITypes-Private.h"
 #include "GPAInternalCounter.h"
@@ -12,11 +15,13 @@
 #include "counters/PublicCountersCLGfx6.h"
 #include "counters/PublicCountersCLGfx7.h"
 #include "counters/PublicCountersCLGfx8.h"
+#include "counters/PublicCountersCLGfx9.h"
 
 #ifdef AMDT_INTERNAL
     #include "InternalCountersCLGfx6.h"
     #include "InternalCountersCLGfx7.h"
     #include "InternalCountersCLGfx8.h"
+    #include "InternalCountersCLGfx9.h"
 #endif
 
 static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<const char*>& counterNames)
@@ -32,7 +37,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
 
     switch (gen)
     {
-        case GPA_HW_GENERATION_SOUTHERNISLAND:
+        case GPA_HW_GENERATION_GFX6:
             pPublicCounters = CLGFX6_PUBLIC_COUNTERS;
             publicCounterCount = CLGFX6_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
@@ -42,7 +47,7 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
 #endif
             break;
 
-        case GPA_HW_GENERATION_SEAISLAND:
+        case GPA_HW_GENERATION_GFX7:
             pPublicCounters = CLGFX7_PUBLIC_COUNTERS;
             publicCounterCount = CLGFX7_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
@@ -52,13 +57,23 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
 #endif
             break;
 
-        case GPA_HW_GENERATION_VOLCANICISLAND:
+        case GPA_HW_GENERATION_GFX8:
             pPublicCounters = CLGFX8_PUBLIC_COUNTERS;
             publicCounterCount = CLGFX8_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
             pHardwareGroups = HWCLGroupsGfx8;
             hwGroupCount = HWCLGroupCountGfx8;
             ppHardwareCounters = CLCounterGroupArrayGfx8;
+#endif
+            break;
+
+        case GPA_HW_GENERATION_GFX9:
+            pPublicCounters = CLGFX9_PUBLIC_COUNTERS;
+            publicCounterCount = CLGFX9_PUBLIC_COUNTER_COUNT;
+#ifdef AMDT_INTERNAL
+            pHardwareGroups = HWCLGroupsGfx9;
+            hwGroupCount = HWCLGroupCountGfx9;
+            ppHardwareCounters = CLCounterGroupArrayGfx9;
 #endif
             break;
     }
@@ -83,12 +98,14 @@ TEST(CounterDLLTests, OpenCLCounterNames)
     VerifyHardwareNotSupported(GPA_API_OPENCL, gDevIdUnknown);
 
     std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SOUTHERNISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
     VerifyCounterNames(GPA_API_OPENCL, gDevIdSI, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SEAISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
     VerifyCounterNames(GPA_API_OPENCL, gDevIdCI, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_VOLCANICISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
     VerifyCounterNames(GPA_API_OPENCL, gDevIdVI, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, gDevIdGfx9, counterNames);
 }
 
 // Test the openCL counter names on each generation
@@ -98,83 +115,88 @@ TEST(CounterDLLTests, OpenCLCounterNamesByGeneration)
     VerifyHardwareNotSupported(GPA_API_OPENCL, GPA_HW_GENERATION_INTEL);
 
     std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SOUTHERNISLAND, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_SOUTHERNISLAND, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SEAISLAND, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_SEAISLAND, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_VOLCANICISLAND, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_VOLCANICISLAND, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX6, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX7, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX8, counterNames);
+    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX9, counterNames);
 }
 
 TEST(CounterDLLTests, OpenCLMultipleGenerations)
 {
-    // open the DLL
-    HMODULE hDll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
-    ASSERT_NE((HMODULE)nullptr, hDll);
+    LibHandle libHandle = LoadLib(countersLibName);
+    ASSERT_NE((LibHandle)nullptr, libHandle);
+    GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetEntryPoint(libHandle, "GPA_GetAvailableCounters");
 
-    // get the entrypoints
-    GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetProcAddress(hDll, "GPA_GetAvailableCounters");
-    ASSERT_NE((GPA_GetAvailableCountersProc)nullptr, GPA_GetAvailableCounters_fn);
-
-    // First, attempt to get EG counters
-    GPA_ICounterAccessor* pCounterAccessor = nullptr;
-    GPA_ICounterScheduler* pCounterScheduler = nullptr;
-    GPA_Status status = GPA_GetAvailableCounters_fn(GPA_API_OPENCL, AMD_VENDOR_ID, gDevIdCI, 0, &pCounterAccessor, &pCounterScheduler);
-    EXPECT_EQ(GPA_STATUS_OK, status);
-    EXPECT_NE((GPA_ICounterAccessor*)nullptr, pCounterAccessor);
-    EXPECT_NE((GPA_ICounterScheduler*)nullptr, pCounterScheduler);
-
-    std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SEAISLAND, counterNames);
-
-    size_t numCounters = pCounterAccessor->GetNumCounters();
-    EXPECT_EQ(counterNames.size(), numCounters);
-
-    // verify as many counter names as possible.
-    numCounters = min(counterNames.size(), numCounters);
-
-    if (counterNames.size() == numCounters)
+    if (nullptr != GPA_GetAvailableCounters_fn)
     {
-        for (unsigned int i = 0; i < numCounters; ++i)
-        {
-            const char* pCounterName = pCounterAccessor->GetCounterName(i);
-            EXPECT_STREQ(counterNames[i], pCounterName);
+        // First, attempt to get EG counters
+        GPA_ICounterAccessor* pCounterAccessor = nullptr;
+        GPA_ICounterScheduler* pCounterScheduler = nullptr;
+        GPA_Status status = GPA_GetAvailableCounters_fn(GPA_API_OPENCL, AMD_VENDOR_ID, gDevIdCI, 0, &pCounterAccessor, &pCounterScheduler);
+        EXPECT_EQ(GPA_STATUS_OK, status);
+        EXPECT_NE((GPA_ICounterAccessor*)nullptr, pCounterAccessor);
+        EXPECT_NE((GPA_ICounterScheduler*)nullptr, pCounterScheduler);
 
-            const char* pDesc = pCounterAccessor->GetCounterDescription(i);
-            EXPECT_NE((const char*)nullptr, pDesc);
-            EXPECT_NE("", pDesc);
+        std::vector<const char*> counterNames;
+        GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
+
+        if (nullptr != pCounterAccessor)
+        {
+            size_t numCounters = pCounterAccessor->GetNumCounters();
+            EXPECT_EQ(counterNames.size(), numCounters);
+
+            // verify as many counter names as possible.
+            numCounters = std::min(counterNames.size(), numCounters);
+
+            if (counterNames.size() == numCounters)
+            {
+                for (unsigned int i = 0; i < numCounters; ++i)
+                {
+                    const char* pCounterName = pCounterAccessor->GetCounterName(i);
+                    EXPECT_STREQ(counterNames[i], pCounterName);
+
+                    const char* pDesc = pCounterAccessor->GetCounterDescription(i);
+                    EXPECT_NE((const char*)nullptr, pDesc);
+                    EXPECT_NE("", pDesc);
+                }
+            }
+
+            // Second, attempt to get SI counters
+            pCounterAccessor = nullptr;
+            pCounterScheduler = nullptr;
+            status = GPA_GetAvailableCounters_fn(GPA_API_OPENCL, AMD_VENDOR_ID, gDevIdSI, 0, &pCounterAccessor, &pCounterScheduler);
+            EXPECT_EQ(GPA_STATUS_OK, status);
+            EXPECT_NE((GPA_ICounterAccessor*)nullptr, pCounterAccessor);
+            EXPECT_NE((GPA_ICounterScheduler*)nullptr, pCounterScheduler);
+
+            GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
+            if (nullptr != pCounterAccessor)
+            {
+                numCounters = pCounterAccessor->GetNumCounters();
+                EXPECT_EQ(counterNames.size(), numCounters);
+
+                // verify as many counter names as possible.
+                numCounters = std::min(counterNames.size(), numCounters);
+
+                if (counterNames.size() == numCounters)
+                {
+                    for (unsigned int i = 0; i < numCounters; ++i)
+                    {
+                        const char* pCounterName = pCounterAccessor->GetCounterName(i);
+                        EXPECT_STREQ(counterNames[i], pCounterName);
+
+                        const char* pDesc = pCounterAccessor->GetCounterDescription(i);
+                        EXPECT_NE((const char*)nullptr, pDesc);
+                        EXPECT_NE("", pDesc);
+                    }
+                }
+            }
         }
     }
 
-    // Second, attempt to get SI counters
-    pCounterAccessor = nullptr;
-    pCounterScheduler = nullptr;
-    status = GPA_GetAvailableCounters_fn(GPA_API_OPENCL, AMD_VENDOR_ID, gDevIdSI, 0, &pCounterAccessor, &pCounterScheduler);
-    EXPECT_EQ(GPA_STATUS_OK, status);
-    EXPECT_NE((GPA_ICounterAccessor*)nullptr, pCounterAccessor);
-    EXPECT_NE((GPA_ICounterScheduler*)nullptr, pCounterScheduler);
-
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_SOUTHERNISLAND, counterNames);
-    numCounters = pCounterAccessor->GetNumCounters();
-    EXPECT_EQ(counterNames.size(), numCounters);
-
-    // verify as many counter names as possible.
-    numCounters = min(counterNames.size(), numCounters);
-
-    if (counterNames.size() == numCounters)
-    {
-        for (unsigned int i = 0; i < numCounters; ++i)
-        {
-            const char* pCounterName = pCounterAccessor->GetCounterName(i);
-            EXPECT_STREQ(counterNames[i], pCounterName);
-
-            const char* pDesc = pCounterAccessor->GetCounterDescription(i);
-            EXPECT_NE((const char*)nullptr, pDesc);
-            EXPECT_NE("", pDesc);
-        }
-    }
-
-    // delete DLL
-    BOOL freed = FreeLibrary(hDll);
-    EXPECT_EQ(TRUE, freed);
+    UnloadLib(libHandle);
 }

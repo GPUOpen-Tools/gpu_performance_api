@@ -8,7 +8,7 @@
 #ifndef _HSA_COUNTER_DATA_REQUEST_H_
 #define _HSA_COUNTER_DATA_REQUEST_H_
 
-#include "../GPUPerfAPI-Common/GPUPerfAPIImp.h"
+#include "GPUPerfAPIImp.h"
 #include "GPUPerfAPIHSA.h"
 
 /// Typedef for a map from counter group index to hsa_ext_tools_counter_block_t

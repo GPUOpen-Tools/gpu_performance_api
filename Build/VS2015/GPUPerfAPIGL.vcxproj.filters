@@ -28,7 +28,7 @@
     <ClCompile Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.cpp" />
-    <ClCompile Include="..\..\Non-OpenSource\GPUPerfAPICounterGenerator\GPAInternalCounterGeneratorRegistration.cpp" />
+    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPIInternalRegistration\GLGPAInternalCounterGeneratorRegistration.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.h" />
