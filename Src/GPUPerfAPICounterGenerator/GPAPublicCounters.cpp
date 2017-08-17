@@ -478,6 +478,22 @@ static void EvaluateExpression(const char* pExpression, void* pResult, vector< c
 
             stack.push_back(sum);
         }
+        else if (_strcmpi(pch, "sum256") == 0)
+        {
+            assert(stack.size() >= 256);
+            T sum = 0;
+
+            // pop the last 256 items and add them together
+            for (int i = 0; i < 256; i++)
+            {
+                T value = stack.back();
+                stack.pop_back();
+
+                sum += value;
+            }
+
+            stack.push_back(sum);
+        }
         else
         {
             // must be number, reference to internal counter

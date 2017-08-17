@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  PublicCounterDefinitions for DX11GFX8
@@ -1092,74 +1092,14 @@ void AutoDefinePublicCountersDX11Gfx8(GPA_PublicCounters& p)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(22242);
-        internalCounters.push_back(22541);
-        internalCounters.push_back(22840);
-        internalCounters.push_back(23139);
-        internalCounters.push_back(23513);
-        internalCounters.push_back(23632);
-        internalCounters.push_back(23751);
-        internalCounters.push_back(23870);
-        internalCounters.push_back(23989);
-        internalCounters.push_back(24108);
-        internalCounters.push_back(24227);
-        internalCounters.push_back(24346);
-        internalCounters.push_back(24465);
-        internalCounters.push_back(24584);
-        internalCounters.push_back(24703);
-        internalCounters.push_back(24822);
-        internalCounters.push_back(24941);
-        internalCounters.push_back(25060);
-        internalCounters.push_back(25179);
-        internalCounters.push_back(25298);
-        internalCounters.push_back(25417);
-        internalCounters.push_back(25536);
-        internalCounters.push_back(25655);
-        internalCounters.push_back(25774);
-        internalCounters.push_back(25893);
-        internalCounters.push_back(26012);
-        internalCounters.push_back(26131);
-        internalCounters.push_back(26250);
-        internalCounters.push_back(26369);
-        internalCounters.push_back(26488);
-        internalCounters.push_back(26607);
-        internalCounters.push_back(26726);
-        internalCounters.push_back(26845);
-        internalCounters.push_back(26964);
-        internalCounters.push_back(27083);
-        internalCounters.push_back(27202);
-        internalCounters.push_back(27321);
-        internalCounters.push_back(27440);
-        internalCounters.push_back(27559);
-        internalCounters.push_back(27678);
-        internalCounters.push_back(27797);
-        internalCounters.push_back(27916);
-        internalCounters.push_back(28035);
-        internalCounters.push_back(28154);
-        internalCounters.push_back(28273);
-        internalCounters.push_back(28392);
-        internalCounters.push_back(28511);
-        internalCounters.push_back(28630);
-        internalCounters.push_back(28749);
-        internalCounters.push_back(28868);
-        internalCounters.push_back(28987);
-        internalCounters.push_back(29106);
-        internalCounters.push_back(29225);
-        internalCounters.push_back(29344);
-        internalCounters.push_back(29463);
-        internalCounters.push_back(29582);
-        internalCounters.push_back(29701);
-        internalCounters.push_back(29820);
-        internalCounters.push_back(29939);
-        internalCounters.push_back(30058);
-        internalCounters.push_back(30177);
-        internalCounters.push_back(30296);
-        internalCounters.push_back(30415);
-        internalCounters.push_back(30534);
-        internalCounters.push_back(30653);
-        internalCounters.push_back(30772);
-        internalCounters.push_back(30891);
-        internalCounters.push_back(31010);
+        internalCounters.push_back(22247);
+        internalCounters.push_back(22546);
+        internalCounters.push_back(22845);
+        internalCounters.push_back(23144);
+        internalCounters.push_back(22248);
+        internalCounters.push_back(22547);
+        internalCounters.push_back(22846);
+        internalCounters.push_back(23145);
         internalCounters.push_back(22219);
         internalCounters.push_back(22518);
         internalCounters.push_back(22817);
@@ -1169,7 +1109,7 @@ void AutoDefinePublicCountersDX11Gfx8(GPA_PublicCounters& p)
         internalCounters.push_back(13508);
         internalCounters.push_back(13705);
 
-        p.DefinePublicCounter("CSFlatVMemInsts", "#ComputeShader#The average number of FLAT instructions that read from or write to the video memory executed per work item (affected by flow control). Includes FLAT instructions that read from or write to scratch.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,sum4,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,sum64,-,68,69,70,71,sum4,/,72,73,74,75,sum4,ifnotzero");
+        p.DefinePublicCounter("CSFlatVMemInsts", "#ComputeShader#The average number of FLAT instructions that read from or write to the video memory executed per work item (affected by flow control). Includes FLAT instructions that read from or write to scratch.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,-,8,9,10,11,sum4,/,12,13,14,15,sum4,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
