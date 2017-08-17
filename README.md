@@ -81,4 +81,4 @@ allow users of GPA to indicate whether the library exposes just the Derived coun
 for something which is no longer actually Internal-to-AMD can be a bit confusing, and we will aim to change this in the future.
 
 ## Known Issues
- * The OpenCL™ version of GPUPerfAPI is not currently working for Vega GPUs on Windows when using a 17.20-based driver. This is due to missing driver support in the 17.20 driver. Future driver versions should provide the support needed.
+ * The OpenCL™ version of GPUPerfAPI requires at least Driver Version 17.30.1071 for Vega GPUs on Windows.  Earlier driver versions have either missing or incomplete support for collecting OpenCL performance counters
