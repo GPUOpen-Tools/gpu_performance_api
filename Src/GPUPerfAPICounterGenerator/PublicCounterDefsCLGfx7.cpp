@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  PublicCounterDefinitions for CLGFX7
@@ -54,7 +54,7 @@ void AutoDefinePublicCountersCLGfx7(GPA_PublicCounters& p)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(2766);
+        internalCounters.push_back(2764);
         internalCounters.push_back(2765);
         internalCounters.push_back(2736);
 

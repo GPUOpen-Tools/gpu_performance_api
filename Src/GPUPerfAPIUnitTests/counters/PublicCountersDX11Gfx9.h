@@ -13,7 +13,7 @@
 #include "GPACounterDesc.h"
 
 /// Number of public counters for DX11Gfx9
-static const size_t DX11GFX9_PUBLIC_COUNTER_COUNT = 73;
+static const size_t DX11GFX9_PUBLIC_COUNTER_COUNT = 84;
 
 /// Array of public counters for DX11Gfx9
 extern const GPACounterDesc DX11GFX9_PUBLIC_COUNTERS[DX11GFX9_PUBLIC_COUNTER_COUNT];

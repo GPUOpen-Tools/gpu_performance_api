@@ -13,7 +13,7 @@
 #include "GPACounterDesc.h"
 
 /// Number of public counters for CLGfx9
-static const size_t CLGFX9_PUBLIC_COUNTER_COUNT = 15;
+static const size_t CLGFX9_PUBLIC_COUNTER_COUNT = 21;
 
 /// Array of public counters for CLGfx9
 extern const GPACounterDesc CLGFX9_PUBLIC_COUNTERS[CLGFX9_PUBLIC_COUNTER_COUNT];

@@ -897,12 +897,12 @@ desc=#ComputeShader#The average number of FLAT instructions that read from or wr
 type=gpa_float64
 usage=items
 [GLGfx7]
-SQ_CS_SQ_PERF_SEL_INSTS_LDS
+SQ_CS_SQ_PERF_SEL_INSTS_FLAT
 SQ_CS_SQ_PERF_SEL_INSTS_FLAT_LDS_ONLY
 SQ_CS_SQ_PERF_SEL_WAVES
 comp=(0),0,1,-,2,/,2,ifnotzero
 [DX11Gfx7]
-SQ_CS*_SQ_PERF_SEL_INSTS_LDS[0..3]
+SQ_CS*_SQ_PERF_SEL_INSTS_FLAT[0..3]
 SQ_CS*_SQ_PERF_SEL_INSTS_FLAT_LDS_ONLY[0..3]
 SQ_CS*_SQ_PERF_SEL_WAVES[0..3]
 SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]

@@ -72,7 +72,7 @@ desc=#General#The average number of FLAT instructions that read from or write to
 type=gpa_float64
 usage=items
 [CLGfx7]
-SQ_SQ_PERF_SEL_INSTS_LDS
+SQ_SQ_PERF_SEL_INSTS_FLAT
 SQ_SQ_PERF_SEL_INSTS_FLAT_LDS_ONLY
 SQ_SQ_PERF_SEL_WAVES
 comp=0,1,-,2,/

@@ -61,6 +61,34 @@ GPA_Status GPA_CounterGeneratorCL::GeneratePublicCounters(GDT_HW_GENERATION desi
     return GPA_STATUS_OK;
 }
 
+int GPA_CounterGeneratorCL::GetDriverGroupId(GDT_HW_GENERATION desiredGeneration, int blockIndex) const
+{
+    int result = blockIndex;
+
+    if (GDT_HW_GENERATION_GFX9 == desiredGeneration)
+    {
+        // for GFX9, the driver has MC, SRBM at index 92, 93, but we don't have those groups for GFX9
+        static const int GFX9_MC_BLOCK_INDEX = 92;
+
+        if (blockIndex >= GFX9_MC_BLOCK_INDEX)
+        {
+            result += 2;
+        }
+    }
+    else if (GDT_HW_GENERATION_SEAISLAND == desiredGeneration)
+    {
+        // for GFX7 (CI), the driver has TCS at index 79, but we don't have that group for GFX7
+        static const int GFX9_TCS_BLOCK_INDEX = 79;
+
+        if (blockIndex >= GFX9_TCS_BLOCK_INDEX)
+        {
+            result++;
+        }
+    }
+
+    return result;
+}
+
 GPA_Status GPA_CounterGeneratorCL::GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
 {
     if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
@@ -123,7 +151,8 @@ GPA_Status GPA_CounterGeneratorCL::GenerateHardwareCounters(GDT_HW_GENERATION de
             {
                 counter.m_pHardwareCounter = &(pClGroup[j]);
                 counter.m_groupIndex      = i;
-                counter.m_groupIdDriver   = i;
+                counter.m_groupIdDriver = GetDriverGroupId(desiredGeneration, i);
+
                 counter.m_counterIdDriver = 0;
 
 #if defined(_DEBUG) && defined(_WIN32) && defined(AMDT_INTERNAL)

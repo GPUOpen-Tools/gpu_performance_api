@@ -205,7 +205,7 @@ bool CLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
         // need to Enable counters
         GPA_HardwareCounterDescExt* pCounter = getCurrentContext()->m_pCounterAccessor->GetHardwareCounterExt((*pCounters)[i]);
 
-        gpa_uint32 uGroupIndex = pCounter->m_groupIndex;
+        gpa_uint32 uGroupIndex = pCounter->m_groupIdDriver;
         assert(uGroupIndex <= uGroups);
 
         gpa_uint64 uCounters = pHardwareCounters->m_pGroups[uGroupIndex].m_numCounters;

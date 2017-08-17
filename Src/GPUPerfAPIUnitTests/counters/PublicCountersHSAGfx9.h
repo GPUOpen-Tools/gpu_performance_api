@@ -13,7 +13,7 @@
 #include "GPACounterDesc.h"
 
 /// Number of public counters for HSAGfx9
-static const size_t HSAGFX9_PUBLIC_COUNTER_COUNT = 15;
+static const size_t HSAGFX9_PUBLIC_COUNTER_COUNT = 20;
 
 /// Array of public counters for HSAGfx9
 extern const GPACounterDesc HSAGFX9_PUBLIC_COUNTERS[HSAGFX9_PUBLIC_COUNTER_COUNT];

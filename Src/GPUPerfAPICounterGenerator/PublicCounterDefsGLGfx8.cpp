@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  PublicCounterDefinitions for GLGFX8
@@ -508,7 +508,7 @@ void AutoDefinePublicCountersGLGfx8(GPA_PublicCounters& p)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(5554);
+        internalCounters.push_back(5552);
         internalCounters.push_back(5553);
         internalCounters.push_back(5524);
 
