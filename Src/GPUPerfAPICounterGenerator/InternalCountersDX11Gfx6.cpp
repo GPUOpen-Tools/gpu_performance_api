@@ -352,6 +352,121 @@ GPA_SQCounterGroupDesc HWDX11SQGroupsGfx6[] =
     {35, 1, SQ_ALL},
 };
 
+
+unsigned int HWDX11SQIsolatedGroupsGfx6[] =
+{
+    36, // Ta
+    37, // Ta
+    38, // Ta
+    39, // Ta
+    40, // Ta
+    41, // Ta
+    42, // Ta
+    43, // Ta
+    44, // Ta
+    45, // Ta
+    46, // Ta
+    47, // Ta
+    48, // Ta
+    49, // Ta
+    50, // Ta
+    51, // Ta
+    52, // Ta
+    53, // Ta
+    54, // Ta
+    55, // Ta
+    56, // Ta
+    57, // Ta
+    58, // Ta
+    59, // Ta
+    60, // Ta
+    61, // Ta
+    62, // Ta
+    63, // Ta
+    64, // Ta
+    65, // Ta
+    66, // Ta
+    67, // Ta
+    68, // Td
+    69, // Td
+    70, // Td
+    71, // Td
+    72, // Td
+    73, // Td
+    74, // Td
+    75, // Td
+    76, // Td
+    77, // Td
+    78, // Td
+    79, // Td
+    80, // Td
+    81, // Td
+    82, // Td
+    83, // Td
+    84, // Td
+    85, // Td
+    86, // Td
+    87, // Td
+    88, // Td
+    89, // Td
+    90, // Td
+    91, // Td
+    92, // Td
+    93, // Td
+    94, // Td
+    95, // Td
+    96, // Td
+    97, // Td
+    98, // Td
+    99, // Td
+    100, // Tcp
+    101, // Tcp
+    102, // Tcp
+    103, // Tcp
+    104, // Tcp
+    105, // Tcp
+    106, // Tcp
+    107, // Tcp
+    108, // Tcp
+    109, // Tcp
+    110, // Tcp
+    111, // Tcp
+    112, // Tcp
+    113, // Tcp
+    114, // Tcp
+    115, // Tcp
+    116, // Tcp
+    117, // Tcp
+    118, // Tcp
+    119, // Tcp
+    120, // Tcp
+    121, // Tcp
+    122, // Tcp
+    123, // Tcp
+    124, // Tcp
+    125, // Tcp
+    126, // Tcp
+    127, // Tcp
+    128, // Tcp
+    129, // Tcp
+    130, // Tcp
+    131, // Tcp
+    132, // Tcc
+    133, // Tcc
+    134, // Tcc
+    135, // Tcc
+    136, // Tcc
+    137, // Tcc
+    138, // Tcc
+    139, // Tcc
+    140, // Tcc
+    141, // Tcc
+    142, // Tcc
+    143, // Tcc
+    144, // Tca
+    145, // Tca
+};
+
 PE_BLOCK_ID HWDX11DriverEnumGfx6[] =
 {
     PE_BLOCK_DRMDMA,
@@ -525,3 +640,4 @@ const unsigned int HWDX11GPUTimeStampIndexGfx6 = 162;
 const unsigned int HWDX11FirstGPUTimeCounterIndexGfx6 = 16885;
 const unsigned int HWDX11GroupCountGfx6 = sizeof(HWDX11GroupsGfx6) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX11SQGroupCountGfx6 = sizeof(HWDX11SQGroupsGfx6) / sizeof(GPA_SQCounterGroupDesc);
+const unsigned int HWDX11SQIsolatedGroupCountGfx6 = sizeof(HWDX11SQIsolatedGroupsGfx6) / sizeof(unsigned int);

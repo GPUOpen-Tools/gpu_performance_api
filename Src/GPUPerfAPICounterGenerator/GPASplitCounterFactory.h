@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  A factory which can produce various counter splitting implementations.
@@ -13,9 +13,6 @@
 #include "GPASplitCountersMaxPerPass.h"
 #include "GPASplitCountersOnePerPass.h"
 #include "GPASplitCountersConsolidated.h"
-#ifdef _WIN32
-    #include "GPASplitCountersConsolidatedDX12.h"
-#endif // _WIN32
 #include "GPAHardwareCounters.h"
 #include <list>
 
@@ -33,9 +30,6 @@ enum GPACounterSplitterAlgorithm
     /// multi-pass counters should not take more passes than required,
     /// no more than a fixed number of counters per pass,
     CONSOLIDATED,
-
-    // Consolidated algorithm for DX12
-    CONSOLIDATED_DX12,
 };
 
 /// A factory which can produce various counter splitting implementations.
@@ -50,6 +44,8 @@ public:
     /// \param maxSQCounters The maximum number of simultaneous counters in the SQ block.
     /// \param numSQGroups The number of SQ counter groups.
     /// \param pSQCounterBlockInfo The list of SQ counter groups.
+    /// \param numIsolatedFromSqGroups The number of counter groups that must be isolated from SQ counter groups
+    /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
     /// \return the counter splitter
     static IGPASplitCounters* GetNewCounterSplitter(GPACounterSplitterAlgorithm algorithm,
                                                     unsigned int gpuTimestampGroupIndex,
@@ -57,7 +53,9 @@ public:
                                                     unsigned int gpuTimestampTopToBottomCounterIndex,
                                                     unsigned int maxSQCounters,
                                                     unsigned int numSQGroups,
-                                                    GPA_SQCounterGroupDesc* pSQCounterBlockInfo)
+                                                    GPA_SQCounterGroupDesc* pSQCounterBlockInfo,
+                                                    unsigned int numIsolatedFromSqGroups,
+                                                    const unsigned int* pIsolatedFromSqGroups)
     {
         IGPASplitCounters* pSplitter = nullptr;
 
@@ -68,7 +66,9 @@ public:
                                                                      gpuTimestampTopToBottomCounterIndex,
                                                                      maxSQCounters,
                                                                      numSQGroups,
-                                                                     pSQCounterBlockInfo);
+                                                                     pSQCounterBlockInfo,
+                                                                     numIsolatedFromSqGroups,
+                                                                     pIsolatedFromSqGroups);
         }
         else if (ONE_PUBLIC_COUNTER_PER_PASS == algorithm)
         {
@@ -77,7 +77,9 @@ public:
                                                                      gpuTimestampTopToBottomCounterIndex,
                                                                      maxSQCounters,
                                                                      numSQGroups,
-                                                                     pSQCounterBlockInfo);
+                                                                     pSQCounterBlockInfo,
+                                                                     numIsolatedFromSqGroups,
+                                                                     pIsolatedFromSqGroups);
         }
         else if (CONSOLIDATED == algorithm)
         {
@@ -86,20 +88,10 @@ public:
                                                                        gpuTimestampTopToBottomCounterIndex,
                                                                        maxSQCounters,
                                                                        numSQGroups,
-                                                                       pSQCounterBlockInfo);
+                                                                       pSQCounterBlockInfo,
+                                                                       numIsolatedFromSqGroups,
+                                                                       pIsolatedFromSqGroups);
         }
-#ifdef _WIN32
-        else if (CONSOLIDATED_DX12 == algorithm)
-        {
-            pSplitter = new(std::nothrow) GPASplitCountersConsolidatedDX12(gpuTimestampGroupIndex,
-                                                                           gpuTimestampBottomToBottomCounterIndex,
-                                                                           gpuTimestampTopToBottomCounterIndex,
-                                                                           maxSQCounters,
-                                                                           numSQGroups,
-                                                                           pSQCounterBlockInfo);
-        }
-
-#endif // _WIN32
         else
         {
             assert(!"Unhandled GPACounterSplitAlgorithm supplied to factory.");
@@ -107,7 +99,7 @@ public:
 
         if (nullptr == pSplitter)
         {
-            GPA_LogError("Unable to allocate memory for counter splitter");
+            GPA_LogError("Unable to allocate memory for counter splitter.");
         }
 
         return pSplitter;

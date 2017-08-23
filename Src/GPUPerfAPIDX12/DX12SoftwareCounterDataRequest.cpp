@@ -16,7 +16,7 @@ DX12SoftwareCounterDataRequest::DX12SoftwareCounterDataRequest()
     m_commandList(),
     m_swSampleId(ms_unitializedSampleId)
 {
-} // end of DX12SoftwareCounterDataRequest::DX12SoftwareCounterDataRequest
+}
 
 DX12SoftwareCounterDataRequest::~DX12SoftwareCounterDataRequest()
 {
@@ -25,7 +25,7 @@ DX12SoftwareCounterDataRequest::~DX12SoftwareCounterDataRequest()
     m_activeQueries = 0;
     m_commandList.Release();
     m_swSampleId = ms_unitializedSampleId;
-} // end of DX12SoftwareCounterDataRequest::~DX12SoftwareCounterDataRequest
+}
 
 bool DX12SoftwareCounterDataRequest::CollectResults(GPA_CounterResults& resultStorage)
 {
@@ -84,10 +84,11 @@ bool DX12SoftwareCounterDataRequest::CollectResults(GPA_CounterResults& resultSt
     }
 
     return result;
-} // end of DX12SoftwareCounterDataRequest::CollectResults
+}
 
 bool DX12SoftwareCounterDataRequest::BeginRequest(
     GPA_ContextState* pContextState,
+    void* pSampleList,
     gpa_uint32 selectionId,
     const vector<gpa_uint32>* pCounters)
 {
@@ -106,12 +107,16 @@ bool DX12SoftwareCounterDataRequest::BeginRequest(
         const size_t counterCount = pCounters->size();
         m_activeCountersList.resize(counterCount);
 
+        gpa_uint32 hardWareCountersCount = m_pContextState->m_pCounterAccessor->GetHardwareCounters()->GetNumCounters();
+
         for (size_t ci = 0; result && (ci < counterCount) ; ++ci)
         {
             gpa_uint32 swCounterIndex = (*pCounters)[ci];
             m_activeCountersList[ci].m_index =
                 s_pSwCounterManager->GetSwCounterPubIndex(swCounterIndex);
-            gpa_uint32 counterIdDriver = pSwCounters->m_counters[swCounterIndex].m_counterIdDriver;
+
+            // software counter indices are after the hardware counter
+            gpa_uint32 counterIdDriver = pSwCounters->m_counters[swCounterIndex - hardWareCountersCount].m_counterIdDriver;
             m_activeCountersList[ci].m_queryType = static_cast<D3D12_QUERY_TYPE>(counterIdDriver);
             result = (counterIdDriver < sizeof(m_activeQueries));
 
@@ -123,28 +128,39 @@ bool DX12SoftwareCounterDataRequest::BeginRequest(
 
         if (result)
         {
-            unsigned int activeQueries = m_activeQueries;
-            bool beginQuery = (0 != activeQueries);
-            result = m_pContextState->BeginSwSample(m_commandList, m_swSampleId);
+            IUnknown* pUnknown = static_cast<IUnknown*>(pSampleList);
+
+            ID3D12GraphicsCommandList* pCommandList;
+            HRESULT hr = pUnknown->QueryInterface(__uuidof(ID3D12GraphicsCommandList), reinterpret_cast<void**>(&pCommandList));
+            result = S_OK == hr;
 
             if (result)
             {
-                while (beginQuery)
-                {
-                    D3D12_QUERY_TYPE queryType;
-                    _BitScanForward(reinterpret_cast<unsigned long*>(&queryType), activeQueries);
-                    m_pContextState->BeginSwQuery(m_commandList, m_swSampleId, queryType);
-                    activeQueries &= ~(0x1 << static_cast<unsigned int>(queryType));
-                    beginQuery = (0 != activeQueries);
-                }
+                m_commandList = pCommandList;
 
-                SetActiveCountersCount(counterCount);
+                unsigned int activeQueries = m_activeQueries;
+                bool beginQuery = (0 != activeQueries);
+                result = m_pContextState->BeginSwSample(m_commandList, m_swSampleId);
+
+                if (result)
+                {
+                    while (beginQuery)
+                    {
+                        D3D12_QUERY_TYPE queryType;
+                        _BitScanForward(reinterpret_cast<unsigned long*>(&queryType), activeQueries);
+                        m_pContextState->BeginSwQuery(m_commandList, m_swSampleId, queryType);
+                        activeQueries &= ~(0x1 << static_cast<unsigned int>(queryType));
+                        beginQuery = (0 != activeQueries);
+                    }
+
+                    SetActiveCountersCount(counterCount);
+                }
             }
         }
     }
 
     return result;
-} // end of DX12SoftwareCounterDataRequest::BeginRequest
+}
 
 bool DX12SoftwareCounterDataRequest::EndRequest()
 {
@@ -172,11 +188,11 @@ bool DX12SoftwareCounterDataRequest::EndRequest()
     }
 
     return result;
-} // end of DX12SoftwareCounterDataRequest::EndRequest
+}
 
 void DX12SoftwareCounterDataRequest::ReleaseCounters()
 {
-} // end of DX12SoftwareCounterDataRequest::ReleaseCounters
+}
 
 bool DX12SoftwareCounterDataRequest::GetTimestampQueryCounterResult(
     const DX12SoftwareCountersResults& queryResults,
@@ -205,7 +221,7 @@ const
     }
 
     return result;
-} // end of DX12SoftwareCounterDataRequest::GetTimestampQueryCounterResult
+}
 
 bool DX12SoftwareCounterDataRequest::GetPipelineQueryCounterResult(
     const DX12SoftwareCountersResults& queryResults,
@@ -266,5 +282,4 @@ const
     }
 
     return result;
-} // end of DX12SoftwareCounterDataRequest::GetPipelineQueryCounterResult
-
+}

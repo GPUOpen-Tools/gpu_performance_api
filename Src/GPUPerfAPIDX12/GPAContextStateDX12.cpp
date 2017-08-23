@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA_ContextStateDX12 implementation
@@ -11,134 +11,358 @@
 
 GPA_ContextStateDX12::GPA_ContextStateDX12()
     :
-    m_device(),
-    m_commandList(),
+    m_device(nullptr),
     m_commandListQueries(),
-    m_mutex()
+    m_commandListGpaSession(),
+    m_mutex(),
+    m_pGpaInterface(nullptr),
+    m_pAmdExtObject(nullptr),
+    m_clockMode(AmdExtDeviceClockMode::Default)
 {
-} // end of GPA_ContextStateDX12::GPA_ContextStateDX12
+}
 
 GPA_ContextStateDX12::~GPA_ContextStateDX12()
 {
     Cleanup();
-} // end of GPA_ContextStateDX12::~GPA_ContextStateDX12
+}
 
 void GPA_ContextStateDX12::Cleanup()
 {
-    if (nullptr != m_commandList)
+    if (GPA_STATUS_OK != SetStableClocks(false))
     {
-        m_commandList.Release();
+        GPA_LogError("Unable to restore GPU clocks.");
+    }
+
+    // TODO: is it sufficient to destroy all sessions here or do we need a way to
+    //       explicitly destroy sessions when we know we're done with them (i.e.
+    //       after we gather all results from a session)
+    for (auto cmdListGpaSessionPair : m_commandListGpaSession)
+    {
+        m_pGpaInterface->DestroyGpaSession(cmdListGpaSessionPair.second);
+    }
+
+    m_commandListGpaSession.clear();
+
+    if (nullptr != m_pGpaInterface)
+    {
+        m_pGpaInterface->Release();
+        m_pGpaInterface = nullptr;
+    }
+
+    if (nullptr != m_pAmdExtObject)
+    {
+        m_pAmdExtObject->Release();
+        m_pAmdExtObject = nullptr;
     }
 
     if (nullptr != m_device)
     {
-        m_device.Release();
+        m_device = nullptr;
     }
-} // end of GPA_ContextStateDX12::Cleanup
+}
 
-
-bool GPA_ContextStateDX12::SetCommandList(ID3D12GraphicsCommandListPtr pCommandList)
+GPA_Status GPA_ContextStateDX12::SetD3D12Device(ID3D12Device* pDevice, bool isAMDDevice)
 {
-    AMDTScopeLock scopeLock(m_mutex);
-    bool result = true;
+    GPA_Status result = GPA_STATUS_OK;
 
-    if (nullptr == pCommandList)
+    if (pDevice != m_device)
     {
-        m_commandList.Release();
-        result = false;
-    }
-    else
-    {
-        if (m_commandList != pCommandList)
+        m_device = pDevice;
+
+        if (nullptr == m_pGpaInterface && isAMDDevice)
         {
-            if (nullptr != m_commandList)
+            result = GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+
+            HMODULE hDll = nullptr;
+#ifdef X64
+            hDll = GetModuleHandle("amdxc64.dll");
+#else
+            hDll = GetModuleHandle("amdxc32.dll");
+#endif
+            if (nullptr == hDll)
             {
-                m_commandList.Release();
+                GPA_LogError("Unable to get driver module handle.");
             }
+            else
+            {
+                PFNAmdExtD3DCreateInterface pAmdExtD3dCreateFunc = reinterpret_cast<PFNAmdExtD3DCreateInterface>(GetProcAddress(hDll,
+                                                                   "AmdExtD3DCreateInterface"));
 
-            m_commandList = pCommandList;
+                if (nullptr == pAmdExtD3dCreateFunc)
+                {
+                    GPA_LogError("Unable to get driver extension entry point.");
+                }
+                else
+                {
+                    HRESULT hr = pAmdExtD3dCreateFunc(m_device, __uuidof(IAmdExtD3DFactory), reinterpret_cast<void**>(&m_pAmdExtObject));
 
-            HRESULT hr = m_commandList->GetDevice(__uuidof(ID3D12Device), (void**)&m_device);
+                    if (FAILED(hr))
+                    {
+                        GPA_LogError("Unable to get driver extension interface.");
+                    }
+                    else
+                    {
+                        hr = m_pAmdExtObject->CreateInterface(m_device,
+                                                            __uuidof(IAmdExtGpaInterface),
+                                                            reinterpret_cast<void**>(&m_pGpaInterface));
 
-            result = S_OK == hr;
+                        if (FAILED(hr))
+                        {
+                            const GUID prevDriverExtGuid = { 0xA86AE046, 0x9926, 0x44B5, { 0xB8, 0x23, 0x02, 0x2F, 0x45, 0x73, 0xBF, 0xE1} };
+                            hr = m_pAmdExtObject->CreateInterface(m_device,
+                                                                prevDriverExtGuid,
+                                                                reinterpret_cast<void**>(&m_pGpaInterface));
+                        }
+
+                        if (FAILED(hr))
+                        {
+                            GPA_LogError("Unable to get driver GPA extension interface.");
+                        }
+                        else
+                        {
+                            hr = m_pGpaInterface->GetPerfExperimentProperties(&m_props);
+
+                            if (FAILED(hr))
+                            {
+                                GPA_LogError("Unable to get current hardware perf experiment properties.");
+                            }
+                            else
+                            {
+                                if (0 == m_props.features.counters)
+                                {
+                                    GPA_LogError("Active GPU hardware does not support performance counters.");
+                                    result = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+                                }
+                                else
+                                {
+                                    result = SetStableClocks(true);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 
     return result;
-} // end of GPA_ContextStateDX12::SetCommandList
+}
 
 GPA_Status GPA_ContextStateDX12::GetTimestampFrequency(UINT64& timestampFrequency)
 {
-    GPA_Status result = GPA_STATUS_ERROR_FAILED;
+    GPA_Status result = GPA_STATUS_OK;
 
-    result = SetStablePowerState(TRUE);
+    ID3D12CommandQueue* pQueue = nullptr;
+    D3D12_COMMAND_QUEUE_DESC queueDesc;
+    ZeroMemory(&queueDesc, sizeof(queueDesc));
+    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+    HRESULT hr = m_device->CreateCommandQueue(&queueDesc, __uuidof(ID3D12CommandQueue), (PVOID*)&pQueue);
 
-    if (GPA_STATUS_OK == result)
+    if (FAILED(hr) || nullptr == pQueue)
     {
-        ID3D12CommandQueue* pQueue = nullptr;
-        D3D12_COMMAND_QUEUE_DESC queueDesc;
-        ZeroMemory(&queueDesc, sizeof(queueDesc));
-        queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
-        queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-        HRESULT hr = m_device->CreateCommandQueue(&queueDesc, __uuidof(ID3D12CommandQueue), (PVOID*)&pQueue);
+        result = GPA_STATUS_ERROR_FAILED;
+    }
+    else
+    {
+        UINT64 frequency = 0;
+        hr = pQueue->GetTimestampFrequency(&frequency);
 
-        if (S_OK != hr || nullptr == pQueue)
+        if (FAILED(hr))
         {
             result = GPA_STATUS_ERROR_FAILED;
         }
         else
         {
-            UINT64 frequencey = 0;
-            hr = pQueue->GetTimestampFrequency(&frequencey);
-
-            if (S_OK != hr)
-            {
-                result = GPA_STATUS_ERROR_FAILED;
-            }
-            else
-            {
-                timestampFrequency = frequencey;
-            }
-
-            pQueue->Release();
+            timestampFrequency = frequency;
         }
 
-        result = SetStablePowerState(FALSE);
+        pQueue->Release();
     }
 
     return result;
-} // end of GPA_ContextStateDX12::GetTimestampFrequency
+}
 
-GPA_Status GPA_ContextStateDX12::BeginSession()
+GPA_Status GPA_ContextStateDX12::BeginCommandList(void* pCommandList)
 {
-    return SetStablePowerState(TRUE);
-} // end of GPA_ContextStateDX12::BeginSession
+    GPA_Status retVal = GPA_STATUS_OK;
 
-GPA_Status GPA_ContextStateDX12::EndSession()
+    IUnknown* pUnknown = static_cast<IUnknown*>(pCommandList);
+    ID3D12GraphicsCommandList* pD3DCommandList;
+    HRESULT hr = pUnknown->QueryInterface(__uuidof(ID3D12GraphicsCommandList), reinterpret_cast<void**>(&pD3DCommandList));
+    bool result = SUCCEEDED(hr);
+
+    if (result)
+    {
+        D3D12_COMMAND_LIST_TYPE cmdListType = pD3DCommandList->GetType();
+
+        if (D3D12_COMMAND_LIST_TYPE_COPY == cmdListType)
+        {
+            GPA_LogError("D3D12_COMMAND_LIST_TYPE_COPY command lists not supported.");
+            retVal = GPA_STATUS_ERROR_FAILED;
+        }
+        else
+        {
+            IAmdExtGpaSession* pGpaSession = nullptr;
+
+            if (m_commandListGpaSession.end() == m_commandListGpaSession.find(pD3DCommandList))
+            {
+                if (nullptr != m_pGpaInterface)
+                {
+                    pGpaSession = m_pGpaInterface->CreateGpaSession();
+                }
+            }
+            else
+            {
+                pGpaSession = m_commandListGpaSession[pD3DCommandList];
+
+                GPA_SessionRequests* pSessionRequests = FindSession(m_sessionID);
+
+                if (nullptr == pSessionRequests)
+                {
+                    GPA_LogError("Unable to find session requests.");
+                    return GPA_STATUS_ERROR_NULL_POINTER;
+                }
+
+                // attempt to collect any outstanding results before resetting the Gpa Session
+                if (pSessionRequests->IsComplete())
+                {
+                    hr = pGpaSession->Reset();
+
+                    if (FAILED(hr))
+                    {
+                        GPA_LogError("Unable to reset GPA session.");
+                        retVal = GPA_STATUS_ERROR_FAILED;
+                    }
+                }
+                else
+                {
+                    GPA_LogError("Attempt to restart a command list while its previous results have not been collected.");
+                    retVal = GPA_STATUS_ERROR_FAILED;
+                }
+            }
+
+            if (nullptr == pGpaSession)
+            {
+                GPA_LogError("Unable to create GPA session.");
+                retVal = GPA_STATUS_ERROR_NULL_POINTER;
+            }
+            else
+            {
+                m_commandListGpaSession[pD3DCommandList] = pGpaSession;
+
+                hr = pGpaSession->Begin(pD3DCommandList);
+
+                if (FAILED(hr))
+                {
+                    GPA_LogError("Unable to open command list for sampling.");
+                    retVal = GPA_STATUS_ERROR_FAILED;
+                }
+            }
+        }
+
+        pD3DCommandList->Release();
+    }
+    else
+    {
+        GPA_LogError("Attempted to open an invalid command list for sampling.");
+        retVal = GPA_STATUS_ERROR_FAILED;
+    }
+
+    return retVal;
+}
+
+GPA_Status GPA_ContextStateDX12::EndCommandList(void* pCommandList)
 {
-    return SetStablePowerState(FALSE);
-} // end of GPA_ContextStateDX12::EndSession
+    GPA_Status retVal = GPA_STATUS_OK;
+
+    IUnknown* pUnknown = static_cast<IUnknown*>(pCommandList);
+    ID3D12GraphicsCommandList* pD3DCommandList;
+    HRESULT hr = pUnknown->QueryInterface(__uuidof(ID3D12GraphicsCommandList), reinterpret_cast<void**>(&pD3DCommandList));
+    bool result = SUCCEEDED(hr);
+
+    if (result)
+    {
+        IAmdExtGpaSession* pGpaSession = nullptr;
+
+        if (m_commandListGpaSession.end() != m_commandListGpaSession.find(pD3DCommandList))
+        {
+            pGpaSession = m_commandListGpaSession[pD3DCommandList];
+
+            if (nullptr == pGpaSession)
+            {
+                GPA_LogError("Make sure BeginCommandList is called before EndCommandList for this command list.");
+                retVal = GPA_STATUS_ERROR_SAMPLING_NOT_STARTED;
+            }
+            else
+            {
+                hr = pGpaSession->End(pD3DCommandList);
+
+                if (FAILED(hr))
+                {
+                    GPA_LogError("Unable to end command list.");
+                    retVal = GPA_STATUS_ERROR_FAILED;
+                }
+            }
+        }
+        else
+        {
+            GPA_LogError("Command List not open for sampling.");
+            retVal = GPA_STATUS_ERROR_SAMPLING_NOT_STARTED;
+        }
+
+        pD3DCommandList->Release();
+    }
+
+    return retVal;
+}
+
+bool GPA_ContextStateDX12::GetGpaSessionForCommandList(ID3D12GraphicsCommandList* pCommandList, IAmdExtGpaSession** pGpaSession)
+{
+    bool retVal = false;
+
+    if (nullptr != pGpaSession)
+    {
+        if (m_commandListGpaSession.end() != m_commandListGpaSession.find(pCommandList))
+        {
+            *pGpaSession = m_commandListGpaSession[pCommandList];
+            retVal = true;
+        }
+        else
+        {
+            *pGpaSession = nullptr;
+            GPA_LogError("Unable to get extension object for specified command list.");
+        }
+    }
+    else
+    {
+        GPA_LogError("Null extension pointer.");
+    }
+
+    return retVal;
+}
 
 bool GPA_ContextStateDX12::BeginSwSample(
     ID3D12GraphicsCommandListPtr& commandList, gpa_uint32& swSampleId)
 {
-    bool result = (nullptr != m_commandList.GetInterfacePtr());
+    UNREFERENCED_PARAMETER(commandList);
+    bool result = (nullptr != commandList.GetInterfacePtr());
     CommandListQueriesType::iterator cmdListQueriesIter = m_commandListQueries.end();
 
     if (result)
     {
-        cmdListQueriesIter = m_commandListQueries.find(m_commandList.GetInterfacePtr());
+        cmdListQueriesIter = m_commandListQueries.find(commandList.GetInterfacePtr());
 
         if (m_commandListQueries.end() == cmdListQueriesIter)
         {
             DX12CommandListSwQueries cmdListSwQueries;
-            result = cmdListSwQueries.Initialize(m_device, m_commandList);
+            result = cmdListSwQueries.Initialize(m_device, commandList);
 
             if (result)
             {
                 std::pair<CommandListQueriesType::iterator, bool> insertResult =
                     m_commandListQueries.insert(CommandListQueriesType::value_type(
-                                                    m_commandList.GetInterfacePtr(), std::move(cmdListSwQueries)));
+                        commandList.GetInterfacePtr(), std::move(cmdListSwQueries)));
                 result = insertResult.second;
 
                 if (result)
@@ -152,11 +376,11 @@ bool GPA_ContextStateDX12::BeginSwSample(
     if (result)
     {
         result = cmdListQueriesIter->second.BeginSwSample(swSampleId);
-        commandList = m_commandList;
+        //commandList = m_commandList;
     }
 
     return result;
-} // end of GPA_ContextStateDX12::BeginSwSample
+}
 
 void GPA_ContextStateDX12::EndSwSample(
     ID3D12GraphicsCommandListPtr& commandList, const gpa_uint32 swSampleId)
@@ -171,7 +395,7 @@ void GPA_ContextStateDX12::EndSwSample(
     {
         cmdListIter->second.EndSwSample(swSampleId);
     }
-} // end of GPA_ContextStateDX12::EndSwSample
+}
 
 void GPA_ContextStateDX12::ReleaseSwSample(
     ID3D12GraphicsCommandListPtr& commandList, const gpa_uint32 swSampleId)
@@ -186,7 +410,7 @@ void GPA_ContextStateDX12::ReleaseSwSample(
     {
         cmdListIter->second.ReleaseSwSample(swSampleId);
     }
-} // end of GPA_ContextStateDX12::ReleaseSwSample
+}
 
 void GPA_ContextStateDX12::BeginSwQuery(
     ID3D12GraphicsCommandListPtr& commandList,
@@ -203,7 +427,7 @@ void GPA_ContextStateDX12::BeginSwQuery(
     {
         cmdListIter->second.BeginSwQuery(swSampleId, queryType);
     }
-} // end of GPA_ContextStateDX12::BeginSwQuery
+}
 
 void GPA_ContextStateDX12::EndSwQuery(
     ID3D12GraphicsCommandListPtr& commandList,
@@ -220,7 +444,7 @@ void GPA_ContextStateDX12::EndSwQuery(
     {
         cmdListIter->second.EndSwQuery(swSampleId, queryType);
     }
-} // end of GPA_ContextStateDX12::EndSwQuery
+}
 
 bool GPA_ContextStateDX12::GetSwSampleResults(
     ID3D12GraphicsCommandListPtr& commandList,
@@ -237,18 +461,74 @@ bool GPA_ContextStateDX12::GetSwSampleResults(
     }
 
     return result;
-} // end of GPA_ContextStateDX12::GetSwSampleResults
+}
 
-inline GPA_Status GPA_ContextStateDX12::SetStablePowerState(BOOL state)
+inline GPA_Status GPA_ContextStateDX12::SetStableClocks(bool useProfilingClocks)
 {
     GPA_Status result = GPA_STATUS_OK;
-    HRESULT hr = m_device->SetStablePowerState(state);
 
-    if (S_OK != hr)
+    if (nullptr != m_pGpaInterface)
     {
-        result = GPA_STATUS_ERROR_FAILED;
+        AmdExtDeviceClockMode amdClockMode = AmdExtDeviceClockMode::Default;
+
+        if (useProfilingClocks)
+        {
+            DeviceClockMode deviceClockMode = GetDeviceClockMode();
+
+            switch (deviceClockMode)
+            {
+            case DeviceClockMode::Default:
+                amdClockMode = AmdExtDeviceClockMode::Default;
+                break;
+            case DeviceClockMode::MinimumEngine:
+                amdClockMode = AmdExtDeviceClockMode::MinimumEngine;
+                break;
+            case DeviceClockMode::MinimumMemory:
+                amdClockMode = AmdExtDeviceClockMode::MinimumMemory;
+                break;
+            case DeviceClockMode::Peak:
+                amdClockMode = AmdExtDeviceClockMode::Peak;
+                break;
+            case DeviceClockMode::Profiling:
+                amdClockMode = AmdExtDeviceClockMode::Profiling;
+                break;
+            default:
+                assert(0);
+                amdClockMode = AmdExtDeviceClockMode::Profiling;
+                break;
+            }
+        }
+
+        if (amdClockMode != m_clockMode)
+        {
+            m_clockMode = amdClockMode;
+            m_pGpaInterface->SetClockMode(amdClockMode, nullptr);
+        }
     }
 
     return result;
-} // end of GPA_ContextStateDX12::SetStablePowerState
+}
 
+gpa_uint32 GPA_ContextStateDX12::GetInstanceCount(AmdExtGpuBlock block)
+{
+    gpa_uint32 instanceCount = 0;
+
+    if (block < AmdExtGpuBlock::Count)
+    {
+        instanceCount = m_props.blocks[static_cast<size_t>(block)].instanceCount;
+    }
+
+    return instanceCount;
+}
+
+gpa_uint32 GPA_ContextStateDX12::GetMaxEventIdCount(AmdExtGpuBlock block)
+{
+    gpa_uint32 maxEventId = 0;
+
+    if (block < AmdExtGpuBlock::Count)
+    {
+        maxEventId = m_props.blocks[static_cast<size_t>(block)].maxEventId;
+    }
+
+    return maxEventId;
+}

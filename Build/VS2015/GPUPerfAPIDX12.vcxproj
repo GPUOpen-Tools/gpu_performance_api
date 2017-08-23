@@ -50,6 +50,7 @@
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CounterDataRequestProxy.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12DataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12HardwareCounterDataRequest.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12Utils.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\GPAContextStateDX12.cpp" />
@@ -61,6 +62,7 @@
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12ComSmartPtrs.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CounterDataRequestProxy.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12DataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12HardwareCounterDataRequest.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCountersResults.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12Utils.h" />

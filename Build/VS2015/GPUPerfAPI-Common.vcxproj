@@ -33,14 +33,11 @@
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPADataRequest.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAFunctions.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAHWInfo.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAInterfaceLoader.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPASessionRequests.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI-Private.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIFunctionTypes-Private.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIFunctionTypes.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIImp.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIOS.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPITypes-Private.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPITypes.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Logging.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAProfiler.h" />

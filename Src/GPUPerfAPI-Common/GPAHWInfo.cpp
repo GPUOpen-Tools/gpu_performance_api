@@ -208,7 +208,7 @@ GPA_Status CompareHwInfo(GPA_HWInfo* pFirst, GPA_HWInfo* pSecond)
             {
                 if (firstVendorId != secondVendorId)
                 {
-                    GPA_LogError("Vendor ID mismatch.");
+                    GPA_LogDebugError("Vendor ID mismatch.");
                     result = GPA_STATUS_ERROR_FAILED;
                 }
                 else
@@ -225,7 +225,7 @@ GPA_Status CompareHwInfo(GPA_HWInfo* pFirst, GPA_HWInfo* pSecond)
                             {
                                 if (firstDeviceId != secondDeviceId)
                                 {
-                                    GPA_LogError("Device ID mismatch.");
+                                    GPA_LogDebugError("Device ID mismatch.");
                                     result = GPA_STATUS_ERROR_FAILED;
                                 }
                                 else
@@ -240,7 +240,7 @@ GPA_Status CompareHwInfo(GPA_HWInfo* pFirst, GPA_HWInfo* pSecond)
                                         {
                                             if (firstRevisionId != secondRevisionId)
                                             {
-                                                GPA_LogError("Revision ID mismatch.");
+                                                GPA_LogDebugError("Revision ID mismatch.");
                                                 result = GPA_STATUS_ERROR_FAILED;
                                             }
                                         }

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Counter splitter that puts max number of hardware counter per pass
@@ -25,15 +25,20 @@ public:
     /// \param maxSQCounters The maximum number of counters that can be simultaneously enabled on the SQ block
     /// \param numSQGroups The number of SQ counter groups.
     /// \param pSQCounterBlockInfo The list of SQ counter groups.
+    /// \param numIsolatedFromSqGroups The number of counter groups that must be isolated from SQ counter groups
+    /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
     GPASplitCountersMaxPerPass(unsigned int gpuTimestampGroupIndex,
                                unsigned int gpuTimestampBottomToBottomCounterIndex,
                                unsigned int gpuTimestampTopToBottomCounterIndex,
                                unsigned int maxSQCounters,
                                unsigned int numSQGroups,
-                               GPA_SQCounterGroupDesc* pSQCounterBlockInfo)
+                               GPA_SQCounterGroupDesc* pSQCounterBlockInfo,
+                               unsigned int numIsolatedFromSqGroups,
+                               const unsigned int* pIsolatedFromSqGroups)
         :   IGPASplitCounters(gpuTimestampGroupIndex, gpuTimestampBottomToBottomCounterIndex,
                               gpuTimestampTopToBottomCounterIndex, maxSQCounters,
-                              numSQGroups, pSQCounterBlockInfo)
+                              numSQGroups, pSQCounterBlockInfo,
+                              numIsolatedFromSqGroups, pIsolatedFromSqGroups)
     {
     };
 
@@ -112,6 +117,7 @@ public:
                         if (CheckForTimestampCounters(accessor, *counterPassIter) &&
                             CanCounterBeAdded(accessor, *countersUsedIter, maxCountersPerGroup) &&
                             CheckForSQCounters(accessor, *countersUsedIter, m_maxSQCounters) &&
+                            CheckCountersAreCompatible(accessor, *countersUsedIter) &&
                             counterPassIter->m_counters.size() < 300)
                         {
                             counterPassIter->m_counters.push_back(*counterIter);
@@ -200,7 +206,8 @@ private:
             {
                 if (CheckForTimestampCounters(accessor, *passIter) == true &&
                     CanCounterBeAdded(accessor, *countersUsedIter, maxCountersPerGroup) == true &&
-                    CheckForSQCounters(accessor, *countersUsedIter, m_maxSQCounters) == true)
+                    CheckForSQCounters(accessor, *countersUsedIter, m_maxSQCounters) == true &&
+                    CheckCountersAreCompatible(accessor, *countersUsedIter) == true)
                 {
                     // the counter can be scheduled here.
                     passIter->m_counters.push_back(internalCounterIter->m_hardwareIndex);

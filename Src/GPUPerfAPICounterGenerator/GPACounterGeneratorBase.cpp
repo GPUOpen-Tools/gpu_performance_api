@@ -50,8 +50,6 @@ GPA_Status GPA_CounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desiredG
         }
     }
 
-#if defined(WIN32)
-
     if (m_doAllowSoftwareCounters)
     {
         status = GenerateSoftwareCounters(desiredGeneration, &m_softwareCounters);
@@ -62,8 +60,6 @@ GPA_Status GPA_CounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desiredG
         }
     }
 
-#endif  // WIN32
-
     if (0 == GetNumCounters())
     {
         // no counters reported, return hardware not supported
@@ -73,7 +69,7 @@ GPA_Status GPA_CounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desiredG
     return status;
 }
 
-gpa_uint32 GPA_CounterGeneratorBase::GetNumCounters()
+gpa_uint32 GPA_CounterGeneratorBase::GetNumCounters() const
 {
     gpa_uint32 count = 0;
 
@@ -95,7 +91,7 @@ gpa_uint32 GPA_CounterGeneratorBase::GetNumCounters()
     return count;
 }
 
-gpa_uint32 GPA_CounterGeneratorBase::GetNumAMDCounters() //to be used for SW D3D counters for AMD
+gpa_uint32 GPA_CounterGeneratorBase::GetNumAMDCounters() const //to be used for SW D3D counters for AMD
 {
     gpa_uint32 count = 0;
 
@@ -112,7 +108,7 @@ gpa_uint32 GPA_CounterGeneratorBase::GetNumAMDCounters() //to be used for SW D3D
     return count;
 }
 
-const char* GPA_CounterGeneratorBase::GetCounterName(gpa_uint32 index)
+const char* GPA_CounterGeneratorBase::GetCounterName(gpa_uint32 index) const
 {
     if (m_doAllowPublicCounters)
     {
@@ -140,27 +136,24 @@ const char* GPA_CounterGeneratorBase::GetCounterName(gpa_uint32 index)
 
     if (m_doAllowSoftwareCounters)
     {
-#if defined(WIN32)
-
         if (index < m_softwareCounters.GetNumCounters())
         {
             return m_softwareCounters.GetCounterName(index);
         }
-
-#endif // WIN32
     }
 
     return nullptr;
 }
 
-bool GPA_CounterGeneratorBase::GetCounterIndex(const char* pName, gpa_uint32* pIndex)
+bool GPA_CounterGeneratorBase::GetCounterIndex(const char* pName, gpa_uint32* pIndex) const
 {
 
     bool retVal = false;
 
     if (nullptr != pIndex)
     {
-        CounterNameIndexMap::iterator it = m_counterIndexCache.find(pName);
+        CounterNameIndexMap::const_iterator it = m_counterIndexCache.find(pName);
+
         if (m_counterIndexCache.end() != it)
         {
             *pIndex = m_counterIndexCache[pName];
@@ -196,7 +189,44 @@ bool GPA_CounterGeneratorBase::GetCounterIndex(const char* pName, gpa_uint32* pI
 
 }
 
-const char* GPA_CounterGeneratorBase::GetCounterDescription(gpa_uint32 index)
+const char* GPA_CounterGeneratorBase::GetCounterCategory(gpa_uint32 index) const
+{
+    if (m_doAllowPublicCounters)
+    {
+        if (index < m_publicCounters.GetNumCounters())
+        {
+            return m_publicCounters.GetCounterCategory(index);
+        }
+        else
+        {
+            index -= m_publicCounters.GetNumCounters();
+        }
+    }
+
+    if (m_doAllowHardwareCounters)
+    {
+        if (index < m_hardwareCounters.GetNumCounters())
+        {
+            return m_hardwareCounters.GetCounterCategory(index);
+        }
+        else
+        {
+            index -= m_hardwareCounters.GetNumCounters();
+        }
+    }
+
+    if (m_doAllowSoftwareCounters)
+    {
+        if (index < m_softwareCounters.GetNumCounters())
+        {
+            return m_softwareCounters.GetCounterCategory(index);
+        }
+    }
+
+    return nullptr;
+}
+
+const char* GPA_CounterGeneratorBase::GetCounterDescription(gpa_uint32 index) const
 {
     if (m_doAllowPublicCounters)
     {
@@ -224,20 +254,16 @@ const char* GPA_CounterGeneratorBase::GetCounterDescription(gpa_uint32 index)
 
     if (m_doAllowSoftwareCounters)
     {
-#if defined(WIN32)
-
         if (index < m_softwareCounters.GetNumCounters())
         {
             return m_softwareCounters.GetCounterDescription(index);
         }
-
-#endif  // WIN32
     }
 
     return nullptr;
 }
 
-GPA_Type GPA_CounterGeneratorBase::GetCounterDataType(gpa_uint32 index)
+GPA_Type GPA_CounterGeneratorBase::GetCounterDataType(gpa_uint32 index) const
 {
     if (m_doAllowPublicCounters)
     {
@@ -266,7 +292,6 @@ GPA_Type GPA_CounterGeneratorBase::GetCounterDataType(gpa_uint32 index)
 
     if (m_doAllowSoftwareCounters)
     {
-#if defined(WIN32)
         GPA_Type type = GPA_TYPE_UINT64;
 
         if (s_pSwCounterManager->SwCounterEnabled())
@@ -283,14 +308,12 @@ GPA_Type GPA_CounterGeneratorBase::GetCounterDataType(gpa_uint32 index)
         }
 
         return type;
-#endif // WIN32
-
     } // m_bAllowSoftwareCounters
 
     return GPA_TYPE_UINT64;
 }
 
-GPA_Usage_Type GPA_CounterGeneratorBase::GetCounterUsageType(gpa_uint32 index)
+GPA_Usage_Type GPA_CounterGeneratorBase::GetCounterUsageType(gpa_uint32 index) const
 {
     if (m_doAllowPublicCounters)
     {
@@ -319,8 +342,6 @@ GPA_Usage_Type GPA_CounterGeneratorBase::GetCounterUsageType(gpa_uint32 index)
 
     if (m_doAllowSoftwareCounters)
     {
-#if defined(WIN32)
-
         if (s_pSwCounterManager->SwCounterEnabled())
         {
             if (index >= GetNumAMDCounters())
@@ -335,28 +356,34 @@ GPA_Usage_Type GPA_CounterGeneratorBase::GetCounterUsageType(gpa_uint32 index)
         }
 
         return GPA_USAGE_TYPE_ITEMS;
-#endif // WIN32
     }
 
     return GPA_USAGE_TYPE_ITEMS;
 }
 
-const GPA_PublicCounter* GPA_CounterGeneratorBase::GetPublicCounter(gpa_uint32 index)
+const GPA_PublicCounter* GPA_CounterGeneratorBase::GetPublicCounter(gpa_uint32 index) const
 {
     return m_publicCounters.GetCounter(index);
 }
 
-GPA_HardwareCounterDescExt* GPA_CounterGeneratorBase::GetHardwareCounterExt(gpa_uint32 index)
+const GPA_HardwareCounterDescExt* GPA_CounterGeneratorBase::GetHardwareCounterExt(gpa_uint32 index) const
 {
     return &(m_hardwareCounters.m_counters[index]);
 }
 
-gpa_uint32 GPA_CounterGeneratorBase::GetNumPublicCounters()
+gpa_uint32 GPA_CounterGeneratorBase::GetNumPublicCounters() const
 {
-    return m_publicCounters.GetNumCounters();
+    gpa_uint32 count = 0;
+
+    if (m_doAllowPublicCounters)
+    {
+        count += m_publicCounters.GetNumCounters();
+    }
+
+    return count;
 }
 
-vector<gpa_uint32> GPA_CounterGeneratorBase::GetInternalCountersRequired(gpa_uint32 index)
+vector<gpa_uint32> GPA_CounterGeneratorBase::GetInternalCountersRequired(gpa_uint32 index) const
 {
     if (m_doAllowPublicCounters)
     {
@@ -388,8 +415,6 @@ vector<gpa_uint32> GPA_CounterGeneratorBase::GetInternalCountersRequired(gpa_uin
 
     if (m_doAllowSoftwareCounters)
     {
-#if defined(WIN32)
-
         if (index < m_softwareCounters.GetNumCounters())
         {
             // the index is now the same as the needed hardware counter
@@ -397,7 +422,6 @@ vector<gpa_uint32> GPA_CounterGeneratorBase::GetInternalCountersRequired(gpa_uin
         }
 
         index -= m_softwareCounters.GetNumCounters();
-#endif // WIN32
     }
 
     return vecInternalCounters;
@@ -430,7 +454,7 @@ GPA_SoftwareCounters* GPA_CounterGeneratorBase::GetSoftwareCounters()
     return &m_softwareCounters;
 }
 
-GPACounterTypeInfo GPA_CounterGeneratorBase::GetCounterTypeInfo(gpa_uint32 globalIndex)
+GPACounterTypeInfo GPA_CounterGeneratorBase::GetCounterTypeInfo(gpa_uint32 globalIndex) const
 {
     if (m_doAllowPublicCounters)
     {

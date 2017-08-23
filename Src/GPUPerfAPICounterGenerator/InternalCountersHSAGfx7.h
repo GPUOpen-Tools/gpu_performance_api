@@ -12,7 +12,9 @@
 extern GPA_HardwareCounterDesc* HSACounterGroupArrayGfx7[]; ///< Array of hardware counter groups for HSA for Gfx7 family
 extern GPA_CounterGroupDesc HWHSAGroupsGfx7[]; ///< Array of counter groups for HSA for Gfx7 family
 extern GPA_SQCounterGroupDesc HWHSASQGroupsGfx7[]; ///< Array of SQ groups for HSA for Gfx7 family
+extern unsigned int HWHSASQIsolatedGroupsGfx7[]; ///< Array of counter groups isolated from SQ counter groups for HSA for Gfx7 family
 extern const unsigned int HWHSAGroupCountGfx7; ///< Hardware Group Count for HSA for Gfx7 family
 extern const unsigned int HWHSASQGroupCountGfx7; ///< Hardware SQ Group Count for HSA for Gfx7 family
+extern const unsigned int HWHSASQIsolatedGroupCountGfx7; ///< Hardware Isolated Group Count for HSA for Gfx7 family
 
 #endif // _GPA_INTERNAL_COUNTERS_HSA_GFX7_H_

@@ -2,7 +2,7 @@
 // Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief DX12CounterDataRequestProxy declaration 
+/// \brief DX12CounterDataRequestProxy declaration
 //==============================================================================
 
 #ifndef _DX12_COUNTER_DATA_REQUEST_PROXY_H_
@@ -28,6 +28,7 @@ public:
 
     virtual bool BeginRequest(
         GPA_ContextState* pContextState,
+        void* pSampleList,
         gpa_uint32 selectionID,
         const vector<gpa_uint32>* pCounters);
 
@@ -49,7 +50,7 @@ private:
 
     /// Move operator - private override to disable usage
     DX12CounterDataRequestProxy& operator=(DX12CounterDataRequestProxy&& other) = delete;
-}; // end of class DX12CounterDataRequestProxy
+};
 
 #endif // _DX12_COUNTER_DATA_REQUEST_PROXY_H_
 

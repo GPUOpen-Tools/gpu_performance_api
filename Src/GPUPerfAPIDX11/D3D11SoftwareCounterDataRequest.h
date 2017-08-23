@@ -70,11 +70,14 @@ public:
     virtual ~D3D11SoftwareCounterDataRequest();
 
 protected:
-    virtual bool BeginRequest(GPA_ContextState* pContextState, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters);
-    virtual bool EndRequest();
-    virtual void ReleaseCounters();
-    virtual void Reset(gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters);
-    virtual bool CollectResults(GPA_CounterResults& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId);
+    virtual bool BeginRequest(
+        GPA_ContextState* pContextState,
+        gpa_uint32 selectionID,
+        const vector<gpa_uint32>* pCounters) override;
+    virtual bool EndRequest() override;
+    virtual void ReleaseCounters() override;
+    virtual void Reset(gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters) override;
+    virtual bool CollectResults(GPA_CounterResults& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId) override;
 
     /// Gets the GPU time data
     /// \return the GPU time data

@@ -8,7 +8,7 @@
 #ifndef _GPUPERFAPI_DX12_H_
 #define _GPUPERFAPI_DX12_H_
 
-#include "..\GPUPerfAPI-Common\GPUPerfAPI.h"
+#include "GPUPerfAPI.h"
 
 #include <d3d12.h>
 

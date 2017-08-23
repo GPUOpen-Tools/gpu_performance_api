@@ -38,7 +38,7 @@ public:
     /// \return True if initialization succeeded, false if it failed
     /// \param[in] device The device queries are executed on
     /// \param[in] commandList The command list the queries are excuted on
-    bool Initialize(ID3D12DevicePtr& device, ID3D12GraphicsCommandListPtr& commandList);
+    bool Initialize(ID3D12Device* device, ID3D12GraphicsCommandListPtr& commandList);
 
     /// Begin SW sample
     ///
@@ -99,7 +99,7 @@ private:
     ID3D12DevicePtr              m_device;                  ///< The device which created the command list
     QueryGroupListType           m_queryGroups;             ///< The list of query groups for this command list
 
-}; // end of class DX12CommandListSwQueries
+};
 
 #endif // _DX12_COMMAND_LIST_SW_QUERIES_H_
 

@@ -14,6 +14,9 @@ INCLUDES =	-I. \
 		-I$(DEVICEINFO_DIR) \
 		-I$(TSINGLETON_DIR) \
 		-I$(GTEST_DIR)/include \
+		-I$(AMD_VK_EXT_DIR) \
+		-I$(VK_INCLUDE_DIR) \
+		-I$(VK_INCLUDE_DIR)/vulkan \
 
 LIBS = \
 	$(GTEST_LIBS) \
@@ -28,6 +31,7 @@ OBJS	= \
 	./$(OBJ_DIR)/CounterGeneratorCLTests.o \
 	./$(OBJ_DIR)/CounterGeneratorGLTests.o \
 	./$(OBJ_DIR)/CounterGeneratorHSATests.o \
+	./$(OBJ_DIR)/CounterGeneratorVKTests.o \
 	./$(OBJ_DIR)/CounterSchedulerTests.o \
 	./$(OBJ_DIR)/GPUPerfAPIUnitTests.o \
 	./$(OBJ_DIR)/PublicCountersCLGfx7.o \
@@ -41,6 +45,10 @@ OBJS	= \
 	./$(OBJ_DIR)/PublicCountersHSAGfx7.o \
 	./$(OBJ_DIR)/PublicCountersHSAGfx8.o \
 	./$(OBJ_DIR)/PublicCountersHSAGfx9.o \
+	./$(OBJ_DIR)/PublicCountersVKGfx7.o \
+	./$(OBJ_DIR)/PublicCountersVKGfx8.o \
+	./$(OBJ_DIR)/PublicCountersVKGfx9.o \
+	./$(OBJ_DIR)/SWCountersVK.o \
 
 $(OBJ_DIR)/%.o: counters/%.cpp
 	$(BUILD_SRC)

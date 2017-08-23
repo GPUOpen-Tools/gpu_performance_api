@@ -39,7 +39,7 @@ struct DX12SoftwareCountersResults
     UINT64 timestampEnd;                                     ///< TimestampEnd results
     D3D12_QUERY_DATA_PIPELINE_STATISTICS pipelineStatistics; ///< PipelineStatistics results
     UINT64 queryReadyEvent;                                  ///< QueryReadyEvent results
-}; // end of struct DX12SoftwareCountersResults
+};
 
 #endif // _DX12_SOFTWARE_COUNTERS_RESULTS_H_
 

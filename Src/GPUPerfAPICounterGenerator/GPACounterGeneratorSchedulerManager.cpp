@@ -17,6 +17,7 @@ CounterGeneratorSchedulerManager::~CounterGeneratorSchedulerManager()
 
 void CounterGeneratorSchedulerManager::RegisterCounterGenerator(GPA_API_Type apiType, GDT_HW_GENERATION generation, GPA_CounterGeneratorBase* pCounterGenerator, bool replaceExisting)
 {
+
     GenerationGeneratorMap localMap;
 
     if (0 < m_counterGeneratorItems.count(apiType))

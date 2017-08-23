@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for DX11 counter generation for AMD HW
@@ -29,7 +29,6 @@
 #include "AmdDxCounter.h"
 #include "AmdDxExtPerfProfile.h"
 
-#include "GPACounterGeneratorCommon.h"
 #include "GPASwCounterManager.h"
 #include "GPACounterGeneratorSchedulerManager.h"
 
@@ -273,6 +272,8 @@ GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION 
         pHardwareCounters->m_sqGroupCount = HWDX11SQGroupCountGfx6;
         pHardwareCounters->m_gpuTimestampIndex = HWDX11GPUTimeStampIndexGfx6;
         pHardwareCounters->m_gpuTimeIndex = HWDX11GPUTimeIndexGfx6;
+        pHardwareCounters->m_pIsolatedGroups = HWDX11SQIsolatedGroupsGfx6;
+        pHardwareCounters->m_isolatedGroupCount = HWDX11SQIsolatedGroupCountGfx6;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
     {
@@ -283,6 +284,8 @@ GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION 
         pHardwareCounters->m_sqGroupCount = HWDX11SQGroupCountGfx7;
         pHardwareCounters->m_gpuTimestampIndex = HWDX11GPUTimeStampIndexGfx7;
         pHardwareCounters->m_gpuTimeIndex = HWDX11GPUTimeIndexGfx7;
+        pHardwareCounters->m_pIsolatedGroups = HWDX11SQIsolatedGroupsGfx7;
+        pHardwareCounters->m_isolatedGroupCount = HWDX11SQIsolatedGroupCountGfx7;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
@@ -293,6 +296,8 @@ GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION 
         pHardwareCounters->m_sqGroupCount = HWDX11SQGroupCountGfx8;
         pHardwareCounters->m_gpuTimestampIndex = HWDX11GPUTimeStampIndexGfx8;
         pHardwareCounters->m_gpuTimeIndex = HWDX11GPUTimeIndexGfx8;
+        pHardwareCounters->m_pIsolatedGroups = HWDX11SQIsolatedGroupsGfx8;
+        pHardwareCounters->m_isolatedGroupCount = HWDX11SQIsolatedGroupCountGfx8;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
@@ -303,6 +308,8 @@ GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION 
         pHardwareCounters->m_sqGroupCount = HWDX11SQGroupCountGfx9;
         pHardwareCounters->m_gpuTimestampIndex = HWDX11GPUTimeStampIndexGfx9;
         pHardwareCounters->m_gpuTimeIndex = HWDX11GPUTimeIndexGfx9;
+        pHardwareCounters->m_pIsolatedGroups = HWDX11SQIsolatedGroupsGfx9;
+        pHardwareCounters->m_isolatedGroupCount = HWDX11SQIsolatedGroupCountGfx9;
     }
     else
     {

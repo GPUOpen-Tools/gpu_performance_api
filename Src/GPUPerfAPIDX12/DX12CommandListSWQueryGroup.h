@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class to manage the resources used for DX12 SW queries
@@ -123,12 +123,12 @@ private:
     static const size_t           ms_queryTypeCount = 4;        ///< The query type list size
 
     size_t                        m_maxSamples;                 ///< The max number of samples that this group can hold
-    gpa_uint32                    m_sampleCount;                ///< The number of active samples in this group
+    gpa_uint32                    m_activeSampleCount;          ///< The number of active samples in this group
     ID3D12GraphicsCommandListPtr  m_commandList;                ///< The command list that queries and counters are inserted to
     ID3D12ResourcePtr             m_queriesResultsResource;     ///< SW queries results resource
     DX12SoftwareCountersResults*  m_pQueriesResults;            ///< SW queries results
     ID3D12ResourcePtr             m_queriesSessionIdsResource;  ///< SW queries session ID resource - used to signal query results are available
     ID3D12QueryHeapPtr            m_queries[ms_queryTypeCount]; ///< Timestamp queries heap
-};  // end of class DX12CommandListSWQueryGroup
+};
 
 #endif // _DX12_COMMAND_LIST_SW_QUERY_GROUP_H_

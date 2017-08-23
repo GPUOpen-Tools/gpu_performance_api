@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{958FF3B0-837F-483A-AC5C-19855FDA299A}"
 EndProject
@@ -65,18 +65,17 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{CCAE5569
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublicCounterDefinitionFiles", "PublicCounterDefinitionFiles", "{F7B24265-E56B-4F18-A486-AC50CFBB5FB9}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx6.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx7.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx8.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx9.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx6.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx9.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx6.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx7.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx8.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx9.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx7.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx8.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx9.txt
 	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPUPerfAPIVK", "GPUPerfAPIVK.vcxproj", "{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -178,6 +177,14 @@ Global
 		{305A7A16-9C7A-4E86-BA74-3492E2C824C9}.Release|Win32.Build.0 = Release|Win32
 		{305A7A16-9C7A-4E86-BA74-3492E2C824C9}.Release|x64.ActiveCfg = Release|x64
 		{305A7A16-9C7A-4E86-BA74-3492E2C824C9}.Release|x64.Build.0 = Release|x64
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Debug|Win32.Build.0 = Debug|Win32
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Debug|x64.ActiveCfg = Debug|x64
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Debug|x64.Build.0 = Debug|x64
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|Win32.ActiveCfg = Release|Win32
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|Win32.Build.0 = Release|Win32
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|x64.ActiveCfg = Release|x64
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

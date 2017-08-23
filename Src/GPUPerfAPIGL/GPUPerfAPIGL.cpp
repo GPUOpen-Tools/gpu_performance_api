@@ -851,7 +851,7 @@ GPA_Status GPA_IMP_CreateContext(GPA_ContextState** ppNewContext)
         result = GPA_STATUS_ERROR_NULL_POINTER;
     }
 
-    GPA_ContextStateGL* pContext = new(std::nothrow) GPA_ContextStateGL;
+    GPA_ContextStateGL* pContext = new(std::nothrow) GPA_ContextStateGL();
 
     if (nullptr == pContext)
     {
@@ -1118,6 +1118,41 @@ GPA_Status GPA_IMP_BeginPass()
 GPA_Status GPA_IMP_EndPass()
 {
     return GPA_STATUS_OK;
+}
+
+
+GPA_Status GPA_IMP_BeginSampleList(void* pSampleList)
+{
+    UNREFERENCED_PARAMETER(pSampleList);
+
+    return GPA_STATUS_ERROR_API_NOT_SUPPORTED;
+}
+
+
+GPA_Status GPA_IMP_EndSampleList(void* pSampleList)
+{
+    UNREFERENCED_PARAMETER(pSampleList);
+
+    return GPA_STATUS_ERROR_API_NOT_SUPPORTED;
+}
+
+
+GPA_Status GPA_IMP_BeginSampleInSampleList(gpa_uint32 sampleID, void* pSampleList)
+{
+    UNREFERENCED_PARAMETER(sampleID);
+    UNREFERENCED_PARAMETER(pSampleList);
+    GPA_LogError("GPA_BeginSampleInSampleList is not supported. Use GPA_BeginSample instead.");
+
+    return GPA_STATUS_ERROR_API_NOT_SUPPORTED;
+}
+
+
+GPA_Status GPA_IMP_EndSampleInSampleList(void* pSampleList)
+{
+    UNREFERENCED_PARAMETER(pSampleList);
+    GPA_LogError("GPA_EndSampleInSampleList is not supported. Use GPA_EndSample instead.");
+
+    return GPA_STATUS_ERROR_API_NOT_SUPPORTED;
 }
 
 

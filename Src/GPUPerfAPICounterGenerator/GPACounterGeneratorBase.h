@@ -25,18 +25,20 @@ public:
     virtual ~GPA_CounterGeneratorBase();
 
     // Implementation of GPA_ICounterAccessor -- see base class for documentation
-    virtual gpa_uint32 GetNumCounters();
-    virtual const char* GetCounterName(gpa_uint32 index);
-    virtual const char* GetCounterDescription(gpa_uint32 index);
-    virtual GPA_Type GetCounterDataType(gpa_uint32 index);
-    virtual GPA_Usage_Type GetCounterUsageType(gpa_uint32 index);
-    virtual const GPA_PublicCounter* GetPublicCounter(gpa_uint32 index);
-    virtual GPA_HardwareCounterDescExt* GetHardwareCounterExt(gpa_uint32 index);
-    virtual gpa_uint32 GetNumPublicCounters();
-    virtual vector<gpa_uint32> GetInternalCountersRequired(gpa_uint32 index);
-    virtual void ComputePublicCounterValue(gpa_uint32 counterIndex, std::vector<char*>& results, std::vector<GPA_Type>& internalCounterTypes, void* pResult, GPA_HWInfo* pHwInfo);
-    virtual GPACounterTypeInfo GetCounterTypeInfo(gpa_uint32 globalIndex);
-    virtual bool GetCounterIndex(const char* pName, gpa_uint32* pIndex);
+    virtual void SetAllowedCounters(bool bAllowPublicCounters, bool bAllowHardwareCounters, bool bAllowSoftwareCounters) override;
+    virtual gpa_uint32 GetNumCounters() const override;
+    virtual const char* GetCounterName(gpa_uint32 index) const override;
+    virtual const char* GetCounterCategory(gpa_uint32 index) const override;
+    virtual const char* GetCounterDescription(gpa_uint32 index) const override;
+    virtual GPA_Type GetCounterDataType(gpa_uint32 index) const  override;
+    virtual GPA_Usage_Type GetCounterUsageType(gpa_uint32 index) const override;
+    virtual const GPA_PublicCounter* GetPublicCounter(gpa_uint32 index) const override;
+    virtual const GPA_HardwareCounterDescExt* GetHardwareCounterExt(gpa_uint32 index) const override;
+    virtual gpa_uint32 GetNumPublicCounters() const override;
+    virtual vector<gpa_uint32> GetInternalCountersRequired(gpa_uint32 index) const  override;
+    virtual void ComputePublicCounterValue(gpa_uint32 counterIndex, std::vector<char*>& results, std::vector<GPA_Type>& internalCounterTypes, void* pResult, GPA_HWInfo* pHwInfo) override;
+    virtual GPACounterTypeInfo GetCounterTypeInfo(gpa_uint32 globalIndex) const override;
+    virtual bool GetCounterIndex(const char* pName, gpa_uint32* pIndex) const override;
     // end Implementation of GPA_ICounterAccessor
 
     /// Generate the counters for the specified generation
@@ -53,7 +55,7 @@ public:
 
     /// TODO: does this need to be here in the base class?
     /// Get the number of supported AMD counters
-    gpa_uint32 GetNumAMDCounters();
+    gpa_uint32 GetNumAMDCounters() const;
 
     /// Get the hardware counters
     /// \return the hardware counters
@@ -81,12 +83,6 @@ public:
     /// \return GPA_STATUS_OK on success
     virtual GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters) = 0;
 
-    /// Set the flags indicating which counters are allowed
-    /// \param bAllowPublicCounters flag indicating whether or not public counters are allowed
-    /// \param bAllowHardwareCounters flag indicating whether or not hardware counters are allowed
-    /// \param bAllowSoftwareCounters flag indicating whether or not software counters are allowed
-    void SetAllowedCounters(bool bAllowPublicCounters, bool bAllowHardwareCounters, bool bAllowSoftwareCounters);
-
     GPA_PublicCounters   m_publicCounters;   ///< the generated public counters
     GPA_HardwareCounters m_hardwareCounters; ///< the generated hardware counters
     GPA_SoftwareCounters m_softwareCounters; ///< the generated software counters
@@ -99,7 +95,7 @@ private:
 
     typedef std::unordered_map<std::string, gpa_uint32> CounterNameIndexMap;    ///< typedef for an unordered_map from counter name to index
     static const gpa_uint32 ms_COUNTER_NOT_FOUND = static_cast<gpa_uint32>(-1); ///< const indicating that a counter was not found
-    CounterNameIndexMap m_counterIndexCache;                                    ///< cache of counter indexes, so we don't have to look up a counter more than once (it can be expensive)
+    mutable CounterNameIndexMap m_counterIndexCache;                            ///< cache of counter indexes, so we don't have to look up a counter more than once (it can be expensive)
 };
 
 #endif //_GPA_COUNTER_GENERATOR_BASE_H_

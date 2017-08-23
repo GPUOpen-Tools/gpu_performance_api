@@ -7,12 +7,8 @@
 ///         GPA_OpenContext call when using GPUPerfAPI with HSA.
 //==============================================================================
 
-
 #ifndef _GPUPERFAPI_HSA_H_
 #define _GPUPERFAPI_HSA_H_
-
-#include "GPUPerfAPITypes.h"
-#include "GPUPerfAPI.h"
 
 #include "hsa.h"
 

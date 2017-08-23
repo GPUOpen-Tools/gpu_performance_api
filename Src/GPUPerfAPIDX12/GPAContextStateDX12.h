@@ -13,6 +13,13 @@
 #include <unordered_map>
 #include <vector>
 
+#include <AmdExtD3D.h>
+
+#pragma warning (push)
+#pragma warning (disable: 4201)
+#include <AmdExtGpaInterfaceApi.h>
+#pragma warning (pop)
+
 #include <AMDTMutex.h>
 #include <GPAContextState.h>
 
@@ -33,21 +40,32 @@ public:
     /// Cleanup DX12 GPA context resources
     void Cleanup();
 
-    /// Set the command list for this context state
-    bool SetCommandList(ID3D12GraphicsCommandListPtr pCommandList);
+    /// Set the device for this context state
+    /// \param pDevice the D3D12 device
+    /// \param isAMDDevice flag indicating if the device is an AMD device (based on the adapter vendorID)
+    /// \return GPA_STATUS_OK if device was set correctly and stable clock mode was entered
+    GPA_Status SetD3D12Device(ID3D12Device* pDevice, bool isAMDDevice);
 
     /// Get the time stamp frequencey
     /// \return GPA_STATUS_OK if time stampe frequencey access succeeded, GPA_STATUS_ERROR_FAILED if it failed
     /// \param[out] timestampFrequency The timestamp frequencey
     GPA_Status GetTimestampFrequency(UINT64& timestampFrequency);
 
-    /// Begin sampling session
+    /// Begin sampling on the specified command list
+    /// \param pCommandList the command list on which to begin sampling
     /// \return GPA_STATUS_OK if session start succeeded, GPA_STATUS_ERROR_FAILED if it failed
-    GPA_Status BeginSession();
+    GPA_Status BeginCommandList(void* pCommandList);
 
-    /// End sampling session
+    /// End sampling on the specified command list
+    /// \param pCommandList the command list on which to end sampling
     /// \return GPA_STATUS_OK if session end succeeded, GPA_STATUS_ERROR_FAILED if it failed
-    GPA_Status EndSession();
+    GPA_Status EndCommandList(void* pCommandList);
+
+    /// Gets the GpaSession object for the given command list
+    /// \param pCommandList the command list whose GpaSession is needed
+    /// \param[out] pGpaSession the GpaSession associated with the command list
+    /// \return true if a GpaSession was found for the command list, false otherwise
+    bool GetGpaSessionForCommandList(ID3D12GraphicsCommandList* pCommandList, IAmdExtGpaSession** pGpaSession);
 
     /// Begin SW sample
     ///
@@ -98,20 +116,34 @@ public:
         const gpa_uint32 swSampleId,
         DX12SoftwareCountersResults& queryResults);
 
+    /// Get the number of instances of the specified block
+    /// \param[in] block the block whose number of instances is needed
+    /// \return the number of instances of the specific block.  Could be zero if block does not exist
+    gpa_uint32 GetInstanceCount(AmdExtGpuBlock block);
+
+    /// Get the max event id of the specified block
+    /// \param[in] block the block whose max event id is needed
+    /// \return the max event id of the specified block.  Could be zero if block does not exist
+    gpa_uint32 GetMaxEventIdCount(AmdExtGpuBlock block);
+
 private:
     typedef std::unordered_map<ID3D12CommandList*, DX12CommandListSwQueries> CommandListQueriesType; ///< Typedef for map from command list to queries
+    typedef std::unordered_map<ID3D12GraphicsCommandList*, IAmdExtGpaSession*> CommandListGpaSessionType; ///< Typedef for map from command list to GPASession interface
 
-    ID3D12DevicePtr              m_device;             ///< The device queries and counters are created on
-    ID3D12GraphicsCommandListPtr m_commandList;        ///< The command list queries and counters are inserted to
-    CommandListQueriesType       m_commandListQueries; ///< Map from command list to queries
-    AMDTMutex                    m_mutex;              ///< Context access mutex
+    ID3D12Device*                  m_device;                ///< The device queries and counters are created on
+    CommandListQueriesType         m_commandListQueries;    ///< Map from command list to queries
+    CommandListGpaSessionType      m_commandListGpaSession; ///< Map from command list to gpa session
+    AMDTMutex                      m_mutex;                 ///< Context access mutex
+    IAmdExtD3DFactory*             m_pAmdExtObject;         ///< Driver extension object
+    IAmdExtGpaInterface*           m_pGpaInterface;         ///< The GPA Interface from the driver
+    AmdExtPerfExperimentProperties m_props;                 ///< Counter properties reported by the driver
+    AmdExtDeviceClockMode          m_clockMode;             ///< GPU Clock mode
+
 
     /// Enable/disable the stable power state
-    /// \return GPA_STATUS_OK if stable power is enabled/disable, GPA_STATUS_ERROR_FAILED if it's not
-    /// \param[in] state TRUE to enable stable power state, false to disable stable power state
-    inline GPA_Status SetStablePowerState(BOOL state);
-
-}; // end of class GPA_ContextStateDX12
+    /// \return GPA_STATUS_OK if stable power is enabled/disabled, GPA_STATUS_ERROR_FAILED if it's not
+    /// \param[in] useProfilingClocks true to use GPU clocks for profiling
+    inline GPA_Status SetStableClocks(bool useProfilingClocks);
+};
 
 #endif // _GPA_CONTEXT_STATE_DX12_H_
-

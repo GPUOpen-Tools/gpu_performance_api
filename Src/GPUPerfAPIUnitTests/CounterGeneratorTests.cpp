@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Helper functions for Counter Generator Unit Tests
@@ -151,12 +151,16 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, std::vector<con
                     printf("Counter names are different at index %d: expected %s, got %s\n", i, expectedNames[i], pCounterName);
                 }
 
+                const char* pGroup = pCounterAccessor->GetCounterCategory(i);
+                EXPECT_NE((const char*)nullptr, pGroup);
+                EXPECT_NE("", pGroup);
+
                 const char* pDesc = pCounterAccessor->GetCounterDescription(i);
                 EXPECT_NE((const char*)nullptr, pDesc);
                 EXPECT_NE("", pDesc);
 
-                // the format of the description should be "#GROUP#counter description", so make sure the description starts with '#'
-                EXPECT_EQ('#', pDesc[0]);
+                // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
+                EXPECT_NE('#', pDesc[0]);
             }
 
 #else // not AMDT_INTERNAL
@@ -168,12 +172,16 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, std::vector<con
                     const char* pCounterName = pCounterAccessor->GetCounterName(i);
                     EXPECT_STREQ(expectedNames[i], pCounterName);
 
+                    const char* pGroup = pCounterAccessor->GetCounterCategory(i);
+                    EXPECT_NE((const char*)nullptr, pGroup);
+                    EXPECT_NE("", pGroup);
+
                     const char* pDesc = pCounterAccessor->GetCounterDescription(i);
                     EXPECT_NE((const char*)nullptr, pDesc);
                     EXPECT_NE("", pDesc);
 
-                    // the format of the description should be "#GROUP#counter description", so make sure the description starts with '#'
-                    EXPECT_EQ('#', pDesc[0]);
+                    // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
+                    EXPECT_NE('#', pDesc[0]);
                 }
             }
 
@@ -217,12 +225,16 @@ void VerifyCounterNames(GPA_API_Type api, GPA_HW_GENERATION generation, std::vec
                     printf("Counter names are different at index %d: expected %s, got %s\n", i, expectedNames[i], pCounterName);
                 }
 
+                const char* pGroup = pCounterAccessor->GetCounterCategory(i);
+                EXPECT_NE((const char*)nullptr, pGroup);
+                EXPECT_NE("", pGroup);
+
                 const char* pDesc = pCounterAccessor->GetCounterDescription(i);
                 EXPECT_NE((const char*)nullptr, pDesc);
                 EXPECT_NE("", pDesc);
 
-                // the format of the description should be "#GROUP#counter description", so make sure the description starts with '#'
-                EXPECT_EQ('#', pDesc[0]);
+                // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
+                EXPECT_NE('#', pDesc[0]);
             }
 
 #else // not AMDT_INTERNAL
@@ -234,12 +246,16 @@ void VerifyCounterNames(GPA_API_Type api, GPA_HW_GENERATION generation, std::vec
                     const char* pCounterName = pCounterAccessor->GetCounterName(i);
                     EXPECT_STREQ(expectedNames[i], pCounterName);
 
+                    const char* pGroup = pCounterAccessor->GetCounterCategory(i);
+                    EXPECT_NE((const char*)nullptr, pGroup);
+                    EXPECT_NE("", pGroup);
+
                     const char* pDesc = pCounterAccessor->GetCounterDescription(i);
                     EXPECT_NE((const char*)nullptr, pDesc);
                     EXPECT_NE("", pDesc);
 
-                    // the format of the description should be "#GROUP#counter description", so make sure the description starts with '#'
-                    EXPECT_EQ('#', pDesc[0]);
+                    // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
+                    EXPECT_NE('#', pDesc[0]);
                 }
             }
 
@@ -251,7 +267,7 @@ void VerifyCounterNames(GPA_API_Type api, GPA_HW_GENERATION generation, std::vec
 }
 
 
-void VerifyPassCount(GPA_API_Type api, unsigned int deviceId, std::vector<unsigned int> countersToEnable, unsigned int expectedNumPasses)
+void VerifyPassCount(GPA_API_Type api, unsigned int deviceId, const std::vector<unsigned int>& countersToEnable, unsigned int expectedNumPasses)
 {
     LibHandle libHandle = LoadLib(countersLibName);
     ASSERT_NE((LibHandle)nullptr, libHandle);
@@ -291,9 +307,9 @@ void VerifyPassCount(GPA_API_Type api, unsigned int deviceId, std::vector<unsign
 
 void VerifyCountersInPass(GPA_API_Type api,
                           unsigned int deviceId,
-                          std::vector<unsigned int> countersToEnable,
-                          std::vector< std::vector<unsigned int> >& expectedHwCountersPerPass,
-                          std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> >& expectedResultLocations)
+                          const std::vector<unsigned int>& countersToEnable,
+                          const std::vector< std::vector<unsigned int> >& expectedHwCountersPerPass,
+                          const std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> >& expectedResultLocations)
 {
     LibHandle libHandle = LoadLib(countersLibName);
     ASSERT_NE((LibHandle)nullptr, libHandle);
@@ -334,7 +350,7 @@ void VerifyCountersInPass(GPA_API_Type api,
             {
                 std::vector<gpa_uint32>* pScheduledCountersInPass = pCounterScheduler->GetCountersForPass(passIndex);
 
-                std::vector<unsigned int>& expectedCountersInPass = expectedHwCountersPerPass[passIndex];
+                const std::vector<unsigned int>& expectedCountersInPass = expectedHwCountersPerPass[passIndex];
 
                 // make sure the number of scheduled counters matches the expected number of scheduled counters
                 EXPECT_EQ(expectedCountersInPass.size(), pScheduledCountersInPass->size());
@@ -357,22 +373,29 @@ void VerifyCountersInPass(GPA_API_Type api,
 
                 if (nullptr != pCounterResultLocation)
                 {
-                    std::map<unsigned int, GPA_CounterResultLocation> expectedResultLocation = expectedResultLocations[countersToEnable[i]];
+                    const auto expectedResultiter = expectedResultLocations.find(countersToEnable[i]);
+                    if (expectedResultiter == expectedResultLocations.end())
+                    {
+                        // Counter not found in expected results
+                        ADD_FAILURE();
+                    }
+                    const std::map<unsigned int, GPA_CounterResultLocation> expectedResultLocation = expectedResultiter->second;
+
                     EXPECT_EQ(expectedResultLocation.size(), pCounterResultLocation->size());
 
                     if (expectedResultLocation.size() == pCounterResultLocation->size())
                     {
-                        for (std::map<unsigned int, GPA_CounterResultLocation>::iterator hardwareCounterIter = expectedResultLocation.begin(); hardwareCounterIter != expectedResultLocation.end(); hardwareCounterIter++)
+                        for (auto hardwareCounterIter = expectedResultLocation.begin(); hardwareCounterIter != expectedResultLocation.end(); hardwareCounterIter++)
                         {
                             unsigned int expectedOffset = hardwareCounterIter->second.m_offset;
                             unsigned int expectedPass = hardwareCounterIter->second.m_pass;
 
-                            std::map<unsigned int, GPA_CounterResultLocation>::iterator locationIter = pCounterResultLocation->find(hardwareCounterIter->first);
+                            auto locationIter = pCounterResultLocation->find(hardwareCounterIter->first);
 
                             if (pCounterResultLocation->end() != locationIter)
                             {
-                                EXPECT_EQ(expectedOffset, locationIter->second.m_offset);
-                                EXPECT_EQ(expectedPass, locationIter->second.m_pass);
+                                EXPECT_EQ(expectedOffset, locationIter->second.m_offset) << "Unexpected result offset for counter " << countersToEnable[i];
+                                EXPECT_EQ(expectedPass, locationIter->second.m_pass) << "Unexpected result pass for counter " << countersToEnable[i];
                             }
                             else
                             {
@@ -386,6 +409,111 @@ void VerifyCountersInPass(GPA_API_Type api,
 
             // disable the counters
             pCounterScheduler->DisableAllCounters();
+        }
+    }
+
+    UnloadLib(libHandle);
+}
+
+void DecodeCountersInPassAndResultLocations(
+    GPA_API_Type api,
+    unsigned int deviceId,
+    const std::vector<unsigned int>& countersToEnable,
+    std::stringstream* pOutputStream
+)
+{
+    LibHandle libHandle = LoadLib(countersLibName);
+    ASSERT_NE((LibHandle)nullptr, libHandle);
+    GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetEntryPoint(libHandle, "GPA_GetAvailableCounters");
+
+    if (nullptr != GPA_GetAvailableCounters_fn)
+    {
+        GPA_ICounterAccessor* pCounterAccessor = nullptr;
+        GPA_ICounterScheduler* pCounterScheduler = nullptr;
+
+        // Get all the counters (based on API and the deviceID), an accessor, and a scheduler
+        GPA_Status status = GPA_GetAvailableCounters_fn(api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, &pCounterAccessor, &pCounterScheduler);
+
+        EXPECT_EQ(GPA_STATUS_OK, status);
+        EXPECT_NE((GPA_ICounterAccessor*)nullptr, pCounterAccessor);
+        EXPECT_NE((GPA_ICounterScheduler*)nullptr, pCounterScheduler);
+
+        if (nullptr != pCounterScheduler)
+        {
+            pCounterScheduler->DisableAllCounters();
+
+            for (unsigned int i = 0; i < countersToEnable.size(); ++i)
+            {
+                GPA_Status enabled = pCounterScheduler->EnableCounter(countersToEnable[i]);
+                EXPECT_EQ(GPA_STATUS_OK, enabled);
+            }
+
+            gpa_uint32 requiredPasses = 0;
+
+            GPA_Status passCountStatus = pCounterScheduler->GetNumRequiredPasses(&requiredPasses);
+            EXPECT_EQ(GPA_STATUS_OK, passCountStatus);
+
+            *pOutputStream << "Expected number of passes: " << requiredPasses << "\n";
+
+            // make sure each pass has the expected set of hw counters
+            for (unsigned int passIndex = 0; passIndex < requiredPasses; passIndex++)
+            {
+                std::vector<gpa_uint32>* pScheduledCountersInPass = pCounterScheduler->GetCountersForPass(passIndex);
+
+                *pOutputStream << "Pass: " << passIndex << "\n";
+                *pOutputStream << "Counter Count: " << pScheduledCountersInPass->size() << "\n";
+                *pOutputStream << "Counters: ";
+
+                // make sure all the counters match what we expect
+                for (unsigned int counterIndex = 0; counterIndex < pScheduledCountersInPass->size(); counterIndex++)
+                {
+                    if (counterIndex)
+                        *pOutputStream << ",";
+                    *pOutputStream << pScheduledCountersInPass->at(counterIndex);
+                }
+                *pOutputStream << "\n";
+            }
+
+            std::map<unsigned int, GPA_CounterResultLocation>* pCounterResultLocation = nullptr;
+
+            *pOutputStream << "\nResult locations (Pass, Offset)\n";
+
+            for (unsigned int i = 0; i < countersToEnable.size(); ++i)
+            {
+                *pOutputStream << "Counter: " << countersToEnable[i] << "\n";
+
+                pCounterResultLocation = pCounterScheduler->GetCounterResultLocations(countersToEnable[i]);
+                EXPECT_NE((void*)nullptr, pCounterResultLocation);
+
+                if (nullptr != pCounterResultLocation)
+                {
+                    for (auto hardwareCounterIter = pCounterResultLocation->begin(); hardwareCounterIter != pCounterResultLocation->end(); hardwareCounterIter++)
+                    {
+                        unsigned int expectedOffset = hardwareCounterIter->second.m_offset;
+                        unsigned int expectedPass = hardwareCounterIter->second.m_pass;
+
+                        *pOutputStream << "(" << expectedPass << ", " << expectedOffset << ")\n";
+
+                        auto locationIter = pCounterResultLocation->find(hardwareCounterIter->first);
+
+                        if (pCounterResultLocation->end() != locationIter)
+                        {
+                            EXPECT_EQ(expectedOffset, locationIter->second.m_offset) << "Unexpected result offset for counter " << countersToEnable[i];
+                            EXPECT_EQ(expectedPass, locationIter->second.m_pass) << "Unexpected result pass for counter " << countersToEnable[i];
+                        }
+                        else
+                        {
+                            // The locationIter should always be valid; if the code got here, that means a counter was not in the expected place
+                            ADD_FAILURE();
+                        }
+                    }
+                }
+            }
+
+            // disable the counters
+            pCounterScheduler->DisableAllCounters();
+
+            *pOutputStream << "\n";
         }
     }
 

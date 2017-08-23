@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for DX12 counter generation
@@ -8,59 +8,60 @@
 #ifndef _GPA_COUNTER_GENERATOR_DX12_H_
 #define _GPA_COUNTER_GENERATOR_DX12_H_
 
-#include "GPACounterGeneratorBase.h"
+#include "GPACounterGeneratorDX12Base.h"
 
 /// The DX12-specific counter generator
-class GPA_CounterGeneratorDX12 : public GPA_CounterGeneratorBase
+class GPA_CounterGeneratorDX12 : public GPA_CounterGeneratorDX12Base
 {
 public:
-    /// Get the SW counter description for the given SW counter index
-    /// \return The SW counter description
-    /// \param[in] swCounterIndex The SW counter index
-    /// \param[out] swCounterDesc Software counter description
-    static bool GetSwCounterDesc(
-        const gpa_uint32 swCounterIndex, GPA_SoftwareCounterDesc& swCounterDesc);
-
-    /// Construct a GPA DX12 counter generator
+    /// Constructor
     GPA_CounterGeneratorDX12();
 
-    /// Destroy this GPA DX12 counter generator
+    /// Destructor
     virtual ~GPA_CounterGeneratorDX12();
 
 protected:
+
+    /// Overridden methods -- see base for documentation
     virtual GPA_Status GeneratePublicCounters(
-        GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters);
+        GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters) override;
 
     virtual GPA_Status GenerateHardwareCounters(
-        GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters);
-
-    virtual GPA_Status GenerateSoftwareCounters(
-        GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters);
-
-    virtual void ComputeSWCounterValue(
-        gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, GPA_HWInfo* pHwInfo);
+        GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters) override;
 
 private:
-    static const GPA_SoftwareCounterDesc s_dx12SWCounters[]; ///< DX12 SW counters list
-    static const size_t s_dx12SWCountersCount; ///< DX12 SW counter list size
+
+    /// Helper function to indicates whether the specified HW generation represents an AMD GPU
+    /// \param generation the hw generation to check
+    /// \return true if the specified HW generation represents an AMD GPU
+    static bool IsAMDGPU(GDT_HW_GENERATION generation);
+
+    /// Logic inside this function is based on the AmdExtGpuBlock enum in AmdExtGpaInterface in DXCP driver.
+    /// The driver gives each block an ID, but ignores the instance. GPA treats each instance as a different
+    /// block, so we need to translate.
+    /// \param generation the generation whose block id needs to be calculated
+    /// \param pGroup the group for which the block id needs to be calculated
+    /// \return the block id according to the driver
+    static UINT CalculateBlockIdDX12(GDT_HW_GENERATION generation, GPA_CounterGroupDesc* pGroup);
+
+    /// Generates internal counters
+    /// \param pHardwareCounters the hardware counters to generate
+    /// \param generation the generation for which counters need to be generated
+    /// \return true on success
+    static bool GenerateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GDT_HW_GENERATION generation);
 
     /// Copy constructor - private override to prevent usage
-    GPA_CounterGeneratorDX12(const GPA_CounterGeneratorDX12&) = delete;
+    GPA_CounterGeneratorDX12(const GPA_CounterGeneratorDX12Base&) = delete;
 
     /// Move constructor - private override to prevent usage
-    GPA_CounterGeneratorDX12(GPA_CounterGeneratorDX12&&) = delete;
+    GPA_CounterGeneratorDX12(GPA_CounterGeneratorDX12Base&&) = delete;
 
     /// Copy operator - private override to prevent usage
     GPA_CounterGeneratorDX12& operator=(const GPA_CounterGeneratorDX12&) = delete;
 
-    /// Mpve operator - private override to prevent usage
+    /// Move operator - private override to prevent usage
     GPA_CounterGeneratorDX12& operator=(GPA_CounterGeneratorDX12&&) = delete;
-
-    /// Generate DX12 API software counters
-    /// \return GPA_STATUS_OK if generating counters succeeded, false if it failed
-    GPA_Status GenerateDX12SoftwareCounters();
-
-}; // end of class GPA_CounterGeneratorDX12
+};
 
 #endif // _GPA_COUNTER_GENERATOR_DX12_H_
 

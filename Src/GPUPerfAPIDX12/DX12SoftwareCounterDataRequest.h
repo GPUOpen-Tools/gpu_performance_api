@@ -35,6 +35,7 @@ public:
 
     virtual bool BeginRequest(
         GPA_ContextState* pContextState,
+        void* pSampleList,
         gpa_uint32 selectionId,
         const vector<gpa_uint32>* pCounters);
 
@@ -48,7 +49,7 @@ private:
     {
         gpa_uint32 m_index;           ///< index of counter
         D3D12_QUERY_TYPE m_queryType; ///< query type of counter
-    }; // end of struct ActiveCounter
+    };
 
     typedef std::vector<ActiveCounter> ActiveCounterListType; ///< Typedef for a list of counters
 
@@ -92,7 +93,7 @@ private:
         const gpa_uint32 counterIndex,
         gpa_uint64& counterResult) const;
 
-}; // end of class DX12SoftwareCounterDataRequest
+};
 
 #endif // _DX12_SOFTWARE_COUNTER_DATA_REQUEST_H_
 

@@ -1,4 +1,4 @@
-# GPU Performance API Release Notes
+﻿# GPU Performance API Release Notes
 ---
 
 ## Version 2.23 (6/27/17)

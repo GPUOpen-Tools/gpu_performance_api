@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for CL counter generation
@@ -98,6 +98,8 @@ GPA_Status GPA_CounterGeneratorCL::GenerateHardwareCounters(GDT_HW_GENERATION de
         pHardwareCounters->m_groupCount          = HWCLGroupCountGfx6;
         pHardwareCounters->m_pSQCounterGroups    = HWCLSQGroupsGfx6;
         pHardwareCounters->m_sqGroupCount        = HWCLSQGroupCountGfx6;
+        pHardwareCounters->m_pIsolatedGroups     = HWCLSQIsolatedGroupsGfx6;
+        pHardwareCounters->m_isolatedGroupCount  = HWCLSQIsolatedGroupCountGfx6;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
     {
@@ -106,22 +108,28 @@ GPA_Status GPA_CounterGeneratorCL::GenerateHardwareCounters(GDT_HW_GENERATION de
         pHardwareCounters->m_groupCount          = HWCLGroupCountGfx7;
         pHardwareCounters->m_pSQCounterGroups    = HWCLSQGroupsGfx7;
         pHardwareCounters->m_sqGroupCount        = HWCLSQGroupCountGfx7;
+        pHardwareCounters->m_pIsolatedGroups     = HWCLSQIsolatedGroupsGfx7;
+        pHardwareCounters->m_isolatedGroupCount  = HWCLSQIsolatedGroupCountGfx7;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
         pHardwareCounters->m_ppCounterGroupArray = CLCounterGroupArrayGfx8;
-        pHardwareCounters->m_pGroups            = HWCLGroupsGfx8;
-        pHardwareCounters->m_groupCount        = HWCLGroupCountGfx8;
-        pHardwareCounters->m_pSQCounterGroups   = HWCLSQGroupsGfx8;
-        pHardwareCounters->m_sqGroupCount      = HWCLSQGroupCountGfx8;
+        pHardwareCounters->m_pGroups             = HWCLGroupsGfx8;
+        pHardwareCounters->m_groupCount          = HWCLGroupCountGfx8;
+        pHardwareCounters->m_pSQCounterGroups    = HWCLSQGroupsGfx8;
+        pHardwareCounters->m_sqGroupCount        = HWCLSQGroupCountGfx8;
+        pHardwareCounters->m_pIsolatedGroups     = HWCLSQIsolatedGroupsGfx8;
+        pHardwareCounters->m_isolatedGroupCount  = HWCLSQIsolatedGroupCountGfx8;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
         pHardwareCounters->m_ppCounterGroupArray = CLCounterGroupArrayGfx9;
-        pHardwareCounters->m_pGroups = HWCLGroupsGfx9;
-        pHardwareCounters->m_groupCount = HWCLGroupCountGfx9;
-        pHardwareCounters->m_pSQCounterGroups = HWCLSQGroupsGfx9;
-        pHardwareCounters->m_sqGroupCount = HWCLSQGroupCountGfx9;
+        pHardwareCounters->m_pGroups             = HWCLGroupsGfx9;
+        pHardwareCounters->m_groupCount          = HWCLGroupCountGfx9;
+        pHardwareCounters->m_pSQCounterGroups    = HWCLSQGroupsGfx9;
+        pHardwareCounters->m_sqGroupCount        = HWCLSQGroupCountGfx9;
+        pHardwareCounters->m_pIsolatedGroups     = HWCLSQIsolatedGroupsGfx9;
+        pHardwareCounters->m_isolatedGroupCount  = HWCLSQIsolatedGroupCountGfx9;
     }
     else
     {

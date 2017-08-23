@@ -6,7 +6,7 @@
 //==============================================================================
 
 #include "CounterGeneratorTests.h"
-#include "GPUPerfAPITypes-Private.h"
+#include "GPUPerfAPITypes.h"
 #include "GPAInternalCounter.h"
 
 #include "counters/PublicCountersGLGfx6.h"

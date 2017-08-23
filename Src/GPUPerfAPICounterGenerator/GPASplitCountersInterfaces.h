@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Interfaces used for counter splitting
@@ -13,6 +13,7 @@
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <set>
 
 #ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
     #include "Logging.h"
@@ -126,12 +127,16 @@ public:
     /// \param maxSQCounters The maximum number of counters that can be simultaneously enabled on the SQ block
     /// \param numSQGroups The number of SQ counter groups.
     /// \param pSQCounterBlockInfo The list of SQ counter groups.
+    /// \param numIsolatedFromSqGroups The number of counter groups that must be isolated from SQ counter groups
+    /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
     IGPASplitCounters(unsigned int gpuTimestampGroupIndex,
                       unsigned int gpuTimestampBottomToBottomCounterIndex,
                       unsigned int gpuTimestampTopToBottomCounterIndex,
                       unsigned int maxSQCounters,
                       unsigned int numSQGroups,
-                      GPA_SQCounterGroupDesc* pSQCounterBlockInfo)
+                      GPA_SQCounterGroupDesc* pSQCounterBlockInfo,
+                      unsigned int numIsolatedFromSqGroups,
+                      const unsigned int* pIsolatedFromSqGroups)
         : m_gpuTimestampGroupIndex(gpuTimestampGroupIndex),
           m_gpuTimestampBottomToBottomCounterIndex(gpuTimestampBottomToBottomCounterIndex),
           m_gpuTimestampTopToBottomCounterIndex(gpuTimestampTopToBottomCounterIndex),
@@ -141,6 +146,12 @@ public:
         {
             m_sqCounterIndexMap[pSQCounterBlockInfo[i].m_groupIndex] = pSQCounterBlockInfo[i];
             m_sqShaderStageGroupMap[pSQCounterBlockInfo[i].m_stage].push_back(pSQCounterBlockInfo[i].m_groupIndex);
+            m_sqCounterIndexSet.insert(pSQCounterBlockInfo[i].m_groupIndex);
+        }
+
+        for (uint32_t i = 0; i < numIsolatedFromSqGroups; ++i)
+        {
+            m_isolatedFromSqGroupIndexSet.insert(pIsolatedFromSqGroups[i]);
         }
     }
 
@@ -182,6 +193,9 @@ protected:
 
     std::map<gpa_uint32, GPA_SQCounterGroupDesc> m_sqCounterIndexMap;           ///< map from group index to the SQ counter group description for that group
     std::map<GPA_SQShaderStage, vector<unsigned int> > m_sqShaderStageGroupMap; ///< map from shader stage to the list of SQ groups for that stage
+    std::set<gpa_uint32> m_sqCounterIndexSet;                                   ///< set of SQ counter groups
+
+    std::set<gpa_uint32> m_isolatedFromSqGroupIndexSet;  ///< set of groups that must be isolated from SQ groups
 
     /// A map between a public counter index and the set of hardware counters that compose the public counter.
     /// For each hardware counter, there is a map from the hardware counter to the counter result location (pass and offset) for that specific counter.
@@ -198,8 +212,8 @@ protected:
     void AddCounterResultLocation(unsigned int publicCounterIndex, unsigned int hardwareCounterIndex, unsigned int passIndex, unsigned int offset)
     {
         GPA_CounterResultLocation location;
-        location.m_offset = (gpa_uint16)offset;
-        location.m_pass = (gpa_uint16)passIndex;
+        location.m_offset = static_cast<gpa_uint16>(offset);
+        location.m_pass = static_cast<gpa_uint16>(passIndex);
 
         m_counterResultLocationMap[publicCounterIndex][hardwareCounterIndex] = location;
 #ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
@@ -216,7 +230,7 @@ protected:
     /// \return The index of the element if the vector does contain it.
     template <class T> int VectorContains(const vector<T>& array, const T& element)
     {
-        int arraySize = (int)array.size();
+        int arraySize = static_cast<int>(array.size());
 
         for (int i = 0; i < arraySize; i++)
         {
@@ -228,6 +242,64 @@ protected:
 
         return -1;
     };
+
+    //--------------------------------------------------------------------------
+    /// Tests to see if the counter group is an SQ counter group
+    /// \param pAccessor The counter accessor that describes the counter that needs to be scheduled.
+    /// \return True if a counter is an SQ group counter
+    bool IsSqCounterGroup(const IGPACounterAccessor* pAccessor) const
+    {
+        unsigned int groupIndex = pAccessor->GlobalGroupIndex();
+        return m_sqCounterIndexSet.find(groupIndex) != m_sqCounterIndexSet.end();
+    }
+
+    //--------------------------------------------------------------------------
+    /// Tests to see if the counter group must be isolated from an SQ counter group
+    /// \param pAccessor The counter accessor that describes the counter that needs to be scheduled.
+    /// \return True if a counter must be isolated from SQ group counters
+    bool IsCounterGroupIsolatedFromSqCounterGroup(const IGPACounterAccessor* pAccessor) const
+    {
+        unsigned int groupIndex = pAccessor->GlobalGroupIndex();
+        return m_isolatedFromSqGroupIndexSet.find(groupIndex) != m_isolatedFromSqGroupIndexSet.end();
+    }
+
+    //--------------------------------------------------------------------------
+    /// Tests to see if the enabled counters include one of those in the parameter set
+    /// \param currentPassData The counters enabled on each block in the current pass.
+    /// \param counterSet List of counter groups to check for in the enabled set.
+    /// \return True if a counter enabled in the current pass is a member of the validation set
+    bool EnabledCounterGroupsContain(const PerPassData& currentPassData, const std::set<uint32_t>& counterSet) const
+    {
+        for (const auto& groupEntry : currentPassData.m_numUsedCountersPerBlock)
+        {
+            // Is the counter group in the list of interest?
+            if (counterSet.find(groupEntry.first) == counterSet.end())
+                continue;
+
+            // Check if any counters are scheduled on it
+            if (groupEntry.second.size())
+                return true;
+        }
+        return false;
+    }
+
+    //--------------------------------------------------------------------------
+    /// Tests to see if the counter group that needs to be scheduled is compatible with those already scheduled
+    /// \param pAccessor The counter accessor that describes the counter that needs to be scheduled.
+    /// \param currentPassData The counters enabled on each block in the current pass.
+    /// \return True if the counter is compatible with counters already scheduled on the current pass
+    bool CheckCountersAreCompatible(const IGPACounterAccessor* pAccessor, const PerPassData& currentPassData) const
+    {
+        // SQ counters cannot be scheduled on the same pass as TCC/TA/TCP/TCA/TD counters (and vice versa)
+
+        if (IsSqCounterGroup(pAccessor))
+            return !EnabledCounterGroupsContain(currentPassData, m_isolatedFromSqGroupIndexSet);
+
+        if (IsCounterGroupIsolatedFromSqCounterGroup(pAccessor))
+            return !EnabledCounterGroupsContain(currentPassData, m_sqCounterIndexSet);
+
+        return true;
+    }
 
     //--------------------------------------------------------------------------
     /// Ensures that there are enough pass partitions and per pass data for the number of required passes.
@@ -326,12 +398,12 @@ protected:
 
         for (unsigned int i = SQ_ALL; i <= SQ_LAST; i++)
         {
-            if ((GPA_SQShaderStage)i == sqCounterGroup.m_stage)
+            if (static_cast<GPA_SQShaderStage>(i) == sqCounterGroup.m_stage)
             {
                 continue;
             }
 
-            for (vector<unsigned int>::const_iterator it = m_sqShaderStageGroupMap[(GPA_SQShaderStage)i].begin(); it != m_sqShaderStageGroupMap[(GPA_SQShaderStage)i].end(); ++it)
+            for (vector<unsigned int>::const_iterator it = m_sqShaderStageGroupMap[static_cast<GPA_SQShaderStage>(i)].begin(); it != m_sqShaderStageGroupMap[static_cast<GPA_SQShaderStage>(i)].end(); ++it)
             {
                 if (currentPassData.m_numUsedCountersPerBlock[*it].size() > 0)
                 {

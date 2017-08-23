@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Maintains a set of hardware counters
@@ -54,27 +54,37 @@ public:
         m_gpuTimeBottomToBottomCounterIndex = static_cast<unsigned int>(-1);
         m_gpuTimeTopToBottomCounterIndex = static_cast<unsigned int>(-1);
         m_countersGenerated = false;
+        m_pIsolatedGroups = nullptr;
+        m_isolatedGroupCount = 0;
     }
 
     /// Obtains the number of hardware counters
     /// \return the number of hardware counters
-    gpa_uint32 GetNumCounters()
+    gpa_uint32 GetNumCounters() const
     {
-        return (gpa_uint32)m_counters.size();
+        return static_cast<gpa_uint32>(m_counters.size());
     }
 
     /// Gets the name of the specified counter
     /// \param index the index of the counter whose name is needed
     /// \return the name of the specified counter
-    const char* GetCounterName(gpa_uint32 index)
+    const char* GetCounterName(gpa_uint32 index) const
     {
         return m_counters[index].m_pHardwareCounter->m_pName;
+    }
+
+    /// Gets the category of the specified counter
+    /// \param index the index of the counter whose category is needed
+    /// \return the category of the specified counter
+    const char* GetCounterCategory(gpa_uint32 index) const
+    {
+        return m_pGroups[m_counters[index].m_groupIndex].m_pName;
     }
 
     /// Gets the description of the specified counter
     /// \param index the index of the counter whose description is needed
     /// \return the description of the specified counter
-    const char* GetCounterDescription(gpa_uint32 index)
+    const char* GetCounterDescription(gpa_uint32 index) const
     {
         return m_counters[index].m_pHardwareCounter->m_pDescription;
     }
@@ -111,6 +121,12 @@ public:
 
     /// indicates that the internal counters have been generated
     bool m_countersGenerated;
+
+    /// List of groups that are isolated from SQ groups
+    const uint32_t* m_pIsolatedGroups;
+
+    /// The number of isolated groups
+    uint32_t m_isolatedGroupCount;
 
     /// vector of hardware counters
     std::vector<GPA_HardwareCounterDescExt> m_counters;

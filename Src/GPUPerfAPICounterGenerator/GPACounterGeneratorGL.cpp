@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for GL counter generation
@@ -335,6 +335,8 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
             pHardwareCounters->m_pSQCounterGroups    = HWGLSQGroupsGfx6;
             pHardwareCounters->m_sqGroupCount        = HWGLSQGroupCountGfx6;
             pHardwareCounters->m_gpuTimeIndex        = HWGLGPUTimeIndexGfx6;
+            pHardwareCounters->m_pIsolatedGroups     = HWGLSQIsolatedGroupsGfx6;
+            pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx6;
             break;
 
         case GDT_HW_GENERATION_SEAISLAND:
@@ -344,6 +346,8 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
             pHardwareCounters->m_pSQCounterGroups    = HWGLSQGroupsGfx7;
             pHardwareCounters->m_sqGroupCount        = HWGLSQGroupCountGfx7;
             pHardwareCounters->m_gpuTimeIndex        = HWGLGPUTimeIndexGfx7;
+            pHardwareCounters->m_pIsolatedGroups     = HWGLSQIsolatedGroupsGfx7;
+            pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx7;
             break;
 
         case GDT_HW_GENERATION_VOLCANICISLAND:
@@ -353,6 +357,8 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
             pHardwareCounters->m_pSQCounterGroups    = HWGLSQGroupsGfx8;
             pHardwareCounters->m_sqGroupCount        = HWGLSQGroupCountGfx8;
             pHardwareCounters->m_gpuTimeIndex        = HWGLGPUTimeIndexGfx8;
+            pHardwareCounters->m_pIsolatedGroups     = HWGLSQIsolatedGroupsGfx8;
+            pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx8;
             break;
 
         case GDT_HW_GENERATION_GFX9:
@@ -362,6 +368,8 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
             pHardwareCounters->m_pSQCounterGroups    = HWGLSQGroupsGfx9;
             pHardwareCounters->m_sqGroupCount        = HWGLSQGroupCountGfx9;
             pHardwareCounters->m_gpuTimeIndex        = HWGLGPUTimeIndexGfx9;
+            pHardwareCounters->m_pIsolatedGroups     = HWGLSQIsolatedGroupsGfx9;
+            pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx9;
             break;
 
         default:

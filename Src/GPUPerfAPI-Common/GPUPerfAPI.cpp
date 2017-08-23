@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  This file contains the main entrypoints into GPA
@@ -12,7 +12,7 @@
     #define GPALIB_DECL extern "C" __declspec( dllexport )
 #endif
 
-#include "GPUPerfAPI-Private.h"
+#include "GPUPerfAPI.h"
 
 #include "GPUPerfAPIImp.h"
 #include <string.h>
@@ -211,27 +211,9 @@ GPALIB_DECL GPA_Status GPA_RegisterLoggingCallback(GPA_Logging_Type loggingType,
 
     g_loggerSingleton.SetLoggingCallback(loggingType, pCallbackFuncPtr);
 
-    GPA_Log(GPA_LOG_MESSAGE, "Logging callback registered successfully.");
+    GPA_Log(GPA_LOGGING_MESSAGE, "Logging callback registered successfully.");
     return GPA_STATUS_OK;
 }
-
-//-----------------------------------------------------------------------------
-#ifdef AMDT_INTERNAL
-GPALIB_DECL GPA_Status GPA_RegisterLoggingDebugCallback(GPA_Log_Debug_Type loggingType, GPA_LoggingDebugCallbackPtrType pCallbackFuncPtr)
-{
-    if (nullptr == pCallbackFuncPtr &&
-        loggingType != GPA_LOG_NONE)
-    {
-        GPA_LogDebugError("Parameter 'pCallbackFuncPtr' is NULL.");
-        return GPA_STATUS_ERROR_NULL_POINTER;
-    }
-
-    g_loggerSingleton.SetLoggingDebugCallback(loggingType, pCallbackFuncPtr);
-
-    GPA_Log(GPA_LOG_DEBUG_MESSAGE, "Debug logging callback registered successfully.");
-    return GPA_STATUS_OK;
-}
-#endif // AMDT_INTERNAL
 
 //-----------------------------------------------------------------------------
 GPALIB_DECL GPA_Status GPA_Initialize()
@@ -257,7 +239,7 @@ GPALIB_DECL GPA_Status GPA_Destroy()
 
 //-----------------------------------------------------------------------------
 // Implementation API guaranteed that no functions called on context unless it's open
-GPALIB_DECL GPA_Status GPA_OpenContext(void* pContext)
+GPALIB_DECL GPA_Status GPA_OpenContext(void* pContext, GPA_OpenContextFlags flags)
 {
     PROFILE_FUNCTION(GPA_OpenContext);
     TRACE_FUNCTION(GPA_OpenContext);
@@ -265,7 +247,7 @@ GPALIB_DECL GPA_Status GPA_OpenContext(void* pContext)
     // sets the current context to be device
     // performs any initialization
 
-    GPA_LogDebugMessage("GPA_OpenContext( 0x%08x ).", pContext);
+    GPA_LogDebugMessage("GPA_OpenContext( 0x%08x, %u ).", pContext, flags);
 
     if (!pContext)
     {
@@ -295,6 +277,8 @@ GPALIB_DECL GPA_Status GPA_OpenContext(void* pContext)
         return status;
     }
 
+    pNewContextState->SetFlags(flags);
+
     GPA_ContextState* pOldContextState = g_pCurrentContext;
     g_pCurrentContext = pNewContextState;
     status = GetHWInfo(pContext, &(pNewContextState->m_hwInfo));
@@ -303,7 +287,7 @@ GPALIB_DECL GPA_Status GPA_OpenContext(void* pContext)
     {
         delete pNewContextState;
         g_pCurrentContext = pOldContextState;
-        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+        return status;
     }
 
     // initialize context
@@ -485,6 +469,45 @@ GPALIB_DECL GPA_Status GPA_GetCounterName(gpa_uint32 index, const char** ppName)
     }
 
     *ppName = g_pCurrentContext->m_pCounterAccessor->GetCounterName(index);
+
+    return GPA_STATUS_OK;
+}
+
+//-----------------------------------------------------------------------------
+GPALIB_DECL GPA_Status GPA_GetCounterCategory(gpa_uint32 index, const char** ppCategory)
+{
+    PROFILE_FUNCTION(GPA_GetCounterCategory);
+    TRACE_FUNCTION(GPA_GetCounterCategory);
+
+    if (nullptr == g_pCurrentContext)
+    {
+        GPA_LogError("GPA_OpenContext must return successfully before calling GPA_GetCounterCategory.");
+        return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
+    }
+
+    if (nullptr == g_pCurrentContext->m_pCounterAccessor)
+    {
+        GPA_LogError("GPA_OpenContext must return successfully before calling GPA_GetCounterCategory.");
+        return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
+    }
+
+    gpa_uint32 numCounters = g_pCurrentContext->m_pCounterAccessor->GetNumCounters();
+
+    if (index >= numCounters)
+    {
+        std::stringstream message;
+        message << "Parameter 'index' is " << index << " but must be less than " << numCounters << ".";
+        GPA_LogError(message.str().c_str());
+        return GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;
+    }
+
+    if (!ppCategory)
+    {
+        GPA_LogError("Parameter 'ppCategory' is NULL.");
+        return GPA_STATUS_ERROR_NULL_POINTER;
+    }
+
+    *ppCategory = g_pCurrentContext->m_pCounterAccessor->GetCounterCategory(index);
 
     return GPA_STATUS_OK;
 }
@@ -1119,6 +1142,195 @@ GPALIB_DECL GPA_Status GPA_EndPass()
 }
 
 //-----------------------------------------------------------------------------
+GPALIB_DECL GPA_Status GPA_BeginSampleList(void* pSampleList)
+{
+    PROFILE_FUNCTION(GPA_BeginSampleList);
+    TRACE_FUNCTION(GPA_BeginSampleList);
+
+    if (nullptr == g_pCurrentContext)
+    {
+        GPA_LogError("Please call GPA_OpenContext before GPA_BeginSampleList.");
+        return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
+    }
+
+    if (!g_pCurrentContext->m_passStarted)
+    {
+        GPA_LogError("A pass must be started with GPA_BeginPass before a SampleList can be started.");
+        return GPA_STATUS_ERROR_PASS_NOT_STARTED;
+    }
+
+    GPA_Status impStatus = GPA_IMP_BeginSampleList(pSampleList);
+
+    return impStatus;
+}
+
+//-----------------------------------------------------------------------------
+GPALIB_DECL GPA_Status GPA_EndSampleList(void* pSampleList)
+{
+    PROFILE_FUNCTION(GPA_EndSampleList);
+    TRACE_FUNCTION(GPA_EndSampleList);
+
+    if (nullptr == g_pCurrentContext)
+    {
+        GPA_LogError("Please call GPA_OpenContext before GPA_EndSampleList.");
+        return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
+    }
+
+    GPA_Status impStatus = GPA_IMP_EndSampleList(pSampleList);
+
+    return impStatus;
+}
+
+//-----------------------------------------------------------------------------
+GPALIB_DECL GPA_Status GPA_BeginSampleInSampleList(gpa_uint32 sampleID, void* pSampleList)
+{
+    PROFILE_FUNCTION(GPA_BeginSampleInSampleList);
+    TRACE_FUNCTION(GPA_BeginSampleInSampleList);
+
+    if (nullptr == g_pCurrentContext)
+    {
+        GPA_LogError("Please call GPA_OpenContext before GPA_BeginSampleInSampleList.");
+        return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
+    }
+
+    if (!g_pCurrentContext->m_samplingStarted)
+    {
+        GPA_LogError("A session must be started with GPA_BeginSession before a sample can be started.");
+        return GPA_STATUS_ERROR_SAMPLING_NOT_STARTED;
+    }
+
+    if (!g_pCurrentContext->m_passStarted)
+    {
+        GPA_LogError("A pass must be started with GPA_BeginPass before a sample can be started.");
+        return GPA_STATUS_ERROR_PASS_NOT_STARTED;
+    }
+
+    if (g_pCurrentContext->m_sampleStarted)
+    {
+        GPA_LogError("The previous sample must be ended with GPA_EndSampleInSampleList before a new one can be started.");
+        return GPA_STATUS_ERROR_SAMPLE_ALREADY_STARTED;
+    }
+
+    //check if sample id is already in use for this pass
+    if (g_pCurrentContext->m_pCurrentSessionRequests->ContainsSampleRequest(g_pCurrentContext->m_currentPass - 1, sampleID))
+    {
+        GPA_LogError("This pass already contains a sample with this sample id. Please ensure all sample ids are unique");
+        return GPA_STATUS_ERROR_SAMPLE_ALREADY_STARTED;
+    }
+
+    // Check if this pass is needed
+    gpa_uint32 numRequiredPasses = 0;
+    g_pCurrentContext->m_pCounterScheduler->GetNumRequiredPasses(&numRequiredPasses);
+
+    gpa_uint32 passCount = g_pCurrentContext->m_pCurrentSessionRequests->GetPassCount();
+
+    if (g_pCurrentContext->m_currentPass > numRequiredPasses &&
+        g_pCurrentContext->m_currentPass > passCount)
+    {
+        // set the sample as started so that the call to EndSample will not generate errors
+        g_pCurrentContext->m_sampleStarted = true;
+        g_pCurrentContext->m_currentSample = sampleID;
+
+        // just return successful since this pass is not needed (there are no counters for this pass).
+        return GPA_STATUS_OK;
+    }
+
+    GPA_Status status = GPA_IMP_BeginSampleInSampleList(sampleID, pSampleList);
+
+    if (GPA_STATUS_OK == status)
+    {
+        // issue request for counter data
+        GPA_DataRequest* pRequest = g_pCurrentContext->GetDataRequest(g_pCurrentContext->m_currentPass - 1);
+        pRequest->SetSampleID(sampleID);
+
+        bool requestOk = pRequest->Begin(g_pCurrentContext, pSampleList, g_pCurrentContext->m_selectionID, g_pCurrentContext->m_pCounterScheduler->GetCountersForPass(g_pCurrentContext->m_currentPass - 1));
+
+        if (!requestOk)
+        {
+            return GPA_STATUS_ERROR_FAILED;
+        }
+
+        // add new request to current session requests list
+        g_pCurrentContext->m_pCurrentSessionRequests->Begin(g_pCurrentContext->m_currentPass - 1, sampleID, pRequest);
+    }
+    else if (GPA_STATUS_OK_HANDLED == status)
+    {
+        status = GPA_STATUS_OK;
+    }
+
+    if (GPA_STATUS_OK == status)
+    {
+        g_pCurrentContext->m_sampleStarted = true;
+        g_pCurrentContext->m_currentSample = sampleID;
+    }
+
+    return status;
+}
+
+//-----------------------------------------------------------------------------
+GPALIB_DECL GPA_Status GPA_EndSampleInSampleList(void* pSampleList)
+{
+    PROFILE_FUNCTION(GPA_EndSampleInSampleList);
+    TRACE_FUNCTION(GPA_EndSampleInSampleList);
+
+    if (nullptr == g_pCurrentContext)
+    {
+        GPA_LogError("Please call GPA_OpenContext before GPA_EndSampleInSampleList.");
+        return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
+    }
+
+    if (!g_pCurrentContext->m_sampleStarted)
+    {
+        GPA_LogError("A sample must be started with GPA_BeginSampleInSampleList before one can be ended.");
+        return GPA_STATUS_ERROR_SAMPLE_NOT_STARTED;
+    }
+
+    // make sure this pass is necessary
+    if (g_pCurrentContext->m_currentPass > g_pCurrentContext->m_pCurrentSessionRequests->GetPassCount())
+    {
+        // mark the sample as ended so that EndPass does not generate an error
+        g_pCurrentContext->m_sampleStarted = false;
+
+        // just return successful since there were no counters enabled for this pass
+        return GPA_STATUS_OK;
+    }
+
+    GPA_Status status = GPA_IMP_EndSampleInSampleList(pSampleList);
+
+    if (GPA_STATUS_OK == status)
+    {
+        bool endedOk = g_pCurrentContext->m_pCurrentSessionRequests->End(g_pCurrentContext->m_currentPass - 1, g_pCurrentContext->m_currentSample);
+
+        if (!endedOk)
+        {
+            return GPA_STATUS_ERROR_FAILED;
+        }
+    }
+    else if (GPA_STATUS_OK_HANDLED == status)
+    {
+        status = GPA_STATUS_OK;
+    }
+
+    if (GPA_STATUS_OK == status)
+    {
+        g_pCurrentContext->m_sampleStarted = false;
+    }
+
+    g_pCurrentContext->m_sampleCount++;
+
+    // test if other samples are completed
+    // If at a proper interval, test for previous samples to be completed
+    gpa_uint32 preferredCheckResultFrequency = GPA_IMP_GetPreferredCheckResultFrequency();
+
+    if ((preferredCheckResultFrequency > 0) && g_pCurrentContext->m_currentSample % preferredCheckResultFrequency == 0)
+    {
+        g_pCurrentContext->m_pCurrentSessionRequests->CheckForAvailableResults(g_pCurrentContext->m_currentPass - 1);
+    }
+
+    return status;
+}
+
+//-----------------------------------------------------------------------------
 GPALIB_DECL GPA_Status GPA_BeginSample(gpa_uint32 sampleID)
 {
     PROFILE_FUNCTION(GPA_BeginSample);
@@ -1180,7 +1392,7 @@ GPALIB_DECL GPA_Status GPA_BeginSample(gpa_uint32 sampleID)
         GPA_DataRequest* pRequest = g_pCurrentContext->GetDataRequest(g_pCurrentContext->m_currentPass - 1);
         pRequest->SetSampleID(sampleID);
 
-        bool requestOk = pRequest->Begin(g_pCurrentContext, g_pCurrentContext->m_selectionID, g_pCurrentContext->m_pCounterScheduler->GetCountersForPass(g_pCurrentContext->m_currentPass - 1));
+        bool requestOk = pRequest->Begin(g_pCurrentContext, nullptr, g_pCurrentContext->m_selectionID, g_pCurrentContext->m_pCounterScheduler->GetCountersForPass(g_pCurrentContext->m_currentPass - 1));
 
         if (!requestOk)
         {
@@ -1269,7 +1481,7 @@ GPALIB_DECL GPA_Status GPA_EndSample()
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_IsSampleReady(bool* pReadyResult, gpa_uint32 sessionID, gpa_uint32 sampleID)
+GPALIB_DECL GPA_Status GPA_IsSampleReady(gpa_uint8* pReadyResult, gpa_uint32 sessionID, gpa_uint32 sampleID)
 {
     PROFILE_FUNCTION(GPA_IsSampleReady);
     TRACE_FUNCTION(GPA_IsSampleReady);
@@ -1301,13 +1513,16 @@ GPALIB_DECL GPA_Status GPA_IsSampleReady(bool* pReadyResult, gpa_uint32 sessionI
     }
 
     // need to make sure the sample is ready in all passes
-    GPA_Status result = checkSession->IsSampleReady(sampleID, pReadyResult);
+    bool readyResult = false;
+    GPA_Status result = checkSession->IsSampleReady(sampleID, &readyResult);
+
+    *pReadyResult = !!readyResult;
 
     return result;
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_IsSessionReady(bool* pReadyResult, gpa_uint32 sessionID)
+GPALIB_DECL GPA_Status GPA_IsSessionReady(gpa_uint8* pReadyResult, gpa_uint32 sessionID)
 {
     PROFILE_FUNCTION(GPA_IsSessionReady);
     TRACE_FUNCTION(GPA_IsSessionReady);
@@ -1336,7 +1551,7 @@ GPALIB_DECL GPA_Status GPA_IsSessionReady(bool* pReadyResult, gpa_uint32 session
     }
 
     // check to see if the session is complete
-    *pReadyResult = checkSession->IsComplete();
+    *pReadyResult = !!checkSession->IsComplete();
 
     return GPA_STATUS_OK;
 }
@@ -1624,23 +1839,19 @@ static GPA_Status GPA_GetSample(gpa_uint32 sessionID, gpa_uint32 sampleID, gpa_u
             gpa_uint16 counterResultOffset = (*pLocations)[hardwareCounterIndex].m_offset;
             status = checkSession->GetResult(counterResultPass, sampleID, counterResultOffset, pResult);
         }
-
-#if defined(WIN32)
         else  //SW counter
         {
             counterIndex -= numAMDCounters;
             gpa_uint64 buf = 0;
+
             auto iter = pLocations->begin();
             gpa_uint16 counterResultOffset = iter->second.m_offset;
             gpa_uint16 counterResultPass = iter->second.m_pass;
-
             status = checkSession->GetResult(counterResultPass, sampleID, counterResultOffset, &buf);
 
             // compute using supplied function. value order is as defined when registered
             g_pCurrentContext->m_pCounterAccessor->ComputeSWCounterValue(counterIndex, buf, pResult, &(g_pCurrentContext->m_hwInfo));
         }
-
-#endif // WIN32
 
         return status;
     }
@@ -1902,6 +2113,16 @@ GPALIB_DECL const char* GPA_GetStatusAsStr(GPA_Status status)
 
         case GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED:
             return "Driver Not Supported";
+
+        case GPA_STATUS_ERROR_API_NOT_SUPPORTED:
+            return "API Not Supported";
+
+        case GPA_STATUS_ERROR_LIB_LOAD_FAILED:
+            return "Loading The Library Failed";
+
+        case GPA_STATUS_ERROR_LIB_LOAD_VERION_MISMATCH:
+            return "Version Mismatch Between The Loader And The GPUPerfAPI Library";
+
         default:
             break;
     }
@@ -1982,11 +2203,12 @@ GPALIB_DECL GPA_Status GPA_GetDeviceDesc(const char** ppDesc)
     return GPA_STATUS_ERROR_NOT_FOUND;
 }
 
-#ifdef AMDT_INTERNAL
 //---------------------------------------------------------------------------------
 //This function must be called before GPA_BeginSession()
 GPALIB_DECL GPA_Status GPA_InternalSetDrawCallCounts(const int iCounts)
 {
+
+#ifdef AMDT_INTERNAL
 
     if (nullptr == g_pCurrentContext)
     {
@@ -2005,5 +2227,27 @@ GPALIB_DECL GPA_Status GPA_InternalSetDrawCallCounts(const int iCounts)
     g_pCurrentContext->m_pCounterScheduler->SetDrawCallCounts(iCounts);
 
     return GPA_STATUS_OK;
-}
+
+#else
+
+    UNREFERENCED_PARAMETER(iCounts);
+    return GPA_STATUS_ERROR_API_NOT_SUPPORTED;
+
 #endif
+
+}
+
+
+//---------------------------------------------------------------------------------
+GPALIB_DECL GPA_Status GPA_GetFuncTable(void** pGPAFuncTable)
+{
+    GPAApi* pApi = reinterpret_cast<GPAApi*>(*pGPAFuncTable);
+
+#define GPA_FUNCTION_PREFIX( func) pApi->func = func;
+    #include "GPAFunctions.h"
+#undef GPA_FUNCTION_PREFIX
+
+    pApi->m_apiId = GPA_API_CURRENT_UUID;
+    return GPA_STATUS_OK;
+}
+

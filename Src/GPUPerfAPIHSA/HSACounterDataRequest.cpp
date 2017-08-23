@@ -28,7 +28,7 @@ HSACounterDataRequest::~HSACounterDataRequest()
 {
     TRACE_PRIVATE_FUNCTION(HSACounterDataRequest::DESTRUCTOR);
 
-    ReleaseCounters();
+    ReleaseCountersInHSADataRequest();
 
     if (nullptr != m_pCounters)
     {
@@ -41,12 +41,18 @@ HSACounterDataRequest::~HSACounterDataRequest()
 void HSACounterDataRequest::ReleaseCounters()
 {
     TRACE_PRIVATE_FUNCTION(HSACounterDataRequest::ReleaseCounters);
+    ReleaseCountersInHSADataRequest();
+}
+
+void HSACounterDataRequest::ReleaseCountersInHSADataRequest()
+{
+    TRACE_PRIVATE_FUNCTION(HSACounterDataRequest::ReleaseCountersInHSADataRequest);
 
     // For HSA, we need to destroy all the counters being created in each group
-    HsaCounterGroupMap::iterator git  = m_hsaGrpIdCtrGrpMap.begin();
+    HsaCounterGroupMap::iterator git = m_hsaGrpIdCtrGrpMap.begin();
     HsaCounterGroupMap::iterator gend = m_hsaGrpIdCtrGrpMap.end();
 
-    for (; git != gend ; ++git)
+    for (; git != gend; ++git)
     {
         // For each group
         hsa_status_t status = HSAToolsRTModuleLoader::Instance()->GetAPIRTModule()->ext_tools_destroy_all_counters(git->second);
@@ -195,10 +201,12 @@ void HSACounterDataRequest::Reset(
 
 bool HSACounterDataRequest::BeginRequest(
     GPA_ContextState* pContextState,
+    void* pSampleList,
     gpa_uint32 selectionID,
     const vector<gpa_uint32>* pCounters)
 {
     TRACE_PRIVATE_FUNCTION(HSACounterDataRequest::Begin);
+    UNREFERENCED_PARAMETER(pSampleList);
 
     assert(pContextState != nullptr);
     assert(pCounters != nullptr);
@@ -239,7 +247,7 @@ bool HSACounterDataRequest::BeginRequest(
     GPA_HardwareCounters* pHardwareCounters = getCurrentContext()->m_pCounterAccessor->GetHardwareCounters();
 
     // Check number of groups
-    gpa_uint32 numGroups = (gpa_uint32)(pHardwareCounters->m_groupCount);
+    gpa_uint32 numGroups = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
 
     hsa_status_t status;
 
@@ -249,7 +257,7 @@ bool HSACounterDataRequest::BeginRequest(
         bool isCounterValid = false;
 
         // need to Enable counters
-        GPA_HardwareCounterDescExt* pCounter = getCurrentContext()->m_pCounterAccessor->GetHardwareCounterExt((*pCounters)[i]);
+        const GPA_HardwareCounterDescExt* pCounter = getCurrentContext()->m_pCounterAccessor->GetHardwareCounterExt((*pCounters)[i]);
 
         gpa_uint32 groupIndex = pCounter->m_groupIdDriver;
         assert(groupIndex <= numGroups);
@@ -345,7 +353,7 @@ bool HSACounterDataRequest::BeginRequest(
         // Update the list of currently active counters
         m_pCounters[i].m_counterID       = (*pCounters)[i];
         m_pCounters[i].m_counterGroup    = pCounter->m_groupIndex;
-        m_pCounters[i].m_counterIndex    = (gpa_uint32)pCounter->m_pHardwareCounter->m_counterIndexInGroup;
+        m_pCounters[i].m_counterIndex    = static_cast<gpa_uint32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
         m_pCounters[i].m_hsaPerfCounter  = counter;
         m_pCounters[i].m_isCounterValid  = isCounterValid;
     } // for each counter

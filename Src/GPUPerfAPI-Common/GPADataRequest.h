@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2011-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2011-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  A base class to manage data requests
@@ -8,7 +8,6 @@
 #ifndef _GPA_COUNTERDATAREQUEST_H_
 #define _GPA_COUNTERDATAREQUEST_H_
 
-#include "GPUPerfAPIOS.h"
 #include "GPUPerfAPITypes.h"
 #include <vector>
 
@@ -48,7 +47,7 @@ struct GPA_CounterResults
 class GPA_DataRequest
 {
 public:
-    /// Initializes a new instance of hte GPA_DataRequest class.
+    /// Initializes a new instance of the GPA_DataRequest class.
     GPA_DataRequest()
         : m_counterSelectionID(0),
           m_sampleID(0),
@@ -76,7 +75,7 @@ public:
 
     /// Obtain the number of active counters in the data request.
     /// \return The number of active counters.
-    size_t NumActiveCounters()
+    size_t NumActiveCounters() const
     {
         return m_activeCounters;
     }
@@ -88,9 +87,9 @@ public:
     /// \param selectionID the ID of the counter selection
     /// \param pCounters the set of counters to enable
     /// \return True if the sample could be started; false otherwise.
-    bool Begin(GPA_ContextState* pContextState, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters)
+    bool Begin(GPA_ContextState* pContextState, void* pSampleList, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters)
     {
-        bool result = BeginRequest(pContextState, selectionID, pCounters);
+        bool result = BeginRequest(pContextState, pSampleList, selectionID, pCounters);
 
         if (result)
         {
@@ -174,7 +173,7 @@ public:
 
     /// Gets the sample ID
     /// \return the sample ID of this data request.
-    inline gpa_uint32 GetSampleID()
+    inline gpa_uint32 GetSampleID() const
     {
         return m_sampleID;
     }
@@ -182,7 +181,7 @@ public:
     /// Checks to see if the data request is a time stamp and for a specific counter activeCounterOffset
     /// \param activeCounterOffset The counter offset
     /// \return true if time stamp and offset match - false if not
-    bool IsTimeStamp(gpa_uint32 activeCounterOffset)
+    bool IsTimeStamp(gpa_uint32 activeCounterOffset) const
     {
         if ((m_gpuTimeBottomToBottomPresent && activeCounterOffset == m_gpuTimeBottomToBottomOffset) ||
             (m_gpuTimeTopToBottomPresent && activeCounterOffset == m_gpuTimeTopToBottomOffset) ||
@@ -200,91 +199,91 @@ public:
 
     /// Gets the top to bottom time stamp bool
     /// \return true if the data request is a top to bottom time stamp
-    inline bool GPUTimeTopToBottomPresent()
+    inline bool GPUTimeTopToBottomPresent() const
     {
         return m_gpuTimeTopToBottomPresent;
     }
 
     /// Gets the bottom to bottom time stamp bool
     /// \return true if the data request is a bottom to bottom time stamp
-    inline bool GPUTimeBottomToBottomPresent()
+    inline bool GPUTimeBottomToBottomPresent() const
     {
         return m_gpuTimeBottomToBottomPresent;
     }
 
     /// Gets the pre-event top timestamp bool
     /// \return true if the data request is a pre-event top timestamp
-    inline bool GPUTimestampTopPresent()
+    inline bool GPUTimestampTopPresent() const
     {
         return m_gpuTimestampTopPresent;
     }
 
     /// Gets the pre-event bottom timestamp bool
     /// \return true if the data request is a pre-event bottom timestamp
-    inline bool GPUTimestampPreBottomPresent()
+    inline bool GPUTimestampPreBottomPresent() const
     {
         return m_gpuTimestampPreBottomPresent;
     }
 
     /// Gets the post-event bottom timestamp bool
     /// \return true if the data request is a post-event bottom timestamp
-    inline bool GPUTimestampPostBottomPresent()
+    inline bool GPUTimestampPostBottomPresent() const
     {
         return m_gpuTimestampPostBottomPresent;
     }
 
     /// Gets the top to bottom counter offset
     /// \return The counter offset
-    inline gpa_uint32 GPUTimeBottomToBottomOffset()
+    inline gpa_uint32 GPUTimeBottomToBottomOffset() const
     {
         return m_gpuTimeBottomToBottomOffset;
     }
 
     /// Gets the bottom to bottom counter offset
     /// \return The counter offset
-    inline gpa_uint32 GPUTimeTopToBottomOffset()
+    inline gpa_uint32 GPUTimeTopToBottomOffset() const
     {
         return m_gpuTimeTopToBottomOffset;
     }
 
     /// Gets the pre-event top timestamp counter offset
     /// \return The counter offset
-    inline gpa_uint32 GPUTimestampTopOffset()
+    inline gpa_uint32 GPUTimestampTopOffset() const
     {
         return m_gpuTimestampTopOffset;
     }
 
     /// Gets the pre-event bottom timestamp counter offset
     /// \return The counter offset
-    inline gpa_uint32 GPUTimestampPreBottomOffset()
+    inline gpa_uint32 GPUTimestampPreBottomOffset() const
     {
         return m_gpuTimestampPreBottomOffset;
     }
 
     /// Gets the post-event bottom timestamp counter offset
     /// \return The counter offset
-    inline gpa_uint32 GPUTimestampPostBottomOffset()
+    inline gpa_uint32 GPUTimestampPostBottomOffset() const
     {
         return m_gpuTimestampPostBottomOffset;
     }
 
     /// Gets a bool indicating if the request has been started
     /// \return True if started - false if not
-    bool IsRequestStarted()
+    bool IsRequestStarted() const
     {
         return m_isRequestStarted;
     }
 
     /// Gets a bool indicating if the request is active
     /// \return True if active - false if not
-    bool IsRequestActive()
+    bool IsRequestActive() const
     {
         return m_isRequestActive;
     }
 
     /// Gets the current counter selection ID
     /// \return The current counter selection ID
-    gpa_uint32 GetCounterSelectionID()
+    gpa_uint32 GetCounterSelectionID() const
     {
         return m_counterSelectionID;
     }
@@ -312,7 +311,7 @@ public:
         m_gpuTimestampPreBottomPresent = false;
         m_gpuTimestampPostBottomPresent = false;
 
-        for (gpa_uint32 i = 0 ; i < (gpa_uint32)pCounters->size() ; i++)
+        for (gpa_uint32 i = 0 ; i < static_cast<gpa_uint32>(pCounters->size()) ; i++)
         {
             if ((*pCounters)[i] == topToBottomCounterIndex)
             {
@@ -377,7 +376,7 @@ protected:
     /// \param selectionID the ID of the counter selection
     /// \param pCounters the set of counters to enable
     /// \return True if the sample could be started; false otherwise.
-    virtual bool BeginRequest(GPA_ContextState* pContextState, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters) = 0;
+    virtual bool BeginRequest(GPA_ContextState* pContextState, void* pSampleList, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters) = 0;
 
     /// Ends a counter sample.
     /// \return True on success; false on error.

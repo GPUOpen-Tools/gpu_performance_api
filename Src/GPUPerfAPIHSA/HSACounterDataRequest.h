@@ -68,14 +68,15 @@ protected:
 
     virtual bool BeginRequest(
         GPA_ContextState* pContextState,
+        void* pSampleList,
         gpa_uint32 selectionID,
-        const vector<gpa_uint32>* pCounters);
+        const vector<gpa_uint32>* pCounters) override;
 
-    virtual bool EndRequest();
+    virtual bool EndRequest() override;
 
-    virtual bool CollectResults(GPA_CounterResults& resultStorage);
+    virtual bool CollectResults(GPA_CounterResults& resultStorage) override;
 
-    virtual void ReleaseCounters();
+    virtual void ReleaseCounters() override;
 
 protected:
     /// Array of active counters
@@ -92,6 +93,11 @@ protected:
 
     /// Store the data to interface with HSA counters per HW block
     HsaCounterGroupMap m_hsaGrpIdCtrGrpMap;
+
+private:
+
+    /// Release allocated counters for HSA Data Request
+    void ReleaseCountersInHSADataRequest();
 };
 
 #endif //_HSA_COUNTER_DATA_REQUEST_H_

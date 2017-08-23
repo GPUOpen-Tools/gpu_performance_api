@@ -34,9 +34,7 @@ CLCounterDataRequest::CLCounterDataRequest()
 CLCounterDataRequest::~CLCounterDataRequest()
 {
     TRACE_PRIVATE_FUNCTION(CLCounterDataRequest::DESTRUCTOR);
-
-    ReleaseCounters();
-
+    ReleaseCountersInCLDataRequest();
     DeleteCounterBlocks();
     delete[] m_counters;
 }
@@ -59,6 +57,12 @@ void CLCounterDataRequest::DeleteCounterBlocks()
 void CLCounterDataRequest::ReleaseCounters()
 {
     TRACE_PRIVATE_FUNCTION(CLCounterDataRequest::ReleaseCounters);
+    ReleaseCountersInCLDataRequest();
+}
+
+void CLCounterDataRequest::ReleaseCountersInCLDataRequest()
+{
+    TRACE_PRIVATE_FUNCTION(CLCounterDataRequest::ReleaseCountersInCLDataRequest);
 
     for (gpa_uint32 i = 0; i < m_clCounterBlocks.size(); ++i)
     {
@@ -183,19 +187,20 @@ void CLCounterDataRequest::Reset(gpa_uint32 uSelectionID, const vector<gpa_uint3
 }
 
 
-bool CLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters)
+bool CLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, void* pSampleList, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters)
 {
     TRACE_PRIVATE_FUNCTION(CLCounterDataRequest::Begin);
 
     UNREFERENCED_PARAMETER(pContextState);
+    UNREFERENCED_PARAMETER(pSampleList);
 
     // reset object since may be reused
     Reset(selectionID, pCounters);
 
     GPA_HardwareCounters* pHardwareCounters = getCurrentContext()->m_pCounterAccessor->GetHardwareCounters();
 
-    gpa_uint32 uGroups = (gpa_uint32)(pHardwareCounters->m_groupCount);
-    uGroups;
+    gpa_uint32 uGroups = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
+    UNREFERENCED_PARAMETER(uGroups);
 
     std::map< gpa_uint32, vector<cl_ulong> > groupCounters;
 
@@ -203,13 +208,13 @@ bool CLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
     for (gpa_uint32 i = 0; i < m_activeCounters; ++i)
     {
         // need to Enable counters
-        GPA_HardwareCounterDescExt* pCounter = getCurrentContext()->m_pCounterAccessor->GetHardwareCounterExt((*pCounters)[i]);
+        const GPA_HardwareCounterDescExt* pCounter = getCurrentContext()->m_pCounterAccessor->GetHardwareCounterExt((*pCounters)[i]);
 
         gpa_uint32 uGroupIndex = pCounter->m_groupIdDriver;
         assert(uGroupIndex <= uGroups);
 
         gpa_uint64 uCounters = pHardwareCounters->m_pGroups[uGroupIndex].m_numCounters;
-        uCounters;
+        UNREFERENCED_PARAMETER(uCounters);
         assert(pCounter->m_pHardwareCounter->m_counterIndexInGroup <= uCounters);
 
         groupCounters[uGroupIndex].push_back(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
@@ -220,7 +225,7 @@ bool CLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
          it != groupCounters.end();
          ++it)
     {
-        gpa_uint32 uMaxCountersEnabled = (gpa_uint32)pHardwareCounters->m_pGroups[it->first].m_maxActiveCounters;
+        gpa_uint32 uMaxCountersEnabled = static_cast<gpa_uint32>(pHardwareCounters->m_pGroups[it->first].m_maxActiveCounters);
         clPerfCounterBlock* cBlock = nullptr;
 
         cBlock = new(std::nothrow) clPerfCounterBlock(getCurrentContext()->m_clDevice,
@@ -259,13 +264,13 @@ bool CLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
 
     for (gpa_uint32 i = 0; i < m_activeCounters; ++i)
     {
-        GPA_HardwareCounterDescExt* pCounter = getCurrentContext()->m_pCounterAccessor->GetHardwareCounterExt((*pCounters)[i]);
+        const GPA_HardwareCounterDescExt* pCounter = getCurrentContext()->m_pCounterAccessor->GetHardwareCounterExt((*pCounters)[i]);
 
         // GPA_LogDebugMessage( "ENABLED COUNTER: %x.", m_counters[i] );
 
         m_counters[i].uCounterID    = (*pCounters)[i];
         m_counters[i].uCounterGroup = pCounter->m_groupIdDriver;
-        m_counters[i].uCounterIndex = (gpa_uint32)pCounter->m_pHardwareCounter->m_counterIndexInGroup;
+        m_counters[i].uCounterIndex = static_cast<gpa_uint32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
     }
 
     return true;

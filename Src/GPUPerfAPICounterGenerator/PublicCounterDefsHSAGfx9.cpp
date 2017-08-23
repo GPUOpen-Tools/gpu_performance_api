@@ -15,21 +15,21 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4133);
 
-        p.DefinePublicCounter("Wavefronts", "#General#Total wavefronts.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0");
+        p.DefinePublicCounter("Wavefronts", "General", "Total wavefronts.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4155);
         internalCounters.push_back(4133);
 
-        p.DefinePublicCounter("VALUInsts", "#General#The average number of vector ALU instructions executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/");
+        p.DefinePublicCounter("VALUInsts", "General", "The average number of vector ALU instructions executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4159);
         internalCounters.push_back(4133);
 
-        p.DefinePublicCounter("SALUInsts", "#General#The average number of scalar ALU instructions executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/");
+        p.DefinePublicCounter("SALUInsts", "General", "The average number of scalar ALU instructions executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -52,14 +52,14 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(8467);
         internalCounters.push_back(4133);
 
-        p.DefinePublicCounter("VFetchInsts", "#General#The average number of vector fetch instructions from the video memory executed per work-item (affected by flow control). Excludes FLAT instructions that fetch from video memory.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,sum16,-,17,/");
+        p.DefinePublicCounter("VFetchInsts", "General", "The average number of vector fetch instructions from the video memory executed per work-item (affected by flow control). Excludes FLAT instructions that fetch from video memory.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,sum16,-,17,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4160);
         internalCounters.push_back(4133);
 
-        p.DefinePublicCounter("SFetchInsts", "#General#The average number of scalar fetch instructions from the video memory executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/");
+        p.DefinePublicCounter("SFetchInsts", "General", "The average number of scalar fetch instructions from the video memory executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -82,7 +82,7 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(8468);
         internalCounters.push_back(4133);
 
-        p.DefinePublicCounter("VWriteInsts", "#General#The average number of vector write instructions to the video memory executed per work-item (affected by flow control). Excludes FLAT instructions that write to video memory.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,sum16,-,17,/");
+        p.DefinePublicCounter("VWriteInsts", "General", "The average number of vector write instructions to the video memory executed per work-item (affected by flow control). Excludes FLAT instructions that write to video memory.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,sum16,-,17,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -90,7 +90,7 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(4162);
         internalCounters.push_back(4133);
 
-        p.DefinePublicCounter("FlatVMemInsts", "#General#The average number of FLAT instructions that read from or write to the video memory executed per work item (affected by flow control). Includes FLAT instructions that read from or write to scratch.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,-,2,/");
+        p.DefinePublicCounter("FlatVMemInsts", "General", "The average number of FLAT instructions that read from or write to the video memory executed per work item (affected by flow control). Includes FLAT instructions that read from or write to scratch.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,-,2,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -98,42 +98,42 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(4162);
         internalCounters.push_back(4133);
 
-        p.DefinePublicCounter("LDSInsts", "#LocalMemory#The average number of LDS read or LDS write instructions executed per work item (affected by flow control).  Excludes FLAT instructions that read from or write to LDS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,-,2,/");
+        p.DefinePublicCounter("LDSInsts", "LocalMemory", "The average number of LDS read or LDS write instructions executed per work item (affected by flow control).  Excludes FLAT instructions that read from or write to LDS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,-,2,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4162);
         internalCounters.push_back(4133);
 
-        p.DefinePublicCounter("FlatLDSInsts", "#LocalMemory#The average number of FLAT instructions that read or write to LDS executed per work item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/");
+        p.DefinePublicCounter("FlatLDSInsts", "LocalMemory", "The average number of FLAT instructions that read or write to LDS executed per work item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4164);
         internalCounters.push_back(4133);
 
-        p.DefinePublicCounter("GDSInsts", "#General#The average number of GDS read or GDS write instructions executed per work item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/");
+        p.DefinePublicCounter("GDSInsts", "General", "The average number of GDS read or GDS write instructions executed per work item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4214);
         internalCounters.push_back(4200);
 
-        p.DefinePublicCounter("VALUUtilization", "#General#The percentage of active vector ALU threads in a wave. A lower number can mean either more thread divergence in a wave or that the work-group size is not a multiple of 64. Value range: 0% (bad), 100% (ideal - no thread divergence).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,(64),*,/,(100),*,(100),min");
+        p.DefinePublicCounter("VALUUtilization", "General", "The percentage of active vector ALU threads in a wave. A lower number can mean either more thread divergence in a wave or that the work-group size is not a multiple of 64. Value range: 0% (bad), 100% (ideal - no thread divergence).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,(64),*,/,(100),*,(100),min");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4200);
         internalCounters.push_back(3098);
 
-        p.DefinePublicCounter("VALUBusy", "#General#The percentage of GPUTime vector ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,(4),*,NUM_SIMDS,/,1,/,(100),*");
+        p.DefinePublicCounter("VALUBusy", "General", "The percentage of GPUTime vector ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,(4),*,NUM_SIMDS,/,1,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4213);
         internalCounters.push_back(3098);
 
-        p.DefinePublicCounter("SALUBusy", "#General#The percentage of GPUTime scalar ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/,1,/,(100),*");
+        p.DefinePublicCounter("SALUBusy", "General", "The percentage of GPUTime scalar ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/,1,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -153,24 +153,8 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(11924);
         internalCounters.push_back(12180);
         internalCounters.push_back(12436);
-        internalCounters.push_back(8597);
-        internalCounters.push_back(8853);
-        internalCounters.push_back(9109);
-        internalCounters.push_back(9365);
-        internalCounters.push_back(9621);
-        internalCounters.push_back(9877);
-        internalCounters.push_back(10133);
-        internalCounters.push_back(10389);
-        internalCounters.push_back(10645);
-        internalCounters.push_back(10901);
-        internalCounters.push_back(11157);
-        internalCounters.push_back(11413);
-        internalCounters.push_back(11669);
-        internalCounters.push_back(11925);
-        internalCounters.push_back(12181);
-        internalCounters.push_back(12437);
 
-        p.DefinePublicCounter("FetchSize", "#GlobalMemory#The total kilobytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(64),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(32),*,+,(1024),/");
+        p.DefinePublicCounter("FetchSize", "GlobalMemory", "The total kilobytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*,(1024),/");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -190,24 +174,8 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(11912);
         internalCounters.push_back(12168);
         internalCounters.push_back(12424);
-        internalCounters.push_back(8585);
-        internalCounters.push_back(8841);
-        internalCounters.push_back(9097);
-        internalCounters.push_back(9353);
-        internalCounters.push_back(9609);
-        internalCounters.push_back(9865);
-        internalCounters.push_back(10121);
-        internalCounters.push_back(10377);
-        internalCounters.push_back(10633);
-        internalCounters.push_back(10889);
-        internalCounters.push_back(11145);
-        internalCounters.push_back(11401);
-        internalCounters.push_back(11657);
-        internalCounters.push_back(11913);
-        internalCounters.push_back(12169);
-        internalCounters.push_back(12425);
 
-        p.DefinePublicCounter("WriteSize", "#GlobalMemory#The total kilobytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(64),*,+,(1024),/");
+        p.DefinePublicCounter("WriteSize", "GlobalMemory", "The total kilobytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*,(1024),/");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -244,7 +212,7 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(12161);
         internalCounters.push_back(12417);
 
-        p.DefinePublicCounter("L2CacheHit", "#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the data in L2 cache. Value range: 0% (no hit) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,+,/,(100),*");
+        p.DefinePublicCounter("L2CacheHit", "GlobalMemory", "The percentage of fetch, write, atomic, and other instructions that hit the data in L2 cache. Value range: 0% (no hit) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,+,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -266,7 +234,7 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(8381);
         internalCounters.push_back(3098);
 
-        p.DefinePublicCounter("MemUnitBusy", "#GlobalMemory#The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*");
+        p.DefinePublicCounter("MemUnitBusy", "GlobalMemory", "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -288,7 +256,7 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(14844);
         internalCounters.push_back(3098);
 
-        p.DefinePublicCounter("MemUnitStalled", "#GlobalMemory#The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*");
+        p.DefinePublicCounter("MemUnitStalled", "GlobalMemory", "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -310,14 +278,14 @@ void AutoDefinePublicCountersHSAGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(12428);
         internalCounters.push_back(3098);
 
-        p.DefinePublicCounter("WriteUnitStalled", "#GlobalMemory#The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,/,(100),*");
+        p.DefinePublicCounter("WriteUnitStalled", "GlobalMemory", "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4222);
         internalCounters.push_back(3098);
 
-        p.DefinePublicCounter("LDSBankConflict", "#LocalMemory#The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/,NUM_SIMDS,/,(100),*");
+        p.DefinePublicCounter("LDSBankConflict", "LocalMemory", "The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/,NUM_SIMDS,/,(100),*");
     }
 }
 

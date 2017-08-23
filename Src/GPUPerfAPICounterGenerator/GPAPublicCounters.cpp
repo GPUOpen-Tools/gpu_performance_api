@@ -13,24 +13,44 @@
 #include "Utility.h"
 #include "Logging.h"
 
-GPA_PublicCounter::GPA_PublicCounter(unsigned int index, const char* pName, const char* pDescription, GPA_Type dataType, GPA_Usage_Type usageType, GPA_CounterType counterType, vector< gpa_uint32 >& internalCountersRequired, const char* pComputeExpression)
+GPA_PublicCounter::GPA_PublicCounter(
+    unsigned int index,
+    const char* pName,
+    const char* pGroup,
+    const char* pDescription,
+    GPA_Type dataType,
+    GPA_Usage_Type usageType,
+    GPA_CounterType counterType,
+    vector< gpa_uint32 >& internalCountersRequired,
+    const char* pComputeExpression):
+    m_index(index),
+    m_pName(pName),
+    m_pGroup(pGroup),
+    m_pDescription(pDescription),
+    m_dataType(dataType),
+    m_usageType(usageType),
+    m_counterType(counterType),
+    m_internalCountersRequired(internalCountersRequired),
+    m_pComputeExpression(pComputeExpression)
 {
-    m_index = index;
-    m_pName = pName;
-    m_pDescription = pDescription;
-    m_dataType = dataType;
-    m_usageType = usageType;
-    m_counterType = counterType;
-    m_internalCountersRequired = internalCountersRequired;
-    m_pComputeExpression = pComputeExpression;
+
 }
 
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void GPA_PublicCounters::DefinePublicCounter(const char* pName, const char* pDescription, GPA_Type dataType, GPA_Usage_Type usageType, GPA_CounterType counterType, vector< gpa_uint32 >& internalCountersRequired, const char* pComputeExpression)
+void GPA_PublicCounters::DefinePublicCounter(
+    const char* pName,
+    const char* pGroup,
+    const char* pDescription,
+    GPA_Type dataType,
+    GPA_Usage_Type usageType,
+    GPA_CounterType counterType,
+    vector< gpa_uint32 >& internalCountersRequired,
+    const char* pComputeExpression)
 {
     assert(pName);
+    assert(pGroup);
     assert(pDescription);
     assert(dataType < GPA_TYPE__LAST);
     assert(counterType < GPA_COUNTER_TYPE__LAST);
@@ -38,9 +58,9 @@ void GPA_PublicCounters::DefinePublicCounter(const char* pName, const char* pDes
     assert(pComputeExpression);
     assert(strlen(pComputeExpression) > 0);
 
-    unsigned int index = (unsigned int)m_counters.size();
+    unsigned int index = static_cast<unsigned int>(m_counters.size());
 
-    m_counters.push_back(GPA_PublicCounter(index, pName, pDescription, dataType, usageType, counterType, internalCountersRequired, pComputeExpression));
+    m_counters.push_back(GPA_PublicCounter(index, pName, pGroup, pDescription, dataType, usageType, counterType, internalCountersRequired, pComputeExpression));
 }
 
 
@@ -51,9 +71,9 @@ void GPA_PublicCounters::Clear()
 }
 
 
-gpa_uint32 GPA_PublicCounters::GetNumCounters()
+gpa_uint32 GPA_PublicCounters::GetNumCounters() const
 {
-    return (gpa_uint32) m_counters.size();
+    return static_cast<gpa_uint32>(m_counters.size());
 }
 
 
@@ -66,10 +86,15 @@ gpa_uint32 GPA_PublicCounters::GetNumCounters()
 /// \param resultType the coutner result type
 /// \param pHwInfo the hardware info
 template<class T, class InternalCounterType>
-static void EvaluateExpression(const char* pExpression, void* pResult, vector< char* >& results, vector< GPA_Type >& internalCounterTypes, GPA_Type resultType,
-                               const GPA_HWInfo* pHwInfo)
+static void EvaluateExpression(
+    const char* pExpression,
+    void* pResult,
+    vector< char* >& results,
+    vector< GPA_Type >& internalCounterTypes,
+    GPA_Type resultType,
+    const GPA_HWInfo* pHwInfo)
 {
-    internalCounterTypes;
+    UNREFERENCED_PARAMETER(internalCounterTypes);
 
     assert(nullptr != pHwInfo);
 
@@ -79,7 +104,7 @@ static void EvaluateExpression(const char* pExpression, void* pResult, vector< c
     strcpy_s(pBuf, expressionLen, pExpression);
 
     vector< T > stack;
-    T* pWriteResult = (T*)pResult;
+    T* pWriteResult = reinterpret_cast<T*>(pResult);
 
     char* pContext;
     char* pch = strtok_s(pBuf, " ,", &pContext);
@@ -105,13 +130,13 @@ static void EvaluateExpression(const char* pExpression, void* pResult, vector< c
             T p1 = stack.back();
             stack.pop_back();
 
-            if (p2 != (T)0)
+            if (p2 != static_cast<T>(0))
             {
                 stack.push_back(p1 / p2);
             }
             else
             {
-                stack.push_back((T)0);
+                stack.push_back(static_cast<T>(0));
             }
         }
         else if (*pch == '+')
@@ -137,39 +162,39 @@ static void EvaluateExpression(const char* pExpression, void* pResult, vector< c
         else if (*pch == '(')
         {
             // constant
-            T constant = (T)0;
+            T constant = static_cast<T>(0);
             int scanResult = 0;
 
             if (resultType == GPA_TYPE_FLOAT32)
             {
 #ifdef _LINUX
-                scanResult = sscanf(pch, "(%f)", (gpa_float32*)&constant);
+                scanResult = sscanf(pch, "(%f)", reinterpret_cast<gpa_float32*>(&constant));
 #else
-                scanResult = sscanf_s(pch, "(%f)", (gpa_float32*)&constant);
+                scanResult = sscanf_s(pch, "(%f)", reinterpret_cast<gpa_float32*>(&constant));
 #endif // _LINUX
             }
             else if (resultType == GPA_TYPE_FLOAT64)
             {
 #ifdef _LINUX
-                scanResult = sscanf(pch, "(%lf)", (gpa_float64*)&constant);
+                scanResult = sscanf(pch, "(%lf)", reinterpret_cast<gpa_float64*>(&constant));
 #else
-                scanResult = sscanf_s(pch, "(%lf)", (gpa_float64*)&constant);
+                scanResult = sscanf_s(pch, "(%lf)", reinterpret_cast<gpa_float64*>(&constant));
 #endif // _LINUX
             }
             else if (resultType == GPA_TYPE_UINT32)
             {
 #ifdef _LINUX
-                scanResult = sscanf(pch, "(%u)", (gpa_uint32*)&constant);
+                scanResult = sscanf(pch, "(%u)", reinterpret_cast<gpa_uint32*>(&constant));
 #else
-                scanResult = sscanf_s(pch, "(%u)", (gpa_uint32*)&constant);
+                scanResult = sscanf_s(pch, "(%u)", reinterpret_cast<gpa_uint32*>(&constant));
 #endif // _LINUX
             }
             else if (resultType == GPA_TYPE_UINT64)
             {
 #ifdef _LINUX
-                scanResult = sscanf(pch, "(%llu)", (gpa_uint64*)&constant);
+                scanResult = sscanf(pch, "(%llu)", reinterpret_cast<gpa_uint64*>(&constant));
 #else
-                scanResult = sscanf_s(pch, "(%I64u)", (gpa_uint64*)&constant);
+                scanResult = sscanf_s(pch, "(%I64u)", reinterpret_cast<gpa_uint64*>(&constant));
 #endif // _LINUX
             }
             else
@@ -184,23 +209,23 @@ static void EvaluateExpression(const char* pExpression, void* pResult, vector< c
         }
         else if (_strcmpi(pch, "num_shader_engines") == 0)
         {
-            stack.push_back((T)pHwInfo->GetNumberShaderEngines());
+            stack.push_back(static_cast<T>(pHwInfo->GetNumberShaderEngines()));
         }
         else if (_strcmpi(pch, "num_simds") == 0)
         {
-            stack.push_back((T)pHwInfo->GetNumberSIMDs());
+            stack.push_back(static_cast<T>(pHwInfo->GetNumberSIMDs()));
         }
         else if (_strcmpi(pch, "su_clocks_prim") == 0)
         {
-            stack.push_back((T)pHwInfo->GetSUClocksPrim());
+            stack.push_back(static_cast<T>(pHwInfo->GetSUClocksPrim()));
         }
         else if (_strcmpi(pch, "num_prim_pipes") == 0)
         {
-            stack.push_back((T)pHwInfo->GetNumberPrimPipes());
+            stack.push_back(static_cast<T>(pHwInfo->GetNumberPrimPipes()));
         }
         else if (_strcmpi(pch, "TS_FREQ") == 0)
         {
-            stack.push_back((T)pHwInfo->GetTimeStampFrequency());
+            stack.push_back(static_cast<T>(pHwInfo->GetTimeStampFrequency()));
         }
         else if (_strcmpi(pch, "max") == 0)
         {
@@ -510,8 +535,8 @@ static void EvaluateExpression(const char* pExpression, void* pResult, vector< c
 
             if (index < results.size())
             {
-                InternalCounterType internalVal = *((InternalCounterType*)results[index]);
-                T internalValFloat = (T)internalVal;
+                InternalCounterType internalVal = *reinterpret_cast<InternalCounterType*>(results[index]);
+                T internalValFloat = static_cast<T>(internalVal);
                 stack.push_back(internalValFloat);
             }
             else

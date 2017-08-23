@@ -19,6 +19,7 @@ GPA_ContextState::~GPA_ContextState()
 void GPA_ContextState::Init()
 {
     m_sessionID = 0;
+    m_flags = 0;
     m_currentPass = 0;
     m_currentSample = 0;
     m_samplingStarted = false;
@@ -31,6 +32,7 @@ void GPA_ContextState::Init()
     m_pCurrentSessionRequests = nullptr;
     m_pCounterScheduler = nullptr;
     m_pCounterAccessor = nullptr;
+    m_invalidateAndFlushL2Cache = false;
 }
 
 GPA_DataRequest* GPA_ContextState::GetDataRequest(gpa_uint32 passNumber)

@@ -11,14 +11,20 @@ GPUPerfAPI no longer uses git submodules to reference dependent repositories. In
 order to clone/update any dependent repositories.
 
 #### Prerequisites
-  * This step requires that python be installed on the system. Python can be installed from https://www.python.org/
+  * Python, which can be installed from https://www.python.org/
 
 #### Instructions
  * Simply execute the [UpdateCommon.py](Scripts/UpdateCommon.py) python script located in the [Scripts](Scripts) directory:
    * `python Scripts/UpdateCommon.py`
-This script will clone any dependent repositories that are not present on the system. If any of the dependent repositories are already
+ * This script will clone any dependent repositories that are not present on the system. If any of the dependent repositories are already
 present on the system, this script will instead do a "git pull" on those repositories to ensure that they are up to date. Please re-run
 this script everytime you pull new changes from GPA repository.
+ * This script will also download and execute the Vulkan SDK installer.
+   * On Windows, running the installer may require elevation.  If you've previously installed the required Vulkan version, UpdateCommon will simply copy the files form the default installation location into the correct place into the GPUPerfAPI directory tree.
+   * UpdateCommon is set up to install the version of the Vulkan SDK which was used during development. If you want to use a newer version of the SDK, the following files will need to be updated:
+     * [UpdateCommonMap.py](Scripts/UpdateCommonMap.py)
+     * Linux-specific: [Common.mk](GPA/Build/Linux/Common.mk)
+     * Windows-specific: Common/Lib/Ext/Global-Vulkan.props
 
 ## Windows Build Information
 

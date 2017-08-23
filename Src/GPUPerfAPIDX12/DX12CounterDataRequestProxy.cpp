@@ -11,6 +11,7 @@
 #include <GPAHardwareCounters.h>
 #include <GPASoftwareCounters.h>
 
+#include "DX12HardwareCounterDataRequest.h"
 #include "DX12SoftwareCounterDataRequest.h"
 
 DX12CounterDataRequestProxy::DX12CounterDataRequestProxy()
@@ -18,13 +19,13 @@ DX12CounterDataRequestProxy::DX12CounterDataRequestProxy()
     DX12DataRequest(),
     m_pDataRequest(nullptr)
 {
-} // end of DX12CounterDataRequestProxy::DX12CounterDataRequestProxy
+}
 
 DX12CounterDataRequestProxy::~DX12CounterDataRequestProxy()
 {
     delete m_pDataRequest;
     m_pDataRequest = nullptr;
-} // end of DX12CounterDataRequestProxy::~DX12CounterDataRequestProxy
+}
 
 bool DX12CounterDataRequestProxy::CollectResults(GPA_CounterResults& resultStorage)
 {
@@ -36,10 +37,11 @@ bool DX12CounterDataRequestProxy::CollectResults(GPA_CounterResults& resultStora
     }
 
     return result;
-} // end of DX12CounterDataRequestProxy::CollectResults
+}
 
 bool DX12CounterDataRequestProxy::BeginRequest(
     GPA_ContextState* pContextState,
+    void* pSampleList,
     gpa_uint32 selectionID,
     const vector<gpa_uint32>* pCounters)
 {
@@ -59,9 +61,13 @@ bool DX12CounterDataRequestProxy::BeginRequest(
     {
         m_pDataRequest = new(std::nothrow) DX12SoftwareCounterDataRequest;
     }
+    else if (counterAccessor.IsHWCounter())
+    {
+        m_pDataRequest = new(std::nothrow) DX12HardwareCounterDataRequest;
+    }
     else
     {
-        GPA_LogError("Only SW counters supported in DX12 GPA");
+        GPA_LogError("Unknown Counter type.");
         result = false;
     }
 
@@ -71,7 +77,7 @@ bool DX12CounterDataRequestProxy::BeginRequest(
     }
     else
     {
-        result = m_pDataRequest->BeginRequest(pContextState, selectionID, pCounters);
+        result = m_pDataRequest->BeginRequest(pContextState, pSampleList, selectionID, pCounters);
 
         if (result)
         {
@@ -80,7 +86,7 @@ bool DX12CounterDataRequestProxy::BeginRequest(
     }
 
     return result;
-} // end of DX12CounterDataRequestProxy::BeginRequest
+}
 
 bool DX12CounterDataRequestProxy::EndRequest()
 {
@@ -92,7 +98,7 @@ bool DX12CounterDataRequestProxy::EndRequest()
     }
 
     return result;
-} // end of DX12CounterDataRequestProxy::EndRequest
+}
 
 void DX12CounterDataRequestProxy::ReleaseCounters()
 {
@@ -100,5 +106,4 @@ void DX12CounterDataRequestProxy::ReleaseCounters()
     {
         m_pDataRequest->ReleaseCounters();
     }
-} // end of DX12CounterDataRequestProxy::ReleaseCounters
-
+}

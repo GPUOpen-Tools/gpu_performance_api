@@ -26,6 +26,11 @@ namespace PublicCounterCompiler
       private static int maxNameLen = 0;
 
       /// <summary>
+      /// stores the maximum group length
+      /// </summary>
+      private static int maxGroupLen = 0;
+
+      /// <summary>
       /// stores the maximum description length
       /// </summary>
       private static int maxDescLen = 0;
@@ -54,6 +59,11 @@ namespace PublicCounterCompiler
       /// The name of the counter.
       /// </summary>
       private string name = string.Empty;
+
+      /// <summary>
+      /// The counter group.
+      /// </summary>
+      private string group = string.Empty;
 
       /// <summary>
       /// The counter description.
@@ -96,6 +106,26 @@ namespace PublicCounterCompiler
             if (this.name.Length > maxNameLen)
             {
                maxNameLen = this.name.Length;
+            }
+         }
+      }
+
+      /// <summary>
+      /// Gets or sets the counter group (aka category).
+      /// </summary>
+      public string Group
+      {
+         get
+         {
+            return this.group;
+         }
+
+         set
+         {
+            this.group = value;
+            if (this.group.Length > maxGroupLen)
+            {
+               maxGroupLen = this.group.Length;
             }
          }
       }

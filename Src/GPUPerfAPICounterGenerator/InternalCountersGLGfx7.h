@@ -12,8 +12,10 @@
 extern GPA_HardwareCounterDesc* GLCounterGroupArrayGfx7[]; ///< Array of hardware counter groups for GL for Gfx7 family
 extern GPA_CounterGroupDesc HWGLGroupsGfx7[]; ///< Array of counter groups for GL for Gfx7 family
 extern GPA_SQCounterGroupDesc HWGLSQGroupsGfx7[]; ///< Array of SQ groups for GL for Gfx7 family
+extern unsigned int HWGLSQIsolatedGroupsGfx7[]; ///< Array of counter groups isolated from SQ counter groups for GL for Gfx7 family
 extern const unsigned int HWGLGPUTimeIndexGfx7; ///< Index of GPUTime Group for GL for Gfx7 family
 extern const unsigned int HWGLGroupCountGfx7; ///< Hardware Group Count for GL for Gfx7 family
 extern const unsigned int HWGLSQGroupCountGfx7; ///< Hardware SQ Group Count for GL for Gfx7 family
+extern const unsigned int HWGLSQIsolatedGroupCountGfx7; ///< Hardware Isolated Group Count for GL for Gfx7 family
 
 #endif // _GPA_INTERNAL_COUNTERS_GL_GFX7_H_

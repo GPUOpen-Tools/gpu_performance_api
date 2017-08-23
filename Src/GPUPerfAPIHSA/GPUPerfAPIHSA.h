@@ -12,8 +12,6 @@
 #include <hsa_ext_profiler.h>
 #include <hsa_ext_amd.h>
 
-#include "../GPUPerfAPI-Common/GPUPerfAPI.h"
-
 #include "GPAContextStateHSA.h"
 #include "GPUPerfAPI-HSA.h"
 

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class to manage the resources used for DX12 SW queries
@@ -19,7 +19,7 @@ const D3D12_QUERY_TYPE DX12CommandListSWQueryGroup::ms_queryTypes[] =
 DX12CommandListSWQueryGroup::DX12CommandListSWQueryGroup()
     :
     m_maxSamples(0),
-    m_sampleCount(0),
+    m_activeSampleCount(0),
     m_commandList(),
     m_queriesResultsResource(),
     m_pQueriesResults(),
@@ -30,7 +30,7 @@ DX12CommandListSWQueryGroup::DX12CommandListSWQueryGroup()
 DX12CommandListSWQueryGroup::DX12CommandListSWQueryGroup(DX12CommandListSWQueryGroup&& other)
     :
     m_maxSamples(other.m_maxSamples),
-    m_sampleCount(other.m_sampleCount),
+    m_activeSampleCount(other.m_activeSampleCount),
     m_commandList(other.m_commandList),
     m_queriesResultsResource(other.m_queriesResultsResource),
     m_pQueriesResults(other.m_pQueriesResults),
@@ -47,17 +47,17 @@ DX12CommandListSWQueryGroup::DX12CommandListSWQueryGroup(DX12CommandListSWQueryG
     other.m_queriesResultsResource.Release();
     other.m_pQueriesResults = nullptr;
     other.m_queriesSessionIdsResource.Release();
-} // end of DX12CommandListSWQueryGroup::DX12CommandListSWQueryGroup
+}
 
 DX12CommandListSWQueryGroup::~DX12CommandListSWQueryGroup()
 {
     Cleanup();
-} // end of DX12CommandListSWQueryGroup::~DX12CommandListSWQueryGroup
+}
 
 DX12CommandListSWQueryGroup& DX12CommandListSWQueryGroup::operator=(DX12CommandListSWQueryGroup&& other)
 {
     m_maxSamples = other.m_maxSamples;
-    m_sampleCount = other.m_sampleCount;
+    m_activeSampleCount = other.m_activeSampleCount;
 
     m_commandList = other.m_commandList;
     other.m_commandList.Release();
@@ -75,7 +75,7 @@ DX12CommandListSWQueryGroup& DX12CommandListSWQueryGroup::operator=(DX12CommandL
     m_queriesSessionIdsResource = other.m_queriesSessionIdsResource;
     other.m_queriesSessionIdsResource.Release();
     return (*this);
-} // end of DX12CommandListSWQueryGroup::operator=
+}
 
 bool DX12CommandListSWQueryGroup::Initialize(ID3D12DevicePtr& device, ID3D12GraphicsCommandListPtr& commandList, size_t groupSize)
 {
@@ -112,7 +112,7 @@ bool DX12CommandListSWQueryGroup::Initialize(ID3D12DevicePtr& device, ID3D12Grap
     }
 
     return result;
-} // end of DX12CommandListSWQueryGroup::Initialize
+}
 
 void DX12CommandListSWQueryGroup::Cleanup()
 {
@@ -140,17 +140,17 @@ void DX12CommandListSWQueryGroup::Cleanup()
     {
         m_commandList.Release();
     }
-} // end of DX12CommandListSWQueryGroup::Cleanup
+}
 
 gpa_uint32 DX12CommandListSWQueryGroup::GetSampleCount() const
 {
-    return m_sampleCount;
+    return m_activeSampleCount;
 }
 
 void DX12CommandListSWQueryGroup::BeginSwSample()
 {
-    m_sampleCount++;
-} // end of DX12CommandListSWQueryGroup::BeginSwSample
+    m_activeSampleCount++;
+}
 
 void DX12CommandListSWQueryGroup::EndSwSample(const gpa_uint32 swSampleId)
 {
@@ -164,13 +164,13 @@ void DX12CommandListSWQueryGroup::EndSwSample(const gpa_uint32 swSampleId)
         m_queriesSessionIdsResource,
         queryResultsReadySrcOffset,
         sizeof(UINT64));
-} // end of DX12CommandListSWQueryGroup::EndSwSample
+}
 
 void DX12CommandListSWQueryGroup::ReleaseSwSample(const gpa_uint32 swSampleId)
 {
     memset(&(m_pQueriesResults[swSampleId]), 0, sizeof(m_pQueriesResults[swSampleId]));
-    m_sampleCount--; // TODO: note this only makes sense if you don't release some samples while others are still active -- if you do this, then the indeces get messed up and you need to use something akin to m_freeQueryIds
-} // end of DX12CommandListSWQueryGroup::ReleaseSwSample
+    m_activeSampleCount--;
+}
 
 void DX12CommandListSWQueryGroup::BeginSwQuery(
     const gpa_uint32 swSampleId, const D3D12_QUERY_TYPE queryType)
@@ -192,7 +192,7 @@ void DX12CommandListSWQueryGroup::BeginSwQuery(
             m_queriesResultsResource,
             queryResultOffset);
     }
-} // end of DX12CommandListSWQueryGroup::BeginSwQuery
+}
 
 void DX12CommandListSWQueryGroup::EndSwQuery(
     const gpa_uint32 swSampleId, const D3D12_QUERY_TYPE queryType)
@@ -214,7 +214,7 @@ void DX12CommandListSWQueryGroup::EndSwQuery(
         1,
         m_queriesResultsResource,
         queryResultOffset);
-} // end of DX12CommandListSWQueryGroup::EndSwQuery
+}
 
 bool DX12CommandListSWQueryGroup::GetSwSampleResults(
     const gpa_uint32 swSampleId, DX12SoftwareCountersResults& queryResults)
@@ -228,7 +228,7 @@ bool DX12CommandListSWQueryGroup::GetSwSampleResults(
     }
 
     return result;
-} // end of DX12CommandListSWQueryGroup::GetSwSampleResults
+}
 
 bool DX12CommandListSWQueryGroup::CreateSwQueryHeap(ID3D12DevicePtr& device, const D3D12_QUERY_TYPE queryType)
 {
@@ -268,7 +268,7 @@ bool DX12CommandListSWQueryGroup::CreateSwQueryHeap(ID3D12DevicePtr& device, con
     }
 
     return result;
-} // end of DX12CommandListSWQueryGroup::CreateSwQueryHeap
+}
 
 bool DX12CommandListSWQueryGroup::CreateSwQueriesResultsResources(ID3D12DevicePtr& device)
 {
@@ -316,7 +316,7 @@ bool DX12CommandListSWQueryGroup::CreateSwQueriesResultsResources(ID3D12DevicePt
     }
 
     return result;
-} // end of DX12CommandListSWQueryGroup::CreateSwQueriesResultsResources
+}
 
 bool DX12CommandListSWQueryGroup::CreateQueriesIdsResource(ID3D12DevicePtr& device)
 {
@@ -367,10 +367,10 @@ bool DX12CommandListSWQueryGroup::CreateQueriesIdsResource(ID3D12DevicePtr& devi
     }
 
     return result;
-} // end of DX12CommandListSWQueryGroup::CreateQueriesIdsResource
+}
 
 UINT64 DX12CommandListSWQueryGroup::GetQueryId(const UINT64 session)
 {
     static const UINT64 sessionIdPrefix = 0x69AD3D12i64;
     return ((sessionIdPrefix << 32) + session);
-} // end of DX12CommandListSWQueryGroup::GetQueryId
+}

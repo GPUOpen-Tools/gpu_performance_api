@@ -109,7 +109,9 @@ ScopeTrace::~ScopeTrace()
 
 
 
-GPALogger::GPALogger()
+GPALogger::GPALogger():
+    m_loggingType(GPA_LOGGING_NONE),
+    m_loggingCallback(nullptr)
 {
 #ifdef _WIN32
     InitializeCriticalSection(&m_hLock);
@@ -143,52 +145,16 @@ void GPALogger::SetLoggingCallback(GPA_Logging_Type loggingType, GPA_LoggingCall
     }
 }
 
-#ifdef AMDT_INTERNAL
-void GPALogger::SetLoggingDebugCallback(GPA_Log_Debug_Type loggingType, GPA_LoggingDebugCallbackPtrType loggingDebugCallback)
-{
-    if (nullptr == loggingDebugCallback)
-    {
-        m_loggingDebugCallback = nullptr;
-        m_loggingDebugType = GPA_LOG_NONE;
-    }
-    else
-    {
-        m_loggingDebugCallback = loggingDebugCallback;
-        m_loggingDebugType = loggingType;
-    }
-}
-#endif // AMDT_INTERNAL
-
-void GPALogger::Log(GPA_Log_Debug_Type logType, const char* pMessage)
+void GPALogger::Log(GPA_Logging_Type logType, const char* pMessage)
 {
     EnterCriticalSection(&m_hLock);
 
-#ifdef AMDT_INTERNAL
-
-    if (logType > GPA_LOG_ALL)
+    // if the supplied message type is among those that the user wants be notified of,
+    // then pass the message along.
+    if ((logType & m_loggingType) &&
+        nullptr != m_loggingCallback)
     {
-        // this is in the debug message range,
-        // so log it to the debug callback
-        if ((logType & m_loggingDebugType) &&
-            nullptr != m_loggingDebugCallback)
-        {
-            m_loggingDebugCallback(logType, pMessage);
-        }
-
-    }
-    else
-#endif // AMDT_INTERNAL
-    {
-        // convert from private GPA_Log_Debug_type to public GPA_Logging_Type
-        GPA_Logging_Type messageType = (GPA_Logging_Type)logType;
-
-        // if the supplied message type is among those that the user wants be notified of,
-        // then pass the message along.
-        if ((messageType & m_loggingType) &&
-            nullptr != m_loggingCallback)
-        {
-            m_loggingCallback(messageType, pMessage);
-        }
+        m_loggingCallback(logType, pMessage);
     }
 
     LeaveCriticalSection(&m_hLock);

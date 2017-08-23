@@ -13,7 +13,7 @@ DX12CommandListSwQueries::DX12CommandListSwQueries()
     m_commandList(0),
     m_device(0)
 {
-} // end of DX12CommandListSwQueries::DX12CommandListSwQueries
+}
 
 DX12CommandListSwQueries::DX12CommandListSwQueries(DX12CommandListSwQueries&& other)
     :
@@ -34,7 +34,7 @@ DX12CommandListSwQueries::DX12CommandListSwQueries(DX12CommandListSwQueries&& ot
 
     m_queryGroups = std::move(other.m_queryGroups);
 
-} // end of DX12CommandListSwQueries::DX12CommandListSwQueries
+}
 
 DX12CommandListSwQueries::~DX12CommandListSwQueries()
 {
@@ -55,7 +55,7 @@ DX12CommandListSwQueries::~DX12CommandListSwQueries()
         m_device.Release();
     }
 
-} // end of DX12CommandListSwQueries::~DX12CommandListSwQueries
+}
 
 DX12CommandListSwQueries& DX12CommandListSwQueries::operator=(DX12CommandListSwQueries&& other)
 {
@@ -75,16 +75,16 @@ DX12CommandListSwQueries& DX12CommandListSwQueries::operator=(DX12CommandListSwQ
     m_queryGroups = std::move(other.m_queryGroups);
 
     return (*this);
-} // end of DX12CommandListSwQueries::operator=
+}
 
 bool DX12CommandListSwQueries::Initialize(
-    ID3D12DevicePtr& device, ID3D12GraphicsCommandListPtr& commandList)
+    ID3D12Device* device, ID3D12GraphicsCommandListPtr& commandList)
 {
     m_device = device;
     m_commandList = commandList;
 
     return true;
-} // end of DX12CommandListSwQueries::Initialize
+}
 
 bool DX12CommandListSwQueries::BeginSwSample(gpa_uint32& swSampleId)
 {
@@ -123,7 +123,7 @@ bool DX12CommandListSwQueries::BeginSwSample(gpa_uint32& swSampleId)
     }
 
     return retVal;
-} // end of DX12CommandListSwQueries::BeginSwSample
+}
 
 
 void DX12CommandListSwQueries::EndSwSample(const gpa_uint32 swSampleId)
@@ -134,7 +134,7 @@ void DX12CommandListSwQueries::EndSwSample(const gpa_uint32 swSampleId)
     DX12CommandListSWQueryGroup* pQueryGroup = m_queryGroups[groupIndex];
 
     pQueryGroup->EndSwSample(sampleIndex);
-} // end of DX12CommandListSwQueries::EndSwSample
+}
 
 void DX12CommandListSwQueries::ReleaseSwSample(const gpa_uint32 swSampleId)
 {
@@ -143,7 +143,7 @@ void DX12CommandListSwQueries::ReleaseSwSample(const gpa_uint32 swSampleId)
 
     DX12CommandListSWQueryGroup* pQueryGroup = m_queryGroups[groupIndex];
     pQueryGroup->ReleaseSwSample(sampleIndex);
-} // end of DX12CommandListSwQueries::ReleaseSwSample
+}
 
 
 void DX12CommandListSwQueries::BeginSwQuery(
@@ -155,7 +155,7 @@ void DX12CommandListSwQueries::BeginSwQuery(
     DX12CommandListSWQueryGroup* pQueryGroup = m_queryGroups[groupIndex];
 
     pQueryGroup->BeginSwQuery(sampleIndex, queryType);
-} // end of DX12CommandListSwQueries::BeginSwQuery
+}
 
 void DX12CommandListSwQueries::EndSwQuery(
     const gpa_uint32 swSampleId, const D3D12_QUERY_TYPE queryType)
@@ -166,7 +166,7 @@ void DX12CommandListSwQueries::EndSwQuery(
     DX12CommandListSWQueryGroup* pQueryGroup = m_queryGroups[groupIndex];
 
     pQueryGroup->EndSwQuery(sampleIndex, queryType);
-} // end of DX12CommandListSwQueries::EndSwQuery
+}
 
 bool DX12CommandListSwQueries::GetSwSampleResults(
     const gpa_uint32 swSampleId, DX12SoftwareCountersResults& queryResults)
@@ -177,7 +177,7 @@ bool DX12CommandListSwQueries::GetSwSampleResults(
     DX12CommandListSWQueryGroup* pQueryGroup = m_queryGroups[groupIndex];
 
     return pQueryGroup->GetSwSampleResults(sampleIndex, queryResults);
-} // end of DX12CommandListSwQueries::GetSwSampleResults
+}
 
 bool DX12CommandListSwQueries::CreateNewQueryGroup()
 {
@@ -187,7 +187,7 @@ bool DX12CommandListSwQueries::CreateNewQueryGroup()
 
     if (nullptr == queryGroup)
     {
-        GPA_LogError("Unable to allocate memory for software queries");
+        GPA_LogError("Unable to allocate memory for software queries.");
     }
     else
     {
@@ -204,5 +204,5 @@ bool DX12CommandListSwQueries::CreateNewQueryGroup()
     }
 
     return retVal;
-} // end of DX12CommandListSwQueries::CreateNewQueryGroup
+}
 

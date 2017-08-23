@@ -21,6 +21,7 @@ public:
 
     virtual bool BeginRequest(
         GPA_ContextState* pContextState,
+        void* pSampleList,
         gpa_uint32 selectionID,
         const vector<gpa_uint32>* pCounters)
         = 0;
@@ -54,6 +55,6 @@ private:
     /// Move operator - private override to disable usage
     DX12DataRequest& operator=(DX12DataRequest&& other) = delete;
 
-}; // end of class DX12DataRequest
+};
 
 #endif // _DX12_DATA_REQUEST_H_

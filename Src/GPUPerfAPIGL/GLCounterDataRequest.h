@@ -58,10 +58,17 @@ public:
 
 protected:
 
-    virtual bool BeginRequest(GPA_ContextState* pContextState, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters);
-    virtual bool EndRequest();
-    virtual bool CollectResults(GPA_CounterResults& resultStorage);
-    virtual void ReleaseCounters();
+    virtual bool BeginRequest(
+        GPA_ContextState* pContextState,
+        void* pSampleList,
+        gpa_uint32 selectionID,
+        const vector<gpa_uint32>* pCounters) override;
+
+    virtual bool EndRequest() override;
+
+    virtual bool CollectResults(GPA_CounterResults& resultStorage) override;
+
+    virtual void ReleaseCounters() override;
 
     /// Create the GPUTime Query object
     void CreateGPUTimeQuery();
@@ -87,6 +94,11 @@ protected:
     GPA_CounterResults m_counterResults;         ///< saved counter results for this data request
     bool               m_areAllResultsSaved;     ///< indicates whether or not all of the results have been saved in m_counterResults
     bool               m_isAMD;                  ///< indicates whether or not an AMD GPU is in use
+
+private:
+
+    /// Release allocated counters for GL Data Request
+    void ReleaseCountersInGLDataRequest();
 };
 
 #endif // _GL_COUNTER_DATA_REQUEST_H_

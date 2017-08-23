@@ -39,7 +39,7 @@ public:
 
 protected:
 
-    virtual bool BeginRequest(GPA_ContextState* pContextState, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters);
+    virtual bool BeginRequest(GPA_ContextState* pContextState, void* pSampleList, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters);
     virtual bool EndRequest();
     virtual void ReleaseCounters();
 };

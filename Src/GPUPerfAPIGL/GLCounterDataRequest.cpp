@@ -31,7 +31,7 @@ GLCounterDataRequest::GLCounterDataRequest()
        m_appsCurrentOcclusionQuery(0),
        m_appsCurrentOcclusionQuery2(0),
        m_appsCurrentTransformFeedbackQuery(0),
-       m_monitor((GLuint)(-1)),
+       m_monitor(static_cast<GLuint>(-1)),
        m_areAllResultsSaved(false)
 
 {
@@ -49,7 +49,7 @@ GLCounterDataRequest::~GLCounterDataRequest()
 {
     TRACE_PRIVATE_FUNCTION(GLCounterDataRequest::DESTRUCTOR);
 
-    ReleaseCounters();
+    ReleaseCountersInGLDataRequest();
 
     delete[] m_counters;
     m_counters = nullptr;
@@ -73,6 +73,12 @@ void GLCounterDataRequest::CreateGPUTimeQuery()
 void GLCounterDataRequest::ReleaseCounters()
 {
     TRACE_PRIVATE_FUNCTION(GLCounterDataRequest::ReleaseCounters);
+    ReleaseCountersInGLDataRequest();
+}
+
+void GLCounterDataRequest::ReleaseCountersInGLDataRequest()
+{
+    TRACE_PRIVATE_FUNCTION(GLCounterDataRequest::ReleaseCountersInGLDataRequest);
 
     for (gpa_uint32 i = 0; i < m_activeCounters; i++)
     {
@@ -90,10 +96,10 @@ void GLCounterDataRequest::ReleaseCounters()
         }
         else
         {
-            if (m_monitor != (GLuint)(-1))
+            if (m_monitor != static_cast<GLuint>(-1))
             {
                 GLPerfMonitorCache::Instance()->DoneMonitor(m_monitor);
-                m_monitor = (GLuint)(-1);
+                m_monitor = static_cast<GLuint>(-1);
             }
         }
     }
@@ -120,6 +126,7 @@ void GLCounterDataRequest::ReleaseCounters()
     m_gpuTimeQuery[0] = 0;
     m_gpuTimeQuery[1] = 0;
 }
+
 
 
 bool GLCounterDataRequest::CollectResults(GPA_CounterResults& resultStorage)
@@ -189,7 +196,7 @@ void GLCounterDataRequest::Reset(gpa_uint32 selectionID, const vector<gpa_uint32
     TRACE_PRIVATE_FUNCTION(GLCounterDataRequest::Reset);
 
     // reset object
-    const gpa_uint32 newActiveCounters = (gpa_uint32)pCounters->size();
+    const gpa_uint32 newActiveCounters = static_cast<gpa_uint32>(pCounters->size());
 
     // GL counters must be disabled before being able to reuse the monitor
     ReleaseCounters();
@@ -285,7 +292,7 @@ bool GLCounterDataRequest::GetResults(GLCounterDataRequest* pRequest)
         CheckForGLErrors("glGetPerfMonitorCounterDataAMD( .. GL_PERFMON_RESULT_SIZE_AMD .. ) caused an error");
 #endif
         // obtain the actual results
-        GLuint* pCounterData = (GLuint*) malloc(resultSize);
+        GLuint* pCounterData = reinterpret_cast<GLuint*>(malloc(resultSize));
         assert(nullptr != pCounterData);
 
         GLsizei bytesWritten = 0;
@@ -338,7 +345,7 @@ bool GLCounterDataRequest::GetResults(GLCounterDataRequest* pRequest)
                 return false;
             }
 
-            GLuint* pDest = (GLuint*)&pRequest->m_counterResults.m_pResultBuffer[curCounterResultIndex];
+            GLuint* pDest = reinterpret_cast<GLuint*>(&pRequest->m_counterResults.m_pResultBuffer[curCounterResultIndex]);
             pDest[0] = 0;
             pDest[1] = 0;
 
@@ -385,9 +392,11 @@ bool GLCounterDataRequest::GetResults(GLCounterDataRequest* pRequest)
 }
 
 
-bool GLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters)
+bool GLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, void* pSampleList, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters)
 {
     TRACE_PRIVATE_FUNCTION(GLCounterDataRequest::Begin);
+
+    UNREFERENCED_PARAMETER(pSampleList);
 
     gpa_uint32 vendorId = 0;
     pContextState->m_hwInfo.GetVendorID(vendorId);
@@ -444,7 +453,7 @@ bool GLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
         else
         {
             // need to Enable counters
-            GPA_HardwareCounterDescExt* pCounter = pContextState->m_pCounterAccessor->GetHardwareCounterExt((*pCounters)[i]);
+            const GPA_HardwareCounterDescExt* pCounter = pContextState->m_pCounterAccessor->GetHardwareCounterExt((*pCounters)[i]);
 
             unsigned int uGroupIndex = pCounter->m_groupIndex;
 
@@ -452,18 +461,18 @@ bool GLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
 
             if (uGroupIndex < pHardwareCounters->m_groupCount)
             {
-                nCounters = (GLint)pHardwareCounters->m_pGroups[uGroupIndex].m_numCounters;
+                nCounters = static_cast<GLint>(pHardwareCounters->m_pGroups[uGroupIndex].m_numCounters);
             }
             else
             {
-                nCounters = (GLint)pHardwareCounters->m_pAdditionalGroups[uGroupIndex - pHardwareCounters->m_groupCount].m_numCounters;
+                nCounters = static_cast<GLint>(pHardwareCounters->m_pAdditionalGroups[uGroupIndex - pHardwareCounters->m_groupCount].m_numCounters);
             }
 
-            assert(pCounter->m_pHardwareCounter->m_counterIndexInGroup <= (unsigned int) nCounters);
+            assert(pCounter->m_pHardwareCounter->m_counterIndexInGroup <= static_cast<unsigned int>(nCounters));
 
             // validate Counter result type
             GLuint resultType = 0;
-            _oglGetPerfMonitorCounterInfoAMD(pCounter->m_groupIdDriver, (GLuint)pCounter->m_pHardwareCounter->m_counterIndexInGroup, GL_COUNTER_TYPE_AMD, &resultType);
+            _oglGetPerfMonitorCounterInfoAMD(pCounter->m_groupIdDriver, static_cast<GLuint>(pCounter->m_pHardwareCounter->m_counterIndexInGroup), GL_COUNTER_TYPE_AMD, &resultType);
 
 #ifdef DEBUG_GL_ERRORS
 
@@ -521,7 +530,7 @@ bool GLCounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uin
             m_counters[i].m_counterType = resultType;
             m_counters[i].m_counterID = (*pCounters)[i];
             m_counters[i].m_counterGroup = pCounter->m_groupIdDriver;
-            m_counters[i].m_counterIndex = (GLuint)pCounter->m_pHardwareCounter->m_counterIndexInGroup;
+            m_counters[i].m_counterIndex = static_cast<GLuint>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
         }
     }
 

@@ -28,6 +28,7 @@ struct GPA_HardwareCounterDesc
 {
     gpa_uint64 m_counterIndexInGroup;   ///< 0-based index of counter within the group
     char* m_pName;                      ///< name of the counter
+    char* m_pGroup;                     ///< group containing the counter
     char* m_pDescription;               ///< description of the counter
     GPA_Type m_type;                    ///< data type
     gpa_uint64 m_min;                   ///< min possible value
@@ -45,13 +46,15 @@ struct GPA_CounterGroupDesc
 };
 
 const int maxSoftwareCounterNameLength = 20;                ///< maximum length for a software counter name
-const int maxSoftwareCounterDescriptionLength = 86;         ///< maximum length for a software counter name
+const int maxSoftwareCounterGroupLength = 20;               ///< maximum length for a software counter group name
+const int maxSoftwareCounterDescriptionLength = 86;         ///< maximum length for a software counter description
 
 /// Contains all information pertaining to an software counter
 struct GPA_SoftwareCounterDesc
 {
     gpa_uint64 m_counterIndexInGroup;                         ///< 0-based index of counter within the group
     char m_name[maxSoftwareCounterNameLength];                ///< name of the counter
+    char m_group[maxSoftwareCounterGroupLength];              ///< group of the counter
     char m_description[maxSoftwareCounterDescriptionLength];  ///< description of the counter
     GPA_Type m_type;                                          ///< data type
 };
@@ -161,8 +164,6 @@ public:
             return;
         }
 
-#if defined(WIN32)
-
         m_groupIndex = 0;
         m_isSW = true;
 
@@ -174,11 +175,6 @@ public:
         {
             m_counterIndex = index;
         }
-
-        return;
-
-#endif // WIN32
-
     }
 
     /// Get the 0-based group index of the internal counter.
@@ -244,7 +240,6 @@ private:
 
     /// stores the number of groups in the array.
     unsigned int m_hardwareGroupCount;
-
 
     /// Points to the array of internal counter groups
     GPA_CounterGroupDesc* m_pHardwareAdditionalGroups;

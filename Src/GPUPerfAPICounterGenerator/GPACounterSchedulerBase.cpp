@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Base Class for counter scheduling
@@ -215,7 +215,9 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
                                    pHWCounters->m_gpuTimeTopToBottomCounterIndex,
                                    numSQMaxCounters,
                                    pHWCounters->m_sqGroupCount,
-                                   pHWCounters->m_pSQCounterGroups);
+                                   pHWCounters->m_pSQCounterGroups,
+                                   pHWCounters->m_isolatedGroupCount,
+                                   pHWCounters->m_pIsolatedGroups);
 
     if (nullptr == pSplitter)
     {
@@ -258,26 +260,23 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
             }
 
             case SOFTWARE_COUNTER:
-#if defined(WIN32)
+            {
+                // software counter
+                std::vector<unsigned int> requiredCounters = m_pCounterAccessor->GetInternalCountersRequired(*counterIter);
+                assert(requiredCounters.size() == 1);
+
+                if (requiredCounters.size() == 1)
                 {
-                    // software counter
-                    std::vector<unsigned int> requiredCounters = m_pCounterAccessor->GetInternalCountersRequired(*counterIter);
-                    assert(requiredCounters.size() == 1);
+                    GPASoftwareCounterIndices indices;
+                    indices.m_publicIndex = *counterIter;
 
-                    if (requiredCounters.size() == 1)
-                    {
-                        GPASoftwareCounterIndices indices;
-                        indices.m_publicIndex = *counterIter;
+                    indices.m_softwareIndex = requiredCounters[0] + pHWCounters->GetNumCounters(); // Add the number of HW counters so that the SW counters in effect are after the end of the HW counters
 
-                        indices.m_softwareIndex = requiredCounters[0] + pHWCounters->GetNumCounters(); // Add the number of HW counters so that the SW counters in effect are after the end of the HW counters
-
-                        softwareCountersToSchedule.push_back(indices);
-                    }
-
-                    break;
+                    softwareCountersToSchedule.push_back(indices);
                 }
 
-#endif
+                break;
+            }
 
             case UNKNOWN_COUNTER:
             default:

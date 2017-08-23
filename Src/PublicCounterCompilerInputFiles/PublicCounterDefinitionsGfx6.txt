@@ -1023,6 +1023,36 @@ DB*_DB_PERF_SEL_DB_CB_LQUAD_STALLS[0..7]
 GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,/,(100),*
 
+name=DBMemRead
+desc=#DepthAndStencil#Number of bytes read from the depth buffer.
+type=gpa_float64
+usage=bytes
+[GLGfx6]
+DB0_DB_PERF_SEL_TILE_RD_SENDS
+DB1_DB_PERF_SEL_TILE_RD_SENDS
+DB0_DB_PERF_SEL_QUAD_RD_32BYTE_REQS
+DB1_DB_PERF_SEL_QUAD_RD_32BYTE_REQS
+comp=0,1,+,(256),*,2,3,+,(32),*,+
+[DX11Gfx6]
+DB*_DB_PERF_SEL_TILE_RD_SENDS[0..3]
+DB*_DB_PERF_SEL_QUAD_RD_32BYTE_REQS[0..3]
+comp=0..3,sum4,(256),*,4..7,sum4,(32),*,+
+
+name=DBMemWritten
+desc=#DepthAndStencil#Number of bytes written to the depth buffer.
+type=gpa_float64
+usage=bytes
+[GLGfx6]
+DB0_DB_PERF_SEL_TILE_WR_SENDS
+DB1_DB_PERF_SEL_TILE_WR_SENDS
+DB0_DB_PERF_SEL_QUAD_WR_SENDS
+DB1_DB_PERF_SEL_QUAD_WR_SENDS
+comp=0,1,+,(256),*,2,3,+,(32),*,+
+[DX11Gfx6]
+DB*_DB_PERF_SEL_TILE_WR_SENDS[0..3]
+DB*_DB_PERF_SEL_QUAD_WR_SENDS[0..3]
+comp=0..3,sum4,(32),*,4..7,sum4,+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; The following are new on R8xx
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

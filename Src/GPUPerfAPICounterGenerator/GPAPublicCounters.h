@@ -9,7 +9,6 @@
 #define _GPA_PUBLIC_COUNTERS_H_
 
 #include <assert.h>
-#include "GPUPerfAPIOS.h"
 #include <vector>
 #include "GPAHWInfo.h"
 using std::vector;
@@ -20,19 +19,29 @@ class GPA_PublicCounter
 public:
 
     /// constructor taking a compute expression string
-    GPA_PublicCounter(unsigned int index, const char* pName, const char* pDescription, GPA_Type dataType, GPA_Usage_Type usageType, GPA_CounterType counterType, vector< gpa_uint32 >& internalCountersRequired, const char* pComputeExpression);
+    GPA_PublicCounter(
+        unsigned int index,
+        const char* pName,
+        const char* pGroup,
+        const char* pDescription,
+        GPA_Type dataType,
+        GPA_Usage_Type usageType,
+        GPA_CounterType counterType,
+        vector< gpa_uint32 >& internalCountersRequired,
+        const char* pComputeExpression);
 
     /// Default Constructor.
     /// temporary addition of a default constructor to allow vector to build and execute.
-    GPA_PublicCounter()
-    {
-    }
+    GPA_PublicCounter() = default;
 
     /// index of this counter
     unsigned int m_index;
 
     /// The name of the counter
     const char* m_pName;
+
+    /// A group to which the counter is related
+    const char* m_pGroup;
 
     /// A description of what the counter means.
     const char* m_pDescription;
@@ -70,21 +79,30 @@ public:
     }
 
     /// Obtains the number of public counters
-    virtual gpa_uint32 GetNumCounters();
+    virtual gpa_uint32 GetNumCounters() const;
 
     /// Gets a counter's name
     /// \param index the index of the requested counter
     /// \return the counter's name
-    virtual const char* GetCounterName(gpa_uint32 index)
+    virtual const char* GetCounterName(gpa_uint32 index) const
     {
         assert(index < m_counters.size());
         return m_counters[index].m_pName;
     }
 
+    /// Gets a counter's category
+    /// \param index the index of the requested counter
+    /// \return the counter's category
+    virtual const char* GetCounterCategory(gpa_uint32 index) const
+    {
+        assert(index < m_counters.size());
+        return m_counters[index].m_pGroup;
+    }
+
     /// Gets a counter's description
     /// \param index the index of the requested counter
     /// \return the counter's description
-    virtual const char* GetCounterDescription(gpa_uint32 index)
+    virtual const char* GetCounterDescription(gpa_uint32 index) const
     {
         assert(index < m_counters.size());
         return m_counters[index].m_pDescription;
@@ -93,7 +111,7 @@ public:
     /// Gets a counter's usage type
     /// \param index the index of the requested counter
     /// \return the counter's usage type
-    virtual GPA_Usage_Type GetCounterUsageType(gpa_uint32 index)
+    virtual GPA_Usage_Type GetCounterUsageType(gpa_uint32 index) const
     {
         assert(index < m_counters.size());
         return m_counters[index].m_usageType;
@@ -102,7 +120,7 @@ public:
     /// Gets a counter's data type
     /// \param index the index of the requested counter
     /// \return the counter's data type
-    virtual GPA_Type GetCounterDataType(gpa_uint32 index)
+    virtual GPA_Type GetCounterDataType(gpa_uint32 index) const
     {
         assert(index < m_counters.size());
         return m_counters[index].m_dataType;
@@ -111,7 +129,7 @@ public:
     /// Gets a counter's type
     /// \param index the index of the requested counter
     /// \return the counter's type
-    virtual GPA_CounterType GetCounterType(gpa_uint32 index)
+    virtual GPA_CounterType GetCounterType(gpa_uint32 index) const
     {
         assert(index < m_counters.size());
         return m_counters[index].m_counterType;
@@ -119,13 +137,22 @@ public:
 
     /// Defines a public counter based on an expression
     /// \param pName the name of the counter
+    /// \param pGroup the group that the counter is related to
     /// \param pDescription the description of the counter
     /// \param dataType the data type of the counter
     /// \param usageType the usage type of the counter
     /// \param counterType the type of the counter
     /// \param internalCountersRequired the list of required internal counters
     /// \param pComputeExpression the compute expression of the counter
-    virtual void DefinePublicCounter(const char* pName, const char* pDescription, GPA_Type dataType, GPA_Usage_Type usageType, GPA_CounterType counterType, vector< gpa_uint32 >& internalCountersRequired, const char* pComputeExpression);
+    virtual void DefinePublicCounter(
+        const char* pName,
+        const char* pGroup,
+        const char* pDescription,
+        GPA_Type dataType,
+        GPA_Usage_Type usageType,
+        GPA_CounterType counterType,
+        vector< gpa_uint32 >& internalCountersRequired,
+        const char* pComputeExpression);
 
     /// Adds a public counter to the set of available counters
     /// \param publicCounter the public counter to add
@@ -137,7 +164,7 @@ public:
     /// Get the counter at the specified index
     /// \param index the index of the requested counter
     /// \return the counter at the specified index
-    virtual const GPA_PublicCounter* GetCounter(gpa_uint32 index)
+    virtual const GPA_PublicCounter* GetCounter(gpa_uint32 index) const
     {
         assert(index < m_counters.size());
         return &m_counters[index];
@@ -149,7 +176,7 @@ public:
     /// Gets the list of internal counters that are required for a public counter
     /// \param index the index of the requested counter
     /// \return the list of internal counters
-    virtual vector< gpa_uint32 >& GetInternalCountersRequired(gpa_uint32 index)
+    virtual const vector< gpa_uint32 >& GetInternalCountersRequired(gpa_uint32 index) const
     {
         assert(index < m_counters.size());
         return m_counters[index].m_internalCountersRequired;
@@ -161,7 +188,12 @@ public:
     /// \param internalCounterTypes the list of internal counter types
     /// \param pResult the result of the computation
     /// \param pHwInfo the hardware info for the current hardware
-    virtual void ComputeCounterValue(gpa_uint32 counterIndex, vector< char* >& results, vector< GPA_Type >& internalCounterTypes, void* pResult, GPA_HWInfo* pHwInfo);
+    virtual void ComputeCounterValue(
+        gpa_uint32 counterIndex,
+        vector< char* >& results,
+        vector< GPA_Type >& internalCounterTypes,
+        void* pResult,
+        GPA_HWInfo* pHwInfo);
 
     /// indicates that the public counters have been generated
     bool m_countersGenerated;

@@ -8,23 +8,16 @@
 #ifndef _GPUPERFAPI_IMP_H_
 #define _GPUPERFAPI_IMP_H_
 
-#include "GPUPerfAPIOS.h"
-
 #include <vector>
 #include "CircularBuffer.h"
 
 #include "GPADataRequest.h"
-#include "GPASessionRequests.h"
 
 #include "GPAHWInfo.h"
 #include "GPAICounterAccessor.h"
 #include "GPASplitCounterFactory.h"
 
 // Functions which a GPA implementation layer must support
-
-/// Creates a new data request.
-/// \return A pointer to a new data request.
-GPA_DataRequest* GPA_IMP_CreateDataRequest();
 
 #include "GPAContextState.h"
 
@@ -83,6 +76,28 @@ GPA_Status GPA_IMP_BeginPass();
 /// Ends a pass
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPA_Status GPA_IMP_EndPass();
+
+/// Begins a sample list
+/// \param pSampleList the sample list on which to begin sampling
+/// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
+GPA_Status GPA_IMP_BeginSampleList(void* pSampleList);
+
+/// Ends a sample list
+/// \param pSampleList the sample list on which to end sampling
+/// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
+GPA_Status GPA_IMP_EndSampleList(void* pSampleList);
+
+/// Begins a sample in a sample list
+/// g_pCurrentContext->m_selectionID holds ID of current counter selection
+/// \param sampleID the id of the sample being started
+/// \param pSampleList the sample list on which to begin sampling
+/// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
+GPA_Status GPA_IMP_BeginSampleInSampleList(gpa_uint32 sampleID, void* pSampleList);
+
+/// Ends a sample in a sample list
+/// \param pSampleList the sample list on which to end sampling
+/// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
+GPA_Status GPA_IMP_EndSampleInSampleList(void* pSampleList);
 
 /// Begins a sample
 /// g_pCurrentContext->m_selectionID holds ID of current counter selection

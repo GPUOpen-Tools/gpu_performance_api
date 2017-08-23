@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  PublicCounterDefinitions for DX11GFX6
@@ -15,14 +15,14 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(16886);
 
-        p.DefinePublicCounter("GPUTime", "#Timing#Time this API call took to execute on the GPU in milliseconds. Does not include time that draw calls are processed in parallel.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_API_DYNAMIC, internalCounters, "0,TS_FREQ,/,(1000),*");
+        p.DefinePublicCounter("GPUTime", "Timing", "Time this API call took to execute on the GPU in milliseconds. Does not include time that draw calls are processed in parallel.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_API_DYNAMIC, internalCounters, "0,TS_FREQ,/,(1000),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(3892);
         internalCounters.push_back(3890);
 
-        p.DefinePublicCounter("GPUBusy", "#Timing#The percentage of time GPU was busy.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/,(100),*,(100),min");
+        p.DefinePublicCounter("GPUBusy", "Timing", "The percentage of time GPU was busy.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,/,(100),*,(100),min");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -30,7 +30,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(16606);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("TessellatorBusy", "#Timing#The percentage of time the tessellation engine is busy.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,/,(100),*");
+        p.DefinePublicCounter("TessellatorBusy", "Timing", "The percentage of time the tessellation engine is busy.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -50,7 +50,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5224);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("VSBusy", "#Timing#The percentage of time the ShaderUnit has vertex shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,8,ifnotzero,2,10,ifnotzero,4,12,ifnotzero,(0),1,9,ifnotzero,3,11,ifnotzero,5,13,ifnotzero,max,14,/,(100),*,(100),min");
+        p.DefinePublicCounter("VSBusy", "Timing", "The percentage of time the ShaderUnit has vertex shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,8,ifnotzero,2,10,ifnotzero,4,12,ifnotzero,(0),1,9,ifnotzero,3,11,ifnotzero,5,13,ifnotzero,max,14,/,(100),*,(100),min");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -71,7 +71,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5224);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("VSTime", "#Timing#Time vertex shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,9,ifnotzero,3,11,ifnotzero,5,13,ifnotzero,(0),2,10,ifnotzero,4,12,ifnotzero,6,14,ifnotzero,max,15,/,(1),min,0,TS_FREQ,/,(1000),*,*");
+        p.DefinePublicCounter("VSTime", "Timing", "Time vertex shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,9,ifnotzero,3,11,ifnotzero,5,13,ifnotzero,(0),2,10,ifnotzero,4,12,ifnotzero,6,14,ifnotzero,max,15,/,(1),min,0,TS_FREQ,/,(1000),*,*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -81,7 +81,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5215);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("HSBusy", "#Timing#The percentage of time the ShaderUnit has hull shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,4,/,(100),*,(100),min");
+        p.DefinePublicCounter("HSBusy", "Timing", "The percentage of time the ShaderUnit has hull shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,4,/,(100),*,(100),min");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -92,7 +92,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5215);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("HSTime", "#Timing#Time hull shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,ifnotzero,(0),2,4,ifnotzero,max,5,/,(1),min,0,TS_FREQ,/,(1000),*,*");
+        p.DefinePublicCounter("HSTime", "Timing", "Time hull shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,ifnotzero,(0),2,4,ifnotzero,max,5,/,(1),min,0,TS_FREQ,/,(1000),*,*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -108,7 +108,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5224);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("DSBusy", "#Timing#The percentage of time the ShaderUnit has domain shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,6,ifnotzero,8,ifnotzero,(0),1,3,7,ifnotzero,9,ifnotzero,max,10,/,(100),*,(100),min");
+        p.DefinePublicCounter("DSBusy", "Timing", "The percentage of time the ShaderUnit has domain shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,6,ifnotzero,8,ifnotzero,(0),1,3,7,ifnotzero,9,ifnotzero,max,10,/,(100),*,(100),min");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -125,7 +125,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5224);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("DSTime", "#Timing#Time domain shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,7,ifnotzero,9,ifnotzero,(0),2,4,8,ifnotzero,10,ifnotzero,max,11,/,(1),min,0,TS_FREQ,/,(1000),*,*");
+        p.DefinePublicCounter("DSTime", "Timing", "Time domain shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,7,ifnotzero,9,ifnotzero,(0),2,4,8,ifnotzero,10,ifnotzero,max,11,/,(1),min,0,TS_FREQ,/,(1000),*,*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -135,7 +135,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5197);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("GSBusy", "#Timing#The percentage of time the ShaderUnit has geometry shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,4,/,(100),*,(100),min");
+        p.DefinePublicCounter("GSBusy", "Timing", "The percentage of time the ShaderUnit has geometry shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,4,/,(100),*,(100),min");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -146,7 +146,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5197);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("GSTime", "#Timing#Time geometry shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,ifnotzero,(0),2,4,ifnotzero,max,5,/,(1),min,0,TS_FREQ,/,(1000),*,*");
+        p.DefinePublicCounter("GSTime", "Timing", "Time geometry shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,ifnotzero,(0),2,4,ifnotzero,max,5,/,(1),min,0,TS_FREQ,/,(1000),*,*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -156,7 +156,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5255);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("PSBusy", "#Timing#The percentage of time the ShaderUnit has pixel shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,4,/,(100),*");
+        p.DefinePublicCounter("PSBusy", "Timing", "The percentage of time the ShaderUnit has pixel shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,4,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -167,7 +167,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5255);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("PSTime", "#Timing#Time pixel shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,ifnotzero,(0),2,4,ifnotzero,max,5,/,0,TS_FREQ,/,(1000),*,*");
+        p.DefinePublicCounter("PSTime", "Timing", "Time pixel shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,ifnotzero,(0),2,4,ifnotzero,max,5,/,0,TS_FREQ,/,(1000),*,*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -177,7 +177,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5232);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("CSBusy", "#Timing#The percentage of time the ShaderUnit has compute shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,4,/,(100),*,(100),min");
+        p.DefinePublicCounter("CSBusy", "Timing", "The percentage of time the ShaderUnit has compute shader work to do.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,4,/,(100),*,(100),min");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -188,7 +188,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5232);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("CSTime", "#Timing#Time compute shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,ifnotzero,(0),2,4,ifnotzero,max,5,/,(1),min,0,TS_FREQ,/,(1000),*,*");
+        p.DefinePublicCounter("CSTime", "Timing", "Time compute shaders are busy in milliseconds.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,ifnotzero,(0),2,4,ifnotzero,max,5,/,(1),min,0,TS_FREQ,/,(1000),*,*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -199,14 +199,14 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(16437);
         internalCounters.push_back(16577);
 
-        p.DefinePublicCounter("VSVerticesIn", "#VertexShader#The number of vertices processed by the VS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+,2,3,+,2,3,+,ifnotzero,4,5,+,4,5,+,ifnotzero");
+        p.DefinePublicCounter("VSVerticesIn", "VertexShader", "The number of vertices processed by the VS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+,2,3,+,2,3,+,ifnotzero,4,5,+,4,5,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(16446);
         internalCounters.push_back(16586);
 
-        p.DefinePublicCounter("HSPatches", "#HullShader#The number of patches processed by the HS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
+        p.DefinePublicCounter("HSPatches", "HullShader", "The number of patches processed by the HS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -217,14 +217,14 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(16437);
         internalCounters.push_back(16577);
 
-        p.DefinePublicCounter("DSVerticesIn", "#DomainShader#The number of vertices processed by the DS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,2,3,+,ifnotzero,4,5,+,ifnotzero");
+        p.DefinePublicCounter("DSVerticesIn", "DomainShader", "The number of vertices processed by the DS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,2,3,+,ifnotzero,4,5,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(16350);
         internalCounters.push_back(16490);
 
-        p.DefinePublicCounter("GSPrimsIn", "#GeometryShader#The number of primitives passed into the GS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
+        p.DefinePublicCounter("GSPrimsIn", "GeometryShader", "The number of primitives passed into the GS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -233,7 +233,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(16342);
         internalCounters.push_back(16482);
 
-        p.DefinePublicCounter("GSVerticesOut", "#GeometryShader#The number of vertices output by the GS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,ifnotzero");
+        p.DefinePublicCounter("GSVerticesOut", "GeometryShader", "The number of vertices output by the GS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -251,14 +251,14 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(4218);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("PrimitiveAssemblyBusy", "#Timing#The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,2,-,4,6,+,8,+,10,(2),*,+,SU_CLOCKS_PRIM,*,-,1,3,-,5,7,+,9,+,11,(2),*,+,SU_CLOCKS_PRIM,*,-,max,(0),max,12,/,(100),*,(100),min");
+        p.DefinePublicCounter("PrimitiveAssemblyBusy", "Timing", "The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,2,-,4,6,+,8,+,10,(2),*,+,SU_CLOCKS_PRIM,*,-,1,3,-,5,7,+,9,+,11,(2),*,+,SU_CLOCKS_PRIM,*,-,max,(0),max,12,/,(100),*,(100),min");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4016);
         internalCounters.push_back(4152);
 
-        p.DefinePublicCounter("PrimitivesIn", "#PrimitiveAssembly#The number of primitives received by the hardware. This includes primitives generated by tessellation.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
+        p.DefinePublicCounter("PrimitivesIn", "PrimitiveAssembly", "The number of primitives received by the hardware. This includes primitives generated by tessellation.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -273,14 +273,14 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(4065);
         internalCounters.push_back(4201);
 
-        p.DefinePublicCounter("CulledPrims", "#PrimitiveAssembly#The number of culled primitives. Typical reasons include scissor, the primitive having zero area, and back or front face culling.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+,2,+,3,+,4,+,5,+,6,+,7,+,8,+,9,+");
+        p.DefinePublicCounter("CulledPrims", "PrimitiveAssembly", "The number of culled primitives. Typical reasons include scissor, the primitive having zero area, and back or front face culling.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+,2,+,3,+,4,+,5,+,6,+,7,+,8,+,9,+");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(4029);
         internalCounters.push_back(4165);
 
-        p.DefinePublicCounter("ClippedPrims", "#PrimitiveAssembly#The number of primitives that required one or more clipping operations due to intersecting the view volume or user clip planes.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
+        p.DefinePublicCounter("ClippedPrims", "PrimitiveAssembly", "The number of primitives that required one or more clipping operations due to intersecting the view volume or user clip planes.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -288,7 +288,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(4253);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("PAStalledOnRasterizer", "#PrimitiveAssembly#Percentage of GPUTime that primitive assembly waits for rasterization to be ready to accept data. This roughly indicates for what percentage of time the pipeline is bottlenecked by pixel operations.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,/,(100),*");
+        p.DefinePublicCounter("PAStalledOnRasterizer", "PrimitiveAssembly", "Percentage of GPUTime that primitive assembly waits for rasterization to be ready to accept data. This roughly indicates for what percentage of time the pipeline is bottlenecked by pixel operations.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -309,7 +309,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(4955);
         internalCounters.push_back(4987);
 
-        p.DefinePublicCounter("PSPixelsOut", "#PixelShader#Pixels exported from shader to colour buffers. Does not include killed or alpha tested pixels; if there are multiple rendertargets, each rendertarget receives one export, so this will be 2 for 1 pixel written to two RTs.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,sum4,4,5,6,7,sum4,8,9,10,11,sum4,12,13,14,15,sum4,sum4");
+        p.DefinePublicCounter("PSPixelsOut", "PixelShader", "Pixels exported from shader to colour buffers. Does not include killed or alpha tested pixels; if there are multiple rendertargets, each rendertarget receives one export, so this will be 2 for 1 pixel written to two RTs.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,sum4,4,5,6,7,sum4,8,9,10,11,sum4,12,13,14,15,sum4,sum4");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -331,21 +331,21 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(4989);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("PSExportStalls", "#PixelShader#Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the colour buffer.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,/,(100),*");
+        p.DefinePublicCounter("PSExportStalls", "PixelShader", "Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the colour buffer.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSThreadGroups", "#ComputeShader#Total number of thread groups.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
+        p.DefinePublicCounter("CSThreadGroups", "ComputeShader", "Total number of thread groups.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(5043);
         internalCounters.push_back(5232);
 
-        p.DefinePublicCounter("CSWavefronts", "#ComputeShader#The total number of wavefronts used for the CS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
+        p.DefinePublicCounter("CSWavefronts", "ComputeShader", "The total number of wavefronts used for the CS.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -354,7 +354,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5379);
         internalCounters.push_back(5778);
 
-        p.DefinePublicCounter("CSThreads", "#ComputeShader#The number of CS threads processed by the hardware.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),2,3,+,0,1,+,ifnotzero");
+        p.DefinePublicCounter("CSThreads", "ComputeShader", "The number of CS threads processed by the hardware.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),2,3,+,0,1,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -365,7 +365,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSVALUInsts", "#ComputeShader#The average number of vector ALU instructions executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
+        p.DefinePublicCounter("CSVALUInsts", "ComputeShader", "The average number of vector ALU instructions executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -376,7 +376,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSVALUUtilization", "#ComputeShader#The percentage of active vector ALU threads in a wave. A lower number can mean either more thread divergence in a wave or that the work-group size is not a multiple of 64. Value range: 0% (bad), 100% (ideal - no thread divergence).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,(64),*,/,(100),*,4,5,+,ifnotzero,(100),min");
+        p.DefinePublicCounter("CSVALUUtilization", "ComputeShader", "The percentage of active vector ALU threads in a wave. A lower number can mean either more thread divergence in a wave or that the work-group size is not a multiple of 64. Value range: 0% (bad), 100% (ideal - no thread divergence).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,(64),*,/,(100),*,4,5,+,ifnotzero,(100),min");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -387,7 +387,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSSALUInsts", "#ComputeShader#The average number of scalar ALU instructions executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
+        p.DefinePublicCounter("CSSALUInsts", "ComputeShader", "The average number of scalar ALU instructions executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -398,7 +398,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSVFetchInsts", "#ComputeShader#The average number of vector fetch instructions from the video memory executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
+        p.DefinePublicCounter("CSVFetchInsts", "ComputeShader", "The average number of vector fetch instructions from the video memory executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -409,7 +409,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSSFetchInsts", "#ComputeShader#The average number of scalar fetch instructions from the video memory executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
+        p.DefinePublicCounter("CSSFetchInsts", "ComputeShader", "The average number of scalar fetch instructions from the video memory executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -420,7 +420,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSVWriteInsts", "#ComputeShader#The average number of vector write instructions to the video memory executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
+        p.DefinePublicCounter("CSVWriteInsts", "ComputeShader", "The average number of vector write instructions to the video memory executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -430,7 +430,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSVALUBusy", "#ComputeShader#The percentage of GPUTime vector ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,(4),*,NUM_SIMDS,/,2,/,(100),*,3,4,+,ifnotzero");
+        p.DefinePublicCounter("CSVALUBusy", "ComputeShader", "The percentage of GPUTime vector ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,(4),*,NUM_SIMDS,/,2,/,(100),*,3,4,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -440,7 +440,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSSALUBusy", "#ComputeShader#The percentage of GPUTime scalar ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/,2,/,(100),*,3,4,+,ifnotzero");
+        p.DefinePublicCounter("CSSALUBusy", "ComputeShader", "The percentage of GPUTime scalar ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/,2,/,(100),*,3,4,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -480,7 +480,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSMemUnitBusy", "#ComputeShader#The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,max32,32,/,(100),*,33,34,+,ifnotzero");
+        p.DefinePublicCounter("CSMemUnitBusy", "ComputeShader", "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,max32,32,/,(100),*,33,34,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -520,7 +520,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSMemUnitStalled", "#ComputeShader#The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,max32,32,/,(100),*,33,34,+,ifnotzero");
+        p.DefinePublicCounter("CSMemUnitStalled", "ComputeShader", "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,max32,32,/,(100),*,33,34,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -539,7 +539,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSFetchSize", "#ComputeShader#The total kilobytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,sum12,(32),*,(1024),/,12,13,+,ifnotzero");
+        p.DefinePublicCounter("CSFetchSize", "ComputeShader", "The total kilobytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,sum12,(32),*,(1024),/,12,13,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -558,7 +558,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSWriteSize", "#ComputeShader#The total kilobytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,sum12,(32),*,(1024),/,12,13,+,ifnotzero");
+        p.DefinePublicCounter("CSWriteSize", "ComputeShader", "The total kilobytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,sum12,(32),*,(1024),/,12,13,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -589,7 +589,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSCacheHit", "#ComputeShader#The percentage of fetch, write, atomic, and other instructions that hit the data cache. Value range: 0% (no hit) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,sum12,0,1,2,3,4,5,6,7,8,9,10,11,sum12,12,13,14,15,16,17,18,19,20,21,22,23,sum12,+,/,(100),*,24,25,+,ifnotzero");
+        p.DefinePublicCounter("CSCacheHit", "ComputeShader", "The percentage of fetch, write, atomic, and other instructions that hit the data cache. Value range: 0% (no hit) to 100% (optimal).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,sum12,0,1,2,3,4,5,6,7,8,9,10,11,sum12,12,13,14,15,16,17,18,19,20,21,22,23,sum12,+,/,(100),*,24,25,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -609,7 +609,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSWriteUnitStalled", "#ComputeShader#The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,max,2,max,3,max,4,max,5,max,7,max,8,max,9,max,10,max,11,max,12,/,(100),*,13,14,+,ifnotzero");
+        p.DefinePublicCounter("CSWriteUnitStalled", "ComputeShader", "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,max,2,max,3,max,4,max,5,max,7,max,8,max,9,max,10,max,11,max,12,/,(100),*,13,14,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -620,7 +620,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSGDSInsts", "#ComputeShader#The average number of GDS read or GDS write instructions executed per work item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
+        p.DefinePublicCounter("CSGDSInsts", "ComputeShader", "The average number of GDS read or GDS write instructions executed per work item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -631,7 +631,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSLDSInsts", "#ComputeShader#The average number of LDS read/write instructions executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
+        p.DefinePublicCounter("CSLDSInsts", "ComputeShader", "The average number of LDS read/write instructions executed per work-item (affected by flow control).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,5,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -643,7 +643,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSALUStalledByLDS", "#ComputeShader#The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,/,NUM_SHADER_ENGINES,/,(100),*,5,6,+,ifnotzero");
+        p.DefinePublicCounter("CSALUStalledByLDS", "ComputeShader", "The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,3,+,/,4,/,NUM_SHADER_ENGINES,/,(100),*,5,6,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -653,7 +653,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(5040);
         internalCounters.push_back(5229);
 
-        p.DefinePublicCounter("CSLDSBankConflict", "#ComputeShader#The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,/,NUM_SIMDS,/,(100),*,3,4,+,ifnotzero");
+        p.DefinePublicCounter("CSLDSBankConflict", "ComputeShader", "The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,+,2,/,NUM_SIMDS,/,(100),*,3,4,+,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -691,7 +691,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(9454);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("TexUnitBusy", "#Timing#The percentage of GPUTime the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,max,17,max,18,max,19,max,20,max,21,max,22,max,23,max,24,max,25,max,26,max,27,max,28,max,29,max,30,max,31,max,32,/,(100),*");
+        p.DefinePublicCounter("TexUnitBusy", "Timing", "The percentage of GPUTime the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,max,17,max,18,max,19,max,20,max,21,max,22,max,23,max,24,max,25,max,26,max,27,max,28,max,29,max,30,max,31,max,32,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -760,7 +760,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(9416);
         internalCounters.push_back(9522);
 
-        p.DefinePublicCounter("TexTriFilteringPct", "#TextureUnit#Percentage of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,+,/,(100),*");
+        p.DefinePublicCounter("TexTriFilteringPct", "TextureUnit", "Percentage of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,+,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -829,7 +829,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(9418);
         internalCounters.push_back(9524);
 
-        p.DefinePublicCounter("TexVolFilteringPct", "#TextureUnit#Percentage of pixels that received volume filtering.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,+,/,(100),*");
+        p.DefinePublicCounter("TexVolFilteringPct", "TextureUnit", "Percentage of pixels that received volume filtering.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,+,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1122,7 +1122,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(9445);
         internalCounters.push_back(9551);
 
-        p.DefinePublicCounter("TexAveAnisotropy", "#TextureUnit#The average degree of anisotropy applied. A number between 1 and 16. The anisotropic filtering algorithm only applies samples where they are required (e.g. there will be no extra anisotropic samples if the view vector is perpendicular to the surface) so this can be much lower than the requested anisotropy.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,(2),32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,*,+,(4),64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum32,*,+,(6),96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum32,*,+,(8),128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum32,*,+,(10),160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum32,*,+,(12),192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,sum32,*,+,(14),224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,sum32,*,+,(16),256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum32,*,+,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,+,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum32,+,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum32,+,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum32,+,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum32,+,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,sum32,+,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,sum32,+,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum32,+,/");
+        p.DefinePublicCounter("TexAveAnisotropy", "TextureUnit", "The average degree of anisotropy applied. A number between 1 and 16. The anisotropic filtering algorithm only applies samples where they are required (e.g. there will be no extra anisotropic samples if the view vector is perpendicular to the surface) so this can be much lower than the requested anisotropy.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,(2),32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,*,+,(4),64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum32,*,+,(6),96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum32,*,+,(8),128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum32,*,+,(10),160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum32,*,+,(12),192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,sum32,*,+,(14),224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,sum32,*,+,(16),256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum32,*,+,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum32,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum32,+,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum32,+,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,sum32,+,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,sum32,+,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum32,+,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,sum32,+,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,sum32,+,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum32,+,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1136,7 +1136,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(3786);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("DepthStencilTestBusy", "#Timing#Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,/,(100),*");
+        p.DefinePublicCounter("DepthStencilTestBusy", "Timing", "Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1157,7 +1157,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(3396);
         internalCounters.push_back(3645);
 
-        p.DefinePublicCounter("HiZTilesAccepted", "#DepthAndStencil#Percentage of tiles accepted by HiZ and will be rendered to the depth or color buffers.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8,8,9,10,11,12,13,14,15,sum8,/,(100),*");
+        p.DefinePublicCounter("HiZTilesAccepted", "DepthAndStencil", "Percentage of tiles accepted by HiZ and will be rendered to the depth or color buffers.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8,8,9,10,11,12,13,14,15,sum8,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1178,7 +1178,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(3420);
         internalCounters.push_back(3669);
 
-        p.DefinePublicCounter("PreZTilesDetailCulled", "#DepthAndStencil#Percentage of tiles rejected because the associated prim had no contributing area.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "8,9,10,11,12,13,14,15,sum8,0,1,2,3,4,5,6,7,sum8,/,(100),*");
+        p.DefinePublicCounter("PreZTilesDetailCulled", "DepthAndStencil", "Percentage of tiles rejected because the associated prim had no contributing area.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "8,9,10,11,12,13,14,15,sum8,0,1,2,3,4,5,6,7,sum8,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1199,7 +1199,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(4522);
         internalCounters.push_back(4814);
 
-        p.DefinePublicCounter("HiZQuadsCulled", "#DepthAndStencil#Percentage of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8,8,9,10,11,12,13,14,15,sum8,-,0,1,2,3,4,5,6,7,sum8,/,(100),*");
+        p.DefinePublicCounter("HiZQuadsCulled", "DepthAndStencil", "Percentage of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8,8,9,10,11,12,13,14,15,sum8,-,0,1,2,3,4,5,6,7,sum8,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1222,7 +1222,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(4522);
         internalCounters.push_back(4814);
 
-        p.DefinePublicCounter("PreZQuadsCulled", "#DepthAndStencil#Percentage of quads rejected based on the detailZ and earlyZ tests.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "10,11,12,13,14,15,16,17,sum8,8,9,+,-,0,1,2,3,4,5,6,7,sum8,/,(100),*");
+        p.DefinePublicCounter("PreZQuadsCulled", "DepthAndStencil", "Percentage of quads rejected based on the detailZ and earlyZ tests.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "10,11,12,13,14,15,16,17,sum8,8,9,+,-,0,1,2,3,4,5,6,7,sum8,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1237,7 +1237,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(4446);
         internalCounters.push_back(4738);
 
-        p.DefinePublicCounter("PostZQuads", "#DepthAndStencil#Percentage of quads for which the pixel shader will run and may be postZ tested.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+,2,3,4,5,6,7,8,9,sum8,/,(100),*");
+        p.DefinePublicCounter("PostZQuads", "DepthAndStencil", "Percentage of quads for which the pixel shader will run and may be postZ tested.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+,2,3,4,5,6,7,8,9,sum8,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1250,7 +1250,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(3572);
         internalCounters.push_back(3821);
 
-        p.DefinePublicCounter("PreZSamplesPassing", "#DepthAndStencil#Number of samples tested for Z before shading and passed.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
+        p.DefinePublicCounter("PreZSamplesPassing", "DepthAndStencil", "Number of samples tested for Z before shading and passed.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1263,7 +1263,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(3574);
         internalCounters.push_back(3823);
 
-        p.DefinePublicCounter("PreZSamplesFailingS", "#DepthAndStencil#Number of samples tested for Z before shading and failed stencil test.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
+        p.DefinePublicCounter("PreZSamplesFailingS", "DepthAndStencil", "Number of samples tested for Z before shading and failed stencil test.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1276,7 +1276,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(3573);
         internalCounters.push_back(3822);
 
-        p.DefinePublicCounter("PreZSamplesFailingZ", "#DepthAndStencil#Number of samples tested for Z before shading and failed Z test.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
+        p.DefinePublicCounter("PreZSamplesFailingZ", "DepthAndStencil", "Number of samples tested for Z before shading and failed Z test.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1289,7 +1289,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(3569);
         internalCounters.push_back(3818);
 
-        p.DefinePublicCounter("PostZSamplesPassing", "#DepthAndStencil#Number of samples tested for Z after shading and passed.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
+        p.DefinePublicCounter("PostZSamplesPassing", "DepthAndStencil", "Number of samples tested for Z after shading and passed.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1302,7 +1302,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(3571);
         internalCounters.push_back(3820);
 
-        p.DefinePublicCounter("PostZSamplesFailingS", "#DepthAndStencil#Number of samples tested for Z after shading and failed stencil test.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
+        p.DefinePublicCounter("PostZSamplesFailingS", "DepthAndStencil", "Number of samples tested for Z after shading and failed stencil test.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1315,7 +1315,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(3570);
         internalCounters.push_back(3819);
 
-        p.DefinePublicCounter("PostZSamplesFailingZ", "#DepthAndStencil#Number of samples tested for Z after shading and failed Z test.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
+        p.DefinePublicCounter("PostZSamplesFailingZ", "DepthAndStencil", "Number of samples tested for Z after shading and failed Z test.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1329,7 +1329,33 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(3688);
         internalCounters.push_back(3892);
 
-        p.DefinePublicCounter("ZUnitStalled", "#DepthAndStencil#The percentage of GPUTime the depth buffer spends waiting for the color buffer to be ready to accept data. High figures here indicate a bottleneck in color buffer operations.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,/,(100),*");
+        p.DefinePublicCounter("ZUnitStalled", "DepthAndStencil", "The percentage of GPUTime the depth buffer spends waiting for the color buffer to be ready to accept data. High figures here indicate a bottleneck in color buffer operations.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,/,(100),*");
+    }
+    {
+        vector< gpa_uint32 > internalCounters;
+        internalCounters.push_back(1947);
+        internalCounters.push_back(2196);
+        internalCounters.push_back(2445);
+        internalCounters.push_back(2694);
+        internalCounters.push_back(1954);
+        internalCounters.push_back(2203);
+        internalCounters.push_back(2452);
+        internalCounters.push_back(2701);
+
+        p.DefinePublicCounter("DBMemRead", "DepthAndStencil", "Number of bytes read from the depth buffer.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_BYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,sum4,(256),*,4,5,6,7,sum4,(32),*,+");
+    }
+    {
+        vector< gpa_uint32 > internalCounters;
+        internalCounters.push_back(1959);
+        internalCounters.push_back(2208);
+        internalCounters.push_back(2457);
+        internalCounters.push_back(2706);
+        internalCounters.push_back(1962);
+        internalCounters.push_back(2211);
+        internalCounters.push_back(2460);
+        internalCounters.push_back(2709);
+
+        p.DefinePublicCounter("DBMemWritten", "DepthAndStencil", "Number of bytes written to the depth buffer.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_BYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,sum4,(32),*,4,5,6,7,sum4,+");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1342,7 +1368,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(1595);
         internalCounters.push_back(1810);
 
-        p.DefinePublicCounter("CBMemRead", "#ColorBuffer#Number of bytes read from the color buffer.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_BYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8,(32),*");
+        p.DefinePublicCounter("CBMemRead", "ColorBuffer", "Number of bytes read from the color buffer.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_BYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8,(32),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1355,7 +1381,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(1585);
         internalCounters.push_back(1800);
 
-        p.DefinePublicCounter("CBMemWritten", "#ColorBuffer#Number of bytes written to the color buffer.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_BYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8,(32),*");
+        p.DefinePublicCounter("CBMemWritten", "ColorBuffer", "Number of bytes written to the color buffer.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_BYTES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8,(32),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -1376,7 +1402,7 @@ void AutoDefinePublicCountersDX11Gfx6(GPA_PublicCounters& p)
         internalCounters.push_back(1475);
         internalCounters.push_back(1690);
 
-        p.DefinePublicCounter("CBSlowPixelPct", "#ColorBuffer#Percentage of pixels written to the color buffer using a half-rate or quarter-rate format.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8,8,9,10,11,12,13,14,15,sum8,/,(100),*,(100),min");
+        p.DefinePublicCounter("CBSlowPixelPct", "ColorBuffer", "Percentage of pixels written to the color buffer using a half-rate or quarter-rate format.", GPA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,2,3,4,5,6,7,sum8,8,9,10,11,12,13,14,15,sum8,/,(100),*,(100),min");
     }
 }
 

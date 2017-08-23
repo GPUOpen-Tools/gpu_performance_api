@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2014-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2014-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  This file implements the "consolidated" counter splitter
@@ -15,10 +15,10 @@
 #endif
 #include "GPASplitCountersInterfaces.h"
 #include "GPAInternalCounter.h"
+#include "GPASwCounterManager.h"
 
 #if defined(WIN32)
     #include <Windows.h>
-    #include "GPASwCounterManager.h"
 #endif // WIN32
 
 /// Splits counters such that no individual public counter will be split into any more passes than minimally required.
@@ -34,15 +34,20 @@ public:
     /// \param maxSQCounters The maximum number of counters that can be simultaneously enabled on the SQ block
     /// \param numSQGroups The number of SQ counter groups.
     /// \param pSQCounterBlockInfo The list of SQ counter groups.
+    /// \param numIsolatedFromSqGroups The number of counter groups that must be isolated from SQ counter groups
+    /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
     GPASplitCountersConsolidated(unsigned int gpuTimestampGroupIndex,
                                  unsigned int gpuTimestampBottomToBottomCounterIndex,
                                  unsigned int gpuTimestampTopToBottomCounterIndex,
                                  unsigned int maxSQCounters,
                                  unsigned int numSQGroups,
-                                 GPA_SQCounterGroupDesc* pSQCounterBlockInfo)
+                                 GPA_SQCounterGroupDesc* pSQCounterBlockInfo,
+                                 unsigned int numIsolatedFromSqGroups,
+                                 const unsigned int* pIsolatedFromSqGroups)
         :   IGPASplitCounters(gpuTimestampGroupIndex, gpuTimestampBottomToBottomCounterIndex,
                               gpuTimestampTopToBottomCounterIndex, maxSQCounters,
-                              numSQGroups, pSQCounterBlockInfo)
+                              numSQGroups, pSQCounterBlockInfo, 
+                              numIsolatedFromSqGroups, pIsolatedFromSqGroups)
     {
     };
 
@@ -95,8 +100,6 @@ protected:
     virtual bool IsTimestampQueryCounter(const gpa_uint32 swCounterIndex) const
     {
         bool isTimestampQuery = false;
-#if defined(WIN32)
-
         const SwCounterDescVec* pSwCounters = s_pSwCounterManager->GetSwCounters();
         const gpa_uint32        amdCounters = s_pSwCounterManager->GetNumAmdCounters();
 
@@ -113,17 +116,22 @@ protected:
 
             if (swCounterGroupIndex < (gpa_uint32)pSwCounters->size())
             {
-                const std::string gpuTime = "GPUTime";
+                const std::string gpuTime       = "GPUTime";
                 const std::string d3dGPUTime    = "D3DGPUTime";
+                const std::string vkGPUTime     = "VKGPUTime";
                 const std::string preTimeStamp  = "PreBottomTimestamp";
                 const std::string postTimeStamp = "PostBottomTimestamp";
                 const std::string counterName   = pSwCounters->at(swCounterGroupIndex).m_name;
 
-                if (counterName == d3dGPUTime || counterName == gpuTime || counterName == preTimeStamp || counterName == postTimeStamp)
+                if (counterName == d3dGPUTime || 
+                    counterName == vkGPUTime ||
+                    counterName == gpuTime || 
+                    counterName == preTimeStamp || 
+                    counterName == postTimeStamp)
                 {
                     isTimestampQuery = true;
 
-                    if (counterName == gpuTime || counterName == d3dGPUTime)
+                    if (counterName == gpuTime || counterName == d3dGPUTime || counterName == vkGPUTime)
                     {
                         s_pSwCounterManager->SetSwGPUTimeCounterIndex(swCounterIndex);
                         s_pSwCounterManager->SetSwGPUTimeCounterEnabled(true);
@@ -132,7 +140,6 @@ protected:
             }
         }
 
-#endif // defined(WIN32)
         return isTimestampQuery;
     }
 
@@ -211,6 +218,7 @@ private:
             // reset the iterators to the beginning each time we are trying to schedule a different public counter
             auto countersUsedIter = numUsedCountersPerPassPerBlock.begin();
             auto counterPassIter = passPartitions.begin();
+
 
             // find out the minimum required passes for the public counter
             const std::list<GPACounterPass> singleCounterPasses = SplitSingleCounter(*publicIter, accessor, maxCountersPerGroup);
@@ -292,7 +300,8 @@ private:
 
                                 if (CheckForTimestampCounters(accessor, *tmpCounterPassIter) == false || //use tmpCounterPassIter
                                     CanCounterBeAdded(accessor, tmpCurCountersUsed, maxCountersPerGroup) == false ||
-                                    CheckForSQCounters(accessor, tmpCurCountersUsed, m_maxSQCounters) == false)
+                                    CheckForSQCounters(accessor, tmpCurCountersUsed, m_maxSQCounters) == false ||
+                                    CheckCountersAreCompatible(accessor, tmpCurCountersUsed) == false)
                                 {
                                     allPassesAreGood = false;
                                     break;
@@ -394,6 +403,15 @@ private:
                             numScheduledCounters += 1;
 
                             unsigned int offset = (unsigned int)counterPassIter->m_counters.size() - 1;
+
+                            // find the correct pass that the counter was added to
+                            passIndex = 0;
+
+                            for (auto itt = passPartitions.begin(); itt != passPartitions.end() && itt != counterPassIter; ++itt)
+                            {
+                                ++passIndex;
+                            }
+
                             AddCounterResultLocation(publicCounterIndex, hardwareCounterIndex, passIndex, offset);
                         }
                         else
@@ -493,7 +511,8 @@ private:
             {
                 if (CheckForTimestampCounters(pAccessor, *passIter) == true &&
                     CanCounterBeAdded(pAccessor, *countersUsedIter, maxCountersPerGroup) == true &&
-                    CheckForSQCounters(pAccessor, *countersUsedIter, m_maxSQCounters) == true)
+                    CheckForSQCounters(pAccessor, *countersUsedIter, m_maxSQCounters) == true &&
+                    CheckCountersAreCompatible(pAccessor, *countersUsedIter) == true)
                 {
                     // the counter can be scheduled here.
                     passIter->m_counters.push_back(internalCounterIter->m_hardwareIndex);
@@ -534,8 +553,6 @@ private:
                                 const std::vector<unsigned int>& maxCountersPerGroup,
                                 unsigned int& numScheduledCounters)
     {
-#if defined(WIN32)
-
         if (0 < swCountersToSchedule.size())
         {
             UNREFERENCED_PARAMETER(maxCountersPerGroup);
@@ -601,8 +618,6 @@ private:
                 }
             }
         }
-
-#endif  // WIN32
     }
 
 
@@ -664,7 +679,8 @@ private:
                 // try to add the counter to the current pass
                 if (CheckForTimestampCounters(pAccessor, *counterPassIter) &&
                     CanCounterBeAdded(pAccessor, *countersUsedIter, maxCountersPerGroup) &&
-                    CheckForSQCounters(pAccessor, *countersUsedIter, m_maxSQCounters))
+                    CheckForSQCounters(pAccessor, *countersUsedIter, m_maxSQCounters) &&
+                    CheckCountersAreCompatible(pAccessor, *countersUsedIter))
                 {
                     counterPassIter->m_counters.push_back(*counterIter);
                     countersUsedIter->m_numUsedCountersPerBlock[groupIndex].push_back(pAccessor->CounterIndex());

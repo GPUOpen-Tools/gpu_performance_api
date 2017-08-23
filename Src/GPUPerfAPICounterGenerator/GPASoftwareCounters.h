@@ -10,9 +10,7 @@
 
 #include "GPAInternalCounter.h"
 #include "Logging.h"
-#if defined(WIN32)
-    #include "GPASwCounterManager.h"
-#endif // WIN32
+#include "GPASwCounterManager.h"
 #include <sstream>
 
 /// Struct to describe a software counter
@@ -51,23 +49,31 @@ public:
 
     /// Obtains the number of software counters
     /// \return the number of software counters
-    gpa_uint32 GetNumCounters()
+    gpa_uint32 GetNumCounters() const
     {
-        return (gpa_uint32)m_counters.size();
+        return static_cast<gpa_uint32>(m_counters.size());
     }
 
     /// Gets the name of the specified counter
     /// \param index the index of the counter whose name is needed
     /// \return the name of the specified counter
-    const char* GetCounterName(gpa_uint32 index)
+    const char* GetCounterName(gpa_uint32 index) const
     {
         return m_counters[index].m_pSoftwareCounter->m_name;
+    }
+
+    /// Gets the category of the specified counter
+    /// \param index the index of the counter whose category is needed
+    /// \return the category of the specified counter
+    const char* GetCounterCategory(gpa_uint32 index) const
+    {
+        return m_counters[index].m_pSoftwareCounter->m_group;
     }
 
     /// Gets the description of the specified counter
     /// \param index the index of the counter whose description is needed
     /// \return the description of the specified counter
-    const char* GetCounterDescription(gpa_uint32 index)
+    const char* GetCounterDescription(gpa_uint32 index) const
     {
         return m_counters[index].m_pSoftwareCounter->m_description;
     }
@@ -75,7 +81,7 @@ public:
     /// Gets the type of the specified counter
     /// \param index the index of the counter whose type is needed
     /// \return the type of the specified counter
-    GPA_Type GetCounterType(gpa_uint32 index)
+    GPA_Type GetCounterType(gpa_uint32 index) const
     {
         return m_counters[index].m_pSoftwareCounter->m_type;
     }

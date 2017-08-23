@@ -28,9 +28,13 @@ DEBUG_SUFFIX=
 # HSA directory override
 HSA_DIR_OVERRIDE=
 
+# Vulkan include directory override
+VK_INC_DIR_OVERRIDE=
+
 # API-specific build control
 bBuildOpenGL=true
 bBuildOpenGLES=true
+bBuildVK=true
 bBuildOpenCL=true
 bBuildHSA=true
 
@@ -68,10 +72,15 @@ do
    elif [ "$1" = "hsadir" ]; then
       shift
       HSA_DIR_OVERRIDE="HSA_DIR=$1"
+   elif [ "$1" = "vkincdir" ]; then
+      shift
+      VK_INC_DIR_OVERRIDE="VK_INCLUDE_DIR=$1"
    elif [ "$1" = "skipopengl" ]; then
       bBuildOpenGL=false
    elif [ "$1" = "skipopengles" ]; then
       bBuildOpenGLES=false
+   elif [ "$1" = "skipvulkan" ]; then
+      bBuildOpenVK=false
    elif [ "$1" = "skipopencl" ]; then
       bBuildOpenCL=false
    elif [ "$1" = "skiphsa" ]; then
@@ -101,6 +110,7 @@ CL=$GPASRC/GPUPerfAPICL
 HSA=$GPASRC/GPUPerfAPIHSA
 GL=$GPASRC/GPUPerfAPIGL
 GLES=$GPASRC/GPUPerfAPIGLES
+VK=$GPASRC/GPUPerfAPIVk
 COUNTERS=$GPASRC/GPUPerfAPICounters
 COUNTERGENERATOR=$GPASRC/GPUPerfAPICounterGenerator
 GPA_COMMON=$GPASRC/GPUPerfAPI-Common
@@ -109,6 +119,7 @@ UNITTESTS=$GPASRC/GPUPerfAPIUnitTests
 
 GLLIB=libGPUPerfAPIGL$DEBUG_SUFFIX.so
 GLESLIB=libGPUPerfAPIGLES$DEBUG_SUFFIX.so
+VKLIB=libGPUPerfAPIVK$DEBUG_SUFFIX.so
 CLLIB=libGPUPerfAPICL$DEBUG_SUFFIX.so
 HSALIB=libGPUPerfAPIHSA$DEBUG_SUFFIX.so
 COUNTERSLIB=libGPUPerfAPICounters$DEBUG_SUFFIX.so
@@ -118,6 +129,7 @@ GPA_DEVICEINFOLIB=libDeviceInfo$DEBUG_SUFFIX.a
 
 GLLIB32=libGPUPerfAPIGL32$DEBUG_SUFFIX.so
 GLESLIB32=libGPUPerfAPIGLES32$DEBUG_SUFFIX.so
+VKLIB32=libGPUPerfAPIVK32$DEBUG_SUFFIX.so
 CLLIB32=libGPUPerfAPICL32$DEBUG_SUFFIX.so
 COUNTERSLIB32=libGPUPerfAPICounters32$DEBUG_SUFFIX.so
 COUNTERGENERATORLIB32=libGPUPerfAPICounterGenerator32$DEBUG_SUFFIX.a
@@ -126,6 +138,7 @@ GPA_DEVICEINFOLIB32=libDeviceInfo32$DEBUG_SUFFIX.a
 
 GLLIB_INTERNAL=libGPUPerfAPIGL$DEBUG_SUFFIX-Internal.so
 GLESLIB_INTERNAL=libGPUPerfAPIGLES$DEBUG_SUFFIX-Internal.so
+VKLIB_INTERNAL=libGPUPerfAPIVK$DEBUG_SUFFIX-Internal.so
 CLLIB_INTERNAL=libGPUPerfAPICL$DEBUG_SUFFIX-Internal.so
 HSALIB_INTERNAL=libGPUPerfAPIHSA$DEBUG_SUFFIX-Internal.so
 COUNTERSLIB_INTERNAL=libGPUPerfAPICounters$DEBUG_SUFFIX-Internal.so
@@ -135,6 +148,7 @@ GPA_DEVICEINFOLIB_INTERNAL=libDeviceInfo$DEBUG_SUFFIX-Internal.a
 
 GLLIB32_INTERNAL=libGPUPerfAPIGL32$DEBUG_SUFFIX-Internal.so
 GLESLIB32_INTERNAL=libGPUPerfAPIGLES32$DEBUG_SUFFIX-Internal.so
+VKLIB32_INTERNAL=libGPUPerfAPIVK32$DEBUG_SUFFIX-Internal.so
 CLLIB32_INTERNAL=libGPUPerfAPICL32$DEBUG_SUFFIX-Internal.so
 COUNTERSLIB32_INTERNAL=libGPUPerfAPICounters32$DEBUG_SUFFIX-Internal.so
 COUNTERGENERATORLIB32_INTERNAL=libGPUPerfAPICounterGenerator32$DEBUG_SUFFIX-Internal.a
@@ -169,6 +183,10 @@ if $bBuildOpenGLES ; then
    BUILD_DIRS="$BUILD_DIRS $GLES"
 fi
 
+if $bBuildOpenVK ; then
+   BUILD_DIRS="$BUILD_DIRS $VK"
+fi
+
 if $bBuildOpenCL ; then
    BUILD_DIRS="$BUILD_DIRS $CL"
 fi
@@ -192,14 +210,14 @@ for SUBDIR in $BUILD_DIRS; do
    #make 64 bit
    echo "Build ${BASENAME}, 64-bit..." | tee -a $LOGFILE
 
-   if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET} >> $LOGFILE 2>&1; then
+   if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET} >> $LOGFILE 2>&1; then
       echo "Failed to build ${BASENAME}, 64 bit"
       exit 1
    fi
 
    #make 64 bit Internal
    if $bBuildInternal ; then
-      if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internal  >> $LOGFILE 2>&1; then
+      if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internal  >> $LOGFILE 2>&1; then
          echo "Failed to build ${BASENAME}, 64 bit, Internal"
          exit 1
       fi
@@ -210,14 +228,14 @@ for SUBDIR in $BUILD_DIRS; do
          #make 32 bit
          echo "Build ${BASENAME}, 32-bit..." | tee -a $LOGFILE
 
-         if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}x86 >> $LOGFILE 2>&1; then
+         if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}x86 >> $LOGFILE 2>&1; then
             echo "Failed to build ${BASENAME}, 32 bit"
             exit 1
          fi
 
          #make 32 bit Internal
          if $bBuildInternal ; then
-            if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internalx86  >> $LOGFILE 2>&1; then
+            if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internalx86  >> $LOGFILE 2>&1; then
                echo "Failed to build ${BASENAME}, 32 bit, Internal"
                exit 1
             fi
@@ -243,21 +261,20 @@ if $bZip ; then
    cp $HSA/$HSALIB ./Bin/Linx64/
    cp $GL/$GLLIB ./Bin/Linx64/
    cp $GLES/$GLESLIB ./Bin/Linx64/
+   cp $VK/$VKLIB ./Bin/Linx64/
    cp $CL/$CLLIB32 ./Bin/Linx86/
    cp $GL/$GLLIB32 ./Bin/Linx86/
    cp $GLES/$GLESLIB32 ./Bin/Linx86/
+   cp $VK/$VKLIB32 ./Bin/Linx86/
    cp $COUNTERS/$COUNTERSLIB ./Bin/Linx64/
    cp $COUNTERS/$COUNTERSLIB32 ./Bin/Linx86/
    mkdir Include
    cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI.h ./Include/
    cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes.h ./Include/
    cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPITypes.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-Private.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes-Private.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPITypes-Private.h ./Include/
    cp ../../../Src/GPUPerfAPI-Common/GPAFunctions.h ./Include/
    cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-HSA.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIOS.h ./Include/
+   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-VK.h ./Include/
    cp ../../../Src/GPUPerfAPICounters/GPUPerfAPICounters.h ./Include/
    cp ../../../Src/GPUPerfAPICounterGenerator/GPACounterGenerator.h ./Include/
    cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterAccessor.h ./Include/
@@ -282,11 +299,13 @@ if $bZip ; then
       cp $HSA/$HSALIB_INTERNAL ./Bin-Internal/Linx64/
       cp $GL/$GLLIB_INTERNAL ./Bin-Internal/Linx64/
       cp $GLES/$GLESLIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $VK/$VKLIB_INTERNAL ./Bin-Internal/Linx64/
       cp $COUNTERS/$COUNTERSLIB_INTERNAL ./Bin-Internal/Linx64/
 
       cp $CL/$CLLIB32_INTERNAL ./Bin-Internal/Linx86/
       cp $GL/$GLLIB32_INTERNAL ./Bin-Internal/Linx86/
       cp $GLES/$GLESLIB32_INTERNAL ./Bin-Internal/Linx86/
+      cp $VK/$VKLIB32_INTERNAL ./Bin-Internal/Linx86/
       cp $COUNTERS/$COUNTERSLIB32_INTERNAL ./Bin-Internal/Linx86/
 
       cd ..

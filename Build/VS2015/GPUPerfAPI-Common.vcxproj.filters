@@ -46,19 +46,7 @@
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPASessionRequests.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI-Private.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIFunctionTypes-Private.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIImp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIOS.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPITypes-Private.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Logging.h">
@@ -97,6 +85,9 @@
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\DXGetAMDDeviceInfo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAInterfaceLoader.h">
+      <Filter>Public Headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAContextState.cpp">
@@ -129,9 +120,6 @@
     <ClCompile Include="..\..\..\Common\Src\AMDTMutex\AMDTMutex.cpp">
       <Filter>CommonSrc</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\Src\DeviceInfo-Internal\DeviceInfoInternal.cpp">
-      <Filter>CommonSrc</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.cpp">
       <Filter>CommonSrc</Filter>
     </ClCompile>
@@ -144,5 +132,6 @@
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPACustomHWValidationManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\Common\Src\DeviceInfo-Internal\DeviceInfoInternal.cpp" />
   </ItemGroup>
 </Project>

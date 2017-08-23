@@ -228,6 +228,78 @@ GPA_SQCounterGroupDesc HWGLSQGroupsGfx8[] =
     {21, 0, SQ_CS},
 };
 
+
+unsigned int HWGLSQIsolatedGroupsGfx8[] =
+{
+    23, // Ta
+    24, // Ta
+    25, // Ta
+    26, // Ta
+    27, // Ta
+    28, // Ta
+    29, // Ta
+    30, // Ta
+    31, // Ta
+    32, // Ta
+    33, // Ta
+    34, // Ta
+    35, // Ta
+    36, // Ta
+    37, // Ta
+    38, // Ta
+    39, // Tca
+    40, // Tca
+    41, // Tcc
+    42, // Tcc
+    43, // Tcc
+    44, // Tcc
+    45, // Tcc
+    46, // Tcc
+    47, // Tcc
+    48, // Tcc
+    49, // Tcc
+    50, // Tcc
+    51, // Tcc
+    52, // Tcc
+    53, // Tcc
+    54, // Tcc
+    55, // Tcc
+    56, // Tcc
+    57, // Td
+    58, // Td
+    59, // Td
+    60, // Td
+    61, // Td
+    62, // Td
+    63, // Td
+    64, // Td
+    65, // Td
+    66, // Td
+    67, // Td
+    68, // Td
+    69, // Td
+    70, // Td
+    71, // Td
+    72, // Td
+    73, // Tcp
+    74, // Tcp
+    75, // Tcp
+    76, // Tcp
+    77, // Tcp
+    78, // Tcp
+    79, // Tcp
+    80, // Tcp
+    81, // Tcp
+    82, // Tcp
+    83, // Tcp
+    84, // Tcp
+    85, // Tcp
+    86, // Tcp
+    87, // Tcp
+    88, // Tcp
+};
+
 const unsigned int HWGLGPUTimeIndexGfx8 = 98;
 const unsigned int HWGLGroupCountGfx8 = sizeof(HWGLGroupsGfx8) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWGLSQGroupCountGfx8 = sizeof(HWGLSQGroupsGfx8) / sizeof(GPA_SQCounterGroupDesc);
+const unsigned int HWGLSQIsolatedGroupCountGfx8 = sizeof(HWGLSQIsolatedGroupsGfx8) / sizeof(unsigned int);

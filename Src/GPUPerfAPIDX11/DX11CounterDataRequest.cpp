@@ -73,9 +73,11 @@ void DX11CounterDataRequest::Reset(gpa_uint32 selectionID, const vector<gpa_uint
     m_pCounterDataRequest->Reset(selectionID, pCounters);
 }
 
-bool DX11CounterDataRequest::BeginRequest(GPA_ContextState* pContextState, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters)
+bool DX11CounterDataRequest::BeginRequest(GPA_ContextState* pContextState, void* pSampleList, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters)
 {
     TRACE_PRIVATE_FUNCTION(DX11CounterDataRequest::Begin);
+
+    UNREFERENCED_PARAMETER(pSampleList);
 
     // Get the HW and SW counters
     GPA_HardwareCounters* pHwCounters = pContextState->m_pCounterAccessor->GetHardwareCounters();

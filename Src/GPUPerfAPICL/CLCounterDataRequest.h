@@ -53,10 +53,10 @@ public:
 
 protected:
 
-    virtual bool BeginRequest(GPA_ContextState* pContextState, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters);
-    virtual bool EndRequest();
-    virtual bool CollectResults(GPA_CounterResults& resultStorage);
-    virtual void ReleaseCounters();
+    virtual bool BeginRequest(GPA_ContextState* pContextState, void* pSampleList, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters) override;
+    virtual bool EndRequest() override;
+    virtual bool CollectResults(GPA_CounterResults& resultStorage) override;
+    virtual void ReleaseCounters() override;
 
     /// Deletes counter block objects
     void DeleteCounterBlocks();
@@ -75,6 +75,11 @@ protected:
     cl_event m_clEvent;                                 ///< cl event to synchronize the counters
 
     gpa_uint32 m_uDataReadyCount;       ///< number of counters with data ready
+
+private:
+
+    /// Release allocated counters for CL Data Request
+    void ReleaseCountersInCLDataRequest();
 };
 
 #endif // _CL_COUNTER_DATA_REQUEST_H_

@@ -8,7 +8,7 @@
 #ifndef _GPA_HW_INFO_H_
 #define _GPA_HW_INFO_H_
 
-#include "GPUPerfAPITypes-Private.h"
+#include "GPUPerfAPITypes.h"
 #include "DeviceInfo.h"
 #include <vector>
 #include <string>

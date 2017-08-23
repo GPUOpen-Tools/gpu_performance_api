@@ -56,10 +56,10 @@ protected:
 
 private:
     /// Disabled copy constructor
-    ICounterDataRequest(const ICounterDataRequest& other);
+    ICounterDataRequest(const ICounterDataRequest& other) = delete;
 
     /// Disabled assignment operator
-    ICounterDataRequest& operator=(const ICounterDataRequest& other);
+    ICounterDataRequest& operator=(const ICounterDataRequest& other) = delete;
 };
 
 #endif _I_COUNTER_DATA_REQUEST_H_

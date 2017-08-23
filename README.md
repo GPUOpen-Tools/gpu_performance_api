@@ -1,4 +1,4 @@
-# GPU Performance API
+﻿# GPU Performance API
 ---
 
 ## Overview
@@ -29,9 +29,8 @@ is used by both CodeXL and GPU PerfStudio.
 * "Internal" version provides access to some raw hardware counters. See ["Public" vs "Internal" Versions](#PublicInternal) for more information.
 
 ## What's New
-* Version 2.23 (6/27/17)
-  * Add support for additional GPUs, including Vega series GPUs
-  * Allow unit tests to be built and run on Linux
+* Version 3.0 preview (8/24/17)
+  * See GPUPerfAPI 3.pdf delivered with the Release
 
 ## System Requirements
 * An AMD Radeon GCN-based GPU or APU
@@ -64,6 +63,7 @@ UpdateCommon has replaced the use of git submodules in the GPA repository
 * [Src/GPUPerfAPIGLES](Src/GPUPerfAPIGLES) - contains the source for the OpenGLES version of GPUPerfAPI
 * [Src/GPUPerfAPIHSA](Src/GPUPerfAPIHSA) - contains the source for the ROCm/HSA version of GPUPerfAPI
 * [Src/GPUPerfAPIUnitTests](Src/GPUPerfAPIUnitTests) - contains a small set of unit tests for GPUPerfAPI
+* [Src/GPUPerfAPIVk](Src/GPUPerfAPIVk) - contains the source for the Vulkan version of GPUPerfAPI
 * [Src/PublicCounterCompiler](Src/PublicCounterCompiler) - source code for a tool to generate C++ code for public counters from text files defining the counters.
 * [Src/PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) - input files that can be fed as input to the PublicCounterCompiler tool
 * [Scripts](Scripts) -- scripts to use to clone/update dependent repositories

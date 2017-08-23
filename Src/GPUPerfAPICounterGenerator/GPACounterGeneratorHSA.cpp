@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for HSA counter generation
@@ -73,6 +73,8 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION d
         pHardwareCounters->m_groupCount          = HWHSAGroupCountGfx7;
         pHardwareCounters->m_pSQCounterGroups    = HWHSASQGroupsGfx7;
         pHardwareCounters->m_sqGroupCount        = HWHSASQGroupCountGfx7;
+        pHardwareCounters->m_pIsolatedGroups     = HWHSASQIsolatedGroupsGfx7;
+        pHardwareCounters->m_isolatedGroupCount  = HWHSASQIsolatedGroupCountGfx7;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
@@ -81,14 +83,18 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION d
         pHardwareCounters->m_groupCount          = HWHSAGroupCountGfx8;
         pHardwareCounters->m_pSQCounterGroups    = HWHSASQGroupsGfx8;
         pHardwareCounters->m_sqGroupCount        = HWHSASQGroupCountGfx8;
+        pHardwareCounters->m_pIsolatedGroups     = HWHSASQIsolatedGroupsGfx8;
+        pHardwareCounters->m_isolatedGroupCount  = HWHSASQIsolatedGroupCountGfx8;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
         pHardwareCounters->m_ppCounterGroupArray = HSACounterGroupArrayGfx9;
-        pHardwareCounters->m_pGroups = HWHSAGroupsGfx9;
-        pHardwareCounters->m_groupCount = HWHSAGroupCountGfx9;
-        pHardwareCounters->m_pSQCounterGroups = HWHSASQGroupsGfx9;
-        pHardwareCounters->m_sqGroupCount = HWHSASQGroupCountGfx9;
+        pHardwareCounters->m_pGroups             = HWHSAGroupsGfx9;
+        pHardwareCounters->m_groupCount          = HWHSAGroupCountGfx9;
+        pHardwareCounters->m_pSQCounterGroups    = HWHSASQGroupsGfx9;
+        pHardwareCounters->m_sqGroupCount        = HWHSASQGroupCountGfx9;
+        pHardwareCounters->m_pIsolatedGroups     = HWHSASQIsolatedGroupsGfx9;
+        pHardwareCounters->m_isolatedGroupCount  = HWHSASQIsolatedGroupCountGfx9;
     }
     else
     {
