@@ -8,7 +8,7 @@
         <Import Project="..\..\..\Common\Lib\AMD\APPSDK\Global-OpenCL-NoLib.props" />
         <Import Project="..\..\..\Common\Lib\Ext\OpenGL\Global-OpenGL.props" />
         <Import Project="..\..\..\Common\Lib\Ext\OpenGLES\Global-OpenGLES.props" />
-        <Import Condition="'$(SolutionName)'!='GPUPerfAPI'" Project="..\..\..\Common\Lib\AMD\HSA\Global-HSAFoundation-NoLib.props" />
+        <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="..\..\..\Common\Lib\AMD\HSA\Global-HSAFoundation-NoLib.props" />
         <Import Project="..\..\..\Common\Src\ADLUtil\Global-ADLUtil.props" />
         <Import Project="..\..\..\Common\Src\GPUPerfAPIUtils\Global-GPUPerfAPIUtils.props" />
         <Import Project="..\..\..\Common\Src\AMDTMutex\Global-AMDTMutex.props" />
