@@ -23,8 +23,6 @@
 #include "GPUPerfAPIGL.h"
 #include "ASICInfo.h"
 #include "ADLUtil.h"
-// This is from ADL's include directory.
-#include "customer/oem_structures.h"
 
 #include "DeviceInfoUtils.h"
 

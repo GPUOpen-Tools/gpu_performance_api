@@ -15,8 +15,6 @@
 #include "DxxExtUtils.h"
 
 #include "ADLUtil.h"
-// This is from ADL's include directory.
-#include "customer/oem_structures.h"
 
 /// Macro to assert on a PerfExperiment error
 #ifdef _DEBUG
