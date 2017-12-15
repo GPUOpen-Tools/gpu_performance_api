@@ -34,7 +34,7 @@
 
 GPA_CounterGeneratorDX11::GPA_CounterGeneratorDX11()
 {
-    SetAllowedCounters(true, true, true); //enable all counters
+    GPA_CounterGeneratorBase::SetAllowedCounters(true, true, true); //enable all counters
 
     for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
     {
@@ -239,7 +239,7 @@ GPA_Status GPA_CounterGeneratorDX11::GeneratePublicCounters(GDT_HW_GENERATION de
     {
         AutoDefinePublicCountersDX11Gfx8(*pPublicCounters);
     }
-    else if(desiredGeneration == GDT_HW_GENERATION_GFX9)
+    else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
         AutoDefinePublicCountersDX11Gfx9(*pPublicCounters);
     }

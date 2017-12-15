@@ -1,12 +1,13 @@
 //==============================================================================
-// Copyright (c) 2015-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA_ContextStateDX12 implementation
 //==============================================================================
 
 #include "GPAContextStateDX12.h"
-
+#include "IGPASession.h"
+#include "Logging.h"
 #include <cassert>
 
 GPA_ContextStateDX12::GPA_ContextStateDX12()
@@ -16,8 +17,7 @@ GPA_ContextStateDX12::GPA_ContextStateDX12()
     m_commandListGpaSession(),
     m_mutex(),
     m_pGpaInterface(nullptr),
-    m_pAmdExtObject(nullptr),
-    m_clockMode(AmdExtDeviceClockMode::Default)
+    m_pAmdExtObject(nullptr)
 {
 }
 
@@ -79,6 +79,7 @@ GPA_Status GPA_ContextStateDX12::SetD3D12Device(ID3D12Device* pDevice, bool isAM
 #else
             hDll = GetModuleHandle("amdxc32.dll");
 #endif
+
             if (nullptr == hDll)
             {
                 GPA_LogError("Unable to get driver module handle.");
@@ -103,15 +104,15 @@ GPA_Status GPA_ContextStateDX12::SetD3D12Device(ID3D12Device* pDevice, bool isAM
                     else
                     {
                         hr = m_pAmdExtObject->CreateInterface(m_device,
-                                                            __uuidof(IAmdExtGpaInterface),
-                                                            reinterpret_cast<void**>(&m_pGpaInterface));
+                                                              __uuidof(IAmdExtGpaInterface),
+                                                              reinterpret_cast<void**>(&m_pGpaInterface));
 
                         if (FAILED(hr))
                         {
                             const GUID prevDriverExtGuid = { 0xA86AE046, 0x9926, 0x44B5, { 0xB8, 0x23, 0x02, 0x2F, 0x45, 0x73, 0xBF, 0xE1} };
                             hr = m_pAmdExtObject->CreateInterface(m_device,
-                                                                prevDriverExtGuid,
-                                                                reinterpret_cast<void**>(&m_pGpaInterface));
+                                                                  prevDriverExtGuid,
+                                                                  reinterpret_cast<void**>(&m_pGpaInterface));
                         }
 
                         if (FAILED(hr))
@@ -216,7 +217,7 @@ GPA_Status GPA_ContextStateDX12::BeginCommandList(void* pCommandList)
             {
                 pGpaSession = m_commandListGpaSession[pD3DCommandList];
 
-                GPA_SessionRequests* pSessionRequests = FindSession(m_sessionID);
+                IGPASession* pSessionRequests = FindSession(m_sessionID);
 
                 if (nullptr == pSessionRequests)
                 {
@@ -292,7 +293,7 @@ GPA_Status GPA_ContextStateDX12::EndCommandList(void* pCommandList)
             if (nullptr == pGpaSession)
             {
                 GPA_LogError("Make sure BeginCommandList is called before EndCommandList for this command list.");
-                retVal = GPA_STATUS_ERROR_SAMPLING_NOT_STARTED;
+                retVal = GPA_STATUS_ERROR_COMMAND_LIST_NOT_STARTED;
             }
             else
             {
@@ -308,7 +309,7 @@ GPA_Status GPA_ContextStateDX12::EndCommandList(void* pCommandList)
         else
         {
             GPA_LogError("Command List not open for sampling.");
-            retVal = GPA_STATUS_ERROR_SAMPLING_NOT_STARTED;
+            retVal = GPA_STATUS_ERROR_COMMAND_LIST_NOT_STARTED;
         }
 
         pD3DCommandList->Release();
@@ -362,7 +363,7 @@ bool GPA_ContextStateDX12::BeginSwSample(
             {
                 std::pair<CommandListQueriesType::iterator, bool> insertResult =
                     m_commandListQueries.insert(CommandListQueriesType::value_type(
-                        commandList.GetInterfacePtr(), std::move(cmdListSwQueries)));
+                                                    commandList.GetInterfacePtr(), std::move(cmdListSwQueries)));
                 result = insertResult.second;
 
                 if (result)
@@ -469,41 +470,21 @@ inline GPA_Status GPA_ContextStateDX12::SetStableClocks(bool useProfilingClocks)
 
     if (nullptr != m_pGpaInterface)
     {
-        AmdExtDeviceClockMode amdClockMode = AmdExtDeviceClockMode::Default;
+        AmdExtDeviceClockMode clockMode = useProfilingClocks ? AmdExtDeviceClockMode::Profiling : AmdExtDeviceClockMode::Default;
+        m_pGpaInterface->SetClockMode(clockMode, nullptr);
+    }
+    else
+    {
+        //if (nullptr != m_device)
+        //{
+        //    // this will set stable clock for devices that do not support the GpaSession extension
+        //    HRESULT hr = m_device->SetStablePowerState(useProfilingClocks ? TRUE : FALSE);
 
-        if (useProfilingClocks)
-        {
-            DeviceClockMode deviceClockMode = GetDeviceClockMode();
-
-            switch (deviceClockMode)
-            {
-            case DeviceClockMode::Default:
-                amdClockMode = AmdExtDeviceClockMode::Default;
-                break;
-            case DeviceClockMode::MinimumEngine:
-                amdClockMode = AmdExtDeviceClockMode::MinimumEngine;
-                break;
-            case DeviceClockMode::MinimumMemory:
-                amdClockMode = AmdExtDeviceClockMode::MinimumMemory;
-                break;
-            case DeviceClockMode::Peak:
-                amdClockMode = AmdExtDeviceClockMode::Peak;
-                break;
-            case DeviceClockMode::Profiling:
-                amdClockMode = AmdExtDeviceClockMode::Profiling;
-                break;
-            default:
-                assert(0);
-                amdClockMode = AmdExtDeviceClockMode::Profiling;
-                break;
-            }
-        }
-
-        if (amdClockMode != m_clockMode)
-        {
-            m_clockMode = amdClockMode;
-            m_pGpaInterface->SetClockMode(amdClockMode, nullptr);
-        }
+        //    if (S_OK != hr)
+        //    {
+        //        result = GPA_STATUS_ERROR_FAILED;
+        //    }
+        //}
     }
 
     return result;

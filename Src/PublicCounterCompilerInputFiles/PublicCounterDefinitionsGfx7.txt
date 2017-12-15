@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copyright (c) 2010-2016 Advanced Micro Devices, Inc. All rights reserved.
+;; Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
 ;;
 ;; Counter definitions for DX/GL for Gfx7 (GFX IP v7)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -537,10 +537,9 @@ comp=0,1,2,ifnotzero,(4),*,NUM_SIMDS,/
 SQ_VS*_SQ_PERF_SEL_INST_CYCLES_VALU[0..3]
 SQ_ES*_SQ_PERF_SEL_INST_CYCLES_VALU[0..3]
 SQ_ES*_SQ_PERF_SEL_ITEMS[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 SQ_LS*_SQ_PERF_SEL_INST_CYCLES_VALU[0..3]
 SQ_LS*_SQ_PERF_SEL_ITEMS[0..3]
-comp=0..3,sum4,4..7,sum4,8..11,sum4,ifnotzero,13..16,sum4,17..20,sum4,ifnotzero,(4),*,NUM_SIMDS,/
+comp=0..3,sum4,4..7,sum4,8..11,sum4,ifnotzero,12..15,sum4,16..19,sum4,ifnotzero,(4),*,NUM_SIMDS,/
 
 name=VSSALUBusy
 desc=#VertexShader#The percentage of GPUTime scalar ALU instructions are being processed by the VS.
@@ -578,10 +577,9 @@ comp=0,1,2,ifnotzero,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/
 SQ_VS*_SQ_PERF_SEL_INST_CYCLES_SALU[0..3]
 SQ_ES*_SQ_PERF_SEL_INST_CYCLES_SALU[0..3]
 SQ_ES*_SQ_PERF_SEL_ITEMS[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 SQ_LS*_SQ_PERF_SEL_INST_CYCLES_SALU[0..3]
 SQ_LS*_SQ_PERF_SEL_ITEMS[0..3]
-comp=0..3,sum4,4..7,sum4,8..11,sum4,ifnotzero,13..16,sum4,17..20,sum4,ifnotzero,(4),*,NUM_SIMDS,/
+comp=0..3,sum4,4..7,sum4,8..11,sum4,ifnotzero,12..15,sum4,16..19,sum4,ifnotzero,(4),*,NUM_SIMDS,/
 
 name=HSPatches
 desc=#HullShader#The number of patches processed by the HS.
@@ -773,19 +771,17 @@ usage=cycles
 [GLGfx7]
 SQ_VS_SQ_PERF_SEL_INST_CYCLES_VALU
 SQ_ES_SQ_PERF_SEL_INST_CYCLES_VALU
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 SQ_ES_SQ_PERF_SEL_ITEMS
 SQ_LS_SQ_PERF_SEL_ITEMS
-comp=(0),0,1,3,ifnotzero,4,ifnotzero,(4),*,NUM_SIMDS,/
+comp=(0),0,1,2,ifnotzero,3,ifnotzero,(4),*,NUM_SIMDS,/
 [DX11Gfx7]
 [DX12Gfx7]
 [VKGfx7]
 SQ_VS*_SQ_PERF_SEL_INST_CYCLES_VALU[0..3]
 SQ_ES*_SQ_PERF_SEL_INST_CYCLES_VALU[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 SQ_ES*_SQ_PERF_SEL_ITEMS[0..3]
 SQ_LS*_SQ_PERF_SEL_ITEMS[0..3]
-comp=(0),0..3,sum4,4..7,sum4,9..12,sum4,ifnotzero,13..16,sum4,ifnotzero,(4),*,NUM_SIMDS,/
+comp=(0),0..3,sum4,4..7,sum4,8..11,sum4,ifnotzero,12..15,sum4,ifnotzero,(4),*,NUM_SIMDS,/
 
 name=DSSALUBusy
 desc=#DomainShader#The percentage of GPUTime scalar ALU instructions are being processed by the DS.
@@ -815,19 +811,17 @@ usage=cycles
 [GLGfx7]
 SQ_VS_SQ_PERF_SEL_INST_CYCLES_SALU
 SQ_ES_SQ_PERF_SEL_INST_CYCLES_SALU
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 SQ_ES_SQ_PERF_SEL_ITEMS
 SQ_LS_SQ_PERF_SEL_ITEMS
-comp=(0),0,1,3,ifnotzero,4,ifnotzero,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/
+comp=(0),0,1,2,ifnotzero,3,ifnotzero,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/
 [DX11Gfx7]
 [DX12Gfx7]
 [VKGfx7]
 SQ_VS*_SQ_PERF_SEL_INST_CYCLES_SALU[0..3]
 SQ_ES*_SQ_PERF_SEL_INST_CYCLES_SALU[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 SQ_ES*_SQ_PERF_SEL_ITEMS[0..3]
 SQ_LS*_SQ_PERF_SEL_ITEMS[0..3]
-comp=(0),0..3,sum4,4..7,sum4,9..12,sum4,ifnotzero,13..16,sum4,ifnotzero,(4),*,NUM_SIMDS,/
+comp=(0),0..3,sum4,4..7,sum4,8..11,sum4,ifnotzero,12..15,sum4,ifnotzero,(4),*,NUM_SIMDS,/
 
 name=GSPrimsIn
 desc=#GeometryShader#The number of primitives passed into the GS.
@@ -979,7 +973,6 @@ PA_SU_PERF_PAPC_SU_OUTPUT_PRIM
 PA_SU_PERF_PAPC_SU_OUTPUT_PRIM_DUAL
 PA_SU_PERF_PAPC_SU_OUTPUT_CLIP_PRIM
 PA_SU_PERF_PAPC_SU_OUTPUT_CLIP_PRIM_DUAL
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0,1,-,2,3,+,4,+,5,(2),*,+,SU_CLOCKS_PRIM,*,-,NUM_PRIM_PIPES,/,(0),max
 [DX11Gfx7]
 [DX12Gfx7]
@@ -990,7 +983,6 @@ PA_SU*_PERF_PAPC_SU_OUTPUT_PRIM[0..3]
 PA_SU*_PERF_PAPC_SU_OUTPUT_PRIM_DUAL[0..3]
 PA_SU*_PERF_PAPC_SU_OUTPUT_CLIP_PRIM[0..3]
 PA_SU*_PERF_PAPC_SU_OUTPUT_CLIP_PRIM_DUAL[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0,4,-,8,12,+,16,+,20,(2),*,+,SU_CLOCKS_PRIM,*,-,1,5,-,9,13,+,17,+,21,(2),*,+,SU_CLOCKS_PRIM,*,-,max,2,6,-,10,14,+,18,+,22,(2),*,+,SU_CLOCKS_PRIM,*,-,max,3,7,-,11,15,+,19,+,23,(2),*,+,SU_CLOCKS_PRIM,*,-,max,(0),max
 
 name=PrimitivesIn
@@ -1394,8 +1386,6 @@ comp=0,(4),*,NUM_SIMDS,/
 [DX12Gfx7]
 [VKGfx7]
 SQ_CS*_SQ_PERF_SEL_INST_CYCLES_VALU[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
-SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]
 comp=0..3,sum4,(4),*,NUM_SIMDS,/
 
 name=CSSALUBusy
@@ -1425,8 +1415,6 @@ comp=0,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/
 [DX12Gfx7]
 [VKGfx7]
 SQ_CS*_SQ_PERF_SEL_INST_CYCLES_SALU[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
-SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]
 comp=0..3,sum4,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/
 
 name=CSMemUnitBusy
@@ -1452,7 +1440,7 @@ type=gpa_float64
 usage=cycles
 [GLGfx7]
 TA*_TA_PERF_SEL_TA_BUSY[0..10]
-comp=(0),0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,NUM_SHADER_ENGINES,/
+comp=0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,NUM_SHADER_ENGINES,/
 [DX11Gfx7]
 [DX12Gfx7]
 [VKGfx7]
@@ -1552,7 +1540,7 @@ comp=0..15,sum16
 name=CSCacheMissCount
 desc=#ComputeShader#Count of fetch, write, atomic, and other instructions that miss the data cache.
 type=gpa_float64
-usage=percentage
+usage=items
 [GLGfx7]
 TCC*_TCC_PERF_SEL_MISS[0..15]
 comp=0..15,sum16
@@ -1658,7 +1646,7 @@ SQ_CS*_SQ_PERF_SEL_WAIT_INST_LDS[0..3]
 SQ_CS*_SQ_PERF_SEL_WAVES[0..3]
 GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]
-comp=(0),0..3,sum4,4..7,sum4,/,8,/,NUM_SHADER_ENGINES,/,(100),*,8..11,sum4,ifnotzero
+comp=(0),0..3,sum4,4..7,sum4,/,8,/,NUM_SHADER_ENGINES,/,(100),*,9..12,sum4,ifnotzero
 
 name=CSALUStalledByLDSCycles
 desc=#ComputeShader#Number of GPU cycles the ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible.
@@ -1862,13 +1850,11 @@ type=gpa_float64
 usage=cycles
 [GLGfx7]
 DB*_DB_PERF_SEL_OP_PIPE_BUSY[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0,1,max,2,max,3,max,NUM_SHADER_ENGINES,/
 [DX11Gfx7]
 [DX12Gfx7]
 [VKGfx7]
 DB*_DB_PERF_SEL_OP_PIPE_BUSY[0..15]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0..15,max16
 
 name=HiZTilesAccepted
@@ -2267,13 +2253,13 @@ usage=bytes
 [GLGfx7]
 DB*_DB_PERF_SEL_TILE_WR_SENDS[0..3]
 DB*_DB_PERF_SEL_QUAD_WR_SENDS[0..3]
-comp=0..3,sum4,(256),*,4..7,sum4,(32),*,+
+comp=0..3,sum4,(32),*,4..7,sum4,(32),*,+
 [DX11Gfx7]
 [DX12Gfx7]
 [VKGfx7]
 DB*_DB_PERF_SEL_TILE_WR_SENDS[0..15]
 DB*_DB_PERF_SEL_QUAD_WR_SENDS[0..15]
-comp=0..15,sum16,(256),*,16..31,sum16,(32),*,+
+comp=0..15,sum16,(32),*,16..31,sum16,(32),*,+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; The following are new on R8xx

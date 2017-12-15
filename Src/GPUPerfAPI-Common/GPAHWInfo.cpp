@@ -9,10 +9,8 @@
 #include <assert.h>
 #include <DeviceInfoUtils.h>
 #include "Logging.h"
-#include "Logging.h"
 
-GPA_HWInfo::GPA_HWInfo()
-    :
+GPA_HWInfo::GPA_HWInfo():
     m_deviceId(0),
     m_deviceIdSet(false),
     m_revisionId(0),
@@ -39,43 +37,43 @@ GPA_HWInfo::~GPA_HWInfo()
 {
 }
 
-bool GPA_HWInfo::GetDeviceID(gpa_uint32& id)
+bool GPA_HWInfo::GetDeviceID(gpa_uint32& id) const
 {
     id = m_deviceId;
     return m_deviceIdSet;
 }
 
-bool GPA_HWInfo::GetRevisionID(gpa_uint32& id)
+bool GPA_HWInfo::GetRevisionID(gpa_uint32& id) const
 {
     id = m_revisionId;
     return m_revisionIdSet;
 }
 
-bool GPA_HWInfo::GetVendorID(gpa_uint32& vid)
+bool GPA_HWInfo::GetVendorID(gpa_uint32& vid) const
 {
     vid = m_vendorId;
     return m_vendorIdSet;
 }
 
-bool GPA_HWInfo::GetDeviceName(const char*& pName)
+bool GPA_HWInfo::GetDeviceName(const char*& pName) const
 {
     pName = m_deviceName.c_str();
     return m_deviceNameSet;
 }
 
-bool GPA_HWInfo::GetGpuIndex(unsigned int& gpuIndex)
+bool GPA_HWInfo::GetGpuIndex(unsigned int& gpuIndex) const
 {
     gpuIndex = m_gpuIndex;
     return m_gpuIndexSet;
 }
 
-bool GPA_HWInfo::GetHWGeneration(GDT_HW_GENERATION& gen)
+bool GPA_HWInfo::GetHWGeneration(GDT_HW_GENERATION& gen) const
 {
     gen = m_generation;
     return m_generationSet;
 }
 
-bool GPA_HWInfo::GetHWAsicType(GDT_HW_ASIC_TYPE& type)
+bool GPA_HWInfo::GetHWAsicType(GDT_HW_ASIC_TYPE& type) const
 {
     type = m_asicType;
     return m_asicType != GDT_ASIC_TYPE_NONE;
@@ -152,7 +150,7 @@ bool GPA_HWInfo::UpdateDeviceInfoBasedOnDeviceID()
     //only emit an error for AMD devices
     if (IsAMD())
     {
-        GPA_LogDebugError("Unrecognized device ID %X", m_deviceId);
+        GPA_LogDebugError("Unrecognized device ID %X.", m_deviceId);
         GPA_LogError("Unrecognized device ID.");
     }
 
@@ -188,102 +186,41 @@ bool GPA_HWInfo::UpdateRevisionIdBasedOnDeviceIDAndName()
     return false;
 }
 
-GPA_Status CompareHwInfo(GPA_HWInfo* pFirst, GPA_HWInfo* pSecond)
-{
-    GPA_Status result = GPA_STATUS_OK;
 
-    if ((nullptr == pFirst) || (nullptr == pSecond))
+bool GPA_HWInfo::operator==(GPA_HWInfo otherHwInfo) const
+{
+    bool isSame = false;
+
+    if (!m_vendorIdSet)
     {
-        result = GPA_STATUS_ERROR_NULL_POINTER;
+        GPA_LogError("Failed to get vendor Id.");
+    }
+    else if(!m_deviceIdSet)
+    {
+        GPA_LogError("Failed to get device Id.");
+    }
+    else if(!m_revisionIdSet)
+    {
+        GPA_LogError("Failed to get revision Id.");
+    }
+    else if (m_vendorId != otherHwInfo.m_vendorId)
+    {
+        GPA_LogDebugError("Vendor ID mismatch.");
+    }
+    else if (m_deviceId != otherHwInfo.m_deviceId)
+    {
+        GPA_LogError("Device Id Mismatch.");
+    }
+    else if (m_revisionId != REVISION_ID_ANY &&
+             otherHwInfo.m_revisionId != REVISION_ID_ANY &&
+             m_revisionId != otherHwInfo.m_revisionId)
+    {
+        GPA_LogError("Revision Id Mismatch.");
     }
     else
     {
-        gpa_uint32 firstVendorId;
-
-        if (pFirst->GetVendorID(firstVendorId))
-        {
-            gpa_uint32 secondVendorId;
-
-            if (pSecond->GetVendorID(secondVendorId))
-            {
-                if (firstVendorId != secondVendorId)
-                {
-                    GPA_LogDebugError("Vendor ID mismatch.");
-                    result = GPA_STATUS_ERROR_FAILED;
-                }
-                else
-                {
-                    if (pFirst->IsAMD() && pSecond->IsAMD())
-                    {
-                        gpa_uint32 firstDeviceId;
-
-                        if (pFirst->GetDeviceID(firstDeviceId))
-                        {
-                            gpa_uint32 secondDeviceId;
-
-                            if (pSecond->GetDeviceID(secondDeviceId))
-                            {
-                                if (firstDeviceId != secondDeviceId)
-                                {
-                                    GPA_LogDebugError("Device ID mismatch.");
-                                    result = GPA_STATUS_ERROR_FAILED;
-                                }
-                                else
-                                {
-                                    gpa_uint32 firstRevisionId;
-
-                                    if (pFirst->GetRevisionID(firstRevisionId))
-                                    {
-                                        gpa_uint32 secondRevisionId;
-
-                                        if (pSecond->GetRevisionID(secondRevisionId))
-                                        {
-                                            if (firstRevisionId != secondRevisionId)
-                                            {
-                                                GPA_LogDebugError("Revision ID mismatch.");
-                                                result = GPA_STATUS_ERROR_FAILED;
-                                            }
-                                        }
-                                        else
-                                        {
-                                            GPA_LogError("Failed to get revision ID.");
-                                            result = GPA_STATUS_ERROR_FAILED;
-                                        }
-                                    }
-                                    else
-                                    {
-                                        GPA_LogError("Failed to get revision ID.");
-                                        result = GPA_STATUS_ERROR_FAILED;
-                                    }
-
-                                }
-                            }
-                            else
-                            {
-                                GPA_LogError("Failed to get device ID.");
-                                result = GPA_STATUS_ERROR_FAILED;
-                            }
-                        }
-                        else
-                        {
-                            GPA_LogError("Failed to get device ID.");
-                            result = GPA_STATUS_ERROR_FAILED;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                GPA_LogError("Failed to get vendor ID.");
-                result = GPA_STATUS_ERROR_FAILED;
-            }
-        }
-        else
-        {
-            GPA_LogError("Failed to get vendor ID.");
-            result = GPA_STATUS_ERROR_FAILED;
-        }
+        isSame = true;
     }
 
-    return result;
+    return isSame;
 }

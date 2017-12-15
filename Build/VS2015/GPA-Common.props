@@ -11,7 +11,6 @@
     <Import Condition="'$(SolutionName)'!='GPUPerfAPI'" Project="..\..\..\Common\Lib\AMD\HSA\Global-HSAFoundation-NoLib.props" />
     <Import Project="..\..\..\Common\Src\ADLUtil\Global-ADLUtil.props" />
     <Import Project="..\..\..\Common\Src\GPUPerfAPIUtils\Global-GPUPerfAPIUtils.props" />
-    <Import Project="..\..\..\Common\Src\AMDTMutex\Global-AMDTMutex.props" />
     <Import Project="..\..\..\Common\Src\AmdDxExt\Global-AmdDxExt.props" />
     <Import Project="..\..\..\Common\Src\DynamicLibraryModule\Global-DynamicLibraryModule.props" />
     <Import Project="..\..\..\Common\Src\AmdVkExt\Global-AmdVkExt.props" />
@@ -28,7 +27,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup>
     <ClCompile>
-      <PreprocessorDefinitions>USE_POINTER_SINGLETON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NOMINMAX;USE_POINTER_SINGLETON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <RuntimeLibrary Condition="$([System.Convert]::ToBoolean($(IsDebug)))">MultiThreadedDebug</RuntimeLibrary>
       <RuntimeLibrary Condition="$([System.Convert]::ToBoolean($(IsRelease)))">MultiThreaded</RuntimeLibrary>

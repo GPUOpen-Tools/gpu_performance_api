@@ -16,22 +16,29 @@ INCLUDES =	-I. \
 		-I$(AMD_VK_EXT_DIR) \
 		-I$(VK_INCLUDE_DIR) \
 		-I$(VK_INCLUDE_DIR)/vulkan \
+		-I$(VK_SOURCE_DIR)/layers \
+		-I$(VK_SOURCE_DIR)/loader \
+		-I$(VK_SDK_DIR)/glslang/SPIRV \
 
 LIBS = \
-	$(COMMON_LIBS) \
+	-Wl,--whole-archive -lGPUPerfAPI-Common$(TARGET_SUFFIX) -Wl,--no-whole-archive -lGPUPerfAPICounterGenerator$(TARGET_SUFFIX) \
 	$(COMMON_DEVICEINFO_LIB) \
 	$(STANDARD_LIBS)
 
 LIBPATH = $(COMMON_LIB_PATHS)
 
 SO_OBJS = \
-	./$(OBJ_DIR)/GPAContextStateVk.o \
-	./$(OBJ_DIR)/GPUPerfAPIVk.o \
+	./$(OBJ_DIR)/VkGPAImplementor.o \
 	./$(OBJ_DIR)/VkCommandListSwQueries.o \
 	./$(OBJ_DIR)/VkCommandListSWQueryGroup.o \
-	./$(OBJ_DIR)/VkCounterDataRequestProxy.o \
-	./$(OBJ_DIR)/VkDataRequest.o \
-	./$(OBJ_DIR)/VkHardwareCounterDataRequest.o \
-	./$(OBJ_DIR)/VkSoftwareCounterDataRequest.o \
+	./$(OBJ_DIR)/VkEntrypoints.o \
+	./$(OBJ_DIR)/VkGPAPass.o \
+	./$(OBJ_DIR)/VkGPASample.o \
+	./$(OBJ_DIR)/VkGPACommandList.o \
+	./$(OBJ_DIR)/VkGPAContext.o \
+	./$(OBJ_DIR)/VkGPASession.o \
+	./$(OBJ_DIR)/VkGPAHardwareSample.o \
+	./$(OBJ_DIR)/VkGPASoftwareSample.o \
+	./$(OBJ_DIR)/VkUtils.o \
 
 include $(DEPTH)/Build/Linux/CommonTargets.mk

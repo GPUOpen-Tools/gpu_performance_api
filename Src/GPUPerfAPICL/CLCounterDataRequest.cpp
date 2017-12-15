@@ -86,13 +86,13 @@ bool CLCounterDataRequest::FindBlockID(gpa_uint32& uBlockID, gpa_uint32 uGroupID
     return false;
 }
 
-bool CLCounterDataRequest::CollectResults(GPA_CounterResults& resultStorage)
+bool CLCounterDataRequest::CollectResults(GPASampleResult& resultStorage)
 {
     TRACE_PRIVATE_FUNCTION(CLCounterDataRequest::CollectResults);
 
     if (nullptr == m_clEvent)
     {
-        // clEnqueueEndPerfCounterAMD() hasn't been called succesfully
+        // clEnqueueEndPerfCounterAMD() hasn't been called successfully
         return false;
     }
 

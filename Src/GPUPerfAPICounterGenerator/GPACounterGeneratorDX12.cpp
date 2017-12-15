@@ -64,7 +64,7 @@ UINT GPA_CounterGeneratorDX12::CalculateBlockIdDX12(GDT_HW_GENERATION generation
 GPA_CounterGeneratorDX12::GPA_CounterGeneratorDX12():
     GPA_CounterGeneratorDX12Base()
 {
-    SetAllowedCounters(true, true, true); //enable public, hw, and sw counters
+    GPA_CounterGeneratorBase::SetAllowedCounters(true, true, true); //enable public, hw, and sw counters
 
     for (int gen = GDT_HW_GENERATION_SOUTHERNISLAND; gen < GDT_HW_GENERATION_LAST; gen++)
     {
@@ -91,24 +91,24 @@ GPA_Status GPA_CounterGeneratorDX12::GeneratePublicCounters(GDT_HW_GENERATION de
 
         switch (desiredGeneration)
         {
-        case GDT_HW_GENERATION_SEAISLAND:
-            AutoDefinePublicCountersDX12Gfx7(*pPublicCounters);
-            pPublicCounters->m_countersGenerated = true;
-            break;
+            case GDT_HW_GENERATION_SEAISLAND:
+                AutoDefinePublicCountersDX12Gfx7(*pPublicCounters);
+                pPublicCounters->m_countersGenerated = true;
+                break;
 
-        case GDT_HW_GENERATION_VOLCANICISLAND:
-            AutoDefinePublicCountersDX12Gfx8(*pPublicCounters);
-            pPublicCounters->m_countersGenerated = true;
-            break;
+            case GDT_HW_GENERATION_VOLCANICISLAND:
+                AutoDefinePublicCountersDX12Gfx8(*pPublicCounters);
+                pPublicCounters->m_countersGenerated = true;
+                break;
 
-        case GDT_HW_GENERATION_GFX9:
-            AutoDefinePublicCountersDX12Gfx9(*pPublicCounters);
-            pPublicCounters->m_countersGenerated = true;
-            break;
+            case GDT_HW_GENERATION_GFX9:
+                AutoDefinePublicCountersDX12Gfx9(*pPublicCounters);
+                pPublicCounters->m_countersGenerated = true;
+                break;
 
-        default:
-            status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
-            break;
+            default:
+                status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+                break;
         }
     }
 

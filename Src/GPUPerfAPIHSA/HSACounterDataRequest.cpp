@@ -69,7 +69,7 @@ void HSACounterDataRequest::ReleaseCountersInHSADataRequest()
 }
 
 
-bool HSACounterDataRequest::CollectResults(GPA_CounterResults& resultStorage)
+bool HSACounterDataRequest::CollectResults(GPASampleResult& resultStorage)
 {
     TRACE_PRIVATE_FUNCTION(HSACounterDataRequest::CollectResults);
 

@@ -55,7 +55,7 @@ bool VkCommandListSwQueries::BeginSwSample(gpa_uint32& swSampleId)
     bool retVal = true;
 
     swSampleId = m_queryGroup.GetSampleCount();
-    
+
     m_queryGroup.BeginSwSample();
 
     return retVal;

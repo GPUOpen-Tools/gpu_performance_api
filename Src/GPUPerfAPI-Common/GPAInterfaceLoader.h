@@ -40,6 +40,7 @@
     #define GPA_OPENGL_ES_LIB L"GPUPerfAPIGLES"
     #define GPA_DIRECTX11_LIB L"GPUPerfAPIDX11"
     #define GPA_DIRECTX12_LIB L"GPUPerfAPIDX12"
+    #define GPA_VULKAN_LIB L"GPUPerfAPIVK"
     #define GPA_HSA_LIB L"GPUPerfAPIHSA"
 
     #ifdef _WIN32
@@ -62,6 +63,7 @@
     #define GPA_OPENGL_ES_LIB "GPUPerfAPIGLES"
     #define GPA_DIRECTX11_LIB "GPUPerfAPIDX11"
     #define GPA_DIRECTX12_LIB "GPUPerfAPIDX12"
+    #define GPA_VULKAN_LIB "GPUPerfAPIVK"
     #define GPA_HSA_LIB "GPUPerfAPIHSA"
     #define GPA_X64_ARCH_SUFFIX "-x64"
     #define GPA_X86_ARCH_SUFFIX "32"
@@ -138,6 +140,8 @@ public:
     {
         GPA_Status status = GPA_STATUS_OK;
 
+#if USE_GPA
+
         if (m_gpaApiFunctionTables.find(apiType) == m_gpaApiFunctionTables.end())
         {
             if (apiType > GPA_API__START && apiType < GPA_API_NO_SUPPORT)
@@ -148,17 +152,21 @@ public:
                 switch (apiType)
                 {
 #ifdef _WIN32
+
                     case GPA_API_DIRECTX_11:
                         libFullPath.append(GPA_DIRECTX11_LIB);
                         break;
+
 
                     case GPA_API_DIRECTX_12:
                         libFullPath.append(GPA_DIRECTX12_LIB);
                         break;
 #endif
+
                     case GPA_API_OPENGL:
                         libFullPath.append(GPA_OPENGL_LIB);
                         break;
+
 
                     case GPA_API_OPENGLES:
                         libFullPath.append(GPA_OPENGL_ES_LIB);
@@ -168,13 +176,19 @@ public:
                         libFullPath.append(GPA_OPENCL_LIB);
                         break;
 #ifdef _LINUX
+
                     case GPA_API_HSA:
                         libFullPath.append(HSA_LIB);
                         break;
 #endif
+
                     case GPA_API_VULKAN:
+                        libFullPath.append(GPA_VULKAN_LIB);
+                        break;
+
                     default:
                         status = GPA_STATUS_ERROR_API_NOT_SUPPORTED;
+
                 }
 
 #ifdef GPA_IS_64_BIT
@@ -223,7 +237,7 @@ public:
                         else
                         {
                             delete pGPAApi;
-                            status = GPA_STATUS_ERROR_LIB_LOAD_VERION_MISMATCH;
+                            status = GPA_STATUS_ERROR_LIB_LOAD_VERSION_MISMATCH;
                         }
                     }
                     else
@@ -238,6 +252,20 @@ public:
             }
         }
 
+#else
+
+        if (m_gpaApiFunctionTables.find(apiType) == m_gpaApiFunctionTables.end())
+        {
+            GPAApi* pGPAApi = new(std::nothrow) GPAApi();
+
+            if (pGPAApi->m_apiId == GPA_API_CURRENT_UUID)
+            {
+                GPA_GetFuncTable(reinterpret_cast<void**>(&pGPAApi));
+                m_gpaApiFunctionTables.insert(std::pair<GPA_API_Type, std::pair<LibHandle, GPAApi*>>(apiType, std::pair<LibHandle, GPAApi*>(nullptr, pGPAApi)));
+            }
+        }
+
+#endif
         return status;
     }
 
@@ -255,7 +283,7 @@ public:
     }
 
     /// Get the function table for the passed API
-    /// \param[in]apiType api type
+    /// \param[in] apiType api type
     /// \return returns pointer to the api function table if loaded otherwise nullpointer
     GPAApi* GetApi(const GPA_API_Type& apiType)
     {

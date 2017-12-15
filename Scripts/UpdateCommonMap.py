@@ -6,29 +6,28 @@
 
 # GitHub GPUOpen-Tools projects map
 GitHubMapping = {
-    "common-lib-amd-ADL"                     : ["../Common/Lib/AMD/ADL", "0f3122ba840b193ca9ebd8f050a7ddac58f3b27e"],
-    "common-lib-amd-APPSDK-3.0"              : ["../Common/Lib/AMD/APPSDK", "acb9bb08f23e5653bbe8b6021a2cf89f1c7fd26f"],
-    "common-lib-ext-GoogleTest-1.7"          : ["../Common/Lib/Ext/GoogleTest", "7ab958af33ee2d435b52d341f95aafb67e0189d0"],
-    "common-lib-ext-OpenGL"                  : ["../Common/Lib/Ext/OpenGL", "6b6684bf5408da05efeb24c53f4241a003c1ac6e"],
-    "common-lib-ext-OpenGLES"                : ["../Common/Lib/Ext/OpenGLES", "758b5caeeaff90858f292adc45f8cfda0d34b000"],
-    "common-lib-ext-WindowsKits"             : ["../Common/Lib/Ext/Windows-Kits", "75d314b074e5899e1d8133e6ca253c3dca0307c9"],
-    "common-lib-ext-Vulkan-1.0.49.0"         : ["../Common/Lib/Ext/Vulkan", "2940df77aed7f794f0c6808f8a42f3dbd812457a"],
-    "common-src-ADLUtil"                     : ["../Common/Src/ADLUtil", "5a54c478c06ced583ac8ad74228f3e84f90e44f6"],
-    "common-src-AMDTMutex"                   : ["../Common/Src/AMDTMutex", "fb68811ed3a475cc9ab1c5d5e0482658ec679716"],
-    "common-src-AmdDxExt"                    : ["../Common/Src/AmdDxExt", "1e16621535a70dc4e088aaa7975ac4b84949f9e3"],
-    "common-src-AmdVkExt"                    : ["../Common/Src/AmdVkExt", "1fc64cdf8da2bd5c1e1b87a6d2ee58c6334e686b"],
-    "common-src-DeviceInfo"                  : ["../Common/Src/DeviceInfo", "1d750f29ebf52ff1a70f521b31c16ad6df65e8b9"],
-    "common-src-DynamicLibraryModule"        : ["../Common/Src/DynamicLibraryModule", "4b1587a50119c0a59ce3472facbaa2af7c243fdf"],
-    "common-src-GPUPerfAPIUtils"             : ["../Common/Src/GPUPerfAPIUtils", "d10457ebd4846a84820f83a7dd3e2e11ec1be081"],
-    "common-src-TSingleton"                  : ["../Common/Src/TSingleton", "2a338d5b7e649ffba0225772c521726c18b13fff"],
-    "common-src-Vsprops"                     : ["../Common/Src/Vsprops", "5a434b269727ed1f36c3c31aa56a0ca06502b198"],
+    "common-lib-amd-ADL"                     : "../Common/Lib/AMD/ADL",
+    "common-lib-amd-APPSDK-3.0"              : "../Common/Lib/AMD/APPSDK",
+    "common-lib-ext-GoogleTest-1.7"          : "../Common/Lib/Ext/GoogleTest",
+    "common-lib-ext-OpenGL"                  : "../Common/Lib/Ext/OpenGL",
+    "common-lib-ext-OpenGLES"                : "../Common/Lib/Ext/OpenGLES",
+    "common-lib-ext-WindowsKits"             : "../Common/Lib/Ext/Windows-Kits",
+    "common-lib-ext-Vulkan-1.0.49.0"         : "../Common/Lib/Ext/Vulkan",
+    "common-src-ADLUtil"                     : "../Common/Src/ADLUtil",
+    "common-src-AMDTMutex"                   : "../Common/Src/AMDTMutex",
+    "common-src-AmdDxExt"                    : "../Common/Src/AmdDxExt",
+    "common-src-AmdVkExt"                    : "../Common/Src/AmdVkExt",
+    "common-src-DeviceInfo"                  : "../Common/Src/DeviceInfo",
+    "common-src-DynamicLibraryModule"        : "../Common/Src/DynamicLibraryModule",
+    "common-src-GPUPerfAPIUtils"             : "../Common/Src/GPUPerfAPIUtils",
+    "common-src-TSingleton"                  : "../Common/Src/TSingleton",
+    "common-src-Vsprops"                     : "../Common/Src/Vsprops",
 }
 
 downloadAndInstallMappingWin = {
-    "https://vulkan.lunarg.com/sdk/download/1.0.49.0/windows/VulkanSDK-1.0.49.0-Installer.exe" : ["../Common/Lib/Ext/Vulkan", "c:/VulkanSDK/1.0.49.0/Include", "../Common/Lib/Ext/Vulkan/1.0.49.0/SDK/Include"],
+    "https://sdk.lunarg.com/sdk/download/1.0.49.0/windows/VulkanSDK-1.0.49.0-Installer.exe" : ["../Common/Lib/Ext/Vulkan", "c:/VulkanSDK/1.0.49.0/Include", "../Common/Lib/Ext/Vulkan/1.0.49.0/SDK/Include"],
 }
 
 downloadAndInstallMappingLin = {
-    "https://vulkan.lunarg.com/sdk/download/1.0.49.0/linux/Vulkansdk-linux-x86_64-1.0.49.0.run" : ["../Common/Lib/Ext/Vulkan"],
+    "https://sdk.lunarg.com/sdk/download/1.0.49.0/linux/Vulkansdk-linux-x86_64-1.0.49.0.run" : ["../Common/Lib/Ext/Vulkan"],
 }
-

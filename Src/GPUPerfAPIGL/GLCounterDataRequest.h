@@ -8,7 +8,6 @@
 #ifndef _GL_COUNTER_DATA_REQUEST_H_
 #define _GL_COUNTER_DATA_REQUEST_H_
 
-#include "GPUPerfAPIImp.h"
 #include "GPUPerfAPIGL.h"
 
 //-----------------------------------------------------------------------------
@@ -58,16 +57,30 @@ public:
 
 protected:
 
+    /// Start a counter sample.
+    /// Begin must handle the case where a request is reused
+    /// try and reuse resources if selectionID matches (which means the same counters are activated).
+    /// \param pContextState pointer to object containing the context information for this request
+    /// \param pSampleList the sample list where sampling is being started
+    /// \param selectionID the ID of the counter selection
+    /// \param pCounters the set of counters to enable
+    /// \return True if the sample could be started; false otherwise.
     virtual bool BeginRequest(
         GPA_ContextState* pContextState,
         void* pSampleList,
         gpa_uint32 selectionID,
         const vector<gpa_uint32>* pCounters) override;
 
+    /// Ends a counter sample.
+    /// \return True on success; false on error.
     virtual bool EndRequest() override;
 
-    virtual bool CollectResults(GPA_CounterResults& resultStorage) override;
+    /// Collects the results if they are available.
+    /// \param[out] resultStorage
+    /// \return true if the results were collected; false if they are not available.
+    virtual bool CollectResults(GPASampleResult& resultStorage) override;
 
+    /// Release allocated counters
     virtual void ReleaseCounters() override;
 
     /// Create the GPUTime Query object
@@ -91,9 +104,9 @@ protected:
 
     gpa_uint32 m_dataReadyCount;                 ///< number of counters with data ready
 
-    GPA_CounterResults m_counterResults;         ///< saved counter results for this data request
-    bool               m_areAllResultsSaved;     ///< indicates whether or not all of the results have been saved in m_counterResults
-    bool               m_isAMD;                  ///< indicates whether or not an AMD GPU is in use
+    GPASampleResult             m_counterResults;           ///< saved counter results for this data request
+    bool                        m_areAllResultsSaved;       ///< indicates whether or not all of the results have been saved in m_counterResults
+    bool                        m_isAMD;                    ///< indicates whether or not an AMD GPU is in use
 
 private:
 

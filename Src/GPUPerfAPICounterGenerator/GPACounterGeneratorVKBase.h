@@ -38,7 +38,7 @@ protected:
         GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters) override;
 
     virtual void ComputeSWCounterValue(
-        gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, GPA_HWInfo* pHwInfo) override;
+        gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const override;
 
 private:
 

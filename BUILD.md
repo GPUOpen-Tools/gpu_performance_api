@@ -51,17 +51,22 @@ this script everytime you pull new changes from GPA repository.
 
 ## Linux Build Information
 
+##### Prerequisites
+ * Install the Mesa common development package: sudo apt-get install mesa-common-dev
+ * For 32-bit builds, install the multilib packages: sudo apt-get install gcc-multilib g++-multilib
+
 ##### Build Instructions
  * cd into the Build\Linux directory
  * Execute `./build.sh`
    * By default this performs a from-scratch build of the release versions of GPUPerfAPI, both 32-bit and 64-bit binaries.
  * The following arguments can be passed to build.sh to alter the build:
    * `debug`: performs a debug build
-   * `skip32buildbuild`: skips building the 32-bit binaries
+   * `skip32bitbuild`: skips building the 32-bit binaries
    * `skipopengl`: skips building the OpenGL version of GPUPerfAPI
    * `skipopengles`: skips building the OpenGLES version of GPUPerfAPI
    * `skipopencl`: skips building the OpenCL version of GPUPerfAPI
    * `skiphsa`: skips building the ROCm/HSA version of GPUPerfAPI
+   * `skipvulkan`: skips building the Vulkan version of GPUPerfAPI
    * `quick` or `incremental`: performs an incremental build (as opposed to a from-scratch build)
    * `buildinternal`: builds the internal versions of GPUPerfAPI
    * `hsadir`: overrides the location of the ROCm/HSA header files (by default they are expected to be in /opt/rocm/hsa)
@@ -88,6 +93,7 @@ this script everytime you pull new changes from GPA repository.
    * GPUPerfAPIGL
    * GPUPerfAPIGLES
    * GPUPerfAPIHSA
+   * GPUPerfAPIVk
  * When using `make` to build the ROCM/HSA version of GPUPerfAPI, by default the HSA headers are expected to be in /opt/rocm/hsa. You can override this by specifying "HSA_DIR=<dir>" on the make command line:
    * Example: make Dbg HSA_DIR=/home/user/hsa_dir
  * When building the internal version, each binary filename will also have a "-Internal" suffix (for example libGPUPerfAPIGL-Internal.so)
@@ -101,7 +107,7 @@ outputs files in the [GPUPerfAPICounterGenerator](Src/GPUPerfAPICounterGenerator
 There are three ways to execute the tool:
 * With no parameters - it opens the user interface with no fields prepopulated
 * With two parameters - it opens the user interface with the two main fields prepopulated. When you press the "Compile Public Counters" button it will load the correct input files and generate the output files in the correct location.
-  * Param 1: API -- the API to compile counters for (ex: GL, CL, HSA, DX11, etc).
+  * Param 1: API -- the API to compile counters for (ex: GL, CL, HSA, DX11, DX12, VK, etc).
   * Param 2: HW generation: the generation to compile counters for (ex: Gfx6, Gfx7, Gfx8, etc.)
 * With five parameters - the user interface does not open. It simply generates the c++ files using the specified input and output file locations
   * Param 1: Counter names file - text file containing hardware counter names and type (CounterNames[API][GEN].txt)
@@ -117,7 +123,7 @@ Counter formulas are expressed in a Reverse Polish Notation and are made up the 
 * numbers: these are zero-based counter indexes referring to individual counters within the list of hardware counters
 * math operators: The supported operators are +, -, /, *
 * numeric literals: Numbers contained within parentheses are numeric literals (as opposed to counter indexes)
-* functions: The supported functions are: min, max, sum, and ifnotzero. "max and "sum" have variants that work on multiple items at once (i.e. sum16, sum63, etc.)
+* functions: The supported functions are: min, max, sum, ifnotzero. "max and "sum" have variants that work on multiple items at once (i.e. sum16, sum64, etc.)
 * hardware params: The supported hardware params are "num_shader_engines". "num_simds", "su_clock_prim", "num_prim_pipes", and "TS_FREQ"
 
 For more details, see the "EvaluateExpression" function in the [GPAPublicCounters.cpp](Src/GPUPerfAPICounterGenerator/GPAPublicCounters.cpp) file.

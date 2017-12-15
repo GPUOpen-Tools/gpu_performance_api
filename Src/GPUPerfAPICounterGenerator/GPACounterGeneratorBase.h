@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief Base class for counter generation
@@ -12,10 +12,10 @@
 
 #include "GPAHardwareCounters.h"
 #include "GPASoftwareCounters.h"
-#include "GPAICounterAccessor.h"
+#include "IGPACounterAccessor.h"
 
 /// Base class for counter generation
-class GPA_CounterGeneratorBase : public GPA_ICounterAccessor
+class GPA_CounterGeneratorBase : public IGPACounterAccessor
 {
 public:
     /// Constructor
@@ -24,46 +24,75 @@ public:
     /// Destructor
     virtual ~GPA_CounterGeneratorBase();
 
-    // Implementation of GPA_ICounterAccessor -- see base class for documentation
-    virtual void SetAllowedCounters(bool bAllowPublicCounters, bool bAllowHardwareCounters, bool bAllowSoftwareCounters) override;
-    virtual gpa_uint32 GetNumCounters() const override;
-    virtual const char* GetCounterName(gpa_uint32 index) const override;
-    virtual const char* GetCounterCategory(gpa_uint32 index) const override;
-    virtual const char* GetCounterDescription(gpa_uint32 index) const override;
-    virtual GPA_Type GetCounterDataType(gpa_uint32 index) const  override;
-    virtual GPA_Usage_Type GetCounterUsageType(gpa_uint32 index) const override;
-    virtual const GPA_PublicCounter* GetPublicCounter(gpa_uint32 index) const override;
-    virtual const GPA_HardwareCounterDescExt* GetHardwareCounterExt(gpa_uint32 index) const override;
-    virtual gpa_uint32 GetNumPublicCounters() const override;
-    virtual vector<gpa_uint32> GetInternalCountersRequired(gpa_uint32 index) const  override;
-    virtual void ComputePublicCounterValue(gpa_uint32 counterIndex, std::vector<char*>& results, std::vector<GPA_Type>& internalCounterTypes, void* pResult, GPA_HWInfo* pHwInfo) override;
-    virtual GPACounterTypeInfo GetCounterTypeInfo(gpa_uint32 globalIndex) const override;
-    virtual bool GetCounterIndex(const char* pName, gpa_uint32* pIndex) const override;
-    // end Implementation of GPA_ICounterAccessor
+    /// \copydoc IGPACounterAccessor::SetAllowedCounters()
+    void SetAllowedCounters(bool bAllowPublicCounters, bool bAllowHardwareCounters, bool bAllowSoftwareCounters) override;
+
+    /// \copydoc IGPACounterAccessor::GetNumCounters()
+    gpa_uint32 GetNumCounters() const override;
+
+    /// \copydoc IGPACounterAccessor::GetCounterName()
+    const char* GetCounterName(gpa_uint32 index) const override;
+
+    /// \copydoc IGPACounterAccessor::GetCounterGroup()
+    const char* GetCounterGroup(gpa_uint32 index) const override;
+
+    /// \copydoc IGPACounterAccessor::GetCounterDescription()
+    const char* GetCounterDescription(gpa_uint32 index) const override;
+
+    /// \copydoc IGPACounterAccessor::GetCounterDataType()
+    GPA_Data_Type GetCounterDataType(gpa_uint32 index) const  override;
+
+    /// \copydoc IGPACounterAccessor::GetCounterUsageType()
+    GPA_Usage_Type GetCounterUsageType(gpa_uint32 index) const override;
+
+    /// \copydoc IGPACounterAccessor::GetCounterUuid()
+    GPA_UUID GetCounterUuid(gpa_uint32 index) const override;
+
+    /// \copydoc IGPACounterAccessor::GetPublicCounter()
+    const GPA_PublicCounter* GetPublicCounter(gpa_uint32 index) const override;
+
+    /// \copydoc IGPACounterAccessor::GetHardwareCounterExt()
+    const GPA_HardwareCounterDescExt* GetHardwareCounterExt(gpa_uint32 index) const override;
+
+    /// \copydoc IGPACounterAccessor::GetNumPublicCounters()
+    gpa_uint32 GetNumPublicCounters() const override;
+
+    /// \copydoc IGPACounterAccessor::GetInternalCountersRequired()
+    std::vector<gpa_uint32> GetInternalCountersRequired(gpa_uint32 index) const override;
+
+    /// \copydoc IGPACounterAccessor::ComputePublicCounterValue()
+    void ComputePublicCounterValue(gpa_uint32 counterIndex,
+        std::vector<gpa_uint64*>& results,
+        std::vector<GPA_Data_Type>& internalCounterTypes,
+        void* pResult,
+        const GPA_HWInfo* pHwInfo) const override;
+
+    /// \copydoc IGPACounterAccessor::GetCounterSourceInfo()
+    GPACounterSourceInfo GetCounterSourceInfo(gpa_uint32 globalIndex) const override;
+
+    /// \copydoc IGPACounterAccessor::GetCounterIndex()
+    bool GetCounterIndex(const char* pName, gpa_uint32* pIndex) const override;
+
+    /// \copydoc IGPACounterAccessor::GetHardwareCounters()
+    const GPA_HardwareCounters* GetHardwareCounters() const override;
+
+    /// \copydoc IGPACounterAccessor::GetSoftwareCounters()
+    const GPA_SoftwareCounters* GetSoftwareCounters() const override;
 
     /// Generate the counters for the specified generation
     /// \param desiredGeneration the generation whose counters are needed
     /// \return GPA_STATUS_OK on success
     GPA_Status GenerateCounters(GDT_HW_GENERATION desiredGeneration);
 
-    /// Compute a software counter value
-    /// \param counterIndex the index of the counter whose value is needed
-    /// \param value the value of the counter
-    /// \param[out] pResult the resulting value
-    /// \param pHwInfo the hardware info
-    virtual void ComputeSWCounterValue(gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, GPA_HWInfo* pHwInfo);
+    /// \copydoc IGPACounterAccessor::ComputeSWCounterValue()
+    void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex,
+        gpa_uint64 value,
+        void* pResult,
+        const GPA_HWInfo* pHwInfo) const override;
 
     /// TODO: does this need to be here in the base class?
     /// Get the number of supported AMD counters
     gpa_uint32 GetNumAMDCounters() const;
-
-    /// Get the hardware counters
-    /// \return the hardware counters
-    GPA_HardwareCounters* GetHardwareCounters();
-
-    /// Get the softwarecounters
-    /// \return the software counters
-    GPA_SoftwareCounters* GetSoftwareCounters();
 
     /// Generate the public counters for the specified hardware generation
     /// \param desiredGeneration the generation whose counters are needed

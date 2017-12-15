@@ -16,14 +16,18 @@ INCLUDES =	-I. \
 
 LIB_OBJS	= \
 	./$(OBJ_DIR)/ADLUtil.o \
-	./$(OBJ_DIR)/AMDTMutex.o \
-	./$(OBJ_DIR)/GPAContextState.o \
-	./$(OBJ_DIR)/GPAHWInfo.o \
-	./$(OBJ_DIR)/GPASessionRequests.o \
+	./$(OBJ_DIR)/DynamicLibraryModule.o \
+	./$(OBJ_DIR)/GPACommandList.o \
+	./$(OBJ_DIR)/GPAContext.o \
 	./$(OBJ_DIR)/GPACustomHWValidationManager.o \
+	./$(OBJ_DIR)/GPAHWInfo.o \
+	./$(OBJ_DIR)/GPAImplementor.o \
+	./$(OBJ_DIR)/GPAPass.o \
+	./$(OBJ_DIR)/GPASample.o \
+	./$(OBJ_DIR)/GPAUniqueObject.o \
 	./$(OBJ_DIR)/GPUPerfAPI.o \
+	./$(OBJ_DIR)/GPASession.o \
 	./$(OBJ_DIR)/Logging.o \
-	./$(OBJ_DIR)/DynamicLibraryModule.o
 
 include $(DEPTH)/Build/Linux/CommonTargets.mk
 

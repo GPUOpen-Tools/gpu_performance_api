@@ -5,7 +5,6 @@
 /// \brief  DX11 version of GPUPerfAPI
 //==============================================================================
 
-#include "GPUPerfAPIImp.h"
 #include "GPACounterGenerator.h"
 
 #include "DX11CounterDataRequest.h"
@@ -39,10 +38,13 @@ gpa_uint32 GPA_IMP_GetPreferredCheckResultFrequency()
 
 //-----------------------------------------------------------------------------
 /// Query time stamp frequency from hardware
+/// \param pContext the context whose timestamp frequency is needed
+/// \param[out] frequency the timestamp frequency
+/// \return true if the timestamp frequency is successfully queried
 //-----------------------------------------------------------------------------
-bool queryTimeStampFrequency(void* context, gpa_uint64& frequency)
+bool queryTimeStampFrequency(void* pContext, gpa_uint64& frequency)
 {
-    ID3D11DevicePtr device = static_cast<ID3D11Device* >(context);
+    ID3D11DevicePtr device = static_cast<ID3D11Device* >(pContext);
     ID3D11QueryPtr timeStampDisjointQuery;
 
     D3D11_QUERY_DESC timeStampDesc;
@@ -84,9 +86,7 @@ bool queryTimeStampFrequency(void* context, gpa_uint64& frequency)
     return true;
 }
 
-EXTERN_C IMAGE_DOS_HEADER __ImageBase; ///< __ImageBase symbol exported by MSVC linker
-/// the HINSTANCE of the owning module
-#define HINST_THISCOMPONENT ((HINSTANCE)&__ImageBase)
+
 
 /// Get the HW Info for an AMD device
 /// \param pDevice the D3D device
@@ -144,7 +144,7 @@ static GPA_Status GetAmdHwInfo(
             {
                 unsigned int gpuIndex = 0;
 
-                if (IsMgpuPerfExtSupported(pExt))
+                if (DxxExtUtils::IsMgpuPerfExtSupported(pExt))
                 {
                     pExtPerfProfile = reinterpret_cast<IAmdDxExtPerfProfile*>(pExt->GetExtInterface(AmdDxExtPerfProfileID));
 
@@ -559,7 +559,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
 
     getCurrentContext()->SetDX11DeviceContext(pDeviceContext);
 
-    return GenerateCounters(GPA_API_DIRECTX_11, vendorId, deviceId, revisionId, (GPA_ICounterAccessor**) & (g_pCurrentContext->m_pCounterAccessor), &(getCurrentContext()->m_pCounterScheduler));
+    return GenerateCounters(GPA_API_DIRECTX_11, vendorId, deviceId, revisionId, (IGPACounterAccessor**) & (g_pCurrentContext->m_pCounterAccessor), &(getCurrentContext()->m_pCounterScheduler));
 }
 
 //-----------------------------------------------------------------------------

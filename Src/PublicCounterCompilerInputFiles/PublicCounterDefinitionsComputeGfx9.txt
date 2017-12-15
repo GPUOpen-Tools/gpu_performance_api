@@ -155,7 +155,8 @@ usage=kilobytes
 [CLGfx9]
 [HSAGfx9]
 TCC*_TCC_PERF_SEL_EA_RDREQ[0..15]
-comp=0..15,sum16,(32),*,(1024),/
+TCC*_TCC_PERF_SEL_EA_RDREQ_32B[0..15]
+comp=0..15,sum16,16..31,sum16,-,(64),*,16..31,sum16,(32),*,+,(1024),/
 
 name=WriteSize
 desc=#GlobalMemory#The total kilobytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
@@ -164,7 +165,8 @@ usage=kilobytes
 [CLGfx9]
 [HSAGfx9]
 TCC*_TCC_PERF_SEL_EA_WRREQ[0..15]
-comp=0..15,sum16,(32),*,(1024),/
+TCC*_TCC_PERF_SEL_EA_WRREQ_64B[0..15]
+comp=0..15,sum16,16..31,sum16,-,(32),*,16..31,sum16,(64),*,+,(1024),/
 
 name=L1CacheHit
 desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the data in L1 cache. Value range: 0% (no hit) to 100% (optimal).
@@ -216,7 +218,7 @@ usage=percentage
 [HSAGfx9]
 TCC*_TCC_PERF_SEL_EA_WRREQ_STALL[0..15]
 GRBM_GRBM_PERF_SEL_GUI_ACTIVE
-comp=0,1,max,2,max,3,max,4,max,5,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,/,(100),*
+comp=0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,/,(100),*
 
 ;name=ALUStalledByLDS
 ;desc=#LocalMemory#The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).

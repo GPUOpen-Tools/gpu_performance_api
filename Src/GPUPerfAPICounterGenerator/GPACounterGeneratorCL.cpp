@@ -26,7 +26,7 @@
 
 GPA_CounterGeneratorCL::GPA_CounterGeneratorCL()
 {
-    SetAllowedCounters(true, true, false);
+    GPA_CounterGeneratorBase::SetAllowedCounters(true, true, false);
 
     for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
     {
@@ -48,7 +48,7 @@ GPA_Status GPA_CounterGeneratorCL::GeneratePublicCounters(GDT_HW_GENERATION desi
     {
         AutoDefinePublicCountersCLGfx8(*pPublicCounters);
     }
-    else if(desiredGeneration == GDT_HW_GENERATION_GFX9)
+    else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
         AutoDefinePublicCountersCLGfx9(*pPublicCounters);
     }

@@ -8,11 +8,11 @@
 #ifndef _GPA_COUNTER_SCHEDULER_BASE_H_
 #define _GPA_COUNTER_SCHEDULER_BASE_H_
 
-#include "GPAICounterScheduler.h"
+#include "IGPACounterScheduler.h"
 #include "GPASplitCounterFactory.h"
 
 /// Base Class for counter scheduling
-class GPA_CounterSchedulerBase : public GPA_ICounterScheduler
+class GPA_CounterSchedulerBase : public IGPACounterScheduler
 {
 public:
     /// Constructor
@@ -21,7 +21,7 @@ public:
     /// Destructor
     ~GPA_CounterSchedulerBase();
 
-    // Implementation of GPA_ICounterScheduler
+    // Implementation of IGPACounterScheduler
 
     /// Reset the counter scheduler
     void Reset();
@@ -33,11 +33,11 @@ public:
     /// \param revisionId The revision id
     /// \return GPA_STATUS_ERROR_NULL_POINTER If pCounterAccessor is nullptr
     /// \return GPA_STATUS_OK
-    GPA_Status SetCounterAccessor(GPA_ICounterAccessor* pCounterAccessor, gpa_uint32 vendorId, gpa_uint32 deviceId, gpa_uint32 revisionId);
+    GPA_Status SetCounterAccessor(IGPACounterAccessor* pCounterAccessor, gpa_uint32 vendorId, gpa_uint32 deviceId, gpa_uint32 revisionId);
 
     /// Get the number of enabled counters
     /// \return the number of enabled counters
-    gpa_uint32 GetNumEnabledCounters();
+    gpa_uint32 GetNumEnabledCounters() const;
 
     /// Enables a counter
     /// \param index The index of a counter to enable
@@ -56,12 +56,12 @@ public:
     /// \param enabledIndex the enabled counter whose counter index is needed
     /// \param[out] pCounterAtIndex the counter index of the specified enabled counter
     /// \return GPA_STATUS_OK on success
-    GPA_Status GetEnabledIndex(gpa_uint32 enabledIndex, gpa_uint32* pCounterAtIndex);
+    GPA_Status GetEnabledIndex(gpa_uint32 enabledIndex, gpa_uint32* pCounterAtIndex) const;
 
     /// Checks if the specified counter is enabled
     /// \param counterIndex the index of the counter to check
     /// \return GPA_STATUS_OK if the counter is enabled
-    GPA_Status IsCounterEnabled(gpa_uint32 counterIndex);
+    GPA_Status IsCounterEnabled(gpa_uint32 counterIndex) const;
 
     /// Obtains the number of passes required to collect the enabled counters
     /// \param[inout] pNumRequiredPassesOut Will contain the number of passes needed to collect the set of enabled counters
@@ -70,7 +70,7 @@ public:
 
     /// Get a flag indicating if the counter selection has changed
     /// \return true if the counter selection has changed, false otherwise
-    bool GetCounterSelectionChanged();
+    bool GetCounterSelectionChanged() const;
 
     /// Begin profiling -- sets pass index to zero
     /// \return GPA_STATUS_OK on success
@@ -100,13 +100,13 @@ public:
     /// \param iCounts the count of draw calls
     void SetDrawCallCounts(const int iCounts);
 
-    // end Implementation of GPA_ICounterScheduler
+    // end Implementation of IGPACounterScheduler
 
 protected:
 
     /// Gets the preferred counter splitting algorithm
     /// \return the preferred counter splitting algorithm
-    virtual GPACounterSplitterAlgorithm GetPreferredSplittingAlgorithm() = 0;
+    virtual GPACounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const = 0;
 
     /// Helper function to disable a counter
     /// \param index the index of the counter to disable
@@ -115,7 +115,7 @@ protected:
 
     /// Helper function to get the number of software counters
     /// \return the number of software counters
-    virtual gpa_uint32 DoGetNumSoftwareCounters();
+    virtual gpa_uint32 DoGetNumSoftwareCounters() const;
 
     /// Helper function called when beginning a profile
     /// \return GPA_STATUS_OK on success
@@ -143,7 +143,7 @@ protected:
     std::map< unsigned int, CounterResultLocationMap> m_counterResultLocationMap;
 
     /// The counter accessor used by the scheduler
-    GPA_ICounterAccessor* m_pCounterAccessor;
+    IGPACounterAccessor* m_pCounterAccessor;
 
     /// The vendor id used by the scheduler
     gpa_uint32 m_vendorId;

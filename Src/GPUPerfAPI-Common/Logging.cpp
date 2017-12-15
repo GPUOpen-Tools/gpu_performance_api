@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Logging utility
@@ -11,7 +11,7 @@
     #pragma comment( lib, "Winmm.lib" )
 #endif
 
-static const char MUTEX_NAME[]     = "GPALoggerMutex"; ///< mutex name
+static const char MUTEX_NAME[] = "GPALoggerMutex"; ///< mutex name
 
 GPATracer gTracerSingleton;
 GPALogger g_loggerSingleton;
@@ -41,7 +41,7 @@ void GPATracer::EnterFunction(const char* pFunctionName)
             message += "   ";
         }
 
-        message += "Entering: ";
+        message += "Enter: ";
         message += pFunctionName;
         message += ".";
 
@@ -76,8 +76,37 @@ void GPATracer::LeaveFunction(const char* pFunctionName)
             message += "   ";
         }
 
-        message += "Leaving: ";
+        message += "Leave: ";
         message += pFunctionName;
+        message += ".";
+
+#ifdef AMDT_INTERNAL
+        GPA_LogDebugTrace(message.c_str());
+
+        if (m_logTab == 0)
+        {
+            // if this is the top level, also pass it to the normal LogTrace
+            GPA_LogTrace(message.c_str());
+        }
+
+#else
+        GPA_LogTrace(message.c_str());
+#endif // AMDT_INTERNAL
+    }
+}
+
+void GPATracer::OutputFunctionData(const char* pData)
+{
+    if ((m_logTab == 1 && m_topLevelOnly) || !m_topLevelOnly)
+    {
+        std::string message;
+
+        for (unsigned int tempLogTab = 0; tempLogTab < m_logTab; tempLogTab++)
+        {
+            message += "   ";
+        }
+
+        message += pData;
         message += ".";
 
 #ifdef AMDT_INTERNAL
@@ -109,7 +138,7 @@ ScopeTrace::~ScopeTrace()
 
 
 
-GPALogger::GPALogger():
+GPALogger::GPALogger() :
     m_loggingType(GPA_LOGGING_NONE),
     m_loggingCallback(nullptr)
 {

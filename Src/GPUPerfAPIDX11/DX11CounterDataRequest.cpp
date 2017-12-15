@@ -48,7 +48,7 @@ void DX11CounterDataRequest::ReleaseCounters()
     m_pCounterDataRequest->ReleaseCounters();
 }
 
-bool DX11CounterDataRequest::CollectResults(GPA_CounterResults& resultStorage)
+bool DX11CounterDataRequest::CollectResults(GPASampleResult& resultStorage)
 {
     TRACE_PRIVATE_FUNCTION(DX11CounterDataRequest::CollectResults);
 

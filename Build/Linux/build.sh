@@ -1,4 +1,6 @@
 #!/bin/bash
+set -u
+set -x
 
 #define path
 GPAROOT=`dirname $(readlink -f "$0")`/../..
@@ -32,14 +34,14 @@ HSA_DIR_OVERRIDE=
 VK_INC_DIR_OVERRIDE=
 
 # API-specific build control
-bBuildOpenGL=true
-bBuildOpenGLES=true
+bBuildOpenGL=false
+bBuildOpenGLES=false
 bBuildVK=true
-bBuildOpenCL=true
-bBuildHSA=true
+bBuildOpenCL=false
+bBuildHSA=false
 
 # Tests build control
-bBuildTests=true
+bBuildTests=false
 
 REL_ROOT=
 BUILD=0
@@ -80,7 +82,7 @@ do
    elif [ "$1" = "skipopengles" ]; then
       bBuildOpenGLES=false
    elif [ "$1" = "skipvulkan" ]; then
-      bBuildOpenVK=false
+      bBuildVK=false
    elif [ "$1" = "skipopencl" ]; then
       bBuildOpenCL=false
    elif [ "$1" = "skiphsa" ]; then
@@ -183,7 +185,7 @@ if $bBuildOpenGLES ; then
    BUILD_DIRS="$BUILD_DIRS $GLES"
 fi
 
-if $bBuildOpenVK ; then
+if $bBuildVK ; then
    BUILD_DIRS="$BUILD_DIRS $VK"
 fi
 
@@ -277,8 +279,8 @@ if $bZip ; then
    cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-VK.h ./Include/
    cp ../../../Src/GPUPerfAPICounters/GPUPerfAPICounters.h ./Include/
    cp ../../../Src/GPUPerfAPICounterGenerator/GPACounterGenerator.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterAccessor.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterScheduler.h ./Include/
+   cp ../../../Src/GPUPerfAPICounterGenerator/IGPACounterAccessor.h ./Include/
+   cp ../../../Src/GPUPerfAPICounterGenerator/IGPACounterScheduler.h ./Include/
    cp ../../../Doc/GPUPerfAPI-UserGuide.pdf .
    cp ../../../LICENSE .
    cp ../../../Doc/thirdpartylicenses.txt .

@@ -24,7 +24,10 @@ public:
     /// Destroy this GPA counter data request instance
     virtual ~DX12CounterDataRequestProxy();
 
-    virtual bool CollectResults(GPA_CounterResults& resultStorage);
+    /// Collects the results if they are available.
+    /// \param[out] resultStorage
+    /// \return true if the results were collected; false if they are not available.
+    virtual bool CollectResults(GPASample_CounterResults& resultStorage);
 
     virtual bool BeginRequest(
         GPA_ContextState* pContextState,
@@ -32,8 +35,11 @@ public:
         gpa_uint32 selectionID,
         const vector<gpa_uint32>* pCounters);
 
+    /// Ends a counter sample.
+    /// \return True on success; false on error.
     virtual bool EndRequest();
 
+    /// Release allocated counters
     virtual void ReleaseCounters();
 
 private:

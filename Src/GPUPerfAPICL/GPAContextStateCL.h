@@ -27,4 +27,3 @@ public:
 };
 
 #endif // _GPA_CONTEXTSTATE_CL_H_
-

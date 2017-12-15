@@ -8,8 +8,7 @@
 #include "GPUPerfAPIDX12.h"
 
 #include <DeviceInfoUtils.h>
-#include "GPUPerfAPIImp.h"
-#include "GPUPerfAPI.h"
+//#include "GPUPerfAPI.h"
 #include "GPACounterGenerator.h"
 #include "DX12Utils.h"
 #include "GPAContextStateDX12.h"
@@ -43,12 +42,14 @@ static HRESULT GetID3D12Device(void* pContext, ID3D12Device** ppDevice)
         ID3D12DeviceChild* pDeviceChild = nullptr;
 
         hr = pUnknown->QueryInterface(__uuidof(ID3D12DeviceChild), reinterpret_cast<void**>(&pDeviceChild));
+
         if (SUCCEEDED(hr))
         {
             hr = pDeviceChild->GetDevice(__uuidof(ID3D12Device), reinterpret_cast<void**>(ppDevice));
             pDeviceChild->Release();
         }
     }
+
     return hr;
 }
 
@@ -79,7 +80,7 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
         else
         {
             DXGI_ADAPTER_DESC adapterDesc;
-            result = DX12GetAdapterDesc(pDevice, adapterDesc);
+            result = DX12Utils::DX12GetAdapterDesc(pDevice, adapterDesc);
 
             if (GPA_STATUS_OK != result)
             {
@@ -317,15 +318,15 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
 
             if (GPA_STATUS_OK == result)
             {
-                GPA_ICounterAccessor* pCounterAccessor = nullptr;
-                GPA_ICounterScheduler* pCounterScheduler = nullptr;
+                IGPACounterAccessor* pCounterAccessor = nullptr;
+                IGPACounterScheduler* pCounterScheduler = nullptr;
                 result = GenerateCounters(
-                                GPA_API_DIRECTX_12,
-                                vendorId,
-                                deviceId,
-                                revisionId,
-                                &pCounterAccessor,
-                                &pCounterScheduler);
+                             GPA_API_DIRECTX_12,
+                             vendorId,
+                             deviceId,
+                             revisionId,
+                             &pCounterAccessor,
+                             &pCounterScheduler);
 
                 if (GPA_STATUS_OK == result)
                 {

@@ -32,6 +32,7 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorVK.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorVKBase.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorVKNonAMD.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGroupAccessor.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerBase.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerCL.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerDX11.h" />
@@ -40,7 +41,7 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerHSA.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerVK.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAHardwareCounters.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAICounterScheduler.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\IGPACounterScheduler.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCounter.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx6.h" />
@@ -80,7 +81,7 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx7.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAICounterAccessor.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\IGPACounterAccessor.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorBase.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGenerator.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx9.h" />

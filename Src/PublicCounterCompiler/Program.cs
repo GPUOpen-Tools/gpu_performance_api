@@ -17,6 +17,7 @@ namespace PublicCounterCompiler
     using System.IO;
     using System.Text;
     using System.Windows.Forms;
+    using System.Diagnostics;
 
     /// <summary>
     /// A program which compiles the public counters definitions into C++ files.
@@ -42,6 +43,7 @@ namespace PublicCounterCompiler
             {
                 Form1.Instance().Output(strMsg);
             }
+            Debug.Print(strMsg);
         }
 
         /// <summary>
@@ -123,6 +125,344 @@ namespace PublicCounterCompiler
         }
 
         /// <summary>
+        /// Formats a counter error for output
+        /// </summary>
+        /// <param name="counterName">Public counter name</param>
+        /// <param name="component">Component of the formula that is referenced</param>
+        /// <param name="index">Index of the component of the formula that is referenced</param>
+        /// <param name="errorMessage">Error message</param>
+        private static void OutputCounterError(string counterName, string component, int index, string errorMessage)
+        {
+            Output("Error: " + counterName + " - " + errorMessage + " " + component + " at index " + index);
+        }
+
+        /// <summary>
+        /// Validates the counter formula and referenced hardware counters
+        /// </summary>
+        /// <param name="counter">Public counter to validate</param>
+        /// <returns>True if the formula and referenced counters are correct, otherwise false.</returns>
+        private static bool ValidateFormulaAndReferencedCounter(PublicCounterDef counter)
+        {
+            bool retVal = true;
+
+            string comp = counter.Comp.ToLower();
+            string[] components = comp.Split(',');
+
+            // Basic validation of comp formula
+            // Validate count of counters vs. those referenced in formula
+            // Validate that all counter references are 1, or multiple of 4
+
+            Stack<string> rpnStack = new Stack<string>();
+
+            int componentIndex = -1;
+
+            foreach(string component in components)
+            {
+                ++componentIndex;
+
+                // Empty
+                if (string.IsNullOrEmpty(component))
+                {
+                    OutputCounterError(counter.Name, component, componentIndex, "empty comp component");
+                    retVal = false;
+                    break;
+                }
+
+                // Range hardware counter reference
+                bool isNumeric = false;
+
+                if (component.Contains(".."))
+                {
+                    int startingCounter = 0;
+                    isNumeric = int.TryParse(component, out startingCounter);
+                    if (!isNumeric)
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range");
+                        retVal = false;
+                        break;
+                    }
+
+                    int ellipsisIndex = component.IndexOf("..");
+                    if (ellipsisIndex < 0)
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range");
+                        retVal = false;
+                        break;
+                    }
+
+                    int endingCounter = 0;
+                    isNumeric = int.TryParse(component.Substring(ellipsisIndex + 2), out endingCounter);
+                    if (!isNumeric)
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range");
+                        retVal = false;
+                        break;
+                    }
+
+                    if (endingCounter <= startingCounter)
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range");
+                        retVal = false;
+                        break;
+                    }
+
+                    if (((endingCounter - startingCounter) + 1) % 4 != 0)
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "hardware counter range is not a multiple of 4");
+                        retVal = false;
+                        break;
+                    }
+
+                    for (int i = startingCounter; i <= endingCounter; ++i)
+                    {
+                        rpnStack.Push(i.ToString());
+
+                        var hardwareCounter = counter.GetCounter(i);
+                        if (hardwareCounter == null)
+                        {
+                            OutputCounterError(counter.Name, component, componentIndex, "reference to undefined hardware counter index");
+                            retVal = false;
+                            break;
+                        }
+
+                        hardwareCounter.Referenced = true;
+                    }
+
+                    continue;
+                }
+
+                // Singleton hardware counter reference
+                int index;
+                isNumeric = int.TryParse(component, out index);
+                if (isNumeric)
+                {
+                    rpnStack.Push(component);
+
+                    if (index < 0 || index >= counter.GetCounterCount())
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "reference to out of range hardware counter index");
+                        retVal = false;
+                        break;
+                    }
+
+                    var hardwareCounter = counter.GetCounter(index);
+                    if (hardwareCounter == null)
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "reference to undefined hardware counter index");
+                        retVal = false;
+                        break;
+                    }
+
+                    hardwareCounter.Referenced = true;
+
+                    continue;
+                }
+
+                // Numeric
+                if (component.Substring(0, 1) == "(")
+                {
+                    string n = component.Substring(1, component.Length - 2);
+
+                    isNumeric = int.TryParse(n, out index);
+                    if (!isNumeric)
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "invalid numeric value");
+                        retVal = false;
+                        break;
+                    }
+
+                    rpnStack.Push(component);
+                    continue;
+                }
+
+                // Operator
+                switch (component)
+                {
+                    case "+":
+                    case "-":
+                    case "*":
+                    case "/":
+                        {
+                            if (rpnStack.Count < 2)
+                            {
+                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 2) for");
+                                retVal = false;
+                                break;
+                            }
+                            string result = rpnStack.Pop();
+                            result = component + result;
+                            result = rpnStack.Pop() + result;
+                            rpnStack.Push(result);
+                        }
+                        continue;
+
+                    case "min":
+                        {
+                            if (rpnStack.Count < 2)
+                            {
+                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 2) for");
+                                retVal = false;
+                                break;
+                            }
+                            string result = component + "(";
+                            result += rpnStack.Pop() + ",";
+                            result += rpnStack.Pop() + ")";
+                            rpnStack.Push(result);
+                        }
+                        continue;
+
+                    case "ifnotzero":
+                        {
+                            if (rpnStack.Count < 3)
+                            {
+                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 3) for");
+                                retVal = false;
+                                break;
+                            }
+                            string result = rpnStack.Pop();
+                            result += "?";
+                            result += rpnStack.Pop();
+                            result += ":";
+                            result += rpnStack.Pop();
+                            rpnStack.Push(result);
+                        }
+                        continue;
+
+                    case "num_shader_engines":
+                    case "num_simds":
+                    case "su_clocks_prim":
+                    case "num_prim_pipes":
+                    case "ts_freq":
+                        rpnStack.Push(component);
+                        continue;
+                }
+
+                // Special handling for sum{N}
+                if (component.Substring(0, 3) == "sum")
+                {
+                    int popCount = 0;
+                    string strCount = component.Substring(3);
+                    if (string.IsNullOrEmpty(strCount))
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "sum operator missing number of components");
+                        retVal = false;
+                        break;
+                    }
+
+                    isNumeric = int.TryParse(strCount, out popCount);
+                    if (!isNumeric)
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "sum operator with invalid component count");
+                        retVal = false;
+                        break;
+                    }
+
+                    if (rpnStack.Count < popCount)
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "attempt to sum more components than exist on stack");
+                        retVal = false;
+                        break;
+                    }
+
+                    for (int i = 0; i < popCount; ++i)
+                    {
+                        rpnStack.Pop();
+                    }
+                    rpnStack.Push("result:" + component);
+                    continue;
+                }
+
+                // Special handling for max{N}
+                if (component.Substring(0, 3) == "max")
+                {
+                    int popCount = 0;
+                    string strCount = component.Substring(3);
+                    if (string.IsNullOrEmpty(strCount))
+                    {
+                        popCount = 2;
+                    }
+                    else
+                    {
+                        isNumeric = int.TryParse(strCount, out popCount);
+                        if (!isNumeric)
+                        {
+                            OutputCounterError(counter.Name, component, componentIndex, "sum operator with invalid component count");
+                            retVal = false;
+                            break;
+                        }
+                    }
+
+                    if (rpnStack.Count < popCount)
+                    {
+                        OutputCounterError(counter.Name, component, componentIndex, "attempt to sum more components than exist on stack");
+                        retVal = false;
+                        break;
+                    }
+
+                    for (int i = 0; i < popCount; ++i)
+                    {
+                        rpnStack.Pop();
+                    }
+                    rpnStack.Push("result:" + component);
+                    continue;
+                }
+
+                // Unknown component - error
+                OutputCounterError(counter.Name, component, componentIndex, "unknown formula component");
+                retVal = false;
+            }
+
+            // Validate stack contains a single result
+            if (rpnStack.Count != 1)
+            {
+                Output("Error: " + counter.Name + " stack incorrectly contains " + rpnStack.Count.ToString() + " entries instead a single result");
+                retVal = false;
+            }
+
+            // Validate all hardware counters were referenced
+            int counterIndex = 0;
+
+            foreach (var hardwareCounter in counter.GetCounters())
+            {
+                if (hardwareCounter.Referenced == false)
+                {
+                    if (hardwareCounter.Name.Contains("SPI_PERF_PS_CTL_BUSY")
+                        || hardwareCounter.Name.Contains("SPI_PERF_PS_BUSY"))
+                    {
+                        Output("Info: " + counter.Name + " unreferenced block instance counter " + hardwareCounter.Name + " at index " 
+                            + counterIndex + ". This is required for some counter definitions.");
+                    }
+                    else
+                    {
+                        Output("Error: " + counter.Name + " unreferenced block instance counter " + hardwareCounter.Name + " at index " + counterIndex);
+                        retVal = false;
+                    }
+                }
+
+                ++counterIndex;
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
+        /// Validates the formula and referenced counters
+        /// </summary>
+        /// <param name="publicCounterList">List of public counter to validate</param>
+        /// <returns>True if the formula and referenced counters are correct, otherwise false.</returns>
+        private static bool ValidateFormulaAndReferencedCounters(ref List<PublicCounterDef> publicCounterList)
+        {
+            bool retVal = true;
+
+            foreach (PublicCounterDef counter in publicCounterList)
+            {
+                retVal &= ValidateFormulaAndReferencedCounter(counter);
+            }
+
+            return retVal;
+        }
+
+        /// <summary>
         ///
         /// </summary>
         /// <param name="counterNamesFile"></param>
@@ -165,6 +505,11 @@ namespace PublicCounterCompiler
             else
             {
                 Output("Read " + publicCounterList.Count + " public counters from " + counterDefsFile + ".");
+            }
+
+            if (ValidateFormulaAndReferencedCounters(ref publicCounterList) == false)
+            {
+                return false;
             }
 
             if (GenerateOutputFiles(ref internalCounterList, ref publicCounterList, sectionLabel, outputDir,
@@ -242,17 +587,11 @@ namespace PublicCounterCompiler
                         return false;
                     }
 
-                    InternalCounterDef newDef = new InternalCounterDef();
-                    newDef.Name = counterText[1].Trim();
-                    newDef.Type = counterText[2].Trim();
-                    internalCounterList.Add(newDef);
+                    internalCounterList.Add(new InternalCounterDef(counterText[1].Trim(), counterText[2].Trim()));
                 }
                 else
                 {
-                    InternalCounterDef newDef = new InternalCounterDef();
-                    newDef.Name = counterText[0].Trim();
-                    newDef.Type = counterText[1].Trim();
-                    internalCounterList.Add(newDef);
+                    internalCounterList.Add(new InternalCounterDef(counterText[0].Trim(), counterText[1].Trim()));
                 }
 
                 lineNum++;
@@ -417,27 +756,27 @@ namespace PublicCounterCompiler
                         // map input type to a GPA type
                         if (lineSplit[1].Equals("gpa_float32", StringComparison.OrdinalIgnoreCase))
                         {
-                            counterDef.Type = "GPA_TYPE_FLOAT32";
+                            counterDef.Type = "GPA_DATA_TYPE_FLOAT32";
                         }
                         else if (lineSplit[1].Equals("gpa_float64", StringComparison.OrdinalIgnoreCase))
                         {
-                            counterDef.Type = "GPA_TYPE_FLOAT64";
+                            counterDef.Type = "GPA_DATA_TYPE_FLOAT64";
                         }
                         else if (lineSplit[1].Equals("gpa_uint32", StringComparison.OrdinalIgnoreCase))
                         {
-                            counterDef.Type = "GPA_TYPE_UINT32";
+                            counterDef.Type = "GPA_DATA_TYPE_UINT32";
                         }
                         else if (lineSplit[1].Equals("gpa_uint64", StringComparison.OrdinalIgnoreCase))
                         {
-                            counterDef.Type = "GPA_TYPE_UINT64";
+                            counterDef.Type = "GPA_DATA_TYPE_UINT64";
                         }
                         else if (lineSplit[1].Equals("gpa_int32", StringComparison.OrdinalIgnoreCase))
                         {
-                            counterDef.Type = "GPA_TYPE_INT32";
+                            counterDef.Type = "GPA_DATA_TYPE_INT32";
                         }
                         else if (lineSplit[1].Equals("gpa_int64", StringComparison.OrdinalIgnoreCase))
                         {
-                            counterDef.Type = "GPA_TYPE_INT64";
+                            counterDef.Type = "GPA_DATA_TYPE_INT64";
                         }
                         else
                         {
@@ -671,13 +1010,13 @@ namespace PublicCounterCompiler
                                 return false;
                             }
 
-                            counterDef.AddCounter(index);
+                            counterDef.AddCounter(counterName, index);
                         }
                         else
                         {
                             Output("Warning: Counter not recognized " + s +
                                    ". Compare this spelling to the counter names file to see which is incorrect.");
-                            counterDef.AddCounter(-1);
+                            counterDef.AddCounter(s, -1);
                             numInvalidCounterNames++;
 
                             if (IgnoreInvalidCounters())
@@ -832,15 +1171,15 @@ namespace PublicCounterCompiler
 
                 csw.WriteLine("    {");
                 csw.WriteLine("        vector< gpa_uint32 > internalCounters;");
-                foreach (int i in c.GetCounters())
+                foreach (PublicCounterDef.HardwareCounterDef counter in c.GetCounters())
                 {
-                    csw.WriteLine("        internalCounters.push_back({0});", i);
+                    csw.WriteLine("        internalCounters.push_back({0});", counter.Id);
                 }
 
                 csw.WriteLine();
                 csw.WriteLine(
-                    "        p.DefinePublicCounter(\"{0}\", \"{1}\", \"{2}\", {3}, {4}, {6}, internalCounters, \"{5}\");",
-                    c.Name, c.Group, c.Desc, c.Type, c.Usage, c.Comp, c.CounterType);
+                    "        p.DefinePublicCounter(\"{0}\", \"{1}\", \"{2}\", {3}, {4}, {5}, internalCounters, \"{6}\", \"{7}\" );",
+                    c.Name, c.Group, c.Desc, c.Type, c.Usage, c.CounterType, c.Comp, c.GuidHash.ToString("D"));
                 csw.WriteLine("    }");
             }
 
@@ -943,8 +1282,8 @@ namespace PublicCounterCompiler
             foreach (PublicCounterDef publicCounter in counterDefList)
             {
                 ++counterCount;
-                cppStream.WriteLine("    {{\"{0}\", \"{1}\", \"{2}\", {3}, {4}}},", publicCounter.Name,
-                    publicCounter.Group, publicCounter.Desc, publicCounter.Type, publicCounter.Usage);
+                cppStream.WriteLine("    {{\"{0}\", \"{1}\", \"{2}\", {3}, {4}, {5}}},", publicCounter.Name,
+                    publicCounter.Group, publicCounter.Desc, publicCounter.Type, publicCounter.Usage, publicCounter.GuidHash.ToString("X"));
                 headerStream.WriteLine("#define {0}{1} {2}", publicCounter.Name, activeSectionLabel, counterIndex);
                 counterIndex++;
             }

@@ -9,6 +9,7 @@
 #define _GPA_HARDWARE_COUNTERS_H_
 
 #include "GPAInternalCounter.h"
+#include "GPASplitCountersInterfaces.h"
 
 /// Struct to describe a hardware counter
 struct GPA_HardwareCounterDescExt
@@ -73,10 +74,10 @@ public:
         return m_counters[index].m_pHardwareCounter->m_pName;
     }
 
-    /// Gets the category of the specified counter
-    /// \param index the index of the counter whose category is needed
-    /// \return the category of the specified counter
-    const char* GetCounterCategory(gpa_uint32 index) const
+    /// Gets the group (hw block) of the specified counter
+    /// \param index the index of the counter whose group is needed
+    /// \return the group name of the specified counter
+    const char* GetCounterGroup(gpa_uint32 index) const
     {
         return m_pGroups[m_counters[index].m_groupIndex].m_pName;
     }
@@ -89,50 +90,33 @@ public:
         return m_counters[index].m_pHardwareCounter->m_pDescription;
     }
 
-    /// List of counter groups as defined by the list of internal counters in each group.
-    GPA_HardwareCounterDesc** m_ppCounterGroupArray;
+    GPA_HardwareCounterDesc**                   m_ppCounterGroupArray;                  ///< List of counter groups as defined by the list of internal counters in each group.
+    GPA_CounterGroupDesc*                       m_pGroups;                              ///< List of internal counter groups
+    GPA_CounterGroupDesc*                       m_pAdditionalGroups;                    ///< List of internal counter groups exposed by the driver, but not known by GPA
+    unsigned int                                m_groupCount;                           ///< The number of internal counter groups
+    unsigned int                                m_additionalGroupCount;                 ///< The number of internal counter groups exposed by the driver, but not known by GPA
+    GPA_SQCounterGroupDesc*                     m_pSQCounterGroups;                     ///< List of SQCounterGroupDesc
+    unsigned int                                m_sqGroupCount;                         ///< The number of internal SQ counter groups
+    unsigned int                                m_gpuTimestampIndex;                    ///< Index of the GPUTimestamp group (-1 if it doesn't exist)
+    unsigned int                                m_gpuTimeIndex;                         ///< Index of the GPUTime group (-1 if it doesn't exist)
+    unsigned int                                m_gpuTimestampPreBottomCounterIndex;    ///< the index of the GPU Timestamp pre-event Bottom counter (-1 if it doesn't exist)
+    unsigned int                                m_gpuTimestampPostBottomCounterIndex;   ///< the index of the GPU Timestamp post-event Bottom counter (-1 if it doesn't exist)
+    unsigned int                                m_gpuTimestampTopCounterIndex;          ///< the index of the GPU Timestamp pre-event Top counter (-1 if it doesn't exist)
+    unsigned int                                m_gpuTimeBottomToBottomCounterIndex;    ///< the index of the GPUTime Bottom-to-Bottom counter (-1 if it doesn't exist)
+    unsigned int                                m_gpuTimeTopToBottomCounterIndex;       ///< the index of the GPUTime Top-to-Bottom counter (-1 if it doesn't exist)
+    bool                                        m_countersGenerated;                    ///< indicates that the internal counters have been generated
+    const uint32_t*                             m_pIsolatedGroups;                      ///< List of groups that are isolated from SQ groups
+    uint32_t                                    m_isolatedGroupCount;                   ///< The number of isolated groups
+    std::vector<GPA_HardwareCounterDescExt>     m_counters;                             ///< vector of hardware counters
+    std::vector<int>                            m_currentGroupUsedCounts;               ///< List of the number of counters which have been enabled in each group
 
-    /// List of internal counter groups
-    GPA_CounterGroupDesc* m_pGroups;
-
-    /// List of internal counter groups exposed by the driver, but not known by GPA
-    GPA_CounterGroupDesc* m_pAdditionalGroups;
-
-    /// The number of internal counter groups
-    unsigned int m_groupCount;
-
-    /// The number of internal counter groups exposed by the driver, but not known by GPA
-    unsigned int m_additionalGroupCount;
-
-    /// List of SQCounterGroupDesc
-    GPA_SQCounterGroupDesc* m_pSQCounterGroups;
-
-    /// The number of internal SQ counter groups
-    unsigned int m_sqGroupCount;
-
-    unsigned int m_gpuTimestampIndex; ///< Index of the GPUTimestamp group (-1 if it doesn't exist)
-    unsigned int m_gpuTimeIndex;      ///< Index of the GPUTime group (-1 if it doesn't exist)
-
-    unsigned int m_gpuTimestampPreBottomCounterIndex;  ///< the index of the GPU Timestamp pre-event Bottom counter (-1 if it doesn't exist)
-    unsigned int m_gpuTimestampPostBottomCounterIndex; ///< the index of the GPU Timestamp post-event Bottom counter (-1 if it doesn't exist)
-    unsigned int m_gpuTimestampTopCounterIndex;        ///< the index of the GPU Timestamp pre-event Top counter (-1 if it doesn't exist)
-    unsigned int m_gpuTimeBottomToBottomCounterIndex;  ///< the index of the GPUTime Bottom-to-Bottom counter (-1 if it doesn't exist)
-    unsigned int m_gpuTimeTopToBottomCounterIndex;     ///< the index of the GPUTime Top-to-Bottom counter (-1 if it doesn't exist)
-
-    /// indicates that the internal counters have been generated
-    bool m_countersGenerated;
-
-    /// List of groups that are isolated from SQ groups
-    const uint32_t* m_pIsolatedGroups;
-
-    /// The number of isolated groups
-    uint32_t m_isolatedGroupCount;
-
-    /// vector of hardware counters
-    std::vector<GPA_HardwareCounterDescExt> m_counters;
-
-    /// List of the number of counters which have been enabled in each group
-    std::vector<int> m_currentGroupUsedCounts;
+    /// Gets a counter's UUID
+    /// \param index the index of the requested counter
+    /// \return the counter's UUID
+    GPA_UUID GetCounterUuid(gpa_uint32 index) const
+    {
+        return ::GetCounterUuid(GetCounterName(index), GetCounterDescription(index));
+    }
 };
 
 #endif //_GPA_HARDWARE_COUNTERS_H_

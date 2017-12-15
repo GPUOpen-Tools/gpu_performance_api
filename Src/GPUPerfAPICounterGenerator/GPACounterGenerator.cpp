@@ -76,7 +76,7 @@ void ReplaceMCCountersWithFijiMCCounters(GPA_HardwareCounterDesc* pMcCounters, G
     }
 }
 
-GPA_Status GenerateCounters(GPA_API_Type desiredAPI, gpa_uint32 vendorId, gpa_uint32 deviceId, gpa_uint32 revisionId, GPA_ICounterAccessor** ppCounterAccessorOut, GPA_ICounterScheduler** ppCounterSchedulerOut)
+GPA_Status GenerateCounters(GPA_API_Type desiredAPI, gpa_uint32 vendorId, gpa_uint32 deviceId, gpa_uint32 revisionId, IGPACounterAccessor** ppCounterAccessorOut, IGPACounterScheduler** ppCounterSchedulerOut)
 {
     if (nullptr == ppCounterAccessorOut)
     {
@@ -162,7 +162,7 @@ GPA_Status GenerateCounters(GPA_API_Type desiredAPI, gpa_uint32 vendorId, gpa_ui
 
     GPA_Status status = GPA_STATUS_OK;
     GPA_CounterGeneratorBase* pTmpAccessor = nullptr;
-    GPA_ICounterScheduler* pTmpScheduler = nullptr;
+    IGPACounterScheduler* pTmpScheduler = nullptr;
 
     bool retCode = CounterGeneratorSchedulerManager::Instance()->GetCounterGenerator(desiredAPI, desiredGeneration, pTmpAccessor);
 

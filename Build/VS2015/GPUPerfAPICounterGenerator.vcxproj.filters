@@ -120,9 +120,6 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx7.h">
       <Filter>Source Files\InternalCounters\CL</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAICounterAccessor.h">
-      <Filter>Internally Exposed Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGenerator.h">
       <Filter>Internally Exposed Header Files</Filter>
     </ClInclude>
@@ -161,9 +158,6 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx7.h">
       <Filter>Source Files\PublicCounters\HSA</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAICounterScheduler.h">
-      <Filter>Internally Exposed Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorBase.h">
       <Filter>Source Files\CounterGenerators</Filter>
@@ -347,6 +341,15 @@
     </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorVKBase.h">
       <Filter>Source Files\CounterGenerators\VK</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\IGPACounterAccessor.h">
+      <Filter>Internally Exposed Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\IGPACounterScheduler.h">
+      <Filter>Internally Exposed Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGroupAccessor.h">
+      <Filter>Source Files\InternalCounters</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

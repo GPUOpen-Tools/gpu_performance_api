@@ -534,6 +534,7 @@ WARN_LOGFILE           = ../../Doc/public/PublicWarnings.txt
 INPUT                  = ..\..\Src\GPUPerfAPIDX\ \
                          ..\..\Src\GPUPerfAPIDX11\ \
                          ..\..\Src\GPUPerfAPIDX12\ \
+                         ..\..\Src\GPUPerfAPIVK\ \
                          ..\..\Src\GPUPerfAPIGL\ \
                          ..\..\Src\GPUPerfAPIGLES\ \
                          ..\..\Src\GPUPerfAPICL\ \
@@ -1371,7 +1372,7 @@ DOT_IMAGE_FORMAT       = png
 # The tag DOT_PATH can be used to specify the path where the dot tool can be 
 # found. If left blank, it is assumed the dot tool can be found in the path.
 
-DOT_PATH               = "C:\Program Files(x86)\Graphviz2.32\bin"
+DOT_PATH               = "C:\Program Files (x86)\Graphviz2.32\bin"
 
 # The DOTFILE_DIRS tag can be used to specify one or more directories that 
 # contain dot files that are included in the documentation (see the 

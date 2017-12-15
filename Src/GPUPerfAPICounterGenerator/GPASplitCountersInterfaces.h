@@ -81,15 +81,15 @@ public:
 };
 
 /// Interface for accessing information of an internal counter.
-class IGPACounterAccessor
+class IGPACounterGroupAccessor
 {
 public:
 
     /// Initializes an instance of the IGPACounterAccessor interface.
-    IGPACounterAccessor() {};
+    IGPACounterGroupAccessor() {};
 
     /// Virtual destructor
-    virtual ~IGPACounterAccessor() {};
+    virtual ~IGPACounterGroupAccessor() {};
 
     /// Sets the counter index of which to get the group and counter Id.
     /// \param index The counter index.
@@ -173,7 +173,7 @@ public:
     virtual std::list<GPACounterPass> SplitCounters(const std::vector<const GPA_PublicCounter*>& publicCountersToSplit,
                                                     const std::vector<GPAHardwareCounterIndices> internalCountersToSchedule,
                                                     const std::vector<GPASoftwareCounterIndices>  softwareCountersToSchedule,
-                                                    IGPACounterAccessor* pAccessor,
+                                                    IGPACounterGroupAccessor* pAccessor,
                                                     const std::vector<unsigned int>& maxCountersPerGroup,
                                                     unsigned int& numScheduledCounters) = 0;
 
@@ -247,7 +247,7 @@ protected:
     /// Tests to see if the counter group is an SQ counter group
     /// \param pAccessor The counter accessor that describes the counter that needs to be scheduled.
     /// \return True if a counter is an SQ group counter
-    bool IsSqCounterGroup(const IGPACounterAccessor* pAccessor) const
+    bool IsSqCounterGroup(const IGPACounterGroupAccessor* pAccessor) const
     {
         unsigned int groupIndex = pAccessor->GlobalGroupIndex();
         return m_sqCounterIndexSet.find(groupIndex) != m_sqCounterIndexSet.end();
@@ -257,7 +257,7 @@ protected:
     /// Tests to see if the counter group must be isolated from an SQ counter group
     /// \param pAccessor The counter accessor that describes the counter that needs to be scheduled.
     /// \return True if a counter must be isolated from SQ group counters
-    bool IsCounterGroupIsolatedFromSqCounterGroup(const IGPACounterAccessor* pAccessor) const
+    bool IsCounterGroupIsolatedFromSqCounterGroup(const IGPACounterGroupAccessor* pAccessor) const
     {
         unsigned int groupIndex = pAccessor->GlobalGroupIndex();
         return m_isolatedFromSqGroupIndexSet.find(groupIndex) != m_isolatedFromSqGroupIndexSet.end();
@@ -274,12 +274,17 @@ protected:
         {
             // Is the counter group in the list of interest?
             if (counterSet.find(groupEntry.first) == counterSet.end())
+            {
                 continue;
+            }
 
             // Check if any counters are scheduled on it
             if (groupEntry.second.size())
+            {
                 return true;
+            }
         }
+
         return false;
     }
 
@@ -288,15 +293,19 @@ protected:
     /// \param pAccessor The counter accessor that describes the counter that needs to be scheduled.
     /// \param currentPassData The counters enabled on each block in the current pass.
     /// \return True if the counter is compatible with counters already scheduled on the current pass
-    bool CheckCountersAreCompatible(const IGPACounterAccessor* pAccessor, const PerPassData& currentPassData) const
+    bool CheckCountersAreCompatible(const IGPACounterGroupAccessor* pAccessor, const PerPassData& currentPassData) const
     {
         // SQ counters cannot be scheduled on the same pass as TCC/TA/TCP/TCA/TD counters (and vice versa)
 
         if (IsSqCounterGroup(pAccessor))
+        {
             return !EnabledCounterGroupsContain(currentPassData, m_isolatedFromSqGroupIndexSet);
+        }
 
         if (IsCounterGroupIsolatedFromSqCounterGroup(pAccessor))
+        {
             return !EnabledCounterGroupsContain(currentPassData, m_sqCounterIndexSet);
+        }
 
         return true;
     }
@@ -304,17 +313,17 @@ protected:
     //--------------------------------------------------------------------------
     /// Ensures that there are enough pass partitions and per pass data for the number of required passes.
     /// \param numRequiredPasses The number of passes that must be available in the arrays.
-    /// \param[in,out] passPartitions The list to add additional pass partitions.
-    /// \param[in,out] numUsedCountersPerPassPerBlock The list to which additional used counter info should be added.
-    void AddNewPassInfo(unsigned int numRequiredPasses, std::list<GPACounterPass>& passPartitions, std::list<PerPassData>& numUsedCountersPerPassPerBlock)
+    /// \param[in,out] pPassPartitions The list to add additional pass partitions.
+    /// \param[in,out] pNumUsedCountersPerPassPerBlock The list to which additional used counter info should be added.
+    void AddNewPassInfo(unsigned int numRequiredPasses, std::list<GPACounterPass>* pPassPartitions, std::list<PerPassData>* pNumUsedCountersPerPassPerBlock)
     {
-        while (passPartitions.size() < numRequiredPasses)
+        while (pPassPartitions->size() < numRequiredPasses)
         {
             GPACounterPass counterPass;
-            passPartitions.push_back(counterPass);
+            pPassPartitions->push_back(counterPass);
 
             PerPassData newPass;
-            numUsedCountersPerPassPerBlock.push_back(newPass);
+            pNumUsedCountersPerPassPerBlock->push_back(newPass);
         }
     }
 
@@ -324,10 +333,10 @@ protected:
     /// \param currentPassData Contains the number of counters enabled on each block in the current pass.
     /// \param maxCountersPerGroup Contains the maximum number of counters allowed on each block in a single pass.
     /// \return True if a counter can be added; false if not.
-    bool CanCounterBeAdded(const IGPACounterAccessor* pAccessor, PerPassData& currentPassData, const std::vector<unsigned int>& maxCountersPerGroup)
+    bool CanCounterBeAdded(const IGPACounterGroupAccessor* pAccessor, PerPassData& currentPassData, const std::vector<unsigned int>& maxCountersPerGroup)
     {
         unsigned int groupIndex = pAccessor->GlobalGroupIndex();
-        size_t newGroupUsedCount = 1 ;
+        size_t newGroupUsedCount = 1;
 
         if (currentPassData.m_numUsedCountersPerBlock.count(groupIndex) > 0)
         {
@@ -345,7 +354,7 @@ protected:
     /// \param currentPassData The number of counters enabled on each block in the current pass.
     /// \param maxSQCounters The maximum number of simultaneous counters allowed on the SQ block.
     /// \return True if a counter can be added to the block specified by blockIndex; false if the counter cannot be scheduled.
-    bool CheckForSQCounters(const IGPACounterAccessor* pAccessor, PerPassData& currentPassData, unsigned int maxSQCounters)
+    bool CheckForSQCounters(const IGPACounterGroupAccessor* pAccessor, PerPassData& currentPassData, unsigned int maxSQCounters)
     {
         unsigned int groupIndex = pAccessor->GlobalGroupIndex();
         unsigned int counterIndex = pAccessor->CounterIndex();
@@ -359,7 +368,6 @@ protected:
         GPA_SQCounterGroupDesc sqCounterGroup = m_sqCounterIndexMap[groupIndex];
         vector<unsigned int> groups = m_sqShaderStageGroupMap[sqCounterGroup.m_stage]; // groups for this stage
 
-        //std::map<GPA_SQShaderStage, vector<unsigned int>> uniqueStageCounters;
         vector<unsigned int> thisStageCounters;
 
         // check if this counter has already been added (either via the current or a different shader engine)
@@ -413,15 +421,14 @@ protected:
         }
 
         return true;
-    };
-
+    }
     //--------------------------------------------------------------------------
     /// Checks if there are timestamp counters -- the counters need to go in their own pass.
-    /// This is because idle's must not be active when they are read, and when measuring counters idles are used.
+    /// This is because idles must not be active when they are read, and when measuring counters idles are used.
     /// \param pAccessor counter accessor that describes the counter that needs to be scheduled.
     /// \param currentPassCounters list of counters in current pass.
     /// \return true if the counter passes this check (not a timestamp, or it is a timestamp and can be added); false if the counter is a timestamp and cannot be added.
-    bool CheckForTimestampCounters(const IGPACounterAccessor* pAccessor, const GPACounterPass& currentPassCounters)
+    bool CheckForTimestampCounters(const IGPACounterGroupAccessor* pAccessor, const GPACounterPass& currentPassCounters)
     {
         unsigned int blockIndex = pAccessor->GlobalGroupIndex();
 
@@ -456,7 +463,7 @@ protected:
         }
 
         return false;
-    };
+    }
 };
 
 #endif //_GPA_SPLIT_COUNTER_INTERFACES_H_

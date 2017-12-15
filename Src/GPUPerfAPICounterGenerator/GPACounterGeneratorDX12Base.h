@@ -23,23 +23,23 @@ public:
     /// Constructor
     GPA_CounterGeneratorDX12Base() = default;
 
-    /// Destructor
+    /// Virtual Destructor
     virtual ~GPA_CounterGeneratorDX12Base();
 
 protected:
 
     /// Overridden methods -- see base for documentation
-    virtual GPA_Status GeneratePublicCounters(
+    GPA_Status GeneratePublicCounters(
         GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters) override;
 
-    virtual GPA_Status GenerateHardwareCounters(
+    GPA_Status GenerateHardwareCounters(
         GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters) override;
 
-    virtual GPA_Status GenerateSoftwareCounters(
+    GPA_Status GenerateSoftwareCounters(
         GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters) override;
 
-    virtual void ComputeSWCounterValue(
-        gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, GPA_HWInfo* pHwInfo) override;
+    void ComputeSWCounterValue(
+        gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const override;
 
 private:
 
@@ -60,7 +60,7 @@ private:
 
     /// Generate DX12 API software counters
     /// \return GPA_STATUS_OK if generating counters succeeded, false if it failed
-    GPA_Status GenerateDX12SoftwareCounters();
+    GPA_Status GenerateDX12SoftwareCounters() const;
 };
 
 #endif // _GPA_COUNTER_GENERATOR_DX12_BASE_H_

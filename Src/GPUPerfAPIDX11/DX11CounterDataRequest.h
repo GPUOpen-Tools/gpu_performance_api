@@ -9,7 +9,6 @@
 #define _DX11_COUNTER_DATA_REQUEST_H_
 
 #include <d3d11.h>
-#include "GPUPerfAPIImp.h"
 #include "GPUPerfAPIDX11.h"
 #include "ICounterDataRequest.h"
 
@@ -35,12 +34,28 @@ public:
     /// \param pCounters The set of counters to enable in place of the existing ones
     void Reset(gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters);
 
-    virtual bool CollectResults(GPA_CounterResults& resultStorage);
+    /// Collects the results if they are available.
+    /// \param[out] resultStorage
+    /// \return true if the results were collected; false if they are not available.
+    virtual bool CollectResults(GPASampleResult& resultStorage);
 
 protected:
 
+    /// Start a counter sample.
+    /// Begin must handle the case where a request is reused
+    /// try and reuse resources if selectionID matches (which means the same counters are activated).
+    /// \param pContextState pointer to object containing the context information for this request
+    /// \param pSampleList the sample list where sampling is being started
+    /// \param selectionID the ID of the counter selection
+    /// \param pCounters the set of counters to enable
+    /// \return True if the sample could be started; false otherwise.
     virtual bool BeginRequest(GPA_ContextState* pContextState, void* pSampleList, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters);
+
+    /// Ends a counter sample.
+    /// \return True on success; false on error.
     virtual bool EndRequest();
+
+    /// Release allocated counters
     virtual void ReleaseCounters();
 };
 

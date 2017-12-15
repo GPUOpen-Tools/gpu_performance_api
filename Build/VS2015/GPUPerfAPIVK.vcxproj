@@ -39,6 +39,7 @@
     <Import Project="GPA-Common.props" />
     <Import Project="GPA-DLL.props" />
     <Import Project="..\..\..\Common\Lib\Ext\Vulkan\Global-Vulkan.props" />
+    <Import Project="GPA-API-DLL.props" />
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Internal.props" />
   </ImportGroup>
   <ItemDefinitionGroup>
@@ -50,26 +51,33 @@
   <ItemGroup>
     <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkCommandListSwQueries.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkCommandListSWQueryGroup.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkCounterDataRequestProxy.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkDataRequest.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkHardwareCounterDataRequest.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkSoftwareCounterDataRequest.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIVk\GPAContextStateVk.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIVk\GPUPerfAPIVk.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkEntrypoints.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkGPAPass.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkGPASample.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkGPACommandList.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkGPAContext.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkGPASession.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkGPAHardwareSample.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkGPASoftwareSample.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkGPAImplementor.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIVk\VkUtils.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI-VK.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkCommandListSwQueries.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkCommandListSWQueryGroup.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkCounterDataRequestProxy.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPAPass.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPASample.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkEntrypoints.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkHardwareCounterDataRequest.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkSoftwareCounterDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPACommandList.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPAContext.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPASession.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPAHardwareSample.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPASoftwareSample.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkSoftwareCountersResults.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIVk\GPAContextStateVk.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIVk\GPUPerfAPIVk.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPAImplementor.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkUtils.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\Src\GPUPerfAPIVk\GPUPerfAPIVk.rc" />

@@ -31,16 +31,28 @@ public:
     /// Destroy this DX12 SW counter data request
     virtual ~DX12SoftwareCounterDataRequest();
 
-    virtual bool CollectResults(GPA_CounterResults& resultStorage);
+    /// Collects the results if they are available.
+    /// \param[out] resultStorage
+    /// \return true if the results were collected; false if they are not available.
+    virtual bool CollectResults(GPASampleResult& resultStorage);
 
+    /// Start a counter sample.
+    /// Begin must handle the case where a request is reused
+    /// try and reuse resources if selectionID matches (which means the same counters are activated).
+    /// \param pContextState pointer to object containing the context information for this request
+    /// \param pSampleList the sample list where sampling is being started
+    /// \param pCounters the set of counters to enable
+    /// \return True if the sample could be started; false otherwise.
     virtual bool BeginRequest(
         GPA_ContextState* pContextState,
         void* pSampleList,
-        gpa_uint32 selectionId,
         const vector<gpa_uint32>* pCounters);
 
+    /// Ends a counter sample.
+    /// \return True on success; false on error.
     virtual bool EndRequest();
 
+    /// Release allocated counters
     virtual void ReleaseCounters();
 
 private:

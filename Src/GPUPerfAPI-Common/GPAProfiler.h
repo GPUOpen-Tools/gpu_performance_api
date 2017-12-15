@@ -45,6 +45,8 @@
 // total time in: total time spent within this function, not including time spent in profiled functions called by it.
 // time in per call: average time spent within this function per call, not including time spent in profiled functions called by it.
 
+//#define ENABLE_PROFILING
+#include <mutex>
 
 #ifdef ENABLE_PROFILING
 
@@ -142,8 +144,10 @@ class ScopeProfile
 public:
     ScopeProfile(const char* pFunctionName)
     {
+        m_mutex.lock();
         m_pFunctionName = pFunctionName;
         gProfilerSingleton.EnterFunction(pFunctionName);
+        m_mutex.unlock();
     }
 
     ~ScopeProfile()
@@ -153,6 +157,7 @@ public:
 
 protected:
     const char* m_pFunctionName;
+    std::mutex m_mutex;
 };
 
 

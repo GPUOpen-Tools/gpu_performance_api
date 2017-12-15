@@ -17,6 +17,9 @@ INCLUDES =	-I. \
 		-I$(AMD_VK_EXT_DIR) \
 		-I$(VK_INCLUDE_DIR) \
 		-I$(VK_INCLUDE_DIR)/vulkan \
+		-I$(VK_SOURCE_DIR)/layers \
+		-I$(VK_SOURCE_DIR)/loader \
+		-I$(VK_SDK_DIR)/glslang/SPIRV \
 
 LIB_OBJS	= \
 	./$(OBJ_DIR)/GPAPublicCounters.o \

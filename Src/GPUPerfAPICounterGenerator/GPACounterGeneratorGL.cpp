@@ -32,7 +32,7 @@ GPA_CounterGeneratorGL::GPA_CounterGeneratorGL() :
     m_pDriverSuppliedGroups(nullptr),
     m_driverSuppliedGroupCount(0)
 {
-    SetAllowedCounters(true, true, false); // TODO: investigate allowing software counters in public build (i.e. GPUTime for all hardware)
+    GPA_CounterGeneratorBase::SetAllowedCounters(true, true, false); // TODO: investigate allowing software counters in public build (i.e. GPUTime for all hardware)
 
     // TODO: need to make some changes to support GPUTime counter on Intel and NVidia in public build
     for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
@@ -174,7 +174,7 @@ bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_Hardware
                 strcat_s(counter.m_pHardwareCounter->m_pDescription, nDescSize, GPA_HIDE_NAME("#"));
                 strcat_s(counter.m_pHardwareCounter->m_pDescription, nDescSize, GPA_HIDE_NAME(gs_pDriverSuppliedCounter));
 
-                counter.m_pHardwareCounter->m_type = GPA_TYPE_UINT64;
+                counter.m_pHardwareCounter->m_type = GPA_DATA_TYPE_UINT64;
                 counter.m_groupIdDriver = driverPerfGroupId;
                 counter.m_counterIdDriver = 0;
 
@@ -316,6 +316,7 @@ GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(GDT_HW_GENERATION desi
         case GDT_HW_GENERATION_GFX9:
             AutoDefinePublicCountersGLGfx9(*pPublicCounters);
             break;
+
         default:
             GPA_LogError("Unsupported or unrecognized hardware generation. Cannot generate public counters.");
             return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;

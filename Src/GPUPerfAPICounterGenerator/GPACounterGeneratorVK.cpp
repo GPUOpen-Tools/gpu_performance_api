@@ -55,7 +55,7 @@ UINT GPA_CounterGeneratorVK::CalculateBlockIdVK(GDT_HW_GENERATION generation, GP
 GPA_CounterGeneratorVK::GPA_CounterGeneratorVK():
     GPA_CounterGeneratorVKBase()
 {
-    SetAllowedCounters(true, true, true); //enable public, hw, and sw counters
+    GPA_CounterGeneratorBase::SetAllowedCounters(true, true, true); //enable public, hw, and sw counters
 
     for (int gen = GDT_HW_GENERATION_SOUTHERNISLAND; gen < GDT_HW_GENERATION_LAST; gen++)
     {

@@ -18,16 +18,28 @@ public:
     /// Constructor
     GPA_CounterGeneratorDX11Base();
 
-    /// Overridden methods -- see base for documentation
-    virtual GPA_Status GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters) override;
-    virtual GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters) override;
-    virtual GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters) override;
-    virtual void ComputeSWCounterValue(gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, GPA_HWInfo* pHwInfo) override;
+    /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
+    GPA_Status GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration,
+        GPA_PublicCounters* pPublicCounters) override;
+
+    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
+    GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration,
+        GPA_HardwareCounters* pHardwareCounters) override;
+
+    /// \copydoc GPA_CounterGeneratorBase::GenerateSoftwareCounters
+    GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration,
+        GPA_SoftwareCounters* pSoftwareCounters) override;
+
+    /// \copydoc IGPACounterAccessor::ComputeSWCounterValue()
+    void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex,
+        gpa_uint64 value,
+        void* pResult,
+        const GPA_HWInfo* pHwInfo) const override;
 
     /// Get the D3D11_QUERY enum value based on our own software counter index
     /// \param index Our SW counter index
     /// \return a D3D11_QUERY enum value
-    gpa_uint32 GetD3D11Enum(gpa_uint32 index);
+    gpa_uint32 GetD3D11Enum(gpa_uint32 index) const;
 
     /// Add D3D software counters
     /// \param desiredGeneration of GDT_HW_GENERATION

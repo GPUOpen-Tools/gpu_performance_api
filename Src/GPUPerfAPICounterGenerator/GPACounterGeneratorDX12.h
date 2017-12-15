@@ -23,10 +23,10 @@ public:
 protected:
 
     /// Overridden methods -- see base for documentation
-    virtual GPA_Status GeneratePublicCounters(
+    GPA_Status GeneratePublicCounters(
         GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters) override;
 
-    virtual GPA_Status GenerateHardwareCounters(
+    GPA_Status GenerateHardwareCounters(
         GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters) override;
 
 private:

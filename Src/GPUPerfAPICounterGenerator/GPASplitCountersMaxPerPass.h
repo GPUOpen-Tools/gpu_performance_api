@@ -51,7 +51,7 @@ public:
     std::list<GPACounterPass> SplitCounters(const std::vector<const GPA_PublicCounter*>& publicCountersToSplit,
                                             const std::vector<GPAHardwareCounterIndices> internalCountersToSchedule,
                                             const std::vector<GPASoftwareCounterIndices>  softwareCountersToSchedule,
-                                            IGPACounterAccessor* accessor,
+                                            IGPACounterGroupAccessor* accessor,
                                             const std::vector<unsigned int>& maxCountersPerGroup,
                                             unsigned int& numScheduledCounters)
     {
@@ -68,7 +68,7 @@ public:
         std::list<PerPassData> numUsedCountersPerPassPerBlock;
 
         // add initial pass information
-        AddNewPassInfo(1, passPartitions, numUsedCountersPerPassPerBlock);
+        AddNewPassInfo(1, &passPartitions, &numUsedCountersPerPassPerBlock);
 
         // will store the locations for each scheduled internal counter to help ensure that we don't duplicate any scheduling
         std::map<unsigned int, GPA_CounterResultLocation> internalCounterResultLocations;
@@ -101,7 +101,7 @@ public:
                     while (doneAllocatingCounter == false)
                     {
                         // make sure there is a partition for current pass
-                        AddNewPassInfo(passIndex + 1, passPartitions, numUsedCountersPerPassPerBlock);
+                        AddNewPassInfo(passIndex + 1, &passPartitions, &numUsedCountersPerPassPerBlock);
 
                         // increment the pass iterator if past the first loop
                         if (passIndex > 0)
@@ -160,7 +160,7 @@ private:
     /// \param numUsedCountersPerPassPerBlock A list of passes, each consisting of the number of counters scheduled on each block
     /// \param maxCountersPerGroup A vector containing the maximum number of simultaneous counters for each block
     /// \param[in,out] numScheduledCounters The total number of internal counters that were scheduled
-    void InsertHardwareCounters(std::list<GPACounterPass>& passPartitions, const std::vector<GPAHardwareCounterIndices> internalCounters, IGPACounterAccessor* accessor, std::list<PerPassData> numUsedCountersPerPassPerBlock, const std::vector<unsigned int>& maxCountersPerGroup, unsigned int& numScheduledCounters)
+    void InsertHardwareCounters(std::list<GPACounterPass>& passPartitions, const std::vector<GPAHardwareCounterIndices> internalCounters, IGPACounterGroupAccessor* accessor, std::list<PerPassData> numUsedCountersPerPassPerBlock, const std::vector<unsigned int>& maxCountersPerGroup, unsigned int& numScheduledCounters)
     {
         // schedule each of the internal counters
         for (std::vector<GPAHardwareCounterIndices>::const_iterator internalCounterIter = internalCounters.begin(); internalCounterIter != internalCounters.end(); ++internalCounterIter)
@@ -194,7 +194,7 @@ private:
 
             // The counter needs to be scheduled
             // make sure there is enough space for the first pass
-            AddNewPassInfo(1, passPartitions, numUsedCountersPerPassPerBlock);
+            AddNewPassInfo(1, &passPartitions, &numUsedCountersPerPassPerBlock);
 
             accessor->SetCounterIndex(internalCounterIter->m_hardwareIndex);
 
@@ -224,7 +224,7 @@ private:
                     ++passIndex;
 
                     // make sure there is enough space for the next pass
-                    AddNewPassInfo(passIndex + 1, passPartitions, numUsedCountersPerPassPerBlock);
+                    AddNewPassInfo(passIndex + 1, &passPartitions, &numUsedCountersPerPassPerBlock);
 
                     // increment the iterator after any necessary new passes have been allocated.
                     ++countersUsedIter;

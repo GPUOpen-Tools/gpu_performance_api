@@ -24,7 +24,7 @@
     #include "InternalCountersDX12Gfx9.h"
 #endif
 
-static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<const char*>& counterNames)
+static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<const char*>& counterNames)
 {
     counterNames.clear();
 

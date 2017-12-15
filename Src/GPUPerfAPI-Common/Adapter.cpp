@@ -1,12 +1,11 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Query adapters' info from GDI32.
 //==============================================================================
 
 #include <cassert>
-#include <locale>
 #include <sstream>
 
 #include "Adapter.h"
@@ -14,15 +13,7 @@
 #include "Utility.h"
 
 
-Adapter::Adapter()
-{
-}
-
-Adapter::~Adapter()
-{
-}
-
-bool Adapter::getAsicInfoList(AsicInfoList& asicInfoList)
+bool Adapter::getAsicInfoList(AsicInfoList& asicInfoList) const
 {
     IDXGIFactory* pDxgiFactory = nullptr;
     HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDxgiFactory));
@@ -85,7 +76,7 @@ bool Adapter::getAsicInfoList(AsicInfoList& asicInfoList)
 
 void Adapter::dxgiAdapterDescToAsicInfo(const DXGI_ADAPTER_DESC& dxgiAdapterDesc, ADLUtil_ASICInfo& asicInfo)
 {
-    wcstringToString(dxgiAdapterDesc.Description, asicInfo.adapterName);
+    GPAUtil::wcstringToString(dxgiAdapterDesc.Description, asicInfo.adapterName);
     std::stringstream strStream;
     strStream << std::hex << dxgiAdapterDesc.DeviceId;
     asicInfo.deviceIDString = strStream.str();

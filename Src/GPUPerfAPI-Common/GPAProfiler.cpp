@@ -5,6 +5,7 @@
 /// \brief  Internal class to support profiling GPA calls themselves
 //==============================================================================
 
+//#define ENABLE_PROFILING
 #ifdef ENABLE_PROFILING
 
 #include "GPAProfiler.h"

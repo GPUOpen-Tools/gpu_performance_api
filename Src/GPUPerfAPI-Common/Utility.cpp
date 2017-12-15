@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2014-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2014-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Utility macros, constants and function declarations
@@ -8,8 +8,14 @@
 #include <locale>
 
 #include "Utility.h"
+#include "GPACommonDefs.h"
 
-void wcstringToString(const wchar_t* pWstr, std::string& str)
+EXTERN_C IMAGE_DOS_HEADER __ImageBase; ///< __ImageBase symbol exported by MSVC linker
+                                       /// the HINSTANCE of the owning module
+#define HINST_THISCOMPONENT ((HINSTANCE)&__ImageBase)
+
+
+void GPAUtil::wcstringToString(const wchar_t* pWstr, std::string& str)
 {
     const size_t strLen = wcslen(pWstr);
     str.resize(strLen);
@@ -20,7 +26,24 @@ void wcstringToString(const wchar_t* pWstr, std::string& str)
     }
 }
 
-void wstringToString(const std::wstring& wstr, std::string& str)
+void GPAUtil::wstringToString(const std::wstring& wstr, std::string& str)
 {
     wcstringToString(wstr.c_str(), str);
+}
+
+bool GPAUtil::GetCurrentModulePath(std::string& currentModulePath)
+{
+    bool success = false;
+
+    char szThisModuleName[MAX_PATH];
+
+    if (0 != GetModuleFileNameA(HINST_THISCOMPONENT, szThisModuleName, MAX_PATH))
+    {
+        char szThisModulePath[MAX_PATH];
+        strncpy_s(szThisModulePath, MAX_PATH, szThisModuleName, strrchr(szThisModuleName, '\\') + 1 - szThisModuleName);
+        currentModulePath = szThisModulePath;
+        success = true;
+    }
+
+    return success;
 }

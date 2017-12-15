@@ -16,7 +16,7 @@ GPA_CounterSchedulerDX12::GPA_CounterSchedulerDX12()
     }
 }
 
-GPACounterSplitterAlgorithm GPA_CounterSchedulerDX12::GetPreferredSplittingAlgorithm()
+GPACounterSplitterAlgorithm GPA_CounterSchedulerDX12::GetPreferredSplittingAlgorithm() const
 {
     return CONSOLIDATED;
 }

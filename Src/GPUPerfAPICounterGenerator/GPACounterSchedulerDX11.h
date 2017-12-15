@@ -27,7 +27,7 @@ protected:
     /// This keeps the overall number of passes down to a reasonable number, but splits the counters up
     /// in a manner that allows them to be more consistent.
     /// \return The splitting algorithm to use.
-    virtual GPACounterSplitterAlgorithm GetPreferredSplittingAlgorithm();
+    virtual GPACounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const;
 };
 
 #endif //_GPA_COUNTER_SCHEDULER_DX11_H_

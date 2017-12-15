@@ -3,6 +3,7 @@
 # Simple script to clone or update a set of common directories that are needed as dependencies of the GPUPerfAPI.
 # This script should be run after cloning the GPA repository.
 
+import argparse
 import ctypes
 import os
 import platform
@@ -31,6 +32,11 @@ if MACHINE_OS == "Linux":
 else:
     from UpdateCommonMap import downloadAndInstallMappingWin as downloadAndInstallMapping
 
+# specify whether or not to download the Vulkan SDK (default is to download it)
+parser = argparse.ArgumentParser(description='UpdateCommon args')
+parser.add_argument('--skipvulkansdk', action='store_true', default=False, help='Prevents script from trying to install the Vulkan SDK')
+args = parser.parse_args()
+
 # to allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file
 scriptRoot = os.path.dirname(os.path.realpath(__file__))
 
@@ -39,7 +45,7 @@ scriptRoot = os.path.dirname(os.path.realpath(__file__))
 
 for key in GitHubMapping:
     # convert targetPath to OS specific format
-    tmppath = os.path.join(scriptRoot, "..", GitHubMapping[key][0])
+    tmppath = os.path.join(scriptRoot, "..", GitHubMapping[key])
     # clean up path, collapsing any ../ and converting / to \ for Windows
     targetPath = os.path.normpath(tmppath)
     if os.path.isdir(targetPath):
@@ -51,8 +57,6 @@ for key in GitHubMapping:
         gitamdRoot = "https://github.com/GPUOpen-Tools/" + key
         commandArgs = ["git", "clone", gitamdRoot, targetPath]
         p = subprocess.Popen( commandArgs )
-        p.wait()
-        p = subprocess.Popen(["git","reset","--hard",GitHubMapping[key][1]], cwd=targetPath)
         p.wait()
 
 # Downloads and runs an installer for a Common Dir (just used for VulkanSDK currently)
@@ -94,5 +98,6 @@ def download_and_run(key, value):
             print("\nCopying " + value[1] + " to " + dstDir)
             shutil.copytree(value[1], dstDir)
 
-for key in downloadAndInstallMapping:
-    download_and_run(key, downloadAndInstallMapping[key])
+if False == args.skipvulkansdk:
+    for key in downloadAndInstallMapping:
+        download_and_run(key, downloadAndInstallMapping[key])

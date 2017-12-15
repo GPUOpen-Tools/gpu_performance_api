@@ -9,7 +9,6 @@
 #define _D3D11_SOFTWARE_COUNTER_DATA_REQUEST_H_
 
 #include <d3d11.h>
-#include "GPUPerfAPIImp.h"
 #include "ICounterDataRequest.h"
 #include "GPUPerfAPIDX11.h"
 #include "DX11ComSmartPtrs.h"
@@ -64,20 +63,43 @@ class D3D11SoftwareCounterDataRequest : public ICounterDataRequest
 public:
 
     /// Initializes a new D3D11SoftwareCounterDataRequest object with GPA_DataRequest object
+    /// \param pParentCounter the parent data request
     D3D11SoftwareCounterDataRequest(GPA_DataRequest* pParentCounter);
 
     /// Destructor
     virtual ~D3D11SoftwareCounterDataRequest();
 
 protected:
+    /// Start a counter sample.
+    /// Begin must handle the case where a request is reused
+    /// try and reuse resources if selectionID matches (which means the same counters are activated).
+    /// \param pContextState pointer to object containing the context information for this request
+    /// \param selectionID the ID of the counter selection
+    /// \param pCounters the set of counters to enable
+    /// \return True if the sample could be started; false otherwise.
     virtual bool BeginRequest(
         GPA_ContextState* pContextState,
         gpa_uint32 selectionID,
         const vector<gpa_uint32>* pCounters) override;
+
+    /// Ends a counter sample.
+    /// \return True on success; false on error.
     virtual bool EndRequest() override;
+
+    /// Release allocated counters
     virtual void ReleaseCounters() override;
+
+    /// Reset the counters
+    /// \param selectionID the selection ID of the request
+    /// \param pCounters the counters to enable for this request
     virtual void Reset(gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters) override;
-    virtual bool CollectResults(GPA_CounterResults& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId) override;
+
+    /// Collects the results if they are available.
+    /// \param resultStorage the place to store counter results
+    /// \param numActiveCounters the number of active counters
+    /// \param sampleId the samplpe id whose results are needed
+    /// \return true if the results were collected; false if they are not available.
+    virtual bool CollectResults(GPASampleResult& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId) override;
 
     /// Gets the GPU time data
     /// \return the GPU time data
@@ -103,7 +125,7 @@ protected:
     GPA_DataRequest*              m_parentCounter;                     ///< Pointer to the parent counter object - it has data members we need to work on.
     gpa_uint32                    m_numAMDCounters     = 0;            ///< number of AMD counters
     gpa_uint32                    m_numSwCounters      = 0;            ///< number of SW counters
-    const EnabledSwCounterSet*    m_pEnabledSwCounters = nullptr;      ///< pointer to s_pSwCounterManager::m_EnabledSwCounters vector
+    const EnabledSwCounterSet*    m_pEnabledSwCounters = nullptr;      ///< pointer to SwCounterManager::Instance()::m_EnabledSwCounters vector
     vector<gpa_uint32>            m_activeSWCountersVec;               ///< active SW counter public index vector in current pass
 };
 

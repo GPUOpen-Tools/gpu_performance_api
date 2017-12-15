@@ -697,7 +697,6 @@ comp=0..3,sum4,(4),*,NUM_SIMDS,/
 ;[GLGfx9]
 ;SQ_VS_SQ_PERF_SEL_INST_CYCLES_VALU
 ;SQ_ES_SQ_PERF_SEL_INST_CYCLES_VALU
-;GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 ;SQ_ES_SQ_PERF_SEL_ITEMS
 ;SQ_LS_SQ_PERF_SEL_ITEMS
 ;comp=(0),0,1,3,ifnotzero,4,ifnotzero,(4),*,NUM_SIMDS,/
@@ -706,7 +705,6 @@ comp=0..3,sum4,(4),*,NUM_SIMDS,/
 ;[VKGfx9]
 ;SQ_VS*_SQ_PERF_SEL_INST_CYCLES_VALU[0..3]
 ;SQ_ES*_SQ_PERF_SEL_INST_CYCLES_VALU[0..3]
-;GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 ;SQ_ES*_SQ_PERF_SEL_ITEMS[0..3]
 ;SQ_LS*_SQ_PERF_SEL_ITEMS[0..3]
 ;comp=(0),0..3,sum4,4..7,sum4,9..12,sum4,ifnotzero,13..16,sum4,ifnotzero,(4),*,NUM_SIMDS,/
@@ -739,7 +737,6 @@ comp=0..3,sum4,(4),*,NUM_SIMDS,/
 ;[GLGfx9]
 ;SQ_VS_SQ_PERF_SEL_INST_CYCLES_SALU
 ;SQ_ES_SQ_PERF_SEL_INST_CYCLES_SALU
-;GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 ;SQ_ES_SQ_PERF_SEL_ITEMS
 ;SQ_LS_SQ_PERF_SEL_ITEMS
 ;comp=(0),0,1,3,ifnotzero,4,ifnotzero,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/
@@ -748,7 +745,6 @@ comp=0..3,sum4,(4),*,NUM_SIMDS,/
 ;[VKGfx9]
 ;SQ_VS*_SQ_PERF_SEL_INST_CYCLES_SALU[0..3]
 ;SQ_ES*_SQ_PERF_SEL_INST_CYCLES_SALU[0..3]
-;GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 ;SQ_ES*_SQ_PERF_SEL_ITEMS[0..3]
 ;SQ_LS*_SQ_PERF_SEL_ITEMS[0..3]
 ;comp=(0),0..3,sum4,4..7,sum4,9..12,sum4,ifnotzero,13..16,sum4,ifnotzero,(4),*,NUM_SIMDS,/
@@ -903,7 +899,6 @@ PA_SU_PERF_PAPC_SU_OUTPUT_PRIM
 PA_SU_PERF_PAPC_SU_OUTPUT_PRIM_DUAL
 PA_SU_PERF_PAPC_SU_OUTPUT_CLIP_PRIM
 PA_SU_PERF_PAPC_SU_OUTPUT_CLIP_PRIM_DUAL
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0,1,-,2,3,+,4,+,5,(2),*,+,SU_CLOCKS_PRIM,*,-,NUM_PRIM_PIPES,/,(0),max
 [DX11Gfx9]
 [DX12Gfx9]
@@ -914,7 +909,6 @@ PA_SU*_PERF_PAPC_SU_OUTPUT_PRIM[0..3]
 PA_SU*_PERF_PAPC_SU_OUTPUT_PRIM_DUAL[0..3]
 PA_SU*_PERF_PAPC_SU_OUTPUT_CLIP_PRIM[0..3]
 PA_SU*_PERF_PAPC_SU_OUTPUT_CLIP_PRIM_DUAL[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0,4,-,8,12,+,16,+,20,(2),*,+,SU_CLOCKS_PRIM,*,-,1,5,-,9,13,+,17,+,21,(2),*,+,SU_CLOCKS_PRIM,*,-,max,2,6,-,10,14,+,18,+,22,(2),*,+,SU_CLOCKS_PRIM,*,-,max,3,7,-,11,15,+,19,+,23,(2),*,+,SU_CLOCKS_PRIM,*,-,max,(0),max
 
 name=PrimitivesIn
@@ -1322,8 +1316,6 @@ comp=0,(4),*,NUM_SIMDS,/
 [DX12Gfx9]
 [VKGfx9]
 SQ_CS*_SQ_PERF_SEL_ACTIVE_INST_VALU[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
-SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]
 comp=0..3,sum4,(4),*,NUM_SIMDS,/
 
 name=CSSALUBusy
@@ -1353,8 +1345,6 @@ comp=0,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/
 [DX12Gfx9]
 [VKGfx9]
 SQ_CS*_SQ_PERF_SEL_INST_CYCLES_SALU[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
-SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]
 comp=0..3,sum4,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/
 
 name=CSMemUnitBusy
@@ -1417,42 +1407,9 @@ comp=0..15,max16,NUM_SHADER_ENGINES,/
 TCP*_TCP_PERF_SEL_TCP_TA_DATA_STALL_CYCLES[0..63]
 comp=0..63,max64
 
-name=CSFetchSize
-desc=#ComputeShader#The total kilobytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
-type=gpa_float64
-usage=kilobytes
-[GLGfx9]
-TCC*_TCC_PERF_SEL_EA_RDREQ[0..15]
-TCC*_TCC_PERF_SEL_EA_RDREQ_32B[0..15]
-SPI_SPI_PERF_CSG_NUM_THREADGROUPS
-comp=(0),0..15,sum16,16..31,sum16,-,(64),*,16..31,sum16,(32),*,+,(1024),/,32,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-TCC*_TCC_PERF_SEL_EA_RDREQ[0..15]
-TCC*_TCC_PERF_SEL_EA_RDREQ_32B[0..15]
-SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]
-comp=(0),0..15,sum16,16..31,sum16,-,(64),*,16..31,sum16,(32),*,+,(1024),/,16,17,18,19,sum4,ifnotzero
 
-name=CSWriteSize
-desc=#ComputeShader#The total kilobytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
-type=gpa_float64
-usage=kilobytes
-[GLGfx9]
-TCC*_TCC_PERF_SEL_EA_WRREQ[0..15]
-TCC*_TCC_PERF_SEL_EA_WRREQ_64B[0..15]
-SPI_SPI_PERF_CSG_NUM_THREADGROUPS
-comp=(0),0..15,sum16,16..31,sum16,-,(32),*,16..31,sum16,(64),*,+,(1024),/,32,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-TCC*_TCC_PERF_SEL_EA_WRREQ[0..15]
-TCC*_TCC_PERF_SEL_EA_WRREQ_64B[0..15]
-SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]
-comp=(0),0..15,sum16,16..31,sum16,-,(32),*,16..31,sum16,(64),*,+,(1024),/,16,17,18,19,sum4,ifnotzero
-
-name=CSL1CacheHit
-desc=#ComputeShader#The percentage of fetch, write, atomic, and other instructions that hit the data in L1 cache. Value range: 0% (no hit) to 100% (optimal).
+name=L1CacheHit
+desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the data in L1 cache. Value range: 0% (no hit) to 100% (optimal).
 type=gpa_float64
 usage=percentage
 [GLGfx9]
@@ -1472,8 +1429,8 @@ TCP*_TCP_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ[0..63]
 TCP*_TCP_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ[0..63]
 comp=(0),(1),64..319,sum256,0..63,sum64,/,-,(100),*,0..63,sum64,ifnotzero
 
-name=CSL1CacheHitCount
-desc=#ComputeShader#Count of fetch, write, atomic, and other instructions that hit the data in L1 cache.
+name=L1CacheHitCount
+desc=#GlobalMemory#Count of fetch, write, atomic, and other instructions that hit the data in L1 cache.
 type=gpa_float64
 usage=items
 [GLGfx9]
@@ -1493,8 +1450,8 @@ TCP*_TCP_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ[0..63]
 TCP*_TCP_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ[0..63]
 comp=0..63,sum64,64..319,sum256,-
 
-name=CSL1CacheMissCount
-desc=#ComputeShader#Count of fetch, write, atomic, and other instructions that miss the data in L1 cache.
+name=L1CacheMissCount
+desc=#GlobalMemory#Count of fetch, write, atomic, and other instructions that miss the data in L1 cache.
 type=gpa_float64
 usage=items
 [GLGfx9]
@@ -1512,73 +1469,11 @@ TCP*_TCP_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ[0..63]
 TCP*_TCP_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ[0..63]
 comp=0..255,sum256
 
-name=CSL2CacheHit
-desc=#ComputeShader#The percentage of fetch, write, atomic, and other instructions that hit the data in L2 cache. Value range: 0% (no hit) to 100% (optimal).
-type=gpa_float64
-usage=percentage
-[GLGfx9]
-TCC*_TCC_PERF_SEL_HIT[0..15]
-TCC*_TCC_PERF_SEL_MISS[0..15]
-SPI_SPI_PERF_CSG_NUM_THREADGROUPS
-comp=(0),0..15,sum16,0..15,sum16,16..31,sum16,+,/,(100),*,32,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-TCC*_TCC_PERF_SEL_HIT[0..15]
-TCC*_TCC_PERF_SEL_MISS[0..15]
-SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]
-comp=(0),0..15,sum16,0..15,sum16,16..31,sum16,+,/,(100),*,32,33,34,35,sum4,ifnotzero
-
-name=CSL2CacheHitCount
-desc=#ComputeShader#Count of fetch, write, atomic, and other instructions that hit the data in L2 cache.
-type=gpa_float64
-usage=items
-[GLGfx9]
-TCC*_TCC_PERF_SEL_HIT[0..15]
-comp=0..15,sum16
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-TCC*_TCC_PERF_SEL_HIT[0..15]
-comp=0..15,sum16
-
-name=CSL2CacheMissCount
-desc=#ComputeShader#Count of fetch, write, atomic, and other instructions that miss the data in L2 cache.
-type=gpa_float64
-usage=items
-[GLGfx9]
-TCC*_TCC_PERF_SEL_MISS[0..15]
-comp=0..15,sum16
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-TCC*_TCC_PERF_SEL_MISS[0..15]
-comp=0..15,sum16
-
-name=CSWriteUnitStalled
-desc=#ComputeShader#The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).
-type=gpa_float64
-usage=percentage
-[GLGfx9]
-TCC*_TCC_PERF_SEL_EA_WRREQ_STALL[0..15]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
-SPI_SPI_PERF_CSG_NUM_THREADGROUPS
-comp=(0),0..15,max16,16,/,(100),*,17,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-TCC*_TCC_PERF_SEL_EA_WRREQ_STALL[0..15]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
-SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]
-comp=(0),0..15,max16,16,/,(100),*,17,18,19,20,sum4,ifnotzero
-
 name=CSWriteUnitStalledCycles
 desc=#ComputeShader#Number of GPU cycles the write unit is stalled.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
-TCC*_TCC_PERF_SEL_EA_WRREQ_STALL[0..15]
-comp=0..15,max16
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -1651,7 +1546,7 @@ SQ_CS*_SQ_PERF_SEL_WAIT_INST_LDS[0..3]
 SQ_CS*_SQ_PERF_SEL_WAVES[0..3]
 GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 SPI*_SPI_PERF_CSG_NUM_THREADGROUPS[0..3]
-comp=(0),0..3,sum4,4..7,sum4,/,8,/,NUM_SHADER_ENGINES,/,(100),*,5..8,sum4,ifnotzero
+comp=(0),0..3,sum4,4..7,sum4,/,8,/,NUM_SHADER_ENGINES,/,(100),*,9..12,sum4,ifnotzero
 
 name=CSALUStalledByLDSCycles
 desc=#ComputeShader#Number of GPU cycles the ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible.
@@ -1659,7 +1554,7 @@ type=gpa_float64
 usage=cycles
 [GLGfx9]
 SQ_SQ_PERF_SEL_WAIT_INST_LDS
-comp=(0),0,NUM_SHADER_ENGINES,/
+comp=0,NUM_SHADER_ENGINES,/
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -1855,13 +1750,11 @@ type=gpa_float64
 usage=cycles
 [GLGfx9]
 DB*_DB_PERF_SEL_OP_PIPE_BUSY[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0,1,max,2,max,3,max,NUM_SHADER_ENGINES,/
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 DB*_DB_PERF_SEL_OP_PIPE_BUSY[0..15]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0..15,max16
 
 name=HiZTilesAccepted
@@ -2231,7 +2124,6 @@ type=gpa_float64
 usage=cycles
 [GLGfx9]
 DB*_DB_PERF_SEL_DB_CB_LQUAD_STALLS[0..3]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0,1,max,2,max,3,max,NUM_SHADER_ENGINES,/
 [DX11Gfx9]
 [DX12Gfx9]
@@ -2261,13 +2153,13 @@ usage=bytes
 [GLGfx9]
 DB*_DB_PERF_SEL_TILE_WR_SENDS[0..3]
 DB*_DB_PERF_SEL_QUAD_WR_SENDS[0..3]
-comp=0..3,sum4,(256),*,4..7,sum4,(32),*,+
+comp=0..3,sum4,(32),*,4..7,sum4,(32),*,+
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 DB*_DB_PERF_SEL_TILE_WR_SENDS[0..15]
 DB*_DB_PERF_SEL_QUAD_WR_SENDS[0..15]
-comp=0..15,sum16,(256),*,16..31,sum16,(32),*,+
+comp=0..15,sum16,(32),*,16..31,sum16,(32),*,+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; The following are new on R8xx
@@ -2301,6 +2193,25 @@ comp=0..3,sum4,(32),*
 CB*_CB_PERF_SEL_CC_MC_READ_REQUEST[0..15]
 comp=0..15,sum16,(32),*
 
+name=CBColorAndMaskRead
+desc=#ColorBuffer#Total number of bytes read from the color and mask buffers.
+type=gpa_float64
+usage=bytes
+[GLGfx9]
+CB*_CB_PERF_SEL_FC_MC_DCC_READ_REQUEST[0..3]
+CB*_CB_PERF_SEL_CM_MC_READ_REQUEST[0..3]
+CB*_CB_PERF_SEL_FC_MC_READ_REQUEST[0..3]
+CB*_CB_PERF_SEL_CC_MC_READ_REQUEST[0..3]
+comp=0..15,sum16,(32),*
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+CB*_CB_PERF_SEL_FC_MC_DCC_READ_REQUEST[0..15]
+CB*_CB_PERF_SEL_CM_MC_READ_REQUEST[0..15]
+CB*_CB_PERF_SEL_FC_MC_READ_REQUEST[0..15]
+CB*_CB_PERF_SEL_CC_MC_READ_REQUEST[0..15]
+comp=0..63,sum64,(32),*
+
 name=CBMemWritten
 desc=#ColorBuffer#Number of bytes written to the color buffer.
 type=gpa_float64
@@ -2313,6 +2224,25 @@ comp=0..3,sum4,(32),*
 [VKGfx9]
 CB*_CB_PERF_SEL_CC_MC_WRITE_REQUEST[0..15]
 comp=0..15,sum16,(32),*
+
+name=CBColorAndMaskWritten
+desc=#ColorBuffer#Total number of bytes written to the color and mask buffers.
+type=gpa_float64
+usage=bytes
+[GLGfx9]
+CB*_CB_PERF_SEL_FC_MC_DCC_WRITE_REQUEST[0..3]
+CB*_CB_PERF_SEL_CM_MC_WRITE_REQUEST[0..3]
+CB*_CB_PERF_SEL_FC_MC_WRITE_REQUEST[0..3]
+CB*_CB_PERF_SEL_CC_MC_WRITE_REQUEST[0..3]
+comp=0..15,sum16,(32),*
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+CB*_CB_PERF_SEL_FC_MC_DCC_WRITE_REQUEST[0..15]
+CB*_CB_PERF_SEL_CM_MC_WRITE_REQUEST[0..15]
+CB*_CB_PERF_SEL_FC_MC_WRITE_REQUEST[0..15]
+CB*_CB_PERF_SEL_CC_MC_WRITE_REQUEST[0..15]
+comp=0..63,sum64,(32),*
 
 name=CBSlowPixelPct
 desc=#ColorBuffer#Percentage of pixels written to the color buffer using a half-rate or quarter-rate format.
@@ -2341,3 +2271,148 @@ comp=0..3,sum4
 [VKGfx9]
 CB*_CB_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT[0..15]
 comp=0..15,sum16
+
+name=FetchSize
+desc=#GlobalMemory#The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
+type=gpa_float64
+usage=kilobytes
+[GLGfx9]
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+TCC*_TCC_PERF_SEL_EA_RDREQ[0..15]
+TCC*_TCC_PERF_SEL_EA_RDREQ_32B[0..15]
+comp=0..15,sum16,16..31,sum16,-,(64),*,16..31,sum16,(32),*,+
+
+name=WriteSize
+desc=#GlobalMemory#The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
+type=gpa_float64
+usage=kilobytes
+[GLGfx9]
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+TCC*_TCC_PERF_SEL_EA_WRREQ[0..15]
+TCC*_TCC_PERF_SEL_EA_WRREQ_64B[0..15]
+comp=0..15,sum16,16..31,sum16,-,(32),*,16..31,sum16,(64),*,+
+
+name=L2CacheHit
+desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the L2 cache. Value range: 0% (no hit) to 100% (optimal).
+type=gpa_float64
+usage=percentage
+[GLGfx9]
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+TCC*_TCC_PERF_SEL_HIT[0..15]
+TCC*_TCC_PERF_SEL_MISS[0..15]
+comp=0..15,sum16,0..15,sum16,16..31,sum16,+,/,(100),*
+
+name=L2CacheMiss
+desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that miss the L2 cache. Value range: 0% (optimal) to 100% (all miss).
+type=gpa_float64
+usage=percentage
+[GLGfx9]
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+TCC*_TCC_PERF_SEL_HIT[0..15]
+TCC*_TCC_PERF_SEL_MISS[0..15]
+comp=16..31,sum16,0..15,sum16,16..31,sum16,+,/,(100),*
+
+name=L2CacheHitCount
+desc=#GlobalMemory#Count of fetch, write, atomic, and other instructions that hit the L2 cache.
+type=gpa_float64
+usage=items
+[GLGfx9]
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+TCC*_TCC_PERF_SEL_HIT[0..15]
+comp=0..15,sum16
+
+name=L2CacheMissCount
+desc=#GlobalMemory#Count of fetch, write, atomic, and other instructions that miss the L2 cache.
+type=gpa_float64
+usage=items
+[GLGfx9]
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+TCC*_TCC_PERF_SEL_MISS[0..15]
+comp=0..15,sum16
+
+name=MemUnitBusy
+desc=#GlobalMemory#The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).
+type=gpa_float64
+usage=percentage
+[GLGfx9]
+TA*_TA_PERF_SEL_TA_BUSY[0..3]
+GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+comp=0..3,max4,4,/,NUM_SHADER_ENGINES,/,(100),*
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+TA*_TA_PERF_SEL_TA_BUSY[0..15]
+GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+comp=0..15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*
+
+name=MemUnitStalled
+desc=#GlobalMemory#The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).
+type=gpa_float64
+usage=percentage
+[GLGfx9]
+TCP*_TCP_PERF_SEL_TCP_TA_DATA_STALL_CYCLES[0..3]
+GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+comp=0..3,max4,4,/,NUM_SHADER_ENGINES,/,(100),*
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+TCP*_TCP_PERF_SEL_TCP_TA_DATA_STALL_CYCLES[0..15]
+GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+comp=0..15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*
+
+name=WriteUnitStalled
+desc=#GlobalMemory#The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).
+type=gpa_float64
+usage=percentage
+[GLGfx9]
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+TCC*_TCC_PERF_SEL_EA_WRREQ_STALL[0..15]
+GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+comp=0..15,max16,16,/,(100),*
+
+;name=LocalVidMemBytes
+;desc=#GlobalMemory#Number of bytes read from or written to local video memory
+;type=gpa_float64
+;usage=bytes
+;;[GLGfx9]
+;[DX11Gfx9]
+;[DX12Gfx9]
+;[VKGfx9]
+;GCEA_GCEA_PERF_SEL_SARB_DRAM_SIZED_REQUESTS
+;comp=0,(32),*
+
+;name=GmiBytes
+;desc=#GlobalMemory#Number of bytes read from or written to Global Memory Interconnect
+;type=gpa_float64
+;usage=bytes
+;;[GLGfx9]
+;[DX11Gfx9]
+;[DX12Gfx9]
+;[VKGfx9]
+;GCEA_GCEA_PERF_SEL_SARB_GMI_SIZED_REQUESTS
+;comp=0,(32),*
+
+;name=PcieBytes
+;desc=#GlobalMemory#Number of bytes read from or written to PCIe
+;type=gpa_float64
+;usage=bytes
+;;[GLGfx9]
+;[DX11Gfx9]
+;[DX12Gfx9]
+;[VKGfx9]
+;GCEA_GCEA_PERF_SEL_SARB_IO_SIZED_REQUESTS
+;comp=0,(32),*

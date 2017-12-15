@@ -8,6 +8,15 @@
 #ifndef _DX_GET_AMD_DEVICE_INFO_H_
 #define _DX_GET_AMD_DEVICE_INFO_H_
 
+#ifndef GPALIB_DECL
+    /// macro for exporting an API function
+    #ifdef __cplusplus
+        #define GPALIB_DECL extern "C" __declspec( dllimport )
+    #else
+        #define GPALIB_DECL __declspec( dllimport )
+    #endif
+#endif
+
 #include <windows.h>
 
 /// Get the vendor id and device id of the GPU associated with the monitor

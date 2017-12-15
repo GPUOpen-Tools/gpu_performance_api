@@ -9,14 +9,14 @@
 #ifndef _GPUPERFAPI_DXXEXTUTILS_H_
 #define _GPUPERFAPI_DXXEXTUTILS_H_
 
-#include <Windows.h>
-#include <d3d11.h>
+#include "DX11Include.h"
 
-#include "AmdDxExtApi.h"
-
-/// Test if MGPU performance extension is supported
-/// \param[in] pDxxExt DXX extension
-/// \return True if MGPU performance extension is supported, false if not
-bool IsMgpuPerfExtSupported(IAmdDxExt* pDxxExt);
+namespace DxxExtUtils
+{
+    /// Test if MGPU performance extension is supported
+    /// \param[in] pDxxExt DXX extension
+    /// \return True if MGPU performance extension is supported, false if not
+    bool IsMgpuPerfExtSupported(IAmdDxExt* pDxxExt);
+}
 
 #endif // _GPUPERFAPI_DXXEXTUTILS_H_

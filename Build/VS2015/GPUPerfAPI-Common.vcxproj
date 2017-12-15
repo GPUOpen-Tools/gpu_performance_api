@@ -26,19 +26,27 @@
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Adapter.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\APIRTModuleLoader.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\CircularBuffer.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\DXGetAMDDeviceInfo.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAContextState.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACommandList.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACommonDefs.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAImplementor.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAPass.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPASample.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAUniqueObject.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACounterDataRequestManager.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACustomHWValidationManager.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPADataRequest.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAFunctions.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAHWInfo.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAInterfaceLoader.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPASessionRequests.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAContext.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\IGPAInterfaceTrait.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\IGPACommandList.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\IGPAContext.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\IGPASession.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIFunctionTypes.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIImp.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPITypes.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\IGPAImplementor.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPASession.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Logging.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAProfiler.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Utility.h" />
@@ -46,19 +54,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Common\Src\ADLUtil\ADLUtil.cpp" />
-    <ClCompile Include="..\..\..\Common\Src\AMDTMutex\AMDTMutex.cpp" />
     <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\Common\Src\DeviceInfo-Internal\DeviceInfoInternal.cpp">
       <ExcludedFromBuild Condition="'$(AMDT_BUILD)'!='AMDT_INTERNAL'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.cpp" />
     <ClCompile Include="..\..\..\Common\Src\DynamicLibraryModule\DynamicLibraryModule.cpp" />
     <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIRegistry.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPACommandList.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAContext.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPACustomHWValidationManager.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\Adapter.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAContextState.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAHWInfo.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPASessionRequests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAImplementor.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAPass.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPASample.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAUniqueObject.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPASession.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\Logging.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAProfiler.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\Utility.cpp" />

@@ -129,7 +129,7 @@ void GLCounterDataRequest::ReleaseCountersInGLDataRequest()
 
 
 
-bool GLCounterDataRequest::CollectResults(GPA_CounterResults& resultStorage)
+bool GLCounterDataRequest::CollectResults(GPASampleResult& resultStorage)
 {
     TRACE_PRIVATE_FUNCTION(GLCounterDataRequest::CollectResults);
 

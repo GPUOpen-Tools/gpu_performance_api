@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX12SoftwareCounterDataRequest implementation
@@ -27,7 +27,7 @@ DX12SoftwareCounterDataRequest::~DX12SoftwareCounterDataRequest()
     m_swSampleId = ms_unitializedSampleId;
 }
 
-bool DX12SoftwareCounterDataRequest::CollectResults(GPA_CounterResults& resultStorage)
+bool DX12SoftwareCounterDataRequest::CollectResults(GPASampleResult& resultStorage)
 {
     bool result = true;
 
@@ -89,10 +89,8 @@ bool DX12SoftwareCounterDataRequest::CollectResults(GPA_CounterResults& resultSt
 bool DX12SoftwareCounterDataRequest::BeginRequest(
     GPA_ContextState* pContextState,
     void* pSampleList,
-    gpa_uint32 selectionId,
     const vector<gpa_uint32>* pCounters)
 {
-    UNREFERENCED_PARAMETER(selectionId);
     bool result = true;
 
     if ((nullptr == pContextState) || (nullptr == pCounters) || (nullptr != m_pContextState))
@@ -113,7 +111,7 @@ bool DX12SoftwareCounterDataRequest::BeginRequest(
         {
             gpa_uint32 swCounterIndex = (*pCounters)[ci];
             m_activeCountersList[ci].m_index =
-                s_pSwCounterManager->GetSwCounterPubIndex(swCounterIndex);
+                SwCounterManager::Instance()->GetSwCounterPubIndex(swCounterIndex);
 
             // software counter indices are after the hardware counter
             gpa_uint32 counterIdDriver = pSwCounters->m_counters[swCounterIndex - hardWareCountersCount].m_counterIdDriver;
@@ -153,7 +151,7 @@ bool DX12SoftwareCounterDataRequest::BeginRequest(
                         beginQuery = (0 != activeQueries);
                     }
 
-                    SetActiveCountersCount(counterCount);
+                    SetNumActiveCounters(counterCount);
                 }
             }
         }

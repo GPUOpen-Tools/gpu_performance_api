@@ -17,7 +17,7 @@ D3D11SoftwareCounterDataRequest::D3D11SoftwareCounterDataRequest(GPA_DataRequest
     m_D3d11QueryData.m_timeStampFirst  = 0;
     m_D3d11QueryData.m_timeStampSecond = 0;
     m_numAMDCounters = getCurrentContext()->m_pCounterAccessor->GetNumAMDCounters();
-    m_numSwCounters = s_pSwCounterManager->GetNumSwCounters();
+    m_numSwCounters = SwCounterManager::Instance()->GetNumSwCounters();
 }
 
 D3D11SoftwareCounterDataRequest::~D3D11SoftwareCounterDataRequest()
@@ -35,7 +35,7 @@ void D3D11SoftwareCounterDataRequest::ReleaseCounters()
 
 bool D3D11SoftwareCounterDataRequest::IsSWGPUTimeCounterActive()
 {
-    gpa_uint32 index = s_pSwCounterManager->GetSwGPUTimeCounterIndex();
+    gpa_uint32 index = SwCounterManager::Instance()->GetSwGPUTimeCounterIndex();
 
     for (size_t i = 0; i < m_activeSWCountersVec.size(); i++)
     {
@@ -57,7 +57,7 @@ gpa_uint64 D3D11SoftwareCounterDataRequest::GetSWD3DCounterData(gpa_uint32 index
 {
     gpa_uint64 result = 0;
 
-    if (!s_pSwCounterManager->SwCounterEnabled())
+    if (!SwCounterManager::Instance()->SwCounterEnabled())
     {
         return result;
     }
@@ -74,7 +74,7 @@ gpa_uint64 D3D11SoftwareCounterDataRequest::GetSWD3DCounterData(gpa_uint32 index
         index -= m_numAMDCounters;
     }
 
-    if (index >= s_pSwCounterManager->GetNumSwCounters())
+    if (index >= SwCounterManager::Instance()->GetNumSwCounters())
     {
         GPA_LogError("D3D11SoftwareCounterDataRequest::GetSWD3DCounterData(): index out of range.");
         return result;
@@ -423,14 +423,14 @@ gpa_uint64 D3D11SoftwareCounterDataRequest::GetGPUTime()
     return result;
 }
 
-bool D3D11SoftwareCounterDataRequest::CollectResults(GPA_CounterResults& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId)
+bool D3D11SoftwareCounterDataRequest::CollectResults(GPASampleResult& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId)
 {
     TRACE_PRIVATE_FUNCTION(D3D11SoftwareCounterDataRequest::CollectResults);
 
     UNREFERENCED_PARAMETER(sampleId);
 
     //Collect SW D3D counter results
-    if (s_pSwCounterManager->SwCounterEnabled())
+    if (SwCounterManager::Instance()->SwCounterEnabled())
     {
         resultStorage.m_numResults = numActiveCounters;
 
@@ -450,13 +450,13 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
     m_activeSWCountersVec.clear();
     Reset(selectionID, pCounters);
 
-    m_pEnabledSwCounters = s_pSwCounterManager->GetEnabledSwCounters();
+    m_pEnabledSwCounters = SwCounterManager::Instance()->GetEnabledSwCounters();
 
     m_device = static_cast<ID3D11Device*>(pContextState->m_pContext);
 
     if (nullptr == m_device)
     {
-        GPA_LogError("D3D11SoftwareCounterDataRequest::BeginRequest(): m_device is NULL");
+        GPA_LogError("D3D11SoftwareCounterDataRequest::BeginRequest(): m_device is NULL.");
         return false;
     }
 
@@ -469,7 +469,7 @@ bool D3D11SoftwareCounterDataRequest::BeginRequest(GPA_ContextState* pContextSta
     }
 
     //Only create SW D3D11 counter queries if one or more D3D11 counter(s) enabled
-    if (s_pSwCounterManager->SwCounterEnabled())
+    if (SwCounterManager::Instance()->SwCounterEnabled())
     {
         HRESULT hr = E_FAIL;
         D3D11_QUERY_DESC desc;
@@ -651,7 +651,7 @@ bool D3D11SoftwareCounterDataRequest::EndRequest()
 {
     TRACE_PRIVATE_FUNCTION(D3D11SoftwareCounterDataRequest::EndRequest);
 
-    if (s_pSwCounterManager->SwCounterEnabled())
+    if (SwCounterManager::Instance()->SwCounterEnabled())
     {
         if (IsSWGPUTimeCounterActive())
         {
@@ -691,7 +691,7 @@ void D3D11SoftwareCounterDataRequest::Reset(gpa_uint32 selectionID, const vector
 
     for (gpa_uint32 ui = 0; ui < newActiveCounters; ui++)
     {
-        gpa_uint32 counter = s_pSwCounterManager->GetSwCounterPubIndex(pCounters->at(ui));
+        gpa_uint32 counter = SwCounterManager::Instance()->GetSwCounterPubIndex(pCounters->at(ui));
 
         gpa_uint32 numAmdSwCounters = m_numAMDCounters + m_numSwCounters;
 

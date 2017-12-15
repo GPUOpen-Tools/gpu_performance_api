@@ -5,7 +5,6 @@
 /// \brief  HSA version of GPUPerfAPI
 //==============================================================================
 
-#include "GPUPerfAPIImp.h"
 #include "GPACounterGenerator.h"
 #include "DeviceInfoUtils.h"
 #include "GPUPerfAPIRegistry.h"
@@ -536,7 +535,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
         return GPA_STATUS_ERROR_FAILED;
     }
 
-    return GenerateCounters(GPA_API_HSA, vendorId, deviceId, revisionId, (GPA_ICounterAccessor**) & (pContextState->m_pCounterAccessor), &(pContextState->m_pCounterScheduler));
+    return GenerateCounters(GPA_API_HSA, vendorId, deviceId, revisionId, (IGPACounterAccessor**) & (pContextState->m_pCounterAccessor), &(pContextState->m_pCounterScheduler));
 }
 
 

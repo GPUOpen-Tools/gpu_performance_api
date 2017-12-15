@@ -6,13 +6,14 @@
 //==============================================================================
 
 #include "GPACounterSchedulerBase.h"
-#include "GPAICounterScheduler.h"
+#include "IGPACounterScheduler.h"
 #include "GPACounterGeneratorBase.h"
 #include "Logging.h"
 #include <sstream>
 #include <vector>
 #include <list>
 #include <DeviceInfoUtils.h>
+#include "GPACounterGroupAccessor.h"
 
 GPA_CounterSchedulerBase::GPA_CounterSchedulerBase()
     : m_counterSelectionChanged(false),
@@ -33,7 +34,7 @@ void GPA_CounterSchedulerBase::Reset()
     m_counterSelectionChanged = false;
 }
 
-GPA_Status GPA_CounterSchedulerBase::SetCounterAccessor(GPA_ICounterAccessor* pCounterAccessor, gpa_uint32 vendorId, gpa_uint32 deviceId, gpa_uint32 revisionId)
+GPA_Status GPA_CounterSchedulerBase::SetCounterAccessor(IGPACounterAccessor* pCounterAccessor, gpa_uint32 vendorId, gpa_uint32 deviceId, gpa_uint32 revisionId)
 {
     if (nullptr == pCounterAccessor)
     {
@@ -53,7 +54,7 @@ GPA_Status GPA_CounterSchedulerBase::SetCounterAccessor(GPA_ICounterAccessor* pC
     return GPA_STATUS_OK;
 }
 
-gpa_uint32 GPA_CounterSchedulerBase::GetNumEnabledCounters()
+gpa_uint32 GPA_CounterSchedulerBase::GetNumEnabledCounters() const
 {
     return (gpa_uint32)m_enabledPublicIndices.size();
 }
@@ -115,7 +116,7 @@ void GPA_CounterSchedulerBase::DisableAllCounters()
     m_counterSelectionChanged = true;
 }
 
-GPA_Status GPA_CounterSchedulerBase::GetEnabledIndex(gpa_uint32 enabledIndex, gpa_uint32* pCounterAtIndex)
+GPA_Status GPA_CounterSchedulerBase::GetEnabledIndex(gpa_uint32 enabledIndex, gpa_uint32* pCounterAtIndex) const
 {
     if (enabledIndex >= static_cast<gpa_uint32>(m_enabledPublicIndices.size()))
     {
@@ -130,7 +131,7 @@ GPA_Status GPA_CounterSchedulerBase::GetEnabledIndex(gpa_uint32 enabledIndex, gp
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterSchedulerBase::IsCounterEnabled(gpa_uint32 counterIndex)
+GPA_Status GPA_CounterSchedulerBase::IsCounterEnabled(gpa_uint32 counterIndex) const
 {
     if (counterIndex >= m_enabledPublicCounterBits.size())
     {
@@ -198,7 +199,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
         return GPA_STATUS_ERROR_FAILED;
     }
 
-    GPA_HardwareCounters* pHWCounters = pGenerator->GetHardwareCounters();
+    const GPA_HardwareCounters* pHWCounters = pGenerator->GetHardwareCounters();
 
     unsigned int numSQMaxCounters = 0;
 
@@ -230,19 +231,19 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
     std::vector<GPAHardwareCounterIndices> internalCountersToSchedule;
     std::vector<GPASoftwareCounterIndices> softwareCountersToSchedule;
 
-    for (std::vector<gpa_uint32>::iterator counterIter = m_enabledPublicIndices.begin(); counterIter != m_enabledPublicIndices.end(); ++counterIter)
+    for (std::vector<gpa_uint32>::const_iterator counterIter = m_enabledPublicIndices.cbegin(); counterIter != m_enabledPublicIndices.cend(); ++counterIter)
     {
-        GPACounterTypeInfo info = m_pCounterAccessor->GetCounterTypeInfo(*counterIter);
+        GPACounterSourceInfo info = m_pCounterAccessor->GetCounterSourceInfo(*counterIter);
 
-        switch (info.m_counterType)
+        switch (info.m_counterSource)
         {
-            case PUBLIC_COUNTER:
+            case GPACounterSource::PUBLIC:
             {
                 publicCountersToSplit.push_back(m_pCounterAccessor->GetPublicCounter(*counterIter));
                 break;
             }
 
-            case HARDWARE_COUNTER:
+            case GPACounterSource::HARDWARE:
             {
                 // hardware counter
                 std::vector<unsigned int> requiredCounters = m_pCounterAccessor->GetInternalCountersRequired(*counterIter);
@@ -259,7 +260,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
                 break;
             }
 
-            case SOFTWARE_COUNTER:
+            case GPACounterSource::SOFTWARE:
             {
                 // software counter
                 std::vector<unsigned int> requiredCounters = m_pCounterAccessor->GetInternalCountersRequired(*counterIter);
@@ -270,7 +271,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
                     GPASoftwareCounterIndices indices;
                     indices.m_publicIndex = *counterIter;
 
-                    indices.m_softwareIndex = requiredCounters[0] + pHWCounters->GetNumCounters(); // Add the number of HW counters so that the SW counters in effect are after the end of the HW counters
+                    indices.m_softwareIndex = requiredCounters[0];// -pHWCounters->GetNumCounters(); // subtract the number of HW counters to convert from the internal index to the software index.
 
                     softwareCountersToSchedule.push_back(indices);
                 }
@@ -278,7 +279,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
                 break;
             }
 
-            case UNKNOWN_COUNTER:
+            case GPACounterSource::UNKNOWN:
             default:
             {
                 // do something sensible
@@ -290,7 +291,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
     }
 
     // Get the Sw counters
-    GPA_SoftwareCounters* pSWCounters = pGenerator->GetSoftwareCounters();
+    const GPA_SoftwareCounters* pSWCounters = pGenerator->GetSoftwareCounters();
 
     // build the list of max counters per group (includes both hardware and software groups)
     std::vector<unsigned int> maxCountersPerGroup;
@@ -328,7 +329,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
     m_passPartitions = pSplitter->SplitCounters(publicCountersToSplit,
                                                 internalCountersToSchedule,
                                                 softwareCountersToSchedule,
-                                                (IGPACounterAccessor*)&accessor,
+                                                (IGPACounterGroupAccessor*)&accessor,
                                                 maxCountersPerGroup,
                                                 numInternalCountersScheduled);
 
@@ -343,7 +344,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
     return GPA_STATUS_OK;
 }
 
-bool GPA_CounterSchedulerBase::GetCounterSelectionChanged()
+bool GPA_CounterSchedulerBase::GetCounterSelectionChanged() const
 {
     return m_counterSelectionChanged;
 }
@@ -365,6 +366,11 @@ void GPA_CounterSchedulerBase::BeginPass()
 
 std::vector<unsigned int>* GPA_CounterSchedulerBase::GetCountersForPass(gpa_uint32 passIndex)
 {
+    if (passIndex >= m_passPartitions.size())
+    {
+        return nullptr;
+    }
+
     auto iter = m_passPartitions.begin();
     unsigned int i = 0;
 
@@ -415,7 +421,7 @@ GPA_Status GPA_CounterSchedulerBase::DoDisableCounter(gpa_uint32 index)
     return GPA_STATUS_OK;
 }
 
-gpa_uint32 GPA_CounterSchedulerBase::DoGetNumSoftwareCounters()
+gpa_uint32 GPA_CounterSchedulerBase::DoGetNumSoftwareCounters() const
 {
     gpa_uint32 retVal = 0;
 
@@ -423,7 +429,7 @@ gpa_uint32 GPA_CounterSchedulerBase::DoGetNumSoftwareCounters()
 
     if (nullptr != pGenerator)
     {
-        GPA_SoftwareCounters* pSwCounters = pGenerator->GetSoftwareCounters();
+        const GPA_SoftwareCounters* pSwCounters = pGenerator->GetSoftwareCounters();
 
         if (nullptr != pSwCounters)
         {

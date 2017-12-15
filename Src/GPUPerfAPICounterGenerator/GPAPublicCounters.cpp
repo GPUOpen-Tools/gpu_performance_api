@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Manages a set of public counters
@@ -18,11 +18,12 @@ GPA_PublicCounter::GPA_PublicCounter(
     const char* pName,
     const char* pGroup,
     const char* pDescription,
-    GPA_Type dataType,
+    GPA_Data_Type dataType,
     GPA_Usage_Type usageType,
-    GPA_CounterType counterType,
+    GPA_Counter_Type counterType,
     vector< gpa_uint32 >& internalCountersRequired,
-    const char* pComputeExpression):
+    const char* pComputeExpression,
+    const char* pUuid):
     m_index(index),
     m_pName(pName),
     m_pGroup(pGroup),
@@ -33,7 +34,46 @@ GPA_PublicCounter::GPA_PublicCounter(
     m_internalCountersRequired(internalCountersRequired),
     m_pComputeExpression(pComputeExpression)
 {
+    uint32_t bytes[8];
+#ifdef _WIN32
+    sscanf_s(pUuid, "%08lX-%04hX-%04hX-%02X%02X-%02X%02X%02X%02X%02X%02X",
+        &m_uuid.Data1,
+        &m_uuid.Data2,
+        &m_uuid.Data3,
+        &bytes[0],
+        &bytes[1],
+        &bytes[2],
+        &bytes[3],
+        &bytes[4],
+        &bytes[5],
+        &bytes[6],
+        &bytes[7]
+    );
 
+    for (int i = 0; i < _countof(bytes); ++i)
+    {
+        m_uuid.Data4[i] = static_cast<unsigned char>(bytes[i]);
+    }
+#else
+    sscanf(pUuid, "%08lX-%04hX-%04hX-%02X%02X-%02X%02X%02X%02X%02X%02X",
+        &m_uuid.m_data1,
+        &m_uuid.m_data2,
+        &m_uuid.m_data3,
+        &bytes[0],
+        &bytes[1],
+        &bytes[2],
+        &bytes[3],
+        &bytes[4],
+        &bytes[5],
+        &bytes[6],
+        &bytes[7]
+        );
+
+    for (int i = 0; i < (sizeof(bytes)/sizeof(bytes[0])); ++i)
+    {
+        m_uuid.m_data4[i] = static_cast<unsigned char>(bytes[i]);
+    }
+#endif
 }
 
 
@@ -43,24 +83,26 @@ void GPA_PublicCounters::DefinePublicCounter(
     const char* pName,
     const char* pGroup,
     const char* pDescription,
-    GPA_Type dataType,
+    GPA_Data_Type dataType,
     GPA_Usage_Type usageType,
-    GPA_CounterType counterType,
+    GPA_Counter_Type counterType,
     vector< gpa_uint32 >& internalCountersRequired,
-    const char* pComputeExpression)
+    const char* pComputeExpression,
+    const char* pUuid)
 {
     assert(pName);
     assert(pGroup);
     assert(pDescription);
-    assert(dataType < GPA_TYPE__LAST);
+    assert(dataType < GPA_DATA_TYPE__LAST);
     assert(counterType < GPA_COUNTER_TYPE__LAST);
     assert(internalCountersRequired.size() > 0);
     assert(pComputeExpression);
     assert(strlen(pComputeExpression) > 0);
+    assert(pUuid);
 
     unsigned int index = static_cast<unsigned int>(m_counters.size());
 
-    m_counters.push_back(GPA_PublicCounter(index, pName, pGroup, pDescription, dataType, usageType, counterType, internalCountersRequired, pComputeExpression));
+    m_counters.push_back(GPA_PublicCounter(index, pName, pGroup, pDescription, dataType, usageType, counterType, internalCountersRequired, pComputeExpression, pUuid));
 }
 
 
@@ -89,9 +131,9 @@ template<class T, class InternalCounterType>
 static void EvaluateExpression(
     const char* pExpression,
     void* pResult,
-    vector< char* >& results,
-    vector< GPA_Type >& internalCounterTypes,
-    GPA_Type resultType,
+    vector< gpa_uint64* >& results,
+    vector< GPA_Data_Type >& internalCounterTypes,
+    GPA_Data_Type resultType,
     const GPA_HWInfo* pHwInfo)
 {
     UNREFERENCED_PARAMETER(internalCounterTypes);
@@ -165,15 +207,7 @@ static void EvaluateExpression(
             T constant = static_cast<T>(0);
             int scanResult = 0;
 
-            if (resultType == GPA_TYPE_FLOAT32)
-            {
-#ifdef _LINUX
-                scanResult = sscanf(pch, "(%f)", reinterpret_cast<gpa_float32*>(&constant));
-#else
-                scanResult = sscanf_s(pch, "(%f)", reinterpret_cast<gpa_float32*>(&constant));
-#endif // _LINUX
-            }
-            else if (resultType == GPA_TYPE_FLOAT64)
+            if (resultType == GPA_DATA_TYPE_FLOAT64)
             {
 #ifdef _LINUX
                 scanResult = sscanf(pch, "(%lf)", reinterpret_cast<gpa_float64*>(&constant));
@@ -181,15 +215,7 @@ static void EvaluateExpression(
                 scanResult = sscanf_s(pch, "(%lf)", reinterpret_cast<gpa_float64*>(&constant));
 #endif // _LINUX
             }
-            else if (resultType == GPA_TYPE_UINT32)
-            {
-#ifdef _LINUX
-                scanResult = sscanf(pch, "(%u)", reinterpret_cast<gpa_uint32*>(&constant));
-#else
-                scanResult = sscanf_s(pch, "(%u)", reinterpret_cast<gpa_uint32*>(&constant));
-#endif // _LINUX
-            }
-            else if (resultType == GPA_TYPE_UINT64)
+            else if (resultType == GPA_DATA_TYPE_UINT64)
             {
 #ifdef _LINUX
                 scanResult = sscanf(pch, "(%llu)", reinterpret_cast<gpa_uint64*>(&constant));
@@ -244,6 +270,25 @@ static void EvaluateExpression(
             {
                 stack.push_back(p2);
             }
+        }
+        else if (_strcmpi(pch, "max4") == 0)
+        {
+            assert(stack.size() >= 4);
+
+            // initialize the max value to the 1st item
+            T maxValue = stack.back();
+            stack.pop_back();
+
+            // pop the last 3 items and compute the max
+            for (int i = 0; i < 3; i++)
+            {
+                T value = stack.back();
+                stack.pop_back();
+
+                maxValue = (maxValue > value) ? maxValue : value;
+            }
+
+            stack.push_back(maxValue);
         }
         else if (_strcmpi(pch, "max16") == 0)
         {
@@ -563,7 +608,7 @@ static void EvaluateExpression(
     delete[] pBuf;
 }
 
-void GPA_PublicCounters::ComputeCounterValue(gpa_uint32 counterIndex, vector< char* >& results, vector< GPA_Type >& internalCounterTypes, void* pResult, GPA_HWInfo* pHwInfo)
+void GPA_PublicCounters::ComputeCounterValue(gpa_uint32 counterIndex, vector< gpa_uint64* >& results, vector< GPA_Data_Type >& internalCounterTypes, void* pResult, const GPA_HWInfo* pHwInfo) const
 {
     if (nullptr != m_counters[counterIndex].m_pComputeExpression)
     {
@@ -571,64 +616,15 @@ void GPA_PublicCounters::ComputeCounterValue(gpa_uint32 counterIndex, vector< ch
         GPA_LogDebugCounterDefs("'%s' equation is %s.", m_counters[counterIndex].m_pName, m_counters[counterIndex].m_pComputeExpression);
 #endif
 
-        if (internalCounterTypes[0] == GPA_TYPE_UINT64)
+        if (internalCounterTypes[0] == GPA_DATA_TYPE_UINT64)
         {
-            if (m_counters[counterIndex].m_dataType == GPA_TYPE_FLOAT32)
-            {
-                EvaluateExpression<gpa_float32, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else if (m_counters[counterIndex].m_dataType == GPA_TYPE_FLOAT64)
+            if (m_counters[counterIndex].m_dataType == GPA_DATA_TYPE_FLOAT64)
             {
                 EvaluateExpression<gpa_float64, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
             }
-            else if (m_counters[counterIndex].m_dataType == GPA_TYPE_UINT32)
-            {
-                EvaluateExpression<gpa_uint32, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else if (m_counters[counterIndex].m_dataType == GPA_TYPE_UINT64)
+            else if (m_counters[counterIndex].m_dataType == GPA_DATA_TYPE_UINT64)
             {
                 EvaluateExpression<gpa_uint64, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else if (m_counters[counterIndex].m_dataType == GPA_TYPE_INT32)
-            {
-                EvaluateExpression<gpa_int32, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else if (m_counters[counterIndex].m_dataType == GPA_TYPE_INT64)
-            {
-                EvaluateExpression<gpa_int64, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else
-            {
-                // public counter type not recognized or not currently supported.
-                GPA_LogError("Unable to compute counter value: unrecognized public counter type.");
-                assert(false);
-            }
-        }
-        else if (internalCounterTypes[0] == GPA_TYPE_UINT32)
-        {
-            if (m_counters[counterIndex].m_dataType == GPA_TYPE_FLOAT32)
-            {
-                EvaluateExpression<gpa_float32, gpa_uint32>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else if (m_counters[counterIndex].m_dataType == GPA_TYPE_FLOAT64)
-            {
-                EvaluateExpression<gpa_float64, gpa_uint32>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else if (m_counters[counterIndex].m_dataType == GPA_TYPE_UINT32)
-            {
-                EvaluateExpression<gpa_uint32, gpa_uint32>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else if (m_counters[counterIndex].m_dataType == GPA_TYPE_UINT64)
-            {
-                EvaluateExpression<gpa_uint64, gpa_uint32>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else if (m_counters[counterIndex].m_dataType == GPA_TYPE_INT32)
-            {
-                EvaluateExpression<gpa_int32, gpa_uint32>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else if (m_counters[counterIndex].m_dataType == GPA_TYPE_INT64)
-            {
-                EvaluateExpression<gpa_int64, gpa_uint32>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
             }
             else
             {

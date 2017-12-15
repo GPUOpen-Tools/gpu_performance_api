@@ -18,7 +18,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "VKGPUTime",
         "VK",
         "Time spent in GPU",
-        GPA_TYPE_FLOAT64,
+        GPA_DATA_TYPE_FLOAT64,
     },
     {
         // GPA_VK_QUERY_TYPE_TIMESTAMP
@@ -26,7 +26,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "PreBottomTimestamp",
         "VK",
         "Bottom of the pipeline GPU timestamp",
-        GPA_TYPE_FLOAT64,
+        GPA_DATA_TYPE_FLOAT64,
     },
     {
         // GPA_VK_QUERY_TYPE_TIMESTAMP
@@ -34,7 +34,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "PostBottomTimestamp",
         "VK",
         "Bottom of the pipeline GPU timestamp",
-        GPA_TYPE_FLOAT64,
+        GPA_DATA_TYPE_FLOAT64,
     },
     {
         // GPA_VK_QUERY_TYPE_OCCLUSION (with PRECISE flag)
@@ -42,7 +42,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "Occlusion",
         "VK",
         "Get the number of samples that passed the depth and stencil tests.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_OCCLUSION_BINARY (Occlusion, but without PRECISE flag)
@@ -50,7 +50,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "BinaryOcclusion",
         "VK",
         "True/false if any samples passed depth and stencil tests.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS IAVertices
@@ -58,7 +58,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "IAVertices",
         "VK",
         "Number of vertices read by input assembler.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS IAPrimitives
@@ -66,7 +66,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "IAPrimitives",
         "VK",
         "Number of primitives read by the input assembler.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS VSInvocations
@@ -74,7 +74,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "VSInvocations",
         "VK",
         "Number of times a vertex shader was invoked.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS GSInvocations
@@ -82,7 +82,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "GSInvocations",
         "VK",
         "Number of times a geometry shader was invoked.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS GSPrimitives
@@ -90,7 +90,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "GSPrimitives",
         "VK",
         "Number of primitives output by a geometry shader.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS CInvocations
@@ -98,7 +98,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "CInvocations",
         "VK",
         "Number of primitives that were sent to the rasterizer.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS CPrimitives
@@ -106,7 +106,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "CPrimitives",
         "VK",
         "Number of primitives that were rendered.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS PSInvocations
@@ -114,7 +114,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "PSInvocations",
         "VK",
         "Number of times a pixel shader was invoked.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS TCSInvocations
@@ -122,7 +122,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "TCSInvocations",
         "VK",
         "Number of times a tessellation control shader was invoked.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS TESInvocations
@@ -130,7 +130,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "TESInvocations",
         "VK",
         "Number of times a tessellation evaluation shader was invoked.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
     {
         // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS CSInvocations
@@ -138,7 +138,7 @@ const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
         "CSInvocations",
         "VK",
         "Number of times a compute shader was invoked.",
-        GPA_TYPE_UINT64,
+        GPA_DATA_TYPE_UINT64,
     },
 };
 
@@ -214,8 +214,8 @@ GPA_Status GPA_CounterGeneratorVKBase::GenerateSoftwareCounters(
 
             if (GPA_STATUS_OK == status)
             {
-                const size_t VKSwCounterCount = s_pSwCounterManager->GetNumSwCounters();
-                const SwCounterDescVec* pVKSoftwareCounters = s_pSwCounterManager->GetSwCounters();
+                const size_t VKSwCounterCount = SwCounterManager::Instance()->GetNumSwCounters();
+                const SwCounterDescVec* pVKSoftwareCounters = SwCounterManager::Instance()->GetSwCounters();
                 pSoftwareCounters->m_counters.resize(VKSwCounterCount);
 
                 for (size_t ci = 0 ; VKSwCounterCount > ci ; ++ci)
@@ -237,9 +237,9 @@ GPA_Status GPA_CounterGeneratorVKBase::GenerateSoftwareCounters(
 }
 
 void GPA_CounterGeneratorVKBase::ComputeSWCounterValue(
-    gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, GPA_HWInfo* pHwInfo)
+    gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const
 {
-    const SwCounterDescVec* pSwCounters = s_pSwCounterManager->GetSwCounters();
+    const SwCounterDescVec* pSwCounters = SwCounterManager::Instance()->GetSwCounters();
 
     if (counterIndex < static_cast<gpa_uint32>(pSwCounters->size()))
     {
@@ -262,14 +262,14 @@ void GPA_CounterGeneratorVKBase::ComputeSWCounterValue(
         }
         else // other SW VK counters
         {
-            GPA_Type type = (*pSwCounters)[counterIndex].m_type;
+            GPA_Data_Type type = (*pSwCounters)[counterIndex].m_type;
 
-            if (GPA_TYPE_UINT64 == type)
+            if (GPA_DATA_TYPE_UINT64 == type)
             {
                 gpa_uint64* pBuf = static_cast<gpa_uint64*>(pResult);
                 *pBuf = static_cast<gpa_uint64>(value);
             }
-            else if (GPA_TYPE_FLOAT64 == type)
+            else if (GPA_DATA_TYPE_FLOAT64 == type)
             {
                 memcpy(pResult, &value, sizeof(gpa_float64));
             }
@@ -285,21 +285,21 @@ GPA_Status GPA_CounterGeneratorVKBase::GenerateVKSoftwareCounters()
 {
     GPA_Status result = GPA_STATUS_OK;
 
-    s_pSwCounterManager->SetNumAmdCounters(GetNumAMDCounters());
+    SwCounterManager::Instance()->SetNumAmdCounters(GetNumAMDCounters());
 
-    if (!s_pSwCounterManager->SwCountersGenerated())
+    if (!SwCounterManager::Instance()->SwCountersGenerated())
     {
         for (size_t ci = 0; s_VKSWCountersCount > ci; ++ci)
         {
-            s_pSwCounterManager->GenerateSwCounter(s_VKSWCounters[ci]);
+            SwCounterManager::Instance()->AddSwCounter(s_VKSWCounters[ci]);
         }
 
-        if (0 == s_pSwCounterManager->GetNumSwCounters())
+        if (0 == SwCounterManager::Instance()->GetNumSwCounters())
         {
             result = GPA_STATUS_ERROR_FAILED;
         }
 
-        s_pSwCounterManager->SetSwCountersGenerated(true);
+        SwCounterManager::Instance()->SetSwCountersGenerated(true);
     }
 
     return result;

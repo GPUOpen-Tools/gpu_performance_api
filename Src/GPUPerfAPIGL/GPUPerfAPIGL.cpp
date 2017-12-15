@@ -15,7 +15,6 @@
     #include <dlfcn.h>
 #endif
 
-#include "GPUPerfAPIImp.h"
 #include "GPACustomHWValidationManager.h"
 
 #include "GLCounterDataRequestManager.h"
@@ -919,7 +918,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
     }
 
     // generate the expected counters
-    GPA_Status status = GenerateCounters(GPA_API_OPENGL, vendorId, deviceId, revisionId, reinterpret_cast<GPA_ICounterAccessor**>(&(pGLContext->m_pCounterAccessor)), &(pGLContext->m_pCounterScheduler));
+    GPA_Status status = GenerateCounters(GPA_API_OPENGL, vendorId, deviceId, revisionId, reinterpret_cast<IGPACounterAccessor**>(&(pGLContext->m_pCounterAccessor)), &(pGLContext->m_pCounterScheduler));
 
     if (g_pCurrentContext->m_hwInfo.IsAMD() && status == GPA_STATUS_OK)
     {

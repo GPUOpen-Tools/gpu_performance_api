@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Logging utility
@@ -26,26 +26,36 @@
 #include <string>
 using std::string;
 
+#include <sstream>
+
 #include "GPUPerfAPITypes.h"
 #include "GPUPerfAPIFunctionTypes.h"
 
-#if 1 // enable trace functions ?
-    #undef TRACE_FUNCTION
-    /// macro for tracing function calls
-    #define TRACE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func)
-    #ifdef AMDT_INTERNAL
-        #undef TRACE_PRIVATE_FUNCTION
-        #define TRACE_PRIVATE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func)
-    #else // public build
-        #undef TRACE_PRIVATE_FUNCTION
-        /// macro for tracing private function calls
-        #define TRACE_PRIVATE_FUNCTION(func)
-    #endif // AMDT_INTERNAL / public build
+#if ENABLE_TRACING
+#undef TRACE_FUNCTION
+/// macro for tracing function calls
+#define TRACE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func)
+#ifdef AMDT_INTERNAL
+#undef TRACE_PRIVATE_FUNCTION
+#undef TRACE_PRIVATE_FUNCTION_WITH_ARGS
+/// macro for tracing private function calls
+#define TRACE_PRIVATE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func)
+#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...) \
+    TRACE_PRIVATE_FUNCTION(func); \
+    { std::ostringstream o; o << ##__VA_ARGS__; gTracerSingleton.OutputFunctionData(o.str().c_str()); }
+#else // public build
+#undef TRACE_PRIVATE_FUNCTION
+#undef TRACE_PRIVATE_FUNCTION_WITH_ARGS
+/// macro for tracing private function calls
+#define TRACE_PRIVATE_FUNCTION(func)
+#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)
+#endif // AMDT_INTERNAL / public build
 #else // disable trace functions
-    #undef TRACE_FUNCTION
-    #define TRACE_FUNCTION(func)
-    #undef TRACE_PRIVATE_FUNCTION
-    #define TRACE_PRIVATE_FUNCTION(func)
+#undef TRACE_FUNCTION
+#define TRACE_FUNCTION(func)
+#undef TRACE_PRIVATE_FUNCTION
+#define TRACE_PRIVATE_FUNCTION(func)
+#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)
 #endif // trace functions
 
 /// Passes log messages of various types to a user-supplied callback function
@@ -258,6 +268,10 @@ public:
     /// Should be called when a function is exited.
     /// \param pFunctionName the function that is being left
     void LeaveFunction(const char* pFunctionName);
+
+    /// Called if a function has additional data to output
+    /// Information is tabbed under the function
+    void OutputFunctionData(const char* pData);
 
 protected:
 

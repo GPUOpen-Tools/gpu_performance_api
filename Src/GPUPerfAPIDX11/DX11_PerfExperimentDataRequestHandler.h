@@ -10,7 +10,6 @@
 #define _DX11_PERF_EXPERIMENT_DATA_REQUEST_HANDLER_H_
 
 #include <d3d11.h>
-#include "GPUPerfAPIImp.h"
 #include "GPUPerfAPIDX11.h"
 #include "ICounterDataRequest.h"
 #include "AmdDxExtPerfProfileApi.h"
@@ -23,6 +22,7 @@ class DX11_PerfExperimentDataRequestHandler : public ICounterDataRequest
 public:
 
     /// Initializes a new instance of the DXPerformanceExperimentProfile class.
+    /// \param pParentCounter the parent data request
     DX11_PerfExperimentDataRequestHandler(GPA_DataRequest* pParentCounter);
 
     /// Destructor
@@ -44,12 +44,27 @@ public:
 
 protected:
 
+    /// Start a counter sample.
+    /// Begin must handle the case where a request is reused
+    /// try and reuse resources if selectionID matches (which means the same counters are activated).
+    /// \param pContextState pointer to object containing the context information for this request
+    /// \param selectionID the ID of the counter selection
+    /// \param pCounters the set of counters to enable
+    /// \return True if the sample could be started; false otherwise.
     virtual bool BeginRequest(GPA_ContextState* pContextState, gpa_uint32 selectionID, const vector<gpa_uint32>* pCounters);
 
+    /// Ends a counter sample.
+    /// \return True on success; false on error.
     virtual bool EndRequest();
 
-    virtual bool CollectResults(GPA_CounterResults& resultStorage, size_t m_activeCounters, gpa_uint32 sampleId);
+    /// Collects the results if they are available.
+    /// \param resultStorage the place to store counter results
+    /// \param numActiveCounters the number of active counters
+    /// \param sampleId the samplpe id whose results are needed
+    /// \return true if the results were collected; false if they are not available.
+    virtual bool CollectResults(GPASampleResult& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId);
 
+    /// Release allocated counters
     virtual void ReleaseCounters();
 
 private:

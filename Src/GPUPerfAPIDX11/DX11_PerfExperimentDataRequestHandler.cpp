@@ -472,7 +472,7 @@ bool DX11_PerfExperimentDataRequestHandler::EndRequest()
 }
 
 //-----------------------------------------------------------------------------
-bool DX11_PerfExperimentDataRequestHandler::CollectResults(GPA_CounterResults& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId)
+bool DX11_PerfExperimentDataRequestHandler::CollectResults(GPASampleResult& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId)
 {
     UNREFERENCED_PARAMETER(sampleId);
     UNREFERENCED_PARAMETER(numActiveCounters);

@@ -12,7 +12,7 @@
 
 #include "GPUPerfAPITypes.h"
 
-struct GPA_CounterResults; ///< forward declaration
+struct GPASampleResult; ///< forward declaration
 class GPA_ContextState;    ///< forward declaration
 
 using std::vector;
@@ -29,7 +29,7 @@ public:
     /// \param numActiveCounters the number of active counters
     /// \param sampleId the samplpe id whose results are needed
     ///\return false on failure
-    virtual bool CollectResults(GPA_CounterResults& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId) = 0;
+    virtual bool CollectResults(GPASampleResult& resultStorage, size_t numActiveCounters, gpa_uint32 sampleId) = 0;
 
     /// Begins the request
     /// \param pContextState the context on which the request is being made
@@ -56,10 +56,11 @@ protected:
 
 private:
     /// Disabled copy constructor
-    ICounterDataRequest(const ICounterDataRequest& other) = delete;
+    ICounterDataRequest(const ICounterDataRequest&)  = delete;
 
     /// Disabled assignment operator
-    ICounterDataRequest& operator=(const ICounterDataRequest& other) = delete;
+    /// \return the item being assigned
+    ICounterDataRequest& operator=(const ICounterDataRequest&)  = delete;
 };
 
 #endif _I_COUNTER_DATA_REQUEST_H_

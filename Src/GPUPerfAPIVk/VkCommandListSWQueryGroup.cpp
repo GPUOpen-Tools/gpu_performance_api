@@ -80,6 +80,7 @@ bool VkCommandListSWQueryGroup::Initialize(VkPhysicalDevice physicalDevice, VkDe
         if (VK_NULL_HANDLE == m_queryPools[qi])
         {
             VkBool32 bCreateQueryPool = VK_TRUE;
+
             if (ms_queryTypes[qi] == VK_QUERY_TYPE_PIPELINE_STATISTICS)
             {
                 VkPhysicalDeviceFeatures features;
@@ -125,14 +126,18 @@ void VkCommandListSWQueryGroup::Cleanup()
 
     m_activeSampleQueries.clear();
 
-    VkResult waitResult = _vkDeviceWaitIdle(m_device);
-    if (waitResult == VK_SUCCESS)
+    if (VK_NULL_HANDLE != m_device)
     {
-        for (size_t qti = 0; qti < GPA_VK_QUERY_TYPE_COUNT; ++qti)
+        VkResult waitResult = _vkDeviceWaitIdle(m_device);
+
+        if (waitResult == VK_SUCCESS)
         {
-            if (VK_NULL_HANDLE != m_queryPools[qti])
+            for (size_t qti = 0; qti < GPA_VK_QUERY_TYPE_COUNT; ++qti)
             {
-                _vkDestroyQueryPool(m_device, m_queryPools[qti], nullptr);
+                if (VK_NULL_HANDLE != m_queryPools[qti])
+                {
+                    _vkDestroyQueryPool(m_device, m_queryPools[qti], nullptr);
+                }
             }
         }
     }
@@ -165,15 +170,17 @@ void VkCommandListSWQueryGroup::BeginSwQuery(
 {
     if (GPA_VK_QUERY_TYPE_TIMESTAMP == queryType)
     {
-        _vkCmdWriteTimestamp(m_commandBuffer, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, m_queryPools[queryType], 2*swSampleIndex);
+        _vkCmdWriteTimestamp(m_commandBuffer, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, m_queryPools[queryType], 2 * swSampleIndex);
     }
     else
     {
         VkQueryControlFlags flags = 0;
+
         if (GPA_VK_QUERY_TYPE_OCCLUSION == queryType)
         {
             flags = VK_QUERY_CONTROL_PRECISE_BIT;
         }
+
         _vkCmdBeginQuery(m_commandBuffer, m_queryPools[queryType], swSampleIndex, flags);
     }
 
@@ -185,7 +192,7 @@ void VkCommandListSWQueryGroup::EndSwQuery(
 {
     if (GPA_VK_QUERY_TYPE_TIMESTAMP == queryType)
     {
-        _vkCmdWriteTimestamp(m_commandBuffer, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, m_queryPools[queryType], 2*swSampleIndex + 1);
+        _vkCmdWriteTimestamp(m_commandBuffer, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, m_queryPools[queryType], 2 * swSampleIndex + 1);
     }
     else
     {
@@ -220,32 +227,34 @@ bool VkCommandListSWQueryGroup::GetSwSampleResults(
         if (m_activeSampleQueries[swSampleIndex][qti] == true)
         {
             VkQueryPool queryPool = m_queryPools[qti];
+
             if (VK_NULL_HANDLE != queryPool)
             {
                 // First, get a copy of the query results.
                 uint64_t* pResultAddress = pResultAddresses[qti];
                 size_t resultSize = ms_gpaVkSoftwareResultSizes[qti];
                 size_t resultStride = ms_gpaVkSoftwareResultStrides[qti];
-                
+
                 uint32_t queryIndex = swSampleIndex;
                 uint32_t numQueries = 1;
-                
+
                 if (qti == GPA_VK_QUERY_TYPE_TIMESTAMP)
                 {
                     // timestamp has 2 queries (begin and end)
                     queryIndex = 2 * swSampleIndex;
                     numQueries = 2;
                 }
-                
+
                 // get the results back
-                // NOTE: because we may loop over this multiple times, it is possible 
+                // NOTE: because we may loop over this multiple times, it is possible
                 // that the query results get updated each time we get them.
                 VkResult qpResults = _vkGetQueryPoolResults(m_device,
-                    queryPool,
-                    queryIndex, numQueries, resultSize, pResultAddress, resultStride,
-                    VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WITH_AVAILABILITY_BIT);
+                                                            queryPool,
+                                                            queryIndex, numQueries, resultSize, pResultAddress, resultStride,
+                                                            VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WITH_AVAILABILITY_BIT);
 
                 allResultsAvailable = (qpResults == VK_SUCCESS);
+
                 if (allResultsAvailable)
                 {
                     // Second, Check if the query results availability bit indicated that it was available.
@@ -260,8 +269,8 @@ bool VkCommandListSWQueryGroup::GetSwSampleResults(
                     {
                         // Result is available, which matches initial assumption.
 
-                        // CAVEAT: There's currently a bug in the availibility bit for PIPELINE_STATISTICS that 
-                        // it will report available even though all results are 0. So if we encounter this 
+                        // CAVEAT: There's currently a bug in the availibility bit for PIPELINE_STATISTICS that
+                        // it will report available even though all results are 0. So if we encounter this
                         // situation, report that results are actually NOT available.
                         if (qti == GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS &&
                             m_pQueriesResults[swSampleIndex].inputAssemblyVertices == 0 &&
@@ -276,7 +285,7 @@ bool VkCommandListSWQueryGroup::GetSwSampleResults(
                             m_pQueriesResults[swSampleIndex].tessellationEvaluationShaderInvocations == 0 &&
                             m_pQueriesResults[swSampleIndex].computeShaderInvocations == 0)
                         {
-                            // CAVEAT: There's currently a bug in the availibility bit that it will report available 
+                            // CAVEAT: There's currently a bug in the availibility bit that it will report available
                             // even though all results are 0. So if we encounter this situation, report that results
                             // are actually NOT available.
                             allResultsAvailable = false;
@@ -307,7 +316,7 @@ bool VkCommandListSWQueryGroup::CreateSwQueryPool(VkDevice device, const GPA_VK_
 
     if (queryType == GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS)
     {
-        queryPoolDesc.pipelineStatistics = 
+        queryPoolDesc.pipelineStatistics =
             VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT |
             VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT |
             VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT |
@@ -331,14 +340,16 @@ bool VkCommandListSWQueryGroup::CreateSwQueryPool(VkDevice device, const GPA_VK_
     {
         VkQueryPool queryPool = VK_NULL_HANDLE;
         result = (VK_SUCCESS == _vkCreateQueryPool(device, &queryPoolDesc, nullptr, &queryPool));
+
         if (result)
         {
             // TODO: Check for the debugging extension to be able to tag objects with names
             //pQueryPool->SetName(L"GPUPerfAPIVk QueryPool");
             m_queryPools[queryType] = queryPool;
 
-            m_pQueriesResults = new (std::nothrow) GpaVkSoftwareQueryResults[m_maxSamples];
+            m_pQueriesResults = new(std::nothrow) GpaVkSoftwareQueryResults[m_maxSamples];
             result = (m_pQueriesResults != nullptr);
+
             if (result)
             {
                 memset(m_pQueriesResults, 0, sizeof(GpaVkSoftwareQueryResults) * m_maxSamples);

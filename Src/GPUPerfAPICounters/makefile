@@ -10,7 +10,8 @@ INCLUDES =	-I. \
 		-I$(GPACG_DIR) \
 		-I$(ADL_DIR)/include \
 		-I$(ADLUTIL_DIR) \
-		-I$(DEVICEINFO_DIR)
+		-I$(DEVICEINFO_DIR) \
+		-I$(TSINGLETON_DIR)
 
 LIBS = \
 	$(COMMON_LIBS) \

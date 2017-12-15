@@ -11,7 +11,6 @@
 #include <CL/cl.h>
 #include <CL/internal/cl_profile_amd.h>
 
-#include "GPUPerfAPIImp.h"
 #include "GPACounterGenerator.h"
 
 #include "DeviceInfoUtils.h"
@@ -32,7 +31,8 @@ using std::min;
 
 GPA_ContextStateCL* getCurrentContext()
 {
-    return static_cast<GPA_ContextStateCL* >(g_pCurrentContext);
+    // To-Do - Context Work
+    return static_cast<GPA_ContextStateCL* >(nullptr);
 }
 
 
@@ -486,7 +486,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
         return GPA_STATUS_ERROR_FAILED;
     }
 
-    return GenerateCounters(GPA_API_OPENCL, vendorId, deviceId, revisionId, (GPA_ICounterAccessor**) & (getCurrentContext()->m_pCounterAccessor), &(getCurrentContext()->m_pCounterScheduler));
+    return GenerateCounters(GPA_API_OPENCL, vendorId, deviceId, revisionId, (IGPACounterAccessor**) & (getCurrentContext()->m_pCounterAccessor), &(getCurrentContext()->m_pCounterScheduler));
 }
 
 

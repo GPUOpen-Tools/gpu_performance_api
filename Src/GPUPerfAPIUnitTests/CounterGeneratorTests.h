@@ -28,9 +28,9 @@ static const unsigned int gDevIdGfx8 = 0x67DF;        //< Gfx8
 static const unsigned int gDevIdGfx9 = 0x6863;        //< Gfx9
 
 #ifdef _WIN32
-static const char* countersLibName = "GPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX ".dll";
+    static const char* countersLibName = "GPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX ".dll";
 #else
-static const char* countersLibName = "libGPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX ".so";
+    static const char* countersLibName = "libGPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX ".so";
 #endif
 
 LibHandle LoadLib(const char* pLibName);
@@ -38,13 +38,13 @@ void UnloadLib(LibHandle libHandle);
 void* GetEntryPoint(LibHandle libHandle, const char* pEntrypointName);
 
 void VerifyNotImplemented(GPA_API_Type api, unsigned int deviceId);
-void VerifyNotImplemented(GPA_API_Type api, GPA_HW_GENERATION generation);
+void VerifyNotImplemented(GPA_API_Type api, GPA_Hw_Generation generation);
 
 void VerifyHardwareNotSupported(GPA_API_Type api, unsigned int deviceId);
-void VerifyHardwareNotSupported(GPA_API_Type api, GPA_HW_GENERATION generation);
+void VerifyHardwareNotSupported(GPA_API_Type api, GPA_Hw_Generation generation);
 
 void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, std::vector<const char*> expectedNames);
-void VerifyCounterNames(GPA_API_Type api, GPA_HW_GENERATION generation, std::vector<const char*> expectedNames);
+void VerifyCounterNames(GPA_API_Type api, GPA_Hw_Generation generation, std::vector<const char*> expectedNames);
 
 void VerifyPassCount(GPA_API_Type api, unsigned int deviceId, const std::vector<unsigned int>& countersToEnable, unsigned int expectedNumPasses);
 
@@ -62,14 +62,15 @@ void VerifyCountersInPass(GPA_API_Type api,
 
 void VerifyCounterCalculation(GPA_API_Type api, unsigned int deviceId, char* counterName, std::vector<char*>& sampleResults, gpa_float64 expectedResult);
 
-/// Returns a string describing the counters in each pass and the result locations
+/// Returns a string describing the hardware counters and passes for each public counter, and the scheduling of the
+/// combined counters, passes, and result locations
 /// \param api The API being used in the test
 /// \param deviceID The hardware being used
 /// \param countersToEnable The list of exposed counters being tested
 /// \param pOutputStream Output string stream describing the counters in each pass and the result locations
-void DecodeCountersInPassAndResultLocations(
+void ExplainCountersInPassAndResultLocations(
     GPA_API_Type api,
-    unsigned int deviceId,
-    const std::vector<unsigned int>& countersToEnable,
+    uint32_t deviceId,
+    const std::vector<uint32_t>& countersToEnable,
     std::stringstream* pOutputStream
 );

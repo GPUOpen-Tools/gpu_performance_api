@@ -86,7 +86,7 @@ public:
     /// \return the block id for this block (for example R7xxPerfCtrBlockSQ)
     cl_ulong GetBlockID() const { return m_blockID; }
 
-    /// Check whether the result has been completed (CollectData has been called and completed succesfully)
+    /// Check whether the result has been completed (CollectData has been called and completed successfully)
     /// \return the ready flag
     bool IsComplete() const { return m_isResultReady; }
 
@@ -94,9 +94,9 @@ private:
     /// Initial creation, called by the constructor
     void Create();
 
-    clPerfCounterBlock();                              ///< disable the default constructor
-    clPerfCounterBlock(const clPerfCounterBlock&);     ///< disable the copy constructor
-    clPerfCounterBlock& operator=(const clPerfCounterBlock&);     ///< disable the assignment operator
+    clPerfCounterBlock();                                         ///< disable the default constructor
+    clPerfCounterBlock(const clPerfCounterBlock&);                ///< disable the copy constructor
+    clPerfCounterBlock& operator=(const clPerfCounterBlock&);     ///< disable the assignment operator \return item being assigned
 
 protected:
     cl_device_id                   m_clDevice;      ///< opencl device
@@ -105,7 +105,7 @@ protected:
     const std::vector< cl_ulong >  m_pCounters;     ///< store the id for the counters
     cl_perfcounter_amd*            m_pclCounters;   ///< store the OpenCL HW counters
     std::map< cl_ulong, cl_ulong > m_results;       ///< store the results indexed by the counter id.
-    bool                           m_isResultReady; ///< true if CollectData has been called succesfully, false otherwise
+    bool                           m_isResultReady; ///< true if CollectData has been called successfully, false otherwise
 };
 
 #endif // _CLPERFCOUNTERBLOCK_H

@@ -137,7 +137,6 @@ private:
     IAmdExtD3DFactory*             m_pAmdExtObject;         ///< Driver extension object
     IAmdExtGpaInterface*           m_pGpaInterface;         ///< The GPA Interface from the driver
     AmdExtPerfExperimentProperties m_props;                 ///< Counter properties reported by the driver
-    AmdExtDeviceClockMode          m_clockMode;             ///< GPU Clock mode
 
 
     /// Enable/disable the stable power state
