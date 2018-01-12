@@ -12,21 +12,21 @@
 GPASample::GPASample(GPAPass* pPass,
                      IGPACommandList* pGpaCmdList,
                      GpaSampleType sampleType,
-                     ClientSampleId sampleId):
+                     ClientSampleId clientSampleId):
     m_pPass(pPass),
     m_pGpaCmdList(pGpaCmdList),
     m_gpaSampleType(sampleType),
-    m_clientSampleId(sampleId),
+    m_clientSampleId(clientSampleId),
+    m_driverSampleId(0),
+    m_gpaSampleState(GPASampleState::INITIALIZED),
+    m_pSampleResult(nullptr),
     m_pContinuingSample(nullptr),
-    m_sampleState(GPASampleState::INITIALIZED),
-    m_pSampleResult(nullptr)
+    m_isOpened(false),
+    m_isClosedByClient(false),
+    m_isContinuedByClient(false),
+    m_isCopiedSample(false)
 {
-    m_pSampleResult = nullptr;
     m_isSecondary = (GPA_COMMAND_LIST_SECONDARY == pGpaCmdList->GetCmdType());
-    m_isOpened = false;
-    m_isClosedByClient = false;
-    m_isContinuedByClient = false;
-    m_isCopiedSample = false;
 
     // First, only allocate result space for primary samples.
     // If a secondary sample gets copied, then it will also get space allocated for the results.
@@ -38,19 +38,24 @@ GPASample::GPASample(GPAPass* pPass,
 
 bool GPASample::IsComplete() const
 {
-    return m_sampleState == GPASampleState::RESULTS_COLLECTED;
+    return m_gpaSampleState == GPASampleState::RESULTS_COLLECTED;
 }
 
 GPA_THREAD_SAFE_FUNCTION bool GPASample::Begin(IGPAContext* pGpaContext,
                                                const std::vector<gpa_uint32>* pCounters)
 {
-    std::lock_guard<std::mutex> lockSample(m_sampleMutex);
-    bool result = BeginRequest(pGpaContext, pCounters);
+    bool result = false;
 
-    if (result)
+    if (nullptr != pGpaContext && !pCounters->empty())
     {
-        m_sampleState = GPASampleState::STARTED;
-        m_isOpened = true;
+        std::lock_guard<std::mutex> lockSample(m_sampleMutex);
+        result = BeginRequest(pGpaContext, pCounters);
+
+        if (result)
+        {
+            m_gpaSampleState = GPASampleState::STARTED;
+            m_isOpened = true;
+        }
     }
 
     return result;
@@ -61,7 +66,7 @@ GPA_THREAD_SAFE_FUNCTION bool GPASample::Begin(IGPAContext* pGpaContext,
 bool GPASample::End()
 {
     // make sure this request is valid before trying to end it.
-    if (m_sampleState != GPASampleState::STARTED)
+    if (m_gpaSampleState != GPASampleState::STARTED)
     {
         return false;
     }
@@ -70,7 +75,7 @@ bool GPASample::End()
 
     if (result)
     {
-        m_sampleState = GPASampleState::PENDING_RESULTS;
+        m_gpaSampleState = GPASampleState::PENDING_RESULTS;
     }
 
     return result;
@@ -134,11 +139,30 @@ bool GPASample::IsSecondary() const
     return m_isSecondary;
 }
 
+GpaSampleType GPASample::GetGpaSampleType() const
+{
+    return m_gpaSampleType;
+}
+
+GPASampleState GPASample::GetGpaSampleState() const
+{
+    return m_gpaSampleState;
+}
+
+GPASampleResult* GPASample::GetSampleResultLocation() const
+{
+    return m_pSampleResult;
+}
+
+GPASample* GPASample::GetContinuingSample() const
+{
+    return m_pContinuingSample;
+}
+
 GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsClosedByClient()
 {
     bool success = false;
     std::lock_guard<std::mutex> lockSample(m_sampleMutex);
-    m_sampleState = GPASampleState::PENDING_RESULTS;
 
     if (!m_isContinuedByClient)
     {
@@ -157,7 +181,7 @@ bool GPASample::SetAsCopied()
 {
     bool success = false;
     std::lock_guard<std::mutex> lockSample(m_sampleMutex);
-    m_sampleState = GPASampleState::PENDING_RESULTS;
+    m_gpaSampleState = GPASampleState::PENDING_RESULTS;
 
     if (!m_isCopiedSample)
     {
@@ -192,7 +216,7 @@ GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsContinuedByClient()
 {
     std::lock_guard<std::mutex> lockSample(m_sampleMutex);
     bool success = false;
-    m_sampleState = GPASampleState::PENDING_RESULTS;
+    m_gpaSampleState = GPASampleState::PENDING_RESULTS;
 
     if (!m_isClosedByClient)
     {
@@ -211,7 +235,10 @@ GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsContinuedByClient()
 bool GPASample::IsSampleValid() const
 {
     // A sample is only valid if it is opened and either it is continued/copied on another command list or closed on the same command list on which it was created
-    return m_isOpened && ((m_isClosedByClient && !m_isContinuedByClient) || (!m_isClosedByClient && m_isContinuedByClient)) || m_isCopiedSample;
+    return m_isOpened &&
+        ((m_isClosedByClient && !m_isContinuedByClient) ||
+        (!m_isClosedByClient && m_isContinuedByClient)) ||
+        m_isCopiedSample;
 }
 
 bool GPASample::IsClosed() const
@@ -221,7 +248,7 @@ bool GPASample::IsClosed() const
 
 void GPASample::MarkAsCompleted()
 {
-    m_sampleState = GPASampleState::RESULTS_COLLECTED;
+    m_gpaSampleState = GPASampleState::RESULTS_COLLECTED;
 }
 
 bool GPASample::IsSampleContinuing() const

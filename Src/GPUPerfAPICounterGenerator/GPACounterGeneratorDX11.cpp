@@ -19,6 +19,11 @@
 #include "PublicCounterDefsDX11Gfx8.h"
 #include "PublicCounterDefsDX11Gfx9.h"
 
+#include "PublicCounterDefsDX11Gfx6Asics.h"
+#include "PublicCounterDefsDX11Gfx7Asics.h"
+#include "PublicCounterDefsDX11Gfx8Asics.h"
+#include "PublicCounterDefsDX11Gfx9Asics.h"
+
 #include "InternalCountersDX11Gfx6.h"
 #include "InternalCountersDX11Gfx7.h"
 #include "InternalCountersDX11Gfx8.h"
@@ -218,7 +223,11 @@ static bool generateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GD
 }
 
 
-GPA_Status GPA_CounterGeneratorDX11::GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters)
+GPA_Status GPA_CounterGeneratorDX11::GeneratePublicCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_PublicCounters* pPublicCounters)
 {
     if (true == pPublicCounters->m_countersGenerated) //only generate counters once to improve performance
     {
@@ -230,18 +239,34 @@ GPA_Status GPA_CounterGeneratorDX11::GeneratePublicCounters(GDT_HW_GENERATION de
     if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
     {
         AutoDefinePublicCountersDX11Gfx6(*pPublicCounters);
+        if (generateAsicSpecificCounters)
+        {
+            DX11Gfx6Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
     {
         AutoDefinePublicCountersDX11Gfx7(*pPublicCounters);
+        if (generateAsicSpecificCounters)
+        {
+            DX11Gfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
         AutoDefinePublicCountersDX11Gfx8(*pPublicCounters);
+        if (generateAsicSpecificCounters)
+        {
+            DX11Gfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
         AutoDefinePublicCountersDX11Gfx9(*pPublicCounters);
+        if (generateAsicSpecificCounters)
+        {
+            DX11Gfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else
     {
@@ -254,8 +279,15 @@ GPA_Status GPA_CounterGeneratorDX11::GeneratePublicCounters(GDT_HW_GENERATION de
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
+GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_HardwareCounters* pHardwareCounters)
 {
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+
     if (true == pHardwareCounters->m_countersGenerated) //only generate counters once to improve performance
     {
         return GPA_STATUS_OK;

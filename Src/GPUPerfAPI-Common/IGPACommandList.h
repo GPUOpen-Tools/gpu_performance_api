@@ -51,14 +51,17 @@ public:
     /// \param[in] clientSampleIndex index of the sample
     /// \param[in] pSample The sample to start
     /// \param[in] pCounterList The set of counters to start on the sample
+    /// \return true if sample was successfully begun, false otherwise
     virtual bool BeginSample(ClientSampleId clientSampleIndex, GPASample* pSample, const std::vector<CounterIndex>* pCounterList) = 0;
 
-    /// Gets the index of the open sample
-    /// \return index of the sample created by the driver extension
+    /// Gets the current open sample
+    /// \return the current open sample or nullptr if no sample is open
     virtual GPASample* GetLastSample() const = 0;
 
-    /// Closes the last sample
-    virtual bool CloseLastSample(bool closingByClient = false) = 0;
+    /// Closes the most recent sample
+    /// \param closingByClient flag indicating if the sample is being closed by the client rather than by GPA itself. Default is true.
+    /// \return true if most recent sample was closed, false otherwise
+    virtual bool CloseLastSample(bool closingByClient = true) = 0;
 
     /// Checks whether the last sample has been closed or not
     /// \return true if last sample has been closed otherwise false

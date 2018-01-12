@@ -1,12 +1,12 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief GPA Command List Declarations
 //==============================================================================
 
-#ifndef _GPA_CMD_LIST_H_
-#define _GPA_CMD_LIST_H_
+#ifndef _GPA_COMMAND_LIST_H_
+#define _GPA_COMMAND_LIST_H_
 
 // GPA Common
 #include "IGPACommandList.h"
@@ -21,6 +21,8 @@ public:
     GPACommandList() = delete;
 
     /// Constructor
+    /// \param[in] pGpaSession GPA session pointer
+    /// \param[in] pGpaPass pass object pointer
     GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass);
 
     /// Destructor
@@ -53,7 +55,7 @@ public:
     GPASample* GetLastSample() const override;
 
     /// \copydoc IGPACommandList::CloseLastSample()
-    bool CloseLastSample(bool closingByClient = true) override;
+    bool CloseLastSample(bool closingByClient) override;
 
     /// \copydoc IGPACommandList::IsLastSampleClosed()
     bool IsLastSampleClosed() const override;
@@ -71,7 +73,8 @@ private:
 
     IGPASession*            m_pGpaSession;                 ///< GPA session
     GPAPass*                m_pGpaPass;                    ///< GPA Pass
-    bool                    m_isCmdRunning;                ///< flag indicating command list is running or not
+    GPASample*              m_pLastSample;                 ///< the current open sample on this command list
+    bool                    m_isCmdRunning;                ///< flag indicating if the command list is running or not
 };
 
-#endif // _GPA_CMD_LIST_H_
+#endif // _GPA_COMMAND_LIST_H_

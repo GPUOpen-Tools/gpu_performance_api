@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief GPA Interface Loader Utility header file
@@ -55,6 +55,8 @@
         #define GPA_X86_ARCH_SUFFIX L"32"
     #endif
 
+    #define GPA_DEBUG_SUFFIX L"-d"
+
 #else
     typedef char LocaleChar;
     typedef std::string LocaleString;
@@ -65,8 +67,6 @@
     #define GPA_DIRECTX12_LIB "GPUPerfAPIDX12"
     #define GPA_VULKAN_LIB "GPUPerfAPIVK"
     #define GPA_HSA_LIB "GPUPerfAPIHSA"
-    #define GPA_X64_ARCH_SUFFIX "-x64"
-    #define GPA_X86_ARCH_SUFFIX "32"
 
     #ifdef _WIN32
         #define GPA_LIB_PREFIX ""
@@ -74,11 +74,13 @@
         #define GPA_X64_ARCH_SUFFIX "-x64"
         #define GPA_X86_ARCH_SUFFIX ""
     #else
-        #define LIB_PREFIX "lib"
-        #define LIB_SUFFIX ".so"
+        #define GPA_LIB_PREFIX "lib"
+        #define GPA_LIB_SUFFIX ".so"
         #define GPA_X64_ARCH_SUFFIX ""
         #define GPA_X86_ARCH_SUFFIX "32"
     #endif
+
+    #define GPA_DEBUG_SUFFIX "-d"
 #endif
 
 #define GPA_GET_FUNCTION_TABLE_FUNCTION_NAME "GPA_GetFuncTable"
@@ -114,7 +116,6 @@ inline LocaleString GetWorkingDirectoryPath()
     return path;
 }
 
-
 /// Singleton Class to handle the loading and unloading the possible APIs
 class GPAApiManager
 {
@@ -124,12 +125,22 @@ public:
     /// \return returns  the instance of the GPAApiManager
     static GPAApiManager* Instance()
     {
-        if (nullptr == m_pGpaApiManger)
+        if (nullptr == m_pGpaApiManager)
         {
-            m_pGpaApiManger = new(std::nothrow) GPAApiManager();
+            m_pGpaApiManager = new(std::nothrow) GPAApiManager();
         }
 
-        return m_pGpaApiManger;
+        return m_pGpaApiManager;
+    }
+
+    /// Deletes the static instance instance
+    static void DeleteInstance()
+    {
+        if (nullptr != m_pGpaApiManager)
+        {
+            delete m_pGpaApiManager;
+            m_pGpaApiManager = nullptr;
+        }
     }
 
     /// Loads the dll and initialize the function table for the passed api type
@@ -144,7 +155,7 @@ public:
 
         if (m_gpaApiFunctionTables.find(apiType) == m_gpaApiFunctionTables.end())
         {
-            if (apiType > GPA_API__START && apiType < GPA_API_NO_SUPPORT)
+            if (apiType >= GPA_API__START && apiType < GPA_API_NO_SUPPORT)
             {
                 LocaleString libFullPath;
                 libFullPath.append(GPA_LIB_PREFIX);
@@ -178,7 +189,7 @@ public:
 #ifdef _LINUX
 
                     case GPA_API_HSA:
-                        libFullPath.append(HSA_LIB);
+                        libFullPath.append(GPA_HSA_LIB);
                         break;
 #endif
 
@@ -195,6 +206,10 @@ public:
                 libFullPath.append(GPA_X64_ARCH_SUFFIX);
 #else
                 libFullPath.append(GPA_X86_ARCH_SUFFIX);
+#endif
+
+#ifdef USE_DEBUG_GPA
+                libFullPath.append(GPA_DEBUG_SUFFIX);
 #endif
 
                 libFullPath.append(GPA_LIB_SUFFIX);
@@ -295,27 +310,30 @@ public:
         return nullptr;
     }
 
-    /// Destructor
-    ~GPAApiManager()
-    {
-        for (std::map<GPA_API_Type, std::pair<LibHandle, GPAApi*>>::iterator it = m_gpaApiFunctionTables.begin(); it != m_gpaApiFunctionTables.end(); ++it)
-        {
-            delete it->second.second;
-        }
-
-        m_gpaApiFunctionTables.clear();
-    }
-
 private:
     /// Constructor
     GPAApiManager()
     {}
 
-    static GPAApiManager*                                  m_pGpaApiManger;                 ///< GPA Api Manager pointer
-    std::map<GPA_API_Type, std::pair<LibHandle, GPAApi*>>  m_gpaApiFunctionTables;          ///< container to hold the function pointer table for all loaded api
+    /// Destructor
+    ~GPAApiManager()
+    {
+        if (nullptr != m_pGpaApiManager)
+        {
+            for (std::map<GPA_API_Type, std::pair<LibHandle, GPAApi*>>::iterator it = m_gpaApiFunctionTables.begin(); it != m_gpaApiFunctionTables.end(); ++it)
+            {
+                delete it->second.second;
+            }
+
+            m_gpaApiFunctionTables.clear();
+        }
+    }
+
+    static GPAApiManager*                                  m_pGpaApiManager;                 ///< GPA Api Manager pointer
+    std::map<GPA_API_Type, std::pair<LibHandle, GPAApi*>>  m_gpaApiFunctionTables;           ///< container to hold the function pointer table for all loaded api
 };
 
 // Note: For usage - Add Initialization of the static instance in compiling unit
-// GPAApiManager* GPAApiManager::m_pGpaApiManger = nullptr;
+// GPAApiManager* GPAApiManager::m_pGpaApiManager = nullptr;
 
 #endif

@@ -91,11 +91,20 @@ typedef struct GPA_UUID
     #define UNREFERENCED_PARAMETER(x)
 
     #define _strcmpi(a, b) strcasecmp(a, b)
+    #define _stricmp(a, b) strcasecmp(a, b)
 
     // for now, just use non secure version for Linux
     #define strcpy_s(dst, ndst, src) strcpy(dst, src)
     #define strcat_s(dst, ndst, src) strcat(dst, src)
     #define strtok_s(a, b, c) strtok(a, b)
+
+    #ifndef TRUE
+        #define TRUE 1
+    #endif
+
+    #ifndef FALSE
+        #define FALSE 0
+    #endif
 
 #endif // __linux__
 
@@ -131,8 +140,7 @@ GPA_DEFINE_OBJECT(CommandListId)
 typedef enum
 {
     GPA_STATUS_OK = 0,
-    GPA_STATUS_RESULT_READY = 1,
-    GPA_STATUS_RESULT_NOT_READY = 2,
+    GPA_STATUS_RESULT_NOT_READY = 1,
     GPA_STATUS_MAX = GPA_STATUS_RESULT_NOT_READY,
     GPA_STATUS_ERROR_NULL_POINTER = -1,
     GPA_STATUS_ERROR_COUNTERS_NOT_OPEN = -2,
@@ -165,7 +173,8 @@ typedef enum
     GPA_STATUS_ERROR_LIB_LOAD_FAILED = -29,
     GPA_STATUS_ERROR_LIB_LOAD_VERSION_MISMATCH = -30,
     GPA_STATUS_ERROR_GPA_NOT_INITIALIZED = -31,
-    GPA_STATUS_ERROR_SAMPLE_IN_SECONDARY_COMMAND_LIST = -32,
+    GPA_STATUS_ERROR_GPA_ALREADY_INITIALIZED = -32,
+    GPA_STATUS_ERROR_SAMPLE_IN_SECONDARY_COMMAND_LIST = -33,
     GPA_STATUS_MIN = GPA_STATUS_ERROR_SAMPLE_IN_SECONDARY_COMMAND_LIST,
     // following are status codes used internally within GPUPerfAPI
     GPA_STATUS_INTERNAL = 256,

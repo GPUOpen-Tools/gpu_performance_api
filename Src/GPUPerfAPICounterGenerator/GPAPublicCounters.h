@@ -180,6 +180,15 @@ public:
         const char* pComputeExpression,
         const char* pUuid);
 
+    /// Updates an existing public counter based on ASIC-specific registers.
+    /// \param pName the name of the counter
+    /// \param internalCountersRequired the list of required internal counters
+    /// \param pComputeExpression the compute expression of the counter
+    virtual void UpdateAsicSpecificPublicCounter(
+        const char* pName,
+        vector< gpa_uint32 >& internalCountersRequired,
+        const char* pComputeExpression);
+
     /// Adds a public counter to the set of available counters
     /// \param publicCounter the public counter to add
     virtual void AddPublicCounter(GPA_PublicCounter& publicCounter)

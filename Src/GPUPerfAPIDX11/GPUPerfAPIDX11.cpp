@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2011-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2011-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX11 version of GPUPerfAPI
@@ -559,7 +559,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
 
     getCurrentContext()->SetDX11DeviceContext(pDeviceContext);
 
-    return GenerateCounters(GPA_API_DIRECTX_11, vendorId, deviceId, revisionId, (IGPACounterAccessor**) & (g_pCurrentContext->m_pCounterAccessor), &(getCurrentContext()->m_pCounterScheduler));
+    return GenerateCounters(GPA_API_DIRECTX_11, vendorId, deviceId, revisionId, true, (IGPACounterAccessor**) & (g_pCurrentContext->m_pCounterAccessor), &(getCurrentContext()->m_pCounterScheduler));
 }
 
 //-----------------------------------------------------------------------------

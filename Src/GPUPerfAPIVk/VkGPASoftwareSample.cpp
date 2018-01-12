@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  VkGPASoftwareSample implementation
@@ -234,7 +234,7 @@ const
 
 bool VkGPASoftwareSample::UpdateResults()
 {
-    if (GPASampleState::RESULTS_COLLECTED == m_sampleState)
+    if (GPASampleState::RESULTS_COLLECTED == GetGpaSampleState())
     {
         return true;
     }
@@ -247,7 +247,7 @@ bool VkGPASoftwareSample::UpdateResults()
         isUpdated = true;
     }
 
-    if (GPASampleState::PENDING_RESULTS == m_sampleState && !IsSecondary())
+    if (GPASampleState::PENDING_RESULTS == GetGpaSampleState() && !IsSecondary())
     {
         GpaVkSoftwareQueryResults queryResults;
         memset(&queryResults, 0, sizeof(queryResults));
@@ -256,34 +256,34 @@ bool VkGPASoftwareSample::UpdateResults()
         {
             if (m_pSwQueries->GetSwSampleResults(m_swSampleId, queryResults))
             {
-                m_pSampleResult->m_numCounters = m_activeCountersList.size();
+                GetSampleResultLocation()->m_numCounters = m_activeCountersList.size();
                 const size_t counterCount = m_activeCountersList.size();
-                isUpdated = (counterCount == m_pSampleResult->m_numCounters);
+                isUpdated = (counterCount == GetSampleResultLocation()->m_numCounters);
 
                 for (size_t ci = 0; isUpdated && (counterCount > ci); ++ci)
                 {
                     switch (m_activeCountersList[ci].m_queryType)
                     {
                     case GPA_VK_QUERY_TYPE_OCCLUSION:
-                        m_pSampleResult->m_pResultBuffer[ci] = queryResults.occlusion;
+                        GetSampleResultLocation()->m_pResultBuffer[ci] = queryResults.occlusion;
                         break;
 
                     case GPA_VK_QUERY_TYPE_OCCLUSION_BINARY:
-                        m_pSampleResult->m_pResultBuffer[ci] = queryResults.occlusionBinary;
+                        GetSampleResultLocation()->m_pResultBuffer[ci] = queryResults.occlusionBinary;
                         break;
 
                     case GPA_VK_QUERY_TYPE_TIMESTAMP:
                         isUpdated = GetTimestampQueryCounterResult(
                             queryResults,
                             m_activeCountersList[ci].m_index,
-                            m_pSampleResult->m_pResultBuffer[ci]);
+                            GetSampleResultLocation()->m_pResultBuffer[ci]);
                         break;
 
                     case GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS:
                         isUpdated = GetPipelineQueryCounterResult(
                             queryResults,
                             m_activeCountersList[ci].m_index,
-                            m_pSampleResult->m_pResultBuffer[ci]);
+                            GetSampleResultLocation()->m_pResultBuffer[ci]);
                         break;
 
                     default:

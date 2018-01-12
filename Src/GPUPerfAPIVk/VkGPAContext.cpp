@@ -1,17 +1,15 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA VK Context Definition
 //==============================================================================
 
-#include "VkGPAContext.h"
-
-#include <map>
 #include <mutex>
 #include <assert.h>
-#include <DeviceInfoUtils.h>
 
+#include "VkGPAContext.h"
+#include <DeviceInfoUtils.h>
 #include "VkGPASession.h"
 #include "GPUPerfAPI-VK.h"
 #include "VkEntrypoints.h"
@@ -29,20 +27,26 @@ VkGPAContext::VkGPAContext(const GPA_vkContextOpenInfo* openInfo,
     m_device = openInfo->device;
 
     m_amdDeviceProperties = {};
+    m_clockMode = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
 }
 
 VkGPAContext::~VkGPAContext()
 {
     VkUtils::ReleasePhysicalDeviceGpaPropertiesAMD(&m_amdDeviceProperties);
 
-    std::lock_guard<std::mutex> lockSessionList(m_sessionListMutex);
-
-    for (auto sessionIter = m_gpaSessionList.begin(); sessionIter != m_gpaSessionList.end(); ++sessionIter)
+    auto deleteVkSession = [](IGPASession* pGpaSession) -> bool
     {
-        DeleteVkGpaSession(reinterpret_cast<VkGPASession*>(*sessionIter));
-    }
+        if (nullptr != pGpaSession)
+        {
+            GPAUniqueObjectManager::Instance()->DeleteObject(pGpaSession);
+            delete pGpaSession;
+        }
 
-    m_gpaSessionList.clear();
+        return true;
+    };
+
+    IterateGpaSessionList(deleteVkSession);
+    ClearSessionList();
 }
 
 GPA_Status VkGPAContext::Open()
@@ -56,20 +60,27 @@ GPA_Status VkGPAContext::Open()
     if (VkUtils::GetPhysicalDeviceGpaPropertiesAMD(m_physicalDevice, &m_amdDeviceProperties))
     {
         // counters are supported, set stable clocks
-        result = SetStableClocks(true);
 
-        if (GPA_STATUS_OK == result && OpenCounters())
+        // we don't want a failure when setting stable clocks to result in a
+        // fatal error returned from GetHwInfo. So we use a local status object
+        // instead of modifying "result".  We will still output log messages.
+        GPA_Status setStableClocksStatus = SetStableClocks(true);
+
+        if (GPA_STATUS_OK != setStableClocksStatus)
+        {
+            GPA_LogError("Driver was unable to set stable clocks for profiling.");
+#ifdef __linux__
+            GPA_LogMessage("In Linux, make sure to run your application with root privileges.");
+#endif //__linux__
+        }
+
+        if (OpenCounters())
         {
             SetAsOpened(true);
         }
         else
         {
             result = GPA_STATUS_ERROR_FAILED;
-
-            GPA_LogError("Driver was unable to set stable clocks for profiling.");
-#ifdef __linux__
-            GPA_LogMessage("In Linux, make sure to run your application with root privileges.");
-#endif //__linux__
 
             VkUtils::ReleasePhysicalDeviceGpaPropertiesAMD(&m_amdDeviceProperties);
         }
@@ -127,12 +138,18 @@ GPA_Status VkGPAContext::SetStableClocks(bool useProfilingClocks)
             }
         }
 
-        VkResult clockResult = _vkSetGpaDeviceClockModeAMD(m_device, &clockMode);
-        result = (clockResult == VK_SUCCESS) ? GPA_STATUS_OK : GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+        // TODO: DX12 locks a mutex here: std::lock_guard<std::mutex> lockAmdClock(m_gpaContextMutex);
 
-        if (clockResult != VK_SUCCESS)
+        if (clockMode.clockMode != m_clockMode)
         {
-            GPA_LogError("Failed to set ClockMode for profiling.");
+            m_clockMode = clockMode.clockMode;
+            VkResult clockResult = _vkSetGpaDeviceClockModeAMD(m_device, &clockMode);
+            result = (clockResult == VK_SUCCESS) ? GPA_STATUS_OK : GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+
+            if (VK_SUCCESS != clockResult)
+            {
+                GPA_LogError("Failed to set ClockMode for profiling.");
+            }
         }
     }
 
@@ -147,8 +164,7 @@ GPA_SessionId VkGPAContext::CreateSession()
 
     if (nullptr != pSession)
     {
-        std::lock_guard<std::mutex> lockSessionList(m_sessionListMutex);
-        m_gpaSessionList.push_back(pSession);
+        AddGpaSession(pSession);
         sessionId = reinterpret_cast<GPA_SessionId>(GPAUniqueObjectManager::Instance()->CreateObject(pSession));
     }
 
@@ -171,7 +187,7 @@ bool VkGPAContext::DeleteVkGpaSession(VkGPASession* pVkGpaSession)
 {
     if (nullptr != pVkGpaSession)
     {
-        m_gpaSessionList.remove(pVkGpaSession);
+        RemoveGpaSession(pVkGpaSession);
         GPAUniqueObjectManager::Instance()->DeleteObject(pVkGpaSession);
         delete pVkGpaSession;
     }
@@ -182,18 +198,25 @@ bool VkGPAContext::DeleteVkGpaSession(VkGPASession* pVkGpaSession)
 gpa_uint32 VkGPAContext::GetMaxGPASessions() const
 {
     // there is no maximum number of sessions
-    return 0;
+    return GPA_SESSION_NO_LIMIT;
 }
 
 bool VkGPAContext::DoesSessionExist(GPA_SessionId sessionId) const
 {
-    std::lock_guard<std::mutex> lockSessionList(m_sessionListMutex);
-    GPASessionList::const_iterator search = m_gpaSessionList.cbegin();
-    while (search != m_gpaSessionList.end() && *search != reinterpret_cast<VkGPASession*>(sessionId))
+    bool found = false;
+    auto searchSession = [&](IGPASession* pGpaSession) -> bool
     {
-        ++search;
-    }
-    return (search != m_gpaSessionList.end());
+        if (pGpaSession == reinterpret_cast<VkGPASession*>(sessionId))
+        {
+            found = true;
+            return false;
+        }
+
+        return true;
+    };
+
+    IterateGpaSessionList(searchSession);
+    return found;
 }
 
 GPA_API_Type VkGPAContext::GetAPIType() const

@@ -663,10 +663,10 @@ GPA_CounterGroupDesc HWDX11GroupsGfx8[] =
     {300, "GDS", 0, 121, 4},
     {301, "IA0", 0, 24, 4},
     {302, "IA1", 1, 24, 4},
-    {303, "VGT0", 0, 146, 4},
-    {304, "VGT1", 1, 146, 4},
-    {305, "VGT2", 2, 146, 4},
-    {306, "VGT3", 3, 146, 4},
+    {303, "VGT0", 0, 147, 4},
+    {304, "VGT1", 1, 147, 4},
+    {305, "VGT2", 2, 147, 4},
+    {306, "VGT3", 3, 147, 4},
     {307, "MC0", 0, 33, 4},
     {308, "MC1", 1, 33, 4},
     {309, "MC2", 2, 33, 4},
@@ -1307,7 +1307,7 @@ PE_BLOCK_ID HWDX11DriverEnumGfx8[] =
 
 const unsigned int HWDX11GPUTimeIndexGfx8 = 343;
 const unsigned int HWDX11GPUTimeStampIndexGfx8 = 342;
-const unsigned int HWDX11FirstGPUTimeCounterIndexGfx8 = 51127;
+const unsigned int HWDX11FirstGPUTimeCounterIndexGfx8 = 51131;
 const unsigned int HWDX11GroupCountGfx8 = sizeof(HWDX11GroupsGfx8) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX11SQGroupCountGfx8 = sizeof(HWDX11SQGroupsGfx8) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX11SQIsolatedGroupCountGfx8 = sizeof(HWDX11SQIsolatedGroupsGfx8) / sizeof(unsigned int);

@@ -87,5 +87,6 @@ private:
     VkPhysicalDevice                    m_physicalDevice;       ///< The physical device on which the device was created
     VkDevice                            m_device;               ///< The device queries and counters are created on
     VkPhysicalDeviceGpaPropertiesAMD    m_amdDeviceProperties;  ///< Physical Device properties exposed by the AMD GPA Extension
+    VkGpaDeviceClockModeAMD             m_clockMode;            ///< GPU Clock mode
 };
 #endif //_VK_GPA_CONTEXT_H_

@@ -1,19 +1,19 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief DX12 GPA Command List Declarations
 //==============================================================================
 
-#ifndef _DX12_GPA_CMD_LIST_H_
-#define _DX12_GPA_CMD_LIST_H_
+#ifndef _DX12_GPA_COMMAND_LIST_H_
+#define _DX12_GPA_COMMAND_LIST_H_
 
 // std
 #include <map>
 #include <unordered_set>
 
 // DirectX 12
-#include <D3D12.h>
+#include <d3d12.h>
 
 // AMD Extension
 #pragma warning (push)
@@ -51,14 +51,14 @@ public:
     DX12GPACommandList() = delete;
 
     /// Constructor
-    /// \param[in] pDX12Gpasession dx12 GPA session
+    /// \param[in] pDX12GpaSession dx12 GPA session
     /// \param[in] pPass pass object pointer
     /// \param[in] pCmd command list pointer
     /// \param[in] cmdType commnad list type
-    DX12GPACommandList(DX12GPASession* pDX12Gpasession,
-                   GPAPass* pPass,
-                   void* pCmd,
-                   GPA_Command_List_Type cmdType);
+    DX12GPACommandList(DX12GPASession* pDX12GpaSession,
+                       GPAPass* pPass,
+                       void* pCmd,
+                       GPA_Command_List_Type cmdType);
 
     /// Destructor
     ~DX12GPACommandList();
@@ -88,7 +88,7 @@ public:
     GPASample* GetLastSample() const override;
 
     /// \copydoc IGPACommandList::CloseLastSample()
-    bool CloseLastSample(bool closingByClient = true) override;
+    bool CloseLastSample(bool closingByClient) override;
 
     /// \copydoc IGPACommandList::IsLastSampleClosed()
     bool IsLastSampleClosed() const override;
@@ -201,4 +201,4 @@ private:
     bool                                                    m_isNonGPAResourceReleased;                 ///< flag indicating ID3DGraphicsCommand list has been released or not
 };
 
-#endif // _DX12_GPA_CMD_LIST_H_
+#endif // _DX12_GPA_COMMAND_LIST_H_

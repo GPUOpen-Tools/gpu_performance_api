@@ -17,6 +17,11 @@
 #include "PublicCounterDefsCLGfx8.h"
 #include "PublicCounterDefsCLGfx9.h"
 
+#include "PublicCounterDefsCLGfx6Asics.h"
+#include "PublicCounterDefsCLGfx7Asics.h"
+#include "PublicCounterDefsCLGfx8Asics.h"
+#include "PublicCounterDefsCLGfx9Asics.h"
+
 #include "InternalCountersCLGfx6.h"
 #include "InternalCountersCLGfx7.h"
 #include "InternalCountersCLGfx8.h"
@@ -34,23 +39,43 @@ GPA_CounterGeneratorCL::GPA_CounterGeneratorCL()
     }
 }
 
-GPA_Status GPA_CounterGeneratorCL::GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters)
+GPA_Status GPA_CounterGeneratorCL::GeneratePublicCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_PublicCounters* pPublicCounters)
 {
     if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
     {
         AutoDefinePublicCountersCLGfx6(*pPublicCounters);
+        if (generateAsicSpecificCounters)
+        {
+            CLGfx6Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
     {
         AutoDefinePublicCountersCLGfx7(*pPublicCounters);
+        if (generateAsicSpecificCounters)
+        {
+            CLGfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
         AutoDefinePublicCountersCLGfx8(*pPublicCounters);
+        if (generateAsicSpecificCounters)
+        {
+            CLGfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
         AutoDefinePublicCountersCLGfx9(*pPublicCounters);
+        if (generateAsicSpecificCounters)
+        {
+            CLGfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else
     {
@@ -89,8 +114,15 @@ int GPA_CounterGeneratorCL::GetDriverGroupId(GDT_HW_GENERATION desiredGeneration
     return result;
 }
 
-GPA_Status GPA_CounterGeneratorCL::GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
+GPA_Status GPA_CounterGeneratorCL::GenerateHardwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_HardwareCounters* pHardwareCounters)
 {
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+
     if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
     {
         pHardwareCounters->m_ppCounterGroupArray = CLCounterGroupArrayGfx6;
@@ -207,9 +239,15 @@ GPA_Status GPA_CounterGeneratorCL::GenerateHardwareCounters(GDT_HW_GENERATION de
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorCL::GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters)
+GPA_Status GPA_CounterGeneratorCL::GenerateSoftwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_SoftwareCounters* pSoftwareCounters)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
     UNREFERENCED_PARAMETER(pSoftwareCounters);
     return GPA_STATUS_OK;
 }

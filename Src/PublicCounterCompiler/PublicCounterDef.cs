@@ -13,49 +13,88 @@ namespace PublicCounterCompiler
 {
     using System;
     using System.Collections.Generic;
+    using System.Diagnostics;
     using System.Security.Cryptography;
     using System.Text;
+
+    /// <summary>
+    /// Maps block instance counters to their counter index
+    /// </summary>
+    class PublicCounterRegisterMap
+    {
+        /// <summary>
+        /// Adds a counter the list of block instance counters.
+        /// </summary>
+        /// <param name="counterName">The name of the counter.</param>
+        public void AddCounter(string counterName)
+        {
+            registerMap[counterName] = globalRegisterIndex;
+            ++globalRegisterIndex;
+        }
+
+        /// <summary>
+        /// Gets the counter index for a block instance counter.
+        /// </summary>
+        /// <param name="counterName">The name of the counter.</param>
+        /// <returns>Index of counter, or -1 if not found</returns>
+        public int GetCounterIndex(string counterName)
+        {
+            try
+            {
+                if (!registerMap.ContainsKey(counterName))
+                    return -1;
+                return registerMap[counterName];
+            }
+            catch
+            {
+                return -1;
+            }
+        }
+
+        /// <summary>
+        /// Gets all the counter indices for the indicated block instance counter template.
+        /// </summary>
+        /// <param name="counterName">The base name of the counter.</param>
+        /// <returns>Ordered list of indices</returns>
+        public List<int> GetAllCounterIndices(string counterNameBase)
+        {
+            List<int> indices = new List<int>();
+
+            int baseCounterIndex = 0;
+
+            while (true)
+            {
+                string counterName = counterNameBase.Replace("*", baseCounterIndex.ToString());
+
+                int registerIndex = GetCounterIndex(counterName);
+
+                if (registerIndex < 0)
+                    break;
+
+                indices.Add(registerIndex);
+
+                ++baseCounterIndex;
+            }
+
+            return indices;
+        }
+
+        /// <summary>
+        /// Global register index of the block instance counter within this counter.
+        /// </summary>
+        private int globalRegisterIndex = 0;
+
+        /// <summary>
+        /// Map of block instance counters and indices.
+        /// </summary>
+        private Dictionary<string, int> registerMap = new Dictionary<string, int>();
+    }
 
     /// <summary>
     /// Contains information about a public counter definition
     /// </summary>
     public class PublicCounterDef
     {
-        /// <summary>
-        /// stores the maximum name length
-        /// </summary>
-        private static int maxNameLen = 0;
-
-        /// <summary>
-        /// stores the maximum group length
-        /// </summary>
-        private static int maxGroupLen = 0;
-
-        /// <summary>
-        /// stores the maximum description length
-        /// </summary>
-        private static int maxDescLen = 0;
-
-        /// <summary>
-        /// stores the max type length
-        /// </summary>
-        private static int maxTypeLen = 0;
-
-        /// <summary>
-        /// stores the max usage length
-        /// </summary>
-        private static int maxUsageLen = 0;
-
-        /// <summary>
-        /// stores the max counter list size.
-        /// </summary>
-        private static int maxCounterCount = 0;
-
-        /// <summary>
-        /// stores the max equation length
-        /// </summary>
-        private static int maxCompLen = 0;
-
         /// <summary>
         /// The name of the counter.
         /// </summary>
@@ -86,6 +125,123 @@ namespace PublicCounterCompiler
         /// counter name and description
         /// </summary>
         MD5 md5Hash = MD5.Create();
+
+        /// <summary>
+        /// Map of name referenced counters to their index
+        /// </summary>
+        private PublicCounterRegisterMap counterRegisterMap = new PublicCounterRegisterMap();
+
+        /// <summary>
+        /// Block instance register base name and the range of counter indices it covers.
+        /// </summary>
+        private class RegisterBaseNameRange
+        {
+            public string registerBaseName;
+            public int startIndex;
+            public int endIndex;
+        }
+
+        /// <summary>
+        /// List of block instance register base names and the ranges of counter indices they cover.
+        /// </summary>
+        List<RegisterBaseNameRange> registerBaseNameRanges = new List<RegisterBaseNameRange>();
+
+        /// <summary>
+        /// Adds a block instance register to the register map.
+        /// </summary>
+        /// <param name="registerCounterName">Name of the block instance register.</param>
+        public void AddRegisterCounter(string registerCounterName)
+        {
+            counterRegisterMap.AddCounter(registerCounterName);
+        }
+
+        /// <summary>
+        /// Returns the ending index of the last register counter.
+        /// </summary>
+        /// <returns>On success, the ending index of the last register counter.  Otherwise, -1.</returns>
+        private int GetLastRegisterCounterEndingIndex()
+        {
+            if (registerBaseNameRanges.Count == 0)
+            {
+                return -1;
+            }
+
+            return registerBaseNameRanges[registerBaseNameRanges.Count - 1].endIndex;
+        }
+
+        /// <summary>
+        /// Records a block instance register base name and its reference range.
+        /// </summary>
+        /// <param name="registerCounterBaseName">Base name of the block instance register.</param>
+        /// <param name="startIndex">Starting index of the register.</param>
+        /// <param name="endIndex">Ending index of the register.</param>
+        public void AddRegisterCounterBaseNameRange(string registerCounterBaseName, int startIndex, int endIndex)
+        {
+            int offset = GetLastRegisterCounterEndingIndex();
+
+            if (offset >= 0)
+            {
+                ++offset;
+            }
+            else
+            {
+                offset = 0;
+            }
+
+            RegisterBaseNameRange range = new RegisterBaseNameRange();
+
+            range.registerBaseName = registerCounterBaseName;
+            range.startIndex = startIndex + offset;
+            range.endIndex = endIndex + offset;
+
+            registerBaseNameRanges.Add(range);
+        }
+
+        /// <summary>
+        /// Determine the block instance register base name by counter index.
+        /// </summary>
+        /// <param name="index">Counter index to lookup the block instance register base name for.</param>
+        /// <param name="startIndex">Returned start index of the register.</param>
+        /// <param name="endIndex">Returned end index of the register.</param>
+        /// <returns>On success, the block instance register base name, and the start end end indices.  Otherwise, an empty string.</returns>
+        public string GetRegisterCounterBaseNameForIndex(int index, out int startIndex, out int endIndex)
+        {
+            startIndex = -1;
+            endIndex = -1;
+
+            foreach (var register in registerBaseNameRanges)
+            {
+                if (index >= register.startIndex && index <= register.endIndex)
+                {
+                    startIndex = register.startIndex;
+                    endIndex = register.endIndex;
+                    return register.registerBaseName;
+                }
+            }
+
+            Debug.Assert(false);
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Retrieves the index of a block instance register.
+        /// </summary>
+        /// <param name="counterName">Name of the block instance register.</param>
+        /// <returns>Index of the block instance register</returns>
+        public int GetRegisterCounterIndex(string counterName)
+        {
+            return counterRegisterMap.GetCounterIndex(counterName);
+        }
+
+        /// <summary>
+        /// Retrieves all of the indices based on the wild-carded base block instance register template name.
+        /// </summary>
+        /// <param name="baseCounterName">Wild-cared template name of the block instance register.</param>
+        /// <returns>True if the index is in the </returns>
+        public List<int> GetAllRegisterCounterIndices(string baseCounterName)
+        {
+            return counterRegisterMap.GetAllCounterIndices(baseCounterName);
+        }
 
         /// <summary>
         /// Structure for a hardware counter
@@ -167,10 +323,6 @@ namespace PublicCounterCompiler
             set
             {
                 this.name = value;
-                if (this.name.Length > maxNameLen)
-                {
-                    maxNameLen = this.name.Length;
-                }
             }
         }
 
@@ -187,10 +339,6 @@ namespace PublicCounterCompiler
             set
             {
                 this.group = value;
-                if (this.group.Length > maxGroupLen)
-                {
-                    maxGroupLen = this.group.Length;
-                }
             }
         }
 
@@ -207,10 +355,6 @@ namespace PublicCounterCompiler
             set
             {
                 this.desc = value;
-                if (this.desc.Length > maxDescLen)
-                {
-                    maxDescLen = this.desc.Length;
-                }
             }
         }
 
@@ -227,10 +371,6 @@ namespace PublicCounterCompiler
             set
             {
                 this.type = value;
-                if (this.type.Length > maxTypeLen)
-                {
-                    maxTypeLen = this.type.Length;
-                }
             }
         }
 
@@ -247,10 +387,6 @@ namespace PublicCounterCompiler
             set
             {
                 this.usage = value;
-                if (this.usage.Length > maxUsageLen)
-                {
-                    maxUsageLen = this.usage.Length;
-                }
             }
         }
 
@@ -267,15 +403,20 @@ namespace PublicCounterCompiler
             set
             {
                 this.comp = value;
-                if (this.comp.Length > maxCompLen)
-                {
-                    maxCompLen = this.comp.Length;
-                }
             }
         }
 
         /// <summary>
-        /// Gets or sets the 
+        /// Gets or sets the readable comp for readable debugging, output, validation
+        /// </summary>
+        public string CompReadable
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Gets or sets the counter type.
         /// </summary>
         public string CounterType { get; set; }
 
@@ -286,10 +427,6 @@ namespace PublicCounterCompiler
         public void AddCounter(string counterName, int counterIndex)
         {
             this.counters.Add(new HardwareCounterDef(counterName, counterIndex));
-            if (this.counters.Count > maxCounterCount)
-            {
-                maxCounterCount = this.counters.Count;
-            }
         }
 
         /// <summary>
@@ -359,6 +496,7 @@ namespace PublicCounterCompiler
                 return guid;
             }
         }
+
     }
 }
 

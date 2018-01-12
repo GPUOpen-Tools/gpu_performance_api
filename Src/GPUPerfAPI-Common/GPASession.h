@@ -15,6 +15,8 @@
 using SampleIndex = unsigned int;                   ///< type alias for sample indexes
 using PassInfo = std::vector<GPAPass*>;             ///< type alias for pass index and its corresponding pass
 
+const uint32_t GPA_TIMEOUT_INFINITE = static_cast<uint32_t>(-1); ///< Timeout constant indicating "infinite", or no, timeout
+
 /// Base class implementation for the IGPASession
 class GPASession : public IGPASession
 {
@@ -96,7 +98,7 @@ public:
     bool IsComplete() const override;
 
     /// \copydoc IGPASession::GetPerSampleResultSizeInBytes()
-    gpa_uint32 GetPerSampleResultSizeInBytes() const override;
+    gpa_uint64 GetPerSampleResultSizeInBytes() const override;
 
     /// \copydoc IGPASession::GetSampleResult()
     GPA_Status GetSampleResult(gpa_uint32 sampleId, gpa_uint64 sampleResultSizeInBytes, void* pCounterSampleResults) override;
@@ -125,14 +127,13 @@ protected:
 private:
 
     /// Waits for all data requests to be complete (blocking).
-    virtual void Flush();
+    virtual bool Flush(uint32_t timeout = GPA_TIMEOUT_INFINITE);
 
-    mutable std::mutex                  m_gpaSessionMutex;                         ///< Mutex gpa session
+    mutable std::mutex                  m_gpaSessionMutex;                         ///< Mutex GPA session
     mutable GPASessionState             m_state;                                   ///< The state of the session
     IGPACounterScheduler*               m_pCounterScheduler;                       ///< The counter scheduler that this session will use to schedule counters.
     IGPAContext*                        m_pParentContext;                          ///< The context on which this session was created
     PassInfo                            m_passes;                                  ///< List of pass objects in the session
-    unsigned int                        m_sessionID;                               ///< The session ID of this session.
     PassIndex                           m_maxPassIndex;                            ///< maximum pass index reported for creating command list
 
 };

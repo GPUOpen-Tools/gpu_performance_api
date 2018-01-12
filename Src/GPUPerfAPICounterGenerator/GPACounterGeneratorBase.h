@@ -81,8 +81,12 @@ public:
 
     /// Generate the counters for the specified generation
     /// \param desiredGeneration the generation whose counters are needed
+    /// \param asicType the ASIC type whose counters are needed
+    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
     /// \return GPA_STATUS_OK on success
-    GPA_Status GenerateCounters(GDT_HW_GENERATION desiredGeneration);
+    GPA_Status GenerateCounters(GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters);
 
     /// \copydoc IGPACounterAccessor::ComputeSWCounterValue()
     void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex,
@@ -96,21 +100,39 @@ public:
 
     /// Generate the public counters for the specified hardware generation
     /// \param desiredGeneration the generation whose counters are needed
+    /// \param asicType the ASIC whose counters are needed
+    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
     /// \param[out] pPublicCounters the generated counters
     /// \return GPA_STATUS_OK on success
-    virtual GPA_Status GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters) = 0;
+    virtual GPA_Status GeneratePublicCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_PublicCounters* pPublicCounters) = 0;
 
     /// Generate the hardware counters for the specified hardware generation
     /// \param desiredGeneration the generation whose counters are needed
+    /// \param asicType the ASIC whose counters are needed
+    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
     /// \param[out] pHardwareCounters the generated counters
     /// \return GPA_STATUS_OK on success
-    virtual GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters) = 0;
+    virtual GPA_Status GenerateHardwareCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_HardwareCounters* pHardwareCounters) = 0;
 
     /// Generate the software counters for the specified hardware generation
     /// \param desiredGeneration the generation whose counters are needed
+    /// \param asicType the ASIC whose counters are needed
+    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
     /// \param[out] pSoftwareCounters the generated counters
     /// \return GPA_STATUS_OK on success
-    virtual GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters) = 0;
+    virtual GPA_Status GenerateSoftwareCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_SoftwareCounters* pSoftwareCounters) = 0;
 
     GPA_PublicCounters   m_publicCounters;   ///< the generated public counters
     GPA_HardwareCounters m_hardwareCounters; ///< the generated hardware counters

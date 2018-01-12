@@ -325,6 +325,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
                              vendorId,
                              deviceId,
                              revisionId,
+                             true,
                              &pCounterAccessor,
                              &pCounterScheduler);
 

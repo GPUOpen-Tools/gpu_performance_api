@@ -29,13 +29,22 @@ public:
 protected:
     /// Overridden methods -- see base for documentation
     virtual GPA_Status GeneratePublicCounters(
-        GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters) override;
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_PublicCounters* pPublicCounters) override;
 
     virtual GPA_Status GenerateHardwareCounters(
-        GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters) override;
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_HardwareCounters* pHardwareCounters) override;
 
     virtual GPA_Status GenerateSoftwareCounters(
-        GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters) override;
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_SoftwareCounters* pSoftwareCounters) override;
 
     virtual void ComputeSWCounterValue(
         gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const override;

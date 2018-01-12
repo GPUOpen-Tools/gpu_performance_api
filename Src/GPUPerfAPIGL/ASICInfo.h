@@ -23,7 +23,7 @@ typedef enum
     ASIC_UNKNOWN   ///< unknown asic family
 } ASICType;
 
-/// !!! From maswp4p1.amd.com:1666/stg/ugl/drivers/ugl/src/gl/gs/include/atiasics.h !!!
+/// !!! From /stg/ugl/drivers/ugl/src/gl/gs/include/atiasics.h !!!
 ///   NOTE: THIS MUST BE UPDATED FOR NEW ASICS
 /// Asic identifier enumerant
 typedef enum ATIAsicIDEnum
@@ -43,13 +43,15 @@ typedef enum ATIAsicIDEnum
     ATIASIC_ID_GODAVARI,                    ///< ATIASICID for MULLINS (GFX8 Fusion (Mullins))
     ATIASIC_ID_CARRIZO,                     ///< ATIASICID for Carrizo (GFX8 Fusion)
     ATIASIC_ID_NOLAN,                       ///< ATIASICID for Nolan (GFX8.1 APU)
-    ATIASIC_ID_STONEY,                      ///< ATIASICID for Stoney (GFX8.1 APU, almost the same as Nolan) this was added in 15.20 (GL version 13393)
+    ATIASIC_ID_STONEY,                      ///< ATIASICID for Stoney (GFX8.1 APU, almost the same as Nolan)
     ATIASIC_ID_AMUR,                        ///< ATIASICID for Amur (GFX8.1 APU)
     ATIASIC_ID_FIJI_P,                      ///< ATIASICID for Fiji (GFX8)
     ATIASIC_ID_ELLESMERE,                   ///< ATIASICID for Ellesmere (GFX8)
     ATIASIC_ID_BAFFIN,                      ///< ATIASICID for Baffin (GFX8)
     ATIASIC_ID_LEXA,                        ///< ATIASICID for Lexa (GFX8)
-    ATIASIC_ID_GREENLAND,                   ///< ATIASICID for Greenland (GFX9)
+    ATIASIC_ID_GFX8_PLACEHOLDER,            ///< ATIASICID for GFX8 Placeholder (GFX8)
+    ATIASIC_ID_VEGA,                        ///< ATIASICID for Vega GFX9)
+    ATIASIC_ID_VEGA_APU,                    ///< ATIASICID for Vega-based APU (GFX9)
     ATIASIC_ID_UNKNOWN,                     ///< Unknown Asic
     ATIAsicId_First = ATIASIC_ID_TAHITI_P,  ///< First place holder
     ATIAsicId_LAST = ATIASIC_ID_UNKNOWN     ///< Last place holder

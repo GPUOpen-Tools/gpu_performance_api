@@ -40,21 +40,24 @@ namespace PublicCounterCompiler
         private void InitializeComponent()
         {
             this.CompileButton = new System.Windows.Forms.Button();
-            this.m_output = new System.Windows.Forms.TextBox();
             this.IgnoreInvalidCountersCheckBox = new System.Windows.Forms.CheckBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label6 = new System.Windows.Forms.Label();
             this.apiName = new System.Windows.Forms.TextBox();
             this.GPUFamily = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.richTextBoxOutput = new System.Windows.Forms.RichTextBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.batchCompile = new System.Windows.Forms.Button();
             this.batchGpuFamilyList = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.batchApiList = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.checkBoxGenerateCounterDocs = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // CompileButton
@@ -67,20 +70,6 @@ namespace PublicCounterCompiler
             this.CompileButton.Text = "Compile Public Counters";
             this.CompileButton.UseVisualStyleBackColor = true;
             this.CompileButton.Click += new System.EventHandler(this.CompileButton_Click);
-            // 
-            // m_output
-            // 
-            this.m_output.AcceptsReturn = true;
-            this.m_output.BackColor = System.Drawing.SystemColors.Window;
-            this.m_output.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.m_output.Location = new System.Drawing.Point(3, 22);
-            this.m_output.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
-            this.m_output.Multiline = true;
-            this.m_output.Name = "m_output";
-            this.m_output.ReadOnly = true;
-            this.m_output.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.m_output.Size = new System.Drawing.Size(1281, 727);
-            this.m_output.TabIndex = 3;
             // 
             // IgnoreInvalidCountersCheckBox
             // 
@@ -134,13 +123,22 @@ namespace PublicCounterCompiler
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox1.Controls.Add(this.m_output);
-            this.groupBox1.Location = new System.Drawing.Point(12, 143);
+            this.groupBox1.Controls.Add(this.richTextBoxOutput);
+            this.groupBox1.Location = new System.Drawing.Point(12, 219);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1287, 752);
+            this.groupBox1.Size = new System.Drawing.Size(1287, 676);
             this.groupBox1.TabIndex = 15;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = " Output ";
+            // 
+            // richTextBoxOutput
+            // 
+            this.richTextBoxOutput.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.richTextBoxOutput.Location = new System.Drawing.Point(3, 22);
+            this.richTextBoxOutput.Name = "richTextBoxOutput";
+            this.richTextBoxOutput.Size = new System.Drawing.Size(1281, 651);
+            this.richTextBoxOutput.TabIndex = 0;
+            this.richTextBoxOutput.Text = "";
             // 
             // groupBox2
             // 
@@ -201,12 +199,33 @@ namespace PublicCounterCompiler
             this.label1.TabIndex = 0;
             this.label1.Text = "API\'s";
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.checkBoxGenerateCounterDocs);
+            this.groupBox3.Location = new System.Drawing.Point(15, 142);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(1281, 71);
+            this.groupBox3.TabIndex = 17;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = " Options ";
+            // 
+            // checkBoxGenerateCounterDocs
+            // 
+            this.checkBoxGenerateCounterDocs.AutoSize = true;
+            this.checkBoxGenerateCounterDocs.Location = new System.Drawing.Point(19, 31);
+            this.checkBoxGenerateCounterDocs.Name = "checkBoxGenerateCounterDocs";
+            this.checkBoxGenerateCounterDocs.Size = new System.Drawing.Size(205, 24);
+            this.checkBoxGenerateCounterDocs.TabIndex = 0;
+            this.checkBoxGenerateCounterDocs.Text = "Generate Counter Docs";
+            this.checkBoxGenerateCounterDocs.UseVisualStyleBackColor = true;
+            // 
             // Form1
             // 
             this.AcceptButton = this.CompileButton;
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1302, 907);
+            this.Controls.Add(this.groupBox3);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.GPUFamily);
             this.Controls.Add(this.apiName);
@@ -220,9 +239,10 @@ namespace PublicCounterCompiler
             this.Name = "Form1";
             this.Text = "Public Counter Compiler";
             this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -231,7 +251,6 @@ namespace PublicCounterCompiler
         #endregion
 
         private System.Windows.Forms.Button CompileButton;
-        private System.Windows.Forms.TextBox m_output;
         private System.Windows.Forms.CheckBox IgnoreInvalidCountersCheckBox;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label6;
@@ -244,5 +263,8 @@ namespace PublicCounterCompiler
         private System.Windows.Forms.TextBox batchGpuFamilyList;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button batchCompile;
+        private System.Windows.Forms.RichTextBox richTextBoxOutput;
+        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.CheckBox checkBoxGenerateCounterDocs;
     }
 }

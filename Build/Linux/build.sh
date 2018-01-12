@@ -1,6 +1,5 @@
 #!/bin/bash
 set -u
-set -x
 
 #define path
 GPAROOT=`dirname $(readlink -f "$0")`/../..
@@ -37,11 +36,11 @@ VK_INC_DIR_OVERRIDE=
 bBuildOpenGL=false
 bBuildOpenGLES=false
 bBuildVK=true
-bBuildOpenCL=false
-bBuildHSA=false
+bBuildOpenCL=true
+bBuildHSA=true
 
 # Tests build control
-bBuildTests=false
+bBuildTests=true
 
 REL_ROOT=
 BUILD=0
@@ -108,6 +107,7 @@ done
 
 LOGFILE=$GPAROOT/Build/Linux/GPUPerfAPI_Build.log
 GPASRC=$GPAROOT/Src
+GPUPERFAPI=$GPASRC/GPUPerfAPI
 CL=$GPASRC/GPUPerfAPICL
 HSA=$GPASRC/GPUPerfAPIHSA
 GL=$GPASRC/GPUPerfAPIGL
@@ -118,6 +118,11 @@ COUNTERGENERATOR=$GPASRC/GPUPerfAPICounterGenerator
 GPA_COMMON=$GPASRC/GPUPerfAPI-Common
 GPA_DEVICEINFO=$GPASRC/DeviceInfo
 UNITTESTS=$GPASRC/GPUPerfAPIUnitTests
+GPADOC=$GPAROOT/Doc
+
+GPAOUTPUT=$GPAROOT/Output
+GPAOUTPUT_BIN=$GPAOUTPUT/bin
+GPAOUTPUT_LIB=$GPAOUTPUT/lib
 
 GLLIB=libGPUPerfAPIGL$DEBUG_SUFFIX.so
 GLESLIB=libGPUPerfAPIGLES$DEBUG_SUFFIX.so
@@ -175,7 +180,7 @@ VER=$VER_MAJOR_MINOR.$BUILD
 
 CPU_COUNT=`cat /proc/cpuinfo | grep processor | wc -l`
 
-BUILD_DIRS="$GPA_COMMON $GPA_DEVICEINFO $COUNTERGENERATOR $COUNTERS"
+BUILD_DIRS="$GPUPERFAPI $GPA_COMMON $GPA_DEVICEINFO $COUNTERGENERATOR $COUNTERS"
 
 if $bBuildOpenGL ; then
    BUILD_DIRS="$BUILD_DIRS $GL"
@@ -253,37 +258,38 @@ done
 if $bZip ; then
    echo "Generate tarball..." | tee -a $LOGFILE
    ZIP_DIR_NAME=${VER_MAJOR}_${VER_MINOR}
-   cd $BUILD_DIR
+   cd $GPAOUTPUT
    mkdir $ZIP_DIR_NAME
    cd $ZIP_DIR_NAME
    mkdir Bin
    mkdir Bin/Linx64
    mkdir Bin/Linx86
-   cp $CL/$CLLIB ./Bin/Linx64/
-   cp $HSA/$HSALIB ./Bin/Linx64/
-   cp $GL/$GLLIB ./Bin/Linx64/
-   cp $GLES/$GLESLIB ./Bin/Linx64/
-   cp $VK/$VKLIB ./Bin/Linx64/
-   cp $CL/$CLLIB32 ./Bin/Linx86/
-   cp $GL/$GLLIB32 ./Bin/Linx86/
-   cp $GLES/$GLESLIB32 ./Bin/Linx86/
-   cp $VK/$VKLIB32 ./Bin/Linx86/
-   cp $COUNTERS/$COUNTERSLIB ./Bin/Linx64/
-   cp $COUNTERS/$COUNTERSLIB32 ./Bin/Linx86/
+   cp $GPAOUTPUT_BIN/$CLLIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$HSALIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$GLLIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$GLESLIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$VKLIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$CLLIB32 ./Bin/Linx86/
+   cp $GPAOUTPUT_BIN/$GLLIB32 ./Bin/Linx86/
+   cp $GPAOUTPUT_BIN/$GLESLIB32 ./Bin/Linx86/
+   cp $GPAOUTPUT_BIN/$VKLIB32 ./Bin/Linx86/
+   cp $GPAOUTPUT_BIN/$COUNTERSLIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$COUNTERSLIB32 ./Bin/Linx86/
    mkdir Include
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPITypes.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPAFunctions.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-HSA.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-VK.h ./Include/
-   cp ../../../Src/GPUPerfAPICounters/GPUPerfAPICounters.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/GPACounterGenerator.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/IGPACounterAccessor.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/IGPACounterScheduler.h ./Include/
-   cp ../../../Doc/GPUPerfAPI-UserGuide.pdf .
-   cp ../../../LICENSE .
-   cp ../../../Doc/thirdpartylicenses.txt .
+   cp $GPA_COMMON/GPUPerfAPI.h ./Include/
+   cp $GPA_COMMON/GPUPerfAPIFunctionTypes.h ./Include/
+   cp $GPA_COMMON/GPUPerfAPITypes.h ./Include/
+   cp $GPA_COMMON/GPAFunctions.h ./Include/
+   cp $GPA_COMMON/GPUPerfAPI-HSA.h ./Include/
+   cp $GPA_COMMON/GPUPerfAPI-VK.h ./Include/
+   cp $GPA_COMMON/GPAInterfaceLoader.h ./Include/
+   cp $COUNTERS/GPUPerfAPICounters.h ./Include/
+   cp $COUNTERGENERATOR/GPACounterGenerator.h ./Include/
+   cp $COUNTERGENERATOR/IGPACounterAccessor.h ./Include/
+   cp $COUNTERGENERATOR/IGPACounterScheduler.h ./Include/
+   cp $GPADOC/GPUPerfAPI-UserGuide.pdf .
+   cp $GPAROOT/LICENSE .
+   cp $GPADOC/thirdpartylicenses.txt .
    cd ..
    tar cvzf GPUPerfAPI.$VER-lnx.tgz $ZIP_DIR_NAME/
 
@@ -297,36 +303,40 @@ if $bZip ; then
       mkdir Bin-Internal/Linx86
 
       # internal libs
-      cp $CL/$CLLIB_INTERNAL ./Bin-Internal/Linx64/
-      cp $HSA/$HSALIB_INTERNAL ./Bin-Internal/Linx64/
-      cp $GL/$GLLIB_INTERNAL ./Bin-Internal/Linx64/
-      cp $GLES/$GLESLIB_INTERNAL ./Bin-Internal/Linx64/
-      cp $VK/$VKLIB_INTERNAL ./Bin-Internal/Linx64/
-      cp $COUNTERS/$COUNTERSLIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$CLLIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$HSALIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$GLLIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$GLESLIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$VKLIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$COUNTERSLIB_INTERNAL ./Bin-Internal/Linx64/
 
-      cp $CL/$CLLIB32_INTERNAL ./Bin-Internal/Linx86/
-      cp $GL/$GLLIB32_INTERNAL ./Bin-Internal/Linx86/
-      cp $GLES/$GLESLIB32_INTERNAL ./Bin-Internal/Linx86/
-      cp $VK/$VKLIB32_INTERNAL ./Bin-Internal/Linx86/
-      cp $COUNTERS/$COUNTERSLIB32_INTERNAL ./Bin-Internal/Linx86/
+      cp $GPAOUTPUT_BIN/$CLLIB32_INTERNAL ./Bin-Internal/Linx86/
+      cp $GPAOUTPUT_BIN/$GLLIB32_INTERNAL ./Bin-Internal/Linx86/
+      cp $GPAOUTPUT_BIN/$GLESLIB32_INTERNAL ./Bin-Internal/Linx86/
+      cp $GPAOUTPUT_BIN/$VKLIB32_INTERNAL ./Bin-Internal/Linx86/
+      cp $GPAOUTPUT_BIN/$COUNTERSLIB32_INTERNAL ./Bin-Internal/Linx86/
 
       cd ..
       tar cvzf GPUPerfAPI.$VER-lnx-Promotion.tgz $ZIP_DIR_NAME/
    fi
 fi
 
+if [ -z ${LD_LIBRARY_PATH+x} ]; then
+   LD_LIBRARY_PATH=
+fi
+
 if $bBuildTests ; then
-   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST --gtest_output=xml:$UNITTEST.xml
+   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GPAOUTPUT_BIN $GPAOUTPUT_BIN/$UNITTEST --gtest_output=xml:$GPAOUTPUT/$UNITTEST.xml
 
    if $b32bitbuild ; then
-      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST32 --gtest_output=xml:$UNITTEST32.xml
+      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GPAOUTPUT_BIN $GPAOUTPUT_BIN/$UNITTEST32 --gtest_output=xml:$GPAOUTPUT/$UNITTEST32.xml
    fi
 
    if $bBuildInternal ; then
-      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST_INTERNAL --gtest_output=xml:$UNITTEST_INTERNAL.xml
+      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GPAOUTPUT_BIN $GPAOUTPUT_BIN/$UNITTEST_INTERNAL --gtest_output=xml:$GPAOUTPUT/$UNITTEST_INTERNAL.xml
 
       if $b32bitbuild ; then
-         LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST32_INTERNAL --gtest_output=xml:$UNITTEST32_INTERNAL.xml
+         LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GPAOUTPUT_BIN $GPAOUTPUT_BIN/$UNITTEST32_INTERNAL --gtest_output=xml:$GPAOUTPUT/$UNITTEST32_INTERNAL.xml
       fi
    fi
 fi

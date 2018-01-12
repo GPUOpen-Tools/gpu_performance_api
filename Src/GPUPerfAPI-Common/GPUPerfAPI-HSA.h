@@ -23,7 +23,7 @@
 //            mode is used and the pre/post-dispatch callbacks are used.  In that case,
 //            you can then call GPA_OpenContext with an instance of the below structure
 //            (whose members you would initialize with data provided by the pre-dispatch
-//            callback). Note: this second method is currently used by the CodeXL GPU
+//            callback). Note: this second method is currently used by the Radeon Compute
 //            Profiler, though in the future, it may be modified to use the first method.
 //
 //       It is recommended to use the first method above when using GPUPerfAPI directly

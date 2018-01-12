@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA DX12 Context implementation
@@ -14,13 +14,12 @@
 #include "GPACounterGeneratorBase.h"
 
 DX12GPAContext::DX12GPAContext(ID3D12Device* pD3D12Device,
-    GPA_HWInfo& hwInfo, 
+    GPA_HWInfo& hwInfo,
     GPA_OpenContextFlags flags)
     : GPAContext(hwInfo, flags)
 {
     m_pD3D12Device = pD3D12Device;
     m_pD3D12Device->AddRef();
-    m_isAmdDevice = false;
     m_pAmdExtD3DFactoryObject = nullptr;
     m_pGpaInterface = nullptr;
     m_clockMode = AmdExtDeviceClockMode::Default;
@@ -36,7 +35,7 @@ bool DX12GPAContext::Initialize()
     bool isSucceeded = false;
 
     // TODO: Figure out why GPA is failing when it is uncommented
-    //std::lock_guard<std::mutex> lockInitialization(m_gpaContextMutex);
+    //std::lock_guard<std::mutex> lockInitialization(m_dx12GpaContextMutex);
 
     if (nullptr != m_pD3D12Device)
     {
@@ -57,12 +56,11 @@ GPA_SessionId DX12GPAContext::CreateSession()
 
     if (nullptr != m_pGpaInterface)
     {
-        std::lock_guard<std::mutex> lockSessionCreation(m_gpaContextMutex);
         DX12GPASession* pNewGpaDx12GpaSession = new(std::nothrow) DX12GPASession(this, m_pGpaInterface);
-        m_gpaSessionList.push_back(pNewGpaDx12GpaSession);
 
         if (nullptr != pNewGpaDx12GpaSession)
         {
+            AddGpaSession(pNewGpaDx12GpaSession);
             pRetSessionId = reinterpret_cast<GPA_SessionId>(GPAUniqueObjectManager::Instance()->CreateObject(pNewGpaDx12GpaSession));
         }
     }
@@ -83,8 +81,7 @@ bool DX12GPAContext::DeleteSession(GPA_SessionId pSessionId)
 
         if (GetIndex(pDx12Session, &index))
         {
-            std::lock_guard<std::mutex> lockSessionMap(m_gpaContextMutex);
-            m_gpaSessionList.remove(pDx12Session);
+            RemoveGpaSession(pDx12Session);
             GPAUniqueObjectManager::Instance()->DeleteObject(pSessionId);
             delete pDx12Session;
             success = true;
@@ -144,7 +141,7 @@ bool DX12GPAContext::InitializeAMDExtension()
 
     if (nullptr != m_pD3D12Device)
     {
-        if (nullptr == m_pGpaInterface && m_isAmdDevice)
+        if (nullptr == m_pGpaInterface && IsAMDDevice())
         {
             result = GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
 
@@ -221,9 +218,8 @@ bool DX12GPAContext::InitializeAMDExtension()
 
 void DX12GPAContext::CleanUp()
 {
-    SetStableClocks(false);
 
-    std::lock_guard<std::mutex> lockContextResources(m_gpaContextMutex);
+    std::lock_guard<std::mutex> lockContextResources(m_dx12GpaContextMutex);
     // Release Device
     if (nullptr != m_pD3D12Device)
     {
@@ -233,13 +229,8 @@ void DX12GPAContext::CleanUp()
 
     if (nullptr != m_pGpaInterface)
     {
-        for (auto it = m_gpaSessionList.cbegin(); it != m_gpaSessionList.cend(); ++it)
-        {
-            // Release GPASessions - It is less likely this code path will execute but in case
-            delete(*it);   // Delete the GPA Session
-        }
-
-        m_gpaSessionList.clear();
+        IterateGpaSessionList([](IGPASession* pGpaSession)->bool {delete pGpaSession; return true; });
+        ClearSessionList();
         m_pGpaInterface->Release();
         m_pGpaInterface = nullptr;
     }
@@ -290,7 +281,7 @@ void DX12GPAContext::SetStableClocks(bool useProfilingClocks)
             }
         }
 
-        std::lock_guard<std::mutex> lockAmdClock(m_gpaContextMutex);
+        std::lock_guard<std::mutex> lockAmdClock(m_dx12GpaContextMutex);
 
         if (amdClockMode != m_clockMode)
         {
@@ -298,30 +289,4 @@ void DX12GPAContext::SetStableClocks(bool useProfilingClocks)
             m_pGpaInterface->SetClockMode(m_clockMode, nullptr);
         }
     }
-}
-
-bool DX12GPAContext::GetIndex(DX12GPASession* pDx12GpaSession, unsigned int* pIndex) const
-{
-    std::lock_guard<std::mutex> lock(m_gpaContextMutex);
-    bool found = false;
-    unsigned int index = 0;
-
-    for (auto iter = m_gpaSessionList.cbegin(); iter != m_gpaSessionList.cend(); ++iter)
-    {
-        if (pDx12GpaSession == *iter)
-        {
-            found = true;
-
-            if (nullptr != pIndex)
-            {
-                *pIndex = index;
-                break;
-            }
-        }
-
-        index++;
-
-    }
-
-    return found;
 }

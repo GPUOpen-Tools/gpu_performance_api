@@ -18,6 +18,11 @@
 #include "PublicCounterDefsGLGfx8.h"
 #include "PublicCounterDefsGLGfx9.h"
 
+#include "PublicCounterDefsGLGfx6Asics.h"
+#include "PublicCounterDefsGLGfx7Asics.h"
+#include "PublicCounterDefsGLGfx8Asics.h"
+#include "PublicCounterDefsGLGfx9Asics.h"
+
 #include "InternalCountersGLGfx6.h"
 #include "InternalCountersGLGfx7.h"
 #include "InternalCountersGLGfx8.h"
@@ -295,27 +300,55 @@ void GPA_CounterGeneratorGL::Cleanup()
     m_driverSuppliedCounters.clear();
 }
 
-GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters)
+GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_PublicCounters* pPublicCounters)
 {
     pPublicCounters->Clear();
 
     switch (desiredGeneration)
     {
         case GDT_HW_GENERATION_SOUTHERNISLAND:
+        {
             AutoDefinePublicCountersGLGfx6(*pPublicCounters);
-            break;
+            if (generateAsicSpecificCounters)
+            {
+                GLGfx6Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+        }
+        break;
 
         case GDT_HW_GENERATION_SEAISLAND:
+        {
             AutoDefinePublicCountersGLGfx7(*pPublicCounters);
-            break;
+            if (generateAsicSpecificCounters)
+            {
+                GLGfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+        }
+        break;
 
         case GDT_HW_GENERATION_VOLCANICISLAND:
+        {
             AutoDefinePublicCountersGLGfx8(*pPublicCounters);
-            break;
+            if (generateAsicSpecificCounters)
+            {
+                GLGfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+        }
+        break;
 
         case GDT_HW_GENERATION_GFX9:
+        {
             AutoDefinePublicCountersGLGfx9(*pPublicCounters);
-            break;
+            if (generateAsicSpecificCounters)
+            {
+                GLGfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+        }
+        break;
 
         default:
             GPA_LogError("Unsupported or unrecognized hardware generation. Cannot generate public counters.");
@@ -325,8 +358,15 @@ GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(GDT_HW_GENERATION desi
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
+GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_HardwareCounters* pHardwareCounters)
 {
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+
     switch (desiredGeneration)
     {
         case GDT_HW_GENERATION_SOUTHERNISLAND:
@@ -396,9 +436,15 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorGL::GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters)
+GPA_Status GPA_CounterGeneratorGL::GenerateSoftwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_SoftwareCounters* pSoftwareCounters)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
     UNREFERENCED_PARAMETER(pSoftwareCounters);
     GPA_Status retVal = GPA_STATUS_OK;
 

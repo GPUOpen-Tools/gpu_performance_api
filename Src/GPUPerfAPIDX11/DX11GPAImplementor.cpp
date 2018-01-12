@@ -1,12 +1,12 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief DX11 GPA Implementation
 //==============================================================================
 
 #include <ADLUtil.h>
-#include "../GPUPerfAPIDX/dxUtils.h"
+#include "../GPUPerfAPIDX/DXUtils.h"
 #include "DX11GPAImplementor.h"
 #include "DX11GPAContext.h"
 #include "DX11Utils.h"
@@ -148,12 +148,12 @@ bool DX11GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
 }
 
 IGPAContext* DX11GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
-                                             GPA_HWInfo& pHwInfo,
-                                             GPA_OpenContextFlags flags)
+                                                GPA_HWInfo& pHwInfo,
+                                                GPA_OpenContextFlags flags)
 {
     IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
     ID3D11Device* pD3D11Device;
-    IGPAContext* pRetGPAContext = nullptr;
+    IGPAContext* pRetGpaContext = nullptr;
 
     if (DX11Utils::GetD3D11Device(pUnknownPtr, &pD3D11Device) && DX11Utils::IsFeatureLevelSupported(pD3D11Device))
     {
@@ -164,7 +164,7 @@ IGPAContext* DX11GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
             if (pDX11GpaContext->Initialize())
             {
                 pD3D11Device->AddRef();
-                pRetGPAContext = pDX11GpaContext;
+                pRetGpaContext = pDX11GpaContext;
             }
             else
             {
@@ -178,7 +178,7 @@ IGPAContext* DX11GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
         GPA_LogError("DX11 GPA Error: Hardware Not Supported.");
     }
 
-    return pRetGPAContext;
+    return pRetGpaContext;
 }
 
 bool DX11GPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pGpaContext)
@@ -292,9 +292,23 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
 #ifdef X64
                     strDLLName.append("-x64");
 #endif
-                    strDLLName.append(".dll");
 
-                    HMODULE hModule = LoadLibraryA(strDLLName.c_str());
+
+                    HMODULE hModule = 0;
+#ifdef _DEBUG
+                    // Attempt to load the debug version of the DLL if it exists
+                    {
+                        string debugDllName(strDLLName);
+                        debugDllName.append("-d");
+                        debugDllName.append(".dll");
+                        hModule = LoadLibraryA(debugDllName.c_str());
+                    }
+#endif
+                    if (nullptr == hModule)
+                    {
+                        strDLLName.append(".dll");
+                        hModule = LoadLibraryA(strDLLName.c_str());
+                    }
 
                     if (nullptr != hModule)
                     {
@@ -304,36 +318,34 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
 
                         if (nullptr != DXGetAMDDeviceInfoFunc)
                         {
-                            if (DXGetAMDDeviceInfoFunc(hMonitor, vendorId, deviceId))
-                            {
-                                AsicInfoList asicInfoList;
-                                AMDTADLUtils::Instance()->GetAsicInfoList(asicInfoList);
+                            // NOTE: DXGetAMDDeviceInfo is failing on system with Baffin and Fiji system, driver version Radeon Software Version 17.12.2
+                            // Previous Implementation of the DX11 GPA was also not relying on it successful operation.
+                            // TODO: Track down why AMD extension function under DXGetAMDDeviceInfo is failing
+                            DXGetAMDDeviceInfoFunc(hMonitor, vendorId, deviceId);
 
-                                for (AsicInfoList::iterator asicInfoIter = asicInfoList.begin(); asicInfoList.end() != asicInfoIter; ++asicInfoIter)
+                            AsicInfoList asicInfoList;
+                            AMDTADLUtils::Instance()->GetAsicInfoList(asicInfoList);
+
+                            for (AsicInfoList::iterator asicInfoIter = asicInfoList.begin(); asicInfoList.end() != asicInfoIter; ++asicInfoIter)
+                            {
+                                if ((asicInfoIter->vendorID == vendorId) && (asicInfoIter->deviceID == deviceId))
                                 {
-                                    if ((asicInfoIter->vendorID == vendorId) && (asicInfoIter->deviceID == deviceId))
+                                    hwInfo.SetVendorID(asicInfoIter->vendorID);
+                                    hwInfo.SetDeviceID(asicInfoIter->deviceID);
+                                    hwInfo.SetRevisionID(asicInfoIter->revID);
+                                    hwInfo.SetDeviceName(asicInfoIter->adapterName.c_str());
+                                    hwInfo.SetHWGeneration(GDT_HW_GENERATION_NONE);
+
+                                    GDT_HW_GENERATION hwGeneration;
+
+                                    if (AMDTDeviceInfoUtils::Instance()->GetHardwareGeneration(asicInfoIter->deviceID, hwGeneration))
                                     {
-                                        hwInfo.SetVendorID(asicInfoIter->vendorID);
-                                        hwInfo.SetDeviceID(asicInfoIter->deviceID);
-                                        hwInfo.SetRevisionID(asicInfoIter->revID);
-                                        hwInfo.SetDeviceName(asicInfoIter->adapterName.c_str());
-                                        hwInfo.SetHWGeneration(GDT_HW_GENERATION_NONE);
-
-                                        GDT_HW_GENERATION hwGeneration;
-
-                                        if (AMDTDeviceInfoUtils::Instance()->GetHardwareGeneration(asicInfoIter->deviceID, hwGeneration))
-                                        {
-                                            hwInfo.SetHWGeneration(hwGeneration);
-                                        }
-
-                                        success = true;
-                                        break;
+                                        hwInfo.SetHWGeneration(hwGeneration);
                                     }
+
+                                    success = true;
+                                    break;
                                 }
-                            }
-                            else
-                            {
-                                GPA_LogError("DX11 GPA Error: Unable to get the device information from the monitor.");
                             }
                         }
                         else
@@ -378,6 +390,11 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
     return success;
 }
 
+DX11GPAImplementor::DX11GPAImplementor():
+    m_amdDxExtCreate11FuncPtr(nullptr)
+{
+}
+
 bool DX11GPAImplementor::InitializeAmdExtFunction() const
 {
     bool success = false;
@@ -394,8 +411,7 @@ bool DX11GPAImplementor::InitializeAmdExtFunction() const
 
         if (nullptr != hDxxDll)
         {
-            PFNAmdDxExtCreate11 AmdDxExtCreate11;
-            AmdDxExtCreate11 = reinterpret_cast<PFNAmdDxExtCreate11>(GetProcAddress(hDxxDll, "AmdDxExtCreate11"));
+            PFNAmdDxExtCreate11 AmdDxExtCreate11 = reinterpret_cast<PFNAmdDxExtCreate11>(GetProcAddress(hDxxDll, "AmdDxExtCreate11"));
 
             if (nullptr != AmdDxExtCreate11)
             {

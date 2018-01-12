@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief DX12 GPA Session declaration
@@ -7,9 +7,6 @@
 
 #ifndef _DX12_GPA_SESSION_H_
 #define _DX12_GPA_SESSION_H_
-
-// std
-#include <mutex>
 
 // AMD DX12 Extension
 #pragma warning (push)
@@ -20,7 +17,6 @@
 // GPA Common
 #include "GPASession.h"
 
-class DX12GPACommandList;   // forward declaration
 class DX12GPAContext;   // forward declaration
 
 /// Class for DX12 GPA Session
@@ -29,19 +25,26 @@ class DX12GPASession : public GPASession
 public:
 
     /// Constructor
-    /// \param[in] pdx12GpaContext DX12 GPA Context
+    /// \param[in] pDX12GpaContext DX12 GPA Context
     /// \param[in] pAmdExtGpaSession AMD Extension GpaSession
-    DX12GPASession(DX12GPAContext* pdx12GpaContext,
+    DX12GPASession(DX12GPAContext* pDX12GpaContext,
                    IAmdExtGpaInterface* pAmdExtGpaSession);
+
+    /// Default Constructor
+    DX12GPASession() = delete;
 
     /// Destructor
     virtual ~DX12GPASession();
 
     /// \copydoc IGPASession::ContinueSampleOnCommandList()
-    GPA_Status ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA_CommandListId primaryCommandListId) override;
+    GPA_Status ContinueSampleOnCommandList(gpa_uint32 srcSampleId,
+                                           GPA_CommandListId primaryCommandListId) override;
 
     /// \copydoc IGPASession::CopySecondarySamples()
-    GPA_Status CopySecondarySamples(GPA_CommandListId secondaryCmdListId, GPA_CommandListId primaryCmdListId, gpa_uint32 numSamples, gpa_uint32* pNewSampleIds) override;
+    GPA_Status CopySecondarySamples(GPA_CommandListId secondaryCmdListId,
+                                    GPA_CommandListId primaryCmdListId,
+                                    gpa_uint32 numSamples,
+                                    gpa_uint32* pNewSampleIds) override;
 
     /// \copydoc IGPAInterfaceTrait::GetAPIType()
     GPA_API_Type GetAPIType() const override;
@@ -51,9 +54,6 @@ public:
     IAmdExtGpaInterface* GetAmdExtInterface() const;
 
 private:
-
-    /// Default Constructor
-    DX12GPASession() = delete;
 
     /// \copydoc GPASession::CreateAPIPass()
     GPAPass* CreateAPIPass(PassIndex passIndex) override;

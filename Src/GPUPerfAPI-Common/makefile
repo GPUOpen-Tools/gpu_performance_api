@@ -1,9 +1,10 @@
 # Makefile for GPUPerfAPI-Common
 
+PROJECT_NAME=GPUPerfAPI-Common
 DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
-TARGETLIB = libGPUPerfAPI-Common$(TARGET_SUFFIX).a
+TARGETLIB = $(OUTPUT_LIB_DIR)/lib$(PROJECT_NAME)$(TARGET_SUFFIX).a
 
 INCLUDES =	-I. \
 		-I$(GPACG_DIR) \
@@ -25,7 +26,6 @@ LIB_OBJS	= \
 	./$(OBJ_DIR)/GPAPass.o \
 	./$(OBJ_DIR)/GPASample.o \
 	./$(OBJ_DIR)/GPAUniqueObject.o \
-	./$(OBJ_DIR)/GPUPerfAPI.o \
 	./$(OBJ_DIR)/GPASession.o \
 	./$(OBJ_DIR)/Logging.o \
 

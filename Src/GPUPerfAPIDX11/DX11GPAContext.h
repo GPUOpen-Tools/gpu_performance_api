@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA DX11 Context declarations
@@ -19,6 +19,7 @@
 class DX11GPASession;           // forward Declaration
 
 using DX11GPASessionList = std::list<DX11GPASession*>;            ///< type alias for list of DX11GPASession objects
+using GPUIndex = unsigned int;                                    ///< type alias for GPU index
 
 /// Class for DirectX 11 GPA Context
 class DX11GPAContext : public GPAContext
@@ -26,7 +27,12 @@ class DX11GPAContext : public GPAContext
 public:
 
     /// Constructor
-    DX11GPAContext(ID3D11Device* pD3D11Device, GPA_HWInfo& pHwInfo, GPA_OpenContextFlags contextFlags);
+    /// \param[in] pD3D11Device ID3D11Device pointer
+    /// \param[in] hwInfo hardware info
+    /// \param[in] contextFlags context flags
+    DX11GPAContext(ID3D11Device* pD3D11Device,
+        GPA_HWInfo& hwInfo,
+        GPA_OpenContextFlags contextFlags);
 
     /// Destructor
     ~DX11GPAContext();
@@ -62,14 +68,23 @@ public:
     /// \return DirectX 11 device pointer
     ID3D11Device* GetDevice() const;
 
+    /// Get the index of the acitve GPU
+    /// \return Index of the active GPU or ActiveGpuCF if more than 1 GPU is active
+    GPUIndex GetActiveGpu() const;
+
+    /// Returns the CF active GPU
+    /// \return CF/ACDF active GPU
+    GPUIndex GetCFActiveGpu() const;
+
 private:
 
     /// Initializes the AMD extensions
     bool InitializeProfileAMDExtension();
 
-    ID3D11Device*                           m_pD3D11Device;         ///< DirectX 11 Device pointer
-    IAmdDxExt*                              m_pDxExt;               ///< The AMD Dx Extension interface
-    IAmdDxExtPerfProfile*                   m_pDxExtPE;             ///< The Perf Experiment extension interface
+    ID3D11Device*                                               m_pD3D11Device;                     ///< DirectX 11 Device pointer
+    IAmdDxExt*                                                  m_pDxExt;                           ///< The AMD Dx Extension interface
+    IAmdDxExtPerfProfile*                                       m_pDxExtPE;                         ///< The Perf Experiment extension interface
+    static const GPUIndex                                       ms_activeGpuCF = 0xffffffff;        ///< CF/ACF active GPU
 };
 
 #endif // _DX11_GPA_CONTEXT_H_

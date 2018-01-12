@@ -12,6 +12,7 @@
 #include <string.h> // for strcpy
 #include "Utility.h"
 #include "Logging.h"
+#include <algorithm>
 
 GPA_PublicCounter::GPA_PublicCounter(
     unsigned int index,
@@ -105,6 +106,25 @@ void GPA_PublicCounters::DefinePublicCounter(
     m_counters.push_back(GPA_PublicCounter(index, pName, pGroup, pDescription, dataType, usageType, counterType, internalCountersRequired, pComputeExpression, pUuid));
 }
 
+void GPA_PublicCounters::UpdateAsicSpecificPublicCounter(
+    const char* pName,
+    vector< gpa_uint32 >& internalCountersRequired,
+    const char* pComputeExpression)
+{
+    for (auto& counter : m_counters)
+    {
+        if (!_strcmpi(pName, counter.m_pName))
+        {
+            counter.m_internalCountersRequired.clear();
+            counter.m_internalCountersRequired = internalCountersRequired;
+            counter.m_pComputeExpression = pComputeExpression;
+            return;
+        }
+    }
+
+    // Error - counter name not found.  Should not happen in practice.
+    assert(0);
+}
 
 void GPA_PublicCounters::Clear()
 {
@@ -402,6 +422,38 @@ static void EvaluateExpression(
             else
             {
                 stack.push_back(resultFalse);
+            }
+        }
+        else if (_strcmpi(pch, "comparemax4") == 0)
+        {
+            assert(stack.size() >= 8);
+
+            std::vector<T> values;
+            for (int i = 0; i < 4; ++i)
+            {
+                values.push_back(stack.back());
+                stack.pop_back();
+            }
+
+            std::vector<T> potentialReturns;
+            for (int i = 0; i < 4; ++i)
+            {
+                // Only consider potential returns where the values[i] is non-zero
+                if (values[i])
+                {
+                    potentialReturns.push_back(stack.back());
+                }
+                stack.pop_back();
+            }
+
+            if (potentialReturns.empty())
+            {
+                stack.push_back(0);
+            }
+            else
+            {
+                auto iter = std::max_element(potentialReturns.begin(), potentialReturns.end());
+                stack.push_back(*iter);
             }
         }
         else if (_strcmpi(pch, "sum4") == 0)

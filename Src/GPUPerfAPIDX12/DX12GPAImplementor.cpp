@@ -104,7 +104,7 @@ IGPAContext* DX12GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, 
 {
     IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
     ID3D12Device* pD3D12Device;
-    IGPAContext* pRetGPAContext = nullptr;
+    IGPAContext* pRetGpaContext = nullptr;
 
     if (DX12Utils::GetD3D12Device(pUnknownPtr, &pD3D12Device) &&
         DX12Utils::IsFeatureLevelSupported(pD3D12Device))
@@ -116,7 +116,7 @@ IGPAContext* DX12GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, 
             if (pDX12GpaContext->Initialize())
             {
                 pD3D12Device->AddRef();
-                pRetGPAContext = pDX12GpaContext;
+                pRetGpaContext = pDX12GpaContext;
             }
             else
             {
@@ -130,7 +130,7 @@ IGPAContext* DX12GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, 
         GPA_LogError("Hardware Not Supported.");
     }
 
-    return pRetGPAContext;
+    return pRetGpaContext;
 }
 
 bool DX12GPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pGpaContext)

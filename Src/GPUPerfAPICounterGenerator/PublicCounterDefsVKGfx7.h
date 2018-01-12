@@ -13,7 +13,7 @@
 #include "GPAPublicCounters.h"
 
 /// Defines the public counters for VKGFX7
-/// \param p pubilc counters instance
+/// \param p public counters instance
 void AutoDefinePublicCountersVKGfx7(GPA_PublicCounters& p);
 
 #endif // _PUBLIC_COUNTER_DEFS_VKGFX7_H_

@@ -38,7 +38,7 @@ DbgInternalx86:
 	$(MAKE) -f $(MAKEFILENAME) $(BUILD_DEBUG_INTERNAL_X86_OVERRIDES)
 
 makedir:
-	mkdir -p $(OBJ_DIR)
+	mkdir -p $(OUTPUT_DIRS_TO_CREATE)
 
 all: default x86 Internal Internalx86 Dbg Dbgx86 DbgInternal DbgInternalx86
 

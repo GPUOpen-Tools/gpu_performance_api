@@ -19,8 +19,11 @@ class VkGPACommandList;
 class VkGPASample : public GPASample
 {
 public:
-    /// Vulkan-specific GPASample
-    // TODO: Doxygen
+    /// Constructor
+    /// \param[in] pPass GPA Pass object
+    /// \param[in] pCmdList gpa command list
+    /// \param[in] sampleType gpa sample type
+    /// \param[in] sampleId user-supplied sample id
     VkGPASample(GPAPass* pPass,
                 IGPACommandList* pCmdList,
                 GpaSampleType sampleType,

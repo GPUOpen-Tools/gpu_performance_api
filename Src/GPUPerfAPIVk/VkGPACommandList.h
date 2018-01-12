@@ -70,7 +70,7 @@ public:
     GPASample * GetLastSample() const override;
 
     /// \copydoc IGPACommandList::CloseLastSample()
-    bool CloseLastSample(bool closingByClient = false) override;
+    bool CloseLastSample(bool closingByClient) override;
 
     /// \copydoc IGPACommandList::IsLastSampleClosed()
     bool IsLastSampleClosed() const override;

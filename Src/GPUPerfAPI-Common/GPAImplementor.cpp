@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief Common GPA Implementation
@@ -23,9 +23,9 @@ GPAImplementor::GPAImplementor()
 
 GPA_Status GPAImplementor::Initialize()
 {
-    GPA_Status gpaStatus = GPA_STATUS_ERROR_GPA_NOT_INITIALIZED;
+    GPA_Status gpaStatus = GPA_STATUS_ERROR_GPA_ALREADY_INITIALIZED;
 
-    if (false == m_isInitialized)
+    if (!m_isInitialized)
     {
         m_isInitialized = true;
         gpaStatus = GPA_STATUS_OK;
@@ -191,7 +191,7 @@ GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA
 
         // make sure there are available asics for AMD card.
         // In case there is no AMD driver, we output a message.
-        if (0 == asicInfoList.size())
+        if (asicInfoList.empty())
         {
             GPA_LogMessage("Cannot get asicInfoList from ADL.");
         }
@@ -216,7 +216,7 @@ GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA
 
 #if defined(WIN32)
 
-    if (false == foundMatchingHWInfo) // No ADL exist for clean system that has never had the AMD driver installed
+    if (!foundMatchingHWInfo) // ADL will not be available on a clean system that has never had the AMD driver installed
     {
         Adapter adapter;
         asicInfoList.clear();
@@ -259,14 +259,14 @@ GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA
 
 #endif // WIN32
 
-    if (false == foundMatchingHWInfo)
+    if (!foundMatchingHWInfo)
     {
         // This code path is for systems where ADL is not available. ADL is not available on ROCm systems as well as on amdgpu systems.
         // API specific hardware information mostly gets basic information (namely just needs to get VendorID and DeviceID), so we need to update
         // the device info with additional information that we store per-deviceID.
         bool deviceInfoOk = apiHwInfo.UpdateDeviceInfoBasedOnDeviceID();
 
-        if (false == deviceInfoOk)
+        if (!deviceInfoOk)
         {
             // If this fails, then the hardware must not be supported because we don't know enough about it
             GPA_LogError("Cannot update device information.");

@@ -1,11 +1,10 @@
 # Makefile for GPUPerfAPIUnitTests
 
+PROJECT_NAME=GPUPerfAPIUnitTests
 DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
-TARGET = GPUPerfAPIUnitTests$(TARGET_SUFFIX)
-
-POST_BUILD_ACTION = cp ../GPUPerfAPICounters/libGPUPerfAPICounters$(TARGET_SUFFIX).so .
+TARGET = $(OUTPUT_BIN_DIR)/$(PROJECT_NAME)$(TARGET_SUFFIX)
 
 INCLUDES =	-I. \
 		-I$(GPACOMMON_DIR) \
@@ -17,9 +16,6 @@ INCLUDES =	-I. \
 		-I$(AMD_VK_EXT_DIR) \
 		-I$(VK_INCLUDE_DIR) \
 		-I$(VK_INCLUDE_DIR)/vulkan \
-		-I$(VK_SOURCE_DIR)/layers \
-		-I$(VK_SOURCE_DIR)/loader \
-		-I$(VK_SDK_DIR)/glslang/SPIRV \
 
 LIBS = \
 	$(GTEST_LIBS) \
@@ -52,6 +48,7 @@ OBJS	= \
 	./$(OBJ_DIR)/PublicCountersVKGfx8.o \
 	./$(OBJ_DIR)/PublicCountersVKGfx9.o \
 	./$(OBJ_DIR)/SWCountersVK.o \
+	./$(OBJ_DIR)/GPAInterfaceLoaderTests.o \
 
 $(OBJ_DIR)/%.o: counters/%.cpp
 	$(BUILD_SRC)

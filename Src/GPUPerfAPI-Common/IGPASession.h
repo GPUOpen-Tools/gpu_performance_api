@@ -156,7 +156,7 @@ public:
 
     /// Returns the size of sample result in bytes
     /// \return size of the sample result in bytes
-    virtual gpa_uint32 GetPerSampleResultSizeInBytes() const = 0;
+    virtual gpa_uint64 GetPerSampleResultSizeInBytes() const = 0;
 
     /// Get counter data of the sample
     /// \param[in] sampleID The identifier of the sample to get the result for.

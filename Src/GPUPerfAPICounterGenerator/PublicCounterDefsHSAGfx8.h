@@ -13,7 +13,7 @@
 #include "GPAPublicCounters.h"
 
 /// Defines the public counters for HSAGFX8
-/// \param p pubilc counters instance
+/// \param p public counters instance
 void AutoDefinePublicCountersHSAGfx8(GPA_PublicCounters& p);
 
 #endif // _PUBLIC_COUNTER_DEFS_HSAGFX8_H_

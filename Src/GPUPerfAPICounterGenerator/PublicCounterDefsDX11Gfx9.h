@@ -13,7 +13,7 @@
 #include "GPAPublicCounters.h"
 
 /// Defines the public counters for DX11GFX9
-/// \param p pubilc counters instance
+/// \param p public counters instance
 void AutoDefinePublicCountersDX11Gfx9(GPA_PublicCounters& p);
 
 #endif // _PUBLIC_COUNTER_DEFS_DX11GFX9_H_

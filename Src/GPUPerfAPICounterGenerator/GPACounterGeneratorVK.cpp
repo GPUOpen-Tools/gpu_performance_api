@@ -18,6 +18,10 @@
 #include "PublicCounterDefsVKGfx8.h"
 #include "PublicCounterDefsVKGfx9.h"
 
+#include "PublicCounterDefsVKGfx7Asics.h"
+#include "PublicCounterDefsVKGfx8Asics.h"
+#include "PublicCounterDefsVKGfx9Asics.h"
+
 bool GPA_CounterGeneratorVK::IsAMDGPU(GDT_HW_GENERATION generation)
 {
     return generation >= GDT_HW_GENERATION_FIRST_AMD && generation < GDT_HW_GENERATION_LAST;
@@ -68,7 +72,10 @@ GPA_CounterGeneratorVK::~GPA_CounterGeneratorVK()
 }
 
 GPA_Status GPA_CounterGeneratorVK::GeneratePublicCounters(
-    GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters)
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_PublicCounters* pPublicCounters)
 {
     GPA_Status status = GPA_STATUS_OK;
 
@@ -83,19 +90,37 @@ GPA_Status GPA_CounterGeneratorVK::GeneratePublicCounters(
         switch (desiredGeneration)
         {
             case GDT_HW_GENERATION_SEAISLAND:
+            {
                 AutoDefinePublicCountersVKGfx7(*pPublicCounters);
+                if (generateAsicSpecificCounters)
+                {
+                    VKGfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                }
                 pPublicCounters->m_countersGenerated = true;
-                break;
+            }
+            break;
 
             case GDT_HW_GENERATION_VOLCANICISLAND:
+            {
                 AutoDefinePublicCountersVKGfx8(*pPublicCounters);
+                if (generateAsicSpecificCounters)
+                {
+                    VKGfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                }
                 pPublicCounters->m_countersGenerated = true;
-                break;
+            }
+            break;
 
             case GDT_HW_GENERATION_GFX9:
+            {
                 AutoDefinePublicCountersVKGfx9(*pPublicCounters);
+                if (generateAsicSpecificCounters)
+                {
+                    VKGfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                }
                 pPublicCounters->m_countersGenerated = true;
-                break;
+            }
+            break;
 
             default:
                 status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
@@ -189,8 +214,14 @@ bool GPA_CounterGeneratorVK::GenerateInternalCounters(GPA_HardwareCounters* pHar
 }
 
 GPA_Status GPA_CounterGeneratorVK::GenerateHardwareCounters(
-    GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_HardwareCounters* pHardwareCounters)
 {
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+
     GPA_Status status = GPA_STATUS_OK;
 
     if (nullptr == pHardwareCounters)

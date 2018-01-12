@@ -46,29 +46,26 @@ void AutoDefinePublicCountersGLGfx9(GPA_PublicCounters& p)
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(3934);
-        internalCounters.push_back(3987);
         internalCounters.push_back(3943);
         internalCounters.push_back(3098);
 
-        p.DefinePublicCounter("VSBusy", "Timing", "The percentage of time the ShaderUnit has vertex shader work to do.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,ifnotzero,3,/,(100),*,(100),min", "94caad5e-867c-6c09-cf3a-d05b51df8f3b" );
+        p.DefinePublicCounter("VSBusy", "Timing", "The percentage of time the ShaderUnit has vertex shader work to do.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,ifnotzero,2,/,(100),*,(100),min", "94caad5e-867c-6c09-cf3a-d05b51df8f3b" );
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(3934);
-        internalCounters.push_back(3987);
         internalCounters.push_back(3943);
 
-        p.DefinePublicCounter("VSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has vertex shader work to do.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,2,ifnotzero", "a2086d4e-274b-48a8-3e08-a4ab76ac15dd" );
+        p.DefinePublicCounter("VSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has vertex shader work to do.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,ifnotzero", "a2086d4e-274b-48a8-3e08-a4ab76ac15dd" );
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(16129);
         internalCounters.push_back(3934);
-        internalCounters.push_back(3987);
         internalCounters.push_back(3943);
         internalCounters.push_back(3098);
 
-        p.DefinePublicCounter("VSTime", "Timing", "Time vertex shaders are busy in milliseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,3,ifnotzero,4,/,(1),min,0,TS_FREQ,/,(1000),*,*", "fee660c7-8e01-4dc5-e5d0-fcb61c17fb2c" );
+        p.DefinePublicCounter("VSTime", "Timing", "Time vertex shaders are busy in milliseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,2,ifnotzero,3,/,(1),min,0,TS_FREQ,/,(1000),*,*", "fee660c7-8e01-4dc5-e5d0-fcb61c17fb2c" );
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -146,25 +143,31 @@ void AutoDefinePublicCountersGLGfx9(GPA_PublicCounters& p)
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(3975);
         internalCounters.push_back(3979);
+        internalCounters.push_back(3981);
+        internalCounters.push_back(3985);
         internalCounters.push_back(3098);
 
-        p.DefinePublicCounter("CSBusy", "Timing", "The percentage of time the ShaderUnit has compute shader work to do.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,ifnotzero,2,/,(100),*,(100),min", "493fdd90-8d2b-a055-5e4e-2d29c3396b8c" );
+        p.DefinePublicCounter("CSBusy", "Timing", "The percentage of time the ShaderUnit has compute shader work to do.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,ifnotzero,(0),2,3,ifnotzero,max,4,/,(100),*,(100),min", "493fdd90-8d2b-a055-5e4e-2d29c3396b8c" );
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(3975);
         internalCounters.push_back(3979);
+        internalCounters.push_back(3981);
+        internalCounters.push_back(3985);
 
-        p.DefinePublicCounter("CSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has compute shader work to do.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,ifnotzero", "39bcf1b8-f6b2-4c37-f9af-0a2bb59512f9" );
+        p.DefinePublicCounter("CSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has compute shader work to do.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,ifnotzero,(0),2,3,ifnotzero,max", "39bcf1b8-f6b2-4c37-f9af-0a2bb59512f9" );
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(16129);
         internalCounters.push_back(3975);
         internalCounters.push_back(3979);
+        internalCounters.push_back(3981);
+        internalCounters.push_back(3985);
         internalCounters.push_back(3098);
 
-        p.DefinePublicCounter("CSTime", "Timing", "Time compute shaders are busy in milliseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,2,ifnotzero,3,/,(1),min,0,TS_FREQ,/,(1000),*,*", "5177faaf-f59d-ee23-6e36-0ea087dca9dc" );
+        p.DefinePublicCounter("CSTime", "Timing", "Time compute shaders are busy in milliseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),1,2,ifnotzero,(0),3,4,ifnotzero,max,5,/,(1),min,0,TS_FREQ,/,(1000),*,*", "5177faaf-f59d-ee23-6e36-0ea087dca9dc" );
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -442,8 +445,9 @@ void AutoDefinePublicCountersGLGfx9(GPA_PublicCounters& p)
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(3976);
+        internalCounters.push_back(3982);
 
-        p.DefinePublicCounter("CSThreadGroups", "ComputeShader", "Total number of thread groups.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0", "8ce3fc80-56b2-97f9-8e70-2e8c747cea68" );
+        p.DefinePublicCounter("CSThreadGroups", "ComputeShader", "Total number of thread groups.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "0,1,+", "8ce3fc80-56b2-97f9-8e70-2e8c747cea68" );
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -585,8 +589,9 @@ void AutoDefinePublicCountersGLGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(9129);
         internalCounters.push_back(3098);
         internalCounters.push_back(3976);
+        internalCounters.push_back(3982);
 
-        p.DefinePublicCounter("CSMemUnitBusy", "ComputeShader", "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*,17,ifnotzero", "42ab96e1-0a24-96c8-c4ff-098fa267d78e" );
+        p.DefinePublicCounter("CSMemUnitBusy", "ComputeShader", "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*,17,18,+,ifnotzero", "42ab96e1-0a24-96c8-c4ff-098fa267d78e" );
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -629,8 +634,9 @@ void AutoDefinePublicCountersGLGfx9(GPA_PublicCounters& p)
         internalCounters.push_back(15592);
         internalCounters.push_back(3098);
         internalCounters.push_back(3976);
+        internalCounters.push_back(3982);
 
-        p.DefinePublicCounter("CSMemUnitStalled", "ComputeShader", "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*,17,ifnotzero", "f18e8679-1511-d533-d9ee-4365197f7d0c" );
+        p.DefinePublicCounter("CSMemUnitStalled", "ComputeShader", "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, GPA_COUNTER_TYPE_DYNAMIC, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*,17,18,+,ifnotzero", "f18e8679-1511-d533-d9ee-4365197f7d0c" );
     }
     {
         vector< gpa_uint32 > internalCounters;

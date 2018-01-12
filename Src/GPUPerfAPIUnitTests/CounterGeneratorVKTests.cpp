@@ -78,31 +78,31 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
 // Test the VK counter names on all supported hardware
 TEST(CounterDLLTests, VKCounterNames)
 {
-    VerifyHardwareNotSupported(GPA_API_VULKAN, gDevIdUnknown);
-    VerifyHardwareNotSupported(GPA_API_VULKAN, gDevIdSI);
-    VerifyHardwareNotSupported(GPA_API_VULKAN, gDevIdCI);
+    VerifyHardwareNotSupported(GPA_API_VULKAN, gDevIdUnknown, FALSE);
+    VerifyHardwareNotSupported(GPA_API_VULKAN, gDevIdSI, FALSE);
+    VerifyHardwareNotSupported(GPA_API_VULKAN, gDevIdCI, FALSE);
 
     std::vector<const char*> counterNames;
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
-    VerifyCounterNames(GPA_API_VULKAN, gDevIdCIHawaii, counterNames);
+    VerifyCounterNames(GPA_API_VULKAN, gDevIdCIHawaii, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_VULKAN, gDevIdVI, counterNames);
+    VerifyCounterNames(GPA_API_VULKAN, gDevIdVI, FALSE, counterNames);
 }
 
 // Test the VK counter names on all generations
 TEST(CounterDLLTests, VKCounterNamesByGeneration)
 {
-    VerifyHardwareNotSupported(GPA_API_VULKAN, GPA_HW_GENERATION_NONE);
-    VerifyHardwareNotSupported(GPA_API_VULKAN, GPA_HW_GENERATION_GFX6);
+    VerifyHardwareNotSupported(GPA_API_VULKAN, GPA_HW_GENERATION_NONE, FALSE);
+    VerifyHardwareNotSupported(GPA_API_VULKAN, GPA_HW_GENERATION_GFX6, FALSE);
 
     std::vector<const char*> counterNames;
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_NVIDIA, counterNames);
-    VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_NVIDIA, counterNames);
+    VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_NVIDIA, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_INTEL, counterNames);
-    VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_INTEL, counterNames);
+    VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_INTEL, FALSE, counterNames);
 
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
-    VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_GFX7, counterNames);
+    VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_GFX7, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_GFX8, counterNames);
+    VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_GFX8, FALSE, counterNames);
 }

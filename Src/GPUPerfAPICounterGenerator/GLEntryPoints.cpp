@@ -27,9 +27,6 @@ PFNGLENDPERFMONITORAMDPROC              _oglEndPerfMonitorAMD              = nul
 PFNGLGETPERFMONITORCOUNTERDATAAMDPROC   _oglGetPerfMonitorCounterDataAMD   = nullptr;
 
 // Function pointers for glQuery calls (needed for GPUTime via timer_query extension)
-PFNGLBEGINQUERYPROC                     _oglBeginQuery                     = nullptr;
-PFNGLENDQUERYPROC                       _oglEndQuery                       = nullptr;
-PFNGLGETQUERYIVPROC                     _oglGetQueryiv                     = nullptr;
 PFNGLGETQUERYOBJECTUI64VEXTPROC         _oglGetQueryObjectui64vEXT         = nullptr;
 PFNGLGETQUERYOBJECTUI64VPROC            _oglGetQueryObjectui64v            = nullptr;
 PFNGLGETQUERYOBJECTIVPROC               _oglGetQueryObjectiv               = nullptr;

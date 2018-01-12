@@ -38,7 +38,10 @@ void GPA_CounterGeneratorBase::SetAllowedCounters(bool bAllowPublicCounters, boo
     m_doAllowSoftwareCounters = bAllowSoftwareCounters;
 }
 
-GPA_Status GPA_CounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desiredGeneration)
+GPA_Status GPA_CounterGeneratorBase::GenerateCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters)
 {
     GPA_Status status = GPA_STATUS_ERROR_NOT_ENABLED;
 
@@ -48,7 +51,7 @@ GPA_Status GPA_CounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desiredG
 
     if (m_doAllowPublicCounters)
     {
-        status = GeneratePublicCounters(desiredGeneration, &m_publicCounters);
+        status = GeneratePublicCounters(desiredGeneration, asicType, generateAsicSpecificCounters, &m_publicCounters);
 
         if (status != GPA_STATUS_OK)
         {
@@ -58,7 +61,7 @@ GPA_Status GPA_CounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desiredG
 
     if (m_doAllowPublicCounters || m_doAllowHardwareCounters) // hw counters are required if generating public counters
     {
-        status = GenerateHardwareCounters(desiredGeneration, &m_hardwareCounters);
+        status = GenerateHardwareCounters(desiredGeneration, asicType, generateAsicSpecificCounters, &m_hardwareCounters);
 
         if (status != GPA_STATUS_OK)
         {
@@ -68,7 +71,7 @@ GPA_Status GPA_CounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desiredG
 
     if (m_doAllowSoftwareCounters)
     {
-        status = GenerateSoftwareCounters(desiredGeneration, &m_softwareCounters);
+        status = GenerateSoftwareCounters(desiredGeneration, asicType, generateAsicSpecificCounters, &m_softwareCounters);
 
         if (status != GPA_STATUS_OK)
         {

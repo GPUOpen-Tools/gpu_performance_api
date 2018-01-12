@@ -3979,11 +3979,11 @@
 3978 , SPI_045 , gpa_uint64
 3979 , SPI_SPI_PERF_CSG_WAVE , gpa_uint64
 3980 , SPI_047 , gpa_uint64
-3981 , SPI_048 , gpa_uint64
-3982 , SPI_049 , gpa_uint64
+3981 , SPI_SPI_PERF_CSN_BUSY , gpa_uint64
+3982 , SPI_SPI_PERF_CSN_NUM_THREADGROUPS , gpa_uint64
 3983 , SPI_050 , gpa_uint64
 3984 , SPI_051 , gpa_uint64
-3985 , SPI_052 , gpa_uint64
+3985 , SPI_SPI_PERF_CSN_WAVE , gpa_uint64
 3986 , SPI_053 , gpa_uint64
 3987 , SPI_SPI_PERF_PS_BUSY , gpa_uint64
 3988 , SPI_055 , gpa_uint64

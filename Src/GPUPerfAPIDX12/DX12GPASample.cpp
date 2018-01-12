@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX12 GPA Sample implementation
@@ -20,7 +20,7 @@ DX12GPASample::DX12GPASample(GPAPass* pPass,
 
 bool DX12GPASample::UpdateResults()
 {
-    if (GPASampleState::RESULTS_COLLECTED == m_sampleState)
+    if (GPASampleState::RESULTS_COLLECTED == GetGpaSampleState())
     {
         return true;
     }
@@ -33,7 +33,7 @@ bool DX12GPASample::UpdateResults()
         isUpdated = true;
     }
 
-    if (GPASampleState::PENDING_RESULTS == m_sampleState && !IsSecondary())
+    if (GPASampleState::PENDING_RESULTS == GetGpaSampleState() && !IsSecondary())
     {
         isUpdated = (nullptr != PopulateSampleResult());
     }
@@ -65,46 +65,46 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
     size_t sampleDataSize = 0u;
 
     // Validate result space
-    if (false == m_pPass->IsTimingPass())
+    if (!GetPass()->IsTimingPass())
     {
-        sampleDataSize = m_pSampleResult->m_numCounters * sizeof(gpa_uint64);
+        sampleDataSize = GetSampleResultLocation()->m_numCounters * sizeof(gpa_uint64);
     }
     else
     {
         // If the pass is timing, we will have one result space to return the result, although
         // we need to get the result in twice space size from the driver
-        sampleDataSize = m_pSampleResult->m_numCounters * 2 * sizeof(gpa_uint64);
+        sampleDataSize = GetSampleResultLocation()->m_numCounters * 2 * sizeof(gpa_uint64);
     }
 
     gpa_uint64* pResultBuffer = nullptr;
     gpa_uint64 timingData[2];
 
-    if (nullptr != m_pSampleResult->m_pResultBuffer)
+    if (nullptr != GetSampleResultLocation()->m_pResultBuffer)
     {
-        if (m_pPass->IsTimingPass())
+        if (GetPass()->IsTimingPass())
         {
             pResultBuffer = timingData;
         }
         else
         {
-            pResultBuffer = m_pSampleResult->m_pResultBuffer;
+            pResultBuffer = GetSampleResultLocation()->m_pResultBuffer;
         }
 
         if (CopyResult(sampleDataSize, pResultBuffer))
         {
-            if (m_pPass->IsTimingPass())
+            if (GetPass()->IsTimingPass())
             {
                 // There will be one counter result space for this
-                *m_pSampleResult->m_pResultBuffer = timingData[1] - timingData[0];
+                *(GetSampleResultLocation()->m_pResultBuffer) = timingData[1] - timingData[0];
             }
 
             if (IsSampleContinuing())
             {
-                GPASampleResult* pSampleResult = reinterpret_cast<DX12GPASample*>(m_pContinuingSample)->PopulateSampleResult();
+                GPASampleResult* pSampleResult = reinterpret_cast<DX12GPASample*>(GetContinuingSample())->PopulateSampleResult();
 
-                for (size_t counterIter = 0; counterIter < m_pSampleResult->m_numCounters; counterIter++)
+                for (size_t counterIter = 0; counterIter < GetPass()->GetCounterCount(); counterIter++)
                 {
-                    m_pSampleResult->m_pResultBuffer[counterIter] += pSampleResult->m_pResultBuffer[counterIter];
+                    GetSampleResultLocation()->m_pResultBuffer[counterIter] += pSampleResult->m_pResultBuffer[counterIter];
                 }
             }
 
@@ -120,7 +120,7 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
         GPA_LogError("Incorrect space allocated for sample result.");
     }
 
-    return m_pSampleResult;
+    return GetSampleResultLocation();
 }
 
 bool DX12GPASample::CopyResult(size_t sampleDataSize, void* pResultBuffer) const
@@ -129,7 +129,7 @@ bool DX12GPASample::CopyResult(size_t sampleDataSize, void* pResultBuffer) const
 
     if (nullptr != pResultBuffer)
     {
-        DX12GPACommandList* pDX12GpaCmdList = reinterpret_cast<DX12GPACommandList*>(m_pGpaCmdList);
+        DX12GPACommandList* pDX12GpaCmdList = reinterpret_cast<DX12GPACommandList*>(GetCmdList());
 
         IAmdExtGpaSession* pResultSession = nullptr;
 

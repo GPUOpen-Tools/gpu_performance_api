@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief GPA Common Context class implementation
@@ -85,8 +85,7 @@ GPA_Status GPAContext::GetCounterIndex(const char* pCounterName,
 {
     CHECK_FOR_NULL_COUNTER_ACCESSOR(m_pCounterAccessor);
     GPA_INTERNAL_CHECK_NULL_PARAM(pIndex);
-    m_pCounterAccessor->GetCounterIndex(pCounterName, pIndex);
-    return GPA_STATUS_OK;
+    return m_pCounterAccessor->GetCounterIndex(pCounterName, pIndex) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 }
 
 bool GPAContext::GetCounterSourceLocalIndex(gpa_uint32 exposedCounterIndex, GPACounterSource* pSource, gpa_uint32* pSourceLocalIndex) const
@@ -222,6 +221,7 @@ bool GPAContext::OpenCounters()
                                 vendorId,
                                 deviceId,
                                 revisionId,
+                                true,
                                 &pCounterAccessor,
                                 &pCounterScheduler);
 
@@ -290,4 +290,72 @@ GPAContext::GPAContext(GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
 void GPAContext::SetAsOpened(bool open)
 {
     m_isOpen = open;
+}
+
+bool GPAContext::IsAMDDevice() const
+{
+    gpa_uint32 vendorId;
+    bool isAmd = false;
+
+    if (m_hwInfo.GetVendorID(vendorId) &&
+        AMD_VENDOR_ID == vendorId)
+    {
+        isAmd = true;
+    }
+
+    return isAmd;
+}
+
+void GPAContext::AddGpaSession(IGPASession* pGpaSession)
+{
+    std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
+    m_gpaSessionList.push_back(pGpaSession);
+}
+
+void GPAContext::RemoveGpaSession(IGPASession* pGpaSession)
+{
+    std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
+    m_gpaSessionList.remove(pGpaSession);
+}
+
+void GPAContext::IterateGpaSessionList(std::function<bool(IGPASession* pGpaSession)> function) const
+{
+    std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
+    bool next = true;
+    for (auto it = m_gpaSessionList.cbegin(); it != m_gpaSessionList.cend() && next; ++it)
+    {
+        next = function(*it);
+    }
+}
+
+void GPAContext::ClearSessionList()
+{
+    std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
+    m_gpaSessionList.clear();
+}
+
+bool GPAContext::GetIndex(IGPASession* pGpaSession, unsigned int* pIndex) const
+{
+    bool found = false;
+    unsigned int index = 0;
+
+    std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
+    for (auto iter = m_gpaSessionList.cbegin(); iter != m_gpaSessionList.cend(); ++iter)
+    {
+        if (pGpaSession == *iter)
+        {
+            found = true;
+
+            if (nullptr != pIndex)
+            {
+                *pIndex = index;
+                break;
+            }
+        }
+
+        index++;
+
+    }
+
+    return found;
 }

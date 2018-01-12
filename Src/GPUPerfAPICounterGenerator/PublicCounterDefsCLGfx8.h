@@ -13,7 +13,7 @@
 #include "GPAPublicCounters.h"
 
 /// Defines the public counters for CLGFX8
-/// \param p pubilc counters instance
+/// \param p public counters instance
 void AutoDefinePublicCountersCLGfx8(GPA_PublicCounters& p);
 
 #endif // _PUBLIC_COUNTER_DEFS_CLGFX8_H_

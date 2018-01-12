@@ -1,12 +1,15 @@
 //==============================================================================
-// Copyright (c) 2009-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2009-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  A utility class for interfacing with the performance counter from the OpenCL runtime.
 //==============================================================================
 
-#ifndef _CLPERFCOUNTERBLOCK_H_
-#define _CLPERFCOUNTERBLOCK_H_
+#ifndef _CL_PERF_COUNTER_BLOCK_H_
+#define _CL_PERF_COUNTER_BLOCK_H_
+
+#include <math.h>
+#include <CL/internal/cl_profile_amd.h>
 
 /// Handle the creation of HW performance counter block using the OpenCL runtime
 /// Example usage:
@@ -108,4 +111,4 @@ protected:
     bool                           m_isResultReady; ///< true if CollectData has been called successfully, false otherwise
 };
 
-#endif // _CLPERFCOUNTERBLOCK_H
+#endif // _CL_PERF_COUNTER_BLOCK_H_

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Common GPA Implementation declarations
@@ -17,8 +17,8 @@
 
 using GPAContextInfoPtr = void*;                                                               ///< type alias for context info pointer
 using GPADeviceIdentifier = void*;                                                             ///< type alias for API-specific device identifier
-using GPADeviceIdentifierGPAContextPair = std::pair<GPADeviceIdentifier, IGPAContext*>;        ///< type alias for application and gpa context pair
-using GPADeviceIdentifierGPAContextMap = std::map<GPADeviceIdentifier, IGPAContext*>;          ///< type alias for application and gpa context map
+using GPADeviceIdentifierGPAContextPair = std::pair<GPADeviceIdentifier, IGPAContext*>;        ///< type alias for application and GPA context pair
+using GPADeviceIdentifierGPAContextMap = std::map<GPADeviceIdentifier, IGPAContext*>;          ///< type alias for application and GPA context map
 
 /// Class for common GPA Implementation
 class GPAImplementor : public IGPAImplementor
@@ -72,6 +72,7 @@ protected:
     virtual bool CompareHwInfo(const GPA_HWInfo& first, const GPA_HWInfo& second) const;
 
     /// Verifies the API level hardware support
+    /// \param[in] pContextInfo context info object pointer
     /// \param[in] hwInfo hardware info object pointer
     /// \return true if API supports the hardware otherwise false
     virtual bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const = 0;
@@ -97,13 +98,13 @@ private:
     virtual bool CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pGpaContext) = 0;
 
     /// Returns the API specific device identifier
-    /// \param[in] pGpaContextInfo pointer to gpa context info
-    /// \return device identifier for the passed gpa context info
+    /// \param[in] pGpaContextInfo pointer to GPA context info
+    /// \return device identifier for the passed GPA context info
     virtual GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pGpaContextInfo) const = 0;
 
     mutable std::mutex                          m_deviceGpaContextMapMutex;              ///< mutex for context manager
     GPADeviceIdentifierGPAContextMap            m_appContextInfoGpaContextMap;           ///< map of application context info and GPA context
-    bool                                        m_isInitialized;                         ///< flag indicating gpa is initalized or not
+    bool                                        m_isInitialized;                         ///< flag indicating if GPA has been initalized or not
 };
 
 #endif // _GPA_IMPLEMENTOR_H_

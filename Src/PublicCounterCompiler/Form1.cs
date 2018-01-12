@@ -12,12 +12,8 @@
 namespace PublicCounterCompiler
 {
     using System;
-    using System.Collections.Generic;
-    using System.ComponentModel;
-    using System.Data;
-    using System.Drawing;
-    using System.Text;
     using System.Windows.Forms;
+    using Microsoft.Win32;
 
     /// <summary>
     /// the main form of the PublicCounterCompiler
@@ -30,11 +26,31 @@ namespace PublicCounterCompiler
         private static Form1 instance = null;
 
         /// <summary>
+        /// Registry key root for the utility
+        /// </summary>
+        private static string registryKey = "HKEY_CURRENT_USER\\Software\\AMD\\DevTools";
+
+        /// <summary>
+        /// Previously entered API
+        /// </summary>
+        private static string registryApiEntry = "PccApi";
+
+        /// <summary>
+        /// Previously entered GPU family
+        /// </summary>
+        private static string registryGpuFamilyEntry = "PccGpuFamily";
+
+
+        /// <summary>
         /// Initializes a new instance of the Form1 class.
         /// </summary>
         public Form1()
         {
             InitializeComponent();
+
+            apiName.Text = (string)Registry.GetValue(registryKey, registryApiEntry, string.Empty);
+
+            GPUFamily.Text = (string)Registry.GetValue(registryKey, registryGpuFamilyEntry, string.Empty);
         }
 
         /// <summary>
@@ -57,7 +73,9 @@ namespace PublicCounterCompiler
         /// <param name="strMsg">The message to add to the output window</param>
         public void Output(string strMsg)
         {
-            m_output.Text += strMsg.Replace("\n", "\r\n") + "\r\n";
+            richTextBoxOutput.Text += strMsg + "\n";
+            richTextBoxOutput.SelectionStart = richTextBoxOutput.Text.Length;
+            richTextBoxOutput.ScrollToCaret();
         }
 
         /// <summary>
@@ -77,15 +95,23 @@ namespace PublicCounterCompiler
         /// <param name="e">default event args</param>
         private void CompileButton_Click(object sender, EventArgs e)
         {
-            if (apiName.TextLength == 0 ||
-                 GPUFamily.TextLength == 0)
+            richTextBoxOutput.Text = "";
+
+            string api = apiName.Text.Trim();
+            string gpu = GPUFamily.Text.Trim();
+
+            if (string.IsNullOrEmpty(api)||
+                 string.IsNullOrEmpty(gpu))
             {
                 MessageBox.Show("Required data not provided.\nPlease fill in all the fields on the form.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            this.m_output.Clear();
-            Program.CompileCounters(apiName.Text, GPUFamily.Text);
+            Registry.SetValue(registryKey, registryApiEntry, api);
+
+            Registry.SetValue(registryKey, registryGpuFamilyEntry, gpu);
+
+            Program.CompileCounters(api, gpu);
         }
 
         /// <summary>
@@ -96,19 +122,18 @@ namespace PublicCounterCompiler
         /// <param name="e">default event args</param>
         private void BatchCompile_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrEmpty(batchApiList.Text)
-                || string.IsNullOrEmpty(batchGpuFamilyList.Text))
+            richTextBoxOutput.Text = "";
+
+            if (string.IsNullOrEmpty(batchApiList.Text.Trim())
+                || string.IsNullOrEmpty(batchGpuFamilyList.Text.Trim()))
             {
                 MessageBox.Show("Required data not provided.\nPlease fill in all the fields on the form.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            m_output.Clear();
+            string[] apis = batchApiList.Text.Trim().Split(',');
+            string[] gpus = batchGpuFamilyList.Text.Trim().Split(',');
 
-            string[] apis = batchApiList.Text.Split(',');
-            string[] gpus = batchGpuFamilyList.Text.Split(',');
-
-            this.m_output.Clear();
             foreach (var api in apis)
             {
                 foreach (var gpu in gpus)
@@ -130,5 +155,18 @@ namespace PublicCounterCompiler
                 }
             }
         }
+
+        /// <summary>
+        /// Gets the checked state of the Generate Counter Docs button.
+        /// </summary>
+        /// <returns>True if counter docs should be generated</returns>
+        public bool GenerateCounterDocs
+        {
+            get
+            {
+                return checkBoxGenerateCounterDocs.Checked;
+            }
+        }
+
     }
 }

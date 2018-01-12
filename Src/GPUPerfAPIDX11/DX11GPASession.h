@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief DX11 GPA Session declaration
@@ -19,28 +19,19 @@ class DX11GPASession : public GPASession
 {
 public:
 
+    /// Constructor
+    /// \param[in] pParentContext The context Id on which this session is created
+    DX11GPASession(IGPAContext* pParentContext);
+
     /// Destructor
     ~DX11GPASession();
 
-    /// \copydoc IGPASession::Begin()
-    bool Begin() override;
-
-    /// \copydoc IGPASession::End()
-    bool End() override;
-
-    /// \copydoc IGPASession::CreateCommandList()
-    GPA_CommandListId CreateCommandList(gpa_uint32 passIndex, void* pCmd, GPA_Command_List_Type cmdType) override;
-
-    /// \copydoc IGPASession::BeginSample()
-    bool BeginSample(ClientSampleId sampleId, GPA_CommandListId commandListId) override;
-
-    /// \copydoc IGPASession::EndSample()
-    bool EndSample(GPA_CommandListId commandListId) override;
-
-    /// \copydoc IGPASession::GetSampleCount()
-    gpa_uint32 GetSampleCount() const override;
-
     /// \copydoc IGPAInterfaceTrait::GetAPIType()
     GPA_API_Type GetAPIType() const override;
+
+private:
+
+    /// \copydoc GPASession::CreateAPIPass()
+    GPAPass * CreateAPIPass(PassIndex passIndex) override;
 };
 #endif // _DX11_GPA_SESSION_H_

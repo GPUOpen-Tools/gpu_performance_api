@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  This is the header file that must be included by an application that
@@ -28,11 +28,11 @@
 
 #if DISABLE_GPA
     #define USE_GPA 0
-#else 
+#else
     #define USE_GPA 1
 #endif
 
-#include <assert.h>
+
 #include "GPUPerfAPITypes.h"
 #include "GPUPerfAPIFunctionTypes.h"
 
@@ -395,7 +395,7 @@ GPALIB_DECL GPA_Status GPA_IsCounterEnabled(
 // Sample Handling
 
 /*
-Sampling in DX12/Vulkan : Usage notes
+Sampling in DirectX 12/Vulkan : Usage notes
 
     Before creating any sample on a command list/buffer (primary or secondary), the command list/buffer (primary or secondary) should be in build state for sampling.
     Primary command list/buffer must be in build state if a sample is going to start on it (OR if secondary command list/buffer with samples is going to execute on it).
@@ -467,7 +467,7 @@ thread_3
 /// \brief Begin command list for sampling
 ///
 /// You will be unable to create samples on the specified command list/buffer before GPA_BeginCommandList is called
-/// Command list corresponds to ID3D12GraphicsCommandList in DX12 and vkCommandBuffer in Vulkan.
+/// Command list corresponds to ID3D12GraphicsCommandList in DirectX 12 and vkCommandBuffer in Vulkan.
 /// In OpenCL/OpenGL/HSA/DX11, use GPA_NULL_COMMAND_LIST as pCommandList parameter and GPA_NO_COMMAND_LIST as gpaCommandListType
 /// \param[in] sessionId Unique identifier of the GPA Session Object
 /// \param[in] passIndex 0-based index of the pass
@@ -524,7 +524,7 @@ GPALIB_DECL GPA_Status GPA_EndSample(
 
 /// \brief Continue a primary command list sample on another primary command list
 ///
-/// For use with the explicit graphics APIs (DX12 and Vulkan).
+/// For use with the explicit graphics APIs (DirectX 12 and Vulkan).
 /// Each sample must be associated with a command list.
 /// Samples can be started on one primary command list and continued/ended on another primary command list.
 /// \param[in] srcSampleId source sample id for the sample being continued on a different command list
@@ -536,17 +536,17 @@ GPALIB_DECL GPA_Status GPA_ContinueSampleOnCommandList(
 
 /// \brief Copy a set of samples from a secondary command list/buffer sample back to the primary command list/buffer that executed the secondary command list/buffer
 ///
-/// For use with the explicit graphics APIs (DX12 and Vulkan).
+/// For use with the explicit graphics APIs (DirectX 12 and Vulkan).
 /// Each sample must be associated with a command list.
 /// GPA doesn't collect data for the samples created on secondary command list/buffer unless they are copied to a new set of samples for the primary command list/buffer.
-/// \param[in] secondaryCmdListId secondary command list/buffer where the secondary samples were created
-/// \param[in] primaryCmdListId primary command list/buffer to which the samples results should be copied. This should be the command list/buffer that executed the secondary command lilst/buffer.
+/// \param[in] secondaryCommandListId secondary command list/buffer where the secondary samples were created
+/// \param[in] primaryCommandListId primary command list/buffer to which the samples results should be copied. This should be the command list/buffer that executed the secondary command lilst/buffer.
 /// \param[in] numSamples number of secondary samples
 /// \param[in] pNewSampleIds new sample ids on a primary command list
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPALIB_DECL GPA_Status GPA_CopySecondarySamples(
-    GPA_CommandListId secondaryCmdListId,
-    GPA_CommandListId primaryCmdListId,
+    GPA_CommandListId secondaryCommandListId,
+    GPA_CommandListId primaryCommandListId,
     gpa_uint32 numSamples,
     gpa_uint32* pNewSampleIds);
 
@@ -592,11 +592,11 @@ GPALIB_DECL GPA_Status GPA_IsSessionComplete(
 /// \brief Get the sample result size
 ///
 /// \param[in] sessionId Unique identifier of the GPA Session Object
-/// \param[in] sampleResultSizeInBytes size of sample in bytes
+/// \param[out] sampleResultSizeInBytes size of sample in bytes - this value needs to be passed to GetSampleResult
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPALIB_DECL GPA_Status GPA_GetPerSampleResultSize(
     GPA_SessionId sessionId,
-    gpa_uint32* sampleResultSizeInBytes);
+    gpa_uint64* sampleResultSizeInBytes);
 
 
 /// \brief Get counter data of the sample. This function will block until results are ready. Use GPA_IsSessionComplete to check if results are ready
@@ -627,23 +627,23 @@ GPALIB_DECL const char* GPA_GetStatusAsStr(
 
 /// \brief Get the GPU device and revision id associated with the current context
 ///
-/// \param[in] contextId Unique identifier of the opened context
+/// \param[in] gpaContextId Unique identifier of the opened context
 /// \param[out] pDeviceID The value that will be set to the device id.
 /// \param[out] pRevisionID The value that will be set to the device revision id.
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPALIB_DECL GPA_Status GPA_GetDeviceAndRevisionId(
-    GPA_ContextId contextId,
+    GPA_ContextId gpaContextId,
     gpa_uint32* pDeviceID,
     gpa_uint32* pRevisionID);
 
 
 /// \brief Get the GPU device name
 ///
-/// \param[in] contextId Unique identifier of the opened context
+/// \param[in] gpaContextId Unique identifier of the opened context
 /// \param[out] ppDeviceName The value that will be set to the device name.
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPALIB_DECL GPA_Status GPA_GetDeviceName(
-    GPA_ContextId contextId,
+    GPA_ContextId gpaContextId,
     const char** ppDeviceName);
 
 // Internal function
@@ -666,7 +666,6 @@ GPALIB_DECL GPA_Status GPA_GetFuncTable(
 #else /// Not USE_GPA
 
 #define RETURN_GPA_SUCCESS return GPA_STATUS_OK
-#define RETURN_GPA_RESULT_READY return GPA_STATUS_RESULT_READY;
 
 // Logging
 static  GPA_Status GPA_RegisterLoggingCallback(GPA_Logging_Type, GPA_LoggingCallbackPtrType) { RETURN_GPA_SUCCESS; }
@@ -721,9 +720,9 @@ static GPA_Status GPA_CopySecondarySamples(GPA_CommandListId, GPA_CommandListId,
 static GPA_Status GPA_GetSampleCount(GPA_SessionId, gpa_uint32*) { RETURN_GPA_SUCCESS; }
 
 // Query Results
-static GPA_Status GPA_IsSessionComplete(GPA_SessionId) { RETURN_GPA_RESULT_READY; }
-static GPA_Status GPA_IsPassComplete(GPA_SessionId, gpa_uint32) { RETURN_GPA_RESULT_READY; }
-static GPA_Status GPA_GetPerSampleResultSize(GPA_SessionId, gpa_uint32*) { RETURN_GPA_SUCCESS; }
+static GPA_Status GPA_IsSessionComplete(GPA_SessionId) { RETURN_GPA_SUCCESS; }
+static GPA_Status GPA_IsPassComplete(GPA_SessionId, gpa_uint32) { RETURN_GPA_SUCCESS; }
+static GPA_Status GPA_GetPerSampleResultSize(GPA_SessionId, gpa_uint64*) { RETURN_GPA_SUCCESS; }
 static GPA_Status GPA_GetSampleResult(GPA_SessionId, gpa_uint32, gpa_uint64, void*) { RETURN_GPA_SUCCESS; }
 
 // Status/Error Query

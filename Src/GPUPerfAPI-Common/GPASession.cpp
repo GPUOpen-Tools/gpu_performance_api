@@ -8,6 +8,8 @@
 // std
 #include <list>
 #include <sstream>
+#include <chrono>
+#include <thread>
 
 // GPA Common
 #include "GPASession.h"
@@ -18,10 +20,9 @@
 #include "GPUPerfAPITypes.h"
 
 GPASession::GPASession(IGPAContext* pParentContext, IGPACounterScheduler* pCounterScheduler):
-    m_pParentContext(pParentContext),
     m_state(GPA_SESSION_STATE_NOT_STARTED),
     m_pCounterScheduler(pCounterScheduler),
-    m_sessionID(0u),
+    m_pParentContext(pParentContext),
     m_maxPassIndex(0u)
 {
     TRACE_PRIVATE_FUNCTION(GPASession::CONSTRUCTOR);
@@ -264,7 +265,7 @@ gpa_uint32 GPASession::GetSampleCount() const
     gpa_uint32 sampleCount = 0;
 
     // make sure there is at least one request
-    if (m_passes.size() > 0)
+    if (!m_passes.empty())
     {
         std::lock_guard<std::mutex> lockResources(m_gpaSessionMutex);
         sampleCount = static_cast<gpa_uint32>(m_passes[0]->GetSampleCount());
@@ -346,9 +347,9 @@ bool GPASession::IsComplete() const
     return GPA_SESSION_STATE_COMPLETED == m_state;
 }
 
-gpa_uint32 GPASession::GetPerSampleResultSizeInBytes() const
+gpa_uint64 GPASession::GetPerSampleResultSizeInBytes() const
 {
-    gpa_uint32 sizeInBytes = 0;
+    gpa_uint64 sizeInBytes = 0;
 
     if (m_pCounterScheduler == nullptr)
     {
@@ -392,8 +393,8 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, gpa_uint64 sampleRes
         return GPA_STATUS_ERROR_SAMPLE_IN_SECONDARY_COMMAND_LIST;
     }
 
-    // NOTE: Flush turns this into a blocking call. Alternatively, if not all results are available we could instead return an error.
-    Flush();
+    const uint32_t timeout = 5 * 1000; // 5 second timeout
+    Flush(timeout);
 
     // For each counter
     // Get the interal counter result locations that are needed
@@ -465,7 +466,7 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, gpa_uint64 sampleRes
                     const char* pPublicName = m_pParentContext->GetCounterAccessor()->GetCounterName(*requiredCounterIter);
 
                     std::stringstream message;
-                    message << "Session " << m_sessionID << ", sample " << sampleId << ", pubCounter '" << pPublicName << "', iCounter: '" << pInternalName << "', [" << *requiredCounterIter << "] = ";
+                    message << "Sample " << sampleId << ", pubCounter '" << pPublicName << "', iCounter: '" << pInternalName << "', [" << *requiredCounterIter << "] = ";
 
                     if (type == GPA_DATA_TYPE_UINT64)
                     {
@@ -552,15 +553,35 @@ IGPACounterScheduler* GPASession::GetCounterScheduler() const
     return m_pCounterScheduler;
 }
 
-void GPASession::Flush()
+bool GPASession::Flush(uint32_t timeout)
 {
     TRACE_PRIVATE_FUNCTION(GPASession::Flush);
 
-    // block until the session is complete
-    while (IsComplete() == false)
+    bool retVal = true;
+
+    auto startTime = std::chrono::steady_clock::now();
+
+    // block until the session is complete or the timeout (if any) is reached
+    while (false == IsComplete())
     {
+        if (timeout != GPA_TIMEOUT_INFINITE)
+        {
+            auto currentTime = std::chrono::steady_clock::now();
+            auto duration = currentTime - startTime;
+            if (std::chrono::duration_cast<std::chrono::milliseconds>(duration).count() > timeout)
+            {
+                GPA_LogError("GPA session completion timeout occurred.");
+                retVal = false;
+                break;
+            }
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        }
+
         UpdateResults();
     }
+
+    return retVal;
 }
 
 bool GPASession::BeginSample(ClientSampleId sampleId, GPA_CommandListId commandListId)
@@ -579,7 +600,7 @@ bool GPASession::BeginSample(ClientSampleId sampleId, GPA_CommandListId commandL
             if (nullptr != pCmdPass)
             {
                 // Create a sample
-                if (nullptr != pCmdPass->CreateSample(sampleId, pCmd))
+                if (nullptr != pCmdPass->CreateAndBeginSample(sampleId, pCmd))
                 {
                     bStarted = true;
                 }

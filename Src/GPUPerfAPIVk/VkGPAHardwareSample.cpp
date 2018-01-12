@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class to manage a single sample of HW counters
@@ -180,7 +180,7 @@ void VkGPAHardwareSample::ReleaseCounters()
 
 bool VkGPAHardwareSample::UpdateResults()
 {
-    if (GPASampleState::RESULTS_COLLECTED == m_sampleState)
+    if (GPASampleState::RESULTS_COLLECTED == GetGpaSampleState())
     {
         return true;
     }
@@ -194,7 +194,7 @@ bool VkGPAHardwareSample::UpdateResults()
         isUpdated = true;
     }
 
-    if (GPASampleState::PENDING_RESULTS == m_sampleState)
+    if (GPASampleState::PENDING_RESULTS == GetGpaSampleState())
     {
         isUpdated = (nullptr != PopulateSampleResults());
     }
@@ -207,46 +207,46 @@ GPASampleResult* VkGPAHardwareSample::PopulateSampleResults()
     size_t sampleDataSize = 0u;
 
     // Validate result space
-    if (false == m_pPass->IsTimingPass())
+    if (!GetPass()->IsTimingPass())
     {
-        sampleDataSize = m_pSampleResult->m_numCounters * sizeof(gpa_uint64);
+        sampleDataSize = GetSampleResultLocation()->m_numCounters * sizeof(gpa_uint64);
     }
     else
     {
         // If the pass is timing, we will have one result space to return the result, although
         // we need to get the result in twice space size from the driver
-        sampleDataSize = m_pSampleResult->m_numCounters * 2 * sizeof(gpa_uint64);
+        sampleDataSize = GetSampleResultLocation()->m_numCounters * 2 * sizeof(gpa_uint64);
     }
 
     gpa_uint64* pResultBuffer = nullptr;
     gpa_uint64 timingData[2];
 
-    if (nullptr != m_pSampleResult->m_pResultBuffer)
+    if (nullptr != GetSampleResultLocation()->m_pResultBuffer)
     {
-        if (m_pPass->IsTimingPass())
+        if (GetPass()->IsTimingPass())
         {
             pResultBuffer = timingData;
         }
         else
         {
-            pResultBuffer = m_pSampleResult->m_pResultBuffer;
+            pResultBuffer = GetSampleResultLocation()->m_pResultBuffer;
         }
 
         if (CopyResult(sampleDataSize, pResultBuffer))
         {
-            if (m_pPass->IsTimingPass())
+            if (GetPass()->IsTimingPass())
             {
                 // There will be one counter result space for this
-                *m_pSampleResult->m_pResultBuffer = timingData[1] - timingData[0];
+                *(GetSampleResultLocation()->m_pResultBuffer) = timingData[1] - timingData[0];
             }
 
             if (IsSampleContinuing())
             {
-                GPASampleResult* pSampleResult = reinterpret_cast<VkGPAHardwareSample*>(m_pContinuingSample)->PopulateSampleResults();
+                GPASampleResult* pSampleResult = reinterpret_cast<VkGPAHardwareSample*>(GetContinuingSample())->PopulateSampleResults();
 
-                for (size_t counterIter = 0; counterIter < m_pSampleResult->m_numCounters; counterIter++)
+                for (size_t counterIter = 0; counterIter < GetSampleResultLocation()->m_numCounters; counterIter++)
                 {
-                    m_pSampleResult->m_pResultBuffer[counterIter] += pSampleResult->m_pResultBuffer[counterIter];
+                    GetSampleResultLocation()->m_pResultBuffer[counterIter] += pSampleResult->m_pResultBuffer[counterIter];
                 }
             }
 
@@ -262,7 +262,7 @@ GPASampleResult* VkGPAHardwareSample::PopulateSampleResults()
         GPA_LogError("Incorrect space allocated for sample result");
     }
 
-    return m_pSampleResult;
+    return GetSampleResultLocation();
 }
 
 bool VkGPAHardwareSample::CopyResult(size_t sampleDataSize, void* pResultBuffer) const
@@ -271,7 +271,7 @@ bool VkGPAHardwareSample::CopyResult(size_t sampleDataSize, void* pResultBuffer)
 
     if (nullptr != pResultBuffer)
     {
-        VkGPACommandList* pVkGpaCmdList = reinterpret_cast<VkGPACommandList*>(m_pGpaCmdList);
+        VkGPACommandList* pVkGpaCmdList = reinterpret_cast<VkGPACommandList*>(GetCmdList());
 
         VkGpaSessionAMD extSession = pVkGpaCmdList->GetAmdExtSession();
 
@@ -304,11 +304,11 @@ bool VkGPAHardwareSample::CopyResult(size_t sampleDataSize, void* pResultBuffer)
                 assert(VK_SUCCESS == gotResultSize);
                 assert(sampleDataSize == sampleDataSizeInDriver);
 
-                if (gotResultSize && sampleDataSize == sampleDataSizeInDriver)
+                if (VK_SUCCESS == gotResultSize && sampleDataSize == sampleDataSizeInDriver)
                 {
                     VkResult gotResults = _vkGetGpaSessionResultsAMD(vkDevice, extSession, GetDriverSampleId(), &sampleDataSizeInDriver, pResultBuffer);
                     assert(VK_SUCCESS == gotResults);
-                    if (gotResults)
+                    if (VK_SUCCESS == gotResults)
                     {
                         isDataReady = true;
                     }

@@ -1,9 +1,10 @@
 #MAKE FILE FOR DeviceInfo
 
+PROJECT_NAME=DeviceInfo
 DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
-TARGETLIB = libDeviceInfo$(TARGET_SUFFIX).a
+TARGETLIB = $(OUTPUT_LIB_DIR)/lib$(PROJECT_NAME)$(TARGET_SUFFIX).a
 
 INCLUDES =	-I. \
 		-I$(ADL_DIR)/include \

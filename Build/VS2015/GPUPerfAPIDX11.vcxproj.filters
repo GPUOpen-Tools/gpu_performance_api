@@ -65,7 +65,6 @@
     <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11CounterDataRequest.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX11\GPAContextStateDX11.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX11\GPUPerfAPIDX11.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\resource.h" />
     <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExt.h">
       <Filter>AmdDxExt</Filter>
     </ClInclude>
@@ -114,6 +113,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11Include.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

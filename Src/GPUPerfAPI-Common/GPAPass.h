@@ -51,8 +51,8 @@ public:
     /// Deletes the samples.
     virtual ~GPAPass();
 
-    /// Returns the gpa session
-    /// \return gpa session
+    /// Returns the GPA session
+    /// \return GPA session
     IGPASession* GetGpaSession() const;
 
     /// Returns the counter source of the pass
@@ -66,12 +66,12 @@ public:
 
     /// Add the sample to the pass
     /// \param[in] clientSampleId index of the sample
-    /// \param[in] pCmdList gpa sample object
+    /// \param[in] pCmdList GPA sample object
     /// \return A pointer to the created sample; nullptr if creation failed or clientSampleId already exists.
-    GPASample* CreateSample(ClientSampleId clientSampleId, IGPACommandList* pCmdList);
+    GPASample* CreateAndBeginSample(ClientSampleId clientSampleId, IGPACommandList* pCmdList);
 
     /// Ends a sample created by the CreateAPISpecificSample
-    /// \param[in] pCmdList gpa sample object
+    /// \param[in] pCmdList GPA sample object
     /// \return true if operation is successful otherwise false
     virtual bool EndSample(IGPACommandList* pCmdList) = 0;
 
@@ -202,6 +202,18 @@ public:
     /// Gets the post-event bottom timestamp counter offset
     /// \return The counter offset
     gpa_uint32 GPUTimestampPostBottomOffset() const;
+
+    /// Iterate over all the counter in the pass
+    /// param[in] function function to be executed for each object in the list - function may return false to terminate iteration
+    void IteratePassCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const;
+
+    /// Iterate over all the counter in the pass
+    /// param[in] function function to be executed for each object in the list - function may return false to terminate iteration
+    void IterateEnabledCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const;
+
+    /// Iterate over all the counter in the pass
+    /// param[in] function function to be executed for each object in the list - function may return false to terminate iteration
+    void IterateSkippedCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const;
 
 protected:
 

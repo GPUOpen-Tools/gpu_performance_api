@@ -70,7 +70,7 @@ typedef GPA_Status(*GPA_GetSampleCountPtrType)(GPA_SessionId sessionId, gpa_uint
 // Query Results
 typedef GPA_Status(*GPA_IsSessionCompletePtrType)(GPA_SessionId sessionId);  ///< Typedef for a function pointer for GPA_IsSessionComplete
 typedef GPA_Status(*GPA_IsPassCompletePtrType)(GPA_SessionId sessionId, gpa_uint32 passIndex); ///< Typedef for a function pointer for GPA_IsPassComplete
-typedef GPA_Status(*GPA_GetPerSampleResultSizePtrType)(GPA_SessionId sessionId, gpa_uint32* pSampleSizeInBytes);  ///< Typedef for a function pointer for GPA_GetPerSampleResultSize
+typedef GPA_Status(*GPA_GetPerSampleResultSizePtrType)(GPA_SessionId sessionId, gpa_uint64* pSampleSizeInBytes);  ///< Typedef for a function pointer for GPA_GetPerSampleResultSize
 typedef GPA_Status(*GPA_GetSampleResultPtrType)(GPA_SessionId sessionId, gpa_uint32 sampleID, gpa_uint64 sampleResultSizeInBytes, void* pCounterValues); ///< Typedef for a function pointer for GPA_GetSampleResult
 
 // Status/Error Query

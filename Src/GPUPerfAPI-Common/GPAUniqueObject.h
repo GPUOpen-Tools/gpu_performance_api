@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief GPA Opaque object definition
@@ -24,7 +24,7 @@ class IGPACommandList;      // forward declaration
 struct GPAUniqueObject
 {
     /// Gets the type of the object
-    /// \return gpa object type
+    /// \return GPA object type
     virtual GPAObjectType ObjectType() const;
 
     /// Returns the interface pointer
@@ -58,7 +58,7 @@ struct _GPA_ContextId : GPAUniqueObject
     IGPAContext* Object() const;
 
     /// Returns the type of the object
-    /// \return gpa object type
+    /// \return GPA object type
     GPAObjectType ObjectType() const override;
 
     /// Delete default constructor
@@ -81,7 +81,7 @@ struct _GPA_SessionId : GPAUniqueObject
     IGPASession* Object() const;
 
     /// Returns the type of the object
-    /// \return gpa object type
+    /// \return GPA object type
     GPAObjectType ObjectType() const override;
 
     /// Delete default constructor
@@ -104,7 +104,7 @@ struct _GPA_CommandListId : GPAUniqueObject
     IGPACommandList* Object() const;
 
     /// Returns the type of the object
-    /// \return gpa object type
+    /// \return GPA object type
     GPAObjectType ObjectType() const override;
 
     /// Delete default constructor
@@ -121,16 +121,16 @@ public:
     static GPAUniqueObjectManager* Instance();
 
     /// Add the newly creatd GPA Unique object
-    /// \param[in] pInterfaceTrait gpa unique object pointer
+    /// \param[in] pInterfaceTrait GPA unique object pointer
     /// \return unique object pointer if created successfully otherwise nullptr
     GPA_THREAD_SAFE_FUNCTION GPAUniqueObject* CreateObject(IGPAInterfaceTrait* pInterfaceTrait);
 
     /// Remove the newly creatd GPA Unique object
-    /// \param[in] pUniqueObject gpa unique object pointer
+    /// \param[in] pUniqueObject GPA unique object pointer
     GPA_THREAD_SAFE_FUNCTION void DeleteObject(GPAUniqueObject* pUniqueObject);
 
     /// Remove the newly creatd GPA Unique object
-    /// \param[in] pInterfaceTrait gpa unique object pointer
+    /// \param[in] pInterfaceTrait GPA unique object pointer
     GPA_THREAD_SAFE_FUNCTION void DeleteObject(const IGPAInterfaceTrait* pInterfaceTrait);
 
     /// Checks whether the interface exists or not
@@ -153,7 +153,7 @@ private:
     /// Checks whether the interface exists or not
     /// Assumes that the caller has locked m_mutex.
     /// \param[in] pInterfaceTrait interface trait
-    /// \return index at which the object found otherwise -1
+    /// \param[out] pIndex index at which the object found otherwise -1
     /// \return true if interface is found otherwise false
     bool DoesExist_NotThreadSafe(const IGPAInterfaceTrait* pInterfaceTrait, unsigned int* pIndex = nullptr) const;
 
@@ -164,7 +164,7 @@ private:
     /// \return index at which the object found otherwise -1
     bool DoesExist_NotThreadSafe(const GPAUniqueObject* pUniqueObject, unsigned int* pIndex = nullptr) const;
 
-    static GPAUniqueObjectManager*  ms_pGpaUniqueObjectManger;   ///< static instance of the gpa object manager
+    static GPAUniqueObjectManager*  ms_pGpaUniqueObjectManger;   ///< static instance of the GPA object manager
     std::vector<GPAUniqueObject*>   m_gpaUniqueObjectList;       ///< List of unique object pointers
     mutable std::mutex              m_mutex;                     ///< Mutex for unique object manager class
 };

@@ -8,6 +8,7 @@
 #include "VkGPAImplementor.h"
 
 #include <assert.h>
+#include <vulkan.h>
 #include "GPACounterGenerator.h"
 #include "IGPACommandList.h"
 #include "VkEntrypoints.h"

@@ -82,9 +82,6 @@ extern PFNGLGETPERFMONITORCOUNTERDATAAMDPROC   _oglGetPerfMonitorCounterDataAMD;
 
 /// constant for the AMD-specific extended timer result
 #define GL_QUERY_EXTENDED_TIMER_RESULT_AMDX             0x8870
-extern PFNGLBEGINQUERYPROC                     _oglBeginQuery;              ///< function pointer for glBeginQuery
-extern PFNGLENDQUERYPROC                       _oglEndQuery;                ///< function pointer for glEndQuery
-extern PFNGLGETQUERYIVPROC                     _oglGetQueryiv;              ///< function pointer for glGetQueryiv
 extern PFNGLGETQUERYOBJECTUI64VEXTPROC         _oglGetQueryObjectui64vEXT;  ///< function pointer for glGetQueryObjectui64vEXT
 extern PFNGLGETQUERYOBJECTIVPROC               _oglGetQueryObjectiv;        ///< function pointer for glGetQueryObjectiv
 extern PFNGLGETQUERYOBJECTUI64VPROC            _oglGetQueryObjectui64v;     ///< function pointer for glGetQueryObjectui64v

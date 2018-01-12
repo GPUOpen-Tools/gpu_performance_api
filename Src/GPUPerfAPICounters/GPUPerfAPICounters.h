@@ -31,6 +31,7 @@
 /// \param deviceId the device id of the device whose available counters are requested
 /// \param revisionId the revision id of the device whose available counters are requested
 /// \param flags Flags used to initialize the context. Should be a combination of GPA_OpenContext_Bits
+/// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
 /// \param[out] ppCounterAccessorOut the accessor that will provide the counters
 /// \param[out] ppCounterSchedulerOut the scheduler that will provide the counters
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
@@ -39,6 +40,7 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCounters(GPA_API_Type api,
     gpa_uint32 deviceId,
     gpa_uint32 revisionId,
     GPA_OpenContextFlags flags,
+    gpa_uint8 generateAsicSpecificCounters,
     IGPACounterAccessor** ppCounterAccessorOut,
     IGPACounterScheduler** ppCounterSchedulerOut);
 
@@ -46,11 +48,13 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCounters(GPA_API_Type api,
 /// \param api the api whose available counters are requested
 /// \param generation the hardware generation whose available counters are requested
 /// \param flags Flags used to initialize the context. Should be a combination of GPA_OpenContext_Bits
+/// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
 /// \param[out] ppCounterAccessorOut the accessor that will provide the counters
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API_Type api,
     GPA_Hw_Generation generation,
     GPA_OpenContextFlags flags,
+    gpa_uint8 generateAsicSpecificCounters,
     IGPACounterAccessor** ppCounterAccessorOut);
 
 #endif // _GPUPERFAPI_COUNTERS_H_

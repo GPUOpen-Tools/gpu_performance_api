@@ -1,9 +1,10 @@
 # Makefile for GPUPerfAPICL
 
+PROJECT_NAME=GPUPerfAPICL
 DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
-TARGETSO = libGPUPerfAPICL$(TARGET_SUFFIX).so
+TARGETSO = $(OUTPUT_BIN_DIR)/lib$(PROJECT_NAME)$(TARGET_SUFFIX).so
 
 INCLUDES =	-I. \
 		-I$(GPACOMMON_DIR) \
@@ -16,6 +17,7 @@ INCLUDES =	-I. \
 		-I$(DYNAMICLIBRARYMODULE_DIR)
 
 LIBS = \
+	$(GPUPERFAPI_LIB) \
 	$(COMMON_LIBS) \
 	$(COMMON_DEVICEINFO_LIB) \
 	$(STANDARD_LIBS)
@@ -23,11 +25,14 @@ LIBS = \
 LIBPATH = $(COMMON_LIB_PATHS)
 
 SO_OBJS	= \
-	./$(OBJ_DIR)/GPUPerfAPICL.o \
-	./$(OBJ_DIR)/CLCounterDataRequest.o \
+	./$(OBJ_DIR)/CLGPAImplementor.o \
+	./$(OBJ_DIR)/CLGPACommandList.o \
+	./$(OBJ_DIR)/CLGPAContext.o \
+	./$(OBJ_DIR)/CLGPAPass.o \
+	./$(OBJ_DIR)/CLGPASample.o \
+	./$(OBJ_DIR)/CLGPASession.o \
 	./$(OBJ_DIR)/CLPerfCounterAMDExtension.o \
 	./$(OBJ_DIR)/CLPerfCounterBlock.o \
 	./$(OBJ_DIR)/OpenCLModule.o
 
 include $(DEPTH)/Build/Linux/CommonTargets.mk
-

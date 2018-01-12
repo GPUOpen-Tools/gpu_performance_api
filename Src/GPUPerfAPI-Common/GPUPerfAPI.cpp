@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief This file contains the main entrypoints into GPA
@@ -95,6 +95,7 @@ GPALIB_DECL GPA_Status GPA_Initialize()
 {
     PROFILE_FUNCTION(GPA_Initialize);
     TRACE_FUNCTION(GPA_Initialize);
+
     GPA_Status retStatus = s_pGpaImp->Initialize();
     return retStatus;
 }
@@ -104,6 +105,7 @@ GPALIB_DECL GPA_Status GPA_Destroy()
 {
     PROFILE_FUNCTION(GPA_Destroy);
     TRACE_FUNCTION(GPA_Destroy);
+
     GPA_Status retStatus = s_pGpaImp->Destroy();
 
     // TODO: Need to figure out how to destroy the singleton instance
@@ -143,7 +145,7 @@ GPALIB_DECL GPA_Status GPA_CloseContext(
         return GPA_STATUS_ERROR_INVALID_PARAMETER;
     }
 
-    if ((*contextId)->IsOpen() == false)
+    if (!(*contextId)->IsOpen())
     {
         return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
     }
@@ -282,6 +284,9 @@ GPALIB_DECL GPA_Status GPA_CreateSession(
     GPA_ContextId contextId,
     GPA_SessionId* pSessionId)
 {
+    PROFILE_FUNCTION(GPA_CreateSession);
+    TRACE_FUNCTION(GPA_CreateSession);
+
     CHECK_NULL_PARAM(pSessionId);
     CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
     *pSessionId = (*contextId)->CreateSession();
@@ -292,6 +297,11 @@ GPALIB_DECL GPA_Status GPA_CreateSession(
 GPALIB_DECL GPA_Status GPA_DeleteSession(
     GPA_SessionId sessionId)
 {
+    PROFILE_FUNCTION(GPA_DeleteSession);
+    TRACE_FUNCTION(GPA_DeleteSession);
+
+    CHECK_NULL_PARAM(sessionId);
+
     IGPAContext* pContextId = (*sessionId)->GetParentContext();
     return pContextId->DeleteSession(sessionId) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 }
@@ -304,6 +314,7 @@ GPALIB_DECL GPA_Status GPA_EnableCounter(
     PROFILE_FUNCTION(GPA_EnableCounter);
     TRACE_FUNCTION(GPA_EnableCounter);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_SESSION_RUNNING(sessionId);
 
     gpa_uint32 numCounters;
@@ -327,6 +338,7 @@ GPALIB_DECL GPA_Status GPA_DisableCounter(
     PROFILE_FUNCTION(GPA_DisableCounter);
     TRACE_FUNCTION(GPA_DisableCounter);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_SESSION_RUNNING(sessionId);
 
     gpa_uint32 numCounters;
@@ -350,6 +362,7 @@ GPALIB_DECL GPA_Status GPA_GetNumEnabledCounters(
     PROFILE_FUNCTION(GPA_GetNumEnabledCounters);
     TRACE_FUNCTION(GPA_GetNumEnabledCounters);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_NULL_PARAM(pCount);
     CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
     return (*sessionId)->GetNumEnabledCounters(pCount);
@@ -364,6 +377,7 @@ GPALIB_DECL GPA_Status GPA_GetEnabledIndex(
     PROFILE_FUNCTION(GPA_GetEnabledIndex);
     TRACE_FUNCTION(GPA_GetEnabledIndex);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_NULL_PARAM(pEnabledCounterIndex);
     CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
     return (*sessionId)->GetEnabledIndex(enabledNumber, pEnabledCounterIndex);
@@ -377,6 +391,7 @@ GPALIB_DECL GPA_Status GPA_IsCounterEnabled(
     PROFILE_FUNCTION(GPA_IsCounterEnabled);
     TRACE_FUNCTION(GPA_IsCounterEnabled);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
     return (*sessionId)->IsCounterEnabled(counterIndex);
 }
@@ -389,6 +404,7 @@ GPALIB_DECL GPA_Status GPA_EnableCounterByName(
     PROFILE_FUNCTION(GPA_EnableCounterByName);
     TRACE_FUNCTION(GPA_EnableCounterByName);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_SESSION_RUNNING(sessionId);
     CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
 
@@ -411,6 +427,7 @@ GPALIB_DECL GPA_Status GPA_DisableCounterByName(
     PROFILE_FUNCTION(GPA_DisableCounterByName);
     TRACE_FUNCTION(GPA_DisableCounterByName);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_SESSION_RUNNING(sessionId);
     CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
 
@@ -432,6 +449,7 @@ GPALIB_DECL GPA_Status GPA_EnableAllCounters(
     PROFILE_FUNCTION(GPA_EnableAllCounters);
     TRACE_FUNCTION(GPA_EnableAllCounters);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_SESSION_RUNNING(sessionId);
     CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
 
@@ -466,6 +484,7 @@ GPALIB_DECL GPA_Status GPA_DisableAllCounters(
     PROFILE_FUNCTION(GPA_DisableAllCounters);
     TRACE_FUNCTION(GPA_DisableAllCounters);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_SESSION_RUNNING(sessionId);
     CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
     return (*sessionId)->DisableAllCounters();
@@ -479,6 +498,7 @@ GPALIB_DECL GPA_Status GPA_GetPassCount(
     PROFILE_FUNCTION(GPA_GetPassCount);
     TRACE_FUNCTION(GPA_GetPassCount);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_NULL_PARAM(pNumPasses);
     CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
     return (*sessionId)->GetNumRequiredPasses(pNumPasses);
@@ -491,29 +511,40 @@ GPALIB_DECL GPA_Status GPA_BeginSession(
     PROFILE_FUNCTION(GPA_BeginSession);
     TRACE_FUNCTION(GPA_BeginSession);
 
+    CHECK_NULL_PARAM(sessionId);
     CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
 
-    bool status = true;
+    GPA_Status status = GPA_STATUS_OK;
+
     if (GPA_SESSION_STATE_NOT_STARTED != (*sessionId)->GetState())
     {
         GPA_LogError("Session is already active.");
-        status = false;
+        status = GPA_STATUS_ERROR_FAILED;
     }
     else
     {
         gpa_uint32 numEnabledCounters = 0;
-        (*sessionId)->GetNumEnabledCounters(&numEnabledCounters);
-        if (0 == numEnabledCounters)
+        status = (*sessionId)->GetNumEnabledCounters(&numEnabledCounters);
+
+        if (GPA_STATUS_OK != status)
+        {
+            GPA_LogError("Unable to get the number of enabled counters.");
+        }
+        else if (0 == numEnabledCounters)
         {
             GPA_LogError("Session can not be started without any enabled counters.");
+            status = GPA_STATUS_ERROR_NO_COUNTERS_ENABLED;
         }
         else
         {
-            status = (*sessionId)->Begin();
+            if (!(*sessionId)->Begin())
+            {
+                status = GPA_STATUS_ERROR_FAILED;
+            }
         }
     }
 
-    return status ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+    return status;
 }
 
 //-----------------------------------------------------------------------------
@@ -523,7 +554,9 @@ GPALIB_DECL GPA_Status GPA_EndSession(
     PROFILE_FUNCTION(GPA_EndSession);
     TRACE_FUNCTION(GPA_EndSession);
 
+    CHECK_NULL_PARAM(sessionId);
     bool status = true;
+
     if (GPA_SESSION_STATE_STARTED != (*sessionId)->GetState())
     {
         GPA_LogError("Session has not been started.");
@@ -548,7 +581,13 @@ GPALIB_DECL GPA_Status GPA_BeginCommandList(
     PROFILE_FUNCTION(GPA_BeginCommandList);
     TRACE_FUNCTION(GPA_BeginCommandList);
 
-    CHECK_NULL_PARAM(pCommandList);
+    CHECK_NULL_PARAM(sessionId);
+
+    if (GPA_COMMAND_LIST_NONE != gpaCommandListType)
+    {
+        CHECK_NULL_PARAM(pCommandList);
+    }
+
     CHECK_NULL_PARAM(pCommandListId);
 
     if (GPASessionState::GPA_SESSION_STATE_NOT_STARTED == (*sessionId)->GetState())
@@ -557,7 +596,7 @@ GPALIB_DECL GPA_Status GPA_BeginCommandList(
         return GPA_STATUS_ERROR_FAILED;
     }
 
-    if ((*sessionId)->DoesCommandListExist(passIndex, *pCommandListId))
+    if (GPA_COMMAND_LIST_NONE != gpaCommandListType && (*sessionId)->DoesCommandListExist(passIndex, *pCommandListId))
     {
         GPA_LogError("Command List already created.");
         return GPA_STATUS_ERROR_COMMAND_LIST_ALREADY_STARTED;
@@ -587,6 +626,8 @@ GPALIB_DECL GPA_Status GPA_EndCommandList(
     PROFILE_FUNCTION(GPA_EndCommandList);
     TRACE_FUNCTION(GPA_EndCommandList);
 
+    CHECK_NULL_PARAM(commandListId);
+
     if (!(*commandListId)->IsCommandListRunning())
     {
         GPA_LogError("Command list is already ended.");
@@ -603,6 +644,8 @@ GPALIB_DECL GPA_Status GPA_BeginSample(
 {
     PROFILE_FUNCTION(GPA_BeginSample);
     TRACE_FUNCTION(GPA_BeginSample);
+
+    CHECK_NULL_PARAM(commandListId);
 
     GPA_Status status = GPA_STATUS_OK;
 
@@ -625,6 +668,8 @@ GPALIB_DECL GPA_Status GPA_EndSample(
 {
     PROFILE_FUNCTION(GPA_EndSample);
     TRACE_FUNCTION(GPA_EndSample);
+
+    CHECK_NULL_PARAM(commandListId);
 
     GPA_Status status = GPA_STATUS_OK;
 
@@ -649,19 +694,25 @@ GPALIB_DECL GPA_Status GPA_ContinueSampleOnCommandList(
     PROFILE_FUNCTION(GPA_ContinueSampleOnCommandList);
     TRACE_FUNCTION(GPA_ContinueSampleOnCommandList);
 
+    CHECK_NULL_PARAM(primaryCommandListId);
+
     return ((*primaryCommandListId)->GetParentSession()->ContinueSampleOnCommandList(srcSampleId, primaryCommandListId));
 }
 
 //-----------------------------------------------------------------------------
 GPALIB_DECL GPA_Status GPA_CopySecondarySamples(
-    GPA_CommandListId secondaryCmdListId,
-    GPA_CommandListId primaryCmdListId,
+    GPA_CommandListId secondaryCommandListId,
+    GPA_CommandListId primaryCommandListId,
     gpa_uint32 numSamples,
     gpa_uint32* pNewSampleIds)
 {
     PROFILE_FUNCTION(GPA_CopySecondarySamples);
     TRACE_FUNCTION(GPA_CopySecondarySamples);
-    return ((*primaryCmdListId)->GetParentSession()->CopySecondarySamples(secondaryCmdListId, primaryCmdListId, numSamples, pNewSampleIds));
+
+    CHECK_NULL_PARAM(secondaryCommandListId);
+    CHECK_NULL_PARAM(primaryCommandListId);
+
+    return ((*primaryCommandListId)->GetParentSession()->CopySecondarySamples(secondaryCommandListId, primaryCommandListId, numSamples, pNewSampleIds));
 }
 
 //-----------------------------------------------------------------------------
@@ -671,6 +722,8 @@ GPALIB_DECL GPA_Status GPA_GetSampleCount(
 {
     PROFILE_FUNCTION(GPA_GetSampleCount);
     TRACE_FUNCTION(GPA_GetSampleCount);
+
+    CHECK_NULL_PARAM(sessionId);
 
     if ((*sessionId)->IsSessionRunning())
     {
@@ -687,10 +740,12 @@ GPALIB_DECL GPA_Status GPA_IsPassComplete(
     GPA_SessionId sessionId,
     gpa_uint32 passIndex)
 {
-    GPA_Status retStatus = GPA_STATUS_RESULT_NOT_READY;
+    PROFILE_FUNCTION(GPA_IsPassComplete);
+    TRACE_FUNCTION(GPA_IsPassComplete);
 
-    PROFILE_FUNCTION(GPA_GetSampleCount);
-    TRACE_FUNCTION(GPA_GetSampleCount);
+    CHECK_NULL_PARAM(sessionId);
+
+    GPA_Status retStatus = GPA_STATUS_RESULT_NOT_READY;
 
     if (GPASessionState::GPA_SESSION_STATE_NOT_STARTED == (*sessionId)->GetState())
     {
@@ -700,7 +755,7 @@ GPALIB_DECL GPA_Status GPA_IsPassComplete(
 
     if ((*sessionId)->UpdateResults(passIndex))
     {
-        retStatus = GPA_STATUS_RESULT_READY;
+        retStatus = GPA_STATUS_OK;
     }
 
     return retStatus;
@@ -712,8 +767,10 @@ GPALIB_DECL GPA_Status GPA_IsSessionComplete(
 {
     GPA_Status retStatus = GPA_STATUS_RESULT_NOT_READY;
 
-    PROFILE_FUNCTION(GPA_IsSessionReady);
-    TRACE_FUNCTION(GPA_IsSessionReady);
+    PROFILE_FUNCTION(GPA_IsSessionComplete);
+    TRACE_FUNCTION(GPA_IsSessionComplete);
+
+    CHECK_NULL_PARAM(sessionId);
 
     if ((*sessionId)->IsSessionRunning())
     {
@@ -725,7 +782,7 @@ GPALIB_DECL GPA_Status GPA_IsSessionComplete(
 
     if ((*sessionId)->IsComplete())
     {
-        retStatus = GPA_STATUS_RESULT_READY;
+        retStatus = GPA_STATUS_OK;
     }
 
     return retStatus;
@@ -734,10 +791,12 @@ GPALIB_DECL GPA_Status GPA_IsSessionComplete(
 //-----------------------------------------------------------------------------
 GPALIB_DECL GPA_Status GPA_GetPerSampleResultSize(
     GPA_SessionId sessionId,
-    gpa_uint32* sampleResultSizeInBytes)
+    gpa_uint64* sampleResultSizeInBytes)
 {
     PROFILE_FUNCTION(GPA_GetPerSampleResultSize);
     TRACE_FUNCTION(GPA_GetPerSampleResultSize);
+
+    CHECK_NULL_PARAM(sessionId);
 
     GPA_Status status = GPA_STATUS_OK;
 
@@ -761,6 +820,8 @@ GPALIB_DECL GPA_Status GPA_GetSampleResult(
     PROFILE_FUNCTION(GPA_GetSampleResult);
     TRACE_FUNCTION(GPA_GetSampleResult);
 
+    CHECK_NULL_PARAM(sessionId);
+
     if ((*sessionId)->IsSessionRunning())
     {
         GPA_LogError("Session is still running. End the session before querying sample information.");
@@ -774,7 +835,6 @@ GPALIB_DECL GPA_Status GPA_GetSampleResult(
 static const char* g_gpaStatusString[] =
 {
     GPA_ENUM_STRING_VAL(GPA_STATUS_OK, "GPA Status: Ok."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_RESULT_READY, "GPA Status: Counter Results Are Ready."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_RESULT_NOT_READY, "GPA Status: Counter Results Not Ready.")
 };
 
@@ -806,10 +866,11 @@ static const char* g_gpaErrorString[] =
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED, "GPA Error: Hardware Not Supported."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED, "GPA Error: Driver Not Supported."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_API_NOT_SUPPORTED, "GPA Error: API Not Supported."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_INVALID_PARAMETER, "GPA Error: Incorrect parameter."),
+    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_INVALID_PARAMETER, "GPA Error: Incorrect Parameter."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_LIB_LOAD_FAILED, "GPA Error: Loading The Library Failed."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_LIB_LOAD_VERSION_MISMATCH, "GPA Error: Version Mismatch Between The Loader And The GPUPerfAPI Library."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_GPA_NOT_INITIALIZED, "GPA Error: GPA Has Been Not Initialized."),
+    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_GPA_NOT_INITIALIZED, "GPA Error: GPA Has Not Been Initialized."),
+    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_GPA_ALREADY_INITIALIZED, "GPA Error: GPA Has Already Been Initialized."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SAMPLE_IN_SECONDARY_COMMAND_LIST, "GPA Error: Sample In Secondary Command List.")
 };
 
@@ -894,6 +955,7 @@ GPALIB_DECL GPA_Status GPA_GetDeviceAndRevisionId(
     gpa_uint32* pDeviceID,
     gpa_uint32* pRevisionID)
 {
+    PROFILE_FUNCTION(GPA_GetDeviceAndRevisionId);
     TRACE_FUNCTION(GPA_GetDeviceAndRevisionId);
 
     CHECK_NULL_PARAM(pDeviceID);
@@ -915,6 +977,7 @@ GPALIB_DECL GPA_Status GPA_GetDeviceName(
     GPA_ContextId gpaContextId,
     const char** ppDeviceName)
 {
+    PROFILE_FUNCTION(GPA_GetDeviceName);
     TRACE_FUNCTION(GPA_GetDeviceName);
 
     CHECK_NULL_PARAM(ppDeviceName);
@@ -934,6 +997,9 @@ GPALIB_DECL GPA_Status GPA_GetDeviceName(
 GPALIB_DECL GPA_Status GPA_InternalSetDrawCallCounts(
     const int iCounts)
 {
+    PROFILE_FUNCTION(GPA_InternalSetDrawCallCounts);
+    TRACE_FUNCTION(GPA_InternalSetDrawCallCounts);
+
     UNREFERENCED_PARAMETER(iCounts);
     GPA_Status status = GPA_STATUS_OK;
     return status;
@@ -943,6 +1009,7 @@ GPALIB_DECL GPA_Status GPA_InternalSetDrawCallCounts(
 GPALIB_DECL GPA_Status GPA_GetFuncTable(
     void** ppGPAFuncTable)
 {
+    PROFILE_FUNCTION(GPA_GetFuncTable);
     TRACE_FUNCTION(GPA_GetFuncTable);
 
     GPAApi* pApi = reinterpret_cast<GPAApi*>(*ppGPAFuncTable);

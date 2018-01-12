@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief GPA Command List Implementation
@@ -7,7 +7,8 @@
 
 #include "GPACommandList.h"
 
-GPACommandList::GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass)
+GPACommandList::GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass):
+    m_pLastSample(nullptr)
 {
     m_pGpaSession = pGpaSession;
     m_pGpaPass = pGpaPass;
@@ -23,7 +24,7 @@ bool GPACommandList::Begin()
 {
     bool success = false;
 
-    if (false == m_isCmdRunning)
+    if (!m_isCmdRunning)
     {
         m_isCmdRunning = true;
         success = true;
@@ -40,7 +41,7 @@ bool GPACommandList::End()
 {
     bool success = false;
 
-    if (true == m_isCmdRunning)
+    if (m_isCmdRunning)
     {
         m_isCmdRunning = false;
         success = true;
@@ -72,29 +73,50 @@ bool GPACommandList::BeginSample(ClientSampleId clientSampleIndex,
     GPASample* pSample,
     const std::vector<CounterIndex>* pCounterList)
 {
+    bool retVal = false;
+
     UNREFERENCED_PARAMETER(clientSampleIndex);
+
     if (nullptr != pSample)
     {
-        return pSample->Begin(m_pGpaSession->GetParentContext(), pCounterList);
+        retVal = pSample->Begin(m_pGpaSession->GetParentContext(), pCounterList);
+
+        if (retVal)
+        {
+            m_pLastSample = pSample;
+        }
     }
 
-    return false;
+    return retVal;
 }
 
 GPASample* GPACommandList::GetLastSample() const
 {
-    return nullptr;
+    return m_pLastSample;
 }
 
 bool GPACommandList::CloseLastSample(bool closingByClient)
 {
+    bool retVal = false;
+
     UNREFERENCED_PARAMETER(closingByClient);
-    return true;
+
+    if (nullptr != m_pLastSample)
+    {
+        retVal = m_pLastSample->End();
+
+        if (retVal)
+        {
+            m_pLastSample = nullptr;
+        }
+    }
+
+    return retVal;
 }
 
 bool GPACommandList::IsLastSampleClosed() const
 {
-    return true;
+    return nullptr == m_pLastSample;
 }
 
 bool GPACommandList::IsComplete() const

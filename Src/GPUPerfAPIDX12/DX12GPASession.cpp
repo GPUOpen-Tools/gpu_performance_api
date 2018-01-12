@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief DX12 GPA Session implementation
@@ -14,9 +14,9 @@
 #include "DX12GPAPass.h"
 #include "GPASample.h"
 
-DX12GPASession::DX12GPASession(DX12GPAContext* pdx12GpaContext,
+DX12GPASession::DX12GPASession(DX12GPAContext* pDX12GpaContext,
                                IAmdExtGpaInterface* pAmdExtGpaSession)
-    : GPASession(pdx12GpaContext, pdx12GpaContext->GetCounterScheduler())
+    : GPASession(pDX12GpaContext, pDX12GpaContext->GetCounterScheduler())
 {
     m_pAmdExtGpaInterface = pAmdExtGpaSession;
     m_pAmdExtGpaInterface->AddRef();
@@ -62,7 +62,7 @@ GPA_Status DX12GPASession::ContinueSampleOnCommandList(gpa_uint32 srcSampleId, G
         GPA_LogError("Invalid Parameter.");
     }
 
-    return true == succeed ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+    return succeed ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 }
 
 GPA_Status DX12GPASession::CopySecondarySamples(GPA_CommandListId secondaryCmdListId,
@@ -107,7 +107,7 @@ GPA_Status DX12GPASession::CopySecondarySamples(GPA_CommandListId secondaryCmdLi
         GPA_LogError("Invalid Parameter.");
     }
 
-    return true == succeed ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+    return succeed ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 }
 
 GPA_API_Type DX12GPASession::GetAPIType() const

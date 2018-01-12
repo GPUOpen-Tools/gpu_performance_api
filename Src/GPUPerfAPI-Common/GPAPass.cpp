@@ -91,7 +91,7 @@ GPASample* GPAPass::GetSampleById(ClientSampleId sampleId) const
 }
 
 
-GPASample* GPAPass::CreateSample(ClientSampleId clientSampleId, IGPACommandList* pCmdList)
+GPASample* GPAPass::CreateAndBeginSample(ClientSampleId clientSampleId, IGPACommandList* pCmdList)
 {
     std::lock_guard<std::mutex> lock(m_samplesMapMutex);
 
@@ -136,7 +136,7 @@ bool GPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrima
 
     // 1. Validate that sample already exists in the pass
     // 2. Create a new sample on the cmd
-    // 3. Link the new GpaSample to the old GpaSample
+    // 3. Link the new GPA Sample to the old GPA Sample
     // 4. Update the sample map
 
     // In continuing a sample, we need to check only that the srcSampleId exists (it may not be closed at this point)
@@ -217,7 +217,7 @@ bool GPAPass::UpdateResults()
 {
     std::lock_guard<std::mutex> lock(m_samplesMapMutex);
 
-    if (false == m_isResultCollected)
+    if (!m_isResultCollected)
     {
         bool tmpAllResultsCollected = true;
 
@@ -264,7 +264,7 @@ gpa_uint64 GPAPass::GetResult(ClientSampleId clientSampleId, CounterIndex intern
 
         if (GetCounterIndexInPass(internalCounterIndex, counterIndexWithinSample))
         {
-            if (false == sampleIter->second->GetResult(counterIndexWithinSample, &result))
+            if (!sampleIter->second->GetResult(counterIndexWithinSample, &result))
             {
                 GPA_LogError("Failed to get counter result within pass.");
             }
@@ -297,7 +297,7 @@ bool GPAPass::DoesSampleExist_NotThreadSafe(ClientSampleId clientSampleId) const
     return exists;
 }
 
-bool GPAPass::DoesCommandListExist(IGPACommandList* pCommandList) const
+bool GPAPass::DoesCommandListExist(IGPACommandList* pGpaCommandList) const
 {
     bool exists = false;
 
@@ -307,7 +307,7 @@ bool GPAPass::DoesCommandListExist(IGPACommandList* pCommandList) const
         !exists &&
         cIter != m_gpaCmdList.cend(); ++cIter)
     {
-        if (*cIter == pCommandList)
+        if (*cIter == pGpaCommandList)
         {
             exists = true;
         }
@@ -474,6 +474,33 @@ void GPAPass::AddClientSample(ClientSampleId sampleId, GPASample* pGPASample)
     m_samplesMapMutex.lock();
     m_samplesMap.insert(std::pair<ClientSampleId, GPASample*>(sampleId, pGPASample));
     m_samplesMapMutex.unlock();
+}
+
+void GPAPass::IteratePassCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const
+{
+    bool next = true;
+    for (auto it = (*m_pCounterList).cbegin(); it != (*m_pCounterList).cend() && next; ++it)
+    {
+        next = function(*it);
+    }
+}
+
+void GPAPass::IterateEnabledCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const
+{
+    bool next = true;
+    for (auto it = m_usedCounterListForPass.cbegin(); it != m_usedCounterListForPass.cend() && next; ++it)
+    {
+        next = function(*it);
+    }
+}
+
+void GPAPass::IterateSkippedCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const
+{
+    bool next = true;
+    for (auto it = m_skippedCounterList.cbegin(); it != m_skippedCounterList.cend() && next; ++it)
+    {
+        next = function(*it);
+    }
 }
 
 void GPAPass::PopulateTimingCounterInfo()

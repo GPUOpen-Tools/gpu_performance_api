@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA DX12 Context declarations
@@ -86,12 +86,7 @@ private:
     /// \param[in] useProfilingClocks true to use GPU clocks for profiling
     void SetStableClocks(bool useProfilingClocks);
 
-    /// Returns the index of the dx12 gpa session if it exists
-    /// \param[in] pDx12GpaSession dx12 gpa session
-    /// \param[opt, out] pIndex index of the the gpa session in the list
-    bool GetIndex(DX12GPASession* pDx12GpaSession, unsigned int* pIndex = nullptr) const;
-
-    mutable std::mutex                                      m_gpaContextMutex;                  ///< Mutex for GPA Context
+    mutable std::mutex                                      m_dx12GpaContextMutex;              ///< Mutex for DX12 GPA Context
     ID3D12Device*                                           m_pD3D12Device;                     ///< D3D12Device pointer
     IAmdExtD3DFactory*                                      m_pAmdExtD3DFactoryObject;          ///< Driver extension object
     IAmdExtGpaInterface*                                    m_pGpaInterface;                    ///< The GPA Interface from the driver

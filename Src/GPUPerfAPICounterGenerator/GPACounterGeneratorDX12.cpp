@@ -20,6 +20,10 @@
 #include "PublicCounterDefsDX12Gfx8.h"
 #include "PublicCounterDefsDX12Gfx9.h"
 
+#include "PublicCounterDefsDX12Gfx7Asics.h"
+#include "PublicCounterDefsDX12Gfx8Asics.h"
+#include "PublicCounterDefsDX12Gfx9Asics.h"
+
 bool GPA_CounterGeneratorDX12::IsAMDGPU(GDT_HW_GENERATION generation)
 {
     return generation >= GDT_HW_GENERATION_FIRST_AMD && generation < GDT_HW_GENERATION_LAST;
@@ -77,7 +81,11 @@ GPA_CounterGeneratorDX12::~GPA_CounterGeneratorDX12()
 }
 
 
-GPA_Status GPA_CounterGeneratorDX12::GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters)
+GPA_Status GPA_CounterGeneratorDX12::GeneratePublicCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_PublicCounters* pPublicCounters)
 {
     GPA_Status status = GPA_STATUS_OK;
 
@@ -92,19 +100,37 @@ GPA_Status GPA_CounterGeneratorDX12::GeneratePublicCounters(GDT_HW_GENERATION de
         switch (desiredGeneration)
         {
             case GDT_HW_GENERATION_SEAISLAND:
+            {
                 AutoDefinePublicCountersDX12Gfx7(*pPublicCounters);
+                if (generateAsicSpecificCounters)
+                {
+                    DX12Gfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                }
                 pPublicCounters->m_countersGenerated = true;
-                break;
+            }
+            break;
 
             case GDT_HW_GENERATION_VOLCANICISLAND:
+            {
                 AutoDefinePublicCountersDX12Gfx8(*pPublicCounters);
+                if (generateAsicSpecificCounters)
+                {
+                    DX12Gfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                }
                 pPublicCounters->m_countersGenerated = true;
-                break;
+            }
+            break;
 
             case GDT_HW_GENERATION_GFX9:
+            {
                 AutoDefinePublicCountersDX12Gfx9(*pPublicCounters);
+                if (generateAsicSpecificCounters)
+                {
+                    DX12Gfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                }
                 pPublicCounters->m_countersGenerated = true;
-                break;
+            }
+            break;
 
             default:
                 status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
@@ -199,8 +225,14 @@ bool GPA_CounterGeneratorDX12::GenerateInternalCounters(GPA_HardwareCounters* pH
 }
 
 GPA_Status GPA_CounterGeneratorDX12::GenerateHardwareCounters(
-    GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_HardwareCounters* pHardwareCounters)
 {
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+
     GPA_Status status = GPA_STATUS_OK;
 
     if (nullptr == pHardwareCounters)

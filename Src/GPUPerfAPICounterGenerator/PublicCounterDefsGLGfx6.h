@@ -13,7 +13,7 @@
 #include "GPAPublicCounters.h"
 
 /// Defines the public counters for GLGFX6
-/// \param p pubilc counters instance
+/// \param p public counters instance
 void AutoDefinePublicCountersGLGfx6(GPA_PublicCounters& p);
 
 #endif // _PUBLIC_COUNTER_DEFS_GLGFX6_H_

@@ -37,40 +37,58 @@ LibHandle LoadLib(const char* pLibName);
 void UnloadLib(LibHandle libHandle);
 void* GetEntryPoint(LibHandle libHandle, const char* pEntrypointName);
 
-void VerifyNotImplemented(GPA_API_Type api, unsigned int deviceId);
-void VerifyNotImplemented(GPA_API_Type api, GPA_Hw_Generation generation);
+void VerifyNotImplemented(GPA_API_Type api, unsigned int deviceId, gpa_uint8 generateAsicSpecificCounters);
+void VerifyNotImplemented(GPA_API_Type api, GPA_Hw_Generation generation, gpa_uint8 generateAsicSpecificCounters);
 
-void VerifyHardwareNotSupported(GPA_API_Type api, unsigned int deviceId);
-void VerifyHardwareNotSupported(GPA_API_Type api, GPA_Hw_Generation generation);
+void VerifyHardwareNotSupported(GPA_API_Type api, unsigned int deviceId, gpa_uint8 generateAsicSpecificCounters);
+void VerifyHardwareNotSupported(GPA_API_Type api, GPA_Hw_Generation generation, gpa_uint8 generateAsicSpecificCounters);
 
-void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, std::vector<const char*> expectedNames);
-void VerifyCounterNames(GPA_API_Type api, GPA_Hw_Generation generation, std::vector<const char*> expectedNames);
+void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, gpa_uint8 generateAsicSpecificCounters, std::vector<const char*> expectedNames);
+void VerifyCounterNames(GPA_API_Type api, GPA_Hw_Generation generation, gpa_uint8 generateAsicSpecificCounters, std::vector<const char*> expectedNames);
 
-void VerifyPassCount(GPA_API_Type api, unsigned int deviceId, const std::vector<unsigned int>& countersToEnable, unsigned int expectedNumPasses);
+void VerifyPassCount(GPA_API_Type api, unsigned int deviceId, gpa_uint8 generateAsicSpecificCounters, const std::vector<unsigned int>& countersToEnable, unsigned int expectedNumPasses);
 
 /// Verifies the number of passes, the counters in each pass, and the output result locations
 /// \param api The API being used in the test
 /// \param deviceID The hardware being used
+/// \param generateAsicSpecificCounters Flag indicating whether to use ASIC specific counters, if available.
 /// \param countersToEnable The list of exposed counters being tested
 /// \param expectedHwCountersPerPass A list of counters in each pass (list of lists)
 /// \param expectedResultLocations A list of maps for the result locations
-void VerifyCountersInPass(GPA_API_Type api,
-                          unsigned int deviceId,
-                          const std::vector<unsigned int>& countersToEnable,
-                          const std::vector< std::vector<unsigned int> >& expectedHwCountersPerPass,
-                          const std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> >& expectedResultLocations);
+void VerifyCountersInPass(
+    GPA_API_Type api,
+    unsigned int deviceId,
+    gpa_uint8 generateAsicSpecificCounters,
+    const std::vector<unsigned int>& countersToEnable,
+    const std::vector< std::vector<unsigned int> >& expectedHwCountersPerPass,
+    const std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> >& expectedResultLocations);
 
-void VerifyCounterCalculation(GPA_API_Type api, unsigned int deviceId, char* counterName, std::vector<char*>& sampleResults, gpa_float64 expectedResult);
+/// Verifies the counter calculation
+/// \param api The API being used in the test
+/// \param deviceID The hardware being used
+/// \param generateAsicSpecificCounters Flag indicating whether to use ASIC specific counters, if available.
+/// \param counterName Name of the counter
+/// \param sampleResults List of sample results
+/// \param expectedResult Expected result
+void VerifyCounterCalculation(
+    GPA_API_Type api, 
+    unsigned int deviceId, 
+    gpa_uint8 generateAsicSpecificCounters, 
+    char* counterName, 
+    std::vector<gpa_uint64*>& sampleResults, 
+    gpa_float64 expectedResult);
 
 /// Returns a string describing the hardware counters and passes for each public counter, and the scheduling of the
 /// combined counters, passes, and result locations
 /// \param api The API being used in the test
 /// \param deviceID The hardware being used
+/// \param generateAsicSpecificCounters Flag indicating whether to use ASIC specific counters, if available.
 /// \param countersToEnable The list of exposed counters being tested
 /// \param pOutputStream Output string stream describing the counters in each pass and the result locations
 void ExplainCountersInPassAndResultLocations(
     GPA_API_Type api,
     uint32_t deviceId,
+    gpa_uint8 generateAsicSpecificCounters,
     const std::vector<uint32_t>& countersToEnable,
     std::stringstream* pOutputStream
 );

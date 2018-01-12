@@ -1,9 +1,10 @@
 # Makefile for GPUPerfAPICounters
 
+PROJECT_NAME=GPUPerfAPICounters
 DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
-TARGETSO = libGPUPerfAPICounters$(TARGET_SUFFIX).so
+TARGETSO = $(OUTPUT_BIN_DIR)/lib$(PROJECT_NAME)$(TARGET_SUFFIX).so
 
 INCLUDES =	-I. \
 		-I$(GPACOMMON_DIR) \

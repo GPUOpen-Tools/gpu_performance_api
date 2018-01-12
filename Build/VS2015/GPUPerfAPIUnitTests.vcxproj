@@ -102,6 +102,8 @@
     <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\CounterSchedulerTests.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\SWCountersDX12.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\SWCountersVK.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\GPAInterfaceLoaderTests.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\GPUPerfAPILoaderTests.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\GPUPerfAPIUnitTests.cpp" />
     <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPILoader.cpp" />
   </ItemGroup>

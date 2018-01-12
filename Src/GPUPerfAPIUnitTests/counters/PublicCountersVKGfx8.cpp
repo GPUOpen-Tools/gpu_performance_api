@@ -2,7 +2,7 @@
 // Copyright (c) 2015-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  PublicCounterDefinitions for VKGFX8 for testing
+/// \brief PublicCounterDefinitions for VKGfx8 for testing
 //==============================================================================
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.

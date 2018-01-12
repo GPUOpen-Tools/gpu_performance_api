@@ -23,24 +23,43 @@ GPA_CounterGeneratorDX11Base::GPA_CounterGeneratorDX11Base()
     GPA_CounterGeneratorBase::SetAllowedCounters(false, false, true); //enable sw counters
 }
 
-GPA_Status GPA_CounterGeneratorDX11Base::GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters)
+GPA_Status GPA_CounterGeneratorDX11Base::GeneratePublicCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_PublicCounters* pPublicCounters)
 {
     // do nothing in base class
     UNREFERENCED_PARAMETER(desiredGeneration);
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
     UNREFERENCED_PARAMETER(pPublicCounters);
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorDX11Base::GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
+GPA_Status GPA_CounterGeneratorDX11Base::GenerateHardwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_HardwareCounters* pHardwareCounters)
 {
     // do nothing in base class
     UNREFERENCED_PARAMETER(desiredGeneration);
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
     UNREFERENCED_PARAMETER(pHardwareCounters);
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorDX11Base::GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters)
+GPA_Status GPA_CounterGeneratorDX11Base::GenerateSoftwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_SoftwareCounters* pSoftwareCounters)
 {
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+
     if (true == pSoftwareCounters->m_countersGenerated)
     {
         return GPA_STATUS_OK;

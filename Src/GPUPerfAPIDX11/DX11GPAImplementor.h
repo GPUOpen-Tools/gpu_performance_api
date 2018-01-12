@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief DX11 GPA Implementation declarations
@@ -30,10 +30,10 @@ public:
     GPA_API_Type GetAPIType() const override final;
 
     /// \copydoc GPAImplementor::GetHwInfoFromAPI
-    bool GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& pHwInfo) const override final;
+    bool GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const override final;
 
     /// \copydoc GPAImplementor::VerifyAPIHwSupport
-    bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& pHwInfo) const override final;
+    bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const override final;
 
     /// Returns the AMD extension function pointer
     /// \return DirectX 11 AMD extension function pointer
@@ -55,7 +55,7 @@ private:
                       GPA_HWInfo& hwInfo) const;
 
     /// Constructor
-    DX11GPAImplementor() = default;
+    DX11GPAImplementor();
 
     /// Initializes the AMD extension function pointer
     /// \return true upon successful initialization otherwise false

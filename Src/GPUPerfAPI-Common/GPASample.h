@@ -65,25 +65,29 @@ enum class GPASampleState
     RESULTS_COLLECTED       ///< Sample results are available, and cached locally
 };
 
-/// Class for representing GpaSample object
+/// Class for representing GPA Sample object
 class GPA_NOT_THREAD_SAFE_OBJECT GPASample
 {
 public:
 
     /// Constructor
     /// \param[in] pPass GPA Pass object
-    /// \param[in] pCmdList gpa command list
-    /// \param[in] sampleId user-supplied sample id
+    /// \param[in] pGpaCmdList GPA command list
+    /// \param[in] sampleType type of the sample
+    /// \param[in] clientSampleId user-supplied sample id
     GPASample(GPAPass* pPass,
-              IGPACommandList* pCmdList,
+              IGPACommandList* pGpaCmdList,
               GpaSampleType sampleType,
-              ClientSampleId sampleId);
+              ClientSampleId clientSampleId);
+
+    /// Delete default constructor
+    GPASample() = delete;
 
     /// Destructor
     virtual ~GPASample();
 
     /// Checks whether the sample has linked sample
-    /// \return true if sample is linked to another gpa sample
+    /// \return true if sample is linked to another GPA sample
     bool IsSampleContinuing() const;
 
     /// Returns the command list
@@ -91,7 +95,7 @@ public:
     IGPACommandList* GetCmdList() const;
 
     /// Links the continuing sample
-    /// \param[in] pContinuingSample pointer to the continuing gpa sample
+    /// \param[in] pContinuingSample pointer to the continuing GPA sample
     /// \return returns true if sample can be linked to the current sample or not otherewise false
     bool LinkContinuingSample(GPASample* pContinuingSample);
 
@@ -170,27 +174,28 @@ public:
 
 protected:
 
-    GPAPass*                    m_pPass;                        ///< GPA Pass Object
-    IGPACommandList*            m_pGpaCmdList;                  ///< Pointer to the command list object
-    GpaSampleType               m_gpaSampleType;                ///< type of the gpa sample
-    ClientSampleId              m_clientSampleId;               ///< Client-assigned sample Id
-    DriverSampleId              m_driverSampleId;               ///< Driver created sample id
-    size_t                      m_activeCounters;               ///< The number of active counters in this request.
-    GPASampleState              m_sampleState;                  ///< The state of this sample
-    GPASampleResult*            m_pSampleResult;                ///< memory for sample Results
-    GPASample*                  m_pContinuingSample;            ///< Pointer to linked/continuing GpaSample
-    std::mutex                  m_sampleMutex;                  ///< mutex for the gpa sample object
-
-
     /// Marks the sample as being completed.
     /// Meaning that the results have been copied
     /// back to local memory.
     void MarkAsCompleted();
 
-private:
+    /// Returns the type of the sample
+    /// \return GPA sample type
+    GpaSampleType GetGpaSampleType() const;
 
-    /// Delete default constructor
-    GPASample() = delete;
+    /// Returns the state of the sample
+    /// \return GPA sample state
+    GPASampleState GetGpaSampleState() const;
+
+    /// Return the GPA sample result location
+    /// \return GPA sample result location
+    GPASampleResult* GetSampleResultLocation() const;
+
+    /// Returns the continuing sample
+    /// \return pointer to continuing sample if exists otherwise nullptr
+    GPASample* GetContinuingSample() const;
+
+private:
 
     /// Checks whether the sample has been closed by client or not
     /// \return true if the sample has been closed by client otherwise false
@@ -199,11 +204,20 @@ private:
     /// Allocates resources to store counter results
     void AllocateSampleResultSpace();
 
-    bool            m_isSecondary;                      ///< flag indicating sample is secondary or not i.e. it has been created on a bundle or not
-    bool            m_isOpened;                         ///< flag indicating a sample is opened
-    bool            m_isClosedByClient;                 ///< flag indicating a sample is closed or not by the command list on which it is created
-    bool            m_isContinuedByClient;              ///< flag indicating a sampe has been continued on another command list
-    bool            m_isCopiedSample;                   ///< flag indicating that sample has been copied to primary command list
+    GPAPass*                    m_pPass;                        ///< GPA Pass Object
+    IGPACommandList*            m_pGpaCmdList;                  ///< Pointer to the command list object
+    GpaSampleType               m_gpaSampleType;                ///< type of the GPA sample
+    ClientSampleId              m_clientSampleId;               ///< Client-assigned sample Id
+    DriverSampleId              m_driverSampleId;               ///< Driver created sample id
+    GPASampleState              m_gpaSampleState;               ///< The state of this sample
+    GPASampleResult*            m_pSampleResult;                ///< memory for sample Results
+    GPASample*                  m_pContinuingSample;            ///< Pointer to linked/continuing GpaSample
+    std::mutex                  m_sampleMutex;                  ///< mutex for the GPA sample object
+    bool                        m_isSecondary;                  ///< flag indicating sample is secondary or not i.e. it has been created on a bundle or not
+    bool                        m_isOpened;                     ///< flag indicating a sample is opened
+    bool                        m_isClosedByClient;             ///< flag indicating a sample is closed or not by the command list on which it is created
+    bool                        m_isContinuedByClient;          ///< flag indicating a sampe has been continued on another command list
+    bool                        m_isCopiedSample;               ///< flag indicating that sample has been copied to primary command list
 
     /// Start a counter sample.
     /// \param pGpaContext pointer to object containing the context information for this sample

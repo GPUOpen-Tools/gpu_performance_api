@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GL version of GPUPerfAPI
@@ -22,8 +22,6 @@
 #include "GPUPerfAPIGL.h"
 #include "ASICInfo.h"
 #include "ADLUtil.h"
-// This is from ADL's include directory.
-#include "customer/oem_structures.h"
 
 #include "DeviceInfoUtils.h"
 
@@ -491,18 +489,12 @@ GPA_Status InitializeGLFunctions()
     }
 
 #ifndef GLES
-    GET_PROC_ADDRESS(_oglBeginQuery,               PFNGLBEGINQUERYPROC,             "glBeginQuery"); //not used anymore
-    GET_PROC_ADDRESS(_oglEndQuery,                 PFNGLENDQUERYPROC,               "glEndQuery"); //not used anymore
-    GET_PROC_ADDRESS(_oglGetQueryiv,               PFNGLGETQUERYIVPROC,             "glGetQueryiv"); //not used anymore
     GET_PROC_ADDRESS(_oglGetQueryObjectui64vEXT,   PFNGLGETQUERYOBJECTUI64VEXTPROC, "glGetQueryObjectui64vEXT");
     GET_PROC_ADDRESS(_oglGetQueryObjectiv,         PFNGLGETQUERYOBJECTIVPROC,       "glGetQueryObjectiv");
     GET_PROC_ADDRESS(_oglGenQueries,               PFNGLGENQUERIESPROC,             "glGenQueries");
     GET_PROC_ADDRESS(_oglDeleteQueries,            PFNGLDELETEQUERIESPROC,          "glDeleteQueries");
     GET_PROC_ADDRESS(_oglQueryCounter,             PFNGLQUERYCOUNTERPROC,           "glQueryCounter");
 #else
-    GET_PROC_ADDRESS(_oglBeginQuery,               PFNGLBEGINQUERYPROC,             "glBeginQueryEXT");
-    GET_PROC_ADDRESS(_oglEndQuery,                 PFNGLENDQUERYPROC,               "glEndQueryEXT");
-    GET_PROC_ADDRESS(_oglGetQueryiv,               PFNGLGETQUERYIVPROC,             "glGetQueryivEXT");
     GET_PROC_ADDRESS(_oglGetQueryObjectui64vEXT,   PFNGLGETQUERYOBJECTUI64VEXTPROC, "glGetQueryObjectui64vEXT");
     GET_PROC_ADDRESS(_oglGetQueryObjectiv,         PFNGLGETQUERYOBJECTIVPROC,       "glGetQueryObjectivEXT");
     GET_PROC_ADDRESS(_oglGenQueries,               PFNGLGENQUERIESPROC,             "glGenQueriesEXT");
@@ -514,9 +506,7 @@ GPA_Status InitializeGLFunctions()
 #endif // GL_TIMESTAMP
 #endif // GLES
 
-    if (_oglBeginQuery              == nullptr   ||
-        _oglEndQuery                == nullptr   ||
-        _oglGetQueryObjectui64vEXT  == nullptr   ||
+    if (_oglGetQueryObjectui64vEXT  == nullptr   ||
         _oglGetQueryObjectiv        == nullptr   ||
         _oglGenQueries              == nullptr   ||
         _oglDeleteQueries           == nullptr   ||
@@ -710,6 +700,14 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
 
                 case ATIASIC_ID_LEXA:
                     pHwInfo->SetDeviceID(0x699F);
+                    break;
+
+                case ATIASIC_ID_VEGA:
+                    pHwInfo->SetDeviceID(0x687F);
+                    break;
+
+                case ATIASIC_ID_VEGA_APU:
+                    pHwInfo->SetDeviceID(0x15DD);
                     break;
 
                 default:
@@ -918,7 +916,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
     }
 
     // generate the expected counters
-    GPA_Status status = GenerateCounters(GPA_API_OPENGL, vendorId, deviceId, revisionId, reinterpret_cast<IGPACounterAccessor**>(&(pGLContext->m_pCounterAccessor)), &(pGLContext->m_pCounterScheduler));
+    GPA_Status status = GenerateCounters(GPA_API_OPENGL, vendorId, deviceId, revisionId, true, reinterpret_cast<IGPACounterAccessor**>(&(pGLContext->m_pCounterAccessor)), &(pGLContext->m_pCounterScheduler));
 
     if (g_pCurrentContext->m_hwInfo.IsAMD() && status == GPA_STATUS_OK)
     {

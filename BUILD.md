@@ -72,7 +72,7 @@ this script everytime you pull new changes from GPA repository.
    * `hsadir`: overrides the location of the ROCm/HSA header files (by default they are expected to be in /opt/rocm/hsa)
    * `gtestlibdir`: overrides the location of the GoogleTest libraries (by default they are expected to be in Common/Lib/Ext/GoogleTest/1-7/lib/gcc5/x64. There is also a gcc4.x-compatible version in Common/Lib/Ext/GoogleTest/1-7/lib/x64 for use when building on a system with gcc 4.x)
    * `gtestlibdir32`: overrides the location of the 32-bit GoogleTest libraries (by default they are expected to be in Common/Lib/Ext/GoogleTest/1-7/lib/gcc5/x86. There is also a gcc4.x-compatible version in Common/Lib/Ext/GoogleTest/1-7/lib/x86 for use when building on a system with gcc 4.x)
- * After a successful build, the GPUPerfAPI binaries can be found in their respective source file directories. For instance, the binaries for the OpenGL version of GPUPerfAPI (libGPUPerfAPIGL.so) can be found in the Src/GPUPerfAPIGL subdirectory.
+ * After a successful build, the GPUPerfAPI binaries can be found in Output/bin.
  * Example build command line (builds the debug versions of the binaries, skipping the HSA library):
    * ./build.sh debug skiphsa
  * In addition to using the build.sh build script to build all of GPUPerfAPI, you can also build a single API library by executing `make` in that library's directory. This is useful when making localized changes in a single version of GPUPerfAPI. When using `make`, the following default targets are supported:
@@ -109,21 +109,24 @@ There are three ways to execute the tool:
 * With two parameters - it opens the user interface with the two main fields prepopulated. When you press the "Compile Public Counters" button it will load the correct input files and generate the output files in the correct location.
   * Param 1: API -- the API to compile counters for (ex: GL, CL, HSA, DX11, DX12, VK, etc).
   * Param 2: HW generation: the generation to compile counters for (ex: Gfx6, Gfx7, Gfx8, etc.)
-* With five parameters - the user interface does not open. It simply generates the c++ files using the specified input and output file locations
+* With six or seven parameters - the user interface does not open. It simply generates the c++ files using the specified input and output file locations
   * Param 1: Counter names file - text file containing hardware counter names and type (CounterNames[API][GEN].txt)
   * Param 2: Public counter definition file - text file defining how the public counters are calculated (PublicCounterDefinitions\*.txt)
   * Param 3: Output Dir - the directory to generate the output in (Ex: the path to the GPUPerfAPICounterGenerator directory)
   * Param 4: Test output Dir - the directory to generate the test output in (Ex: the path to the GPUPerfAPIUnitTests/counters directory)
-  * Param 5: Active section label - the label to take the counter names from (ex: dx11gfx6)
+  * Param 5: API - the API to take the counter names from (ex: DX12)
+  * Param 6: GPU - the GPU to take the counter names from (ex: Gfx9)
+  * Param 7: GPU ASIC - (optional) the subversion of GPU to take the counter names from
 
 See the various PublicCounterDefinitions\*.txt files in the [PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) directory. These contain all the counter definitions.
 Each counter is given a name, a description, a type, an optional usage type, a list of hardware counters required and a formula applied to the values of the hardware counters to calculate the value of the counter.
 
 Counter formulas are expressed in a Reverse Polish Notation and are made up the following elements:
 * numbers: these are zero-based counter indexes referring to individual counters within the list of hardware counters
+* hardware counters may also be referred to by name (e.g.: GPUTime_Bottom_To_Bottom) or templated name (e.g.: SPI*_SPI_PERF_CSG_BUSY) which will automatically refer to the correct number of instances
 * math operators: The supported operators are +, -, /, *
 * numeric literals: Numbers contained within parentheses are numeric literals (as opposed to counter indexes)
-* functions: The supported functions are: min, max, sum, ifnotzero. "max and "sum" have variants that work on multiple items at once (i.e. sum16, sum64, etc.)
+* functions: The supported functions are: min, max, sum, ifnotzero, and vcomparemax4. "max and "sum" have variants that work on multiple items at once (i.e. sum16, sum64, etc.)
 * hardware params: The supported hardware params are "num_shader_engines". "num_simds", "su_clock_prim", "num_prim_pipes", and "TS_FREQ"
 
 For more details, see the "EvaluateExpression" function in the [GPAPublicCounters.cpp](Src/GPUPerfAPICounterGenerator/GPAPublicCounters.cpp) file.

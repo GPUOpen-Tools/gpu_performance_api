@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief A Vulkan-specific implementation of the GPA Session interface
@@ -42,7 +42,7 @@ private:
     /// \copydoc GPASession::CreateAPIPass()
     GPAPass* CreateAPIPass(PassIndex passIndex) override;
 
-    mutable std::mutex              m_vkGpasessionMutex;   ///< Mutex for gpa session
+    mutable std::mutex              m_vkGpaSessionMutex;   ///< Mutex for gpa session
     std::list<VkGPACommandList*>    m_vkGpaCmdLists;       ///< List of VkGPACommndLists that are part of this session.
 };
 

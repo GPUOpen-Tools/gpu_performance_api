@@ -19,15 +19,24 @@ public:
     GPA_CounterGeneratorDX11Base();
 
     /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
-    GPA_Status GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration,
+    virtual GPA_Status GeneratePublicCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
         GPA_PublicCounters* pPublicCounters) override;
 
     /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
-    GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration,
+    virtual GPA_Status GenerateHardwareCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
         GPA_HardwareCounters* pHardwareCounters) override;
 
     /// \copydoc GPA_CounterGeneratorBase::GenerateSoftwareCounters
-    GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration,
+    virtual GPA_Status GenerateSoftwareCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
         GPA_SoftwareCounters* pSoftwareCounters) override;
 
     /// \copydoc IGPACounterAccessor::ComputeSWCounterValue()

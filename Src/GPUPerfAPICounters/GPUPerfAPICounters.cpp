@@ -25,10 +25,11 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCounters(GPA_API_Type api,
     gpa_uint32 deviceId,
     gpa_uint32 revisionId,
     GPA_OpenContextFlags flags,
+    gpa_uint8 generateAsicSpecificCounters,
     IGPACounterAccessor** ppCounterAccessorOut,
     IGPACounterScheduler** ppCounterSchedulerOut)
 {
-    GPA_Status retVal = GenerateCounters(api, vendorId, deviceId, revisionId, ppCounterAccessorOut, ppCounterSchedulerOut);
+    GPA_Status retVal = GenerateCounters(api, vendorId, deviceId, revisionId, generateAsicSpecificCounters, ppCounterAccessorOut, ppCounterSchedulerOut);
 
     if (GPA_STATUS_OK == retVal)
     {
@@ -43,6 +44,7 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCounters(GPA_API_Type api,
 GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API_Type api,
     GPA_Hw_Generation generation,
     GPA_OpenContextFlags flags,
+    gpa_uint8 generateAsicSpecificCounters,
     IGPACounterAccessor** ppCounterAccessorOut)
 {
     GPA_Status retVal = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
@@ -55,12 +57,12 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API
     if (GPA_HW_GENERATION_NVIDIA == generation)
     {
         vendorId = NVIDIA_VENDOR_ID;
-        retVal = GenerateCounters(api, vendorId, deviceId, revisionId, ppCounterAccessorOut, nullptr);
+        retVal = GenerateCounters(api, vendorId, deviceId, revisionId, generateAsicSpecificCounters, ppCounterAccessorOut, nullptr);
     }
     else if (GPA_HW_GENERATION_INTEL == generation)
     {
         vendorId = INTEL_VENDOR_ID;
-        retVal = GenerateCounters(api, vendorId, deviceId, revisionId, ppCounterAccessorOut, nullptr);
+        retVal = GenerateCounters(api, vendorId, deviceId, revisionId, generateAsicSpecificCounters, ppCounterAccessorOut, nullptr);
     }
     else if (GPA_HW_GENERATION_NONE != generation)
     {
@@ -74,7 +76,7 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API
             {
                 deviceId = static_cast<gpa_uint32>(card.m_deviceID);
                 revisionId = static_cast<gpa_uint32>(card.m_revID);
-                retVal = GenerateCounters(api, vendorId, deviceId, revisionId, ppCounterAccessorOut, nullptr);
+                retVal = GenerateCounters(api, vendorId, deviceId, revisionId, generateAsicSpecificCounters, ppCounterAccessorOut, nullptr);
 
                 if (GPA_STATUS_OK == retVal)
                 {

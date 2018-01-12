@@ -146,7 +146,13 @@ public:
         {
             m_sqCounterIndexMap[pSQCounterBlockInfo[i].m_groupIndex] = pSQCounterBlockInfo[i];
             m_sqShaderStageGroupMap[pSQCounterBlockInfo[i].m_stage].push_back(pSQCounterBlockInfo[i].m_groupIndex);
-            m_sqCounterIndexSet.insert(pSQCounterBlockInfo[i].m_groupIndex);
+
+            // we need to isolate stage-specific SQ counters from various texture blocks that are also
+            // affected by the shader stage mask in SQ
+            if (pSQCounterBlockInfo[i].m_stage != SQ_ALL)
+            {
+                m_isolatedSqCounterIndexSet.insert(pSQCounterBlockInfo[i].m_groupIndex);
+            }
         }
 
         for (uint32_t i = 0; i < numIsolatedFromSqGroups; ++i)
@@ -193,9 +199,8 @@ protected:
 
     std::map<gpa_uint32, GPA_SQCounterGroupDesc> m_sqCounterIndexMap;           ///< map from group index to the SQ counter group description for that group
     std::map<GPA_SQShaderStage, vector<unsigned int> > m_sqShaderStageGroupMap; ///< map from shader stage to the list of SQ groups for that stage
-    std::set<gpa_uint32> m_sqCounterIndexSet;                                   ///< set of SQ counter groups
-
-    std::set<gpa_uint32> m_isolatedFromSqGroupIndexSet;  ///< set of groups that must be isolated from SQ groups
+    std::set<gpa_uint32> m_isolatedSqCounterIndexSet;                           ///< set of isolated SQ counter groups
+    std::set<gpa_uint32> m_isolatedFromSqGroupIndexSet;                         ///< set of groups that must be isolated from isolated SQ groups
 
     /// A map between a public counter index and the set of hardware counters that compose the public counter.
     /// For each hardware counter, there is a map from the hardware counter to the counter result location (pass and offset) for that specific counter.
@@ -244,20 +249,20 @@ protected:
     };
 
     //--------------------------------------------------------------------------
-    /// Tests to see if the counter group is an SQ counter group
+    /// Tests to see if the counter group is an isolated SQ counter group
     /// \param pAccessor The counter accessor that describes the counter that needs to be scheduled.
-    /// \return True if a counter is an SQ group counter
-    bool IsSqCounterGroup(const IGPACounterGroupAccessor* pAccessor) const
+    /// \return True if a counter is an isolated SQ group counter
+    bool IsIsolatedSqCounterGroup(const IGPACounterGroupAccessor* pAccessor) const
     {
         unsigned int groupIndex = pAccessor->GlobalGroupIndex();
-        return m_sqCounterIndexSet.find(groupIndex) != m_sqCounterIndexSet.end();
+        return m_isolatedSqCounterIndexSet.find(groupIndex) != m_isolatedSqCounterIndexSet.end();
     }
 
     //--------------------------------------------------------------------------
-    /// Tests to see if the counter group must be isolated from an SQ counter group
+    /// Tests to see if the counter group must be isolated from the isloated SQ counter groups
     /// \param pAccessor The counter accessor that describes the counter that needs to be scheduled.
-    /// \return True if a counter must be isolated from SQ group counters
-    bool IsCounterGroupIsolatedFromSqCounterGroup(const IGPACounterGroupAccessor* pAccessor) const
+    /// \return True if a counter must be isolated from isolated SQ group counters
+    bool IsCounterGroupIsolatedFromIsolatedSqCounterGroup(const IGPACounterGroupAccessor* pAccessor) const
     {
         unsigned int groupIndex = pAccessor->GlobalGroupIndex();
         return m_isolatedFromSqGroupIndexSet.find(groupIndex) != m_isolatedFromSqGroupIndexSet.end();
@@ -297,14 +302,14 @@ protected:
     {
         // SQ counters cannot be scheduled on the same pass as TCC/TA/TCP/TCA/TD counters (and vice versa)
 
-        if (IsSqCounterGroup(pAccessor))
+        if (IsIsolatedSqCounterGroup(pAccessor))
         {
             return !EnabledCounterGroupsContain(currentPassData, m_isolatedFromSqGroupIndexSet);
         }
 
-        if (IsCounterGroupIsolatedFromSqCounterGroup(pAccessor))
+        if (IsCounterGroupIsolatedFromIsolatedSqCounterGroup(pAccessor))
         {
-            return !EnabledCounterGroupsContain(currentPassData, m_sqCounterIndexSet);
+            return !EnabledCounterGroupsContain(currentPassData, m_isolatedSqCounterIndexSet);
         }
 
         return true;

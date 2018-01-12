@@ -133,6 +133,12 @@
     <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\counters\PublicCountersHSAGfx9.cpp">
       <Filter>Source Files\GeneratedTestFiles\HSA</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\GPAInterfaceLoaderTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIUnitTests\GPUPerfAPILoaderTests.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPILoader.h">

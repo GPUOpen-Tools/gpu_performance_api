@@ -15,6 +15,7 @@
 #include "CLPerfCounterBlock.h"
 #include "CLPerfCounterAMDExtension.h"
 #include "CLRTModuleLoader.h"
+#include "Logging.h"
 
 clPerfCounterBlock::clPerfCounterBlock(cl_device_id    clDevice,
                                        cl_ulong        blockID,
@@ -62,7 +63,7 @@ void clPerfCounterBlock::Create()
 
     if (nullptr == m_pclCounters)
     {
-        std::cerr << "clPerfCounterBlock: Couldn't allocate memory!\n";
+        GPA_LogError("clPerfCounterBlock: Unable to allocate memory.");
         return;
     }
 
@@ -91,8 +92,12 @@ void clPerfCounterBlock::Create()
 
             if (CL_SUCCESS != error)
             {
-                std::cerr << "clPerfCounterBlock(" << i << "," << j << ")=" << error
-                          << " failed to create a perfcounter\n";
+                std::stringstream ss;
+                ss << "clCreatePerfCounterAMD failed (pass: " << i << ", index in pass: "
+                   << j << ", global index: " << index << ", counter: " << m_pCounters[index]
+                   << "). Error code=" << error << ".";
+                GPA_LogError(ss.str().c_str());
+
                 return;
             }
         }
@@ -129,8 +134,11 @@ bool clPerfCounterBlock::CollectData(const cl_event* clEvent)
 
         if (CL_SUCCESS != error)
         {
-            std::cerr << "clPerfCounterBlock(" << i << ")=" << error
-                      << " failed to get the perf counter data\n";
+            std::stringstream ss;
+            ss << "clGetPerfCounterInfoAMD failed (counter index: " << i << ", counter: "
+                << m_pCounters[i] << "). Error code=" << error << ".";
+            GPA_LogError(ss.str().c_str());
+
             return false;
         }
 

@@ -1,9 +1,10 @@
 # Makefile for GPUPerfAPICounterGenerator
 
+PROJECT_NAME=GPUPerfAPICounterGenerator
 DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
-TARGETLIB = libGPUPerfAPICounterGenerator$(TARGET_SUFFIX).a
+TARGETLIB = $(OUTPUT_LIB_DIR)/lib$(PROJECT_NAME)$(TARGET_SUFFIX).a
 
 INCLUDES =	-I. \
 		-I$(GPACOMMON_DIR) \
@@ -17,9 +18,6 @@ INCLUDES =	-I. \
 		-I$(AMD_VK_EXT_DIR) \
 		-I$(VK_INCLUDE_DIR) \
 		-I$(VK_INCLUDE_DIR)/vulkan \
-		-I$(VK_SOURCE_DIR)/layers \
-		-I$(VK_SOURCE_DIR)/loader \
-		-I$(VK_SDK_DIR)/glslang/SPIRV \
 
 LIB_OBJS	= \
 	./$(OBJ_DIR)/GPAPublicCounters.o \
@@ -40,8 +38,13 @@ LIB_OBJS	= \
 	./$(OBJ_DIR)/GPAInternalCountersGfx6.o \
 	./$(OBJ_DIR)/GPAInternalCountersGfx7.o \
 	./$(OBJ_DIR)/GPAInternalCountersGfx8.o \
+	./$(OBJ_DIR)/GPAInternalCountersGfx8_Baffin.o \
+	./$(OBJ_DIR)/GPAInternalCountersGfx8_Carrizo.o \
+	./$(OBJ_DIR)/GPAInternalCountersGfx8_Ellesmere.o \
+	./$(OBJ_DIR)/GPAInternalCountersGfx8_Fiji.o \
+	./$(OBJ_DIR)/GPAInternalCountersGfx8_Iceland.o \
+	./$(OBJ_DIR)/GPAInternalCountersGfx8_Tonga.o \
 	./$(OBJ_DIR)/GPAInternalCountersGfx9.o \
-	./$(OBJ_DIR)/GPAInternalCountersFiji.o \
 	./$(OBJ_DIR)/InternalCountersCLGfx6.o \
 	./$(OBJ_DIR)/InternalCountersCLGfx7.o \
 	./$(OBJ_DIR)/InternalCountersCLGfx8.o \
@@ -59,16 +62,40 @@ LIB_OBJS	= \
 	./$(OBJ_DIR)/PublicCounterDefsCLGfx6.o \
 	./$(OBJ_DIR)/PublicCounterDefsCLGfx7.o \
 	./$(OBJ_DIR)/PublicCounterDefsCLGfx8.o \
+	./$(OBJ_DIR)/PublicCounterDefsCLGfx8_Baffin.o \
+	./$(OBJ_DIR)/PublicCounterDefsCLGfx8_Carrizo.o \
+	./$(OBJ_DIR)/PublicCounterDefsCLGfx8_Ellesmere.o \
+	./$(OBJ_DIR)/PublicCounterDefsCLGfx8_Fiji.o \
+	./$(OBJ_DIR)/PublicCounterDefsCLGfx8_Iceland.o \
+	./$(OBJ_DIR)/PublicCounterDefsCLGfx8_Tonga.o \
 	./$(OBJ_DIR)/PublicCounterDefsCLGfx9.o \
 	./$(OBJ_DIR)/PublicCounterDefsGLGfx6.o \
 	./$(OBJ_DIR)/PublicCounterDefsGLGfx7.o \
 	./$(OBJ_DIR)/PublicCounterDefsGLGfx8.o \
+	./$(OBJ_DIR)/PublicCounterDefsGLGfx8_Baffin.o \
+	./$(OBJ_DIR)/PublicCounterDefsGLGfx8_Carrizo.o \
+	./$(OBJ_DIR)/PublicCounterDefsGLGfx8_Ellesmere.o \
+	./$(OBJ_DIR)/PublicCounterDefsGLGfx8_Fiji.o \
+	./$(OBJ_DIR)/PublicCounterDefsGLGfx8_Iceland.o \
+	./$(OBJ_DIR)/PublicCounterDefsGLGfx8_Tonga.o \
 	./$(OBJ_DIR)/PublicCounterDefsGLGfx9.o \
 	./$(OBJ_DIR)/PublicCounterDefsHSAGfx7.o \
 	./$(OBJ_DIR)/PublicCounterDefsHSAGfx8.o \
+	./$(OBJ_DIR)/PublicCounterDefsHSAGfx8_Baffin.o \
+	./$(OBJ_DIR)/PublicCounterDefsHSAGfx8_Carrizo.o \
+	./$(OBJ_DIR)/PublicCounterDefsHSAGfx8_Ellesmere.o \
+	./$(OBJ_DIR)/PublicCounterDefsHSAGfx8_Fiji.o \
+	./$(OBJ_DIR)/PublicCounterDefsHSAGfx8_Iceland.o \
+	./$(OBJ_DIR)/PublicCounterDefsHSAGfx8_Tonga.o \
 	./$(OBJ_DIR)/PublicCounterDefsHSAGfx9.o \
 	./$(OBJ_DIR)/PublicCounterDefsVKGfx7.o \
 	./$(OBJ_DIR)/PublicCounterDefsVKGfx8.o \
+	./$(OBJ_DIR)/PublicCounterDefsVKGfx8_Baffin.o \
+	./$(OBJ_DIR)/PublicCounterDefsVKGfx8_Carrizo.o \
+	./$(OBJ_DIR)/PublicCounterDefsVKGfx8_Ellesmere.o \
+	./$(OBJ_DIR)/PublicCounterDefsVKGfx8_Fiji.o \
+	./$(OBJ_DIR)/PublicCounterDefsVKGfx8_Iceland.o \
+	./$(OBJ_DIR)/PublicCounterDefsVKGfx8_Tonga.o \
 	./$(OBJ_DIR)/PublicCounterDefsVKGfx9.o \
 	./$(OBJ_DIR)/GPASwCounterManager.o \
 	./$(OBJ_DIR)/GLEntryPoints.o

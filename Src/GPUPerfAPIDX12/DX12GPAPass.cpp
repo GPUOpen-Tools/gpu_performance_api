@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX12 GPA Pass Object Implementation
@@ -49,7 +49,7 @@ bool DX12GPAPass::IsComplete() const
 {
     bool complete = true;
 
-    if (false == IsResultsCollectedFromDriver())
+    if (!IsResultsCollectedFromDriver())
     {
         for (auto iter = GetCmdList().cbegin();
              iter != GetCmdList().cend();
@@ -139,7 +139,7 @@ bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples
         isAllUniqueSampleIds &= !DoesSampleExist(*iter);
     }
 
-    if (true == isAllUniqueSampleIds)
+    if (isAllUniqueSampleIds)
     {
         if (GPA_COMMAND_LIST_PRIMARY == pDx12PrimaryGpaCmdList->GetCmdType() &&
             GPA_COMMAND_LIST_SECONDARY == pDx12SecondaryGpaCmdList->GetCmdType())
@@ -349,11 +349,7 @@ void DX12GPAPass::InitializeSampleConfig()
                     }
 
                     // Add counter to valid vector
-                    AmdExtPerfCounterId thisCounter;
-                    thisCounter.block = block;
-                    thisCounter.instance = instance;
-                    thisCounter.eventId = eventId;
-
+                    AmdExtPerfCounterId thisCounter = { block, instance, eventId };
                     counterIds.push_back(thisCounter);
 
                     // if dealing with an SQ counter, check if the the stage mask needs to be set

@@ -165,24 +165,40 @@ GPA_CounterGeneratorDX12Base::~GPA_CounterGeneratorDX12Base()
 }
 
 GPA_Status GPA_CounterGeneratorDX12Base::GeneratePublicCounters(
-    GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters)
+    GDT_HW_GENERATION desiredGeneration, 
+    GDT_HW_ASIC_TYPE asicType, 
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_PublicCounters* pPublicCounters)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
     UNREFERENCED_PARAMETER(pPublicCounters);
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPA_CounterGeneratorDX12Base::GenerateHardwareCounters(
-    GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_HardwareCounters* pHardwareCounters)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
     UNREFERENCED_PARAMETER(pHardwareCounters);
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPA_CounterGeneratorDX12Base::GenerateSoftwareCounters(
-    GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters)
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_SoftwareCounters* pSoftwareCounters)
 {
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+
     GPA_Status status = GPA_STATUS_OK;
 
     if (true == pSoftwareCounters->m_countersGenerated)

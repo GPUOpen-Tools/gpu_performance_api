@@ -92,36 +92,36 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
 // Test the DX12 counter names on all supported hardware
 TEST(CounterDLLTests, DX12CounterNames)
 {
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, gDevIdUnknown);
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, gDevIdSI);
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, gDevIdCI);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, gDevIdUnknown, FALSE);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, gDevIdSI, FALSE);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, gDevIdCI, FALSE);
 
     std::vector<const char*> counterNames;
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_12, gDevIdCIHawaii, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_12, gDevIdCIHawaii, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_12, gDevIdVI, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_12, gDevIdVI, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_12, gDevIdGfx9, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_12, gDevIdGfx9, FALSE, counterNames);
 }
 
 // Test the DX12 counter names on all generations
 TEST(CounterDLLTests, DX12CounterNamesByGeneration)
 {
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, GPA_HW_GENERATION_NONE);
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, GPA_HW_GENERATION_GFX6);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, GPA_HW_GENERATION_NONE, FALSE);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, GPA_HW_GENERATION_GFX6, FALSE);
 
     std::vector<const char*> counterNames;
 
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_NVIDIA, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_NVIDIA, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_NVIDIA, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_INTEL, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_INTEL, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_INTEL, FALSE, counterNames);
 
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_GFX7, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_GFX7, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_GFX8, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_GFX8, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_GFX9, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_GFX9, FALSE, counterNames);
 }

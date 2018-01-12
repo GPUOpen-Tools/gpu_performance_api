@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief GPA Common Context class
@@ -9,7 +9,9 @@
 #define _GPA_CONTEXT_H_
 
 #include <list>
+#include <mutex>
 
+#include "GPACommonDefs.h"
 #include "GPUPerfAPITypes.h"
 #include "IGPAContext.h"
 #include "IGPASession.h"
@@ -99,14 +101,41 @@ protected:
     /// \param[in] open flag indicating context to be marked open or closed
     void SetAsOpened(bool open);
 
+    /// Returns whether the device is AMD device or not
+    /// \return true if context device is AMD device otherwise false
+    bool IsAMDDevice() const;
+
+    /// Adds the GPA session to the session list
+    /// param[in] pGpaSession GPA session object pointer
+    GPA_THREAD_SAFE_FUNCTION void AddGpaSession(IGPASession* pGpaSession);
+
+    /// Removes the GPA session from the session list
+    /// param[in] pGpaSession GPA session object pointer
+    GPA_THREAD_SAFE_FUNCTION void RemoveGpaSession(IGPASession* pGpaSession);
+
+    /// Iterate over GPA session list for the passed function
+    /// param[in] function function to be executed for each object in the list - function may return false to terminate iteration
+    GPA_THREAD_SAFE_FUNCTION void IterateGpaSessionList(std::function<bool(IGPASession* pGpaSession)> function) const;
+
+    ///  Clears the list of the GPA session
+    GPA_THREAD_SAFE_FUNCTION void ClearSessionList();
+
+    /// Returns the index of the GPA session if it exists
+    /// \param[in] pGpaSession GPA session
+    /// \param[opt, out] pIndex index of the the GPA session in the list
+    bool GetIndex(IGPASession* pGpaSession, unsigned int* pIndex = nullptr) const;
+
+private:
+
     IGPACounterScheduler*               m_pCounterScheduler;                    ///< counter scheduler
     IGPACounterAccessor*                m_pCounterAccessor;                     ///< counter accessor
     GPA_OpenContextFlags                m_contextFlags;                         ///< context flags
     GPA_HWInfo                          m_hwInfo;                               ///< hw info
     bool                                m_invalidateAndFlushL2CacheEnabled;     ///< flag indicating flush and invalidation of L2 cache is enabled or not
     bool                                m_isOpen;                               ///< flag indicating context is open or not
-    GPASessionList                      m_gpaSessionList;                       ///< list of gpa sessions in the context
+    GPASessionList                      m_gpaSessionList;                       ///< list of GPA sessions in the context
     bool                                m_isAmdDevice;                          ///< flag indicating whether the device is AMD or not
+    mutable std::mutex                  m_gpaSessionListMutex;                  ///< Mutex for GPA session list
 };
 
 #endif // _GPA_CONTEXT_H_

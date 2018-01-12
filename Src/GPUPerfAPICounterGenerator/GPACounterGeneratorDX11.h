@@ -21,8 +21,17 @@ public:
 protected:
 
     /// Overridden methods -- see base for documentation
-    GPA_Status GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters) override;
-    GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters) override;
+    GPA_Status GeneratePublicCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_PublicCounters* pPublicCounters) override;
+
+    GPA_Status GenerateHardwareCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_HardwareCounters* pHardwareCounters) override;
 };
 
 #endif //_GPA_COUNTER_GENERATOR_DX11_H_

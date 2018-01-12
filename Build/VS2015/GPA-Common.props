@@ -8,7 +8,7 @@
     <Import Project="..\..\..\Common\Lib\AMD\APPSDK\Global-OpenCL-NoLib.props" />
     <Import Project="..\..\..\Common\Lib\Ext\OpenGL\Global-OpenGL.props" />
     <Import Project="..\..\..\Common\Lib\Ext\OpenGLES\Global-OpenGLES.props" />
-    <Import Condition="'$(SolutionName)'!='GPUPerfAPI'" Project="..\..\..\Common\Lib\AMD\HSA\Global-HSAFoundation-NoLib.props" />
+    <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="..\..\..\Common\Lib\AMD\HSA\Global-HSAFoundation-NoLib.props" />
     <Import Project="..\..\..\Common\Src\ADLUtil\Global-ADLUtil.props" />
     <Import Project="..\..\..\Common\Src\GPUPerfAPIUtils\Global-GPUPerfAPIUtils.props" />
     <Import Project="..\..\..\Common\Src\AmdDxExt\Global-AmdDxExt.props" />
@@ -28,6 +28,7 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <PreprocessorDefinitions>NOMINMAX;USE_POINTER_SINGLETON;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="$([System.Convert]::ToBoolean($(IsDebug)))">USE_DEBUG_GPA;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WholeProgramOptimization>false</WholeProgramOptimization>
       <RuntimeLibrary Condition="$([System.Convert]::ToBoolean($(IsDebug)))">MultiThreadedDebug</RuntimeLibrary>
       <RuntimeLibrary Condition="$([System.Convert]::ToBoolean($(IsRelease)))">MultiThreaded</RuntimeLibrary>

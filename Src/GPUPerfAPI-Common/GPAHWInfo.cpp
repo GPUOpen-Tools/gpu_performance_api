@@ -209,13 +209,13 @@ bool GPA_HWInfo::operator==(GPA_HWInfo otherHwInfo) const
     }
     else if (m_deviceId != otherHwInfo.m_deviceId)
     {
-        GPA_LogError("Device Id Mismatch.");
+        GPA_LogDebugError("Device Id Mismatch.");
     }
     else if (m_revisionId != REVISION_ID_ANY &&
              otherHwInfo.m_revisionId != REVISION_ID_ANY &&
              m_revisionId != otherHwInfo.m_revisionId)
     {
-        GPA_LogError("Revision Id Mismatch.");
+        GPA_LogDebugError("Revision Id Mismatch.");
     }
     else
     {
