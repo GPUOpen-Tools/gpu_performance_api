@@ -1,14 +1,11 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief A Vulkan-specific implementation of the GPA Session interface
 //==============================================================================
 
-#include <assert.h>
-
 #include "VkGPASession.h"
-
 #include "GPAUniqueObject.h"
 #include "VkGPACommandList.h"
 #include "VkGPAPass.h"
@@ -16,17 +13,6 @@
 VkGPASession::VkGPASession(IGPAContext* parentContextId)
     : GPASession(parentContextId, parentContextId->GetCounterScheduler())
 {
-}
-
-VkGPASession::~VkGPASession()
-{
-    for (auto cmdListIter = m_vkGpaCmdLists.begin(); cmdListIter != m_vkGpaCmdLists.end(); ++cmdListIter)
-    {
-        GPAUniqueObjectManager::Instance()->DeleteObject(*cmdListIter);
-        delete *cmdListIter;
-    }
-
-    m_vkGpaCmdLists.clear();
 }
 
 GPA_API_Type VkGPASession::GetAPIType() const
@@ -66,7 +52,7 @@ GPA_Status VkGPASession::ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA
         GPA_LogError("Invalid Parameter.");
     }
 
-    return true == succeed ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+    return succeed ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 }
 
 GPA_Status VkGPASession::CopySecondarySamples(GPA_CommandListId secondaryCmdListId, GPA_CommandListId primaryCmdListId, gpa_uint32 numSamples, gpa_uint32* pNewSampleIds)

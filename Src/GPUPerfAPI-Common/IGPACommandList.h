@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief Interface for GPA Command List Object
@@ -11,7 +11,6 @@
 #include "GPUPerfAPITypes.h"
 #include "IGPAInterfaceTrait.h"
 #include "GPAPass.h"
-#include <list>
 
 class IGPASession;      // forward declaration
 
@@ -50,16 +49,20 @@ public:
     /// Begins the sample on the command list
     /// \param[in] clientSampleIndex index of the sample
     /// \param[in] pSample The sample to start
-    /// \param[in] pCounterList The set of counters to start on the sample
     /// \return true if sample was successfully begun, false otherwise
-    virtual bool BeginSample(ClientSampleId clientSampleIndex, GPASample* pSample, const std::vector<CounterIndex>* pCounterList) = 0;
+    virtual bool BeginSample(ClientSampleId clientSampleIndex, GPASample* pSample) = 0;
 
     /// Gets the current open sample
     /// \return the current open sample or nullptr if no sample is open
     virtual GPASample* GetLastSample() const = 0;
 
+    /// Returns the sample with given client sample id if it exists otherwise nullptr
+    /// \param[in] clientSampleId client sample id
+    /// \return sample id if found, otherwise nullptr
+    virtual GPASample* GetSample(ClientSampleId clientSampleId) const = 0;
+
     /// Closes the most recent sample
-    /// \param closingByClient flag indicating if the sample is being closed by the client rather than by GPA itself. Default is true.
+    /// \param[in,opt] closingByClient flag indicating if the sample is being closed by the client rather than by GPA itself. Default is true.
     /// \return true if most recent sample was closed, false otherwise
     virtual bool CloseLastSample(bool closingByClient = true) = 0;
 

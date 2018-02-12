@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  PublicCounterDefinitions for VKGFX8_BAFFIN
+/// \brief PublicCounterDefinitions for VKGFX8_BAFFIN
 //==============================================================================
 
 #ifndef _PUBLIC_COUNTER_DEFS_VKGFX8_BAFFIN_H_

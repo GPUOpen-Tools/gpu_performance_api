@@ -38,7 +38,7 @@ public:
     bool UpdateResults() override final;
 
     /// \copydoc GPASample::BeginRequest
-    bool BeginRequest(IGPAContext* pContextState, const std::vector<gpa_uint32>* pCounters) override final;
+    bool BeginRequest() override final;
 
     /// \copydoc GPASample::EndRequest
     bool EndRequest() override final;

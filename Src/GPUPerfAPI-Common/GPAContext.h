@@ -89,6 +89,9 @@ public:
     /// \copydoc IGPAContext::GetCounterScheduler()
     IGPACounterScheduler* GetCounterScheduler() const noexcept override;
 
+    /// \copydoc IGPAContext::DoesSessionExist()
+    bool DoesSessionExist(GPA_SessionId pSessionId) const override;
+
     /// \copydoc IGPAContext::GetSessionCount()
     gpa_uint32 GetSessionCount() const override;
 

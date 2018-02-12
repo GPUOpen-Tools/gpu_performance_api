@@ -59,7 +59,8 @@ GPA_CounterGeneratorGL::~GPA_CounterGeneratorGL()
 
 bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_HardwareCounters* pHardwareCounters)
 {
-    if (m_driverSuppliedGroupCount            == 0       &&
+    if (oglUtils::InitializeGLFunctions() &&
+        m_driverSuppliedGroupCount         == 0       &&
         _oglGetPerfMonitorGroupsAMD        != nullptr &&
         _oglGetPerfMonitorGroupStringAMD   != nullptr &&
         _oglGetPerfMonitorCountersAMD      != nullptr &&

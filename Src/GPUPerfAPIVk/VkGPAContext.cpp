@@ -201,24 +201,6 @@ gpa_uint32 VkGPAContext::GetMaxGPASessions() const
     return GPA_SESSION_NO_LIMIT;
 }
 
-bool VkGPAContext::DoesSessionExist(GPA_SessionId sessionId) const
-{
-    bool found = false;
-    auto searchSession = [&](IGPASession* pGpaSession) -> bool
-    {
-        if (pGpaSession == reinterpret_cast<VkGPASession*>(sessionId))
-        {
-            found = true;
-            return false;
-        }
-
-        return true;
-    };
-
-    IterateGpaSessionList(searchSession);
-    return found;
-}
-
 GPA_API_Type VkGPAContext::GetAPIType() const
 {
     return GPA_API_VULKAN;

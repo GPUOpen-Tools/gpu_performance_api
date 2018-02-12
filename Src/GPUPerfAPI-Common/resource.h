@@ -1,9 +1,10 @@
 //==============================================================================
-// Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  Used by GPUPerfAPIHSA.rc
+/// \brief  Common Resource file
 //==============================================================================
+
 
 // Next default values for new objects
 //

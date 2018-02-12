@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Defines the data types and enumerations used by GPUPerfAPI.
@@ -14,7 +14,7 @@
 
 /// Platform specific definitions
 #ifdef _WIN32
-#include <windows.h>
+#include <Windows.h>
 typedef HMODULE LibHandle; /// typedef for HMODULE for loading the library on windows
 typedef GUID GPA_UUID; /// typedef for Windows GUID definition
 #else
@@ -255,16 +255,6 @@ typedef enum
     GPA_API_NO_SUPPORT,                     ///< API which are not yet supported or support have been removed
     GPA_API__LAST                           ///< Marker indicating last element
 } GPA_API_Type;
-
-/// Counter type definitions
-typedef enum
-{
-    GPA_COUNTER_TYPE_DYNAMIC,     ///< hardware per sample counter type
-    GPA_COUNTER_TYPE_SESSION,     ///< hardware per session counter type
-    GPA_COUNTER_TYPE_API_DYNAMIC, ///< api per sample counter type
-    GPA_COUNTER_TYPE_API_SESSION, ///< api per session counter
-    GPA_COUNTER_TYPE__LAST        ///< Marker indicating last element
-} GPA_Counter_Type;
 
 /// this enum needs to be kept up to date with GDT_HW_GENERATION in DeviceInfo.h
 typedef enum

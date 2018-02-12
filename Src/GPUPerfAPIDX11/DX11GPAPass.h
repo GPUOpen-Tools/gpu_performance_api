@@ -37,10 +37,13 @@ public:
                                        ClientSampleId clientSampleId) override final;
 
     /// \copydoc GPAPass::ContinueSample
-    bool ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrimaryGpaCmdList) override final;
+    bool ContinueSample(ClientSampleId srcSampleId,
+                        IGPACommandList* pPrimaryGpaCmdList) override final;
 
-    /// \copydoc GPAPass::CreateCommandList
-    IGPACommandList* CreateCommandList(void* pCmd, GPA_Command_List_Type cmdType) override final;
+    /// \copydoc GPAPass::CreateAPISpecificCommandList
+    IGPACommandList* CreateAPISpecificCommandList(void* pCmd,
+                                                  CommandListId commandListId,
+                                                  GPA_Command_List_Type cmdType) override final;
 
     /// \copydoc GPAPass::EndSample
     bool EndSample(IGPACommandList* pGpaCmdList) override final;

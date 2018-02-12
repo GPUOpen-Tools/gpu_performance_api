@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA Pass Object Implementation
@@ -21,6 +21,8 @@ GPAPass::GPAPass(IGPASession* pGpaSession,
     m_isTimingPass(false),
     m_pCounterScheduler(pCounterScheduler),
     m_pCounterAccessor(pCounterAccessor),
+    m_commandListCounter(0u),
+    m_isAllSampleValidInPass(false),
     m_gpuTimeTopToBottomPresent(false),
     m_gpuTimeTopToBottomOffset(0),
     m_gpuTimeBottomToBottomPresent(false),
@@ -112,7 +114,7 @@ GPASample* GPAPass::CreateAndBeginSample(ClientSampleId clientSampleId, IGPAComm
         {
             m_samplesMap.insert(std::pair<ClientSampleId, GPASample*>(clientSampleId, pSample));
 
-            if (!pCmdList->BeginSample(clientSampleId, pSample, &m_usedCounterListForPass))
+            if (!pCmdList->BeginSample(clientSampleId, pSample))
             {
                 GPA_LogError("Unable to begin sample in pass.");
             }
@@ -191,6 +193,19 @@ bool GPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrima
     return success;
 }
 
+IGPACommandList* GPAPass::CreateCommandList(void* pCmd, GPA_Command_List_Type cmdType)
+{
+    IGPACommandList* pRetCmdList = CreateAPISpecificCommandList(pCmd, m_commandListCounter, cmdType);
+    m_commandListCounter++;
+
+    if (nullptr != pRetCmdList)
+    {
+        AddCommandList(pRetCmdList);
+    }
+
+    return pRetCmdList;
+}
+
 SampleCount GPAPass::GetSampleCount() const
 {
     std::lock_guard<std::mutex> lock(m_samplesMapMutex);
@@ -198,9 +213,35 @@ SampleCount GPAPass::GetSampleCount() const
     return static_cast<SampleCount>(m_samplesMap.size());
 }
 
-CounterCount GPAPass::GetCounterCount() const
+bool GPAPass::IsAllSampleValidInPass() const
+{
+    if (!m_isAllSampleValidInPass)
+    {
+        bool success = true;
+        std::lock_guard<std::mutex> lockSamples(m_samplesMapMutex);
+
+        for (auto sampleIter = m_samplesMap.cbegin(); sampleIter != m_samplesMap.cend(); ++sampleIter)
+        {
+            success &= sampleIter->second->IsSampleValid();
+        }
+
+        if (success)
+        {
+            m_isAllSampleValidInPass = true;
+        }
+    }
+
+    return m_isAllSampleValidInPass;
+}
+
+CounterCount GPAPass::GetEnabledCounterCount() const
 {
     return static_cast<unsigned int>(m_usedCounterListForPass.size());
+}
+
+CounterCount GPAPass::GetSkippedCounterCount() const
+{
+    return static_cast<unsigned int>(m_skippedCounterList.size());
 }
 
 PassIndex GPAPass::GetIndex() const
@@ -303,9 +344,9 @@ bool GPAPass::DoesCommandListExist(IGPACommandList* pGpaCommandList) const
 
     std::lock_guard<std::mutex> lock(m_gpaCmdListMutex);
 
-    for (GPACommandLists::const_iterator cIter = m_gpaCmdList.cbegin(); 
-        !exists &&
-        cIter != m_gpaCmdList.cend(); ++cIter)
+    for (GPACommandLists::const_iterator cIter = m_gpaCmdList.cbegin();
+         !exists &&
+         cIter != m_gpaCmdList.cend(); ++cIter)
     {
         if (*cIter == pGpaCommandList)
         {
@@ -438,6 +479,18 @@ bool GPAPass::GetCounterIndexInPass(CounterIndex internalCounterIndex, CounterIn
     return found;
 }
 
+bool GPAPass::GetCounterByIndexInPass(CounterIndex counterIndexInPass, CounterIndex& internalCounterIndex) const
+{
+    bool found = counterIndexInPass < m_usedCounterListForPass.size();
+
+    if (found)
+    {
+        internalCounterIndex = m_usedCounterListForPass[counterIndexInPass];
+    }
+
+    return found;
+}
+
 bool GPAPass::IsResultsCollectedFromDriver() const
 {
     return m_isResultCollected;
@@ -453,7 +506,7 @@ const IGPACounterScheduler* GPAPass::GetCounterScheduler() const
     return m_pCounterScheduler;
 }
 
-void GPAPass::AddGPACommandList(IGPACommandList* pGPACommandList)
+void GPAPass::AddCommandList(IGPACommandList* pGPACommandList)
 {
     std::lock_guard<std::mutex> lockCmdList(m_gpaCmdListMutex);
     m_gpaCmdList.push_back(pGPACommandList);
@@ -479,6 +532,7 @@ void GPAPass::AddClientSample(ClientSampleId sampleId, GPASample* pGPASample)
 void GPAPass::IteratePassCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const
 {
     bool next = true;
+
     for (auto it = (*m_pCounterList).cbegin(); it != (*m_pCounterList).cend() && next; ++it)
     {
         next = function(*it);
@@ -488,6 +542,7 @@ void GPAPass::IteratePassCounterList(std::function<bool(const CounterIndex& coun
 void GPAPass::IterateEnabledCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const
 {
     bool next = true;
+
     for (auto it = m_usedCounterListForPass.cbegin(); it != m_usedCounterListForPass.cend() && next; ++it)
     {
         next = function(*it);
@@ -497,6 +552,7 @@ void GPAPass::IterateEnabledCounterList(std::function<bool(const CounterIndex& c
 void GPAPass::IterateSkippedCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const
 {
     bool next = true;
+
     for (auto it = m_skippedCounterList.cbegin(); it != m_skippedCounterList.cend() && next; ++it)
     {
         next = function(*it);

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief A base-class implementation of the GPA Session interface
@@ -7,7 +7,6 @@
 
 // std
 #include <list>
-#include <sstream>
 #include <chrono>
 #include <thread>
 
@@ -308,6 +307,7 @@ bool GPASession::UpdateResults()
     std::lock_guard<std::mutex> lockResources(m_gpaSessionMutex);
     for (PassInfo::iterator passIter = m_passes.begin(); passIter != m_passes.end(); ++passIter)
     {
+        areAllPassesComplete &= (*passIter)->IsAllSampleValidInPass();
         areAllPassesComplete &= (*passIter)->UpdateResults();
     }
 
@@ -326,7 +326,16 @@ bool GPASession::UpdateResults(gpa_uint32 passIndex)
     if (passIndex <= m_maxPassIndex)
     {
         std::lock_guard<std::mutex> lockResources(m_gpaSessionMutex);
-        isPassComplete = m_passes.at(passIndex)->UpdateResults();
+        isPassComplete = m_passes.at(passIndex)->IsAllSampleValidInPass();
+
+        if (isPassComplete)
+        {
+            isPassComplete = m_passes.at(passIndex)->UpdateResults();
+        }
+        else
+        {
+            GPA_LogError("All the samples in the pass is not finished");
+        }
     }
     else
     {
@@ -347,9 +356,9 @@ bool GPASession::IsComplete() const
     return GPA_SESSION_STATE_COMPLETED == m_state;
 }
 
-gpa_uint64 GPASession::GetPerSampleResultSizeInBytes() const
+size_t GPASession::GetPerSampleResultSizeInBytes() const
 {
-    gpa_uint64 sizeInBytes = 0;
+    size_t sizeInBytes = 0;
 
     if (m_pCounterScheduler == nullptr)
     {
@@ -363,7 +372,7 @@ gpa_uint64 GPASession::GetPerSampleResultSizeInBytes() const
     return sizeInBytes;
 }
 
-GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, gpa_uint64 sampleResultSizeInBytes, void* pCounterSampleResults)
+GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultSizeInBytes, void* pCounterSampleResults)
 {
     TRACE_PRIVATE_FUNCTION(GPASession::GetSampleResult);
 

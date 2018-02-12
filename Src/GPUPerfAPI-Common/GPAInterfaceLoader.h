@@ -293,6 +293,12 @@ public:
         if (nullptr != pApi)
         {
             delete pApi;
+            LibHandle libHandle = m_gpaApiFunctionTables[apiType].first;
+#ifdef _WIN32
+            FreeLibrary(libHandle);
+#else
+            dlclose(libHandle);
+#endif
             m_gpaApiFunctionTables.erase(apiType);
         }
     }

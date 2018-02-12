@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA Sample Header
@@ -38,8 +38,16 @@ struct GPASampleResult
     GPASampleResult(size_t numOfCounters)
     {
         m_numCounters = numOfCounters;
-        // We can construct it over here as we are not throwing any exception
-        m_pResultBuffer = new(std::nothrow) gpa_uint64[numOfCounters];
+
+        if (numOfCounters > 0)
+        {
+            // We can construct it over here as we are not throwing any exception
+            m_pResultBuffer = new(std::nothrow) gpa_uint64[numOfCounters];
+        }
+        else
+        {
+            m_pResultBuffer = nullptr;
+        }
     }
 
     /// Destructor
@@ -114,10 +122,8 @@ public:
     inline virtual bool IsComplete() const;
 
     /// Start a counter sample.
-    /// \param pGpaContext pointer to object containing the context information for this request
-    /// \param pCounters the set of counters to enable
     /// \return True if the sample could be started; false otherwise.
-    bool Begin(IGPAContext* pGpaContext, const std::vector<gpa_uint32>* pCounters);
+    bool Begin();
 
     /// Ends a counter sample.
     /// \return True on success; false on error.
@@ -220,10 +226,8 @@ private:
     bool                        m_isCopiedSample;               ///< flag indicating that sample has been copied to primary command list
 
     /// Start a counter sample.
-    /// \param pGpaContext pointer to object containing the context information for this sample
-    /// \param pCounters the set of counters to enable
     /// \return True if the sample could be started; false otherwise.
-    virtual bool BeginRequest(IGPAContext* pGpaContext, const std::vector<gpa_uint32>* pCounters) = 0;
+    virtual bool BeginRequest() = 0;
 
     /// Ends a counter sample.
     /// \return True on success; false on error.

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class to manage a single sample of SW counters
@@ -25,17 +25,20 @@ class VkGPASoftwareSample : public VkGPASample
 {
 public:
     /// Constructor
+    /// \param[in] pPass pass object
+    /// \param[in] pCmdList gpa command list
+    /// \param[in] sampleId sample Id
     VkGPASoftwareSample(GPAPass* pPass,
-        IGPACommandList* pCmdList,
-        unsigned int sampleId);
+                        IGPACommandList* pCmdList,
+                        unsigned int sampleId);
 
     /// Destructor
     virtual ~VkGPASoftwareSample();
 
     /// Assigns the already-initialized queries to the software sample.
-    /// Needed because Vulkan requires that the queries be reset at the 
-    /// very beginning of the command buffer, and at that time we don't 
-    /// know if there will be any samples on the command list, so we 
+    /// Needed because Vulkan requires that the queries be reset at the
+    /// very beginning of the command buffer, and at that time we don't
+    /// know if there will be any samples on the command list, so we
     /// initialize them anyway, and assign the queries to the sample
     /// prior to GPASample::Begin() being called.
     /// \param pSwQueries Pointer to the VkCommandListSwQueries object
@@ -43,15 +46,28 @@ public:
     void AssignQueries(VkCommandListSwQueries* pSwQueries);
 
     /// \copydoc VkGPASample::BeginRequest()
-    virtual bool BeginRequest(
-        IGPAContext* pContextState,
-        const std::vector<gpa_uint32>* pCounters) override final;
+    virtual bool BeginRequest() override final;
 
     /// \copydoc VkGPASample::EndRequest()
     virtual bool EndRequest() override final;
 
-    /// Release allocated counters
+    /// \copydoc VkGPASample::ReleaseCounters
     virtual void ReleaseCounters() override final;
+
+    /// Default Constructor deleted
+    VkGPASoftwareSample() = delete;
+
+    /// Copy constructor - private override to disable usage
+    VkGPASoftwareSample(const VkGPASoftwareSample&) = delete;
+
+    /// Move constructor - private override to disable usage
+    VkGPASoftwareSample(VkGPASoftwareSample&&) = delete;
+
+    /// Copy operator - private override to disable usage
+    VkGPASoftwareSample& operator=(const VkGPASoftwareSample&) = delete;
+
+    /// Move operator - private override to disable usage
+    VkGPASoftwareSample& operator=(VkGPASoftwareSample&&) = delete;
 
 private:
     /// Struct to describe active counter
@@ -71,21 +87,6 @@ private:
     VkCommandBuffer         m_commandList;          ///< The command list the sample is executed on
     gpa_uint32              m_swSampleId;           ///< The SW sample ID executed on the context
     VkCommandListSwQueries* m_pSwQueries;           /// The Software queries being used by this sample
-
-    /// Default Constructor deleted
-    VkGPASoftwareSample() = delete;
-
-    /// Copy constructor - private override to disable usage
-    VkGPASoftwareSample(const VkGPASoftwareSample&) = delete;
-
-    /// Move constructor - private override to disable usage
-    VkGPASoftwareSample(VkGPASoftwareSample&&) = delete;
-
-    /// Copy operator - private override to disable usage
-    VkGPASoftwareSample& operator=(const VkGPASoftwareSample&) = delete;
-
-    /// Move operator - private override to disable usage
-    VkGPASoftwareSample& operator=(VkGPASoftwareSample&&) = delete;
 
     /// Get counter result for a counter derived from a timestamp query
     /// \return True if counter results were collected, false if not

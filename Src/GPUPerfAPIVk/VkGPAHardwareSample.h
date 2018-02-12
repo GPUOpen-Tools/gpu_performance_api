@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class to manage a single sample of HW counters
@@ -23,7 +23,12 @@
 class VkGPAHardwareSample : public VkGPASample
 {
 public:
+
     /// Constructor
+    /// \param[in] pPass pass object
+    /// \param[in] pCmdList gpa command list
+    /// \param[in] sampleId sample Id
+    /// \param[in] device vk device
     VkGPAHardwareSample(GPAPass* pPass,
         IGPACommandList* pCmdList,
         unsigned int sampleId,
@@ -32,23 +37,29 @@ public:
     /// Destructor
     virtual ~VkGPAHardwareSample();
 
-    /// Start a counter sample.
-    /// \param pContextState pointer to object containing the context information for this request
-    /// \param pCounters the set of counters to enable
-    /// \return True if the sample could be started; false otherwise.
-    virtual bool BeginRequest(
-        IGPAContext* pContextState,
-        const std::vector<gpa_uint32>* pCounters) override final;
+    /// \copydoc VkGPASample::BeginRequest
+    virtual bool BeginRequest() override final;
 
-    /// Ends a counter sample.
-    /// \return True on success; false on error.
+    /// \copydoc VkGPASample::EndRequest
     virtual bool EndRequest() override final;
 
-    /// Release allocated counters
+    /// \copydoc VkGPASample::ReleaseCounters
     virtual void ReleaseCounters() override;
 
     /// \copydoc VkGPASample::UpdateResults()
     virtual bool UpdateResults() override;
+
+    /// Copy constructor - private override to disable usage
+    VkGPAHardwareSample(const VkGPAHardwareSample&) = delete;
+
+    /// Move constructor - private override to disable usage
+    VkGPAHardwareSample(VkGPAHardwareSample&&) = delete;
+
+    /// Copy operator - private override to disable usage
+    VkGPAHardwareSample& operator=(const VkGPAHardwareSample&) = delete;
+
+    /// Move operator - private override to disable usage
+    VkGPAHardwareSample& operator=(VkGPAHardwareSample&&) = delete;
 
 private:
 
@@ -63,26 +74,13 @@ private:
     /// \return true if copying of data was successful otherwise false
     bool CopyResult(size_t sampleDataSize, void* pResultBuffer) const;
 
-    /// Copy constructor - private override to disable usage
-    VkGPAHardwareSample(const VkGPAHardwareSample&) = delete;
 
-    /// Move constructor - private override to disable usage
-    VkGPAHardwareSample(VkGPAHardwareSample&&) = delete;
-
-    /// Copy operator - private override to disable usage
-    VkGPAHardwareSample& operator=(const VkGPAHardwareSample&) = delete;
-
-    /// Move operator - private override to disable usage
-    VkGPAHardwareSample& operator=(VkGPAHardwareSample&&) = delete;
-
-    VkGPAContext*                m_pContextState;   ///< the context state that owns this sample
-    VkGpaSessionAMD              m_gpaSession;      ///< The underlying driver extension session that this sample is on.
-    VkGpaPerfCounterAMD*         m_pCounterIds;     ///< ids of the counters in this sample
-    gpa_uint32                   m_numCounters;     ///< number of counters in this sample
-    uint32_t                     m_sampleIndex;     ///< index of the sample being measured
-    VkDevice                     m_device;          ///< The device on which the counters are being collected
-    VkCommandBuffer              m_commandBuffer;   ///< the command buffer for this sample
-    bool                         m_isTimingRequest; ///< flag indicating if this sample is a timing counter
+    VkGpaSessionAMD   m_gpaSession;             ///< The underlying driver extension session that this sample is on.
+    gpa_uint32        m_numCounters;            ///< number of counters in this sample
+    uint32_t          m_sampleIndex;            ///< index of the sample being measured
+    VkDevice          m_device;                 ///< The device on which the counters are being collected
+    VkCommandBuffer   m_commandBuffer;          ///< the command buffer for this sample
+    bool              m_hasAnyHardwareCounters; ///< flag indicating if there are any non-skipped hardware counters in this request
 };
 
 #endif // _VK_GPA_HARDWARE_SAMPLE_H_

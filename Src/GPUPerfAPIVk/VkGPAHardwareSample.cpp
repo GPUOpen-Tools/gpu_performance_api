@@ -7,6 +7,7 @@
 
 #include "VkGPAHardwareSample.h"
 #include "VkGPACommandList.h"
+#include "VkGPAPass.h"
 #include "GPAHardwareCounters.h"
 #include "VkEntrypoints.h"
 #include "vk_amd_gpa_interface.h"
@@ -16,15 +17,13 @@ VkGPAHardwareSample::VkGPAHardwareSample(GPAPass* pPass,
     unsigned int sampleId,
     VkDevice device) :
     VkGPASample(pPass, pCmdList, GpaSampleType::Hardware, sampleId),
-    m_pContextState(nullptr),
-    m_pCounterIds(nullptr),
     m_numCounters(0),
     m_sampleIndex(0),
     m_device(device),
     m_commandBuffer(m_pVkGpaCmdList->GetVkCommandBuffer()),
-    m_isTimingRequest(false)
+    m_hasAnyHardwareCounters(false)
 {
-    VkGPACommandList* pVkGpaCmdList = static_cast<VkGPACommandList*>(pCmdList);
+    VkGPACommandList* pVkGpaCmdList = dynamic_cast<VkGPACommandList*>(pCmdList);
     m_gpaSession = (nullptr != pVkGpaCmdList) ? pVkGpaCmdList->GetAmdExtSession() : VK_NULL_HANDLE;
 }
 
@@ -36,131 +35,36 @@ VkGPAHardwareSample::~VkGPAHardwareSample()
     }
 }
 
-bool VkGPAHardwareSample::BeginRequest(IGPAContext* pContextState,
-                                       const std::vector<gpa_uint32>* pCounters)
+bool VkGPAHardwareSample::BeginRequest()
 {
-    bool result = true;
+    bool result = false;
 
-    m_pContextState = reinterpret_cast<VkGPAContext*>(pContextState);
+    m_numCounters = GetPass()->GetEnabledCounterCount();
+    m_hasAnyHardwareCounters = m_numCounters > 0;
 
-    VkGpaSampleBeginInfoAMD gpaSampleConfig = { };
-    gpaSampleConfig.sType = VK_STRUCTURE_TYPE_GPA_SAMPLE_BEGIN_INFO_AMD;
+    VkGPAPass* pVkGpaPass = dynamic_cast<VkGPAPass*>(GetPass());
 
-    const IGPACounterAccessor* pCounterAccessor = m_pContextState->GetCounterAccessor();
-    const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
-
-    m_numCounters = static_cast<gpa_uint32>(pCounters->size());
-
-    if (m_numCounters > 0)
+    if (nullptr == pVkGpaPass)
     {
-        if ((*pCounters)[0] == pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex ||
-            (*pCounters)[0] == pHardwareCounters->m_gpuTimeTopToBottomCounterIndex)
+        GPA_LogError("Invalid GPAPass encountered in hardware sample begin request");
+    }
+    else
+    {
+        if (GetPass()->IsTimingPass() || m_hasAnyHardwareCounters)
         {
-            m_isTimingRequest = true;
-            m_pCounterIds = nullptr;
+            VkResult beginResult = _vkCmdBeginGpaSampleAMD(m_commandBuffer, m_gpaSession, pVkGpaPass->GetVkSampleBeginInfo(), &m_sampleIndex);
+            result = (VK_SUCCESS == beginResult);
 
-            gpaSampleConfig.sampleType = VkGpaSampleTypeAMD::VK_GPA_SAMPLE_TYPE_TIMING_AMD;
-
-            if ((*pCounters)[0] == pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex)
+            if (result)
             {
-                gpaSampleConfig.timingPreSample = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
+                GPASample::SetDriverSampleId(m_sampleIndex);
             }
-            else if ((*pCounters)[0] == pHardwareCounters->m_gpuTimeTopToBottomCounterIndex)
-            {
-                gpaSampleConfig.timingPreSample = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
-            }
-
-            gpaSampleConfig.timingPostSample = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
         }
         else
         {
-            VkGpaSqShaderStageFlagBitsAMD maskValue = VkGpaSqShaderStageFlagBitsAMD(0x00000080); // All the stages
-
-            gpaSampleConfig.sampleType = VkGpaSampleTypeAMD::VK_GPA_SAMPLE_TYPE_CUMULATIVE_AMD;
-            gpaSampleConfig.perfCounterCount = m_numCounters;
-
-            m_pCounterIds = new(std::nothrow) VkGpaPerfCounterAMD[gpaSampleConfig.perfCounterCount];
-
-            if (nullptr == m_pCounterIds)
-            {
-                GPA_LogError("Insufficient memory to allocate counters.");
-                return false;
-            }
-
-            // add all desired counters
-            for (size_t i = 0; i < pCounters->size(); i++)
-            {
-                const GPA_HardwareCounterDescExt* pCounter = &pHardwareCounters->m_counters[(*pCounters)[i]];
-                m_pCounterIds[i].blockType = static_cast<VkGpaPerfBlockAMD>(pCounter->m_groupIdDriver);
-                m_pCounterIds[i].blockInstance = static_cast<uint32_t>(pHardwareCounters->m_pGroups[pCounter->m_groupIndex].m_blockInstance);
-                m_pCounterIds[i].eventID = static_cast<uint32_t>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
-
-                GPA_SQShaderStage stage = SQ_ALL;
-
-                for (unsigned int j = 0; j < pHardwareCounters->m_sqGroupCount - 1; j++)
-                {
-                    if (pHardwareCounters->m_pSQCounterGroups[j].m_groupIndex == pCounter->m_groupIndex)
-                    {
-                        stage = pHardwareCounters->m_pSQCounterGroups[j].m_stage;
-                        break;
-                    }
-                }
-
-                if (stage == SQ_ES)
-                {
-                    maskValue = VK_GPA_SQ_SHADER_STAGE_ES_BIT_AMD;
-                }
-                else if (stage == SQ_GS)
-                {
-                    maskValue = VK_GPA_SQ_SHADER_STAGE_GS_BIT_AMD;
-                }
-                else if (stage == SQ_VS)
-                {
-                    maskValue = VK_GPA_SQ_SHADER_STAGE_VS_BIT_AMD;
-                }
-                else if (stage == SQ_PS)
-                {
-                    maskValue = VK_GPA_SQ_SHADER_STAGE_PS_BIT_AMD;
-                }
-                else if (stage == SQ_LS)
-                {
-                    maskValue = VK_GPA_SQ_SHADER_STAGE_LS_BIT_AMD;
-                }
-                else if (stage == SQ_HS)
-                {
-                    maskValue = VK_GPA_SQ_SHADER_STAGE_HS_BIT_AMD;
-                }
-                else if (stage == SQ_CS)
-                {
-                    maskValue = VK_GPA_SQ_SHADER_STAGE_CS_BIT_AMD;
-                }
-            }
-
-            gpaSampleConfig.pPerfCounters = m_pCounterIds;
-            gpaSampleConfig.streamingPerfTraceSampleInterval = 0;
-            gpaSampleConfig.perfCounterDeviceMemoryLimit = 0;
-
-            // set shader mask
-            gpaSampleConfig.sqShaderMaskEnable = VK_TRUE;
-            gpaSampleConfig.sqShaderMask = maskValue;
+            // Sample doesn't have any available hardware counters for this specific hardware revision, so we need to pretend this succeeded.
+            result = true;
         }
-
-        // Insert L2 cache invalidate and flush around counter sample
-        if (pContextState->IsInvalidateAndFlushL2CacheEnabled())
-        {
-            gpaSampleConfig.cacheFlushOnCounterCollection = true;
-            pContextState->SetInvalidateAndFlushL2Cache(false);
-        }
-    }
-
-    result = false;
-
-    VkResult beginResult = _vkCmdBeginGpaSampleAMD(m_commandBuffer, m_gpaSession, &gpaSampleConfig, &m_sampleIndex);
-    result = (beginResult == VK_SUCCESS);
-
-    if (result)
-    {
-        GPASample::SetDriverSampleId(m_sampleIndex);
     }
 
     return result;
@@ -168,14 +72,17 @@ bool VkGPAHardwareSample::BeginRequest(IGPAContext* pContextState,
 
 bool VkGPAHardwareSample::EndRequest()
 {
-    _vkCmdEndGpaSampleAMD(m_commandBuffer, m_gpaSession, m_sampleIndex);
+    if (GetPass()->IsTimingPass() || m_hasAnyHardwareCounters)
+    {
+        _vkCmdEndGpaSampleAMD(m_commandBuffer, m_gpaSession, m_sampleIndex);
+    }
 
-    delete[] m_pCounterIds;
     return true;
 }
 
 void VkGPAHardwareSample::ReleaseCounters()
 {
+  GPA_STUB_FUNCTION;
 }
 
 bool VkGPAHardwareSample::UpdateResults()
@@ -207,59 +114,69 @@ GPASampleResult* VkGPAHardwareSample::PopulateSampleResults()
     size_t sampleDataSize = 0u;
 
     // Validate result space
-    if (!GetPass()->IsTimingPass())
+    if (GetPass()->IsTimingPass())
     {
-        sampleDataSize = GetSampleResultLocation()->m_numCounters * sizeof(gpa_uint64);
+        // If this is a timing pass, we will have one result space to return the result, 
+        // but we need to get two results from the driver.
+        sampleDataSize = GetSampleResultLocation()->m_numCounters * 2 * sizeof(gpa_uint64);
     }
     else
     {
-        // If the pass is timing, we will have one result space to return the result, although
-        // we need to get the result in twice space size from the driver
-        sampleDataSize = GetSampleResultLocation()->m_numCounters * 2 * sizeof(gpa_uint64);
+        sampleDataSize = GetSampleResultLocation()->m_numCounters * sizeof(gpa_uint64);
     }
 
     gpa_uint64* pResultBuffer = nullptr;
     gpa_uint64 timingData[2];
 
-    if (nullptr != GetSampleResultLocation()->m_pResultBuffer)
+    if (sampleDataSize > 0)
     {
-        if (GetPass()->IsTimingPass())
+        if (nullptr == GetSampleResultLocation()->m_pResultBuffer)
         {
-            pResultBuffer = timingData;
+            GPA_LogError("Incorrect space allocated for sample result");
         }
         else
-        {
-            pResultBuffer = GetSampleResultLocation()->m_pResultBuffer;
-        }
-
-        if (CopyResult(sampleDataSize, pResultBuffer))
         {
             if (GetPass()->IsTimingPass())
             {
-                // There will be one counter result space for this
-                *(GetSampleResultLocation()->m_pResultBuffer) = timingData[1] - timingData[0];
+                pResultBuffer = timingData;
             }
-
-            if (IsSampleContinuing())
+            else
             {
-                GPASampleResult* pSampleResult = reinterpret_cast<VkGPAHardwareSample*>(GetContinuingSample())->PopulateSampleResults();
-
-                for (size_t counterIter = 0; counterIter < GetSampleResultLocation()->m_numCounters; counterIter++)
-                {
-                    GetSampleResultLocation()->m_pResultBuffer[counterIter] += pSampleResult->m_pResultBuffer[counterIter];
-                }
+                pResultBuffer = GetSampleResultLocation()->m_pResultBuffer;
             }
 
-            MarkAsCompleted();
+            if (CopyResult(sampleDataSize, pResultBuffer))
+            {
+                if (GetPass()->IsTimingPass())
+                {
+                    // There will be one counter result space for this
+                    *(GetSampleResultLocation()->m_pResultBuffer) = timingData[1] - timingData[0];
+                }
+
+                if (IsSampleContinuing())
+                {
+                    GPASampleResult* pSampleResult = dynamic_cast<VkGPAHardwareSample*>(GetContinuingSample())->PopulateSampleResults();
+
+                    if (nullptr == pSampleResult)
+                    {
+                        GPA_LogError("Invalid GPASample encountered when populating results of continued sample");
+                    }
+                    else
+                    {
+                        for (size_t counterIter = 0; counterIter < GetSampleResultLocation()->m_numCounters; counterIter++)
+                        {
+                            GetSampleResultLocation()->m_pResultBuffer[counterIter] += pSampleResult->m_pResultBuffer[counterIter];
+                        }
+                    }
+                }
+
+                MarkAsCompleted();
+            }
+            else
+            {
+                GPA_LogError("Unable to get the result from the driver");
+            }
         }
-        else
-        {
-            GPA_LogError("Unable to get the result from the driver");
-        }
-    }
-    else
-    {
-        GPA_LogError("Incorrect space allocated for sample result");
     }
 
     return GetSampleResultLocation();
@@ -271,55 +188,70 @@ bool VkGPAHardwareSample::CopyResult(size_t sampleDataSize, void* pResultBuffer)
 
     if (nullptr != pResultBuffer)
     {
-        VkGPACommandList* pVkGpaCmdList = reinterpret_cast<VkGPACommandList*>(GetCmdList());
+        VkGPACommandList* pVkGpaCmdList = dynamic_cast<VkGPACommandList*>(GetCmdList());
 
-        VkGpaSessionAMD extSession = pVkGpaCmdList->GetAmdExtSession();
-
-        if (IsCopied())
+        if (nullptr == pVkGpaCmdList)
         {
-            extSession = pVkGpaCmdList->GetCopiedAmdExtSession(GetClientSampleId());
-            assert(VK_NULL_HANDLE != extSession);
+            GPA_LogError("Invalid GPACommandList encountered while copying hardware counter results");
         }
         else
         {
-            extSession = pVkGpaCmdList->GetAmdExtSession();
-            assert(VK_NULL_HANDLE != extSession);
-        }
+            VkGpaSessionAMD extSession = pVkGpaCmdList->GetAmdExtSession();
 
-        VkGPAContext* pVkGPAContext = static_cast<VkGPAContext*>(pVkGpaCmdList->GetParentSession()->GetParentContext());
-        VkDevice vkDevice = pVkGPAContext->GetVkDevice();
-
-        if (VK_NULL_HANDLE == extSession)
-        {
-            GPA_LogError("Invalid profiling session encountered while copying results");
-        }
-        else
-        {
-            VkResult isReady = _vkGetGpaSessionStatusAMD(pVkGPAContext->GetVkDevice(), extSession);
-
-            if (VK_SUCCESS == isReady)
+            if (IsCopied())
             {
-                size_t sampleDataSizeInDriver = 0u;
-                VkResult gotResultSize = _vkGetGpaSessionResultsAMD(vkDevice, extSession, GetDriverSampleId(), &sampleDataSizeInDriver, nullptr);
-                assert(VK_SUCCESS == gotResultSize);
-                assert(sampleDataSize == sampleDataSizeInDriver);
+                extSession = pVkGpaCmdList->GetCopiedAmdExtSession(GetClientSampleId());
+                assert(VK_NULL_HANDLE != extSession);
+            }
+            else
+            {
+                extSession = pVkGpaCmdList->GetAmdExtSession();
+                assert(VK_NULL_HANDLE != extSession);
+            }
 
-                if (VK_SUCCESS == gotResultSize && sampleDataSize == sampleDataSizeInDriver)
+            VkGPAContext* pVkGPAContext = dynamic_cast<VkGPAContext*>(pVkGpaCmdList->GetParentSession()->GetParentContext());
+
+            if (nullptr == pVkGPAContext)
+            {
+                GPA_LogError("Invalid GPAContext encountered while copying hardware counter results");
+            }
+            else
+            {
+                VkDevice vkDevice = pVkGPAContext->GetVkDevice();
+
+                if (VK_NULL_HANDLE == extSession)
                 {
-                    VkResult gotResults = _vkGetGpaSessionResultsAMD(vkDevice, extSession, GetDriverSampleId(), &sampleDataSizeInDriver, pResultBuffer);
-                    assert(VK_SUCCESS == gotResults);
-                    if (VK_SUCCESS == gotResults)
-                    {
-                        isDataReady = true;
-                    }
-                    else
-                    {
-                        GPA_LogError("Error occurred while getting sample results from driver");
-                    }
+                    GPA_LogError("Invalid profiling session encountered while copying results");
                 }
                 else
                 {
-                    GPA_LogError("Error occurred while getting sample result size from driver");
+                    VkResult isReady = _vkGetGpaSessionStatusAMD(pVkGPAContext->GetVkDevice(), extSession);
+
+                    if (VK_SUCCESS == isReady)
+                    {
+                        size_t sampleDataSizeInDriver = 0u;
+                        VkResult gotResultSize = _vkGetGpaSessionResultsAMD(vkDevice, extSession, GetDriverSampleId(), &sampleDataSizeInDriver, nullptr);
+                        assert(VK_SUCCESS == gotResultSize);
+                        assert(sampleDataSize == sampleDataSizeInDriver);
+
+                        if (VK_SUCCESS == gotResultSize && sampleDataSize == sampleDataSizeInDriver)
+                        {
+                            VkResult gotResults = _vkGetGpaSessionResultsAMD(vkDevice, extSession, GetDriverSampleId(), &sampleDataSizeInDriver, pResultBuffer);
+                            assert(VK_SUCCESS == gotResults);
+                            if (VK_SUCCESS == gotResults)
+                            {
+                                isDataReady = true;
+                            }
+                            else
+                            {
+                                GPA_LogError("Error occurred while getting sample results from driver");
+                            }
+                        }
+                        else
+                        {
+                            GPA_LogError("Error occurred while getting sample result size from driver");
+                        }
+                    }
                 }
             }
         }

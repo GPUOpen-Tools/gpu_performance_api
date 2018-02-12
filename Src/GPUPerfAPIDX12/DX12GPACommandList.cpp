@@ -5,8 +5,6 @@
 /// \brief DX12 GPA Command List Implementation
 //==============================================================================
 
-#include <cassert>
-
 #include "DX12GPACommandList.h"
 #include "GPACommonDefs.h"
 #include "DX12Utils.h"
@@ -15,30 +13,22 @@
 #include "Logging.h"
 #include "DX12GPAPass.h"
 
-
-DX12GPASession* DX12GPACommandList::GetSession() const
-{
-    return m_pDX12GpaSession;
-}
-
 DX12GPACommandList::DX12GPACommandList(DX12GPASession* pDX12GpaSession,
-                                       GPAPass* pPass,
+                                       GPAPass* pDX12GpaPass,
                                        void* pCmd,
-                                       GPA_Command_List_Type cmdType)
+                                       CommandListId commandListId,
+                                       GPA_Command_List_Type cmdType):
+    GPACommandList(pDX12GpaSession, pDX12GpaPass, commandListId, cmdType)
 {
     m_pCmdList = reinterpret_cast<ID3D12GraphicsCommandList*>(pCmd);
     unsigned int refCount = m_pCmdList->AddRef();
     UNREFERENCED_PARAMETER(refCount);
-    m_gpaCommandListType = cmdType;
-    m_pDX12GpaSession = pDX12GpaSession;
-    m_commandListState = CommandListState::UNDEFINED;
-    m_pDX12GpaPass = reinterpret_cast<DX12GPAPass*>(pPass);
-    m_cmdSampleStatus = CmdSampleStatus::SAMPLE_END;
     m_pAmdExtSession = nullptr;
-    m_currentDriverSampleId = NULL;
-    m_isCommandListOpen = false;
+    m_isCommandListOpenInDriver = false;
     m_isNonGPAResourceReleased = false;
-    m_lastOpenedClientSampleId = 0u;
+
+    // Hardware counters are requested from the client even though it is not available in the driver
+    m_hasAnyHardwareCounters = pDX12GpaPass->GetEnabledCounterCount() > 0;
 }
 
 DX12GPACommandList::~DX12GPACommandList()
@@ -46,130 +36,81 @@ DX12GPACommandList::~DX12GPACommandList()
     ReleaseNonGPAResources();
 }
 
-IGPASession* DX12GPACommandList::GetParentSession() const
+bool DX12GPACommandList::BeginCommandListRequest()
 {
-    return m_pDX12GpaSession;
+    std::lock_guard<std::mutex> lock(m_dx12CmdListMutex);
+    bool success = false;
+
+    if (nullptr == m_pAmdExtSession)
+    {
+        DX12GPASession* pDx12GpaSession = reinterpret_cast<DX12GPASession*>(GetParentSession());
+        m_pAmdExtSession = pDx12GpaSession->GetAmdExtInterface()->CreateGpaSession();
+        m_pAmdExtSession->AddRef();
+    }
+
+    HRESULT extensionOpResult = m_pAmdExtSession->Begin(m_pCmdList);
+    success = S_OK == extensionOpResult;
+
+    if (!success)
+    {
+        GPA_LogError("Failed to begin the AMD driver extension for sampling");
+    }
+    else
+    {
+        m_isCommandListOpenInDriver = true;
+    }
+
+    return success;
 }
 
-bool DX12GPACommandList::Begin()
+bool DX12GPACommandList::EndCommandListRequest()
 {
-    if (CommandListState::UNDEFINED == m_commandListState)
+    std::lock_guard<std::mutex> lock(m_dx12CmdListMutex);
+    bool succeed = false;
+
+    if (m_isCommandListOpenInDriver)
     {
-        // TODO: Merge http://git.amd.com:8080/#/c/106405/ - workaround for driver bug
-        // where if no sample is added on a command list, driver check for data never to return true.
+        HRESULT status = m_pAmdExtSession->End(m_pCmdList);
 
-        /*if (S_OK == GetAmdExtSession()->Begin(m_pCmdList))
-        {*/
-        m_commandListState = CommandListState::SAMPLE_RECORDING_BEGIN;
-        return true;
-        //}
-
-        /* GPA_LogDebugError("AMD extension is unable to begin the command list.");
-         return false;*/
-    }
-
-    GPA_LogError("CommandList already started.");
-    return false;
-}
-
-bool DX12GPACommandList::End()
-{
-    bool isSucceed = false;
-
-    if (CommandListState::UNDEFINED == m_commandListState)
-    {
-        GPA_LogDebugError("Command list is not yet opened for sampling.");
-    }
-    else if (CommandListState::SAMPLE_RECORDING_END == m_commandListState)
-    {
-        GPA_LogError("Command List already ended.");
-    }
-    else if (CommandListState::SAMPLE_RECORDING_BEGIN == m_commandListState)
-    {
-        // Close any outstanding opened sample and mark it as candidate for continuation
-        if (CmdSampleStatus::SAMPLE_END != m_cmdSampleStatus)
+        if (S_OK == status)
         {
-            CloseLastSample(false);
-        }
-
-        // TODO: Merge http://git.amd.com:8080/#/c/106405/ - workaround for driver bug
-        // where if no sample is added on a command list, driver check for data never to return true.
-        if (m_isCommandListOpen)
-        {
-            HRESULT status = m_pAmdExtSession->End(m_pCmdList);
-
-            if (S_OK == status)
-            {
-                m_commandListState = CommandListState::SAMPLE_RECORDING_END;
-                isSucceed = true;
-                m_isCommandListOpen = false;
-            }
-        }
-        else
-        {
-            GPA_LogDebugError("AMD extension is unable to end the command list.");
+            succeed = true;
+            m_isCommandListOpenInDriver = false;
         }
     }
+    else
+    {
+        GPA_LogDebugError("AMD extension is unable to end the command list.");
+    }
 
-    return isSucceed;
+    return succeed;
 }
 
-bool DX12GPACommandList::IsCommandListRunning() const
-{
-    return m_commandListState == CommandListState::SAMPLE_RECORDING_BEGIN;
-}
-
-GPAPass* DX12GPACommandList::GetPass() const
-{
-    return m_pDX12GpaPass;
-}
-
-gpa_uint32 DX12GPACommandList::GetSampleCount() const
-{
-    return static_cast<gpa_uint32>(m_clientSampleIdGPASampleObjectMap.size());
-}
-
-bool DX12GPACommandList::BeginSample(ClientSampleId clientSampleIndex, GPASample* pSample, const std::vector<CounterIndex>* pCounterList)
+bool DX12GPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample)
 {
     bool succeeded = false;
 
-    if (CommandListState::SAMPLE_RECORDING_BEGIN != m_commandListState)
-    {
-        GPA_LogError("Command list must be in recording state to start/end a sample.");
-    }
-    else if (CmdSampleStatus::SAMPLE_END != m_cmdSampleStatus)
-    {
-        GPA_LogError("Previous sample must be ended before starting a new one.");
-    }
-    else if (DoesSampleExist(clientSampleIndex))
-    {
-        GPA_LogError("Sample Id already exists.");
-    }
-
-    m_cmdSampleStatus = CmdSampleStatus::SAMPLE_BEGIN;
-
     DriverSampleId driverSampleId = 0;
+    GPACounterSource counterSource = GetPass()->GetCounterSource();
 
-    if (GPACounterSource::HARDWARE == m_pDX12GpaPass->GetCounterSource())
+    if (GPACounterSource::HARDWARE == counterSource)
     {
-        if (OpenHwSample(clientSampleIndex, &driverSampleId))
+        if (OpenHwSample(clientSampleId, &driverSampleId))
         {
-            succeeded = pSample->Begin(m_pDX12GpaSession->GetParentContext(), pCounterList);
+            succeeded = true;
         }
     }
-    else if (GPACounterSource::SOFTWARE == m_pDX12GpaPass->GetCounterSource())
+    else if (GPACounterSource::SOFTWARE == counterSource)
     {
-        if (OpenSwSample(clientSampleIndex, &driverSampleId))
+        if (OpenSwSample(clientSampleId, &driverSampleId))
         {
-            succeeded = pSample->Begin(m_pDX12GpaSession->GetParentContext(), pCounterList);
+            succeeded = true;
         }
     }
 
     if (succeeded)
     {
-        pSample->SetDriverSampleId(driverSampleId);
-        m_lastOpenedClientSampleId = clientSampleIndex;
-        m_currentDriverSampleId = driverSampleId;
+        pGpaSample->SetDriverSampleId(driverSampleId);
     }
     else
     {
@@ -179,64 +120,20 @@ bool DX12GPACommandList::BeginSample(ClientSampleId clientSampleIndex, GPASample
     return succeeded;
 }
 
-GPASample* DX12GPACommandList::GetLastSample() const
+bool DX12GPACommandList::CloseLastSampleRequest()
 {
-    GPASample* pRetSample = nullptr;
+    GPACounterSource counterSource = GetPass()->GetCounterSource();
 
-    if (DoesSampleExist(m_lastOpenedClientSampleId))
+    if (GPACounterSource::HARDWARE == counterSource)
     {
-        pRetSample = m_clientSampleIdGPASampleObjectMap.at(m_lastOpenedClientSampleId);
+        CloseHwSample();
+    }
+    else if (GPACounterSource::SOFTWARE == counterSource)
+    {
+        CloseSwSample();
     }
 
-    return pRetSample;
-}
-
-bool DX12GPACommandList::CloseLastSample(bool closingByClient)
-{
-    bool succeeded = false;
-
-    if (CommandListState::SAMPLE_RECORDING_BEGIN != m_commandListState)
-    {
-        GPA_LogError("Command list must be in recording state to start/end a sample.");
-    }
-    else if (CmdSampleStatus::SAMPLE_BEGIN != m_cmdSampleStatus)
-    {
-        GPA_LogError("Sample must be started before ending one.");
-    }
-    else if (!DoesSampleExist(m_lastOpenedClientSampleId))
-    {
-        GPA_LogError("Sample has not been added to the list.");
-    }
-    else
-    {
-        if (closingByClient)
-        {
-            m_clientSampleIdGPASampleObjectMap[m_lastOpenedClientSampleId]->SetAsClosedByClient();
-        }
-
-        if (GPACounterSource::HARDWARE == m_pDX12GpaPass->GetCounterSource())
-        {
-            CloseHwSample();
-        }
-        else if (GPACounterSource::SOFTWARE == m_pDX12GpaPass->GetCounterSource())
-        {
-            CloseSwSample();
-        }
-
-        succeeded = m_clientSampleIdGPASampleObjectMap[m_lastOpenedClientSampleId]->End();
-
-        if (succeeded)
-        {
-            m_cmdSampleStatus = CmdSampleStatus::SAMPLE_END;
-        }
-    }
-
-    return succeeded;
-}
-
-bool DX12GPACommandList::IsLastSampleClosed() const
-{
-    return CmdSampleStatus::SAMPLE_END == m_cmdSampleStatus;
+    return true;
 }
 
 bool DX12GPACommandList::IsComplete() const
@@ -255,33 +152,9 @@ bool DX12GPACommandList::IsComplete() const
     return isComplete;
 }
 
-GPA_Command_List_Type DX12GPACommandList::GetCmdType() const
-{
-    return m_gpaCommandListType;
-}
-
 GPA_API_Type DX12GPACommandList::GetAPIType() const
 {
     return GPA_API_DIRECTX_12;
-}
-
-GPAObjectType DX12GPACommandList::ObjectType() const
-{
-    return GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST;
-}
-
-DX12GPASample* DX12GPACommandList::GetSample(ClientSampleId clientSampleId) const
-{
-    DX12GPASample* pRetDx12GpaSample = nullptr;
-
-    ClientSampleIdGPASampleObjectMap::const_iterator iter = m_clientSampleIdGPASampleObjectMap.find(clientSampleId);
-
-    if (iter != m_clientSampleIdGPASampleObjectMap.end())
-    {
-        pRetDx12GpaSample = iter->second;
-    }
-
-    return pRetDx12GpaSample;
 }
 
 ID3D12GraphicsCommandList* DX12GPACommandList::GetCmdList() const
@@ -295,31 +168,12 @@ bool DX12GPACommandList::CopyBundleSamples(std::vector<ClientSampleId> clientSam
 {
     bool success = false;
 
-    if (m_gpaCommandListType == GPA_COMMAND_LIST_PRIMARY &&
+    if (GPA_COMMAND_LIST_PRIMARY == GetCmdType() &&
         nullptr == GetBundleResultAmdExtSession(clientSampleIds.at(0)))     ///< This should always return nullptr because you've already confirmed that the new clientSampleIds are unique. Therefore this code could be removed.
     {
-        IAmdExtGpaSession* pCopyAmdExtGpaSession = m_pDX12GpaSession->GetAmdExtInterface()->CopyGpaSession(
+        DX12GPASession* pDx12GpaSession = reinterpret_cast<DX12GPASession*>(GetParentSession());
+        IAmdExtGpaSession* pCopyAmdExtGpaSession = pDx12GpaSession->GetAmdExtInterface()->CopyGpaSession(
                                                        pDx12SecondaryCmd->GetAmdExtSession());
-
-        HRESULT status = S_OK;
-
-        // TODO: Merge http://git.amd.com:8080/#/c/106405/ - workaround for driver bug
-        // where if no sample is added on a command list, driver check for data never to return true.
-        if (!m_isCommandListOpen)
-        {
-            if (nullptr == m_pAmdExtSession)
-            {
-                m_pAmdExtSession = m_pDX12GpaSession->GetAmdExtInterface()->CreateGpaSession();
-                m_pAmdExtSession->AddRef();
-            }
-
-            status = m_pAmdExtSession->Begin(m_pCmdList);
-
-            if (S_OK == status)
-            {
-                m_isCommandListOpen = true;
-            }
-        }
 
         pCopyAmdExtGpaSession->CopyResults(m_pCmdList);
         BundleSamplesOnPrimaryCmd bundleSamplesOnPrimaryCmd(clientSampleIds.begin(), clientSampleIds.end());
@@ -329,11 +183,13 @@ bool DX12GPACommandList::CopyBundleSamples(std::vector<ClientSampleId> clientSam
         // holding a reference
         pCopyAmdExtGpaSession->AddRef();
 
-        for (auto constIter = pDx12SecondaryCmd->m_clientSampleIdGPASampleObjectMap.cbegin();
-             constIter != pDx12SecondaryCmd->m_clientSampleIdGPASampleObjectMap.cend(); ++constIter)
+        auto insertOriginalClientSampleId = [&](ClientSampleIdGpaSamplePair clientSampleIdGpaSamplePair)->bool
         {
-            originalClientSampleIds.push_back(constIter->first);
-        }
+            originalClientSampleIds.push_back(clientSampleIdGpaSamplePair.first);
+            return true;
+        };
+
+        pDx12SecondaryCmd->IterateSampleUnorderedMap(insertOriginalClientSampleId);
 
         success = true;
     }
@@ -370,53 +226,38 @@ IAmdExtGpaSession* DX12GPACommandList::GetBundleResultAmdExtSession(ClientSample
 }
 
 
-bool DX12GPACommandList::DoesSampleExist(ClientSampleId clientSampleId) const
+bool DX12GPACommandList::OpenHwSample(ClientSampleId clientSampleId, DriverSampleId* pDriverSampleId) const
 {
-    std::lock_guard<std::mutex> lock(m_cmdListMutex);
-    bool exists = false;
 
-    if (m_clientSampleIdGPASampleObjectMap.find(clientSampleId) != m_clientSampleIdGPASampleObjectMap.end())
-    {
-        exists = true;
-    }
-
-    return exists;
-}
-
-
-bool DX12GPACommandList::OpenHwSample(ClientSampleId clientSampleId, DriverSampleId* pDriverSampleId)
-{
     UNREFERENCED_PARAMETER(clientSampleId);
     bool success = false;
 
     if (nullptr != pDriverSampleId)
     {
-        HRESULT status = S_OK;
-
-        std::lock_guard<std::mutex> lock(m_cmdListMutex);
-
-        // TODO: Merge http://git.amd.com:8080/#/c/106405/ - workaround for driver bug
-        // where if no sample is added on a command list, driver check for data never to return true.
-        if (!m_isCommandListOpen)
+        if (m_isCommandListOpenInDriver)
         {
-            if (nullptr == m_pAmdExtSession)
+            if (m_hasAnyHardwareCounters)
             {
-                m_pAmdExtSession = m_pDX12GpaSession->GetAmdExtInterface()->CreateGpaSession();
-                m_pAmdExtSession->AddRef();
+                *pDriverSampleId = m_pAmdExtSession->BeginSample(m_pCmdList, reinterpret_cast<DX12GPAPass*>(GetPass())->GetAmdExtSampleConfig());
             }
 
-            status = m_pAmdExtSession->Begin(m_pCmdList);
-
-            if (S_OK == status)
-            {
-                m_isCommandListOpen = true;
-            }
+            success = true;
         }
+    }
 
-        if (S_OK == status)
+    return success;
+}
+
+bool DX12GPACommandList::CloseHwSample() const
+{
+    bool success = false;
+
+    if (m_isCommandListOpenInDriver &&
+        nullptr != GetLastSample())
+    {
+        if (m_hasAnyHardwareCounters)
         {
-            *pDriverSampleId = m_pAmdExtSession->BeginSample(m_pCmdList, m_pDX12GpaPass->GetAmdExtSampleConfig());
-
+            m_pAmdExtSession->EndSample(m_pCmdList, GetLastSample()->GetDriverSampleId());
         }
 
         success = true;
@@ -425,7 +266,7 @@ bool DX12GPACommandList::OpenHwSample(ClientSampleId clientSampleId, DriverSampl
     return success;
 }
 
-bool DX12GPACommandList::OpenSwSample(ClientSampleId clientSampleId, DriverSampleId* pDriverSampleId)
+bool DX12GPACommandList::OpenSwSample(ClientSampleId clientSampleId, DriverSampleId* pDriverSampleId) const
 {
     // TODO: Come back when we are implementing software counters
     GPA_FUNCTION_NOT_IMPLEMENTED;
@@ -434,33 +275,11 @@ bool DX12GPACommandList::OpenSwSample(ClientSampleId clientSampleId, DriverSampl
     return true;
 }
 
-void DX12GPACommandList::CloseHwSample() const
-{
-    m_pAmdExtSession->EndSample(m_pCmdList, m_currentDriverSampleId);
-}
-
 bool DX12GPACommandList::CloseSwSample()
 {
     // TODO: Come back when we are implementing software counters
     GPA_FUNCTION_NOT_IMPLEMENTED;
     return true;
-}
-
-
-GPA_THREAD_SAFE_FUNCTION bool DX12GPACommandList::AddGpaSample(DX12GPASample* pdx12GpaSample)
-{
-    bool success = false;
-    ClientSampleId clientSampleId = pdx12GpaSample->GetClientSampleId();
-
-    if (!DoesSampleExist(clientSampleId) && nullptr != pdx12GpaSample)
-    {
-        std::lock_guard<std::mutex> lockCmdList(m_cmdListMutex);
-        m_clientSampleIdGPASampleObjectMap.insert(
-            ClientSampleIdGPASampleObjectPair(clientSampleId, pdx12GpaSample));
-        success = true;
-    }
-
-    return success;
 }
 
 void DX12GPACommandList::ReleaseNonGPAResources()
@@ -471,12 +290,17 @@ void DX12GPACommandList::ReleaseNonGPAResources()
         UNREFERENCED_PARAMETER(refCount);
         m_pCmdList = nullptr;
         m_isNonGPAResourceReleased = true;
-        m_pAmdExtSession->Release();
+
+        DX12GPASession* pDx12GpaSession = reinterpret_cast<DX12GPASession*>(GetParentSession());
+        pDx12GpaSession->GetAmdExtInterface()->DestroyGpaSession(m_pAmdExtSession);
+        m_pAmdExtSession = nullptr;
 
         for (auto iter = m_secondarySampleAmdExtSessionMap.begin();
              iter != m_secondarySampleAmdExtSessionMap.end(); ++iter)
         {
-            iter->first->Release();
+            pDx12GpaSession->GetAmdExtInterface()->DestroyGpaSession(iter->first);
         }
+
+        m_secondarySampleAmdExtSessionMap.clear();
     }
 }

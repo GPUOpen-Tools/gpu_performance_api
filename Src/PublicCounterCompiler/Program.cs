@@ -174,7 +174,7 @@ namespace PublicCounterCompiler
                 DateTime.Today.Year);
             includeFile.WriteLine("/// \\author AMD Developer Tools Team");
             includeFile.WriteLine("/// \\file");
-            includeFile.WriteLine("/// \\brief  PublicCounterDefinitions ASIC file for {0}", section.ToUpper());
+            includeFile.WriteLine("/// \\brief PublicCounterDefinitions ASIC file for {0}", section.ToUpper());
             includeFile.WriteLine("//==============================================================================");
             includeFile.WriteLine();
             includeFile.WriteLine("#ifndef _PUBLIC_COUNTER_DEFS_{0}_ASICS_H_", section.ToUpper());
@@ -1006,9 +1006,7 @@ namespace PublicCounterCompiler
                             return false;
                         }
 
-                        counterDef = new PublicCounterDef();
-                        counterDef.CounterType = "GPA_COUNTER_TYPE_DYNAMIC";
-                        counterDef.Name = lineSplit[1];
+                        counterDef = new PublicCounterDef {Name = lineSplit[1]};
 
                         doneName = true;
                         insideMatchingSection = false;
@@ -1129,10 +1127,6 @@ namespace PublicCounterCompiler
                         }
 
                         doneUsage = true;
-                    }
-                    else if (lineSplit[0].Equals("countertype", StringComparison.OrdinalIgnoreCase))
-                    {
-                        counterDef.CounterType = String.Copy(lineSplit[1]);
                     }
                     else if (lineSplit[0].Equals("comp", StringComparison.OrdinalIgnoreCase))
                     {
@@ -1616,7 +1610,7 @@ namespace PublicCounterCompiler
                 DateTime.Today.Year);
             hsw.WriteLine("/// \\author AMD Developer Tools Team");
             hsw.WriteLine("/// \\file");
-            hsw.WriteLine("/// \\brief  PublicCounterDefinitions for {0}{1}", activeSectionLabel.ToUpper(), asic.ToUpper());
+            hsw.WriteLine("/// \\brief PublicCounterDefinitions for {0}{1}", activeSectionLabel.ToUpper(), asic.ToUpper());
             hsw.WriteLine("//==============================================================================");
             hsw.WriteLine();
             hsw.WriteLine("#ifndef _PUBLIC_COUNTER_DEFS_{0}{1}_H_", activeSectionLabel.ToUpper(), asic.ToUpper());
@@ -1673,7 +1667,7 @@ namespace PublicCounterCompiler
                 DateTime.Today.Year);
             csw.WriteLine("/// \\author AMD Developer Tools Team");
             csw.WriteLine("/// \\file");
-            csw.WriteLine("/// \\brief  PublicCounterDefinitions for {0}{1}", activeSectionLabel.ToUpper(), asic.ToUpper());
+            csw.WriteLine("/// \\brief PublicCounterDefinitions for {0}{1}", activeSectionLabel.ToUpper(), asic.ToUpper());
             csw.WriteLine("//==============================================================================");
             csw.WriteLine();
             csw.WriteLine("#include \"PublicCounterDefs{0}{1}.h\"", activeSectionLabel, asic);
@@ -1741,8 +1735,8 @@ namespace PublicCounterCompiler
                 if (!asicSpecific)
                 {
                     csw.WriteLine(
-                    "        p.DefinePublicCounter(\"{0}\", \"{1}\", \"{2}\", {3}, {4}, {5}, internalCounters, \"{6}\", \"{7}\" );",
-                    c.Name, c.Group, c.Desc, c.Type, c.Usage, c.CounterType, c.Comp, c.GuidHash.ToString("D"));
+                    "        p.DefinePublicCounter(\"{0}\", \"{1}\", \"{2}\", {3}, {4}, internalCounters, \"{5}\", \"{6}\" );",
+                    c.Name, c.Group, c.Desc, c.Type, c.Usage, c.Comp, c.GuidHash.ToString("D"));
                 }
                 else
                 {
@@ -1856,7 +1850,7 @@ namespace PublicCounterCompiler
                 DateTime.Today.Year);
             headerStream.WriteLine("/// \\author AMD Developer Tools Team");
             headerStream.WriteLine("/// \\file");
-            headerStream.WriteLine("/// \\brief  PublicCounterDefinitions for {0} for testing",
+            headerStream.WriteLine("/// \\brief PublicCounterDefinitions for {0} for testing",
                 activeSectionLabel.ToUpper());
             headerStream.WriteLine("//==============================================================================");
             headerStream.WriteLine();

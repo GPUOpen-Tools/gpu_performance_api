@@ -84,7 +84,7 @@ bool DX11GPASample::PopulateResult()
 
     if (nullptr != pSampleResult)
     {
-        size_t counterCount = GetPass()->GetCounterCount();
+        size_t counterCount = GetPass()->GetEnabledCounterCount();
 
         if (GetPass()->IsTimingPass() &&
             nullptr != m_pGPUTimeCounter)
@@ -150,11 +150,9 @@ bool DX11GPASample::PopulateResult()
     return populated;
 }
 
-bool DX11GPASample::BeginRequest(IGPAContext* pContextState, const std::vector<gpa_uint32>* pCounters)
+bool DX11GPASample::BeginRequest()
 {
     bool success = false;
-    UNREFERENCED_PARAMETER(pContextState);
-    UNREFERENCED_PARAMETER(pCounters);
 
     DX11GPAPass* pDx11GpaPass = reinterpret_cast<DX11GPAPass*>(GetPass());
     DX11GPAContext* pdx11GpaContext = reinterpret_cast<DX11GPAContext*>(pDx11GpaPass->GetGpaSession()->GetParentContext());
@@ -163,7 +161,7 @@ bool DX11GPASample::BeginRequest(IGPAContext* pContextState, const std::vector<g
     {
         const GPA_HardwareCounters* pHardwareCounters = pdx11GpaContext->GetCounterAccessor()->GetHardwareCounters();
 
-        if (GetPass()->IsTimingPass())
+        if (pDx11GpaPass->IsTimingPass())
         {
             ID3D11Device* pDevice = pdx11GpaContext->GetDevice();
             ID3D11DeviceContext* pDeviceContext = nullptr;
@@ -172,15 +170,19 @@ bool DX11GPASample::BeginRequest(IGPAContext* pContextState, const std::vector<g
             if (nullptr == m_pGPUTimeCounter &&
                 nullptr != pDeviceContext)
             {
-                bool timestampTopPresent = GetPass()->GPUTimestampTopPresent();
+                bool timestampTopPresent = pDx11GpaPass->GPUTimestampTopPresent();
 
                 // counter not created, create here
                 D3D11_COUNTER_DESC ctrDesc;
-                ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[(*pCounters)[GetPass()->GPUTimeBottomToBottomOffset()]].m_counterIdDriver);
+                CounterIndex GPUTImebottomToBottomCounter = 0u;
+                pDx11GpaPass->GetCounterByIndexInPass(pDx11GpaPass->GPUTimeBottomToBottomOffset(), GPUTImebottomToBottomCounter);
+                ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[GPUTImebottomToBottomCounter].m_counterIdDriver);
 
                 if (timestampTopPresent)
                 {
-                    ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[(*pCounters)[GetPass()->GPUTimestampTopOffset()]].m_counterIdDriver);
+                    CounterIndex GPUTimeTopCounter = 0u;
+                    pDx11GpaPass->GetCounterByIndexInPass(pDx11GpaPass->GPUTimestampTopOffset(), GPUTimeTopCounter);
+                    ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[GPUTimeTopCounter].m_counterIdDriver);
                 }
 
                 assert(ctrDesc.Counter != 0);
@@ -309,7 +311,7 @@ bool DX11GPASample::CreateSampleExperiment()
 
         if ((nullptr == m_pExperiment) &&
             (nullptr != pExtPE) &&
-            pDx11GpaPass->GetCounterCount() > 0)
+            pDx11GpaPass->GetEnabledCounterCount() > 0)
         {
             // create correct version of experiment based on driver version
             if (DxxExtUtils::IsMgpuPerfExtSupported(pDxExt))
@@ -395,7 +397,7 @@ bool DX11GPASample::CreateAndAddCounterToExperiment()
     bool success = true;
     assert(nullptr == m_ppCounters);
 
-    CounterCount enabledCounterCount = GetPass()->GetCounterCount();
+    CounterCount enabledCounterCount = GetPass()->GetEnabledCounterCount();
     CounterCount enabledCounterCountIndex = 0;
     m_ppCounters = new(std::nothrow) IAmdDxExtPerfCounter*[enabledCounterCount];
     const GPA_HardwareCounters* pHardwareCounters = GetPass()->GetGpaSession()->GetParentContext()->GetCounterAccessor()->GetHardwareCounters();

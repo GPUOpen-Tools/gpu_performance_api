@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX11 GPA Sample Header
@@ -33,7 +33,7 @@ public:
     bool UpdateResults() override final;
 
     /// \copydoc GPASample::BeginRequest
-    bool BeginRequest(IGPAContext* pContextState, const std::vector<gpa_uint32>* pCounters) override final;
+    bool BeginRequest() override final;
 
     /// \copydoc GPASample::EndRequest
     bool EndRequest() override final;

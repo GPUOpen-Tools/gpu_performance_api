@@ -53,17 +53,14 @@ bool DX11GPAPass::ContinueSample(ClientSampleId srcSampleId,
     return status;
 }
 
-IGPACommandList* DX11GPAPass::CreateCommandList(void* pCmd, GPA_Command_List_Type cmdType)
+IGPACommandList* DX11GPAPass::CreateAPISpecificCommandList(void* pCmd,
+    CommandListId commandListId,
+    GPA_Command_List_Type cmdType)
 {
     UNREFERENCED_PARAMETER(pCmd);
     UNREFERENCED_PARAMETER(cmdType);
 
-    DX11GPACommandList* pRetCmdList = new(std::nothrow) DX11GPACommandList(GetGpaSession(), this);
-
-    if (nullptr != pRetCmdList)
-    {
-        AddGPACommandList(pRetCmdList);
-    }
+    DX11GPACommandList* pRetCmdList = new(std::nothrow) DX11GPACommandList(GetGpaSession(), this, commandListId);
 
     return pRetCmdList;
 }
@@ -156,7 +153,7 @@ void DX11GPAPass::InitializeCounterInfo()
                 EnableCounterForPass(m_pCounterList->at(counterIter));
             }
 
-            if (GetCounterCount() > 0)
+            if (GetEnabledCounterCount() > 0)
             {
                 InitiliazeCounterExperimentParameters();
             }

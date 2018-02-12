@@ -37,11 +37,19 @@ extern IGPAImplementor* s_pGpaImp;
         return GPA_STATUS_ERROR_NULL_POINTER;                                                                       \
     }                                                                                                               \
 
-#define CHECK_INDEX_OUT_OF_RANGE(index, totalCount)                                                                 \
-    if (index >= totalCount)                                                                                        \
+#define CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, contextId)                                                          \
+    gpa_uint32 numCounters;                                                                                         \
+    GPA_Status numCountersStatus = contextId->GetNumCounters(&numCounters);                                         \
+                                                                                                                    \
+    if (GPA_STATUS_OK != numCountersStatus)                                                                         \
+    {                                                                                                               \
+         return numCountersStatus;                                                                                  \
+    }                                                                                                               \
+                                                                                                                    \
+    if (index >= numCounters)                                                                                       \
     {                                                                                                               \
         std::stringstream message;                                                                                  \
-        message << "Parameter '"#index"' is " << #index << " but must be less than " << #totalCount << ".";         \
+        message << "Parameter '"#index"' is " << #index << " but must be less than " << numCounters << ".";         \
         GPA_LogError(message.str().c_str());                                                                        \
         return GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;                                                                 \
     }                                                                                                               \
@@ -178,6 +186,8 @@ GPALIB_DECL GPA_Status GPA_GetCounterName(
 
     CHECK_NULL_PARAM(ppName);
     CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+    CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+
     return (*contextId)->GetCounterName(index, ppName);
 }
 
@@ -219,6 +229,8 @@ GPALIB_DECL GPA_Status GPA_GetCounterGroup(
 
     CHECK_NULL_PARAM(ppGroup);
     CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+    CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+
     return (*contextId)->GetCounterGroup(index, ppGroup);
 }
 
@@ -234,6 +246,8 @@ GPALIB_DECL GPA_Status GPA_GetCounterDescription(
 
     CHECK_NULL_PARAM(ppDescription);
     CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+    CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+
     return (*contextId)->GetCounterDescription(index, ppDescription);
 }
 
@@ -248,6 +262,8 @@ GPALIB_DECL GPA_Status GPA_GetCounterDataType(
 
     CHECK_NULL_PARAM(pCounterDataType);
     CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+    CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+
     return (*contextId)->GetCounterDataType(index, pCounterDataType);
 }
 
@@ -262,6 +278,8 @@ GPALIB_DECL GPA_Status GPA_GetCounterUsageType(
 
     CHECK_NULL_PARAM(pCounterUsageType);
     CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+    CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+
     return (*contextId)->GetCounterUsageType(index, pCounterUsageType);
 }
 
@@ -276,6 +294,8 @@ GPALIB_DECL GPA_Status GPA_GetCounterUuid(
 
     CHECK_NULL_PARAM(pCounterUuid);
     CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+    CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+
     return (*contextId)->GetCounterUuid(index, pCounterUuid);
 }
 
@@ -316,18 +336,9 @@ GPALIB_DECL GPA_Status GPA_EnableCounter(
 
     CHECK_NULL_PARAM(sessionId);
     CHECK_SESSION_RUNNING(sessionId);
+    CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*sessionId)->GetParentContext());
 
-    gpa_uint32 numCounters;
-    GPA_Status status = (*sessionId)->GetParentContext()->GetNumCounters(&numCounters);
-
-    if (GPA_STATUS_OK == status)
-    {
-        CHECK_INDEX_OUT_OF_RANGE(index, numCounters);
-
-        status = (*sessionId)->EnableCounter(index);
-    }
-
-    return status;
+    return (*sessionId)->EnableCounter(index);
 }
 
 //-----------------------------------------------------------------------------
@@ -340,18 +351,9 @@ GPALIB_DECL GPA_Status GPA_DisableCounter(
 
     CHECK_NULL_PARAM(sessionId);
     CHECK_SESSION_RUNNING(sessionId);
+    CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*sessionId)->GetParentContext());
 
-    gpa_uint32 numCounters;
-    GPA_Status status = (*sessionId)->GetParentContext()->GetNumCounters(&numCounters);
-
-    if (GPA_STATUS_OK == status)
-    {
-        CHECK_INDEX_OUT_OF_RANGE(index, numCounters);
-
-        status = (*sessionId)->DisableCounter(index);
-    }
-
-    return status;
+    return (*sessionId)->DisableCounter(index);
 }
 
 //-----------------------------------------------------------------------------
@@ -614,6 +616,14 @@ GPALIB_DECL GPA_Status GPA_BeginCommandList(
         {
             (*sessionId)->GetParentContext()->SetInvalidateAndFlushL2Cache(true);
         }
+        else
+        {
+          GPA_LogError("Unnable to begin the command list.");
+        }
+    }
+    else
+    {
+      GPA_LogError("Unnable to create the command list.");
     }
 
     return status ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
@@ -653,10 +663,17 @@ GPALIB_DECL GPA_Status GPA_BeginSample(
     gpa_uint32 numRequiredPasses = 0;
     status = (*commandListId)->GetParentSession()->GetNumRequiredPasses(&numRequiredPasses);
 
-    if (GPA_STATUS_OK == status &&
-        (*commandListId)->GetPass()->GetIndex() < numRequiredPasses)
+    if (GPA_STATUS_OK == status)
     {
-        status = ((*commandListId)->GetParentSession()->BeginSample(sampleId, commandListId)) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+        if ((*commandListId)->GetPass()->GetIndex() < numRequiredPasses)
+        {
+            status = ((*commandListId)->GetParentSession()->BeginSample(sampleId, commandListId)) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+        }
+        else
+        {
+            GPA_LogError("Invalid pass index.");
+            status = GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;
+        }
     }
 
     return status;
@@ -677,10 +694,17 @@ GPALIB_DECL GPA_Status GPA_EndSample(
     gpa_uint32 numRequiredPasses = 0;
     status = (*commandListId)->GetParentSession()->GetNumRequiredPasses(&numRequiredPasses);
 
-    if (GPA_STATUS_OK == status &&
-        (*commandListId)->GetPass()->GetIndex() < numRequiredPasses)
+    if (GPA_STATUS_OK == status)
     {
-        status = ((*commandListId)->GetParentSession()->EndSample(commandListId)) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+        if ((*commandListId)->GetPass()->GetIndex() < numRequiredPasses)
+        {
+            status = ((*commandListId)->GetParentSession()->EndSample(commandListId)) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+        }
+        else
+        {
+            GPA_LogError("Invalid pass index.");
+            status = GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;
+        }
     }
 
     return status;
@@ -791,7 +815,7 @@ GPALIB_DECL GPA_Status GPA_IsSessionComplete(
 //-----------------------------------------------------------------------------
 GPALIB_DECL GPA_Status GPA_GetPerSampleResultSize(
     GPA_SessionId sessionId,
-    gpa_uint64* sampleResultSizeInBytes)
+    size_t* sampleResultSizeInBytes)
 {
     PROFILE_FUNCTION(GPA_GetPerSampleResultSize);
     TRACE_FUNCTION(GPA_GetPerSampleResultSize);
@@ -813,8 +837,8 @@ GPALIB_DECL GPA_Status GPA_GetPerSampleResultSize(
 //-----------------------------------------------------------------------------
 GPALIB_DECL GPA_Status GPA_GetSampleResult(
     GPA_SessionId sessionId,
-    gpa_uint32 sampleID,
-    gpa_uint64 sampleResultSizeInBytes,
+    gpa_uint32 sampleId,
+    size_t sampleResultSizeInBytes,
     void* pCounterSampleResults)
 {
     PROFILE_FUNCTION(GPA_GetSampleResult);
@@ -828,7 +852,7 @@ GPALIB_DECL GPA_Status GPA_GetSampleResult(
         return GPA_STATUS_ERROR_FAILED;
     }
 
-    return (*sessionId)->GetSampleResult(sampleID, sampleResultSizeInBytes, pCounterSampleResults);
+    return (*sessionId)->GetSampleResult(sampleId, sampleResultSizeInBytes, pCounterSampleResults);
 }
 
 //-----------------------------------------------------------------------------
@@ -952,19 +976,19 @@ GPALIB_DECL GPA_Status GPA_GetUsageTypeAsStr(
 //-----------------------------------------------------------------------------
 GPALIB_DECL GPA_Status GPA_GetDeviceAndRevisionId(
     GPA_ContextId gpaContextId,
-    gpa_uint32* pDeviceID,
-    gpa_uint32* pRevisionID)
+    gpa_uint32* pDeviceId,
+    gpa_uint32* pRevisionId)
 {
     PROFILE_FUNCTION(GPA_GetDeviceAndRevisionId);
     TRACE_FUNCTION(GPA_GetDeviceAndRevisionId);
 
-    CHECK_NULL_PARAM(pDeviceID);
-    CHECK_NULL_PARAM(pRevisionID);
+    CHECK_NULL_PARAM(pDeviceId);
+    CHECK_NULL_PARAM(pRevisionId);
     CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(gpaContextId);
 
     const GPA_HWInfo* hwInfo = (*gpaContextId)->GetHwInfo();
 
-    if (nullptr != hwInfo && hwInfo->GetDeviceID(*pDeviceID) && hwInfo->GetRevisionID(*pRevisionID))
+    if (nullptr != hwInfo && hwInfo->GetDeviceID(*pDeviceId) && hwInfo->GetRevisionID(*pRevisionId))
     {
         return GPA_STATUS_OK;
     }

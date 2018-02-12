@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+;; Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 ;;
 ;; Counter definitions for DX/GL for Gfx7 (GFX IP v7)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -8,7 +8,6 @@ name=GPUTime
 desc=#Timing#Time this API call took to execute on the GPU in milliseconds. Does not include time that draw calls are processed in parallel.
 type=gpa_float64
 usage=milliseconds
-countertype=GPA_COUNTER_TYPE_API_DYNAMIC
 [GLGfx7]
 [DX11Gfx7]
 [DX12Gfx7]

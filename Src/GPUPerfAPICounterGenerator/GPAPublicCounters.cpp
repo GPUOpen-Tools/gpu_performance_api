@@ -1,18 +1,20 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Manages a set of public counters
 //==============================================================================
 
 
-#include "GPAPublicCounters.h"
 #include <stdio.h>
 #include <sstream>
 #include <string.h> // for strcpy
+#include <algorithm>
+
 #include "Utility.h"
 #include "Logging.h"
-#include <algorithm>
+#include "GPAPublicCounters.h"
+#include "GPACommonDefs.h"
 
 GPA_PublicCounter::GPA_PublicCounter(
     unsigned int index,
@@ -21,7 +23,6 @@ GPA_PublicCounter::GPA_PublicCounter(
     const char* pDescription,
     GPA_Data_Type dataType,
     GPA_Usage_Type usageType,
-    GPA_Counter_Type counterType,
     vector< gpa_uint32 >& internalCountersRequired,
     const char* pComputeExpression,
     const char* pUuid):
@@ -31,50 +32,62 @@ GPA_PublicCounter::GPA_PublicCounter(
     m_pDescription(pDescription),
     m_dataType(dataType),
     m_usageType(usageType),
-    m_counterType(counterType),
     m_internalCountersRequired(internalCountersRequired),
     m_pComputeExpression(pComputeExpression)
 {
     uint32_t bytes[8];
 #ifdef _WIN32
     sscanf_s(pUuid, "%08lX-%04hX-%04hX-%02X%02X-%02X%02X%02X%02X%02X%02X",
-        &m_uuid.Data1,
-        &m_uuid.Data2,
-        &m_uuid.Data3,
-        &bytes[0],
-        &bytes[1],
-        &bytes[2],
-        &bytes[3],
-        &bytes[4],
-        &bytes[5],
-        &bytes[6],
-        &bytes[7]
-    );
+             &m_uuid.Data1,
+             &m_uuid.Data2,
+             &m_uuid.Data3,
+             &bytes[0],
+             &bytes[1],
+             &bytes[2],
+             &bytes[3],
+             &bytes[4],
+             &bytes[5],
+             &bytes[6],
+             &bytes[7]
+            );
 
     for (int i = 0; i < _countof(bytes); ++i)
     {
         m_uuid.Data4[i] = static_cast<unsigned char>(bytes[i]);
     }
+
 #else
     sscanf(pUuid, "%08lX-%04hX-%04hX-%02X%02X-%02X%02X%02X%02X%02X%02X",
-        &m_uuid.m_data1,
-        &m_uuid.m_data2,
-        &m_uuid.m_data3,
-        &bytes[0],
-        &bytes[1],
-        &bytes[2],
-        &bytes[3],
-        &bytes[4],
-        &bytes[5],
-        &bytes[6],
-        &bytes[7]
-        );
+           &m_uuid.m_data1,
+           &m_uuid.m_data2,
+           &m_uuid.m_data3,
+           &bytes[0],
+           &bytes[1],
+           &bytes[2],
+           &bytes[3],
+           &bytes[4],
+           &bytes[5],
+           &bytes[6],
+           &bytes[7]
+          );
 
-    for (int i = 0; i < (sizeof(bytes)/sizeof(bytes[0])); ++i)
+    for (int i = 0; i < (sizeof(bytes) / sizeof(bytes[0])); ++i)
     {
         m_uuid.m_data4[i] = static_cast<unsigned char>(bytes[i]);
     }
+
 #endif
+}
+
+GPA_PublicCounter::GPA_PublicCounter():
+  m_index(0u),
+  m_pName(nullptr),
+  m_pGroup(nullptr),
+  m_pDescription(nullptr),
+  m_dataType(GPA_DATA_TYPE__LAST),
+  m_usageType(GPA_USAGE_TYPE__LAST),
+  m_pComputeExpression(nullptr)
+{
 }
 
 
@@ -86,7 +99,6 @@ void GPA_PublicCounters::DefinePublicCounter(
     const char* pDescription,
     GPA_Data_Type dataType,
     GPA_Usage_Type usageType,
-    GPA_Counter_Type counterType,
     vector< gpa_uint32 >& internalCountersRequired,
     const char* pComputeExpression,
     const char* pUuid)
@@ -95,7 +107,6 @@ void GPA_PublicCounters::DefinePublicCounter(
     assert(pGroup);
     assert(pDescription);
     assert(dataType < GPA_DATA_TYPE__LAST);
-    assert(counterType < GPA_COUNTER_TYPE__LAST);
     assert(internalCountersRequired.size() > 0);
     assert(pComputeExpression);
     assert(strlen(pComputeExpression) > 0);
@@ -103,7 +114,7 @@ void GPA_PublicCounters::DefinePublicCounter(
 
     unsigned int index = static_cast<unsigned int>(m_counters.size());
 
-    m_counters.push_back(GPA_PublicCounter(index, pName, pGroup, pDescription, dataType, usageType, counterType, internalCountersRequired, pComputeExpression, pUuid));
+    m_counters.push_back(GPA_PublicCounter(index, pName, pGroup, pDescription, dataType, usageType, internalCountersRequired, pComputeExpression, pUuid));
 }
 
 void GPA_PublicCounters::UpdateAsicSpecificPublicCounter(
@@ -271,7 +282,9 @@ static void EvaluateExpression(
         }
         else if (_strcmpi(pch, "TS_FREQ") == 0)
         {
-            stack.push_back(static_cast<T>(pHwInfo->GetTimeStampFrequency()));
+            gpa_uint64 freq = 1u;
+            GPA_ASSERT(pHwInfo->GetTimeStampFrequency(freq));
+            stack.push_back(static_cast<T>(freq));
         }
         else if (_strcmpi(pch, "max") == 0)
         {
@@ -429,6 +442,7 @@ static void EvaluateExpression(
             assert(stack.size() >= 8);
 
             std::vector<T> values;
+
             for (int i = 0; i < 4; ++i)
             {
                 values.push_back(stack.back());
@@ -436,6 +450,7 @@ static void EvaluateExpression(
             }
 
             std::vector<T> potentialReturns;
+
             for (int i = 0; i < 4; ++i)
             {
                 // Only consider potential returns where the values[i] is non-zero
@@ -443,6 +458,7 @@ static void EvaluateExpression(
                 {
                     potentialReturns.push_back(stack.back());
                 }
+
                 stack.pop_back();
             }
 

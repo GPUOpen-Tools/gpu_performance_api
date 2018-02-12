@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2008-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2008-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  This is the main include file for Adapter.cpp to enumerate adapters

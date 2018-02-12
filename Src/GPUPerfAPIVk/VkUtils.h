@@ -40,7 +40,7 @@ namespace VkUtils
 /// \return true if device is supported otherwise false;
 bool IsDeviceSupportedForProfiling(VkPhysicalDevice vkPhysicalDevice);
 
-/// Get the time stamp frequencey of DirectX 11 device
+/// Gets the time stamp frequencey of Vulkan device to convert cycles to milliseconds.
 /// \param[in] vkPhysicalDevice device pointer
 /// \param[out] timestampFrequency The timestamp frequencey
 /// \return true if timestamp frequencey access succeeded, otherwise false

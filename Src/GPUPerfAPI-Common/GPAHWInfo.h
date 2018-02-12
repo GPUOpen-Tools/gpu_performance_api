@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2011-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2011-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  A class for managing hardware information
@@ -25,8 +25,8 @@ public:
     /// default constructor
     GPA_HWInfo();
 
-    /// virtual destructor
-    ~GPA_HWInfo();
+    /// destructor
+    ~GPA_HWInfo() = default;
 
     /// Sets the revision ID.
     /// \param id The revision ID of the available device.
@@ -41,8 +41,8 @@ public:
     void SetVendorID(gpa_uint32 vid);
 
     /// Sets the hardware generation that the device belongs to.
-    /// \param gen The hardware generation.
-    void SetHWGeneration(GDT_HW_GENERATION gen);
+    /// \param generation The hardware generation.
+    void SetHWGeneration(GDT_HW_GENERATION generation);
 
     /// Sets the device name
     /// \param pName A name of the device (ie "ATI Radeon HD 2600 series")
@@ -53,8 +53,12 @@ public:
     void SetGpuIndex(const unsigned int gpuIndex);
 
     /// Sets the frequecy of the clock that the timestamps are based on.
-    /// \param freq The timestamp clock frequency.
-    void SetTimeStampFrequency(gpa_uint64 freq);
+    /// \param frequency The timestamp clock frequency.
+    void SetTimeStampFrequency(gpa_uint64 frequency);
+
+    /// Sets the number of SIMDs
+    /// \param numSIMDs The number of SIMDs
+    void SetNumberSIMDs(size_t numSIMDs);
 
     /// Gets the number of shader engines
     /// \return the number of shader engines
@@ -108,10 +112,12 @@ public:
     bool GetHWAsicType(GDT_HW_ASIC_TYPE& type) const;
 
     /// Gets the timestamp clock frequency.
+    /// \param[out] timestampFrequency timestamp frequency
     /// \return the clock frequency.
-    gpa_uint64 GetTimeStampFrequency() const
+    bool GetTimeStampFrequency(gpa_uint64& timestampFrequency) const
     {
-        return m_timeStampFrequency;
+        timestampFrequency = m_timeStampFrequency;
+        return m_timeStampFrequencySet;
     }
 
     /// uses the DeviceId to find the correct DeviceMapping and DeviceInfo.
@@ -162,12 +168,14 @@ private:
     bool                m_generationSet;            ///< Indicates if the hardware geneartion has been set
 
     gpa_uint64          m_timeStampFrequency;       ///< the frequency of the time stamp clock
-    bool                m_timeStampFrequencySet;    ///< Indicates if the timestamp frequence has been set
+    bool                m_timeStampFrequencySet;    ///< Indicates if the timestamp frequency has been set
+
+    size_t              m_numSIMDs;                 ///< Number of SIMDs
+    bool                m_numSIMDsSet;              ///< Indicates if the number of SIMDs has been set
 
     GDT_HW_ASIC_TYPE    m_asicType;                 ///< Indicates the ASIC type of this device
 
     size_t              m_numShaderEngines;         ///< Number of shader engines
-    size_t              m_numSIMDs;                 ///< Number of SIMDs
     size_t              m_suClockPrim;              ///< Number of clocks it takes to process a primitive
     size_t              m_numPrimPipes;             ///< Number of primitive pipes
 };

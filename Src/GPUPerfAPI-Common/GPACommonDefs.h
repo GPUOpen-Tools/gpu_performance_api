@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief GPA Common Internal usage definitions
@@ -28,11 +28,18 @@
     #define GPA_FUNCTION_NOT_IMPLEMENTED    static_assert(true, "Ignore function Not Implemented");
 #endif
 
-#define GPA_INTERNAL_CHECK_NULL_PARAM(parameterName)                                                                \
-    if(nullptr == parameterName)                                                                                    \
-    {                                                                                                               \
-        GPA_LogDebugError("Parameter '"#parameterName"' is NULL.");                                                 \
-        return GPA_STATUS_ERROR_NULL_POINTER;                                                                       \
-    }                                                                                                               \
+#define GPA_INTERNAL_CHECK_NULL_PARAM(parameterName)                      \
+    if(nullptr == parameterName)                                          \
+    {                                                                     \
+        GPA_LogDebugError("Parameter '"#parameterName"' is NULL.");       \
+        return GPA_STATUS_ERROR_NULL_POINTER;                             \
+    }                                                                     \
+
+#define GPA_ASSERT(expression)                                            \
+    bool expressionResult = expression;                                   \
+    expressionResult;                                                     \
+    assert(expressionResult);                                             \
 
 #endif
+
+

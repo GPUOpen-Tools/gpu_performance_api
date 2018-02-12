@@ -59,7 +59,7 @@ void GPUPerfAPILoaderTest::Run()
     const char *apiName = m_apiName.find(Api)->second;
 
     GPUPerfAPILoader gpaLoader;
-    const char* dllPath = "./";
+    const char* dllPath = "";
     const char* errorMessage = "";
 
     EXPECT_TRUE(gpaLoader.Load(dllPath, Api, &errorMessage)) << "GPA loading with the legacy method failed for " << apiName 
@@ -81,9 +81,8 @@ INSTANTIATE_TEST_CASE_P(
         ,GPA_API_DIRECTX_12
         ,GPA_API_VULKAN
         ,GPA_API_OPENCL
-        /// Currently we are not building the GL, GLES versions of GPA on v3.0 branch, so these tests are skipped for now
-        //    ,GPA_API_OPENGL
-        //    ,GPA_API_OPENGLES
+        ,GPA_API_OPENGL
+        ,GPA_API_OPENGLES
     )
 );
 #else
@@ -96,9 +95,8 @@ INSTANTIATE_TEST_CASE_P(
 #ifndef X86
         ,GPA_API_HSA
 #endif
-        /// Currently we are not building the GL, GLES versions of GPA on v3.0 branch, so these tests are skipped for now
-        //    ,GPA_API_OPENGL
-        //    ,GPA_API_OPENGLES
+        ,GPA_API_OPENGL
+        ,GPA_API_OPENGLES
     )
 );
 #endif

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  This file defines function types to make it easier to dynamically load
@@ -70,8 +70,8 @@ typedef GPA_Status(*GPA_GetSampleCountPtrType)(GPA_SessionId sessionId, gpa_uint
 // Query Results
 typedef GPA_Status(*GPA_IsSessionCompletePtrType)(GPA_SessionId sessionId);  ///< Typedef for a function pointer for GPA_IsSessionComplete
 typedef GPA_Status(*GPA_IsPassCompletePtrType)(GPA_SessionId sessionId, gpa_uint32 passIndex); ///< Typedef for a function pointer for GPA_IsPassComplete
-typedef GPA_Status(*GPA_GetPerSampleResultSizePtrType)(GPA_SessionId sessionId, gpa_uint64* pSampleSizeInBytes);  ///< Typedef for a function pointer for GPA_GetPerSampleResultSize
-typedef GPA_Status(*GPA_GetSampleResultPtrType)(GPA_SessionId sessionId, gpa_uint32 sampleID, gpa_uint64 sampleResultSizeInBytes, void* pCounterValues); ///< Typedef for a function pointer for GPA_GetSampleResult
+typedef GPA_Status(*GPA_GetPerSampleResultSizePtrType)(GPA_SessionId sessionId, size_t* pSampleSizeInBytes);  ///< Typedef for a function pointer for GPA_GetPerSampleResultSize
+typedef GPA_Status(*GPA_GetSampleResultPtrType)(GPA_SessionId sessionId, gpa_uint32 sampleID, size_t sampleResultSizeInBytes, void* pCounterValues); ///< Typedef for a function pointer for GPA_GetSampleResult
 
 // Status/Error Query
 typedef const char* (*GPA_GetStatusAsStrPtrType)(GPA_Status status);  ///< Typedef for a function pointer for GPA_GetStatusAsStr

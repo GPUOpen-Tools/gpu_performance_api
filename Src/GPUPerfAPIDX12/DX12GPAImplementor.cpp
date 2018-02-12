@@ -68,7 +68,7 @@ bool DX12GPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, 
                     else
                     {
                         UINT64 deviceFrequency = 0ull;
-                        DX12Utils::GetTimestampFrequency(pD3D12Device, deviceFrequency);
+                        GPA_ASSERT(DX12Utils::GetTimestampFrequency(pD3D12Device, deviceFrequency));
                         hwInfo.SetTimeStampFrequency(deviceFrequency);
                         success = true;
                     }
@@ -115,7 +115,6 @@ IGPAContext* DX12GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, 
         {
             if (pDX12GpaContext->Initialize())
             {
-                pD3D12Device->AddRef();
                 pRetGpaContext = pDX12GpaContext;
             }
             else
@@ -137,12 +136,6 @@ bool DX12GPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, 
 {
     assert(pDeviceIdentifier);
     assert(pGpaContext);
-
-    if (nullptr != pDeviceIdentifier)
-    {
-        IUnknown* pUnknownPtr = static_cast<IUnknown*>(pDeviceIdentifier);
-        pUnknownPtr->Release();
-    }
 
     if (nullptr != pGpaContext)
     {

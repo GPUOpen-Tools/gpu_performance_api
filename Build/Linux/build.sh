@@ -33,8 +33,8 @@ HSA_DIR_OVERRIDE=
 VK_INC_DIR_OVERRIDE=
 
 # API-specific build control
-bBuildOpenGL=false
-bBuildOpenGLES=false
+bBuildOpenGL=true
+bBuildOpenGLES=true
 bBuildVK=true
 bBuildOpenCL=true
 bBuildHSA=true

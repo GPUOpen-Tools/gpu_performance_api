@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  PublicCounterDefinitions ASIC file for HSAGFX8
+/// \brief PublicCounterDefinitions ASIC file for HSAGFX8
 //==============================================================================
 
 #ifndef _PUBLIC_COUNTER_DEFS_HSAGFX8_ASICS_H_

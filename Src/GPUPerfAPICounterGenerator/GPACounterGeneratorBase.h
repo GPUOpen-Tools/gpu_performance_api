@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief Base class for counter generation
@@ -22,7 +22,7 @@ public:
     GPA_CounterGeneratorBase();
 
     /// Destructor
-    virtual ~GPA_CounterGeneratorBase();
+    virtual ~GPA_CounterGeneratorBase() = default;
 
     /// \copydoc IGPACounterAccessor::SetAllowedCounters()
     void SetAllowedCounters(bool bAllowPublicCounters, bool bAllowHardwareCounters, bool bAllowSoftwareCounters) override;
@@ -62,10 +62,10 @@ public:
 
     /// \copydoc IGPACounterAccessor::ComputePublicCounterValue()
     void ComputePublicCounterValue(gpa_uint32 counterIndex,
-        std::vector<gpa_uint64*>& results,
-        std::vector<GPA_Data_Type>& internalCounterTypes,
-        void* pResult,
-        const GPA_HWInfo* pHwInfo) const override;
+                                   std::vector<gpa_uint64*>& results,
+                                   std::vector<GPA_Data_Type>& internalCounterTypes,
+                                   void* pResult,
+                                   const GPA_HWInfo* pHwInfo) const override;
 
     /// \copydoc IGPACounterAccessor::GetCounterSourceInfo()
     GPACounterSourceInfo GetCounterSourceInfo(gpa_uint32 globalIndex) const override;
@@ -85,17 +85,18 @@ public:
     /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
     /// \return GPA_STATUS_OK on success
     GPA_Status GenerateCounters(GDT_HW_GENERATION desiredGeneration,
-        GDT_HW_ASIC_TYPE asicType,
-        gpa_uint8 generateAsicSpecificCounters);
+                                GDT_HW_ASIC_TYPE asicType,
+                                gpa_uint8 generateAsicSpecificCounters);
 
     /// \copydoc IGPACounterAccessor::ComputeSWCounterValue()
     void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex,
-        gpa_uint64 value,
-        void* pResult,
-        const GPA_HWInfo* pHwInfo) const override;
+                               gpa_uint64 value,
+                               void* pResult,
+                               const GPA_HWInfo* pHwInfo) const override;
 
     /// TODO: does this need to be here in the base class?
     /// Get the number of supported AMD counters
+    /// \return number of supported AMD counters
     gpa_uint32 GetNumAMDCounters() const;
 
     /// Generate the public counters for the specified hardware generation

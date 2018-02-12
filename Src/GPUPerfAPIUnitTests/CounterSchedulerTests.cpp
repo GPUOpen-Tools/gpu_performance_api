@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Unit tests for Counter Scheduler
@@ -2060,5 +2060,398 @@ TEST(CounterDLLTests, Gpa83ThreePassTest)
     };
 
     VerifyCountersInPass(GPA_API_DIRECTX_12, gDevIdGfx8, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
+}
+
+// SWDEV-140743: DX11 Vega L1 Cache Counters (TCP Block Instance) Always Zero
+// Implemented as a test for convenience as we need to explain to the driver team the scheduling of the counters
+TEST(CounterDLLTests, SwDev140743)
+{
+    std::vector<uint32_t> counters =
+    {
+        L1CacheHitCountDX11Gfx9
+    };
+
+    // Pass: 0  Counters: 256
+    std::vector<uint32_t> expectedCountersPass0 =
+    {
+        40631, 40716, 40801, 40886, 40971, 41056, 41141, 41226, 41311, 41396,
+        41481, 41566, 41651, 41736, 41821, 41906, 41991, 42076, 42161, 42246,
+        42331, 42416, 42501, 42586, 42671, 42756, 42841, 42926, 43011, 43096,
+        43181, 43266, 43351, 43436, 43521, 43606, 43691, 43776, 43861, 43946,
+        44031, 44116, 44201, 44286, 44371, 44456, 44541, 44626, 44711, 44796,
+        44881, 44966, 45051, 45136, 45221, 45306, 45391, 45476, 45561, 45646,
+        45731, 45816, 45901, 45986, 40640, 40725, 40810, 40895, 40980, 41065,
+        41150, 41235, 41320, 41405, 41490, 41575, 41660, 41745, 41830, 41915,
+        42000, 42085, 42170, 42255, 42340, 42425, 42510, 42595, 42680, 42765,
+        42850, 42935, 43020, 43105, 43190, 43275, 43360, 43445, 43530, 43615,
+        43700, 43785, 43870, 43955, 44040, 44125, 44210, 44295, 44380, 44465,
+        44550, 44635, 44720, 44805, 44890, 44975, 45060, 45145, 45230, 45315,
+        45400, 45485, 45570, 45655, 45740, 45825, 45910, 45995, 40641, 40726,
+        40811, 40896, 40981, 41066, 41151, 41236, 41321, 41406, 41491, 41576,
+        41661, 41746, 41831, 41916, 42001, 42086, 42171, 42256, 42341, 42426,
+        42511, 42596, 42681, 42766, 42851, 42936, 43021, 43106, 43191, 43276,
+        43361, 43446, 43531, 43616, 43701, 43786, 43871, 43956, 44041, 44126,
+        44211, 44296, 44381, 44466, 44551, 44636, 44721, 44806, 44891, 44976,
+        45061, 45146, 45231, 45316, 45401, 45486, 45571, 45656, 45741, 45826,
+        45911, 45996, 40642, 40727, 40812, 40897, 40982, 41067, 41152, 41237,
+        41322, 41407, 41492, 41577, 41662, 41747, 41832, 41917, 42002, 42087,
+        42172, 42257, 42342, 42427, 42512, 42597, 42682, 42767, 42852, 42937,
+        43022, 43107, 43192, 43277, 43362, 43447, 43532, 43617, 43702, 43787,
+        43872, 43957, 44042, 44127, 44212, 44297, 44382, 44467, 44552, 44637,
+        44722, 44807, 44892, 44977, 45062, 45147, 45232, 45317, 45402, 45487,
+        45572, 45657, 45742, 45827, 45912, 45997
+    };
+
+    // Pass: 1  Counters: 64
+    std::vector<uint32_t> expectedCountersPass1 =
+    {
+        40643, 40728, 40813, 40898, 40983, 41068, 41153, 41238, 41323, 41408,
+        41493, 41578, 41663, 41748, 41833, 41918, 42003, 42088, 42173, 42258,
+        42343, 42428, 42513, 42598, 42683, 42768, 42853, 42938, 43023, 43108,
+        43193, 43278, 43363, 43448, 43533, 43618, 43703, 43788, 43873, 43958,
+        44043, 44128, 44213, 44298, 44383, 44468, 44553, 44638, 44723, 44808,
+        44893, 44978, 45063, 45148, 45233, 45318, 45403, 45488, 45573, 45658,
+        45743, 45828, 45913, 45998
+    };
+
+    std::vector< std::vector<uint32_t> > expectedHwCountersPerPass =
+    {
+        expectedCountersPass0,
+        expectedCountersPass1,
+    };
+
+    // Result locations (Pass, Offset)
+
+    // Pass: 0  Counters: 77
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations0
+    {
+        MakeExpectedCounterLocationEntry(0, 0)
+        MakeExpectedCounterLocationEntry(0, 64)
+        MakeExpectedCounterLocationEntry(0, 128)
+        MakeExpectedCounterLocationEntry(0, 192)
+        MakeExpectedCounterLocationEntry(1, 0)
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 65)
+        MakeExpectedCounterLocationEntry(0, 129)
+        MakeExpectedCounterLocationEntry(0, 193)
+        MakeExpectedCounterLocationEntry(1, 1)
+        MakeExpectedCounterLocationEntry(0, 2)
+        MakeExpectedCounterLocationEntry(0, 66)
+        MakeExpectedCounterLocationEntry(0, 130)
+        MakeExpectedCounterLocationEntry(0, 194)
+        MakeExpectedCounterLocationEntry(1, 2)
+        MakeExpectedCounterLocationEntry(0, 3)
+        MakeExpectedCounterLocationEntry(0, 67)
+        MakeExpectedCounterLocationEntry(0, 131)
+        MakeExpectedCounterLocationEntry(0, 195)
+        MakeExpectedCounterLocationEntry(1, 3)
+        MakeExpectedCounterLocationEntry(0, 4)
+        MakeExpectedCounterLocationEntry(0, 68)
+        MakeExpectedCounterLocationEntry(0, 132)
+        MakeExpectedCounterLocationEntry(0, 196)
+        MakeExpectedCounterLocationEntry(1, 4)
+        MakeExpectedCounterLocationEntry(0, 5)
+        MakeExpectedCounterLocationEntry(0, 69)
+        MakeExpectedCounterLocationEntry(0, 133)
+        MakeExpectedCounterLocationEntry(0, 197)
+        MakeExpectedCounterLocationEntry(1, 5)
+        MakeExpectedCounterLocationEntry(0, 6)
+        MakeExpectedCounterLocationEntry(0, 70)
+        MakeExpectedCounterLocationEntry(0, 134)
+        MakeExpectedCounterLocationEntry(0, 198)
+        MakeExpectedCounterLocationEntry(1, 6)
+        MakeExpectedCounterLocationEntry(0, 7)
+        MakeExpectedCounterLocationEntry(0, 71)
+        MakeExpectedCounterLocationEntry(0, 135)
+        MakeExpectedCounterLocationEntry(0, 199)
+        MakeExpectedCounterLocationEntry(1, 7)
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(0, 72)
+        MakeExpectedCounterLocationEntry(0, 136)
+        MakeExpectedCounterLocationEntry(0, 200)
+        MakeExpectedCounterLocationEntry(1, 8)
+        MakeExpectedCounterLocationEntry(0, 9)
+        MakeExpectedCounterLocationEntry(0, 73)
+        MakeExpectedCounterLocationEntry(0, 137)
+        MakeExpectedCounterLocationEntry(0, 201)
+        MakeExpectedCounterLocationEntry(1, 9)
+        MakeExpectedCounterLocationEntry(0, 10)
+        MakeExpectedCounterLocationEntry(0, 74)
+        MakeExpectedCounterLocationEntry(0, 138)
+        MakeExpectedCounterLocationEntry(0, 202)
+        MakeExpectedCounterLocationEntry(1, 10)
+        MakeExpectedCounterLocationEntry(0, 11)
+        MakeExpectedCounterLocationEntry(0, 75)
+        MakeExpectedCounterLocationEntry(0, 139)
+        MakeExpectedCounterLocationEntry(0, 203)
+        MakeExpectedCounterLocationEntry(1, 11)
+        MakeExpectedCounterLocationEntry(0, 12)
+        MakeExpectedCounterLocationEntry(0, 76)
+        MakeExpectedCounterLocationEntry(0, 140)
+        MakeExpectedCounterLocationEntry(0, 204)
+        MakeExpectedCounterLocationEntry(1, 12)
+        MakeExpectedCounterLocationEntry(0, 13)
+        MakeExpectedCounterLocationEntry(0, 77)
+        MakeExpectedCounterLocationEntry(0, 141)
+        MakeExpectedCounterLocationEntry(0, 205)
+        MakeExpectedCounterLocationEntry(1, 13)
+        MakeExpectedCounterLocationEntry(0, 14)
+        MakeExpectedCounterLocationEntry(0, 78)
+        MakeExpectedCounterLocationEntry(0, 142)
+        MakeExpectedCounterLocationEntry(0, 206)
+        MakeExpectedCounterLocationEntry(1, 14)
+        MakeExpectedCounterLocationEntry(0, 15)
+        MakeExpectedCounterLocationEntry(0, 79)
+        MakeExpectedCounterLocationEntry(0, 143)
+        MakeExpectedCounterLocationEntry(0, 207)
+        MakeExpectedCounterLocationEntry(1, 15)
+        MakeExpectedCounterLocationEntry(0, 16)
+        MakeExpectedCounterLocationEntry(0, 80)
+        MakeExpectedCounterLocationEntry(0, 144)
+        MakeExpectedCounterLocationEntry(0, 208)
+        MakeExpectedCounterLocationEntry(1, 16)
+        MakeExpectedCounterLocationEntry(0, 17)
+        MakeExpectedCounterLocationEntry(0, 81)
+        MakeExpectedCounterLocationEntry(0, 145)
+        MakeExpectedCounterLocationEntry(0, 209)
+        MakeExpectedCounterLocationEntry(1, 17)
+        MakeExpectedCounterLocationEntry(0, 18)
+        MakeExpectedCounterLocationEntry(0, 82)
+        MakeExpectedCounterLocationEntry(0, 146)
+        MakeExpectedCounterLocationEntry(0, 210)
+        MakeExpectedCounterLocationEntry(1, 18)
+        MakeExpectedCounterLocationEntry(0, 19)
+        MakeExpectedCounterLocationEntry(0, 83)
+        MakeExpectedCounterLocationEntry(0, 147)
+        MakeExpectedCounterLocationEntry(0, 211)
+        MakeExpectedCounterLocationEntry(1, 19)
+        MakeExpectedCounterLocationEntry(0, 20)
+        MakeExpectedCounterLocationEntry(0, 84)
+        MakeExpectedCounterLocationEntry(0, 148)
+        MakeExpectedCounterLocationEntry(0, 212)
+        MakeExpectedCounterLocationEntry(1, 20)
+        MakeExpectedCounterLocationEntry(0, 21)
+        MakeExpectedCounterLocationEntry(0, 85)
+        MakeExpectedCounterLocationEntry(0, 149)
+        MakeExpectedCounterLocationEntry(0, 213)
+        MakeExpectedCounterLocationEntry(1, 21)
+        MakeExpectedCounterLocationEntry(0, 22)
+        MakeExpectedCounterLocationEntry(0, 86)
+        MakeExpectedCounterLocationEntry(0, 150)
+        MakeExpectedCounterLocationEntry(0, 214)
+        MakeExpectedCounterLocationEntry(1, 22)
+        MakeExpectedCounterLocationEntry(0, 23)
+        MakeExpectedCounterLocationEntry(0, 87)
+        MakeExpectedCounterLocationEntry(0, 151)
+        MakeExpectedCounterLocationEntry(0, 215)
+        MakeExpectedCounterLocationEntry(1, 23)
+        MakeExpectedCounterLocationEntry(0, 24)
+        MakeExpectedCounterLocationEntry(0, 88)
+        MakeExpectedCounterLocationEntry(0, 152)
+        MakeExpectedCounterLocationEntry(0, 216)
+        MakeExpectedCounterLocationEntry(1, 24)
+        MakeExpectedCounterLocationEntry(0, 25)
+        MakeExpectedCounterLocationEntry(0, 89)
+        MakeExpectedCounterLocationEntry(0, 153)
+        MakeExpectedCounterLocationEntry(0, 217)
+        MakeExpectedCounterLocationEntry(1, 25)
+        MakeExpectedCounterLocationEntry(0, 26)
+        MakeExpectedCounterLocationEntry(0, 90)
+        MakeExpectedCounterLocationEntry(0, 154)
+        MakeExpectedCounterLocationEntry(0, 218)
+        MakeExpectedCounterLocationEntry(1, 26)
+        MakeExpectedCounterLocationEntry(0, 27)
+        MakeExpectedCounterLocationEntry(0, 91)
+        MakeExpectedCounterLocationEntry(0, 155)
+        MakeExpectedCounterLocationEntry(0, 219)
+        MakeExpectedCounterLocationEntry(1, 27)
+        MakeExpectedCounterLocationEntry(0, 28)
+        MakeExpectedCounterLocationEntry(0, 92)
+        MakeExpectedCounterLocationEntry(0, 156)
+        MakeExpectedCounterLocationEntry(0, 220)
+        MakeExpectedCounterLocationEntry(1, 28)
+        MakeExpectedCounterLocationEntry(0, 29)
+        MakeExpectedCounterLocationEntry(0, 93)
+        MakeExpectedCounterLocationEntry(0, 157)
+        MakeExpectedCounterLocationEntry(0, 221)
+        MakeExpectedCounterLocationEntry(1, 29)
+        MakeExpectedCounterLocationEntry(0, 30)
+        MakeExpectedCounterLocationEntry(0, 94)
+        MakeExpectedCounterLocationEntry(0, 158)
+        MakeExpectedCounterLocationEntry(0, 222)
+        MakeExpectedCounterLocationEntry(1, 30)
+        MakeExpectedCounterLocationEntry(0, 31)
+        MakeExpectedCounterLocationEntry(0, 95)
+        MakeExpectedCounterLocationEntry(0, 159)
+        MakeExpectedCounterLocationEntry(0, 223)
+        MakeExpectedCounterLocationEntry(1, 31)
+        MakeExpectedCounterLocationEntry(0, 32)
+        MakeExpectedCounterLocationEntry(0, 96)
+        MakeExpectedCounterLocationEntry(0, 160)
+        MakeExpectedCounterLocationEntry(0, 224)
+        MakeExpectedCounterLocationEntry(1, 32)
+        MakeExpectedCounterLocationEntry(0, 33)
+        MakeExpectedCounterLocationEntry(0, 97)
+        MakeExpectedCounterLocationEntry(0, 161)
+        MakeExpectedCounterLocationEntry(0, 225)
+        MakeExpectedCounterLocationEntry(1, 33)
+        MakeExpectedCounterLocationEntry(0, 34)
+        MakeExpectedCounterLocationEntry(0, 98)
+        MakeExpectedCounterLocationEntry(0, 162)
+        MakeExpectedCounterLocationEntry(0, 226)
+        MakeExpectedCounterLocationEntry(1, 34)
+        MakeExpectedCounterLocationEntry(0, 35)
+        MakeExpectedCounterLocationEntry(0, 99)
+        MakeExpectedCounterLocationEntry(0, 163)
+        MakeExpectedCounterLocationEntry(0, 227)
+        MakeExpectedCounterLocationEntry(1, 35)
+        MakeExpectedCounterLocationEntry(0, 36)
+        MakeExpectedCounterLocationEntry(0, 100)
+        MakeExpectedCounterLocationEntry(0, 164)
+        MakeExpectedCounterLocationEntry(0, 228)
+        MakeExpectedCounterLocationEntry(1, 36)
+        MakeExpectedCounterLocationEntry(0, 37)
+        MakeExpectedCounterLocationEntry(0, 101)
+        MakeExpectedCounterLocationEntry(0, 165)
+        MakeExpectedCounterLocationEntry(0, 229)
+        MakeExpectedCounterLocationEntry(1, 37)
+        MakeExpectedCounterLocationEntry(0, 38)
+        MakeExpectedCounterLocationEntry(0, 102)
+        MakeExpectedCounterLocationEntry(0, 166)
+        MakeExpectedCounterLocationEntry(0, 230)
+        MakeExpectedCounterLocationEntry(1, 38)
+        MakeExpectedCounterLocationEntry(0, 39)
+        MakeExpectedCounterLocationEntry(0, 103)
+        MakeExpectedCounterLocationEntry(0, 167)
+        MakeExpectedCounterLocationEntry(0, 231)
+        MakeExpectedCounterLocationEntry(1, 39)
+        MakeExpectedCounterLocationEntry(0, 40)
+        MakeExpectedCounterLocationEntry(0, 104)
+        MakeExpectedCounterLocationEntry(0, 168)
+        MakeExpectedCounterLocationEntry(0, 232)
+        MakeExpectedCounterLocationEntry(1, 40)
+        MakeExpectedCounterLocationEntry(0, 41)
+        MakeExpectedCounterLocationEntry(0, 105)
+        MakeExpectedCounterLocationEntry(0, 169)
+        MakeExpectedCounterLocationEntry(0, 233)
+        MakeExpectedCounterLocationEntry(1, 41)
+        MakeExpectedCounterLocationEntry(0, 42)
+        MakeExpectedCounterLocationEntry(0, 106)
+        MakeExpectedCounterLocationEntry(0, 170)
+        MakeExpectedCounterLocationEntry(0, 234)
+        MakeExpectedCounterLocationEntry(1, 42)
+        MakeExpectedCounterLocationEntry(0, 43)
+        MakeExpectedCounterLocationEntry(0, 107)
+        MakeExpectedCounterLocationEntry(0, 171)
+        MakeExpectedCounterLocationEntry(0, 235)
+        MakeExpectedCounterLocationEntry(1, 43)
+        MakeExpectedCounterLocationEntry(0, 44)
+        MakeExpectedCounterLocationEntry(0, 108)
+        MakeExpectedCounterLocationEntry(0, 172)
+        MakeExpectedCounterLocationEntry(0, 236)
+        MakeExpectedCounterLocationEntry(1, 44)
+        MakeExpectedCounterLocationEntry(0, 45)
+        MakeExpectedCounterLocationEntry(0, 109)
+        MakeExpectedCounterLocationEntry(0, 173)
+        MakeExpectedCounterLocationEntry(0, 237)
+        MakeExpectedCounterLocationEntry(1, 45)
+        MakeExpectedCounterLocationEntry(0, 46)
+        MakeExpectedCounterLocationEntry(0, 110)
+        MakeExpectedCounterLocationEntry(0, 174)
+        MakeExpectedCounterLocationEntry(0, 238)
+        MakeExpectedCounterLocationEntry(1, 46)
+        MakeExpectedCounterLocationEntry(0, 47)
+        MakeExpectedCounterLocationEntry(0, 111)
+        MakeExpectedCounterLocationEntry(0, 175)
+        MakeExpectedCounterLocationEntry(0, 239)
+        MakeExpectedCounterLocationEntry(1, 47)
+        MakeExpectedCounterLocationEntry(0, 48)
+        MakeExpectedCounterLocationEntry(0, 112)
+        MakeExpectedCounterLocationEntry(0, 176)
+        MakeExpectedCounterLocationEntry(0, 240)
+        MakeExpectedCounterLocationEntry(1, 48)
+        MakeExpectedCounterLocationEntry(0, 49)
+        MakeExpectedCounterLocationEntry(0, 113)
+        MakeExpectedCounterLocationEntry(0, 177)
+        MakeExpectedCounterLocationEntry(0, 241)
+        MakeExpectedCounterLocationEntry(1, 49)
+        MakeExpectedCounterLocationEntry(0, 50)
+        MakeExpectedCounterLocationEntry(0, 114)
+        MakeExpectedCounterLocationEntry(0, 178)
+        MakeExpectedCounterLocationEntry(0, 242)
+        MakeExpectedCounterLocationEntry(1, 50)
+        MakeExpectedCounterLocationEntry(0, 51)
+        MakeExpectedCounterLocationEntry(0, 115)
+        MakeExpectedCounterLocationEntry(0, 179)
+        MakeExpectedCounterLocationEntry(0, 243)
+        MakeExpectedCounterLocationEntry(1, 51)
+        MakeExpectedCounterLocationEntry(0, 52)
+        MakeExpectedCounterLocationEntry(0, 116)
+        MakeExpectedCounterLocationEntry(0, 180)
+        MakeExpectedCounterLocationEntry(0, 244)
+        MakeExpectedCounterLocationEntry(1, 52)
+        MakeExpectedCounterLocationEntry(0, 53)
+        MakeExpectedCounterLocationEntry(0, 117)
+        MakeExpectedCounterLocationEntry(0, 181)
+        MakeExpectedCounterLocationEntry(0, 245)
+        MakeExpectedCounterLocationEntry(1, 53)
+        MakeExpectedCounterLocationEntry(0, 54)
+        MakeExpectedCounterLocationEntry(0, 118)
+        MakeExpectedCounterLocationEntry(0, 182)
+        MakeExpectedCounterLocationEntry(0, 246)
+        MakeExpectedCounterLocationEntry(1, 54)
+        MakeExpectedCounterLocationEntry(0, 55)
+        MakeExpectedCounterLocationEntry(0, 119)
+        MakeExpectedCounterLocationEntry(0, 183)
+        MakeExpectedCounterLocationEntry(0, 247)
+        MakeExpectedCounterLocationEntry(1, 55)
+        MakeExpectedCounterLocationEntry(0, 56)
+        MakeExpectedCounterLocationEntry(0, 120)
+        MakeExpectedCounterLocationEntry(0, 184)
+        MakeExpectedCounterLocationEntry(0, 248)
+        MakeExpectedCounterLocationEntry(1, 56)
+        MakeExpectedCounterLocationEntry(0, 57)
+        MakeExpectedCounterLocationEntry(0, 121)
+        MakeExpectedCounterLocationEntry(0, 185)
+        MakeExpectedCounterLocationEntry(0, 249)
+        MakeExpectedCounterLocationEntry(1, 57)
+        MakeExpectedCounterLocationEntry(0, 58)
+        MakeExpectedCounterLocationEntry(0, 122)
+        MakeExpectedCounterLocationEntry(0, 186)
+        MakeExpectedCounterLocationEntry(0, 250)
+        MakeExpectedCounterLocationEntry(1, 58)
+        MakeExpectedCounterLocationEntry(0, 59)
+        MakeExpectedCounterLocationEntry(0, 123)
+        MakeExpectedCounterLocationEntry(0, 187)
+        MakeExpectedCounterLocationEntry(0, 251)
+        MakeExpectedCounterLocationEntry(1, 59)
+        MakeExpectedCounterLocationEntry(0, 60)
+        MakeExpectedCounterLocationEntry(0, 124)
+        MakeExpectedCounterLocationEntry(0, 188)
+        MakeExpectedCounterLocationEntry(0, 252)
+        MakeExpectedCounterLocationEntry(1, 60)
+        MakeExpectedCounterLocationEntry(0, 61)
+        MakeExpectedCounterLocationEntry(0, 125)
+        MakeExpectedCounterLocationEntry(0, 189)
+        MakeExpectedCounterLocationEntry(0, 253)
+        MakeExpectedCounterLocationEntry(1, 61)
+        MakeExpectedCounterLocationEntry(0, 62)
+        MakeExpectedCounterLocationEntry(0, 126)
+        MakeExpectedCounterLocationEntry(0, 190)
+        MakeExpectedCounterLocationEntry(0, 254)
+        MakeExpectedCounterLocationEntry(1, 62)
+        MakeExpectedCounterLocationEntry(0, 63)
+        MakeExpectedCounterLocationEntry(0, 127)
+        MakeExpectedCounterLocationEntry(0, 191)
+        MakeExpectedCounterLocationEntry(0, 255)
+        MakeExpectedCounterLocationEntry(1, 63)
+    };
+
+    std::map< uint32_t, std::map<uint32_t, GPA_CounterResultLocation> > expectedResultLocations =
+    {
+        { L1CacheHitCountDX11Gfx9, expectedLocations0 }
+    };
+
+    VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdGfx9, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
 }
 #endif // _WIN32

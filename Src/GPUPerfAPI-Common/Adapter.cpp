@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Query adapters' info from GDI32.
@@ -59,7 +59,7 @@ bool Adapter::getAsicInfoList(AsicInfoList& asicInfoList) const
         }
         else
         {
-            const size_t listSize = dxgiAdapterDescList.size();
+            const size_t listSize = adapterIndex > 0 ? adapterIndex - 1 : 0;
             asicInfoList.resize(listSize);
 
             for (size_t aii = 0 ; listSize > aii ; ++aii)
@@ -82,4 +82,5 @@ void Adapter::dxgiAdapterDescToAsicInfo(const DXGI_ADAPTER_DESC& dxgiAdapterDesc
     asicInfo.deviceIDString = strStream.str();
     asicInfo.vendorID = dxgiAdapterDesc.VendorId;
     asicInfo.deviceID = dxgiAdapterDesc.DeviceId;
+    asicInfo.revID = dxgiAdapterDesc.Revision;
 }

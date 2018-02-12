@@ -59,19 +59,23 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\GPUPerfAPIGL\ASICInfo.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPACommandList.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPAContext.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPAImplementor.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPAPass.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPASample.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPASession.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GLInclude.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIGL\ASICInfo.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GPAContextStateGL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGLES\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPACommandList.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPAContext.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPAImplementor.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPAPass.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPASample.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPASession.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GPUPerfAPI-Common.vcxproj">

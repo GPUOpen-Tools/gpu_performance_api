@@ -16,6 +16,7 @@ INCLUDES =	-I. \
 		-I$(AMD_VK_EXT_DIR) \
 		-I$(VK_INCLUDE_DIR) \
 		-I$(VK_INCLUDE_DIR)/vulkan \
+		-I$(GPUPERFAPIUTILS_DIR) \
 
 LIBS = \
 	$(GTEST_LIBS) \
@@ -49,6 +50,8 @@ OBJS	= \
 	./$(OBJ_DIR)/PublicCountersVKGfx9.o \
 	./$(OBJ_DIR)/SWCountersVK.o \
 	./$(OBJ_DIR)/GPAInterfaceLoaderTests.o \
+	./$(OBJ_DIR)/GPUPerfAPILoaderTests.o \
+	./$(OBJ_DIR)/GPUPerfAPILoader.o \
 
 $(OBJ_DIR)/%.o: counters/%.cpp
 	$(BUILD_SRC)

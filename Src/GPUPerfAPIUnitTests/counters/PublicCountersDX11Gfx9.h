@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2015-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  PublicCounterDefinitions for DX11GFX9 for testing
+/// \brief PublicCounterDefinitions for DX11GFX9 for testing
 //==============================================================================
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.

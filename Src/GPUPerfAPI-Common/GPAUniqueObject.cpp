@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief GPA Opaque object implementation
@@ -228,9 +228,8 @@ bool GPAUniqueObjectManager::DoesExist_NotThreadSafe(const GPAUniqueObject* pUni
 
     if (!m_gpaUniqueObjectList.empty())
     {
-
         for (std::vector<GPAUniqueObject*>::const_iterator it = m_gpaUniqueObjectList.begin();
-            it != m_gpaUniqueObjectList.end() && false == objectFound; ++it)
+            it != m_gpaUniqueObjectList.end() && !objectFound; ++it)
         {
 
             if (*it == pUniqueObject)

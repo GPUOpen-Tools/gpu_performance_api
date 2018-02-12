@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief Interface representing the GPA Session
@@ -156,14 +156,14 @@ public:
 
     /// Returns the size of sample result in bytes
     /// \return size of the sample result in bytes
-    virtual gpa_uint64 GetPerSampleResultSizeInBytes() const = 0;
+    virtual size_t GetPerSampleResultSizeInBytes() const = 0;
 
     /// Get counter data of the sample
     /// \param[in] sampleID The identifier of the sample to get the result for.
     /// \param[in] sampleResultSizeInBytes size of sample in bytes
     /// \param[out] pCounterSampleResults address to which the counter data for the sample will be copied to
     /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
-    virtual GPA_Status GetSampleResult(gpa_uint32 sampleID, gpa_uint64 sampleResultSizeInBytes, void* pCounterSampleResults) = 0;
+    virtual GPA_Status GetSampleResult(gpa_uint32 sampleID, size_t sampleResultSizeInBytes, void* pCounterSampleResults) = 0;
 };
 
 #endif // _I_GPA_SESSION_H_

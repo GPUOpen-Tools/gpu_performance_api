@@ -40,9 +40,6 @@ public:
     /// \copydoc IGPAContext::GetMaxGPASessions()
     gpa_uint32 GetMaxGPASessions() const override;
 
-    /// \copydoc IGPAContext::DoesSessionExist()
-    bool DoesSessionExist(GPA_SessionId pSessionId) const override;
-
     /// \copydoc IGPAInterfaceTrait::GetAPIType()
     GPA_API_Type GetAPIType() const override;
 

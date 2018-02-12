@@ -14,8 +14,6 @@ DX12GPASample::DX12GPASample(GPAPass* pPass,
                              ClientSampleId sampleId):
     GPASample(pPass, pCmdList, sampleType, sampleId)
 {
-    DX12GPACommandList* pDx12GpaCmdList = reinterpret_cast<DX12GPACommandList*>(pCmdList);
-    pDx12GpaCmdList->AddGpaSample(this);
 }
 
 bool DX12GPASample::UpdateResults()
@@ -41,11 +39,9 @@ bool DX12GPASample::UpdateResults()
     return isUpdated;
 }
 
-bool DX12GPASample::BeginRequest(IGPAContext* pContextState, const std::vector<gpa_uint32>* pCounters)
+bool DX12GPASample::BeginRequest()
 {
     // TODO: Come back when we are implementing software counters, see if we need this
-    UNREFERENCED_PARAMETER(pContextState);
-    UNREFERENCED_PARAMETER(pCounters);
     return true;
 }
 
@@ -102,7 +98,7 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
             {
                 GPASampleResult* pSampleResult = reinterpret_cast<DX12GPASample*>(GetContinuingSample())->PopulateSampleResult();
 
-                for (size_t counterIter = 0; counterIter < GetPass()->GetCounterCount(); counterIter++)
+                for (size_t counterIter = 0; counterIter < GetPass()->GetEnabledCounterCount(); counterIter++)
                 {
                     GetSampleResultLocation()->m_pResultBuffer[counterIter] += pSampleResult->m_pResultBuffer[counterIter];
                 }
@@ -126,53 +122,63 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
 bool DX12GPASample::CopyResult(size_t sampleDataSize, void* pResultBuffer) const
 {
     bool isDataReady = false;
+    bool isAnyHardwareCounterEnabled = GetPass()->GetEnabledCounterCount() > 0;
 
     if (nullptr != pResultBuffer)
     {
-        DX12GPACommandList* pDX12GpaCmdList = reinterpret_cast<DX12GPACommandList*>(GetCmdList());
+        if (isAnyHardwareCounterEnabled)
+        {
+            DX12GPACommandList* pDX12GpaCmdList = reinterpret_cast<DX12GPACommandList*>(GetCmdList());
 
-        IAmdExtGpaSession* pResultSession = nullptr;
+            IAmdExtGpaSession* pResultSession = nullptr;
 
-        if (IsCopied())
-        {
-            pResultSession = pDX12GpaCmdList->GetBundleResultAmdExtSession(GetClientSampleId());
-        }
-        else
-        {
-            pResultSession = pDX12GpaCmdList->GetAmdExtSession();
-        }
-
-        if (nullptr == pResultSession)
-        {
-            GPA_LogError("Invalid profiling session encountered while copying results");
-        }
-        else
-        {
-            if (pResultSession->IsReady())
+            if (IsCopied())
             {
-                size_t sampleDataSizeInDriver = 0u;
-                HRESULT driverResult = pResultSession->GetResults(GetDriverSampleId(), &sampleDataSizeInDriver, nullptr);
-                assert(S_OK == driverResult);
-                assert(sampleDataSize == sampleDataSizeInDriver);
+                pResultSession = pDX12GpaCmdList->GetBundleResultAmdExtSession(GetClientSampleId());
+            }
+            else
+            {
+                pResultSession = pDX12GpaCmdList->GetAmdExtSession();
+            }
 
-                if (S_OK == driverResult && sampleDataSize == sampleDataSizeInDriver)
+            if (nullptr == pResultSession)
+            {
+                GPA_LogError("Invalid profiling session encountered while copying results");
+            }
+            else
+            {
+                if (pResultSession->IsReady())
                 {
-                    driverResult = pResultSession->GetResults(GetDriverSampleId(), &sampleDataSizeInDriver, pResultBuffer);
+                    size_t sampleDataSizeInDriver = 0u;
+                    HRESULT driverResult = pResultSession->GetResults(GetDriverSampleId(), &sampleDataSizeInDriver, nullptr);
                     assert(S_OK == driverResult);
-                    if (S_OK == driverResult)
+                    assert(sampleDataSize == sampleDataSizeInDriver);
+
+                    if (S_OK == driverResult && sampleDataSize == sampleDataSizeInDriver)
                     {
-                        isDataReady = true;
+                        driverResult = pResultSession->GetResults(GetDriverSampleId(), &sampleDataSizeInDriver, pResultBuffer);
+                        assert(S_OK == driverResult);
+                        if (S_OK == driverResult)
+                        {
+                            isDataReady = true;
+                        }
+                        else
+                        {
+                            GPA_LogError("Error occurred while getting sample results from driver");
+                        }
                     }
                     else
                     {
-                        GPA_LogError("Error occurred while getting sample results from driver");
+                        GPA_LogError("Error occurred while getting sample result size from driver");
                     }
                 }
-                else
-                {
-                    GPA_LogError("Error occurred while getting sample result size from driver");
-                }
             }
+        }
+        else
+        {
+            // there is no hardware counter enabled in the driver, put zeros in all result location
+            memcpy(pResultBuffer, 0, sampleDataSize);
+            isDataReady = true;
         }
     }
 

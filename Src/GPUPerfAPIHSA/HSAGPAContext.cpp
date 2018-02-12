@@ -174,13 +174,6 @@ gpa_uint32 HSAGPAContext::GetMaxGPASessions() const
     return 4;
 }
 
-bool HSAGPAContext::DoesSessionExist(GPA_SessionId pSessionId) const
-{
-    GPA_FUNCTION_NOT_IMPLEMENTED;
-    UNREFERENCED_PARAMETER(pSessionId);
-    return true;
-}
-
 GPA_API_Type HSAGPAContext::GetAPIType() const
 {
     return GPA_API_HSA;

@@ -148,7 +148,7 @@ bool DX11GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
 }
 
 IGPAContext* DX11GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
-                                                GPA_HWInfo& pHwInfo,
+                                                GPA_HWInfo& hwInfo,
                                                 GPA_OpenContextFlags flags)
 {
     IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
@@ -157,13 +157,12 @@ IGPAContext* DX11GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
 
     if (DX11Utils::GetD3D11Device(pUnknownPtr, &pD3D11Device) && DX11Utils::IsFeatureLevelSupported(pD3D11Device))
     {
-        DX11GPAContext* pDX11GpaContext = new(std::nothrow) DX11GPAContext(pD3D11Device, pHwInfo, flags);
+        DX11GPAContext* pDX11GpaContext = new(std::nothrow) DX11GPAContext(pD3D11Device, hwInfo, flags);
 
         if (nullptr != pDX11GpaContext)
         {
             if (pDX11GpaContext->Initialize())
             {
-                pD3D11Device->AddRef();
                 pRetGpaContext = pDX11GpaContext;
             }
             else
@@ -185,12 +184,6 @@ bool DX11GPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, 
 {
     assert(pDeviceIdentifier);
     assert(pGpaContext);
-
-    if (nullptr != pDeviceIdentifier)
-    {
-        IUnknown* pUnknownPtr = static_cast<IUnknown*>(pDeviceIdentifier);
-        pUnknownPtr->Release();
-    }
 
     if (nullptr != pGpaContext)
     {
@@ -293,7 +286,6 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
                     strDLLName.append("-x64");
 #endif
 
-
                     HMODULE hModule = 0;
 #ifdef _DEBUG
                     // Attempt to load the debug version of the DLL if it exists
@@ -341,6 +333,9 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
                                     if (AMDTDeviceInfoUtils::Instance()->GetHardwareGeneration(asicInfoIter->deviceID, hwGeneration))
                                     {
                                         hwInfo.SetHWGeneration(hwGeneration);
+                                        UINT64 deviceFrequency = 0ull;
+                                        GPA_ASSERT(DX11Utils::GetTimestampFrequency(pD3D11Device, deviceFrequency));
+                                        hwInfo.SetTimeStampFrequency(deviceFrequency);
                                     }
 
                                     success = true;

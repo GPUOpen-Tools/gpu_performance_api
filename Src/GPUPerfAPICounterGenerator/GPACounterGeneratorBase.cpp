@@ -1,12 +1,12 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief Base class for counter generation
 //==============================================================================
 
 #if defined(WIN32)
-    #include <windows.h>
+    #include <Windows.h>
 #endif
 
 #include "GPACounterGeneratorBase.h"
@@ -15,10 +15,6 @@ GPA_CounterGeneratorBase::GPA_CounterGeneratorBase()
     :   m_doAllowPublicCounters(false),
         m_doAllowHardwareCounters(false),
         m_doAllowSoftwareCounters(false)
-{
-}
-
-GPA_CounterGeneratorBase::~GPA_CounterGeneratorBase()
 {
 }
 
@@ -491,12 +487,12 @@ void GPA_CounterGeneratorBase::ComputePublicCounterValue(gpa_uint32 counterIndex
     m_publicCounters.ComputeCounterValue(counterIndex, results, internalCounterTypes, pResult, pHwInfo);
 }
 
-void GPA_CounterGeneratorBase::ComputeSWCounterValue(gpa_uint32 counterIndex,
-    gpa_uint64 value,
-    void* pResult,
-    const GPA_HWInfo* pHwInfo) const
+void GPA_CounterGeneratorBase::ComputeSWCounterValue(gpa_uint32 softwareCounterIndex,
+                                                     gpa_uint64 value,
+                                                     void* pResult,
+                                                     const GPA_HWInfo* pHwInfo) const
 {
-    UNREFERENCED_PARAMETER(counterIndex);
+    UNREFERENCED_PARAMETER(softwareCounterIndex);
     UNREFERENCED_PARAMETER(pHwInfo);
 
     if (nullptr != pResult)
@@ -518,11 +514,12 @@ const GPA_SoftwareCounters* GPA_CounterGeneratorBase::GetSoftwareCounters() cons
 
 GPACounterSourceInfo GPA_CounterGeneratorBase::GetCounterSourceInfo(gpa_uint32 globalIndex) const
 {
+    GPACounterSourceInfo info = GPACounterSourceInfo();
+
     if (m_doAllowPublicCounters)
     {
         if (globalIndex < m_publicCounters.GetNumCounters())
         {
-            GPACounterSourceInfo info;
             info.Set(globalIndex, GPACounterSource::PUBLIC);
             return info;
         }
@@ -536,7 +533,6 @@ GPACounterSourceInfo GPA_CounterGeneratorBase::GetCounterSourceInfo(gpa_uint32 g
     {
         if (globalIndex < m_hardwareCounters.GetNumCounters())
         {
-            GPACounterSourceInfo info;
             info.Set(globalIndex, GPACounterSource::HARDWARE);
             return info;
         }
@@ -548,13 +544,11 @@ GPACounterSourceInfo GPA_CounterGeneratorBase::GetCounterSourceInfo(gpa_uint32 g
 
     if (m_doAllowSoftwareCounters)
     {
-        GPACounterSourceInfo info;
         info.Set(globalIndex, GPACounterSource::SOFTWARE);
         return info;
     }
 
     /// Unknown counter
-    GPACounterSourceInfo info;
     info.Set(globalIndex, GPACounterSource::UNKNOWN);
     return info;
 }

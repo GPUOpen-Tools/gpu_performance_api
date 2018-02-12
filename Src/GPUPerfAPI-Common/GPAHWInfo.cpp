@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  A class for managing hardware information
@@ -25,15 +25,12 @@ GPA_HWInfo::GPA_HWInfo():
     m_generationSet(false),
     m_timeStampFrequency(1),
     m_timeStampFrequencySet(false),
+    m_numSIMDs(0),
+    m_numSIMDsSet(false),
     m_asicType(GDT_ASIC_TYPE_NONE),
     m_numShaderEngines(0),
-    m_numSIMDs(0),
     m_suClockPrim(0),
     m_numPrimPipes(0)
-{
-}
-
-GPA_HWInfo::~GPA_HWInfo()
 {
 }
 
@@ -121,6 +118,12 @@ void GPA_HWInfo::SetTimeStampFrequency(gpa_uint64 frequency)
     m_timeStampFrequency = frequency;
 }
 
+void GPA_HWInfo::SetNumberSIMDs(size_t numSIMDs)
+{
+    m_numSIMDsSet = true;
+    m_numSIMDs = numSIMDs;
+}
+
 //-----------------------------------------------------------------------------
 bool GPA_HWInfo::UpdateDeviceInfoBasedOnDeviceID()
 {
@@ -135,7 +138,12 @@ bool GPA_HWInfo::UpdateDeviceInfoBasedOnDeviceID()
         if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(m_deviceId, m_revisionId, deviceInfo))
         {
             m_numShaderEngines = deviceInfo.m_nNumShaderEngines;
-            m_numSIMDs = deviceInfo.numberSIMDs();
+
+            if (!m_numSIMDsSet)
+            {
+                SetNumberSIMDs(deviceInfo.numberSIMDs());
+            }
+
             m_suClockPrim = deviceInfo.m_suClocksPrim;
             m_numPrimPipes = deviceInfo.m_nNumPrimPipes;
             m_asicType = cardInfo.m_asicType;

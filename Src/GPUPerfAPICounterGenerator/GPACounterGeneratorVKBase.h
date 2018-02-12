@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for VK Base counter generation
@@ -23,8 +23,20 @@ public:
     /// Constructor
     GPA_CounterGeneratorVKBase() = default;
 
+    /// Copy constructor - private override to prevent usage
+    GPA_CounterGeneratorVKBase(const GPA_CounterGeneratorVKBase&) = delete;
+
+    /// Move constructor - private override to prevent usage
+    GPA_CounterGeneratorVKBase(GPA_CounterGeneratorVKBase&&) = delete;
+
+    /// Copy operator - private override to prevent usage
+    GPA_CounterGeneratorVKBase& operator=(const GPA_CounterGeneratorVKBase&) = delete;
+
+    /// Move operator - private override to prevent usage
+    GPA_CounterGeneratorVKBase& operator=(GPA_CounterGeneratorVKBase&&) = delete;
+
     /// Destructor
-    virtual ~GPA_CounterGeneratorVKBase();
+    virtual ~GPA_CounterGeneratorVKBase() = default;
 
 protected:
     /// Overridden methods -- see base for documentation
@@ -53,18 +65,6 @@ private:
 
     static const GPA_SoftwareCounterDesc s_VKSWCounters[];  ///< VK SW counters list
     static const size_t s_VKSWCountersCount;                ///< VK SW counter list size
-
-    /// Copy constructor - private override to prevent usage
-    GPA_CounterGeneratorVKBase(const GPA_CounterGeneratorVKBase&) = delete;
-
-    /// Move constructor - private override to prevent usage
-    GPA_CounterGeneratorVKBase(GPA_CounterGeneratorVKBase&&) = delete;
-
-    /// Copy operator - private override to prevent usage
-    GPA_CounterGeneratorVKBase& operator=(const GPA_CounterGeneratorVKBase&) = delete;
-
-    /// Move operator - private override to prevent usage
-    GPA_CounterGeneratorVKBase& operator=(GPA_CounterGeneratorVKBase&&) = delete;
 
     /// Generate VK API software counters
     /// \return GPA_STATUS_OK if generating counters succeeded, false if it failed

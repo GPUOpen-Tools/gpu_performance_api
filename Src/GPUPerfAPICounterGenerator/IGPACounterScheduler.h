@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  An interface for scheduling counters in terms of enabling, disabling, and

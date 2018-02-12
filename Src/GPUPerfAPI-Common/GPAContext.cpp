@@ -11,6 +11,7 @@
 #include "GPACounterGroupAccessor.h"
 #include "GPAHardwareCounters.h"
 #include "GPASoftwareCounters.h"
+#include "GPAUniqueObject.h"
 
 #define CHECK_FOR_NULL_COUNTER_ACCESSOR(X)                  \
     if(nullptr == X)                                        \
@@ -228,8 +229,8 @@ bool GPAContext::OpenCounters()
         if (GPA_STATUS_OK == result)
         {
             pCounterAccessor->SetAllowedCounters(ArePublicCountersExposed(),
-                AreHardwareCountersExposed(),
-                AreSoftwareCountersExposed());
+                                                 AreHardwareCountersExposed(),
+                                                 AreSoftwareCountersExposed());
 
             m_pCounterAccessor = pCounterAccessor;
             m_pCounterScheduler = pCounterScheduler;
@@ -261,6 +262,11 @@ const IGPACounterAccessor* GPAContext::GetCounterAccessor() const noexcept
 IGPACounterScheduler* GPAContext::GetCounterScheduler() const noexcept
 {
     return m_pCounterScheduler;
+}
+
+bool GPAContext::DoesSessionExist(GPA_SessionId pSessionId) const
+{
+    return GetIndex(pSessionId->Object());
 }
 
 gpa_uint32 GPAContext::GetSessionCount() const
@@ -322,6 +328,7 @@ void GPAContext::IterateGpaSessionList(std::function<bool(IGPASession* pGpaSessi
 {
     std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
     bool next = true;
+
     for (auto it = m_gpaSessionList.cbegin(); it != m_gpaSessionList.cend() && next; ++it)
     {
         next = function(*it);
@@ -340,6 +347,7 @@ bool GPAContext::GetIndex(IGPASession* pGpaSession, unsigned int* pIndex) const
     unsigned int index = 0;
 
     std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
+
     for (auto iter = m_gpaSessionList.cbegin(); iter != m_gpaSessionList.cend(); ++iter)
     {
         if (pGpaSession == *iter)
@@ -349,8 +357,9 @@ bool GPAContext::GetIndex(IGPASession* pGpaSession, unsigned int* pIndex) const
             if (nullptr != pIndex)
             {
                 *pIndex = index;
-                break;
             }
+
+            break;
         }
 
         index++;

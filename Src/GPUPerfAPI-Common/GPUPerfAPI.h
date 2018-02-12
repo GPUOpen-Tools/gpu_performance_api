@@ -259,7 +259,7 @@ GPALIB_DECL GPA_Status GPA_DeleteSession(
 /// \brief Begin sampling with the currently enabled set of counters.
 ///
 /// This must be called to begin the counter sampling process.
-/// A unique sessionID will be returned which is later used to retrieve the counter values.
+/// A unique sessionId will be returned which is later used to retrieve the counter values.
 /// Session Identifiers are integers and always start from 1 on a newly opened context, upwards in sequence.
 /// The set of enabled counters cannot be changed inside a BeginSession/EndSession sequence.
 /// \param[in] sessionId Unique identifier of the GPA Session Object
@@ -596,20 +596,20 @@ GPALIB_DECL GPA_Status GPA_IsSessionComplete(
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPALIB_DECL GPA_Status GPA_GetPerSampleResultSize(
     GPA_SessionId sessionId,
-    gpa_uint64* sampleResultSizeInBytes);
+    size_t* sampleResultSizeInBytes);
 
 
 /// \brief Get counter data of the sample. This function will block until results are ready. Use GPA_IsSessionComplete to check if results are ready
 ///
 /// \param[in] sessionId The session identifier with the sample you wish to retrieve the result of.
-/// \param[in] sampleID The identifier of the sample to get the result for.
+/// \param[in] sampleId The identifier of the sample to get the result for.
 /// \param[in] sampleResultSizeInBytes size of sample in bytes
 /// \param[out] pCounterSampleResults address to which the counter data for the sample will be copied to
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPALIB_DECL GPA_Status GPA_GetSampleResult(
     GPA_SessionId sessionId,
-    gpa_uint32 sampleID,
-    gpa_uint64 sampleResultSizeInBytes,
+    gpa_uint32 sampleId,
+    size_t sampleResultSizeInBytes,
     void* pCounterSampleResults);
 
 
@@ -628,13 +628,13 @@ GPALIB_DECL const char* GPA_GetStatusAsStr(
 /// \brief Get the GPU device and revision id associated with the current context
 ///
 /// \param[in] gpaContextId Unique identifier of the opened context
-/// \param[out] pDeviceID The value that will be set to the device id.
-/// \param[out] pRevisionID The value that will be set to the device revision id.
+/// \param[out] pDeviceId The value that will be set to the device id.
+/// \param[out] pRevisionId The value that will be set to the device revision id.
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPALIB_DECL GPA_Status GPA_GetDeviceAndRevisionId(
     GPA_ContextId gpaContextId,
-    gpa_uint32* pDeviceID,
-    gpa_uint32* pRevisionID);
+    gpa_uint32* pDeviceId,
+    gpa_uint32* pRevisionId);
 
 
 /// \brief Get the GPU device name

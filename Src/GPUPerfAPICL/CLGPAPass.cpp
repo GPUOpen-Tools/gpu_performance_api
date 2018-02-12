@@ -5,9 +5,12 @@
 /// \brief  CL GPA Pass Object Implementation
 //==============================================================================
 
+#include <cassert>
+
 #include "CLGPAPass.h"
 #include "CLGPACommandList.h"
 #include "CLGPASample.h"
+#include "GPAHardwareCounters.h"
 
 CLGPAPass::CLGPAPass(IGPASession* pGpaSession,
                      PassIndex passIndex,
@@ -17,10 +20,7 @@ CLGPAPass::CLGPAPass(IGPASession* pGpaSession,
     GPAPass(pGpaSession, passIndex, counterSource, pCounterScheduler, pCounterAccessor)
 {
     EnableAllCountersForPass();
-}
-
-CLGPAPass::~CLGPAPass()
-{
+    InitializeCLCounterInfo();
 }
 
 GPASample* CLGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList,
@@ -56,18 +56,14 @@ bool CLGPAPass::ContinueSample(ClientSampleId srcSampleId,
     return false;
 }
 
-IGPACommandList* CLGPAPass::CreateCommandList(void* pCmd, GPA_Command_List_Type cmdType)
+IGPACommandList* CLGPAPass::CreateAPISpecificCommandList(void* pCmd,
+                                                         CommandListId commandListId,
+                                                         GPA_Command_List_Type cmdType)
 {
     UNREFERENCED_PARAMETER(pCmd);
     UNREFERENCED_PARAMETER(cmdType);
 
-    CLGPACommandList* pRetCmdList = new(std::nothrow) CLGPACommandList(GetGpaSession(), this);
-
-    if (nullptr != pRetCmdList)
-    {
-        AddGPACommandList(pRetCmdList);
-    }
-
+    CLGPACommandList* pRetCmdList = new(std::nothrow) CLGPACommandList(GetGpaSession(), this, commandListId);
     return pRetCmdList;
 }
 
@@ -81,4 +77,40 @@ bool CLGPAPass::EndSample(IGPACommandList* pGpaCmdList)
     }
 
     return retVal;
+}
+
+void CLGPAPass::IterateCLCounterMap(std::function<bool(GroupCountersPair groupCountrsPair)> function) const
+{
+    bool next = true;
+
+    for (auto it = m_groupCountersMap.cbegin(); it != m_groupCountersMap.cend() && next; ++it)
+    {
+        next = function(*it);
+    }
+}
+
+void CLGPAPass::InitializeCLCounterInfo()
+{
+    CLGPAContext* pCLGpaContext = reinterpret_cast<CLGPAContext*>(GetGpaSession()->GetParentContext());
+
+    const GPA_HardwareCounters* pHardwareCounters = pCLGpaContext->GetCounterAccessor()->GetHardwareCounters();
+    gpa_uint32 groupCount = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
+    UNREFERENCED_PARAMETER(groupCount);
+
+    auto AddCounterToCLCounterInfo = [&](CounterIndex counterIndex)-> bool
+    {
+        const GPA_HardwareCounterDescExt* pCounter = pCLGpaContext->GetCounterAccessor()->GetHardwareCounterExt(counterIndex);
+
+        gpa_uint32 groupIndex = pCounter->m_groupIdDriver;
+        assert(groupIndex <= groupCount);
+
+        gpa_uint64 numCounters = pHardwareCounters->m_pGroups[groupIndex].m_numCounters;
+        UNREFERENCED_PARAMETER(numCounters);
+        assert(pCounter->m_pHardwareCounter->m_counterIndexInGroup <= numCounters);
+
+        m_groupCountersMap[groupIndex].push_back(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
+        return true;
+    };
+
+    IterateEnabledCounterList(AddCounterToCLCounterInfo);
 }

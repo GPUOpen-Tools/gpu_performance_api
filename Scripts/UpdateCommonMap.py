@@ -31,3 +31,7 @@ downloadAndInstallMappingWin = {
 downloadAndInstallMappingLin = {
     "https://sdk.lunarg.com/sdk/download/1.0.49.0/linux/Vulkansdk-linux-x86_64-1.0.49.0.run" : ["../Common/Lib/Ext/Vulkan"],
 }
+
+specificBranchMapping = {
+    "../Common/Src/GPUPerfAPIUtils" : "gpa-3.0-dev"
+}

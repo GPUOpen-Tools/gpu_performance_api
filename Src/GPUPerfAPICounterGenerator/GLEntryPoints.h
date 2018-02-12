@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  declares GL entry points
+/// \brief  GL entry points
 //==============================================================================
 
 #ifndef _GL_ENTRY_POINTS_H_
@@ -11,7 +11,7 @@
 #ifndef GLES
 
 #ifdef _WIN32
-    #include <windows.h>
+    #include <Windows.h>
     #include <GL/gl.h>
     #include <GL/glext.h>
 #endif
@@ -60,6 +60,7 @@ typedef unsigned int GLhandle; ///< Workaround missing def in headers
 extern decltype(glFlush)*                      _oglFlush;                           ///< function pointer for glFlush
 extern decltype(glGetString)*                  _oglGetString;                       ///< function pointer for glGetString
 extern decltype(glGetIntegerv)*                _oglGetIntegerv;                     ///< function pointer for glGetIntegerv
+extern decltype(glGetError)*                   _oglGetError;                        ///< function pointer for glGetError
 #ifdef _WIN32
     extern decltype(wglGetCurrentContext)*     _wglGetCurrentContext;               ///< function pointer for wglGetCurrentContext
 #endif
@@ -120,5 +121,25 @@ extern PFNGLGETSTRINGIPROC                     _oglGetStringi;              ///<
 typedef bool(APIENTRY* PFN_GLX_QUERYCURRENTRENDERERINTEGERMESA)(int attribute, unsigned int* value); ///< typedef for glxQueryCurrentRendererIntegerMesa
 extern PFN_GLX_QUERYCURRENTRENDERERINTEGERMESA _oglXQueryCurrentRendererIntegerMESA;                 ///< function pointer for glxQueryCurrentRendererIntegerMesa
 
+
+namespace oglUtils
+{
+  /// Queries OpenGL extensions and initializes the entry points needed for perf counter collection
+  /// The extensions queried are:
+  ///    -- GL_AMD_performance_monitor
+  ///    -- GL_ARB_timer_query (OpenGL)
+  ///    -- GL_EXT_disjoint_timer_query (OpenGLES)
+  ///    -- GL_AMD_debug_output
+  ///    -- GLX_MESA_query_renderer
+  /// \return false if the GL_AMD_performance_monitor or GL_ARB_timer_query extension entry points are not found
+  ///         true otherwise
+  bool InitializeGLFunctions();
+
+  extern const char* s_pAMDRenderer;              ///< AMD Renderer string
+  extern const char* s_pATIRenderer;              ///< ATI Renderer string (legacy)
+  extern const char* s_pNVIDIARenderer;           ///< NVIDIA Renderer string
+  extern const char* s_pIntelRenderer;            ///< Intel Renderer string
+  extern bool        s_areGLFunctionsInitialized; ///< flag indicating if the GL extensions and functions have been initialized
+}
 
 #endif // _GL_ENTRY_POINTS_H_

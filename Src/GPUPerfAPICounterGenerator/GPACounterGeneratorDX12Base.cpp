@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief Common DX12 counter generation
@@ -9,6 +9,7 @@
 
 #include "GPACounterGeneratorDX12Base.h"
 #include "GPACounterGeneratorSchedulerManager.h"
+#include "GPACommonDefs.h"
 
 
 const GPA_SoftwareCounterDesc GPA_CounterGeneratorDX12Base::s_dx12SWCounters[] =
@@ -148,25 +149,21 @@ const size_t GPA_CounterGeneratorDX12Base::s_dx12SWCountersCount =
 
 
 bool GPA_CounterGeneratorDX12Base::GetSwCounterDesc(
-    const gpa_uint32 swCounterIndex, GPA_SoftwareCounterDesc& counterDesc)
+    const gpa_uint32 swCounterIndex, GPA_SoftwareCounterDesc& swCounterDesc)
 {
     bool result = (s_dx12SWCountersCount >= swCounterIndex);
 
     if (result)
     {
-        counterDesc = s_dx12SWCounters[swCounterIndex];
+        swCounterDesc = s_dx12SWCounters[swCounterIndex];
     }
 
     return result;
 }
 
-GPA_CounterGeneratorDX12Base::~GPA_CounterGeneratorDX12Base()
-{
-}
-
 GPA_Status GPA_CounterGeneratorDX12Base::GeneratePublicCounters(
-    GDT_HW_GENERATION desiredGeneration, 
-    GDT_HW_ASIC_TYPE asicType, 
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
     gpa_uint8 generateAsicSpecificCounters,
     GPA_PublicCounters* pPublicCounters)
 {
@@ -201,7 +198,7 @@ GPA_Status GPA_CounterGeneratorDX12Base::GenerateSoftwareCounters(
 
     GPA_Status status = GPA_STATUS_OK;
 
-    if (true == pSoftwareCounters->m_countersGenerated)
+    if (pSoftwareCounters->m_countersGenerated)
     {
         return status;
     }
@@ -269,13 +266,15 @@ void GPA_CounterGeneratorDX12Base::ComputeSWCounterValue(
 
         if (counterName == d3dGPUTime)
         {
-            gpa_uint64 freq = pHwInfo->GetTimeStampFrequency();
+            gpa_uint64 freq = 1u;
+            GPA_ASSERT(pHwInfo->GetTimeStampFrequency(freq));
             gpa_float64* pBuf = static_cast<gpa_float64*>(pResult);
             *pBuf = static_cast<gpa_float64>(value) / static_cast<gpa_float64>(freq) * 1000.0;
         }
         else if (counterName == preTimeStamp || counterName == postTimeStamp)
         {
-            gpa_uint64 freq = pHwInfo->GetTimeStampFrequency();
+            gpa_uint64 freq = 1u;
+            GPA_ASSERT(pHwInfo->GetTimeStampFrequency(freq));
             gpa_float64* pBuf = static_cast<gpa_float64*>(pResult);
             *pBuf = static_cast<gpa_float64>(value * 1000.0) / freq;
         }

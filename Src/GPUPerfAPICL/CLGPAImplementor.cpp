@@ -64,7 +64,6 @@ bool CLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
             }
             else
             {
-
                 static const gpa_uint32 MAX_STR = 1024;
                 char str[MAX_STR];
 
@@ -81,9 +80,8 @@ bool CLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                     message << "Device name from Queue: " << str << ".";
                     GPA_LogDebugMessage(message.str().c_str());
 
-                    // Note for some ASICs, there isn't a revision 0, so we default to zero
-                    // here, but then override the revision id to a valid non-zero value below
-                    hwInfo.SetRevisionID(0);
+                    // Match any revision when manually setting the device id
+                    hwInfo.SetRevisionID(REVISION_ID_ANY);
 
                     // get the device ID
                     // the string comes from stg\opencl\drivers\opencl\runtime\device\gpu\gpudefs.hpp as the static const char* TargetName[] array
@@ -122,7 +120,6 @@ bool CLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                     else if (realDeviceName.compare("Mullins") == 0)
                     {
                         hwInfo.SetDeviceID(0x9855);
-                        hwInfo.SetRevisionID(0x02);
                     }
                     else if (realDeviceName.compare("Spectre") == 0)
                     {
@@ -155,37 +152,30 @@ bool CLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                     else if (realDeviceName.compare("Ellesmere") == 0)
                     {
                         hwInfo.SetDeviceID(0x67DF);
-                        hwInfo.SetRevisionID(0x04);
                     }
                     else if (realDeviceName.compare("Baffin") == 0)
                     {
                         hwInfo.SetDeviceID(0x67FF);
-                        hwInfo.SetRevisionID(0x08);
                     }
                     else if (realDeviceName.compare("gfx804") == 0)
                     {
                         hwInfo.SetDeviceID(0x699F);
-                        hwInfo.SetRevisionID(0x81);
                     }
                     else if (realDeviceName.compare("gfx900") == 0)
                     {
                         hwInfo.SetDeviceID(0x687F);
-                        hwInfo.SetRevisionID(0xC1);
                     }
                     else if (realDeviceName.compare("gfx901") == 0)
                     {
                         hwInfo.SetDeviceID(0x687F);
-                        hwInfo.SetRevisionID(0xC1);
                     }
                     else if (realDeviceName.compare("gfx902") == 0)
                     {
                         hwInfo.SetDeviceID(0x15DD);
-                        hwInfo.SetRevisionID(0xC3);
                     }
                     else if (realDeviceName.compare("gfx903") == 0)
                     {
                         hwInfo.SetDeviceID(0x15DD);
-                        hwInfo.SetRevisionID(0xC3);
                     }
                     else
                     {
@@ -220,6 +210,27 @@ bool CLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
 
 #endif
 
+                        cl_uint numComputeUnits = 0;
+
+                        if (CL_SUCCESS != pOclModule->GetDeviceInfo(device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &numComputeUnits, nullptr))
+                        {
+                            GPA_LogError("Unable to get number of compute units.");
+                            isSuccess = false;
+                        }
+                        else
+                        {
+                            cl_uint numSIMDsPerComputeUnit = 0;
+
+                            if (CL_SUCCESS != pOclModule->GetDeviceInfo(device, CL_DEVICE_SIMD_PER_COMPUTE_UNIT_AMD, sizeof(cl_uint), &numSIMDsPerComputeUnit, nullptr))
+                            {
+                                GPA_LogError("Unable to get number of SIMDS per compute unit.");
+                                isSuccess = false;
+                            }
+                            else
+                            {
+                                hwInfo.SetNumberSIMDs(numComputeUnits * numSIMDsPerComputeUnit);
+                            }
+                        }
                     }
                 }
             }
@@ -230,6 +241,7 @@ bool CLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
     return isSuccess;
 }
 
+// TODO: this implementation doesn't do much -- is it needed?
 bool CLGPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo,
                                           const GPA_HWInfo& hwInfo) const
 {
@@ -252,14 +264,14 @@ bool CLGPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo,
 }
 
 IGPAContext* CLGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
-                                              GPA_HWInfo& pHwInfo,
+                                              GPA_HWInfo& hwInfo,
                                               GPA_OpenContextFlags flags)
 {
     CLGPAContext* pRetGpaContext = nullptr;
 
     cl_command_queue clCmdQueue = static_cast<cl_command_queue>(pContextInfo);
 
-    CLGPAContext* pCLGpaContext = new(std::nothrow) CLGPAContext(clCmdQueue, pHwInfo, flags);
+    CLGPAContext* pCLGpaContext = new(std::nothrow) CLGPAContext(clCmdQueue, hwInfo, flags);
 
     if (nullptr == pCLGpaContext)
     {

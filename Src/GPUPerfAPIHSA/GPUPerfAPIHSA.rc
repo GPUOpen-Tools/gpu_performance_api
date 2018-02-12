@@ -1,6 +1,5 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "resource.h"
 #include "GPAVersion.h"
 
 #define APSTUDIO_READONLY_SYMBOLS
@@ -30,20 +29,17 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 1 TEXTINCLUDE
 BEGIN
-    "resource.h\0"
-END
-
-2 TEXTINCLUDE
-BEGIN
+    "#include ""..\GPUPerfAPI-Common\resource.h""\r\n"
     "#include ""afxres.h""\r\n"
     "\0"
 END
 
-3 TEXTINCLUDE
+2 TEXTINCLUDE
 BEGIN
     "\r\n"
     "\0"
 END
+
 
 #endif    // APSTUDIO_INVOKED
 

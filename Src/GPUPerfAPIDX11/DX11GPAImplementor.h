@@ -62,7 +62,7 @@ private:
     bool InitializeAmdExtFunction() const;
 
     /// \copydoc GPAImplementor::OpenAPIContext
-    IGPAContext* OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& pHwInfo, GPA_OpenContextFlags flags) override final;
+    IGPAContext* OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags) override final;
 
     /// \copydoc GPAImplementor::CloseAPIContext
     bool CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pGpaContext) override final;

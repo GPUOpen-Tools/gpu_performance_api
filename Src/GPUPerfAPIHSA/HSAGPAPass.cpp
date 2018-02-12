@@ -56,18 +56,14 @@ bool HSAGPAPass::ContinueSample(ClientSampleId srcSampleId,
     return false;
 }
 
-IGPACommandList* HSAGPAPass::CreateCommandList(void* pCmd, GPA_Command_List_Type cmdType)
+IGPACommandList* HSAGPAPass::CreateAPISpecificCommandList(void* pCmd,
+    CommandListId commandListId,
+    GPA_Command_List_Type cmdType)
 {
     UNREFERENCED_PARAMETER(pCmd);
     UNREFERENCED_PARAMETER(cmdType);
 
-    HSAGPACommandList* pRetCmdList = new(std::nothrow) HSAGPACommandList(GetGpaSession(), this);
-
-    if (nullptr != pRetCmdList)
-    {
-        AddGPACommandList(pRetCmdList);
-    }
-
+    HSAGPACommandList* pRetCmdList = new(std::nothrow) HSAGPACommandList(GetGpaSession(), this, commandListId);
     return pRetCmdList;
 }
 

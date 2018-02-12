@@ -47,66 +47,23 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSwQueries.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CounterDataRequestProxy.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPACommandList.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPAContext.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPAImplementor.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPAPass.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPASample.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPASession.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12Utils.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\GPAContextStateDX12.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.cpp">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSwQueries.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12ComSmartPtrs.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CounterDataRequestProxy.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12DataRequest.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPACommandList.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPAContext.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPAPass.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPASample.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPASession.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12HardwareCounterDataRequest.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCountersResults.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12Utils.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\GPAContextStateDX12.h">
-      <ExcludedFromBuild>true</ExcludedFromBuild>
-    </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPAImplementor.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.rc" />

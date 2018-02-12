@@ -44,6 +44,7 @@
     <ClCompile Include="..\..\Src\GPUPerfAPICounters\GPUPerfAPICounters.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounters\GPUPerfAPICounters.h" />
   </ItemGroup>
   <ItemGroup>

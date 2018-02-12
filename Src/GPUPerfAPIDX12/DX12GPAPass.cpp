@@ -10,6 +10,7 @@
 #include "DX12GPAContext.h"
 #include "DX12GPASample.h"
 #include "DX12GPACommandList.h"
+#include "DX12Utils.h"
 
 DX12GPAPass::DX12GPAPass(IGPASession* pGpaSession,
                          PassIndex passIndex,
@@ -31,7 +32,7 @@ GPASample* DX12GPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList,
 
     // First Check whether the command list is opened and last sample is closed
     if (nullptr != pDx12GpaCmdList &&
-        !pDx12GpaCmdList->DoesSampleExist(clientSampleId) &&
+        nullptr == pDx12GpaCmdList->GetSample(clientSampleId) &&
         pDx12GpaCmdList->IsCommandListRunning() &&
         pDx12GpaCmdList->IsLastSampleClosed())
     {
@@ -79,20 +80,34 @@ bool DX12GPAPass::UpdateResults()
     return isCompleted;
 }
 
-IGPACommandList* DX12GPAPass::CreateCommandList(void* pCmd, GPA_Command_List_Type cmdType)
+IGPACommandList* DX12GPAPass::CreateAPISpecificCommandList(void* pCmd,
+                                                           CommandListId commandListId,
+                                                           GPA_Command_List_Type cmdType)
 {
     IGPACommandList* pRetCmdList = nullptr;
 
-    DX12GPACommandList* pDx12CmdList = new(std::nothrow) DX12GPACommandList(
-        reinterpret_cast<DX12GPASession*>(GetGpaSession()),
-        this,
-        pCmd,
-        cmdType);
+    D3D12_COMMAND_LIST_TYPE commandListType;
 
-    if (nullptr != pDx12CmdList)
+    if (DX12Utils::IsD3D12CommandList(pCmd, &commandListType))
     {
-        pRetCmdList = pDx12CmdList;
-        AddGPACommandList(pDx12CmdList);
+        if (commandListType != D3D12_COMMAND_LIST_TYPE_COPY)
+        {
+            DX12GPACommandList* pDx12GpaCmdList = new(std::nothrow) DX12GPACommandList(
+                reinterpret_cast<DX12GPASession*>(GetGpaSession()),
+                this,
+                pCmd,
+                commandListId,
+                cmdType);
+
+            if (nullptr != pDx12GpaCmdList)
+            {
+                pRetCmdList = pDx12GpaCmdList;
+            }
+        }
+        else
+        {
+          GPA_LogError("Copy command lists are not supported.");
+        }
     }
 
     return pRetCmdList;
@@ -168,7 +183,7 @@ bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples
                             for (auto iter = clientSamples.begin(); iter != clientSamples.end(); ++iter)
                             {
                                 GpaSampleType sampleType = GetCounterSource() == GPACounterSource::HARDWARE ? GpaSampleType::Hardware : GpaSampleType::Software;
-                                DX12GPASample* pNewSample = reinterpret_cast<DX12GPASample*>(CreateAPISpecificSample(pDx12SecondaryGpaCmdList,
+                                DX12GPASample* pNewSample = reinterpret_cast<DX12GPASample*>(CreateAPISpecificSample(pDx12PrimaryGpaCmdList,
                                                                                              sampleType,
                                                                                              *iter));
 
@@ -188,8 +203,8 @@ bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples
 
                             success = true;
 
-                            if (pDx12SecondaryGpaCmdList->CopyBundleSamples(clientSamples,
-                                                                          pDx12PrimaryGpaCmdList,
+                            if (pDx12PrimaryGpaCmdList->CopyBundleSamples(clientSamples,
+                                                                          pDx12SecondaryGpaCmdList,
                                                                           originalClientSampleIds))
                             {
                                 index = 0;
@@ -198,7 +213,7 @@ bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples
                                 {
                                     // Driver sample id will be same as that of the original one
                                     DX12GPASample* pSecondaryCmdSample =
-                                        pDx12SecondaryGpaCmdList->GetSample(originalClientSampleIds[index]);
+                                        reinterpret_cast<DX12GPASample*>(pDx12SecondaryGpaCmdList->GetSample(originalClientSampleIds[index]));
 
                                     if (nullptr != pSecondaryCmdSample)
                                     {

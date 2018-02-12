@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Vulkan utility functions implementation
@@ -132,12 +132,12 @@ void VkUtils::DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vkPhysicalDev
                 {
                     if (pQueueFamilyProperties[i].timestampValidBits == 0)
                     {
-                        GPA_LogError("QueueFamily has no valid timestamp bits.");
+                        GPA_LogError("QueueFamily Does NOT have valid timestamp bits!");
                         GPA_LogDebugMessage("QueueFamily %u does not have any valid timestamp bits; cannot support profiling.", i);
                     }
                     else
                     {
-                        GPA_LogError("QueueFamily DOES have valid timestamp bits!");
+                        GPA_LogError("QueueFamily has valid timestamp bits.");
                         GPA_LogDebugMessage("QueueFamily %u has %u valid timestamp bits; it will support profiling.", i, pQueueFamilyProperties[i].timestampValidBits);
                     }
                 }
@@ -219,18 +219,13 @@ bool VkUtils::GetTimestampFrequency(VkPhysicalDevice vkPhysicalDevice, gpa_uint6
 {
     bool success = false;
 
-    if (true == s_isEntryPointsInitialized)
+    if (s_isEntryPointsInitialized)
     {
         VkPhysicalDeviceProperties properties;
         _vkGetPhysicalDeviceProperties(vkPhysicalDevice, &properties);
 
-        // get Time stamp frequency
-        float timestampPeriod = properties.limits.timestampPeriod;
-
-        // TODO: decide if/how this should come into play
-        //bool computeAndGraphics = properties.limits.timestampComputeAndGraphics;
-
-        // TODO: confirm this is accurate
+        // Convert timestamp period from cycles / nanosecond to cycles / second
+        float timestampPeriod = properties.limits.timestampPeriod * 1000000000.0f;
         timestampFrequency = static_cast<gpa_uint64>(timestampPeriod);
 
         success = true;

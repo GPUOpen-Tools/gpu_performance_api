@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA Sample Implementation
@@ -41,21 +41,17 @@ bool GPASample::IsComplete() const
     return m_gpaSampleState == GPASampleState::RESULTS_COLLECTED;
 }
 
-GPA_THREAD_SAFE_FUNCTION bool GPASample::Begin(IGPAContext* pGpaContext,
-                                               const std::vector<gpa_uint32>* pCounters)
+GPA_THREAD_SAFE_FUNCTION bool GPASample::Begin()
 {
     bool result = false;
 
-    if (nullptr != pGpaContext && !pCounters->empty())
-    {
-        std::lock_guard<std::mutex> lockSample(m_sampleMutex);
-        result = BeginRequest(pGpaContext, pCounters);
+    std::lock_guard<std::mutex> lockSample(m_sampleMutex);
+    result = BeginRequest();
 
-        if (result)
-        {
-            m_gpaSampleState = GPASampleState::STARTED;
-            m_isOpened = true;
-        }
+    if (result)
+    {
+        m_gpaSampleState = GPASampleState::STARTED;
+        m_isOpened = true;
     }
 
     return result;
@@ -130,7 +126,7 @@ void GPASample::AllocateSampleResultSpace()
 {
     if (nullptr == m_pSampleResult)
     {
-        m_pSampleResult = new(std::nothrow) GPASampleResult(m_pPass->GetCounterCount());
+        m_pSampleResult = new(std::nothrow) GPASampleResult(m_pPass->GetEnabledCounterCount());
     }
 }
 

@@ -24,7 +24,17 @@ DX11GPAContext::DX11GPAContext(ID3D11Device* pD3D11Device,
 
 DX11GPAContext::~DX11GPAContext()
 {
-    GPA_FUNCTION_NOT_IMPLEMENTED;
+    m_pD3D11Device->Release();
+
+    if(nullptr != m_pDxExt)
+    {
+        m_pDxExt->Release();
+    }
+
+    if(nullptr != m_pDxExtPE)
+    {
+        m_pDxExtPE->Release();
+    }
 }
 
 GPA_SessionId DX11GPAContext::CreateSession()
@@ -190,18 +200,20 @@ bool DX11GPAContext::InitializeProfileAMDExtension()
 
         if (S_OK == hr)
         {
-            m_pDxExtPE = static_cast<IAmdDxExtPerfProfile*>(m_pDxExt->GetExtInterface(AmdDxExtPerfProfileID));
+          m_pDxExt->AddRef();
+          m_pDxExtPE = reinterpret_cast<IAmdDxExtPerfProfile*>(m_pDxExt->GetExtInterface(AmdDxExtPerfProfileID));
 
-            if (nullptr != m_pDxExtPE)
-            {
-                success = true;
-            }
-            else
-            {
-                m_pDxExt->Release();
-                m_pDxExt = nullptr;
-                GPA_LogError("Unable to initialize because the driver does not support the PerfProfile extension.");
-            }
+          if (nullptr != m_pDxExtPE)
+          {
+            success = true;
+            m_pDxExtPE->AddRef();
+          }
+          else
+          {
+            m_pDxExt->Release();
+            m_pDxExt = nullptr;
+            GPA_LogError("Unable to initialize because the driver does not support the PerfProfile extension.");
+          }
         }
         else
         {

@@ -65,6 +65,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Common\Src\DynamicLibraryModule\OpenCLModule.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPACommandList.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPAContext.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPAImplementor.h" />
@@ -74,7 +75,6 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICL\CLRTModuleLoader.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GPUPerfAPI-Common.vcxproj">

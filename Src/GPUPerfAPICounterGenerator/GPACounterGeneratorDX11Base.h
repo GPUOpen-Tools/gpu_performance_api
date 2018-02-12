@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Base class for DX11 counter generation -- add D3D11 Query counters which are supported on all hardware
@@ -41,9 +41,9 @@ public:
 
     /// \copydoc IGPACounterAccessor::ComputeSWCounterValue()
     void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex,
-        gpa_uint64 value,
-        void* pResult,
-        const GPA_HWInfo* pHwInfo) const override;
+                               gpa_uint64 value,
+                               void* pResult,
+                               const GPA_HWInfo* pHwInfo) const override;
 
     /// Get the D3D11_QUERY enum value based on our own software counter index
     /// \param index Our SW counter index
@@ -60,6 +60,7 @@ public:
     static bool IsAMDGPU(GDT_HW_GENERATION generation);
 
 private:
+
     GPA_CounterGroupDesc m_d3dCounterGroup = {0, "D3D11", 0, 0, 0}; ///< description for D3D11 counter group
 };
 

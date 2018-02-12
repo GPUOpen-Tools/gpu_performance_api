@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  VkGPASample declaration
@@ -37,9 +37,7 @@ public:
 
 protected:
     /// \copydoc GPASample::BeginRequest()
-    virtual bool BeginRequest(
-        IGPAContext* pContextState,
-        const std::vector<gpa_uint32>* pCounters) override = 0;
+    virtual bool BeginRequest() override = 0;
 
     /// \copydoc GPASample::EndRequest()
     virtual bool EndRequest() override = 0;

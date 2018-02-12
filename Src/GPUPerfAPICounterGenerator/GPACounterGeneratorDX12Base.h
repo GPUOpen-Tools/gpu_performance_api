@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for common DX12 counter generation
@@ -14,6 +14,7 @@
 class GPA_CounterGeneratorDX12Base : public GPA_CounterGeneratorBase
 {
 public:
+
     /// Get the SW counter description for the given SW counter index
     /// \return The SW counter description
     /// \param[in] swCounterIndex The SW counter index
@@ -23,8 +24,20 @@ public:
     /// Constructor
     GPA_CounterGeneratorDX12Base() = default;
 
+    /// Copy constructor - private override to prevent usage
+    GPA_CounterGeneratorDX12Base(const GPA_CounterGeneratorDX12Base&) = delete;
+
+    /// Move constructor - private override to prevent usage
+    GPA_CounterGeneratorDX12Base(GPA_CounterGeneratorDX12Base&&) = delete;
+
+    /// Copy operator - private override to prevent usage
+    GPA_CounterGeneratorDX12Base& operator=(const GPA_CounterGeneratorDX12Base&) = delete;
+
+    /// Move operator - private override to prevent usage
+    GPA_CounterGeneratorDX12Base& operator=(GPA_CounterGeneratorDX12Base&&) = delete;
+
     /// Virtual Destructor
-    virtual ~GPA_CounterGeneratorDX12Base();
+    virtual ~GPA_CounterGeneratorDX12Base() = default;
 
 protected:
 
@@ -54,18 +67,6 @@ private:
 
     static const GPA_SoftwareCounterDesc s_dx12SWCounters[];    ///< DX12 SW counters list
     static const size_t s_dx12SWCountersCount;                  ///< DX12 SW counter list size
-
-    /// Copy constructor - private override to prevent usage
-    GPA_CounterGeneratorDX12Base(const GPA_CounterGeneratorDX12Base&) = delete;
-
-    /// Move constructor - private override to prevent usage
-    GPA_CounterGeneratorDX12Base(GPA_CounterGeneratorDX12Base&&) = delete;
-
-    /// Copy operator - private override to prevent usage
-    GPA_CounterGeneratorDX12Base& operator=(const GPA_CounterGeneratorDX12Base&) = delete;
-
-    /// Move operator - private override to prevent usage
-    GPA_CounterGeneratorDX12Base& operator=(GPA_CounterGeneratorDX12Base&&) = delete;
 
     /// Generate DX12 API software counters
     /// \return GPA_STATUS_OK if generating counters succeeded, false if it failed

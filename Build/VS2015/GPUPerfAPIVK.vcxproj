@@ -64,6 +64,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI-VK.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkCommandListSwQueries.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkCommandListSWQueryGroup.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPAPass.h" />
@@ -76,7 +77,6 @@
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPASoftwareSample.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkSoftwareCountersResults.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkGPAImplementor.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIVk\resource.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIVk\VkUtils.h" />
   </ItemGroup>
   <ItemGroup>

@@ -22,13 +22,31 @@ public:
     /// Constructor
     /// \param[in] pGpaSession GPA session pointer
     /// \param[in] pGpaPass pass object pointer
-    HSAGPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass);
+    /// \param[in] commandListId command list id
+    HSAGPACommandList(IGPASession* pGpaSession,
+        GPAPass* pGpaPass,
+        CommandListId commandListId);
 
     /// Destructor
     ~HSAGPACommandList() = default;
 
     /// \copydoc IGPAInterfaceTrait::GetAPIType()
     GPA_API_Type GetAPIType() const override;
+
+private:
+
+    /// \copydoc GPACommandList::BeginCommandListRequest()
+    bool BeginCommandListRequest() override final;
+
+    /// \copydoc GPACommandList::EndCommandListRequest()
+    bool EndCommandListRequest() override final;
+
+    /// \copydoc GPACommandList::BeginSampleRequest()
+    bool BeginSampleRequest(ClientSampleId clientSampleId,
+        GPASample* pGpaSample) override final;
+
+    /// \copydoc GPACommandList::CloseLastSampleRequest()
+    bool CloseLastSampleRequest() override final;
 };
 
 #endif // _HSA_GPA_COMMAND_LIST_H_

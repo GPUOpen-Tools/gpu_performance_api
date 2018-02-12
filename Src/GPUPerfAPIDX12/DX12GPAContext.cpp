@@ -96,11 +96,6 @@ gpa_uint32 DX12GPAContext::GetMaxGPASessions() const
     return GPA_SESSION_NO_LIMIT;
 }
 
-bool DX12GPAContext::DoesSessionExist(GPA_SessionId pSessionId) const
-{
-    return GetIndex(reinterpret_cast<DX12GPASession*>(pSessionId->Object()));
-}
-
 GPA_API_Type DX12GPAContext::GetAPIType() const
 {
     return GPA_API_DIRECTX_12;
@@ -213,7 +208,7 @@ bool DX12GPAContext::InitializeAMDExtension()
         }
     }
 
-    return result == GPA_STATUS_OK ? true : false;
+    return result == GPA_STATUS_OK;
 }
 
 void DX12GPAContext::CleanUp()
@@ -238,7 +233,6 @@ void DX12GPAContext::CleanUp()
     // Release AMD D3D Factory
     if (nullptr != m_pAmdExtD3DFactoryObject)
     {
-        m_pAmdExtD3DFactoryObject->Release();
         m_pAmdExtD3DFactoryObject = nullptr;
     }
 }

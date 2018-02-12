@@ -10,9 +10,11 @@
     </Filter>
     <Filter Include="Source Files">
       <UniqueIdentifier>{1ed141df-1379-4b79-9b10-4c21c841baa4}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
     </Filter>
     <Filter Include="Header Files">
       <UniqueIdentifier>{bab7bebc-9844-4fcb-a7e3-a000c1c4002c}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -91,7 +93,7 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICL\CLRTModuleLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\resource.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

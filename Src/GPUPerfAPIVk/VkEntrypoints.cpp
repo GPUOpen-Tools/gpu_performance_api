@@ -59,7 +59,7 @@ bool VkUtils::s_isEntryPointsInitialized = false;
 
 bool VkUtils::Initialize_Vk_Entrypoints(VkInstance instance, VkDevice device)
 {
-    if (false == s_isEntryPointsInitialized)
+    if (!s_isEntryPointsInitialized)
     {
 #ifdef _WIN32
         HMODULE vulkanModule = GetModuleHandle("Vulkan-1.dll");

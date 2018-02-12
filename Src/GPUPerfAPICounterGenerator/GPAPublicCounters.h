@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Manages a set of public counters
@@ -25,7 +25,6 @@ public:
     /// \param pDescription the description of the public counter
     /// \param dataType the data type of the public counter
     /// \param usageType the usage type of the public counter
-    /// \param counterType the counter type of the public counter
     /// \param internalCountersRequired the list of hardware counters required by the public counter
     /// \param pComputeExpression the formula used to compute the public counter
     /// \param pUuid UUID string that uniquely and consistently identifies the counter
@@ -36,44 +35,23 @@ public:
         const char* pDescription,
         GPA_Data_Type dataType,
         GPA_Usage_Type usageType,
-        GPA_Counter_Type counterType,
         vector< gpa_uint32 >& internalCountersRequired,
         const char* pComputeExpression,
         const char* pUuid);
 
     /// Default Constructor.
     /// temporary addition of a default constructor to allow vector to build and execute.
-    GPA_PublicCounter() = default;
+    GPA_PublicCounter();
 
-    /// index of this counter
-    unsigned int m_index;
-
-    /// The name of the counter
-    const char* m_pName;
-
-    /// A group to which the counter is related
-    const char* m_pGroup;
-
-    /// A description of what the counter means.
-    const char* m_pDescription;
-
-    /// Data type
-    GPA_Data_Type m_dataType;
-
-    /// How the counter should be interpreted (percentage, ratio, bytes, etc)
-    GPA_Usage_Type m_usageType;
-
-    /// The counter type
-    GPA_Counter_Type m_counterType;
-
-    /// List of internal counters that are needed to calculate this public counter
-    vector< gpa_uint32 > m_internalCountersRequired;
-
-    /// A string expression that shows how to calculate this counter.
-    const char* m_pComputeExpression;
-
-    /// UUID that uniquely and consistently identifies a counter.
-    GPA_UUID m_uuid = {};
+    unsigned int m_index;                                     ///< index of this counter
+    const char* m_pName;                                      ///< The name of the counter
+    const char* m_pGroup;                                     ///< A group to which the counter is related
+    const char* m_pDescription;                               ///< A description of what the counter means.
+    GPA_Data_Type m_dataType;                                 ///< Data type
+    GPA_Usage_Type m_usageType;                               ///< How the counter should be interpreted (percentage, ratio, bytes, etc)
+    vector< gpa_uint32 > m_internalCountersRequired;          ///< List of internal counters that are needed to calculate this public counter
+    const char* m_pComputeExpression;                         ///< A string expression that shows how to calculate this counter.
+    GPA_UUID m_uuid = {};                                     ///< UUID that uniquely and consistently identifies a counter.
 };
 
 /// The set of available public counters
@@ -88,9 +66,7 @@ public:
     }
 
     /// Destructor
-    virtual ~GPA_PublicCounters()
-    {
-    }
+    virtual ~GPA_PublicCounters() = default;
 
     /// Obtains the number of public counters
     /// \return the number of public counters
@@ -141,15 +117,6 @@ public:
         return m_counters[index].m_dataType;
     }
 
-    /// Gets a counter's type
-    /// \param index the index of the requested counter
-    /// \return the counter's type
-    virtual GPA_Counter_Type GetCounterType(gpa_uint32 index) const
-    {
-        assert(index < m_counters.size());
-        return m_counters[index].m_counterType;
-    }
-
     /// Gets a counter's UUID
     /// \param index the index of the requested counter
     /// \return the counter's UUID
@@ -165,7 +132,6 @@ public:
     /// \param pDescription the description of the counter
     /// \param dataType the data type of the counter
     /// \param usageType the usage type of the counter
-    /// \param counterType the type of the counter
     /// \param internalCountersRequired the list of required internal counters
     /// \param pComputeExpression the compute expression of the counter
     /// \param pUuid UUID string that uniquely and consistently identifies the counter
@@ -175,7 +141,6 @@ public:
         const char* pDescription,
         GPA_Data_Type dataType,
         GPA_Usage_Type usageType,
-        GPA_Counter_Type counterType,
         vector< gpa_uint32 >& internalCountersRequired,
         const char* pComputeExpression,
         const char* pUuid);
@@ -230,12 +195,12 @@ public:
         void* pResult,
         const GPA_HWInfo* pHwInfo) const;
 
-    /// indicates that the public counters have been generated
-    bool m_countersGenerated;
+
+    bool m_countersGenerated;                             ///< indicates that the public counters have been generated
 
 protected:
-    /// The set of available public counters
-    vector< GPA_PublicCounter > m_counters;
+
+    vector< GPA_PublicCounter > m_counters;               ///< The set of available public counters
 };
 
 #endif // _GPA_PUBLIC_COUNTERS_H_

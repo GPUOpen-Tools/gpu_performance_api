@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for VK counter generation
@@ -9,6 +9,7 @@
 #include "GPACounterGeneratorSchedulerManager.h"
 
 #include "GPASwCounterManager.h"
+#include "GPACommonDefs.h"
 
 const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] =
 {
@@ -147,20 +148,16 @@ const size_t GPA_CounterGeneratorVKBase::s_VKSWCountersCount =
 
 
 bool GPA_CounterGeneratorVKBase::GetSwCounterDesc(
-    const gpa_uint32 swCounterIndex, GPA_SoftwareCounterDesc& counterDesc)
+    const gpa_uint32 swCounterIndex, GPA_SoftwareCounterDesc& swCounterDesc)
 {
     bool result = (s_VKSWCountersCount >= swCounterIndex);
 
     if (result)
     {
-        counterDesc = s_VKSWCounters[swCounterIndex];
+        swCounterDesc = s_VKSWCounters[swCounterIndex];
     }
 
     return result;
-}
-
-GPA_CounterGeneratorVKBase::~GPA_CounterGeneratorVKBase()
-{
 }
 
 GPA_Status GPA_CounterGeneratorVKBase::GeneratePublicCounters(
@@ -200,7 +197,7 @@ GPA_Status GPA_CounterGeneratorVKBase::GenerateSoftwareCounters(
 
     GPA_Status status = GPA_STATUS_OK;
 
-    if (true == pSoftwareCounters->m_countersGenerated)
+    if (pSoftwareCounters->m_countersGenerated)
     {
         return status;
     }
@@ -268,13 +265,15 @@ void GPA_CounterGeneratorVKBase::ComputeSWCounterValue(
 
         if (counterName == VKGPUTime)
         {
-            gpa_uint64 freq = pHwInfo->GetTimeStampFrequency();
+            gpa_uint64 freq = 1u;
+            GPA_ASSERT(pHwInfo->GetTimeStampFrequency(freq));
             gpa_float64* pBuf = static_cast<gpa_float64*>(pResult);
             *pBuf = static_cast<gpa_float64>(value) / static_cast<gpa_float64>(freq) * 1000.0;
         }
         else if (counterName == preTimeStamp || counterName == postTimeStamp)
         {
-            gpa_uint64 freq = pHwInfo->GetTimeStampFrequency();
+            gpa_uint64 freq = 1u;
+            GPA_ASSERT(pHwInfo->GetTimeStampFrequency(freq));
             gpa_float64* pBuf = static_cast<gpa_float64*>(pResult);
             *pBuf = static_cast<gpa_float64>(value * 1000.0) / freq;
         }

@@ -27,11 +27,13 @@ LIBS = \
 LIBPATH = $(COMMON_LIB_PATHS)
 
 SO_OBJS	= \
-	./$(OBJ_DIR)/GLCounterDataRequest.o \
-	./$(OBJ_DIR)/GLCounterDataRequestManager.o \
+	./$(OBJ_DIR)/GLGPAImplementor.o \
+	./$(OBJ_DIR)/GLGPACommandList.o \
+	./$(OBJ_DIR)/GLGPAContext.o \
+	./$(OBJ_DIR)/GLGPAPass.o \
+	./$(OBJ_DIR)/GLGPASample.o \
+	./$(OBJ_DIR)/GLGPASession.o \
 	./$(OBJ_DIR)/ASICInfo.o \
-	./$(OBJ_DIR)/GPUPerfAPIGL.o \
-	./$(OBJ_DIR)/GLPerfMonitorCache.o
 
 include $(DEPTH)/Build/Linux/CommonTargets.mk
 

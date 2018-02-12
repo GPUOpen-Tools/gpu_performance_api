@@ -9,7 +9,6 @@
 #define _VK_GPA_SESSION_H_
 
 #include "GPASession.h"
-#include "GPACounterSchedulerVK.h"
 
 // Predeclared classes
 class VkGPACommandList;
@@ -26,7 +25,7 @@ public:
     VkGPASession(IGPAContext* parentContextId);
 
     /// Destructor
-    virtual ~VkGPASession();
+    ~VkGPASession() = default;
 
     /// \copydoc GPASession::GetAPIType()
     GPA_API_Type GetAPIType() const override;
@@ -41,9 +40,6 @@ private:
 
     /// \copydoc GPASession::CreateAPIPass()
     GPAPass* CreateAPIPass(PassIndex passIndex) override;
-
-    mutable std::mutex              m_vkGpaSessionMutex;   ///< Mutex for gpa session
-    std::list<VkGPACommandList*>    m_vkGpaCmdLists;       ///< List of VkGPACommndLists that are part of this session.
 };
 
 #endif // _VK_GPA_SESSION_H_

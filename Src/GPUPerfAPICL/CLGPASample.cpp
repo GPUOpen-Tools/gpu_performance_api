@@ -11,6 +11,7 @@
 #include "CLGPASample.h"
 #include "CLPerfCounterBlock.h"
 #include "CLPerfCounterAMDExtension.h"
+#include "CLGPAPass.h"
 
 CLGPASample::CLGPASample(GPAPass* pPass,
                          IGPACommandList* pCmdList,
@@ -43,7 +44,7 @@ bool CLGPASample::UpdateResults()
 {
     bool isComplete = false;
 
-    CounterCount counterCount = GetPass()->GetCounterCount();
+    CounterCount counterCount = GetPass()->GetEnabledCounterCount();
 
     if (nullptr != m_clEvent)
     {
@@ -95,20 +96,13 @@ bool CLGPASample::UpdateResults()
     return isComplete;
 }
 
-bool CLGPASample::BeginRequest(IGPAContext* pContextState, const std::vector<gpa_uint32>* pCounters)
+bool CLGPASample::BeginRequest()
 {
     bool success = true;
-    UNREFERENCED_PARAMETER(pCounters);
-
-    if (nullptr != pContextState &&
-        nullptr == m_pCLGpaContext)
-    {
-        m_pCLGpaContext = reinterpret_cast<CLGPAContext*>(pContextState);
-    }
 
     if (nullptr != m_pCLGpaContext)
     {
-        CounterCount counterCount = GetPass()->GetCounterCount();
+        CounterCount counterCount = GetPass()->GetEnabledCounterCount();
 
         m_pClCounters = new(std::nothrow) CLCounter[counterCount];
 
@@ -120,56 +114,50 @@ bool CLGPASample::BeginRequest(IGPAContext* pContextState, const std::vector<gpa
 
         const GPA_HardwareCounters* pHardwareCounters = m_pCLGpaContext->GetCounterAccessor()->GetHardwareCounters();
 
-        gpa_uint32 groupCount = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
-        UNREFERENCED_PARAMETER(groupCount);
+        bool populateCounterInfoStatus = true;
+        unsigned int counterGroupSize = 0u;
 
-        std::map< gpa_uint32, vector<cl_ulong> > groupCounters;
-
-        for (size_t i = 0; i < pCounters->size(); i++)
+        auto PopulateCLPerFCounterInfo = [&](GroupCountersPair groupCountersPair) -> bool
         {
-            const GPA_HardwareCounterDescExt* pCounter = m_pCLGpaContext->GetCounterAccessor()->GetHardwareCounterExt((*pCounters)[i]);
+            bool counterStatus = true;
 
-            gpa_uint32 groupIndex = pCounter->m_groupIdDriver;
-            assert(groupIndex <= groupCount);
-
-            gpa_uint64 numCounters = pHardwareCounters->m_pGroups[groupIndex].m_numCounters;
-            UNREFERENCED_PARAMETER(numCounters);
-            assert(pCounter->m_pHardwareCounter->m_counterIndexInGroup <= numCounters);
-
-            groupCounters[groupIndex].push_back(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
-        }
-
-        // loop through the requested counters and create and enable them
-        for (std::map< gpa_uint32, vector<cl_ulong> >::iterator it = groupCounters.begin();
-            it != groupCounters.end();
-            ++it)
-        {
-            gpa_uint32 maxCountersEnabled = static_cast<gpa_uint32>(pHardwareCounters->m_pGroups[it->first].m_maxActiveCounters);
+            gpa_uint32 maxCountersEnabled = static_cast<gpa_uint32>(pHardwareCounters->m_pGroups[groupCountersPair.first].m_maxActiveCounters);
             clPerfCounterBlock* clBlock = nullptr;
 
             clBlock = new(std::nothrow) clPerfCounterBlock(m_pCLGpaContext->GetCLDeviceId(),
-                                                           it->first,
+                                                           groupCountersPair.first,
                                                            maxCountersEnabled,
-                                                           it->second);
+                                                           groupCountersPair.second);
 
             if (nullptr == clBlock)
             {
                 GPA_LogError("Unable to allocate memory for CL counter blocks.");
-                return false;
+                counterStatus = false;
             }
-
-            m_clCounterBlocks.push_back(clBlock);
-
-            // store the opencl counters into an array so we can use one call of clEnqueueBeginPerfCounterAMD for all of them
-            cl_perfcounter_amd* pClCounters = clBlock->GetCounterArray(0);
-
-            for (gpa_uint32 i = 0; i < clBlock->GetCounterCount(); ++i)
+            else
             {
-                m_clCounterList.push_back(pClCounters[i]);
-            }
-        }
+                m_clCounterBlocks.push_back(clBlock);
 
-        assert(m_clCounterBlocks.size() == groupCounters.size());
+                // store the opencl counters into an array so we can use one call of clEnqueueBeginPerfCounterAMD for all of them
+                cl_perfcounter_amd* pClCounters = clBlock->GetCounterArray(0);
+
+                for (gpa_uint32 i = 0; i < clBlock->GetCounterCount(); ++i)
+                {
+                    m_clCounterList.push_back(pClCounters[i]);
+                }
+            }
+
+            populateCounterInfoStatus &= counterStatus;
+            counterGroupSize++;
+            return counterStatus;
+        };
+
+        CLGPAPass* pClGpaPass = reinterpret_cast<CLGPAPass*>(GetPass());
+
+        // loop through the requested counters and create and enable them
+        pClGpaPass->IterateCLCounterMap(PopulateCLPerFCounterInfo);
+
+        assert(m_clCounterBlocks.size() == counterGroupSize);
 
         if (CL_SUCCESS != my_clEnqueueBeginPerfCounterAMD(m_pCLGpaContext->GetCLCommandQueue(),
                                                           static_cast<cl_uint>(m_clCounterList.size()),
@@ -180,16 +168,27 @@ bool CLGPASample::BeginRequest(IGPAContext* pContextState, const std::vector<gpa
             return false;
         }
 
-        for (gpa_uint32 i = 0; i < counterCount; ++i)
+        unsigned int counterCountIter = 0;
+
+        auto AddClCounterToSample = [&](const CounterIndex & counterIndex)->bool
         {
-            const GPA_HardwareCounterDescExt* pCounter = m_pCLGpaContext->GetCounterAccessor()->GetHardwareCounterExt((*pCounters)[i]);
+            const GPA_HardwareCounterDescExt* pCounter = m_pCLGpaContext->GetCounterAccessor()->GetHardwareCounterExt(counterIndex);
 
             // GPA_LogDebugMessage( "ENABLED COUNTER: %x.", m_pCounters[i] );
+            m_pClCounters[counterCountIter].m_counterID = counterIndex;
+            m_pClCounters[counterCountIter].m_counterGroup = pCounter->m_groupIdDriver;
+            m_pClCounters[counterCountIter].m_counterIndex = static_cast<gpa_uint32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
+            counterCountIter++;
+            return true;
+        };
 
-            m_pClCounters[i].m_counterID = (*pCounters)[i];
-            m_pClCounters[i].m_counterGroup = pCounter->m_groupIdDriver;
-            m_pClCounters[i].m_counterIndex = static_cast<gpa_uint32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
-        }
+        pClGpaPass->IterateEnabledCounterList(AddClCounterToSample);
+
+    }
+    else
+    {
+        GPA_LogError("CL Context is not initialized.");
+        success = false;
     }
 
     return success;

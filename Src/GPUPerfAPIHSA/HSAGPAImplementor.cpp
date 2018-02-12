@@ -197,6 +197,7 @@ bool HSAGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
     return isSuccess;
 }
 
+// TODO: this implementation doesn't do much -- is it needed?
 bool HSAGPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo,
                                            const GPA_HWInfo& hwInfo) const
 {
@@ -219,7 +220,7 @@ bool HSAGPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo,
 }
 
 IGPAContext* HSAGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
-                                               GPA_HWInfo& pHwInfo,
+                                               GPA_HWInfo& hwInfo,
                                                GPA_OpenContextFlags flags)
 {
     HSAGPAContext* pRetGpaContext = nullptr;
@@ -262,7 +263,7 @@ IGPAContext* HSAGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
             }
             else
             {
-                HSAGPAContext* pHsaGpaContext = new(std::nothrow) HSAGPAContext(pHwInfo, flags);
+                HSAGPAContext* pHsaGpaContext = new(std::nothrow) HSAGPAContext(hwInfo, flags);
 
                 if (nullptr == pHsaGpaContext)
                 {

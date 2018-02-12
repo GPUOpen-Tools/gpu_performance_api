@@ -85,7 +85,7 @@ bool HSAGPASample::UpdateResults()
         }
     }
 
-    CounterCount counterCount = GetPass()->GetCounterCount();
+    CounterCount counterCount = GetPass()->GetEnabledCounterCount();
 
     // Get and set the result to m_counters
     for (gpa_uint32 i = 0; i < counterCount; ++i)
@@ -124,174 +124,183 @@ bool HSAGPASample::UpdateResults()
     return isComplete;
 }
 
-bool HSAGPASample::BeginRequest(IGPAContext* pContextState, const std::vector<gpa_uint32>* pCounters)
+bool HSAGPASample::BeginRequest()
 {
-    bool success = true;
-    UNREFERENCED_PARAMETER(pCounters);
-
-    if (nullptr != pContextState &&
-        nullptr == m_pHSAGpaContext)
-    {
-        m_pHSAGpaContext = reinterpret_cast<HSAGPAContext*>(pContextState);
-    }
+    bool success = false;
 
     if (nullptr != m_pHSAGpaContext)
     {
-
         HSAToolsRTModule* pHsaToolsRTModule = HSAToolsRTModuleLoader::Instance()->GetAPIRTModule();
 
         if (nullptr == pHsaToolsRTModule || !pHsaToolsRTModule->IsModuleLoaded())
         {
             GPA_LogError("HSA runtime module is NULL.");
-            return false;
         }
-
-        CounterCount counterCount = GetPass()->GetCounterCount();
-
-        hsa_ext_tools_pmu_t pmu = m_pHSAGpaContext->GetHSAPMU();
-
-        if (nullptr == pmu)
+        else
         {
-            GPA_LogError("NULL PMU returned from the HSA Context.");
-            return false;
-        }
+            CounterCount counterCount = GetPass()->GetEnabledCounterCount();
+            hsa_ext_tools_pmu_t pmu = m_pHSAGpaContext->GetHSAPMU();
 
-        const GPA_HardwareCounters* pHardwareCounters = m_pHSAGpaContext->GetCounterAccessor()->GetHardwareCounters();
-
-        // Check number of groups
-        gpa_uint32 numGroups = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
-
-        m_pHSACounters = new(std::nothrow) HSACounter[counterCount];
-
-        if (nullptr == m_pHSACounters)
-        {
-            GPA_LogError("Unable to allocate memory for HSA counters.");
-            return false;
-        }
-
-
-        hsa_status_t status;
-
-        // Loop through requested counters and group them by their group id
-        for (gpa_uint32 i = 0; i < pCounters->size(); ++i)
-        {
-            bool isCounterValid = false;
-
-            // need to Enable counters
-            const GPA_HardwareCounterDescExt* pCounter = m_pHSAGpaContext->GetCounterAccessor()->GetHardwareCounterExt((*pCounters)[i]);
-
-            gpa_uint32 groupIndex = pCounter->m_groupIdDriver;
-            assert(groupIndex <= numGroups);
-
-            if (groupIndex > numGroups)
+            if (nullptr == pmu)
             {
-                return false;
-            }
-
-            // Check number of counters
-            gpa_uint64 numCounters = pHardwareCounters->m_pGroups[groupIndex].m_numCounters;
-            assert(pCounter->m_pHardwareCounter->m_counterIndexInGroup <= numCounters);
-
-            if (pCounter->m_pHardwareCounter->m_counterIndexInGroup > numCounters)
-            {
-                return false;
-            }
-
-            hsa_ext_tools_counter_block_t block;
-            status = pHsaToolsRTModule->ext_tools_get_counter_block_by_id(pmu, groupIndex, &block);
-
-            hsa_ext_tools_counter_t counter = nullptr;
-
-            if (HSA_STATUS_SUCCESS != status)
-            {
-                std::stringstream ss;
-                ss << "Failed to get counter block for group: " << groupIndex << ".";
-                GPA_LogError(ss.str().c_str());
+                GPA_LogError("NULL PMU returned from the HSA Context.");
             }
             else
             {
-                // Check if we already have seen this group
-                HsaCounterGroupMap::iterator it = m_hsaGrpIdCtrGrpMap.find(groupIndex);
+                const GPA_HardwareCounters* pHardwareCounters = m_pHSAGpaContext->GetCounterAccessor()->GetHardwareCounters();
 
-                if (it == m_hsaGrpIdCtrGrpMap.end())
+                // Check number of groups
+                gpa_uint32 numGroups = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
+
+                m_pHSACounters = new(std::nothrow) HSACounter[counterCount];
+
+                if (nullptr == m_pHSACounters)
                 {
-                    // If this is the first time seeing group, store this group in the map
-                    m_hsaGrpIdCtrGrpMap.insert(HsaCounterGroupMap::value_type(groupIndex, block));
-                }
-
-                // Create counter
-                status = pHsaToolsRTModule->ext_tools_create_counter(block, &counter);
-
-                if (HSA_STATUS_SUCCESS != status)
-                {
-                    std::stringstream ss;
-                    ss << "Failed to create perf counter with index: "
-                        << pCounter->m_pHardwareCounter->m_counterIndexInGroup
-                        << " in group "
-                        << groupIndex << ".";
-                    GPA_LogError(ss.str().c_str());
+                    GPA_LogError("Unable to allocate memory for HSA counters.");
                 }
                 else
                 {
+                    hsa_status_t status;
+                    bool HSAPerfMonitorCollectionStatus = true;
+                    unsigned int enabledCounterIter = 0u;
 
-                    status = pHsaToolsRTModule->ext_tools_set_counter_parameter(counter,
-                        static_cast<uint32_t>(HSA_EXT_TOOLS_COUNTER_PARAMETER_EVENT_INDEX),
-                        sizeof(pCounter->m_pHardwareCounter->m_counterIndexInGroup),
-                        static_cast<void*>(&pCounter->m_pHardwareCounter->m_counterIndexInGroup));
-
-                    // Setup the counter
-                    if (HSA_STATUS_SUCCESS != status)
+                    auto PopulateHSAPerForEnabledCounters = [&](const CounterIndex& counterIndex)-> bool
                     {
-                        std::stringstream ss;
-                        ss << "Failed to setup counter with index: "
-                            << pCounter->m_pHardwareCounter->m_counterIndexInGroup
-                            << " in group "
-                            << groupIndex << ".";
-                        GPA_LogError(ss.str().c_str());
-                    }
-                    else
-                    {
-                        // Enable the counter
-                        status = pHsaToolsRTModule->ext_tools_set_counter_enabled(counter, true);
+                        bool bEnabledCounter = true;
+                        bool isCounterValid = false;
 
-                        if (HSA_STATUS_SUCCESS != status)
+                        // need to Enable counters
+                        const GPA_HardwareCounterDescExt* pCounter = m_pHSAGpaContext->GetCounterAccessor()->GetHardwareCounterExt(counterIndex);
+
+                        gpa_uint32 groupIndex = pCounter->m_groupIdDriver;
+                        assert(groupIndex <= numGroups);
+
+                        if (groupIndex > numGroups)
                         {
-                            std::stringstream ss;
-                            ss << "Failed to enable counter with index: "
-                                << pCounter->m_pHardwareCounter->m_counterIndexInGroup
-                                << " in group "
-                                << groupIndex << ".";
-                            GPA_LogError(ss.str().c_str());
+                            bEnabledCounter = false;
                         }
                         else
                         {
-                            isCounterValid = true;
+                            // Check number of counters
+                            gpa_uint64 numCounters = pHardwareCounters->m_pGroups[groupIndex].m_numCounters;
+                            assert(pCounter->m_pHardwareCounter->m_counterIndexInGroup <= numCounters);
+
+                            if (pCounter->m_pHardwareCounter->m_counterIndexInGroup > numCounters)
+                            {
+                                bEnabledCounter = false;
+                            }
+                            else
+                            {
+
+                                hsa_ext_tools_counter_block_t block;
+                                status = pHsaToolsRTModule->ext_tools_get_counter_block_by_id(pmu, groupIndex, &block);
+
+                                hsa_ext_tools_counter_t counter = nullptr;
+
+                                if (HSA_STATUS_SUCCESS != status)
+                                {
+                                    std::stringstream ss;
+                                    ss << "Failed to get counter block for group: " << groupIndex << ".";
+                                    GPA_LogError(ss.str().c_str());
+                                }
+                                else
+                                {
+                                    // Check if we already have seen this group
+                                    HsaCounterGroupMap::iterator it = m_hsaGrpIdCtrGrpMap.find(groupIndex);
+
+                                    if (it == m_hsaGrpIdCtrGrpMap.end())
+                                    {
+                                        // If this is the first time seeing group, store this group in the map
+                                        m_hsaGrpIdCtrGrpMap.insert(HsaCounterGroupMap::value_type(groupIndex, block));
+                                    }
+
+                                    // Create counter
+                                    status = pHsaToolsRTModule->ext_tools_create_counter(block, &counter);
+
+                                    if (HSA_STATUS_SUCCESS != status)
+                                    {
+                                        std::stringstream ss;
+                                        ss << "Failed to create perf counter with index: "
+                                            << pCounter->m_pHardwareCounter->m_counterIndexInGroup
+                                            << " in group "
+                                            << groupIndex << ".";
+                                        GPA_LogError(ss.str().c_str());
+                                    }
+                                    else
+                                    {
+
+                                        status = pHsaToolsRTModule->ext_tools_set_counter_parameter(counter,
+                                            static_cast<uint32_t>(HSA_EXT_TOOLS_COUNTER_PARAMETER_EVENT_INDEX),
+                                            sizeof(pCounter->m_pHardwareCounter->m_counterIndexInGroup),
+                                            static_cast<void*>(&pCounter->m_pHardwareCounter->m_counterIndexInGroup));
+
+                                        // Setup the counter
+                                        if (HSA_STATUS_SUCCESS != status)
+                                        {
+                                            std::stringstream ss;
+                                            ss << "Failed to setup counter with index: "
+                                                << pCounter->m_pHardwareCounter->m_counterIndexInGroup
+                                                << " in group "
+                                                << groupIndex << ".";
+                                            GPA_LogError(ss.str().c_str());
+                                        }
+                                        else
+                                        {
+                                            // Enable the counter
+                                            status = pHsaToolsRTModule->ext_tools_set_counter_enabled(counter, true);
+
+                                            if (HSA_STATUS_SUCCESS != status)
+                                            {
+                                                std::stringstream ss;
+                                                ss << "Failed to enable counter with index: "
+                                                    << pCounter->m_pHardwareCounter->m_counterIndexInGroup
+                                                    << " in group "
+                                                    << groupIndex << ".";
+                                                GPA_LogError(ss.str().c_str());
+                                            }
+                                            else
+                                            {
+                                                isCounterValid = true;
+                                            }
+                                        }
+                                    }
+                                }
+
+                                // Update the list of currently active counters
+                                m_pHSACounters[enabledCounterIter].m_counterID = counterIndex;
+                                m_pHSACounters[enabledCounterIter].m_counterGroup = pCounter->m_groupIndex;
+                                m_pHSACounters[enabledCounterIter].m_counterIndex = static_cast<gpa_uint32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
+                                m_pHSACounters[enabledCounterIter].m_hsaPerfCounter = counter;
+                                m_pHSACounters[enabledCounterIter].m_isCounterValid = isCounterValid;
+                                enabledCounterIter++;
+                            }
+                        }
+
+                        HSAPerfMonitorCollectionStatus &= bEnabledCounter;
+                        return bEnabledCounter;
+                    };
+
+                    // Loop through requested counters and group them by their group id
+                    GetPass()->IterateEnabledCounterList(PopulateHSAPerForEnabledCounters);
+
+                    if (HSAPerfMonitorCollectionStatus)
+                    {
+                        // Begin
+                        status = pHsaToolsRTModule->ext_tools_pmu_begin(pmu, m_pHSAGpaContext->GetHSAContext().m_pQueue, m_pHSAGpaContext->GetHSAContext().m_pAqlTranslationHandle, true);
+
+                        if (HSA_STATUS_SUCCESS != status)
+                        {
+                            GPA_LogError("Failed to begin perf counter request.");
+                            //Reset(selectionID, pCounters);
+                        }
+                        else
+                        {
+                            success = true;
                         }
                     }
                 }
             }
-
-            // Update the list of currently active counters
-            m_pHSACounters[i].m_counterID = (*pCounters)[i];
-            m_pHSACounters[i].m_counterGroup = pCounter->m_groupIndex;
-            m_pHSACounters[i].m_counterIndex = static_cast<gpa_uint32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
-            m_pHSACounters[i].m_hsaPerfCounter = counter;
-            m_pHSACounters[i].m_isCounterValid = isCounterValid;
-        } // for each counter
-
-          // Begin
-
-        status = pHsaToolsRTModule->ext_tools_pmu_begin(pmu, m_pHSAGpaContext->GetHSAContext().m_pQueue, m_pHSAGpaContext->GetHSAContext().m_pAqlTranslationHandle, true);
-
-        if (HSA_STATUS_SUCCESS != status)
-        {
-            GPA_LogError("Failed to begin perf counter request.");
-
-            //Reset(selectionID, pCounters);
-            return false;
         }
-
-        return true;
     }
 
     return success;

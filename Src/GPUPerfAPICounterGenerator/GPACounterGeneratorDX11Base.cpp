@@ -1,11 +1,11 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Base class for DX11 counter generation -- add D3D11 Query counters which are supported on all hardware
 //==============================================================================
 
-#include <D3D11.h>
+#include <d3d11.h>
 
 #ifdef EXTRA_COUNTER_INFO
     #include <sstream>
@@ -17,6 +17,7 @@
 #include "GPASoftwareCounters.h"
 
 #include "GPACounterGeneratorSchedulerManager.h"
+#include "GPACommonDefs.h"
 
 GPA_CounterGeneratorDX11Base::GPA_CounterGeneratorDX11Base()
 {
@@ -60,7 +61,7 @@ GPA_Status GPA_CounterGeneratorDX11Base::GenerateSoftwareCounters(
     UNREFERENCED_PARAMETER(asicType);
     UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
 
-    if (true == pSoftwareCounters->m_countersGenerated)
+    if (pSoftwareCounters->m_countersGenerated)
     {
         return GPA_STATUS_OK;
     }
@@ -96,35 +97,36 @@ GPA_Status GPA_CounterGeneratorDX11Base::GenerateSoftwareCounters(
     return GPA_STATUS_OK;
 }
 
-void GPA_CounterGeneratorDX11Base::ComputeSWCounterValue(gpa_uint32 counterIndex,
-    gpa_uint64 value,
-    void* pResult,
-    const GPA_HWInfo* pHwInfo) const
+void GPA_CounterGeneratorDX11Base::ComputeSWCounterValue(gpa_uint32 softwareCounterIndex,
+                                                         gpa_uint64 value,
+                                                         void* pResult,
+                                                         const GPA_HWInfo* pHwInfo) const
 {
     gpa_uint32 numAMDCounters = GetNumAMDCounters();
 
-    if (counterIndex >= numAMDCounters)
+    if (softwareCounterIndex >= numAMDCounters)
     {
-        counterIndex -= numAMDCounters;  //adjust index for AMD counters
+        softwareCounterIndex -= numAMDCounters;  //adjust index for AMD counters
     }
 
     const SwCounterDescVec* pSwCounters = SwCounterManager::Instance()->GetSwCounters();
 
-    if (counterIndex < static_cast<gpa_uint32>(pSwCounters->size()))
+    if (softwareCounterIndex < static_cast<gpa_uint32>(pSwCounters->size()))
     {
         const std::string nvGPUTime = "GPUTime";
         const std::string d3dGPUTime = "D3DGPUTime";
-        const std::string counterName = pSwCounters->at(counterIndex).m_name;
+        const std::string counterName = pSwCounters->at(softwareCounterIndex).m_name;
 
         if (counterName == d3dGPUTime || counterName == nvGPUTime)
         {
-            gpa_uint64 freq = pHwInfo->GetTimeStampFrequency();
+            gpa_uint64 freq = 1u;
+            GPA_ASSERT(pHwInfo->GetTimeStampFrequency(freq));
             gpa_float64* pBuf = static_cast<gpa_float64*>(pResult);
             *pBuf = static_cast<gpa_float64>(value) / static_cast<gpa_float64>(freq) * 1000.0;
         }
         else // other SW DX counters
         {
-            GPA_Data_Type type = (*pSwCounters)[counterIndex].m_type;
+            GPA_Data_Type type = (*pSwCounters)[softwareCounterIndex].m_type;
 
             if (GPA_DATA_TYPE_UINT64 == type)
             {

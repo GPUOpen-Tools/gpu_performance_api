@@ -34,10 +34,10 @@ public:
     GPA_API_Type GetAPIType() const override final;
 
     /// \copydoc GPAImplementor::GetHwInfoFromAPI
-    bool GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& pHwInfo) const override final;
+    bool GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const override final;
 
     /// \copydoc GPAImplementor::VerifyAPIHwSupport
-    bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& pHwInfo) const override final;
+    bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const override final;
 
 private:
 
@@ -45,7 +45,7 @@ private:
     HSAGPAImplementor() = default;
 
     /// \copydoc GPAImplementor::OpenAPIContext
-    IGPAContext* OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& pHwInfo, GPA_OpenContextFlags flags) override final;
+    IGPAContext* OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags) override final;
 
     /// \copydoc GPAImplementor::CloseAPIContext
     bool CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pGpaContext) override final;

@@ -8,11 +8,7 @@
 #ifndef _CL_GPA_CONTEXT_H_
 #define _CL_GPA_CONTEXT_H_
 
-// std
-#include <list>
-
 #include <CL/cl.h>
-
 
 // GPA Common
 #include "GPAContext.h"
@@ -24,12 +20,12 @@ public:
 
     /// Constructor
     /// \param[in] clCommandQueue the CL Command queue used to create the context
-    /// \param[in] pHwInfo the hardware info used to create the context
+    /// \param[in] hwInfo the hardware info used to create the context
     /// \param[in] contextFlags the flags used to create the context
-    CLGPAContext(cl_command_queue& clCommandQueue, GPA_HWInfo& pHwInfo, GPA_OpenContextFlags contextFlags);
+    CLGPAContext(cl_command_queue& clCommandQueue, GPA_HWInfo& hwInfo, GPA_OpenContextFlags contextFlags);
 
     /// Destructor
-    ~CLGPAContext();
+    ~CLGPAContext() = default;
 
     /// \copydoc IGPAContext::CreateSession()
     GPA_SessionId CreateSession() override;
@@ -39,9 +35,6 @@ public:
 
     /// \copydoc IGPAContext::GetMaxGPASessions()
     gpa_uint32 GetMaxGPASessions() const override;
-
-    /// \copydoc IGPAContext::DoesSessionExist()
-    bool DoesSessionExist(GPA_SessionId pSessionId) const override;
 
     /// \copydoc IGPAInterfaceTrait::GetAPIType()
     GPA_API_Type GetAPIType() const override;

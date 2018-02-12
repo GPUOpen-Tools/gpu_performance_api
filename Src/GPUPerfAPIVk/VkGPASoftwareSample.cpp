@@ -10,6 +10,7 @@
 #include "VkGPACommandList.h"
 #include "GPASoftwareCounters.h"
 #include "GPAHardwareCounters.h"
+#include "VkGPAPass.h"
 
 VkGPASoftwareSample::VkGPASoftwareSample(GPAPass* pPass,
     IGPACommandList* pCmdList,
@@ -38,20 +39,19 @@ void VkGPASoftwareSample::AssignQueries(VkCommandListSwQueries* pSwQueries)
     m_pSwQueries = pSwQueries;
 }
 
-bool VkGPASoftwareSample::BeginRequest(
-    IGPAContext* pContextState,
-    const std::vector<gpa_uint32>* pCounters)
+bool VkGPASoftwareSample::BeginRequest()
 {
     bool result = true;
 
-    if ((nullptr == pContextState) || (nullptr == pCounters) || (nullptr != m_pContextState) || (nullptr == m_pVkGpaCmdList))
+    if ((nullptr != m_pContextState) || (nullptr == m_pVkGpaCmdList))
     {
         result = false;
     }
     else
     {
-        m_pContextState = static_cast<VkGPAContext*>(pContextState);
-        const size_t counterCount = pCounters->size();
+        VkGPAPass* pVkGpaPass = reinterpret_cast<VkGPAPass*>(GetPass());
+        m_pContextState = reinterpret_cast<VkGPAContext*>(pVkGpaPass->GetGpaSession()->GetParentContext());
+        const size_t counterCount = pVkGpaPass->GetEnabledCounterCount();
 
         const IGPACounterAccessor* pCounterAccessor = m_pContextState->GetCounterAccessor();
         const GPA_SoftwareCounters* pSwCounters = pCounterAccessor->GetSoftwareCounters();
@@ -60,22 +60,33 @@ bool VkGPASoftwareSample::BeginRequest(
 
         gpa_uint32 hardwareCountersCount = pHwCounters->GetNumCounters();
 
-        for (size_t ci = 0; result && (ci < counterCount) ; ++ci)
+        unsigned int counterIter = 0u;
+        bool bCounterInfoCollected = true;
+
+        auto PopulateSoftwareCounterInfo = [&](const CounterIndex& counterIndex) -> bool
         {
-            gpa_uint32 swCounterIndex = (*pCounters)[ci];
-            m_activeCountersList[ci].m_index =
+            bool bIsCounterEnabled = true;
+            gpa_uint32 swCounterIndex = counterIndex;
+            m_activeCountersList[counterIter].m_index =
                 SwCounterManager::Instance()->GetSwCounterPubIndex(swCounterIndex);
 
             // software counter indices are after the hardware counter
             gpa_uint32 counterIdDriver = pSwCounters->m_counters[swCounterIndex - hardwareCountersCount].m_counterIdDriver;
-            m_activeCountersList[ci].m_queryType = static_cast<GPA_VK_SW_QUERY_TYPE>(counterIdDriver);
-            result = (counterIdDriver < sizeof(m_activeQueries));
+            m_activeCountersList[counterIter].m_queryType = static_cast<GPA_VK_SW_QUERY_TYPE>(counterIdDriver);
+            bIsCounterEnabled = (counterIdDriver < sizeof(m_activeQueries));
 
-            if (result)
+            if (bIsCounterEnabled)
             {
                 m_activeQueries |= (0x1 << counterIdDriver);
             }
-        }
+
+            counterIter++;
+            bCounterInfoCollected &= bIsCounterEnabled;
+            return bIsCounterEnabled;
+        };
+
+        pVkGpaPass->IterateEnabledCounterList(PopulateSoftwareCounterInfo);
+        result = bCounterInfoCollected;
 
         if (result)
         {

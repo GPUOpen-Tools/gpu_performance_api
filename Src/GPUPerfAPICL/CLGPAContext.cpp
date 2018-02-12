@@ -11,14 +11,11 @@
 #include "CLGPASession.h"
 
 CLGPAContext::CLGPAContext(cl_command_queue& clCommandQueue,
-                           GPA_HWInfo& pHwInfo,
+                           GPA_HWInfo& hwInfo,
                            GPA_OpenContextFlags contextFlags) :
-                           GPAContext(pHwInfo, contextFlags),
-                           m_clCommandQueue(clCommandQueue)
-{
-}
-
-CLGPAContext::~CLGPAContext()
+                           GPAContext(hwInfo, contextFlags),
+                           m_clCommandQueue(clCommandQueue),
+                           m_clDeviceId(nullptr)
 {
 }
 
@@ -66,13 +63,6 @@ gpa_uint32 CLGPAContext::GetMaxGPASessions() const
 {
     // maximum latency is 4 for dx10-capable cards
     return 4;
-}
-
-bool CLGPAContext::DoesSessionExist(GPA_SessionId pSessionId) const
-{
-    GPA_FUNCTION_NOT_IMPLEMENTED;
-    UNREFERENCED_PARAMETER(pSessionId);
-    return true;
 }
 
 GPA_API_Type CLGPAContext::GetAPIType() const

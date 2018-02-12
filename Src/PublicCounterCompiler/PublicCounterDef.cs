@@ -416,11 +416,6 @@ namespace PublicCounterCompiler
         }
 
         /// <summary>
-        /// Gets or sets the counter type.
-        /// </summary>
-        public string CounterType { get; set; }
-
-        /// <summary>
         /// Adds a counter the list of required internal counters for this public counter.
         /// </summary>
         /// <param name="counterIndex">The index of the internal counter to add.</param>

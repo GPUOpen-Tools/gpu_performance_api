@@ -207,6 +207,16 @@ GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA
 
             if (CompareHwInfo(apiHwInfo, asicHwInfo))
             {
+                gpa_uint32 apiRevId = 0;
+
+                // make sure revision id is set correctly based on the actual hardware
+                if (apiHwInfo.GetRevisionID(apiRevId) && REVISION_ID_ANY == apiRevId)
+                {
+                    apiHwInfo.SetRevisionID(asicInfo.revID);
+                }
+
+                apiHwInfo.UpdateDeviceInfoBasedOnDeviceID();
+
                 // this device matches what the application is running on, so break from the loop.
                 foundMatchingHWInfo = true;
                 break;
@@ -225,29 +235,41 @@ GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA
         {
             for (auto asicInfo : asicInfoList)
             {
-                if (NVIDIA_VENDOR_ID == asicInfo.vendorID || INTEL_VENDOR_ID == asicInfo.vendorID) // support non-AMD use case (DX and GL only)
+                GPA_HWInfo asicHwInfo;
+                asicHwInfo.SetVendorID(asicInfo.vendorID);
+                asicHwInfo.SetDeviceName(asicInfo.adapterName.c_str());
+                asicHwInfo.SetDeviceID(asicInfo.deviceID);
+                asicHwInfo.SetRevisionID(asicInfo.revID);
+
+                if (NVIDIA_VENDOR_ID == asicInfo.vendorID)
                 {
-                    GPA_HWInfo asicHwInfo;
-                    asicHwInfo.SetVendorID(asicInfo.vendorID);
-                    asicHwInfo.SetDeviceName(asicInfo.adapterName.c_str());
-                    asicHwInfo.SetDeviceID(asicInfo.deviceID);
-                    asicHwInfo.SetRevisionID(asicInfo.revID);
+                    asicHwInfo.SetHWGeneration(GDT_HW_GENERATION_NVIDIA);
+                }
+                else if (INTEL_VENDOR_ID == asicInfo.vendorID)
+                {
+                    asicHwInfo.SetHWGeneration(GDT_HW_GENERATION_INTEL);
+                }
+                else
+                {
+                    // this call makes sure the hw generation is set correctly
+                    asicHwInfo.UpdateDeviceInfoBasedOnDeviceID();
+                }
 
-                    if (NVIDIA_VENDOR_ID == asicInfo.vendorID)
+                if (GPA_STATUS_OK == CompareHwInfo(apiHwInfo, asicHwInfo))
+                {
+                    gpa_uint32 apiRevId = 0;
+
+                    // make sure revision id is set correctly based on the actual hardware
+                    if (apiHwInfo.GetRevisionID(apiRevId) && REVISION_ID_ANY == apiRevId)
                     {
-                        asicHwInfo.SetHWGeneration(GDT_HW_GENERATION_NVIDIA);
-                    }
-                    else if (INTEL_VENDOR_ID == asicInfo.vendorID)
-                    {
-                        asicHwInfo.SetHWGeneration(GDT_HW_GENERATION_INTEL);
+                        apiHwInfo.SetRevisionID(asicInfo.revID);
                     }
 
-                    if (GPA_STATUS_OK == CompareHwInfo(apiHwInfo, asicHwInfo))
-                    {
-                        // this device matches what the application is running on, so break from the loop.
-                        foundMatchingHWInfo = true;
-                        break;
-                    }
+                    apiHwInfo.UpdateDeviceInfoBasedOnDeviceID();
+
+                    // this device matches what the application is running on, so break from the loop.
+                    foundMatchingHWInfo = true;
+                    break;
                 }
             }
         }

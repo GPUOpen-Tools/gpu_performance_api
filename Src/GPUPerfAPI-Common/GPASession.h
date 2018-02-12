@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief A base-class implementation of the GPA Session interface
@@ -98,10 +98,10 @@ public:
     bool IsComplete() const override;
 
     /// \copydoc IGPASession::GetPerSampleResultSizeInBytes()
-    gpa_uint64 GetPerSampleResultSizeInBytes() const override;
+    size_t GetPerSampleResultSizeInBytes() const override;
 
     /// \copydoc IGPASession::GetSampleResult()
-    GPA_Status GetSampleResult(gpa_uint32 sampleId, gpa_uint64 sampleResultSizeInBytes, void* pCounterSampleResults) override;
+    GPA_Status GetSampleResult(gpa_uint32 sampleId, size_t sampleResultSizeInBytes, void* pCounterSampleResults) override;
 
     /// \copydoc IGPASession::BeginSample()
     bool BeginSample(ClientSampleId sampleId, GPA_CommandListId commandListId) override;

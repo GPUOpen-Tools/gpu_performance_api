@@ -20,13 +20,33 @@ public:
     DX11GPACommandList() = delete;
 
     /// Constructor
-    DX11GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass);
+    /// \param[in] pGpaSession GPA session pointer
+    /// \param[in] pGpaPass pass object pointer
+    /// \param[in] commandListId command list id
+    DX11GPACommandList(IGPASession* pGpaSession,
+                       GPAPass* pGpaPass,
+                       CommandListId commandListId);
 
     /// Destructor
     ~DX11GPACommandList() = default;
 
     /// \copydoc IGPAInterfaceTrait::GetAPIType()
     GPA_API_Type GetAPIType() const override;
+
+private:
+
+    /// \copydoc GPACommandList::BeginCommandListRequest()
+    bool BeginCommandListRequest() override final;
+
+    /// \copydoc GPACommandList::EndCommandListRequest()
+    bool EndCommandListRequest() override final;
+
+    /// \copydoc GPACommandList::BeginSampleRequest()
+    bool BeginSampleRequest(ClientSampleId clientSampleId,
+                            GPASample* pGpaSample) override final;
+
+    /// \copydoc GPACommandList::CloseLastSampleRequest()
+    bool CloseLastSampleRequest() override final;
 };
 
 #endif // _DX11_GPA_COMMAND_LIST_H_

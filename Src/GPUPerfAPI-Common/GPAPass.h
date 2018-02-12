@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA Pass Object Header
@@ -26,6 +26,8 @@ using CounterList =     std::vector<CounterIndex>;                ///< type alia
 using SkippedCounters = std::set<CounterIndex>;                   ///< type alias for list of skipped counters
 using SampleIndex =     unsigned int;                             ///< type alias for sample indexes
 using GPACommandLists = std::vector<IGPACommandList*>;            ///< type alias for list of GPA command lists
+using CommandListCounter = unsigned int;                          ///< type alias for command list counter
+using CommandListId = unsigned int;                               ///< type alias for command list Id
 
 /// Class for GPA pass
 class GPAPass
@@ -84,15 +86,23 @@ public:
     /// Creates a command list
     /// \param[in] pCmd command list
     /// \param[in] cmdType type of the command list
-    virtual IGPACommandList* CreateCommandList(void* pCmd, GPA_Command_List_Type cmdType) = 0;
+    virtual IGPACommandList* CreateCommandList(void* pCmd, GPA_Command_List_Type cmdType);
 
     /// Returns the number of samples in the pass
     /// \return sample count
     SampleCount GetSampleCount() const;
 
+    /// Checks whether the all the samples are valid and ready to get the result
+    /// \return true if pass is ready to collect the result
+    bool IsAllSampleValidInPass() const;
+
     /// Returns the number of counters in the pass
     /// \return sample count
-    CounterCount GetCounterCount() const;
+    CounterCount GetEnabledCounterCount() const;
+
+    /// Returns the number of counters skipped in the pass
+    /// \return sample count
+    CounterCount GetSkippedCounterCount() const;
 
     /// Returns the index of the pass object
     /// \return index of the pass object
@@ -215,6 +225,12 @@ public:
     /// param[in] function function to be executed for each object in the list - function may return false to terminate iteration
     void IterateSkippedCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const;
 
+    /// Get the counter index in the list of the counters passed to the driver for sample creation
+    /// \param[in] counterIndexInPass index of the counter in the pass
+    /// \param[out] internalCounterIndex internal counter index from the counter generator
+    /// \return true if counter index is found otherwise false
+    bool GetCounterByIndexInPass(CounterIndex counterIndexInPass, CounterIndex& internalCounterIndex) const;
+
 protected:
 
     /// Checks to see if the supplied ClientSampleId has been opened on this pass.
@@ -228,10 +244,17 @@ protected:
     /// \param[in] sampleType Indicates whether the created sample should support Software or Hardware counters.
     /// \param[in] sampleId The client-supplied Id that will identify the created sample.
     /// \return A newly allocated API-specific GPASample object.
-    virtual GPASample* CreateAPISpecificSample(
-        IGPACommandList* pCmdList,
-        GpaSampleType sampleType,
-        ClientSampleId sampleId) = 0;
+    virtual GPASample* CreateAPISpecificSample(IGPACommandList* pCmdList,
+                                               GpaSampleType sampleType,
+                                               ClientSampleId sampleId) = 0;
+
+    /// Creates a command list
+    /// \param[in] pCmd command list
+    /// \param[in] commandListId command list id
+    /// \param[in] cmdType type of the command list
+    virtual IGPACommandList* CreateAPISpecificCommandList(void* pCmd,
+                                                          CommandListId commandListId,
+                                                          GPA_Command_List_Type cmdType) = 0;
 
     /// Get the counter index in the list of the counters passed to the driver for sample creation
     /// \param[in] internalCounterIndex internal counter index from the counter generator
@@ -251,10 +274,6 @@ protected:
     /// \return counter scheduler
     const IGPACounterScheduler* GetCounterScheduler() const;
 
-    /// Add the GPA command list
-    /// \param[in] pGPACommandList GPA command list
-    void AddGPACommandList(IGPACommandList* pGPACommandList);
-
     /// Lock the mutex to protect the GPACommandList vector
     void LockCommandListMutex() const;
 
@@ -268,6 +287,10 @@ protected:
     std::map<gpa_uint32, GPASampleResult>                       m_results;                          ///< Maps a sample ID to a set of counter results.
 
 private:
+
+    /// Add the GPA command list
+    /// \param[in] pGPACommandList GPA command list
+    void AddCommandList(IGPACommandList* pGPACommandList);
 
     /// Populates the timing counter information for the counters in the pass
     void PopulateTimingCounterInfo();
@@ -286,6 +309,8 @@ private:
     GPACommandLists                                             m_gpaCmdList;                       ///< list of api specific command Lists
     mutable std::mutex                                          m_samplesMapMutex;                  ///< Mutex to protect the samples map
     SamplesMap                                                  m_samplesMap;                       ///< sample list
+    CommandListCounter                                          m_commandListCounter;               ///< counter representing number of command list created in this pass - This will help in validation and uniquely identifying two different command list
+    mutable bool                                                m_isAllSampleValidInPass;           ///< flag indicating all the sample in the pass is valid or not - for cache
 
     bool                                                        m_gpuTimeTopToBottomPresent;        ///< Indicates if the GPUTime top to bottom is being requested
     gpa_uint32                                                  m_gpuTimeTopToBottomOffset;         ///< Which index within this request is the top to bottom counter

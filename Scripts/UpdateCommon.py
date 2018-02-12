@@ -101,3 +101,11 @@ def download_and_run(key, value):
 if False == args.skipvulkansdk:
     for key in downloadAndInstallMapping:
         download_and_run(key, downloadAndInstallMapping[key])
+
+for key in specificBranchMapping:
+    tmppath = os.path.join(scriptRoot, "..", key)
+    # clean up path, collapsing any ../ and converting / to \ for Windows
+    targetPath = os.path.normpath(tmppath)
+    commandArgs = ["git", "checkout", specificBranchMapping[key]]
+    p = subprocess.Popen( commandArgs, cwd=targetPath)
+    p.wait()
