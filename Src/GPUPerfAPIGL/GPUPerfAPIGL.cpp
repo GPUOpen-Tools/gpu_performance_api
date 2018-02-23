@@ -214,11 +214,11 @@ gpa_uint32 GPA_IMP_GetPreferredCheckResultFrequency()
     #endif
 
     #ifdef _LINUX
-        decltype(glXGetProcAddressARB)* _glXGetProcAddressARB = nullptr;
+        decltype(glXGetProcAddressARB)* _GPAglXGetProcAddressARB = nullptr;
     #endif
 
 #else
-    decltype(eglGetProcAddress)* _eglGetProcAddress = nullptr;
+    decltype(eglGetProcAddress)* _GPAeglGetProcAddress = nullptr;
 #endif
 
 /// Checks the OpenGL extensions and initializes the various function pointers.  The extensions queried are:
@@ -264,9 +264,9 @@ GPA_Status InitializeGLFunctions()
 #endif
 
 #ifdef _LINUX
-    _glXGetProcAddressARB = reinterpret_cast<decltype(glXGetProcAddressARB)*>(dlsym(module, "glXGetProcAddressARB"));
+    _GPAglXGetProcAddressARB = reinterpret_cast<decltype(glXGetProcAddressARB)*>(dlsym(module, "glXGetProcAddressARB"));
 
-    if (nullptr == _glXGetProcAddressARB)
+    if (nullptr == _GPAglXGetProcAddressARB)
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
@@ -276,9 +276,9 @@ GPA_Status InitializeGLFunctions()
 #else // GLES
 
 #ifdef _WIN32
-    _eglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(GetProcAddress(module, "eglGetProcAddress"));
+    _GPAeglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(GetProcAddress(module, "eglGetProcAddress"));
 
-    if (nullptr == _eglGetProcAddress)
+    if (nullptr == _GPAeglGetProcAddress)
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
@@ -286,9 +286,9 @@ GPA_Status InitializeGLFunctions()
 #endif
 
 #ifdef _LINUX
-    _eglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(dlsym(module, "eglGetProcAddress"));
+    _GPAeglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(dlsym(module, "eglGetProcAddress"));
 
-    if (nullptr == _eglGetProcAddress)
+    if (nullptr == _GPAeglGetProcAddress)
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
