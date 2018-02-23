@@ -8,7 +8,7 @@ LINKFLAGS_SO = -shared -Wl,-z,defs $(ADDL_LINKFLAGS)
 PLATFORM_CFLAG =
 PLATFORM_LFLAG =
 TARGET_SUFFIX =
-ADDL_CFLAGS =
+ADDL_CFLAGS = -fno-rtti
 CFLAGS = -std=c++11 $(OPTIMIZE) -fPIC -D_LINUX -Wno-write-strings $(PLATFORM_CFLAG) $(ADDL_CFLAGS)
 # ADDLCFLAGS = -Wall -Wno-unknown-pragmas -Wno-strict-aliasing -Wno-non-virtual-dtor -Werror -msse
 PLATFORM_DIR = x64
