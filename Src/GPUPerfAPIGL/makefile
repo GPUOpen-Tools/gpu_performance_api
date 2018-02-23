@@ -4,6 +4,7 @@ DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
 TARGETSO = libGPUPerfAPIGL$(TARGET_SUFFIX).so
+TARGETLIB = libGPUPerfAPIGL$(TARGET_SUFFIX).a
 ADDL_DEFINES = -DGLX_GLXEXT_PROTOTYPES
 
 INCLUDES =	-I. \
@@ -29,6 +30,8 @@ SO_OBJS	= \
 	./$(OBJ_DIR)/ASICInfo.o \
 	./$(OBJ_DIR)/GPUPerfAPIGL.o \
 	./$(OBJ_DIR)/GLPerfMonitorCache.o
+
+LIB_OBJS = $(SO_OBJS)
 
 include $(DEPTH)/Build/Linux/CommonTargets.mk
 
