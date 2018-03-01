@@ -19,7 +19,7 @@ GitHubMapping = {
     "common-src-AmdVkExt"                    : ["../Common/Src/AmdVkExt", "1fc64cdf8da2bd5c1e1b87a6d2ee58c6334e686b"],
     "common-src-DeviceInfo"                  : ["../Common/Src/DeviceInfo", "e5e83b573fb49a16e8e1045d4cb39cbb17326270"],
     "common-src-DynamicLibraryModule"        : ["../Common/Src/DynamicLibraryModule", "4b1587a50119c0a59ce3472facbaa2af7c243fdf"],
-    "common-src-GPUPerfAPIUtils"             : ["../Common/Src/GPUPerfAPIUtils", "d10457ebd4846a84820f83a7dd3e2e11ec1be081"],
+    "common-src-GPUPerfAPIUtils"             : ["../Common/Src/GPUPerfAPIUtils", "a05a033a82d3b85e4b219888c992b9586a87375f"],
     "common-src-TSingleton"                  : ["../Common/Src/TSingleton", "2a338d5b7e649ffba0225772c521726c18b13fff"],
     "common-src-Vsprops"                     : ["../Common/Src/Vsprops", "5a434b269727ed1f36c3c31aa56a0ca06502b198"],
 }
