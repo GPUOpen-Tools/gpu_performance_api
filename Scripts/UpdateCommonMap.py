@@ -17,7 +17,7 @@ GitHubMapping = {
     "common-src-AMDTMutex"                   : ["../Common/Src/AMDTMutex", "fb68811ed3a475cc9ab1c5d5e0482658ec679716"],
     "common-src-AmdDxExt"                    : ["../Common/Src/AmdDxExt", "1e16621535a70dc4e088aaa7975ac4b84949f9e3"],
     "common-src-AmdVkExt"                    : ["../Common/Src/AmdVkExt", "1fc64cdf8da2bd5c1e1b87a6d2ee58c6334e686b"],
-    "common-src-DeviceInfo"                  : ["../Common/Src/DeviceInfo", "1d750f29ebf52ff1a70f521b31c16ad6df65e8b9"],
+    "common-src-DeviceInfo"                  : ["../Common/Src/DeviceInfo", "e5e83b573fb49a16e8e1045d4cb39cbb17326270"],
     "common-src-DynamicLibraryModule"        : ["../Common/Src/DynamicLibraryModule", "4b1587a50119c0a59ce3472facbaa2af7c243fdf"],
     "common-src-GPUPerfAPIUtils"             : ["../Common/Src/GPUPerfAPIUtils", "d10457ebd4846a84820f83a7dd3e2e11ec1be081"],
     "common-src-TSingleton"                  : ["../Common/Src/TSingleton", "2a338d5b7e649ffba0225772c521726c18b13fff"],

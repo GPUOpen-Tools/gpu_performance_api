@@ -318,7 +318,9 @@ bool GetASICInfo(ASICInfo& rASICInfo)
              nAsicType == ATIASIC_ID_TONGA_P ||
              nAsicType == ATIASIC_ID_FIJI_P ||
              nAsicType == ATIASIC_ID_ELLESMERE ||
-             nAsicType == ATIASIC_ID_BAFFIN)
+             nAsicType == ATIASIC_ID_BAFFIN ||
+             nAsicType == ATIASIC_ID_LEXA ||
+             nAsicType == ATIASIC_ID_VEGAM)
     {
         GPA_LogMessage("Recognized a GFX8 card.");
         rASICInfo.eAsicType = ASIC_Gfx8;
@@ -328,6 +330,16 @@ bool GetASICInfo(ASICInfo& rASICInfo)
     {
         GPA_LogMessage("Recognized an APU with GFX8 graphics.");
         rASICInfo.eAsicType = ASIC_Gfx8;
+    }
+    else if (nAsicType == ATIASIC_ID_VEGA)
+    {
+        GPA_LogMessage("Recognized a GFX9 card.");
+        rASICInfo.eAsicType = ASIC_Gfx9;
+    }
+    else if (nAsicType == ATIASIC_ID_VEGA_APU)
+    {
+        GPA_LogMessage("Recognized an APU with GFX9 graphics.");
+        rASICInfo.eAsicType = ASIC_Gfx9;
     }
     else
     {
