@@ -23,6 +23,13 @@ else:
     print("Operating system not recognized correctly")
     sys.exit(1)
 
+SHELLTYPE = os.environ.get('SHELL')
+# SHELL only set for Cygwin or Linux, use "shell=False" in Popen calls
+SHELLARG = False
+if ( SHELLTYPE == None ):
+    # on Windows, set "shell=True"
+    SHELLARG = True
+
 # GPUPerfAPI git project to folder map definitions
 # - GitHubMapping
 from UpdateCommonMap import *
@@ -44,15 +51,15 @@ for key in GitHubMapping:
     targetPath = os.path.normpath(tmppath)
     if os.path.isdir(targetPath):
         print("\nDirectory " + targetPath + " exists, using 'git pull' to get latest")
-        p = subprocess.Popen(["git","pull"], cwd=targetPath)
+        p = subprocess.Popen(["git","pull"], cwd=targetPath, shell=SHELLARG)
         p.wait();
     else:
         print("\nDirectory " + targetPath + " does not exist, using 'git clone' to get latest")
         gitamdRoot = "https://github.com/GPUOpen-Tools/" + key
         commandArgs = ["git", "clone", gitamdRoot, targetPath]
-        p = subprocess.Popen( commandArgs )
+        p = subprocess.Popen(commandArgs, shell=SHELLARG)
         p.wait()
-        p = subprocess.Popen(["git","reset","--hard",GitHubMapping[key][1]], cwd=targetPath)
+        p = subprocess.Popen(["git","reset","--hard",GitHubMapping[key][1]], cwd=targetPath, shell=SHELLARG)
         p.wait()
 
 # Downloads and runs an installer for a Common Dir (just used for VulkanSDK currently)
