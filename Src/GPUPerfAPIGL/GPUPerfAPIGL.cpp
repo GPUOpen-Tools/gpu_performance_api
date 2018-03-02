@@ -720,7 +720,11 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
             }
         }
 
-        pHwInfo->UpdateRevisionIdBasedOnDeviceIDAndName();
+        if (!pHwInfo->UpdateRevisionIdBasedOnDeviceIDAndName())
+        {
+            // We didn't find a revision Id, set it to REVISION_ID_ANY
+            pHwInfo->SetRevisionID(REVISION_ID_ANY);
+        }
 
         return GPA_STATUS_OK;
     }
