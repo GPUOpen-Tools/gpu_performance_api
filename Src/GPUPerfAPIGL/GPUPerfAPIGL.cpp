@@ -709,8 +709,20 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
                     pHwInfo->SetDeviceID(0x67FF);
                     break;
 
+                case ATIASIC_ID_VEGAM:
+                    pHwInfo->SetDeviceID(0x694C);
+                    break;
+
                 case ATIASIC_ID_LEXA:
                     pHwInfo->SetDeviceID(0x699F);
+                    break;
+
+                case ATIASIC_ID_VEGA:
+                    pHwInfo->SetDeviceID(0x687F);
+                    break;
+
+                case ATIASIC_ID_VEGA_APU:
+                    pHwInfo->SetDeviceID(0x15DD);
                     break;
 
                 default:

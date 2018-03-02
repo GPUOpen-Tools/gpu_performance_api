@@ -357,6 +357,7 @@ bool GetASICInfo(ASICInfo& rASICInfo)
         case ASIC_Gfx6:
         case ASIC_Gfx7:
         case ASIC_Gfx8:
+        case ASIC_Gfx9:
             if (!GetCounterValue(nASICGroupId, "GPIN_001", rASICInfo.nNumSIMD))
             {
                 GPA_LogError("Unable to query GPIN_001.");
