@@ -67,7 +67,22 @@ bool Initialize_Vk_Entrypoints(VkInstance instance, VkDevice device)
 #ifdef _WIN32
     HMODULE vulkanModule = GetModuleHandle("Vulkan-1.dll");
 #else
-    void* vulkanModule = dlopen("libvulkan.so", RTLD_NOW);
+    void* vulkanModule = dlopen("libvulkan.so", RTLD_NOLOAD);
+
+    if (vulkanModule == nullptr)
+    {
+        vulkanModule = dlopen("libvulkan.so", RTLD_NOW);
+    }
+
+    if (vulkanModule == nullptr)
+    {
+        vulkanModule = dlopen("libvulkan.so.1", RTLD_NOLOAD);
+    }
+
+    if (vulkanModule == nullptr)
+    {
+        vulkanModule = dlopen("libvulkan.so.1", RTLD_NOW);
+    }
 #endif
 
     if (vulkanModule == nullptr)
