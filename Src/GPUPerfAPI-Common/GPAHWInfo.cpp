@@ -175,7 +175,7 @@ bool GPA_HWInfo::UpdateRevisionIdBasedOnDeviceIDAndName()
             {
                 string thisMarketingName(it->m_szMarketingName);
 
-                if (thisMarketingName.compare(m_deviceName) == 0)
+                if (m_deviceName.find(thisMarketingName) != std::string::npos)
                 {
                     SetRevisionID(static_cast<gpa_uint32>(it->m_revID));
                     return true;
