@@ -241,10 +241,11 @@ GPA_Status InitializeGLFunctions()
 #ifdef _WIN32
     HMODULE module = LoadLibraryA("opengl32.dll");
 #else
-    void* module = dlopen("libGL.so", RTLD_LAZY);
+    void* egl_module = dlopen("libEGL.so", RTLD_LAZY);
+    void* gl_module = dlopen("libGL.so", RTLD_LAZY);
 #endif
 
-    if (nullptr == module)
+    if ((nullptr == egl_module) || (nullptr == gl_module))
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
@@ -264,7 +265,7 @@ GPA_Status InitializeGLFunctions()
 #endif
 
 #ifdef _LINUX
-    _GPAglXGetProcAddressARB = reinterpret_cast<decltype(glXGetProcAddressARB)*>(dlsym(module, "glXGetProcAddressARB"));
+    _GPAglXGetProcAddressARB = reinterpret_cast<decltype(glXGetProcAddressARB)*>(dlsym(egl_module, "glXGetProcAddressARB"));
 
     if (nullptr == _GPAglXGetProcAddressARB)
     {
@@ -286,7 +287,7 @@ GPA_Status InitializeGLFunctions()
 #endif
 
 #ifdef _LINUX
-    _GPAeglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(dlsym(module, "eglGetProcAddress"));
+    _GPAeglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(dlsym(egl_module, "eglGetProcAddress"));
 
     if (nullptr == _GPAeglGetProcAddress)
     {
@@ -303,9 +304,9 @@ GPA_Status InitializeGLFunctions()
     _oglGetIntegerv = reinterpret_cast<decltype(glGetIntegerv)*>(GetProcAddress(module, "glGetIntegerv"));
 #endif
 #ifdef _LINUX
-    _oglFlush = reinterpret_cast<decltype(glFlush)*>(dlsym(module, "glFlush"));
-    _oglGetString = reinterpret_cast<decltype(glGetString)*>(dlsym(module, "glGetString"));
-    _oglGetIntegerv = reinterpret_cast<decltype(glGetIntegerv)*>(dlsym(module, "glGetIntegerv"));
+    _oglFlush = reinterpret_cast<decltype(glFlush)*>(dlsym(gl_module, "glFlush"));
+    _oglGetString = reinterpret_cast<decltype(glGetString)*>(dlsym(gl_module, "glGetString"));
+    _oglGetIntegerv = reinterpret_cast<decltype(glGetIntegerv)*>(dlsym(gl_module, "glGetIntegerv"));
 #endif
 
     if (nullptr == _oglFlush || nullptr == _oglGetString || nullptr == _oglGetIntegerv)
