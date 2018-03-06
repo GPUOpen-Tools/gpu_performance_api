@@ -1033,7 +1033,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
                     // There will be no catastrophic errors if the GPA expects less counters than GL exposes, but we may not have the right counters... and may be reporting bad results.
                     // There could be major issues if the GPA expects more counters than GL exposes, because we may try to enable a counter that doesn't exist,
                     // in which case we hope the driver will return a 0 result and not write unexpected values into the register.
-                    assert(pHardwareCounters->m_pGroups[g].m_numCounters == (unsigned int)nCounters);
+                    // assert(pHardwareCounters->m_pGroups[g].m_numCounters >= (unsigned int)nCounters);
 
                     if (pHardwareCounters->m_pGroups[g].m_numCounters != (unsigned int)nCounters)
                     {
