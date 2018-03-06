@@ -29,9 +29,9 @@ extern decltype(wglGetProcAddress)* _wglGetProcAddress; ///< function pointer fo
 #endif
 
 #ifdef _LINUX
-extern decltype(glXGetProcAddressARB)* _glXGetProcAddressARB; ///< function pointer for glXGetProcAddressARB
+extern decltype(glXGetProcAddressARB)* _GPAglXGetProcAddressARB; ///< function pointer for glXGetProcAddressARB
 #define GET_PROC_ADDRESS(f,type,name)\
-    (f) = (type) _glXGetProcAddressARB( (const GLubyte*) name);
+    (f) = (type) _GPAglXGetProcAddressARB( (const GLubyte*) name);
 #endif
 
 #else
@@ -49,9 +49,9 @@ extern decltype(glXGetProcAddressARB)* _glXGetProcAddressARB; ///< function poin
 #include <GLES2/gl2ext.h>
 
 // used for defining the proc addresses which are initialized below
-extern decltype(eglGetProcAddress)* _eglGetProcAddress; ///< function pointer for eglGetProcAddress
+extern decltype(eglGetProcAddress)* _GPAeglGetProcAddress; ///< function pointer for eglGetProcAddress
 #define GET_PROC_ADDRESS(f,type,name)\
-    (f) = (type) _eglGetProcAddress(name);
+    (f) = (type) _GPAeglGetProcAddress(name);
 
 #endif // GLES
 

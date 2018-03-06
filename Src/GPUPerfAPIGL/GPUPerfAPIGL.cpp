@@ -214,11 +214,11 @@ gpa_uint32 GPA_IMP_GetPreferredCheckResultFrequency()
     #endif
 
     #ifdef _LINUX
-        decltype(glXGetProcAddressARB)* _glXGetProcAddressARB = nullptr;
+        decltype(glXGetProcAddressARB)* _GPAglXGetProcAddressARB = nullptr;
     #endif
 
 #else
-    decltype(eglGetProcAddress)* _eglGetProcAddress = nullptr;
+    decltype(eglGetProcAddress)* _GPAeglGetProcAddress = nullptr;
 #endif
 
 /// Checks the OpenGL extensions and initializes the various function pointers.  The extensions queried are:
@@ -241,10 +241,11 @@ GPA_Status InitializeGLFunctions()
 #ifdef _WIN32
     HMODULE module = LoadLibraryA("opengl32.dll");
 #else
-    void* module = dlopen("libGL.so", RTLD_LAZY);
+    void* egl_module = dlopen("libEGL.so", RTLD_LAZY);
+    void* gl_module = dlopen("libGL.so", RTLD_LAZY);
 #endif
 
-    if (nullptr == module)
+    if ((nullptr == egl_module) || (nullptr == gl_module))
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
@@ -264,9 +265,9 @@ GPA_Status InitializeGLFunctions()
 #endif
 
 #ifdef _LINUX
-    _glXGetProcAddressARB = reinterpret_cast<decltype(glXGetProcAddressARB)*>(dlsym(module, "glXGetProcAddressARB"));
+    _GPAglXGetProcAddressARB = reinterpret_cast<decltype(glXGetProcAddressARB)*>(dlsym(egl_module, "glXGetProcAddressARB"));
 
-    if (nullptr == _glXGetProcAddressARB)
+    if (nullptr == _GPAglXGetProcAddressARB)
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
@@ -276,9 +277,9 @@ GPA_Status InitializeGLFunctions()
 #else // GLES
 
 #ifdef _WIN32
-    _eglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(GetProcAddress(module, "eglGetProcAddress"));
+    _GPAeglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(GetProcAddress(module, "eglGetProcAddress"));
 
-    if (nullptr == _eglGetProcAddress)
+    if (nullptr == _GPAeglGetProcAddress)
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
@@ -286,9 +287,9 @@ GPA_Status InitializeGLFunctions()
 #endif
 
 #ifdef _LINUX
-    _eglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(dlsym(module, "eglGetProcAddress"));
+    _GPAeglGetProcAddress = reinterpret_cast<decltype(eglGetProcAddress)*>(dlsym(egl_module, "eglGetProcAddress"));
 
-    if (nullptr == _eglGetProcAddress)
+    if (nullptr == _GPAeglGetProcAddress)
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
@@ -303,9 +304,9 @@ GPA_Status InitializeGLFunctions()
     _oglGetIntegerv = reinterpret_cast<decltype(glGetIntegerv)*>(GetProcAddress(module, "glGetIntegerv"));
 #endif
 #ifdef _LINUX
-    _oglFlush = reinterpret_cast<decltype(glFlush)*>(dlsym(module, "glFlush"));
-    _oglGetString = reinterpret_cast<decltype(glGetString)*>(dlsym(module, "glGetString"));
-    _oglGetIntegerv = reinterpret_cast<decltype(glGetIntegerv)*>(dlsym(module, "glGetIntegerv"));
+    _oglFlush = reinterpret_cast<decltype(glFlush)*>(dlsym(gl_module, "glFlush"));
+    _oglGetString = reinterpret_cast<decltype(glGetString)*>(dlsym(gl_module, "glGetString"));
+    _oglGetIntegerv = reinterpret_cast<decltype(glGetIntegerv)*>(dlsym(gl_module, "glGetIntegerv"));
 #endif
 
     if (nullptr == _oglFlush || nullptr == _oglGetString || nullptr == _oglGetIntegerv)
@@ -499,14 +500,14 @@ GPA_Status InitializeGLFunctions()
     GET_PROC_ADDRESS(_oglDeleteQueries,            PFNGLDELETEQUERIESPROC,          "glDeleteQueries");
     GET_PROC_ADDRESS(_oglQueryCounter,             PFNGLQUERYCOUNTERPROC,           "glQueryCounter");
 #else
-    GET_PROC_ADDRESS(_oglBeginQuery,               PFNGLBEGINQUERYPROC,             "glBeginQueryEXT");
-    GET_PROC_ADDRESS(_oglEndQuery,                 PFNGLENDQUERYPROC,               "glEndQueryEXT");
-    GET_PROC_ADDRESS(_oglGetQueryiv,               PFNGLGETQUERYIVPROC,             "glGetQueryivEXT");
+    GET_PROC_ADDRESS(_oglBeginQuery,               PFNGLBEGINQUERYPROC,             "glBeginQuery");
+    GET_PROC_ADDRESS(_oglEndQuery,                 PFNGLENDQUERYPROC,               "glEndQuery");
+    GET_PROC_ADDRESS(_oglGetQueryiv,               PFNGLGETQUERYIVPROC,             "glGetQueryiv");
     GET_PROC_ADDRESS(_oglGetQueryObjectui64vEXT,   PFNGLGETQUERYOBJECTUI64VEXTPROC, "glGetQueryObjectui64vEXT");
-    GET_PROC_ADDRESS(_oglGetQueryObjectiv,         PFNGLGETQUERYOBJECTIVPROC,       "glGetQueryObjectivEXT");
-    GET_PROC_ADDRESS(_oglGenQueries,               PFNGLGENQUERIESPROC,             "glGenQueriesEXT");
-    GET_PROC_ADDRESS(_oglDeleteQueries,            PFNGLDELETEQUERIESPROC,          "glDeleteQueriesEXT");
-    GET_PROC_ADDRESS(_oglQueryCounter,             PFNGLQUERYCOUNTEREXTPROC,        "glQueryCounterEXT");
+    GET_PROC_ADDRESS(_oglGetQueryObjectiv,         PFNGLGETQUERYOBJECTIVPROC,       "glGetQueryObjectiv");
+    GET_PROC_ADDRESS(_oglGenQueries,               PFNGLGENQUERIESPROC,             "glGenQueries");
+    GET_PROC_ADDRESS(_oglDeleteQueries,            PFNGLDELETEQUERIESPROC,          "glDeleteQueries");
+    GET_PROC_ADDRESS(_oglQueryCounter,             PFNGLQUERYCOUNTERPROC,        "glQueryCounter");
 
 #ifndef GL_TIMESTAMP
 #define GL_TIMESTAMP GL_TIMESTAMP_EXT
@@ -1032,7 +1033,7 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
                     // There will be no catastrophic errors if the GPA expects less counters than GL exposes, but we may not have the right counters... and may be reporting bad results.
                     // There could be major issues if the GPA expects more counters than GL exposes, because we may try to enable a counter that doesn't exist,
                     // in which case we hope the driver will return a 0 result and not write unexpected values into the register.
-                    assert(pHardwareCounters->m_pGroups[g].m_numCounters == (unsigned int)nCounters);
+                    // assert(pHardwareCounters->m_pGroups[g].m_numCounters >= (unsigned int)nCounters);
 
                     if (pHardwareCounters->m_pGroups[g].m_numCounters != (unsigned int)nCounters)
                     {
