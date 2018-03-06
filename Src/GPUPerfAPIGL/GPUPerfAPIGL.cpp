@@ -500,14 +500,14 @@ GPA_Status InitializeGLFunctions()
     GET_PROC_ADDRESS(_oglDeleteQueries,            PFNGLDELETEQUERIESPROC,          "glDeleteQueries");
     GET_PROC_ADDRESS(_oglQueryCounter,             PFNGLQUERYCOUNTERPROC,           "glQueryCounter");
 #else
-    GET_PROC_ADDRESS(_oglBeginQuery,               PFNGLBEGINQUERYPROC,             "glBeginQueryEXT");
-    GET_PROC_ADDRESS(_oglEndQuery,                 PFNGLENDQUERYPROC,               "glEndQueryEXT");
-    GET_PROC_ADDRESS(_oglGetQueryiv,               PFNGLGETQUERYIVPROC,             "glGetQueryivEXT");
+    GET_PROC_ADDRESS(_oglBeginQuery,               PFNGLBEGINQUERYPROC,             "glBeginQuery");
+    GET_PROC_ADDRESS(_oglEndQuery,                 PFNGLENDQUERYPROC,               "glEndQuery");
+    GET_PROC_ADDRESS(_oglGetQueryiv,               PFNGLGETQUERYIVPROC,             "glGetQueryiv");
     GET_PROC_ADDRESS(_oglGetQueryObjectui64vEXT,   PFNGLGETQUERYOBJECTUI64VEXTPROC, "glGetQueryObjectui64vEXT");
-    GET_PROC_ADDRESS(_oglGetQueryObjectiv,         PFNGLGETQUERYOBJECTIVPROC,       "glGetQueryObjectivEXT");
-    GET_PROC_ADDRESS(_oglGenQueries,               PFNGLGENQUERIESPROC,             "glGenQueriesEXT");
-    GET_PROC_ADDRESS(_oglDeleteQueries,            PFNGLDELETEQUERIESPROC,          "glDeleteQueriesEXT");
-    GET_PROC_ADDRESS(_oglQueryCounter,             PFNGLQUERYCOUNTEREXTPROC,        "glQueryCounterEXT");
+    GET_PROC_ADDRESS(_oglGetQueryObjectiv,         PFNGLGETQUERYOBJECTIVPROC,       "glGetQueryObjectiv");
+    GET_PROC_ADDRESS(_oglGenQueries,               PFNGLGENQUERIESPROC,             "glGenQueries");
+    GET_PROC_ADDRESS(_oglDeleteQueries,            PFNGLDELETEQUERIESPROC,          "glDeleteQueries");
+    GET_PROC_ADDRESS(_oglQueryCounter,             PFNGLQUERYCOUNTERPROC,        "glQueryCounter");
 
 #ifndef GL_TIMESTAMP
 #define GL_TIMESTAMP GL_TIMESTAMP_EXT
