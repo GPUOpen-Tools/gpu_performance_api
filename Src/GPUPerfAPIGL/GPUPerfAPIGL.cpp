@@ -581,17 +581,11 @@ GPA_Status GPA_IMP_GetHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
     //TODO: should at least support GPUTime for these vendors then
     if (nullptr != strstr(reinterpret_cast<const char*>(pVendor), pNVIDIARenderer))
     {
-        pHwInfo->SetVendorID(NVIDIA_VENDOR_ID);
-        pHwInfo->SetDeviceName(reinterpret_cast<const char*>(pRenderer));
-        pHwInfo->SetHWGeneration(GDT_HW_GENERATION_NVIDIA);
-        return GPA_STATUS_OK;
+        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
     }
     else if (nullptr != strstr(reinterpret_cast<const char*>(pVendor), pIntelRenderer))
     {
-        pHwInfo->SetVendorID(INTEL_VENDOR_ID);
-        pHwInfo->SetDeviceName(reinterpret_cast<const char*>(pRenderer));
-        pHwInfo->SetHWGeneration(GDT_HW_GENERATION_INTEL);
-        return GPA_STATUS_OK;
+        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
     }
 
     // instead of checking the vendor string to make sure it is ATI / AMD,
@@ -792,26 +786,12 @@ GPA_Status GPA_IMP_CompareHWInfo(void* pContext, GPA_HWInfo* pHwInfo)
 
     if (strstr(reinterpret_cast<const char*>(pVendor), pNVIDIARenderer))
     {
-        if (pHwInfo->IsNVidia())
-        {
-            return GPA_STATUS_OK;
-        }
-        else
-        {
-            return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
-        }
+        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
     }
 
     if (strstr(reinterpret_cast<const char*>(pVendor), pIntelRenderer))
     {
-        if (pHwInfo->IsIntel())
-        {
-            return GPA_STATUS_OK;
-        }
-        else
-        {
-            return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
-        }
+        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
     }
 
     GPA_LogError("A unknown graphics card was identified.");

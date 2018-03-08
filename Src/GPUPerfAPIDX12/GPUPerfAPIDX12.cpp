@@ -329,6 +329,9 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
 
                 if (GPA_STATUS_OK == result)
                 {
+                    pCounterAccessor->SetAllowedCounters(GetCurrentContext()->ExposePublicCounters(),
+                                                         GetCurrentContext()->ExposeHardwareCounters(),
+                                                         GetCurrentContext()->ExposeSoftwareCounters());
                     GetCurrentContext()->m_pCounterAccessor =
                         static_cast<GPA_CounterGeneratorBase*>(pCounterAccessor);
                     GetCurrentContext()->m_pCounterScheduler = pCounterScheduler;

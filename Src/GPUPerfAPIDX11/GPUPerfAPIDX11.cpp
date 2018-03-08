@@ -559,7 +559,17 @@ GPA_Status GPA_IMP_OpenContext(void* pContext)
 
     getCurrentContext()->SetDX11DeviceContext(pDeviceContext);
 
-    return GenerateCounters(GPA_API_DIRECTX_11, vendorId, deviceId, revisionId, (GPA_ICounterAccessor**) & (g_pCurrentContext->m_pCounterAccessor), &(getCurrentContext()->m_pCounterScheduler));
+    GPA_Status result = GenerateCounters(GPA_API_DIRECTX_11, vendorId, deviceId, revisionId, (GPA_ICounterAccessor**) & (g_pCurrentContext->m_pCounterAccessor), &(getCurrentContext()->m_pCounterScheduler));
+
+    if (GPA_STATUS_OK == result)
+    {
+        g_pCurrentContext->m_pCounterAccessor->SetAllowedCounters(g_pCurrentContext->ExposePublicCounters(),
+                                                                  g_pCurrentContext->ExposeHardwareCounters(),
+                                                                  g_pCurrentContext->ExposeSoftwareCounters());
+    }
+
+    return result;
+
 }
 
 //-----------------------------------------------------------------------------
