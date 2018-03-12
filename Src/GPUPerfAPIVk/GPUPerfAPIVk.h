@@ -9,6 +9,8 @@
 #ifndef __GPUPERFAPI_VK_H__
 #define __GPUPERFAPI_VK_H__
 
+#include <vulkan.h>
+
 #include "GPUPerfAPI.h"
 #include "GPUPerfAPI-VK.h"
 
