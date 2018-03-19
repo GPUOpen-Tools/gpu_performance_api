@@ -37,6 +37,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="GPA-Common.props" />
     <Import Project="GPA-DLL.props" />
+    <Import Project="GPA-API-DLL.props" />
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Internal.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -53,20 +54,27 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Common\Src\DynamicLibraryModule\OpenCLModule.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLCounterDataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPACommandList.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPAContext.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPAImplementor.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPAPass.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPASample.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPASession.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\Common\Src\DynamicLibraryModule\OpenCLModule.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLCounterDataRequest.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPACommandList.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPAContext.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPAImplementor.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPAPass.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPASample.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPASession.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICL\CLRTModuleLoader.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\GPAContextStateCL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\resource.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="GPUPerfAPI-Common.vcxproj">

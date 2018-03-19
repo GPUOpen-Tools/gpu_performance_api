@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  PublicCounterDefinitions for HSAGFX7
+/// \brief PublicCounterDefinitions for HSAGFX7
 //==============================================================================
 
 #ifndef _PUBLIC_COUNTER_DEFS_HSAGFX7_H_
@@ -13,7 +13,7 @@
 #include "GPAPublicCounters.h"
 
 /// Defines the public counters for HSAGFX7
-/// \param p pubilc counters instance
+/// \param p public counters instance
 void AutoDefinePublicCountersHSAGfx7(GPA_PublicCounters& p);
 
 #endif // _PUBLIC_COUNTER_DEFS_HSAGFX7_H_

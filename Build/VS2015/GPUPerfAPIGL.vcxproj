@@ -37,6 +37,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="GPA-Common.props" />
     <Import Project="GPA-DLL.props" />
+    <Import Project="GPA-API-DLL.props" />
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Internal.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
@@ -55,25 +56,25 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\GPUPerfAPIGL\ASICInfo.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.cpp" />
-    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPIInternalRegistration\GLGPAInternalCounterGeneratorRegistration.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPACommandList.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPAContext.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPAImplementor.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPAPass.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPASample.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPASession.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GLInclude.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIGL\ASICInfo.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GPAContextStateGL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPACommandList.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPAContext.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPAImplementor.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPAPass.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPASample.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPASession.h" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Build\VS2015\GPUPerfAPINVPerfkit.vcxproj">
-      <Project>{918f0693-23f7-473a-82c5-f832039bec45}</Project>
-    </ProjectReference>
     <ProjectReference Include="GPUPerfAPI-Common.vcxproj">
       <Project>{cfc8ab83-e03a-43e5-a9b1-ad073aefe8c0}</Project>
     </ProjectReference>

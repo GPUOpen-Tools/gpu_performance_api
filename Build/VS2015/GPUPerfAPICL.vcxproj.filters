@@ -8,6 +8,14 @@
     <Filter Include="DynamicLibraryModule">
       <UniqueIdentifier>{77328a2b-f39d-4eaa-98c9-cacf8d42f8fb}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{1ed141df-1379-4b79-9b10-4c21c841baa4}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{bab7bebc-9844-4fcb-a7e3-a000c1c4002c}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesCLGfx6.txt">
@@ -26,24 +34,67 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLCounterDataRequest.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.cpp" />
     <ClCompile Include="..\..\..\Common\Src\DynamicLibraryModule\OpenCLModule.cpp">
       <Filter>DynamicLibraryModule</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPACommandList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPAContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPAImplementor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPAPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPASample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLGPASession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLCounterDataRequest.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\GPAContextStateCL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\resource.h" />
     <ClInclude Include="..\..\..\Common\Src\DynamicLibraryModule\OpenCLModule.h">
       <Filter>DynamicLibraryModule</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLRTModuleLoader.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPACommandList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPAContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPAImplementor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPAPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPASample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLGPASession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterBlock.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLPerfCounterAMDExtension.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICL\CLRTModuleLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

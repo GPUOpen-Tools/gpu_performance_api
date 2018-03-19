@@ -1,7 +1,11 @@
 #!/bin/bash
+set -u
 
 #define path
 GPAROOT=`dirname $(readlink -f "$0")`/../..
+
+# clean up old folders
+rm -rf $GPAROOT/Output/*
 
 # Command line args
 
@@ -28,11 +32,17 @@ DEBUG_SUFFIX=
 # HSA directory override
 HSA_DIR_OVERRIDE=
 
+# Vulkan include directory override
+VK_INC_DIR_OVERRIDE=
+
 # API-specific build control
 bBuildOpenGL=true
-bBuildOpenGLES=true
+bBuildVK=true
 bBuildOpenCL=true
 bBuildHSA=true
+
+# Documentation build control
+bBuildDocumentation=false
 
 # Tests build control
 bBuildTests=true
@@ -68,10 +78,13 @@ do
    elif [ "$1" = "hsadir" ]; then
       shift
       HSA_DIR_OVERRIDE="HSA_DIR=$1"
+   elif [ "$1" = "vkincdir" ]; then
+      shift
+      VK_INC_DIR_OVERRIDE="VK_INCLUDE_DIR=$1"
    elif [ "$1" = "skipopengl" ]; then
       bBuildOpenGL=false
-   elif [ "$1" = "skipopengles" ]; then
-      bBuildOpenGLES=false
+   elif [ "$1" = "skipvulkan" ]; then
+      bBuildVK=false
    elif [ "$1" = "skipopencl" ]; then
       bBuildOpenCL=false
    elif [ "$1" = "skiphsa" ]; then
@@ -91,24 +104,33 @@ do
    elif [ "$1" = "additionaldefines" ]; then
       shift
       ADDITIONAL_COMPILER_DEFINES_OVERRIDE="ADDITIONAL_COMPILER_DEFINES_FROM_BUILD_SCRIPT=$1"
+   elif [ "$1" = "doc" ]; then
+      bBuildDocumentation=true
    fi
    shift
 done
 
 LOGFILE=$GPAROOT/Build/Linux/GPUPerfAPI_Build.log
 GPASRC=$GPAROOT/Src
+GPUPERFAPI=$GPASRC/GPUPerfAPI
 CL=$GPASRC/GPUPerfAPICL
 HSA=$GPASRC/GPUPerfAPIHSA
 GL=$GPASRC/GPUPerfAPIGL
-GLES=$GPASRC/GPUPerfAPIGLES
+VK=$GPASRC/GPUPerfAPIVk
 COUNTERS=$GPASRC/GPUPerfAPICounters
 COUNTERGENERATOR=$GPASRC/GPUPerfAPICounterGenerator
 GPA_COMMON=$GPASRC/GPUPerfAPI-Common
 GPA_DEVICEINFO=$GPASRC/DeviceInfo
 UNITTESTS=$GPASRC/GPUPerfAPIUnitTests
+GPADOCS=$GPAROOT/docs
+
+GPAOUTPUT=$GPAROOT/Output
+GPAOUTPUT_BIN=$GPAOUTPUT/bin
+GPAOUTPUT_LIB=$GPAOUTPUT/lib
+GPAOUTPUT_DOCS=$GPAOUTPUT/docs
 
 GLLIB=libGPUPerfAPIGL$DEBUG_SUFFIX.so
-GLESLIB=libGPUPerfAPIGLES$DEBUG_SUFFIX.so
+VKLIB=libGPUPerfAPIVK$DEBUG_SUFFIX.so
 CLLIB=libGPUPerfAPICL$DEBUG_SUFFIX.so
 HSALIB=libGPUPerfAPIHSA$DEBUG_SUFFIX.so
 COUNTERSLIB=libGPUPerfAPICounters$DEBUG_SUFFIX.so
@@ -117,7 +139,7 @@ GPA_COMMONLIB=libGPUPerfAPI-Common$DEBUG_SUFFIX.a
 GPA_DEVICEINFOLIB=libDeviceInfo$DEBUG_SUFFIX.a
 
 GLLIB32=libGPUPerfAPIGL32$DEBUG_SUFFIX.so
-GLESLIB32=libGPUPerfAPIGLES32$DEBUG_SUFFIX.so
+VKLIB32=libGPUPerfAPIVK32$DEBUG_SUFFIX.so
 CLLIB32=libGPUPerfAPICL32$DEBUG_SUFFIX.so
 COUNTERSLIB32=libGPUPerfAPICounters32$DEBUG_SUFFIX.so
 COUNTERGENERATORLIB32=libGPUPerfAPICounterGenerator32$DEBUG_SUFFIX.a
@@ -125,7 +147,7 @@ GPA_COMMONLIB32=libGPUPerfAPI-Common32$DEBUG_SUFFIX.a
 GPA_DEVICEINFOLIB32=libDeviceInfo32$DEBUG_SUFFIX.a
 
 GLLIB_INTERNAL=libGPUPerfAPIGL$DEBUG_SUFFIX-Internal.so
-GLESLIB_INTERNAL=libGPUPerfAPIGLES$DEBUG_SUFFIX-Internal.so
+VKLIB_INTERNAL=libGPUPerfAPIVK$DEBUG_SUFFIX-Internal.so
 CLLIB_INTERNAL=libGPUPerfAPICL$DEBUG_SUFFIX-Internal.so
 HSALIB_INTERNAL=libGPUPerfAPIHSA$DEBUG_SUFFIX-Internal.so
 COUNTERSLIB_INTERNAL=libGPUPerfAPICounters$DEBUG_SUFFIX-Internal.so
@@ -134,7 +156,7 @@ GPA_COMMONLIB_INTERNAL=libGPUPerfAPI-Common$DEBUG_SUFFIX-Internal.a
 GPA_DEVICEINFOLIB_INTERNAL=libDeviceInfo$DEBUG_SUFFIX-Internal.a
 
 GLLIB32_INTERNAL=libGPUPerfAPIGL32$DEBUG_SUFFIX-Internal.so
-GLESLIB32_INTERNAL=libGPUPerfAPIGLES32$DEBUG_SUFFIX-Internal.so
+VKLIB32_INTERNAL=libGPUPerfAPIVK32$DEBUG_SUFFIX-Internal.so
 CLLIB32_INTERNAL=libGPUPerfAPICL32$DEBUG_SUFFIX-Internal.so
 COUNTERSLIB32_INTERNAL=libGPUPerfAPICounters32$DEBUG_SUFFIX-Internal.so
 COUNTERGENERATORLIB32_INTERNAL=libGPUPerfAPICounterGenerator32$DEBUG_SUFFIX-Internal.a
@@ -159,14 +181,14 @@ VER=$VER_MAJOR_MINOR.$BUILD
 
 CPU_COUNT=`cat /proc/cpuinfo | grep processor | wc -l`
 
-BUILD_DIRS="$GPA_COMMON $GPA_DEVICEINFO $COUNTERGENERATOR $COUNTERS"
+BUILD_DIRS="$GPUPERFAPI $GPA_COMMON $GPA_DEVICEINFO $COUNTERGENERATOR $COUNTERS"
 
 if $bBuildOpenGL ; then
    BUILD_DIRS="$BUILD_DIRS $GL"
 fi
 
-if $bBuildOpenGLES ; then
-   BUILD_DIRS="$BUILD_DIRS $GLES"
+if $bBuildVK ; then
+   BUILD_DIRS="$BUILD_DIRS $VK"
 fi
 
 if $bBuildOpenCL ; then
@@ -192,14 +214,14 @@ for SUBDIR in $BUILD_DIRS; do
    #make 64 bit
    echo "Build ${BASENAME}, 64-bit..." | tee -a $LOGFILE
 
-   if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET} >> $LOGFILE 2>&1; then
+   if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET} >> $LOGFILE 2>&1; then
       echo "Failed to build ${BASENAME}, 64 bit"
       exit 1
    fi
 
    #make 64 bit Internal
    if $bBuildInternal ; then
-      if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internal  >> $LOGFILE 2>&1; then
+      if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internal  >> $LOGFILE 2>&1; then
          echo "Failed to build ${BASENAME}, 64 bit, Internal"
          exit 1
       fi
@@ -210,14 +232,14 @@ for SUBDIR in $BUILD_DIRS; do
          #make 32 bit
          echo "Build ${BASENAME}, 32-bit..." | tee -a $LOGFILE
 
-         if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}x86 >> $LOGFILE 2>&1; then
+         if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}x86 >> $LOGFILE 2>&1; then
             echo "Failed to build ${BASENAME}, 32 bit"
             exit 1
          fi
 
          #make 32 bit Internal
          if $bBuildInternal ; then
-            if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internalx86  >> $LOGFILE 2>&1; then
+            if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internalx86  >> $LOGFILE 2>&1; then
                echo "Failed to build ${BASENAME}, 32 bit, Internal"
                exit 1
             fi
@@ -226,6 +248,14 @@ for SUBDIR in $BUILD_DIRS; do
    fi
 done
 
+if ($bBuildDocumentation); then
+    echo "Build Documentation" | tee -a "$LOGFILE"
+    if ! make -C "$GPADOCS" html >> "$LOGFILE" 2>&1; then
+        echo "Failed to build Documentation"
+        exit 1
+    fi
+fi
+
 #-----------------------------------------
 #copy to bin folder
 #-----------------------------------------
@@ -233,38 +263,40 @@ done
 if $bZip ; then
    echo "Generate tarball..." | tee -a $LOGFILE
    ZIP_DIR_NAME=${VER_MAJOR}_${VER_MINOR}
-   cd $BUILD_DIR
-   mkdir $ZIP_DIR_NAME
+   cd $GPAOUTPUT
+   mkdir -p $ZIP_DIR_NAME
    cd $ZIP_DIR_NAME
-   mkdir Bin
-   mkdir Bin/Linx64
-   mkdir Bin/Linx86
-   cp $CL/$CLLIB ./Bin/Linx64/
-   cp $HSA/$HSALIB ./Bin/Linx64/
-   cp $GL/$GLLIB ./Bin/Linx64/
-   cp $GLES/$GLESLIB ./Bin/Linx64/
-   cp $CL/$CLLIB32 ./Bin/Linx86/
-   cp $GL/$GLLIB32 ./Bin/Linx86/
-   cp $GLES/$GLESLIB32 ./Bin/Linx86/
-   cp $COUNTERS/$COUNTERSLIB ./Bin/Linx64/
-   cp $COUNTERS/$COUNTERSLIB32 ./Bin/Linx86/
-   mkdir Include
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPITypes.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-Private.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIFunctionTypes-Private.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPITypes-Private.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPAFunctions.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPI-HSA.h ./Include/
-   cp ../../../Src/GPUPerfAPI-Common/GPUPerfAPIOS.h ./Include/
-   cp ../../../Src/GPUPerfAPICounters/GPUPerfAPICounters.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/GPACounterGenerator.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterAccessor.h ./Include/
-   cp ../../../Src/GPUPerfAPICounterGenerator/GPAICounterScheduler.h ./Include/
-   cp ../../../Doc/GPUPerfAPI-UserGuide.pdf .
-   cp ../../../LICENSE .
-   cp ../../../Doc/thirdpartylicenses.txt .
+   mkdir -p Bin
+   mkdir -p Bin/Linx64
+   mkdir -p Bin/Linx86
+   cp $GPAOUTPUT_BIN/$CLLIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$HSALIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$GLLIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$VKLIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$CLLIB32 ./Bin/Linx86/
+   cp $GPAOUTPUT_BIN/$GLLIB32 ./Bin/Linx86/
+   cp $GPAOUTPUT_BIN/$VKLIB32 ./Bin/Linx86/
+   cp $GPAOUTPUT_BIN/$COUNTERSLIB ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/$COUNTERSLIB32 ./Bin/Linx86/
+   mkdir -p Include
+   cp $GPA_COMMON/GPUPerfAPI.h ./Include/
+   cp $GPA_COMMON/GPUPerfAPIStub.h ./Include/
+   cp $GPA_COMMON/GPUPerfAPIFunctionTypes.h ./Include/
+   cp $GPA_COMMON/GPUPerfAPITypes.h ./Include/
+   cp $GPA_COMMON/GPAFunctions.h ./Include/
+   cp $GPA_COMMON/GPUPerfAPI-HSA.h ./Include/
+   cp $GPA_COMMON/GPUPerfAPI-VK.h ./Include/
+   cp $GPA_COMMON/GPAInterfaceLoader.h ./Include/
+   cp $COUNTERS/GPUPerfAPICounters.h ./Include/
+   cp $COUNTERGENERATOR/GPACounterGenerator.h ./Include/
+   cp $COUNTERGENERATOR/IGPACounterAccessor.h ./Include/
+   cp $COUNTERGENERATOR/IGPACounterScheduler.h ./Include/
+   cp $GPAROOT/LICENSE .
+   cp $GPAROOT/thirdpartylicenses.txt .
+   if $bBuildDocumentation ; then
+      mkdir -p docs
+      cp -R GPAOUTPUT_DOCS/build/html/* docs
+   fi
    cd ..
    tar cvzf GPUPerfAPI.$VER-lnx.tgz $ZIP_DIR_NAME/
 
@@ -273,39 +305,43 @@ if $bZip ; then
    #-----------------------------------------
    if $bBuildInternal ; then
       cd $ZIP_DIR_NAME
-      mkdir Bin-Internal
-      mkdir Bin-Internal/Linx64
-      mkdir Bin-Internal/Linx86
+      mkdir -p Bin-Internal
+      mkdir -p Bin-Internal/Linx64
+      mkdir -p Bin-Internal/Linx86
 
       # internal libs
-      cp $CL/$CLLIB_INTERNAL ./Bin-Internal/Linx64/
-      cp $HSA/$HSALIB_INTERNAL ./Bin-Internal/Linx64/
-      cp $GL/$GLLIB_INTERNAL ./Bin-Internal/Linx64/
-      cp $GLES/$GLESLIB_INTERNAL ./Bin-Internal/Linx64/
-      cp $COUNTERS/$COUNTERSLIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$CLLIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$HSALIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$GLLIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$VKLIB_INTERNAL ./Bin-Internal/Linx64/
+      cp $GPAOUTPUT_BIN/$COUNTERSLIB_INTERNAL ./Bin-Internal/Linx64/
 
-      cp $CL/$CLLIB32_INTERNAL ./Bin-Internal/Linx86/
-      cp $GL/$GLLIB32_INTERNAL ./Bin-Internal/Linx86/
-      cp $GLES/$GLESLIB32_INTERNAL ./Bin-Internal/Linx86/
-      cp $COUNTERS/$COUNTERSLIB32_INTERNAL ./Bin-Internal/Linx86/
+      cp $GPAOUTPUT_BIN/$CLLIB32_INTERNAL ./Bin-Internal/Linx86/
+      cp $GPAOUTPUT_BIN/$GLLIB32_INTERNAL ./Bin-Internal/Linx86/
+      cp $GPAOUTPUT_BIN/$VKLIB32_INTERNAL ./Bin-Internal/Linx86/
+      cp $GPAOUTPUT_BIN/$COUNTERSLIB32_INTERNAL ./Bin-Internal/Linx86/
 
       cd ..
       tar cvzf GPUPerfAPI.$VER-lnx-Promotion.tgz $ZIP_DIR_NAME/
    fi
 fi
 
+if [ -z ${LD_LIBRARY_PATH+x} ]; then
+   LD_LIBRARY_PATH=
+fi
+
 if $bBuildTests ; then
-   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST --gtest_output=xml:$UNITTEST.xml
+   LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GPAOUTPUT_BIN $GPAOUTPUT_BIN/$UNITTEST --gtest_output=xml:$GPAOUTPUT/$UNITTEST.xml
 
    if $b32bitbuild ; then
-      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST32 --gtest_output=xml:$UNITTEST32.xml
+      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GPAOUTPUT_BIN $GPAOUTPUT_BIN/$UNITTEST32 --gtest_output=xml:$GPAOUTPUT/$UNITTEST32.xml
    fi
 
    if $bBuildInternal ; then
-      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST_INTERNAL --gtest_output=xml:$UNITTEST_INTERNAL.xml
+      LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GPAOUTPUT_BIN $GPAOUTPUT_BIN/$UNITTEST_INTERNAL --gtest_output=xml:$GPAOUTPUT/$UNITTEST_INTERNAL.xml
 
       if $b32bitbuild ; then
-         LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$UNITTESTS $UNITTESTS/$UNITTEST32_INTERNAL --gtest_output=xml:$UNITTEST32_INTERNAL.xml
+         LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$GPAOUTPUT_BIN $GPAOUTPUT_BIN/$UNITTEST32_INTERNAL --gtest_output=xml:$GPAOUTPUT/$UNITTEST32_INTERNAL.xml
       fi
    fi
 fi

@@ -19,6 +19,7 @@ GPA_ContextState::~GPA_ContextState()
 void GPA_ContextState::Init()
 {
     m_sessionID = 0;
+    m_flags = 0;
     m_currentPass = 0;
     m_currentSample = 0;
     m_samplingStarted = false;
@@ -31,20 +32,22 @@ void GPA_ContextState::Init()
     m_pCurrentSessionRequests = nullptr;
     m_pCounterScheduler = nullptr;
     m_pCounterAccessor = nullptr;
+    m_invalidateAndFlushL2Cache = false;
 }
 
-GPA_DataRequest* GPA_ContextState::GetDataRequest(gpa_uint32 passNumber)
+GPASample* GPA_ContextState::GetDataRequest(gpa_uint32 passNumber)
 {
     UNREFERENCED_PARAMETER(passNumber);
-    return GPA_IMP_CreateDataRequest();
+    return nullptr;
+    //return GPA_IMP_CreateDataRequest();
 }
 
-GPA_SessionRequests* GPA_ContextState::FindSession(gpa_uint32 sessionID)
+IGPASession* GPA_ContextState::FindSession(gpa_uint32 sessionID)
 {
     for (gpa_uint32 i = 0; i < m_profileSessions.getCount(); i++)
     {
         // search from oldest to newest
-        GPA_SessionRequests& checkSession = m_profileSessions.getRelative(i);
+        IGPASession* checkSession = m_profileSessions.getRelative(i);
 
         if (checkSession.m_sessionID == sessionID)
         {

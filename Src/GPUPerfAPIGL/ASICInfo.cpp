@@ -49,10 +49,10 @@
 //=========================================================================================================
 GLint GetGroupID(const char* pGroupStr)
 {
-    GLint nNumGroups;
+    GLint nNumGroups = 0;
 
     // Get the number of performance counter groups
-    _oglGetPerfMonitorGroupsAMD(&nNumGroups, 0, nullptr);
+    oglUtils::_oglGetPerfMonitorGroupsAMD(&nNumGroups, 0, nullptr);
 
     if (nNumGroups > 0)
     {
@@ -61,14 +61,14 @@ GLint GetGroupID(const char* pGroupStr)
         if (nullptr != pPerfGroups)
         {
             // Get the group Ids
-            _oglGetPerfMonitorGroupsAMD(nullptr, nNumGroups, pPerfGroups);
+            oglUtils::_oglGetPerfMonitorGroupsAMD(nullptr, nNumGroups, pPerfGroups);
 
             for (int i = 0; i < nNumGroups; i++)
             {
                 char groupStr[256];
 
                 // Get the group name
-                _oglGetPerfMonitorGroupStringAMD(pPerfGroups[i], 255, nullptr, groupStr);
+                oglUtils::_oglGetPerfMonitorGroupStringAMD(pPerfGroups[i], 255, nullptr, groupStr);
 
                 if (!strcmp(groupStr, pGroupStr))
                 {
@@ -98,7 +98,7 @@ bool GetCounterValue(GLint nGroup, const char* pCounterStr, GLuint& rValue)
     bool bResult = false;
 
     // Start by getting the list of counters in the group
-    _oglGetPerfMonitorCountersAMD(nGroup, &nNumCounters, nullptr, 0, nullptr);
+    oglUtils::_oglGetPerfMonitorCountersAMD(nGroup, &nNumCounters, nullptr, 0, nullptr);
 
     if (nNumCounters > 0)
     {
@@ -107,13 +107,13 @@ bool GetCounterValue(GLint nGroup, const char* pCounterStr, GLuint& rValue)
         if (nullptr != pCounterList)
         {
             // Get the list of counters in the group
-            _oglGetPerfMonitorCountersAMD(nGroup, nullptr, nullptr, nNumCounters, pCounterList);
+            oglUtils::_oglGetPerfMonitorCountersAMD(nGroup, nullptr, nullptr, nNumCounters, pCounterList);
 
             for (int i = 0; i < nNumCounters; i++)
             {
                 char counterStr[256];
 
-                _oglGetPerfMonitorCounterStringAMD(nGroup, pCounterList[i], 255, nullptr, counterStr);
+                oglUtils::_oglGetPerfMonitorCounterStringAMD(nGroup, pCounterList[i], 255, nullptr, counterStr);
 
                 if (!strcmp(pCounterStr, counterStr))
                 {
@@ -121,16 +121,16 @@ bool GetCounterValue(GLint nGroup, const char* pCounterStr, GLuint& rValue)
                     GLuint nResultSize;
 
                     // Counter found, now create a monitor with it and get its value
-                    _oglGenPerfMonitorsAMD(1, &monitor);
+                    oglUtils::_oglGenPerfMonitorsAMD(1, &monitor);
 
-                    _oglSelectPerfMonitorCountersAMD(monitor, GL_TRUE, nGroup, 1, &pCounterList[i]);
+                    oglUtils::_oglSelectPerfMonitorCountersAMD(monitor, GL_TRUE, nGroup, 1, &pCounterList[i]);
 
                     // need to begin / end the monitor so that the data is obtained
-                    _oglBeginPerfMonitorAMD(monitor);
-                    _oglEndPerfMonitorAMD(monitor);
+                    oglUtils::_oglBeginPerfMonitorAMD(monitor);
+                    oglUtils::_oglEndPerfMonitorAMD(monitor);
 
                     // Get the counter result size
-                    _oglGetPerfMonitorCounterDataAMD(monitor, GL_PERFMON_RESULT_SIZE_AMD, 4, &nResultSize, nullptr);
+                    oglUtils::_oglGetPerfMonitorCounterDataAMD(monitor, GL_PERFMON_RESULT_SIZE_AMD, 4, &nResultSize, nullptr);
 
                     assert((GLint)nResultSize == 3 * sizeof(GLuint));
 
@@ -143,7 +143,7 @@ bool GetCounterValue(GLint nGroup, const char* pCounterStr, GLuint& rValue)
                         if (nullptr != pCounterData)
                         {
                             // Get the counter results
-                            _oglGetPerfMonitorCounterDataAMD(monitor, GL_PERFMON_RESULT_AMD, nResultSize, (GLuint*)pCounterData, nullptr);
+                            oglUtils::_oglGetPerfMonitorCounterDataAMD(monitor, GL_PERFMON_RESULT_AMD, nResultSize, (GLuint*)pCounterData, nullptr);
                             rValue = ((GLuint*)pCounterData)[2];
                             bResult = true;
 
@@ -151,7 +151,7 @@ bool GetCounterValue(GLint nGroup, const char* pCounterStr, GLuint& rValue)
                         }
                     }
 
-                    _oglSelectPerfMonitorCountersAMD(monitor, GL_FALSE, nGroup, 1, &pCounterList[i]);
+                    oglUtils::_oglSelectPerfMonitorCountersAMD(monitor, GL_FALSE, nGroup, 1, &pCounterList[i]);
 
                     bool deletePerfMonitor = true;
 #if defined(_LINUX) && defined(X86)
@@ -173,7 +173,7 @@ bool GetCounterValue(GLint nGroup, const char* pCounterStr, GLuint& rValue)
 
                     if (deletePerfMonitor)
                     {
-                        _oglDeletePerfMonitorsAMD(1, &monitor);
+                        oglUtils::_oglDeletePerfMonitorsAMD(1, &monitor);
                     }
 
                     break;
@@ -227,16 +227,16 @@ int extractVersionNumber(const GLubyte* pVersion)
 //=========================================================================================================
 bool GetASICInfo(ASICInfo& rASICInfo)
 {
-    if (_oglGetPerfMonitorCountersAMD      == nullptr ||
-        _oglGetPerfMonitorGroupStringAMD   == nullptr ||
-        _oglGetPerfMonitorCounterInfoAMD   == nullptr ||
-        _oglGetPerfMonitorCounterStringAMD == nullptr ||
-        _oglGenPerfMonitorsAMD             == nullptr ||
-        _oglDeletePerfMonitorsAMD          == nullptr ||
-        _oglSelectPerfMonitorCountersAMD   == nullptr ||
-        _oglBeginPerfMonitorAMD            == nullptr ||
-        _oglEndPerfMonitorAMD              == nullptr ||
-        _oglGetPerfMonitorCounterDataAMD   == nullptr)
+    if (nullptr == oglUtils::_oglGetPerfMonitorCountersAMD      ||
+        nullptr == oglUtils::_oglGetPerfMonitorGroupStringAMD   ||
+        nullptr == oglUtils::_oglGetPerfMonitorCounterInfoAMD   ||
+        nullptr == oglUtils::_oglGetPerfMonitorCounterStringAMD ||
+        nullptr == oglUtils::_oglGenPerfMonitorsAMD             ||
+        nullptr == oglUtils::_oglDeletePerfMonitorsAMD          ||
+        nullptr == oglUtils::_oglSelectPerfMonitorCountersAMD   ||
+        nullptr == oglUtils::_oglBeginPerfMonitorAMD            ||
+        nullptr == oglUtils::_oglEndPerfMonitorAMD              ||
+        nullptr == oglUtils::_oglGetPerfMonitorCounterDataAMD)
     {
         // No AMD_peformance_monitor support, means no ASIC info
         GPA_LogError("One or more of the GL_AMD_performance_monitor functions were not found.");
@@ -269,7 +269,7 @@ bool GetASICInfo(ASICInfo& rASICInfo)
     // Since GL ES didn't exist before version 9551, there's no need to check the
     // version number. For now, it is assumed the version number will be >9551
 
-    const GLubyte* pVersion = _oglGetString(GL_VERSION);
+    const GLubyte* pVersion = oglUtils::_oglGetString(GL_VERSION);
     int nVersion = extractVersionNumber(pVersion);
 
     std::stringstream message;
@@ -318,7 +318,9 @@ bool GetASICInfo(ASICInfo& rASICInfo)
              nAsicType == ATIASIC_ID_TONGA_P ||
              nAsicType == ATIASIC_ID_FIJI_P ||
              nAsicType == ATIASIC_ID_ELLESMERE ||
-             nAsicType == ATIASIC_ID_BAFFIN)
+             nAsicType == ATIASIC_ID_BAFFIN ||
+             nAsicType == ATIASIC_ID_LEXA ||
+             nAsicType == ATIASIC_ID_VEGAM)
     {
         GPA_LogMessage("Recognized a GFX8 card.");
         rASICInfo.eAsicType = ASIC_Gfx8;
@@ -328,6 +330,16 @@ bool GetASICInfo(ASICInfo& rASICInfo)
     {
         GPA_LogMessage("Recognized an APU with GFX8 graphics.");
         rASICInfo.eAsicType = ASIC_Gfx8;
+    }
+    else if (nAsicType == ATIASIC_ID_VEGA)
+    {
+        GPA_LogMessage("Recognized a GFX9 card.");
+        rASICInfo.eAsicType = ASIC_Gfx9;
+    }
+    else if (nAsicType == ATIASIC_ID_VEGA_APU)
+    {
+        GPA_LogMessage("Recognized an APU with GFX9 graphics.");
+        rASICInfo.eAsicType = ASIC_Gfx9;
     }
     else
     {
@@ -345,6 +357,7 @@ bool GetASICInfo(ASICInfo& rASICInfo)
         case ASIC_Gfx6:
         case ASIC_Gfx7:
         case ASIC_Gfx8:
+        case ASIC_Gfx9:
             if (!GetCounterValue(nASICGroupId, "GPIN_001", rASICInfo.nNumSIMD))
             {
                 GPA_LogError("Unable to query GPIN_001.");

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for DX11 counter generation for AMD HW
@@ -19,6 +19,11 @@
 #include "PublicCounterDefsDX11Gfx8.h"
 #include "PublicCounterDefsDX11Gfx9.h"
 
+#include "PublicCounterDefsDX11Gfx6Asics.h"
+#include "PublicCounterDefsDX11Gfx7Asics.h"
+#include "PublicCounterDefsDX11Gfx8Asics.h"
+#include "PublicCounterDefsDX11Gfx9Asics.h"
+
 #include "InternalCountersDX11Gfx6.h"
 #include "InternalCountersDX11Gfx7.h"
 #include "InternalCountersDX11Gfx8.h"
@@ -29,13 +34,12 @@
 #include "AmdDxCounter.h"
 #include "AmdDxExtPerfProfile.h"
 
-#include "GPACounterGeneratorCommon.h"
 #include "GPASwCounterManager.h"
 #include "GPACounterGeneratorSchedulerManager.h"
 
 GPA_CounterGeneratorDX11::GPA_CounterGeneratorDX11()
 {
-    SetAllowedCounters(true, true, true); //enable all counters
+    GPA_CounterGeneratorBase::SetAllowedCounters(true, true, true); //enable all counters
 
     for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
     {
@@ -168,7 +172,7 @@ static bool generateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GD
             counter.m_pHardwareCounter = &(pGroupCounters[c]);
             counter.m_groupIdDriver = blockId;
 
-            // counterIdDriver is used primarily for pre-SI.  In SI and later, it is used for GPUTimeStamp and GPUTime counters only.
+            // counterIdDriver is used primarily for pre-SI. In SI and later, it is used for GPUTimeStamp and GPUTime counters only.
             if (counter.m_groupIndex >= pHardwareCounters->m_gpuTimestampIndex)
             {
                 counter.m_counterIdDriver = EncodeGPUTimeCounter(generation, globalCounterIndex);
@@ -219,7 +223,11 @@ static bool generateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GD
 }
 
 
-GPA_Status GPA_CounterGeneratorDX11::GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters)
+GPA_Status GPA_CounterGeneratorDX11::GeneratePublicCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_PublicCounters* pPublicCounters)
 {
     if (true == pPublicCounters->m_countersGenerated) //only generate counters once to improve performance
     {
@@ -231,18 +239,38 @@ GPA_Status GPA_CounterGeneratorDX11::GeneratePublicCounters(GDT_HW_GENERATION de
     if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
     {
         AutoDefinePublicCountersDX11Gfx6(*pPublicCounters);
+
+        if (generateAsicSpecificCounters)
+        {
+            DX11Gfx6Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
     {
         AutoDefinePublicCountersDX11Gfx7(*pPublicCounters);
+
+        if (generateAsicSpecificCounters)
+        {
+            DX11Gfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
         AutoDefinePublicCountersDX11Gfx8(*pPublicCounters);
+
+        if (generateAsicSpecificCounters)
+        {
+            DX11Gfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
-    else if(desiredGeneration == GDT_HW_GENERATION_GFX9)
+    else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
         AutoDefinePublicCountersDX11Gfx9(*pPublicCounters);
+
+        if (generateAsicSpecificCounters)
+        {
+            DX11Gfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else
     {
@@ -255,8 +283,15 @@ GPA_Status GPA_CounterGeneratorDX11::GeneratePublicCounters(GDT_HW_GENERATION de
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
+GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_HardwareCounters* pHardwareCounters)
 {
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+
     if (true == pHardwareCounters->m_countersGenerated) //only generate counters once to improve performance
     {
         return GPA_STATUS_OK;
@@ -273,6 +308,8 @@ GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION 
         pHardwareCounters->m_sqGroupCount = HWDX11SQGroupCountGfx6;
         pHardwareCounters->m_gpuTimestampIndex = HWDX11GPUTimeStampIndexGfx6;
         pHardwareCounters->m_gpuTimeIndex = HWDX11GPUTimeIndexGfx6;
+        pHardwareCounters->m_pIsolatedGroups = HWDX11SQIsolatedGroupsGfx6;
+        pHardwareCounters->m_isolatedGroupCount = HWDX11SQIsolatedGroupCountGfx6;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
     {
@@ -283,6 +320,8 @@ GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION 
         pHardwareCounters->m_sqGroupCount = HWDX11SQGroupCountGfx7;
         pHardwareCounters->m_gpuTimestampIndex = HWDX11GPUTimeStampIndexGfx7;
         pHardwareCounters->m_gpuTimeIndex = HWDX11GPUTimeIndexGfx7;
+        pHardwareCounters->m_pIsolatedGroups = HWDX11SQIsolatedGroupsGfx7;
+        pHardwareCounters->m_isolatedGroupCount = HWDX11SQIsolatedGroupCountGfx7;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
@@ -293,6 +332,8 @@ GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION 
         pHardwareCounters->m_sqGroupCount = HWDX11SQGroupCountGfx8;
         pHardwareCounters->m_gpuTimestampIndex = HWDX11GPUTimeStampIndexGfx8;
         pHardwareCounters->m_gpuTimeIndex = HWDX11GPUTimeIndexGfx8;
+        pHardwareCounters->m_pIsolatedGroups = HWDX11SQIsolatedGroupsGfx8;
+        pHardwareCounters->m_isolatedGroupCount = HWDX11SQIsolatedGroupCountGfx8;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
@@ -303,6 +344,8 @@ GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION 
         pHardwareCounters->m_sqGroupCount = HWDX11SQGroupCountGfx9;
         pHardwareCounters->m_gpuTimestampIndex = HWDX11GPUTimeStampIndexGfx9;
         pHardwareCounters->m_gpuTimeIndex = HWDX11GPUTimeIndexGfx9;
+        pHardwareCounters->m_pIsolatedGroups = HWDX11SQIsolatedGroupsGfx9;
+        pHardwareCounters->m_isolatedGroupCount = HWDX11SQIsolatedGroupCountGfx9;
     }
     else
     {
@@ -313,11 +356,11 @@ GPA_Status GPA_CounterGeneratorDX11::GenerateHardwareCounters(GDT_HW_GENERATION 
     // need to count total number of internal counters, since split into groups
     if (!pHardwareCounters->m_countersGenerated)
     {
-        if (generateInternalCounters(pHardwareCounters, desiredGeneration) == false)
+        if (!generateInternalCounters(pHardwareCounters, desiredGeneration))
         {
             GPA_LogError("Unable to generate internal counters.");
             pHardwareCounters->m_currentGroupUsedCounts.resize(0);
-            return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
+            return GPA_STATUS_ERROR_CONTEXT_NOT_OPEN;
         }
     }
 

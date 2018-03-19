@@ -17,6 +17,7 @@ CounterGeneratorSchedulerManager::~CounterGeneratorSchedulerManager()
 
 void CounterGeneratorSchedulerManager::RegisterCounterGenerator(GPA_API_Type apiType, GDT_HW_GENERATION generation, GPA_CounterGeneratorBase* pCounterGenerator, bool replaceExisting)
 {
+
     GenerationGeneratorMap localMap;
 
     if (0 < m_counterGeneratorItems.count(apiType))
@@ -48,7 +49,7 @@ bool CounterGeneratorSchedulerManager::GetCounterGenerator(GPA_API_Type apiType,
     return retVal;
 }
 
-void CounterGeneratorSchedulerManager::RegisterCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, GPA_ICounterScheduler* pCounterScheduler, bool replaceExisting)
+void CounterGeneratorSchedulerManager::RegisterCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, IGPACounterScheduler* pCounterScheduler, bool replaceExisting)
 {
     GenerationSchedulerMap localMap;
 
@@ -65,7 +66,7 @@ void CounterGeneratorSchedulerManager::RegisterCounterScheduler(GPA_API_Type api
     m_counterSchedulerItems[apiType] = localMap;
 }
 
-bool CounterGeneratorSchedulerManager::GetCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, GPA_ICounterScheduler*& pCounterSchedulerOut)
+bool CounterGeneratorSchedulerManager::GetCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, IGPACounterScheduler*& pCounterSchedulerOut)
 {
     bool retVal = false;
 

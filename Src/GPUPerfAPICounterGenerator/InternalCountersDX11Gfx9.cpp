@@ -325,8 +325,30 @@ GPA_HardwareCounterDesc* DX11CounterGroupArrayGfx9[] =
     ATCcountersGfx9,
     ATCL2countersGfx9,
     RPBcountersGfx9,
-    GCEAcountersGfx9,
-    RMIcountersGfx9,
+    GCEA0countersGfx9,
+    GCEA1countersGfx9,
+    GCEA2countersGfx9,
+    GCEA3countersGfx9,
+    GCEA4countersGfx9,
+    GCEA5countersGfx9,
+    GCEA6countersGfx9,
+    GCEA7countersGfx9,
+    GCEA8countersGfx9,
+    GCEA9countersGfx9,
+    GCEA10countersGfx9,
+    GCEA11countersGfx9,
+    GCEA12countersGfx9,
+    GCEA13countersGfx9,
+    GCEA14countersGfx9,
+    GCEA15countersGfx9,
+    RMI0countersGfx9,
+    RMI1countersGfx9,
+    RMI2countersGfx9,
+    RMI3countersGfx9,
+    RMI4countersGfx9,
+    RMI5countersGfx9,
+    RMI6countersGfx9,
+    RMI7countersGfx9,
     GPUTimeStampcountersGfx9,
     GPUTimecountersGfx9,
 };
@@ -646,10 +668,32 @@ GPA_CounterGroupDesc HWDX11GroupsGfx9[] =
     {310, "ATC", 0, 24, 4},
     {311, "ATCL2", 0, 8, 2},
     {312, "RPB", 0, 63, 4},
-    {313, "GCEA", 0, 77, 2},
-    {314, "RMI", 0, 257, 4},
-    {315, "GPUTimeStamp", 0, 1, 1},
-    {316, "GPUTime", 0, 2, 2},
+    {313, "GCEA0", 0, 77, 2},
+    {314, "GCEA1", 1, 77, 2},
+    {315, "GCEA2", 2, 77, 2},
+    {316, "GCEA3", 3, 77, 2},
+    {317, "GCEA4", 4, 77, 2},
+    {318, "GCEA5", 5, 77, 2},
+    {319, "GCEA6", 6, 77, 2},
+    {320, "GCEA7", 7, 77, 2},
+    {321, "GCEA8", 8, 77, 2},
+    {322, "GCEA9", 9, 77, 2},
+    {323, "GCEA10", 10, 77, 2},
+    {324, "GCEA11", 11, 77, 2},
+    {325, "GCEA12", 12, 77, 2},
+    {326, "GCEA13", 13, 77, 2},
+    {327, "GCEA14", 14, 77, 2},
+    {328, "GCEA15", 15, 77, 2},
+    {329, "RMI0", 0, 257, 4},
+    {330, "RMI1", 1, 257, 4},
+    {331, "RMI2", 2, 257, 4},
+    {332, "RMI3", 3, 257, 4},
+    {333, "RMI4", 4, 257, 4},
+    {334, "RMI5", 5, 257, 4},
+    {335, "RMI6", 6, 257, 4},
+    {336, "RMI7", 7, 257, 4},
+    {337, "GPUTimeStamp", 0, 1, 1},
+    {338, "GPUTime", 0, 2, 2},
 };
 
 GPA_SQCounterGroupDesc HWDX11SQGroupsGfx9[] =
@@ -686,6 +730,221 @@ GPA_SQCounterGroupDesc HWDX11SQGroupsGfx9[] =
     {86, 1, SQ_CS},
     {87, 2, SQ_CS},
     {88, 3, SQ_CS},
+};
+
+
+unsigned int HWDX11SQIsolatedGroupsGfx9[] =
+{
+    89, // Ta
+    90, // Ta
+    91, // Ta
+    92, // Ta
+    93, // Ta
+    94, // Ta
+    95, // Ta
+    96, // Ta
+    97, // Ta
+    98, // Ta
+    99, // Ta
+    100, // Ta
+    101, // Ta
+    102, // Ta
+    103, // Ta
+    104, // Ta
+    105, // Ta
+    106, // Ta
+    107, // Ta
+    108, // Ta
+    109, // Ta
+    110, // Ta
+    111, // Ta
+    112, // Ta
+    113, // Ta
+    114, // Ta
+    115, // Ta
+    116, // Ta
+    117, // Ta
+    118, // Ta
+    119, // Ta
+    120, // Ta
+    121, // Ta
+    122, // Ta
+    123, // Ta
+    124, // Ta
+    125, // Ta
+    126, // Ta
+    127, // Ta
+    128, // Ta
+    129, // Ta
+    130, // Ta
+    131, // Ta
+    132, // Ta
+    133, // Ta
+    134, // Ta
+    135, // Ta
+    136, // Ta
+    137, // Ta
+    138, // Ta
+    139, // Ta
+    140, // Ta
+    141, // Ta
+    142, // Ta
+    143, // Ta
+    144, // Ta
+    145, // Ta
+    146, // Ta
+    147, // Ta
+    148, // Ta
+    149, // Ta
+    150, // Ta
+    151, // Ta
+    152, // Ta
+    153, // Td
+    154, // Td
+    155, // Td
+    156, // Td
+    157, // Td
+    158, // Td
+    159, // Td
+    160, // Td
+    161, // Td
+    162, // Td
+    163, // Td
+    164, // Td
+    165, // Td
+    166, // Td
+    167, // Td
+    168, // Td
+    169, // Td
+    170, // Td
+    171, // Td
+    172, // Td
+    173, // Td
+    174, // Td
+    175, // Td
+    176, // Td
+    177, // Td
+    178, // Td
+    179, // Td
+    180, // Td
+    181, // Td
+    182, // Td
+    183, // Td
+    184, // Td
+    185, // Td
+    186, // Td
+    187, // Td
+    188, // Td
+    189, // Td
+    190, // Td
+    191, // Td
+    192, // Td
+    193, // Td
+    194, // Td
+    195, // Td
+    196, // Td
+    197, // Td
+    198, // Td
+    199, // Td
+    200, // Td
+    201, // Td
+    202, // Td
+    203, // Td
+    204, // Td
+    205, // Td
+    206, // Td
+    207, // Td
+    208, // Td
+    209, // Td
+    210, // Td
+    211, // Td
+    212, // Td
+    213, // Td
+    214, // Td
+    215, // Td
+    216, // Td
+    217, // Tcp
+    218, // Tcp
+    219, // Tcp
+    220, // Tcp
+    221, // Tcp
+    222, // Tcp
+    223, // Tcp
+    224, // Tcp
+    225, // Tcp
+    226, // Tcp
+    227, // Tcp
+    228, // Tcp
+    229, // Tcp
+    230, // Tcp
+    231, // Tcp
+    232, // Tcp
+    233, // Tcp
+    234, // Tcp
+    235, // Tcp
+    236, // Tcp
+    237, // Tcp
+    238, // Tcp
+    239, // Tcp
+    240, // Tcp
+    241, // Tcp
+    242, // Tcp
+    243, // Tcp
+    244, // Tcp
+    245, // Tcp
+    246, // Tcp
+    247, // Tcp
+    248, // Tcp
+    249, // Tcp
+    250, // Tcp
+    251, // Tcp
+    252, // Tcp
+    253, // Tcp
+    254, // Tcp
+    255, // Tcp
+    256, // Tcp
+    257, // Tcp
+    258, // Tcp
+    259, // Tcp
+    260, // Tcp
+    261, // Tcp
+    262, // Tcp
+    263, // Tcp
+    264, // Tcp
+    265, // Tcp
+    266, // Tcp
+    267, // Tcp
+    268, // Tcp
+    269, // Tcp
+    270, // Tcp
+    271, // Tcp
+    272, // Tcp
+    273, // Tcp
+    274, // Tcp
+    275, // Tcp
+    276, // Tcp
+    277, // Tcp
+    278, // Tcp
+    279, // Tcp
+    280, // Tcp
+    281, // Tcc
+    282, // Tcc
+    283, // Tcc
+    284, // Tcc
+    285, // Tcc
+    286, // Tcc
+    287, // Tcc
+    288, // Tcc
+    289, // Tcc
+    290, // Tcc
+    291, // Tcc
+    292, // Tcc
+    293, // Tcc
+    294, // Tcc
+    295, // Tcc
+    296, // Tcc
+    297, // Tca
+    298, // Tca
 };
 
 PE_BLOCK_ID HWDX11DriverEnumGfx9[] =
@@ -999,18 +1258,41 @@ PE_BLOCK_ID HWDX11DriverEnumGfx9[] =
     PE_BLOCK_CPG,
     PE_BLOCK_CPC,
     PE_BLOCK_WD,
-    PE_BLOCK_MC,
+    PE_BLOCK_MCVML2,
     PE_BLOCK_ATC,
     PE_BLOCK_ATCL2,
     PE_BLOCK_RPB,
     PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_RMI,
+    PE_BLOCK_RMI,
+    PE_BLOCK_RMI,
+    PE_BLOCK_RMI,
+    PE_BLOCK_RMI,
+    PE_BLOCK_RMI,
+    PE_BLOCK_RMI,
     PE_BLOCK_RMI,
     PE_BLOCK_UNKNOWN,
     PE_BLOCK_UNKNOWN,
 };
 
-const unsigned int HWDX11GPUTimeIndexGfx9 = 316;
-const unsigned int HWDX11GPUTimeStampIndexGfx9 = 315;
-const unsigned int HWDX11FirstGPUTimeCounterIndexGfx9 = 51556;
+const unsigned int HWDX11GPUTimeIndexGfx9 = 338;
+const unsigned int HWDX11GPUTimeStampIndexGfx9 = 337;
+const unsigned int HWDX11FirstGPUTimeCounterIndexGfx9 = 54510;
 const unsigned int HWDX11GroupCountGfx9 = sizeof(HWDX11GroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX11SQGroupCountGfx9 = sizeof(HWDX11SQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
+const unsigned int HWDX11SQIsolatedGroupCountGfx9 = sizeof(HWDX11SQIsolatedGroupsGfx9) / sizeof(unsigned int);

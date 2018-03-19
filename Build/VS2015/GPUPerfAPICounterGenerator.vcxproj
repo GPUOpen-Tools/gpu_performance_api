@@ -20,24 +20,35 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GLEntryPoints.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCommon.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11Base.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11NonAMD.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX12.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX12Base.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX12NonAMD.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorGL.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorHSA.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorSchedulerManager.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorVK.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorVKBase.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorVKNonAMD.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGroupAccessor.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerBase.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerCL.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerDX11.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerDX12.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerGL.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerHSA.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerVK.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAHardwareCounters.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAICounterScheduler.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Baffin.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Carrizo.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Ellesmere.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Fiji.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Iceland.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Tonga.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\IGPACounterScheduler.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCounter.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx6.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx7.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.h" />
@@ -46,7 +57,6 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASoftwareCounters.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCounterFactory.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersConsolidated.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersConsolidatedDX12.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersInterfaces.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersMaxPerPass.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersOnePerPass.h" />
@@ -59,6 +69,9 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx7.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx8.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx9.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX12Gfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX12Gfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX12Gfx9.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx6.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx7.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx8.h" />
@@ -66,44 +79,114 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx7.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx8.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx9.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersVKGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersVKGfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersVKGfx9.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx6.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx6Asics.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx7Asics.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAICounterAccessor.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\IGPACounterAccessor.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorBase.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGenerator.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8Asics.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Baffin.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Carrizo.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Ellesmere.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Fiji.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Iceland.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Tonga.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx9.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx9Asics.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx6.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx6Asics.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx7Asics.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8Asics.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Baffin.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Carrizo.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Ellesmere.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Fiji.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Iceland.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Tonga.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx9.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx9Asics.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx7Asics.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8Asics.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Baffin.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Carrizo.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Ellesmere.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Fiji.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Iceland.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Tonga.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx9.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx9Asics.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx6.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx6Asics.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx7Asics.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8Asics.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Baffin.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Carrizo.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Ellesmere.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Fiji.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Iceland.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Tonga.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx9.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx9Asics.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx7Asics.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8Asics.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Baffin.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Carrizo.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Ellesmere.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Fiji.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Iceland.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Tonga.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx9.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx9Asics.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx7.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx7Asics.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8Asics.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Baffin.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Carrizo.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Ellesmere.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Fiji.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Iceland.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Tonga.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx9.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx9Asics.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GLEntryPoints.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorBase.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCommon.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11Base.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX11NonAMD.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX12.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX12Base.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorDX12NonAMD.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorGL.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorHSA.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorSchedulerManager.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorVK.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorVKBase.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorVKNonAMD.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerBase.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerCL.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerDX11.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerDX12.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerGL.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerHSA.cpp" />
-    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI'" Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterSchedulerVK.cpp" />
     <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI'" Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx6.cpp" />
     <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI'" Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx7.cpp">
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
@@ -111,10 +194,15 @@
     <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI'" Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8.cpp">
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Baffin.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Carrizo.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Ellesmere.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Fiji.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Iceland.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Tonga.cpp" />
     <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI'" Include="..\..\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx9.cpp">
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
-    <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersFiji.cpp" />
     <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx6.cpp" />
     <ClCompile Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx7.cpp">
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
@@ -126,7 +214,6 @@
       <AdditionalOptions>/bigobj %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAPublicCounters.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPASplitCountersConsolidatedDX12.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPASwCounterManager.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx6.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx7.cpp" />
@@ -136,6 +223,9 @@
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx7.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx8.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX11Gfx9.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX12Gfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX12Gfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersDX12Gfx9.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx6.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx7.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersGLGfx8.cpp" />
@@ -143,23 +233,68 @@
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx7.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx8.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersHSAGfx9.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersVKGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersVKGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersVKGfx9.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx6.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx7.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGeneratorCL.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGenerator.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Baffin.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Carrizo.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Ellesmere.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Fiji.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Iceland.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx8_Tonga.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx9.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx6.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx7.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Baffin.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Carrizo.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Ellesmere.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Fiji.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Iceland.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx8_Tonga.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX11Gfx9.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Baffin.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Carrizo.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Ellesmere.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Fiji.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Iceland.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx8_Tonga.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsDX12Gfx9.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx6.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx7.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Baffin.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Carrizo.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Ellesmere.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Fiji.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Iceland.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx8_Tonga.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsGLGfx9.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx7.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Baffin.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Carrizo.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Ellesmere.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Fiji.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Iceland.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx8_Tonga.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsHSAGfx9.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx7.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Baffin.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Carrizo.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Ellesmere.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Fiji.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Iceland.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx8_Tonga.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsVKGfx9.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{C1E8ADA1-400C-45EB-A6E1-F0FFCE7DDD1A}</ProjectGuid>
@@ -180,6 +315,7 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="GPA-Common.props" />
+    <Import Project="$(CommonDir)Lib\Ext\Vulkan\Global-Vulkan.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup />

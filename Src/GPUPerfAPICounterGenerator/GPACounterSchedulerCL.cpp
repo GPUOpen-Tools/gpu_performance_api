@@ -16,7 +16,7 @@ GPA_CounterSchedulerCL::GPA_CounterSchedulerCL()
     }
 }
 
-GPACounterSplitterAlgorithm GPA_CounterSchedulerCL::GetPreferredSplittingAlgorithm()
+GPACounterSplitterAlgorithm GPA_CounterSchedulerCL::GetPreferredSplittingAlgorithm() const
 {
     return CONSOLIDATED;
 }

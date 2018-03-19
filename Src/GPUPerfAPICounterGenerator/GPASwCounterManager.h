@@ -64,7 +64,7 @@ public :
 
     /// generate a SW counter
     /// \param counterDesc reference to the GPA_SoftwareCounterDesc to generate
-    void GenerateSwCounter(const GPA_SoftwareCounterDesc& counterDesc);
+    void AddSwCounter(const GPA_SoftwareCounterDesc& counterDesc);
 
     /// check if DX11 SW counters have been generated
     /// \return true if  DX11 SW counters generated.
@@ -83,11 +83,11 @@ public :
 
     /// get SW counter list
     /// \return a pointer to swCounterDescVec
-    const SwCounterDescVec* GetSwCounters();
+    const SwCounterDescVec* GetSwCounters() const;
 
     /// get the number of SW counters
     /// \return number of SW counters
-    const gpa_uint32 GetNumSwCounters();
+    gpa_uint32 GetNumSwCounters() const;
 
     /// enable SW counter
     /// \param index the public index of the SW counter to be enabled
@@ -108,7 +108,7 @@ public :
 
     /// get SW GPUTime counter public index
     /// \return SW GPUTime counter public index
-    const gpa_uint32 GetSwGPUTimeCounterIndex() const;
+    gpa_uint32 GetSwGPUTimeCounterIndex() const;
 
     /// set SW GPUTime counter enabled status
     /// \param enabled the status to set
@@ -132,30 +132,28 @@ public :
 
     /// get the number of AMD counters
     /// \return number of AMD counters
-    const gpa_uint32 GetNumAmdCounters() const;
+    gpa_uint32 GetNumAmdCounters() const;
 
     /// get enabled SW counter list
     /// \return a pointer to  enabledSwCounterSet
-    const EnabledSwCounterSet* GetEnabledSwCounters();
+    const EnabledSwCounterSet* GetEnabledSwCounters() const;
 
 private:
     /// disable copy constructor
-    SwCounterManager(const SwCounterManager& copy);
+    SwCounterManager(const SwCounterManager&) = delete;
 
     /// disable copy assignment operator
-    SwCounterManager& operator=(SwCounterManager& rhs);
+    /// \return reference to object
+    SwCounterManager& operator=(SwCounterManager&) = delete;
 
-    SwCounterDescVec          m_swCounters;             ///<vector containing SW D3D11 counters
-    EnabledSwCounterSet       m_enabledSwCounters;      ///< set of currently enabled SW D3D11 counters(ids)
-    gpa_uint32                m_amdCounters;            ///< number of AMD counters
-    CounterIndexMap           m_swCounterIndexMap;      ///< SW counter public index, SW index map
-    gpa_uint32                m_swGPUTimeCounter;       ///< SW GPUTime counter public index
-    bool                      m_swGPUTimeEnabled;       ///< Indicates if SW GPUTime counter is enabled
-    bool                      m_swCountersGenerated;    ///< Indicates if SW counters have been generated
+    SwCounterDescVec    m_swCounters;          ///<vector containing SW D3D11 counters
+    EnabledSwCounterSet m_enabledSwCounters;   ///< set of currently enabled SW D3D11 counters(ids)
+    gpa_uint32          m_amdCounters;         ///< number of AMD counters
+    CounterIndexMap     m_swCounterIndexMap;   ///< SW counter public index, SW index map
+    gpa_uint32          m_swGPUTimeCounter;    ///< SW GPUTime counter public index
+    bool                m_swGPUTimeEnabled;    ///< Indicates if SW GPUTime counter is enabled
+    bool                m_swCountersGenerated; ///< Indicates if SW counters have been generated
 };
-
-/// declare singleton SwCounterManager object as extern
-extern SwCounterManager* s_pSwCounterManager;
 
 #endif // _GPA_SW_COUNTER_MANAGER_H_
 

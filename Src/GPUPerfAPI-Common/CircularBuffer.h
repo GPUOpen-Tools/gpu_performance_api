@@ -45,7 +45,7 @@ public:
 
             if (nullptr != m_pArray)
             {
-                for (int i = 0; i < (int)obj.getSize(); i++)
+                for (int i = 0; i < static_cast<int>(obj.getSize()); i++)
                 {
                     m_pArray[i] = obj.get(i);
                 }
@@ -69,7 +69,7 @@ public:
 
         if (nullptr != m_pArray)
         {
-            for (int i = 0; i < (int)obj.getSize(); i++)
+            for (int i = 0; i < static_cast<int>(obj.getSize()); i++)
             {
                 m_pArray[i] = obj.get(i);
             }
@@ -130,6 +130,8 @@ public:
 
     /// allows direct access to next item ( avoids copying )
     /// addLockedItem should be called once it's filled in
+    /// \param[out] success flag indicating if function is sucessfully returning the next item
+    /// \return the next item
     T& lockNext(bool& success)
     {
         success = true;

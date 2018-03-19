@@ -1,15 +1,14 @@
 //==============================================================================
-// Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Unit Tests for CL Counter Generator
 //==============================================================================
 
-#define NOMINMAX
 #include <algorithm>
 
 #include "CounterGeneratorTests.h"
-#include "GPUPerfAPITypes-Private.h"
+#include "GPUPerfAPITypes.h"
 #include "GPAInternalCounter.h"
 
 #include "counters/PublicCountersCLGfx6.h"
@@ -24,7 +23,7 @@
     #include "InternalCountersCLGfx9.h"
 #endif
 
-static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<const char*>& counterNames)
+static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<const char*>& counterNames)
 {
     counterNames.clear();
 
@@ -95,34 +94,34 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
 // Test the openCL counter names on all supported hardware
 TEST(CounterDLLTests, OpenCLCounterNames)
 {
-    VerifyHardwareNotSupported(GPA_API_OPENCL, gDevIdUnknown);
+    VerifyHardwareNotSupported(GPA_API_OPENCL, gDevIdUnknown, FALSE);
 
     std::vector<const char*> counterNames;
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, gDevIdSI, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, gDevIdSI, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, gDevIdCI, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, gDevIdCI, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, gDevIdVI, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, gDevIdVI, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, gDevIdGfx9, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, gDevIdGfx9, FALSE, counterNames);
 }
 
 // Test the openCL counter names on each generation
 TEST(CounterDLLTests, OpenCLCounterNamesByGeneration)
 {
-    VerifyHardwareNotSupported(GPA_API_OPENCL, GPA_HW_GENERATION_NVIDIA);
-    VerifyHardwareNotSupported(GPA_API_OPENCL, GPA_HW_GENERATION_INTEL);
+    VerifyHardwareNotSupported(GPA_API_OPENCL, GPA_HW_GENERATION_NVIDIA, FALSE);
+    VerifyHardwareNotSupported(GPA_API_OPENCL, GPA_HW_GENERATION_INTEL, FALSE);
 
     std::vector<const char*> counterNames;
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX6, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX6, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX7, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX7, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX8, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX8, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
-    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX9, counterNames);
+    VerifyCounterNames(GPA_API_OPENCL, GPA_HW_GENERATION_GFX9, FALSE, counterNames);
 }
 
 TEST(CounterDLLTests, OpenCLMultipleGenerations)
@@ -134,12 +133,12 @@ TEST(CounterDLLTests, OpenCLMultipleGenerations)
     if (nullptr != GPA_GetAvailableCounters_fn)
     {
         // First, attempt to get EG counters
-        GPA_ICounterAccessor* pCounterAccessor = nullptr;
-        GPA_ICounterScheduler* pCounterScheduler = nullptr;
-        GPA_Status status = GPA_GetAvailableCounters_fn(GPA_API_OPENCL, AMD_VENDOR_ID, gDevIdCI, 0, &pCounterAccessor, &pCounterScheduler);
+        IGPACounterAccessor* pCounterAccessor = nullptr;
+        IGPACounterScheduler* pCounterScheduler = nullptr;
+        GPA_Status status = GPA_GetAvailableCounters_fn(GPA_API_OPENCL, AMD_VENDOR_ID, gDevIdCI, 0, GPA_OPENCONTEXT_DEFAULT_BIT, FALSE, &pCounterAccessor, &pCounterScheduler);
         EXPECT_EQ(GPA_STATUS_OK, status);
-        EXPECT_NE((GPA_ICounterAccessor*)nullptr, pCounterAccessor);
-        EXPECT_NE((GPA_ICounterScheduler*)nullptr, pCounterScheduler);
+        EXPECT_NE((IGPACounterAccessor*)nullptr, pCounterAccessor);
+        EXPECT_NE((IGPACounterScheduler*)nullptr, pCounterScheduler);
 
         std::vector<const char*> counterNames;
         GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
@@ -168,12 +167,13 @@ TEST(CounterDLLTests, OpenCLMultipleGenerations)
             // Second, attempt to get SI counters
             pCounterAccessor = nullptr;
             pCounterScheduler = nullptr;
-            status = GPA_GetAvailableCounters_fn(GPA_API_OPENCL, AMD_VENDOR_ID, gDevIdSI, 0, &pCounterAccessor, &pCounterScheduler);
+            status = GPA_GetAvailableCounters_fn(GPA_API_OPENCL, AMD_VENDOR_ID, gDevIdSI, 0, GPA_OPENCONTEXT_DEFAULT_BIT, FALSE, &pCounterAccessor, &pCounterScheduler);
             EXPECT_EQ(GPA_STATUS_OK, status);
-            EXPECT_NE((GPA_ICounterAccessor*)nullptr, pCounterAccessor);
-            EXPECT_NE((GPA_ICounterScheduler*)nullptr, pCounterScheduler);
+            EXPECT_NE((IGPACounterAccessor*)nullptr, pCounterAccessor);
+            EXPECT_NE((IGPACounterScheduler*)nullptr, pCounterScheduler);
 
             GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
+
             if (nullptr != pCounterAccessor)
             {
                 numCounters = pCounterAccessor->GetNumCounters();

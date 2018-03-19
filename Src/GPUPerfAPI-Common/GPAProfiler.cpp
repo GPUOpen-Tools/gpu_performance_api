@@ -1,10 +1,11 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Internal class to support profiling GPA calls themselves
 //==============================================================================
 
+//#define ENABLE_PROFILING
 #ifdef ENABLE_PROFILING
 
 #include "GPAProfiler.h"

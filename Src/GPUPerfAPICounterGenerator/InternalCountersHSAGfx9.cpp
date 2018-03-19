@@ -102,7 +102,22 @@ GPA_HardwareCounterDesc* HSACounterGroupArrayGfx9[] =
     GDScountersGfx9,
     VGT0countersGfx9,
     IA0countersGfx9,
-    GCEAcountersGfx9,
+    GCEA0countersGfx9,
+    GCEA1countersGfx9,
+    GCEA2countersGfx9,
+    GCEA3countersGfx9,
+    GCEA4countersGfx9,
+    GCEA5countersGfx9,
+    GCEA6countersGfx9,
+    GCEA7countersGfx9,
+    GCEA8countersGfx9,
+    GCEA9countersGfx9,
+    GCEA10countersGfx9,
+    GCEA11countersGfx9,
+    GCEA12countersGfx9,
+    GCEA13countersGfx9,
+    GCEA14countersGfx9,
+    GCEA15countersGfx9,
     WDcountersGfx9,
     CPCcountersGfx9,
 };
@@ -199,9 +214,24 @@ GPA_CounterGroupDesc HWHSAGroupsGfx9[] =
     {87, "GDS", 0, 121, 4},
     {88, "VGT", 0, 148, 4},
     {89, "IA", 0, 32, 4},
-    {90, "GCEA", 0, 77, 2},
-    {91, "WD", 0, 58, 4},
-    {92, "CPC", 0, 35, 2},
+    {90, "GCEA0", 0, 77, 2},
+    {91, "GCEA1", 1, 77, 2},
+    {92, "GCEA2", 2, 77, 2},
+    {93, "GCEA3", 3, 77, 2},
+    {94, "GCEA4", 4, 77, 2},
+    {95, "GCEA5", 5, 77, 2},
+    {96, "GCEA6", 6, 77, 2},
+    {97, "GCEA7", 7, 77, 2},
+    {98, "GCEA8", 8, 77, 2},
+    {99, "GCEA9", 9, 77, 2},
+    {100, "GCEA10", 10, 77, 2},
+    {101, "GCEA11", 11, 77, 2},
+    {102, "GCEA12", 12, 77, 2},
+    {103, "GCEA13", 13, 77, 2},
+    {104, "GCEA14", 14, 77, 2},
+    {105, "GCEA15", 15, 77, 2},
+    {106, "WD", 0, 58, 4},
+    {107, "CPC", 0, 35, 2},
 };
 
 GPA_SQCounterGroupDesc HWHSASQGroupsGfx9[] =
@@ -214,5 +244,77 @@ GPA_SQCounterGroupDesc HWHSASQGroupsGfx9[] =
     {19, 0, SQ_CS},
 };
 
+
+unsigned int HWHSASQIsolatedGroupsGfx9[] =
+{
+    21, // Ta
+    22, // Ta
+    23, // Ta
+    24, // Ta
+    25, // Ta
+    26, // Ta
+    27, // Ta
+    28, // Ta
+    29, // Ta
+    30, // Ta
+    31, // Ta
+    32, // Ta
+    33, // Ta
+    34, // Ta
+    35, // Ta
+    36, // Ta
+    37, // Tca
+    38, // Tca
+    39, // Tcc
+    40, // Tcc
+    41, // Tcc
+    42, // Tcc
+    43, // Tcc
+    44, // Tcc
+    45, // Tcc
+    46, // Tcc
+    47, // Tcc
+    48, // Tcc
+    49, // Tcc
+    50, // Tcc
+    51, // Tcc
+    52, // Tcc
+    53, // Tcc
+    54, // Tcc
+    55, // Td
+    56, // Td
+    57, // Td
+    58, // Td
+    59, // Td
+    60, // Td
+    61, // Td
+    62, // Td
+    63, // Td
+    64, // Td
+    65, // Td
+    66, // Td
+    67, // Td
+    68, // Td
+    69, // Td
+    70, // Td
+    71, // Tcp
+    72, // Tcp
+    73, // Tcp
+    74, // Tcp
+    75, // Tcp
+    76, // Tcp
+    77, // Tcp
+    78, // Tcp
+    79, // Tcp
+    80, // Tcp
+    81, // Tcp
+    82, // Tcp
+    83, // Tcp
+    84, // Tcp
+    85, // Tcp
+    86, // Tcp
+};
+
 const unsigned int HWHSAGroupCountGfx9 = sizeof(HWHSAGroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWHSASQGroupCountGfx9 = sizeof(HWHSASQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
+const unsigned int HWHSASQIsolatedGroupCountGfx9 = sizeof(HWHSASQIsolatedGroupsGfx9) / sizeof(unsigned int);

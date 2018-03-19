@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Logging utility
@@ -26,26 +26,36 @@
 #include <string>
 using std::string;
 
-#include "GPUPerfAPITypes-Private.h"
-#include "GPUPerfAPIFunctionTypes-Private.h"
+#include <sstream>
 
-#if 1 // enable trace functions ?
-    #undef TRACE_FUNCTION
-    /// macro for tracing function calls
-    #define TRACE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func)
-    #ifdef AMDT_INTERNAL
-        #undef TRACE_PRIVATE_FUNCTION
-        #define TRACE_PRIVATE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func)
-    #else // public build
-        #undef TRACE_PRIVATE_FUNCTION
-        /// macro for tracing private function calls
-        #define TRACE_PRIVATE_FUNCTION(func)
-    #endif // AMDT_INTERNAL / public build
+#include "GPUPerfAPITypes.h"
+#include "GPUPerfAPIFunctionTypes.h"
+
+#if ENABLE_TRACING
+#undef TRACE_FUNCTION
+/// macro for tracing function calls
+#define TRACE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func) ///< Macro used for tracing functions
+#ifdef AMDT_INTERNAL
+#undef TRACE_PRIVATE_FUNCTION
+#undef TRACE_PRIVATE_FUNCTION_WITH_ARGS
+/// macro for tracing private function calls
+#define TRACE_PRIVATE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func) ///< Macro used for tracing private functions
+#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...) \
+    TRACE_PRIVATE_FUNCTION(func); \
+    { std::ostringstream o; o << ##__VA_ARGS__; gTracerSingleton.OutputFunctionData(o.str().c_str()); }  ///< Macro used for tracing private function with parameters
+#else // public build
+#undef TRACE_PRIVATE_FUNCTION
+#undef TRACE_PRIVATE_FUNCTION_WITH_ARGS
+/// macro for tracing private function calls
+#define TRACE_PRIVATE_FUNCTION(func) ///< Macro used for tracing private functions
+#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)  ///< Macro used for tracing private function with parameters
+#endif // AMDT_INTERNAL / public build
 #else // disable trace functions
-    #undef TRACE_FUNCTION
-    #define TRACE_FUNCTION(func)
-    #undef TRACE_PRIVATE_FUNCTION
-    #define TRACE_PRIVATE_FUNCTION(func)
+#undef TRACE_FUNCTION
+#define TRACE_FUNCTION(func) ///< Macro used for tracing functions
+#undef TRACE_PRIVATE_FUNCTION
+#define TRACE_PRIVATE_FUNCTION(func) ///< Macro used for tracing private functions
+#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...) ///< Macro used for tracing private function with parameters
 #endif // trace functions
 
 /// Passes log messages of various types to a user-supplied callback function
@@ -65,48 +75,39 @@ public:
     /// \param loggingCallback a pointer to the callback function
     void SetLoggingCallback(GPA_Logging_Type loggingType, GPA_LoggingCallbackPtrType loggingCallback);
 
-#ifdef AMDT_INTERNAL
-    /// Sets the type of message the user would like to be informed of and a pointer to the callback function.
-    /// \param loggingType the type of messages to pass on to the callback function
-    /// \param loggingCallback a pointer to the callback function
-    void SetLoggingDebugCallback(GPA_Log_Debug_Type loggingType, GPA_LoggingDebugCallbackPtrType loggingDebugCallback);
-#endif // AMDT_INTERNAL
-
     /// Passes the supplied message to the callback function if the user has accepted that type of message.
     /// \param logType the type of message being supplied
     /// \param pMessage the message to pass along
-    void Log(GPA_Log_Debug_Type logType, const char* pMessage);
+    void Log(GPA_Logging_Type logType, const char* pMessage);
 
     /// Logs an error message.
     /// \param pMessage the message to pass along
     inline void LogError(const char* pMessage)
     {
-        Log(GPA_LOG_ERROR, pMessage);
+        Log(GPA_LOGGING_ERROR, pMessage);
     }
 
     /// Logs an informational message.
     /// \param pMessage the message to pass along
     inline void LogMessage(const char* pMessage)
     {
-        Log(GPA_LOG_MESSAGE, pMessage);
+        Log(GPA_LOGGING_MESSAGE, pMessage);
     }
 
     /// Logs a trace message.
     /// \param pMessage the message to pass along
     inline void LogTrace(const char* pMessage)
     {
-        Log(GPA_LOG_TRACE, pMessage);
+        Log(GPA_LOGGING_TRACE, pMessage);
     }
 
     /// Logs a formatted message in internal builds; does nothing in release.
     /// \param pMsgFmt the message to format and pass along
     void LogDebugMessage(const char* pMsgFmt, ...)
     {
-#ifdef AMDT_INTERNAL
-
         // if the supplied message type is among those that the user wants be notified of,
         // then pass the message along.
-        if (GPA_LOG_DEBUG_MESSAGE & m_loggingDebugType)
+        if (GPA_LOGGING_DEBUG_MESSAGE & m_loggingType)
         {
             EnterCriticalSection(&m_hLock);
 
@@ -121,25 +122,19 @@ public:
 #endif
             va_end(arglist);
 
-            Log(GPA_LOG_DEBUG_MESSAGE, buffer);
+            Log(GPA_LOGGING_DEBUG_MESSAGE, buffer);
 
             LeaveCriticalSection(&m_hLock);
         }
-
-#else
-        UNREFERENCED_PARAMETER(pMsgFmt);
-#endif // AMDT_INTERNAL
     }
 
     /// Logs a formatted error message in debug builds; does nothing in release.
     /// \param pMsgFmt the message to format and pass along
     void LogDebugError(const char* pMsgFmt, ...)
     {
-#ifdef AMDT_INTERNAL
-
         // if the supplied message type is among those that the user wants be notified of,
         // then pass the message along.
-        if (GPA_LOG_DEBUG_ERROR & m_loggingDebugType)
+        if (GPA_LOGGING_DEBUG_ERROR & m_loggingType)
         {
             EnterCriticalSection(&m_hLock);
 
@@ -154,14 +149,10 @@ public:
 #endif
             va_end(arglist);
 
-            Log(GPA_LOG_DEBUG_ERROR, buffer);
+            Log(GPA_LOGGING_DEBUG_ERROR, buffer);
 
             LeaveCriticalSection(&m_hLock);
         }
-
-#else
-        UNREFERENCED_PARAMETER(pMsgFmt);
-#endif // AMDT_INTERNAL
     }
 
 
@@ -169,11 +160,10 @@ public:
     /// \param pMsgFmt the message to format and pass along
     void LogDebugTrace(const char* pMsgFmt, ...)
     {
-#ifdef AMDT_INTERNAL
 
         // if the supplied message type is among those that the user wants be notified of,
         // then pass the message along.
-        if (GPA_LOG_DEBUG_TRACE & m_loggingDebugType)
+        if (GPA_LOGGING_DEBUG_TRACE & m_loggingType)
         {
             EnterCriticalSection(&m_hLock);
 
@@ -188,25 +178,19 @@ public:
 #endif
             va_end(arglist);
 
-            Log(GPA_LOG_DEBUG_TRACE, buffer);
+            Log(GPA_LOGGING_DEBUG_TRACE, buffer);
 
             LeaveCriticalSection(&m_hLock);
         }
-
-#else
-        UNREFERENCED_PARAMETER(pMsgFmt);
-#endif // AMDT_INTERNAL
     }
 
     /// Logs a formatted message in internal builds; does nothing in public builds.
     /// \param pMsgFmt the message to format and pass along
     void LogDebugCounterDefs(const char* pMsgFmt, ...)
     {
-#ifdef AMDT_INTERNAL
-
         // if the supplied message type is among those that the user wants be notified of,
         // then pass the message along.
-        if (GPA_LOG_DEBUG_COUNTERDEFS & m_loggingDebugType)
+        if (GPA_LOGGING_DEBUG_COUNTERDEFS & m_loggingType)
         {
             EnterCriticalSection(&m_hLock);
 
@@ -221,14 +205,10 @@ public:
 #endif
             va_end(arglist);
 
-            Log(GPA_LOG_DEBUG_COUNTERDEFS, buffer);
+            Log(GPA_LOGGING_DEBUG_COUNTERDEFS, buffer);
 
             LeaveCriticalSection(&m_hLock);
         }
-
-#else
-        UNREFERENCED_PARAMETER(pMsgFmt);
-#endif // AMDT_INTERNAL
     }
 
 protected:
@@ -238,14 +218,6 @@ protected:
 
     /// User-supplied callback function
     GPA_LoggingCallbackPtrType m_loggingCallback;
-
-#ifdef AMDT_INTERNAL
-    /// User selected logging type that defines what debug messages they want to be notified of
-    GPA_Log_Debug_Type m_loggingDebugType;
-
-    /// User-supplied debug callback function
-    GPA_LoggingDebugCallbackPtrType m_loggingDebugCallback;
-#endif // AMDT_INTERNAL
 
 #ifdef _WIN32
     CRITICAL_SECTION m_hLock;  ///< lock for thread-safe access
@@ -296,6 +268,11 @@ public:
     /// Should be called when a function is exited.
     /// \param pFunctionName the function that is being left
     void LeaveFunction(const char* pFunctionName);
+
+    /// Called if a function has additional data to output
+    /// Information is tabbed under the function
+    /// \param pData the additional data to output
+    void OutputFunctionData(const char* pData);
 
 protected:
 

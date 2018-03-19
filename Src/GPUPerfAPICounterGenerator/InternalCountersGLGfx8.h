@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GL internal counter definitions for GFX8
@@ -12,8 +12,10 @@
 extern GPA_HardwareCounterDesc* GLCounterGroupArrayGfx8[]; ///< Array of hardware counter groups for GL for Gfx8 family
 extern GPA_CounterGroupDesc HWGLGroupsGfx8[]; ///< Array of counter groups for GL for Gfx8 family
 extern GPA_SQCounterGroupDesc HWGLSQGroupsGfx8[]; ///< Array of SQ groups for GL for Gfx8 family
+extern unsigned int HWGLSQIsolatedGroupsGfx8[]; ///< Array of counter groups isolated from SQ counter groups for GL for Gfx8 family
 extern const unsigned int HWGLGPUTimeIndexGfx8; ///< Index of GPUTime Group for GL for Gfx8 family
 extern const unsigned int HWGLGroupCountGfx8; ///< Hardware Group Count for GL for Gfx8 family
 extern const unsigned int HWGLSQGroupCountGfx8; ///< Hardware SQ Group Count for GL for Gfx8 family
+extern const unsigned int HWGLSQIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for GL for Gfx8 family
 
 #endif // _GPA_INTERNAL_COUNTERS_GL_GFX8_H_

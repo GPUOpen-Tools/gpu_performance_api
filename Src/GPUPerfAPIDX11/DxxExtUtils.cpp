@@ -5,12 +5,13 @@
 /// \brief  DXX Utility functions
 //==============================================================================
 
+#include "GPACommonDefs.h"
 #include "DxxExtUtils.h"
 
 /// Generate a single int from a DX extension version struct
 #define GENERATE_DXX_EXT_VERSION(major, minor) ((major << 16) + minor)
 
-bool IsMgpuPerfExtSupported(IAmdDxExt* pDxxExt)
+bool DxxExtUtils::IsMgpuPerfExtSupported(IAmdDxExt* pDxxExt)
 {
     static const unsigned int dxExtVersion8p1 = GENERATE_DXX_EXT_VERSION(8, 1);
     AmdDxExtVersion extVersion;

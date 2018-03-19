@@ -1,5 +1,32 @@
-# GPU Performance API Release Notes
+﻿# GPU Performance API Release Notes
 ---
+
+## Version 3.0 (3/19/17)
+ * Add support for additional GPUs and APUs.
+ * Support for collecting hardware counters for Vulkan and DirectX 12 applications.
+ * Redesigned API to support modern graphics APIs.
+ * The documentation has been rewritten and is now available in HTML format.
+ * New counters added:
+   * Cycle and count-based counters in addition to existing percentage-based counters.
+   * New Depth Buffer memory read/write counters.
+   * Additional Color Buffer memory counters.
+   * For graphics, several global memory counters which were previously available only in the Compute Shader stage are now available generically.
+ * Support for setting stable GPU clocks.
+ * Counter Group Names can now be queried separately from Counter Descriptions.
+ * Counters now have a UUID which can be used to uniquely identify a counter.
+ * New entry point (GPA_GetFuncTable) to retrieve a table of function pointers for all GPA entry points.
+ * New C++ GPAInterfaceLoader.h header file provides an easy way to load and use GPA entry points.
+ * Bugs Fixed:
+   * Fixed an issue with TesselatorBusy counter on many GFX8 GPUs.
+   * Fixed an issue with FlatVMemInsts and CSFlatVMemInsts counters on many GFX8 GPUs.
+   * Fixed an issue with LDSInsts counter on Vega GPUs.
+   * Fixed some issues with Compute Shader counters on Vega GPUs.
+   * Some counter combinations could lead to incorrect counter results.
+   * Enabling counters in a certain order can lead to incorrect counter scheduling across multiple passes.
+   * ROCm/HSA: GPA_OpenContext crashes if libhsa-runtime64.so.1 can't be found.
+   * ROCm/HSA: GPA does not coexist nicely with an application that also sets the HSA_TOOLS_LIB environment variable.
+   * OpenGL: Fixed a crash that can occur with an incorrectly-configured OpenGL driver.
+   * OpenGL: Fixed some issues with OpenGL device-detection.
 
 ## Version 2.23 (6/27/17)
  * Add support for additional GPUs, including Vega series GPUs

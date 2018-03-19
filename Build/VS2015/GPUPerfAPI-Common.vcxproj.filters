@@ -1,148 +1,185 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
-    <Filter Include="Public Headers">
-      <UniqueIdentifier>{0cc5601c-e29a-4e06-be1f-a25825576789}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{29e63369-a5ad-4fad-a680-b288c57b98e1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="CommonSrc">
-      <UniqueIdentifier>{f832b4f0-a5bd-4096-910e-76e4c703c8b5}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI.h">
-      <Filter>Public Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIFunctionTypes.h">
-      <Filter>Public Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPITypes.h">
-      <Filter>Public Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Utility.h">
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\Adapter.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\CircularBuffer.h">
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\Src\ADLUtil\ADLUtil.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAContextState.h">
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\Src\DeviceInfo-Internal\DeviceInfoInternal.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPADataRequest.h">
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAFunctions.h">
+    </ClCompile>
+    <ClCompile Include="..\..\..\Common\Src\DynamicLibraryModule\DynamicLibraryModule.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAHWInfo.h">
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPACommandList.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPASessionRequests.h">
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAContext.cpp">
       <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI-Private.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIFunctionTypes-Private.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIImp.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIOS.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPITypes-Private.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Logging.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAProfiler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Adapter.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\Src\DeviceInfo\DeviceInfo.h">
-      <Filter>CommonSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.h">
-      <Filter>CommonSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\Src\DynamicLibraryModule\DynamicLibraryModule.h">
-      <Filter>CommonSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\APIRTModuleLoader.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIRegistry.h">
-      <Filter>CommonSrc</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACustomHWValidationManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACounterDataRequestManager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAVersion.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\DXGetAMDDeviceInfo.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAContextState.cpp">
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPACustomHWValidationManager.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAHWInfo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAImplementor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\Logging.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPASessionRequests.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAProfiler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPASample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPASession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAUniqueObject.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\Utility.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\Adapter.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\Logging.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\Common\Src\ADLUtil\ADLUtil.cpp">
-      <Filter>CommonSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\Src\AMDTMutex\AMDTMutex.cpp">
-      <Filter>CommonSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\Src\DeviceInfo-Internal\DeviceInfoInternal.cpp">
-      <Filter>CommonSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.cpp">
-      <Filter>CommonSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\Src\DynamicLibraryModule\DynamicLibraryModule.cpp">
-      <Filter>CommonSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIRegistry.cpp">
-      <Filter>CommonSrc</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPACustomHWValidationManager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Adapter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\APIRTModuleLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\CircularBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Src\DeviceInfo\DeviceInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Src\DynamicLibraryModule\DynamicLibraryModule.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACommandList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACommonDefs.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACounterDataRequestManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACustomHWValidationManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAFunctions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAHWInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAImplementor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAInterfaceLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAProfiler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPASample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPASession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAUniqueObject.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAVersion.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\IGPACommandList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\IGPAContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\IGPAImplementor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\IGPAInterfaceTrait.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\IGPASession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Logging.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Utility.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPASample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAHWInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPI.h">
+      <Filter>Public Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAInterfaceLoader.h">
+      <Filter>Public Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPITypes.h">
+      <Filter>Public Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIFunctionTypes.h">
+      <Filter>Public Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAFunctions.h">
+      <Filter>Public Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPUPerfAPIStub.h">
+      <Filter>Public Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{259c43a0-88d7-426d-82ea-be86c5ec64a1}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{fae95da4-968a-4258-b666-ad8efabf7820}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Public Header Files">
+      <UniqueIdentifier>{6999fbfe-22d3-4d01-ab30-30bf03fe24d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

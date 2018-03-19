@@ -7,6 +7,14 @@
     <Filter Include="AmdDxExt">
       <UniqueIdentifier>{59f321d8-f841-477d-8e2c-483ca59cb438}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{d5aff145-b1fc-4447-921e-a58b15a2a72e}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{b12042b6-8c5f-4eb1-9068-2a744f5f0316}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\PublicCounterCounterCompilerInputFiles\CounterNamesDX11NV.txt">
@@ -23,20 +31,32 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11CounterDataRequest.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\GPUPerfAPIDX11.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11_PerfExperimentDataRequestHandler.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\D3D11SoftwareCounterDataRequest.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\GPAContextStateDX11.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DxxExtUtils.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11SoftwareCounterDataRequestManager.cpp" />
-    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPIInternalRegistration\DX11GPAInternalCounterGeneratorRegistration.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPAPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPAContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPASession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPASample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPACommandList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPAImplementor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DxxExtUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11CounterDataRequest.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\GPAContextStateDX11.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\GPUPerfAPIDX11.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\resource.h" />
     <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExt.h">
       <Filter>AmdDxExt</Filter>
     </ClInclude>
@@ -52,12 +72,39 @@
     <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExtPerfProfileApi.h">
       <Filter>AmdDxExt</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\ICounterDataRequest.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11_PerfExperimentDataRequestHandler.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\D3D11SoftwareCounterDataRequest.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DxxExtUtils.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11ComSmartPtrs.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11SoftwareCounterDataRequestManager.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPAContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPAPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPASession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPASample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPACommandList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPAImplementor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DxxExtUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\DXGetAMDDeviceInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11Include.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\Src\GPUPerfAPIDX11\GPUPerfAPIDX11.rc">

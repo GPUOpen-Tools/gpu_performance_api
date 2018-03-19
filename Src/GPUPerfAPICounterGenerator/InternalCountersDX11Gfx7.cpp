@@ -592,6 +592,161 @@ GPA_SQCounterGroupDesc HWDX11SQGroupsGfx7[] =
     {89, 3, SQ_CS},
 };
 
+
+unsigned int HWDX11SQIsolatedGroupsGfx7[] =
+{
+    90, // Ta
+    91, // Ta
+    92, // Ta
+    93, // Ta
+    94, // Ta
+    95, // Ta
+    96, // Ta
+    97, // Ta
+    98, // Ta
+    99, // Ta
+    100, // Ta
+    101, // Ta
+    102, // Ta
+    103, // Ta
+    104, // Ta
+    105, // Ta
+    106, // Ta
+    107, // Ta
+    108, // Ta
+    109, // Ta
+    110, // Ta
+    111, // Ta
+    112, // Ta
+    113, // Ta
+    114, // Ta
+    115, // Ta
+    116, // Ta
+    117, // Ta
+    118, // Ta
+    119, // Ta
+    120, // Ta
+    121, // Ta
+    122, // Ta
+    123, // Ta
+    124, // Ta
+    125, // Ta
+    126, // Ta
+    127, // Ta
+    128, // Ta
+    129, // Ta
+    130, // Ta
+    131, // Ta
+    132, // Ta
+    133, // Ta
+    134, // Td
+    135, // Td
+    136, // Td
+    137, // Td
+    138, // Td
+    139, // Td
+    140, // Td
+    141, // Td
+    142, // Td
+    143, // Td
+    144, // Td
+    145, // Td
+    146, // Td
+    147, // Td
+    148, // Td
+    149, // Td
+    150, // Td
+    151, // Td
+    152, // Td
+    153, // Td
+    154, // Td
+    155, // Td
+    156, // Td
+    157, // Td
+    158, // Td
+    159, // Td
+    160, // Td
+    161, // Td
+    162, // Td
+    163, // Td
+    164, // Td
+    165, // Td
+    166, // Td
+    167, // Td
+    168, // Td
+    169, // Td
+    170, // Td
+    171, // Td
+    172, // Td
+    173, // Td
+    174, // Td
+    175, // Td
+    176, // Td
+    177, // Td
+    178, // Tcp
+    179, // Tcp
+    180, // Tcp
+    181, // Tcp
+    182, // Tcp
+    183, // Tcp
+    184, // Tcp
+    185, // Tcp
+    186, // Tcp
+    187, // Tcp
+    188, // Tcp
+    189, // Tcp
+    190, // Tcp
+    191, // Tcp
+    192, // Tcp
+    193, // Tcp
+    194, // Tcp
+    195, // Tcp
+    196, // Tcp
+    197, // Tcp
+    198, // Tcp
+    199, // Tcp
+    200, // Tcp
+    201, // Tcp
+    202, // Tcp
+    203, // Tcp
+    204, // Tcp
+    205, // Tcp
+    206, // Tcp
+    207, // Tcp
+    208, // Tcp
+    209, // Tcp
+    210, // Tcp
+    211, // Tcp
+    212, // Tcp
+    213, // Tcp
+    214, // Tcp
+    215, // Tcp
+    216, // Tcp
+    217, // Tcp
+    218, // Tcp
+    219, // Tcp
+    220, // Tcp
+    221, // Tcp
+    222, // Tcc
+    223, // Tcc
+    224, // Tcc
+    225, // Tcc
+    226, // Tcc
+    227, // Tcc
+    228, // Tcc
+    229, // Tcc
+    230, // Tcc
+    231, // Tcc
+    232, // Tcc
+    233, // Tcc
+    234, // Tcc
+    235, // Tcc
+    236, // Tcc
+    237, // Tcc
+    238, // Tca
+    239, // Tca
+};
+
 PE_BLOCK_ID HWDX11DriverEnumGfx7[] =
 {
     PE_BLOCK_SDMA,
@@ -870,3 +1025,4 @@ const unsigned int HWDX11GPUTimeStampIndexGfx7 = 267;
 const unsigned int HWDX11FirstGPUTimeCounterIndexGfx7 = 36850;
 const unsigned int HWDX11GroupCountGfx7 = sizeof(HWDX11GroupsGfx7) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX11SQGroupCountGfx7 = sizeof(HWDX11SQGroupsGfx7) / sizeof(GPA_SQCounterGroupDesc);
+const unsigned int HWDX11SQIsolatedGroupCountGfx7 = sizeof(HWDX11SQIsolatedGroupsGfx7) / sizeof(unsigned int);

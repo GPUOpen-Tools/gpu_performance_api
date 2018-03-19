@@ -1,0 +1,21 @@
+/* This override allows text in table cells to wrap.
+   Without this override, the descritpions in the
+   command line options tables  are very long and
+   the table is displayed with a horizontal scroll
+   bar */
+@media screen and (min-width: 767px) {
+
+   .wy-table-responsive table td {
+      /* !important prevents the common CSS stylesheets from overriding
+         this as on RTD they are loaded after this stylesheet */
+      white-space: normal !important;
+   }
+
+   .wy-table-responsive {
+      overflow: visible !important;
+   }
+}
+
+table.docutils div.line-block {
+    margin-left: 0;
+}

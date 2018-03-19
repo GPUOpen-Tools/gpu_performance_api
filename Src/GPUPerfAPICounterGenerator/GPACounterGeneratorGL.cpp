@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for GL counter generation
@@ -18,6 +18,11 @@
 #include "PublicCounterDefsGLGfx8.h"
 #include "PublicCounterDefsGLGfx9.h"
 
+#include "PublicCounterDefsGLGfx6Asics.h"
+#include "PublicCounterDefsGLGfx7Asics.h"
+#include "PublicCounterDefsGLGfx8Asics.h"
+#include "PublicCounterDefsGLGfx9Asics.h"
+
 #include "InternalCountersGLGfx6.h"
 #include "InternalCountersGLGfx7.h"
 #include "InternalCountersGLGfx8.h"
@@ -32,18 +37,12 @@ GPA_CounterGeneratorGL::GPA_CounterGeneratorGL() :
     m_pDriverSuppliedGroups(nullptr),
     m_driverSuppliedGroupCount(0)
 {
-    SetAllowedCounters(true, true, false); // TODO: investigate allowing software counters in public build (i.e. GPUTime for all hardware)
+    GPA_CounterGeneratorBase::SetAllowedCounters(true, true, false); // TODO: investigate allowing software counters in public build (i.e. GPUTime for all hardware)
 
     // TODO: need to make some changes to support GPUTime counter on Intel and NVidia in public build
     for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
     {
         CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_OPENGL, static_cast<GDT_HW_GENERATION>(gen), this);
-    }
-
-    // AMD only for GLES (for now) -- will allow Intel and NVidia once GPUTime is supported in public builds
-    for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
-    {
-        CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_OPENGLES, static_cast<GDT_HW_GENERATION>(gen), this);
     }
 }
 
@@ -54,34 +53,40 @@ GPA_CounterGeneratorGL::~GPA_CounterGeneratorGL()
 
 bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_HardwareCounters* pHardwareCounters)
 {
-    if (m_driverSuppliedGroupCount            == 0       &&
-        _oglGetPerfMonitorGroupsAMD        != nullptr &&
-        _oglGetPerfMonitorGroupStringAMD   != nullptr &&
-        _oglGetPerfMonitorCountersAMD      != nullptr &&
-        _oglGetPerfMonitorCounterStringAMD != nullptr)
+    if (oglUtils::InitializeGLFunctions() &&
+        m_driverSuppliedGroupCount         == 0       &&
+        nullptr != oglUtils::_oglGetPerfMonitorGroupsAMD      &&
+        nullptr != oglUtils::_oglGetPerfMonitorGroupStringAMD &&
+        nullptr != oglUtils::_oglGetPerfMonitorCountersAMD    &&
+        nullptr != oglUtils::_oglGetPerfMonitorCounterStringAMD)
     {
         // clean up previously allocated memory, if any (there shouldn't be...)
         Cleanup();
 
-        GLint nNumGroups;
-        _oglGetPerfMonitorGroupsAMD(&nNumGroups, 0, nullptr);
+        GLint nNumGroups = 0;
+        oglUtils::_oglGetPerfMonitorGroupsAMD(&nNumGroups, 0, nullptr);
+
+        if (0 == nNumGroups)
+        {
+            return false;
+        }
 
         // Get the group Ids
         GLuint* pPerfGroups = new(std::nothrow) GLuint[nNumGroups];
 
-        if (pPerfGroups == nullptr)
+        if (nullptr == pPerfGroups)
         {
             GPA_LogError("Unable to allocate memory to store the group IDs.");
             return false;
         }
 
-        _oglGetPerfMonitorGroupsAMD(nullptr, nNumGroups, pPerfGroups);
+        oglUtils::_oglGetPerfMonitorGroupsAMD(nullptr, nNumGroups, pPerfGroups);
 
         m_driverSuppliedGroupCount = nNumGroups - (pHardwareCounters->m_groupCount - 1);
 
         m_pDriverSuppliedGroups = new(std::nothrow) GPA_CounterGroupDesc[m_driverSuppliedGroupCount];
 
-        if (m_pDriverSuppliedGroups == nullptr)
+        if (nullptr == m_pDriverSuppliedGroups)
         {
             GPA_LogError("Unable to allocate memory to store the group IDs.");
             return false;
@@ -100,12 +105,12 @@ bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_Hardware
             GLint nMaxActive = 0;
 
             // Get the group name
-            _oglGetPerfMonitorGroupStringAMD(driverPerfGroupId, 64, nullptr, strGroupName);
+            oglUtils::_oglGetPerfMonitorGroupStringAMD(driverPerfGroupId, 64, nullptr, strGroupName);
 
             size_t groupNameLen = strlen(strGroupName) + 1;
             m_pDriverSuppliedGroups[i].m_pName = new(std::nothrow) char[groupNameLen];
 
-            if (m_pDriverSuppliedGroups[i].m_pName == nullptr)
+            if (nullptr == m_pDriverSuppliedGroups[i].m_pName)
             {
                 GPA_LogError("Unable to allocate memory to store the counter group name.");
                 return false;
@@ -116,7 +121,7 @@ bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_Hardware
             m_counterBuffers.push_back(m_pDriverSuppliedGroups[i].m_pName);
 
             // Get the number of counters and max active counters
-            _oglGetPerfMonitorCountersAMD(driverPerfGroupId, &nCounters, &nMaxActive, 0, nullptr);
+            oglUtils::_oglGetPerfMonitorCountersAMD(driverPerfGroupId, &nCounters, &nMaxActive, 0, nullptr);
 
             m_pDriverSuppliedGroups[i].m_groupIndex = pHardwareCounters->m_groupCount - 1 + i;
             m_pDriverSuppliedGroups[i].m_maxActiveCounters = nMaxActive;
@@ -128,7 +133,7 @@ bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_Hardware
                 counter.m_groupIndex = m_pDriverSuppliedGroups[i].m_groupIndex + 1;//i + 1;
                 counter.m_pHardwareCounter = new(std::nothrow) GPA_HardwareCounterDesc;
 
-                if (counter.m_pHardwareCounter == nullptr)
+                if (nullptr == counter.m_pHardwareCounter)
                 {
                     GPA_LogError("Unable to allocate memory to store the hardwareCounter.");
                     return false;
@@ -139,11 +144,11 @@ bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_Hardware
                 counter.m_pHardwareCounter->m_counterIndexInGroup = c;
 
                 GLsizei nNameLength;
-                _oglGetPerfMonitorCounterStringAMD(driverPerfGroupId, c, 0, &nNameLength, nullptr);
+                oglUtils::_oglGetPerfMonitorCounterStringAMD(driverPerfGroupId, c, 0, &nNameLength, nullptr);
 
                 char* pCounterName = new(std::nothrow) char[nNameLength + 1];
 
-                if (pCounterName == nullptr)
+                if (nullptr == pCounterName)
                 {
                     GPA_LogError("Unable to allocate memory to store the counter name.");
                     return false;
@@ -153,14 +158,14 @@ bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_Hardware
 
                 memset(pCounterName, 0, nNameLength + 1);
 
-                _oglGetPerfMonitorCounterStringAMD(driverPerfGroupId, c, nNameLength, nullptr, pCounterName);
+                oglUtils::_oglGetPerfMonitorCounterStringAMD(driverPerfGroupId, c, nNameLength, nullptr, pCounterName);
 
                 counter.m_pHardwareCounter->m_pName = GPA_HIDE_NAME(pCounterName);
 
                 size_t nDescSize = 3 + strlen(strGroupName) + strlen(gs_pDriverSuppliedCounter); // 3 = 2 # signs and the terminating null
                 counter.m_pHardwareCounter->m_pDescription = new(std::nothrow) char[nDescSize];
 
-                if (counter.m_pHardwareCounter->m_pDescription == nullptr)
+                if (nullptr == counter.m_pHardwareCounter->m_pDescription)
                 {
                     GPA_LogError("Unable to allocate memory to store the counter description.");
                     return false;
@@ -174,7 +179,7 @@ bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_Hardware
                 strcat_s(counter.m_pHardwareCounter->m_pDescription, nDescSize, GPA_HIDE_NAME("#"));
                 strcat_s(counter.m_pHardwareCounter->m_pDescription, nDescSize, GPA_HIDE_NAME(gs_pDriverSuppliedCounter));
 
-                counter.m_pHardwareCounter->m_type = GPA_TYPE_UINT64;
+                counter.m_pHardwareCounter->m_type = GPA_DATA_TYPE_UINT64;
                 counter.m_groupIdDriver = driverPerfGroupId;
                 counter.m_counterIdDriver = 0;
 
@@ -228,7 +233,7 @@ bool GPA_CounterGeneratorGL::GenerateInternalCounters(GPA_HardwareCounters* pHar
 
 #if defined(_DEBUG) && defined(_WIN32) && defined(AMDT_INTERNAL)
 
-            if (pFile != nullptr)
+            if (nullptr != pFile)
             {
                 fwrite("    \"", 1, 5, pFile);
                 std::string tmpName(counter.m_pHardwareCounter->m_pName);
@@ -252,7 +257,7 @@ bool GPA_CounterGeneratorGL::GenerateInternalCounters(GPA_HardwareCounters* pHar
     }
 
     // In openGL we always tack the GPUTime counters onto the end
-    pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = static_cast<gpa_int32>(pHardwareCounters->m_counters.size()) - 2;
+    pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = static_cast<gpa_uint32>(pHardwareCounters->m_counters.size()) - 2;
     pHardwareCounters->m_gpuTimeTopToBottomCounterIndex = static_cast<gpa_uint32>(pHardwareCounters->m_counters.size()) - 1;
 
     // now add extra groups/counters exposed by the driver
@@ -260,7 +265,7 @@ bool GPA_CounterGeneratorGL::GenerateInternalCounters(GPA_HardwareCounters* pHar
 
 #if defined(_DEBUG) && defined(_WIN32) && defined(AMDT_INTERNAL)
 
-    if (pFile != nullptr)
+    if (nullptr != pFile)
     {
         fclose(pFile);
     }
@@ -295,27 +300,60 @@ void GPA_CounterGeneratorGL::Cleanup()
     m_driverSuppliedCounters.clear();
 }
 
-GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters)
+GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_PublicCounters* pPublicCounters)
 {
     pPublicCounters->Clear();
 
     switch (desiredGeneration)
     {
         case GDT_HW_GENERATION_SOUTHERNISLAND:
+        {
             AutoDefinePublicCountersGLGfx6(*pPublicCounters);
-            break;
+
+            if (generateAsicSpecificCounters)
+            {
+                GLGfx6Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+        }
+        break;
 
         case GDT_HW_GENERATION_SEAISLAND:
+        {
             AutoDefinePublicCountersGLGfx7(*pPublicCounters);
-            break;
+
+            if (generateAsicSpecificCounters)
+            {
+                GLGfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+        }
+        break;
 
         case GDT_HW_GENERATION_VOLCANICISLAND:
+        {
             AutoDefinePublicCountersGLGfx8(*pPublicCounters);
-            break;
+
+            if (generateAsicSpecificCounters)
+            {
+                GLGfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+        }
+        break;
 
         case GDT_HW_GENERATION_GFX9:
+        {
             AutoDefinePublicCountersGLGfx9(*pPublicCounters);
-            break;
+
+            if (generateAsicSpecificCounters)
+            {
+                GLGfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+        }
+        break;
+
         default:
             GPA_LogError("Unsupported or unrecognized hardware generation. Cannot generate public counters.");
             return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
@@ -324,8 +362,15 @@ GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(GDT_HW_GENERATION desi
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
+GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_HardwareCounters* pHardwareCounters)
 {
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+
     switch (desiredGeneration)
     {
         case GDT_HW_GENERATION_SOUTHERNISLAND:
@@ -335,6 +380,8 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
             pHardwareCounters->m_pSQCounterGroups    = HWGLSQGroupsGfx6;
             pHardwareCounters->m_sqGroupCount        = HWGLSQGroupCountGfx6;
             pHardwareCounters->m_gpuTimeIndex        = HWGLGPUTimeIndexGfx6;
+            pHardwareCounters->m_pIsolatedGroups     = HWGLSQIsolatedGroupsGfx6;
+            pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx6;
             break;
 
         case GDT_HW_GENERATION_SEAISLAND:
@@ -344,6 +391,8 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
             pHardwareCounters->m_pSQCounterGroups    = HWGLSQGroupsGfx7;
             pHardwareCounters->m_sqGroupCount        = HWGLSQGroupCountGfx7;
             pHardwareCounters->m_gpuTimeIndex        = HWGLGPUTimeIndexGfx7;
+            pHardwareCounters->m_pIsolatedGroups     = HWGLSQIsolatedGroupsGfx7;
+            pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx7;
             break;
 
         case GDT_HW_GENERATION_VOLCANICISLAND:
@@ -353,6 +402,8 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
             pHardwareCounters->m_pSQCounterGroups    = HWGLSQGroupsGfx8;
             pHardwareCounters->m_sqGroupCount        = HWGLSQGroupCountGfx8;
             pHardwareCounters->m_gpuTimeIndex        = HWGLGPUTimeIndexGfx8;
+            pHardwareCounters->m_pIsolatedGroups     = HWGLSQIsolatedGroupsGfx8;
+            pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx8;
             break;
 
         case GDT_HW_GENERATION_GFX9:
@@ -362,6 +413,8 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
             pHardwareCounters->m_pSQCounterGroups    = HWGLSQGroupsGfx9;
             pHardwareCounters->m_sqGroupCount        = HWGLSQGroupCountGfx9;
             pHardwareCounters->m_gpuTimeIndex        = HWGLGPUTimeIndexGfx9;
+            pHardwareCounters->m_pIsolatedGroups     = HWGLSQIsolatedGroupsGfx9;
+            pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx9;
             break;
 
         default:
@@ -373,11 +426,11 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
     // need to count total number of internal counters, since split into groups
     if (!pHardwareCounters->m_countersGenerated)
     {
-        if (GenerateInternalCounters(pHardwareCounters, desiredGeneration) == false)
+        if (!GenerateInternalCounters(pHardwareCounters, desiredGeneration))
         {
             GPA_LogError("Unable to generate internal counters.");
             pHardwareCounters->m_currentGroupUsedCounts.resize(0);
-            return GPA_STATUS_ERROR_COUNTERS_NOT_OPEN;
+            return GPA_STATUS_ERROR_CONTEXT_NOT_OPEN;
         }
     }
 
@@ -387,9 +440,15 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION de
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorGL::GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters)
+GPA_Status GPA_CounterGeneratorGL::GenerateSoftwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_SoftwareCounters* pSoftwareCounters)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
     UNREFERENCED_PARAMETER(pSoftwareCounters);
     GPA_Status retVal = GPA_STATUS_OK;
 

@@ -7,7 +7,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="../../Doc/DoxyfilePublic">
+    <CustomBuild Include="..\..\docs\doxygen\DoxyfilePublic">
       <Filter>Source Files</Filter>
     </CustomBuild>
   </ItemGroup>

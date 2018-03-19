@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Maintains a set of software counters
@@ -10,9 +10,7 @@
 
 #include "GPAInternalCounter.h"
 #include "Logging.h"
-#if defined(WIN32)
-    #include "GPASwCounterManager.h"
-#endif // WIN32
+#include "GPASwCounterManager.h"
 #include <sstream>
 
 /// Struct to describe a software counter
@@ -51,49 +49,65 @@ public:
 
     /// Obtains the number of software counters
     /// \return the number of software counters
-    gpa_uint32 GetNumCounters()
+    gpa_uint32 GetNumCounters() const
     {
-        return (gpa_uint32)m_counters.size();
+        return static_cast<gpa_uint32>(m_counters.size());
     }
 
     /// Gets the name of the specified counter
     /// \param index the index of the counter whose name is needed
     /// \return the name of the specified counter
-    const char* GetCounterName(gpa_uint32 index)
+    const char* GetCounterName(gpa_uint32 index) const
     {
         return m_counters[index].m_pSoftwareCounter->m_name;
+    }
+
+    /// Gets the group name of the specified counter
+    /// \param index the index of the counter whose group is needed
+    /// \return the group name of the specified counter
+    const char* GetCounterGroup(gpa_uint32 index) const
+    {
+        return m_counters[index].m_pSoftwareCounter->m_group;
     }
 
     /// Gets the description of the specified counter
     /// \param index the index of the counter whose description is needed
     /// \return the description of the specified counter
-    const char* GetCounterDescription(gpa_uint32 index)
+    const char* GetCounterDescription(gpa_uint32 index) const
     {
         return m_counters[index].m_pSoftwareCounter->m_description;
+    }
+
+    /// Gets a counter's UUID
+    /// \param index the index of the requested counter
+    /// \return the counter's UUID
+    GPA_UUID GetCounterUuid(gpa_uint32 index) const
+    {
+        return ::GetCounterUuid(GetCounterName(index), GetCounterDescription(index));
+    }
+
+    /// Gets a counter's supported sample type
+    /// \param index the index of the requested counter
+    /// \return the counter's supported sample type
+    GPA_Counter_Sample_Type GetCounterSampleType(gpa_uint32 index) const
+    {
+        UNREFERENCED_PARAMETER(index);
+        return GPA_COUNTER_SAMPLE_TYPE_DISCRETE; // all software counters are discrete counters
     }
 
     /// Gets the type of the specified counter
     /// \param index the index of the counter whose type is needed
     /// \return the type of the specified counter
-    GPA_Type GetCounterType(gpa_uint32 index)
+    GPA_Data_Type GetCounterType(gpa_uint32 index) const
     {
         return m_counters[index].m_pSoftwareCounter->m_type;
     }
 
-    /// List of counter groups as defined by the list of counters in each group.
-    GPA_SoftwareCounterDesc** m_ppCounterGroupArray;
-
-    /// List of internal counter groups
-    GPA_CounterGroupDesc* m_pGroups;
-
-    /// indicates that the counters have been generated
-    bool m_countersGenerated;
-
-    /// the list of software counters
-    std::vector<GPA_SoftwareCounterDescExt> m_counters;
-
-    /// The number of internal counter groups
-    unsigned int m_groupCount;
+    GPA_SoftwareCounterDesc**               m_ppCounterGroupArray; ///< List of counter groups as defined by the list of counters in each group.
+    GPA_CounterGroupDesc*                   m_pGroups;             ///< List of internal counter groups
+    bool                                    m_countersGenerated;   ///< Indicates that the counters have been generated
+    std::vector<GPA_SoftwareCounterDescExt> m_counters;            ///< The list of software counters
+    unsigned int                            m_groupCount;          ///< The number of internal counter groups
 };
 
 #endif //_GPA_SOFTWARE_COUNTERS_H_

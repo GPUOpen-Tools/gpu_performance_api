@@ -37,6 +37,7 @@
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="GPA-Common.props" />
     <Import Project="GPA-DLL.props" />
+    <Import Project="GPA-API-DLL.props" />
     <Import Condition="'$(SolutionName)'=='GPUPerfAPI-Full'" Project="$(BaseDir)GPA-Internal/Build/VS2015/GPA-Internal.props" />
   </ImportGroup>
   <ItemDefinitionGroup>
@@ -46,27 +47,23 @@
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSwQueries.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12CounterDataRequestProxy.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12DataRequest.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPACommandList.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPAContext.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPAImplementor.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPAPass.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPASample.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12GPASession.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX12\DX12Utils.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\GPAContextStateDX12.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSwQueries.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CommandListSWQueryGroup.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12ComSmartPtrs.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12CounterDataRequestProxy.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12DataRequest.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCounterDataRequest.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12SoftwareCountersResults.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPACommandList.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPAContext.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPAPass.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPASample.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPASession.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12Utils.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\GPAContextStateDX12.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\resource.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX12\DX12GPAImplementor.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\..\Src\GPUPerfAPIDX12\GPUPerfAPIDX12.rc" />

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Logging utility
@@ -11,7 +11,7 @@
     #pragma comment( lib, "Winmm.lib" )
 #endif
 
-static const char MUTEX_NAME[]     = "GPALoggerMutex"; ///< mutex name
+static const char MUTEX_NAME[] = "GPALoggerMutex"; ///< mutex name
 
 GPATracer gTracerSingleton;
 GPALogger g_loggerSingleton;
@@ -41,7 +41,7 @@ void GPATracer::EnterFunction(const char* pFunctionName)
             message += "   ";
         }
 
-        message += "Entering: ";
+        message += "Enter: ";
         message += pFunctionName;
         message += ".";
 
@@ -76,8 +76,37 @@ void GPATracer::LeaveFunction(const char* pFunctionName)
             message += "   ";
         }
 
-        message += "Leaving: ";
+        message += "Leave: ";
         message += pFunctionName;
+        message += ".";
+
+#ifdef AMDT_INTERNAL
+        GPA_LogDebugTrace(message.c_str());
+
+        if (m_logTab == 0)
+        {
+            // if this is the top level, also pass it to the normal LogTrace
+            GPA_LogTrace(message.c_str());
+        }
+
+#else
+        GPA_LogTrace(message.c_str());
+#endif // AMDT_INTERNAL
+    }
+}
+
+void GPATracer::OutputFunctionData(const char* pData)
+{
+    if ((m_logTab == 1 && m_topLevelOnly) || !m_topLevelOnly)
+    {
+        std::string message;
+
+        for (unsigned int tempLogTab = 0; tempLogTab < m_logTab; tempLogTab++)
+        {
+            message += "   ";
+        }
+
+        message += pData;
         message += ".";
 
 #ifdef AMDT_INTERNAL
@@ -109,7 +138,9 @@ ScopeTrace::~ScopeTrace()
 
 
 
-GPALogger::GPALogger()
+GPALogger::GPALogger() :
+    m_loggingType(GPA_LOGGING_NONE),
+    m_loggingCallback(nullptr)
 {
 #ifdef _WIN32
     InitializeCriticalSection(&m_hLock);
@@ -143,52 +174,16 @@ void GPALogger::SetLoggingCallback(GPA_Logging_Type loggingType, GPA_LoggingCall
     }
 }
 
-#ifdef AMDT_INTERNAL
-void GPALogger::SetLoggingDebugCallback(GPA_Log_Debug_Type loggingType, GPA_LoggingDebugCallbackPtrType loggingDebugCallback)
-{
-    if (nullptr == loggingDebugCallback)
-    {
-        m_loggingDebugCallback = nullptr;
-        m_loggingDebugType = GPA_LOG_NONE;
-    }
-    else
-    {
-        m_loggingDebugCallback = loggingDebugCallback;
-        m_loggingDebugType = loggingType;
-    }
-}
-#endif // AMDT_INTERNAL
-
-void GPALogger::Log(GPA_Log_Debug_Type logType, const char* pMessage)
+void GPALogger::Log(GPA_Logging_Type logType, const char* pMessage)
 {
     EnterCriticalSection(&m_hLock);
 
-#ifdef AMDT_INTERNAL
-
-    if (logType > GPA_LOG_ALL)
+    // if the supplied message type is among those that the user wants be notified of,
+    // then pass the message along.
+    if ((logType & m_loggingType) &&
+        nullptr != m_loggingCallback)
     {
-        // this is in the debug message range,
-        // so log it to the debug callback
-        if ((logType & m_loggingDebugType) &&
-            nullptr != m_loggingDebugCallback)
-        {
-            m_loggingDebugCallback(logType, pMessage);
-        }
-
-    }
-    else
-#endif // AMDT_INTERNAL
-    {
-        // convert from private GPA_Log_Debug_type to public GPA_Logging_Type
-        GPA_Logging_Type messageType = (GPA_Logging_Type)logType;
-
-        // if the supplied message type is among those that the user wants be notified of,
-        // then pass the message along.
-        if ((messageType & m_loggingType) &&
-            nullptr != m_loggingCallback)
-        {
-            m_loggingCallback(messageType, pMessage);
-        }
+        m_loggingCallback(logType, pMessage);
     }
 
     LeaveCriticalSection(&m_hLock);

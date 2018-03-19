@@ -15,15 +15,9 @@ GPA_CounterSchedulerGL::GPA_CounterSchedulerGL()
     {
         CounterGeneratorSchedulerManager::Instance()->RegisterCounterScheduler(GPA_API_OPENGL, static_cast<GDT_HW_GENERATION>(gen), this);
     }
-
-    // AMD only for GLES (for now) -- will allow non-AMD once GPUTime is supported in public builds
-    for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
-    {
-        CounterGeneratorSchedulerManager::Instance()->RegisterCounterScheduler(GPA_API_OPENGLES, static_cast<GDT_HW_GENERATION>(gen), this);
-    }
 }
 
-GPACounterSplitterAlgorithm GPA_CounterSchedulerGL::GetPreferredSplittingAlgorithm()
+GPACounterSplitterAlgorithm GPA_CounterSchedulerGL::GetPreferredSplittingAlgorithm() const
 {
     return CONSOLIDATED;
 }

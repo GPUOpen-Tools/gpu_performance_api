@@ -6,7 +6,7 @@
 //==============================================================================
 
 #include "CounterGeneratorTests.h"
-#include "GPUPerfAPITypes-Private.h"
+#include "GPUPerfAPITypes.h"
 #include "GPAInternalCounter.h"
 
 #include "counters/PublicCountersHSAGfx7.h"
@@ -19,7 +19,7 @@
     #include "InternalCountersHSAGfx9.h"
 #endif
 
-static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<const char*>& counterNames)
+static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<const char*>& counterNames)
 {
     counterNames.clear();
 
@@ -81,30 +81,30 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
 // Test the HSA counter names on all supported hardware
 TEST(CounterDLLTests, HSACounterNames)
 {
-    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdUnknown);
-    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdSI);
+    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdUnknown, FALSE);
+    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdSI, FALSE);
 
     std::vector<const char*> counterNames;
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
-    VerifyCounterNames(GPA_API_HSA, gDevIdCI, counterNames);
+    VerifyCounterNames(GPA_API_HSA, gDevIdCI, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_HSA, gDevIdVI, counterNames);
+    VerifyCounterNames(GPA_API_HSA, gDevIdVI, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
-    VerifyCounterNames(GPA_API_HSA, gDevIdGfx9, counterNames);
+    VerifyCounterNames(GPA_API_HSA, gDevIdGfx9, FALSE, counterNames);
 }
 
 // Test the HSA counter names on all generations
 TEST(CounterDLLTests, HSACounterNamesByGeneration)
 {
-    VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_NVIDIA);
-    VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_INTEL);
-    VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_GFX6);
+    VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_NVIDIA, FALSE);
+    VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_INTEL, FALSE);
+    VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_GFX6, FALSE);
     std::vector<const char*> counterNames;
 
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
-    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_GFX7, counterNames);
+    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_GFX7, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_GFX8, counterNames);
+    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_GFX8, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
-    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_GFX9, counterNames);
+    VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_GFX9, FALSE, counterNames);
 }

@@ -1,6 +1,6 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.24720.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{958FF3B0-837F-483A-AC5C-19855FDA299A}"
 EndProject
@@ -12,12 +12,6 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PublicCounterCompiler", "PublicCounterCompiler.csproj", "{64D471AB-B0FB-41EF-9ABA-A20AAE658B36}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPUPerfAPIGL", "GPUPerfAPIGL.vcxproj", "{51B54ABC-4A07-46FD-B7E0-38E4147EA1A8}"
-	ProjectSection(ProjectDependencies) = postProject
-		{CFC8AB83-E03A-43E5-A9B1-AD073AEFE8C0} = {CFC8AB83-E03A-43E5-A9B1-AD073AEFE8C0}
-		{C1E8ADA1-400C-45EB-A6E1-F0FFCE7DDD1A} = {C1E8ADA1-400C-45EB-A6E1-F0FFCE7DDD1A}
-	EndProjectSection
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPUPerfAPIGLES", "GPUPerfAPIGLES.vcxproj", "{50DF5553-3806-4C4C-B298-A11CC6A75312}"
 	ProjectSection(ProjectDependencies) = postProject
 		{CFC8AB83-E03A-43E5-A9B1-AD073AEFE8C0} = {CFC8AB83-E03A-43E5-A9B1-AD073AEFE8C0}
 		{C1E8ADA1-400C-45EB-A6E1-F0FFCE7DDD1A} = {C1E8ADA1-400C-45EB-A6E1-F0FFCE7DDD1A}
@@ -65,17 +59,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tools", "Tools", "{CCAE5569
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "PublicCounterDefinitionFiles", "PublicCounterDefinitionFiles", "{F7B24265-E56B-4F18-A486-AC50CFBB5FB9}"
 	ProjectSection(SolutionItems) = preProject
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx6.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx7.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx8.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsCLGfx9.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx6.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsComputeGfx9.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx6.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx7.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx8.txt
 		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsGfx9.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx7.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx8.txt
-		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterDefinitionsHSAGfx9.txt
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GPUPerfAPIVK", "GPUPerfAPIVK.vcxproj", "{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModuleDefinition", "ModuleDefinition", "{3F5DA1D7-5581-4212-A07E-A5B17D449E5D}"
+	ProjectSection(SolutionItems) = preProject
+		GPAFunctionExports.def = GPAFunctionExports.def
 	EndProjectSection
 EndProject
 Global
@@ -110,14 +108,6 @@ Global
 		{51B54ABC-4A07-46FD-B7E0-38E4147EA1A8}.Release|Win32.Build.0 = Release|Win32
 		{51B54ABC-4A07-46FD-B7E0-38E4147EA1A8}.Release|x64.ActiveCfg = Release|x64
 		{51B54ABC-4A07-46FD-B7E0-38E4147EA1A8}.Release|x64.Build.0 = Release|x64
-		{50DF5553-3806-4C4C-B298-A11CC6A75312}.Debug|Win32.ActiveCfg = Debug|Win32
-		{50DF5553-3806-4C4C-B298-A11CC6A75312}.Debug|Win32.Build.0 = Debug|Win32
-		{50DF5553-3806-4C4C-B298-A11CC6A75312}.Debug|x64.ActiveCfg = Debug|x64
-		{50DF5553-3806-4C4C-B298-A11CC6A75312}.Debug|x64.Build.0 = Debug|x64
-		{50DF5553-3806-4C4C-B298-A11CC6A75312}.Release|Win32.ActiveCfg = Release|Win32
-		{50DF5553-3806-4C4C-B298-A11CC6A75312}.Release|Win32.Build.0 = Release|Win32
-		{50DF5553-3806-4C4C-B298-A11CC6A75312}.Release|x64.ActiveCfg = Release|x64
-		{50DF5553-3806-4C4C-B298-A11CC6A75312}.Release|x64.Build.0 = Release|x64
 		{3F0EB093-266D-4300-8EF3-F66B30681043}.Debug|Win32.ActiveCfg = Debug|Win32
 		{3F0EB093-266D-4300-8EF3-F66B30681043}.Debug|Win32.Build.0 = Debug|Win32
 		{3F0EB093-266D-4300-8EF3-F66B30681043}.Debug|x64.ActiveCfg = Debug|x64
@@ -178,6 +168,14 @@ Global
 		{305A7A16-9C7A-4E86-BA74-3492E2C824C9}.Release|Win32.Build.0 = Release|Win32
 		{305A7A16-9C7A-4E86-BA74-3492E2C824C9}.Release|x64.ActiveCfg = Release|x64
 		{305A7A16-9C7A-4E86-BA74-3492E2C824C9}.Release|x64.Build.0 = Release|x64
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Debug|Win32.Build.0 = Debug|Win32
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Debug|x64.ActiveCfg = Debug|x64
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Debug|x64.Build.0 = Debug|x64
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|Win32.ActiveCfg = Release|Win32
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|Win32.Build.0 = Release|Win32
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|x64.ActiveCfg = Release|x64
+		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -12,7 +12,9 @@
 extern GPA_HardwareCounterDesc* CLCounterGroupArrayGfx6[]; ///< Array of hardware counter groups for CL for Gfx6 family
 extern GPA_CounterGroupDesc HWCLGroupsGfx6[]; ///< Array of counter groups for CL for Gfx6 family
 extern GPA_SQCounterGroupDesc HWCLSQGroupsGfx6[]; ///< Array of SQ groups for CL for Gfx6 family
+extern unsigned int HWCLSQIsolatedGroupsGfx6[]; ///< Array of counter groups isolated from SQ counter groups for CL for Gfx6 family
 extern const unsigned int HWCLGroupCountGfx6; ///< Hardware Group Count for CL for Gfx6 family
 extern const unsigned int HWCLSQGroupCountGfx6; ///< Hardware SQ Group Count for CL for Gfx6 family
+extern const unsigned int HWCLSQIsolatedGroupCountGfx6; ///< Hardware Isolated Group Count for CL for Gfx6 family
 
 #endif // _GPA_INTERNAL_COUNTERS_CL_GFX6_H_

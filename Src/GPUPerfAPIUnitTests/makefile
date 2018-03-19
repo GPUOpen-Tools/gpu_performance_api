@@ -1,11 +1,10 @@
 # Makefile for GPUPerfAPIUnitTests
 
+PROJECT_NAME=GPUPerfAPIUnitTests
 DEPTH = ../..
 include $(DEPTH)/Build/Linux/Common.mk
 
-TARGET = GPUPerfAPIUnitTests$(TARGET_SUFFIX)
-
-POST_BUILD_ACTION = cp ../GPUPerfAPICounters/libGPUPerfAPICounters$(TARGET_SUFFIX).so .
+TARGET = $(OUTPUT_BIN_DIR)/$(PROJECT_NAME)$(TARGET_SUFFIX)
 
 INCLUDES =	-I. \
 		-I$(GPACOMMON_DIR) \
@@ -14,7 +13,9 @@ INCLUDES =	-I. \
 		-I$(DEVICEINFO_DIR) \
 		-I$(TSINGLETON_DIR) \
 		-I$(GTEST_DIR)/include \
-
+		-I$(AMD_VK_EXT_DIR) \
+		-I$(VK_INCLUDE_DIR) \
+		-I$(VK_INCLUDE_DIR)/vulkan
 LIBS = \
 	$(GTEST_LIBS) \
 	$(COMMON_LIBS) \
@@ -24,10 +25,12 @@ LIBS = \
 LIBPATH = $(COMMON_LIB_PATHS)
 
 OBJS	= \
+	./$(OBJ_DIR)/APIErrorTests.o \
 	./$(OBJ_DIR)/CounterGeneratorTests.o \
 	./$(OBJ_DIR)/CounterGeneratorCLTests.o \
 	./$(OBJ_DIR)/CounterGeneratorGLTests.o \
 	./$(OBJ_DIR)/CounterGeneratorHSATests.o \
+	./$(OBJ_DIR)/CounterGeneratorVKTests.o \
 	./$(OBJ_DIR)/CounterSchedulerTests.o \
 	./$(OBJ_DIR)/GPUPerfAPIUnitTests.o \
 	./$(OBJ_DIR)/PublicCountersCLGfx7.o \
@@ -41,8 +44,18 @@ OBJS	= \
 	./$(OBJ_DIR)/PublicCountersHSAGfx7.o \
 	./$(OBJ_DIR)/PublicCountersHSAGfx8.o \
 	./$(OBJ_DIR)/PublicCountersHSAGfx9.o \
+	./$(OBJ_DIR)/PublicCountersVKGfx7.o \
+	./$(OBJ_DIR)/PublicCountersVKGfx8.o \
+	./$(OBJ_DIR)/PublicCountersVKGfx9.o \
+	./$(OBJ_DIR)/SWCountersVK.o \
+	./$(OBJ_DIR)/GPAInterfaceLoaderTests.o \
+	./$(OBJ_DIR)/GPUPerfAPILoaderTests.o \
+	./$(OBJ_DIR)/GPUPerfAPILoader.o \
 
 $(OBJ_DIR)/%.o: counters/%.cpp
+	$(BUILD_SRC)
+
+$(OBJ_DIR)/%.o: utils/%.cpp
 	$(BUILD_SRC)
 
 include $(DEPTH)/Build/Linux/CommonTargets.mk

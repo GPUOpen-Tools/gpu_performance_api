@@ -246,9 +246,6 @@ FakesAssemblies/
 **/*.Server/ModelManifest.xml
 _Pvt_Extensions
 
-# Linux unit test output
-Build/Linux/GPUPerfAPIUnitTests*.xml
-Src/GPUPerfAPIUnitTests/GPUPerfAPIUnitTests
-Src/GPUPerfAPIUnitTests/GPUPerfAPIUnitTests32
-Src/GPUPerfAPIUnitTests/GPUPerfAPIUnitTests-Internal
-Src/GPUPerfAPIUnitTests/GPUPerfAPIUnitTests32-Internal
+# Documentation build files
+docs/build
+

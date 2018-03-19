@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copyright (c) 2010-2016 Advanced Micro Devices, Inc. All rights reserved.
+;; Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 ;;
 ;; Counter definitions for DX/GL for Gfx6 (GFX IP v6)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -8,7 +8,6 @@ name=GPUTime
 desc=#Timing#Time this API call took to execute on the GPU in milliseconds. Does not include time that draw calls are processed in parallel.
 type=gpa_float64
 usage=milliseconds
-countertype=GPA_COUNTER_TYPE_API_DYNAMIC
 [GLGfx6]
 [DX11Gfx6]
 GPUTime_Bottom_To_Bottom
@@ -418,7 +417,7 @@ GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0,1,max,2,/,(100),*
 
 name=PSPixelsOut
-desc=#PixelShader#Pixels exported from shader to colour buffers. Does not include killed or alpha tested pixels; if there are multiple rendertargets, each rendertarget receives one export, so this will be 2 for 1 pixel written to two RTs.
+desc=#PixelShader#Pixels exported from shader to color buffers. Does not include killed or alpha tested pixels; if there are multiple render targets, each render target receives one export, so this will be 2 for 1 pixel written to two RTs.
 type=gpa_float64
 usage=items
 [GLGfx6]
@@ -435,7 +434,7 @@ SX*_SX_PERF_SEL_DB3_PIXELS[0..3]
 comp=0,1,2,3,sum4,4,5,6,7,sum4,8,9,10,11,sum4,12,13,14,15,sum4,sum4
 
 name=PSExportStalls
-desc=#PixelShader#Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the colour buffer.
+desc=#PixelShader#Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.
 type=gpa_float64
 usage=percentage
 [GLGfx6]
@@ -687,12 +686,12 @@ usage=percentage
 TCC*_TCC_PERF_SEL_MC_WRREQ_STALL[0..11]
 GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 SPI_SPI_PERF_CS_R0_NUM_THREADGROUPS
-comp=(0),0,1,max,2,max,3,max,4,max,5,max,7,max,8,max,9,max,10,max,11,max,12,/,(100),*,13,ifnotzero
+comp=(0),0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,/,(100),*,13,ifnotzero
 [DX11Gfx6]
 TCC*_TCC_PERF_SEL_MC_WRREQ_STALL[0..11]
 GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 SPI*_SPI_PERF_CS_R0_NUM_THREADGROUPS[0,1]
-comp=(0),0,1,max,2,max,3,max,4,max,5,max,7,max,8,max,9,max,10,max,11,max,12,/,(100),*,13,14,+,ifnotzero
+comp=(0),0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,/,(100),*,13,14,+,ifnotzero
 
 name=CSGDSInsts
 desc=#ComputeShader#The average number of GDS read or GDS write instructions executed per work item (affected by flow control).
@@ -1022,6 +1021,36 @@ comp=0,1,max,2,/,NUM_SHADER_ENGINES,/,(100),*
 DB*_DB_PERF_SEL_DB_CB_LQUAD_STALLS[0..7]
 GRBM_GRBM_PERF_SEL_GUI_ACTIVE
 comp=0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,/,(100),*
+
+name=DBMemRead
+desc=#DepthAndStencil#Number of bytes read from the depth buffer.
+type=gpa_float64
+usage=bytes
+[GLGfx6]
+DB0_DB_PERF_SEL_TILE_RD_SENDS
+DB1_DB_PERF_SEL_TILE_RD_SENDS
+DB0_DB_PERF_SEL_QUAD_RD_32BYTE_REQS
+DB1_DB_PERF_SEL_QUAD_RD_32BYTE_REQS
+comp=0,1,+,(256),*,2,3,+,(32),*,+
+[DX11Gfx6]
+DB*_DB_PERF_SEL_TILE_RD_SENDS[0..3]
+DB*_DB_PERF_SEL_QUAD_RD_32BYTE_REQS[0..3]
+comp=0..3,sum4,(256),*,4..7,sum4,(32),*,+
+
+name=DBMemWritten
+desc=#DepthAndStencil#Number of bytes written to the depth buffer.
+type=gpa_float64
+usage=bytes
+[GLGfx6]
+DB0_DB_PERF_SEL_TILE_WR_SENDS
+DB1_DB_PERF_SEL_TILE_WR_SENDS
+DB0_DB_PERF_SEL_QUAD_WR_SENDS
+DB1_DB_PERF_SEL_QUAD_WR_SENDS
+comp=0,1,+,(32),*,2,3,+,(32),*,+
+[DX11Gfx6]
+DB*_DB_PERF_SEL_TILE_WR_SENDS[0..3]
+DB*_DB_PERF_SEL_QUAD_WR_SENDS[0..3]
+comp=0..3,sum4,(32),*,4..7,sum4,+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; The following are new on R8xx

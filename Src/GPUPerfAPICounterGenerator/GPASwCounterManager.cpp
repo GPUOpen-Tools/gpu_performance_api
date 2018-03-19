@@ -7,8 +7,6 @@
 
 #include "GPASwCounterManager.h"
 
-SwCounterManager* s_pSwCounterManager = SwCounterManager::Instance();   ///< pointer to singleton class object SwCounterManager
-
 SwCounterManager::SwCounterManager() :
     m_amdCounters(0),
     m_swGPUTimeCounter(0),
@@ -27,7 +25,7 @@ SwCounterManager::~SwCounterManager()
     m_swCountersGenerated = false;
 }
 
-void SwCounterManager::GenerateSwCounter(const GPA_SoftwareCounterDesc& counterDesc)
+void SwCounterManager::AddSwCounter(const GPA_SoftwareCounterDesc& counterDesc)
 {
     m_swCounters.push_back(counterDesc);
 }
@@ -67,7 +65,7 @@ bool SwCounterManager::SwGPUTimeCounterEnabled() const
     return m_swGPUTimeEnabled;
 }
 
-const gpa_uint32 SwCounterManager::GetSwGPUTimeCounterIndex() const
+gpa_uint32 SwCounterManager::GetSwGPUTimeCounterIndex() const
 {
     return m_swGPUTimeCounter;
 }
@@ -90,7 +88,7 @@ void SwCounterManager::SetNumAmdCounters(const gpa_uint32 counters)
     m_amdCounters = counters;
 }
 
-const gpa_uint32 SwCounterManager::GetNumAmdCounters() const
+gpa_uint32 SwCounterManager::GetNumAmdCounters() const
 {
     return m_amdCounters;
 }
@@ -110,17 +108,17 @@ void SwCounterManager::ClearEnabledSwCounters()
     m_enabledSwCounters.clear();
 }
 
-const SwCounterDescVec* SwCounterManager::GetSwCounters()
+const SwCounterDescVec* SwCounterManager::GetSwCounters() const
 {
     return &m_swCounters;
 }
 
-const gpa_uint32 SwCounterManager::GetNumSwCounters()
+gpa_uint32 SwCounterManager::GetNumSwCounters() const
 {
-    return (gpa_uint32)m_swCounters.size();
+    return static_cast<gpa_uint32>(m_swCounters.size());
 }
 
-const EnabledSwCounterSet* SwCounterManager::GetEnabledSwCounters()
+const EnabledSwCounterSet* SwCounterManager::GetEnabledSwCounters() const
 {
     return &m_enabledSwCounters;
 }

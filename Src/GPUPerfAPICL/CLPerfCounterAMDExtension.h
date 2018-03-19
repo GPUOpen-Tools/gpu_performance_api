@@ -1,13 +1,13 @@
 //==============================================================================
-// Copyright (c) 2009-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2009-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  A utility function to get the AMD internal performance counters' interface via
-///         clGetExtensionFunctionAddress.
+/// \brief  A utility function to get the AMD internal performance counters'
+///         interface via clGetExtensionFunctionAddress.
 //==============================================================================
 
-#ifndef _CLPERFCOUNTERAMDEXTENSION_H_
-#define _CLPERFCOUNTERAMDEXTENSION_H_
+#ifndef _CL_PERF_COUNTER_AMD_EXTENSION_H_
+#define _CL_PERF_COUNTER_AMD_EXTENSION_H_
 
 /// typedef for clCreatePerfCounterAMD function pointer
 typedef CL_API_ENTRY cl_perfcounter_amd(CL_API_CALL* pfn_clCreatePerfCounterAMD)(
@@ -61,4 +61,4 @@ extern pfn_clGetPerfCounterInfoAMD      my_clGetPerfCounterInfoAMD;       ///< f
 /// \return true if successful, false otherwise
 bool InitPerfCounterAMDExtension(cl_platform_id platform);
 
-#endif
+#endif // _CL_PERF_COUNTER_AMD_EXTENSION_H_

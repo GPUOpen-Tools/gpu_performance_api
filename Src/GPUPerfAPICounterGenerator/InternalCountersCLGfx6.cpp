@@ -160,5 +160,49 @@ GPA_SQCounterGroupDesc HWCLSQGroupsGfx6[] =
     {17, 0, SQ_CS},
 };
 
+
+unsigned int HWCLSQIsolatedGroupsGfx6[] =
+{
+    19, // Ta
+    20, // Ta
+    21, // Ta
+    22, // Ta
+    23, // Ta
+    24, // Ta
+    25, // Ta
+    26, // Ta
+    27, // Tca
+    28, // Tca
+    29, // Tcc
+    30, // Tcc
+    31, // Tcc
+    32, // Tcc
+    33, // Tcc
+    34, // Tcc
+    35, // Tcc
+    36, // Tcc
+    37, // Tcc
+    38, // Tcc
+    39, // Tcc
+    40, // Tcc
+    41, // Td
+    42, // Td
+    43, // Td
+    44, // Td
+    45, // Td
+    46, // Td
+    47, // Td
+    48, // Td
+    49, // Tcp
+    50, // Tcp
+    51, // Tcp
+    52, // Tcp
+    53, // Tcp
+    54, // Tcp
+    55, // Tcp
+    56, // Tcp
+};
+
 const unsigned int HWCLGroupCountGfx6 = sizeof(HWCLGroupsGfx6) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWCLSQGroupCountGfx6 = sizeof(HWCLSQGroupsGfx6) / sizeof(GPA_SQCounterGroupDesc);
+const unsigned int HWCLSQIsolatedGroupCountGfx6 = sizeof(HWCLSQIsolatedGroupsGfx6) / sizeof(unsigned int);

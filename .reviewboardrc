@@ -1,4 +1,0 @@
-REVIEWBOARD_URL = 'http://adt-review.amd.com/'
-REPOSITORY = 'github GPA'
-TARGET_GROUPS = 'GPUProfiling'
-OPEN_BROWSER = 1

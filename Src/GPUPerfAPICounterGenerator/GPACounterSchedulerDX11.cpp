@@ -29,16 +29,16 @@ GPA_Status GPA_CounterSchedulerDX11::EnableCounter(gpa_uint32 index)
 
     if (NVIDIA_VENDOR_ID == m_vendorId)
     {
-        if (index < s_pSwCounterManager->GetNumSwCounters()) //SW counter
+        if (index < SwCounterManager::Instance()->GetNumSwCounters()) //SW counter
         {
-            s_pSwCounterManager->EnableSwCounter(index);
+            SwCounterManager::Instance()->EnableSwCounter(index);
         }
     }
     else  //for AMD SW D3D counters are added at the end
     {
-        if ((index >= totalCounters - s_pSwCounterManager->GetNumSwCounters()) && index < totalCounters)
+        if ((index >= totalCounters - SwCounterManager::Instance()->GetNumSwCounters()) && index < totalCounters)
         {
-            s_pSwCounterManager->EnableSwCounter(index);
+            SwCounterManager::Instance()->EnableSwCounter(index);
         }
     }
 
@@ -57,18 +57,18 @@ GPA_Status GPA_CounterSchedulerDX11::DoDisableCounter(gpa_uint32 index)
 
         if (NVIDIA_VENDOR_ID == m_vendorId)
         {
-            if (index < s_pSwCounterManager->GetNumSwCounters()) //SW counter
+            if (index < SwCounterManager::Instance()->GetNumSwCounters()) //SW counter
             {
-                s_pSwCounterManager->DisableSwCounter(index);
+                SwCounterManager::Instance()->DisableSwCounter(index);
             }
         }
         else  //for AMD SW D3D counters are added at the end (for Intel, they are first and last)
         {
             gpa_uint32 totalCounters = m_pCounterAccessor->GetNumCounters();
 
-            if ((index >= totalCounters - s_pSwCounterManager->GetNumSwCounters()) && index < totalCounters)
+            if ((index >= totalCounters - SwCounterManager::Instance()->GetNumSwCounters()) && index < totalCounters)
             {
-                s_pSwCounterManager->DisableSwCounter(index);
+                SwCounterManager::Instance()->DisableSwCounter(index);
             }
         }
 
@@ -82,10 +82,10 @@ void GPA_CounterSchedulerDX11::DisableAllCounters()
 {
     GPA_CounterSchedulerBase::DisableAllCounters();
 
-    s_pSwCounterManager->ClearEnabledSwCounters();
+    SwCounterManager::Instance()->ClearEnabledSwCounters();
 }
 
-GPACounterSplitterAlgorithm GPA_CounterSchedulerDX11::GetPreferredSplittingAlgorithm()
+GPACounterSplitterAlgorithm GPA_CounterSchedulerDX11::GetPreferredSplittingAlgorithm() const
 {
     return CONSOLIDATED;
 }

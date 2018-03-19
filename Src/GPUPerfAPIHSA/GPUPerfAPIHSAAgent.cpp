@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  HSA Agent (tools lib) implementation
@@ -11,7 +11,6 @@
 
 #include <hsa_api_trace.h>
 
-#include "HSAAPITable1_0.h"
 #include "GPUPerfAPIHSAGlobals.h"
 
 #ifndef GPADLL_EXPORT
@@ -30,11 +29,20 @@
     #endif
 #endif //DLL_EXPORT
 
-decltype(hsa_queue_create)* g_realQueueCreateFn = nullptr;
+decltype(hsa_queue_create)* g_realQueueCreateFn = nullptr; ///< pointer to the real hsa_queue_create function
 
 std::map<hsa_queue_t*, hsa_agent_t> g_queueAgentMap; ///< typedef for a map from queue to agent
 
 /// replacement function for hsa_queue_create
+/// \param agent parameter to hsa_queue_create
+/// \param size parameter to hsa_queue_create
+/// \param type parameter to hsa_queue_create
+/// \param pCallback parameter to hsa_queue_create
+/// \param pData parameter to hsa_queue_create
+/// \param private_segment_size parameter to hsa_queue_create
+/// \param group_segment_size parameter to hsa_queue_create
+/// \param ppQueue parameter to hsa_queue_create
+/// \return the hsa_status_t result of the real API function
 hsa_status_t HSA_API
 my_hsa_queue_create(hsa_agent_t agent, uint32_t size, hsa_queue_type32_t type,
                     void(*pCallback)(hsa_status_t status, hsa_queue_t* pSource, void* pData),
@@ -52,21 +60,20 @@ my_hsa_queue_create(hsa_agent_t agent, uint32_t size, hsa_queue_type32_t type,
 }
 
 /// exported function called when tools libs are loaded
+/// \param pTable pointer to hsa function table
+/// \param runtimeVersion the major version of the HSA runtime
+/// \return true if the hsa_queue_create function can be replaced
 extern "C" bool GPADLL_EXPORT OnLoad(void* pTable, uint64_t runtimeVersion, uint64_t /*failedToolCount*/, const char* const* /*pFailedToolNames*/)
 {
+    bool retVal = 0 < runtimeVersion;
 
-    if (0 == runtimeVersion)
-    {
-        g_realQueueCreateFn = reinterpret_cast<ApiTable1_0*>(pTable)->hsa_queue_create_fn;
-        reinterpret_cast<ApiTable1_0*>(pTable)->hsa_queue_create_fn = my_hsa_queue_create;
-    }
-    else
+    if (retVal)
     {
         g_realQueueCreateFn = reinterpret_cast<HsaApiTable*>(pTable)->core_->hsa_queue_create_fn;
         reinterpret_cast<HsaApiTable*>(pTable)->core_->hsa_queue_create_fn = my_hsa_queue_create;
     }
 
-    return true;
+    return retVal;
 }
 
 /// exported function called when tools libs are unloaded

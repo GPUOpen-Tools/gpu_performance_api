@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for HSA counter generation
@@ -16,13 +16,17 @@
 #include "PublicCounterDefsHSAGfx8.h"
 #include "PublicCounterDefsHSAGfx9.h"
 
+#include "PublicCounterDefsHSAGfx7Asics.h"
+#include "PublicCounterDefsHSAGfx8Asics.h"
+#include "PublicCounterDefsHSAGfx9Asics.h"
+
 #include "InternalCountersHSAGfx7.h"
 #include "InternalCountersHSAGfx8.h"
 #include "InternalCountersHSAGfx9.h"
 
 GPA_CounterGeneratorHSA::GPA_CounterGeneratorHSA()
 {
-    SetAllowedCounters(true, true, false);
+    GPA_CounterGeneratorBase::SetAllowedCounters(true, true, false);
 
     for (int gen = GDT_HW_GENERATION_SEAISLAND; gen < GDT_HW_GENERATION_LAST; gen++)
     {
@@ -30,7 +34,11 @@ GPA_CounterGeneratorHSA::GPA_CounterGeneratorHSA()
     }
 }
 
-GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters)
+GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_PublicCounters* pPublicCounters)
 {
     if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
     {
@@ -40,14 +48,29 @@ GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(GDT_HW_GENERATION des
     else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
     {
         AutoDefinePublicCountersHSAGfx7(*pPublicCounters);
+
+        if (generateAsicSpecificCounters)
+        {
+            HSAGfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
         AutoDefinePublicCountersHSAGfx8(*pPublicCounters);
+
+        if (generateAsicSpecificCounters)
+        {
+            HSAGfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
         AutoDefinePublicCountersHSAGfx9(*pPublicCounters);
+
+        if (generateAsicSpecificCounters)
+        {
+            HSAGfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+        }
     }
     else
     {
@@ -58,8 +81,15 @@ GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(GDT_HW_GENERATION des
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters)
+GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_HardwareCounters* pHardwareCounters)
 {
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+
     if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
     {
         // HSA does not support Gfx6 hardware
@@ -73,6 +103,8 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION d
         pHardwareCounters->m_groupCount          = HWHSAGroupCountGfx7;
         pHardwareCounters->m_pSQCounterGroups    = HWHSASQGroupsGfx7;
         pHardwareCounters->m_sqGroupCount        = HWHSASQGroupCountGfx7;
+        pHardwareCounters->m_pIsolatedGroups     = HWHSASQIsolatedGroupsGfx7;
+        pHardwareCounters->m_isolatedGroupCount  = HWHSASQIsolatedGroupCountGfx7;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
@@ -81,14 +113,18 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION d
         pHardwareCounters->m_groupCount          = HWHSAGroupCountGfx8;
         pHardwareCounters->m_pSQCounterGroups    = HWHSASQGroupsGfx8;
         pHardwareCounters->m_sqGroupCount        = HWHSASQGroupCountGfx8;
+        pHardwareCounters->m_pIsolatedGroups     = HWHSASQIsolatedGroupsGfx8;
+        pHardwareCounters->m_isolatedGroupCount  = HWHSASQIsolatedGroupCountGfx8;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
         pHardwareCounters->m_ppCounterGroupArray = HSACounterGroupArrayGfx9;
-        pHardwareCounters->m_pGroups = HWHSAGroupsGfx9;
-        pHardwareCounters->m_groupCount = HWHSAGroupCountGfx9;
-        pHardwareCounters->m_pSQCounterGroups = HWHSASQGroupsGfx9;
-        pHardwareCounters->m_sqGroupCount = HWHSASQGroupCountGfx9;
+        pHardwareCounters->m_pGroups             = HWHSAGroupsGfx9;
+        pHardwareCounters->m_groupCount          = HWHSAGroupCountGfx9;
+        pHardwareCounters->m_pSQCounterGroups    = HWHSASQGroupsGfx9;
+        pHardwareCounters->m_sqGroupCount        = HWHSASQGroupCountGfx9;
+        pHardwareCounters->m_pIsolatedGroups     = HWHSASQIsolatedGroupsGfx9;
+        pHardwareCounters->m_isolatedGroupCount  = HWHSASQIsolatedGroupCountGfx9;
     }
     else
     {
@@ -168,9 +204,15 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION d
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorHSA::GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters)
+GPA_Status GPA_CounterGeneratorHSA::GenerateSoftwareCounters(
+    GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_SoftwareCounters* pSoftwareCounters)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
     UNREFERENCED_PARAMETER(pSoftwareCounters);
     return GPA_STATUS_OK;
 }

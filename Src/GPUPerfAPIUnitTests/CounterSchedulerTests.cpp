@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Unit tests for Counter Scheduler
@@ -9,15 +9,33 @@
 #include "GPASplitCountersInterfaces.h"
 
 #ifdef _WIN32
+    #include "GPAInternalCounter.h"
+
     #include "counters/PublicCountersDX11Gfx6.h"
     #include "counters/PublicCountersDX11Gfx7.h"
     #include "counters/PublicCountersDX11Gfx8.h"
+    #include "counters/PublicCountersDX11Gfx9.h"
 
-    #include "GPAInternalCounter.h"
     #include "InternalCountersDX11Gfx6.h"
     #include "InternalCountersDX11Gfx7.h"
     #include "InternalCountersDX11Gfx8.h"
+    #include "InternalCountersDX11Gfx9.h"
+
+    #include "counters/PublicCountersDX12Gfx7.h"
+    #include "counters/PublicCountersDX12Gfx8.h"
+    #include "counters/PublicCountersDX12Gfx9.h"
+
+    #include "InternalCountersDX12Gfx7.h"
+    #include "InternalCountersDX12Gfx8.h"
+    #include "InternalCountersDX12Gfx9.h"
 #endif
+
+#include "counters/PublicCountersCLGfx6.h"
+#include "counters/PublicCountersGLGfx6.h"
+#include "counters/PublicCountersGLGfx7.h"
+#include "counters/PublicCountersGLGfx8.h"
+
+#define MakeExpectedCounterLocationEntry(x, y) { expectedCountersPass##x[y], MakeLocation(x, y) },
 
 GPA_CounterResultLocation MakeLocation(gpa_uint16 pass, gpa_uint16 offset)
 {
@@ -36,7 +54,7 @@ TEST(CounterDLLTests, OpenCLCounterSchedulingSI)
     counters.push_back(1);
     counters.push_back(2);
 
-    VerifyPassCount(GPA_API_OPENCL, gDevIdSI, counters, 1);
+    VerifyPassCount(GPA_API_OPENCL, gDevIdSI, FALSE, counters, 1);
 }
 
 // Test the openCL counter names on CI hardware
@@ -47,7 +65,7 @@ TEST(CounterDLLTests, OpenCLCounterSchedulingCI)
     counters.push_back(1);
     counters.push_back(2);
 
-    VerifyPassCount(GPA_API_OPENCL, gDevIdCI, counters, 1);
+    VerifyPassCount(GPA_API_OPENCL, gDevIdCI, FALSE, counters, 1);
 }
 
 // Test the openCL counter names on VI hardware
@@ -58,93 +76,131 @@ TEST(CounterDLLTests, OpenCLCounterSchedulingVI)
     counters.push_back(1);
     counters.push_back(2);
 
-    VerifyPassCount(GPA_API_OPENCL, gDevIdVI, counters, 1);
+    VerifyPassCount(GPA_API_OPENCL, gDevIdVI, FALSE, counters, 1);
 }
 
+// Counters to enable (Wavefronts, VALUInsts, SALUInsts, VFetchInsts, SFetchInsts, VWriteInsts, VALUUtilization, VALUBusy, SALUBusy)
 TEST(CounterDLLTests, OpenCLResultLocations)
 {
-    // counters to enable (Wavefronts, VALUInsts, SALUInsts, VFetchInsts, SFetchInsts, VWriteInsts, VALUUtilization, VALUBusy, SALUBusy)
-    std::vector<unsigned int> counters;
-    counters.push_back(0); // Wavefronts
-    counters.push_back(1); // VALUInsts
-    counters.push_back(2); // SALUInsts
-    counters.push_back(3); // VFetchInsts
-    counters.push_back(4); // SFetchInsts
-    counters.push_back(5); // VWriteInsts
-    counters.push_back(8); // VALUUtilization
-    counters.push_back(9); // VALUBusy
-    counters.push_back(10); // SALUBusy
+    std::vector<unsigned int> counters =
+    {
+        WavefrontsCLGfx6,
+        VALUInstsCLGfx6,
+        SALUInstsCLGfx6,
+        VFetchInstsCLGfx6,
+        SFetchInstsCLGfx6,
+        VWriteInstsCLGfx6,
+        VALUUtilizationCLGfx6,
+        VALUBusyCLGfx6,
+        SALUBusyCLGfx6,
+    };
 
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsWavefronts;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVALUInsts;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsSALUInsts;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVFetchInsts;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsSFetchInsts;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVWriteInsts;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVALUUtilization;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVALUBusy;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsSALUBusy;
+    std::vector<uint32_t> expectedCountersPass0 =
+    {
+        1649, 1639, 1653, 1651, 1654, 1650, 1693, 1685, 976
+    };
 
-    std::vector<unsigned int> expectedCountersPass1;
-    // Wavefronts
-    expectedCountersPass1.push_back(1639); expectedLocationsWavefronts[1639] = MakeLocation(0, 0);
-    // VALUInsts
-    expectedCountersPass1.push_back(1649); expectedLocationsVALUInsts[1649] = MakeLocation(0, 1);
-    /* expectedCountersPass1.push_back(1639); */ expectedLocationsVALUInsts[1639] = MakeLocation(0, 0);
-    // SALUInsts
-    expectedCountersPass1.push_back(1653); expectedLocationsSALUInsts[1653] = MakeLocation(0, 2);
-    /* expectedCountersPass1.push_back(1639); */ expectedLocationsSALUInsts[1639] = MakeLocation(0, 0);
-    // VFetchInsts
-    expectedCountersPass1.push_back(1651); expectedLocationsVFetchInsts[1651] = MakeLocation(0, 3);
-    /*expectedCountersPass1.push_back(1639); */ expectedLocationsVFetchInsts[1639] = MakeLocation(0, 0);
-    // SFetchInsts
-    expectedCountersPass1.push_back(1654); expectedLocationsSFetchInsts[1654] = MakeLocation(0, 4);
-    /*expectedCountersPass1.push_back(1639); */ expectedLocationsSFetchInsts[1639] = MakeLocation(0, 0);
-    // VWriteInsts
-    expectedCountersPass1.push_back(1650); expectedLocationsVWriteInsts[1650] = MakeLocation(0, 5);
-    /* expectedCountersPass1.push_back(1639); */ expectedLocationsVWriteInsts[1639] = MakeLocation(0, 0);
-    // VALUUtilization
-    expectedCountersPass1.push_back(1693); expectedLocationsVALUUtilization[1693] = MakeLocation(0, 6);
-    expectedCountersPass1.push_back(1685); expectedLocationsVALUUtilization[1685] = MakeLocation(0, 7);
-    // VALUUBusy
-    /* expectedCountersPass1.push_back(1685); */ expectedLocationsVALUBusy[1685] = MakeLocation(0, 7);
-    expectedCountersPass1.push_back(976); expectedLocationsVALUBusy[976] = MakeLocation(0, 8);
+    std::vector<uint32_t> expectedCountersPass1 =
+    {
+        1690, 976,
+    };
 
-    std::vector<unsigned int> expectedCountersPass2;
-    // SALUBusy
-    expectedCountersPass2.push_back(1690); expectedLocationsSALUBusy[1690] = MakeLocation(1, 0);
-    expectedCountersPass2.push_back(976);  expectedLocationsSALUBusy[976] = MakeLocation(1, 1);
+    std::vector< std::vector<uint32_t> > expectedHwCountersPerPass =
+    {
+        expectedCountersPass0,
+        expectedCountersPass1,
+    };
 
-    std::vector< std::vector<unsigned int> > expectedHwCountersPerPass;
-    expectedHwCountersPerPass.push_back(expectedCountersPass1);
-    expectedHwCountersPerPass.push_back(expectedCountersPass2);
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsWavefronts =
+    {
+        MakeExpectedCounterLocationEntry(0, 1)
+    };
 
-    std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations;
-    expectedResultLocations[0] = expectedLocationsWavefronts;
-    expectedResultLocations[1] = expectedLocationsVALUInsts;
-    expectedResultLocations[2] = expectedLocationsSALUInsts;
-    expectedResultLocations[3] = expectedLocationsVFetchInsts;
-    expectedResultLocations[4] = expectedLocationsSFetchInsts;
-    expectedResultLocations[5] = expectedLocationsVWriteInsts;
-    expectedResultLocations[8] = expectedLocationsVALUUtilization;
-    expectedResultLocations[9] = expectedLocationsVALUBusy;
-    expectedResultLocations[10] = expectedLocationsSALUBusy;
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVALUInsts =
+    {
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 0)
+    };
 
-    VerifyCountersInPass(GPA_API_OPENCL, gDevIdSI, counters, expectedHwCountersPerPass, expectedResultLocations);
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsSALUInsts =
+    {
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 2)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVFetchInsts =
+    {
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 3)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsSFetchInsts =
+    {
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 4)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVWriteInsts =
+    {
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 5)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVALUUtilization =
+    {
+        MakeExpectedCounterLocationEntry(0, 7)
+        MakeExpectedCounterLocationEntry(0, 6)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVALUBusy =
+    {
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(0, 7)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsSALUBusy =
+    {
+        MakeExpectedCounterLocationEntry(1, 1)
+        MakeExpectedCounterLocationEntry(1, 0)
+    };
+
+    std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations =
+    {
+        { WavefrontsCLGfx6, expectedLocationsWavefronts },
+        { VALUInstsCLGfx6, expectedLocationsVALUInsts },
+        { SALUInstsCLGfx6, expectedLocationsSALUInsts },
+        { VFetchInstsCLGfx6, expectedLocationsVFetchInsts },
+        { SFetchInstsCLGfx6, expectedLocationsSFetchInsts },
+        { VWriteInstsCLGfx6, expectedLocationsVWriteInsts },
+        { VALUUtilizationCLGfx6, expectedLocationsVALUUtilization },
+        { VALUBusyCLGfx6, expectedLocationsVALUBusy },
+        { SALUBusyCLGfx6, expectedLocationsSALUBusy }
+    };
+
+    VerifyCountersInPass(GPA_API_OPENCL, gDevIdSI, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
 }
 
 TEST(CounterDLLTests, OpenGLCounterScheduling)
 {
     std::vector<unsigned int> counters;
-    counters.push_back(0);
-    counters.push_back(1);
-    counters.push_back(2);
+    counters.push_back(GPUTimeGLGfx6);
+    counters.push_back(GPUBusyGLGfx6);
+    counters.push_back(TessellatorBusyGLGfx6);
 
-    VerifyHardwareNotSupported(GPA_API_OPENGL, gDevIdUnknown);
+    VerifyHardwareNotSupported(GPA_API_OPENGL, gDevIdUnknown, FALSE);
+    VerifyPassCount(GPA_API_OPENGL, gDevIdSI, FALSE, counters, 2);
 
-    VerifyPassCount(GPA_API_OPENGL, gDevIdSI,   counters, 2);
-    VerifyPassCount(GPA_API_OPENGL, gDevIdCI,   counters, 2);
-    VerifyPassCount(GPA_API_OPENGL, gDevIdVI,   counters, 2);
+    counters.clear();
+    counters.push_back(GPUTimeGLGfx7);
+    counters.push_back(GPUBusyGLGfx7);
+    counters.push_back(TessellatorBusyGLGfx7);
+    VerifyPassCount(GPA_API_OPENGL, gDevIdCI, FALSE, counters, 2);
+
+    counters.clear();
+    counters.push_back(GPUTimeGLGfx8);
+    counters.push_back(GPUBusyGLGfx8);
+    counters.push_back(TessellatorBusyGLGfx8);
+    VerifyPassCount(GPA_API_OPENGL, gDevIdVI, FALSE, counters, 2);
 }
 
 #ifdef _WIN32
@@ -152,34 +208,318 @@ TEST(CounterDLLTests, OpenGLCounterScheduling)
 TEST(CounterDLLTests, DX11CounterScheduling)
 {
     std::vector<unsigned int> counters;
-    counters.push_back(0);
-    counters.push_back(1);
-    counters.push_back(2);
+    counters.push_back(GPUTimeDX11Gfx6);
+    counters.push_back(GPUBusyDX11Gfx6);
+    counters.push_back(TessellatorBusyDX11Gfx6);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, gDevIdUnknown, FALSE);
+    VerifyPassCount(GPA_API_DIRECTX_11, gDevIdSI, FALSE, counters, 2);
 
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, gDevIdUnknown);
+    counters.clear();
+    counters.push_back(GPUTimeDX11Gfx7);
+    counters.push_back(GPUBusyDX11Gfx7);
+    counters.push_back(TessellatorBusyDX11Gfx7);
+    VerifyPassCount(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counters, 2);
 
-    VerifyPassCount(GPA_API_DIRECTX_11, gDevIdSI,   counters, 2);
-    VerifyPassCount(GPA_API_DIRECTX_11, gDevIdCI,   counters, 2);
-    VerifyPassCount(GPA_API_DIRECTX_11, gDevIdVI,   counters, 2);
+    counters.clear();
+    counters.push_back(GPUTimeDX11Gfx8);
+    counters.push_back(GPUBusyDX11Gfx8);
+    counters.push_back(TessellatorBusyDX11Gfx8);
+    VerifyPassCount(GPA_API_DIRECTX_11, gDevIdVI, FALSE, counters, 2);
 }
 
 TEST(CounterDLLTests, DX11CIBusyCounters)
 {
-    // counters to enable (VSBusy, HSBusy, DSBusy, GSBusy, PSBusy, CSBusy)
+    std::vector<unsigned int> counters =
+    {
+        VSBusyDX11Gfx7,
+        HSBusyDX11Gfx7,
+        DSBusyDX11Gfx7,
+        GSBusyDX11Gfx7,
+        PSBusyDX11Gfx7,
+        CSBusyDX11Gfx7
+    };
+
+    std::vector<uint32_t> expectedCountersPass0 =
+    {
+        10306, 10492, 10678, 10864, 10331, 10517, 10703, 10889, 10353, 10539,
+        10725, 10911, 10375, 10561, 10747, 10933, 10315, 10501, 10687, 10873,
+        10337, 10523, 10709, 10895, 7886
+    };
+
+    std::vector<uint32_t> expectedCountersPass1 =
+    {
+        10306, 10492, 10678, 10864, 10331, 10517, 10703, 10889, 10375, 10561,
+        10747, 10933, 10337, 10523, 10709, 10895, 10359, 10545, 10731, 10917,
+        7886, 10380, 10566, 10752, 10938
+    };
+
+    std::vector<uint32_t> expectedCountersPass2 =
+    {
+        10343, 10529, 10715, 10901, 10349, 10535, 10721, 10907, 7886, 10322,
+        10508, 10694, 10880, 10325, 10511, 10697, 10883, 10363, 10549, 10735,
+        10921, 10367, 10553, 10739, 10925
+    };
+
+    std::vector< std::vector<uint32_t> > expectedHwCountersPerPass =
+    {
+        expectedCountersPass0,
+        expectedCountersPass1,
+        expectedCountersPass2
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVSBusyDX11Gfx7 =
+    {
+        MakeExpectedCounterLocationEntry(0, 24)
+        MakeExpectedCounterLocationEntry(0, 0)
+        MakeExpectedCounterLocationEntry(0, 16)
+        MakeExpectedCounterLocationEntry(0, 4)
+        MakeExpectedCounterLocationEntry(0, 20)
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(1, 16)
+        MakeExpectedCounterLocationEntry(0, 12)
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 17)
+        MakeExpectedCounterLocationEntry(0, 5)
+        MakeExpectedCounterLocationEntry(0, 21)
+        MakeExpectedCounterLocationEntry(0, 9)
+        MakeExpectedCounterLocationEntry(1, 17)
+        MakeExpectedCounterLocationEntry(0, 13)
+        MakeExpectedCounterLocationEntry(0, 2)
+        MakeExpectedCounterLocationEntry(0, 18)
+        MakeExpectedCounterLocationEntry(0, 6)
+        MakeExpectedCounterLocationEntry(0, 22)
+        MakeExpectedCounterLocationEntry(0, 10)
+        MakeExpectedCounterLocationEntry(1, 18)
+        MakeExpectedCounterLocationEntry(0, 14)
+        MakeExpectedCounterLocationEntry(0, 3)
+        MakeExpectedCounterLocationEntry(0, 19)
+        MakeExpectedCounterLocationEntry(0, 7)
+        MakeExpectedCounterLocationEntry(0, 23)
+        MakeExpectedCounterLocationEntry(0, 11)
+        MakeExpectedCounterLocationEntry(1, 19)
+        MakeExpectedCounterLocationEntry(0, 15)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsHSBusyDX11Gfx7 =
+    {
+        MakeExpectedCounterLocationEntry(2, 8)
+        MakeExpectedCounterLocationEntry(2, 0)
+        MakeExpectedCounterLocationEntry(2, 4)
+        MakeExpectedCounterLocationEntry(2, 1)
+        MakeExpectedCounterLocationEntry(2, 5)
+        MakeExpectedCounterLocationEntry(2, 2)
+        MakeExpectedCounterLocationEntry(2, 6)
+        MakeExpectedCounterLocationEntry(2, 3)
+        MakeExpectedCounterLocationEntry(2, 7)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsDSBusyDX11Gfx7 =
+    {
+        MakeExpectedCounterLocationEntry(1, 20)
+        MakeExpectedCounterLocationEntry(1, 0)
+        MakeExpectedCounterLocationEntry(1, 4)
+        MakeExpectedCounterLocationEntry(1, 12)
+        MakeExpectedCounterLocationEntry(1, 16)
+        MakeExpectedCounterLocationEntry(1, 8)
+        MakeExpectedCounterLocationEntry(1, 1)
+        MakeExpectedCounterLocationEntry(1, 5)
+        MakeExpectedCounterLocationEntry(1, 13)
+        MakeExpectedCounterLocationEntry(1, 17)
+        MakeExpectedCounterLocationEntry(1, 9)
+        MakeExpectedCounterLocationEntry(1, 2)
+        MakeExpectedCounterLocationEntry(1, 6)
+        MakeExpectedCounterLocationEntry(1, 14)
+        MakeExpectedCounterLocationEntry(1, 18)
+        MakeExpectedCounterLocationEntry(1, 10)
+        MakeExpectedCounterLocationEntry(1, 3)
+        MakeExpectedCounterLocationEntry(1, 7)
+        MakeExpectedCounterLocationEntry(1, 15)
+        MakeExpectedCounterLocationEntry(1, 19)
+        MakeExpectedCounterLocationEntry(1, 11)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsGSBusyDX11Gfx7 =
+    {
+        MakeExpectedCounterLocationEntry(2, 8)
+        MakeExpectedCounterLocationEntry(2, 9)
+        MakeExpectedCounterLocationEntry(2, 13)
+        MakeExpectedCounterLocationEntry(2, 10)
+        MakeExpectedCounterLocationEntry(2, 14)
+        MakeExpectedCounterLocationEntry(2, 11)
+        MakeExpectedCounterLocationEntry(2, 15)
+        MakeExpectedCounterLocationEntry(2, 12)
+        MakeExpectedCounterLocationEntry(2, 16)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsPSBusyDX11Gfx7 =
+    {
+        MakeExpectedCounterLocationEntry(1, 20)
+        MakeExpectedCounterLocationEntry(1, 8)
+        MakeExpectedCounterLocationEntry(1, 21)
+        MakeExpectedCounterLocationEntry(1, 9)
+        MakeExpectedCounterLocationEntry(1, 22)
+        MakeExpectedCounterLocationEntry(1, 10)
+        MakeExpectedCounterLocationEntry(1, 23)
+        MakeExpectedCounterLocationEntry(1, 11)
+        MakeExpectedCounterLocationEntry(1, 24)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsCSBusyDX11Gfx7 =
+    {
+        MakeExpectedCounterLocationEntry(2, 8)
+        MakeExpectedCounterLocationEntry(2, 17)
+        MakeExpectedCounterLocationEntry(2, 21)
+        MakeExpectedCounterLocationEntry(2, 18)
+        MakeExpectedCounterLocationEntry(2, 22)
+        MakeExpectedCounterLocationEntry(2, 19)
+        MakeExpectedCounterLocationEntry(2, 23)
+        MakeExpectedCounterLocationEntry(2, 20)
+        MakeExpectedCounterLocationEntry(2, 24)
+    };
+
+    std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations =
+    {
+        { VSBusyDX11Gfx7, expectedLocationsVSBusyDX11Gfx7 },
+        { HSBusyDX11Gfx7, expectedLocationsHSBusyDX11Gfx7 },
+        { DSBusyDX11Gfx7, expectedLocationsDSBusyDX11Gfx7 },
+        { GSBusyDX11Gfx7, expectedLocationsGSBusyDX11Gfx7 },
+        { PSBusyDX11Gfx7, expectedLocationsPSBusyDX11Gfx7 },
+        { CSBusyDX11Gfx7, expectedLocationsCSBusyDX11Gfx7 }
+    };
+
+    VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
+}
+
+// regression test for GPA-123
+TEST(CounterDLLTests, DX11CIHSBusyHSTimeGSTime)
+{
     std::vector<unsigned int> counters;
-    counters.push_back(3);
-    counters.push_back(5);
-    counters.push_back(7);
-    counters.push_back(9);
-    counters.push_back(11);
-    counters.push_back(13);
+    counters.push_back(HSBusyDX11Gfx7); // HSBusy
+    counters.push_back(HSTimeDX11Gfx7); // HSTime
+    counters.push_back(GSTimeDX11Gfx7); // GSTime
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsHSBusy;
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsHSTime;
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsGSTime;
+
+
+    std::vector<unsigned int> expectedCountersPass1;
+    std::vector<unsigned int> expectedCountersPass2;
+    // HSBusy
+    expectedCountersPass1.push_back(10343); expectedLocationsHSBusy[10343] = MakeLocation(0, 0);
+    expectedCountersPass1.push_back(10529); expectedLocationsHSBusy[10529] = MakeLocation(0, 1);
+    expectedCountersPass1.push_back(10715); expectedLocationsHSBusy[10715] = MakeLocation(0, 2);
+    expectedCountersPass1.push_back(10901); expectedLocationsHSBusy[10901] = MakeLocation(0, 3);
+    expectedCountersPass1.push_back(10349); expectedLocationsHSBusy[10349] = MakeLocation(0, 4);
+    expectedCountersPass1.push_back(10535); expectedLocationsHSBusy[10535] = MakeLocation(0, 5);
+    expectedCountersPass1.push_back(10721); expectedLocationsHSBusy[10721] = MakeLocation(0, 6);
+    expectedCountersPass1.push_back(10907); expectedLocationsHSBusy[10907] = MakeLocation(0, 7);
+    expectedCountersPass1.push_back(7886);  expectedLocationsHSBusy[7886] = MakeLocation(0, 8);
+    // HSTime
+    expectedCountersPass2.push_back(36851);  expectedLocationsHSTime[36851] = MakeLocation(1, 0);
+    /*expectedCountersPass1.push_back(10343); */ expectedLocationsHSTime[10343] = MakeLocation(0, 0);  //reused from HSBusy
+    /*expectedCountersPass1.push_back(10529); */ expectedLocationsHSTime[10529] = MakeLocation(0, 1);  //reused from HSBusy
+    /*expectedCountersPass1.push_back(10715); */ expectedLocationsHSTime[10715] = MakeLocation(0, 2);  //reused from HSBusy
+    /*expectedCountersPass1.push_back(10901); */ expectedLocationsHSTime[10901] = MakeLocation(0, 3);  //reused from HSBusy
+    /*expectedCountersPass1.push_back(10349); */ expectedLocationsHSTime[10349] = MakeLocation(0, 4);  //reused from HSBusy
+    /*expectedCountersPass1.push_back(10535); */ expectedLocationsHSTime[10535] = MakeLocation(0, 5);  //reused from HSBusy
+    /*expectedCountersPass1.push_back(10721); */ expectedLocationsHSTime[10721] = MakeLocation(0, 6); //reused from HSBusy
+    /*expectedCountersPass1.push_back(10907); */ expectedLocationsHSTime[10907] = MakeLocation(0, 7); //reused from HSBusy
+    /*expectedCountersPass1.push_back(7886);  */ expectedLocationsHSTime[7886] = MakeLocation(0, 8);  //reused from HSBusy
+    // GSTime
+    /*expectedCountersPass2.push_back(36851); */expectedLocationsGSTime[36851] = MakeLocation(1, 0);  //reused from HSTime
+    expectedCountersPass1.push_back(10322); expectedLocationsGSTime[10322] = MakeLocation(0, 9);
+    expectedCountersPass1.push_back(10508); expectedLocationsGSTime[10508] = MakeLocation(0, 10);
+    expectedCountersPass1.push_back(10694); expectedLocationsGSTime[10694] = MakeLocation(0, 11);
+    expectedCountersPass1.push_back(10880); expectedLocationsGSTime[10880] = MakeLocation(0, 12);
+    expectedCountersPass1.push_back(10325); expectedLocationsGSTime[10325] = MakeLocation(0, 13);
+    expectedCountersPass1.push_back(10511); expectedLocationsGSTime[10511] = MakeLocation(0, 14);
+    expectedCountersPass1.push_back(10697); expectedLocationsGSTime[10697] = MakeLocation(0, 15);
+    expectedCountersPass1.push_back(10883); expectedLocationsGSTime[10883] = MakeLocation(0, 16);
+    /*expectedCountersPass1.push_back(7886); */ expectedLocationsGSTime[7886] = MakeLocation(0, 8);  //reused from HSBusy
+
+    std::vector< std::vector<unsigned int> > expectedHwCountersPerPass;
+    expectedHwCountersPerPass.push_back(expectedCountersPass1);
+    expectedHwCountersPerPass.push_back(expectedCountersPass2);
+
+    std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations;
+    expectedResultLocations[HSBusyDX11Gfx7] = expectedLocationsHSBusy;
+    expectedResultLocations[HSTimeDX11Gfx7] = expectedLocationsHSTime;
+    expectedResultLocations[GSTimeDX11Gfx7] = expectedLocationsGSTime;
+
+    VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
+}
+
+// regression test related to GPA-123
+TEST(CounterDLLTests, DX11CIHSTimeGSTime)
+{
+    std::vector<unsigned int> counters =
+    {
+        HSTimeDX11Gfx7,
+        GSTimeDX11Gfx7,
+    };
+
+
+    std::vector<uint32_t> expectedCountersPass0 =
+    {
+        10343, 10529, 10715, 10901, 10349, 10535, 10721, 10907, 7886,
+        10322, 10508, 10694, 10880, 10325, 10511, 10697, 10883
+    };
+
+    std::vector<uint32_t> expectedCountersPass1 =
+    {
+        36851
+    };
+
+    std::vector< std::vector<uint32_t> > expectedHwCountersPerPass =
+    {
+        expectedCountersPass0,
+        expectedCountersPass1
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsHSTimeDX11Gfx7 =
+    {
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(0, 0)
+        MakeExpectedCounterLocationEntry(0, 4)
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 5)
+        MakeExpectedCounterLocationEntry(0, 2)
+        MakeExpectedCounterLocationEntry(0, 6)
+        MakeExpectedCounterLocationEntry(0, 3)
+        MakeExpectedCounterLocationEntry(0, 7)
+        MakeExpectedCounterLocationEntry(1, 0)
+    };
+
+    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsGSTimeDX11Gfx7 =
+    {
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(0, 9)
+        MakeExpectedCounterLocationEntry(0, 13)
+        MakeExpectedCounterLocationEntry(0, 10)
+        MakeExpectedCounterLocationEntry(0, 14)
+        MakeExpectedCounterLocationEntry(0, 11)
+        MakeExpectedCounterLocationEntry(0, 15)
+        MakeExpectedCounterLocationEntry(0, 12)
+        MakeExpectedCounterLocationEntry(0, 16)
+        MakeExpectedCounterLocationEntry(1, 0)
+    };
+
+    std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations =
+    {
+        { HSTimeDX11Gfx7, expectedLocationsHSTimeDX11Gfx7 },
+        { GSTimeDX11Gfx7, expectedLocationsGSTimeDX11Gfx7 }
+    };
+
+    VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
+}
+
+TEST(CounterDLLTests, DX11CIVSBusy)
+{
+    std::vector<unsigned int> counters;
+    counters.push_back(VSBusyDX11Gfx7);
 
     std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVSBusy;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsHSBusy;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsDSBusy;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsGSBusy;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsPSBusy;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsCSBusy;
 
 
     std::vector<unsigned int> expectedCountersPass1;
@@ -208,7 +548,7 @@ TEST(CounterDLLTests, DX11CIBusyCounters)
     expectedCountersPass1.push_back(10523); expectedLocationsVSBusy[10523] = MakeLocation(0, 21);
     expectedCountersPass1.push_back(10709); expectedLocationsVSBusy[10709] = MakeLocation(0, 22);
     expectedCountersPass1.push_back(10895); expectedLocationsVSBusy[10895] = MakeLocation(0, 23);
-    expectedCountersPass1.push_back(7886);  expectedLocationsVSBusy[7886]  = MakeLocation(0, 24);
+    expectedCountersPass1.push_back(7886);  expectedLocationsVSBusy[7886] = MakeLocation(0, 24);
 
     std::vector<unsigned int> expectedCountersPass2;
     // VSBusy
@@ -216,177 +556,89 @@ TEST(CounterDLLTests, DX11CIBusyCounters)
     expectedCountersPass2.push_back(10545); expectedLocationsVSBusy[10545] = MakeLocation(1, 1);
     expectedCountersPass2.push_back(10731); expectedLocationsVSBusy[10731] = MakeLocation(1, 2);
     expectedCountersPass2.push_back(10917); expectedLocationsVSBusy[10917] = MakeLocation(1, 3);
-    // HSBusy
-    expectedCountersPass2.push_back(10343); expectedLocationsHSBusy[10343] = MakeLocation(1, 4);
-    expectedCountersPass2.push_back(10529); expectedLocationsHSBusy[10529] = MakeLocation(1, 5);
-    expectedCountersPass2.push_back(10715); expectedLocationsHSBusy[10715] = MakeLocation(1, 6);
-    expectedCountersPass2.push_back(10901); expectedLocationsHSBusy[10901] = MakeLocation(1, 7);
-    expectedCountersPass2.push_back(10349); expectedLocationsHSBusy[10349] = MakeLocation(1, 8);
-    expectedCountersPass2.push_back(10535); expectedLocationsHSBusy[10535] = MakeLocation(1, 9);
-    expectedCountersPass2.push_back(10721); expectedLocationsHSBusy[10721] = MakeLocation(1, 10);
-    expectedCountersPass2.push_back(10907); expectedLocationsHSBusy[10907] = MakeLocation(1, 11);
-    expectedCountersPass2.push_back(7886);  expectedLocationsHSBusy[7886]  = MakeLocation(1, 12);
-    // GSBusy
-    expectedCountersPass2.push_back(10322); expectedLocationsGSBusy[10322] = MakeLocation(1, 13);
-    expectedCountersPass2.push_back(10508); expectedLocationsGSBusy[10508] = MakeLocation(1, 14);
-    expectedCountersPass2.push_back(10694); expectedLocationsGSBusy[10694] = MakeLocation(1, 15);
-    expectedCountersPass2.push_back(10880); expectedLocationsGSBusy[10880] = MakeLocation(1, 16);
-    expectedCountersPass2.push_back(10325); expectedLocationsGSBusy[10325] = MakeLocation(1, 17);
-    expectedCountersPass2.push_back(10511); expectedLocationsGSBusy[10511] = MakeLocation(1, 18);
-    expectedCountersPass2.push_back(10697); expectedLocationsGSBusy[10697] = MakeLocation(1, 19);
-    expectedCountersPass2.push_back(10883); expectedLocationsGSBusy[10883] = MakeLocation(1, 20);
-    /*internalCounters.push_back(7886); */  expectedLocationsGSBusy[7886]  = MakeLocation(1, 12); // reused from HSBusy
-
-    std::vector<unsigned int> expectedCountersPass3;
-    // DSBusy
-    expectedCountersPass3.push_back(10306); expectedLocationsDSBusy[10306] = MakeLocation(2, 0);
-    expectedCountersPass3.push_back(10492); expectedLocationsDSBusy[10492] = MakeLocation(2, 1);
-    expectedCountersPass3.push_back(10678); expectedLocationsDSBusy[10678] = MakeLocation(2, 2);
-    expectedCountersPass3.push_back(10864); expectedLocationsDSBusy[10864] = MakeLocation(2, 3);
-    expectedCountersPass3.push_back(10331); expectedLocationsDSBusy[10331] = MakeLocation(2, 4);
-    expectedCountersPass3.push_back(10517); expectedLocationsDSBusy[10517] = MakeLocation(2, 5);
-    expectedCountersPass3.push_back(10703); expectedLocationsDSBusy[10703] = MakeLocation(2, 6);
-    expectedCountersPass3.push_back(10889); expectedLocationsDSBusy[10889] = MakeLocation(2, 7);
-    expectedCountersPass3.push_back(10375); expectedLocationsDSBusy[10375] = MakeLocation(2, 8);
-    expectedCountersPass3.push_back(10561); expectedLocationsDSBusy[10561] = MakeLocation(2, 9);
-    expectedCountersPass3.push_back(10747); expectedLocationsDSBusy[10747] = MakeLocation(2, 10);
-    expectedCountersPass3.push_back(10933); expectedLocationsDSBusy[10933] = MakeLocation(2, 11);
-    expectedCountersPass3.push_back(10337); expectedLocationsDSBusy[10337] = MakeLocation(2, 12);
-    expectedCountersPass3.push_back(10523); expectedLocationsDSBusy[10523] = MakeLocation(2, 13);
-    expectedCountersPass3.push_back(10709); expectedLocationsDSBusy[10709] = MakeLocation(2, 14);
-    expectedCountersPass3.push_back(10895); expectedLocationsDSBusy[10895] = MakeLocation(2, 15);
-    expectedCountersPass3.push_back(10359); expectedLocationsDSBusy[10359] = MakeLocation(2, 16);
-    expectedCountersPass3.push_back(10545); expectedLocationsDSBusy[10545] = MakeLocation(2, 17);
-    expectedCountersPass3.push_back(10731); expectedLocationsDSBusy[10731] = MakeLocation(2, 18);
-    expectedCountersPass3.push_back(10917); expectedLocationsDSBusy[10917] = MakeLocation(2, 19);
-    expectedCountersPass3.push_back(7886);  expectedLocationsDSBusy[7886]  = MakeLocation(2, 20);
-
-    // PSBusy
-    /*expectedCountersPass3.push_back(10375); */ expectedLocationsPSBusy[10375] = MakeLocation(2, 8); // reused from DSBusy
-    /*expectedCountersPass3.push_back(10561); */ expectedLocationsPSBusy[10561] = MakeLocation(2, 9); // reused from DSBusy
-    /*expectedCountersPass3.push_back(10747); */ expectedLocationsPSBusy[10747] = MakeLocation(2, 10); // reused from DSBusy
-    /*expectedCountersPass3.push_back(10933); */ expectedLocationsPSBusy[10933] = MakeLocation(2, 11); // reused from DSBusy
-    expectedCountersPass3.push_back(10380);      expectedLocationsPSBusy[10380] = MakeLocation(2, 21);
-    expectedCountersPass3.push_back(10566);      expectedLocationsPSBusy[10566] = MakeLocation(2, 22);
-    expectedCountersPass3.push_back(10752);      expectedLocationsPSBusy[10752] = MakeLocation(2, 23);
-    expectedCountersPass3.push_back(10938);      expectedLocationsPSBusy[10938] = MakeLocation(2, 24);
-    /*expectedCountersPass3.push_back(7886); */  expectedLocationsPSBusy[7886]  = MakeLocation(2, 20); // reused from DSBusy
-
-    std::vector<unsigned int> expectedCountersPass4;
-    // CSBusy
-    expectedCountersPass4.push_back(10363); expectedLocationsCSBusy[10363] = MakeLocation(3, 0);
-    expectedCountersPass4.push_back(10549); expectedLocationsCSBusy[10549] = MakeLocation(3, 1);
-    expectedCountersPass4.push_back(10735); expectedLocationsCSBusy[10735] = MakeLocation(3, 2);
-    expectedCountersPass4.push_back(10921); expectedLocationsCSBusy[10921] = MakeLocation(3, 3);
-    expectedCountersPass4.push_back(10367); expectedLocationsCSBusy[10367] = MakeLocation(3, 4);
-    expectedCountersPass4.push_back(10553); expectedLocationsCSBusy[10553] = MakeLocation(3, 5);
-    expectedCountersPass4.push_back(10739); expectedLocationsCSBusy[10739] = MakeLocation(3, 6);
-    expectedCountersPass4.push_back(10925); expectedLocationsCSBusy[10925] = MakeLocation(3, 7);
-    expectedCountersPass4.push_back(7886);  expectedLocationsCSBusy[7886]  = MakeLocation(3, 8);
 
     std::vector< std::vector<unsigned int> > expectedHwCountersPerPass;
     expectedHwCountersPerPass.push_back(expectedCountersPass1);
     expectedHwCountersPerPass.push_back(expectedCountersPass2);
-    expectedHwCountersPerPass.push_back(expectedCountersPass3);
-    expectedHwCountersPerPass.push_back(expectedCountersPass4);
 
     std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations;
-    expectedResultLocations[3]  = expectedLocationsVSBusy;
-    expectedResultLocations[5]  = expectedLocationsHSBusy;
-    expectedResultLocations[7]  = expectedLocationsDSBusy;
-    expectedResultLocations[9]  = expectedLocationsGSBusy;
-    expectedResultLocations[11] = expectedLocationsPSBusy;
-    expectedResultLocations[13] = expectedLocationsCSBusy;
+    expectedResultLocations[VSBusyDX11Gfx7] = expectedLocationsVSBusy;
 
-    VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdCI, counters, expectedHwCountersPerPass, expectedResultLocations);
+    VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
 }
 
 void TestGPUTimeVSBusyVSTimeCountersForDevice(unsigned int deviceId)
 {
-    // checks that different combinations of GPUTime (0) / VSBusy (3) / VSTime (4) are scheduled correctly regardless of order of inclusion
+    // checks that different combinations of GPUTime / VSBusy / VSTime are scheduled correctly regardless of order of inclusion
+    static uint32_t GPUTimeIndex;
+    static uint32_t VSBusyIndex;
+    static uint32_t VSTimeIndex;
+    uint32_t expectedPasses = 0;
 
-    static const int GPUTimeIndex = 0;
-    static const int VSBusyIndex  = 3;
-    static const int VSTimeIndex  = 4;
-    std::vector<unsigned int> counters;
+    if (gDevIdSI == deviceId)
+    {
+        GPUTimeIndex = GPUTimeDX11Gfx6;
+        VSBusyIndex = VSBusyDX11Gfx6;
+        VSTimeIndex = VSTimeDX11Gfx6;
+        expectedPasses = 3;
+    }
+    else if (gDevIdCI == deviceId)
+    {
+        GPUTimeIndex = GPUTimeDX11Gfx7;
+        VSBusyIndex = VSBusyDX11Gfx7;
+        VSTimeIndex = VSTimeDX11Gfx7;
+        expectedPasses = 3;
+    }
+    else if (gDevIdVI == deviceId)
+    {
+        GPUTimeIndex = GPUTimeDX11Gfx8;
+        VSBusyIndex = VSBusyDX11Gfx8;
+        VSTimeIndex = VSTimeDX11Gfx8;
+        expectedPasses = 3;
+    }
+    else if (gDevIdGfx9 == deviceId)
+    {
+        GPUTimeIndex = GPUTimeDX11Gfx9;
+        VSBusyIndex = VSBusyDX11Gfx9;
+        VSTimeIndex = VSTimeDX11Gfx9;
+        expectedPasses = 2;
+    }
 
     // counters to enable (GPUTime, VSBusy)
-    counters.clear();
-    counters.push_back(GPUTimeIndex);
-    counters.push_back(VSBusyIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { GPUTimeIndex, VSBusyIndex }, expectedPasses);
 
     // counters to enable (VSBusy, GPUTime)
-    counters.clear();
-    counters.push_back(VSBusyIndex);
-    counters.push_back(GPUTimeIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { VSBusyIndex, GPUTimeIndex }, expectedPasses);
 
     // counters to enable (VSBusy, VSTime)
-    counters.clear();
-    counters.push_back(VSBusyIndex);
-    counters.push_back(VSTimeIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { VSBusyIndex, VSTimeIndex }, expectedPasses);
 
     // counters to enable (VSTime, VSBusy)
-    counters.clear();
-    counters.push_back(VSTimeIndex);
-    counters.push_back(VSBusyIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { VSTimeIndex, VSBusyIndex }, expectedPasses);
 
     // counters to enable (GPUTime, VSTime)
-    counters.clear();
-    counters.push_back(GPUTimeIndex);
-    counters.push_back(VSTimeIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { GPUTimeIndex, VSTimeIndex }, expectedPasses);
 
     // counters to enable (VSTime, GPUTime)
-    counters.clear();
-    counters.push_back(VSTimeIndex);
-    counters.push_back(GPUTimeIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { VSTimeIndex, GPUTimeIndex}, expectedPasses);
 
     // counters to enable (GPUTime, VSBusy, VSTime)
-    counters.clear();
-    counters.push_back(GPUTimeIndex);
-    counters.push_back(VSBusyIndex);
-    counters.push_back(VSTimeIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { GPUTimeIndex, VSBusyIndex, VSTimeIndex}, expectedPasses);
 
     // counters to enable (GPUTime, VSTime, VSBusy)
-    counters.clear();
-    counters.push_back(GPUTimeIndex);
-    counters.push_back(VSTimeIndex);
-    counters.push_back(VSBusyIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { GPUTimeIndex, VSTimeIndex, VSBusyIndex }, expectedPasses);
 
     // counters to enable (VSTime, GPUTime, VSBusy)
-    counters.clear();
-    counters.push_back(4);
-    counters.push_back(GPUTimeIndex);
-    counters.push_back(VSBusyIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { VSTimeIndex, GPUTimeIndex, VSBusyIndex }, expectedPasses);
 
     // counters to enable (VSTime, VSBusy, GPUTime)
-    counters.clear();
-    counters.push_back(VSTimeIndex);
-    counters.push_back(VSBusyIndex);
-    counters.push_back(GPUTimeIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { VSTimeIndex, VSBusyIndex, GPUTimeIndex}, expectedPasses);
 
     // counters to enable (VSBusy, GPUTime, VSTime)
-    counters.clear();
-    counters.push_back(VSBusyIndex);
-    counters.push_back(GPUTimeIndex);
-    counters.push_back(VSTimeIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { VSBusyIndex, GPUTimeIndex, VSTimeIndex }, expectedPasses);
 
     // counters to enable (VSBusy, VSTime, GPUTime)
-    counters.clear();
-    counters.push_back(VSBusyIndex);
-    counters.push_back(VSTimeIndex);
-    counters.push_back(GPUTimeIndex);
-    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, counters, 3);
+    VerifyPassCount(GPA_API_DIRECTX_11, deviceId, FALSE, std::vector<uint32_t> { VSBusyIndex, VSTimeIndex, GPUTimeIndex}, expectedPasses);
 }
 
 TEST(CounterDLLTests, DX11VIGPUTimeVSBusyVSTimeCounters)
@@ -402,6 +654,11 @@ TEST(CounterDLLTests, DX11CIGPUTimeVSBusyVSTimeCounters)
 TEST(CounterDLLTests, DX11SIGPUTimeVSBusyVSTimeCounters)
 {
     TestGPUTimeVSBusyVSTimeCountersForDevice(gDevIdSI);
+}
+
+TEST(CounterDLLTests, DX11Gfx9GPUTimeVSBusyVSTimeCounters)
+{
+    TestGPUTimeVSBusyVSTimeCountersForDevice(gDevIdGfx9);
 }
 
 void TestD3D11QueryCounter(unsigned int deviceId, unsigned int D3DQueryCounterIndex, unsigned int publicCounterCount, unsigned int hardwareCounterCount, unsigned int gpuTimeHWCounterIndex = 0)
@@ -466,10 +723,10 @@ void TestD3D11QueryCounter(unsigned int deviceId, unsigned int D3DQueryCounterIn
 
     expectedResultLocations[queryCounterIndex] = expectedLocationsD3DQuery;
 
-    VerifyCountersInPass(GPA_API_DIRECTX_11, deviceId, counters, expectedHwCountersPerPass, expectedResultLocations);
+    VerifyCountersInPass(GPA_API_DIRECTX_11, deviceId, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
 }
 
-static unsigned int GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION generation, unsigned int& gpuTimeHWCounterIndex)
+static unsigned int GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_Hw_Generation generation, unsigned int& gpuTimeHWCounterIndex)
 {
     unsigned int numHwCounters = 0;
     gpuTimeHWCounterIndex = 0;
@@ -608,7 +865,7 @@ void TestAllD3D11QueryCounters(unsigned int deviceId, unsigned int D3DQueryCount
     expectedHwCountersPerPass.push_back(expectedCountersPass1);
     expectedHwCountersPerPass.push_back(expectedCountersPass2);
 
-    VerifyCountersInPass(GPA_API_DIRECTX_11, deviceId, counters, expectedHwCountersPerPass, expectedResultLocations);
+    VerifyCountersInPass(GPA_API_DIRECTX_11, deviceId, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
 }
 
 TEST(CounterDLLTests, AllDX11D3DCounters)
@@ -641,7 +898,7 @@ TEST(CounterDLLTests, DX11CIPSBusyCounterResult)
 
     // fabricate some results that will allow us to confirm the PSBusy counter
     // each result is 64 bit, so 8 chars.
-    char* pAllResults = new(std::nothrow) char[requiredCount * 8];
+    gpa_uint64* pAllResults = new(std::nothrow) gpa_uint64[requiredCount * 8];
     ASSERT_TRUE(nullptr != pAllResults);
     memset(pAllResults, 0, requiredCount * 8);
 
@@ -656,14 +913,14 @@ TEST(CounterDLLTests, DX11CIPSBusyCounterResult)
     pAllResults[8 * 8] = 2; // GUI_ACTIVE
 
     // copy results into the vector
-    std::vector< char* > sampleResults;
+    std::vector< gpa_uint64* > sampleResults;
 
     for (unsigned int i = 0; i < requiredCount; i++)
     {
         sampleResults.push_back(&(pAllResults[i * 8]));
     }
 
-    VerifyCounterCalculation(GPA_API_DIRECTX_11, gDevIdCI, "PSBusy", sampleResults, 50);
+    VerifyCounterCalculation(GPA_API_DIRECTX_11, gDevIdCI, FALSE, "PSBusy", sampleResults, 50);
 
     delete[] pAllResults;
 
@@ -676,7 +933,7 @@ TEST(CounterDLLTests, DX11VIPSBusyCounterResult)
 
     // fabricate some results that will allow us to confirm the PSBusy counter
     // each result is 64 bit, so 8 chars.
-    char* pAllResults = new(std::nothrow) char[requiredCount * 8];
+    gpa_uint64* pAllResults = new(std::nothrow) gpa_uint64[requiredCount * 8];
     ASSERT_TRUE(nullptr != pAllResults);
     memset(pAllResults, 0, requiredCount * 8);
 
@@ -691,14 +948,14 @@ TEST(CounterDLLTests, DX11VIPSBusyCounterResult)
     pAllResults[8 * 8] = 2; // GUI_ACTIVE
 
     // copy results into the vector
-    std::vector< char* > sampleResults;
+    std::vector< gpa_uint64* > sampleResults;
 
     for (unsigned int i = 0; i < requiredCount; i++)
     {
         sampleResults.push_back(&(pAllResults[i * 8]));
     }
 
-    VerifyCounterCalculation(GPA_API_DIRECTX_11, gDevIdVI, "PSBusy", sampleResults, 50);
+    VerifyCounterCalculation(GPA_API_DIRECTX_11, gDevIdVI, FALSE, "PSBusy", sampleResults, 50);
 
     delete[] pAllResults;
 
@@ -706,11 +963,6 @@ TEST(CounterDLLTests, DX11VIPSBusyCounterResult)
 
 TEST(CounterDLLTests, DX11EnableAndDisable)
 {
-    std::vector<unsigned int> counters;
-    counters.push_back(0);
-    counters.push_back(1);
-    counters.push_back(2);
-
     GPA_API_Type api = GPA_API_DIRECTX_11;
     unsigned int deviceId = gDevIdVI;
 
@@ -720,12 +972,12 @@ TEST(CounterDLLTests, DX11EnableAndDisable)
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetProcAddress(hDll, "GPA_GetAvailableCounters");
     ASSERT_NE((GPA_GetAvailableCountersProc)nullptr, GPA_GetAvailableCounters_fn);
 
-    GPA_ICounterAccessor* pCounterAccessor = nullptr;
-    GPA_ICounterScheduler* pCounterScheduler = nullptr;
-    GPA_Status status = GPA_GetAvailableCounters_fn(api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, &pCounterAccessor, &pCounterScheduler);
+    IGPACounterAccessor* pCounterAccessor = nullptr;
+    IGPACounterScheduler* pCounterScheduler = nullptr;
+    GPA_Status status = GPA_GetAvailableCounters_fn(api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, FALSE, &pCounterAccessor, &pCounterScheduler);
     EXPECT_EQ(GPA_STATUS_OK, status);
-    EXPECT_NE((GPA_ICounterAccessor*)nullptr, pCounterAccessor);
-    ASSERT_NE((GPA_ICounterScheduler*)nullptr, pCounterScheduler);
+    EXPECT_NE((IGPACounterAccessor*)nullptr, pCounterAccessor);
+    ASSERT_NE((IGPACounterScheduler*)nullptr, pCounterScheduler);
 
     // enable a counter
     GPA_Status enabled = pCounterScheduler->EnableCounter(0);
@@ -769,9 +1021,1437 @@ TEST(CounterDLLTests, HSACounterScheduling)
     counters.push_back(1);
     counters.push_back(2);
 
-    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdUnknown);
-    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdSI);
+    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdUnknown, FALSE);
+    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdSI, FALSE);
 
-    VerifyPassCount(GPA_API_HSA, gDevIdCI, counters, 1);
-    VerifyPassCount(GPA_API_HSA, gDevIdVI, counters, 1);
+    VerifyPassCount(GPA_API_HSA, gDevIdCI, FALSE, counters, 1);
+    VerifyPassCount(GPA_API_HSA, gDevIdVI, FALSE, counters, 1);
 }
+
+/// GPA-127 Validation test.
+/// SQ counters must be isolated from TCC/TA/TCP/TCA/TD counters because PAL is now setting the
+/// SQ_PERF_CTRL register field to enable all shader waves when counters from the texture blocks are used.
+
+#ifdef _WIN32
+
+TEST(CounterDLLTests, SqIsolatedCounterSplitScheduler)
+{
+    // CSVFetchInstsDX11Gfx8 TA and SQ counters
+    std::vector<uint32_t> counters = { CSVFetchInstsDX11Gfx8 };
+
+    // Pass: 0  Counters: 64
+    std::vector<uint32_t> expectedCountersPass0 =
+    {
+        23512, 23631, 23750, 23869, 23988, 24107, 24226, 24345, 24464, 24583,
+        24702, 24821, 24940, 25059, 25178, 25297, 25416, 25535, 25654, 25773,
+        25892, 26011, 26130, 26249, 26368, 26487, 26606, 26725, 26844, 26963,
+        27082, 27201, 27320, 27439, 27558, 27677, 27796, 27915, 28034, 28153,
+        28272, 28391, 28510, 28629, 28748, 28867, 28986, 29105, 29224, 29343,
+        29462, 29581, 29700, 29819, 29938, 30057, 30176, 30295, 30414, 30533,
+        30652, 30771, 30890, 31009
+    };
+
+    // Pass: 1  Counters: 16
+    std::vector<uint32_t> expectedCountersPass1 =
+    {
+        22243, 22542, 22841, 23140, 22219, 22518, 22817, 23116, 13114, 13311,
+        13508, 13705, 13120, 13317, 13514, 13711
+    };
+
+    std::vector< std::vector<uint32_t> > expectedHwCountersPerPass =
+    {
+        expectedCountersPass0,
+        expectedCountersPass1
+    };
+
+    // Pass: 0  Counters: 74
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations0
+    {
+        MakeExpectedCounterLocationEntry(1, 8)
+        MakeExpectedCounterLocationEntry(1, 12)
+        MakeExpectedCounterLocationEntry(1, 9)
+        MakeExpectedCounterLocationEntry(1, 13)
+        MakeExpectedCounterLocationEntry(1, 10)
+        MakeExpectedCounterLocationEntry(1, 14)
+        MakeExpectedCounterLocationEntry(1, 11)
+        MakeExpectedCounterLocationEntry(1, 15)
+        MakeExpectedCounterLocationEntry(1, 4)
+        MakeExpectedCounterLocationEntry(1, 0)
+        MakeExpectedCounterLocationEntry(1, 5)
+        MakeExpectedCounterLocationEntry(1, 1)
+        MakeExpectedCounterLocationEntry(1, 6)
+        MakeExpectedCounterLocationEntry(1, 2)
+        MakeExpectedCounterLocationEntry(1, 7)
+        MakeExpectedCounterLocationEntry(1, 3)
+        MakeExpectedCounterLocationEntry(0, 0)
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 2)
+        MakeExpectedCounterLocationEntry(0, 3)
+        MakeExpectedCounterLocationEntry(0, 4)
+        MakeExpectedCounterLocationEntry(0, 5)
+        MakeExpectedCounterLocationEntry(0, 6)
+        MakeExpectedCounterLocationEntry(0, 7)
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(0, 9)
+        MakeExpectedCounterLocationEntry(0, 10)
+        MakeExpectedCounterLocationEntry(0, 11)
+        MakeExpectedCounterLocationEntry(0, 12)
+        MakeExpectedCounterLocationEntry(0, 13)
+        MakeExpectedCounterLocationEntry(0, 14)
+        MakeExpectedCounterLocationEntry(0, 15)
+        MakeExpectedCounterLocationEntry(0, 16)
+        MakeExpectedCounterLocationEntry(0, 17)
+        MakeExpectedCounterLocationEntry(0, 18)
+        MakeExpectedCounterLocationEntry(0, 19)
+        MakeExpectedCounterLocationEntry(0, 20)
+        MakeExpectedCounterLocationEntry(0, 21)
+        MakeExpectedCounterLocationEntry(0, 22)
+        MakeExpectedCounterLocationEntry(0, 23)
+        MakeExpectedCounterLocationEntry(0, 24)
+        MakeExpectedCounterLocationEntry(0, 25)
+        MakeExpectedCounterLocationEntry(0, 26)
+        MakeExpectedCounterLocationEntry(0, 27)
+        MakeExpectedCounterLocationEntry(0, 28)
+        MakeExpectedCounterLocationEntry(0, 29)
+        MakeExpectedCounterLocationEntry(0, 30)
+        MakeExpectedCounterLocationEntry(0, 31)
+        MakeExpectedCounterLocationEntry(0, 32)
+        MakeExpectedCounterLocationEntry(0, 33)
+        MakeExpectedCounterLocationEntry(0, 34)
+        MakeExpectedCounterLocationEntry(0, 35)
+        MakeExpectedCounterLocationEntry(0, 36)
+        MakeExpectedCounterLocationEntry(0, 37)
+        MakeExpectedCounterLocationEntry(0, 38)
+        MakeExpectedCounterLocationEntry(0, 39)
+        MakeExpectedCounterLocationEntry(0, 40)
+        MakeExpectedCounterLocationEntry(0, 41)
+        MakeExpectedCounterLocationEntry(0, 42)
+        MakeExpectedCounterLocationEntry(0, 43)
+        MakeExpectedCounterLocationEntry(0, 44)
+        MakeExpectedCounterLocationEntry(0, 45)
+        MakeExpectedCounterLocationEntry(0, 46)
+        MakeExpectedCounterLocationEntry(0, 47)
+        MakeExpectedCounterLocationEntry(0, 48)
+        MakeExpectedCounterLocationEntry(0, 49)
+        MakeExpectedCounterLocationEntry(0, 50)
+        MakeExpectedCounterLocationEntry(0, 51)
+        MakeExpectedCounterLocationEntry(0, 52)
+        MakeExpectedCounterLocationEntry(0, 53)
+        MakeExpectedCounterLocationEntry(0, 54)
+        MakeExpectedCounterLocationEntry(0, 55)
+        MakeExpectedCounterLocationEntry(0, 56)
+        MakeExpectedCounterLocationEntry(0, 57)
+        MakeExpectedCounterLocationEntry(0, 58)
+        MakeExpectedCounterLocationEntry(0, 59)
+        MakeExpectedCounterLocationEntry(0, 60)
+        MakeExpectedCounterLocationEntry(0, 61)
+        MakeExpectedCounterLocationEntry(0, 62)
+        MakeExpectedCounterLocationEntry(0, 63)
+    };
+
+    std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations =
+    {
+        { CSVFetchInstsDX11Gfx8, expectedLocations0 }
+    };
+
+    VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdGfx8, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
+}
+
+/// GPA-159 Validation Test
+/// Select the "HSBusyCycles", "HSTime (ns)", "PSBusyCycles", "PSTime (ns)" counters together
+
+TEST(CounterDLLTests, Gpa159MultipleTimingCounters)
+{
+    std::vector<uint32_t> counters =
+    {
+        HSBusyCyclesDX12Gfx8,
+        HSTimeDX12Gfx8,
+        PSBusyCyclesDX12Gfx8,
+        PSTimeDX12Gfx8,
+    };
+
+    // Pass: 0  Counters: 17
+    std::vector<uint32_t> expectedCountersPass0 =
+    {
+        2893, 3090, 3287, 3484, 2899, 3096, 3293, 3490, 49743, 2925,
+        3122, 3319, 3516, 2930, 3127, 3324, 3521
+    };
+
+    // Pass: 1  Counters: 1
+    std::vector<uint32_t> expectedCountersPass1 =
+    {
+        51131
+    };
+
+    std::vector< std::vector<uint32_t> > expectedHwCountersPerPass =
+    {
+        expectedCountersPass0,
+        expectedCountersPass1,
+    };
+
+
+    // Result locations (Pass, Offset)
+
+    // Pass: 0  Counters: 9
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations0
+    {
+        MakeExpectedCounterLocationEntry(0, 0)
+        MakeExpectedCounterLocationEntry(0, 4)
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 5)
+        MakeExpectedCounterLocationEntry(0, 2)
+        MakeExpectedCounterLocationEntry(0, 6)
+        MakeExpectedCounterLocationEntry(0, 3)
+        MakeExpectedCounterLocationEntry(0, 7)
+    };
+
+    // Pass: 1  Counters: 10
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations1
+    {
+        MakeExpectedCounterLocationEntry(0, 0)
+        MakeExpectedCounterLocationEntry(0, 4)
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 5)
+        MakeExpectedCounterLocationEntry(0, 2)
+        MakeExpectedCounterLocationEntry(0, 6)
+        MakeExpectedCounterLocationEntry(0, 3)
+        MakeExpectedCounterLocationEntry(0, 7)
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(1, 0)
+    };
+
+    // Pass: 2  Counters: 18
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations2
+    {
+        MakeExpectedCounterLocationEntry(0, 9)
+        MakeExpectedCounterLocationEntry(0, 13)
+        MakeExpectedCounterLocationEntry(0, 10)
+        MakeExpectedCounterLocationEntry(0, 14)
+        MakeExpectedCounterLocationEntry(0, 11)
+        MakeExpectedCounterLocationEntry(0, 15)
+        MakeExpectedCounterLocationEntry(0, 12)
+        MakeExpectedCounterLocationEntry(0, 16)
+    };
+
+    // Pass: 3  Counters: 19
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations3
+    {
+        MakeExpectedCounterLocationEntry(0, 9)
+        MakeExpectedCounterLocationEntry(0, 13)
+        MakeExpectedCounterLocationEntry(0, 10)
+        MakeExpectedCounterLocationEntry(0, 14)
+        MakeExpectedCounterLocationEntry(0, 11)
+        MakeExpectedCounterLocationEntry(0, 15)
+        MakeExpectedCounterLocationEntry(0, 12)
+        MakeExpectedCounterLocationEntry(0, 16)
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(1, 0)
+    };
+
+    std::map< uint32_t, std::map<uint32_t, GPA_CounterResultLocation> > expectedResultLocations =
+    {
+        { HSBusyCyclesDX12Gfx8, expectedLocations0 },
+        { HSTimeDX12Gfx8, expectedLocations1 },
+        { PSBusyCyclesDX12Gfx8, expectedLocations2 },
+        { PSTimeDX12Gfx8, expectedLocations3 }
+    };
+
+    VerifyCountersInPass(GPA_API_DIRECTX_12, gDevIdGfx8, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
+}
+
+/// GPA-85 Validation Test
+/// Enable the following counters in this order:
+/// VSVerticesIn
+/// VSVALUInstCount
+/// VSVALUBusy
+/// VSSALUInstCount
+/// VSSALUBusy
+/// CSBusy
+/// CSTime
+/// DSBusy
+/// DSTime
+/// DepthStencilTestBusy
+/// GPUBusy
+/// GPUTime
+/// GSBusy
+/// GSTime
+/// PSBusy
+/// PSTime
+/// PrimitiveAssemblyBusy
+/// TessallatorBusy
+/// TexUnitBusy
+/// HSTime
+/// HSBusy
+/// VSBusy
+/// VSTime
+
+TEST(CounterDLLTests, Gpa85MultipleTimingCounters)
+{
+    std::vector<uint32_t> counters =
+    {
+        VSVerticesInDX12Gfx8,
+        VSVALUInstCountDX12Gfx8,
+        VSVALUBusyDX12Gfx8,
+        VSSALUInstCountDX12Gfx8,
+        VSSALUBusyDX12Gfx8,
+        CSBusyDX12Gfx8,
+        CSTimeDX12Gfx8,
+        DSBusyDX12Gfx8,
+        DSTimeDX12Gfx8,
+        DepthStencilTestBusyDX12Gfx8,
+        GPUBusyDX12Gfx8,
+        GPUTimeDX12Gfx8,
+        GSBusyDX12Gfx8,
+        GSTimeDX12Gfx8,
+        PSBusyDX12Gfx8,
+        PSTimeDX12Gfx8,
+        PrimitiveAssemblyBusyDX12Gfx8,
+        TessellatorBusyDX12Gfx8,
+        TexUnitBusyDX12Gfx8,
+        HSTimeDX12Gfx8,
+        HSBusyDX12Gfx8,
+        VSBusyDX12Gfx8,
+        VSTimeDX12Gfx8,
+    };
+
+    // Pass: 0  Counters: 118
+    std::vector<uint32_t> expectedCountersPass0 =
+    {
+        13362, 13481, 13600, 13719, 13838, 13957, 14076, 14195, 14314, 14433,
+        14552, 14671, 14790, 14909, 15028, 15147, 15266, 15385, 15504, 15623,
+        15742, 15861, 15980, 16099, 16218, 16337, 16456, 16575, 16694, 16813,
+        16932, 17051, 17170, 17289, 17408, 17527, 17646, 17765, 17884, 18003,
+        18122, 18241, 18360, 18479, 18598, 18717, 18836, 18955, 19074, 19193,
+        19312, 19431, 19550, 19669, 19788, 19907, 20026, 20145, 20264, 20383,
+        20502, 20621, 20740, 20859, 49743, 2856, 3053, 3250, 3447, 2881,
+        3078, 3275, 3472, 2903, 3100, 3297, 3494, 2925, 3122, 3319,
+        3516, 2865, 3062, 3259, 3456, 2887, 3084, 3281, 3478, 39289,
+        39546, 39803, 40060, 40317, 40574, 40831, 41088, 41345, 41602, 41859,
+        42116, 42373, 42630, 42887, 43144, 87, 234, 381, 528, 68,
+        215, 362, 509, 163, 310, 457, 604, 49741
+    };
+
+    // Pass: 1  Counters: 69
+    std::vector<uint32_t> expectedCountersPass1 =
+    {
+        2856, 3053, 3250, 3447, 2881, 3078, 3275, 3472, 2925, 3122,
+        3319, 3516, 2887, 3084, 3281, 3478, 2909, 3106, 3303, 3500,
+        49743, 760, 913, 1066, 1219, 764, 917, 1070, 1223, 716,
+        869, 1022, 1175, 728, 881, 1034, 1187, 4865, 5164, 5463,
+        5762, 4843, 5142, 5441, 5740, 4853, 5152, 5451, 5750, 4869,
+        5168, 5467, 5766, 2930, 3127, 3324, 3521, 4920, 5219, 5518,
+        5817, 4925, 5224, 5523, 5822, 191, 338, 485, 632
+    };
+
+    // Pass: 2  Counters: 57
+    std::vector<uint32_t> expectedCountersPass2 =
+    {
+        2913, 3110, 3307, 3504, 2917, 3114, 3311, 3508, 2919, 3116,
+        3313, 3510, 2923, 3120, 3317, 3514, 49743, 9649, 9948, 10247,
+        10546, 9627, 9926, 10225, 10524, 9637, 9936, 10235, 10534, 9653,
+        9952, 10251, 10550, 2872, 3069, 3266, 3463, 2875, 3072, 3269,
+        3466, 9704, 10003, 10302, 10601, 9709, 10008, 10307, 10606, 717,
+        870, 1023, 1176, 729, 882, 1035, 1188
+    };
+
+    // Pass: 3  Counters: 29
+    std::vector<uint32_t> expectedCountersPass3 =
+    {
+        2893, 3090, 3287, 3484, 2899, 3096, 3293, 3490, 49743, 7257,
+        7556, 7855, 8154, 7235, 7534, 7833, 8132, 7261, 7560, 7859,
+        8158, 7312, 7611, 7910, 8209, 7317, 7616, 7915, 8214
+    };
+
+    // Pass: 4  Counters: 1
+    std::vector<uint32_t> expectedCountersPass4 =
+    {
+        51131
+    };
+
+    std::vector< std::vector<uint32_t> > expectedHwCountersPerPass =
+    {
+        expectedCountersPass0,
+        expectedCountersPass1,
+        expectedCountersPass2,
+        expectedCountersPass3,
+        expectedCountersPass4,
+    };
+
+
+    // Result locations (Pass, Offset)
+
+    // Pass: 0  Counters: 23
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations0
+    {
+        MakeExpectedCounterLocationEntry(0, 109)
+        MakeExpectedCounterLocationEntry(0, 105)
+        MakeExpectedCounterLocationEntry(0, 113)
+        MakeExpectedCounterLocationEntry(0, 110)
+        MakeExpectedCounterLocationEntry(0, 106)
+        MakeExpectedCounterLocationEntry(0, 114)
+        MakeExpectedCounterLocationEntry(0, 111)
+        MakeExpectedCounterLocationEntry(0, 107)
+        MakeExpectedCounterLocationEntry(0, 115)
+        MakeExpectedCounterLocationEntry(0, 112)
+        MakeExpectedCounterLocationEntry(0, 108)
+        MakeExpectedCounterLocationEntry(0, 116)
+    };
+
+    // Pass: 1  Counters: 24
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations1
+    {
+        MakeExpectedCounterLocationEntry(1, 41)
+        MakeExpectedCounterLocationEntry(1, 45)
+        MakeExpectedCounterLocationEntry(1, 37)
+        MakeExpectedCounterLocationEntry(1, 42)
+        MakeExpectedCounterLocationEntry(1, 46)
+        MakeExpectedCounterLocationEntry(1, 38)
+        MakeExpectedCounterLocationEntry(1, 43)
+        MakeExpectedCounterLocationEntry(1, 47)
+        MakeExpectedCounterLocationEntry(1, 39)
+        MakeExpectedCounterLocationEntry(1, 44)
+        MakeExpectedCounterLocationEntry(1, 48)
+        MakeExpectedCounterLocationEntry(1, 40)
+        MakeExpectedCounterLocationEntry(3, 13)
+        MakeExpectedCounterLocationEntry(3, 9)
+        MakeExpectedCounterLocationEntry(3, 14)
+        MakeExpectedCounterLocationEntry(3, 10)
+        MakeExpectedCounterLocationEntry(3, 15)
+        MakeExpectedCounterLocationEntry(3, 11)
+        MakeExpectedCounterLocationEntry(3, 16)
+        MakeExpectedCounterLocationEntry(3, 12)
+        MakeExpectedCounterLocationEntry(2, 21)
+        MakeExpectedCounterLocationEntry(2, 25)
+        MakeExpectedCounterLocationEntry(2, 17)
+        MakeExpectedCounterLocationEntry(2, 22)
+        MakeExpectedCounterLocationEntry(2, 26)
+        MakeExpectedCounterLocationEntry(2, 18)
+        MakeExpectedCounterLocationEntry(2, 23)
+        MakeExpectedCounterLocationEntry(2, 27)
+        MakeExpectedCounterLocationEntry(2, 19)
+        MakeExpectedCounterLocationEntry(2, 24)
+        MakeExpectedCounterLocationEntry(2, 28)
+        MakeExpectedCounterLocationEntry(2, 20)
+    };
+
+    // Pass: 2  Counters: 26
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations2
+    {
+        MakeExpectedCounterLocationEntry(1, 45)
+        MakeExpectedCounterLocationEntry(1, 57)
+        MakeExpectedCounterLocationEntry(1, 46)
+        MakeExpectedCounterLocationEntry(1, 58)
+        MakeExpectedCounterLocationEntry(1, 47)
+        MakeExpectedCounterLocationEntry(1, 59)
+        MakeExpectedCounterLocationEntry(1, 48)
+        MakeExpectedCounterLocationEntry(1, 60)
+        MakeExpectedCounterLocationEntry(3, 21)
+        MakeExpectedCounterLocationEntry(3, 22)
+        MakeExpectedCounterLocationEntry(3, 23)
+        MakeExpectedCounterLocationEntry(3, 24)
+        MakeExpectedCounterLocationEntry(2, 25)
+        MakeExpectedCounterLocationEntry(2, 41)
+        MakeExpectedCounterLocationEntry(2, 26)
+        MakeExpectedCounterLocationEntry(2, 42)
+        MakeExpectedCounterLocationEntry(2, 27)
+        MakeExpectedCounterLocationEntry(2, 43)
+        MakeExpectedCounterLocationEntry(2, 28)
+        MakeExpectedCounterLocationEntry(2, 44)
+        MakeExpectedCounterLocationEntry(3, 8)
+    };
+
+    // Pass: 3  Counters: 25
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations3
+    {
+        MakeExpectedCounterLocationEntry(1, 41)
+        MakeExpectedCounterLocationEntry(1, 45)
+        MakeExpectedCounterLocationEntry(1, 49)
+        MakeExpectedCounterLocationEntry(1, 42)
+        MakeExpectedCounterLocationEntry(1, 46)
+        MakeExpectedCounterLocationEntry(1, 50)
+        MakeExpectedCounterLocationEntry(1, 43)
+        MakeExpectedCounterLocationEntry(1, 47)
+        MakeExpectedCounterLocationEntry(1, 51)
+        MakeExpectedCounterLocationEntry(1, 44)
+        MakeExpectedCounterLocationEntry(1, 48)
+        MakeExpectedCounterLocationEntry(1, 52)
+        MakeExpectedCounterLocationEntry(3, 13)
+        MakeExpectedCounterLocationEntry(3, 17)
+        MakeExpectedCounterLocationEntry(3, 14)
+        MakeExpectedCounterLocationEntry(3, 18)
+        MakeExpectedCounterLocationEntry(3, 15)
+        MakeExpectedCounterLocationEntry(3, 19)
+        MakeExpectedCounterLocationEntry(3, 16)
+        MakeExpectedCounterLocationEntry(3, 20)
+        MakeExpectedCounterLocationEntry(2, 21)
+        MakeExpectedCounterLocationEntry(2, 25)
+        MakeExpectedCounterLocationEntry(2, 29)
+        MakeExpectedCounterLocationEntry(2, 22)
+        MakeExpectedCounterLocationEntry(2, 26)
+        MakeExpectedCounterLocationEntry(2, 30)
+        MakeExpectedCounterLocationEntry(2, 23)
+        MakeExpectedCounterLocationEntry(2, 27)
+        MakeExpectedCounterLocationEntry(2, 31)
+        MakeExpectedCounterLocationEntry(2, 24)
+        MakeExpectedCounterLocationEntry(2, 28)
+        MakeExpectedCounterLocationEntry(2, 32)
+    };
+
+    // Pass: 4  Counters: 28
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations4
+    {
+        MakeExpectedCounterLocationEntry(1, 45)
+        MakeExpectedCounterLocationEntry(1, 61)
+        MakeExpectedCounterLocationEntry(1, 46)
+        MakeExpectedCounterLocationEntry(1, 62)
+        MakeExpectedCounterLocationEntry(1, 47)
+        MakeExpectedCounterLocationEntry(1, 63)
+        MakeExpectedCounterLocationEntry(1, 48)
+        MakeExpectedCounterLocationEntry(1, 64)
+        MakeExpectedCounterLocationEntry(3, 25)
+        MakeExpectedCounterLocationEntry(3, 26)
+        MakeExpectedCounterLocationEntry(3, 27)
+        MakeExpectedCounterLocationEntry(3, 28)
+        MakeExpectedCounterLocationEntry(2, 25)
+        MakeExpectedCounterLocationEntry(2, 45)
+        MakeExpectedCounterLocationEntry(2, 26)
+        MakeExpectedCounterLocationEntry(2, 46)
+        MakeExpectedCounterLocationEntry(2, 27)
+        MakeExpectedCounterLocationEntry(2, 47)
+        MakeExpectedCounterLocationEntry(2, 28)
+        MakeExpectedCounterLocationEntry(2, 48)
+        MakeExpectedCounterLocationEntry(3, 8)
+    };
+
+    // Pass: 5  Counters: 20
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations5
+    {
+        MakeExpectedCounterLocationEntry(2, 0)
+        MakeExpectedCounterLocationEntry(2, 4)
+        MakeExpectedCounterLocationEntry(2, 8)
+        MakeExpectedCounterLocationEntry(2, 12)
+        MakeExpectedCounterLocationEntry(2, 1)
+        MakeExpectedCounterLocationEntry(2, 5)
+        MakeExpectedCounterLocationEntry(2, 9)
+        MakeExpectedCounterLocationEntry(2, 13)
+        MakeExpectedCounterLocationEntry(2, 2)
+        MakeExpectedCounterLocationEntry(2, 6)
+        MakeExpectedCounterLocationEntry(2, 10)
+        MakeExpectedCounterLocationEntry(2, 14)
+        MakeExpectedCounterLocationEntry(2, 3)
+        MakeExpectedCounterLocationEntry(2, 7)
+        MakeExpectedCounterLocationEntry(2, 11)
+        MakeExpectedCounterLocationEntry(2, 15)
+        MakeExpectedCounterLocationEntry(2, 16)
+    };
+
+    // Pass: 6  Counters: 22
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations6
+    {
+        MakeExpectedCounterLocationEntry(2, 0)
+        MakeExpectedCounterLocationEntry(2, 4)
+        MakeExpectedCounterLocationEntry(2, 8)
+        MakeExpectedCounterLocationEntry(2, 12)
+        MakeExpectedCounterLocationEntry(2, 1)
+        MakeExpectedCounterLocationEntry(2, 5)
+        MakeExpectedCounterLocationEntry(2, 9)
+        MakeExpectedCounterLocationEntry(2, 13)
+        MakeExpectedCounterLocationEntry(2, 2)
+        MakeExpectedCounterLocationEntry(2, 6)
+        MakeExpectedCounterLocationEntry(2, 10)
+        MakeExpectedCounterLocationEntry(2, 14)
+        MakeExpectedCounterLocationEntry(2, 3)
+        MakeExpectedCounterLocationEntry(2, 7)
+        MakeExpectedCounterLocationEntry(2, 11)
+        MakeExpectedCounterLocationEntry(2, 15)
+        MakeExpectedCounterLocationEntry(2, 16)
+        MakeExpectedCounterLocationEntry(4, 0)
+    };
+
+    // Pass: 7  Counters: 11
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations7
+    {
+        MakeExpectedCounterLocationEntry(1, 0)
+        MakeExpectedCounterLocationEntry(1, 4)
+        MakeExpectedCounterLocationEntry(1, 12)
+        MakeExpectedCounterLocationEntry(1, 16)
+        MakeExpectedCounterLocationEntry(1, 8)
+        MakeExpectedCounterLocationEntry(1, 1)
+        MakeExpectedCounterLocationEntry(1, 5)
+        MakeExpectedCounterLocationEntry(1, 13)
+        MakeExpectedCounterLocationEntry(1, 17)
+        MakeExpectedCounterLocationEntry(1, 9)
+        MakeExpectedCounterLocationEntry(1, 2)
+        MakeExpectedCounterLocationEntry(1, 6)
+        MakeExpectedCounterLocationEntry(1, 14)
+        MakeExpectedCounterLocationEntry(1, 18)
+        MakeExpectedCounterLocationEntry(1, 10)
+        MakeExpectedCounterLocationEntry(1, 3)
+        MakeExpectedCounterLocationEntry(1, 7)
+        MakeExpectedCounterLocationEntry(1, 15)
+        MakeExpectedCounterLocationEntry(1, 19)
+        MakeExpectedCounterLocationEntry(1, 11)
+        MakeExpectedCounterLocationEntry(1, 20)
+    };
+
+    // Pass: 8  Counters: 13
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations8
+    {
+        MakeExpectedCounterLocationEntry(1, 0)
+        MakeExpectedCounterLocationEntry(1, 4)
+        MakeExpectedCounterLocationEntry(1, 12)
+        MakeExpectedCounterLocationEntry(1, 16)
+        MakeExpectedCounterLocationEntry(1, 8)
+        MakeExpectedCounterLocationEntry(1, 1)
+        MakeExpectedCounterLocationEntry(1, 5)
+        MakeExpectedCounterLocationEntry(1, 13)
+        MakeExpectedCounterLocationEntry(1, 17)
+        MakeExpectedCounterLocationEntry(1, 9)
+        MakeExpectedCounterLocationEntry(1, 2)
+        MakeExpectedCounterLocationEntry(1, 6)
+        MakeExpectedCounterLocationEntry(1, 14)
+        MakeExpectedCounterLocationEntry(1, 18)
+        MakeExpectedCounterLocationEntry(1, 10)
+        MakeExpectedCounterLocationEntry(1, 3)
+        MakeExpectedCounterLocationEntry(1, 7)
+        MakeExpectedCounterLocationEntry(1, 15)
+        MakeExpectedCounterLocationEntry(1, 19)
+        MakeExpectedCounterLocationEntry(1, 11)
+        MakeExpectedCounterLocationEntry(1, 20)
+        MakeExpectedCounterLocationEntry(4, 0)
+    };
+
+    // Pass: 9  Counters: 103
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations9
+    {
+        MakeExpectedCounterLocationEntry(0, 89)
+        MakeExpectedCounterLocationEntry(0, 90)
+        MakeExpectedCounterLocationEntry(0, 91)
+        MakeExpectedCounterLocationEntry(0, 92)
+        MakeExpectedCounterLocationEntry(0, 93)
+        MakeExpectedCounterLocationEntry(0, 94)
+        MakeExpectedCounterLocationEntry(0, 95)
+        MakeExpectedCounterLocationEntry(0, 96)
+        MakeExpectedCounterLocationEntry(0, 97)
+        MakeExpectedCounterLocationEntry(0, 98)
+        MakeExpectedCounterLocationEntry(0, 99)
+        MakeExpectedCounterLocationEntry(0, 100)
+        MakeExpectedCounterLocationEntry(0, 101)
+        MakeExpectedCounterLocationEntry(0, 102)
+        MakeExpectedCounterLocationEntry(0, 103)
+        MakeExpectedCounterLocationEntry(0, 104)
+        MakeExpectedCounterLocationEntry(0, 64)
+    };
+
+    // Pass: 10  Counters: 1
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations10
+    {
+        MakeExpectedCounterLocationEntry(0, 117)
+        MakeExpectedCounterLocationEntry(0, 64)
+    };
+
+    // Pass: 11  Counters: 0
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations11
+    {
+        MakeExpectedCounterLocationEntry(4, 0)
+    };
+
+    // Pass: 12  Counters: 14
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations12
+    {
+        MakeExpectedCounterLocationEntry(2, 33)
+        MakeExpectedCounterLocationEntry(2, 37)
+        MakeExpectedCounterLocationEntry(2, 34)
+        MakeExpectedCounterLocationEntry(2, 38)
+        MakeExpectedCounterLocationEntry(2, 35)
+        MakeExpectedCounterLocationEntry(2, 39)
+        MakeExpectedCounterLocationEntry(2, 36)
+        MakeExpectedCounterLocationEntry(2, 40)
+        MakeExpectedCounterLocationEntry(2, 16)
+    };
+
+    // Pass: 13  Counters: 16
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations13
+    {
+        MakeExpectedCounterLocationEntry(2, 33)
+        MakeExpectedCounterLocationEntry(2, 37)
+        MakeExpectedCounterLocationEntry(2, 34)
+        MakeExpectedCounterLocationEntry(2, 38)
+        MakeExpectedCounterLocationEntry(2, 35)
+        MakeExpectedCounterLocationEntry(2, 39)
+        MakeExpectedCounterLocationEntry(2, 36)
+        MakeExpectedCounterLocationEntry(2, 40)
+        MakeExpectedCounterLocationEntry(2, 16)
+        MakeExpectedCounterLocationEntry(4, 0)
+    };
+
+    // Pass: 14  Counters: 17
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations14
+    {
+        MakeExpectedCounterLocationEntry(1, 8)
+        MakeExpectedCounterLocationEntry(1, 53)
+        MakeExpectedCounterLocationEntry(1, 9)
+        MakeExpectedCounterLocationEntry(1, 54)
+        MakeExpectedCounterLocationEntry(1, 10)
+        MakeExpectedCounterLocationEntry(1, 55)
+        MakeExpectedCounterLocationEntry(1, 11)
+        MakeExpectedCounterLocationEntry(1, 56)
+        MakeExpectedCounterLocationEntry(1, 20)
+    };
+
+    // Pass: 15  Counters: 19
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations15
+    {
+        MakeExpectedCounterLocationEntry(1, 8)
+        MakeExpectedCounterLocationEntry(1, 53)
+        MakeExpectedCounterLocationEntry(1, 9)
+        MakeExpectedCounterLocationEntry(1, 54)
+        MakeExpectedCounterLocationEntry(1, 10)
+        MakeExpectedCounterLocationEntry(1, 55)
+        MakeExpectedCounterLocationEntry(1, 11)
+        MakeExpectedCounterLocationEntry(1, 56)
+        MakeExpectedCounterLocationEntry(1, 20)
+        MakeExpectedCounterLocationEntry(4, 0)
+    };
+
+    // Pass: 16  Counters: 52
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations16
+    {
+        MakeExpectedCounterLocationEntry(1, 29)
+        MakeExpectedCounterLocationEntry(2, 49)
+        MakeExpectedCounterLocationEntry(1, 33)
+        MakeExpectedCounterLocationEntry(2, 53)
+        MakeExpectedCounterLocationEntry(1, 21)
+        MakeExpectedCounterLocationEntry(1, 25)
+        MakeExpectedCounterLocationEntry(1, 30)
+        MakeExpectedCounterLocationEntry(2, 50)
+        MakeExpectedCounterLocationEntry(1, 34)
+        MakeExpectedCounterLocationEntry(2, 54)
+        MakeExpectedCounterLocationEntry(1, 22)
+        MakeExpectedCounterLocationEntry(1, 26)
+        MakeExpectedCounterLocationEntry(1, 31)
+        MakeExpectedCounterLocationEntry(2, 51)
+        MakeExpectedCounterLocationEntry(1, 35)
+        MakeExpectedCounterLocationEntry(2, 55)
+        MakeExpectedCounterLocationEntry(1, 23)
+        MakeExpectedCounterLocationEntry(1, 27)
+        MakeExpectedCounterLocationEntry(1, 32)
+        MakeExpectedCounterLocationEntry(2, 52)
+        MakeExpectedCounterLocationEntry(1, 36)
+        MakeExpectedCounterLocationEntry(2, 56)
+        MakeExpectedCounterLocationEntry(1, 24)
+        MakeExpectedCounterLocationEntry(1, 28)
+        MakeExpectedCounterLocationEntry(1, 20)
+    };
+
+    // Pass: 17  Counters: 3
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations17
+    {
+        MakeExpectedCounterLocationEntry(1, 65)
+        MakeExpectedCounterLocationEntry(1, 66)
+        MakeExpectedCounterLocationEntry(1, 67)
+        MakeExpectedCounterLocationEntry(1, 68)
+        MakeExpectedCounterLocationEntry(1, 20)
+    };
+
+    // Pass: 18  Counters: 94
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations18
+    {
+        MakeExpectedCounterLocationEntry(0, 0)
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 2)
+        MakeExpectedCounterLocationEntry(0, 3)
+        MakeExpectedCounterLocationEntry(0, 4)
+        MakeExpectedCounterLocationEntry(0, 5)
+        MakeExpectedCounterLocationEntry(0, 6)
+        MakeExpectedCounterLocationEntry(0, 7)
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(0, 9)
+        MakeExpectedCounterLocationEntry(0, 10)
+        MakeExpectedCounterLocationEntry(0, 11)
+        MakeExpectedCounterLocationEntry(0, 12)
+        MakeExpectedCounterLocationEntry(0, 13)
+        MakeExpectedCounterLocationEntry(0, 14)
+        MakeExpectedCounterLocationEntry(0, 15)
+        MakeExpectedCounterLocationEntry(0, 16)
+        MakeExpectedCounterLocationEntry(0, 17)
+        MakeExpectedCounterLocationEntry(0, 18)
+        MakeExpectedCounterLocationEntry(0, 19)
+        MakeExpectedCounterLocationEntry(0, 20)
+        MakeExpectedCounterLocationEntry(0, 21)
+        MakeExpectedCounterLocationEntry(0, 22)
+        MakeExpectedCounterLocationEntry(0, 23)
+        MakeExpectedCounterLocationEntry(0, 24)
+        MakeExpectedCounterLocationEntry(0, 25)
+        MakeExpectedCounterLocationEntry(0, 26)
+        MakeExpectedCounterLocationEntry(0, 27)
+        MakeExpectedCounterLocationEntry(0, 28)
+        MakeExpectedCounterLocationEntry(0, 29)
+        MakeExpectedCounterLocationEntry(0, 30)
+        MakeExpectedCounterLocationEntry(0, 31)
+        MakeExpectedCounterLocationEntry(0, 32)
+        MakeExpectedCounterLocationEntry(0, 33)
+        MakeExpectedCounterLocationEntry(0, 34)
+        MakeExpectedCounterLocationEntry(0, 35)
+        MakeExpectedCounterLocationEntry(0, 36)
+        MakeExpectedCounterLocationEntry(0, 37)
+        MakeExpectedCounterLocationEntry(0, 38)
+        MakeExpectedCounterLocationEntry(0, 39)
+        MakeExpectedCounterLocationEntry(0, 40)
+        MakeExpectedCounterLocationEntry(0, 41)
+        MakeExpectedCounterLocationEntry(0, 42)
+        MakeExpectedCounterLocationEntry(0, 43)
+        MakeExpectedCounterLocationEntry(0, 44)
+        MakeExpectedCounterLocationEntry(0, 45)
+        MakeExpectedCounterLocationEntry(0, 46)
+        MakeExpectedCounterLocationEntry(0, 47)
+        MakeExpectedCounterLocationEntry(0, 48)
+        MakeExpectedCounterLocationEntry(0, 49)
+        MakeExpectedCounterLocationEntry(0, 50)
+        MakeExpectedCounterLocationEntry(0, 51)
+        MakeExpectedCounterLocationEntry(0, 52)
+        MakeExpectedCounterLocationEntry(0, 53)
+        MakeExpectedCounterLocationEntry(0, 54)
+        MakeExpectedCounterLocationEntry(0, 55)
+        MakeExpectedCounterLocationEntry(0, 56)
+        MakeExpectedCounterLocationEntry(0, 57)
+        MakeExpectedCounterLocationEntry(0, 58)
+        MakeExpectedCounterLocationEntry(0, 59)
+        MakeExpectedCounterLocationEntry(0, 60)
+        MakeExpectedCounterLocationEntry(0, 61)
+        MakeExpectedCounterLocationEntry(0, 62)
+        MakeExpectedCounterLocationEntry(0, 63)
+        MakeExpectedCounterLocationEntry(0, 64)
+    };
+
+    // Pass: 19  Counters: 10
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations19
+    {
+        MakeExpectedCounterLocationEntry(3, 0)
+        MakeExpectedCounterLocationEntry(3, 4)
+        MakeExpectedCounterLocationEntry(3, 1)
+        MakeExpectedCounterLocationEntry(3, 5)
+        MakeExpectedCounterLocationEntry(3, 2)
+        MakeExpectedCounterLocationEntry(3, 6)
+        MakeExpectedCounterLocationEntry(3, 3)
+        MakeExpectedCounterLocationEntry(3, 7)
+        MakeExpectedCounterLocationEntry(3, 8)
+        MakeExpectedCounterLocationEntry(4, 0)
+    };
+
+    // Pass: 20  Counters: 8
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations20
+    {
+        MakeExpectedCounterLocationEntry(3, 0)
+        MakeExpectedCounterLocationEntry(3, 4)
+        MakeExpectedCounterLocationEntry(3, 1)
+        MakeExpectedCounterLocationEntry(3, 5)
+        MakeExpectedCounterLocationEntry(3, 2)
+        MakeExpectedCounterLocationEntry(3, 6)
+        MakeExpectedCounterLocationEntry(3, 3)
+        MakeExpectedCounterLocationEntry(3, 7)
+        MakeExpectedCounterLocationEntry(3, 8)
+    };
+
+    // Pass: 21  Counters: 5
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations21
+    {
+        MakeExpectedCounterLocationEntry(0, 65)
+        MakeExpectedCounterLocationEntry(0, 81)
+        MakeExpectedCounterLocationEntry(0, 69)
+        MakeExpectedCounterLocationEntry(0, 85)
+        MakeExpectedCounterLocationEntry(0, 73)
+        MakeExpectedCounterLocationEntry(1, 16)
+        MakeExpectedCounterLocationEntry(0, 77)
+        MakeExpectedCounterLocationEntry(0, 66)
+        MakeExpectedCounterLocationEntry(0, 82)
+        MakeExpectedCounterLocationEntry(0, 70)
+        MakeExpectedCounterLocationEntry(0, 86)
+        MakeExpectedCounterLocationEntry(0, 74)
+        MakeExpectedCounterLocationEntry(1, 17)
+        MakeExpectedCounterLocationEntry(0, 78)
+        MakeExpectedCounterLocationEntry(0, 67)
+        MakeExpectedCounterLocationEntry(0, 83)
+        MakeExpectedCounterLocationEntry(0, 71)
+        MakeExpectedCounterLocationEntry(0, 87)
+        MakeExpectedCounterLocationEntry(0, 75)
+        MakeExpectedCounterLocationEntry(1, 18)
+        MakeExpectedCounterLocationEntry(0, 79)
+        MakeExpectedCounterLocationEntry(0, 68)
+        MakeExpectedCounterLocationEntry(0, 84)
+        MakeExpectedCounterLocationEntry(0, 72)
+        MakeExpectedCounterLocationEntry(0, 88)
+        MakeExpectedCounterLocationEntry(0, 76)
+        MakeExpectedCounterLocationEntry(1, 19)
+        MakeExpectedCounterLocationEntry(0, 80)
+        MakeExpectedCounterLocationEntry(0, 64)
+    };
+
+    // Pass: 22  Counters: 7
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations22
+    {
+        MakeExpectedCounterLocationEntry(0, 65)
+        MakeExpectedCounterLocationEntry(0, 81)
+        MakeExpectedCounterLocationEntry(0, 69)
+        MakeExpectedCounterLocationEntry(0, 85)
+        MakeExpectedCounterLocationEntry(0, 73)
+        MakeExpectedCounterLocationEntry(1, 16)
+        MakeExpectedCounterLocationEntry(0, 77)
+        MakeExpectedCounterLocationEntry(0, 66)
+        MakeExpectedCounterLocationEntry(0, 82)
+        MakeExpectedCounterLocationEntry(0, 70)
+        MakeExpectedCounterLocationEntry(0, 86)
+        MakeExpectedCounterLocationEntry(0, 74)
+        MakeExpectedCounterLocationEntry(1, 17)
+        MakeExpectedCounterLocationEntry(0, 78)
+        MakeExpectedCounterLocationEntry(0, 67)
+        MakeExpectedCounterLocationEntry(0, 83)
+        MakeExpectedCounterLocationEntry(0, 71)
+        MakeExpectedCounterLocationEntry(0, 87)
+        MakeExpectedCounterLocationEntry(0, 75)
+        MakeExpectedCounterLocationEntry(1, 18)
+        MakeExpectedCounterLocationEntry(0, 79)
+        MakeExpectedCounterLocationEntry(0, 68)
+        MakeExpectedCounterLocationEntry(0, 84)
+        MakeExpectedCounterLocationEntry(0, 72)
+        MakeExpectedCounterLocationEntry(0, 88)
+        MakeExpectedCounterLocationEntry(0, 76)
+        MakeExpectedCounterLocationEntry(1, 19)
+        MakeExpectedCounterLocationEntry(0, 80)
+        MakeExpectedCounterLocationEntry(0, 64)
+        MakeExpectedCounterLocationEntry(4, 0)
+    };
+
+    std::map< uint32_t, std::map<uint32_t, GPA_CounterResultLocation> > expectedResultLocations =
+    {
+        { VSVerticesInDX12Gfx8, expectedLocations0 },
+        { VSVALUInstCountDX12Gfx8, expectedLocations1 },
+        { VSVALUBusyDX12Gfx8, expectedLocations2 },
+        { VSSALUInstCountDX12Gfx8, expectedLocations3 },
+        { VSSALUBusyDX12Gfx8, expectedLocations4 },
+        { CSBusyDX12Gfx8, expectedLocations5 },
+        { CSTimeDX12Gfx8, expectedLocations6 },
+        { DSBusyDX12Gfx8, expectedLocations7 },
+        { DSTimeDX12Gfx8, expectedLocations8 },
+        { DepthStencilTestBusyDX12Gfx8, expectedLocations9 },
+        { GPUBusyDX12Gfx8, expectedLocations10 },
+        { GPUTimeDX12Gfx8, expectedLocations11 },
+        { GSBusyDX12Gfx8, expectedLocations12 },
+        { GSTimeDX12Gfx8, expectedLocations13 },
+        { PSBusyDX12Gfx8, expectedLocations14 },
+        { PSTimeDX12Gfx8, expectedLocations15 },
+        { PrimitiveAssemblyBusyDX12Gfx8, expectedLocations16 },
+        { TessellatorBusyDX12Gfx8, expectedLocations17 },
+        { TexUnitBusyDX12Gfx8, expectedLocations18 },
+        { HSTimeDX12Gfx8, expectedLocations19 },
+        { HSBusyDX12Gfx8, expectedLocations20 },
+        { VSBusyDX12Gfx8, expectedLocations21 },
+        { VSTimeDX12Gfx8, expectedLocations22 },
+    };
+
+    VerifyCountersInPass(GPA_API_DIRECTX_12, gDevIdGfx8, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
+}
+
+// GPA-83: Consolidated counter scheduler no longer schedules multi-pass public
+// counters in consecutive passes  This consolidates 4 passes into 3 passes
+// VSVerticeIn, GPUTime, and VSBusy should be scheduled in 3 passes
+TEST(CounterDLLTests, Gpa83ThreePassTest)
+{
+    std::vector<uint32_t> counters =
+    {
+        VSVerticesInDX12Gfx8,
+        GPUTimeDX12Gfx8,
+        VSBusyDX12Gfx8
+    };
+
+    // Pass: 0  Counters: 37
+    std::vector<uint32_t> expectedCountersPass0 =
+    {
+        2856, 3053, 3250, 3447, 2881, 3078, 3275, 3472, 2903, 3100,
+        3297, 3494, 2925, 3122, 3319, 3516, 2865, 3062, 3259, 3456,
+        2887, 3084, 3281, 3478, 49743, 87, 234, 381, 528, 68,
+        215, 362, 509, 163, 310, 457, 604
+    };
+
+    // Pass: 1  Counters: 4
+    std::vector<uint32_t> expectedCountersPass1 =
+    {
+        2909, 3106, 3303, 3500
+    };
+
+    // Pass: 2  Counters: 1
+    std::vector<uint32_t> expectedCountersPass2 =
+    {
+        51131
+    };
+
+    std::vector< std::vector<uint32_t> > expectedHwCountersPerPass =
+    {
+        expectedCountersPass0,
+        expectedCountersPass1,
+        expectedCountersPass2,
+    };
+
+
+    // Result locations (Pass, Offset)
+
+    // Pass: 0  Counters: 23
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations0
+    {
+        MakeExpectedCounterLocationEntry(0, 29)
+        MakeExpectedCounterLocationEntry(0, 25)
+        MakeExpectedCounterLocationEntry(0, 33)
+        MakeExpectedCounterLocationEntry(0, 30)
+        MakeExpectedCounterLocationEntry(0, 26)
+        MakeExpectedCounterLocationEntry(0, 34)
+        MakeExpectedCounterLocationEntry(0, 31)
+        MakeExpectedCounterLocationEntry(0, 27)
+        MakeExpectedCounterLocationEntry(0, 35)
+        MakeExpectedCounterLocationEntry(0, 32)
+        MakeExpectedCounterLocationEntry(0, 28)
+        MakeExpectedCounterLocationEntry(0, 36)
+    };
+
+    // Pass: 1  Counters: 0
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations1
+    {
+        MakeExpectedCounterLocationEntry(2, 0)
+    };
+
+    // Pass: 2  Counters: 5
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations2
+    {
+        MakeExpectedCounterLocationEntry(0, 0)
+        MakeExpectedCounterLocationEntry(0, 16)
+        MakeExpectedCounterLocationEntry(0, 4)
+        MakeExpectedCounterLocationEntry(0, 20)
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(1, 0)
+        MakeExpectedCounterLocationEntry(0, 12)
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 17)
+        MakeExpectedCounterLocationEntry(0, 5)
+        MakeExpectedCounterLocationEntry(0, 21)
+        MakeExpectedCounterLocationEntry(0, 9)
+        MakeExpectedCounterLocationEntry(1, 1)
+        MakeExpectedCounterLocationEntry(0, 13)
+        MakeExpectedCounterLocationEntry(0, 2)
+        MakeExpectedCounterLocationEntry(0, 18)
+        MakeExpectedCounterLocationEntry(0, 6)
+        MakeExpectedCounterLocationEntry(0, 22)
+        MakeExpectedCounterLocationEntry(0, 10)
+        MakeExpectedCounterLocationEntry(1, 2)
+        MakeExpectedCounterLocationEntry(0, 14)
+        MakeExpectedCounterLocationEntry(0, 3)
+        MakeExpectedCounterLocationEntry(0, 19)
+        MakeExpectedCounterLocationEntry(0, 7)
+        MakeExpectedCounterLocationEntry(0, 23)
+        MakeExpectedCounterLocationEntry(0, 11)
+        MakeExpectedCounterLocationEntry(1, 3)
+        MakeExpectedCounterLocationEntry(0, 15)
+        MakeExpectedCounterLocationEntry(0, 24)
+    };
+
+    std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations =
+    {
+        { VSVerticesInDX12Gfx8, expectedLocations0 },
+        { GPUTimeDX12Gfx8, expectedLocations1 },
+        { VSBusyDX12Gfx8, expectedLocations2 }
+    };
+
+    VerifyCountersInPass(GPA_API_DIRECTX_12, gDevIdGfx8, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
+}
+
+// SWDEV-140743: DX11 Vega L1 Cache Counters (TCP Block Instance) Always Zero
+// Implemented as a test for convenience as we need to explain to the driver team the scheduling of the counters
+TEST(CounterDLLTests, SwDev140743)
+{
+    std::vector<uint32_t> counters =
+    {
+        L1CacheHitCountDX11Gfx9
+    };
+
+    // Pass: 0  Counters: 256
+    std::vector<uint32_t> expectedCountersPass0 =
+    {
+        40631, 40716, 40801, 40886, 40971, 41056, 41141, 41226, 41311, 41396,
+        41481, 41566, 41651, 41736, 41821, 41906, 41991, 42076, 42161, 42246,
+        42331, 42416, 42501, 42586, 42671, 42756, 42841, 42926, 43011, 43096,
+        43181, 43266, 43351, 43436, 43521, 43606, 43691, 43776, 43861, 43946,
+        44031, 44116, 44201, 44286, 44371, 44456, 44541, 44626, 44711, 44796,
+        44881, 44966, 45051, 45136, 45221, 45306, 45391, 45476, 45561, 45646,
+        45731, 45816, 45901, 45986, 40640, 40725, 40810, 40895, 40980, 41065,
+        41150, 41235, 41320, 41405, 41490, 41575, 41660, 41745, 41830, 41915,
+        42000, 42085, 42170, 42255, 42340, 42425, 42510, 42595, 42680, 42765,
+        42850, 42935, 43020, 43105, 43190, 43275, 43360, 43445, 43530, 43615,
+        43700, 43785, 43870, 43955, 44040, 44125, 44210, 44295, 44380, 44465,
+        44550, 44635, 44720, 44805, 44890, 44975, 45060, 45145, 45230, 45315,
+        45400, 45485, 45570, 45655, 45740, 45825, 45910, 45995, 40641, 40726,
+        40811, 40896, 40981, 41066, 41151, 41236, 41321, 41406, 41491, 41576,
+        41661, 41746, 41831, 41916, 42001, 42086, 42171, 42256, 42341, 42426,
+        42511, 42596, 42681, 42766, 42851, 42936, 43021, 43106, 43191, 43276,
+        43361, 43446, 43531, 43616, 43701, 43786, 43871, 43956, 44041, 44126,
+        44211, 44296, 44381, 44466, 44551, 44636, 44721, 44806, 44891, 44976,
+        45061, 45146, 45231, 45316, 45401, 45486, 45571, 45656, 45741, 45826,
+        45911, 45996, 40642, 40727, 40812, 40897, 40982, 41067, 41152, 41237,
+        41322, 41407, 41492, 41577, 41662, 41747, 41832, 41917, 42002, 42087,
+        42172, 42257, 42342, 42427, 42512, 42597, 42682, 42767, 42852, 42937,
+        43022, 43107, 43192, 43277, 43362, 43447, 43532, 43617, 43702, 43787,
+        43872, 43957, 44042, 44127, 44212, 44297, 44382, 44467, 44552, 44637,
+        44722, 44807, 44892, 44977, 45062, 45147, 45232, 45317, 45402, 45487,
+        45572, 45657, 45742, 45827, 45912, 45997
+    };
+
+    // Pass: 1  Counters: 64
+    std::vector<uint32_t> expectedCountersPass1 =
+    {
+        40643, 40728, 40813, 40898, 40983, 41068, 41153, 41238, 41323, 41408,
+        41493, 41578, 41663, 41748, 41833, 41918, 42003, 42088, 42173, 42258,
+        42343, 42428, 42513, 42598, 42683, 42768, 42853, 42938, 43023, 43108,
+        43193, 43278, 43363, 43448, 43533, 43618, 43703, 43788, 43873, 43958,
+        44043, 44128, 44213, 44298, 44383, 44468, 44553, 44638, 44723, 44808,
+        44893, 44978, 45063, 45148, 45233, 45318, 45403, 45488, 45573, 45658,
+        45743, 45828, 45913, 45998
+    };
+
+    std::vector< std::vector<uint32_t> > expectedHwCountersPerPass =
+    {
+        expectedCountersPass0,
+        expectedCountersPass1,
+    };
+
+    // Result locations (Pass, Offset)
+
+    // Pass: 0  Counters: 77
+    std::map<uint32_t, GPA_CounterResultLocation> expectedLocations0
+    {
+        MakeExpectedCounterLocationEntry(0, 0)
+        MakeExpectedCounterLocationEntry(0, 64)
+        MakeExpectedCounterLocationEntry(0, 128)
+        MakeExpectedCounterLocationEntry(0, 192)
+        MakeExpectedCounterLocationEntry(1, 0)
+        MakeExpectedCounterLocationEntry(0, 1)
+        MakeExpectedCounterLocationEntry(0, 65)
+        MakeExpectedCounterLocationEntry(0, 129)
+        MakeExpectedCounterLocationEntry(0, 193)
+        MakeExpectedCounterLocationEntry(1, 1)
+        MakeExpectedCounterLocationEntry(0, 2)
+        MakeExpectedCounterLocationEntry(0, 66)
+        MakeExpectedCounterLocationEntry(0, 130)
+        MakeExpectedCounterLocationEntry(0, 194)
+        MakeExpectedCounterLocationEntry(1, 2)
+        MakeExpectedCounterLocationEntry(0, 3)
+        MakeExpectedCounterLocationEntry(0, 67)
+        MakeExpectedCounterLocationEntry(0, 131)
+        MakeExpectedCounterLocationEntry(0, 195)
+        MakeExpectedCounterLocationEntry(1, 3)
+        MakeExpectedCounterLocationEntry(0, 4)
+        MakeExpectedCounterLocationEntry(0, 68)
+        MakeExpectedCounterLocationEntry(0, 132)
+        MakeExpectedCounterLocationEntry(0, 196)
+        MakeExpectedCounterLocationEntry(1, 4)
+        MakeExpectedCounterLocationEntry(0, 5)
+        MakeExpectedCounterLocationEntry(0, 69)
+        MakeExpectedCounterLocationEntry(0, 133)
+        MakeExpectedCounterLocationEntry(0, 197)
+        MakeExpectedCounterLocationEntry(1, 5)
+        MakeExpectedCounterLocationEntry(0, 6)
+        MakeExpectedCounterLocationEntry(0, 70)
+        MakeExpectedCounterLocationEntry(0, 134)
+        MakeExpectedCounterLocationEntry(0, 198)
+        MakeExpectedCounterLocationEntry(1, 6)
+        MakeExpectedCounterLocationEntry(0, 7)
+        MakeExpectedCounterLocationEntry(0, 71)
+        MakeExpectedCounterLocationEntry(0, 135)
+        MakeExpectedCounterLocationEntry(0, 199)
+        MakeExpectedCounterLocationEntry(1, 7)
+        MakeExpectedCounterLocationEntry(0, 8)
+        MakeExpectedCounterLocationEntry(0, 72)
+        MakeExpectedCounterLocationEntry(0, 136)
+        MakeExpectedCounterLocationEntry(0, 200)
+        MakeExpectedCounterLocationEntry(1, 8)
+        MakeExpectedCounterLocationEntry(0, 9)
+        MakeExpectedCounterLocationEntry(0, 73)
+        MakeExpectedCounterLocationEntry(0, 137)
+        MakeExpectedCounterLocationEntry(0, 201)
+        MakeExpectedCounterLocationEntry(1, 9)
+        MakeExpectedCounterLocationEntry(0, 10)
+        MakeExpectedCounterLocationEntry(0, 74)
+        MakeExpectedCounterLocationEntry(0, 138)
+        MakeExpectedCounterLocationEntry(0, 202)
+        MakeExpectedCounterLocationEntry(1, 10)
+        MakeExpectedCounterLocationEntry(0, 11)
+        MakeExpectedCounterLocationEntry(0, 75)
+        MakeExpectedCounterLocationEntry(0, 139)
+        MakeExpectedCounterLocationEntry(0, 203)
+        MakeExpectedCounterLocationEntry(1, 11)
+        MakeExpectedCounterLocationEntry(0, 12)
+        MakeExpectedCounterLocationEntry(0, 76)
+        MakeExpectedCounterLocationEntry(0, 140)
+        MakeExpectedCounterLocationEntry(0, 204)
+        MakeExpectedCounterLocationEntry(1, 12)
+        MakeExpectedCounterLocationEntry(0, 13)
+        MakeExpectedCounterLocationEntry(0, 77)
+        MakeExpectedCounterLocationEntry(0, 141)
+        MakeExpectedCounterLocationEntry(0, 205)
+        MakeExpectedCounterLocationEntry(1, 13)
+        MakeExpectedCounterLocationEntry(0, 14)
+        MakeExpectedCounterLocationEntry(0, 78)
+        MakeExpectedCounterLocationEntry(0, 142)
+        MakeExpectedCounterLocationEntry(0, 206)
+        MakeExpectedCounterLocationEntry(1, 14)
+        MakeExpectedCounterLocationEntry(0, 15)
+        MakeExpectedCounterLocationEntry(0, 79)
+        MakeExpectedCounterLocationEntry(0, 143)
+        MakeExpectedCounterLocationEntry(0, 207)
+        MakeExpectedCounterLocationEntry(1, 15)
+        MakeExpectedCounterLocationEntry(0, 16)
+        MakeExpectedCounterLocationEntry(0, 80)
+        MakeExpectedCounterLocationEntry(0, 144)
+        MakeExpectedCounterLocationEntry(0, 208)
+        MakeExpectedCounterLocationEntry(1, 16)
+        MakeExpectedCounterLocationEntry(0, 17)
+        MakeExpectedCounterLocationEntry(0, 81)
+        MakeExpectedCounterLocationEntry(0, 145)
+        MakeExpectedCounterLocationEntry(0, 209)
+        MakeExpectedCounterLocationEntry(1, 17)
+        MakeExpectedCounterLocationEntry(0, 18)
+        MakeExpectedCounterLocationEntry(0, 82)
+        MakeExpectedCounterLocationEntry(0, 146)
+        MakeExpectedCounterLocationEntry(0, 210)
+        MakeExpectedCounterLocationEntry(1, 18)
+        MakeExpectedCounterLocationEntry(0, 19)
+        MakeExpectedCounterLocationEntry(0, 83)
+        MakeExpectedCounterLocationEntry(0, 147)
+        MakeExpectedCounterLocationEntry(0, 211)
+        MakeExpectedCounterLocationEntry(1, 19)
+        MakeExpectedCounterLocationEntry(0, 20)
+        MakeExpectedCounterLocationEntry(0, 84)
+        MakeExpectedCounterLocationEntry(0, 148)
+        MakeExpectedCounterLocationEntry(0, 212)
+        MakeExpectedCounterLocationEntry(1, 20)
+        MakeExpectedCounterLocationEntry(0, 21)
+        MakeExpectedCounterLocationEntry(0, 85)
+        MakeExpectedCounterLocationEntry(0, 149)
+        MakeExpectedCounterLocationEntry(0, 213)
+        MakeExpectedCounterLocationEntry(1, 21)
+        MakeExpectedCounterLocationEntry(0, 22)
+        MakeExpectedCounterLocationEntry(0, 86)
+        MakeExpectedCounterLocationEntry(0, 150)
+        MakeExpectedCounterLocationEntry(0, 214)
+        MakeExpectedCounterLocationEntry(1, 22)
+        MakeExpectedCounterLocationEntry(0, 23)
+        MakeExpectedCounterLocationEntry(0, 87)
+        MakeExpectedCounterLocationEntry(0, 151)
+        MakeExpectedCounterLocationEntry(0, 215)
+        MakeExpectedCounterLocationEntry(1, 23)
+        MakeExpectedCounterLocationEntry(0, 24)
+        MakeExpectedCounterLocationEntry(0, 88)
+        MakeExpectedCounterLocationEntry(0, 152)
+        MakeExpectedCounterLocationEntry(0, 216)
+        MakeExpectedCounterLocationEntry(1, 24)
+        MakeExpectedCounterLocationEntry(0, 25)
+        MakeExpectedCounterLocationEntry(0, 89)
+        MakeExpectedCounterLocationEntry(0, 153)
+        MakeExpectedCounterLocationEntry(0, 217)
+        MakeExpectedCounterLocationEntry(1, 25)
+        MakeExpectedCounterLocationEntry(0, 26)
+        MakeExpectedCounterLocationEntry(0, 90)
+        MakeExpectedCounterLocationEntry(0, 154)
+        MakeExpectedCounterLocationEntry(0, 218)
+        MakeExpectedCounterLocationEntry(1, 26)
+        MakeExpectedCounterLocationEntry(0, 27)
+        MakeExpectedCounterLocationEntry(0, 91)
+        MakeExpectedCounterLocationEntry(0, 155)
+        MakeExpectedCounterLocationEntry(0, 219)
+        MakeExpectedCounterLocationEntry(1, 27)
+        MakeExpectedCounterLocationEntry(0, 28)
+        MakeExpectedCounterLocationEntry(0, 92)
+        MakeExpectedCounterLocationEntry(0, 156)
+        MakeExpectedCounterLocationEntry(0, 220)
+        MakeExpectedCounterLocationEntry(1, 28)
+        MakeExpectedCounterLocationEntry(0, 29)
+        MakeExpectedCounterLocationEntry(0, 93)
+        MakeExpectedCounterLocationEntry(0, 157)
+        MakeExpectedCounterLocationEntry(0, 221)
+        MakeExpectedCounterLocationEntry(1, 29)
+        MakeExpectedCounterLocationEntry(0, 30)
+        MakeExpectedCounterLocationEntry(0, 94)
+        MakeExpectedCounterLocationEntry(0, 158)
+        MakeExpectedCounterLocationEntry(0, 222)
+        MakeExpectedCounterLocationEntry(1, 30)
+        MakeExpectedCounterLocationEntry(0, 31)
+        MakeExpectedCounterLocationEntry(0, 95)
+        MakeExpectedCounterLocationEntry(0, 159)
+        MakeExpectedCounterLocationEntry(0, 223)
+        MakeExpectedCounterLocationEntry(1, 31)
+        MakeExpectedCounterLocationEntry(0, 32)
+        MakeExpectedCounterLocationEntry(0, 96)
+        MakeExpectedCounterLocationEntry(0, 160)
+        MakeExpectedCounterLocationEntry(0, 224)
+        MakeExpectedCounterLocationEntry(1, 32)
+        MakeExpectedCounterLocationEntry(0, 33)
+        MakeExpectedCounterLocationEntry(0, 97)
+        MakeExpectedCounterLocationEntry(0, 161)
+        MakeExpectedCounterLocationEntry(0, 225)
+        MakeExpectedCounterLocationEntry(1, 33)
+        MakeExpectedCounterLocationEntry(0, 34)
+        MakeExpectedCounterLocationEntry(0, 98)
+        MakeExpectedCounterLocationEntry(0, 162)
+        MakeExpectedCounterLocationEntry(0, 226)
+        MakeExpectedCounterLocationEntry(1, 34)
+        MakeExpectedCounterLocationEntry(0, 35)
+        MakeExpectedCounterLocationEntry(0, 99)
+        MakeExpectedCounterLocationEntry(0, 163)
+        MakeExpectedCounterLocationEntry(0, 227)
+        MakeExpectedCounterLocationEntry(1, 35)
+        MakeExpectedCounterLocationEntry(0, 36)
+        MakeExpectedCounterLocationEntry(0, 100)
+        MakeExpectedCounterLocationEntry(0, 164)
+        MakeExpectedCounterLocationEntry(0, 228)
+        MakeExpectedCounterLocationEntry(1, 36)
+        MakeExpectedCounterLocationEntry(0, 37)
+        MakeExpectedCounterLocationEntry(0, 101)
+        MakeExpectedCounterLocationEntry(0, 165)
+        MakeExpectedCounterLocationEntry(0, 229)
+        MakeExpectedCounterLocationEntry(1, 37)
+        MakeExpectedCounterLocationEntry(0, 38)
+        MakeExpectedCounterLocationEntry(0, 102)
+        MakeExpectedCounterLocationEntry(0, 166)
+        MakeExpectedCounterLocationEntry(0, 230)
+        MakeExpectedCounterLocationEntry(1, 38)
+        MakeExpectedCounterLocationEntry(0, 39)
+        MakeExpectedCounterLocationEntry(0, 103)
+        MakeExpectedCounterLocationEntry(0, 167)
+        MakeExpectedCounterLocationEntry(0, 231)
+        MakeExpectedCounterLocationEntry(1, 39)
+        MakeExpectedCounterLocationEntry(0, 40)
+        MakeExpectedCounterLocationEntry(0, 104)
+        MakeExpectedCounterLocationEntry(0, 168)
+        MakeExpectedCounterLocationEntry(0, 232)
+        MakeExpectedCounterLocationEntry(1, 40)
+        MakeExpectedCounterLocationEntry(0, 41)
+        MakeExpectedCounterLocationEntry(0, 105)
+        MakeExpectedCounterLocationEntry(0, 169)
+        MakeExpectedCounterLocationEntry(0, 233)
+        MakeExpectedCounterLocationEntry(1, 41)
+        MakeExpectedCounterLocationEntry(0, 42)
+        MakeExpectedCounterLocationEntry(0, 106)
+        MakeExpectedCounterLocationEntry(0, 170)
+        MakeExpectedCounterLocationEntry(0, 234)
+        MakeExpectedCounterLocationEntry(1, 42)
+        MakeExpectedCounterLocationEntry(0, 43)
+        MakeExpectedCounterLocationEntry(0, 107)
+        MakeExpectedCounterLocationEntry(0, 171)
+        MakeExpectedCounterLocationEntry(0, 235)
+        MakeExpectedCounterLocationEntry(1, 43)
+        MakeExpectedCounterLocationEntry(0, 44)
+        MakeExpectedCounterLocationEntry(0, 108)
+        MakeExpectedCounterLocationEntry(0, 172)
+        MakeExpectedCounterLocationEntry(0, 236)
+        MakeExpectedCounterLocationEntry(1, 44)
+        MakeExpectedCounterLocationEntry(0, 45)
+        MakeExpectedCounterLocationEntry(0, 109)
+        MakeExpectedCounterLocationEntry(0, 173)
+        MakeExpectedCounterLocationEntry(0, 237)
+        MakeExpectedCounterLocationEntry(1, 45)
+        MakeExpectedCounterLocationEntry(0, 46)
+        MakeExpectedCounterLocationEntry(0, 110)
+        MakeExpectedCounterLocationEntry(0, 174)
+        MakeExpectedCounterLocationEntry(0, 238)
+        MakeExpectedCounterLocationEntry(1, 46)
+        MakeExpectedCounterLocationEntry(0, 47)
+        MakeExpectedCounterLocationEntry(0, 111)
+        MakeExpectedCounterLocationEntry(0, 175)
+        MakeExpectedCounterLocationEntry(0, 239)
+        MakeExpectedCounterLocationEntry(1, 47)
+        MakeExpectedCounterLocationEntry(0, 48)
+        MakeExpectedCounterLocationEntry(0, 112)
+        MakeExpectedCounterLocationEntry(0, 176)
+        MakeExpectedCounterLocationEntry(0, 240)
+        MakeExpectedCounterLocationEntry(1, 48)
+        MakeExpectedCounterLocationEntry(0, 49)
+        MakeExpectedCounterLocationEntry(0, 113)
+        MakeExpectedCounterLocationEntry(0, 177)
+        MakeExpectedCounterLocationEntry(0, 241)
+        MakeExpectedCounterLocationEntry(1, 49)
+        MakeExpectedCounterLocationEntry(0, 50)
+        MakeExpectedCounterLocationEntry(0, 114)
+        MakeExpectedCounterLocationEntry(0, 178)
+        MakeExpectedCounterLocationEntry(0, 242)
+        MakeExpectedCounterLocationEntry(1, 50)
+        MakeExpectedCounterLocationEntry(0, 51)
+        MakeExpectedCounterLocationEntry(0, 115)
+        MakeExpectedCounterLocationEntry(0, 179)
+        MakeExpectedCounterLocationEntry(0, 243)
+        MakeExpectedCounterLocationEntry(1, 51)
+        MakeExpectedCounterLocationEntry(0, 52)
+        MakeExpectedCounterLocationEntry(0, 116)
+        MakeExpectedCounterLocationEntry(0, 180)
+        MakeExpectedCounterLocationEntry(0, 244)
+        MakeExpectedCounterLocationEntry(1, 52)
+        MakeExpectedCounterLocationEntry(0, 53)
+        MakeExpectedCounterLocationEntry(0, 117)
+        MakeExpectedCounterLocationEntry(0, 181)
+        MakeExpectedCounterLocationEntry(0, 245)
+        MakeExpectedCounterLocationEntry(1, 53)
+        MakeExpectedCounterLocationEntry(0, 54)
+        MakeExpectedCounterLocationEntry(0, 118)
+        MakeExpectedCounterLocationEntry(0, 182)
+        MakeExpectedCounterLocationEntry(0, 246)
+        MakeExpectedCounterLocationEntry(1, 54)
+        MakeExpectedCounterLocationEntry(0, 55)
+        MakeExpectedCounterLocationEntry(0, 119)
+        MakeExpectedCounterLocationEntry(0, 183)
+        MakeExpectedCounterLocationEntry(0, 247)
+        MakeExpectedCounterLocationEntry(1, 55)
+        MakeExpectedCounterLocationEntry(0, 56)
+        MakeExpectedCounterLocationEntry(0, 120)
+        MakeExpectedCounterLocationEntry(0, 184)
+        MakeExpectedCounterLocationEntry(0, 248)
+        MakeExpectedCounterLocationEntry(1, 56)
+        MakeExpectedCounterLocationEntry(0, 57)
+        MakeExpectedCounterLocationEntry(0, 121)
+        MakeExpectedCounterLocationEntry(0, 185)
+        MakeExpectedCounterLocationEntry(0, 249)
+        MakeExpectedCounterLocationEntry(1, 57)
+        MakeExpectedCounterLocationEntry(0, 58)
+        MakeExpectedCounterLocationEntry(0, 122)
+        MakeExpectedCounterLocationEntry(0, 186)
+        MakeExpectedCounterLocationEntry(0, 250)
+        MakeExpectedCounterLocationEntry(1, 58)
+        MakeExpectedCounterLocationEntry(0, 59)
+        MakeExpectedCounterLocationEntry(0, 123)
+        MakeExpectedCounterLocationEntry(0, 187)
+        MakeExpectedCounterLocationEntry(0, 251)
+        MakeExpectedCounterLocationEntry(1, 59)
+        MakeExpectedCounterLocationEntry(0, 60)
+        MakeExpectedCounterLocationEntry(0, 124)
+        MakeExpectedCounterLocationEntry(0, 188)
+        MakeExpectedCounterLocationEntry(0, 252)
+        MakeExpectedCounterLocationEntry(1, 60)
+        MakeExpectedCounterLocationEntry(0, 61)
+        MakeExpectedCounterLocationEntry(0, 125)
+        MakeExpectedCounterLocationEntry(0, 189)
+        MakeExpectedCounterLocationEntry(0, 253)
+        MakeExpectedCounterLocationEntry(1, 61)
+        MakeExpectedCounterLocationEntry(0, 62)
+        MakeExpectedCounterLocationEntry(0, 126)
+        MakeExpectedCounterLocationEntry(0, 190)
+        MakeExpectedCounterLocationEntry(0, 254)
+        MakeExpectedCounterLocationEntry(1, 62)
+        MakeExpectedCounterLocationEntry(0, 63)
+        MakeExpectedCounterLocationEntry(0, 127)
+        MakeExpectedCounterLocationEntry(0, 191)
+        MakeExpectedCounterLocationEntry(0, 255)
+        MakeExpectedCounterLocationEntry(1, 63)
+    };
+
+    std::map< uint32_t, std::map<uint32_t, GPA_CounterResultLocation> > expectedResultLocations =
+    {
+        { L1CacheHitCountDX11Gfx9, expectedLocations0 }
+    };
+
+    VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdGfx9, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
+}
+#endif // _WIN32

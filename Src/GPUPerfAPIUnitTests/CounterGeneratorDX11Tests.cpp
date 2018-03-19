@@ -7,7 +7,7 @@
 
 
 #include "CounterGeneratorTests.h"
-#include "GPUPerfAPITypes-Private.h"
+#include "GPUPerfAPITypes.h"
 #include "GPAInternalCounter.h"
 
 #include "counters/PublicCountersDX11Gfx6.h"
@@ -24,7 +24,7 @@
     #include "InternalCountersDX11Gfx9.h"
 #endif
 
-static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<const char*>& counterNames)
+static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<const char*>& counterNames)
 {
     counterNames.clear();
 
@@ -106,36 +106,36 @@ static void GetExpectedCountersForGeneration(GPA_HW_GENERATION gen, std::vector<
 // Test the DX11 counter names on all supported hardware
 TEST(CounterDLLTests, DX11CounterNames)
 {
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, gDevIdUnknown);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, gDevIdUnknown, FALSE);
 
     std::vector<const char*> counterNames;
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdSI, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdSI, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdCI, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdVI, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdVI, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdGfx9, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdGfx9, FALSE, counterNames);
 }
 
 // Test the DX11 counter names on all generations
 TEST(CounterDLLTests, DX11CounterNamesByGeneration)
 {
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, GPA_HW_GENERATION_NONE);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, GPA_HW_GENERATION_NONE, FALSE);
 
     std::vector<const char*> counterNames;
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_NVIDIA, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_NVIDIA, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_NVIDIA, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_INTEL, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_INTEL, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_INTEL, FALSE, counterNames);
 
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX6, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX6, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX7, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX7, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX8, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX8, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX9, counterNames);
+    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX9, FALSE, counterNames);
 }

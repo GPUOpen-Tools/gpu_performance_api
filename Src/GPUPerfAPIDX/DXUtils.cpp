@@ -1,11 +1,11 @@
 //==============================================================================
-// Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Common DX utility function implementations
 //==============================================================================
 
-#include "dxUtils.h"
+#include "DXUtils.h"
 
 GPA_Status DXGetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& adapterDesc)
 {
@@ -113,7 +113,7 @@ HMONITOR DXGetDeviceMonitor(IUnknown* pDevice)
                 pAdapter->Release();
             }
 
-            pDevice->Release();
+            pDXGIDevice->Release();
         }
     }
 

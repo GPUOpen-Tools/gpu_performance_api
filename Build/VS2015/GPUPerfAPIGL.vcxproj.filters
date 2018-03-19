@@ -5,6 +5,14 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{0399ce11-9250-403e-90e4-082e35353e2c}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{1db145f4-0c43-482c-8e4d-798075b373ae}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesGLGfx6.txt">
@@ -23,20 +31,55 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\ASICInfo.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.cpp" />
-    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.cpp" />
-    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPIInternalRegistration\GLGPAInternalCounterGeneratorRegistration.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\ASICInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPACommandList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPAContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPAImplementor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPAPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPASample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIGL\GLGPASession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequest.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GPAContextStateGL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\resource.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\ASICInfo.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLPerfMonitorCache.h" />
-    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLCounterDataRequestManager.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\ASICInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPACommandList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPAContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPAImplementor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPAPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPASample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIGL\GLGPASession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GLInclude.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

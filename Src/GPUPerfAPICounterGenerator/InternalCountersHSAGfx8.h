@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  HSA internal counter definitions for GFX8
@@ -12,7 +12,9 @@
 extern GPA_HardwareCounterDesc* HSACounterGroupArrayGfx8[]; ///< Array of hardware counter groups for HSA for Gfx8 family
 extern GPA_CounterGroupDesc HWHSAGroupsGfx8[]; ///< Array of counter groups for HSA for Gfx8 family
 extern GPA_SQCounterGroupDesc HWHSASQGroupsGfx8[]; ///< Array of SQ groups for HSA for Gfx8 family
+extern unsigned int HWHSASQIsolatedGroupsGfx8[]; ///< Array of counter groups isolated from SQ counter groups for HSA for Gfx8 family
 extern const unsigned int HWHSAGroupCountGfx8; ///< Hardware Group Count for HSA for Gfx8 family
 extern const unsigned int HWHSASQGroupCountGfx8; ///< Hardware SQ Group Count for HSA for Gfx8 family
+extern const unsigned int HWHSASQIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for HSA for Gfx8 family
 
 #endif // _GPA_INTERNAL_COUNTERS_HSA_GFX8_H_

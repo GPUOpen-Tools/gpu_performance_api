@@ -23,10 +23,26 @@ public:
 
 protected:
 
-    /// Overridden methods -- see base for documentation
-    GPA_Status GeneratePublicCounters(GDT_HW_GENERATION desiredGeneration, GPA_PublicCounters* pPublicCounters) override;
-    GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_HardwareCounters* pHardwareCounters) override;
-    GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION desiredGeneration, GPA_SoftwareCounters* pSoftwareCounters) override;
+    /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
+    GPA_Status GeneratePublicCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_PublicCounters* pPublicCounters) override;
+
+    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
+    GPA_Status GenerateHardwareCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_HardwareCounters* pHardwareCounters) override;
+
+    /// \copydoc GPA_CounterGeneratorBase::GenerateSoftwareCounters
+    GPA_Status GenerateSoftwareCounters(
+        GDT_HW_GENERATION desiredGeneration,
+        GDT_HW_ASIC_TYPE asicType,
+        gpa_uint8 generateAsicSpecificCounters,
+        GPA_SoftwareCounters* pSoftwareCounters) override;
 
 private:
     /// Helper function to generate the driver-supplied counters

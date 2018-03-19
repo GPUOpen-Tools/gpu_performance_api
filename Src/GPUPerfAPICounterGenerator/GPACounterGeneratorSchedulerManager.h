@@ -16,19 +16,19 @@
 #include "GPUPerfAPITypes.h"
 
 class GPA_CounterGeneratorBase;  ///< forward declaration
-class GPA_ICounterScheduler;     ///< forward declaration
+class IGPACounterScheduler;     ///< forward declaration
 
 /// Class that will get the correct Generator and Scheduler for an API/Generation combination
 class CounterGeneratorSchedulerManager : public TSingleton<CounterGeneratorSchedulerManager>
 {
-    friend class TSingleton<CounterGeneratorSchedulerManager>;
+    friend class TSingleton<CounterGeneratorSchedulerManager>; ///< friend declaration to allow access to the constructor
 
 public:
     /// Registers an API/HwGen-specific counter generator
     /// \param apiType the API the generator is being registered for
     /// \param generation the hardware generation the generator is being registered for
     /// \param pCounterGenerator the generator to register
-    /// \param replaceExisting flag indicating whether an existing generator for the specified api/generation combination should be replaced by this one.  If false, then this one is ignored if an existing registration is found
+    /// \param replaceExisting flag indicating whether an existing generator for the specified api/generation combination should be replaced by this one. If false, then this one is ignored if an existing registration is found
     void RegisterCounterGenerator(GPA_API_Type apiType, GDT_HW_GENERATION generation, GPA_CounterGeneratorBase* pCounterGenerator, bool replaceExisting = true);
 
     /// Get the registered generator for the specified API/HwGen
@@ -42,15 +42,15 @@ public:
     /// \param apiType the API the scheduler is being registered for
     /// \param generation the hardware generation the scheduler is being registered for
     /// \param pCounterScheduler the scheduler to register
-    /// \param replaceExisting flag indicating whether an existing scheduler for the specified api/generation combination should be replaced by this one.  If false, then this one is ignored if an existing registration is found
-    void RegisterCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, GPA_ICounterScheduler* pCounterScheduler, bool replaceExisting = true);
+    /// \param replaceExisting flag indicating whether an existing scheduler for the specified api/generation combination should be replaced by this one. If false, then this one is ignored if an existing registration is found
+    void RegisterCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, IGPACounterScheduler* pCounterScheduler, bool replaceExisting = true);
 
     /// Get the registered scheduler for the specified API/HwGen
     /// \param apiType the API whose scheduler is needed
     /// \param generation the hardware generation whose scheduler is needed
     /// \param[out] pCounterSchedulerOut the scheduler registered for the specified API/HwGen
     /// \return true if there is a scheduler registered for the API/HwGen, false otehrwise
-    bool GetCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, GPA_ICounterScheduler*& pCounterSchedulerOut);
+    bool GetCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, IGPACounterScheduler*& pCounterSchedulerOut);
 
 protected:
     /// Constructor
@@ -69,7 +69,7 @@ protected:
     APITypeGenerationGeneratorMap m_counterGeneratorItems;
 
     /// typedef for HWGen to Scheduler Map
-    typedef std::map<GDT_HW_GENERATION, GPA_ICounterScheduler*> GenerationSchedulerMap;
+    typedef std::map<GDT_HW_GENERATION, IGPACounterScheduler*> GenerationSchedulerMap;
 
     /// typedef for HWGen to Scheduler Map
     typedef std::map<GPA_API_Type, GenerationSchedulerMap> APITypeGenerationSchedulerMap;
