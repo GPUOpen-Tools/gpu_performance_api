@@ -295,7 +295,7 @@ if $bZip ; then
    cp $GPAROOT/thirdpartylicenses.txt .
    if $bBuildDocumentation ; then
       mkdir -p docs
-      cp -R GPAOUTPUT_DOCS/build/html/* docs
+      cp -R $GPAOUTPUT_DOCS/build/html/* docs
    fi
    cd ..
    tar cvzf GPUPerfAPI.$VER-lnx.tgz $ZIP_DIR_NAME/

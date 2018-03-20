@@ -67,6 +67,7 @@ this script everytime you pull new changes from GPA repository.
    * `skipopencl`: skips building the OpenCL version of GPUPerfAPI
    * `skiphsa`: skips building the ROCm/HSA version of GPUPerfAPI
    * `skipvulkan`: skips building the Vulkan version of GPUPerfAPI
+   * `doc`: builds the documentation
    * `quick` or `incremental`: performs an incremental build (as opposed to a from-scratch build)
    * `buildinternal`: builds the internal versions of GPUPerfAPI
    * `hsadir`: overrides the location of the ROCm/HSA header files (by default they are expected to be in /opt/rocm/hsa)
