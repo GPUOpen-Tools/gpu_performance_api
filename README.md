@@ -97,6 +97,8 @@ UpdateCommon.py has replaced the use of git submodules in the GPA repository
 The documentation for GPUPerfAPI can be found in each [GitHub release](https://github.com/GPUOpen-Tools/GPA/releases). In the release .zip file or .tgz file, there
 will be a "docs" directory. Simply open the index.html file in a web browser to view the documentation.
 
+The documentation is hosted publicly at: http://gpuperfapi.readthedocs.io/en/latest/
+
 ## "Public" vs "Internal" Versions
 This open source release supports building both the "Public" and "Internal" versions of GPUPerfAPI. By default the Visual Studio solution and the Linux build scripts
 will produce what is referred to as the "Public" version of GPUPerfAPI. This version exposes "Public", or "Derived", counters. These are counters that are computed
