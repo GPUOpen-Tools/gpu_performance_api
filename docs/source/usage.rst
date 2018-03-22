@@ -395,7 +395,7 @@ library search mechanism for the host operating system (i.e. in the PATH on
 Windows and LD_LIBRARY_PATH on Linux).
 
 When deploying the DirectX 11 version on Windows, you will also need to deploy
-GPUPerfAPIDXGetAMDDeviceInfo.dll or GPUPerfAPIDXGetAMDDeviceInfox64.dll, if you
+GPUPerfAPIDXGetAMDDeviceInfo.dll or GPUPerfAPIDXGetAMDDeviceInfo-x64.dll, if you
 need to support systems with multiple AMD GPUs.  This library is used by GPA to
 determine which GPU is being used for rendering at runtime.  For single-GPU
 systems, this library is not required.
