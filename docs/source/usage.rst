@@ -69,16 +69,23 @@ initialize the DirectX 12 version of GPA:
 
     GPAApiManager* GPAApiManager::m_pGpaApiManager = nullptr;
 
-    GPAFunctionTable* pGpaFunctionTable;
+    GPAFunctionTable* pGpaFunctionTable = nullptr;
 
     bool InitializeGPA()
     {
+        bool retVal = false;
+
         if (GPA_STATUS_OK == GPAApiManager::Instance()->LoadApi(GPA_API_DIRECTX_12))
         {
             pGpaFunctionTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_DIRECTX_12);
+
+            if (nullptr != pGpaFunctionTable)
+            {
+                retVal = GPA_STATUS_OK == pGpaFunctionTable->GPA_Initialize(GPA_INITIALIZE_DEFAULT_BIT);
+            }
         }
 
-        return GPA_STATUS_OK == pGpaFunctionTable->GPA_Initialize(GPA_INITIALIZE_DEFAULT_BIT);
+        return retVal;
     }
 
 Registering a Logging Callback
@@ -170,7 +177,7 @@ required type which should be passed to GPA_OpenContext:
 Querying a Context and Counters
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-After creating a Context, you can use the returned GPA_ContextId to query
+After creating a context, you can use the returned GPA_ContextId to query
 information about the context and the performance counters exposed by the
 context.
 

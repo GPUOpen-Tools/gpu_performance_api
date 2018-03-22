@@ -115,11 +115,12 @@ html_theme = 'sphinx_rtd_theme'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-html_context = {
-    'css_files': [
-        '_static/theme_overrides.css',  # override wide tables in RTD theme
-    ],
-}
+# If a function setup(app) exists, Sphinx will call this function as a normal
+# extension during application startup. This method of using the overrides css
+# file works better with read the docs (more so than specifying it via the
+# html_context tag)
+def setup(app):
+    app.add_stylesheet('theme_overrides.css')
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.
