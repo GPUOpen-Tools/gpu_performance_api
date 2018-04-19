@@ -10,6 +10,7 @@
 
 #include <list>
 #include <mutex>
+#include <functional>
 
 #include "GPACommonDefs.h"
 #include "GPUPerfAPITypes.h"
