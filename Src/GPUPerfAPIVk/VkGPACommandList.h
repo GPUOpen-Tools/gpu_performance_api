@@ -41,6 +41,9 @@ public:
     /// Destructor
     ~VkGPACommandList();
 
+    /// \copydoc IGPACommandList::IsResultReady()
+    bool IsResultReady() const override;
+
     /// \copydoc IGPAInterfaceTrait::GetAPIType()
     GPA_API_Type GetAPIType() const override;
 

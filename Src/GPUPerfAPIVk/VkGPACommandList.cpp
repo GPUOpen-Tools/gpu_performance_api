@@ -175,6 +175,25 @@ bool VkGPACommandList::CloseLastSampleRequest()
     return true;
 }
 
+bool VkGPACommandList::IsResultReady() const
+{
+    bool isResultReady = false;
+
+    VkGPAContext* pVkGPAContext = dynamic_cast<VkGPAContext*>(GetParentSession()->GetParentContext());
+
+    if (nullptr == pVkGPAContext)
+    {
+       GPA_LogError("Invalid profiling session encountered when checking for available results.");
+    }
+    else
+    {
+        VkResult isReady = _vkGetGpaSessionStatusAMD(pVkGPAContext->GetVkDevice(), m_gpaExtSessionAMD);
+        isResultReady = VK_SUCCESS == isReady;
+    }
+
+    return isResultReady;
+}
+
 VkCommandBuffer VkGPACommandList::GetVkCommandBuffer() const
 {
     return m_vkCmdBuffer;

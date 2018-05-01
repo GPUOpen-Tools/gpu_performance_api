@@ -378,7 +378,7 @@ bool GPASession::UpdateResults()
 
         if (!areAllPassesComplete)
         {
-            GPA_LogError("Pass is not complete.");
+            GPA_LogDebugMessage("Pass is not complete.");
         }
     }
 

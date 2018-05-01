@@ -225,20 +225,21 @@ private:
     /// Release allocated counters
     virtual void ReleaseCounters() = 0;
 
-    GPAPass*         m_pPass;               ///< GPA Pass Object
-    IGPACommandList* m_pGpaCmdList;         ///< Pointer to the command list object
-    GpaSampleType    m_gpaSampleType;       ///< type of the GPA sample
-    ClientSampleId   m_clientSampleId;      ///< Client-assigned sample Id
-    DriverSampleId   m_driverSampleId;      ///< Driver created sample id
-    GPASampleState   m_gpaSampleState;      ///< The state of this sample
-    GPASampleResult* m_pSampleResult;       ///< memory for sample Results
-    GPASample*       m_pContinuingSample;   ///< Pointer to linked/continuing GpaSample
-    std::mutex       m_sampleMutex;         ///< mutex for the GPA sample object
-    bool             m_isSecondary;         ///< flag indicating a sample is a secondary sample; i.e. it has been created on a bundle or secondary command buffer
-    bool             m_isOpened;            ///< flag indicating a sample is opened
-    bool             m_isClosedByClient;    ///< flag indicating a sample is closed by the command list on which it is created
-    bool             m_isContinuedByClient; ///< flag indicating a sampe has been continued on another command list
-    bool             m_isCopiedSample;      ///< flag indicating that sample has been copied to primary command list
+    GPAPass*             m_pPass;               ///< GPA Pass Object
+    IGPACommandList*     m_pGpaCmdList;         ///< Pointer to the command list object
+    GpaSampleType        m_gpaSampleType;       ///< type of the GPA sample
+    ClientSampleId       m_clientSampleId;      ///< Client-assigned sample Id
+    DriverSampleId       m_driverSampleId;      ///< Driver created sample id
+    GPASampleState       m_gpaSampleState;      ///< The state of this sample
+    GPASampleResult*     m_pSampleResult;       ///< memory for sample Results
+    GPASample*           m_pContinuingSample;   ///< Pointer to linked/continuing GpaSample
+    std::recursive_mutex m_continueSampleMutex; ///< mutex for the GPA sample object
+    std::mutex           m_sampleMutex;         ///< mutex for the GPA sample object
+    bool                 m_isSecondary;         ///< flag indicating a sample is a secondary sample; i.e. it has been created on a bundle or secondary command buffer
+    bool                 m_isOpened;            ///< flag indicating a sample is opened
+    bool                 m_isClosedByClient;    ///< flag indicating a sample is closed by the command list on which it is created
+    bool                 m_isContinuedByClient; ///< flag indicating a sampe has been continued on another command list
+    bool                 m_isCopiedSample;      ///< flag indicating that sample has been copied to primary command list
 };
 
 #endif // _GPA_SAMPLE_H_

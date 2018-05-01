@@ -212,7 +212,6 @@ GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsContinuedByClient()
 {
     std::lock_guard<std::mutex> lockSample(m_sampleMutex);
     bool success = false;
-    m_gpaSampleState = GPASampleState::PENDING_RESULTS;
 
     if (!m_isClosedByClient)
     {
@@ -259,6 +258,8 @@ IGPACommandList* GPASample::GetCmdList() const
 
 bool GPASample::LinkContinuingSample(GPASample* pContinuingSample)
 {
+    std::lock_guard<std::recursive_mutex> lock(m_continueSampleMutex);
+
     if (nullptr == pContinuingSample)
     {
         return false;

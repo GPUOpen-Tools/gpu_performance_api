@@ -84,6 +84,11 @@ GPASample* GPAPass::GetSampleById(ClientSampleId sampleId) const
 {
     std::lock_guard<std::mutex> lock(m_samplesMapMutex);
 
+    return GetSampleById_NotThreadSafe(sampleId);
+}
+
+GPASample* GPAPass::GetSampleById_NotThreadSafe(ClientSampleId sampleId) const
+{
     GPASample* pRetVal = nullptr;
 
     if (m_samplesMap.find(sampleId) != m_samplesMap.end())
@@ -154,7 +159,7 @@ bool GPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrima
     // We will mark the parent sample as to be continued by the client
 
     bool success = false;
-    GPASample* pParentSample = GetSampleById(srcSampleId);
+    GPASample* pParentSample = GetSampleById_NotThreadSafe(srcSampleId);
 
     if (nullptr != pParentSample)
     {
@@ -179,14 +184,19 @@ bool GPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrima
 
                 if (nullptr != pNewSample)
                 {
-                    // TODO: Can these two be merged into the same entrypoint?
-                    // ie, if we link a continuing sample, isn't it by default continued by client?
-                    // is there a way that WE (GPA) would continue it on our own?
-                    // Mark the parent sample as getting continuing by client
-                    pParentSample->SetAsContinuedByClient();
-                    // Link the sample to the parent sample
-                    pParentSample->LinkContinuingSample(pNewSample);
-                    success = true;
+                    if (!pPrimaryGpaCmdList->BeginSample(srcSampleId, pNewSample))
+                    {
+                        GPA_LogError("Unable to begin continued sample in pass.");
+                        delete pNewSample;
+                        pNewSample = nullptr;
+                    }
+                    else
+                    {
+                        pParentSample->SetAsContinuedByClient();
+                        // Link the sample to the parent sample
+                        pParentSample->LinkContinuingSample(pNewSample);
+                        success = true;
+                    }
                 }
             }
             else

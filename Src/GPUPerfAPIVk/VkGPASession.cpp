@@ -26,7 +26,7 @@ GPA_Status VkGPASession::ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA
 {
     bool succeed = false;
 
-    if (primaryCommandListId->Object()->GetAPIType() == GPA_API_DIRECTX_12 &&
+    if (primaryCommandListId->Object()->GetAPIType() == GetAPIType() &&
         primaryCommandListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST)
     {
         VkGPACommandList* pVkGpaCmdList = reinterpret_cast<VkGPACommandList*>(primaryCommandListId->Object());

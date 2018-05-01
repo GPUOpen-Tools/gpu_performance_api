@@ -248,6 +248,12 @@ protected:
     /// \return True if the sample has been opened; False otherwise
     bool DoesSampleExist_NotThreadSafe(ClientSampleId clientSampleId) const;
 
+    /// Returns the sample by its client sample Id
+    /// Does NOT lock the mutex, expects the calling method to do that.
+    /// \param[in] sampleId Id of the sample
+    /// \return GPA Sample object
+    GPASample* GetSampleById_NotThreadSafe(ClientSampleId sampleId) const;
+
     /// Create an API-specific GPASample of the supplied GpaSampleType.
     /// \param[in] pCmdList The commandList on which this sample is taking place.
     /// \param[in] sampleType Indicates whether the created sample should support Software or Hardware counters.
