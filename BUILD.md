@@ -37,7 +37,7 @@ this script everytime you pull new changes from GPA repository.
 ##### Build Instructions
  * Load Build\VS2015\GPUPerfAPI.sln into Visual Studio
  * Build the 64-bit and/or 32-bit configuration
- * After a successful build, the GPUPerfAPI binaries can be found in `GPA\Output\\$(Configuration)\bin` (for example GPA\Output\Release\bin)
+ * After a successful build, the GPUPerfAPI binaries can be found in `GPA\Output\$(Configuration)\bin` (for example GPA\Output\Release\bin)
 
 #### Additional Information
  * The Visual Studio solution includes a Documentation project that allows you to generate the HTML-based source code documentation using Doxygen. In order
@@ -57,7 +57,7 @@ this script everytime you pull new changes from GPA repository.
  * For 32-bit builds, install the multilib packages: sudo apt-get install gcc-multilib g++-multilib
 
 ##### Build Instructions
- * cd into the Build\Linux directory
+ * cd into the Build/Linux directory
  * Execute `./build.sh`
    * By default this performs a from-scratch build of the release versions of GPUPerfAPI, both 32-bit and 64-bit binaries.
  * The following arguments can be passed to build.sh to alter the build:
@@ -120,7 +120,7 @@ There are three ways to execute the tool:
   * Param 6: GPU - the GPU to take the counter names from (ex: Gfx9)
   * Param 7: GPU ASIC - (optional) the subversion of GPU to take the counter names from
 
-See the various PublicCounterDefinitions\*.txt files in the [PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) directory. These contain all the counter definitions.
+See the various PublicCounterDefinitions/*.txt files in the [PublicCounterCompilerInputFiles](Src/PublicCounterCompilerInputFiles) directory. These contain all the counter definitions.
 Each counter is given a name, a description, a type, an optional usage type, a list of hardware counters required and a formula applied to the values of the hardware counters to calculate the value of the counter.
 
 Counter formulas are expressed in a Reverse Polish Notation and are made up the following elements:
