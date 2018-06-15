@@ -9,19 +9,19 @@
 # "git repo name"  : ["Directory for clone relative to parent project directory",  "branch or commit to checkout (or None for top of tree)"]
 gitMapping = {
  # Lib.
-    "common-lib-amd-ADL"                  : ["../Common/Lib/AMD/ADL",               None],
-    "common-lib-amd-APPSDK-3.0"           : ["../Common/Lib/AMD/APPSDK",            None],
-    "common-lib-ext-GoogleTest-1.7"       : ["../Common/Lib/Ext/GoogleTest",        None],
-    "common-lib-ext-OpenGL"               : ["../Common/Lib/Ext/OpenGL",            None],
-    "common-lib-ext-WindowsKits"          : ["../Common/Lib/Ext/Windows-Kits",      None],
+    "common-lib-amd-ADL"                  : ["../Common/Lib/AMD/ADL",               "04b97aa3138c282d9c2b84b3b2f3d06decbea6df"],
+    "common-lib-amd-APPSDK-3.0"           : ["../Common/Lib/AMD/APPSDK",            "4e6d30e406d2e5a65e1d65e404fe6df5f772a32b"],
+    "common-lib-ext-GoogleTest-1.7"       : ["../Common/Lib/Ext/GoogleTest",        "7ab958af33ee2d435b52d341f95aafb67e0189d0"],
+    "common-lib-ext-OpenGL"               : ["../Common/Lib/Ext/OpenGL",            "6b6684bf5408da05efeb24c53f4241a003c1ac6e"],
+    "common-lib-ext-WindowsKits"          : ["../Common/Lib/Ext/Windows-Kits",      "dc6a865cab7aac7a9d3c033c529dbd37cf3cee41"],
 # Src.
-    "common-src-ADLUtil"                  : ["../Common/Src/ADLUtil",               None],
-    "common-src-AmdDxExt"                 : ["../Common/Src/AmdDxExt",              None],
-    "common-src-AmdVkExt"                 : ["../Common/Src/AmdVkExt",              None],
-    "common-src-DeviceInfo"               : ["../Common/Src/DeviceInfo",            None],
-    "common-src-DynamicLibraryModule"     : ["../Common/Src/DynamicLibraryModule",  None],
-    "common-src-TSingleton"               : ["../Common/Src/TSingleton",            None],
-    "common-src-Vsprops"                  : ["../Common/Src/Vsprops",               None],
+    "common-src-ADLUtil"                  : ["../Common/Src/ADLUtil",               "2f57a3e44067379a1bdbb7b420d5e95ab2cab55c"],
+    "common-src-AmdDxExt"                 : ["../Common/Src/AmdDxExt",              "3192b5d86218214fa04462523b58553ac9d406e6"],
+    "common-src-AmdVkExt"                 : ["../Common/Src/AmdVkExt",              "6b1123404d4bc27ad6b46fb8d8c12b0f02a0c1dd"],
+    "common-src-DeviceInfo"               : ["../Common/Src/DeviceInfo",            "10fd4de85f62d9146480e2e76900f284d58dcecd"],
+    "common-src-DynamicLibraryModule"     : ["../Common/Src/DynamicLibraryModule",  "37160c2c7543f08b04cf0ac633a38f221bfad31e"],
+    "common-src-TSingleton"               : ["../Common/Src/TSingleton",            "ebde730c07eac1c1da7f486d65517b93e1550edb"],
+    "common-src-Vsprops"                  : ["../Common/Src/Vsprops",               "69c97737d688a2e3fe5a5d4ba844ae6ab1cd35c4"],
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
