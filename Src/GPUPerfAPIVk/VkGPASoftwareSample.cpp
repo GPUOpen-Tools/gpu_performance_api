@@ -267,34 +267,34 @@ bool VkGPASoftwareSample::UpdateResults()
         {
             if (m_pSwQueries->GetSwSampleResults(m_swSampleId, queryResults))
             {
-                GetSampleResultLocation()->m_numCounters = m_activeCountersList.size();
+                GetSampleResultLocation()->SetNumCounters(m_activeCountersList.size());
                 const size_t counterCount = m_activeCountersList.size();
-                isUpdated = (counterCount == GetSampleResultLocation()->m_numCounters);
+                isUpdated = (counterCount == GetSampleResultLocation()->GetNumCounters());
 
                 for (size_t ci = 0; isUpdated && (counterCount > ci); ++ci)
                 {
                     switch (m_activeCountersList[ci].m_queryType)
                     {
                         case GPA_VK_QUERY_TYPE_OCCLUSION:
-                            GetSampleResultLocation()->m_pResultBuffer[ci] = queryResults.occlusion;
+                            GetSampleResultLocation()->GetResultBuffer()[ci] = queryResults.occlusion;
                             break;
 
                         case GPA_VK_QUERY_TYPE_OCCLUSION_BINARY:
-                            GetSampleResultLocation()->m_pResultBuffer[ci] = queryResults.occlusionBinary;
+                            GetSampleResultLocation()->GetResultBuffer()[ci] = queryResults.occlusionBinary;
                             break;
 
                         case GPA_VK_QUERY_TYPE_TIMESTAMP:
                             isUpdated = GetTimestampQueryCounterResult(
                                             queryResults,
                                             m_activeCountersList[ci].m_index,
-                                            GetSampleResultLocation()->m_pResultBuffer[ci]);
+                                            GetSampleResultLocation()->GetResultBuffer()[ci]);
                             break;
 
                         case GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS:
                             isUpdated = GetPipelineQueryCounterResult(
                                             queryResults,
                                             m_activeCountersList[ci].m_index,
-                                            GetSampleResultLocation()->m_pResultBuffer[ci]);
+                                            GetSampleResultLocation()->GetResultBuffer()[ci]);
                             break;
 
                         default:

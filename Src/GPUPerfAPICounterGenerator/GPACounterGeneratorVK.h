@@ -27,7 +27,7 @@ protected:
         GDT_HW_GENERATION desiredGeneration,
         GDT_HW_ASIC_TYPE asicType,
         gpa_uint8 generateAsicSpecificCounters,
-        GPA_PublicCounters* pPublicCounters) override;
+        GPA_DerivedCounters* pPublicCounters) override;
 
     /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
     virtual GPA_Status GenerateHardwareCounters(

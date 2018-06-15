@@ -1,16 +1,20 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX12 GPA Implementation
 //==============================================================================
 
 #include "DX12GPAImplementor.h"
-#include "DX12GPAContext.h"
 #include "DX12Utils.h"
 #include "DeviceInfoUtils.h"
 
 IGPAImplementor* s_pGpaImp = DX12GPAImplementor::Instance();
+
+DX12GPAImplementor::~DX12GPAImplementor()
+{
+    DeleteContexts();
+}
 
 GPA_API_Type DX12GPAImplementor::GetAPIType() const
 {
@@ -100,6 +104,12 @@ bool DX12GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
     return success;
 }
 
+GPA_Status DX12GPAImplementor::Destroy()
+{
+    DeleteContexts();
+    return GPAImplementor::Destroy();
+}
+
 IGPAContext* DX12GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
 {
     IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
@@ -137,15 +147,30 @@ bool DX12GPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, 
     assert(pDeviceIdentifier);
     assert(pContext);
 
+    UNREFERENCED_PARAMETER(pDeviceIdentifier);
+    UNREFERENCED_PARAMETER(pContext);
+
     if (nullptr != pContext)
     {
-        delete reinterpret_cast<DX12GPAContext*>(pContext);
+        DX12GPAContext* pDx12GpaContext = reinterpret_cast<DX12GPAContext*>(pContext);
+        pDx12GpaContext->CleanUp();
+        m_dx12GpaContextList.push_back(pDx12GpaContext);
     }
 
-    return (nullptr != pContext) && (nullptr != pDeviceIdentifier);
+    return true;
 }
 
 GPADeviceIdentifier DX12GPAImplementor::GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const
 {
     return static_cast<IUnknown*>(pContextInfo);
+}
+
+void DX12GPAImplementor::DeleteContexts()
+{
+    for (DX12GPAContext* pTempContext : m_dx12GpaContextList)
+    {
+        delete pTempContext;
+    }
+
+    m_dx12GpaContextList.clear();
 }

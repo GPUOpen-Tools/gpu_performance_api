@@ -77,6 +77,9 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             ppHardwareCounters = DX11CounterGroupArrayGfx9;
 #endif
             break;
+
+        default:
+            break;
     }
 
     for (size_t i = 0; i < publicCounterCount; i++)
@@ -92,6 +95,7 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
         }
     }
 
+    /* No more sw counters
     for (size_t i = 0; i < DX11SW_COUNTER_COUNT; i++)
     {
         counterNames.push_back(DX11SW_COUNTERS[i].m_pName);
@@ -101,6 +105,7 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
     {
         counterNames[0] = "GPUTime";
     }
+    */
 }
 
 // Test the DX11 counter names on all supported hardware
@@ -123,13 +128,10 @@ TEST(CounterDLLTests, DX11CounterNames)
 TEST(CounterDLLTests, DX11CounterNamesByGeneration)
 {
     VerifyHardwareNotSupported(GPA_API_DIRECTX_11, GPA_HW_GENERATION_NONE, FALSE);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, GPA_HW_GENERATION_NVIDIA, FALSE);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, GPA_HW_GENERATION_INTEL, FALSE);
 
     std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_NVIDIA, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_NVIDIA, FALSE, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_INTEL, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_INTEL, FALSE, counterNames);
-
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX6, counterNames);
     VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX6, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);

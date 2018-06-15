@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GL internal counter definitions for GFX7
@@ -254,7 +254,10 @@ unsigned int HWGLSQIsolatedGroupsGfx7[] =
     73, // Tcp
 };
 
-const unsigned int HWGLGPUTimeIndexGfx7 = 83;
+const unsigned int HWGLGPUTimeBottomToBottomIndexGfx7 = 11279;
+const unsigned int HWGLGPUTimeTopToBottomIndexGfx7 = 11280;
+const std::set<unsigned int> HWGLTimestampBlockIdsGfx7 = { 83 }; ///< Timestamp block id's for GL for Gfx7 family
+const std::set<unsigned int> HWGLTimeCounterIndicesGfx7 = { 11279, 11280 }; ///< Timestamp counter indices for GL for Gfx7 family
 const unsigned int HWGLGroupCountGfx7 = sizeof(HWGLGroupsGfx7) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWGLSQGroupCountGfx7 = sizeof(HWGLSQGroupsGfx7) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWGLSQIsolatedGroupCountGfx7 = sizeof(HWGLSQIsolatedGroupsGfx7) / sizeof(unsigned int);

@@ -6,6 +6,7 @@ entrypoint
 entrypoints
 API
 vkCommandBuffer
+vkEndCommandBuffer
 ROCm
 HSA
 GPU

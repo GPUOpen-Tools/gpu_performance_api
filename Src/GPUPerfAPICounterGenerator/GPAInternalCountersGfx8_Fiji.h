@@ -30,6 +30,10 @@ inline bool MatchAsic(GDT_HW_ASIC_TYPE asicType)
     return true;
 }
 
+extern GPA_HardwareCounterDesc VGT0countersGfx8_Fiji []; ///< Array of internal counters for VGT0 block for Gfx8_Fiji family
+extern GPA_HardwareCounterDesc VGT1countersGfx8_Fiji []; ///< Array of internal counters for VGT1 block for Gfx8_Fiji family
+extern GPA_HardwareCounterDesc VGT2countersGfx8_Fiji []; ///< Array of internal counters for VGT2 block for Gfx8_Fiji family
+extern GPA_HardwareCounterDesc VGT3countersGfx8_Fiji []; ///< Array of internal counters for VGT3 block for Gfx8_Fiji family
 extern GPA_HardwareCounterDesc MC0countersGfx8_Fiji []; ///< Array of internal counters for MC0 block for Gfx8_Fiji family
 extern GPA_HardwareCounterDesc MC1countersGfx8_Fiji []; ///< Array of internal counters for MC1 block for Gfx8_Fiji family
 extern GPA_HardwareCounterDesc MC2countersGfx8_Fiji []; ///< Array of internal counters for MC2 block for Gfx8_Fiji family
@@ -62,10 +66,6 @@ extern GPA_HardwareCounterDesc MC28countersGfx8_Fiji []; ///< Array of internal 
 extern GPA_HardwareCounterDesc MC29countersGfx8_Fiji []; ///< Array of internal counters for MC29 block for Gfx8_Fiji family
 extern GPA_HardwareCounterDesc MC30countersGfx8_Fiji []; ///< Array of internal counters for MC30 block for Gfx8_Fiji family
 extern GPA_HardwareCounterDesc MC31countersGfx8_Fiji []; ///< Array of internal counters for MC31 block for Gfx8_Fiji family
-extern GPA_HardwareCounterDesc VGT0countersGfx8_Fiji []; ///< Array of internal counters for VGT0 block for Gfx8_Fiji family
-extern GPA_HardwareCounterDesc VGT1countersGfx8_Fiji []; ///< Array of internal counters for VGT1 block for Gfx8_Fiji family
-extern GPA_HardwareCounterDesc VGT2countersGfx8_Fiji []; ///< Array of internal counters for VGT2 block for Gfx8_Fiji family
-extern GPA_HardwareCounterDesc VGT3countersGfx8_Fiji []; ///< Array of internal counters for VGT3 block for Gfx8_Fiji family
 
 /// Replaces count number of block instance counters at the destination with the overriding source counters.
 /// \param pDestCounter Destination to update.
@@ -89,6 +89,10 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asicType)
         return false;
     }
 
+    ReplaceBlockInstanceCounters(VGT0countersGfx8, VGT0countersGfx8_Fiji, 146);
+    ReplaceBlockInstanceCounters(VGT1countersGfx8, VGT1countersGfx8_Fiji, 146);
+    ReplaceBlockInstanceCounters(VGT2countersGfx8, VGT2countersGfx8_Fiji, 146);
+    ReplaceBlockInstanceCounters(VGT3countersGfx8, VGT3countersGfx8_Fiji, 146);
     ReplaceBlockInstanceCounters(MC0countersGfx8, MC0countersGfx8_Fiji, 33);
     ReplaceBlockInstanceCounters(MC1countersGfx8, MC1countersGfx8_Fiji, 33);
     ReplaceBlockInstanceCounters(MC2countersGfx8, MC2countersGfx8_Fiji, 33);
@@ -121,10 +125,6 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asicType)
     ReplaceBlockInstanceCounters(MC29countersGfx8, MC29countersGfx8_Fiji, 33);
     ReplaceBlockInstanceCounters(MC30countersGfx8, MC30countersGfx8_Fiji, 33);
     ReplaceBlockInstanceCounters(MC31countersGfx8, MC31countersGfx8_Fiji, 33);
-    ReplaceBlockInstanceCounters(VGT0countersGfx8, VGT0countersGfx8_Fiji, 146);
-    ReplaceBlockInstanceCounters(VGT1countersGfx8, VGT1countersGfx8_Fiji, 146);
-    ReplaceBlockInstanceCounters(VGT2countersGfx8, VGT2countersGfx8_Fiji, 146);
-    ReplaceBlockInstanceCounters(VGT3countersGfx8, VGT3countersGfx8_Fiji, 146);
 
     return true;
 }

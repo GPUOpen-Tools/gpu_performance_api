@@ -38,7 +38,7 @@ GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(
     GDT_HW_GENERATION desiredGeneration,
     GDT_HW_ASIC_TYPE asicType,
     gpa_uint8 generateAsicSpecificCounters,
-    GPA_PublicCounters* pPublicCounters)
+    GPA_DerivedCounters* pPublicCounters)
 {
     if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
     {
@@ -47,7 +47,7 @@ GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(
     }
     else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
     {
-        AutoDefinePublicCountersHSAGfx7(*pPublicCounters);
+        AutoDefineDerivedCountersHSAGfx7(*pPublicCounters);
 
         if (generateAsicSpecificCounters)
         {
@@ -56,7 +56,7 @@ GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
-        AutoDefinePublicCountersHSAGfx8(*pPublicCounters);
+        AutoDefineDerivedCountersHSAGfx8(*pPublicCounters);
 
         if (generateAsicSpecificCounters)
         {
@@ -65,7 +65,7 @@ GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
-        AutoDefinePublicCountersHSAGfx9(*pPublicCounters);
+        AutoDefineDerivedCountersHSAGfx9(*pPublicCounters);
 
         if (generateAsicSpecificCounters)
         {

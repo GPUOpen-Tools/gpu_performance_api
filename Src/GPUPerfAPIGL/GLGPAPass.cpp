@@ -173,7 +173,8 @@ const GLCounter* GLGPAPass::GetGLCounter(const GLuint& counterGroup,
 bool GLGPAPass::InitializeCounters(const GLPerfMonitorId& glPerfMonitorId)
 {
     bool isSuccessFul = true;
-    auto EnableCounter = [&](const CounterIndex & counterIndex) ->bool
+
+    auto EnableCounter = [&](const CounterIndex& counterIndex) ->bool
     {
         bool isCounterEnabled = false;
         // need to Enable counters

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX12 internal counter definitions for GFX7
@@ -1014,7 +1014,10 @@ AmdExtGpuBlock HWDX12DriverEnumGfx7[] =
     AmdExtGpuBlock::Count,
 };
 
-const unsigned int HWDX12GPUTimeIndexGfx7 = 266;
+const unsigned int HWDX12GPUTimeBottomToBottomIndexGfx7 = 36722;
+const unsigned int HWDX12GPUTimeTopToBottomIndexGfx7 = 36723;
+const std::set<unsigned int> HWDX12TimestampBlockIdsGfx7 = { 266 }; ///< Timestamp block id's for DX12 for Gfx7 family
+const std::set<unsigned int> HWDX12TimeCounterIndicesGfx7 = { 36722, 36723 }; ///< Timestamp counter indices for DX12 for Gfx7 family
 const unsigned int HWDX12GroupCountGfx7 = sizeof(HWDX12GroupsGfx7) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX12SQGroupCountGfx7 = sizeof(HWDX12SQGroupsGfx7) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX12SQIsolatedGroupCountGfx7 = sizeof(HWDX12SQIsolatedGroupsGfx7) / sizeof(unsigned int);

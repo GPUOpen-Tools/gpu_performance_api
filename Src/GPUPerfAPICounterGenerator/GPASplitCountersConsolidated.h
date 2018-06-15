@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2014-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2014-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  This file implements the "consolidated" counter splitter
@@ -28,24 +28,22 @@ class GPASplitCountersConsolidated : public IGPASplitCounters
 {
 public:
     /// Initialize an instance of the GPASplitCountersConsolidated class.
-    /// \param gpuTimestampGroupIndex The index of the GPUTimestamp group
-    /// \param gpuTimestampBottomToBottomCounterIndex The global counter index of the bottom-bottom counter
-    /// \param gpuTimestampTopToBottomCounterIndex The global counter index of the top-bottom counter
+    /// \param timestampBlockIds Set of timestamp block id's
+    /// \param timeCounterIndices Set of timestamp counter indices
     /// \param maxSQCounters The maximum number of counters that can be simultaneously enabled on the SQ block
     /// \param numSQGroups The number of SQ counter groups.
     /// \param pSQCounterBlockInfo The list of SQ counter groups.
     /// \param numIsolatedFromSqGroups The number of counter groups that must be isolated from SQ counter groups
     /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
-    GPASplitCountersConsolidated(unsigned int gpuTimestampGroupIndex,
-                                 unsigned int gpuTimestampBottomToBottomCounterIndex,
-                                 unsigned int gpuTimestampTopToBottomCounterIndex,
+    GPASplitCountersConsolidated(const std::set<unsigned int>& timestampBlockIds,
+                                 const std::set<unsigned int>& timeCounterIndices,
                                  unsigned int maxSQCounters,
                                  unsigned int numSQGroups,
                                  GPA_SQCounterGroupDesc* pSQCounterBlockInfo,
                                  unsigned int numIsolatedFromSqGroups,
                                  const unsigned int* pIsolatedFromSqGroups)
-        :   IGPASplitCounters(gpuTimestampGroupIndex, gpuTimestampBottomToBottomCounterIndex,
-                              gpuTimestampTopToBottomCounterIndex, maxSQCounters,
+        :   IGPASplitCounters(timestampBlockIds, timeCounterIndices,
+                              maxSQCounters,
                               numSQGroups, pSQCounterBlockInfo,
                               numIsolatedFromSqGroups, pIsolatedFromSqGroups)
     {
@@ -59,7 +57,7 @@ public:
     // single-pass counters should not be split into multiple passes,
     // multi-pass counters should not take more passes than required,
     // no more than a fixed number of counters per pass.
-    std::list<GPACounterPass> SplitCounters(const std::vector<const GPA_PublicCounter*>& publicCountersToSplit,
+    std::list<GPACounterPass> SplitCounters(const std::vector<const GPA_DerivedCounter*>& publicCountersToSplit,
                                             const std::vector<GPAHardwareCounterIndices> internalCountersToSchedule,
                                             const std::vector<GPASoftwareCounterIndices> softwareCountersToSchedule,
                                             IGPACounterGroupAccessor* accessor,
@@ -146,10 +144,10 @@ private:
     /// structure representing a point to the requested GPA_PublicCounter, and the breakdown of hardware counter passes
     struct PublicAndHardwareCounters
     {
-        const GPA_PublicCounter* m_publicCounter = nullptr; ///< the public counter
-        GPACounterPass m_counterPass;                       ///< the set of hardware counters in a pass
-        uint32_t m_passIndex = 0;                           ///< the pass index
-        uint32_t m_totalPasses = 0;                         ///< the total passes requried for the public counter
+        const GPA_DerivedCounter* m_publicCounter = nullptr; ///< the public counter
+        GPACounterPass            m_counterPass;             ///< the set of hardware counters in a pass
+        uint32_t                  m_passIndex = 0;           ///< the pass index
+        uint32_t                  m_totalPasses = 0;         ///< the total passes requried for the public counter
     };
 
     /// Checks passes created for previous public counters to see if the counters in the specified pass are already all scheduled in the same pass
@@ -443,7 +441,7 @@ private:
     /// \param[in,out] numScheduledCounters The total number of counters that were scheduled
     /// \param maxInternalCountersPerPass the maximum number of counters per pass
     void InsertPublicCounters(std::list<GPACounterPass>& passPartitions,
-                              const std::vector<const GPA_PublicCounter*>& inputCountersToSplit,
+                              const std::vector<const GPA_DerivedCounter*>& inputCountersToSplit,
                               IGPACounterGroupAccessor* pAccessor,
                               std::list<PerPassData>& numUsedCountersPerPassPerBlock,
                               const std::vector<unsigned int>& maxCountersPerGroup,
@@ -740,7 +738,7 @@ private:
     /// \param maxCountersPerGroup the list of max counters per group
     /// \return a list of passes
     std::list<GPACounterPass> SplitSingleCounter(
-        const GPA_PublicCounter* pPublicCounter,
+        const GPA_DerivedCounter* pPublicCounter,
         IGPACounterGroupAccessor* pAccessor,
         const std::vector<unsigned int>& maxCountersPerGroup)
     {

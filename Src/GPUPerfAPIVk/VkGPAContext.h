@@ -9,7 +9,7 @@
 #define _VK_GPA_CONTEXT_H_
 
 #include <mutex>
-#include <vulkan.h>
+#include <vulkan/vulkan.h>
 #include <vk_amd_gpa_interface.h>
 
 #include "GPAContext.h"

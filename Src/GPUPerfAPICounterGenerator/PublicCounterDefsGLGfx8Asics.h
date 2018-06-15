@@ -10,7 +10,7 @@
 
 //*** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#include "GPAPublicCounters.h"
+#include "GPADerivedCounters.h"
 
 #include "PublicCounterDefsGLGfx8_Baffin.h"
 #include "PublicCounterDefsGLGfx8_Carrizo.h"
@@ -22,40 +22,40 @@
 namespace GLGfx8Asics
 {
 
-/// Updates default GPU generation public counters with ASIC specific public counters if available.
+/// Updates default GPU generation derived counters with ASIC specific derived counters if available.
 /// \param desiredGeneration Hardware generation currently in use.
 /// \param asicType The ASIC type that is currently in use.
-/// \param publicCounters Returned set of public counters, if available.
-/// \return True if the ASIC matched one available, and publicCounters was updated.
-inline void UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_PublicCounters& publicCounters)
+/// \param counters Returned set of derived counters, if available.
+/// \return True if the ASIC matched one available, and counters was updated.
+inline void UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& counters)
 {
 
-    if (GLGfx8_Baffin::UpdateAsicSpecificCounters(desiredGeneration, asicType, publicCounters))
+    if (GLGfx8_Baffin::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
     {
         return;
     }
 
-    if (GLGfx8_Carrizo::UpdateAsicSpecificCounters(desiredGeneration, asicType, publicCounters))
+    if (GLGfx8_Carrizo::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
     {
         return;
     }
 
-    if (GLGfx8_Ellesmere::UpdateAsicSpecificCounters(desiredGeneration, asicType, publicCounters))
+    if (GLGfx8_Ellesmere::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
     {
         return;
     }
 
-    if (GLGfx8_Fiji::UpdateAsicSpecificCounters(desiredGeneration, asicType, publicCounters))
+    if (GLGfx8_Fiji::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
     {
         return;
     }
 
-    if (GLGfx8_Iceland::UpdateAsicSpecificCounters(desiredGeneration, asicType, publicCounters))
+    if (GLGfx8_Iceland::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
     {
         return;
     }
 
-    if (GLGfx8_Tonga::UpdateAsicSpecificCounters(desiredGeneration, asicType, publicCounters))
+    if (GLGfx8_Tonga::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
     {
         return;
     }

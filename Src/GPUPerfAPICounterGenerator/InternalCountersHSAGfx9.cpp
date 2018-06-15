@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  HSA internal counter definitions for GFX9
@@ -315,6 +315,8 @@ unsigned int HWHSASQIsolatedGroupsGfx9[] =
     86, // Tcp
 };
 
+const std::set<unsigned int> HWHSATimestampBlockIdsGfx9 = {  }; ///< Timestamp block id's for HSA for Gfx9 family
+const std::set<unsigned int> HWHSATimeCounterIndicesGfx9 = {  }; ///< Timestamp counter indices for HSA for Gfx9 family
 const unsigned int HWHSAGroupCountGfx9 = sizeof(HWHSAGroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWHSASQGroupCountGfx9 = sizeof(HWHSASQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWHSASQIsolatedGroupCountGfx9 = sizeof(HWHSASQIsolatedGroupsGfx9) / sizeof(unsigned int);

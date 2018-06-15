@@ -12,7 +12,7 @@
 #include "VkGPASample.h"
 #include "VkCommandListSwQueries.h"
 
-#include <vulkan.h>
+#include <vulkan/vulkan.h>
 #include <vk_amd_gpa_interface.h>
 
 class IGPASession;    ///< Predeclared IGPASession

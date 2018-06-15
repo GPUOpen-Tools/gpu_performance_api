@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX11 internal counter definitions for GFX9
@@ -661,7 +661,7 @@ GPA_CounterGroupDesc HWDX11GroupsGfx9[] =
     {303, "VGT1", 1, 148, 4},
     {304, "VGT2", 2, 148, 4},
     {305, "VGT3", 3, 148, 4},
-    {306, "CPG", 0, 59, 2},
+    {306, "CPG", 0, 60, 2},
     {307, "CPC", 0, 35, 2},
     {308, "WD", 0, 58, 4},
     {309, "MCVML2", 0, 21, 8},
@@ -1290,9 +1290,10 @@ PE_BLOCK_ID HWDX11DriverEnumGfx9[] =
     PE_BLOCK_UNKNOWN,
 };
 
-const unsigned int HWDX11GPUTimeIndexGfx9 = 338;
-const unsigned int HWDX11GPUTimeStampIndexGfx9 = 337;
-const unsigned int HWDX11FirstGPUTimeCounterIndexGfx9 = 54510;
+const unsigned int HWDX11GPUTimeBottomToBottomIndexGfx9 = 54512;
+const unsigned int HWDX11GPUTimeTopToBottomIndexGfx9 = 54513;
+const std::set<unsigned int> HWDX11TimestampBlockIdsGfx9 = { 338, 337 }; ///< Timestamp block id's for DX11 for Gfx9 family
+const std::set<unsigned int> HWDX11TimeCounterIndicesGfx9 = { 54512, 54513, 54511 }; ///< Timestamp counter indices for DX11 for Gfx9 family
 const unsigned int HWDX11GroupCountGfx9 = sizeof(HWDX11GroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX11SQGroupCountGfx9 = sizeof(HWDX11SQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX11SQIsolatedGroupCountGfx9 = sizeof(HWDX11SQIsolatedGroupsGfx9) / sizeof(unsigned int);

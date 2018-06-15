@@ -64,6 +64,12 @@ IGPACommandList* CLGPAPass::CreateAPISpecificCommandList(void* pCmd,
     UNREFERENCED_PARAMETER(cmdType);
 
     CLGPACommandList* pRetCmdList = new(std::nothrow) CLGPACommandList(GetGpaSession(), this, commandListId);
+
+    if (nullptr == pRetCmdList)
+    {
+        GPA_LogError("Unable to allocate memory for the command list.");
+    }
+
     return pRetCmdList;
 }
 

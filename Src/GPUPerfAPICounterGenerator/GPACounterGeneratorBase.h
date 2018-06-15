@@ -52,7 +52,7 @@ public:
     GPA_Counter_Sample_Type GetCounterSampleType(gpa_uint32 index) const override;
 
     /// \copydoc IGPACounterAccessor::GetPublicCounter()
-    const GPA_PublicCounter* GetPublicCounter(gpa_uint32 index) const override;
+    const GPA_DerivedCounter* GetPublicCounter(gpa_uint32 index) const override;
 
     /// \copydoc IGPACounterAccessor::GetHardwareCounterExt()
     const GPA_HardwareCounterDescExt* GetHardwareCounterExt(gpa_uint32 index) const override;
@@ -64,11 +64,11 @@ public:
     std::vector<gpa_uint32> GetInternalCountersRequired(gpa_uint32 index) const override;
 
     /// \copydoc IGPACounterAccessor::ComputePublicCounterValue()
-    void ComputePublicCounterValue(gpa_uint32 counterIndex,
-                                   std::vector<gpa_uint64*>& results,
-                                   std::vector<GPA_Data_Type>& internalCounterTypes,
-                                   void* pResult,
-                                   const GPA_HWInfo* pHwInfo) const override;
+    GPA_Status ComputePublicCounterValue(gpa_uint32 counterIndex,
+                                         std::vector<gpa_uint64*>& results,
+                                         std::vector<GPA_Data_Type>& internalCounterTypes,
+                                         void* pResult,
+                                         const GPA_HWInfo* pHwInfo) const override;
 
     /// \copydoc IGPACounterAccessor::GetCounterSourceInfo()
     GPACounterSourceInfo GetCounterSourceInfo(gpa_uint32 globalIndex) const override;
@@ -112,7 +112,7 @@ public:
         GDT_HW_GENERATION desiredGeneration,
         GDT_HW_ASIC_TYPE asicType,
         gpa_uint8 generateAsicSpecificCounters,
-        GPA_PublicCounters* pPublicCounters) = 0;
+        GPA_DerivedCounters* pPublicCounters) = 0;
 
     /// Generate the hardware counters for the specified hardware generation
     /// \param desiredGeneration the generation whose counters are needed
@@ -138,7 +138,7 @@ public:
         gpa_uint8 generateAsicSpecificCounters,
         GPA_SoftwareCounters* pSoftwareCounters) = 0;
 
-    GPA_PublicCounters   m_publicCounters;   ///< the generated public counters
+    GPA_DerivedCounters  m_publicCounters;   ///< the generated public counters
     GPA_HardwareCounters m_hardwareCounters; ///< the generated hardware counters
     GPA_SoftwareCounters m_softwareCounters; ///< the generated software counters
 

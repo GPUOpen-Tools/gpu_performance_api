@@ -450,7 +450,7 @@ GPA_Counter_Sample_Type GPA_CounterGeneratorBase::GetCounterSampleType(gpa_uint3
     return GPA_COUNTER_SAMPLE_TYPE_DISCRETE;
 }
 
-const GPA_PublicCounter* GPA_CounterGeneratorBase::GetPublicCounter(gpa_uint32 index) const
+const GPA_DerivedCounter* GPA_CounterGeneratorBase::GetPublicCounter(gpa_uint32 index) const
 {
     return m_publicCounters.GetCounter(index);
 }
@@ -518,9 +518,9 @@ std::vector<gpa_uint32> GPA_CounterGeneratorBase::GetInternalCountersRequired(gp
     return vecInternalCounters;
 }
 
-void GPA_CounterGeneratorBase::ComputePublicCounterValue(gpa_uint32 counterIndex, vector<gpa_uint64*>& results, vector<GPA_Data_Type>& internalCounterTypes, void* pResult, const GPA_HWInfo* pHwInfo) const
+GPA_Status GPA_CounterGeneratorBase::ComputePublicCounterValue(gpa_uint32 counterIndex, vector<gpa_uint64*>& results, vector<GPA_Data_Type>& internalCounterTypes, void* pResult, const GPA_HWInfo* pHwInfo) const
 {
-    m_publicCounters.ComputeCounterValue(counterIndex, results, internalCounterTypes, pResult, pHwInfo);
+    return m_publicCounters.ComputeCounterValue(counterIndex, results, internalCounterTypes, pResult, pHwInfo);
 }
 
 void GPA_CounterGeneratorBase::ComputeSWCounterValue(gpa_uint32 softwareCounterIndex,

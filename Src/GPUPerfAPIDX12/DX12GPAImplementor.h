@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX12 GPA Implementation declarations
@@ -14,6 +14,8 @@
 // GPA Common
 #include "GPAImplementor.h"
 
+#include "DX12GPAContext.h"
+
 /// Class for DX12 GPA Implementation
 class DX12GPAImplementor : public GPAImplementor, public TSingleton<DX12GPAImplementor>
 {
@@ -22,7 +24,7 @@ class DX12GPAImplementor : public GPAImplementor, public TSingleton<DX12GPAImple
 public:
 
     /// Destructor
-    ~DX12GPAImplementor() = default;
+    ~DX12GPAImplementor();
 
     /// \copydoc IGPAInterfaceTrait::GetAPIType()
     GPA_API_Type GetAPIType() const override;
@@ -32,6 +34,9 @@ public:
 
     /// \copydoc GPAImplementor::VerifyAPIHwSupport
     bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const override final;
+
+    /// \copydoc IGPAImplementor::Destroy()
+    GPA_Status Destroy() override;
 
 private:
 
@@ -46,6 +51,11 @@ private:
 
     /// \copydoc GPAImplementor::GetDeviceIdentifierFromContextInfo()
     GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const override final;
+
+    /// Deletes the GPA contexts
+    void DeleteContexts();
+
+    std::vector<DX12GPAContext*>     m_dx12GpaContextList;          ///< DX12 GPA context list for housekeeping
 };
 
 #endif // _DX12_GPA_IMPLEMENTOR_H_

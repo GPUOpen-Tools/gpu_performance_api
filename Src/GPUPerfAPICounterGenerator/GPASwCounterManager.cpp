@@ -10,8 +10,8 @@
 SwCounterManager::SwCounterManager() :
     m_amdCounters(0),
     m_swGPUTimeCounter(0),
-    m_swCountersGenerated(false),
-    m_swGPUTimeEnabled(false)
+    m_swGPUTimeEnabled(false),
+    m_swCountersGenerated(false)
 {
     m_swCounters.clear();
     m_enabledSwCounters.clear();

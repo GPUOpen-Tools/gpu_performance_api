@@ -142,10 +142,12 @@ void DX11GPAPass::InitializeCounterInfo()
 
                 if (dontEnableCounter)
                 {
-                    continue;
+                    DisableCounterForPass(m_pCounterList->at(counterIter));
                 }
-
-                EnableCounterForPass(m_pCounterList->at(counterIter));
+                else
+                {
+                    EnableCounterForPass(m_pCounterList->at(counterIter));
+                }
             }
 
             if (GetEnabledCounterCount() > 0)
@@ -161,7 +163,7 @@ void DX11GPAPass::InitiliazeCounterExperimentParameters()
     DX11GPAContext* pDx11GpaContext = reinterpret_cast<DX11GPAContext*>(GetGpaSession()->GetParentContext());
     const GPA_HardwareCounters* pHardwareCounters = pDx11GpaContext->GetCounterAccessor()->GetHardwareCounters();
 
-    auto PopulateExperimentParams = [&](const CounterIndex & counterIndex)->bool
+    auto PopulateExperimentParams = [&](const CounterIndex& counterIndex)->bool
     {
         const GPA_HardwareCounterDescExt* pCounter = &pHardwareCounters->m_counters[counterIndex];
 

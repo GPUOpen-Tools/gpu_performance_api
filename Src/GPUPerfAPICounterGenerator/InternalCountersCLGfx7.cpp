@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  CL internal counter definitions for GFX7
@@ -252,6 +252,8 @@ unsigned int HWCLSQIsolatedGroupsGfx7[] =
     73, // Tcp
 };
 
+const std::set<unsigned int> HWCLTimestampBlockIdsGfx7 = {  }; ///< Timestamp block id's for CL for Gfx7 family
+const std::set<unsigned int> HWCLTimeCounterIndicesGfx7 = {  }; ///< Timestamp counter indices for CL for Gfx7 family
 const unsigned int HWCLGroupCountGfx7 = sizeof(HWCLGroupsGfx7) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWCLSQGroupCountGfx7 = sizeof(HWCLSQGroupsGfx7) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWCLSQIsolatedGroupCountGfx7 = sizeof(HWCLSQIsolatedGroupsGfx7) / sizeof(unsigned int);

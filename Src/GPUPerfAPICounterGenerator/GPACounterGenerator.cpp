@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPUPerfAPI Counter Generator function
@@ -68,6 +68,7 @@ GPA_Status GenerateCounters(
     gpa_uint32 vendorId,
     gpa_uint32 deviceId,
     gpa_uint32 revisionId,
+    GPA_OpenContextFlags flags,
     gpa_uint8 generateAsicSpecificCounters,
     IGPACounterAccessor** ppCounterAccessorOut,
     IGPACounterScheduler** ppCounterSchedulerOut)
@@ -123,6 +124,11 @@ GPA_Status GenerateCounters(
         return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
     }
 
+    bool allowPublic = (flags & GPA_OPENCONTEXT_HIDE_PUBLIC_COUNTERS_BIT) == 0;
+    bool allowHardware = (flags & GPA_OPENCONTEXT_HIDE_HARDWARE_COUNTERS_BIT) == 0;
+    bool allowSoftware = (flags & GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT) == 0;
+
+    pTmpAccessor->SetAllowedCounters(allowPublic, allowHardware, allowSoftware);
     status = pTmpAccessor->GenerateCounters(desiredGeneration, cardInfo.m_asicType, generateAsicSpecificCounters);
 
     if (status == GPA_STATUS_OK)

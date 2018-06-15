@@ -17,5 +17,5 @@ bool DxxExtUtils::IsMgpuPerfExtSupported(IAmdDxExt* pDxxExt)
     AmdDxExtVersion extVersion;
     HRESULT hr = pDxxExt->GetVersion(&extVersion);
     unsigned int dxExtVersion = GENERATE_DXX_EXT_VERSION(extVersion.majorVersion, extVersion.minorVersion);
-    return ((S_OK == hr) && (dxExtVersion8p1 < dxExtVersion));
+    return (SUCCEEDED(hr) && (dxExtVersion8p1 < dxExtVersion));
 }

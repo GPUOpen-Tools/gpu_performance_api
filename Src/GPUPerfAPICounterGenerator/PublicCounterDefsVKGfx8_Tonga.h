@@ -10,7 +10,7 @@
 
 //*** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#include "GPAPublicCounters.h"
+#include "GPADerivedCounters.h"
 
 namespace VKGfx8_Tonga
 {
@@ -19,8 +19,8 @@ namespace VKGfx8_Tonga
 /// \param desiredGeneration Hardware generation currently in use.
 /// \param asicType The ASIC type that is currently in use.
 /// \param p public counters instance.
-/// \return True if the ASIC matched one available, and pPublicCounters was updated.
-extern bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_PublicCounters& p);
+/// \return True if the ASIC matched one available, and c was updated.
+extern bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& p);
 
 } //VKGfx8_Tonga
 

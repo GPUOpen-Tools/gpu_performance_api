@@ -2,7 +2,7 @@
 // Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  Manages a set of public counters
+/// \brief  Manages a set of derived counters
 //==============================================================================
 
 
@@ -13,10 +13,10 @@
 
 #include "Utility.h"
 #include "Logging.h"
-#include "GPAPublicCounters.h"
+#include "GPADerivedCounters.h"
 #include "GPACommonDefs.h"
 
-GPA_PublicCounter::GPA_PublicCounter(
+GPA_DerivedCounter::GPA_DerivedCounter(
     unsigned int index,
     const char* pName,
     const char* pGroup,
@@ -71,7 +71,7 @@ GPA_PublicCounter::GPA_PublicCounter(
            &bytes[7]
           );
 
-    for (int i = 0; i < (sizeof(bytes) / sizeof(bytes[0])); ++i)
+    for (size_t i = 0; i < (sizeof(bytes) / sizeof(bytes[0])); ++i)
     {
         m_uuid.m_data4[i] = static_cast<unsigned char>(bytes[i]);
     }
@@ -79,7 +79,7 @@ GPA_PublicCounter::GPA_PublicCounter(
 #endif
 }
 
-GPA_PublicCounter::GPA_PublicCounter():
+GPA_DerivedCounter::GPA_DerivedCounter():
     m_index(0u),
     m_pName(nullptr),
     m_pGroup(nullptr),
@@ -93,7 +93,7 @@ GPA_PublicCounter::GPA_PublicCounter():
 
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void GPA_PublicCounters::DefinePublicCounter(
+void GPA_DerivedCounters::DefineDerivedCounter(
     const char* pName,
     const char* pGroup,
     const char* pDescription,
@@ -114,10 +114,10 @@ void GPA_PublicCounters::DefinePublicCounter(
 
     unsigned int index = static_cast<unsigned int>(m_counters.size());
 
-    m_counters.push_back(GPA_PublicCounter(index, pName, pGroup, pDescription, dataType, usageType, internalCountersRequired, pComputeExpression, pUuid));
+    m_counters.push_back(GPA_DerivedCounter(index, pName, pGroup, pDescription, dataType, usageType, internalCountersRequired, pComputeExpression, pUuid));
 }
 
-void GPA_PublicCounters::UpdateAsicSpecificPublicCounter(
+void GPA_DerivedCounters::UpdateAsicSpecificDerivedCounter(
     const char* pName,
     vector< gpa_uint32 >& internalCountersRequired,
     const char* pComputeExpression)
@@ -137,50 +137,53 @@ void GPA_PublicCounters::UpdateAsicSpecificPublicCounter(
     assert(0);
 }
 
-void GPA_PublicCounters::Clear()
+void GPA_DerivedCounters::Clear()
 {
     m_counters.clear();
     m_countersGenerated = false;
 }
 
 
-gpa_uint32 GPA_PublicCounters::GetNumCounters() const
+gpa_uint32 GPA_DerivedCounters::GetNumCounters() const
 {
     return static_cast<gpa_uint32>(m_counters.size());
 }
 
 
 /// Evaluates a counter formula expression
-/// T is public counter type
+/// T is derived counter type
 /// \param pExpression the counter formula
 /// \param[out] pResult the result value
 /// \param results list of the hardware counter results
-/// \param internalCounterTypes list of the hardware counter types
-/// \param resultType the coutner result type
+/// \param resultType the counter result type
 /// \param pHwInfo the hardware info
+/// \return GPA_STATUS_OK on success, otherwise an error code
 template<class T, class InternalCounterType>
-static void EvaluateExpression(
+static GPA_Status EvaluateExpression(
     const char* pExpression,
     void* pResult,
-    vector< gpa_uint64* >& results,
-    vector< GPA_Data_Type >& internalCounterTypes,
+    const vector< gpa_uint64* >& results,
     GPA_Data_Type resultType,
     const GPA_HWInfo* pHwInfo)
 {
-    UNREFERENCED_PARAMETER(internalCounterTypes);
+    GPA_Status status = GPA_STATUS_OK;
 
-    assert(nullptr != pHwInfo);
+    if (!pHwInfo)
+    {
+        assert(nullptr != pHwInfo);
+        return GPA_STATUS_ERROR_INVALID_PARAMETER;
+    }
 
     size_t expressionLen = strlen(pExpression) + 1;
-    char* pBuf = new(std::nothrow) char[expressionLen];
+    std::vector<char> pBuf(expressionLen);
 
-    strcpy_s(pBuf, expressionLen, pExpression);
+    strcpy_s(pBuf.data(), expressionLen, pExpression);
 
     vector< T > stack;
     T* pWriteResult = reinterpret_cast<T*>(pResult);
 
     char* pContext;
-    char* pch = strtok_s(pBuf, " ,", &pContext);
+    char* pch = strtok_s(pBuf.data(), " ,", &pContext);
 
     while (nullptr != pch)
     {
@@ -256,11 +259,15 @@ static void EvaluateExpression(
             }
             else
             {
-                // Unsupported public counter type
+                // Unsupported derived counter type
                 assert(false);
+                return GPA_STATUS_ERROR_INVALID_DATATYPE;
             }
 
-            assert(scanResult == 1);
+            if (1 != scanResult)
+            {
+                assert(false);
+            }
 
             stack.push_back(constant);
         }
@@ -644,7 +651,6 @@ static void EvaluateExpression(
             UNREFERENCED_PARAMETER(scanResult);
             assert(scanResult == 1);
 
-            assert(index < results.size());
 
             if (index < results.size())
             {
@@ -655,8 +661,10 @@ static void EvaluateExpression(
             else
             {
                 // the index was invalid, so the counter result is unknown
-                assert(!"counter index in equation is out of range");
-                stack.push_back(0);
+                assert(0);
+                GPA_LogError("counter registerIndex in equation is out of range.");
+                status = GPA_STATUS_ERROR_INVALID_COUNTER_EQUATION;
+                break;
             }
         }
 
@@ -668,51 +676,59 @@ static void EvaluateExpression(
         std::stringstream ss;
         ss << "Invalid formula: " << pExpression << ".";
         GPA_LogError(ss.str().c_str());
+        status = GPA_STATUS_ERROR_INVALID_COUNTER_EQUATION;
     }
 
     assert(stack.size() == 1);
     *pWriteResult = stack.back();
 
-    delete[] pBuf;
+    return status;
 }
 
-void GPA_PublicCounters::ComputeCounterValue(gpa_uint32 counterIndex, vector< gpa_uint64* >& results, vector< GPA_Data_Type >& internalCounterTypes, void* pResult, const GPA_HWInfo* pHwInfo) const
+GPA_Status GPA_DerivedCounters::ComputeCounterValue(
+    gpa_uint32 counterIndex,
+    const vector< gpa_uint64* >& results,
+    vector< GPA_Data_Type >& internalCounterTypes,
+    void* pResult,
+    const GPA_HWInfo* pHwInfo
+) const
 {
-    if (nullptr != m_counters[counterIndex].m_pComputeExpression)
+    if (nullptr == m_counters[counterIndex].m_pComputeExpression)
     {
+        GPA_LogError("Unable to compute counter value: no equation specified.");
+        return GPA_STATUS_ERROR_INVALID_COUNTER_EQUATION;
+    }
+
 #ifdef AMDT_INTERNAL
-        GPA_LogDebugCounterDefs("'%s' equation is %s.", m_counters[counterIndex].m_pName, m_counters[counterIndex].m_pComputeExpression);
+    GPA_LogDebugCounterDefs("'%s' equation is %s.", m_counters[counterIndex].m_pName, m_counters[counterIndex].m_pComputeExpression);
 #endif
 
-        if (internalCounterTypes[0] == GPA_DATA_TYPE_UINT64)
+    GPA_Status status = GPA_STATUS_OK;
+
+    if (internalCounterTypes[0] == GPA_DATA_TYPE_UINT64)
+    {
+        if (m_counters[counterIndex].m_dataType == GPA_DATA_TYPE_FLOAT64)
         {
-            if (m_counters[counterIndex].m_dataType == GPA_DATA_TYPE_FLOAT64)
-            {
-                EvaluateExpression<gpa_float64, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else if (m_counters[counterIndex].m_dataType == GPA_DATA_TYPE_UINT64)
-            {
-                EvaluateExpression<gpa_uint64, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, internalCounterTypes, m_counters[counterIndex].m_dataType, pHwInfo);
-            }
-            else
-            {
-                // public counter type not recognized or not currently supported.
-                GPA_LogError("Unable to compute counter value: unrecognized public counter type.");
-                assert(false);
-            }
+            status = EvaluateExpression<gpa_float64, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, m_counters[counterIndex].m_dataType, pHwInfo);
+        }
+        else if (m_counters[counterIndex].m_dataType == GPA_DATA_TYPE_UINT64)
+        {
+            status = EvaluateExpression<gpa_uint64, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, m_counters[counterIndex].m_dataType, pHwInfo);
         }
         else
         {
-            GPA_LogError("Unable to compute counter value: unrecognized internal counter type.");
+            // derived counter type not recognized or not currently supported.
+            GPA_LogError("Unable to compute counter value: unrecognized derived counter type.");
             assert(false);
         }
     }
     else
     {
-        // no method of evaluation specified for counter
-        GPA_LogError("Unable to compute counter value: unrecognized compute expression.");
-        assert(false);
+        GPA_LogError("Unable to compute counter value: unrecognized derived counter type.");
+        return GPA_STATUS_ERROR_INVALID_DATATYPE;
     }
+
+    return status;
 }
 
 

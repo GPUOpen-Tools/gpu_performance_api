@@ -15,8 +15,7 @@ INCLUDES =	-I. \
 		-I$(DEVICEINFO_DIR) \
 		-I$(TSINGLETON_DIR) \
 		-I$(AMD_VK_EXT_DIR) \
-		-I$(VK_INCLUDE_DIR) \
-		-I$(VK_INCLUDE_DIR)/vulkan \
+		-I$(VK_INCLUDE_DIR)
 
 LIBS = \
 	$(GPUPERFAPI_LIB) \

@@ -16,11 +16,10 @@ INCLUDES =	-I. \
 		-I$(GL_DIR)/Include \
 		-I$(HSA_DIR)/include/hsa \
 		-I$(AMD_VK_EXT_DIR) \
-		-I$(VK_INCLUDE_DIR) \
-		-I$(VK_INCLUDE_DIR)/vulkan \
+		-I$(VK_INCLUDE_DIR)
 
 LIB_OBJS	= \
-	./$(OBJ_DIR)/GPAPublicCounters.o \
+	./$(OBJ_DIR)/GPADerivedCounters.o \
 	./$(OBJ_DIR)/GPACounterGenerator.o \
 	./$(OBJ_DIR)/GPACounterGeneratorSchedulerManager.o \
 	./$(OBJ_DIR)/GPACounterGeneratorBase.o \

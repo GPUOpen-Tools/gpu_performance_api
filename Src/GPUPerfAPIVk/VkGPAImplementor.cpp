@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA Vk API implementation
@@ -8,7 +8,8 @@
 #include "VkGPAImplementor.h"
 
 #include <assert.h>
-#include <vulkan.h>
+#include <vulkan/vulkan.h>
+#include <vk_amd_shader_core_properties.h>
 #include "GPACounterGenerator.h"
 #include "IGPACommandList.h"
 #include "VkEntrypoints.h"
@@ -43,7 +44,7 @@ bool VkGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GP
             // For Vulkan, the pContext contains the VkInstance and vKDevice
             if (VkUtils::Initialize_Vk_Entrypoints(pVkContextInfo->instance, pVkContextInfo->device))
             {
-                if (true == VkUtils::IsDeviceSupportedForProfiling(pVkContextInfo->physicalDevice))
+                if (VkUtils::IsDeviceSupportedForProfiling(pVkContextInfo->physicalDevice))
                 {
                     // Device is supported, fill the hardware info
 
@@ -52,10 +53,14 @@ bool VkGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GP
                     // In case where MGPU support hides the GPU from the app, then
                     // we will need to use Vk MGPU extension (and possibly ADL util)
                     // to get the correct HW info
-                    VkPhysicalDeviceProperties    physicalDeviceProperties;
-                    physicalDeviceProperties = {};
+                    VkPhysicalDeviceShaderCorePropertiesAMD shaderCorePropertiesAMD = {};
+                    shaderCorePropertiesAMD.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD;
 
-                    _vkGetPhysicalDeviceProperties(pVkContextInfo->physicalDevice, &physicalDeviceProperties);
+                    VkPhysicalDeviceProperties2KHR physicalDeviceProperties = {};
+                    physicalDeviceProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
+                    physicalDeviceProperties.pNext = &shaderCorePropertiesAMD;
+
+                    _vkGetPhysicalDeviceProperties2KHR(pVkContextInfo->physicalDevice, &physicalDeviceProperties);
 
                     gpa_uint64 freq = 0ull;
 
@@ -63,11 +68,11 @@ bool VkGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GP
                     {
                         // We have almost all information to fill the hardware info
 
-                        gpa_uint32 vendorId = physicalDeviceProperties.vendorID;
-                        gpa_uint32 deviceId = physicalDeviceProperties.deviceID;
-                        uint32_t deviceRevision = REVISION_ID_ANY; // < Vulkan doesn't have this
+                        gpa_uint32 vendorId = physicalDeviceProperties.properties.vendorID;
+                        gpa_uint32 deviceId = physicalDeviceProperties.properties.deviceID;
+                        uint32_t deviceRevision = REVISION_ID_ANY; // Vulkan doesn't have this
 
-                        std::string adapterName(physicalDeviceProperties.deviceName);
+                        std::string adapterName(physicalDeviceProperties.properties.deviceName);
                         GDT_HW_GENERATION hwGen = GDT_HW_GENERATION_NONE;
 
                         if (NVIDIA_VENDOR_ID == vendorId)
@@ -100,12 +105,22 @@ bool VkGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GP
                                     hwInfo.SetHWGeneration(hwGen);
                                     hwInfo.SetTimeStampFrequency(freq);
 
+                                    size_t numTotalSIMDs = shaderCorePropertiesAMD.simdPerComputeUnit *
+                                                           shaderCorePropertiesAMD.computeUnitsPerShaderArray *
+                                                           shaderCorePropertiesAMD.shaderArraysPerEngineCount *
+                                                           shaderCorePropertiesAMD.shaderEngineCount;
+
+                                    if (0 != numTotalSIMDs)
+                                    {
+                                        hwInfo.SetNumberSIMDs(numTotalSIMDs);
+                                    }
+
                                     isSucceeded = true;
                                 }
                             }
                             else
                             {
-                                GPA_LogError("Unable to get device info from AMDTUtils.");
+                                GPA_LogError("Unable to get device info from AMDTDeviceInfoUtils.");
                             }
                         }
                         else
@@ -212,7 +227,7 @@ IGPAContext* VkGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, GP
             }
             else
             {
-                GPA_LogError("Failed to create GPAContext.");
+                GPA_LogError("Unable to allocate memory for the context.");
             }
         }
         else

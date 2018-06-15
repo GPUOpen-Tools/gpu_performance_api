@@ -10,8 +10,8 @@
 
 VkCommandListSwQueries::VkCommandListSwQueries()
     :
-    m_commandBuffer(VK_NULL_HANDLE),
     m_physicalDevice(VK_NULL_HANDLE),
+    m_commandBuffer(VK_NULL_HANDLE),
     m_device(VK_NULL_HANDLE)
 {
 }

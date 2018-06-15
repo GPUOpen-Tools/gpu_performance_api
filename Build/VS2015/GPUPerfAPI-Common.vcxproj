@@ -22,7 +22,6 @@
     <ClInclude Include="..\..\..\Common\Src\DeviceInfo\DeviceInfo.h" />
     <ClInclude Include="..\..\..\Common\Src\DeviceInfo\DeviceInfoUtils.h" />
     <ClInclude Include="..\..\..\Common\Src\DynamicLibraryModule\DynamicLibraryModule.h" />
-    <ClInclude Include="..\..\..\Common\Src\GPUPerfAPIUtils\GPUPerfAPIRegistry.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\Adapter.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\APIRTModuleLoader.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\CircularBuffer.h" />

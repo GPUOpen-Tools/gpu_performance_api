@@ -1,7 +1,19 @@
 ﻿# GPU Performance API Release Notes
 ---
 
-## Version 3.0 (3/19/17)
+## Version 3.1 (6/15/18)
+  * Add support for additional GPUs and APUs.
+  * Usability improvements to GPAInterfaceLoader.h.
+  * New Vulkan and DirectX 12 sample applications.
+  * New GPA_GetSampleId entry point.
+  * New GPA_GetVersion entry point.
+  * Bugs Fixed:
+    * Fixed issues with some counters on 56CU Vega10.
+    * Vulkan: Fixed GPA_ContinueSampleOnCommandList.
+    * Vulkan: Ensure results are ready before trying to query them.
+    * DirectX 12: Fixed incorrect device reference counting issue.
+
+## Version 3.0 (3/19/18)
  * Add support for additional GPUs and APUs.
  * Support for collecting hardware counters for Vulkan and DirectX 12 applications.
  * Redesigned API to support modern graphics APIs.

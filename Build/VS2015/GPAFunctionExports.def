@@ -45,3 +45,5 @@ EXPORTS
     GPA_GetStatusAsStr
     GPA_GetDeviceAndRevisionId
     GPA_GetDeviceName
+    GPA_GetSampleId
+    GPA_GetVersion

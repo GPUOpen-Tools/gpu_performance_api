@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  CL internal counter definitions for GFX9
@@ -13,6 +13,8 @@ extern GPA_HardwareCounterDesc* CLCounterGroupArrayGfx9[]; ///< Array of hardwar
 extern GPA_CounterGroupDesc HWCLGroupsGfx9[]; ///< Array of counter groups for CL for Gfx9 family
 extern GPA_SQCounterGroupDesc HWCLSQGroupsGfx9[]; ///< Array of SQ groups for CL for Gfx9 family
 extern unsigned int HWCLSQIsolatedGroupsGfx9[]; ///< Array of counter groups isolated from SQ counter groups for CL for Gfx9 family
+extern const std::set<unsigned int> HWCLTimestampBlockIdsGfx9; ///< Timestamp block id's for CL for Gfx9 family
+extern const std::set<unsigned int> HWCLTimeCounterIndicesGfx9; ///< Timestamp counter indices for CL for Gfx9 family
 extern const unsigned int HWCLGroupCountGfx9; ///< Hardware Group Count for CL for Gfx9 family
 extern const unsigned int HWCLSQGroupCountGfx9; ///< Hardware SQ Group Count for CL for Gfx9 family
 extern const unsigned int HWCLSQIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for CL for Gfx9 family

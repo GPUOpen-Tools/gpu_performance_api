@@ -10,24 +10,28 @@
 
 // std
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <set>
+#include <memory>
+#include <atomic>
 
 #include "IGPACounterScheduler.h"
 #include "GPASample.h"
 #include "GPAContext.h"
 
-using PassIndex =       unsigned int;                             ///< type alias for pass index
-using SampleCount =     unsigned int;                             ///< type alias for sample count
-using CounterCount =    unsigned int;                             ///< type alias for counter count
-using CounterIndex =    unsigned int;                             ///< type alias for counter index
-using SamplesMap =      std::map<ClientSampleId, GPASample*>;     ///< type alias for map of internal GPA sample index and GPASample Object
-using CounterList =     std::vector<CounterIndex>;                ///< type alias for counter list
-using SkippedCounters = std::set<CounterIndex>;                   ///< type alias for list of skipped counters
-using SampleIndex =     unsigned int;                             ///< type alias for sample indexes
-using GPACommandLists = std::vector<IGPACommandList*>;            ///< type alias for list of GPA command lists
-using CommandListCounter = unsigned int;                          ///< type alias for command list counter
-using CommandListId = unsigned int;                               ///< type alias for command list Id
+using PassIndex = unsigned int;                                       ///< type alias for pass index
+using SampleCount = unsigned int;                                     ///< type alias for sample count
+using CounterCount = unsigned int;                                    ///< type alias for counter count
+using CounterIndex = unsigned int;                                    ///< type alias for counter index
+using SamplesMap = std::unordered_map<ClientSampleId, GPASample*>;    ///< type alias for map of client sample id and GPASample Object
+using GpaInternalSampleCounter = std::atomic<unsigned int>;           ///< type alias for GPA internal sample counter
+using ClientGpaSamplesMap = std::map<unsigned int, unsigned int>;     ///< type alias for map of internal sample id and client sample id
+using CounterList = std::vector<CounterIndex>;                        ///< type alias for counter list
+using SkippedCounters = std::set<CounterIndex>;                       ///< type alias for list of skipped counters
+using SampleIndex = unsigned int;                                     ///< type alias for sample indexes
+using GPACommandLists = std::vector<IGPACommandList*>;                ///< type alias for list of GPA command lists
+using CommandListCounter = unsigned int;                              ///< type alias for command list counter
+using CommandListId = unsigned int;                                   ///< type alias for command list Id
 
 /// Class for GPA pass
 class GPAPass
@@ -93,6 +97,12 @@ public:
     /// \return sample count
     SampleCount GetSampleCount() const;
 
+    /// Get the sample id by index
+    /// \param[in] sampleIndex index of the sample
+    /// \param[out] clientSampleId client sample id
+    /// \return true if sample found otherwise false
+    bool GetSampleIdByIndex(SampleIndex sampleIndex, ClientSampleId& clientSampleId) const;
+
     /// Returns the number of counters in the pass
     /// \return sample count
     CounterCount GetEnabledCounterCount() const;
@@ -105,7 +115,7 @@ public:
     /// \return index of the pass object
     PassIndex GetIndex() const;
 
-    /// Indicates whether the pass is toming pass or not
+    /// Indicates whether the pass is timing pass or not
     /// \return true if pass is timing otherwise false
     bool IsTimingPass() const;
 
@@ -151,13 +161,13 @@ public:
     /// \return True if the sample has been opened; False otherwise
     bool DoesSampleExist(ClientSampleId clientSampleId) const;
 
-    /// Returns the Cmd list in the pass
-    /// \return cmd list in the pass
+    /// Returns the command lists for the pass
+    /// \return command lists for the pass
     const GPACommandLists& GetCmdList() const;
 
     /// Adds the counter to the enabled counter set for the pass.
     /// Certain counters can't be enabled in the API specific driver due to unavailability of certain blocks
-    /// This function keeps track to add only counterset which can be enabled in the driver
+    /// This function keeps track to add only counter set which can be enabled in the driver
     /// \param[in] counterIndex index of the counter
     void EnableCounterForPass(const CounterIndex& counterIndex);
 
@@ -177,50 +187,13 @@ public:
     /// \return number of counters
     CounterCount GetNumEnabledCountersForPass() const;
 
-    /// Checks to see if the data request is a time stamp and for a specific counter activeCounterOffset
-    /// \param activeCounterOffset The counter offset
-    /// \return true if time stamp and offset match - false if not
-    bool IsTimeStamp(gpa_uint32 activeCounterOffset) const;
+    /// Returns the index of the EOP to TOP timing counter
+    /// \return index of the EOP to EOP timing counter
+    gpa_uint32 GetBottomToBottomTimingCounterIndex() const;
 
-    /// Gets the top to bottom time stamp bool
-    /// \return true if the data request is a top to bottom time stamp
-    bool GPUTimeTopToBottomPresent() const;
-
-    /// Gets the bottom to bottom time stamp bool
-    /// \return true if the data request is a bottom to bottom time stamp
-    bool GPUTimeBottomToBottomPresent() const;
-
-    /// Gets the pre-event top timestamp bool
-    /// \return true if the data request is a pre-event top timestamp
-    bool GPUTimestampTopPresent() const;
-
-    /// Gets the pre-event bottom timestamp bool
-    /// \return true if the data request is a pre-event bottom timestamp
-    bool GPUTimestampPreBottomPresent() const;
-
-    /// Gets the post-event bottom timestamp bool
-    /// \return true if the data request is a post-event bottom timestamp
-    bool GPUTimestampPostBottomPresent() const;
-
-    /// Gets the top to bottom counter offset
-    /// \return The counter offset
-    gpa_uint32 GPUTimeBottomToBottomOffset() const;
-
-    /// Gets the bottom to bottom counter offset
-    /// \return The counter offset
-    gpa_uint32 GPUTimeTopToBottomOffset() const;
-
-    /// Gets the pre-event top timestamp counter offset
-    /// \return The counter offset
-    gpa_uint32 GPUTimestampTopOffset() const;
-
-    /// Gets the pre-event bottom timestamp counter offset
-    /// \return The counter offset
-    gpa_uint32 GPUTimestampPreBottomOffset() const;
-
-    /// Gets the post-event bottom timestamp counter offset
-    /// \return The counter offset
-    gpa_uint32 GPUTimestampPostBottomOffset() const;
+    /// Returns the index of the TOP to TOP timing counter
+    /// \return index of the TOP to EOP timing counter
+    gpa_uint32 GetTopToBottomTimingCounterIndex() const;
 
     /// Iterate over all the counter in the pass
     /// \param[in] function function to be executed for each object in the list - function may return false to terminate iteration
@@ -236,9 +209,9 @@ public:
 
     /// Get the counter index in the list of the counters passed to the driver for sample creation
     /// \param[in] counterIndexInPass index of the counter in the pass
-    /// \param[out] internalCounterIndex internal counter index from the counter generator
+    /// \param[out] pInternalCounterIndex internal counter index from the counter generator
     /// \return true if counter index is found otherwise false
-    bool GetCounterByIndexInPass(CounterIndex counterIndexInPass, CounterIndex& internalCounterIndex) const;
+    bool GetCounterByIndexInPass(CounterIndex counterIndexInPass, CounterIndex* pInternalCounterIndex) const;
 
 protected:
 
@@ -248,7 +221,7 @@ protected:
     /// \return True if the sample has been opened; False otherwise
     bool DoesSampleExist_NotThreadSafe(ClientSampleId clientSampleId) const;
 
-    /// Returns the sample by its client sample Id
+    /// Returns the sample by its client sample Id.
     /// Does NOT lock the mutex, expects the calling method to do that.
     /// \param[in] sampleId Id of the sample
     /// \return GPA Sample object
@@ -301,17 +274,14 @@ protected:
     /// \param[in] pGPASample the sample being added
     void AddClientSample(ClientSampleId sampleId, GPASample* pGPASample);
 
-    CounterList*                          m_pCounterList; ///< list of counter in a pass
-    std::map<gpa_uint32, GPASampleResult> m_results;      ///< Maps a sample ID to a set of counter results.
+    const CounterList*                                     m_pCounterList;          ///< list of counter in a pass
+    std::map<gpa_uint32, std::shared_ptr<GPASampleResult>> m_results;               ///< Maps a sample ID to a set of counter results.
 
 private:
 
     /// Add the GPA command list
     /// \param[in] pGPACommandList GPA command list
     void AddCommandList(IGPACommandList* pGPACommandList);
-
-    /// Populates the timing counter information for the counters in the pass
-    void PopulateTimingCounterInfo();
 
     /// Checks whether the all the samples are valid and ready to get the result
     /// \return true if pass is ready to collect the result
@@ -330,26 +300,13 @@ private:
     SkippedCounters            m_skippedCounterList;            ///< List of unsupported counters - these are counters whose blocks are not suported by the API specific driver
     mutable std::mutex         m_gpaCmdListMutex;               ///< Mutex to protect the gpaCmdList
     GPACommandLists            m_gpaCmdList;                    ///< list of api specific command Lists
-    mutable std::mutex         m_samplesMapMutex;               ///< Mutex to protect the samples map
-    SamplesMap                 m_samplesMap;                    ///< sample list
+    mutable std::mutex         m_samplesUnorderedMapMutex;      ///< Mutex to protect the samples map
+    SamplesMap                 m_samplesUnorderedMap;           ///< client sample id and GPASample object unordered map
+    ClientGpaSamplesMap        m_clientGpaSamplesMap;           ///< cleint sample id and internal sample id map
+    GpaInternalSampleCounter   m_gpaInternalSampleCounter;      ///< atomic counter for internal sample counter
     CommandListCounter         m_commandListCounter;            ///< counter representing number of command list created in this pass - This will help in validation and uniquely identifying two different command list
     mutable bool               m_isAllSampleValidInPass;        ///< flag indicating all the sample in the pass is valid or not - for cache
     mutable bool               m_isPassComplete;                ///< flag indicating whether or not the command list and sample on them is complete
-
-    bool                       m_gpuTimeTopToBottomPresent;     ///< Indicates if the GPUTime top to bottom is being requested
-    gpa_uint32                 m_gpuTimeTopToBottomOffset;      ///< Which index within this request is the top to bottom counter
-
-    bool                       m_gpuTimeBottomToBottomPresent;  ///< Indicates if the GPUTime bottom to bottom is being requested
-    gpa_uint32                 m_gpuTimeBottomToBottomOffset;   ///< Which index within this request is the bottom to bottom counter
-
-    bool                       m_gpuTimestampTopPresent;        ///< Indicates if the GPUTimestamp pre-event top is being requested
-    gpa_uint32                 m_gpuTimestampTopOffset;         ///< Which index within this request is the pre-event top timestamp counter
-
-    bool                       m_gpuTimestampPreBottomPresent;  ///< Indicates if the GPUTimestamp pre-event bottom is being requested
-    gpa_uint32                 m_gpuTimestampPreBottomOffset;   ///< Which index within this request is the pre-event bottom timestamp counter
-
-    bool                       m_gpuTimestampPostBottomPresent; ///< Indicates if the GPUTimestamp post-event bottom is being requested
-    gpa_uint32                 m_gpuTimestampPostBottomOffset;  ///< Which index within this request is the post-event bottom timestamp counter
 };
 
 #endif  // _GPA_PASS_H_

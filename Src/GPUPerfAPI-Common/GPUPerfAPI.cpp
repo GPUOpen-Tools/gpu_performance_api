@@ -25,13 +25,14 @@
 #include "IGPACommandList.h"
 #include "IGPAContext.h"
 #include "IGPASession.h"
+#include "GPAVersion.h"
 
 extern IGPAImplementor* s_pGpaImp; ///< GPA implementor instance
 
 /// Macro for an enum value string
 #define GPA_ENUM_STRING_VAL(X,Y) Y
 
-/// Macro to checkk for a null parameter
+/// Macro to check for a null parameter
 #define CHECK_NULL_PARAM(parameterName)                                                                             \
     if (nullptr == parameterName)                                                                                   \
     {                                                                                                               \
@@ -39,7 +40,7 @@ extern IGPAImplementor* s_pGpaImp; ///< GPA implementor instance
         return GPA_STATUS_ERROR_NULL_POINTER;                                                                       \
     }
 
-/// Macro to check for out of range coutner index
+/// Macro to check for out of range counter index
 #define CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, contextId)                                                          \
     gpa_uint32 numCounters;                                                                                         \
     GPA_Status numCountersStatus = contextId->GetNumCounters(&numCounters);                                         \
@@ -119,26 +120,41 @@ extern IGPAImplementor* s_pGpaImp; ///< GPA implementor instance
         return GPA_STATUS_ERROR_CANNOT_CHANGE_COUNTERS_WHEN_SAMPLING;                                               \
     }
 
-/// Macro to check if a sample id exists in a pass
-#define CHECK_SAMPLE_ID_EXISTS_IN_PASS(pPass, sampleId)                                                             \
-    if (nullptr == pPass)                                                                                           \
-    {                                                                                                               \
-        GPA_LogError("Invalid pass.");                                                                              \
-        return GPA_STATUS_ERROR_FAILED;                                                                             \
-    }                                                                                                               \
-    if (!pPass->DoesSampleExist(sampleId))                                                                          \
-    {                                                                                                               \
-        GPA_LogError("Sample not found.");                                                                          \
-        return GPA_STATUS_ERROR_SAMPLE_NOT_FOUND;                                                                   \
+/// Validate that sample id exists in a pass
+/// \param[in] pPass The pass
+/// \param[in] sampleId The sample id
+/// \return GPA_STATUS_OK if the sample id exists in the pass, otherwise an error code
+GPA_Status CheckSampleIdExistsInPass(GPAPass* pPass, gpa_uint32 sampleId)
+{
+    if (nullptr == pPass)
+    {
+        GPA_LogError("Invalid pass.");
+        return GPA_STATUS_ERROR_FAILED;
     }
 
-/// Macro to check if a sample id exists in a session
-#define CHECK_SAMPLE_ID_EXISTS_IN_SESSION(sessionId, sampleId)                                                      \
-    if (!(*sessionId)->DoesSampleExist(sampleId))                                                                   \
-    {                                                                                                               \
-        GPA_LogError("Sample not found.");                                                                          \
-        return GPA_STATUS_ERROR_SAMPLE_NOT_FOUND;                                                                   \
+    if (!pPass->DoesSampleExist(sampleId))
+    {
+        GPA_LogError("Sample not found in pass.");
+        return GPA_STATUS_ERROR_SAMPLE_NOT_FOUND;
     }
+
+    return GPA_STATUS_OK;
+}
+
+/// Validate that sample id exists in a session
+/// \param[in] sessionId The session id
+/// \param[in] sampleId The sample id
+/// \return GPA_STATUS_OK if the sample id exists in the pass, otherwise an error code
+GPA_Status CheckSampleIdExistsInSession(GPA_SessionId sessionId, gpa_uint32 sampleId)
+{
+    if (!(*sessionId)->DoesSampleExist(sampleId))
+    {
+        GPA_LogError("Sample not found in session.");
+        return GPA_STATUS_ERROR_SAMPLE_NOT_FOUND;
+    }
+
+    return GPA_STATUS_OK;
+}
 
 /// Macro to check the session sample type
 #define CHECK_SESSION_SAMPLE_TYPE(sampleType, additionalsampleType)                                                 \
@@ -148,6 +164,30 @@ extern IGPAImplementor* s_pGpaImp; ///< GPA implementor instance
         GPA_LogError("Session does not support the correct sample type.");                                          \
         return GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES;                                                          \
     }
+
+
+//-----------------------------------------------------------------------------
+GPALIB_DECL GPA_Status GPA_GetVersion(
+    gpa_uint32* pMajorVersion,
+    gpa_uint32* pMinorVersion,
+    gpa_uint32* pBuild,
+    gpa_uint32* pUpdateVersion)
+{
+    PROFILE_FUNCTION(GPA_GetVersion);
+    TRACE_FUNCTION(GPA_GetVersion);
+
+    CHECK_NULL_PARAM(pMajorVersion);
+    CHECK_NULL_PARAM(pMinorVersion);
+    CHECK_NULL_PARAM(pBuild);
+    CHECK_NULL_PARAM(pUpdateVersion);
+
+    *pMajorVersion = GPA_MAJOR_VERSION;
+    *pMinorVersion = GPA_MINOR_VERSION;
+    *pBuild = GPA_BUILD_NUMBER;
+    *pUpdateVersion = GPA_UPDATE_VERSION;
+
+    return GPA_STATUS_OK;
+}
 
 //-----------------------------------------------------------------------------
 GPALIB_DECL GPA_Status GPA_GetFuncTable(
@@ -962,8 +1002,13 @@ GPALIB_DECL GPA_Status GPA_ContinueSampleOnCommandList(
     PROFILE_FUNCTION(GPA_ContinueSampleOnCommandList);
     TRACE_FUNCTION(GPA_ContinueSampleOnCommandList);
 
+    GPA_Status status = GPA_STATUS_OK;
     CHECK_COMMANDLIST_ID_EXISTS(primaryCommandListId);
-    CHECK_SAMPLE_ID_EXISTS_IN_PASS((*primaryCommandListId)->GetPass(), srcSampleId);
+
+    if ((status = CheckSampleIdExistsInPass((*primaryCommandListId)->GetPass(), srcSampleId)) != GPA_STATUS_OK)
+    {
+        return status;
+    }
 
     return ((*primaryCommandListId)->GetParentSession()->ContinueSampleOnCommandList(srcSampleId, primaryCommandListId));
 }
@@ -992,11 +1037,35 @@ GPALIB_DECL GPA_Status GPA_GetSampleCount(
     PROFILE_FUNCTION(GPA_GetSampleCount);
     TRACE_FUNCTION(GPA_GetSampleCount);
 
+    CHECK_NULL_PARAM(pSampleCount);
     CHECK_SESSION_ID_EXISTS(sessionId);
     CHECK_SESSION_RUNNING(sessionId);
 
     *pSampleCount = (*sessionId)->GetSampleCount();
     return GPA_STATUS_OK;
+}
+
+//-----------------------------------------------------------------------------
+GPALIB_DECL GPA_Status GPA_GetSampleId(GPA_SessionId sessionId, gpa_uint32 index, gpa_uint32* pSampleId)
+{
+    PROFILE_FUNCTION(GPA_GetSampleId);
+    TRACE_FUNCTION(GPA_GetSampleId);
+
+    CHECK_NULL_PARAM(pSampleId);
+    CHECK_SESSION_ID_EXISTS(sessionId);
+    CHECK_SESSION_RUNNING(sessionId);
+
+    GPA_Status gpaStatus = GPA_STATUS_ERROR_SAMPLE_NOT_FOUND;
+    gpa_uint32 sampleId = 0u;
+    bool found = (*sessionId)->GetSampleIdByIndex(index, sampleId);
+
+    if (found)
+    {
+        *pSampleId = sampleId;
+        gpaStatus = GPA_STATUS_OK;
+    }
+
+    return gpaStatus;
 }
 
 //-----------------------------------------------------------------------------
@@ -1067,19 +1136,24 @@ GPALIB_DECL GPA_Status GPA_IsPassComplete(
 GPALIB_DECL GPA_Status GPA_GetSampleResultSize(
     GPA_SessionId sessionId,
     gpa_uint32 sampleId,
-    size_t* sampleResultSizeInBytes)
+    size_t* pSampleResultSizeInBytes)
 {
     PROFILE_FUNCTION(GPA_GetSampleResultSize);
     TRACE_FUNCTION(GPA_GetSampleResultSize);
 
-    CHECK_SESSION_ID_EXISTS(sessionId);
-    CHECK_SAMPLE_ID_EXISTS_IN_SESSION(sessionId, sampleId);
-
     GPA_Status status = GPA_STATUS_OK;
+
+    CHECK_NULL_PARAM(pSampleResultSizeInBytes);
+    CHECK_SESSION_ID_EXISTS(sessionId);
+
+    if ((status = CheckSampleIdExistsInSession(sessionId, sampleId)) != GPA_STATUS_OK)
+    {
+        return status;
+    }
 
     CHECK_SESSION_RUNNING(sessionId);
 
-    *sampleResultSizeInBytes = (*sessionId)->GetSampleResultSizeInBytes(sampleId);
+    *pSampleResultSizeInBytes = (*sessionId)->GetSampleResultSizeInBytes(sampleId);
     return status;
 }
 
@@ -1093,8 +1167,16 @@ GPALIB_DECL GPA_Status GPA_GetSampleResult(
     PROFILE_FUNCTION(GPA_GetSampleResult);
     TRACE_FUNCTION(GPA_GetSampleResult);
 
+    GPA_Status status = GPA_STATUS_OK;
+
+    CHECK_NULL_PARAM(pCounterSampleResults);
     CHECK_SESSION_ID_EXISTS(sessionId);
-    CHECK_SAMPLE_ID_EXISTS_IN_SESSION(sessionId, sampleId);
+
+    if ((status = CheckSampleIdExistsInSession(sessionId, sampleId)) != GPA_STATUS_OK)
+    {
+        return status;
+    }
+
     CHECK_SESSION_RUNNING(sessionId);
 
     return (*sessionId)->GetSampleResult(sampleId, sampleResultSizeInBytes, pCounterSampleResults);
@@ -1150,7 +1232,11 @@ static const char* g_errorString[] =
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES, "GPA Error: Incompatible Sample Types."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SESSION_ALREADY_STARTED, "GPA Error: Session Already Started."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SESSION_NOT_STARTED, "GPA Error: Session Not Started."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SESSION_NOT_ENDED, "GPA Error: Session Not Ended.")
+    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SESSION_NOT_ENDED, "GPA Error: Session Not Ended."),
+    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_INVALID_DATATYPE, "GPA Error: Invalid Counter Datatype."),
+    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_INVALID_COUNTER_EQUATION, "GPA Error: Invalid Counter Equation."),
+    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_TIMEOUT, "GPA Error: Attempt to Retrieve Data Failed due to Timeout."),
+    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_LIB_ALREADY_LOADED, "GPA Error: Library Is Already Loaded."),
 };
 
 /// size of g_errorString array

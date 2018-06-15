@@ -180,7 +180,7 @@ bool GPA_HWInfo::UpdateRevisionIdBasedOnDeviceIDAndName()
             // first check for exact matches
             for (auto it = cardList.begin(); it != cardList.end(); ++it)
             {
-                string thisMarketingName(it->m_szMarketingName);
+                std::string thisMarketingName(it->m_szMarketingName);
 
                 if (0 == thisMarketingName.compare(m_deviceName))
                 {
@@ -192,7 +192,7 @@ bool GPA_HWInfo::UpdateRevisionIdBasedOnDeviceIDAndName()
             // if no exact match is found, try a substring match (first part of string should match marketing name)
             for (auto it = cardList.begin(); it != cardList.end(); ++it)
             {
-                string thisMarketingName(it->m_szMarketingName);
+                std::string thisMarketingName(it->m_szMarketingName);
 
                 if (0 == m_deviceName.find(thisMarketingName))
                 {
@@ -218,7 +218,7 @@ bool GPA_HWInfo::UpdateDeviceInfoBasedOnASICTypeAndName(GDT_HW_ASIC_TYPE asicTyp
             // first check for exact matches
             for (auto it = cardList.begin(); it != cardList.end(); ++it)
             {
-                string thisMarketingName(it->m_szMarketingName);
+                std::string thisMarketingName(it->m_szMarketingName);
 
                 if (0 == thisMarketingName.compare(m_deviceName))
                 {
@@ -231,7 +231,7 @@ bool GPA_HWInfo::UpdateDeviceInfoBasedOnASICTypeAndName(GDT_HW_ASIC_TYPE asicTyp
             // if no exact match is found, try a substring match (first part of string should match marketing name)
             for (auto it = cardList.begin(); it != cardList.end(); ++it)
             {
-                string thisMarketingName(it->m_szMarketingName);
+                std::string thisMarketingName(it->m_szMarketingName);
 
                 if (0 == m_deviceName.find(thisMarketingName))
                 {

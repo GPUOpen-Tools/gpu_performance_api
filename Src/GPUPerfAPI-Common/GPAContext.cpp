@@ -257,16 +257,13 @@ bool GPAContext::OpenCounters()
                                 vendorId,
                                 deviceId,
                                 revisionId,
+                                m_contextFlags,
                                 true,
                                 &pCounterAccessor,
                                 &pCounterScheduler);
 
         if (GPA_STATUS_OK == result)
         {
-            pCounterAccessor->SetAllowedCounters(ArePublicCountersExposed(),
-                                                 AreHardwareCountersExposed(),
-                                                 AreSoftwareCountersExposed());
-
             m_pCounterAccessor = pCounterAccessor;
             m_pCounterScheduler = pCounterScheduler;
 

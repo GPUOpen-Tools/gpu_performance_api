@@ -5,7 +5,7 @@
 /// \brief  Vulkan GPA Pass Object Implementation
 //==============================================================================
 
-#include <vulkan.h>
+#include <vulkan/vulkan.h>
 #include <vk_amd_gpa_interface.h>
 
 #include "VkGPAPass.h"

@@ -134,12 +134,11 @@ void VkUtils::DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vkPhysicalDev
                 {
                     if (pQueueFamilyProperties[i].timestampValidBits == 0)
                     {
-                        GPA_LogError("QueueFamily Does NOT have valid timestamp bits!");
+                        GPA_LogError("QueueFamily Does NOT have valid timestamp bits.");
                         GPA_LogDebugMessage("QueueFamily %u does not have any valid timestamp bits; cannot support profiling.", i);
                     }
                     else
                     {
-                        GPA_LogError("QueueFamily has valid timestamp bits.");
                         GPA_LogDebugMessage("QueueFamily %u has %u valid timestamp bits; it will support profiling.", i, pQueueFamilyProperties[i].timestampValidBits);
                     }
                 }

@@ -55,17 +55,17 @@ private:
 
     /// Sets the necessary environment variable to enable the HSA runtime Tools lib
     /// \return true on success
-    bool SetHSAToolsLibEnvVar();
+    bool SetHSAToolsLibEnvVar() const;
 
     /// Sets the necessary environment variable to enable SoftCP mode
     /// \param[out] strErrorMsg error message, if env var could not be set
     /// \return true on success
-    bool SetHSASoftCPEnvVar(std::string& strErrorMsg);
+    bool SetHSASoftCPEnvVar(std::string& strErrorMsg) const;
 
     /// Unsets the necessary environment variable to enable SoftCP mode
     /// \param[out] strErrorMsg error message, if env var could not be unset
     /// \return true on success
-    bool UnsetHSASoftCPEnvVar(std::string strErrorMsg);
+    bool UnsetHSASoftCPEnvVar(std::string strErrorMsg) const;
 };
 
 #endif // _HSA_GPA_IMPLEMENTOR_H_

@@ -12,7 +12,6 @@
 #include "IGPACounterScheduler.h"
 #include "GPAPass.h"
 
-using SampleIndex = unsigned int;                   ///< type alias for sample indexes
 using PassInfo = std::vector<GPAPass*>;             ///< type alias for pass index and its corresponding pass
 
 const uint32_t GPA_TIMEOUT_INFINITE = static_cast<uint32_t>(-1); ///< Timeout constant indicating "infinite", or no, timeout
@@ -81,12 +80,15 @@ public:
     /// \copydoc IGPASession::GetSampleCount()
     gpa_uint32 GetSampleCount() const override;
 
+    /// \copydoc IGPASession::GetSampleIdByIndex()
+    bool GetSampleIdByIndex(SampleIndex sampleIndex, ClientSampleId& clientSampleId) const override;
+
     /// \copydoc IGPASession::DoesCommandListExist()
     bool DoesCommandListExist(gpa_uint32 passIndex,
                               GPA_CommandListId pCommandListId) const override;
 
     /// \copydoc IGPASession::DoesSampleExist()
-    bool DoesSampleExist(gpa_uint32 sampleIndex) const override;
+    bool DoesSampleExist(gpa_uint32 sampleId) const override;
 
     /// \copydoc IGPASession::BeginSample()
     bool BeginSample(ClientSampleId sampleId,

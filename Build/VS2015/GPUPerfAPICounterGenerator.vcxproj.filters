@@ -182,7 +182,7 @@
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPASoftwareCounters.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPAPublicCounters.h">
+    <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\GPADerivedCounters.h">
       <Filter>Source Files\PublicCounters</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx8.h">
@@ -580,7 +580,7 @@
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPACounterGenerator.cpp">
       <Filter>Source Files\CounterGenerators</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPAPublicCounters.cpp">
+    <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\GPADerivedCounters.cpp">
       <Filter>Source Files\PublicCounters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\InternalCountersCLGfx8.cpp">
@@ -686,6 +686,24 @@
       <Filter>Source Files\InternalCounters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx9.cpp">
+      <Filter>Source Files\InternalCounters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Baffin.cpp">
+      <Filter>Source Files\InternalCounters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Carrizo.cpp">
+      <Filter>Source Files\InternalCounters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Ellesmere.cpp">
+      <Filter>Source Files\InternalCounters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Fiji.cpp">
+      <Filter>Source Files\InternalCounters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Iceland.cpp">
+      <Filter>Source Files\InternalCounters</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\GPA-Internal\Src\GPUPerfAPICounterGenerator\GPAInternalCountersGfx8_Tonga.cpp">
       <Filter>Source Files\InternalCounters</Filter>
     </ClCompile>
     <ClCompile Include="..\..\Src\GPUPerfAPICounterGenerator\PublicCounterDefsCLGfx9.cpp">

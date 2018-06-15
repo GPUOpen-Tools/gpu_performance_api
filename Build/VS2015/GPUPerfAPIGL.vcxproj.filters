@@ -15,17 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesGLGfx6.txt">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesGLGfx8.txt">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesGLGfx7.txt">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.rc">
       <Filter>Resource Files</Filter>
     </ResourceCompile>

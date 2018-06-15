@@ -164,7 +164,7 @@ GPA_Status GPA_CounterGeneratorVKBase::GeneratePublicCounters(
     GDT_HW_GENERATION desiredGeneration,
     GDT_HW_ASIC_TYPE asicType,
     gpa_uint8 generateAsicSpecificCounters,
-    GPA_PublicCounters* pPublicCounters)
+    GPA_DerivedCounters* pPublicCounters)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
     UNREFERENCED_PARAMETER(asicType);

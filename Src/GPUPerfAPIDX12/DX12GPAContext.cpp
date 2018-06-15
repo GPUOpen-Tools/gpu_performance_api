@@ -27,7 +27,12 @@ DX12GPAContext::DX12GPAContext(ID3D12Device* pD3D12Device,
 
 DX12GPAContext::~DX12GPAContext()
 {
-    CleanUp();
+    // Release AMD D3D Factory
+    if (nullptr != m_pAmdExtD3DFactoryObject)
+    {
+        m_pAmdExtD3DFactoryObject->Release();
+        m_pAmdExtD3DFactoryObject = nullptr;
+    }
 }
 
 bool DX12GPAContext::Initialize()
@@ -229,13 +234,6 @@ void DX12GPAContext::CleanUp()
         ClearSessionList();
         m_pGpaInterface->Release();
         m_pGpaInterface = nullptr;
-    }
-
-    // Release AMD D3D Factory
-    if (nullptr != m_pAmdExtD3DFactoryObject)
-    {
-        m_pAmdExtD3DFactoryObject->Release();
-        m_pAmdExtD3DFactoryObject = nullptr;
     }
 }
 

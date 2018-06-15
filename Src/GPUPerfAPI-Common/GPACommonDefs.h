@@ -58,8 +58,10 @@ typedef GPA_Flags GPA_SQTTInstructionFlags;
 
 /// Asserts an expression
 #define GPA_ASSERT(expression)                                            \
-    bool expressionResult = expression;                                   \
-    UNREFERENCED_PARAMETER(expressionResult);                             \
-    assert(expressionResult);
+    {                                                                     \
+        bool expressionResult = expression;                               \
+        UNREFERENCED_PARAMETER(expressionResult);                         \
+        assert(expressionResult);                                         \
+    }                                                                     \
 
 #endif

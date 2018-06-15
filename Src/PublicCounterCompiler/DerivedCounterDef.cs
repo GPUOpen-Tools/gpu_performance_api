@@ -1,6 +1,6 @@
 // =====================================================================
 // <copyright file="PublicCounterDef.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2017 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2018 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -20,7 +20,7 @@ namespace PublicCounterCompiler
     /// <summary>
     /// Maps block instance counters to their counter index
     /// </summary>
-    class PublicCounterRegisterMap
+    class DerivedCounterRegisterMap
     {
         /// <summary>
         /// Adds a counter the list of block instance counters.
@@ -93,7 +93,7 @@ namespace PublicCounterCompiler
     /// <summary>
     /// Contains information about a public counter definition
     /// </summary>
-    public class PublicCounterDef
+    public class DerivedCounterDef
     {
         /// <summary>
         /// The name of the counter.
@@ -129,7 +129,7 @@ namespace PublicCounterCompiler
         /// <summary>
         /// Map of name referenced counters to their index
         /// </summary>
-        private PublicCounterRegisterMap counterRegisterMap = new PublicCounterRegisterMap();
+        private DerivedCounterRegisterMap counterRegisterMap = new DerivedCounterRegisterMap();
 
         /// <summary>
         /// Block instance register base name and the range of counter indices it covers.

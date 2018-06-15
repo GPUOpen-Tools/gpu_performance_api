@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX11 GPA Sample Implementation
@@ -45,28 +45,36 @@ DX11GPASample::DX11GPASample(GPAPass* pPass,
 bool DX11GPASample::UpdateResults()
 {
     bool isComplete = false;
+    DX11GPAPass* pDx11GpaPass = reinterpret_cast<DX11GPAPass*>(GetPass());
 
     if (GetPass()->IsTimingPass() &&
         nullptr != m_pGPUTimeCounter)
     {
         ID3D11DeviceContext* pD3D11DeviceContext = nullptr;
-        DX11GPAPass* pDx11GpaPass = reinterpret_cast<DX11GPAPass*>(GetPass());
         DX11GPAContext* pdx11GpaContext = reinterpret_cast<DX11GPAContext*>(pDx11GpaPass->GetGpaSession()->GetParentContext());
         pdx11GpaContext->GetDevice()->GetImmediateContext(&pD3D11DeviceContext);
 
         if (nullptr != pD3D11DeviceContext)
         {
             HRESULT gpuTimeResultStatus = pD3D11DeviceContext->GetData(m_pGPUTimeCounter, nullptr, 0, 0);
-            isComplete = S_OK == gpuTimeResultStatus;
-            pD3D11DeviceContext->Release();
 
-            if (isComplete)
+            if (FAILED(gpuTimeResultStatus))
             {
-                isComplete = PopulateResult();
+                GPA_LogError("Call to ID3D11DeviceContext::GetData failed.");
             }
             else
             {
-                GPA_LogDebugMessage("GPU Time data not yet ready.");
+                isComplete = S_OK == gpuTimeResultStatus; // S_OK == data ready; S_FALSE == data not ready
+                pD3D11DeviceContext->Release();
+
+                if (isComplete)
+                {
+                    isComplete = PopulateResult();
+                }
+                else
+                {
+                    GPA_LogDebugMessage("GPU Time data not yet ready.");
+                }
             }
         }
     }
@@ -78,6 +86,11 @@ bool DX11GPASample::UpdateResults()
         {
             isComplete = true;
         }
+    }
+    else if (0 == pDx11GpaPass->GetEnabledCounterCount())
+    {
+        // if there are no actual hardware counters in this sample, then indicate results are ready
+        isComplete = true;
     }
 
     return isComplete;
@@ -102,39 +115,47 @@ bool DX11GPASample::PopulateResult()
             if (nullptr != pD3D11DeviceContext)
             {
                 UINT gpuTimeCounterDataSize = m_pGPUTimeCounter->GetDataSize();
-                assert(gpuTimeCounterDataSize == counterCount * sizeof(gpa_uint64));
-                assert(1 == counterCount);
 
-                //TODO: Now, it has been exactly like the way it was in previous implementation, but the data seems off.
-                //      And why there is a need of two gpa_uint64 ?
+                if ((1 != counterCount) || (gpuTimeCounterDataSize != counterCount * sizeof(gpa_uint64)))
+                {
+                    GPA_LogError("Call to DX11 PopulateResult encountered invalid number of counters, or invalid number of bytes.");
+                    return false;
+                }
 
-                // TimeStamps 'may' return 2 gpa_uint64
-                gpa_uint64 timingData[2];
-                HRESULT hr = pD3D11DeviceContext->GetData(m_pGPUTimeCounter, timingData, gpuTimeCounterDataSize, 0);
+                // An array of 2x gpa_uint64 is passed to ID3D11DeviceContext::GetData
+                // However, note that the size of the array passed to the API is 1x gpa_uint64
+                // The driver writes 2x gpa_uint64 values
+                // Passing a single gpa_uint64 array will cause a trailing memory overwrite
+                // Passing the actual size of the array will cause a Direct3D11 error
+                // Therefore, this may appear to be incorrect, but it's actually correct
+                gpa_uint64 timingData[2] = {};
 
-                assert(hr == S_OK);
+                HRESULT hr = pD3D11DeviceContext->GetData(m_pGPUTimeCounter, &timingData, gpuTimeCounterDataSize, 0);
 
-                if (S_OK == hr)
+                // The above should never return S_FALSE (data not ready) because UpdateResults will only call this function
+                // if it has determined that the data is ready
+                assert(S_FALSE != hr);
+
+                if (SUCCEEDED(hr))
                 {
                     // copy top data if requested
-                    if (GetPass()->GPUTimeTopToBottomPresent())
+                    if (GetPass()->GetTopToBottomTimingCounterIndex() != static_cast<DWORD>(-1))
                     {
-                        *(pSampleResult->m_pResultBuffer) = timingData[0];
+                        *(pSampleResult->GetResultBuffer()) = timingData[0];
                     }
 
                     // copy bottom data if requested
-                    if (GetPass()->GPUTimeBottomToBottomPresent())
+                    if (GetPass()->GetBottomToBottomTimingCounterIndex() != static_cast<DWORD>(-1))
                     {
-                        *(pSampleResult->m_pResultBuffer) = timingData[1];
-                    }
-
-                    // copy GPUTimestamp data
-                    if (GetPass()->GPUTimestampTopPresent())
-                    {
-                        *(pSampleResult->m_pResultBuffer) = timingData[0];
+                        *(pSampleResult->GetResultBuffer()) = timingData[1];
                     }
 
                     populated = true;
+                }
+                else
+                {
+                    assert(SUCCEEDED(hr));
+                    GPA_LogError("Call to ID3D11DeviceContext::GetData failed.");
                 }
 
                 pD3D11DeviceContext->Release();
@@ -144,7 +165,7 @@ bool DX11GPASample::PopulateResult()
         {
             for (size_t counterIter = 0; counterIter < counterCount; counterIter++)
             {
-                pSampleResult->m_pResultBuffer[counterIter] = m_ppCounters[counterIter]->GetData();
+                pSampleResult->GetResultBuffer()[counterIter] = m_ppCounters[counterIter]->GetData();
             }
 
             populated = true;
@@ -201,19 +222,13 @@ bool DX11GPASample::BeginRequest()
             if (nullptr == m_pGPUTimeCounter &&
                 nullptr != pDeviceContext)
             {
-                bool timestampTopPresent = pDx11GpaPass->GPUTimestampTopPresent();
-
                 // counter not created, create here
-                D3D11_COUNTER_DESC ctrDesc;
-                CounterIndex GPUTImebottomToBottomCounter = 0u;
-                pDx11GpaPass->GetCounterByIndexInPass(pDx11GpaPass->GPUTimeBottomToBottomOffset(), GPUTImebottomToBottomCounter);
-                ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[GPUTImebottomToBottomCounter].m_counterIdDriver);
+                D3D11_COUNTER_DESC ctrDesc = {};
+                ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex].m_counterIdDriver);
 
-                if (timestampTopPresent)
+                if (pDx11GpaPass->GetTopToBottomTimingCounterIndex() != static_cast<DWORD>(-1))
                 {
-                    CounterIndex GPUTimeTopCounter = 0u;
-                    pDx11GpaPass->GetCounterByIndexInPass(pDx11GpaPass->GPUTimestampTopOffset(), GPUTimeTopCounter);
-                    ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[GPUTimeTopCounter].m_counterIdDriver);
+                    ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[pHardwareCounters->m_gpuTimeTopToBottomCounterIndex].m_counterIdDriver);
                 }
 
                 assert(ctrDesc.Counter != 0);
@@ -224,11 +239,11 @@ bool DX11GPASample::BeginRequest()
                 gpa_uint32 numAvailableCounterSize = sizeof(gpa_uint32);
                 HRESULT hr = pDevice->CheckCounter(&ctrDesc, &type, &activeCounters, nullptr, nullptr, nullptr, &numAvailableCounterSize, nullptr, nullptr);
 
-                if (S_OK == hr)
+                if (SUCCEEDED(hr))
                 {
                     hr = pDevice->CreateCounter(&ctrDesc, &m_pGPUTimeCounter);
 
-                    if (S_OK == hr)
+                    if (SUCCEEDED(hr))
                     {
                         pDeviceContext->Begin(m_pGPUTimeCounter);
                         success = true;
@@ -252,8 +267,14 @@ bool DX11GPASample::BeginRequest()
         }
         else
         {
-            if (CreateSampleExperiment() &&
-                CreateAndAddCounterToExperiment())
+            if (0 == pDx11GpaPass->GetEnabledCounterCount())
+            {
+                // if there are no actual hardware counters in this sample, log a debug message and return true
+                GPA_LogDebugMessage("No counters enabled in this sample.");
+                success = true;
+            }
+            else if (CreateSampleExperiment() &&
+                     CreateAndAddCounterToExperiment())
             {
                 // finalize the experiment
                 PE_RESULT result = m_pExperiment->Finalize();
@@ -322,6 +343,11 @@ bool DX11GPASample::EndRequest()
             m_pExperiment->End();
             success = true;
         }
+        else if (0 == pDx11GpaPass->GetEnabledCounterCount())
+        {
+            // if there are no actual hardware counters in this sample, return true
+            success = true;
+        }
     }
 
     return success;
@@ -343,82 +369,88 @@ bool DX11GPASample::CreateSampleExperiment()
         IAmdDxExt* pDxExt = pdx11GpaContext->GetAmdDxExtension();
         IAmdDxExtPerfProfile* pExtPE = pdx11GpaContext->GetAmdProfileExtension();
 
-        if ((nullptr == m_pExperiment) &&
-            (nullptr != pExtPE) &&
-            pDx11GpaPass->GetEnabledCounterCount() > 0)
+        if (0 == pDx11GpaPass->GetEnabledCounterCount())
         {
-            // create correct version of experiment based on driver version
-            if (DxxExtUtils::IsMgpuPerfExtSupported(pDxExt))
+            GPA_LogDebugMessage("No counters enabled in this sample.");
+        }
+        else
+        {
+            if ((nullptr == m_pExperiment) &&
+                (nullptr != pExtPE))
             {
-                GPUIndex activeGPU = pdx11GpaContext->GetActiveGpu();
-
-                if (pdx11GpaContext->GetCFActiveGpu() == activeGPU)
+                // create correct version of experiment based on driver version
+                if (DxxExtUtils::IsMgpuPerfExtSupported(pDxExt))
                 {
-                    // When checking block limits, if in Crossfire mode, always use GPU zero; if in PX mode, use the active GPU
-                    activeGPU = 0;
+                    GPUIndex activeGPU = pdx11GpaContext->GetActiveGpu();
 
-                    // In CF/ACF scenario let the driver create the experiment on the
-                    // current frame active GPU
-                    m_pExperiment = pExtPE->CreateExperiment();
+                    if (pdx11GpaContext->GetCFActiveGpu() == activeGPU)
+                    {
+                        // When checking block limits, if in Crossfire mode, always use GPU zero; if in PX mode, use the active GPU
+                        activeGPU = 0;
+
+                        // In CF/ACF scenario let the driver create the experiment on the
+                        // current frame active GPU
+                        m_pExperiment = pExtPE->CreateExperiment();
+                    }
+                    else
+                    {
+                        m_pExperiment = pExtPE->CreateExperimentEx(activeGPU);
+                    }
                 }
                 else
                 {
-                    m_pExperiment = pExtPE->CreateExperimentEx(activeGPU);
+                    m_pExperiment = pExtPE->CreateExperiment();
+                }
+
+                bool engineParamSetsuccess = true;
+
+                const GPA_HardwareCounters* pHardwareCounters = pdx11GpaContext->GetCounterAccessor()->GetHardwareCounters();
+
+                if (nullptr != m_pExperiment)
+                {
+                    auto AssignEngineParam = [&](CounterIndex counterIndex)->bool
+                    {
+                        const GPA_HardwareCounterDescExt* pCounter = &pHardwareCounters->m_counters[counterIndex];
+                        engineParamSetsuccess = true;
+
+                        if (pCounter->m_groupIdDriver == PE_BLOCK_SQ)
+                        {
+                            // set all valid shader engines to the current stage mask
+                            for (unsigned int ii = 0; ii < pdx11GpaContext->GetHwInfo()->GetNumberShaderEngines(); ii++)
+                            {
+                                SQEngineParamValue sqEngineParamValue;
+
+                                if (pDx11GpaPass->GetSQEngineParamValue(counterIndex, sqEngineParamValue))
+                                {
+                                    PE_RESULT result = m_pExperiment->SetEngineParam(ii, PE_PARAM_SQ_SHADER_MASK, sqEngineParamValue);
+
+                                    if (PE_OK != result)
+                                    {
+                                        GPA_LogError("Unable to set the shader engine paramater.");
+                                        engineParamSetsuccess = false;
+                                        break;
+                                    }
+                                }
+                            }
+                        }
+
+                        return engineParamSetsuccess;
+                    };
+
+                    pDx11GpaPass->IterateEnabledCounterList(AssignEngineParam);
+
+                    success = engineParamSetsuccess;
+
+                    if (!success)
+                    {
+                        GPA_LogError("Unable to set engine params.");
+                    }
                 }
             }
             else
             {
-                m_pExperiment = pExtPE->CreateExperiment();
+                GPA_LogError("Either the experiment has already been created or the driver extension is not available.");
             }
-
-            bool engineParamSetsuccess = true;
-
-            const GPA_HardwareCounters* pHardwareCounters = pdx11GpaContext->GetCounterAccessor()->GetHardwareCounters();
-
-            if (nullptr != m_pExperiment)
-            {
-                auto AssignEngineParam = [&](CounterIndex counterIndex)->bool
-                {
-                    const GPA_HardwareCounterDescExt* pCounter = &pHardwareCounters->m_counters[counterIndex];
-                    engineParamSetsuccess = true;
-
-                    if (pCounter->m_groupIdDriver == PE_BLOCK_SQ)
-                    {
-                        // set all valid shader engines to the current stage mask
-                        for (unsigned int ii = 0; ii < pdx11GpaContext->GetHwInfo()->GetNumberShaderEngines(); ii++)
-                        {
-                            SQEngineParamValue sqEngineParamValue;
-
-                            if (pDx11GpaPass->GetSQEngineParamValue(counterIndex, sqEngineParamValue))
-                            {
-                                PE_RESULT result = m_pExperiment->SetEngineParam(ii, PE_PARAM_SQ_SHADER_MASK, sqEngineParamValue);
-
-                                if (PE_OK != result)
-                                {
-                                    GPA_LogError("Unable to set the shader engine paramater.");
-                                    engineParamSetsuccess = false;
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    return engineParamSetsuccess;
-                };
-
-                pDx11GpaPass->IterateEnabledCounterList(AssignEngineParam);
-
-                success = engineParamSetsuccess;
-
-                if (!success)
-                {
-                    GPA_LogError("Unable to set engine params.");
-                }
-            }
-        }
-        else
-        {
-            GPA_LogError("Either the experiment has already been created or the driver extenison is not available.");
         }
     }
 
@@ -492,7 +524,7 @@ bool DX11GPASample::CreateAndAddCounterToExperiment()
     }
     else
     {
-        GPA_LogError("Unable to allocate space for performance counters.");
+        GPA_LogError("Unable to allocate memory for performance counters.");
         success = false;
     }
 

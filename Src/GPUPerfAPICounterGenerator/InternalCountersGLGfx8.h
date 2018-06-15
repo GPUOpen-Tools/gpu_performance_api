@@ -13,7 +13,10 @@ extern GPA_HardwareCounterDesc* GLCounterGroupArrayGfx8[]; ///< Array of hardwar
 extern GPA_CounterGroupDesc HWGLGroupsGfx8[]; ///< Array of counter groups for GL for Gfx8 family
 extern GPA_SQCounterGroupDesc HWGLSQGroupsGfx8[]; ///< Array of SQ groups for GL for Gfx8 family
 extern unsigned int HWGLSQIsolatedGroupsGfx8[]; ///< Array of counter groups isolated from SQ counter groups for GL for Gfx8 family
-extern const unsigned int HWGLGPUTimeIndexGfx8; ///< Index of GPUTime Group for GL for Gfx8 family
+extern const unsigned int HWGLGPUTimeBottomToBottomIndexGfx8; ///< Index of EOP to EOP counter for GL for Gfx8 family
+extern const unsigned int HWGLGPUTimeTopToBottomIndexGfx8; ///< Index of TOP to EOP counter for GL for Gfx8 family
+extern const std::set<unsigned int> HWGLTimestampBlockIdsGfx8; ///< Timestamp block id's for GL for Gfx8 family
+extern const std::set<unsigned int> HWGLTimeCounterIndicesGfx8; ///< Timestamp counter indices for GL for Gfx8 family
 extern const unsigned int HWGLGroupCountGfx8; ///< Hardware Group Count for GL for Gfx8 family
 extern const unsigned int HWGLSQGroupCountGfx8; ///< Hardware SQ Group Count for GL for Gfx8 family
 extern const unsigned int HWGLSQIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for GL for Gfx8 family

@@ -17,9 +17,10 @@ extern GPA_CounterGroupDesc HWDX11GroupsGfx8[]; ///< Array of counter groups for
 extern GPA_SQCounterGroupDesc HWDX11SQGroupsGfx8[]; ///< Array of SQ groups for DX11 for Gfx8 family
 extern unsigned int HWDX11SQIsolatedGroupsGfx8[]; ///< Array of counter groups isolated from SQ counter groups for DX11 for Gfx8 family
 extern PE_BLOCK_ID HWDX11DriverEnumGfx8[]; ///< Array of driver enum values per group for DX11 for Gfx8 family
-extern const unsigned int HWDX11GPUTimeIndexGfx8; ///< Index of GPUTime Group for DX11 for Gfx8 family
-extern const unsigned int HWDX11GPUTimeStampIndexGfx8; ///< Index of GPUTimeStamp Group for DX11 for Gfx8 family
-extern const unsigned int HWDX11FirstGPUTimeCounterIndexGfx8; ///< Index of first GPUTime counter for DX11 for Gfx8 family
+extern const unsigned int HWDX11GPUTimeBottomToBottomIndexGfx8; ///< Index of EOP to EOP counter for DX11 for Gfx8 family
+extern const unsigned int HWDX11GPUTimeTopToBottomIndexGfx8; ///< Index of TOP to EOP counter for DX11 for Gfx8 family
+extern const std::set<unsigned int> HWDX11TimestampBlockIdsGfx8; ///< Timestamp block id's for DX11 for Gfx8 family
+extern const std::set<unsigned int> HWDX11TimeCounterIndicesGfx8; ///< Timestamp counter indices for DX11 for Gfx8 family
 extern const unsigned int HWDX11GroupCountGfx8; ///< Hardware Group Count for DX11 for Gfx8 family
 extern const unsigned int HWDX11SQGroupCountGfx8; ///< Hardware SQ Group Count for DX11 for Gfx8 family
 extern const unsigned int HWDX11SQIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for DX11 for Gfx8 family

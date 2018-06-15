@@ -76,6 +76,99 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ModuleDefinition", "ModuleD
 		GPAFunctionExports.def = GPAFunctionExports.def
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Public Counter Names", "Public Counter Names", "{8E5866E4-E313-4437-8756-5C033B0D2391}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CL", "CL", "{8622D970-42A5-4994-B0A7-65561F98B57E}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx6.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Baffin.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Baffin.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Carrizo.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Carrizo.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Ellesmere.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Ellesmere.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Fiji.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Fiji.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Iceland.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Iceland.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Tonga.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx8_Tonga.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesCLGfx9.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DX11", "DX11", "{6EFC9A4A-C603-4172-9728-CC9762C1095B}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx6.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Baffin.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Baffin.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Carrizo.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Carrizo.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Ellesmere.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Ellesmere.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Fiji.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Fiji.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Iceland.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Iceland.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Tonga.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx8_Tonga.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX11Gfx9.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DX12", "DX12", "{0AA1458B-E65A-47A4-83C9-91C29BD76FFD}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Baffin.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Baffin.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Carrizo.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Carrizo.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Ellesmere.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Ellesmere.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Fiji.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Fiji.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Iceland.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Iceland.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Tonga.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx8_Tonga.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesDX12Gfx9.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GL", "GL", "{5797FCB1-4AD2-45D4-B659-1D68AB9135B5}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx6.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx6.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Baffin.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Baffin.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Carrizo.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Carrizo.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Ellesmere.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Ellesmere.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Fiji.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Fiji.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Iceland.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Iceland.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Tonga.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx8_Tonga.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesGLGfx9.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "HSA", "HSA", "{35B30323-A8E0-4C76-8C91-857A322184CE}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Baffin.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Baffin.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Carrizo.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Carrizo.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Ellesmere.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Ellesmere.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Fiji.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Fiji.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Iceland.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Iceland.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Tonga.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx8_Tonga.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesHSAGfx9.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VK", "VK", "{28F73534-1ECB-45D9-8818-48D3A9289C5F}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx7.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx7.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Baffin.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Baffin.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Carrizo.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Carrizo.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Ellesmere.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Ellesmere.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Fiji.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Fiji.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Iceland.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Iceland.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Tonga.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx8_Tonga.txt
+		..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx9.txt = ..\..\Src\PublicCounterCompilerInputFiles\PublicCounterNamesVKGfx9.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Examples", "Examples", "{F4D7D1FA-168E-4465-8CEA-12C9D39F8C87}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DX12", "DX12", "{75309F63-BEDD-4EE2-AE0F-4F570369F917}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Vulkan", "Vulkan", "{C6359478-AD39-4679-85B5-FD78455FE5FD}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "D3D12ColorCube", "D3D12ColorCube.vcxproj", "{1B136D41-DEA0-48D8-8E9B-E0DEE84D6DA6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VkColorCube", "VkColorCube.vcxproj", "{7FC66C29-BB8D-4007-98EC-E84877073AE7}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -176,6 +269,22 @@ Global
 		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|Win32.Build.0 = Release|Win32
 		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|x64.ActiveCfg = Release|x64
 		{D484B6F5-3EEF-47D4-AF66-1C2CCFFF670B}.Release|x64.Build.0 = Release|x64
+		{1B136D41-DEA0-48D8-8E9B-E0DEE84D6DA6}.Debug|Win32.ActiveCfg = Debug|Win32
+		{1B136D41-DEA0-48D8-8E9B-E0DEE84D6DA6}.Debug|Win32.Build.0 = Debug|Win32
+		{1B136D41-DEA0-48D8-8E9B-E0DEE84D6DA6}.Debug|x64.ActiveCfg = Debug|x64
+		{1B136D41-DEA0-48D8-8E9B-E0DEE84D6DA6}.Debug|x64.Build.0 = Debug|x64
+		{1B136D41-DEA0-48D8-8E9B-E0DEE84D6DA6}.Release|Win32.ActiveCfg = Release|Win32
+		{1B136D41-DEA0-48D8-8E9B-E0DEE84D6DA6}.Release|Win32.Build.0 = Release|Win32
+		{1B136D41-DEA0-48D8-8E9B-E0DEE84D6DA6}.Release|x64.ActiveCfg = Release|x64
+		{1B136D41-DEA0-48D8-8E9B-E0DEE84D6DA6}.Release|x64.Build.0 = Release|x64
+		{7FC66C29-BB8D-4007-98EC-E84877073AE7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7FC66C29-BB8D-4007-98EC-E84877073AE7}.Debug|Win32.Build.0 = Debug|Win32
+		{7FC66C29-BB8D-4007-98EC-E84877073AE7}.Debug|x64.ActiveCfg = Debug|x64
+		{7FC66C29-BB8D-4007-98EC-E84877073AE7}.Debug|x64.Build.0 = Debug|x64
+		{7FC66C29-BB8D-4007-98EC-E84877073AE7}.Release|Win32.ActiveCfg = Release|Win32
+		{7FC66C29-BB8D-4007-98EC-E84877073AE7}.Release|Win32.Build.0 = Release|Win32
+		{7FC66C29-BB8D-4007-98EC-E84877073AE7}.Release|x64.ActiveCfg = Release|x64
+		{7FC66C29-BB8D-4007-98EC-E84877073AE7}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -183,5 +292,18 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{EBFA5625-DD99-43E5-B607-5C8231A8B932} = {958FF3B0-837F-483A-AC5C-19855FDA299A}
 		{64D471AB-B0FB-41EF-9ABA-A20AAE658B36} = {CCAE5569-A4ED-4CD6-B2AF-9B9F8DFA2B51}
+		{8622D970-42A5-4994-B0A7-65561F98B57E} = {8E5866E4-E313-4437-8756-5C033B0D2391}
+		{6EFC9A4A-C603-4172-9728-CC9762C1095B} = {8E5866E4-E313-4437-8756-5C033B0D2391}
+		{0AA1458B-E65A-47A4-83C9-91C29BD76FFD} = {8E5866E4-E313-4437-8756-5C033B0D2391}
+		{5797FCB1-4AD2-45D4-B659-1D68AB9135B5} = {8E5866E4-E313-4437-8756-5C033B0D2391}
+		{35B30323-A8E0-4C76-8C91-857A322184CE} = {8E5866E4-E313-4437-8756-5C033B0D2391}
+		{28F73534-1ECB-45D9-8818-48D3A9289C5F} = {8E5866E4-E313-4437-8756-5C033B0D2391}
+		{75309F63-BEDD-4EE2-AE0F-4F570369F917} = {F4D7D1FA-168E-4465-8CEA-12C9D39F8C87}
+		{C6359478-AD39-4679-85B5-FD78455FE5FD} = {F4D7D1FA-168E-4465-8CEA-12C9D39F8C87}
+		{1B136D41-DEA0-48D8-8E9B-E0DEE84D6DA6} = {75309F63-BEDD-4EE2-AE0F-4F570369F917}
+		{7FC66C29-BB8D-4007-98EC-E84877073AE7} = {C6359478-AD39-4679-85B5-FD78455FE5FD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {9F91BB19-7E64-4C6C-92DE-8B114E07AD81}
 	EndGlobalSection
 EndGlobal

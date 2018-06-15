@@ -68,14 +68,14 @@ public:
     /// \return ID3D12Device pointer
     ID3D12Device* GetD3D12Device() const;
 
+    /// Destroys all the allocated resources for the context
+    void CleanUp();
+
 private:
 
     /// Initializes the AMD Driver extension objects for the context
     /// \return true upon successful initialization otherwise false
     bool InitializeAMDExtension();
-
-    /// Destroys all the allocated resources for the context
-    void CleanUp();
 
     /// Enable/disable the stable power state, using the stable clock mode specified when opening the context
     /// \param[in] useProfilingClocks true to use GPU clocks for profiling, false to use default clock mode

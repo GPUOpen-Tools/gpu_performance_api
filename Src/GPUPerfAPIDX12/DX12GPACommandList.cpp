@@ -43,23 +43,30 @@ bool DX12GPACommandList::BeginCommandListRequest()
     std::lock_guard<std::mutex> lock(m_dx12CmdListMutex);
     bool success = false;
 
-    if (nullptr == m_pAmdExtSession)
+    if (!m_isCommandListOpenInDriver)
     {
-        DX12GPASession* pDx12GpaSession = reinterpret_cast<DX12GPASession*>(GetParentSession());
-        m_pAmdExtSession = pDx12GpaSession->GetAmdExtInterface()->CreateGpaSession();
-        m_pAmdExtSession->AddRef();
-    }
+        if (nullptr == m_pAmdExtSession)
+        {
+            DX12GPASession* pDx12GpaSession = reinterpret_cast<DX12GPASession*>(GetParentSession());
+            m_pAmdExtSession = pDx12GpaSession->GetAmdExtInterface()->CreateGpaSession();
+            m_pAmdExtSession->AddRef(); // Holding a reference is not required here, but we are doing so in order to work around an issue in older drivers
+        }
 
-    HRESULT extensionOpResult = m_pAmdExtSession->Begin(m_pCmdList);
-    success = S_OK == extensionOpResult;
+        HRESULT extensionOpResult = m_pAmdExtSession->Begin(m_pCmdList);
+        success = S_OK == extensionOpResult;
 
-    if (!success)
-    {
-        GPA_LogError("Failed to begin the AMD driver extension for sampling.");
+        if (!success)
+        {
+            GPA_LogError("The driver extension is unable to begin the command list.");
+        }
+        else
+        {
+            m_isCommandListOpenInDriver = true;
+        }
     }
     else
     {
-        m_isCommandListOpenInDriver = true;
+        GPA_LogError("The command list has already been started.");
     }
 
     return success;
@@ -68,7 +75,7 @@ bool DX12GPACommandList::BeginCommandListRequest()
 bool DX12GPACommandList::EndCommandListRequest()
 {
     std::lock_guard<std::mutex> lock(m_dx12CmdListMutex);
-    bool succeed = false;
+    bool success = false;
 
     if (m_isCommandListOpenInDriver)
     {
@@ -76,21 +83,25 @@ bool DX12GPACommandList::EndCommandListRequest()
 
         if (S_OK == status)
         {
-            succeed = true;
+            success = true;
             m_isCommandListOpenInDriver = false;
+        }
+        else
+        {
+            GPA_LogError("The driver extension is unable to end the command list. This can occur if GPA_EndCommandList is called after the command list has been closed.");
         }
     }
     else
     {
-        GPA_LogDebugError("AMD extension is unable to end the command list.");
+        GPA_LogError("The command list has not been started.");
     }
 
-    return succeed;
+    return success;
 }
 
 bool DX12GPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample)
 {
-    bool succeeded = false;
+    bool success = false;
 
     DriverSampleId driverSampleId = 0;
     GPACounterSource counterSource = GetPass()->GetCounterSource();
@@ -99,18 +110,18 @@ bool DX12GPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASa
     {
         if (OpenHwSample(clientSampleId, &driverSampleId))
         {
-            succeeded = true;
+            success = true;
         }
     }
     else if (GPACounterSource::SOFTWARE == counterSource)
     {
         if (OpenSwSample(clientSampleId, &driverSampleId))
         {
-            succeeded = true;
+            success = true;
         }
     }
 
-    if (succeeded)
+    if (success)
     {
         pGpaSample->SetDriverSampleId(driverSampleId);
     }
@@ -119,7 +130,7 @@ bool DX12GPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASa
         GPA_LogError("Unable to begin sample in command list.");
     }
 
-    return succeeded;
+    return success;
 }
 
 bool DX12GPACommandList::CloseLastSampleRequest()
@@ -182,8 +193,7 @@ bool DX12GPACommandList::CopyBundleSamples(std::vector<ClientSampleId> clientSam
         m_secondarySampleAmdExtSessionMap.insert(
             BundleResultAmdExtSessionBundleSamplesOnPrimaryCmdPair(
                 pCopyAmdExtGpaSession, bundleSamplesOnPrimaryCmd));
-        // holding a reference
-        pCopyAmdExtGpaSession->AddRef();
+        pCopyAmdExtGpaSession->AddRef(); // Holding a reference is not required here, but we are doing so in order to work around an issue in older drivers
 
         auto insertOriginalClientSampleId = [&](ClientSampleIdGpaSamplePair clientSampleIdGpaSamplePair)->bool
         {
@@ -238,6 +248,8 @@ bool DX12GPACommandList::OpenHwSample(ClientSampleId clientSampleId, DriverSampl
     {
         if (m_isCommandListOpenInDriver)
         {
+            success = true;
+
             if (m_hasAnyHardwareCounters)
             {
                 *pDriverSampleId = m_pAmdExtSession->BeginSample(m_pCmdList, reinterpret_cast<DX12GPAPass*>(GetPass())->GetAmdExtSampleConfig());
@@ -300,6 +312,11 @@ void DX12GPACommandList::ReleaseNonGPAResources()
         UNREFERENCED_PARAMETER(refCount);
         m_pCmdList = nullptr;
         m_isNonGPAResourceReleased = true;
+
+        /*
+         * We won't rely on Release() to delete extension session objects because of an issue in older drivers,
+         * rather we will use DestroyGpaSession to delete the session object
+         */
 
         DX12GPASession* pDx12GpaSession = reinterpret_cast<DX12GPASession*>(GetParentSession());
         pDx12GpaSession->GetAmdExtInterface()->DestroyGpaSession(m_pAmdExtSession);

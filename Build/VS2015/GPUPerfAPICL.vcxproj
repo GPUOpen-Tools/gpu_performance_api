@@ -45,11 +45,6 @@
     <_ProjectFileVersion>10.0.30319.1</_ProjectFileVersion>
   </PropertyGroup>
   <ItemGroup>
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesCLGfx6.txt" />
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesCLGfx7.txt" />
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesCLGfx8.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="..\..\Src\GPUPerfAPICL\GPUPerfAPICL.rc" />
   </ItemGroup>
   <ItemGroup>

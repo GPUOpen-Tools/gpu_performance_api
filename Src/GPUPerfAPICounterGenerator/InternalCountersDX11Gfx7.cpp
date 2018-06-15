@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX11 internal counter definitions for GFX7
@@ -1020,9 +1020,10 @@ PE_BLOCK_ID HWDX11DriverEnumGfx7[] =
     PE_BLOCK_UNKNOWN,
 };
 
-const unsigned int HWDX11GPUTimeIndexGfx7 = 268;
-const unsigned int HWDX11GPUTimeStampIndexGfx7 = 267;
-const unsigned int HWDX11FirstGPUTimeCounterIndexGfx7 = 36850;
+const unsigned int HWDX11GPUTimeBottomToBottomIndexGfx7 = 36851;
+const unsigned int HWDX11GPUTimeTopToBottomIndexGfx7 = 36852;
+const std::set<unsigned int> HWDX11TimestampBlockIdsGfx7 = { 268, 267 }; ///< Timestamp block id's for DX11 for Gfx7 family
+const std::set<unsigned int> HWDX11TimeCounterIndicesGfx7 = { 36851, 36852, 36850 }; ///< Timestamp counter indices for DX11 for Gfx7 family
 const unsigned int HWDX11GroupCountGfx7 = sizeof(HWDX11GroupsGfx7) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX11SQGroupCountGfx7 = sizeof(HWDX11SQGroupsGfx7) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX11SQIsolatedGroupCountGfx7 = sizeof(HWDX11SQIsolatedGroupsGfx7) / sizeof(unsigned int);

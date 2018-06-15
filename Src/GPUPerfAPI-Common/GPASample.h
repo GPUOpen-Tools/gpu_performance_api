@@ -27,9 +27,6 @@ using DriverSampleId = unsigned int;                ///< type alias for index of
 /// Stores counter results after they are returned from the sample.
 struct GPASampleResult
 {
-    size_t      m_numCounters;              ///< Stores the number of items in pResultsBuffer.
-    gpa_uint64* m_pResultBuffer;            ///< An array of counter results.
-
     /// Delete Default Constructor
     GPASampleResult() = delete;
 
@@ -37,24 +34,37 @@ struct GPASampleResult
     /// \param[in] numOfCounters number of counters
     GPASampleResult(size_t numOfCounters)
     {
-        m_numCounters = numOfCounters;
-
-        if (numOfCounters > 0)
-        {
-            // We can construct it over here as we are not throwing any exception
-            m_pResultBuffer = new(std::nothrow) gpa_uint64[numOfCounters];
-        }
-        else
-        {
-            m_pResultBuffer = nullptr;
-        }
+        SetNumCounters(numOfCounters);
     }
 
-    /// Destructor
-    ~GPASampleResult()
+    /// Sets the number of counters
+    /// \param[in] numOfCounters Number of counters
+    void SetNumCounters(size_t numOfCounters)
     {
-        delete[] m_pResultBuffer;
+        m_resultBuffer.clear();
+
+        if (numOfCounters)
+        {
+            m_resultBuffer.resize(numOfCounters);
+        }
     }
+
+    /// Returns the number of counters
+    /// \return Returns the number of counters
+    size_t GetNumCounters() const
+    {
+        return m_resultBuffer.size();
+    }
+
+    /// Returns the output buffer
+    /// \return Returns the output buffer
+    gpa_uint64* GetResultBuffer()
+    {
+        return m_resultBuffer.data();
+    }
+
+private:
+    std::vector<gpa_uint64> m_resultBuffer;            ///< An array of counter results.
 };
 
 /// Enum for GPA Sample type
@@ -119,7 +129,10 @@ public:
     /// Should confirm that results for this sample have been collected from the driver.
     /// \return true if the sample's results have been copied back from the driver;
     ///         false if any sample is still pending.
-    inline virtual bool IsResultCollected() const;
+    inline virtual bool IsResultCollected() const
+    {
+        return m_gpaSampleState == GPASampleState::RESULTS_COLLECTED;
+    }
 
     /// Start a counter sample.
     /// \return True if the sample could be started; false otherwise.
@@ -225,21 +238,21 @@ private:
     /// Release allocated counters
     virtual void ReleaseCounters() = 0;
 
-    GPAPass*             m_pPass;               ///< GPA Pass Object
-    IGPACommandList*     m_pGpaCmdList;         ///< Pointer to the command list object
-    GpaSampleType        m_gpaSampleType;       ///< type of the GPA sample
-    ClientSampleId       m_clientSampleId;      ///< Client-assigned sample Id
-    DriverSampleId       m_driverSampleId;      ///< Driver created sample id
-    GPASampleState       m_gpaSampleState;      ///< The state of this sample
-    GPASampleResult*     m_pSampleResult;       ///< memory for sample Results
-    GPASample*           m_pContinuingSample;   ///< Pointer to linked/continuing GpaSample
-    std::recursive_mutex m_continueSampleMutex; ///< mutex for the GPA sample object
-    std::mutex           m_sampleMutex;         ///< mutex for the GPA sample object
-    bool                 m_isSecondary;         ///< flag indicating a sample is a secondary sample; i.e. it has been created on a bundle or secondary command buffer
-    bool                 m_isOpened;            ///< flag indicating a sample is opened
-    bool                 m_isClosedByClient;    ///< flag indicating a sample is closed by the command list on which it is created
-    bool                 m_isContinuedByClient; ///< flag indicating a sampe has been continued on another command list
-    bool                 m_isCopiedSample;      ///< flag indicating that sample has been copied to primary command list
+    GPAPass*              m_pPass;               ///< GPA Pass Object
+    IGPACommandList*      m_pGpaCmdList;         ///< Pointer to the command list object
+    GpaSampleType         m_gpaSampleType;       ///< type of the GPA sample
+    ClientSampleId        m_clientSampleId;      ///< Client-assigned sample Id
+    DriverSampleId        m_driverSampleId;      ///< Driver created sample id
+    GPASampleState        m_gpaSampleState;      ///< The state of this sample
+    GPASampleResult*      m_pSampleResult;       ///< memory for sample Results
+    GPASample*            m_pContinuingSample;   ///< Pointer to linked/continuing GpaSample
+    std::recursive_mutex  m_continueSampleMutex; ///< recursive mutex for continuing sample pointer
+    std::mutex            m_sampleMutex;         ///< mutex for the GPA sample object
+    bool                  m_isSecondary;         ///< flag indicating a sample is a secondary sample; i.e. it has been created on a bundle or secondary command buffer
+    bool                  m_isOpened;            ///< flag indicating a sample is opened
+    bool                  m_isClosedByClient;    ///< flag indicating a sample is closed by the command list on which it is created
+    bool                  m_isContinuedByClient; ///< flag indicating a sample has been continued on another command list
+    bool                  m_isCopiedSample;      ///< flag indicating that sample has been copied to primary command list
 };
 
 #endif // _GPA_SAMPLE_H_

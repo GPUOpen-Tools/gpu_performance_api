@@ -118,11 +118,11 @@ GPASampleResult* VkGPAHardwareSample::PopulateSampleResults()
     {
         // If this is a timing pass, we will have one result space to return the result,
         // but we need to get two results from the driver.
-        sampleDataSize = GetSampleResultLocation()->m_numCounters * 2 * sizeof(gpa_uint64);
+        sampleDataSize = GetSampleResultLocation()->GetNumCounters() * 2 * sizeof(gpa_uint64);
     }
     else
     {
-        sampleDataSize = GetSampleResultLocation()->m_numCounters * sizeof(gpa_uint64);
+        sampleDataSize = GetSampleResultLocation()->GetNumCounters() * sizeof(gpa_uint64);
     }
 
     gpa_uint64* pResultBuffer = nullptr;
@@ -130,7 +130,7 @@ GPASampleResult* VkGPAHardwareSample::PopulateSampleResults()
 
     if (sampleDataSize > 0)
     {
-        if (nullptr == GetSampleResultLocation()->m_pResultBuffer)
+        if (nullptr == GetSampleResultLocation()->GetResultBuffer())
         {
             GPA_LogError("Incorrect space allocated for sample result.");
         }
@@ -142,7 +142,7 @@ GPASampleResult* VkGPAHardwareSample::PopulateSampleResults()
             }
             else
             {
-                pResultBuffer = GetSampleResultLocation()->m_pResultBuffer;
+                pResultBuffer = GetSampleResultLocation()->GetResultBuffer();
             }
 
             if (CopyResult(sampleDataSize, pResultBuffer))
@@ -150,7 +150,7 @@ GPASampleResult* VkGPAHardwareSample::PopulateSampleResults()
                 if (GetPass()->IsTimingPass())
                 {
                     // There will be one counter result space for this
-                    *(GetSampleResultLocation()->m_pResultBuffer) = timingData[1] - timingData[0];
+                    *(GetSampleResultLocation()->GetResultBuffer()) = timingData[1] - timingData[0];
                 }
 
                 if (IsSampleContinuing())
@@ -163,9 +163,9 @@ GPASampleResult* VkGPAHardwareSample::PopulateSampleResults()
                     }
                     else
                     {
-                        for (size_t counterIter = 0; counterIter < GetSampleResultLocation()->m_numCounters; counterIter++)
+                        for (size_t counterIter = 0; counterIter < GetSampleResultLocation()->GetNumCounters(); counterIter++)
                         {
-                            GetSampleResultLocation()->m_pResultBuffer[counterIter] += pSampleResult->m_pResultBuffer[counterIter];
+                            GetSampleResultLocation()->GetResultBuffer()[counterIter] += pSampleResult->GetResultBuffer()[counterIter];
                         }
                     }
                 }

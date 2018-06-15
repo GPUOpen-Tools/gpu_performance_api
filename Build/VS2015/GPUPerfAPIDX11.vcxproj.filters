@@ -17,20 +17,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\PublicCounterCounterCompilerInputFiles\CounterNamesDX11NV.txt">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesDX11Gfx6.txt">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesDX11Gfx7.txt">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesDX11Gfx8.txt">
-      <Filter>Resource Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPAPass.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

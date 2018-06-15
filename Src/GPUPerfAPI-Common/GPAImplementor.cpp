@@ -15,8 +15,9 @@
     #include "Adapter.h"
 #endif
 
-GPAImplementor::GPAImplementor()
-    : m_isInitialized(false)
+GPAImplementor::GPAImplementor() :
+    m_isInitialized(false),
+    m_initFlags(GPA_INITIALIZE_DEFAULT_BIT)
 {
 }
 

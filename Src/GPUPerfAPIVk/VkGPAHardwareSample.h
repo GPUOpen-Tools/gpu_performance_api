@@ -9,7 +9,7 @@
 #define _VK_GPA_HARDWARE_SAMPLE_H_
 
 #include <vector>
-#include <vulkan.h>
+#include <vulkan/vulkan.h>
 #include <vk_amd_gpa_interface.h>
 
 #include "VkGPASample.h"

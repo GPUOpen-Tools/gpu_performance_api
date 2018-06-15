@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Maintains a set of hardware counters
@@ -10,6 +10,7 @@
 
 #include "GPAInternalCounter.h"
 #include "GPASplitCountersInterfaces.h"
+#include "IGPACounterScheduler.h"
 
 /// Struct to describe a hardware counter
 struct GPA_HardwareCounterDescExt
@@ -47,11 +48,6 @@ public:
         m_additionalGroupCount = 0;
         m_pSQCounterGroups = nullptr;
         m_sqGroupCount = 0;
-        m_gpuTimestampIndex = static_cast<unsigned int>(-1);
-        m_gpuTimeIndex = static_cast<unsigned int>(-1);
-        m_gpuTimestampPreBottomCounterIndex = static_cast<unsigned int>(-1);
-        m_gpuTimestampPostBottomCounterIndex = static_cast<unsigned int>(-1);
-        m_gpuTimestampTopCounterIndex = static_cast<unsigned int>(-1);
         m_gpuTimeBottomToBottomCounterIndex = static_cast<unsigned int>(-1);
         m_gpuTimeTopToBottomCounterIndex = static_cast<unsigned int>(-1);
         m_countersGenerated = false;
@@ -79,7 +75,21 @@ public:
     /// \return the group name of the specified counter
     const char* GetCounterGroup(gpa_uint32 index) const
     {
-        return m_pGroups[m_counters[index].m_groupIndex].m_pName;
+        if (m_counters[index].m_groupIndex < m_groupCount)
+        {
+            return m_pGroups[m_counters[index].m_groupIndex].m_pName;
+        }
+        else
+        {
+            gpa_uint32 additionalGroupIndex = m_counters[index].m_groupIndex - m_groupCount;
+
+            if (additionalGroupIndex < m_additionalGroupCount)
+            {
+                return m_pAdditionalGroups[additionalGroupIndex].m_pName;
+            }
+        }
+
+        return nullptr;
     }
 
     /// Gets the description of the specified counter
@@ -103,13 +113,37 @@ public:
     /// \return the counter's supported sample type
     GPA_Counter_Sample_Type GetCounterSampleType(gpa_uint32 index) const
     {
-        // TODO: Hardcoding to discrete-only counters for now.
+        // TODO: Hard coding to discrete-only counters for now.
         //       Uncomment the below line and remove the following two lines when we have a mechanism
         //       for hardware counters to specify which sample types they support.
         //return m_counters[index].m_pHardwareCounter->m_supportedSampleTypes;
 
         UNREFERENCED_PARAMETER(index);
         return GPA_COUNTER_SAMPLE_TYPE_DISCRETE;
+    }
+
+    /// Determines whether the indicated block id is a timestamp block id
+    /// \param blockId The block id to check
+    /// \return True if the block id is a timestamp block id
+    bool IsTimestampBlockId(unsigned int blockId) const
+    {
+        return m_timestampBlockIds.find(blockId) != m_timestampBlockIds.end();
+    }
+
+    /// Determines whether the indicated counter index is a timestamp counter
+    /// \param counterIndex The counter index to check
+    /// \return True if the counter index is a timestamp counter
+    bool IsTimeCounterIndex(unsigned int counterIndex) const
+    {
+        return m_timeCounterIndices.find(counterIndex) != m_timeCounterIndices.end();
+    }
+
+    /// Finds and returns the hardware timing counter with the minimum index in the set
+    /// \return The hardware timing counter with the minimum index in the set
+    unsigned int GetFirstHardwareTimeCounterIndex() const
+    {
+        auto iter = std::min_element(m_timeCounterIndices.begin(), m_timeCounterIndices.end());
+        return *iter;
     }
 
     GPA_HardwareCounterDesc**               m_ppCounterGroupArray;                ///< List of counter groups as defined by the list of internal counters in each group.
@@ -119,11 +153,8 @@ public:
     unsigned int                            m_additionalGroupCount;               ///< The number of internal counter groups exposed by the driver, but not known by GPA
     GPA_SQCounterGroupDesc*                 m_pSQCounterGroups;                   ///< List of SQCounterGroupDesc
     unsigned int                            m_sqGroupCount;                       ///< The number of internal SQ counter groups
-    unsigned int                            m_gpuTimestampIndex;                  ///< Index of the GPUTimestamp group (-1 if it doesn't exist)
-    unsigned int                            m_gpuTimeIndex;                       ///< Index of the GPUTime group (-1 if it doesn't exist)
-    unsigned int                            m_gpuTimestampPreBottomCounterIndex;  ///< the index of the GPU Timestamp pre-event Bottom counter (-1 if it doesn't exist)
-    unsigned int                            m_gpuTimestampPostBottomCounterIndex; ///< the index of the GPU Timestamp post-event Bottom counter (-1 if it doesn't exist)
-    unsigned int                            m_gpuTimestampTopCounterIndex;        ///< the index of the GPU Timestamp pre-event Top counter (-1 if it doesn't exist)
+    std::set<unsigned int>                  m_timestampBlockIds;                  ///< Set of timestamp block id's
+    std::set<unsigned int>                  m_timeCounterIndices;                 ///< Set of timestamp counter indices
     unsigned int                            m_gpuTimeBottomToBottomCounterIndex;  ///< the index of the GPUTime Bottom-to-Bottom counter (-1 if it doesn't exist)
     unsigned int                            m_gpuTimeTopToBottomCounterIndex;     ///< the index of the GPUTime Top-to-Bottom counter (-1 if it doesn't exist)
     bool                                    m_countersGenerated;                  ///< indicates that the internal counters have been generated

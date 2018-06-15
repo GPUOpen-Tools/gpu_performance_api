@@ -1,13 +1,13 @@
 // =====================================================================
 // <copyright file="Program.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2017 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2018 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
 // </author>
 // <summary>
-//    Given an ordered internal counter definition file and the public counter definitions,
-//    produces c++ code to define them for the run-time.
+//    Given an ordered internal counter definition file and the derived (e.g.: public)
+//    definitions, produces c++ code to define them for the run-time.
 // </summary>
 // =====================================================================
 namespace PublicCounterCompiler
@@ -19,7 +19,7 @@ namespace PublicCounterCompiler
     using System.Diagnostics;
 
     /// <summary>
-    /// A program which compiles the public counters definitions into C++ files.
+    /// A program which compiles the derived counters definitions into C++ files.
     /// </summary>
     public class Program
     {
@@ -31,7 +31,7 @@ namespace PublicCounterCompiler
             /// <summary>
             /// The public counter definition
             /// </summary>
-            public PublicCounterDef publicCounter = null;
+            public DerivedCounterDef publicCounter = null;
 
             /// <summary>
             /// Flag indicating if the counter support GFX9
@@ -129,10 +129,10 @@ namespace PublicCounterCompiler
 
         /// <summary>
         /// Sets directories based on the supplied API and generation and
-        /// compiles the public counters
+        /// compiles the derived counters
         /// </summary>
         /// <param name="api">The API to compile counters for</param>
-        /// <param name="generation">The HW </param>
+        /// <param name="generation">The HW generation</param>
         /// <returns>true on success, false if there were any errors</returns>
         public static bool CompileCounters(string api, string generation)
         {
@@ -144,7 +144,7 @@ namespace PublicCounterCompiler
             string testOutputDirectory = gpaPath + "Src\\GPUPerfAPIUnitTests\\counters\\";
 
             // Iterate over files that match the base of the counter name's generation file
-            string searchFilename = "CounterNames" + api + generation + "*.txt";
+            string searchFilename = "PublicCounterNames" + api + generation + "*.txt";
 
             string[] filenames = Directory.GetFiles(compilerInputPath, searchFilename);
 
@@ -232,7 +232,7 @@ namespace PublicCounterCompiler
             includeFile.WriteLine();
             includeFile.WriteLine("//*** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.");
             includeFile.WriteLine();
-            includeFile.WriteLine("#include \"GPAPublicCounters.h\"");
+            includeFile.WriteLine("#include \"GPADerivedCounters.h\"");
             includeFile.WriteLine();
 
             foreach(string asic in asicSpecificFiles)
@@ -246,19 +246,19 @@ namespace PublicCounterCompiler
             includeFile.WriteLine("{");
             includeFile.WriteLine();
 
-            includeFile.WriteLine("/// Updates default GPU generation public counters with ASIC specific public counters if available.");
+            includeFile.WriteLine("/// Updates default GPU generation derived counters with ASIC specific derived counters if available.");
             includeFile.WriteLine("/// \\param desiredGeneration Hardware generation currently in use.");
             includeFile.WriteLine("/// \\param asicType The ASIC type that is currently in use.");
-            includeFile.WriteLine("/// \\param publicCounters Returned set of public counters, if available.");
-            includeFile.WriteLine("/// \\return True if the ASIC matched one available, and publicCounters was updated.");
-            includeFile.WriteLine("inline void UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_PublicCounters& publicCounters)");
+            includeFile.WriteLine("/// \\param counters Returned set of derived counters, if available.");
+            includeFile.WriteLine("/// \\return True if the ASIC matched one available, and counters was updated.");
+            includeFile.WriteLine("inline void UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& counters)");
             includeFile.WriteLine("{");
 
             if (asicSpecificFiles.Count == 0)
             {
                 includeFile.WriteLine("    UNREFERENCED_PARAMETER(desiredGeneration);");
                 includeFile.WriteLine("    UNREFERENCED_PARAMETER(asicType);");
-                includeFile.WriteLine("    UNREFERENCED_PARAMETER(publicCounters);");
+                includeFile.WriteLine("    UNREFERENCED_PARAMETER(counters);");
             }
             else
             {
@@ -266,7 +266,7 @@ namespace PublicCounterCompiler
 
                 foreach (string asic in asicSpecificFiles)
                 {
-                    includeFile.WriteLine("    if ({0}{1}::UpdateAsicSpecificCounters(desiredGeneration, asicType, publicCounters))", section, asic);
+                    includeFile.WriteLine("    if ({0}{1}::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))", section, asic);
                     includeFile.WriteLine("    {");
                     includeFile.WriteLine("        return;");
                     includeFile.WriteLine("    }");
@@ -289,7 +289,7 @@ namespace PublicCounterCompiler
     /// <summary>
     /// Formats a counter error for output
     /// </summary>
-    /// <param name="counterName">Public counter name</param>
+    /// <param name="counterName">Derived counter name</param>
     /// <param name="component">Component of the formula that is referenced</param>
     /// <param name="index">Index of the component of the formula that is referenced</param>
     /// <param name="errorMessage">Error message</param>
@@ -301,9 +301,9 @@ namespace PublicCounterCompiler
         /// <summary>
         /// Validates the counter formula and referenced hardware counters
         /// </summary>
-        /// <param name="counter">Public counter to validate</param>
+        /// <param name="counter">Derived counter to validate</param>
         /// <returns>True if the formula and referenced counters are correct, otherwise false.</returns>
-        private static bool ValidateFormulaAndReferencedCounter(PublicCounterDef counter)
+        private static bool ValidateFormulaAndReferencedCounter(DerivedCounterDef counter)
         {
             bool retVal = true;
 
@@ -642,13 +642,13 @@ namespace PublicCounterCompiler
         /// <summary>
         /// Validates the formula and referenced counters
         /// </summary>
-        /// <param name="publicCounterList">List of public counter to validate</param>
+        /// <param name="counters">List of derived counter to validate</param>
         /// <returns>True if the formula and referenced counters are correct, otherwise false.</returns>
-        private static bool ValidateFormulaAndReferencedCounters(ref List<PublicCounterDef> publicCounterList)
+        private static bool ValidateFormulaAndReferencedCounters(ref List<DerivedCounterDef> counters)
         {
             bool retVal = true;
 
-            foreach (PublicCounterDef counter in publicCounterList)
+            foreach (DerivedCounterDef counter in counters)
             {
                 retVal &= ValidateFormulaAndReferencedCounter(counter);
             }
@@ -661,7 +661,7 @@ namespace PublicCounterCompiler
         /// Generates output file of GPU counter data by API and ASIC for use in documentation, etc.
         /// </summary>
         /// <param name="outputCsv">True to output the counter name and description only.</param>
-        /// <param name="publicCounterList">List of public counters.</param>
+        /// <param name="derivedCounterList">List of derived counters.</param>
         /// <param name="internalCounterList">List of internal counters.</param>
         /// <param name="outputDir">Output directory.</param>
         /// <param name="api">API being generated.</param>
@@ -671,7 +671,7 @@ namespace PublicCounterCompiler
         /// <returns>True is files are successfully loaded and generated.</returns>
         private static void GeneratePublicCounterDocFile(
             bool outputCsv,
-            ref List<PublicCounterDef> publicCounterList,
+            ref List<DerivedCounterDef> derivedCounterList,
             ref List<InternalCounterDef> internalCounterList,
             string outputDir,
             string api,
@@ -702,11 +702,11 @@ namespace PublicCounterCompiler
 
             docStream.WriteLine("API: " + api);
             docStream.WriteLine("GPU: " + generation + asic);
-            docStream.WriteLine("Counters: " + publicCounterList.Count);
+            docStream.WriteLine("Counters: " + derivedCounterList.Count);
             docStream.WriteLine("Date: " + String.Format("{0:d MMM yyyy h:mm tt}", DateTime.Now));
             docStream.WriteLine();
 
-            foreach(var counter in publicCounterList)
+            foreach(var counter in derivedCounterList)
             {
                 if (asicSpecific && !PublicCounterReferencesAsicRegisters(ref internalCounterList, counter))
                 {
@@ -735,15 +735,15 @@ namespace PublicCounterCompiler
         /// <summary>
         /// Adds information to the counter info structure that will be used to generate counter documentation.
         /// </summary>
-        /// <param name="publicCounterList">List of public counters.</param>
+        /// <param name="derivedCounterList">List of public counters.</param>
         /// <param name="generation">GPU generation.</param>
         /// <param name="docInfoMap">the counter info structure in which to add information</param>
         private static void AddInfoToRSTDocInfo(
-            ref List<PublicCounterDef> publicCounterList,
+            ref List<DerivedCounterDef> derivedCounterList,
             string generation,
             Dictionary<string, Dictionary<string, PublicCounterDocInfo>> docInfoMap)
         {
-            foreach (var counter in publicCounterList)
+            foreach (var counter in derivedCounterList)
             {
                 PublicCounterDocInfo counterInfo = null;
                 Dictionary<string, PublicCounterDocInfo> counterMap = null;
@@ -810,7 +810,7 @@ namespace PublicCounterCompiler
         /// Loads internal counters and generates output files.
         /// </summary>
         /// <param name="counterNamesFile">File that contains counter names.</param>
-        /// <param name="counterDefsFile">File that contains public counter definitions.</param>
+        /// <param name="counterDefsFile">File that contains derived counter definitions.</param>
         /// <param name="outputDir">Output directory.</param>
         /// <param name="counterListOutputDirectory">Counter list output directory.</param>
         /// <param name="testOutputDirectory">Test file output directory.</param>
@@ -883,7 +883,7 @@ namespace PublicCounterCompiler
             }
 
             // load the public counter definitions using the filename in the second param
-            List<PublicCounterDef> publicCounterList = new List<PublicCounterDef>();
+            List<DerivedCounterDef> publicCounterList = new List<DerivedCounterDef>();
             readOk = LoadPublicCounterDefinitions(counterDefsFile, ref publicCounterList, ref internalCounterList,
                 sectionLabel, asic, out strError);
             if (!readOk)
@@ -1075,7 +1075,7 @@ namespace PublicCounterCompiler
         /// <param name="strError">Optional error return.</param>
         /// <returns>True if the public counter definitions are successfully loaded.</returns>
         public static bool LoadPublicCounterDefinitions(string file,
-            ref List<PublicCounterDef> counterDefList,
+            ref List<DerivedCounterDef> counterDefList,
             ref List<InternalCounterDef> internalCounterList,
             string activeSectionLabel,
             string asic,
@@ -1101,7 +1101,7 @@ namespace PublicCounterCompiler
 
             uint numInvalidCounterNames = 0;
 
-            PublicCounterDef counterDef = null;
+            DerivedCounterDef counterDef = null;
 
             foreach (string s in publicCounterDefs)
             {
@@ -1154,7 +1154,7 @@ namespace PublicCounterCompiler
                             return false;
                         }
 
-                        counterDef = new PublicCounterDef {Name = lineSplit[1]};
+                        counterDef = new DerivedCounterDef { Name = lineSplit[1]};
 
                         doneName = true;
                         insideMatchingSection = false;
@@ -1672,9 +1672,9 @@ namespace PublicCounterCompiler
             return values;
         }
 
-        public static bool PublicCounterReferencesAsicRegisters(ref List<InternalCounterDef> internalCounterList, PublicCounterDef c)
+        public static bool PublicCounterReferencesAsicRegisters(ref List<InternalCounterDef> internalCounterList, DerivedCounterDef c)
         {
-            foreach (PublicCounterDef.HardwareCounterDef counter in c.GetCounters())
+            foreach (DerivedCounterDef.HardwareCounterDef counter in c.GetCounters())
             {
                 if (internalCounterList.Exists(x => x.Name == counter.Name && x.IsAsicSpecific == true))
                 {
@@ -1697,7 +1697,7 @@ namespace PublicCounterCompiler
         /// <param name="asic">Optional ASIC identifier.</param>
         /// <returns>True if the files could be generated; false on error.</returns>
         public static bool GenerateOutputFiles(ref List<InternalCounterDef> internalCounterList,
-            ref List<PublicCounterDef> counterDefList,
+            ref List<DerivedCounterDef> counterDefList,
             string api,
             string generation,
             string outputDir,
@@ -1751,14 +1751,14 @@ namespace PublicCounterCompiler
             hsw.WriteLine(
                 "//*** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.");
             hsw.WriteLine();
-            hsw.WriteLine("#include \"GPAPublicCounters.h\"");
+            hsw.WriteLine("#include \"GPADerivedCounters.h\"");
             hsw.WriteLine();
 
             if (!asicSpecific)
             {
                 hsw.WriteLine("/// Defines the public counters for {0}{1}", activeSectionLabel.ToUpper(), asic.ToUpper());
-                hsw.WriteLine("/// \\param p public counters instance");
-                hsw.WriteLine("void AutoDefinePublicCounters{0}(GPA_PublicCounters& p);", activeSectionLabel);
+                hsw.WriteLine("/// \\param c public counters instance");
+                hsw.WriteLine("void AutoDefineDerivedCounters{0}(GPA_DerivedCounters& c);", activeSectionLabel);
             }
             else
             {
@@ -1769,8 +1769,8 @@ namespace PublicCounterCompiler
                 hsw.WriteLine("/// \\param desiredGeneration Hardware generation currently in use.");
                 hsw.WriteLine("/// \\param asicType The ASIC type that is currently in use.");
                 hsw.WriteLine("/// \\param p public counters instance.");
-                hsw.WriteLine("/// \\return True if the ASIC matched one available, and pPublicCounters was updated.");
-                hsw.WriteLine("extern bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_PublicCounters& p);");
+                hsw.WriteLine("/// \\return True if the ASIC matched one available, and c was updated.");
+                hsw.WriteLine("extern bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& p);");
                 hsw.WriteLine();
                 hsw.WriteLine("} //" + activeSectionLabel + asic);
             }
@@ -1810,7 +1810,7 @@ namespace PublicCounterCompiler
 
             if (!asicSpecific)
             {
-                csw.WriteLine("void AutoDefinePublicCounters{0}{1}(GPA_PublicCounters& p)", activeSectionLabel, asic);
+                csw.WriteLine("void AutoDefineDerivedCounters{0}{1}(GPA_DerivedCounters& c)", activeSectionLabel, asic);
                 csw.WriteLine("{");
             }
             else
@@ -1820,10 +1820,10 @@ namespace PublicCounterCompiler
                 csw.WriteLine("namespace {0}{1}", activeSectionLabel, asic);
                 csw.WriteLine("{");
                 csw.WriteLine();
-                csw.WriteLine("bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_PublicCounters& p)");
+                csw.WriteLine("bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c)");
                 csw.WriteLine("{");
                 csw.WriteLine("    UNREFERENCED_PARAMETER(desiredGeneration);");
-                csw.WriteLine("    UNREFERENCED_PARAMETER(p); // Unreferenced if there are no ASIC specific block instance registers");
+                csw.WriteLine("    UNREFERENCED_PARAMETER(c); // Unreferenced if there are no ASIC specific block instance registers");
                 csw.WriteLine();
                 csw.WriteLine("    if (!Counter{0}{1}::MatchAsic(asicType))", generation, asic);
                 csw.WriteLine("    {");
@@ -1846,7 +1846,7 @@ namespace PublicCounterCompiler
                 return false;
             }
 
-            foreach (PublicCounterDef c in counterDefList)
+            foreach (DerivedCounterDef c in counterDefList)
             {
                 if (asicSpecific && !PublicCounterReferencesAsicRegisters(ref internalCounterList, c))
                 {
@@ -1857,7 +1857,7 @@ namespace PublicCounterCompiler
 
                 csw.WriteLine("    {");
                 csw.WriteLine("        vector< gpa_uint32 > internalCounters;");
-                foreach (PublicCounterDef.HardwareCounterDef counter in c.GetCounters())
+                foreach (DerivedCounterDef.HardwareCounterDef counter in c.GetCounters())
                 {
                     csw.WriteLine("        internalCounters.push_back({0});", counter.Id);
                 }
@@ -1867,13 +1867,13 @@ namespace PublicCounterCompiler
                 if (!asicSpecific)
                 {
                     csw.WriteLine(
-                    "        p.DefinePublicCounter(\"{0}\", \"{1}\", \"{2}\", {3}, {4}, internalCounters, \"{5}\", \"{6}\");",
+                    "        c.DefineDerivedCounter(\"{0}\", \"{1}\", \"{2}\", {3}, {4}, internalCounters, \"{5}\", \"{6}\");",
                     c.Name, c.Group, c.Desc, c.Type, c.Usage, c.Comp, c.GuidHash.ToString("D"));
                 }
                 else
                 {
                     csw.WriteLine(
-                    "        p.UpdateAsicSpecificPublicCounter(\"{0}\", internalCounters, \"{1}\");",
+                    "        c.UpdateAsicSpecificDerivedCounter(\"{0}\", internalCounters, \"{1}\");",
                     c.Name, c.Comp);
                 }
 
@@ -1912,7 +1912,7 @@ namespace PublicCounterCompiler
         /// <param name="asic">Specific ASIC, or empty string.</param>
         /// <returns>True if files are successfully generated.</returns>
         public static bool GenerateTestOutputFiles(ref List<InternalCounterDef> internalCounterList,
-            ref List<PublicCounterDef> counterDefList,
+            ref List<DerivedCounterDef> counterDefList,
             string activeSectionLabel,
             string outputDir,
             string asic)
@@ -1998,7 +1998,7 @@ namespace PublicCounterCompiler
             headerStream.WriteLine("/// Macros for {0}{1} Public counter index", activeSectionLabel, asic);
 
             int counterIndex = 0;
-            foreach (PublicCounterDef publicCounter in counterDefList)
+            foreach (DerivedCounterDef publicCounter in counterDefList)
             {
                 ++counterCount;
                 cppStream.WriteLine("    {{\"{0}\", \"{1}\", \"{2}\", {3}, {4}, {5}}},", publicCounter.Name,

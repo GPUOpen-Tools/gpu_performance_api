@@ -63,136 +63,55 @@ bool CLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
             else
             {
                 static const gpa_uint32 MAX_STR = 1024;
-                char str[MAX_STR];
+                char deviceName[MAX_STR];
 
-                if (CL_SUCCESS != pOclModule->GetDeviceInfo(device, CL_DEVICE_NAME, MAX_STR, str, nullptr))
+                if (CL_SUCCESS != pOclModule->GetDeviceInfo(device, CL_DEVICE_NAME, MAX_STR, deviceName, nullptr))
                 {
                     GPA_LogError("Unable to get device name.");
                     isSuccess = false;
                 }
                 else
                 {
-                    string realDeviceName = AMDTDeviceInfoUtils::Instance()->TranslateDeviceName(str);
-
                     std::stringstream message;
-                    message << "Device name from Queue: " << str << ".";
+                    message << "Device name from Queue: " << deviceName << ".";
                     GPA_LogDebugMessage(message.str().c_str());
 
                     // Match any revision when manually setting the device id
                     hwInfo.SetRevisionID(REVISION_ID_ANY);
 
+                    bool isPcieIdValid = false;
                     cl_uint pcieDeviceId = 0;
 
-                    if (CL_SUCCESS == pOclModule->GetDeviceInfo(device, CL_DEVICE_PCIE_ID_AMD, sizeof(cl_uint), &pcieDeviceId, nullptr))
+                    if (CL_SUCCESS == pOclModule->GetDeviceInfo(device, CL_DEVICE_PCIE_ID_AMD, sizeof(cl_uint), &pcieDeviceId, nullptr) && 0 != pcieDeviceId)
                     {
-                        hwInfo.SetDeviceID(pcieDeviceId);
+                        std::vector<GDT_GfxCardInfo> cardList;
+
+                        if (AMDTDeviceInfoUtils::Instance()->GetAllCardsWithDeviceId(pcieDeviceId, cardList))
+                        {
+                            hwInfo.SetDeviceID(pcieDeviceId);
+                            isPcieIdValid = true;
+                        }
                     }
-                    else
+
+                    if (!isPcieIdValid)
                     {
-                        // get the device ID
-                        // the string comes from stg\opencl\drivers\opencl\runtime\device\gpu\gpudefs.hpp as the static const char* TargetName[] array
-                        if (realDeviceName.compare("Tahiti") == 0)
+                        std::vector<GDT_GfxCardInfo> cardList;
+                        bool cardFound = AMDTDeviceInfoUtils::Instance()->GetAllCardsWithName(deviceName, cardList);
+
+                        if (cardFound)
                         {
-                            hwInfo.SetDeviceID(0x6798);
-                        }
-                        else if (realDeviceName.compare("Pitcairn") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x6818);
-                        }
-                        else if (realDeviceName.compare("Capeverde") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x6838);
-                        }
-                        else if (realDeviceName.compare("Bonaire") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x6650);
-                        }
-                        else if (realDeviceName.compare("Hawaii") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x67B0);
-                        }
-                        else if (realDeviceName.compare("Oland") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x6610);
-                        }
-                        else if (realDeviceName.compare("Hainan") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x6660);
-                        }
-                        else if (realDeviceName.compare("Kalindi") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x9830);
-                        }
-                        else if (realDeviceName.compare("Mullins") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x9855);
-                        }
-                        else if (realDeviceName.compare("Spectre") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x130C);
-                        }
-                        else if (realDeviceName.compare("Spooky") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x1316);
-                        }
-                        else if (realDeviceName.compare("Iceland") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x6900);
-                        }
-                        else if (realDeviceName.compare("Tonga") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x6920);
-                        }
-                        else if (realDeviceName.compare("Carrizo") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x9870);
-                        }
-                        else if (realDeviceName.compare("Bristol Ridge") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x9874);
-                        }
-                        else if (realDeviceName.compare("Fiji") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x7300);
-                        }
-                        else if (realDeviceName.compare("Ellesmere") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x67DF);
-                        }
-                        else if (realDeviceName.compare("Baffin") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x67FF);
-                        }
-                        else if (realDeviceName.compare("gfx804") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x699F);
-                        }
-                        else if (realDeviceName.compare("gfx900") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x687F);
-                        }
-                        else if (realDeviceName.compare("gfx901") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x687F);
-                        }
-                        else if (realDeviceName.compare("gfx902") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x15DD);
-                        }
-                        else if (realDeviceName.compare("gfx903") == 0)
-                        {
-                            hwInfo.SetDeviceID(0x15DD);
+                            hwInfo.SetDeviceID(static_cast<gpa_uint32>(cardList[0].m_deviceID));
                         }
                         else
                         {
-                            GPA_LogError("Available device is not supported.");
+                            GPA_LogError("Unable to determine device id.");
                             isSuccess = false;
                         }
                     }
 
                     if (isSuccess)
                     {
-                        hwInfo.SetDeviceName(str);
+                        hwInfo.SetDeviceName(deviceName);
 
                         cl_uint vendorID;
 

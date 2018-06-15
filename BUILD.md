@@ -22,10 +22,10 @@ present on the system, this script will instead do a "git pull" on those reposit
 this script everytime you pull new changes from GPA repository.
  * This script will also download and execute the Vulkan™ SDK installer.
    * On Windows, running the installer may require elevation.  If you've previously installed the required Vulkan version, UpdateCommon will simply copy the files form the default installation location into the correct place into the GPUPerfAPI directory tree.
-   * UpdateCommon is set up to install the version of the Vulkan SDK which was used during development. If you want to use a newer version of the SDK, the following files will need to be updated:
+   * UpdateCommon is set up to install the version of the Vulkan SDK which was used during development. If you want to use a newer version of the SDK, the following file will need to be updated:
      * [UpdateCommonMap.py](Scripts/UpdateCommonMap.py)
-     * Linux-specific: [Common.mk](GPA/Build/Linux/Common.mk)
-     * Windows-specific: Common/Lib/Ext/Global-Vulkan.props
+   * By default the build will expect the Vulkan SDK to be found in a directory pointed to by the `VULKAN_SDK` environment variable. This environment variable is automatically set by the Windows SDK installer, but you may need to set it manually after running the Linux SDK installer. The Linux SDK includes a script called `setup-env.sh` to aid in setting this environment variable:
+     * `source ~/VulkanSDK/1.0.68.0/setup-env.sh` (adjust path as necessary)
 
 ## Windows Build Information
 
@@ -33,6 +33,7 @@ this script everytime you pull new changes from GPA repository.
  * Microsoft Visual Studio 2015 Community Edition or higher + Update 3
  * Windows 10 SDK Version 10.0.10586.0 from https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk
    * You can override the version of the Windows 10 SDK used by modifying Common/Lib/Ext/Windows-Kits/Global-WindowsSDK.props
+ * Microsoft .NET 4.6.2 SDK from https://www.microsoft.com/en-us/download/details.aspx?id=53321
 
 ##### Build Instructions
  * Load Build\VS2015\GPUPerfAPI.sln into Visual Studio
@@ -73,6 +74,7 @@ this script everytime you pull new changes from GPA repository.
    * `hsadir`: overrides the location of the ROCm/HSA header files (by default they are expected to be in /opt/rocm/hsa)
    * `gtestlibdir`: overrides the location of the GoogleTest libraries (by default they are expected to be in Common/Lib/Ext/GoogleTest/1-7/lib/gcc5/x64. There is also a gcc4.x-compatible version in Common/Lib/Ext/GoogleTest/1-7/lib/x64 for use when building on a system with gcc 4.x)
    * `gtestlibdir32`: overrides the location of the 32-bit GoogleTest libraries (by default they are expected to be in Common/Lib/Ext/GoogleTest/1-7/lib/gcc5/x86. There is also a gcc4.x-compatible version in Common/Lib/Ext/GoogleTest/1-7/lib/x86 for use when building on a system with gcc 4.x)
+   * `vksdkdir`: overrides the location of the Vulkan SDK. If not specified, the build will use a `VULKAN_SDK` environment variable to determine where to look for the Vulkan SDK.
  * After a successful build, the GPUPerfAPI binaries can be found in Output/bin.
  * Example build command line (builds the debug versions of the binaries, skipping the HSA library):
    * ./build.sh debug skiphsa

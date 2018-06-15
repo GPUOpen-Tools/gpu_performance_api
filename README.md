@@ -29,36 +29,21 @@ as well as several third-party tools.
 * "Internal" version provides access to some raw hardware counters. See ["Public" vs "Internal" Versions](#public-vs-internal-versions) for more information.
 
 ## What's New
-* Version 3.0 (3/19/17)
+* Version 3.1 (6/15/18)
   * Add support for additional GPUs and APUs.
-  * Support for collecting hardware counters for Vulkan and DirectX 12 applications.
-  * Redesigned API to support modern graphics APIs.
-  * The documentation has been rewritten and is now available in HTML format.
-  * New counters added:
-    * Cycle and count-based counters in addition to existing percentage-based counters.
-    * New Depth Buffer memory read/write counters.
-    * Additional Color Buffer memory counters.
-    * For graphics, several global memory counters which were previously available only in the Compute Shader stage are now available generically.
-  * Support for setting stable GPU clocks.
-  * Counter Group Names can now be queried separately from Counter Descriptions.
-  * Counters now have a UUID which can be used to uniquely identify a counter.
-  * New entry point (GPA_GetFuncTable) to retrieve a table of function pointers for all GPA entry points.
-  * New C++ GPAInterfaceLoader.h header file provides an easy way to load GPA libraries and call GPA entry points.
+  * Usability improvements to GPAInterfaceLoader.h.
+  * New Vulkan and DirectX 12 sample applications.
+  * New GPA_GetSampleId entry point.
+  * New GPA_GetVersion entry point.
   * Bugs Fixed:
-    * Fixed an issue with TesselatorBusy counter on many GFX8 GPUs.
-    * Fixed an issue with FlatVMemInsts and CSFlatVMemInsts counters on many GFX8 GPUs.
-    * Fixed an issue with LDSInsts counter on Vega GPUs.
-    * Fixed some issues with Compute Shader counters on Vega GPUs.
-    * Some counter combinations could lead to incorrect counter results.
-    * Enabling counters in a certain order can lead to incorrect counter scheduling across multiple passes.
-    * ROCm/HSA: GPA_OpenContext crashes if libhsa-runtime64.so.1 can't be found.
-    * ROCm/HSA: GPA does not coexist nicely with an application that also sets the HSA_TOOLS_LIB environment variable.
-    * OpenGL: Fixed a crash that can occur with an incorrectly-configured OpenGL driver.
-    * OpenGL: Fixed some issues with OpenGL device-detection.
+    * Fixed issues with some counters on 56CU Vega10.
+    * Vulkan: Fixed GPA_ContinueSampleOnCommandList.
+    * Vulkan: Ensure results are ready before trying to query them.
+    * DirectX 12: Fixed incorrect device reference counting issue.
 
 ## System Requirements
 * An AMD Radeon GCN-based GPU or APU
-* Radeon Software Crimson Adrenaline Edition 18.2.3 or later (Driver Packaging Version 17.50.25 or later).
+* Radeon Software Crimson Adrenaline Edition 18.5.1 or later (Driver Packaging Version 18.10.16 or later).
 * Pre-GCN-based GPUs or APUs are no longer supported by GPUPerfAPI. Please use an older version ([2.17](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/)) with older hardware.
 * Windows 7, 8.1, and 10
 * Ubuntu (16.04 and later) and RHEL (7 and later) distributions
@@ -77,13 +62,14 @@ UpdateCommon.py has replaced the use of git submodules in the GPA repository
 * [Common](Common) -- Common libs, header and source code not found in other repositories
 * [docs](docs) -- contains documentation sources and a Doxygen configuration file
 * [Src/DeviceInfo](Src/DeviceInfo) -- builds a lib containing the Common/Src/DeviceInfo code (Linux only)
+* [Src/Examples](Src/Examples) -- contains the source code for a DirectX 12 and Vulkan sample which use GPUPerfAPI
 * [Src/GPUPerfAPI](Src/GPUPerfAPI) -- builds a lib containing Src/GPUPerfAPI-Common/GPUPerfAPI.cpp (Linux only)
 * [Src/GPUPerfAPI-Common](Src/GPUPerfAPI-Common) -- contains source code for a Common library shared by all versions of GPUPerfAPI
 * [Src/GPUPerfAPICL](Src/GPUPerfAPICL) -- contains the source for the OpenCL™ version of GPUPerfAPI
 * [Src/GPUPerfAPICounterGenerator](Src/GPUPerfAPICounterGenerator) -- contains the source code for a Common library providing all counter data
 * [Src/GPUPerfAPICounters](Src/GPUPerfAPICounters) -- contains the source code for a library that can be used to query counters without an active GPUPerfAPI context
 * [Src/GPUPerfAPIDX](Src/GPUPerfAPIDX) -- contains source code shared by the DirectX versions of GPUPerfAPI
-* [Src/GPUPerfAPIDX11](Src/GPUPerfAPIDX11) --contains the source for the DirectX11 version of GPUPerfAPI
+* [Src/GPUPerfAPIDX11](Src/GPUPerfAPIDX11) -- contains the source for the DirectX11 version of GPUPerfAPI
 * [Src/GPUPerfAPIDX12](Src/GPUPerfAPIDX12) -- contains the source for the DirectX12 version of GPUPerfAPI (Developer Preview)
 * [Src/GPUPerfAPIGL](Src/GPUPerfAPIGL) -- contains the source for the OpenGL version of GPUPerfAPI
 * [Src/GPUPerfAPIHSA](Src/GPUPerfAPIHSA) -- contains the source for the ROCm/HSA version of GPUPerfAPI
@@ -112,10 +98,9 @@ allow users of GPA to indicate whether the library exposes just the Derived coun
 for something which is no longer actually Internal-to-AMD can be a bit confusing, and we will aim to change this in the future.
 
 ## Known Issues
- * DirectX 12 support currently does not work with the most recent Radeon Pro Software Enterprise Edition 18.Q1
  * Adjusting the GPU clock mode on Linux is accomplished by writing to <br><br>/sys/class/drm/card\<N\>/device/power_dpm_force_performance_level<br><br> where \<N\> is
    the index of the card in question. By default this file is only modifiable by root, so the application being profiled would have to be run as root in order for it to
    modify the clock mode. It is possible to modify the permissions for the file instead so that it can be written by unprivileged users. The following command will
    achieve this. Note, however, that changing the permissions on a system file like this could circumvent security. Also, on multi-GPU systems, you may have to replace
-   "card0" with the appropriate card number:
+   "card0" with the appropriate card number. Permissions on this file may be reset when rebooting the system:
    * sudo chmod ugo+w /sys/class/drm/card0/device/power_dpm_force_performance_level

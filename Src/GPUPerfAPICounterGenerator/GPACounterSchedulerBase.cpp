@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Base Class for counter scheduling
@@ -16,8 +16,11 @@
 #include "GPACounterGroupAccessor.h"
 
 GPA_CounterSchedulerBase::GPA_CounterSchedulerBase()
-    : m_counterSelectionChanged(false),
-      m_pCounterAccessor(nullptr),
+    : m_pCounterAccessor(nullptr),
+      m_vendorId(0),
+      m_deviceId(0),
+      m_revisionId(0),
+      m_counterSelectionChanged(false),
       m_passIndex(0)
 {
 }
@@ -111,6 +114,7 @@ GPA_Status GPA_CounterSchedulerBase::DisableCounter(gpa_uint32 index)
 
 void GPA_CounterSchedulerBase::DisableAllCounters()
 {
+    m_passPartitions.clear();
     m_enabledPublicIndices.clear();
     fill(m_enabledPublicCounterBits.begin(), m_enabledPublicCounterBits.end(), false);
     m_counterSelectionChanged = true;
@@ -211,9 +215,8 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
     }
 
     IGPASplitCounters* pSplitter = GPASplitCounterFactory::GetNewCounterSplitter(GetPreferredSplittingAlgorithm(),
-                                   pHWCounters->m_gpuTimeIndex,
-                                   pHWCounters->m_gpuTimeBottomToBottomCounterIndex,
-                                   pHWCounters->m_gpuTimeTopToBottomCounterIndex,
+                                   pHWCounters->m_timestampBlockIds,
+                                   pHWCounters->m_timeCounterIndices,
                                    numSQMaxCounters,
                                    pHWCounters->m_sqGroupCount,
                                    pHWCounters->m_pSQCounterGroups,
@@ -227,7 +230,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
     }
 
     // build the list of counters to split
-    std::vector<const GPA_PublicCounter*> publicCountersToSplit;
+    std::vector<const GPA_DerivedCounter*> publicCountersToSplit;
     std::vector<GPAHardwareCounterIndices> internalCountersToSchedule;
     std::vector<GPASoftwareCounterIndices> softwareCountersToSchedule;
 

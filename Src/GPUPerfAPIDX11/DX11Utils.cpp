@@ -79,7 +79,7 @@ bool DX11Utils::GetTimestampFrequency(ID3D11Device* pD3D11Device, UINT64& timest
         D3D_SET_OBJECT_NAME_A(timeStampDisjointQuery, "GPA_TimestampFrequencyQuery");
 #endif
 
-        if (hr == S_OK)
+        if (SUCCEEDED(hr))
         {
             // get immediate context
             ID3D11DeviceContext* pD3DContext = nullptr;
@@ -92,17 +92,27 @@ bool DX11Utils::GetTimestampFrequency(ID3D11Device* pD3D11Device, UINT64& timest
                 pD3DContext->End(timeStampDisjointQuery);
 
                 // need to loop on checking the values, it may not be immediately available.
-                while (S_OK != pD3DContext->GetData(timeStampDisjointQuery, nullptr, 0, 0))
+                HRESULT dataReady = S_OK;
+
+                do
                 {
-                    // Wait for the data to be ready
+                    dataReady = pD3DContext->GetData(timeStampDisjointQuery, nullptr, 0, 0);
+
+                    if (FAILED(dataReady))
+                    {
+                        GPA_LogError("Call to ID3D11DeviceContext::GetData failed.");
+                        return false;
+                    }
+
                 }
+                while (S_FALSE == dataReady);   // S_OK == data ready; S_FALSE == data not ready
 
                 D3D11_QUERY_DATA_TIMESTAMP_DISJOINT timeStampDisjoint;
                 assert(timeStampDisjointQuery->GetDataSize() == sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT));
 
                 hr = pD3DContext->GetData(timeStampDisjointQuery, &timeStampDisjoint, sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT), 0);
                 timestampFrequency = timeStampDisjoint.Frequency;
-                assert(hr == S_OK);
+                assert(SUCCEEDED(hr));
                 success = true;
 
                 pD3DContext->Release();

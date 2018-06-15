@@ -15,7 +15,10 @@ Description
 %%%%%%%%%%%
 
 Ends command list for sampling. You will be unable to create samples on the
-specified command list after GPA_EndCommandList is called.
+specified command list after GPA_EndCommandList is called. For DirectX 12,
+GPA_EndCommandList should be called before the application calls Close on the
+underlying command list. For Vulkan, it should be called before the application
+calls vkEndCommandBuffer on the underlying command buffer.
 
 Parameters
 %%%%%%%%%%

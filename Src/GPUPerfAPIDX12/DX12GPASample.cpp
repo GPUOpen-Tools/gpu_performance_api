@@ -63,57 +63,60 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
     // Validate result space
     if (!GetPass()->IsTimingPass())
     {
-        sampleDataSize = GetSampleResultLocation()->m_numCounters * sizeof(gpa_uint64);
+        sampleDataSize = GetSampleResultLocation()->GetNumCounters() * sizeof(gpa_uint64);
     }
     else
     {
         // If the pass is timing, we will have one result space to return the result, although
         // we need to get the result in twice space size from the driver
-        sampleDataSize = GetSampleResultLocation()->m_numCounters * 2 * sizeof(gpa_uint64);
+        sampleDataSize = GetSampleResultLocation()->GetNumCounters() * 2 * sizeof(gpa_uint64);
     }
 
-    gpa_uint64* pResultBuffer = nullptr;
-    gpa_uint64 timingData[2];
-
-    if (nullptr != GetSampleResultLocation()->m_pResultBuffer)
+    if (0 != sampleDataSize)
     {
-        if (GetPass()->IsTimingPass())
+        if (nullptr != GetSampleResultLocation()->GetResultBuffer())
         {
-            pResultBuffer = timingData;
-        }
-        else
-        {
-            pResultBuffer = GetSampleResultLocation()->m_pResultBuffer;
-        }
+            gpa_uint64* pResultBuffer = nullptr;
+            gpa_uint64 timingData[2] = {};
 
-        if (CopyResult(sampleDataSize, pResultBuffer))
-        {
             if (GetPass()->IsTimingPass())
             {
-                // There will be one counter result space for this
-                *(GetSampleResultLocation()->m_pResultBuffer) = timingData[1] - timingData[0];
+                pResultBuffer = timingData;
             }
-
-            if (IsSampleContinuing())
+            else
             {
-                GPASampleResult* pSampleResult = reinterpret_cast<DX12GPASample*>(GetContinuingSample())->PopulateSampleResult();
-
-                for (size_t counterIter = 0; counterIter < GetPass()->GetEnabledCounterCount(); counterIter++)
-                {
-                    GetSampleResultLocation()->m_pResultBuffer[counterIter] += pSampleResult->m_pResultBuffer[counterIter];
-                }
+                pResultBuffer = GetSampleResultLocation()->GetResultBuffer();
             }
 
-            MarkAsCompleted();
+            if (CopyResult(sampleDataSize, pResultBuffer))
+            {
+                if (GetPass()->IsTimingPass())
+                {
+                    // There will be one counter result space for this
+                    *(GetSampleResultLocation()->GetResultBuffer()) = timingData[1] - timingData[0];
+                }
+
+                if (IsSampleContinuing())
+                {
+                    GPASampleResult* pSampleResult = reinterpret_cast<DX12GPASample*>(GetContinuingSample())->PopulateSampleResult();
+
+                    for (size_t counterIter = 0; counterIter < GetPass()->GetEnabledCounterCount(); counterIter++)
+                    {
+                        GetSampleResultLocation()->GetResultBuffer()[counterIter] += pSampleResult->GetResultBuffer()[counterIter];
+                    }
+                }
+
+                MarkAsCompleted();
+            }
+            else
+            {
+                GPA_LogError("Unable to get the result from the driver.");
+            }
         }
         else
         {
-            GPA_LogError("Unable to get the result from the driver.");
+            GPA_LogError("Incorrect space allocated for sample result.");
         }
-    }
-    else
-    {
-        GPA_LogError("Incorrect space allocated for sample result.");
     }
 
     return GetSampleResultLocation();
@@ -151,15 +154,15 @@ bool DX12GPASample::CopyResult(size_t sampleDataSize, void* pResultBuffer) const
                 {
                     size_t sampleDataSizeInDriver = 0u;
                     HRESULT driverResult = pResultSession->GetResults(GetDriverSampleId(), &sampleDataSizeInDriver, nullptr);
-                    assert(S_OK == driverResult);
+                    assert(SUCCEEDED(driverResult));
                     assert(sampleDataSize == sampleDataSizeInDriver);
 
-                    if (S_OK == driverResult && sampleDataSize == sampleDataSizeInDriver)
+                    if (SUCCEEDED(driverResult) && sampleDataSize == sampleDataSizeInDriver)
                     {
                         driverResult = pResultSession->GetResults(GetDriverSampleId(), &sampleDataSizeInDriver, pResultBuffer);
-                        assert(S_OK == driverResult);
+                        assert(SUCCEEDED(driverResult));
 
-                        if (S_OK == driverResult)
+                        if (SUCCEEDED(driverResult))
                         {
                             isDataReady = true;
                         }

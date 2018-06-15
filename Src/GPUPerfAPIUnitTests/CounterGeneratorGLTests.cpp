@@ -76,6 +76,9 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             ppHardwareCounters = GLCounterGroupArrayGfx9;
 #endif
             break;
+
+        default:
+            break;
     }
 
     for (size_t i = 0; i < publicCounterCount; i++)

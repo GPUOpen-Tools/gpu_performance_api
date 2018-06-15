@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Implements a library that allows access to the available counters
@@ -13,13 +13,12 @@
     #define GPUPERFAPI_COUNTERS_DECL extern "C" __declspec( dllexport )
 #endif
 
+#include "GPUPerfAPICounters.h"
 #include "GPACounterGenerator.h"
 #include "DeviceInfo.h"
 #include "DeviceInfoUtils.h"
 #include "GPAHWInfo.h"
 #include "Logging.h"
-#include "GPUPerfAPICounters.h"
-#include "GPAContextState.h"
 
 GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCounters(GPA_API_Type api,
                                                              gpa_uint32 vendorId,
@@ -30,15 +29,17 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCounters(GPA_API_Type api,
                                                              IGPACounterAccessor** ppCounterAccessorOut,
                                                              IGPACounterScheduler** ppCounterSchedulerOut)
 {
-    GPA_Status retVal = GenerateCounters(api, vendorId, deviceId, revisionId, generateAsicSpecificCounters, ppCounterAccessorOut, ppCounterSchedulerOut);
+    // For GPA 3.0 - disable Software counters
+    flags |= GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT;
 
-    if (GPA_STATUS_OK == retVal)
-    {
-        (*ppCounterAccessorOut)->SetAllowedCounters(::ExposePublicCounters(flags),
-                                                    ::ExposeHardwareCounters(flags),
-                                                    ::ExposeSoftwareCounters(flags));
-    }
-
+    GPA_Status retVal = GenerateCounters(api,
+                                         vendorId,
+                                         deviceId,
+                                         revisionId,
+                                         flags,
+                                         generateAsicSpecificCounters,
+                                         ppCounterAccessorOut,
+                                         ppCounterSchedulerOut);
     return retVal;
 }
 
@@ -55,15 +56,32 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API
     gpa_uint32 deviceId = 0;
     gpa_uint32 revisionId = 0;
 
+    // For GPA 3.0 - disable Software counters
+    flags |= GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT;
+
     if (GPA_HW_GENERATION_NVIDIA == generation)
     {
         vendorId = NVIDIA_VENDOR_ID;
-        retVal = GenerateCounters(api, vendorId, deviceId, revisionId, generateAsicSpecificCounters, ppCounterAccessorOut, nullptr);
+        retVal = GenerateCounters(api,
+                                  vendorId,
+                                  deviceId,
+                                  revisionId,
+                                  flags,
+                                  generateAsicSpecificCounters,
+                                  ppCounterAccessorOut,
+                                  nullptr);
     }
     else if (GPA_HW_GENERATION_INTEL == generation)
     {
         vendorId = INTEL_VENDOR_ID;
-        retVal = GenerateCounters(api, vendorId, deviceId, revisionId, generateAsicSpecificCounters, ppCounterAccessorOut, nullptr);
+        retVal = GenerateCounters(api,
+                                  vendorId,
+                                  deviceId,
+                                  revisionId,
+                                  flags,
+                                  generateAsicSpecificCounters,
+                                  ppCounterAccessorOut,
+                                  nullptr);
     }
     else if (GPA_HW_GENERATION_NONE != generation)
     {
@@ -77,7 +95,14 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API
             {
                 deviceId = static_cast<gpa_uint32>(card.m_deviceID);
                 revisionId = static_cast<gpa_uint32>(card.m_revID);
-                retVal = GenerateCounters(api, vendorId, deviceId, revisionId, generateAsicSpecificCounters, ppCounterAccessorOut, nullptr);
+                retVal = GenerateCounters(api,
+                                          vendorId,
+                                          deviceId,
+                                          revisionId,
+                                          flags,
+                                          generateAsicSpecificCounters,
+                                          ppCounterAccessorOut,
+                                          nullptr);
 
                 if (GPA_STATUS_OK == retVal)
                 {
@@ -91,13 +116,6 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API
             GPA_LogError("Parameter 'generation' does not identify supported hardware.");
             return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
         }
-    }
-
-    if (GPA_STATUS_OK == retVal)
-    {
-        (*ppCounterAccessorOut)->SetAllowedCounters(::ExposePublicCounters(flags),
-                                                    ::ExposeHardwareCounters(flags),
-                                                    ::ExposeSoftwareCounters(flags));
     }
 
     return retVal;

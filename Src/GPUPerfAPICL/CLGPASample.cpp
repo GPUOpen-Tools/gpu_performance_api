@@ -74,7 +74,7 @@ bool CLGPASample::UpdateResults()
 
                 if (m_clCounterBlocks[blockID]->IsComplete())
                 {
-                    GetSampleResultLocation()->m_pResultBuffer[i] = m_clCounterBlocks[blockID]->GetResult(counterID);
+                    GetSampleResultLocation()->GetResultBuffer()[i] = m_clCounterBlocks[blockID]->GetResult(counterID);
                     m_pClCounters[i].m_isCounterResultReady = true;
                     m_dataReadyCount++;
                 }
@@ -167,7 +167,7 @@ bool CLGPASample::BeginRequest()
 
         unsigned int counterCountIter = 0;
 
-        auto AddClCounterToSample = [&](const CounterIndex & counterIndex)->bool
+        auto AddClCounterToSample = [&](const CounterIndex& counterIndex)->bool
         {
             const GPA_HardwareCounterDescExt* pCounter = m_pCLGpaContext->GetCounterAccessor()->GetHardwareCounterExt(counterIndex);
 

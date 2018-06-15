@@ -10,9 +10,11 @@
 
 // Make sure to increment GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER anytime GPA_MAJOR_VERSION is incremented
 #define GPA_MAJOR_VERSION 3  ///< Macro for GPA major version
-#define GPA_MINOR_VERSION 0  ///< Macro for GPA minor version
-#define GPA_BUILD_NUMBER 0   ///< Macro for GPA build number
+#define GPA_MINOR_VERSION 1  ///< Macro for GPA minor version
 #define GPA_UPDATE_VERSION 0 ///< Macro for GPA update version
+
+/// Macro for GPA build number
+#define GPA_BUILD_NUMBER 0
 
 #define GPA_STR_VALUE(s) #s                    ///< Macro to stringify a value
 #define GPA_VERSION_STRING(s) GPA_STR_VALUE(s) ///< Macro to stringify a version value

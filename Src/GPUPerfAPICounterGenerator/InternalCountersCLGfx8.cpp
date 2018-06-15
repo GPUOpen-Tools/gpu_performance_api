@@ -297,6 +297,8 @@ unsigned int HWCLSQIsolatedGroupsGfx8[] =
     88, // Tcp
 };
 
+const std::set<unsigned int> HWCLTimestampBlockIdsGfx8 = {  }; ///< Timestamp block id's for CL for Gfx8 family
+const std::set<unsigned int> HWCLTimeCounterIndicesGfx8 = {  }; ///< Timestamp counter indices for CL for Gfx8 family
 const unsigned int HWCLGroupCountGfx8 = sizeof(HWCLGroupsGfx8) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWCLSQGroupCountGfx8 = sizeof(HWCLSQGroupsGfx8) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWCLSQIsolatedGroupCountGfx8 = sizeof(HWCLSQIsolatedGroupsGfx8) / sizeof(unsigned int);

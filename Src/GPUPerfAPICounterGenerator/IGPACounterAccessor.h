@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  An accessor interface for the GPA_CounterGeneratorBase class
@@ -17,7 +17,7 @@ struct GPA_HardwareCounterDescExt;
 class GPA_HWInfo;
 class GPA_HardwareCounters;
 class GPA_SoftwareCounters;
-class GPA_PublicCounter;
+class GPA_DerivedCounter;
 class GPA_CounterResultLocation;
 
 /// Indicates the source or origin of a counter
@@ -98,7 +98,7 @@ public:
     /// Gets a public counter
     /// \param index The index of the public counter to return
     /// \return A public counter
-    virtual const GPA_PublicCounter* GetPublicCounter(gpa_uint32 index) const = 0;
+    virtual const GPA_DerivedCounter* GetPublicCounter(gpa_uint32 index) const = 0;
 
     /// Gets a hardware counter
     /// \param index The index of a hardware counter to return
@@ -120,7 +120,8 @@ public:
     /// \param[in] internalCounterTypes A vector of counter types
     /// \param[inout] pResult The computed counter result
     /// \param[in] pHwInfo Information about the hardware on which the result was generated
-    virtual void ComputePublicCounterValue(gpa_uint32 counterIndex, std::vector<gpa_uint64*>& results, std::vector<GPA_Data_Type>& internalCounterTypes, void* pResult, const GPA_HWInfo* pHwInfo) const = 0;
+    /// \return GPA_STATUS_OK on success, otherwise an error code
+    virtual GPA_Status ComputePublicCounterValue(gpa_uint32 counterIndex, std::vector<gpa_uint64*>& results, std::vector<GPA_Data_Type>& internalCounterTypes, void* pResult, const GPA_HWInfo* pHwInfo) const = 0;
 
     /// Compute a software counter value
     /// \param softwareCounterIndex the index of the counter (within the range of software counters) whose value is needed
@@ -144,7 +145,7 @@ public:
     /// \return the hardware counters
     virtual const GPA_HardwareCounters* GetHardwareCounters() const = 0;
 
-    /// Get the softwarecounters
+    /// Get the software counters
     /// \return the software counters
     virtual const GPA_SoftwareCounters* GetSoftwareCounters() const = 0;
 

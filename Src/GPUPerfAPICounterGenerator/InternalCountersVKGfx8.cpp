@@ -1302,7 +1302,10 @@ VkGpaPerfBlockAMD HWVKDriverEnumGfx8[] =
     VK_GPA_PERF_BLOCK_RANGE_SIZE_AMD,
 };
 
-const unsigned int HWVKGPUTimeIndexGfx8 = 342;
+const unsigned int HWVKGPUTimeBottomToBottomIndexGfx8 = 51131;
+const unsigned int HWVKGPUTimeTopToBottomIndexGfx8 = 51132;
+const std::set<unsigned int> HWVKTimestampBlockIdsGfx8 = { 342 }; ///< Timestamp block id's for VK for Gfx8 family
+const std::set<unsigned int> HWVKTimeCounterIndicesGfx8 = { 51131, 51132 }; ///< Timestamp counter indices for VK for Gfx8 family
 const unsigned int HWVKGroupCountGfx8 = sizeof(HWVKGroupsGfx8) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWVKSQGroupCountGfx8 = sizeof(HWVKSQGroupsGfx8) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWVKSQIsolatedGroupCountGfx8 = sizeof(HWVKSQIsolatedGroupsGfx8) / sizeof(unsigned int);

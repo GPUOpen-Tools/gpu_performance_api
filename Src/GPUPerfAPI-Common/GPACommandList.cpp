@@ -56,7 +56,7 @@ bool GPACommandList::End()
 
     if (CommandListState::UNDEFINED == m_commandListState)
     {
-        GPA_LogDebugError("Command list is not yet opened for sampling.");
+        GPA_LogError("Command list is not yet opened for sampling.");
     }
     else if (CommandListState::SAMPLE_RECORDING_END == m_commandListState)
     {

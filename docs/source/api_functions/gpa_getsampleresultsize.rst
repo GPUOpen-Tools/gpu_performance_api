@@ -11,7 +11,7 @@ Syntax
     GPA_Status GPA_GetSampleResultSize(
         GPA_SessionId sessionId,
         gpa_uint32 sampleId,
-        size_t* sampleResultSizeInBytes);
+        size_t* pSampleResultSizeInBytes);
 
 Description
 %%%%%%%%%%%
@@ -32,7 +32,7 @@ Parameters
 
     "``sessionId``", "Unique identifier of a previously-created session."
     "``sampleId``", "Unique identifier of a previously-created sample."
-    "``sampleResultSizeInBytes``", "The value that will be set to the result size upon successful execution  - this value needs to be passed to GetSampleResult."
+    "``pSampleResultSizeInBytes``", "The value that will be set to the result size upon successful execution  - this value needs to be passed to GetSampleResult."
 
 Return value
 %%%%%%%%%%%%
@@ -42,7 +42,8 @@ Return value
     :widths: 35, 65
 
     "GPA_STATUS_OK", "The sample result size was successfully retrieved."
-    "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``sessionId`` parameter is NULL."
+    "GPA_STATUS_ERROR_NULL_POINTER", "| The supplied ``sessionId`` parameter is NULL.
+    | The supplied ``pSampleResultSizeInBytes`` parameter is NULL."
     "GPA_STATUS_ERROR_SESSION_NOT_FOUND", "The supplied ``sessionId`` parameter was not recognized as a previously-created session identifier."
     "GPA_STATUS_ERROR_SESSION_NOT_ENDED", "The session has not been ended. A session must have been ended with GPA_EndSession prior to retrieving results."
     "GPA_STATUS_ERROR_SAMPLE_NOT_FOUND", "The specified sample was not found in the specified session."

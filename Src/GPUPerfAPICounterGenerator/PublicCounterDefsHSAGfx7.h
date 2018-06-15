@@ -10,10 +10,10 @@
 
 //*** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#include "GPAPublicCounters.h"
+#include "GPADerivedCounters.h"
 
 /// Defines the public counters for HSAGFX7
-/// \param p public counters instance
-void AutoDefinePublicCountersHSAGfx7(GPA_PublicCounters& p);
+/// \param c public counters instance
+void AutoDefineDerivedCountersHSAGfx7(GPA_DerivedCounters& c);
 
 #endif // _PUBLIC_COUNTER_DEFS_HSAGFX7_H_

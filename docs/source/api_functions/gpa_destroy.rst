@@ -14,7 +14,7 @@ Description
 %%%%%%%%%%%
 
 Undoes any initialization to ensure proper behavior in applications that are
-not being profiled. This function must be called after the rendering context or
+not being profiled. This function must be called before the rendering context or
 device is released / destroyed.
 
 Return value

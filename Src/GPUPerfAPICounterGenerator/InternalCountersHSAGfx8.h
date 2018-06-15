@@ -13,6 +13,8 @@ extern GPA_HardwareCounterDesc* HSACounterGroupArrayGfx8[]; ///< Array of hardwa
 extern GPA_CounterGroupDesc HWHSAGroupsGfx8[]; ///< Array of counter groups for HSA for Gfx8 family
 extern GPA_SQCounterGroupDesc HWHSASQGroupsGfx8[]; ///< Array of SQ groups for HSA for Gfx8 family
 extern unsigned int HWHSASQIsolatedGroupsGfx8[]; ///< Array of counter groups isolated from SQ counter groups for HSA for Gfx8 family
+extern const std::set<unsigned int> HWHSATimestampBlockIdsGfx8; ///< Timestamp block id's for HSA for Gfx8 family
+extern const std::set<unsigned int> HWHSATimeCounterIndicesGfx8; ///< Timestamp counter indices for HSA for Gfx8 family
 extern const unsigned int HWHSAGroupCountGfx8; ///< Hardware Group Count for HSA for Gfx8 family
 extern const unsigned int HWHSASQGroupCountGfx8; ///< Hardware SQ Group Count for HSA for Gfx8 family
 extern const unsigned int HWHSASQIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for HSA for Gfx8 family

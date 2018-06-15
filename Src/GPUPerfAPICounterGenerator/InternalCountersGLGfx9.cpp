@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GL internal counter definitions for GFX9
@@ -206,7 +206,7 @@ GPA_CounterGroupDesc HWGLGroupsGfx9[] =
     {90, "VGT", 0, 148, 4},
     {91, "IA", 0, 32, 4},
     {92, "WD", 0, 58, 4},
-    {93, "CPG", 0, 59, 2},
+    {93, "CPG", 0, 60, 2},
     {94, "CPC", 0, 35, 2},
     {95, "GPIN", 0, 5, 5},
     {96, "GPUTime", 0, 2, 2},
@@ -295,7 +295,10 @@ unsigned int HWGLSQIsolatedGroupsGfx9[] =
     88, // Tcp
 };
 
-const unsigned int HWGLGPUTimeIndexGfx9 = 96;
+const unsigned int HWGLGPUTimeBottomToBottomIndexGfx9 = 16130;
+const unsigned int HWGLGPUTimeTopToBottomIndexGfx9 = 16131;
+const std::set<unsigned int> HWGLTimestampBlockIdsGfx9 = { 96 }; ///< Timestamp block id's for GL for Gfx9 family
+const std::set<unsigned int> HWGLTimeCounterIndicesGfx9 = { 16130, 16131 }; ///< Timestamp counter indices for GL for Gfx9 family
 const unsigned int HWGLGroupCountGfx9 = sizeof(HWGLGroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWGLSQGroupCountGfx9 = sizeof(HWGLSQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWGLSQIsolatedGroupCountGfx9 = sizeof(HWGLSQIsolatedGroupsGfx9) / sizeof(unsigned int);

@@ -115,9 +115,9 @@ bool DX11GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
 
         if (hwInfo.IsAMD())
         {
-            unsigned int majorVer;
-            unsigned int minorVer;
-            unsigned int subMinorVer;
+            unsigned int majorVer = 0;
+            unsigned int minorVer = 0;
+            unsigned int subMinorVer = 0;
             ADLUtil_Result adlResult = AMDTADLUtils::Instance()->GetDriverVersion(majorVer, minorVer, subMinorVer);
 
             static const unsigned int MIN_MAJOR_VER = 16;
@@ -128,7 +128,16 @@ bool DX11GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
                 if (majorVer < MIN_MAJOR_VER || (majorVer == MIN_MAJOR_VER && minorVer < MIN_MINOR_VER_FOR_16))
                 {
                     GPA_LogError("Driver version 16.15 or newer is required.");
-                    status = GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+
+                    if (0 != majorVer || 0 != minorVer || 0 != subMinorVer)
+                    {
+                        // This is an error
+                        status = GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+                    }
+                    else
+                    {
+                        // This is a warning due to an unsigned driver
+                    }
                 }
             }
         }
@@ -216,7 +225,7 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
             IAmdDxExtPerfProfile* pExtPerfProfile = nullptr;
             HRESULT hr = AmdDxExtCreate11(pD3D11Device, &pExt);
 
-            if (S_OK == hr)
+            if (SUCCEEDED(hr))
             {
                 unsigned int gpuIndex = 0;
 
@@ -290,7 +299,7 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
 #ifdef _DEBUG
                     // Attempt to load the debug version of the DLL if it exists
                     {
-                        string debugDllName(strDLLName);
+                        std::string debugDllName(strDLLName);
                         debugDllName.append("-d");
                         debugDllName.append(".dll");
                         hModule = LoadLibraryA(debugDllName.c_str());

@@ -9,7 +9,7 @@
 #define _VK_GPA_PASS_H_
 
 #include "GPAPass.h"
-#include <vulkan.h>
+#include <vulkan/vulkan.h>
 #include <vk_amd_gpa_interface.h>
 
 // forward declaration

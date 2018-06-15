@@ -85,6 +85,8 @@ typedef unsigned int     gpa_uint32;  ///< GPA specific type for 32-bit unsigned
     #define strcpy_s(dst, ndst, src) strcpy(dst, src)
     #define strcat_s(dst, ndst, src) strcat(dst, src)
     #define strtok_s(a, b, c) strtok(a, b)
+    #define strnlen_s(a, b) strlen(a)
+    #define strncpy_s(a, b, c, d) strncpy(a, c, d)
 
     #ifndef TRUE
         #define TRUE 1
@@ -162,7 +164,11 @@ typedef enum
     GPA_STATUS_ERROR_SESSION_ALREADY_STARTED = -35,
     GPA_STATUS_ERROR_SESSION_NOT_STARTED = -36,
     GPA_STATUS_ERROR_SESSION_NOT_ENDED = -37,
-    GPA_STATUS_MIN = GPA_STATUS_ERROR_SESSION_NOT_ENDED,
+    GPA_STATUS_ERROR_INVALID_DATATYPE = -38,
+    GPA_STATUS_ERROR_INVALID_COUNTER_EQUATION = -39,
+    GPA_STATUS_ERROR_TIMEOUT = -40,
+    GPA_STATUS_ERROR_LIB_ALREADY_LOADED = -41,
+    GPA_STATUS_MIN = GPA_STATUS_ERROR_LIB_ALREADY_LOADED,
     // following are status codes used internally within GPUPerfAPI
     GPA_STATUS_INTERNAL = 256,
 } GPA_Status;

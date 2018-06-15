@@ -36,11 +36,6 @@ GPASample::GPASample(GPAPass* pPass,
     }
 }
 
-bool GPASample::IsResultCollected() const
-{
-    return m_gpaSampleState == GPASampleState::RESULTS_COLLECTED;
-}
-
 GPA_THREAD_SAFE_FUNCTION bool GPASample::Begin()
 {
     bool result = false;
@@ -87,11 +82,11 @@ bool GPASample::GetResult(CounterIndex counterIndexInSample, gpa_uint64* pResult
             IsResultCollected())
         {
             if (nullptr != m_pSampleResult &&
-                counterIndexInSample < m_pSampleResult->m_numCounters &&
-                nullptr != m_pSampleResult->m_pResultBuffer)
+                counterIndexInSample < m_pSampleResult->GetNumCounters() &&
+                nullptr != m_pSampleResult->GetResultBuffer())
             {
                 hasResult = true;
-                *pResult = m_pSampleResult->m_pResultBuffer[counterIndexInSample];
+                *pResult = m_pSampleResult->GetResultBuffer()[counterIndexInSample];
             }
             else
             {

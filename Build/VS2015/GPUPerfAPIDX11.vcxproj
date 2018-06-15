@@ -54,12 +54,6 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\..\PublicCounterCounterCompilerInputFiles\CounterNamesDX11NV.txt" />
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesDX11Gfx6.txt" />
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesDX11Gfx7.txt" />
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesDX11Gfx8.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPACommandList.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPAContext.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPAImplementor.cpp" />

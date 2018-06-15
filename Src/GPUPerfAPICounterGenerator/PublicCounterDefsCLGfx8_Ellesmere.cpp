@@ -14,10 +14,10 @@
 namespace CLGfx8_Ellesmere
 {
 
-bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_PublicCounters& p)
+bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
-    UNREFERENCED_PARAMETER(p); // Unreferenced if there are no ASIC specific block instance registers
+    UNREFERENCED_PARAMETER(c); // Unreferenced if there are no ASIC specific block instance registers
 
     if (!CounterGfx8_Ellesmere::MatchAsic(asicType))
     {

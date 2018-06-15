@@ -157,7 +157,7 @@ bool GLGPASample::CopyResults()
             if (!oglUtils::CheckForGLError("Unable to get second timing data."))
             {
                 gpa_uint64 timingDifference = gpuTimeResults[1] - gpuTimeResults[0];
-                memcpy(pSampleResult->m_pResultBuffer, &timingDifference, sizeof(gpa_uint64));
+                memcpy(pSampleResult->GetResultBuffer(), &timingDifference, sizeof(gpa_uint64));
                 success = true;
             }
         }
@@ -223,7 +223,7 @@ bool GLGPASample::CopyResults()
 
                             if (nullptr != pGlCounter)
                             {
-                                GLuint* pDest = reinterpret_cast<GLuint*>(&pSampleResult->m_pResultBuffer[curCounterResultIndex]);
+                                GLuint* pDest = reinterpret_cast<GLuint*>(&pSampleResult->GetResultBuffer()[curCounterResultIndex]);
                                 pDest[0] = 0;
                                 pDest[1] = 0;
 

@@ -122,10 +122,11 @@ Initializing and Destroying a GPUPerfAPI Instance
 
 GPUPerfAPI must be initialized before the rendering context or device is
 created, so that the driver can be prepared for accessing hardware data.
-In the case of DirectX 12 or Vulkan, this function must be called before
+In the case of DirectX 12 or Vulkan, initialization must be done before
 a queue is created. For HSA/ROCm, this function must be called before the
 first call to ``hsa_init``. Once you are done using GPUPerfAPI, you should
-destroy the GPUPerfAPI instance.
+destroy the GPUPerfAPI instance. In the case of DirectX 12, destruction
+must be done before the device is destroyed.
 
 The following methods can be used to initialize and destroy GPUPerfAPI:
 
@@ -294,7 +295,9 @@ Querying Results
 @@@@@@@@@@@@@@@@
 
 Once sampling is complete and the session has been ended, the sample results
-can be read.
+can be read. For DirectX 12 and Vulkan, the command list or command buffer
+which contains the samples must have been fully executed before results will be
+available.
 
 The following methods can be used to check if results are available and to read
 the results for samples:
@@ -368,7 +371,11 @@ using GPA_BeginCommandList. Samples can be created on both types of command
 lists; however, the samples on the secondary command list must be copied back
 to the primary command list. This is done using the GPA_CopySecondarySamples
 function. Once samples are copied back to the primary command list, results
-will be available after the primary command list has been executed.
+will be available after the primary command list has been executed. Bundles or
+secondary command buffers must be re-recorded for each counter pass. This also
+means that extra GPA_CommandListId instances must be created (one per pass for
+each bundle or secondary command buffer) in order to support copying the
+results from the bundles or secondary command buffers after execution.
 
 .. _specific_usage_multiple_command_lists:
 

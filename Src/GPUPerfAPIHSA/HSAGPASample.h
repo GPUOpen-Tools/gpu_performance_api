@@ -72,7 +72,7 @@ private:
         virtual ~HSACounter() = default;
 
         gpa_uint32              m_counterID            = 0;        ///< ID that is calculated in the CounterDefinition files
-        gpa_uint32              m_counterGroup         = 0;        ///< data type that GL specifies the result will be
+        gpa_uint32              m_counterGroup         = 0;        ///< index of the counter group
         gpa_uint32              m_counterIndex         = 0;        ///< index to this counter within its group
         bool                    m_isCounterValid       = false;    ///< indicates whether the counter is a valid counter; if not value will be zero
         bool                    m_isCounterResultReady = false;    ///< indicates whether the result has been stored in the pCounterResult buffer

@@ -10,10 +10,10 @@
 
 //*** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#include "GPAPublicCounters.h"
+#include "GPADerivedCounters.h"
 
 /// Defines the public counters for CLGFX6
-/// \param p public counters instance
-void AutoDefinePublicCountersCLGfx6(GPA_PublicCounters& p);
+/// \param c public counters instance
+void AutoDefineDerivedCountersCLGfx6(GPA_DerivedCounters& c);
 
 #endif // _PUBLIC_COUNTER_DEFS_CLGFX6_H_

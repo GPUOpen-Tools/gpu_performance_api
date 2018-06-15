@@ -317,6 +317,14 @@ static GPA_Status GPA_GetSampleCount(
     RETURN_GPA_SUCCESS;
 }
 
+static GPA_Status GPA_GetSampleId(
+    GPA_SessionId sessionId,
+    gpa_uint32 index,
+    gpa_uint32* pSampleId)
+{
+    RETURN_GPA_SUCCESS;
+}
+
 // Query Results
 
 static GPA_Status GPA_IsPassComplete(
@@ -357,6 +365,17 @@ static const char* GPA_GetStatusAsStr(
     return NULL;
 }
 
+// GPA API Version
+
+static GPA_Status GPA_GetVersion(
+    gpa_uint32* pMajorVersion,
+    gpa_uint32* pMinorVersion,
+    gpa_uint32* pBuild,
+    gpa_uint32* pUpdateVersion)
+{
+    RETURN_GPA_SUCCESS;
+}
+
 // GPA API Table
 
 static GPA_Status GPA_GetFuncTable(void* pGPAFuncTable)
@@ -382,7 +401,7 @@ static GPA_Status GPA_GetFuncTable(void* pGPAFuncTable)
     }
 
     GPAFunctionTable localFuncTable;
-#define GPA_FUNCTION_PREFIX( func) localFuncTable.func = func;
+#define GPA_FUNCTION_PREFIX( func) localFuncTable.func = func; ///< Macro used by GPAFunctions.h
 #include "GPAFunctions.h"
 #undef GPA_FUNCTION_PREFIX
 

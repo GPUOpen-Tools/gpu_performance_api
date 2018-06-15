@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Interfaces used for counter splitting
@@ -8,7 +8,7 @@
 #ifndef _GPA_SPLIT_COUNTER_INTERFACES_H_
 #define _GPA_SPLIT_COUNTER_INTERFACES_H_
 
-#include "GPAPublicCounters.h"
+#include "GPADerivedCounters.h"
 #include <list>
 #include <vector>
 #include <map>
@@ -121,25 +121,22 @@ class IGPASplitCounters
 {
 public:
     /// Initializes a new instance of the IGPASplitCounters interface.
-    /// \param gpuTimestampGroupIndex The index of the GPUTimestamp group
-    /// \param gpuTimestampBottomToBottomCounterIndex The global counter index of the bottom-bottom counter
-    /// \param gpuTimestampTopToBottomCounterIndex The global counter index of the top-bottom counter
+    /// \param timestampBlockIds Set of timestamp block id's
+    /// \param timeCounterIndices Set of timestamp counter indices
     /// \param maxSQCounters The maximum number of counters that can be simultaneously enabled on the SQ block
     /// \param numSQGroups The number of SQ counter groups.
     /// \param pSQCounterBlockInfo The list of SQ counter groups.
     /// \param numIsolatedFromSqGroups The number of counter groups that must be isolated from SQ counter groups
     /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
-    IGPASplitCounters(unsigned int gpuTimestampGroupIndex,
-                      unsigned int gpuTimestampBottomToBottomCounterIndex,
-                      unsigned int gpuTimestampTopToBottomCounterIndex,
+    IGPASplitCounters(const std::set<unsigned int>& timestampBlockIds,
+                      const std::set<unsigned int>& timeCounterIndices,
                       unsigned int maxSQCounters,
                       unsigned int numSQGroups,
                       GPA_SQCounterGroupDesc* pSQCounterBlockInfo,
                       unsigned int numIsolatedFromSqGroups,
                       const unsigned int* pIsolatedFromSqGroups)
-        : m_gpuTimestampGroupIndex(gpuTimestampGroupIndex),
-          m_gpuTimestampBottomToBottomCounterIndex(gpuTimestampBottomToBottomCounterIndex),
-          m_gpuTimestampTopToBottomCounterIndex(gpuTimestampTopToBottomCounterIndex),
+        : m_timestampBlockIds(timestampBlockIds),
+          m_timeCounterIndices(timeCounterIndices),
           m_maxSQCounters(maxSQCounters)
     {
         for (unsigned int i = 0; i < numSQGroups; i++)
@@ -176,7 +173,7 @@ public:
     /// \param maxCountersPerGroup The maximum number of counters that can be enabled in a single pass on each HW block or SW group.
     /// \param[out] numScheduledCounters Indicates the total number of internal counters that were assigned to a pass.
     /// \return The list of passes that the counters are separated into.
-    virtual std::list<GPACounterPass> SplitCounters(const std::vector<const GPA_PublicCounter*>& publicCountersToSplit,
+    virtual std::list<GPACounterPass> SplitCounters(const std::vector<const GPA_DerivedCounter*>& publicCountersToSplit,
                                                     const std::vector<GPAHardwareCounterIndices> internalCountersToSchedule,
                                                     const std::vector<GPASoftwareCounterIndices>  softwareCountersToSchedule,
                                                     IGPACounterGroupAccessor* pAccessor,
@@ -192,9 +189,9 @@ public:
 
 protected:
 
-    unsigned int m_gpuTimestampGroupIndex; ///< index of the GPUTimestamp group (-1 if it doesn't exist)
-    unsigned int m_gpuTimestampBottomToBottomCounterIndex;   ///< index of the Bottom-to-Bottom GPUTime counter (-1 if it doesn't exist)
-    unsigned int m_gpuTimestampTopToBottomCounterIndex;      ///< index of the Top-to-Bottom GPUTime counter (-1 if it doesn't exist)
+    std::set<unsigned int> m_timestampBlockIds;       ///< Set of timestamp block id's
+    std::set<unsigned int> m_timeCounterIndices;      ///< Set of timestamp counter indices
+
     unsigned int m_maxSQCounters; ///< The maximum number of counters that can be enabled in the SQ group
 
     std::map<gpa_uint32, GPA_SQCounterGroupDesc> m_sqCounterIndexMap;           ///< map from group index to the SQ counter group description for that group
@@ -208,6 +205,22 @@ protected:
     /// that the public counters will be consistent. This complex set of maps allows us to find the correct pass and offset for the instance of a
     /// hardware counter that is required for a specific public counter.
     std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > m_counterResultLocationMap;
+
+    /// Determines whether the indicated block id is a timestamp block id
+    /// \param blockId The block id to check
+    /// \return True if the block id is a timestamp block id
+    bool IsTimestampBlockId(unsigned int blockId)
+    {
+        return m_timestampBlockIds.find(blockId) != m_timestampBlockIds.end();
+    }
+
+    /// Determines whether the indicated counter index is a timestamp counter
+    /// \param counterIndex The counter index to check
+    /// \return True if the counter index is a timestamp counter
+    bool IsTimeCounterIndex(unsigned int counterIndex)
+    {
+        return m_timeCounterIndices.find(counterIndex) != m_timeCounterIndices.end();
+    }
 
     /// Adds a counter result location.
     /// \param publicCounterIndex the index of the public counter whose result location is being added.
@@ -438,15 +451,14 @@ protected:
         unsigned int blockIndex = pAccessor->GlobalGroupIndex();
 
         // if this is not a gpuTime counter, it can potentially be added.
-        if (blockIndex != m_gpuTimestampGroupIndex)
+        if (!IsTimestampBlockId(blockIndex))
         {
             // but only if there are no timestamp counters in the current pass.
             bool passContainsGPUTimeCounter = false;
 
             for (size_t i = 0; i < currentPassCounters.m_counters.size(); i++)
             {
-                if (currentPassCounters.m_counters[i] == m_gpuTimestampBottomToBottomCounterIndex ||
-                    currentPassCounters.m_counters[i] == m_gpuTimestampTopToBottomCounterIndex)
+                if (IsTimeCounterIndex(currentPassCounters.m_counters[i]))
                 {
                     passContainsGPUTimeCounter = true;
                     break;

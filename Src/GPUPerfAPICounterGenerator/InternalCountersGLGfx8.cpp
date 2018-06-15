@@ -299,7 +299,10 @@ unsigned int HWGLSQIsolatedGroupsGfx8[] =
     88, // Tcp
 };
 
-const unsigned int HWGLGPUTimeIndexGfx8 = 98;
+const unsigned int HWGLGPUTimeBottomToBottomIndexGfx8 = 15125;
+const unsigned int HWGLGPUTimeTopToBottomIndexGfx8 = 15126;
+const std::set<unsigned int> HWGLTimestampBlockIdsGfx8 = { 98 }; ///< Timestamp block id's for GL for Gfx8 family
+const std::set<unsigned int> HWGLTimeCounterIndicesGfx8 = { 15125, 15126 }; ///< Timestamp counter indices for GL for Gfx8 family
 const unsigned int HWGLGroupCountGfx8 = sizeof(HWGLGroupsGfx8) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWGLSQGroupCountGfx8 = sizeof(HWGLSQGroupsGfx8) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWGLSQIsolatedGroupCountGfx8 = sizeof(HWGLSQIsolatedGroupsGfx8) / sizeof(unsigned int);

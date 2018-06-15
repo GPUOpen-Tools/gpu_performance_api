@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Counter splitter that puts max number of hardware counter per pass
@@ -19,24 +19,22 @@ class GPASplitCountersMaxPerPass : public IGPASplitCounters
 public:
 
     /// Initializes a new instance of the GPASplitCountersMaxPerPass class
-    /// \param gpuTimestampGroupIndex The index of the GPUTimestamp group
-    /// \param gpuTimestampBottomToBottomCounterIndex The global counter index of the bottom-bottom counter
-    /// \param gpuTimestampTopToBottomCounterIndex The global counter index of the top-bottom counter
+    /// \param timestampBlockIds Set of timestamp block id's
+    /// \param timeCounterIndices Set of timestamp counter indices
     /// \param maxSQCounters The maximum number of counters that can be simultaneously enabled on the SQ block
     /// \param numSQGroups The number of SQ counter groups.
     /// \param pSQCounterBlockInfo The list of SQ counter groups.
     /// \param numIsolatedFromSqGroups The number of counter groups that must be isolated from SQ counter groups
     /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
-    GPASplitCountersMaxPerPass(unsigned int gpuTimestampGroupIndex,
-                               unsigned int gpuTimestampBottomToBottomCounterIndex,
-                               unsigned int gpuTimestampTopToBottomCounterIndex,
+    GPASplitCountersMaxPerPass(const std::set<unsigned int>& timestampBlockIds,
+                               const std::set<unsigned int>& timeCounterIndices,
                                unsigned int maxSQCounters,
                                unsigned int numSQGroups,
                                GPA_SQCounterGroupDesc* pSQCounterBlockInfo,
                                unsigned int numIsolatedFromSqGroups,
                                const unsigned int* pIsolatedFromSqGroups)
-        :   IGPASplitCounters(gpuTimestampGroupIndex, gpuTimestampBottomToBottomCounterIndex,
-                              gpuTimestampTopToBottomCounterIndex, maxSQCounters,
+        :   IGPASplitCounters(timestampBlockIds, timeCounterIndices,
+                              maxSQCounters,
                               numSQGroups, pSQCounterBlockInfo,
                               numIsolatedFromSqGroups, pIsolatedFromSqGroups)
     {
@@ -48,9 +46,9 @@ public:
 
     //--------------------------------------------------------------------------
     // puts as many counters in the first pass as will fit based on the maxCountersPerGroup, will expand to additional passes as required by the hardware.
-    std::list<GPACounterPass> SplitCounters(const std::vector<const GPA_PublicCounter*>& publicCountersToSplit,
+    std::list<GPACounterPass> SplitCounters(const std::vector<const GPA_DerivedCounter*>& publicCountersToSplit,
                                             const std::vector<GPAHardwareCounterIndices> internalCountersToSchedule,
-                                            const std::vector<GPASoftwareCounterIndices>  softwareCountersToSchedule,
+                                            const std::vector<GPASoftwareCounterIndices> softwareCountersToSchedule,
                                             IGPACounterGroupAccessor* accessor,
                                             const std::vector<unsigned int>& maxCountersPerGroup,
                                             unsigned int& numScheduledCounters)
@@ -74,7 +72,7 @@ public:
         std::map<unsigned int, GPA_CounterResultLocation> internalCounterResultLocations;
 
         // iterate through each public counter
-        for (std::vector<const GPA_PublicCounter*>::const_iterator publicIter = publicCountersToSplit.begin(); publicIter != publicCountersToSplit.end(); ++publicIter)
+        for (std::vector<const GPA_DerivedCounter*>::const_iterator publicIter = publicCountersToSplit.begin(); publicIter != publicCountersToSplit.end(); ++publicIter)
         {
             // iterate through the internal counters and put them into the appropriate pass (first available pass)
             for (std::vector<gpa_uint32>::const_iterator counterIter = (*publicIter)->m_internalCountersRequired.begin(); counterIter != (*publicIter)->m_internalCountersRequired.end(); ++counterIter)

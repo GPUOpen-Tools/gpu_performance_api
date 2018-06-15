@@ -8,7 +8,7 @@
 #ifndef _VK_ENTRYPOINTS_H_
 #define _VK_ENTRYPOINTS_H_
 
-#include <vulkan.h>
+#include <vulkan/vulkan.h>
 #include "vk_amd_gpa_interface.h"
 
 // Instance entrypoints

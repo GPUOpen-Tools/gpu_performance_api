@@ -56,8 +56,9 @@ GL_DIR = $(COMMON_LIB_EXT)/OpenGL
 GTEST_DIR = $(COMMON_LIB_EXT)/GoogleTest/1-7
 GTEST_LIBS = $(GTEST_DIR)/lib/gcc5/x64/libgtest.a
 GTEST_LIBS32 = $(GTEST_DIR)/lib/gcc5/x86/libgtest.a
-VK_SDK_DIR = $(COMMON_LIB_EXT)/Vulkan/VulkanSDK/1.0.49.0/x86_64
+VK_SDK_DIR = $(VULKAN_SDK)
 VK_INCLUDE_DIR = $(VK_SDK_DIR)/include
+VK_LIB_DIR = $(VK_SDK_DIR)/lib
 AMD_VK_EXT_DIR = $(COMMON_SRC)/AmdVkExt
 
 # Lib paths

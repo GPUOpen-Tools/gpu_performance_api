@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  CL internal counter definitions for GFX9
@@ -232,7 +232,7 @@ GPA_CounterGroupDesc HWCLGroupsGfx9[] =
     {90, "VGT", 0, 148, 4},
     {91, "IA", 0, 32, 4},
     {92, "WD", 0, 58, 4},
-    {93, "CPG", 0, 59, 2},
+    {93, "CPG", 0, 60, 2},
     {94, "CPC", 0, 35, 2},
     {95, "ATC", 0, 24, 4},
     {96, "ATCL2", 0, 8, 2},
@@ -347,6 +347,8 @@ unsigned int HWCLSQIsolatedGroupsGfx9[] =
     88, // Tcp
 };
 
+const std::set<unsigned int> HWCLTimestampBlockIdsGfx9 = {  }; ///< Timestamp block id's for CL for Gfx9 family
+const std::set<unsigned int> HWCLTimeCounterIndicesGfx9 = {  }; ///< Timestamp counter indices for CL for Gfx9 family
 const unsigned int HWCLGroupCountGfx9 = sizeof(HWCLGroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWCLSQGroupCountGfx9 = sizeof(HWCLSQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWCLSQIsolatedGroupCountGfx9 = sizeof(HWCLSQIsolatedGroupsGfx9) / sizeof(unsigned int);

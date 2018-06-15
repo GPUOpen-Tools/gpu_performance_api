@@ -1302,7 +1302,10 @@ AmdExtGpuBlock HWDX12DriverEnumGfx8[] =
     AmdExtGpuBlock::Count,
 };
 
-const unsigned int HWDX12GPUTimeIndexGfx8 = 342;
+const unsigned int HWDX12GPUTimeBottomToBottomIndexGfx8 = 51131;
+const unsigned int HWDX12GPUTimeTopToBottomIndexGfx8 = 51132;
+const std::set<unsigned int> HWDX12TimestampBlockIdsGfx8 = { 342 }; ///< Timestamp block id's for DX12 for Gfx8 family
+const std::set<unsigned int> HWDX12TimeCounterIndicesGfx8 = { 51131, 51132 }; ///< Timestamp counter indices for DX12 for Gfx8 family
 const unsigned int HWDX12GroupCountGfx8 = sizeof(HWDX12GroupsGfx8) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX12SQGroupCountGfx8 = sizeof(HWDX12SQGroupsGfx8) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX12SQIsolatedGroupCountGfx8 = sizeof(HWDX12SQIsolatedGroupsGfx8) / sizeof(unsigned int);

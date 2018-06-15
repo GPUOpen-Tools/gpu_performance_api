@@ -161,7 +161,6 @@ bool HSAGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                         GDT_GfxCardInfo cardInfo;
                         bool isDeviceSupported = false;
 
-                        // TODO: requested that the HSA runtime allows us to get revID -- for now hardcode to zero
                         if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(deviceId, REVISION_ID_ANY, cardInfo))
                         {
                             if (static_cast<unsigned int>(cardInfo.m_generation) >= static_cast<unsigned int>(GDT_HW_GENERATION_SEAISLAND))
@@ -185,6 +184,34 @@ bool HSAGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                         {
                             GPA_LogError("Unsupported device.");
                             isSuccess = false;
+                        }
+                        else
+                        {
+                            uint32_t computeUnitCount = 0;
+                            status = pHsaModule->agent_get_info(device, static_cast<hsa_agent_info_t>(HSA_AMD_AGENT_INFO_COMPUTE_UNIT_COUNT), &computeUnitCount);
+
+                            if (HSA_STATUS_SUCCESS != status)
+                            {
+                                // intentionally not setting isSuccess to false here
+                                // this is non-fatal and if it fails, we will fall back to the hardcoded simd count
+                                GPA_LogError("Unable to get compute unit count.");
+                            }
+                            else
+                            {
+                                uint32_t simdsPerCU = 0;
+                                status = pHsaModule->agent_get_info(device, static_cast<hsa_agent_info_t>(HSA_AMD_AGENT_INFO_NUM_SIMDS_PER_CU), &simdsPerCU);
+
+                                if (HSA_STATUS_SUCCESS != status)
+                                {
+                                    // intentionally not setting isSuccess to false here
+                                    // this is non-fatal and if it fails, we will fall back to the hardcoded simd count
+                                    GPA_LogError("Unable to get SIMDs per CU.");
+                                }
+                                else
+                                {
+                                    hwInfo.SetNumberSIMDs(computeUnitCount * simdsPerCU);
+                                }
+                            }
                         }
                     }
                 }
@@ -231,7 +258,6 @@ IGPAContext* HSAGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
     }
     else
     {
-
         HSAToolsRTModule* pHsaToolsRTModule = HSAToolsRTModuleLoader::Instance()->GetAPIRTModule();
 
         if (nullptr == pHsaToolsRTModule || !pHsaToolsRTModule->IsModuleLoaded())
@@ -307,7 +333,7 @@ GPADeviceIdentifier HSAGPAImplementor::GetDeviceIdentifierFromContextInfo(GPACon
 static const char* s_HSA_SOFTCP_ENV_VAR_NAME = "HSA_EMULATE_AQL"; ///< The SoftCP environment variable name
 static const char* s_HSA_SOFTCP_ENV_VAR_VALUE = "1";              ///< The SoftCP environment variable value
 
-bool HSAGPAImplementor::SetHSASoftCPEnvVar(std::string& strErrorMsg)
+bool HSAGPAImplementor::SetHSASoftCPEnvVar(std::string& strErrorMsg) const
 {
     UNREFERENCED_PARAMETER(strErrorMsg);
     bool retVal = true;
@@ -329,7 +355,7 @@ bool HSAGPAImplementor::SetHSASoftCPEnvVar(std::string& strErrorMsg)
     return retVal;
 }
 
-bool HSAGPAImplementor::UnsetHSASoftCPEnvVar(std::string strErrorMsg)
+bool HSAGPAImplementor::UnsetHSASoftCPEnvVar(std::string strErrorMsg) const
 {
     UNREFERENCED_PARAMETER(strErrorMsg);
     bool retVal = true;
@@ -354,7 +380,7 @@ bool HSAGPAImplementor::UnsetHSASoftCPEnvVar(std::string strErrorMsg)
 
 /// Sets the necessary environment variable to enable the HSA runtime Tools lib
 /// \return true on success
-bool HSAGPAImplementor::SetHSAToolsLibEnvVar()
+bool HSAGPAImplementor::SetHSAToolsLibEnvVar() const
 {
     bool retVal = false;
 #ifndef _WIN32

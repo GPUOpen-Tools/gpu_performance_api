@@ -1305,9 +1305,10 @@ PE_BLOCK_ID HWDX11DriverEnumGfx8[] =
     PE_BLOCK_UNKNOWN,
 };
 
-const unsigned int HWDX11GPUTimeIndexGfx8 = 343;
-const unsigned int HWDX11GPUTimeStampIndexGfx8 = 342;
-const unsigned int HWDX11FirstGPUTimeCounterIndexGfx8 = 51131;
+const unsigned int HWDX11GPUTimeBottomToBottomIndexGfx8 = 51132;
+const unsigned int HWDX11GPUTimeTopToBottomIndexGfx8 = 51133;
+const std::set<unsigned int> HWDX11TimestampBlockIdsGfx8 = { 343, 342 }; ///< Timestamp block id's for DX11 for Gfx8 family
+const std::set<unsigned int> HWDX11TimeCounterIndicesGfx8 = { 51132, 51133, 51131 }; ///< Timestamp counter indices for DX11 for Gfx8 family
 const unsigned int HWDX11GroupCountGfx8 = sizeof(HWDX11GroupsGfx8) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX11SQGroupCountGfx8 = sizeof(HWDX11SQGroupsGfx8) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX11SQIsolatedGroupCountGfx8 = sizeof(HWDX11SQIsolatedGroupsGfx8) / sizeof(unsigned int);

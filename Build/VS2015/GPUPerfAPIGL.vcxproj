@@ -47,11 +47,6 @@
   <ItemDefinitionGroup>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesGLGfx6.txt" />
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesGLGfx7.txt" />
-    <None Include="..\..\PublicCounterCompilerInputFiles\CounterNamesGLGfx8.txt" />
-  </ItemGroup>
-  <ItemGroup>
     <ResourceCompile Include="..\..\Src\GPUPerfAPIGL\GPUPerfAPIGL.rc" />
   </ItemGroup>
   <ItemGroup>

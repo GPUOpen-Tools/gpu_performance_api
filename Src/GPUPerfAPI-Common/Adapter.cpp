@@ -17,29 +17,26 @@ bool Adapter::getAsicInfoList(AsicInfoList& asicInfoList) const
 {
     IDXGIFactory* pDxgiFactory = nullptr;
     HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDxgiFactory));
-    bool retVal = true;
+    bool retVal = false;
 
-    if (S_OK != hr)
+    if (SUCCEEDED(hr))
     {
-        retVal = false;
-    }
-    else
-    {
+        retVal = true;
         typedef std::vector<DXGI_ADAPTER_DESC> DxgiAdapterDescList;
         static const size_t DxgiAdapterDescListInitalSize = 32;
         DxgiAdapterDescList dxgiAdapterDescList(DxgiAdapterDescListInitalSize);
         UINT adapterIndex = 0;
 
-        while (S_OK == hr)
+        while (SUCCEEDED(hr))
         {
             IDXGIAdapter* pDxgiAdapter = nullptr;
             hr = pDxgiFactory->EnumAdapters(adapterIndex, &pDxgiAdapter);
 
-            if (S_OK == hr)
+            if (SUCCEEDED(hr))
             {
                 hr = pDxgiAdapter->GetDesc(&(dxgiAdapterDescList[adapterIndex]));
 #ifdef _DEBUG
-                assert(S_OK == hr);
+                assert(SUCCEEDED(hr));
 #endif // _DEBUG
                 pDxgiAdapter->Release();
             }

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Logging utility
@@ -9,7 +9,7 @@
 #define GPA_LOGGING_H_
 
 #ifdef _WIN32
-    #include <windows.h>
+    #include <Windows.h>
 #endif
 
 #ifdef _LINUX
@@ -20,16 +20,18 @@
     #define LeaveCriticalSection pthread_mutex_unlock
     #include <stdarg.h>
     #include <stdio.h>
-
 #endif
 
 #include <string>
-using std::string;
-
 #include <sstream>
+#include <mutex>
+#include <map>
+#include <thread>
 
 #include "GPUPerfAPITypes.h"
 #include "GPUPerfAPIFunctionTypes.h"
+
+#define ENABLE_TRACING 1 ///< Macro to determine if tracing is enabled
 
 #if ENABLE_TRACING
 #undef TRACE_FUNCTION
@@ -211,6 +213,18 @@ public:
         }
     }
 
+    /// Checks whether the tracing is enabled or not
+    /// \return true if either tracing or debug tracing is enabled otherwise false
+    bool IsTracingEnabled() const
+    {
+        if (nullptr != m_loggingCallback)
+        {
+            return m_loggingType & GPA_LOGGING_TRACE || m_loggingType & GPA_LOGGING_DEBUG_TRACE;
+        }
+
+        return false;
+    }
+
 protected:
 
     /// User selected logging type that defines what messages they want to be notified of
@@ -250,6 +264,7 @@ extern GPALogger g_loggerSingleton;
 /// macro for debug logging of counter defs
 #define GPA_LogDebugCounterDefs g_loggerSingleton.LogDebugCounterDefs
 
+
 /// Utility class for tracing the start and end of functions.
 class GPATracer
 {
@@ -257,9 +272,6 @@ public:
 
     /// Default constructor
     GPATracer();
-
-    /// Destructor
-    ~GPATracer() {}
 
     /// Should be called when a function is entered.
     /// \param pFunctionName the function that is being entered
@@ -274,13 +286,21 @@ public:
     /// \param pData the additional data to output
     void OutputFunctionData(const char* pData);
 
-protected:
+private:
+
+    /// Returns the pointer to the tab counter
+    /// \param[out] pCurrentThreadId thread id of the caller
+    /// \return pointer to the tab counter
+    std::map<std::thread::id, int32_t>::iterator GetTabCounter(std::thread::id* pCurrentThreadId);
 
     /// Indicates whether to only show the top level of functions (true), or also show nested function calls (false).
     bool m_topLevelOnly;
 
-    /// Stores the number of tabs to indent nested function calls.
-    unsigned int m_logTab;
+    /// Mutex for the thread and tab counter map
+    std::mutex m_tracerMutex;
+
+    /// Map of the thread and its associated tab counter
+    std::map<std::thread::id, int32_t> m_threadTabCountMap;
 };
 
 /// Singleton instance of the GPATracer class
@@ -302,7 +322,7 @@ public:
 protected:
 
     /// Stores the function being traced.
-    const char* m_pTraceFunction;
+    std::string m_traceFunction;
 };
 
 #endif //GPA_LOGGING_H_

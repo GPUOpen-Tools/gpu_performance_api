@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX11 internal counter definitions for GFX9
@@ -17,9 +17,10 @@ extern GPA_CounterGroupDesc HWDX11GroupsGfx9[]; ///< Array of counter groups for
 extern GPA_SQCounterGroupDesc HWDX11SQGroupsGfx9[]; ///< Array of SQ groups for DX11 for Gfx9 family
 extern unsigned int HWDX11SQIsolatedGroupsGfx9[]; ///< Array of counter groups isolated from SQ counter groups for DX11 for Gfx9 family
 extern PE_BLOCK_ID HWDX11DriverEnumGfx9[]; ///< Array of driver enum values per group for DX11 for Gfx9 family
-extern const unsigned int HWDX11GPUTimeIndexGfx9; ///< Index of GPUTime Group for DX11 for Gfx9 family
-extern const unsigned int HWDX11GPUTimeStampIndexGfx9; ///< Index of GPUTimeStamp Group for DX11 for Gfx9 family
-extern const unsigned int HWDX11FirstGPUTimeCounterIndexGfx9; ///< Index of first GPUTime counter for DX11 for Gfx9 family
+extern const unsigned int HWDX11GPUTimeBottomToBottomIndexGfx9; ///< Index of EOP to EOP counter for DX11 for Gfx9 family
+extern const unsigned int HWDX11GPUTimeTopToBottomIndexGfx9; ///< Index of TOP to EOP counter for DX11 for Gfx9 family
+extern const std::set<unsigned int> HWDX11TimestampBlockIdsGfx9; ///< Timestamp block id's for DX11 for Gfx9 family
+extern const std::set<unsigned int> HWDX11TimeCounterIndicesGfx9; ///< Timestamp counter indices for DX11 for Gfx9 family
 extern const unsigned int HWDX11GroupCountGfx9; ///< Hardware Group Count for DX11 for Gfx9 family
 extern const unsigned int HWDX11SQGroupCountGfx9; ///< Hardware SQ Group Count for DX11 for Gfx9 family
 extern const unsigned int HWDX11SQIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for DX11 for Gfx9 family

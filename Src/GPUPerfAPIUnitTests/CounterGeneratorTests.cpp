@@ -667,7 +667,8 @@ void VerifyCounterCalculation(
                 }
             }
 
-            pCounterAccessor->ComputePublicCounterValue(counterIndex, sampleResults, internalCounterTypes, &result, &hwInfo);
+            status = pCounterAccessor->ComputePublicCounterValue(counterIndex, sampleResults, internalCounterTypes, &result, &hwInfo);
+            EXPECT_EQ(GPA_STATUS_OK, status);
 
             EXPECT_EQ(expectedResult, result);
 

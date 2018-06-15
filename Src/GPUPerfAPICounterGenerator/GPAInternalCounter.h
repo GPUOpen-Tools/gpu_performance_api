@@ -66,8 +66,8 @@ inline GPA_UUID GetCounterUuid(const char* counterName, const char* counterDescr
     *reinterpret_cast<size_t*>(&uuid.Data1) = std::hash<std::string> {}(counterName);
     *reinterpret_cast<size_t*>(&uuid.Data4) = std::hash<std::string> {}(counterDescription);
 #else
-    *((size_t*)&uuid.m_data1) = std::hash<std::string> {}(counterName);
-    *((size_t*)&uuid.m_data4) = std::hash<std::string> {}(counterDescription);
+    *reinterpret_cast<size_t*>(&uuid.m_data1) = std::hash<std::string> {}(counterName);
+    *reinterpret_cast<size_t*>(&uuid.m_data4) = std::hash<std::string> {}(counterDescription);
 #endif
     return uuid;
 }

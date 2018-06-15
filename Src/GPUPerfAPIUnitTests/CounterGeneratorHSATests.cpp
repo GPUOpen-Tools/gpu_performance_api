@@ -62,6 +62,9 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             ppHardwareCounters = HSACounterGroupArrayGfx9;
 #endif
             break;
+
+        default:
+            break;
     }
 
     for (size_t i = 0; i < publicCounterCount; i++)
@@ -99,8 +102,8 @@ TEST(CounterDLLTests, HSACounterNamesByGeneration)
     VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_NVIDIA, FALSE);
     VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_INTEL, FALSE);
     VerifyHardwareNotSupported(GPA_API_HSA, GPA_HW_GENERATION_GFX6, FALSE);
-    std::vector<const char*> counterNames;
 
+    std::vector<const char*> counterNames;
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
     VerifyCounterNames(GPA_API_HSA, GPA_HW_GENERATION_GFX7, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);

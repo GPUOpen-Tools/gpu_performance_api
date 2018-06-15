@@ -152,30 +152,7 @@ bool GetCounterValue(GLint nGroup, const char* pCounterStr, GLuint& rValue)
                     }
 
                     oglUtils::_oglSelectPerfMonitorCountersAMD(monitor, GL_FALSE, nGroup, 1, &pCounterList[i]);
-
-                    bool deletePerfMonitor = true;
-#if defined(_LINUX) && defined(X86)
-                    unsigned int majorVer;
-                    unsigned int minorVer;
-                    unsigned int subMinorVer;
-
-                    if (AMDTADLUtils::Instance()->GetDriverVersion(majorVer, minorVer, subMinorVer) && 15 > majorVer)
-                    {
-                        // Workaround a driver issue by not deleting the perf monitor.
-                        // The 32-bit Linux driver will crash when glDeletePerfMonitor
-                        // is called.  This is a HUGE hack and introduces an intentional
-                        // memory leak.
-                        // The driver EPR is # 410865, and it was fixed starting with 15.10
-                        deletePerfMonitor = false;
-                    }
-
-#endif
-
-                    if (deletePerfMonitor)
-                    {
-                        oglUtils::_oglDeletePerfMonitorsAMD(1, &monitor);
-                    }
-
+                    oglUtils::_oglDeletePerfMonitorsAMD(1, &monitor);
                     break;
                 }
             }
@@ -382,6 +359,9 @@ bool GetASICInfo(ASICInfo& rASICInfo)
                 return false;
             }
 
+            break;
+
+        default:
             break;
     }
 

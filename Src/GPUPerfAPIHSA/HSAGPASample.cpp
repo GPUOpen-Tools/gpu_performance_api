@@ -108,7 +108,7 @@ bool HSAGPASample::UpdateResults()
             }
         }
 
-        GetSampleResultLocation()->m_pResultBuffer[i] = counterResult;
+        GetSampleResultLocation()->GetResultBuffer()[i] = counterResult;
 
         m_pHSACounters[i].m_isCounterResultReady = true;
         ++m_dataReadyCount;
@@ -237,7 +237,7 @@ bool HSAGPASample::BeginInternalRequest()
                     bool HSAPerfMonitorCollectionStatus = true;
                     unsigned int enabledCounterIter = 0u;
 
-                    auto PopulateHSAPerForEnabledCounters = [&](const CounterIndex & counterIndex)-> bool
+                    auto PopulateHSAPerForEnabledCounters = [&](const CounterIndex& counterIndex)-> bool
                     {
                         bool bEnabledCounter = true;
                         bool isCounterValid = false;

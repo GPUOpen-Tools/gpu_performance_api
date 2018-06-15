@@ -4,9 +4,6 @@ set -u
 #define path
 GPAROOT=`dirname $(readlink -f "$0")`/../..
 
-# clean up old folders
-rm -rf $GPAROOT/Output/*
-
 # Command line args
 
 # Generate internal build
@@ -32,8 +29,11 @@ DEBUG_SUFFIX=
 # HSA directory override
 HSA_DIR_OVERRIDE=
 
-# Vulkan include directory override
-VK_INC_DIR_OVERRIDE=
+# Vulkan SDK directory override
+VK_SDK_DIR_OVERRIDE=
+
+# VUlkan SDK Override path
+VULKAN_SDK_OVERRIDE=
 
 # API-specific build control
 bBuildOpenGL=true
@@ -78,9 +78,10 @@ do
    elif [ "$1" = "hsadir" ]; then
       shift
       HSA_DIR_OVERRIDE="HSA_DIR=$1"
-   elif [ "$1" = "vkincdir" ]; then
+   elif [ "$1" = "vksdkdir" ]; then
       shift
-      VK_INC_DIR_OVERRIDE="VK_INCLUDE_DIR=$1"
+      VK_SDK_DIR_OVERRIDE="VK_SDK_DIR=$1"
+      VULKAN_SDK_OVERRIDE="$1"
    elif [ "$1" = "skipopengl" ]; then
       bBuildOpenGL=false
    elif [ "$1" = "skipvulkan" ]; then
@@ -117,6 +118,8 @@ CL=$GPASRC/GPUPerfAPICL
 HSA=$GPASRC/GPUPerfAPIHSA
 GL=$GPASRC/GPUPerfAPIGL
 VK=$GPASRC/GPUPerfAPIVk
+VKCOLORCUBE=$GPASRC/Examples/Vulkan/VkColorCube
+
 COUNTERS=$GPASRC/GPUPerfAPICounters
 COUNTERGENERATOR=$GPASRC/GPUPerfAPICounterGenerator
 GPA_COMMON=$GPASRC/GPUPerfAPI-Common
@@ -179,6 +182,15 @@ VER_MINOR=$(grep -E "#define GPA_MINOR_VERSION\s*[0-9]+" $VERSION_NUMBER_FILE | 
 VER_MAJOR_MINOR=$VER_MAJOR.$VER_MINOR
 VER=$VER_MAJOR_MINOR.$BUILD
 
+CURRENT_VERSION_H_FILE_PERMISSIONS=$(stat --format %a $VERSION_NUMBER_FILE)
+chmod 777 "$VERSION_NUMBER_FILE"
+old=$(grep -E "#define GPA_BUILD_NUMBER [0-9]+" $VERSION_NUMBER_FILE)
+new="#define GPA_BUILD_NUMBER $BUILD"
+echo "old = $old"
+echo "new = $new"
+sed -i "s/$old/$new/g" "$VERSION_NUMBER_FILE"
+chmod $CURRENT_VERSION_H_FILE_PERMISSIONS "$VERSION_NUMBER_FILE"
+
 CPU_COUNT=`cat /proc/cpuinfo | grep processor | wc -l`
 
 BUILD_DIRS="$GPUPERFAPI $GPA_COMMON $GPA_DEVICEINFO $COUNTERGENERATOR $COUNTERS"
@@ -188,6 +200,16 @@ if $bBuildOpenGL ; then
 fi
 
 if $bBuildVK ; then
+   if ([ ! -z "$VULKAN_SDK_OVERRIDE" ]) ; then
+      echo "Using VULKAN_SDK Override: $VULKAN_SDK_OVERRIDE"
+      VULKAN_SDK="$VULKAN_SDK_OVERRIDE"
+   elif ([ -v VULKAN_SDK ]) && ([ -e "${VULKAN_SDK}/lib/libvulkan.so" ]) && ([ -e "${VULKAN_SDK}/include/vulkan/vulkan.h" ]) ; then
+      echo "Using VULKAN_SDK Env Var: $VULKAN_SDK"
+   else
+      VULKAN_SDK="${GPAROOT}/../Common/Lib/Ext/Vulkan/Linux/"
+      echo "Using local VULKAN_SDK: ${VULKAN_SDK}"
+   fi
+
    BUILD_DIRS="$BUILD_DIRS $VK"
 fi
 
@@ -196,50 +218,60 @@ if $bBuildOpenCL ; then
 fi
 
 if $bBuildHSA ; then
-   BUILD_DIRS="$BUILD_DIRS $HSA"
+    BUILD_DIRS="$BUILD_DIRS $HSA"
+fi
+
+if $bBuildVK ; then
+    BUILD_DIRS="$BUILD_DIRS $VKCOLORCUBE"
 fi
 
 if $bBuildTests ; then
    BUILD_DIRS="$BUILD_DIRS $UNITTESTS"
 fi
 
+#delete old build
+if ! ($bIncrementalBuild) ; then
+   # clean up old folders
+   rm -rf $GPAROOT/Output/*
+fi
+
 for SUBDIR in $BUILD_DIRS; do
    BASENAME=`basename $SUBDIR`
 
    #delete old build
-   if !($bIncrementalBuild) ; then
+   if ! ($bIncrementalBuild) ; then
       make -C $SUBDIR spotless >> $LOGFILE 2>&1
    fi
 
    #make 64 bit
    echo "Build ${BASENAME}, 64-bit..." | tee -a $LOGFILE
 
-   if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET} >> $LOGFILE 2>&1; then
+   if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_SDK_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET} >> $LOGFILE 2>&1; then
       echo "Failed to build ${BASENAME}, 64 bit"
       exit 1
    fi
 
    #make 64 bit Internal
    if $bBuildInternal ; then
-      if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internal  >> $LOGFILE 2>&1; then
+      if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_SDK_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internal  >> $LOGFILE 2>&1; then
          echo "Failed to build ${BASENAME}, 64 bit, Internal"
          exit 1
       fi
    fi
 
    if $b32bitbuild; then
-      if [ "$SUBDIR" != "$HSA" ]; then
+      if ([ "$SUBDIR" != "$HSA" ]  && [ "$SUBDIR" != "$VKCOLORCUBE" ]); then
          #make 32 bit
          echo "Build ${BASENAME}, 32-bit..." | tee -a $LOGFILE
 
-         if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}x86 >> $LOGFILE 2>&1; then
+         if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_SDK_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}x86 >> $LOGFILE 2>&1; then
             echo "Failed to build ${BASENAME}, 32 bit"
             exit 1
          fi
 
          #make 32 bit Internal
          if $bBuildInternal ; then
-            if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_INC_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internalx86  >> $LOGFILE 2>&1; then
+            if ! make -C $SUBDIR -j$CPU_COUNT $HSA_DIR_OVERRIDE $VK_SDK_DIR_OVERRIDE $GTEST_LIB_DIR_OVERRIDE32 "$ADDITIONAL_COMPILER_DEFINES_OVERRIDE" ${MAKE_TARGET}Internalx86  >> $LOGFILE 2>&1; then
                echo "Failed to build ${BASENAME}, 32 bit, Internal"
                exit 1
             fi
@@ -324,6 +356,22 @@ if $bZip ; then
       cd ..
       tar cvzf GPUPerfAPI.$VER-lnx-Promotion.tgz $ZIP_DIR_NAME/
    fi
+
+   #---------------------------------------------------
+   # Copy Vk samples
+   #---------------------------------------------------
+   echo "Generate Samples tarball..." | tee -a $LOGFILE
+   ZIP_DIR_NAME=Samples
+   cd $GPAOUTPUT
+   mkdir -p $ZIP_DIR_NAME
+   cd $ZIP_DIR_NAME
+   mkdir -p Bin
+   mkdir -p Bin/Linx64
+   cp $GPAOUTPUT_BIN/libGPUPerfAPIVK.so ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/VkColorCube ./Bin/Linx64/
+   cp $GPAOUTPUT_BIN/*.spv ./Bin/Linx64/
+   cd ..
+   tar cvzf GPUPerfAPISamples.$VER-lnx.tgz $ZIP_DIR_NAME/
 fi
 
 if [ -z ${LD_LIBRARY_PATH+x} ]; then

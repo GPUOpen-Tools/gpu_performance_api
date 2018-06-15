@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for GL counter generation
@@ -28,7 +28,7 @@ protected:
         GDT_HW_GENERATION desiredGeneration,
         GDT_HW_ASIC_TYPE asicType,
         gpa_uint8 generateAsicSpecificCounters,
-        GPA_PublicCounters* pPublicCounters) override;
+        GPA_DerivedCounters* pPublicCounters) override;
 
     /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
     GPA_Status GenerateHardwareCounters(
@@ -55,7 +55,7 @@ private:
     /// \param pHardwareCounters the list of hardware counters to augment with the driver-supplied counters
     /// \param generation the hardware generation whose internal counters are needed
     /// \return true on success, false on failure
-    bool GenerateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GDT_HW_GENERATION generation);
+    GPA_Status GenerateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GDT_HW_GENERATION generation);
 
     /// Helper function to cleanup and release memory
     void Cleanup();

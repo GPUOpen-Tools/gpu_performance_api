@@ -66,6 +66,9 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             ppHardwareCounters = VKCounterGroupArrayGfx9;
 #endif
             break;
+
+        default:
+            break;
     }
 
     for (size_t i = 0; i < publicCounterCount; i++)
@@ -81,10 +84,12 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
         }
     }
 
+    /* No more sw counters
     for (size_t i = 0; i < VKSW_COUNTER_COUNT; i++)
     {
         counterNames.push_back(VKSW_COUNTERS[i].m_pName);
     }
+    */
 }
 
 // Test the VK counter names on all supported hardware
@@ -108,13 +113,10 @@ TEST(CounterDLLTests, VKCounterNamesByGeneration)
 {
     VerifyHardwareNotSupported(GPA_API_VULKAN, GPA_HW_GENERATION_NONE, FALSE);
     VerifyHardwareNotSupported(GPA_API_VULKAN, GPA_HW_GENERATION_GFX6, FALSE);
+    VerifyHardwareNotSupported(GPA_API_VULKAN, GPA_HW_GENERATION_NVIDIA, FALSE);
+    VerifyHardwareNotSupported(GPA_API_VULKAN, GPA_HW_GENERATION_INTEL, FALSE);
 
     std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_NVIDIA, counterNames);
-    VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_NVIDIA, FALSE, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_INTEL, counterNames);
-    VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_INTEL, FALSE, counterNames);
-
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
     VerifyCounterNames(GPA_API_VULKAN, GPA_HW_GENERATION_GFX7, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);

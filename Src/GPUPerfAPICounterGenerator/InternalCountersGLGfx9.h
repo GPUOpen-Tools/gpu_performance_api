@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GL internal counter definitions for GFX9
@@ -13,7 +13,10 @@ extern GPA_HardwareCounterDesc* GLCounterGroupArrayGfx9[]; ///< Array of hardwar
 extern GPA_CounterGroupDesc HWGLGroupsGfx9[]; ///< Array of counter groups for GL for Gfx9 family
 extern GPA_SQCounterGroupDesc HWGLSQGroupsGfx9[]; ///< Array of SQ groups for GL for Gfx9 family
 extern unsigned int HWGLSQIsolatedGroupsGfx9[]; ///< Array of counter groups isolated from SQ counter groups for GL for Gfx9 family
-extern const unsigned int HWGLGPUTimeIndexGfx9; ///< Index of GPUTime Group for GL for Gfx9 family
+extern const unsigned int HWGLGPUTimeBottomToBottomIndexGfx9; ///< Index of EOP to EOP counter for GL for Gfx9 family
+extern const unsigned int HWGLGPUTimeTopToBottomIndexGfx9; ///< Index of TOP to EOP counter for GL for Gfx9 family
+extern const std::set<unsigned int> HWGLTimestampBlockIdsGfx9; ///< Timestamp block id's for GL for Gfx9 family
+extern const std::set<unsigned int> HWGLTimeCounterIndicesGfx9; ///< Timestamp counter indices for GL for Gfx9 family
 extern const unsigned int HWGLGroupCountGfx9; ///< Hardware Group Count for GL for Gfx9 family
 extern const unsigned int HWGLSQGroupCountGfx9; ///< Hardware SQ Group Count for GL for Gfx9 family
 extern const unsigned int HWGLSQIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for GL for Gfx9 family

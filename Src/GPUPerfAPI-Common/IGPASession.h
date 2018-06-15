@@ -100,9 +100,9 @@ public:
     virtual bool DoesCommandListExist(gpa_uint32 passIndex, GPA_CommandListId pCommandListId) const = 0;
 
     /// Checks whether a sample exists in the session
-    /// \param[in] sampleIndex The sample index to check
+    /// \param[in] sampleId The sample index to check
     /// \return true if the sample exists in the session otherwise false
-    virtual bool DoesSampleExist(gpa_uint32 sampleIndex) const = 0;
+    virtual bool DoesSampleExist(gpa_uint32 sampleId) const = 0;
 
     /// Starts a sample on command list for the passed unique sample id
     /// \param[in] sampleId User-supplied Id of the sample
@@ -139,6 +139,12 @@ public:
     /// Returns the number of samples created in this session
     /// \return number of samples
     virtual gpa_uint32 GetSampleCount() const = 0;
+
+    /// Get the sample id by index
+    /// \param[in] sampleIndex index of the sample
+    /// \param[out] clientSampleId client sample id
+    /// \return true if sample found otherwise false
+    virtual bool GetSampleIdByIndex(gpa_uint32 sampleIndex, gpa_uint32& clientSampleId) const = 0;
 
     /// Checks for newly available sample results
     /// \return true if the results from all samples are now available and cached locally;

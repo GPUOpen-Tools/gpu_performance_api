@@ -7,7 +7,7 @@
 
 #include "VkGPACommandList.h"
 #include "VkGPASession.h"
-#include <vulkan.h>
+#include <vulkan/vulkan.h>
 #include "VkEntrypoints.h"
 #include "VkGPAContext.h"
 #include "VkGPASoftwareSample.h"
@@ -183,7 +183,7 @@ bool VkGPACommandList::IsResultReady() const
 
     if (nullptr == pVkGPAContext)
     {
-       GPA_LogError("Invalid profiling session encountered when checking for available results.");
+        GPA_LogError("Invalid profiling session encountered when checking for available results.");
     }
     else
     {

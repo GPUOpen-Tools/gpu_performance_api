@@ -319,14 +319,30 @@ gpa_uint32 GPASession::GetSampleCount() const
 
     gpa_uint32 sampleCount = 0;
 
+    std::lock_guard<std::mutex> lockResources(m_gpaSessionMutex);
+
     // make sure there is at least one request
     if (!m_passes.empty())
     {
-        std::lock_guard<std::mutex> lockResources(m_gpaSessionMutex);
         sampleCount = static_cast<gpa_uint32>(m_passes[0]->GetSampleCount());
     }
 
     return sampleCount;
+}
+
+bool GPASession::GetSampleIdByIndex(SampleIndex sampleIndex, ClientSampleId& clientSampleId) const
+{
+    TRACE_PRIVATE_FUNCTION(GPASession::GetSampleIdByIndex);
+
+    std::lock_guard<std::mutex> lockResources(m_gpaSessionMutex);
+
+    // make sure there is at least one request
+    if (!m_passes.empty())
+    {
+        return m_passes[0]->GetSampleIdByIndex(sampleIndex, clientSampleId);
+    }
+
+    return false;
 }
 
 bool GPASession::DoesCommandListExist(gpa_uint32 passIndex, GPA_CommandListId pCommandListId) const
@@ -356,13 +372,13 @@ bool GPASession::DoesCommandListExist(gpa_uint32 passIndex, GPA_CommandListId pC
     return exists;
 }
 
-bool GPASession::DoesSampleExist(gpa_uint32 sampleIndex) const
+bool GPASession::DoesSampleExist(gpa_uint32 sampleId) const
 {
     bool retVal = false;
 
     if (!m_passes.empty())
     {
-        retVal = m_passes[0]->DoesSampleExist(sampleIndex);
+        retVal = m_passes[0]->DoesSampleExist(sampleId);
     }
 
     return retVal;
@@ -502,16 +518,23 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
     }
 
     const uint32_t timeout = 5 * 1000; // 5 second timeout
-    Flush(timeout); // TODO: how do we handle the timeout case?
+
+    if (!Flush(timeout))
+    {
+        GPA_LogError("Failed to retrieve sample data due to timeout.");
+        return GPA_STATUS_ERROR_TIMEOUT;
+    }
 
     // For each counter
-    // Get the interal counter result locations that are needed
+    // Get the internal counter result locations that are needed
     // get the necessary results from each pass
     // plug them into the counter equation (where does this come from?)
     // put the result in the appropriate spot in the supplied buffer.
 
     gpa_uint32 numEnabled = 0;
     GetNumEnabledCounters(&numEnabled);
+
+    GPA_Status status = GPA_STATUS_OK;
 
     for (gpa_uint32 counterIndexIter = 0; counterIndexIter < numEnabled; counterIndexIter++)
     {
@@ -604,22 +627,28 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
                 // compute using supplied function. value order is as defined when registered
                 if (GPA_DATA_TYPE_FLOAT64 == currentCounterType)
                 {
-                    m_pParentContext->GetCounterAccessor()->ComputePublicCounterValue(sourceLocalIndex,
-                                                                                      results,
-                                                                                      types,
-                                                                                      reinterpret_cast<gpa_float64*>(pCounterSampleResults) + counterIndexIter,
-                                                                                      m_pParentContext->GetHwInfo());
+                    status = m_pParentContext->GetCounterAccessor()->ComputePublicCounterValue(sourceLocalIndex,
+                             results,
+                             types,
+                             reinterpret_cast<gpa_float64*>(pCounterSampleResults) + counterIndexIter,
+                             m_pParentContext->GetHwInfo());
                 }
                 else if (GPA_DATA_TYPE_UINT64 == currentCounterType)
                 {
-                    m_pParentContext->GetCounterAccessor()->ComputePublicCounterValue(sourceLocalIndex,
-                                                                                      results,
-                                                                                      types,
-                                                                                      reinterpret_cast<gpa_uint64*>(pCounterSampleResults) + counterIndexIter,
-                                                                                      m_pParentContext->GetHwInfo());
+                    status = m_pParentContext->GetCounterAccessor()->ComputePublicCounterValue(sourceLocalIndex,
+                             results,
+                             types,
+                             reinterpret_cast<gpa_uint64*>(pCounterSampleResults) + counterIndexIter,
+                             m_pParentContext->GetHwInfo());
                 }
 
                 delete[] pAllResults;
+
+                if (status != GPA_STATUS_OK)
+                {
+                    return status;
+                }
+
                 break;
             }
 
@@ -653,7 +682,7 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
         }
     }
 
-    return GPA_STATUS_OK;
+    return status;
 }
 
 GPA_Session_Sample_Type GPASession::GetSampleType() const

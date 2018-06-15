@@ -201,9 +201,8 @@ bool DX11GPAContext::InitializeProfileAMDExtension()
         // Note: PFNAmdDxExtCreate11 adds a ref on the out parameter
         HRESULT hr = dx11ExtensionFunc(m_pD3D11Device, &m_pDxExt);
 
-        if (S_OK == hr)
+        if (SUCCEEDED(hr))
         {
-
             m_pDxExtPE = reinterpret_cast<IAmdDxExtPerfProfile*>(m_pDxExt->GetExtInterface(AmdDxExtPerfProfileID));
 
             if (nullptr != m_pDxExtPE)

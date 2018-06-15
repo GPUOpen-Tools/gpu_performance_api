@@ -5,26 +5,32 @@
 #    This script is used by the UpdateCommon.py script
 
 # GitHub GPUOpen-Tools projects map
-GitHubMapping = {
-    "common-lib-amd-ADL"                     : "../Common/Lib/AMD/ADL",
-    "common-lib-amd-APPSDK-3.0"              : "../Common/Lib/AMD/APPSDK",
-    "common-lib-ext-GoogleTest-1.7"          : "../Common/Lib/Ext/GoogleTest",
-    "common-lib-ext-OpenGL"                  : "../Common/Lib/Ext/OpenGL",
-    "common-lib-ext-WindowsKits"             : "../Common/Lib/Ext/Windows-Kits",
-    "common-lib-ext-Vulkan-1.0.49.0"         : "../Common/Lib/Ext/Vulkan",
-    "common-src-ADLUtil"                     : "../Common/Src/ADLUtil",
-    "common-src-AmdDxExt"                    : "../Common/Src/AmdDxExt",
-    "common-src-AmdVkExt"                    : "../Common/Src/AmdVkExt",
-    "common-src-DeviceInfo"                  : "../Common/Src/DeviceInfo",
-    "common-src-DynamicLibraryModule"        : "../Common/Src/DynamicLibraryModule",
-    "common-src-TSingleton"                  : "../Common/Src/TSingleton",
-    "common-src-Vsprops"                     : "../Common/Src/Vsprops",
+# Define a set of dependencies that exist as separate git projects. The parameters are:
+# "git repo name"  : ["Directory for clone relative to parent project directory",  "branch or commit to checkout (or None for top of tree)"]
+gitMapping = {
+ # Lib.
+    "common-lib-amd-ADL"                  : ["../Common/Lib/AMD/ADL",               None],
+    "common-lib-amd-APPSDK-3.0"           : ["../Common/Lib/AMD/APPSDK",            None],
+    "common-lib-ext-GoogleTest-1.7"       : ["../Common/Lib/Ext/GoogleTest",        None],
+    "common-lib-ext-OpenGL"               : ["../Common/Lib/Ext/OpenGL",            None],
+    "common-lib-ext-WindowsKits"          : ["../Common/Lib/Ext/Windows-Kits",      None],
+# Src.
+    "common-src-ADLUtil"                  : ["../Common/Src/ADLUtil",               None],
+    "common-src-AmdDxExt"                 : ["../Common/Src/AmdDxExt",              None],
+    "common-src-AmdVkExt"                 : ["../Common/Src/AmdVkExt",              None],
+    "common-src-DeviceInfo"               : ["../Common/Src/DeviceInfo",            None],
+    "common-src-DynamicLibraryModule"     : ["../Common/Src/DynamicLibraryModule",  None],
+    "common-src-TSingleton"               : ["../Common/Src/TSingleton",            None],
+    "common-src-Vsprops"                  : ["../Common/Src/Vsprops",               None],
 }
 
-downloadAndInstallMappingWin = {
-    "https://sdk.lunarg.com/sdk/download/1.0.49.0/windows/VulkanSDK-1.0.49.0-Installer.exe" : ["../Common/Lib/Ext/Vulkan", "c:/VulkanSDK/1.0.49.0/Include", "../Common/Lib/Ext/Vulkan/1.0.49.0/SDK/Include"],
+# Name : Source , Destination, version, Copied/Installation location wrt to Script root
+downloadWin = {
+    "Vulkan" : [ "https://sdk.lunarg.com/sdk/download/1.0.68.0/windows/VulkanSDK-1.0.68.0-Installer.exe", "default", "1.0.68.0", "default"],
+    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/GPA/releases/download/v3.0/GPUPerfAPI-3.0.353.0.zip" , "default", "3_0", "Common/Lib/AMD/GPUPerfAPI"]
 }
 
-downloadAndInstallMappingLin = {
-    "https://sdk.lunarg.com/sdk/download/1.0.49.0/linux/Vulkansdk-linux-x86_64-1.0.49.0.run" : ["../Common/Lib/Ext/Vulkan"],
+# Name : Source , Destination, version, Copied/Installation location wrt to Script root
+downloadLinux = {
+    "Vulkan" : [ "https://sdk.lunarg.com/sdk/download/1.0.68.0/linux/Vulkansdk-linux-x86_64-1.0.68.0.run", "default", "1.0.68.0", "default"]
 }

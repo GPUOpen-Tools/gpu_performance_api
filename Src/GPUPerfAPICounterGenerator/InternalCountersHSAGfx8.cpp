@@ -295,6 +295,8 @@ unsigned int HWHSASQIsolatedGroupsGfx8[] =
     88, // Tcp
 };
 
+const std::set<unsigned int> HWHSATimestampBlockIdsGfx8 = {  }; ///< Timestamp block id's for HSA for Gfx8 family
+const std::set<unsigned int> HWHSATimeCounterIndicesGfx8 = {  }; ///< Timestamp counter indices for HSA for Gfx8 family
 const unsigned int HWHSAGroupCountGfx8 = sizeof(HWHSAGroupsGfx8) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWHSASQGroupCountGfx8 = sizeof(HWHSASQGroupsGfx8) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWHSASQIsolatedGroupCountGfx8 = sizeof(HWHSASQIsolatedGroupsGfx8) / sizeof(unsigned int);

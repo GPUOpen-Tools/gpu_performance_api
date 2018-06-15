@@ -726,47 +726,47 @@ void TestD3D11QueryCounter(unsigned int deviceId, unsigned int D3DQueryCounterIn
     VerifyCountersInPass(GPA_API_DIRECTX_11, deviceId, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
 }
 
-static unsigned int GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_Hw_Generation generation, unsigned int& gpuTimeHWCounterIndex)
+// Disable Software counter tests
+/*
+static unsigned int GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_Hw_Generation generation, unsigned int* pBottomToBottomIndex = nullptr )
 {
     unsigned int numHwCounters = 0;
-    gpuTimeHWCounterIndex = 0;
 
     GPA_CounterGroupDesc* pHardwareGroups = nullptr;
-    GPA_HardwareCounterDesc** ppHardwareCounters = nullptr;
     unsigned int hwGroupCount = 0;
-    unsigned int hwGPUTimeGroupIndex = 0;
 
     switch (generation)
     {
         case GPA_HW_GENERATION_GFX6:
             pHardwareGroups = HWDX11GroupsGfx6;
             hwGroupCount = HWDX11GroupCountGfx6;
-            ppHardwareCounters = DX11CounterGroupArrayGfx6;
-            hwGPUTimeGroupIndex = HWDX11GPUTimeIndexGfx6;
+            if (pBottomToBottomIndex)
+            {
+                *pBottomToBottomIndex = HWDX11GPUTimeBottomToBottomIndexGfx6;
+            }
             break;
 
         case GPA_HW_GENERATION_GFX7:
             pHardwareGroups = HWDX11GroupsGfx7;
             hwGroupCount = HWDX11GroupCountGfx7;
-            ppHardwareCounters = DX11CounterGroupArrayGfx7;
-            hwGPUTimeGroupIndex = HWDX11GPUTimeIndexGfx7;
+            if (pBottomToBottomIndex)
+            {
+                *pBottomToBottomIndex = HWDX11GPUTimeBottomToBottomIndexGfx7;
+            }
             break;
 
         case GPA_HW_GENERATION_GFX8:
             pHardwareGroups = HWDX11GroupsGfx8;
             hwGroupCount = HWDX11GroupCountGfx8;
-            ppHardwareCounters = DX11CounterGroupArrayGfx8;
-            hwGPUTimeGroupIndex = HWDX11GPUTimeIndexGfx8;
+            if (pBottomToBottomIndex)
+            {
+                *pBottomToBottomIndex = HWDX11GPUTimeBottomToBottomIndexGfx8;
+            }
             break;
     }
 
     for (unsigned int i = 0; i < hwGroupCount; i++)
     {
-        if (hwGPUTimeGroupIndex == i)
-        {
-            gpuTimeHWCounterIndex = numHwCounters;
-        }
-
         numHwCounters += pHardwareGroups[i].m_numCounters;
     }
 
@@ -776,7 +776,6 @@ static unsigned int GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_Hw_Genera
 /// Test the D3D11 QUERY counters (software counters) across different generations
 TEST(CounterDLLTests, DX11D3DCounters)
 {
-    unsigned int dummyGpuTimeHWIndex  = 0;  // this is the index of the GPUTime hw counter (i.e. GPUTime_Bottom_To_Bottom)
     unsigned int D3DCounterIndex      = 0;  // this is the index into the software counters of "OCCLUSION" - see GPASwCounterManager.h
     unsigned int publicCounterCount   = 0;  // this is the number of public counters exposed
     unsigned int hardwareCounterCount = 0;  // this is the number of hardware counters exposed, which is used to offset the sw counter index
@@ -784,25 +783,25 @@ TEST(CounterDLLTests, DX11D3DCounters)
     // Gfx6
     D3DCounterIndex      = 1;
     publicCounterCount  = DX11GFX6_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6);
     TestD3D11QueryCounter(gDevIdSI, D3DCounterIndex, publicCounterCount, hardwareCounterCount);
 
     // Gfx7
     D3DCounterIndex      = 1;
     publicCounterCount  = DX11GFX7_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7);
     TestD3D11QueryCounter(gDevIdCI, D3DCounterIndex, publicCounterCount, hardwareCounterCount);
 
     // Gfx8
     D3DCounterIndex      = 1;
     publicCounterCount  = DX11GFX8_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8);
     TestD3D11QueryCounter(gDevIdVI, D3DCounterIndex, publicCounterCount, hardwareCounterCount);
 }
 
 TEST(CounterDLLTests, DX11D3DCountersAndGPUTime)
 {
-    unsigned int gpuTimeHWIndex       = 0;  // this is the index of the GPUTime hw counter (i.e. GPUTime_Bottom_To_Bottom)
+    unsigned int gpuTimeHWIndex = 0;
     unsigned int D3DCounterIndex      = 0;  // this is the index into the software counters of "OCCLUSION" - see GPASwCounterManager.h
     unsigned int publicCounterCount   = 0;  // this is the number of public counters exposed
     unsigned int hardwareCounterCount = 0;  // this is the number of hardware counters exposed, which is used to offset the sw counter index
@@ -810,19 +809,19 @@ TEST(CounterDLLTests, DX11D3DCountersAndGPUTime)
     // Gfx6
     D3DCounterIndex      = 1;
     publicCounterCount   = DX11GFX6_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6, gpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6, &gpuTimeHWIndex);
     TestD3D11QueryCounter(gDevIdSI, D3DCounterIndex, publicCounterCount, hardwareCounterCount, gpuTimeHWIndex);
 
     // Gfx7
     D3DCounterIndex      = 1;
     publicCounterCount   = DX11GFX7_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7, gpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7, &gpuTimeHWIndex);
     TestD3D11QueryCounter(gDevIdCI, D3DCounterIndex, publicCounterCount, hardwareCounterCount, gpuTimeHWIndex);
 
     // Gfx8
     D3DCounterIndex      = 1;
     publicCounterCount   = DX11GFX8_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8, gpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8, &gpuTimeHWIndex);
     TestD3D11QueryCounter(gDevIdVI, D3DCounterIndex, publicCounterCount, hardwareCounterCount, gpuTimeHWIndex);
 }
 
@@ -870,26 +869,26 @@ void TestAllD3D11QueryCounters(unsigned int deviceId, unsigned int D3DQueryCount
 
 TEST(CounterDLLTests, AllDX11D3DCounters)
 {
-    unsigned int dummyGpuTimeHWIndex  = 0;  // this is the index of the GPUTime hw counter (i.e. GPUTime_Bottom_To_Bottom)
     unsigned int publicCounterCount = 0;  // this is the number of public counters exposed
     unsigned int hardwareCounterCount = 0;  // this is the number of hardware counters exposed, which is used to offset the sw counter index
     unsigned int D3DQueryCounterCount = 29; // there are currently 29 D3D11 query counters
 
     // Gfx6
     publicCounterCount   = DX11GFX6_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6);
     TestAllD3D11QueryCounters(gDevIdSI, D3DQueryCounterCount, publicCounterCount, hardwareCounterCount);
 
     // Gfx7
     publicCounterCount   = DX11GFX7_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7);
     TestAllD3D11QueryCounters(gDevIdCI, D3DQueryCounterCount, publicCounterCount, hardwareCounterCount);
 
     // Gfx8
     publicCounterCount   = DX11GFX8_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8, dummyGpuTimeHWIndex);
+    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8);
     TestAllD3D11QueryCounters(gDevIdVI, D3DQueryCounterCount, publicCounterCount, hardwareCounterCount);
 }
+*/
 
 TEST(CounterDLLTests, DX11CIPSBusyCounterResult)
 {

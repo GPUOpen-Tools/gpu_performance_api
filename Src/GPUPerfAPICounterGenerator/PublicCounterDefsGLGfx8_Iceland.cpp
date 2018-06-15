@@ -14,10 +14,10 @@
 namespace GLGfx8_Iceland
 {
 
-bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_PublicCounters& p)
+bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
-    UNREFERENCED_PARAMETER(p); // Unreferenced if there are no ASIC specific block instance registers
+    UNREFERENCED_PARAMETER(c); // Unreferenced if there are no ASIC specific block instance registers
 
     if (!CounterGfx8_Iceland::MatchAsic(asicType))
     {
@@ -31,13 +31,13 @@ bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC
         internalCounters.push_back(14905);
         internalCounters.push_back(2633);
 
-        p.UpdateAsicSpecificPublicCounter("TessellatorBusy", internalCounters, "0,NUM_PRIM_PIPES,/,1,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("TessellatorBusy", internalCounters, "0,NUM_PRIM_PIPES,/,1,/,(100),*");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(14905);
 
-        p.UpdateAsicSpecificPublicCounter("TessellatorBusyCycles", internalCounters, "0,NUM_PRIM_PIPES,/");
+        c.UpdateAsicSpecificDerivedCounter("TessellatorBusyCycles", internalCounters, "0,NUM_PRIM_PIPES,/");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -45,13 +45,13 @@ bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC
         internalCounters.push_back(14781);
         internalCounters.push_back(14876);
 
-        p.UpdateAsicSpecificPublicCounter("VSVerticesIn", internalCounters, "0,1,1,ifnotzero,2,2,ifnotzero");
+        c.UpdateAsicSpecificDerivedCounter("VSVerticesIn", internalCounters, "0,1,1,ifnotzero,2,2,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(14885);
 
-        p.UpdateAsicSpecificPublicCounter("HSPatches", internalCounters, "0");
+        c.UpdateAsicSpecificDerivedCounter("HSPatches", internalCounters, "0");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -59,20 +59,20 @@ bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC
         internalCounters.push_back(14781);
         internalCounters.push_back(14876);
 
-        p.UpdateAsicSpecificPublicCounter("DSVerticesIn", internalCounters, "(0),0,1,1,ifnotzero,2,ifnotzero");
+        c.UpdateAsicSpecificDerivedCounter("DSVerticesIn", internalCounters, "(0),0,1,1,ifnotzero,2,ifnotzero");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(14789);
 
-        p.UpdateAsicSpecificPublicCounter("GSPrimsIn", internalCounters, "0");
+        c.UpdateAsicSpecificDerivedCounter("GSPrimsIn", internalCounters, "0");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(14800);
         internalCounters.push_back(14781);
 
-        p.UpdateAsicSpecificPublicCounter("GSVerticesOut", internalCounters, "(0),0,1,ifnotzero");
+        c.UpdateAsicSpecificDerivedCounter("GSVerticesOut", internalCounters, "(0),0,1,ifnotzero");
     }
     return true;
 

@@ -42,7 +42,7 @@ public:
 protected:
     static void LogFunction(GPA_Logging_Type loggingType, const char* pLogMessage);
 
-    GPAFunctionTable* m_pGpaFuncTable;
+    const GPAFunctionTable* m_pGpaFuncTable;
     GPA_API_Type m_api;
 
 private:
@@ -232,7 +232,6 @@ TEST_P(GPAAPIErrorTest, TestGPA_CounterInterrogation)
     status = m_pGpaFuncTable->GPA_GetNumCounters(badContextId, nullptr);
     EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
-    numCounters;
     status = m_pGpaFuncTable->GPA_GetNumCounters(badContextId, &numCounters);
     EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
 
@@ -464,7 +463,6 @@ TEST_P(GPAAPIErrorTest, TestGPA_CounterInterrogation)
     status = m_pGpaFuncTable->GPA_GetCounterSampleType(badContextId, 0, nullptr);
     EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
-    sampleType;
     status = m_pGpaFuncTable->GPA_GetCounterSampleType(badContextId, 0, &sampleType);
     EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
 
@@ -935,9 +933,23 @@ TEST_P(GPAAPIErrorTest, TestGPA_SampleHandling)
     EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
     status = m_pGpaFuncTable->GPA_GetSampleCount(badSession, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
     status = m_pGpaFuncTable->GPA_GetSampleCount(badSession, &sampleCount);
+    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+
+    // GPA_GetSampleId
+    status = m_pGpaFuncTable->GPA_GetSampleId(nullptr, 0, nullptr);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    gpa_uint32 sampleId;
+    status = m_pGpaFuncTable->GPA_GetSampleId(nullptr, 0, &sampleId);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    status = m_pGpaFuncTable->GPA_GetSampleId(badSession, 0, nullptr);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    status = m_pGpaFuncTable->GPA_GetSampleId(badSession, 0, &sampleId);
     EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
 }
 
@@ -980,10 +992,10 @@ TEST_P(GPAAPIErrorTest, TestGPA_QueryResults)
     EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
     status = m_pGpaFuncTable->GPA_GetSampleResultSize(badSession, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
     status = m_pGpaFuncTable->GPA_GetSampleResultSize(badSession, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
     status = m_pGpaFuncTable->GPA_GetSampleResultSize(badSession, 0, &resultSize);
     EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
@@ -1011,13 +1023,13 @@ TEST_P(GPAAPIErrorTest, TestGPA_QueryResults)
     EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
     status = m_pGpaFuncTable->GPA_GetSampleResult(badSession, 0, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
     status = m_pGpaFuncTable->GPA_GetSampleResult(badSession, 0x7FFFFFFF, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
     status = m_pGpaFuncTable->GPA_GetSampleResult(badSession, 0, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
     status = m_pGpaFuncTable->GPA_GetSampleResult(badSession, 0, 0, reinterpret_cast<void*>(this));
     EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
@@ -1052,6 +1064,29 @@ TEST_P(GPAAPIErrorTest, TestGPA_StatusErrorQuery)
     EXPECT_EQ(0, statusStr.compare(0, gpaPrefixStr.length(), gpaPrefixStr));
     statusStr = m_pGpaFuncTable->GPA_GetStatusAsStr(static_cast<GPA_Status>(-1024));
     EXPECT_EQ(0, statusStr.compare("GPA Error: Unknown Error."));
+}
+
+TEST_P(GPAAPIErrorTest, TestGPA_APIVersion)
+{
+    // GPA_GetVersion
+    GPA_Status status = m_pGpaFuncTable->GPA_GetVersion(nullptr, nullptr, nullptr, nullptr);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    gpa_uint32 majorVer = 0;
+    status = m_pGpaFuncTable->GPA_GetVersion(&majorVer, nullptr, nullptr, nullptr);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    gpa_uint32 minorVer = 0;
+    status = m_pGpaFuncTable->GPA_GetVersion(&majorVer, &minorVer, nullptr, nullptr);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    gpa_uint32 build = 0;
+    status = m_pGpaFuncTable->GPA_GetVersion(&majorVer, &minorVer, &build, nullptr);
+    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    gpa_uint32 updateVer = 0;
+    status = m_pGpaFuncTable->GPA_GetVersion(&majorVer, &minorVer, &build, &updateVer);
+    EXPECT_EQ(GPA_STATUS_OK, status);
 }
 
 TEST_P(GPAAPIErrorTest, TestGPA_GPAFunctionTable)
@@ -1091,7 +1126,8 @@ TEST_P(GPAAPIErrorTest, TestGPA_GPAFunctionTable)
     ASSERT_EQ(GPA_STATUS_OK, status);
     EXPECT_EQ(m_pGpaFuncTable->m_majorVer, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER);
     EXPECT_EQ(m_pGpaFuncTable->m_minorVer, GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER);
-    EXPECT_EQ(nullptr, pFuncTable->GPA_GetStatusAsStr);
+    // Note: Whenever GPA function table changes, we need to update this with the last function in the GPA function table
+    EXPECT_EQ(nullptr, pFuncTable->GPA_GetVersion);
 
     delete pFuncTable;
 }

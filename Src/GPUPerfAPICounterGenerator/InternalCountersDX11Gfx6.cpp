@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX11 internal counter definitions for GFX6
@@ -635,9 +635,10 @@ PE_BLOCK_ID HWDX11DriverEnumGfx6[] =
     PE_BLOCK_UNKNOWN,
 };
 
-const unsigned int HWDX11GPUTimeIndexGfx6 = 163;
-const unsigned int HWDX11GPUTimeStampIndexGfx6 = 162;
-const unsigned int HWDX11FirstGPUTimeCounterIndexGfx6 = 16885;
+const unsigned int HWDX11GPUTimeBottomToBottomIndexGfx6 = 16886;
+const unsigned int HWDX11GPUTimeTopToBottomIndexGfx6 = 16887;
+const std::set<unsigned int> HWDX11TimestampBlockIdsGfx6 = { 163, 162 }; ///< Timestamp block id's for DX11 for Gfx6 family
+const std::set<unsigned int> HWDX11TimeCounterIndicesGfx6 = { 16886, 16887, 16885 }; ///< Timestamp counter indices for DX11 for Gfx6 family
 const unsigned int HWDX11GroupCountGfx6 = sizeof(HWDX11GroupsGfx6) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX11SQGroupCountGfx6 = sizeof(HWDX11SQGroupsGfx6) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX11SQIsolatedGroupCountGfx6 = sizeof(HWDX11SQIsolatedGroupsGfx6) / sizeof(unsigned int);

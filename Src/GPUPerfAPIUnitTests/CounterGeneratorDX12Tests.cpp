@@ -68,6 +68,9 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             ppHardwareCounters = DX12CounterGroupArrayGfx9;
 #endif
             break;
+
+        default:
+            break;
     }
 
     for (size_t i = 0; i < publicCounterCount; i++)
@@ -83,10 +86,12 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
         }
     }
 
+    /* No more sw counters
     for (size_t i = 0; i < DX12SW_COUNTER_COUNT; i++)
     {
         counterNames.push_back(DX12SW_COUNTERS[i].m_pName);
     }
+    */
 }
 
 // Test the DX12 counter names on all supported hardware
@@ -110,14 +115,10 @@ TEST(CounterDLLTests, DX12CounterNamesByGeneration)
 {
     VerifyHardwareNotSupported(GPA_API_DIRECTX_12, GPA_HW_GENERATION_NONE, FALSE);
     VerifyHardwareNotSupported(GPA_API_DIRECTX_12, GPA_HW_GENERATION_GFX6, FALSE);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, GPA_HW_GENERATION_NVIDIA, FALSE);
+    VerifyHardwareNotSupported(GPA_API_DIRECTX_12, GPA_HW_GENERATION_INTEL, FALSE);
 
     std::vector<const char*> counterNames;
-
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_NVIDIA, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_NVIDIA, FALSE, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_INTEL, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_INTEL, FALSE, counterNames);
-
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX7, counterNames);
     VerifyCounterNames(GPA_API_DIRECTX_12, GPA_HW_GENERATION_GFX7, FALSE, counterNames);
     GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);

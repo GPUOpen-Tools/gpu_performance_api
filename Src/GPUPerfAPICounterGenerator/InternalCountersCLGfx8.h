@@ -13,6 +13,8 @@ extern GPA_HardwareCounterDesc* CLCounterGroupArrayGfx8[]; ///< Array of hardwar
 extern GPA_CounterGroupDesc HWCLGroupsGfx8[]; ///< Array of counter groups for CL for Gfx8 family
 extern GPA_SQCounterGroupDesc HWCLSQGroupsGfx8[]; ///< Array of SQ groups for CL for Gfx8 family
 extern unsigned int HWCLSQIsolatedGroupsGfx8[]; ///< Array of counter groups isolated from SQ counter groups for CL for Gfx8 family
+extern const std::set<unsigned int> HWCLTimestampBlockIdsGfx8; ///< Timestamp block id's for CL for Gfx8 family
+extern const std::set<unsigned int> HWCLTimeCounterIndicesGfx8; ///< Timestamp counter indices for CL for Gfx8 family
 extern const unsigned int HWCLGroupCountGfx8; ///< Hardware Group Count for CL for Gfx8 family
 extern const unsigned int HWCLSQGroupCountGfx8; ///< Hardware SQ Group Count for CL for Gfx8 family
 extern const unsigned int HWCLSQIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for CL for Gfx8 family

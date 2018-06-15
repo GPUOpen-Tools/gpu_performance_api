@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  VK internal counter definitions for GFX9
@@ -660,7 +660,7 @@ GPA_CounterGroupDesc HWVKGroupsGfx9[] =
     {303, "RLC", 0, 7, 2},
     {304, "SDMA0", 0, 97, 2},
     {305, "SDMA1", 1, 97, 2},
-    {306, "CPG", 0, 59, 2},
+    {306, "CPG", 0, 60, 2},
     {307, "CPC", 0, 35, 2},
     {308, "WD", 0, 58, 4},
     {309, "ATC", 0, 24, 4},
@@ -1287,7 +1287,10 @@ VkGpaPerfBlockAMD HWVKDriverEnumGfx9[] =
     VK_GPA_PERF_BLOCK_RANGE_SIZE_AMD,
 };
 
-const unsigned int HWVKGPUTimeIndexGfx9 = 337;
+const unsigned int HWVKGPUTimeBottomToBottomIndexGfx9 = 54511;
+const unsigned int HWVKGPUTimeTopToBottomIndexGfx9 = 54512;
+const std::set<unsigned int> HWVKTimestampBlockIdsGfx9 = { 337 }; ///< Timestamp block id's for VK for Gfx9 family
+const std::set<unsigned int> HWVKTimeCounterIndicesGfx9 = { 54511, 54512 }; ///< Timestamp counter indices for VK for Gfx9 family
 const unsigned int HWVKGroupCountGfx9 = sizeof(HWVKGroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWVKSQGroupCountGfx9 = sizeof(HWVKSQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWVKSQIsolatedGroupCountGfx9 = sizeof(HWVKSQIsolatedGroupsGfx9) / sizeof(unsigned int);

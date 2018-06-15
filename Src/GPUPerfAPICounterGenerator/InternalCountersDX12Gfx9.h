@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX12 internal counter definitions for GFX9
@@ -20,7 +20,10 @@ extern GPA_CounterGroupDesc HWDX12GroupsGfx9[]; ///< Array of counter groups for
 extern GPA_SQCounterGroupDesc HWDX12SQGroupsGfx9[]; ///< Array of SQ groups for DX12 for Gfx9 family
 extern unsigned int HWDX12SQIsolatedGroupsGfx9[]; ///< Array of counter groups isolated from SQ counter groups for DX12 for Gfx9 family
 extern AmdExtGpuBlock HWDX12DriverEnumGfx9[]; ///< Array of driver enum values per group for DX12 for Gfx9 family
-extern const unsigned int HWDX12GPUTimeIndexGfx9; ///< Index of GPUTime Group for DX12 for Gfx9 family
+extern const unsigned int HWDX12GPUTimeBottomToBottomIndexGfx9; ///< Index of EOP to EOP counter for DX12 for Gfx9 family
+extern const unsigned int HWDX12GPUTimeTopToBottomIndexGfx9; ///< Index of TOP to EOP counter for DX12 for Gfx9 family
+extern const std::set<unsigned int> HWDX12TimestampBlockIdsGfx9; ///< Timestamp block id's for DX12 for Gfx9 family
+extern const std::set<unsigned int> HWDX12TimeCounterIndicesGfx9; ///< Timestamp counter indices for DX12 for Gfx9 family
 extern const unsigned int HWDX12GroupCountGfx9; ///< Hardware Group Count for DX12 for Gfx9 family
 extern const unsigned int HWDX12SQGroupCountGfx9; ///< Hardware SQ Group Count for DX12 for Gfx9 family
 extern const unsigned int HWDX12SQIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for DX12 for Gfx9 family

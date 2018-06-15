@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  A factory which can produce various counter splitting implementations.
@@ -38,9 +38,8 @@ class GPASplitCounterFactory
 public:
     /// Generates a new counter splitter object which will need to be deleted by the caller.
     /// \param algorithm The type of algorithm to generate a splitter for.
-    /// \param gpuTimestampGroupIndex The index of the GPU Timestamp group.
-    /// \param gpuTimestampBottomToBottomCounterIndex The index of the bottom to bottom timestamp counter.
-    /// \param gpuTimestampTopToBottomCounterIndex The index of the top to bottom timestamp counter.
+    /// \param timestampBlockIds Set of timestamp block id's
+    /// \param timeCounterIndices Set of timestamp counter indices
     /// \param maxSQCounters The maximum number of simultaneous counters in the SQ block.
     /// \param numSQGroups The number of SQ counter groups.
     /// \param pSQCounterBlockInfo The list of SQ counter groups.
@@ -48,9 +47,8 @@ public:
     /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
     /// \return the counter splitter
     static IGPASplitCounters* GetNewCounterSplitter(GPACounterSplitterAlgorithm algorithm,
-                                                    unsigned int gpuTimestampGroupIndex,
-                                                    unsigned int gpuTimestampBottomToBottomCounterIndex,
-                                                    unsigned int gpuTimestampTopToBottomCounterIndex,
+                                                    const std::set<unsigned int>& timestampBlockIds,
+                                                    const std::set<unsigned int>& timeCounterIndices,
                                                     unsigned int maxSQCounters,
                                                     unsigned int numSQGroups,
                                                     GPA_SQCounterGroupDesc* pSQCounterBlockInfo,
@@ -61,9 +59,8 @@ public:
 
         if (MAX_PER_PASS == algorithm)
         {
-            pSplitter = new(std::nothrow) GPASplitCountersMaxPerPass(gpuTimestampGroupIndex,
-                                                                     gpuTimestampBottomToBottomCounterIndex,
-                                                                     gpuTimestampTopToBottomCounterIndex,
+            pSplitter = new(std::nothrow) GPASplitCountersMaxPerPass(timestampBlockIds,
+                                                                     timeCounterIndices,
                                                                      maxSQCounters,
                                                                      numSQGroups,
                                                                      pSQCounterBlockInfo,
@@ -72,9 +69,8 @@ public:
         }
         else if (ONE_PUBLIC_COUNTER_PER_PASS == algorithm)
         {
-            pSplitter = new(std::nothrow) GPASplitCountersOnePerPass(gpuTimestampGroupIndex,
-                                                                     gpuTimestampBottomToBottomCounterIndex,
-                                                                     gpuTimestampTopToBottomCounterIndex,
+            pSplitter = new(std::nothrow) GPASplitCountersOnePerPass(timestampBlockIds,
+                                                                     timeCounterIndices,
                                                                      maxSQCounters,
                                                                      numSQGroups,
                                                                      pSQCounterBlockInfo,
@@ -83,9 +79,8 @@ public:
         }
         else if (CONSOLIDATED == algorithm)
         {
-            pSplitter = new(std::nothrow) GPASplitCountersConsolidated(gpuTimestampGroupIndex,
-                                                                       gpuTimestampBottomToBottomCounterIndex,
-                                                                       gpuTimestampTopToBottomCounterIndex,
+            pSplitter = new(std::nothrow) GPASplitCountersConsolidated(timestampBlockIds,
+                                                                       timeCounterIndices,
                                                                        maxSQCounters,
                                                                        numSQGroups,
                                                                        pSQCounterBlockInfo,
