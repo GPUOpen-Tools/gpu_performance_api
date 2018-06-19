@@ -15,6 +15,14 @@
 // #endif
 // GPAFuncTableInfo* g_pFuncTableInfo = NULL;
 
+// In order to use this header file with a debug build of GPA
+// the "USE_DEBUG_GPA" preprocessor macro should be defined before
+// including this header file
+
+// In order to use this header file with an internal build of GPA
+// the "USE_INTERNAL_GPA" preprocessor macro should be defined before
+// including this header file
+
 #ifndef _GPA_INTERFACE_LOADER_H_
 #define _GPA_INTERFACE_LOADER_H_
 
@@ -93,12 +101,7 @@
     #define GPA_X86_ARCH_SUFFIX TFORMAT("32")       ///< Macro for 32-bit lib file architecture suffix
 #endif
 
-#ifdef _DEBUG
-    #define GPA_DEBUG_SUFFIX TFORMAT("-d")          ///< Macro for debug suffix
-#else
-    #define GPA_DEBUG_SUFFIX TFORMAT("")            ///< Macro for release suffix
-#endif
-
+#define GPA_DEBUG_SUFFIX TFORMAT("-d")              ///< Macro for debug suffix
 #define GPA_INTERNAL_SUFFIX TFORMAT("-Internal")    ///< Macro for internal build lib file suffix
 
 #define ARRAY_LENGTH(x) (sizeof(x)/sizeof(x[0]))    ///< Macro to calculate array length
@@ -229,7 +232,9 @@ static const LocaleChar* GPAIL_GetLibraryFileName(GPA_API_Type pApiType)
     STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_X86_ARCH_SUFFIX);
 #endif
 
+#ifdef USE_DEBUG_GPA
     STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_DEBUG_SUFFIX);
+#endif
 
 #ifdef USE_INTERNAL_GPA
     STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_INTERNAL_SUFFIX);
