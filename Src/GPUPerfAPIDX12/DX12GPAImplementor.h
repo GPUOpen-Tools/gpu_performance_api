@@ -38,6 +38,15 @@ public:
     /// \copydoc IGPAImplementor::Destroy()
     GPA_Status Destroy() override;
 
+    /// \copydoc IGPAImplementor::IsCommandListRequired()
+    bool IsCommandListRequired() const override;
+
+    /// \copydoc IGPAImplementor::IsContinueSampleOnCommandListSupported()
+    bool IsContinueSampleOnCommandListSupported() const override;
+
+    /// \copydoc IGPAImplementor::IsCopySecondarySampleSupported()
+    bool IsCopySecondarySampleSupported() const override;
+
 private:
 
     /// Constructor
@@ -55,7 +64,7 @@ private:
     /// Deletes the GPA contexts
     void DeleteContexts();
 
-    std::vector<DX12GPAContext*>     m_dx12GpaContextList;          ///< DX12 GPA context list for housekeeping
+    std::vector<DX12GPAContext*> m_dx12GpaContextList; ///< DX12 GPA context list for housekeeping
 };
 
 #endif // _DX12_GPA_IMPLEMENTOR_H_

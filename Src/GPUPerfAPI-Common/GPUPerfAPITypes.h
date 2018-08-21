@@ -168,7 +168,9 @@ typedef enum
     GPA_STATUS_ERROR_INVALID_COUNTER_EQUATION = -39,
     GPA_STATUS_ERROR_TIMEOUT = -40,
     GPA_STATUS_ERROR_LIB_ALREADY_LOADED = -41,
-    GPA_STATUS_MIN = GPA_STATUS_ERROR_LIB_ALREADY_LOADED,
+    GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE = -42,
+    GPA_STATUS_ERROR_EXCEPTION = -43,
+    GPA_STATUS_MIN = GPA_STATUS_ERROR_EXCEPTION,
     // following are status codes used internally within GPUPerfAPI
     GPA_STATUS_INTERNAL = 256,
 } GPA_Status;
@@ -239,6 +241,7 @@ typedef enum
     GPA_LOGGING_DEBUG_MESSAGE = 0x0200,                                                                ///< Log debugging messages
     GPA_LOGGING_DEBUG_TRACE = 0x0400,                                                                  ///< Log debugging traces
     GPA_LOGGING_DEBUG_COUNTERDEFS = 0x0800,                                                            ///< Log debugging counter defs
+    GPA_LOGGING_INTERNAL = 0x1000,                                                                     ///< Log internal GPA
     GPA_LOGGING_DEBUG_ALL = 0xFF00                                                                     ///< Log all debugging
 } GPA_Logging_Type;
 

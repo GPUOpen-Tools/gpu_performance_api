@@ -62,6 +62,7 @@ Return value
     "GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED", "The currently-installed GPU driver is not supported."
     "GPA_STATUS_ERROR_CONTEXT_ALREADY_OPEN", "The supplied context has already been opened."
     "GPA_STATUS_ERROR_FAILED", "The context could not be opened."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
 
 A Note about GPU Clock Modes
 &&&&&&&&&&&&&&&&&&&&&&&&&&&&

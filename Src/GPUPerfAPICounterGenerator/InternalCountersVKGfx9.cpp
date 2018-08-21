@@ -361,14 +361,14 @@ GPA_CounterGroupDesc HWVKGroupsGfx9[] =
     {4, "VGT1", 1, 148, 4},
     {5, "VGT2", 2, 148, 4},
     {6, "VGT3", 3, 148, 4},
-    {7, "PA_SU0", 0, 292, 4},
-    {8, "PA_SU1", 1, 292, 4},
-    {9, "PA_SU2", 2, 292, 4},
-    {10, "PA_SU3", 3, 292, 4},
-    {11, "PA_SC0", 0, 491, 8},
-    {12, "PA_SC1", 1, 491, 8},
-    {13, "PA_SC2", 2, 491, 8},
-    {14, "PA_SC3", 3, 491, 8},
+    {7, "PA_SU0", 0, 351, 4},
+    {8, "PA_SU1", 1, 351, 4},
+    {9, "PA_SU2", 2, 351, 4},
+    {10, "PA_SU3", 3, 351, 4},
+    {11, "PA_SC0", 0, 492, 8},
+    {12, "PA_SC1", 1, 492, 8},
+    {13, "PA_SC2", 2, 492, 8},
+    {14, "PA_SC3", 3, 492, 8},
     {15, "SPI0", 0, 196, 6},
     {16, "SPI1", 1, 196, 6},
     {17, "SPI2", 2, 196, 6},
@@ -666,22 +666,22 @@ GPA_CounterGroupDesc HWVKGroupsGfx9[] =
     {309, "ATC", 0, 24, 4},
     {310, "ATCL2", 0, 8, 2},
     {311, "MCVML2", 0, 21, 8},
-    {312, "GCEA0", 0, 77, 2},
-    {313, "GCEA1", 1, 77, 2},
-    {314, "GCEA2", 2, 77, 2},
-    {315, "GCEA3", 3, 77, 2},
-    {316, "GCEA4", 4, 77, 2},
-    {317, "GCEA5", 5, 77, 2},
-    {318, "GCEA6", 6, 77, 2},
-    {319, "GCEA7", 7, 77, 2},
-    {320, "GCEA8", 8, 77, 2},
-    {321, "GCEA9", 9, 77, 2},
-    {322, "GCEA10", 10, 77, 2},
-    {323, "GCEA11", 11, 77, 2},
-    {324, "GCEA12", 12, 77, 2},
-    {325, "GCEA13", 13, 77, 2},
-    {326, "GCEA14", 14, 77, 2},
-    {327, "GCEA15", 15, 77, 2},
+    {312, "GCEA0", 0, 83, 2},
+    {313, "GCEA1", 1, 83, 2},
+    {314, "GCEA2", 2, 83, 2},
+    {315, "GCEA3", 3, 83, 2},
+    {316, "GCEA4", 4, 83, 2},
+    {317, "GCEA5", 5, 83, 2},
+    {318, "GCEA6", 6, 83, 2},
+    {319, "GCEA7", 7, 83, 2},
+    {320, "GCEA8", 8, 83, 2},
+    {321, "GCEA9", 9, 83, 2},
+    {322, "GCEA10", 10, 83, 2},
+    {323, "GCEA11", 11, 83, 2},
+    {324, "GCEA12", 12, 83, 2},
+    {325, "GCEA13", 13, 83, 2},
+    {326, "GCEA14", 14, 83, 2},
+    {327, "GCEA15", 15, 83, 2},
     {328, "RPB", 0, 63, 4},
     {329, "RMI0", 0, 257, 4},
     {330, "RMI1", 1, 257, 4},
@@ -1287,10 +1287,10 @@ VkGpaPerfBlockAMD HWVKDriverEnumGfx9[] =
     VK_GPA_PERF_BLOCK_RANGE_SIZE_AMD,
 };
 
-const unsigned int HWVKGPUTimeBottomToBottomIndexGfx9 = 54511;
-const unsigned int HWVKGPUTimeTopToBottomIndexGfx9 = 54512;
+const unsigned int HWVKGPUTimeBottomToBottomIndexGfx9 = 54847;
+const unsigned int HWVKGPUTimeTopToBottomIndexGfx9 = 54848;
 const std::set<unsigned int> HWVKTimestampBlockIdsGfx9 = { 337 }; ///< Timestamp block id's for VK for Gfx9 family
-const std::set<unsigned int> HWVKTimeCounterIndicesGfx9 = { 54511, 54512 }; ///< Timestamp counter indices for VK for Gfx9 family
+const std::set<unsigned int> HWVKTimeCounterIndicesGfx9 = { 54847, 54848 }; ///< Timestamp counter indices for VK for Gfx9 family
 const unsigned int HWVKGroupCountGfx9 = sizeof(HWVKGroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWVKSQGroupCountGfx9 = sizeof(HWVKSQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWVKSQIsolatedGroupCountGfx9 = sizeof(HWVKSQIsolatedGroupsGfx9) / sizeof(unsigned int);

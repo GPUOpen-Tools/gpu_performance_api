@@ -12,6 +12,7 @@
 #include "CLPerfCounterBlock.h"
 #include "CLPerfCounterAMDExtension.h"
 #include "CLGPAPass.h"
+#include "GPAContextCounterMediator.h"
 
 CLGPASample::CLGPASample(GPAPass* pPass,
                          IGPACommandList* pCmdList,
@@ -112,7 +113,8 @@ bool CLGPASample::BeginRequest()
             return false;
         }
 
-        const GPA_HardwareCounters* pHardwareCounters = m_pCLGpaContext->GetCounterAccessor()->GetHardwareCounters();
+        IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pCLGpaContext);
+        const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
 
         bool populateCounterInfoStatus = true;
         unsigned int counterGroupSize = 0u;
@@ -169,7 +171,7 @@ bool CLGPASample::BeginRequest()
 
         auto AddClCounterToSample = [&](const CounterIndex& counterIndex)->bool
         {
-            const GPA_HardwareCounterDescExt* pCounter = m_pCLGpaContext->GetCounterAccessor()->GetHardwareCounterExt(counterIndex);
+            const GPA_HardwareCounterDescExt* pCounter = pCounterAccessor->GetHardwareCounterExt(counterIndex);
 
             // GPA_LogDebugMessage( "ENABLED COUNTER: %x.", m_pCounters[i] );
             m_pClCounters[counterCountIter].m_counterID = counterIndex;

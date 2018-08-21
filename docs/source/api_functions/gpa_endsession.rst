@@ -41,3 +41,5 @@ Return value
     "GPA_STATUS_ERROR_NOT_ENOUGH_PASSES", "There were not enough passes created in the session"
     "GPA_STATUS_ERROR_SESSION_NOT_STARTED", "The session has not been started."
     "GPA_STATUS_ERROR_FAILED", "The session could be be ended."
+    "GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE", "Another session is active."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

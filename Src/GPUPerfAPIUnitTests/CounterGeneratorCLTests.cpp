@@ -163,7 +163,9 @@ TEST(CounterDLLTests, OpenCLMultipleGenerations)
 
                     const char* pDesc = pCounterAccessor->GetCounterDescription(i);
                     EXPECT_NE((const char*)nullptr, pDesc);
-                    EXPECT_NE("", pDesc);
+#ifndef AMDT_INTERNAL
+                    EXPECT_NE(0, strcmp("", pDesc));
+#endif
                 }
             }
 
@@ -194,7 +196,9 @@ TEST(CounterDLLTests, OpenCLMultipleGenerations)
 
                         const char* pDesc = pCounterAccessor->GetCounterDescription(i);
                         EXPECT_NE((const char*)nullptr, pDesc);
-                        EXPECT_NE("", pDesc);
+#ifndef AMDT_INTERNAL
+                        EXPECT_NE(0, strcmp("", pDesc));
+#endif
                     }
                 }
             }

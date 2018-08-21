@@ -12,7 +12,6 @@
 
 #include "GPADerivedCounters.h"
 
-
 namespace DX12Gfx9Asics
 {
 

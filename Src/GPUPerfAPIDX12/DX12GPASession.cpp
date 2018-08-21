@@ -17,7 +17,7 @@
 DX12GPASession::DX12GPASession(DX12GPAContext* pDX12GpaContext,
                                GPA_Session_Sample_Type sampleType,
                                IAmdExtGpaInterface* pAmdExtGpaSession)
-    : GPASession(pDX12GpaContext, pDX12GpaContext->GetCounterScheduler(), sampleType)
+    : GPASession(pDX12GpaContext, sampleType)
 {
     m_pAmdExtGpaInterface = pAmdExtGpaSession;
     m_pAmdExtGpaInterface->AddRef();
@@ -125,9 +125,12 @@ GPAPass* DX12GPASession::CreateAPIPass(PassIndex passIndex)
 {
     GPAPass* pRetPass = nullptr;
 
-    CounterList* passCounters = GetCounterScheduler()->GetCountersForPass(passIndex);
-    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*passCounters)[0]);
-    DX12GPAPass* pDx12Pass = new(std::nothrow) DX12GPAPass(this, passIndex, counterSource, GetCounterScheduler(), GetParentContext()->GetCounterAccessor());
+    CounterList* pPassCounters = GetCountersForPass(passIndex);
+    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
+    DX12GPAPass* pDx12Pass = new(std::nothrow) DX12GPAPass(this,
+                                                           passIndex,
+                                                           counterSource,
+                                                           pPassCounters);
 
     if (nullptr != pDx12Pass)
     {

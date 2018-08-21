@@ -9,23 +9,25 @@
 #include <list>
 #include <chrono>
 #include <thread>
+#include <algorithm>
 
 // GPA Common
 #include "GPASession.h"
 #include "GPAUniqueObject.h"
 #include "IGPACommandList.h"
-#include "GPASplitCountersInterfaces.h"
 #include "GPAPass.h"
 #include "GPUPerfAPITypes.h"
+#include "GPAContextCounterMediator.h"
+#include "GPASplitCountersInterfaces.h"
+
 
 // TODO: these are placeholder values (rough estimates) for right now. We should replace with reasonable values after testing
 static const gpa_uint32 DEFAULT_SPM_INTERVAL = 4096;                  ///< default SPM sampling interval (4096 clock cycles)
 static const gpa_uint64 DEFAULT_SPM_MEMORY_LIMIT = 16 * 1024 * 1024;  ///< default SPM memory limit size (16 MB)
 static const gpa_uint64 DEFAULT_SQTT_MEMORY_LIMIT = 80 * 1024 * 1024; ///< default SQTT memory limit size (80 MB) -- will likely need to be larger (512MB) if instruction-level trace is performed
 
-GPASession::GPASession(IGPAContext* pParentContext, IGPACounterScheduler* pCounterScheduler, GPA_Session_Sample_Type sampleType):
+GPASession::GPASession(IGPAContext* pParentContext, GPA_Session_Sample_Type sampleType):
     m_state(GPA_SESSION_STATE_NOT_STARTED),
-    m_pCounterScheduler(pCounterScheduler),
     m_pParentContext(pParentContext),
     m_maxPassIndex(0u),
     m_sampleType(sampleType),
@@ -33,7 +35,9 @@ GPASession::GPASession(IGPAContext* pParentContext, IGPACounterScheduler* pCount
     m_spmMemoryLimit(DEFAULT_SPM_MEMORY_LIMIT),
     m_sqttInstructionMask(GPA_SQTT_INSTRUCTION_TYPE_NONE),
     m_sqttComputeUnitId(0),
-    m_sqttMemoryLimit(DEFAULT_SQTT_MEMORY_LIMIT)
+    m_sqttMemoryLimit(DEFAULT_SQTT_MEMORY_LIMIT),
+    m_passRequired(0u),
+    m_counterSetChanged(false)
 {
     TRACE_PRIVATE_FUNCTION(GPASession::CONSTRUCTOR);
 }
@@ -77,6 +81,11 @@ GPASessionState GPASession::GetState() const
 
 GPA_Status GPASession::EnableCounter(gpa_uint32 index)
 {
+    if (!GPAContextCounterMediator::Instance()->IsCounterSchedulingSupported(GetParentContext()))
+    {
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
     if (GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER != m_sampleType &&
         GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER != m_sampleType &&
         GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT != m_sampleType)
@@ -87,52 +96,75 @@ GPA_Status GPASession::EnableCounter(gpa_uint32 index)
 
     if (IsSessionRunning())
     {
-        return GPA_STATUS_ERROR_FAILED;
+        return GPA_STATUS_ERROR_SESSION_ALREADY_STARTED;
     }
 
-    GPA_Status status = (nullptr == m_pCounterScheduler) ? GPA_STATUS_ERROR_FAILED : m_pCounterScheduler->EnableCounter(index);
+    SessionCounters::const_iterator counterIter = std::find(m_sessionCounters.cbegin(), m_sessionCounters.cend(), index);
 
-    if (GPA_STATUS_OK == status &&
-        ((GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER == m_sampleType) ||
+    if (counterIter != m_sessionCounters.end())
+    {
+        return GPA_STATUS_ERROR_ALREADY_ENABLED;
+    }
+
+    if (((GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER == m_sampleType) ||
          (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT == m_sampleType)))
     {
         // if we're sampling streaming counters, then only enable the counter if the set of counters remains single-pass
-        gpa_uint32 numPasses = 0;
-        status = m_pCounterScheduler->GetNumRequiredPasses(&numPasses);
+        unsigned int numPasses = 0;
+        GPA_Status status = GPAContextCounterMediator::Instance()->GetRequiredPassCount(GetParentContext(), m_sessionCounters, numPasses);
 
         if (GPA_STATUS_OK == status)
         {
             if (1 < numPasses)
             {
-                m_pCounterScheduler->DisableCounter(index);
                 GPA_LogError("Unable to enable counter. Multi-pass counter sets not supported for streaming counters.");
                 status = GPA_STATUS_ERROR_NOT_ENABLED;
             }
         }
     }
 
-    return status;
+    std::lock_guard<std::mutex> lock(m_sessionCountersMutex);
+    m_sessionCounters.push_back(index);
+    m_counterSetChanged = true;
+    return GPA_STATUS_OK;
 }
 
 GPA_Status GPASession::DisableCounter(gpa_uint32 index)
 {
-    if (IsSessionRunning())
+    if (!GPAContextCounterMediator::Instance()->IsCounterSchedulingSupported(GetParentContext()))
     {
         return GPA_STATUS_ERROR_FAILED;
     }
 
-    return (nullptr == m_pCounterScheduler) ? GPA_STATUS_ERROR_FAILED : m_pCounterScheduler->DisableCounter(index);
+    if (IsSessionRunning())
+    {
+        return GPA_STATUS_ERROR_SESSION_ALREADY_STARTED;
+    }
+
+    /*There is a bug in gcc-4.8.2 of usage of const_iterators in std::vector::erase()*/
+    SessionCounters::iterator counterIter = std::find(m_sessionCounters.begin(), m_sessionCounters.end(), index);
+
+    if (counterIter == m_sessionCounters.cend())
+    {
+        return GPA_STATUS_ERROR_NOT_ENABLED;
+    }
+
+    std::lock_guard<std::mutex> lock(m_sessionCountersMutex);
+    m_sessionCounters.erase(counterIter);
+    m_counterSetChanged = true;
+    return GPA_STATUS_OK;
+
 }
 
 GPA_Status GPASession::DisableAllCounters()
 {
-    if (nullptr == m_pCounterScheduler)
+    if (!GPAContextCounterMediator::Instance()->IsCounterSchedulingSupported(GetParentContext()))
     {
         return GPA_STATUS_ERROR_FAILED;
     }
 
-    m_pCounterScheduler->DisableAllCounters();
-
+    m_sessionCounters.clear();
+    m_counterSetChanged = true;
     return GPA_STATUS_OK;
 }
 
@@ -143,29 +175,88 @@ GPA_Status GPASession::GetNumEnabledCounters(gpa_uint32* pCount) const
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
 
-    if (nullptr == m_pCounterScheduler)
+    if (!GPAContextCounterMediator::Instance()->IsCounterSchedulingSupported(GetParentContext()))
     {
         return GPA_STATUS_ERROR_FAILED;
     }
 
-    *pCount = m_pCounterScheduler->GetNumEnabledCounters();
-
+    *pCount = static_cast<gpa_uint32>(m_sessionCounters.size());
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPASession::GetEnabledIndex(gpa_uint32 enabledNumber, gpa_uint32* pEnabledCounterIndex) const
 {
-    return (nullptr == m_pCounterScheduler) ? GPA_STATUS_ERROR_FAILED : m_pCounterScheduler->GetEnabledIndex(enabledNumber, pEnabledCounterIndex);
+    if (!GPAContextCounterMediator::Instance()->IsCounterSchedulingSupported(GetParentContext()))
+    {
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    if (enabledNumber > m_sessionCounters.size())
+    {
+        return GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;
+    }
+
+    unsigned int counterIndex = 0u;
+
+    for (SessionCounters::const_iterator it = m_sessionCounters.cbegin();
+         it != m_sessionCounters.cend(); ++it)
+    {
+        if (counterIndex == enabledNumber)
+        {
+            *pEnabledCounterIndex = *it;
+            break;
+        }
+
+        ++counterIndex;
+    }
+
+    return GPA_STATUS_OK;
 }
 
 GPA_Status GPASession::IsCounterEnabled(gpa_uint32 counterIndex) const
 {
-    return (nullptr == m_pCounterScheduler) ? GPA_STATUS_ERROR_FAILED : m_pCounterScheduler->IsCounterEnabled(counterIndex);
+    if (!GPAContextCounterMediator::Instance()->IsCounterSchedulingSupported(GetParentContext()))
+    {
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    SessionCounters::const_iterator counterIter = std::find(m_sessionCounters.cbegin(), m_sessionCounters.cend(), counterIndex);
+
+    if (counterIter == m_sessionCounters.cend())
+    {
+        return GPA_STATUS_ERROR_COUNTER_NOT_FOUND;
+    }
+
+    return GPA_STATUS_OK;
 }
 
 GPA_Status GPASession::GetNumRequiredPasses(gpa_uint32* pNumPasses)
 {
-    return (nullptr == m_pCounterScheduler) ? GPA_STATUS_ERROR_FAILED : m_pCounterScheduler->GetNumRequiredPasses(pNumPasses);
+    GPA_Status retStatus = GPA_STATUS_OK;
+
+    if (!m_counterSetChanged)
+    {
+        *pNumPasses = m_passRequired;
+    }
+    else
+    {
+        if (!GPAContextCounterMediator::Instance()->IsCounterSchedulingSupported(GetParentContext()))
+        {
+            return GPA_STATUS_ERROR_FAILED;
+        }
+
+        unsigned int passReq = 0u;
+        retStatus = GPAContextCounterMediator::Instance()->GetRequiredPassCount(GetParentContext(), m_sessionCounters, passReq);
+
+        if (GPA_STATUS_OK == retStatus)
+        {
+            m_passRequired = passReq;
+            *pNumPasses = passReq;
+            m_counterSetChanged = false;
+        }
+    }
+
+    return retStatus;
 }
 
 GPA_Status GPASession::Begin()
@@ -181,50 +272,74 @@ GPA_Status GPASession::Begin()
              GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER == m_sampleType ||
              GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT == m_sampleType)
     {
-        // If we are collecting counters, we will check to make sure at least one counter is enabled.
-        // If so, we will then check how many passes are required and pre-create passes for the Session
-        if (nullptr != m_pCounterScheduler &&
-            m_pCounterScheduler->GetNumEnabledCounters() > 0)
-        {
-            gpa_uint32 passCount;
 
-            if (GPA_STATUS_OK == m_pCounterScheduler->GetNumRequiredPasses(&passCount))
-            {
-                // assume the loop below will succeed, it will get set to false if the loop fails
-                bool success = true;
-
-                for (gpa_uint32 passIndexIter = 0; passIndexIter < passCount && success; passIndexIter++)
-                {
-                    GPAPass* pCurrentPass = CreateAPIPass(passIndexIter);
-
-                    if (nullptr != pCurrentPass)
-                    {
-                        m_passes.push_back(pCurrentPass);
-                    }
-                    else
-                    {
-                        // Unable to create API specific pass object
-                        success = false;
-                        break;
-                    }
-                }
-
-                if (!success)
-                {
-                    GPA_LogError("Unable to create passes for the session.");
-                    status = GPA_STATUS_ERROR_FAILED;
-                }
-            }
-            else
-            {
-                GPA_LogError("The session failed to get the number of required passes.");
-                status = GPA_STATUS_ERROR_FAILED;
-            }
-        }
-        else
+        // Verify that at least one counter is enabled
+        if (m_sessionCounters.empty())
         {
             GPA_LogError("The session can't be started without any enabled counters.");
             status = GPA_STATUS_ERROR_NO_COUNTERS_ENABLED;
+        }
+
+        // If so, we will then check how many passes are required and pre-create passes for the Session
+        if (GPA_STATUS_OK == status &&
+            GPAContextCounterMediator::Instance()->IsCounterSchedulingSupported(GetParentContext()))
+        {
+            status = GPAContextCounterMediator::Instance()->ScheduleCounters(GetParentContext(), this, m_sessionCounters);
+
+            if (GPA_STATUS_OK == status)
+            {
+                unsigned int passCount = 0u;
+
+                if (!m_counterSetChanged)
+                {
+                    passCount = static_cast<unsigned int>(m_passRequired);
+                }
+                else
+                {
+                    status = GPAContextCounterMediator::Instance()->GetRequiredPassCount(GetParentContext(), m_sessionCounters, passCount);
+                }
+
+                if (GPA_STATUS_OK == status)
+                {
+                    // assume the loop below will succeed, it will get set to false if the loop fails
+                    bool success = true;
+
+                    for (gpa_uint32 passIndexIter = 0; passIndexIter < passCount && success; passIndexIter++)
+                    {
+                        CounterList* pCounterList = GPAContextCounterMediator::Instance()->GetCounterForPass(GetParentContext(), passIndexIter);
+                        CounterList counterList = *pCounterList;
+                        m_passCountersMap.insert(PassCountersPair(passIndexIter, counterList));
+
+                        GPAPass* pCurrentPass = CreateAPIPass(passIndexIter);
+
+                        if (nullptr != pCurrentPass)
+                        {
+                            m_passes.push_back(pCurrentPass);
+                        }
+                        else
+                        {
+                            // Unable to create API specific pass object
+                            success = false;
+                            break;
+                        }
+                    }
+
+                    if (!success)
+                    {
+                        GPA_LogError("Unable to create passes for the session.");
+                        status = GPA_STATUS_ERROR_FAILED;
+                    }
+                    else
+                    {
+                        status = GPA_STATUS_OK;
+                    }
+                }
+                else
+                {
+                    GPA_LogError("The session failed to get the number of required passes.");
+                    status = GPA_STATUS_ERROR_FAILED;
+                }
+            }
         }
     }
 
@@ -270,6 +385,16 @@ GPA_Status GPASession::End()
     {
         GPA_LogError("Session has not been started.");
         status = GPA_STATUS_ERROR_SESSION_NOT_STARTED;
+    }
+
+    if (GPA_STATUS_OK == status)
+    {
+        if (GPA_STATUS_OK == status && !GatherCounterResultLocations())
+        {
+            status = GPA_STATUS_ERROR_FAILED;
+        }
+
+        status = GPAContextCounterMediator::Instance()->UnscheduleCounters(GetParentContext(), this, m_sessionCounters);
     }
 
     return status;
@@ -469,13 +594,15 @@ size_t GPASession::GetSampleResultSizeInBytes(gpa_uint32 sampleId) const
 {
     size_t sizeInBytes = 0;
 
-    if (nullptr == m_pCounterScheduler)
+    if (!GPAContextCounterMediator::Instance()->IsCounterSchedulingSupported(GetParentContext()))
     {
         GPA_LogError("Unable to GetSampleResultSizeInBytes, counter scheduler is invalid.");
     }
     else if (GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER == m_sampleType)
     {
-        sizeInBytes = sizeof(gpa_uint64) * m_pCounterScheduler->GetNumEnabledCounters();
+        gpa_uint32 enableCounters = 0u;
+        GetNumEnabledCounters(&enableCounters);
+        sizeInBytes = sizeof(gpa_uint64) * enableCounters;
     }
     else
     {
@@ -546,10 +673,10 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
             return GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;
         }
 
-        vector<gpa_uint64*> results;
-        vector<GPA_Data_Type> types;
-        vector<gpa_uint32> internalCountersRequired = m_pParentContext->GetCounterAccessor()->GetInternalCountersRequired(exposedCounterIndex);
-        CounterResultLocationMap* pResultLocations = m_pCounterScheduler->GetCounterResultLocations(exposedCounterIndex);
+        std::vector<gpa_uint64*> results;
+        std::vector<GPA_Data_Type> types;
+        std::vector<gpa_uint32> internalCountersRequired = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetParentContext())->GetInternalCountersRequired(exposedCounterIndex);
+        CounterResultLocationMap resultLocations = m_counterResultLocations[exposedCounterIndex];
 
         gpa_uint32 sourceLocalIndex = 0;
         GPACounterSource source = GPACounterSource::UNKNOWN;
@@ -559,6 +686,8 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
             GPA_LogError("Invalid counter index found while identifying counter source.");
             return GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;
         }
+
+        IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetParentContext());
 
         switch (source)
         {
@@ -580,9 +709,9 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
                     GPA_Data_Type type = GPA_DATA_TYPE_UINT64; // all hardware counters are UINT64
                     types.push_back(type);
 
-                    std::map<unsigned int, GPA_CounterResultLocation>::iterator resultLocationIter = pResultLocations->find(*requiredCounterIter);
+                    std::map<unsigned int, GPA_CounterResultLocation>::iterator resultLocationIter = resultLocations.find(*requiredCounterIter);
 
-                    if (resultLocationIter == pResultLocations->end())
+                    if (resultLocationIter == resultLocations.end())
                     {
                         GPA_LogError("Could not find required counter among the results.");
                         delete[] pAllResults;
@@ -592,9 +721,9 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
                     *pResultBuffer = m_passes[resultLocationIter->second.m_pass]->GetResult(sampleId, *requiredCounterIter);
 
 #ifdef AMDT_INTERNAL
-                    gpa_uint32 numPublicCounters = m_pParentContext->GetCounterAccessor()->GetNumPublicCounters();
-                    const char* pInternalName = m_pParentContext->GetCounterAccessor()->GetCounterName(numPublicCounters + *requiredCounterIter);
-                    const char* pPublicName = m_pParentContext->GetCounterAccessor()->GetCounterName(*requiredCounterIter);
+                    gpa_uint32 numPublicCounters = pCounterAccessor->GetNumPublicCounters();
+                    const char* pInternalName = pCounterAccessor->GetCounterName(numPublicCounters + *requiredCounterIter);
+                    const char* pPublicName = pCounterAccessor->GetCounterName(*requiredCounterIter);
 
                     std::stringstream message;
                     message << "Sample " << sampleId << ", pubCounter '" << pPublicName << "', iCounter: '" << pInternalName << "', [" << *requiredCounterIter << "] = ";
@@ -622,24 +751,24 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
 #endif
                 }
 
-                GPA_Data_Type currentCounterType = m_pParentContext->GetCounterAccessor()->GetCounterDataType(exposedCounterIndex);
+                GPA_Data_Type currentCounterType = pCounterAccessor->GetCounterDataType(exposedCounterIndex);
 
                 // compute using supplied function. value order is as defined when registered
                 if (GPA_DATA_TYPE_FLOAT64 == currentCounterType)
                 {
-                    status = m_pParentContext->GetCounterAccessor()->ComputePublicCounterValue(sourceLocalIndex,
-                             results,
-                             types,
-                             reinterpret_cast<gpa_float64*>(pCounterSampleResults) + counterIndexIter,
-                             m_pParentContext->GetHwInfo());
+                    status = pCounterAccessor->ComputePublicCounterValue(sourceLocalIndex,
+                                                                         results,
+                                                                         types,
+                                                                         reinterpret_cast<gpa_float64*>(pCounterSampleResults) + counterIndexIter,
+                                                                         m_pParentContext->GetHwInfo());
                 }
                 else if (GPA_DATA_TYPE_UINT64 == currentCounterType)
                 {
-                    status = m_pParentContext->GetCounterAccessor()->ComputePublicCounterValue(sourceLocalIndex,
-                             results,
-                             types,
-                             reinterpret_cast<gpa_uint64*>(pCounterSampleResults) + counterIndexIter,
-                             m_pParentContext->GetHwInfo());
+                    status = pCounterAccessor->ComputePublicCounterValue(sourceLocalIndex,
+                                                                         results,
+                                                                         types,
+                                                                         reinterpret_cast<gpa_uint64*>(pCounterSampleResults) + counterIndexIter,
+                                                                         m_pParentContext->GetHwInfo());
                 }
 
                 delete[] pAllResults;
@@ -656,7 +785,7 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
             {
                 gpa_uint64* pUint64Results = reinterpret_cast<gpa_uint64*>(pCounterSampleResults) + counterIndexIter;
 
-                gpa_uint16 counterResultPass = (*pResultLocations)[sourceLocalIndex].m_pass;
+                gpa_uint16 counterResultPass = resultLocations[sourceLocalIndex].m_pass;
                 *pUint64Results = m_passes[counterResultPass]->GetResult(sampleId, internalCountersRequired[0]);
                 break;
             }
@@ -665,14 +794,14 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
             {
                 gpa_uint64 buf = 0;
 
-                auto iter = pResultLocations->begin();
+                auto iter = resultLocations.begin();
                 gpa_uint16 counterResultPass = iter->second.m_pass;
                 buf = m_passes[counterResultPass]->GetResult(sampleId, internalCountersRequired[0]);
 
                 gpa_uint64* pUint64Results = reinterpret_cast<gpa_uint64*>(pCounterSampleResults) + counterIndexIter;
 
                 // compute using supplied function. value order is as defined when registered
-                m_pParentContext->GetCounterAccessor()->ComputeSWCounterValue(sourceLocalIndex, buf, pUint64Results, m_pParentContext->GetHwInfo());
+                pCounterAccessor->ComputeSWCounterValue(sourceLocalIndex, buf, pUint64Results, m_pParentContext->GetHwInfo());
                 break;
             }
 
@@ -740,9 +869,14 @@ void GPASession::SetSQTTMemoryLimit(gpa_uint64 memoryLimit)
     m_sqttMemoryLimit = memoryLimit;
 }
 
-IGPACounterScheduler* GPASession::GetCounterScheduler() const
+CounterList* GPASession::GetCountersForPass(PassIndex passIndex)
 {
-    return m_pCounterScheduler;
+    if (m_passCountersMap.find(passIndex) == m_passCountersMap.end())
+    {
+        return nullptr;
+    }
+
+    return &m_passCountersMap[passIndex];
 }
 
 bool GPASession::Flush(uint32_t timeout)
@@ -775,6 +909,39 @@ bool GPASession::Flush(uint32_t timeout)
     }
 
     return retVal;
+}
+
+bool GPASession::GatherCounterResultLocations()
+{
+    bool success = true;
+
+    for (SessionCounters::const_iterator iter = m_sessionCounters.cbegin();
+         iter != m_sessionCounters.cend(); ++iter)
+    {
+        CounterResultLocationMap* pTempResultLocations =
+            GPAContextCounterMediator::Instance()->GetCounterResultLocations(GetParentContext(), *iter);
+
+        if (nullptr != pTempResultLocations)
+        {
+            CounterResultLocationMap tempResultLocationMap;
+
+            for (CounterResultLocationMap::const_iterator innerIter = pTempResultLocations->cbegin();
+                 innerIter != pTempResultLocations->cend(); ++innerIter)
+            {
+                GPA_CounterResultLocation resultLocation = {innerIter->second.m_pass, innerIter->second.m_offset};
+                tempResultLocationMap.insert(HardwareCounterResultLocationPair(innerIter->first, resultLocation));
+            }
+
+            m_counterResultLocations.insert(CounterResultLocationPair(*iter, tempResultLocationMap));
+        }
+        else
+        {
+            success = false;
+            break;
+        }
+    }
+
+    return success;
 }
 
 bool GPASession::BeginSample(ClientSampleId sampleId, GPA_CommandListId commandListId)

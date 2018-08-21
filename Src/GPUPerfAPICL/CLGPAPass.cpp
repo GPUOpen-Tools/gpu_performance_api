@@ -11,13 +11,13 @@
 #include "CLGPACommandList.h"
 #include "CLGPASample.h"
 #include "GPAHardwareCounters.h"
+#include "GPAContextCounterMediator.h"
 
 CLGPAPass::CLGPAPass(IGPASession* pGpaSession,
                      PassIndex passIndex,
                      GPACounterSource counterSource,
-                     IGPACounterScheduler* pCounterScheduler,
-                     const IGPACounterAccessor* pCounterAccessor):
-    GPAPass(pGpaSession, passIndex, counterSource, pCounterScheduler, pCounterAccessor)
+                     CounterList* pPassCounters):
+    GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
 {
     EnableAllCountersForPass();
     InitializeCLCounterInfo();
@@ -98,14 +98,14 @@ void CLGPAPass::IterateCLCounterMap(std::function<bool(GroupCountersPair groupCo
 void CLGPAPass::InitializeCLCounterInfo()
 {
     CLGPAContext* pCLGpaContext = reinterpret_cast<CLGPAContext*>(GetGpaSession()->GetParentContext());
-
-    const GPA_HardwareCounters* pHardwareCounters = pCLGpaContext->GetCounterAccessor()->GetHardwareCounters();
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(pCLGpaContext);
+    const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
     gpa_uint32 groupCount = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
     UNREFERENCED_PARAMETER(groupCount);
 
     auto AddCounterToCLCounterInfo = [&](CounterIndex counterIndex)-> bool
     {
-        const GPA_HardwareCounterDescExt* pCounter = pCLGpaContext->GetCounterAccessor()->GetHardwareCounterExt(counterIndex);
+        const GPA_HardwareCounterDescExt* pCounter = pCounterAccessor->GetHardwareCounterExt(counterIndex);
 
         gpa_uint32 groupIndex = pCounter->m_groupIdDriver;
         assert(groupIndex <= groupCount);

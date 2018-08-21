@@ -11,7 +11,7 @@
 HSAGPASession::HSAGPASession(
     IGPAContext* pParentContext,
     GPA_Session_Sample_Type sampleType) :
-    GPASession(pParentContext, pParentContext->GetCounterScheduler(), sampleType)
+    GPASession(pParentContext, sampleType)
 {
 }
 
@@ -24,10 +24,13 @@ GPAPass* HSAGPASession::CreateAPIPass(PassIndex passIndex)
 {
     GPAPass* pRetPass = nullptr;
 
-    CounterList* passCounters = GetCounterScheduler()->GetCountersForPass(passIndex);
-    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*passCounters)[0]);
+    CounterList* pPassCounters = GetCountersForPass(passIndex);
+    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
 
-    HSAGPAPass* pHsaPass = new(std::nothrow) HSAGPAPass(this, passIndex, counterSource, GetCounterScheduler(), GetParentContext()->GetCounterAccessor());
+    HSAGPAPass* pHsaPass = new(std::nothrow) HSAGPAPass(this,
+                                                        passIndex,
+                                                        counterSource,
+                                                        pPassCounters);
 
     if (nullptr == pHsaPass)
     {

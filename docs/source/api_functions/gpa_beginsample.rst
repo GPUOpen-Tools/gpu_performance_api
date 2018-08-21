@@ -51,3 +51,4 @@ Return value
     "GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND", "The supplied ``commandListId`` parameter was not recognized as a previously-created command list identifier."
     "GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE", "The specified command list's pass index is out of range."
     "GPA_STATUS_ERROR_FAILED", "The sample could not be started."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

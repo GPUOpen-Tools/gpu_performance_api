@@ -67,3 +67,4 @@ Return value
     "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``pGPAFuncTable`` parameter is NULL."
     "GPA_STATUS_ERROR_LIB_LOAD_MAJOR_VERSION_MISMATCH", "The major version specified by the caller is different from the major version of the GPUPerfAPI library that was loaded."
     "GPA_STATUS_ERROR_LIB_LOAD_MINOR_VERSION_MISMATCH", "The minor version specified by the caller is greater than the major version of the GPUPerfAPI library that was loaded."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

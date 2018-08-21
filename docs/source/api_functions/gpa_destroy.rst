@@ -26,3 +26,4 @@ Return value
 
     "GPA_STATUS_OK", "GPA  was destroyed."
     "GPA_STATUS_ERROR_GPA_NOT_INITIALIZED", "GPA_Initialize was never called."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

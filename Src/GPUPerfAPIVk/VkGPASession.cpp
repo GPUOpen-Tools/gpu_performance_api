@@ -13,7 +13,7 @@
 VkGPASession::VkGPASession(
     IGPAContext* parentContextId,
     GPA_Session_Sample_Type sampleType)
-    : GPASession(parentContextId, parentContextId->GetCounterScheduler(), sampleType)
+    : GPASession(parentContextId, sampleType)
 {
 }
 
@@ -91,14 +91,13 @@ GPAPass* VkGPASession::CreateAPIPass(PassIndex passIndex)
 {
     GPAPass* pRetPass = nullptr;
 
-    CounterList* passCounters = GetCounterScheduler()->GetCountersForPass(passIndex);
-    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*passCounters)[0]);
-    VkGPAPass* pVkGpaPass = new(std::nothrow) VkGPAPass(
-        this,
-        passIndex,
-        counterSource,
-        GetCounterScheduler(),
-        GetParentContext()->GetCounterAccessor());
+    CounterList* pPassCounters = GetCountersForPass(passIndex);
+    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
+
+    VkGPAPass* pVkGpaPass = new(std::nothrow) VkGPAPass(this,
+                                                        passIndex,
+                                                        counterSource,
+                                                        pPassCounters);
 
     if (nullptr != pVkGpaPass)
     {

@@ -40,3 +40,4 @@ Return value
     "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied session's parent context is not currently open."
     "GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES", "The supplied session was not created with a GPA_Session_Sample_Type value that supports counter collection."
     "GPA_STATUS_ERROR_FAILED", "An error occurred while trying to enable all counters."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

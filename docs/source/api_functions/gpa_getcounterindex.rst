@@ -43,3 +43,4 @@ Return value
     "GPA_STATUS_ERROR_CONTEXT_NOT_FOUND", "The supplied ``contextId`` parameter was not recognized as a previously-opened context identifier."
     "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied context is not currently open."
     "GPA_STATUS_ERROR_COUNTER_NOT_FOUND", "The specified counter could not be found."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

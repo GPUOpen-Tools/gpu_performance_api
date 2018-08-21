@@ -12,7 +12,6 @@
 
 #include "GPADerivedCounters.h"
 
-
 namespace CLGfx9Asics
 {
 

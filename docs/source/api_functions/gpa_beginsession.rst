@@ -42,3 +42,5 @@ Return value
     "GPA_STATUS_ERROR_SESSION_ALREADY_STARTED", "The session has already been started."
     "GPA_STATUS_ERROR_NO_COUNTERS_ENABLED", "There are no counters enabled"
     "GPA_STATUS_ERROR_FAILED", "The session could be be started."
+    "GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE", "Another session is active."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

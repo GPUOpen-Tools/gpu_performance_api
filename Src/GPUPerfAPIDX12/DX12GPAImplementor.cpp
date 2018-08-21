@@ -110,6 +110,21 @@ GPA_Status DX12GPAImplementor::Destroy()
     return GPAImplementor::Destroy();
 }
 
+bool DX12GPAImplementor::IsCommandListRequired() const
+{
+    return true;
+}
+
+bool DX12GPAImplementor::IsContinueSampleOnCommandListSupported() const
+{
+    return true;
+}
+
+bool DX12GPAImplementor::IsCopySecondarySampleSupported() const
+{
+    return true;
+}
+
 IGPAContext* DX12GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
 {
     IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);

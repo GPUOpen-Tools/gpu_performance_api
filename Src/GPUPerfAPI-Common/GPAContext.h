@@ -26,6 +26,9 @@ public:
     /// Delete default constructor
     GPAContext() = delete;
 
+    /// Destructor
+    virtual ~GPAContext();
+
     /// \copydoc IGPAContext::GetSupportedSampleTypes()
     GPA_Status GetSupportedSampleTypes(GPA_ContextSampleTypeFlags* pSampleTypes) const override;
 
@@ -92,17 +95,20 @@ public:
     /// \copydoc IGPAInterfaceTrait::ObjectType()
     GPAObjectType ObjectType() const override;
 
-    /// \copydoc IGPAContext::GetCounterAccessor()
-    const IGPACounterAccessor* GetCounterAccessor() const noexcept override;
-
-    /// \copydoc IGPAContext::GetCounterScheduler()
-    IGPACounterScheduler* GetCounterScheduler() const noexcept override;
-
     /// \copydoc IGPAContext::DoesSessionExist()
     bool DoesSessionExist(GPA_SessionId pSessionId) const override;
 
     /// \copydoc IGPAContext::GetSessionCount()
     gpa_uint32 GetSessionCount() const override;
+
+    /// \copydoc IGPAContext::BeginSession()
+    GPA_Status BeginSession(IGPASession* pGpaSession) override;
+
+    /// \copydoc IGPAContext::EndSession()
+    GPA_Status EndSession(IGPASession* pGpaSession) override;
+
+    /// \copydoc IGPAContext::GetActiveSession()
+    const IGPASession* GetActiveSession() const override;
 
 protected:
 
@@ -144,8 +150,6 @@ protected:
 
 private:
 
-    IGPACounterScheduler* m_pCounterScheduler;                ///< counter scheduler
-    IGPACounterAccessor*  m_pCounterAccessor;                 ///< counter accessor
     GPA_OpenContextFlags  m_contextFlags;                     ///< context flags
     GPA_HWInfo            m_hwInfo;                           ///< hw info
     bool                  m_invalidateAndFlushL2CacheEnabled; ///< flag indicating flush and invalidation of L2 cache is enabled or not
@@ -153,6 +157,8 @@ private:
     GPASessionList        m_gpaSessionList;                   ///< list of GPA sessions in the context
     bool                  m_isAmdDevice;                      ///< flag indicating whether the device is AMD or not
     mutable std::mutex    m_gpaSessionListMutex;              ///< Mutex for GPA session list
+    IGPASession*          m_pActiveSession;                   ///< gpa session to keep track of active session
+    mutable std::mutex    m_activeSessionMutex;               ///< mutex for active session
 };
 
 #endif // _GPA_CONTEXT_H_

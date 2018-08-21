@@ -54,3 +54,4 @@ Return value
     "GPA_STATUS_ERROR_SESSION_NOT_STARTED", "The supplied GPA Session object has not yet been started. Call GPA_BeginSession before GPA_BeginCommandList."
     "GPA_STATUS_ERROR_COMMAND_LIST_ALREADY_STARTED", "The supplied command list has already been started."
     "GPA_STATUS_ERROR_FAILED", "The command list could not be started."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

@@ -40,3 +40,4 @@ Return value
     "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied context is not currently open."
     "GPA_STATUS_ERROR_INVALID_PARAMETER", "The API type of the supplied context does not match GPA's API type."
     "GPA_STATUS_ERROR_FAILED", "The context could not be closed."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

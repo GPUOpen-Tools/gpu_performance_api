@@ -60,6 +60,15 @@ public:
     /// \copydoc IGPAImplementor::GetInitializeFlags()
     GPA_InitializeFlags GetInitializeFlags() const override;
 
+    /// \copydoc IGPAImplementor::IsCommandListRequired()
+    bool IsCommandListRequired() const override;
+
+    /// \copydoc IGPAImplementor::IsContinueSampleOnCommandListSupported()
+    bool IsContinueSampleOnCommandListSupported() const override;
+
+    /// \copydoc IGPAImplementor::IsCopySecondarySampleSupported()
+    bool IsCopySecondarySampleSupported() const override;
+
 protected:
 
     /// Checks whether the device is supported

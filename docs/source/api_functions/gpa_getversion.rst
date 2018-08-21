@@ -43,3 +43,4 @@ Return value
     | The supplied ``pMinorVersion`` parameter is NULL.
     | The supplied ``pBuild`` parameter is NULL.
     | The supplied ``pUpdateVersion`` parameter is NULL."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

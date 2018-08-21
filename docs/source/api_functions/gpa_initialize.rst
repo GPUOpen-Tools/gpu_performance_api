@@ -37,3 +37,4 @@ Return value
     "GPA_STATUS_OK", "GPA  was destroyed."
     "GPA_STATUS_ERROR_GPA_ALREADY_INITIALIZED", "GPA_Initialize was already called."
     "GPA_STATUS_ERROR_INVALID_PARAMETER", "The ``flags`` parameter has an invalid value."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

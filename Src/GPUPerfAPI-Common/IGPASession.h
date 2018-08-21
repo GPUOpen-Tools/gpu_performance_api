@@ -8,10 +8,12 @@
 #ifndef _I_GPA_SESSION_H_
 #define _I_GPA_SESSION_H_
 
+#include <vector>
 #include "GPUPerfAPITypes.h"
 #include "GPACommonDefs.h"
-#include "IGPAContext.h"
 #include "IGPAInterfaceTrait.h"
+
+class IGPAContext; // forward declaration
 
 /// Enum for GPA Session limit
 enum GPASessionLimit : uint8_t
@@ -227,6 +229,11 @@ public:
     /// Sets the SQTT memory limit (in bytes) for this session
     /// \param memoryLimit the SQTT memory limit (in bytes) to set for this session
     virtual void SetSQTTMemoryLimit(gpa_uint64 memoryLimit) = 0;
+
+    /// Returns the counter list for the given pass in the session
+    /// \param[in] passIndex index of the pass
+    /// \return counter list for the given pass
+    virtual std::vector<unsigned int>* GetCountersForPass(unsigned int passIndex) = 0;
 };
 
 #endif // _I_GPA_SESSION_H_

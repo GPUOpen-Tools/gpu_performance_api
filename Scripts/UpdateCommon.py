@@ -234,8 +234,8 @@ def HandleGpaDx11GetDeviceInfo(src, dest, fileName, version, copyDest):
     copyArchive = os.path.join(scriptRoot, "..", copyDest)
     # clean up targetPath, collapsing any ../ and converting / to \ for Windows
     copyArchive = os.path.normpath(copyArchive)
-    dx11DeviceInfoPlatform64File="3_0/Bin/x64/GPUPerfAPIDXGetAMDDeviceInfo-x64.dll"
-    dx11DeviceInfoPlatformFile="3_0/Bin/x86/GPUPerfAPIDXGetAMDDeviceInfo.dll"
+    dx11DeviceInfoPlatform64File="3_1/Bin/x64/GPUPerfAPIDXGetAMDDeviceInfo-x64.dll"
+    dx11DeviceInfoPlatformFile="3_1/Bin/x86/GPUPerfAPIDXGetAMDDeviceInfo.dll"
     dx11DeviceInfoPlatform64FileAbsPath = os.path.join(copyArchive, dx11DeviceInfoPlatform64File)
     dx11DeviceInfoPlatformFileAbsPath = os.path.join(copyArchive, dx11DeviceInfoPlatformFile)
 

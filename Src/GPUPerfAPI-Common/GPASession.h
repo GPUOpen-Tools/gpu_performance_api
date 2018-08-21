@@ -12,7 +12,7 @@
 #include "IGPACounterScheduler.h"
 #include "GPAPass.h"
 
-using PassInfo = std::vector<GPAPass*>;             ///< type alias for pass index and its corresponding pass
+using PassInfo = std::vector<GPAPass*>; ///< type alias for pass index and its corresponding pass
 
 const uint32_t GPA_TIMEOUT_INFINITE = static_cast<uint32_t>(-1); ///< Timeout constant indicating "infinite", or no, timeout
 
@@ -22,12 +22,9 @@ class GPASession : public IGPASession
 public:
     /// Constructor
     /// \param[in] pParentContext The context Id on which this session is created
-    /// \param[in] pCounterScheduler The counter scheduler that should be used by this session
     /// \param[in] sampleType The type of samples that will be created on this session
-    GPASession(
-        IGPAContext* pParentContext,
-        IGPACounterScheduler* pCounterScheduler,
-        GPA_Session_Sample_Type sampleType);
+    GPASession(IGPAContext* pParentContext,
+               GPA_Session_Sample_Type sampleType);
 
     /// Delete default constructor
     GPASession() = delete;
@@ -36,13 +33,13 @@ public:
     virtual ~GPASession();
 
     /// \copydoc IGPAInterfaceTrait::ObjectType()
-    GPAObjectType ObjectType() const override;
+    inline GPAObjectType ObjectType() const override;
 
     /// \copydoc IGPASession::GetParentContext()
-    IGPAContext* GetParentContext() const override;
+    inline IGPAContext* GetParentContext() const override;
 
     /// \copydoc IGPASession::GetState()
-    GPASessionState GetState() const override;
+    inline GPASessionState GetState() const override;
 
     /// \copydoc IGPASession::EnableCounter()
     GPA_Status EnableCounter(gpa_uint32 index) override;
@@ -163,6 +160,9 @@ public:
     /// \copydoc IGPASession::SetSQTTMemoryLimit()
     void SetSQTTMemoryLimit(gpa_uint64 memoryLimit) override;
 
+    /// \copydoc IGPASession::GetCountersForPass()
+    CounterList* GetCountersForPass(PassIndex passIndex) override;
+
 protected:
 
     /// Checks whether the multiple passes in the session have same number of samples
@@ -174,10 +174,6 @@ protected:
     /// \return API specific pass objec pointer
     virtual GPAPass* CreateAPIPass(PassIndex passIndex) = 0;
 
-    /// Returns the Counter scheduler
-    /// \return counter scheduler
-    IGPACounterScheduler* GetCounterScheduler() const;
-
 private:
 
     /// Waits for all data requests to be complete (blocking).
@@ -185,18 +181,33 @@ private:
     /// \return true if all data requests are complete, false if a timeout occurred
     virtual bool Flush(uint32_t timeout = GPA_TIMEOUT_INFINITE);
 
-    mutable std::mutex       m_gpaSessionMutex;     ///< Mutex GPA session
-    mutable GPASessionState  m_state;               ///< The state of the session
-    IGPACounterScheduler*    m_pCounterScheduler;   ///< The counter scheduler that this session will use to schedule counters.
-    IGPAContext*             m_pParentContext;      ///< The context on which this session was created
-    PassInfo                 m_passes;              ///< List of pass objects in the session
-    PassIndex                m_maxPassIndex;        ///< maximum pass index reported for creating command list
-    GPA_Session_Sample_Type  m_sampleType;          ///< the sample type suported by the session
-    gpa_uint32               m_spmInterval;         ///< the interval (in clock cycles) at which to sample SPM counters
-    gpa_uint64               m_spmMemoryLimit;      ///< the maximum amount of GPU memory (in bytes) to use for SPM data
-    GPA_SQTTInstructionFlags m_sqttInstructionMask; ///< mask of instructions included in the SQTT data
-    gpa_uint32               m_sqttComputeUnitId;   ///< id of the compute unit which should generate the insruction level data
-    gpa_uint64               m_sqttMemoryLimit;     ///< the maximum amount of GPU memory (in bytes) to use for SQTT data
+    /// Gathers the counter result locations
+    /// \return true upon successful copying otherwise false
+    bool GatherCounterResultLocations();
+
+    using SessionCounters = std::vector<gpa_uint32>; ///< type alias for counters in the session
+    using CounterResultLocationPair = std::pair<DerivedCounterIndex, CounterResultLocationMap>; ///< type alias for counter and its reult location pair
+    using CounterResultLocations = std::map<DerivedCounterIndex, CounterResultLocationMap>; ///< type alias for counter and its reult location map
+    using PassCountersPair = std::pair<PassIndex, CounterList>; ///< type alias for pass and its counters pair
+    using PassCountersMap = std::map<PassIndex, CounterList>; ///< type alias for pass and its counters map
+
+    mutable std::mutex          m_gpaSessionMutex;        ///< Mutex GPA session
+    mutable GPASessionState     m_state;                  ///< The state of the session
+    IGPAContext*                m_pParentContext;         ///< The context on which this session was created
+    PassInfo                    m_passes;                 ///< List of pass objects in the session
+    PassIndex                   m_maxPassIndex;           ///< maximum pass index reported for creating command list
+    GPA_Session_Sample_Type     m_sampleType;             ///< the sample type suported by the session
+    gpa_uint32                  m_spmInterval;            ///< the interval (in clock cycles) at which to sample SPM counters
+    gpa_uint64                  m_spmMemoryLimit;         ///< the maximum amount of GPU memory (in bytes) to use for SPM data
+    GPA_SQTTInstructionFlags    m_sqttInstructionMask;    ///< mask of instructions included in the SQTT data
+    gpa_uint32                  m_sqttComputeUnitId;      ///< id of the compute unit which should generate the insruction level data
+    gpa_uint64                  m_sqttMemoryLimit;        ///< the maximum amount of GPU memory (in bytes) to use for SQTT data
+    SessionCounters             m_sessionCounters;        ///< list of counters enabled in the session
+    std::mutex                  m_sessionCountersMutex;   ///< mutex for enabled counter list
+    gpa_uint32                  m_passRequired;           ///< cached number of passes
+    bool                        m_counterSetChanged;      ///< flag indicating the counter selection has changed or not for the pass
+    CounterResultLocations      m_counterResultLocations; ///< counter result location for the scheduled counter in the session
+    PassCountersMap             m_passCountersMap;        ///< map for the pass and its counters
 };
 
 #endif // _GPA_SESSION_H_

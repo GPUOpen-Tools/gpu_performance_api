@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Base Class for counter scheduling
@@ -19,88 +19,61 @@ public:
     GPA_CounterSchedulerBase();
 
     /// Destructor
-    ~GPA_CounterSchedulerBase();
+    ~GPA_CounterSchedulerBase() = default;
 
-    // Implementation of IGPACounterScheduler
+    /// \copydoc IGPACounterScheduler::Reset()
+    void Reset() override;
 
-    /// Reset the counter scheduler
-    void Reset();
+    /// \copydoc IGPACounterScheduler::SetCounterAccessor()
+    GPA_Status SetCounterAccessor(IGPACounterAccessor* pCounterAccessor,
+                                  gpa_uint32 vendorId,
+                                  gpa_uint32 deviceId,
+                                  gpa_uint32 revisionId) override;
 
-    /// Set the counter accessor that should be used when scheduling counters
-    /// \param pCounterAccessor The counter accessor
-    /// \param vendorId The vendor id
-    /// \param deviceId The device id
-    /// \param revisionId The revision id
-    /// \return GPA_STATUS_ERROR_NULL_POINTER If pCounterAccessor is nullptr
-    /// \return GPA_STATUS_OK
-    GPA_Status SetCounterAccessor(IGPACounterAccessor* pCounterAccessor, gpa_uint32 vendorId, gpa_uint32 deviceId, gpa_uint32 revisionId);
+    /// \copydoc IGPACounterScheduler::GetNumEnabledCounters()
+    gpa_uint32 GetNumEnabledCounters() const override;
 
-    /// Get the number of enabled counters
-    /// \return the number of enabled counters
-    gpa_uint32 GetNumEnabledCounters() const;
+    /// \copydoc IGPACounterScheduler::EnableCounter()
+    GPA_Status EnableCounter(gpa_uint32 index) override;
 
-    /// Enables a counter
-    /// \param index The index of a counter to enable
-    /// \return GPA_STATUS_OK on success
-    GPA_Status EnableCounter(gpa_uint32 index);
+    /// \copydoc IGPACounterScheduler::DisableCounter()
+    GPA_Status DisableCounter(gpa_uint32 index) override;
 
-    /// Disables a counter
-    /// \param index The index of a counter to disable
-    /// \return GPA_STATUS_OK on success
-    GPA_Status DisableCounter(gpa_uint32 index);
+    /// \copydoc IGPACounterScheduler::DisableAllCounters()
+    void DisableAllCounters() override;
 
-    /// Disables all counters
-    void DisableAllCounters();
+    /// \copydoc IGPACounterScheduler::GetEnabledIndex()
+    GPA_Status GetEnabledIndex(gpa_uint32 enabledIndex, gpa_uint32* pCounterAtIndex) const  override;
 
-    /// Gets the counter index of the specified enabled counter
-    /// \param enabledIndex the enabled counter whose counter index is needed
-    /// \param[out] pCounterAtIndex the counter index of the specified enabled counter
-    /// \return GPA_STATUS_OK on success
-    GPA_Status GetEnabledIndex(gpa_uint32 enabledIndex, gpa_uint32* pCounterAtIndex) const;
+    /// \copydoc IGPACounterScheduler::IsCounterEnabled()
+    GPA_Status IsCounterEnabled(gpa_uint32 counterIndex) const override;
 
-    /// Checks if the specified counter is enabled
-    /// \param counterIndex the index of the counter to check
-    /// \return GPA_STATUS_OK if the counter is enabled
-    GPA_Status IsCounterEnabled(gpa_uint32 counterIndex) const;
+    /// \copydoc IGPACounterScheduler::GetNumRequiredPasses()
+    GPA_Status GetNumRequiredPasses(gpa_uint32* pNumRequiredPassesOut) override;
 
-    /// Obtains the number of passes required to collect the enabled counters
-    /// \param[inout] pNumRequiredPassesOut Will contain the number of passes needed to collect the set of enabled counters
-    /// \return GPA_STATUS_OK on success
-    GPA_Status GetNumRequiredPasses(gpa_uint32* pNumRequiredPassesOut);
+    /// \copydoc IGPACounterScheduler::GetCounterSelectionChanged()
+    bool GetCounterSelectionChanged() const override;
 
-    /// Get a flag indicating if the counter selection has changed
-    /// \return true if the counter selection has changed, false otherwise
-    bool GetCounterSelectionChanged() const;
+    /// \copydoc IGPACounterScheduler::BeginProfile()
+    GPA_Status BeginProfile() override;
 
-    /// Begin profiling -- sets pass index to zero
-    /// \return GPA_STATUS_OK on success
-    GPA_Status BeginProfile();
+    /// \copydoc IGPACounterScheduler::BeginPass()
+    void BeginPass() override;
 
-    /// Begin a pass -- increments the pass index
-    void BeginPass();
+    /// \copydoc IGPACounterScheduler::GetCountersForPass()
+    std::vector<unsigned int>* GetCountersForPass(gpa_uint32 passIndex) override;
 
-    /// Gets the counters for the specified pass
-    /// \param passIndex the pass whose counters are needed
-    /// \return a list of counters for the specified pass
-    std::vector<unsigned int>* GetCountersForPass(gpa_uint32 passIndex);
+    /// \copydoc IGPACounterScheduler::EndPass()
+    void EndPass() override;
 
-    /// End a pass (empty implementation)
-    void EndPass();
+    /// \copydoc IGPACounterScheduler::EndProfile()
+    GPA_Status EndProfile() override;
 
-    /// End profiling
-    /// \return GPA_STATUS_OK on success
-    GPA_Status EndProfile();
+    /// \copydoc IGPACounterScheduler::GetCounterResultLocations()
+    CounterResultLocationMap* GetCounterResultLocations(unsigned int publicCounterIndex) override;
 
-    /// Gets the counter result locations for the specified public counter
-    /// \param publicCounterIndex the counter index whose result locations are needed
-    /// \return a map of counter result locations
-    CounterResultLocationMap* GetCounterResultLocations(unsigned int publicCounterIndex);
-
-    /// Set draw call counts (internal support)
-    /// \param iCounts the count of draw calls
-    void SetDrawCallCounts(const int iCounts);
-
-    // end Implementation of IGPACounterScheduler
+    /// \copydoc IGPACounterScheduler::SetDrawCallCounts()
+    void SetDrawCallCounts(const int& iCounts) override;
 
 protected:
 
@@ -133,14 +106,14 @@ protected:
 
     /// Helper function called when setting draw call counts
     /// \param iCount draw call count per frame
-    virtual void DoSetDrawCallCounts(const int iCount);
+    virtual void DoSetDrawCallCounts(const int& iCount);
 
     /// A map between a public counter index and the set of hardware counters that compose the public counter.
     /// For each hardware counter, there is a map from the hardware counter to the counter result location (pass and offset) for that specific counter.
     /// Multiple public counters may be enabled which require the same hardware counter, but the hardware counter may be profiled in multiple passes so
     /// that the public counters will be consistent. This complex set of maps allows us to find the correct pass and offset for the instance of a
     /// hardware counter that is required for a specific public counter.
-    std::map< unsigned int, CounterResultLocationMap> m_counterResultLocationMap;
+    std::map<DerivedCounterIndex, CounterResultLocationMap> m_counterResultLocationMap;
 
     /// The counter accessor used by the scheduler
     IGPACounterAccessor* m_pCounterAccessor;

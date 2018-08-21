@@ -25,13 +25,11 @@ public:
     /// \param[in] pGpaSession GPA session object pointer
     /// \param[in] passIndex pass index
     /// \param[in] counterSource counter source
-    /// \param[in] pCounterScheduler counter scheduler
-    /// \param[in] pCounterAccessor counter accessor
+    /// \param[in] pPassCounters counter list for the pass
     CLGPAPass(IGPASession* pGpaSession,
               PassIndex passIndex,
               GPACounterSource counterSource,
-              IGPACounterScheduler* pCounterScheduler,
-              const IGPACounterAccessor* pCounterAccessor);
+              CounterList* pPassCounters);
 
     /// Destructor
     ~CLGPAPass() = default;

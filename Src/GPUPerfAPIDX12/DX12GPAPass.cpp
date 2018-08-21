@@ -11,13 +11,13 @@
 #include "DX12GPASample.h"
 #include "DX12GPACommandList.h"
 #include "DX12Utils.h"
+#include "GPAContextCounterMediator.h"
 
 DX12GPAPass::DX12GPAPass(IGPASession* pGpaSession,
                          PassIndex passIndex,
                          GPACounterSource counterSource,
-                         IGPACounterScheduler* pCounterScheduler,
-                         const IGPACounterAccessor* pCounterAccessor):
-    GPAPass(pGpaSession, passIndex, counterSource, pCounterScheduler, pCounterAccessor),
+                         CounterList* pPassCounters):
+    GPAPass(pGpaSession, passIndex, counterSource, pPassCounters),
     m_isSampleConfigInitialized(false)
 {
     InitializeSampleConfig();
@@ -271,7 +271,8 @@ void DX12GPAPass::InitializeSampleConfig()
     {
         std::vector<AmdExtPerfCounterId> counterIds;
 
-        const GPA_HardwareCounters* pHardwareCounters = (reinterpret_cast<const GPA_CounterGeneratorDX12Base*>(GetCounterAccessor()))->GetHardwareCounters();
+        IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
+        const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
 
         if (!m_pCounterList->empty())
         {

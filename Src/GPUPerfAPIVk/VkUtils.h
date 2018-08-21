@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Vulkan utility functions declaration
@@ -8,8 +8,7 @@
 #ifndef _VK_UTILS_H_
 #define _VK_UTILS_H_
 
-#include <vulkan/vulkan.h>
-#include "vk_amd_gpa_interface.h"
+#include "VkIncludes.h"
 #include "GPUPerfAPITypes.h"
 
 namespace VkUtils

@@ -396,14 +396,14 @@ GPA_CounterGroupDesc HWDX11GroupsGfx9[] =
     {38, "GRBMSE2", 2, 16, 4},
     {39, "GRBMSE3", 3, 16, 4},
     {40, "RLC", 0, 7, 2},
-    {41, "PA_SU0", 0, 292, 4},
-    {42, "PA_SU1", 1, 292, 4},
-    {43, "PA_SU2", 2, 292, 4},
-    {44, "PA_SU3", 3, 292, 4},
-    {45, "PA_SC0", 0, 491, 8},
-    {46, "PA_SC1", 1, 491, 8},
-    {47, "PA_SC2", 2, 491, 8},
-    {48, "PA_SC3", 3, 491, 8},
+    {41, "PA_SU0", 0, 351, 4},
+    {42, "PA_SU1", 1, 351, 4},
+    {43, "PA_SU2", 2, 351, 4},
+    {44, "PA_SU3", 3, 351, 4},
+    {45, "PA_SC0", 0, 492, 8},
+    {46, "PA_SC1", 1, 492, 8},
+    {47, "PA_SC2", 2, 492, 8},
+    {48, "PA_SC3", 3, 492, 8},
     {49, "SX0", 0, 208, 4},
     {50, "SX1", 1, 208, 4},
     {51, "SX2", 2, 208, 4},
@@ -668,22 +668,22 @@ GPA_CounterGroupDesc HWDX11GroupsGfx9[] =
     {310, "ATC", 0, 24, 4},
     {311, "ATCL2", 0, 8, 2},
     {312, "RPB", 0, 63, 4},
-    {313, "GCEA0", 0, 77, 2},
-    {314, "GCEA1", 1, 77, 2},
-    {315, "GCEA2", 2, 77, 2},
-    {316, "GCEA3", 3, 77, 2},
-    {317, "GCEA4", 4, 77, 2},
-    {318, "GCEA5", 5, 77, 2},
-    {319, "GCEA6", 6, 77, 2},
-    {320, "GCEA7", 7, 77, 2},
-    {321, "GCEA8", 8, 77, 2},
-    {322, "GCEA9", 9, 77, 2},
-    {323, "GCEA10", 10, 77, 2},
-    {324, "GCEA11", 11, 77, 2},
-    {325, "GCEA12", 12, 77, 2},
-    {326, "GCEA13", 13, 77, 2},
-    {327, "GCEA14", 14, 77, 2},
-    {328, "GCEA15", 15, 77, 2},
+    {313, "GCEA0", 0, 83, 2},
+    {314, "GCEA1", 1, 83, 2},
+    {315, "GCEA2", 2, 83, 2},
+    {316, "GCEA3", 3, 83, 2},
+    {317, "GCEA4", 4, 83, 2},
+    {318, "GCEA5", 5, 83, 2},
+    {319, "GCEA6", 6, 83, 2},
+    {320, "GCEA7", 7, 83, 2},
+    {321, "GCEA8", 8, 83, 2},
+    {322, "GCEA9", 9, 83, 2},
+    {323, "GCEA10", 10, 83, 2},
+    {324, "GCEA11", 11, 83, 2},
+    {325, "GCEA12", 12, 83, 2},
+    {326, "GCEA13", 13, 83, 2},
+    {327, "GCEA14", 14, 83, 2},
+    {328, "GCEA15", 15, 83, 2},
     {329, "RMI0", 0, 257, 4},
     {330, "RMI1", 1, 257, 4},
     {331, "RMI2", 2, 257, 4},
@@ -1290,10 +1290,10 @@ PE_BLOCK_ID HWDX11DriverEnumGfx9[] =
     PE_BLOCK_UNKNOWN,
 };
 
-const unsigned int HWDX11GPUTimeBottomToBottomIndexGfx9 = 54512;
-const unsigned int HWDX11GPUTimeTopToBottomIndexGfx9 = 54513;
+const unsigned int HWDX11GPUTimeBottomToBottomIndexGfx9 = 54848;
+const unsigned int HWDX11GPUTimeTopToBottomIndexGfx9 = 54849;
 const std::set<unsigned int> HWDX11TimestampBlockIdsGfx9 = { 338, 337 }; ///< Timestamp block id's for DX11 for Gfx9 family
-const std::set<unsigned int> HWDX11TimeCounterIndicesGfx9 = { 54512, 54513, 54511 }; ///< Timestamp counter indices for DX11 for Gfx9 family
+const std::set<unsigned int> HWDX11TimeCounterIndicesGfx9 = { 54848, 54849, 54847 }; ///< Timestamp counter indices for DX11 for Gfx9 family
 const unsigned int HWDX11GroupCountGfx9 = sizeof(HWDX11GroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX11SQGroupCountGfx9 = sizeof(HWDX11SQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX11SQIsolatedGroupCountGfx9 = sizeof(HWDX11SQIsolatedGroupsGfx9) / sizeof(unsigned int);

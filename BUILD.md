@@ -30,19 +30,21 @@ this script everytime you pull new changes from GPA repository.
 ## Windows Build Information
 
 ##### Prerequisites
- * Microsoft Visual Studio 2015 Community Edition or higher + Update 3
+ * Microsoft Visual Studio 2015 Community Edition or higher + Update 3 or Microsoft Visual Studio 2017
  * Windows 10 SDK Version 10.0.10586.0 from https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk
    * You can override the version of the Windows 10 SDK used by modifying Common/Lib/Ext/Windows-Kits/Global-WindowsSDK.props
  * Microsoft .NET 4.6.2 SDK from https://www.microsoft.com/en-us/download/details.aspx?id=53321
 
 ##### Build Instructions
- * Load Build\VS2015\GPUPerfAPI.sln into Visual Studio
+ * Load Build\VS2015\GPUPerfAPI.sln into Visual Studio 2015
+   * If you are using VS2017, you should load Build\VS2017\GPUPerfAPI.sln instead
  * Build the 64-bit and/or 32-bit configuration
  * After a successful build, the GPUPerfAPI binaries can be found in `GPA\Output\$(Configuration)\bin` (for example GPA\Output\Release\bin)
 
 #### Additional Information
  * The Visual Studio solution includes a Documentation project that allows you to generate the HTML-based source code documentation using Doxygen. In order
-   to build that project, you'll need to modify [Documentation.vcxproj](Build/VS2015/Documentation.vcxproj) and modify the paths to the doxygen executable.
+   to build that project, you'll need to modify [Build/VS2015/Documentation.vcxproj](Build/VS2015/Documentation.vcxproj) or [Build/VS2017/Documentation.vcxproj](Build/VS2017/Documentation.vcxproj)
+   to update the paths to the doxygen executable.
  * The Windows projects each include a .rc file that embeds the VERSIONINFO resource into the final binary. Internally within AMD, a Jenkins build system will dynamically update
    the build number. The version and build numbers can be manually updated by modifying the [GPAVersion.h](Src/GPUPerfAPI-Common/GPAVersion.h) file.
  * Information on building the Internal version:

@@ -26,6 +26,7 @@ LIB_OBJS	= \
 	./$(OBJ_DIR)/GPAPass.o \
 	./$(OBJ_DIR)/GPASample.o \
 	./$(OBJ_DIR)/GPAUniqueObject.o \
+	./$(OBJ_DIR)/GPAContextCounterMediator.o \
 	./$(OBJ_DIR)/GPASession.o \
 	./$(OBJ_DIR)/Logging.o \
 

@@ -856,73 +856,241 @@ TEST_P(GPAAPIErrorTest, TestGPA_SampleHandling)
 
     // GPA_ContinueSampleOnCommandList
     status = m_pGpaFuncTable->GPA_ContinueSampleOnCommandList(0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_ContinueSampleOnCommandList(0, badCommandList);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_ContinueSampleOnCommandList(0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_ContinueSampleOnCommandList(0x7FFFFFFF, badCommandList);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     // GPA_CopySecondarySamples
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     GPA_CommandListId commandListId2;
     status = m_pGpaFuncTable->GPA_BeginCommandList(nullptr, 0x7FFFFFFF, this, GPA_COMMAND_LIST_PRIMARY, &commandListId2);
     EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, badCommandList, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, badCommandList2, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, badCommandList2, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, nullptr, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, nullptr, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, badCommandList2, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, badCommandList2, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     gpa_uint32 newSampleIds = 0;
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, nullptr, 0, &newSampleIds);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, nullptr, 0, &newSampleIds);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, badCommandList, 0, &newSampleIds);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, badCommandList, 0, &newSampleIds);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, nullptr, 1, &newSampleIds);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, nullptr, 1, &newSampleIds);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, badCommandList, 1, &newSampleIds);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, badCommandList, 1, &newSampleIds);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+
+    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    }
+    else
+    {
+        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+    }
 
     // GPA_GetSampleCount
     status = m_pGpaFuncTable->GPA_GetSampleCount(nullptr, nullptr);
@@ -1152,7 +1320,7 @@ INSTANTIATE_TEST_CASE_P(
         GPA_API_VULKAN
         , GPA_API_OPENCL
 #ifndef X86
-        , GPA_API_HSA
+    , GPA_API_HSA
 #endif
         , GPA_API_OPENGL
     )

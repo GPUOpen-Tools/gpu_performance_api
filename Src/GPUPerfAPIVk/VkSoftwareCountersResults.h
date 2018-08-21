@@ -8,7 +8,7 @@
 #ifndef _VK_SOFTWARE_COUNTERS_RESULTS_H_
 #define _VK_SOFTWARE_COUNTERS_RESULTS_H_
 
-#include <vulkan/vulkan.h>
+#include "VkIncludes.h"
 
 /// Enum of the different Vulkan queries used by GPA.
 /// These are used as both identifiers and indexes into arrays of VkQueryPools.

@@ -34,6 +34,15 @@ public:
     /// \copydoc GPAImplementor::VerifyAPIHwSupport
     bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const override final;
 
+    /// \copydoc IGPAImplementor::IsCommandListRequired()
+    bool IsCommandListRequired() const override;
+
+    /// \copydoc IGPAImplementor::IsContinueSampleOnCommandListSupported()
+    bool IsContinueSampleOnCommandListSupported() const override;
+
+    /// \copydoc IGPAImplementor::IsCopySecondarySampleSupported()
+    bool IsCopySecondarySampleSupported() const override;
+
 private:
 
     /// Stores the instance that this GPA implementation is using.

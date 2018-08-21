@@ -44,3 +44,4 @@ Return value
     "GPA_STATUS_ERROR_ALREADY_ENABLED", "The specified counter was already enabled."
     "GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES", "The supplied session was not created with a GPA_Session_Sample_Type value that supports counter collection."
     "GPA_STATUS_ERROR_FAILED", "An error occurred while trying to enable the counter."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

@@ -25,10 +25,6 @@ GPA_CounterSchedulerBase::GPA_CounterSchedulerBase()
 {
 }
 
-GPA_CounterSchedulerBase::~GPA_CounterSchedulerBase()
-{
-}
-
 void GPA_CounterSchedulerBase::Reset()
 {
     DisableAllCounters();
@@ -78,7 +74,10 @@ GPA_Status GPA_CounterSchedulerBase::EnableCounter(gpa_uint32 index)
     {
         std::stringstream message;
         message << "Counter index " << index << " has already been enabled.";
-        GPA_LogError(message.str().c_str());
+
+        // We will log this as a debug message rather than an error at this point,
+        // this error will be reported to the logger from the caller
+        GPA_LogDebugMessage(message.str().c_str());
         return GPA_STATUS_ERROR_ALREADY_ENABLED;
     }
 
@@ -413,7 +412,7 @@ CounterResultLocationMap* GPA_CounterSchedulerBase::GetCounterResultLocations(un
     return nullptr;
 }
 
-void GPA_CounterSchedulerBase::SetDrawCallCounts(const int iCounts)
+void GPA_CounterSchedulerBase::SetDrawCallCounts(const int& iCounts)
 {
     DoSetDrawCallCounts(iCounts);
 }
@@ -465,7 +464,7 @@ void GPA_CounterSchedulerBase::DoEndPass()
     // do nothing in base class
 }
 
-void GPA_CounterSchedulerBase::DoSetDrawCallCounts(const int iCount)
+void GPA_CounterSchedulerBase::DoSetDrawCallCounts(const int& iCount)
 {
     UNREFERENCED_PARAMETER(iCount);
     // do nothing in base

@@ -29,21 +29,18 @@ as well as several third-party tools.
 * "Internal" version provides access to some raw hardware counters. See ["Public" vs "Internal" Versions](#public-vs-internal-versions) for more information.
 
 ## What's New
-* Version 3.1 (6/15/18)
+* Version 3.2 (8/21/18)
   * Add support for additional GPUs and APUs.
-  * Usability improvements to GPAInterfaceLoader.h.
-  * New Vulkan and DirectX 12 sample applications.
-  * New GPA_GetSampleId entry point.
-  * New GPA_GetVersion entry point.
+  * Wrapped all GPA entrypoints in try/catch to ensure unhandled exceptions do not escape the GPA library.
+  * Add VS2017 project files.
   * Bugs Fixed:
-    * Fixed issues with some counters on 56CU Vega10.
-    * Vulkan: Fixed GPA_ContinueSampleOnCommandList.
-    * Vulkan: Ensure results are ready before trying to query them.
-    * DirectX 12: Fixed incorrect device reference counting issue.
+    * Fixed https://github.com/GPUOpen-Tools/GPA/issues/18.
+    * Fixed support for scheduling counters on multiple sessions.
+    * OpenGL: Fixed a bug in GPASample cleanup.
 
 ## System Requirements
 * An AMD Radeon GCN-based GPU or APU
-* Radeon Software Crimson Adrenaline Edition 18.5.1 or later (Driver Packaging Version 18.10.16 or later).
+* Radeon Software Crimson Adrenaline Edition 18.8.1 or later (Driver Packaging Version 18.30.01 or later).
 * Pre-GCN-based GPUs or APUs are no longer supported by GPUPerfAPI. Please use an older version ([2.17](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/)) with older hardware.
 * Windows 7, 8.1, and 10
 * Ubuntu (16.04 and later) and RHEL (7 and later) distributions

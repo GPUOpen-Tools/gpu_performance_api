@@ -12,7 +12,7 @@
 DX11GPASession::DX11GPASession(
     IGPAContext* pParentContext,
     GPA_Session_Sample_Type sampleType) :
-    GPASession(pParentContext, pParentContext->GetCounterScheduler(), sampleType)
+    GPASession(pParentContext, sampleType)
 {
 }
 
@@ -25,14 +25,13 @@ GPAPass* DX11GPASession::CreateAPIPass(PassIndex passIndex)
 {
     GPAPass* pRetPass = nullptr;
 
-    CounterList* passCounters = GetCounterScheduler()->GetCountersForPass(passIndex);
-    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*passCounters)[0]);
+    CounterList* pPassCounters = GetCountersForPass(passIndex);
+    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
 
     DX11GPAPass* pDx11Pass = new(std::nothrow) DX11GPAPass(this,
                                                            passIndex,
                                                            counterSource,
-                                                           GetCounterScheduler(),
-                                                           GetParentContext()->GetCounterAccessor());
+                                                           pPassCounters);
 
     if (nullptr == pDx11Pass)
     {

@@ -124,8 +124,8 @@ GPA_CounterGroupDesc HWGLGroupsGfx9[] =
     {8, "DB3", 3, 328, 4},
     {9, "GRBM", 0, 38, 2},
     {10, "GRBMSE", 0, 16, 4},
-    {11, "PA_SU", 0, 292, 4},
-    {12, "PA_SC", 0, 491, 8},
+    {11, "PA_SU", 0, 351, 4},
+    {12, "PA_SC", 0, 492, 8},
     {13, "SPI", 0, 196, 6},
     {14, "SQ", 0, 374, 16},
     {15, "SQ_ES", 0, 374, 16},
@@ -295,10 +295,10 @@ unsigned int HWGLSQIsolatedGroupsGfx9[] =
     88, // Tcp
 };
 
-const unsigned int HWGLGPUTimeBottomToBottomIndexGfx9 = 16130;
-const unsigned int HWGLGPUTimeTopToBottomIndexGfx9 = 16131;
+const unsigned int HWGLGPUTimeBottomToBottomIndexGfx9 = 16190;
+const unsigned int HWGLGPUTimeTopToBottomIndexGfx9 = 16191;
 const std::set<unsigned int> HWGLTimestampBlockIdsGfx9 = { 96 }; ///< Timestamp block id's for GL for Gfx9 family
-const std::set<unsigned int> HWGLTimeCounterIndicesGfx9 = { 16130, 16131 }; ///< Timestamp counter indices for GL for Gfx9 family
+const std::set<unsigned int> HWGLTimeCounterIndicesGfx9 = { 16190, 16191 }; ///< Timestamp counter indices for GL for Gfx9 family
 const unsigned int HWGLGroupCountGfx9 = sizeof(HWGLGroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWGLSQGroupCountGfx9 = sizeof(HWGLSQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWGLSQIsolatedGroupCountGfx9 = sizeof(HWGLSQIsolatedGroupsGfx9) / sizeof(unsigned int);

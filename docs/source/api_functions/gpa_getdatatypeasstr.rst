@@ -39,3 +39,4 @@ Return value
     "GPA_STATUS_OK", "The string representation was successfully retrieved."
     "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``ppTypeStr`` parameter is NULL."
     "GPA_STATUS_ERROR_INVALID_PARAMETER", "The ``counterDataType`` parameter has an invalid value."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

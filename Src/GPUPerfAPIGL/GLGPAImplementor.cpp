@@ -214,7 +214,7 @@ bool GLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                     asicType = GDT_GFX8_0_4;
                     break;
 
-                case ATIASIC_ID_VEGA:
+                case ATIASIC_ID_VEGA10:
                     hwInfo.SetDeviceID(0x687F);
                     asicType = GDT_GFX9_0_0;
                     break;

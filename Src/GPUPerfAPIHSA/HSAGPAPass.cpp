@@ -12,15 +12,10 @@
 HSAGPAPass::HSAGPAPass(IGPASession* pGpaSession,
                        PassIndex passIndex,
                        GPACounterSource counterSource,
-                       IGPACounterScheduler* pCounterScheduler,
-                       const IGPACounterAccessor* pCounterAccessor):
-    GPAPass(pGpaSession, passIndex, counterSource, pCounterScheduler, pCounterAccessor)
+                       CounterList* pPassCounters):
+    GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
 {
     EnableAllCountersForPass();
-}
-
-HSAGPAPass::~HSAGPAPass()
-{
 }
 
 GPASample* HSAGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList,

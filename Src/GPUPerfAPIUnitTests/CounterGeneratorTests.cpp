@@ -152,11 +152,10 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, gpa_uint8 gener
 
                 const char* pGroup = pCounterAccessor->GetCounterGroup(i);
                 EXPECT_NE((const char*)nullptr, pGroup);
-                EXPECT_NE("", pGroup);
+                EXPECT_NE(0, strcmp("", pGroup));
 
                 const char* pDesc = pCounterAccessor->GetCounterDescription(i);
                 EXPECT_NE((const char*)nullptr, pDesc);
-                EXPECT_NE("", pDesc);
 
                 // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
                 EXPECT_NE('#', pDesc[0]);
@@ -173,11 +172,11 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, gpa_uint8 gener
 
                     const char* pGroup = pCounterAccessor->GetCounterGroup(i);
                     EXPECT_NE((const char*)nullptr, pGroup);
-                    EXPECT_NE("", pGroup);
+                    EXPECT_NE(0, strcmp("", pGroup));
 
                     const char* pDesc = pCounterAccessor->GetCounterDescription(i);
                     EXPECT_NE((const char*)nullptr, pDesc);
-                    EXPECT_NE("", pDesc);
+                    EXPECT_NE(0, strcmp("", pDesc));
 
                     // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
                     EXPECT_NE('#', pDesc[0]);
@@ -226,11 +225,10 @@ void VerifyCounterNames(GPA_API_Type api, GPA_Hw_Generation generation, gpa_uint
 
                 const char* pGroup = pCounterAccessor->GetCounterGroup(i);
                 EXPECT_NE((const char*)nullptr, pGroup);
-                EXPECT_NE("", pGroup);
+                EXPECT_NE(0, strcmp("", pGroup));
 
                 const char* pDesc = pCounterAccessor->GetCounterDescription(i);
                 EXPECT_NE((const char*)nullptr, pDesc);
-                EXPECT_NE("", pDesc);
 
                 // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
                 EXPECT_NE('#', pDesc[0]);
@@ -247,11 +245,11 @@ void VerifyCounterNames(GPA_API_Type api, GPA_Hw_Generation generation, gpa_uint
 
                     const char* pGroup = pCounterAccessor->GetCounterGroup(i);
                     EXPECT_NE((const char*)nullptr, pGroup);
-                    EXPECT_NE("", pGroup);
+                    EXPECT_NE(0, strcmp("", pGroup));
 
                     const char* pDesc = pCounterAccessor->GetCounterDescription(i);
                     EXPECT_NE((const char*)nullptr, pDesc);
-                    EXPECT_NE("", pDesc);
+                    EXPECT_NE(0, strcmp("", pDesc));
 
                     // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
                     EXPECT_NE('#', pDesc[0]);

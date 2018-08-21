@@ -7,11 +7,12 @@
 
 #include "GLGPASession.h"
 #include "GLGPAPass.h"
+#include "GPAContextCounterMediator.h"
 
 GLGPASession::GLGPASession(
     IGPAContext* pParentContext,
     GPA_Session_Sample_Type sampleType) :
-    GPASession(pParentContext, pParentContext->GetCounterScheduler(), sampleType)
+    GPASession(pParentContext, sampleType)
 {
 }
 
@@ -24,10 +25,13 @@ GPAPass* GLGPASession::CreateAPIPass(PassIndex passIndex)
 {
     GPAPass* pRetPass = nullptr;
 
-    CounterList* passCounters = GetCounterScheduler()->GetCountersForPass(passIndex);
-    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*passCounters)[0]);
+    CounterList* pPassCounters = GetCountersForPass(passIndex);
+    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
 
-    GLGPAPass* pGlPass = new(std::nothrow) GLGPAPass(this, passIndex, counterSource, GetCounterScheduler(), GetParentContext()->GetCounterAccessor());
+    GLGPAPass* pGlPass = new(std::nothrow) GLGPAPass(this,
+                                                     passIndex,
+                                                     counterSource,
+                                                     pPassCounters);
 
     if (nullptr == pGlPass)
     {

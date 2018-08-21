@@ -7,7 +7,6 @@
 
 #include "VkGPACommandList.h"
 #include "VkGPASession.h"
-#include <vulkan/vulkan.h>
 #include "VkEntrypoints.h"
 #include "VkGPAContext.h"
 #include "VkGPASoftwareSample.h"

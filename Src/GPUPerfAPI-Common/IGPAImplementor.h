@@ -64,6 +64,18 @@ public:
     /// Gets the flags used to initialize GPA. This is a mask of GPA_Initialize_Bits
     /// \return the flags used to initialize GPA
     virtual GPA_InitializeFlags GetInitializeFlags() const = 0;
+
+    /// Returns whether the command list is required or not
+    /// \return true if command list is required otherwise false
+    virtual bool IsCommandListRequired() const = 0;
+
+    /// Returns whether the sample continuation on command list is supported or not
+    /// \return true if sample continuation is supported otherwise false
+    virtual bool IsContinueSampleOnCommandListSupported() const = 0;
+
+    /// Returns whether the secondary sample copy is supported or not
+    /// \return true if copy secondary sample is supported otherwise false
+    virtual bool IsCopySecondarySampleSupported() const = 0;
 };
 
 #endif // _I_GPA_IMPLEMENTOR_H_

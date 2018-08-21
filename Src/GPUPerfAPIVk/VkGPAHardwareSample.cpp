@@ -10,7 +10,6 @@
 #include "VkGPAPass.h"
 #include "GPAHardwareCounters.h"
 #include "VkEntrypoints.h"
-#include "vk_amd_gpa_interface.h"
 
 VkGPAHardwareSample::VkGPAHardwareSample(GPAPass* pPass,
                                          IGPACommandList* pCmdList,

@@ -43,3 +43,4 @@ Return value
     GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE", "The specified index is out of range."
     "GPA_STATUS_ERROR_NOT_ENABLED", "The specified counter is not currently enabled."
     "GPA_STATUS_ERROR_FAILED", "An error occurred while trying to disable the counter."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

@@ -8,8 +8,7 @@
 #ifndef _VK_ENTRYPOINTS_H_
 #define _VK_ENTRYPOINTS_H_
 
-#include <vulkan/vulkan.h>
-#include "vk_amd_gpa_interface.h"
+#include "VkIncludes.h"
 
 // Instance entrypoints
 extern PFN_vkGetPhysicalDeviceProperties _vkGetPhysicalDeviceProperties;                       ///< Vulkan entrypoint

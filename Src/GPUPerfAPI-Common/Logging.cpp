@@ -7,15 +7,25 @@
 
 #include "Logging.h"
 #include <assert.h>
+#include "Utility.h"
 
 #ifdef _WIN32
     #pragma comment( lib, "Winmm.lib" )
 #endif
 
-static const char MUTEX_NAME[] = "GPALoggerMutex"; ///< mutex name
-
 GPATracer gTracerSingleton;
 GPALogger g_loggerSingleton;
+
+void GPAInternalLogger(GPA_Logging_Type logType, const char* pLogMsg)
+{
+    if (GPA_LOGGING_INTERNAL == logType)
+    {
+        if (g_loggerSingleton.m_internalLoggingFileStream.is_open())
+        {
+            g_loggerSingleton.m_internalLoggingFileStream << "GPA Internal Logging: " << pLogMsg << std::endl;
+        }
+    }
+}
 
 GPATracer::GPATracer()
 {
@@ -180,7 +190,8 @@ ScopeTrace::~ScopeTrace()
 
 GPALogger::GPALogger() :
     m_loggingType(GPA_LOGGING_NONE),
-    m_loggingCallback(nullptr)
+    m_loggingCallback(nullptr),
+    m_enableInternalLogging(false)
 {
 #ifdef _WIN32
     InitializeCriticalSection(&m_hLock);
@@ -197,6 +208,14 @@ GPALogger::GPALogger() :
 
     //After initializing the mutex, the thread attribute can be destroyed
     pthread_mutexattr_destroy(&mutexattr);
+#endif
+
+#ifdef _DEBUG
+    std::string currentModulePath;
+    GPAUtil::GetCurrentModulePath(currentModulePath);
+    m_internalLogFileName = currentModulePath + "GPA-Internal-Log.txt";
+    std::remove(m_internalLogFileName.c_str());
+    m_internalLoggingFileStream.open(m_internalLogFileName.c_str(), std::ios_base::out | std::ios_base::app);
 #endif
 }
 
@@ -224,6 +243,11 @@ void GPALogger::Log(GPA_Logging_Type logType, const char* pMessage)
         nullptr != m_loggingCallback)
     {
         m_loggingCallback(logType, pMessage);
+
+        if (m_enableInternalLogging)
+        {
+            m_gpaInternalLogger(logType, pMessage);
+        }
     }
 
     LeaveCriticalSection(&m_hLock);

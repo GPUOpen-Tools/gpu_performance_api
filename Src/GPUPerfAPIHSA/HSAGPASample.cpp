@@ -10,6 +10,7 @@
 #include "GPAPass.h"
 #include "HSAGPASample.h"
 #include "HSARTModuleLoader.h"
+#include "GPAContextCounterMediator.h"
 
 HSAGPASample::HSAGPASample(GPAPass* pPass,
                            IGPACommandList* pCmdList,
@@ -220,7 +221,8 @@ bool HSAGPASample::BeginInternalRequest()
             }
             else
             {
-                const GPA_HardwareCounters* pHardwareCounters = m_pHSAGpaContext->GetCounterAccessor()->GetHardwareCounters();
+                IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pHSAGpaContext);
+                const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
 
                 // Check number of groups
                 gpa_uint32 numGroups = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
@@ -243,7 +245,7 @@ bool HSAGPASample::BeginInternalRequest()
                         bool isCounterValid = false;
 
                         // need to Enable counters
-                        const GPA_HardwareCounterDescExt* pCounter = m_pHSAGpaContext->GetCounterAccessor()->GetHardwareCounterExt(counterIndex);
+                        const GPA_HardwareCounterDescExt* pCounter = pCounterAccessor->GetHardwareCounterExt(counterIndex);
 
                         gpa_uint32 groupIndex = pCounter->m_groupIdDriver;
                         assert(groupIndex <= numGroups);

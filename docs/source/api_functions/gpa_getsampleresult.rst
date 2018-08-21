@@ -55,3 +55,4 @@ Return value
     "GPA_STATUS_ERROR_READING_SAMPLE_RESULT", "The sample result could not be read."
     "GPA_STATUS_ERROR_SAMPLE_IN_SECONDARY_COMMAND_LIST", "An attempt was made to read a result from a secondary command list. Samples from a secondary command list must copied to the primary command list using GPA_CopySecondarySamples."
     "GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE", "An internal operation to index a particular counter failed."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

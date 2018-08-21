@@ -49,4 +49,5 @@ Return value
     "GPA_STATUS_ERROR_INVALID_PARAMETER", "The ``sampleType`` parameter has an invalid value."
     "GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES", "The ``sampleType`` is incompatible with the context's supported sample type."
     "GPA_STATUS_ERROR_FAILED", "The session could not be created."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
 

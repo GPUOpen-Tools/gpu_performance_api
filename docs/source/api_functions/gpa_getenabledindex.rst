@@ -45,3 +45,4 @@ Return value
     "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied session's parent context is not currently open."
     "GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE", "The supplied ``enabledNumber`` is out of range."
     "GPA_STATUS_ERROR_FAILED", "The counter index could not be retrieved."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

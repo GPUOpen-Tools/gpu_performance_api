@@ -27,6 +27,7 @@
 #include <mutex>
 #include <map>
 #include <thread>
+#include <fstream>
 
 #include "GPUPerfAPITypes.h"
 #include "GPUPerfAPIFunctionTypes.h"
@@ -59,6 +60,16 @@
 #define TRACE_PRIVATE_FUNCTION(func) ///< Macro used for tracing private functions
 #define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...) ///< Macro used for tracing private function with parameters
 #endif // trace functions
+
+/// Internal GPA logger function
+/// \param[in] logType logging type
+/// \param[in] pLogMsg logging message
+extern void GPAInternalLogger(GPA_Logging_Type logType, const char* pLogMsg);
+
+#define GPA_INTERNAL_LOG(func, ...)                                                                                 \
+    std::stringstream logAdditionalMessage;                                                                         \
+    logAdditionalMessage << "ThreadId: " << std::this_thread::get_id() << #func << ": " << __VA_ARGS__ ;            \
+    GPAInternalLogger(GPA_LOGGING_INTERNAL, logAdditionalMessage.str().c_str());                                    \
 
 /// Passes log messages of various types to a user-supplied callback function
 /// if the user has elected to receive messages of that particular type.
@@ -225,6 +236,12 @@ public:
         return false;
     }
 
+    /// Internal logging file stream
+    std::fstream m_internalLoggingFileStream;
+
+    /// Internal logging file
+    std::string m_internalLogFileName;
+
 protected:
 
     /// User selected logging type that defines what messages they want to be notified of
@@ -232,6 +249,15 @@ protected:
 
     /// User-supplied callback function
     GPA_LoggingCallbackPtrType m_loggingCallback;
+
+    /// Internal logger of GPA for debugging purposes
+    GPA_LoggingCallbackPtrType m_gpaInternalLogger = GPAInternalLogger;
+
+    /// Mutex for internal logging flag
+    std::mutex m_internalLoggingMutex;
+
+    /// Internal logging flag
+    bool m_enableInternalLogging;
 
 #ifdef _WIN32
     CRITICAL_SECTION m_hLock;  ///< lock for thread-safe access

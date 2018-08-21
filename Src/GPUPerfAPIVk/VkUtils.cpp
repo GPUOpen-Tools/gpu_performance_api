@@ -5,10 +5,12 @@
 /// \brief  Vulkan utility functions implementation
 //==============================================================================
 
+#include <assert.h>
+
 #include "VkUtils.h"
 #include "VkEntrypoints.h"
 #include "Logging.h"
-#include <assert.h>
+
 
 bool VkUtils::GetPhysicalDeviceGpaFeaturesAMD(VkPhysicalDevice vkPhysicalDevice, VkPhysicalDeviceGpaFeaturesAMD* pGpaFeaturesAMD)
 {

@@ -5,22 +5,19 @@
 /// \brief  Vulkan GPA Pass Object Implementation
 //==============================================================================
 
-#include <vulkan/vulkan.h>
-#include <vk_amd_gpa_interface.h>
-
 #include "VkGPAPass.h"
 #include "VkGPACommandList.h"
 #include "VkGPAContext.h"
 #include "VkGPAHardwareSample.h"
 #include "VkGPASoftwareSample.h"
 #include "GPACounterGeneratorVKBase.h"
+#include "GPAContextCounterMediator.h"
 
 VkGPAPass::VkGPAPass(IGPASession* pGpaSession,
                      PassIndex passIndex,
                      GPACounterSource counterSource,
-                     IGPACounterScheduler* pCounterScheduler,
-                     const IGPACounterAccessor* pCounterAccessor):
-    GPAPass(pGpaSession, passIndex, counterSource, pCounterScheduler, pCounterAccessor),
+                     CounterList* pPassCounters):
+    GPAPass(pGpaSession, passIndex, counterSource, pPassCounters),
     m_isSampleBeginInfoInitialized(false)
 {
     InitializeSampleConfig();
@@ -70,7 +67,8 @@ void VkGPAPass::InitializeSampleConfig()
         m_sampleBeginInfoAMD.sType = VK_STRUCTURE_TYPE_GPA_SAMPLE_BEGIN_INFO_AMD;
         m_sampleBeginInfoAMD.pNext = nullptr;
 
-        const GPA_HardwareCounters* pHardwareCounters = (reinterpret_cast<const GPA_CounterGeneratorVKBase*>(GetCounterAccessor()))->GetHardwareCounters();
+        IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
+        const GPA_HardwareCounters* pHardwareCounters = (reinterpret_cast<const GPA_CounterGeneratorVKBase*>(pCounterAccessor))->GetHardwareCounters();
 
         if (!m_pCounterList->empty())
         {

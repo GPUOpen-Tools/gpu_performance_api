@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA VK Context declarations
@@ -9,9 +9,7 @@
 #define _VK_GPA_CONTEXT_H_
 
 #include <mutex>
-#include <vulkan/vulkan.h>
-#include <vk_amd_gpa_interface.h>
-
+#include "VkIncludes.h"
 #include "GPAContext.h"
 
 // Predeclared objects

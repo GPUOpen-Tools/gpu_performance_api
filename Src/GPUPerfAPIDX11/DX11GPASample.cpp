@@ -11,6 +11,7 @@
 #include "GPAPass.h"
 #include "DX11GPASample.h"
 #include "DX11GPAPass.h"
+#include "GPAContextCounterMediator.h"
 
 /// Macro to assert on a PerfExperiment error
 #ifdef _DEBUG
@@ -207,15 +208,16 @@ bool DX11GPASample::BeginRequest()
     bool success = false;
 
     DX11GPAPass* pDx11GpaPass = reinterpret_cast<DX11GPAPass*>(GetPass());
-    DX11GPAContext* pdx11GpaContext = reinterpret_cast<DX11GPAContext*>(pDx11GpaPass->GetGpaSession()->GetParentContext());
+    DX11GPAContext* pDx11GpaContext = reinterpret_cast<DX11GPAContext*>(pDx11GpaPass->GetGpaSession()->GetParentContext());
 
-    if (nullptr != pdx11GpaContext)
+    if (nullptr != pDx11GpaContext)
     {
-        const GPA_HardwareCounters* pHardwareCounters = pdx11GpaContext->GetCounterAccessor()->GetHardwareCounters();
+        IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(pDx11GpaContext);
+        const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
 
         if (pDx11GpaPass->IsTimingPass())
         {
-            ID3D11Device* pDevice = pdx11GpaContext->GetDevice();
+            ID3D11Device* pDevice = pDx11GpaContext->GetDevice();
             ID3D11DeviceContext* pDeviceContext = nullptr;
             pDevice->GetImmediateContext(&pDeviceContext);
 
@@ -362,12 +364,12 @@ bool DX11GPASample::CreateSampleExperiment()
 {
     bool success = false;
     DX11GPAPass* pDx11GpaPass = reinterpret_cast<DX11GPAPass*>(GetPass());
-    DX11GPAContext* pdx11GpaContext = reinterpret_cast<DX11GPAContext*>(pDx11GpaPass->GetGpaSession()->GetParentContext());
+    DX11GPAContext* pDx11GpaContext = reinterpret_cast<DX11GPAContext*>(pDx11GpaPass->GetGpaSession()->GetParentContext());
 
-    if (nullptr != pdx11GpaContext)
+    if (nullptr != pDx11GpaContext)
     {
-        IAmdDxExt* pDxExt = pdx11GpaContext->GetAmdDxExtension();
-        IAmdDxExtPerfProfile* pExtPE = pdx11GpaContext->GetAmdProfileExtension();
+        IAmdDxExt* pDxExt = pDx11GpaContext->GetAmdDxExtension();
+        IAmdDxExtPerfProfile* pExtPE = pDx11GpaContext->GetAmdProfileExtension();
 
         if (0 == pDx11GpaPass->GetEnabledCounterCount())
         {
@@ -381,9 +383,9 @@ bool DX11GPASample::CreateSampleExperiment()
                 // create correct version of experiment based on driver version
                 if (DxxExtUtils::IsMgpuPerfExtSupported(pDxExt))
                 {
-                    GPUIndex activeGPU = pdx11GpaContext->GetActiveGpu();
+                    GPUIndex activeGPU = pDx11GpaContext->GetActiveGpu();
 
-                    if (pdx11GpaContext->GetCFActiveGpu() == activeGPU)
+                    if (pDx11GpaContext->GetCFActiveGpu() == activeGPU)
                     {
                         // When checking block limits, if in Crossfire mode, always use GPU zero; if in PX mode, use the active GPU
                         activeGPU = 0;
@@ -404,7 +406,8 @@ bool DX11GPASample::CreateSampleExperiment()
 
                 bool engineParamSetsuccess = true;
 
-                const GPA_HardwareCounters* pHardwareCounters = pdx11GpaContext->GetCounterAccessor()->GetHardwareCounters();
+                IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(pDx11GpaContext);
+                const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
 
                 if (nullptr != m_pExperiment)
                 {
@@ -416,7 +419,7 @@ bool DX11GPASample::CreateSampleExperiment()
                         if (pCounter->m_groupIdDriver == PE_BLOCK_SQ)
                         {
                             // set all valid shader engines to the current stage mask
-                            for (unsigned int ii = 0; ii < pdx11GpaContext->GetHwInfo()->GetNumberShaderEngines(); ii++)
+                            for (unsigned int ii = 0; ii < pDx11GpaContext->GetHwInfo()->GetNumberShaderEngines(); ii++)
                             {
                                 SQEngineParamValue sqEngineParamValue;
 
@@ -469,7 +472,8 @@ bool DX11GPASample::CreateAndAddCounterToExperiment()
 
     if (nullptr != m_ppCounters)
     {
-        const GPA_HardwareCounters* pHardwareCounters = GetPass()->GetGpaSession()->GetParentContext()->GetCounterAccessor()->GetHardwareCounters();
+        IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession()->GetParentContext());
+        const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
 
         auto AddCounterToExperiment = [&](CounterIndex counterIndex)->bool
         {

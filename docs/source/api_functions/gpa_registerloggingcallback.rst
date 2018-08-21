@@ -41,3 +41,4 @@ Return value
 
     "GPA_STATUS_OK", "The logging callback function was successfully registered."
     "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``pCallbackFuncPtr`` parameter is NULL and the specified ``loggingType`` is not GPA_LOGGING_NONE."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

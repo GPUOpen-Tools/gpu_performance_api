@@ -8,12 +8,10 @@
 #ifndef _VK_GPA_COMMAND_LIST_H_
 #define _VK_GPA_COMMAND_LIST_H_
 
+#include "VkIncludes.h"
 #include "GPACommandList.h"
 #include "VkGPASample.h"
 #include "VkCommandListSwQueries.h"
-
-#include <vulkan/vulkan.h>
-#include <vk_amd_gpa_interface.h>
 
 class IGPASession;    ///< Predeclared IGPASession
 class VkGPASession;   ///< Predeclared VkGPASession

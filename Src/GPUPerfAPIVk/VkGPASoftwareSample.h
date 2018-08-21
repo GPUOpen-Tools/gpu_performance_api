@@ -9,8 +9,7 @@
 #define _VK_GPA_SOFTWARE_SAMPLE_H_
 
 #include <vector>
-#include <vulkan/vulkan.h>
-
+#include "VkIncludes.h"
 #include "VkGPASample.h"
 #include "VkSoftwareCountersResults.h"
 #include "VkGPAContext.h"

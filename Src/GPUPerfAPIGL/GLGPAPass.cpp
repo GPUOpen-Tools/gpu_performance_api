@@ -9,13 +9,13 @@
 #include "GLGPACommandList.h"
 #include "GLGPASample.h"
 #include "GPAHardwareCounters.h"
+#include "GPAContextCounterMediator.h"
 
 GLGPAPass::GLGPAPass(IGPASession* pGpaSession,
                      PassIndex passIndex,
                      GPACounterSource counterSource,
-                     IGPACounterScheduler* pCounterScheduler,
-                     const IGPACounterAccessor* pCounterAccessor):
-    GPAPass(pGpaSession, passIndex, counterSource, pCounterScheduler, pCounterAccessor)
+                     CounterList* pPassCounters):
+                     GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
 {
     EnableAllCountersForPass();
 }
@@ -178,8 +178,9 @@ bool GLGPAPass::InitializeCounters(const GLPerfMonitorId& glPerfMonitorId)
     {
         bool isCounterEnabled = false;
         // need to Enable counters
-        const GPA_HardwareCounters* pHardwareCounters = GetGpaSession()->GetParentContext()->GetCounterAccessor()->GetHardwareCounters();
-        const GPA_HardwareCounterDescExt* pCounter = GetGpaSession()->GetParentContext()->GetCounterAccessor()->GetHardwareCounterExt(counterIndex);
+        IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
+        const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
+        const GPA_HardwareCounterDescExt* pCounter = pCounterAccessor->GetHardwareCounterExt(counterIndex);
 
         unsigned int uGroupIndex = pCounter->m_groupIndex;
 

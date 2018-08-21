@@ -29,18 +29,25 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCounters(GPA_API_Type api,
                                                              IGPACounterAccessor** ppCounterAccessorOut,
                                                              IGPACounterScheduler** ppCounterSchedulerOut)
 {
-    // For GPA 3.0 - disable Software counters
-    flags |= GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT;
+    try
+    {
+        // For GPA 3.0 - disable Software counters
+        flags |= GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT;
 
-    GPA_Status retVal = GenerateCounters(api,
-                                         vendorId,
-                                         deviceId,
-                                         revisionId,
-                                         flags,
-                                         generateAsicSpecificCounters,
-                                         ppCounterAccessorOut,
-                                         ppCounterSchedulerOut);
-    return retVal;
+        GPA_Status retVal = GenerateCounters(api,
+                                             vendorId,
+                                             deviceId,
+                                             revisionId,
+                                             flags,
+                                             generateAsicSpecificCounters,
+                                             ppCounterAccessorOut,
+                                             ppCounterSchedulerOut);
+        return retVal;
+    }
+    catch (...)
+    {
+        return GPA_STATUS_ERROR_EXCEPTION;
+    }
 }
 
 GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API_Type api,
@@ -49,74 +56,81 @@ GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCountersByGeneration(GPA_API
         gpa_uint8 generateAsicSpecificCounters,
         IGPACounterAccessor** ppCounterAccessorOut)
 {
-    GPA_Status retVal = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
-
-    // pick a device Id that falls into the desired HW generation.
-    gpa_uint32 vendorId = 0;
-    gpa_uint32 deviceId = 0;
-    gpa_uint32 revisionId = 0;
-
-    // For GPA 3.0 - disable Software counters
-    flags |= GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT;
-
-    if (GPA_HW_GENERATION_NVIDIA == generation)
+    try
     {
-        vendorId = NVIDIA_VENDOR_ID;
-        retVal = GenerateCounters(api,
-                                  vendorId,
-                                  deviceId,
-                                  revisionId,
-                                  flags,
-                                  generateAsicSpecificCounters,
-                                  ppCounterAccessorOut,
-                                  nullptr);
-    }
-    else if (GPA_HW_GENERATION_INTEL == generation)
-    {
-        vendorId = INTEL_VENDOR_ID;
-        retVal = GenerateCounters(api,
-                                  vendorId,
-                                  deviceId,
-                                  revisionId,
-                                  flags,
-                                  generateAsicSpecificCounters,
-                                  ppCounterAccessorOut,
-                                  nullptr);
-    }
-    else if (GPA_HW_GENERATION_NONE != generation)
-    {
-        std::vector<GDT_GfxCardInfo> cardList;
+        GPA_Status retVal = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
 
-        if (AMDTDeviceInfoUtils::Instance()->GetAllCardsInHardwareGeneration(static_cast<GDT_HW_GENERATION>(generation), cardList))
+        // pick a device Id that falls into the desired HW generation.
+        gpa_uint32 vendorId = 0;
+        gpa_uint32 deviceId = 0;
+        gpa_uint32 revisionId = 0;
+
+        // For GPA 3.0 - disable Software counters
+        flags |= GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT;
+
+        if (GPA_HW_GENERATION_NVIDIA == generation)
         {
-            vendorId = AMD_VENDOR_ID;
+            vendorId = NVIDIA_VENDOR_ID;
+            retVal = GenerateCounters(api,
+                                      vendorId,
+                                      deviceId,
+                                      revisionId,
+                                      flags,
+                                      generateAsicSpecificCounters,
+                                      ppCounterAccessorOut,
+                                      nullptr);
+        }
+        else if (GPA_HW_GENERATION_INTEL == generation)
+        {
+            vendorId = INTEL_VENDOR_ID;
+            retVal = GenerateCounters(api,
+                                      vendorId,
+                                      deviceId,
+                                      revisionId,
+                                      flags,
+                                      generateAsicSpecificCounters,
+                                      ppCounterAccessorOut,
+                                      nullptr);
+        }
+        else if (GPA_HW_GENERATION_NONE != generation)
+        {
+            std::vector<GDT_GfxCardInfo> cardList;
 
-            for (auto card : cardList)
+            if (AMDTDeviceInfoUtils::Instance()->GetAllCardsInHardwareGeneration(static_cast<GDT_HW_GENERATION>(generation), cardList))
             {
-                deviceId = static_cast<gpa_uint32>(card.m_deviceID);
-                revisionId = static_cast<gpa_uint32>(card.m_revID);
-                retVal = GenerateCounters(api,
-                                          vendorId,
-                                          deviceId,
-                                          revisionId,
-                                          flags,
-                                          generateAsicSpecificCounters,
-                                          ppCounterAccessorOut,
-                                          nullptr);
+                vendorId = AMD_VENDOR_ID;
 
-                if (GPA_STATUS_OK == retVal)
+                for (auto card : cardList)
                 {
-                    break;
+                    deviceId = static_cast<gpa_uint32>(card.m_deviceID);
+                    revisionId = static_cast<gpa_uint32>(card.m_revID);
+                    retVal = GenerateCounters(api,
+                                              vendorId,
+                                              deviceId,
+                                              revisionId,
+                                              flags,
+                                              generateAsicSpecificCounters,
+                                              ppCounterAccessorOut,
+                                              nullptr);
+
+                    if (GPA_STATUS_OK == retVal)
+                    {
+                        break;
+                    }
                 }
+            }
+
+            if (deviceId == 0)
+            {
+                GPA_LogError("Parameter 'generation' does not identify supported hardware.");
+                return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
             }
         }
 
-        if (deviceId == 0)
-        {
-            GPA_LogError("Parameter 'generation' does not identify supported hardware.");
-            return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
-        }
+        return retVal;
     }
-
-    return retVal;
+    catch (...)
+    {
+        return GPA_STATUS_ERROR_EXCEPTION;
+    }
 };

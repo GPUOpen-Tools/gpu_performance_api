@@ -49,3 +49,4 @@ Return value
     | The supplied ``primaryCommandListId`` parameter was not recognized as a previously-created command list identifier."
     "GPA_STATUS_ERROR_API_NOT_SUPPORTED", "This function is not supported for the current API. Only DirectX 12 and Vulkan support this API."
     "GPA_STATUS_ERROR_FAILED", "The samples could not be copied."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

@@ -45,3 +45,4 @@ Return value
     "GPA_STATUS_ERROR_SAMPLE_NOT_FOUND", "The specified sample was not found."
     "GPA_STATUS_ERROR_API_NOT_SUPPORTED", "This function is not supported for the current API. Only DirectX 12 and Vulkan support this API."
     "GPA_STATUS_ERROR_FAILED", "The sample could not be continued on the specified command list."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

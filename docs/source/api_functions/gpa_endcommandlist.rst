@@ -41,3 +41,4 @@ Return value
     "GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND", "The supplied ``commandListId`` parameter was not recognized as a previously-created command list identifier."
     "GPA_STATUS_ERROR_COMMAND_LIST_ALREADY_ENDED", "The supplied command list has already been ended."
     "GPA_STATUS_ERROR_FAILED", "The command list could not be ended."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

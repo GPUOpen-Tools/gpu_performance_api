@@ -27,6 +27,7 @@
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\CircularBuffer.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACommandList.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPACommonDefs.h" />
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAContextCounterMediator.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAImplementor.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPAPass.h" />
     <ClInclude Include="..\..\Src\GPUPerfAPI-Common\GPASample.h" />
@@ -61,6 +62,7 @@
     <ClCompile Include="..\..\..\Common\Src\DynamicLibraryModule\DynamicLibraryModule.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPACommandList.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAContext.cpp" />
+    <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAContextCounterMediator.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPACustomHWValidationManager.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\Adapter.cpp" />
     <ClCompile Include="..\..\Src\GPUPerfAPI-Common\GPAHWInfo.cpp" />

@@ -9,15 +9,15 @@
 #include "DX11GPACommandList.h"
 #include "DX11GPASample.h"
 #include "GPAHardwareCounters.h"
+#include "GPAContextCounterMediator.h"
 
 GpuBlockInstanceLimitMap DX11GPAPass::ms_blockInstanceLimits;
 
 DX11GPAPass::DX11GPAPass(IGPASession* pGpaSession,
-                         PassIndex passIndex,
-                         GPACounterSource counterSource,
-                         IGPACounterScheduler* pCounterScheduler,
-                         const IGPACounterAccessor* pCounterAccessor):
-    GPAPass(pGpaSession, passIndex, counterSource, pCounterScheduler, pCounterAccessor)
+    PassIndex passIndex,
+    GPACounterSource counterSource,
+    CounterList* pPassCounters) :
+    GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
 {
     InitializeCounterInfo();
 }
@@ -108,7 +108,8 @@ void DX11GPAPass::InitializeCounterInfo()
             GPUIndex activeGPU = pDx11GpaContext->GetActiveGpu();
             PopulateBlockInstanceLimits(activeGPU);
 
-            const GPA_HardwareCounters* pHardwareCounters = pDx11GpaContext->GetCounterAccessor()->GetHardwareCounters();
+            IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(pDx11GpaContext);
+            const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
 
             for (CounterIndex counterIter = 0; counterIter < m_pCounterList->size(); counterIter++)
             {
@@ -161,7 +162,8 @@ void DX11GPAPass::InitializeCounterInfo()
 void DX11GPAPass::InitiliazeCounterExperimentParameters()
 {
     DX11GPAContext* pDx11GpaContext = reinterpret_cast<DX11GPAContext*>(GetGpaSession()->GetParentContext());
-    const GPA_HardwareCounters* pHardwareCounters = pDx11GpaContext->GetCounterAccessor()->GetHardwareCounters();
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(pDx11GpaContext);
+    const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
 
     auto PopulateExperimentParams = [&](const CounterIndex& counterIndex)->bool
     {

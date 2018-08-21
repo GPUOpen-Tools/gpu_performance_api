@@ -19,19 +19,19 @@
 #include "GPASample.h"
 #include "GPAContext.h"
 
-using PassIndex = unsigned int;                                       ///< type alias for pass index
-using SampleCount = unsigned int;                                     ///< type alias for sample count
-using CounterCount = unsigned int;                                    ///< type alias for counter count
-using CounterIndex = unsigned int;                                    ///< type alias for counter index
-using SamplesMap = std::unordered_map<ClientSampleId, GPASample*>;    ///< type alias for map of client sample id and GPASample Object
-using GpaInternalSampleCounter = std::atomic<unsigned int>;           ///< type alias for GPA internal sample counter
-using ClientGpaSamplesMap = std::map<unsigned int, unsigned int>;     ///< type alias for map of internal sample id and client sample id
-using CounterList = std::vector<CounterIndex>;                        ///< type alias for counter list
-using SkippedCounters = std::set<CounterIndex>;                       ///< type alias for list of skipped counters
-using SampleIndex = unsigned int;                                     ///< type alias for sample indexes
-using GPACommandLists = std::vector<IGPACommandList*>;                ///< type alias for list of GPA command lists
-using CommandListCounter = unsigned int;                              ///< type alias for command list counter
-using CommandListId = unsigned int;                                   ///< type alias for command list Id
+using PassIndex = unsigned int;                                    ///< type alias for pass index
+using SampleCount = unsigned int;                                  ///< type alias for sample count
+using CounterCount = unsigned int;                                 ///< type alias for counter count
+using CounterIndex = unsigned int;                                 ///< type alias for counter index
+using SamplesMap = std::unordered_map<ClientSampleId, GPASample*>; ///< type alias for map of client sample id and GPASample Object
+using GpaInternalSampleCounter = std::atomic<unsigned int>;        ///< type alias for GPA internal sample counter
+using ClientGpaSamplesMap = std::map<unsigned int, unsigned int>;  ///< type alias for map of internal sample id and client sample id
+using CounterList = std::vector<CounterIndex>;                     ///< type alias for counter list
+using SkippedCounters = std::set<CounterIndex>;                    ///< type alias for list of skipped counters
+using SampleIndex = unsigned int;                                  ///< type alias for sample indexes
+using GPACommandLists = std::vector<IGPACommandList*>;             ///< type alias for list of GPA command lists
+using CommandListCounter = unsigned int;                           ///< type alias for command list counter
+using CommandListId = unsigned int;                                ///< type alias for command list Id
 
 /// Class for GPA pass
 class GPAPass
@@ -42,13 +42,11 @@ public:
     /// \param[in] pGpaSession GPA session object pointer
     /// \param[in] passIndex pass index
     /// \param[in] counterSource counter source
-    /// \param[in] pCounterScheduler counter scheduler
-    /// \param[in] pCounterAccessor counter accessor
+    /// \param[in] pPassCounters counter list for the pass
     GPAPass(IGPASession* pGpaSession,
             PassIndex passIndex,
             GPACounterSource counterSource,
-            IGPACounterScheduler* pCounterScheduler,
-            const IGPACounterAccessor* pCounterAccessor);
+            CounterList* pPassCounters);
 
     /// Delete default constructor
     GPAPass() = delete;
@@ -255,14 +253,6 @@ protected:
     /// \return true if the result from the driver is copied to GPA memory otherwise false
     bool IsResultsCollectedFromDriver() const;
 
-    /// Returns the counter accessor
-    /// \return counter accessor
-    const IGPACounterAccessor* GetCounterAccessor() const;
-
-    /// Returns the counter scheduler
-    /// \return counter scheduler
-    const IGPACounterScheduler* GetCounterScheduler() const;
-
     /// Lock the mutex to protect the GPACommandList vector
     void LockCommandListMutex() const;
 
@@ -274,8 +264,8 @@ protected:
     /// \param[in] pGPASample the sample being added
     void AddClientSample(ClientSampleId sampleId, GPASample* pGPASample);
 
-    const CounterList*                                     m_pCounterList;          ///< list of counter in a pass
-    std::map<gpa_uint32, std::shared_ptr<GPASampleResult>> m_results;               ///< Maps a sample ID to a set of counter results.
+    const CounterList*                                     m_pCounterList; ///< list of counter in a pass
+    std::map<gpa_uint32, std::shared_ptr<GPASampleResult>> m_results;      ///< Maps a sample ID to a set of counter results.
 
 private:
 
@@ -293,8 +283,6 @@ private:
     bool                       m_isResultCollected;             ///< flag indicating completion of the pass i.e. data has been collected from the driver
     mutable bool               m_isResultReady;                 ///< flag indicating whether or not results are ready to be collected
     bool                       m_isTimingPass;                  ///< flag indicating pass is timing pass
-    IGPACounterScheduler*      m_pCounterScheduler;             ///< counter scheduler
-    const IGPACounterAccessor* m_pCounterAccessor;              ///< accessor of the counter for the pass
     mutable std::mutex         m_counterListMutex;              ///< Mutex to protect the m_usedCounterListForPass member;
     CounterList                m_usedCounterListForPass;        ///< list of counters passed to driver for sample
     SkippedCounters            m_skippedCounterList;            ///< List of unsupported counters - these are counters whose blocks are not suported by the API specific driver

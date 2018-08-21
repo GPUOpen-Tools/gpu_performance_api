@@ -40,4 +40,5 @@ Return value
     "GPA_STATUS_ERROR_SESSION_NOT_FOUND", "The supplied ``sessionId`` parameter was not recognized as a previously-created session identifier."
     "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied session's parent context is not currently open."
     "GPA_STATUS_ERROR_FAILED", "The pass count could not be retrieved."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
 

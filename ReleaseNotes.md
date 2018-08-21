@@ -1,6 +1,15 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.2 (8/21/18)
+  * Add support for additional GPUs and APUs.
+  * Wrapped all GPA entrypoints in try/catch to ensure unhandled exceptions do not escape the GPA library.
+  * Add VS2017 project files.
+  * Bugs Fixed:
+    * Fixed https://github.com/GPUOpen-Tools/GPA/issues/18.
+    * Fixed support for scheduling counters on multiple sessions.
+    * OpenGL: Fixed a bug in GPASample cleanup.
+
 ## Version 3.1 (6/15/18)
   * Add support for additional GPUs and APUs.
   * Usability improvements to GPAInterfaceLoader.h.

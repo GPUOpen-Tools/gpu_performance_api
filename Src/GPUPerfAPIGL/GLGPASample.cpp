@@ -25,7 +25,10 @@ GLGPASample::GLGPASample(GPAPass* pPass,
 
 GLGPASample::~GLGPASample()
 {
-    DeleteGPUTimeQueries();
+    if (m_pGlGpaPass->IsTimingPass())
+    {
+        DeleteGPUTimeQueries();
+    }
 }
 
 bool GLGPASample::UpdateResults()

@@ -8,8 +8,7 @@
 #include "VkGPAImplementor.h"
 
 #include <assert.h>
-#include <vulkan/vulkan.h>
-#include <vk_amd_shader_core_properties.h>
+#include "VkIncludes.h"
 #include "GPACounterGenerator.h"
 #include "IGPACommandList.h"
 #include "VkEntrypoints.h"
@@ -18,6 +17,7 @@
 #include "VkUtils.h"
 #include "DeviceInfoUtils.h"
 #include "GPUPerfAPI-VK.h"
+
 
 IGPAImplementor* s_pGpaImp = VkGPAImplementor::Instance();
 
@@ -192,6 +192,21 @@ bool VkGPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, 
 
     return isSupported;
 
+}
+
+bool VkGPAImplementor::IsCommandListRequired() const
+{
+    return true;
+}
+
+bool VkGPAImplementor::IsContinueSampleOnCommandListSupported() const
+{
+    return true;
+}
+
+bool VkGPAImplementor::IsCopySecondarySampleSupported() const
+{
+    return true;
 }
 
 IGPAContext* VkGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)

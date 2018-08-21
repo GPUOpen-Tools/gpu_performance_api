@@ -33,7 +33,7 @@
 #include <thread>
 #include <vector>
 #include <vulkan/vulkan.h>
-#include "GPUPerfAPI.h"
+#include "GPAInterfaceLoader.h"
 #include "GPUPerfAPI-VK.h"
 
 #if defined(VK_USE_PLATFORM_XCB_KHR) || defined(VK_USE_PLATFORM_XLIB_KHR)
@@ -108,6 +108,9 @@ void gpaLoggingCallback(
     std::cout << msg << std::endl;
 }
 
+GPAApiManager* GPAApiManager::m_pGpaApiManager = nullptr;
+GPAFuncTableInfo* g_pFuncTableInfo = nullptr;
+
 /// Class that demonstrates one approach to loading GPUPerfAPI and into an application.
 /// It can query the addresses of all GPA entrypoints, and has utility functions to demonstrate
 /// how to access information about the available counters, as well as how to query the profile
@@ -117,10 +120,10 @@ class GPUPerfAPI
 public:
 
     /// Constructor
-    GPUPerfAPI()
+    GPUPerfAPI():
+        m_pGpaFuncTable(nullptr),
+        m_bHeaderWritten(false)
     {
-        m_libHandle = nullptr;
-        m_bHeaderWritten = false;
     }
 
     /// Destructor
@@ -133,73 +136,23 @@ public:
     }
 
     /// Indicates whether or not the GPA library is loaded.
-    bool IsLoaded()
+    bool IsLoaded() const
     {
-        return m_libHandle != nullptr;
+        return m_pGpaFuncTable != nullptr;
     }
 
     /// Loads the necessary GPUPerfAPI library.
     /// \return True if the library loaded successfully; false otherwise.
     bool Load()
     {
-#define GPA_FUNCTION_PREFIX(func) func = NULL;
-#include "GPAFunctions.h"
-#undef GPA_FUNCTION_PREFIX
+        bool success = GPA_STATUS_OK == GPAApiManager::Instance()->LoadApi(GPA_API_VULKAN);
 
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-#ifdef NDEBUG
-        char vulkanLib[] = "GPUPerfAPIVK-x64.dll";
-#else
-        char vulkanLib[] = "GPUPerfAPIVK-x64-d.dll";
-#endif
-
-        m_libHandle = LoadLibrary(vulkanLib);
-
-        if (m_libHandle != NULL)
+        if (success)
         {
-#define GPA_FUNCTION_PREFIX( func )                                                     \
-    func = ( func##PtrType ) GetProcAddress( m_libHandle, #func );                      \
-    assert( func != NULL );                                                             \
-    if ( func == NULL )                                                                 \
-    {                                                                                   \
-        printf( #func " not located in the dll. Incorrect or out of date dll.\n");      \
-        return false;                                                                   \
-    }
-#include "GPAFunctions.h"
-#undef GPA_FUNCTION_PREFIX
-            std::remove(m_csvFileName.c_str());
-            return true;
+            m_pGpaFuncTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN);
         }
 
-#endif
-#if defined(VK_USE_PLATFORM_XCB_KHR) || defined(VK_USE_PLATFORM_XLIB_KHR)
-        char vulkanLib[] = "libGPUPerfAPIVK.so";
-        m_libHandle = dlopen(vulkanLib, RTLD_NOW);
-
-        if (m_libHandle != NULL)
-        {
-#define GPA_FUNCTION_PREFIX( func )                                                                      \
-    func = ( func##PtrType ) dlsym( m_libHandle, #func );                                                \
-    assert( func != NULL );                                                                              \
-    if ( func == NULL )                                                                                  \
-    {                                                                                                    \
-        printf( #func " not located in the shared library. Incorrect or out of date shared library.\n"); \
-        return false;                                                                                    \
-    }
-#include "GPAFunctions.h"
-#undef GPA_FUNCTION_PREFIX
-
-            return true;
-        }
-
-#endif
-
-        if (nullptr == m_libHandle)
-        {
-            std::cout << "ERROR: Failed to load " << vulkanLib << "." << std::endl;
-        }
-
-        return false;
+        return success;
     }
 
     /// Unloads the GPUPerfAPI library.
@@ -207,22 +160,18 @@ public:
     {
         if (IsLoaded())
         {
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-            FreeLibrary(m_libHandle);
-#else
-            dlclose(m_libHandle);
-#endif
-
-            m_libHandle = nullptr;
+            GPAApiManager::Instance()->UnloadApi(GPA_API_VULKAN);
         }
+
+        m_pGpaFuncTable = nullptr;
     }
 
     /// Print the available counters from the specified context.
     /// \param contextId A valid GPA Context ID.
-    void PrintGPACounterInfo(GPA_ContextId contextId)
+    void PrintGPACounterInfo(GPA_ContextId contextId) const
     {
         gpa_uint32 numCounters = 0;
-        GPA_Status gpaStatus = GPA_GetNumCounters(contextId, &numCounters);
+        GPA_Status gpaStatus = m_pGpaFuncTable->GPA_GetNumCounters(contextId, &numCounters);
 
         if (GPA_STATUS_OK != gpaStatus)
         {
@@ -233,13 +182,13 @@ public:
         for (gpa_uint32 counterIndex = 0; counterIndex < numCounters; counterIndex++)
         {
             const char* pName = NULL;
-            GPA_Status nameStatus = GPA_GetCounterName(contextId, counterIndex, &pName);
+            GPA_Status nameStatus = m_pGpaFuncTable->GPA_GetCounterName(contextId, counterIndex, &pName);
 
             const char* pGroup = NULL;
-            GPA_Status groupStatus = GPA_GetCounterGroup(contextId, counterIndex, &pGroup);
+            GPA_Status groupStatus = m_pGpaFuncTable->GPA_GetCounterGroup(contextId, counterIndex, &pGroup);
 
             const char* pDescription = NULL;
-            GPA_Status descStatus = GPA_GetCounterDescription(contextId, counterIndex, &pDescription);
+            GPA_Status descStatus = m_pGpaFuncTable->GPA_GetCounterDescription(contextId, counterIndex, &pDescription);
 
             if (GPA_STATUS_OK == nameStatus &&
                 GPA_STATUS_OK == groupStatus &&
@@ -280,7 +229,7 @@ public:
         std::cout << "Sample ID: " << sampleId << std::endl;
 
         size_t sampleResultSizeInBytes = 0;
-        GPA_Status gpaStatus = GPA_GetSampleResultSize(sessionId, sampleId, &sampleResultSizeInBytes);
+        GPA_Status gpaStatus = m_pGpaFuncTable->GPA_GetSampleResultSize(sessionId, sampleId, &sampleResultSizeInBytes);
 
         if (GPA_STATUS_OK != gpaStatus)
         {
@@ -296,7 +245,7 @@ public:
             return;
         }
 
-        gpaStatus = GPA_GetSampleResult(sessionId, sampleId, sampleResultSizeInBytes, pResultsBuffer);
+        gpaStatus = m_pGpaFuncTable->GPA_GetSampleResult(sessionId, sampleId, sampleResultSizeInBytes, pResultsBuffer);
 
         if (GPA_STATUS_OK != gpaStatus)
         {
@@ -305,7 +254,7 @@ public:
         else
         {
             gpa_uint32 enabledCount = 0;
-            gpaStatus = GPA_GetNumEnabledCounters(sessionId, &enabledCount);
+            gpaStatus = m_pGpaFuncTable->GPA_GetNumEnabledCounters(sessionId, &enabledCount);
 
             if (GPA_STATUS_OK != gpaStatus)
             {
@@ -319,7 +268,7 @@ public:
                 for (gpa_uint32 i = 0; i < enabledCount; i++)
                 {
                     gpa_uint32 counterIndex = 0;
-                    gpaStatus = GPA_GetEnabledIndex(sessionId, i, &counterIndex);
+                    gpaStatus = m_pGpaFuncTable->GPA_GetEnabledIndex(sessionId, i, &counterIndex);
 
                     if (GPA_STATUS_OK != gpaStatus)
                     {
@@ -328,11 +277,11 @@ public:
                     else
                     {
                         GPA_Data_Type counterType = GPA_DATA_TYPE_UINT64;
-                        gpaStatus = GPA_GetCounterDataType(contextId, counterIndex, &counterType);
+                        gpaStatus = m_pGpaFuncTable->GPA_GetCounterDataType(contextId, counterIndex, &counterType);
                         assert(GPA_STATUS_OK == gpaStatus);
 
                         const char* pCounterName = NULL;
-                        gpaStatus = GPA_GetCounterName(contextId, counterIndex, &pCounterName);
+                        gpaStatus = m_pGpaFuncTable->GPA_GetCounterName(contextId, counterIndex, &pCounterName);
                         assert(GPA_STATUS_OK == gpaStatus);
 
                         printf("Counter %u %s result: ", counterIndex, pCounterName);
@@ -390,19 +339,9 @@ public:
         free(pResultsBuffer);
     }
 
-public:
-#define GPA_FUNCTION_PREFIX(func) func##PtrType func;
-#include "GPAFunctions.h"
-#undef GPA_FUNCTION_PREFIX
+    GPAFunctionTable* m_pGpaFuncTable;
 
 private:
-#if defined(VK_USE_PLATFORM_WIN32_KHR)
-    /// Handle to the GPUPerfAPI library.
-    HMODULE m_libHandle;
-#else
-    /// Handle to the GPUPerfAPI library.
-    void* m_libHandle;
-#endif
 
     /// The file stream for writing the csv file.
     std::fstream m_csvFile;
@@ -730,7 +669,7 @@ public:
 
         if (GPUPerfAPI.IsLoaded())
         {
-            GPA_Status statusRegisterCallback = GPUPerfAPI.GPA_RegisterLoggingCallback(GPA_LOGGING_ERROR_AND_MESSAGE, gpaLoggingCallback);
+            GPA_Status statusRegisterCallback = GPUPerfAPI.m_pGpaFuncTable->GPA_RegisterLoggingCallback(GPA_LOGGING_ERROR_AND_MESSAGE, gpaLoggingCallback);
 
             if (statusRegisterCallback != GPA_STATUS_OK)
             {
@@ -738,7 +677,7 @@ public:
                 return false;
             }
 
-            GPA_Status statusGPAInitialize = GPUPerfAPI.GPA_Initialize(GPA_INITIALIZE_DEFAULT_BIT);
+            GPA_Status statusGPAInitialize = GPUPerfAPI.m_pGpaFuncTable->GPA_Initialize(GPA_INITIALIZE_DEFAULT_BIT);
 
             if (statusGPAInitialize != GPA_STATUS_OK)
             {
@@ -1147,7 +1086,7 @@ public:
             gpaContextOpenInfo.device = m_vkDevice;
 
             GPA_OpenContextFlags openFlags = GPA_OPENCONTEXT_DEFAULT_BIT;
-            GPA_Status statusGPAOpenContext = GPUPerfAPI.GPA_OpenContext(&gpaContextOpenInfo, openFlags, &m_GPAContextId);
+            GPA_Status statusGPAOpenContext = GPUPerfAPI.m_pGpaFuncTable->GPA_OpenContext(&gpaContextOpenInfo, openFlags, &m_GPAContextId);
 
             if (statusGPAOpenContext != GPA_STATUS_OK)
             {
@@ -1162,7 +1101,7 @@ public:
 
             // Make sure discrete counters are supported
             GPA_ContextSampleTypeFlags sampleTypes = 0;
-            GPA_Status statusGetSampleTypes = GPUPerfAPI.GPA_GetSupportedSampleTypes(m_GPAContextId, &sampleTypes);
+            GPA_Status statusGetSampleTypes = GPUPerfAPI.m_pGpaFuncTable->GPA_GetSupportedSampleTypes(m_GPAContextId, &sampleTypes);
 
             if (statusGetSampleTypes != GPA_STATUS_OK)
             {
@@ -1170,7 +1109,7 @@ public:
                 return false;
             }
 
-            GPA_Status statusGPACreateSession = GPUPerfAPI.GPA_CreateSession(m_GPAContextId, GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER, &m_GPASessionId);
+            GPA_Status statusGPACreateSession = GPUPerfAPI.m_pGpaFuncTable->GPA_CreateSession(m_GPAContextId, GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER, &m_GPASessionId);
 
             if (statusGPACreateSession != GPA_STATUS_OK)
             {
@@ -1179,7 +1118,7 @@ public:
             }
 
             // Enable all the counters.
-            GPA_Status statusGPAEnableAllCounters = GPUPerfAPI.GPA_EnableAllCounters(m_GPASessionId);
+            GPA_Status statusGPAEnableAllCounters = GPUPerfAPI.m_pGpaFuncTable->GPA_EnableAllCounters(m_GPASessionId);
 
             if (statusGPAEnableAllCounters != GPA_STATUS_OK)
             {
@@ -1189,7 +1128,7 @@ public:
 
             // Get the number of required passes based on the counters that were enabled above. Store it as a member
             // because it will be needed to control which CommandBuffers get GPA calls included.
-            GPA_Status statusGPAGetPassCount = GPUPerfAPI.GPA_GetPassCount(m_GPASessionId, &m_requiredPassCount);
+            GPA_Status statusGPAGetPassCount = GPUPerfAPI.m_pGpaFuncTable->GPA_GetPassCount(m_GPASessionId, &m_requiredPassCount);
 
             if (statusGPAGetPassCount != GPA_STATUS_OK)
             {
@@ -1201,7 +1140,7 @@ public:
 
             // Begin the GPA session to lock in the set of selected counters and allow command buffers to start
             // being built with GPA commands included.
-            GPA_Status statusGPABeginSession = GPUPerfAPI.GPA_BeginSession(m_GPASessionId);
+            GPA_Status statusGPABeginSession = GPUPerfAPI.m_pGpaFuncTable->GPA_BeginSession(m_GPASessionId);
 
             if (statusGPABeginSession != GPA_STATUS_OK)
             {
@@ -1921,7 +1860,7 @@ public:
         if (GPUPerfAPI.IsLoaded())
         {
             // All command buffers have been built; ending the session will confirm this.
-            GPA_Status statusGPAEndSession = GPUPerfAPI.GPA_EndSession(m_GPASessionId);
+            GPA_Status statusGPAEndSession = GPUPerfAPI.m_pGpaFuncTable->GPA_EndSession(m_GPASessionId);
 
             if (statusGPAEndSession != GPA_STATUS_OK)
             {
@@ -2047,7 +1986,7 @@ public:
 
             do
             {
-                isReady = GPA_STATUS_OK == GPUPerfAPI.GPA_IsSessionComplete(m_GPASessionId);
+                isReady = GPA_STATUS_OK == GPUPerfAPI.m_pGpaFuncTable->GPA_IsSessionComplete(m_GPASessionId);
 
                 if (!isReady)
                 {
@@ -2068,7 +2007,7 @@ public:
             if (isReady)
             {
                 gpa_uint32 sampleCount = 0;
-                GPUPerfAPI.GPA_GetSampleCount(m_GPASessionId, &sampleCount);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_GetSampleCount(m_GPASessionId, &sampleCount);
 
                 std::cout << "There were " << sampleCount << " GPA samples recorded." << std::endl;
 
@@ -2103,7 +2042,7 @@ public:
         {
             if (m_GPASessionId != nullptr)
             {
-                GPA_Status statusGPADeleteSession = GPUPerfAPI.GPA_DeleteSession(m_GPASessionId);
+                GPA_Status statusGPADeleteSession = GPUPerfAPI.m_pGpaFuncTable->GPA_DeleteSession(m_GPASessionId);
 
                 if (statusGPADeleteSession != GPA_STATUS_OK)
                 {
@@ -2113,7 +2052,7 @@ public:
 
             if (m_GPAContextId != nullptr)
             {
-                GPA_Status statusGPACloseContext = GPUPerfAPI.GPA_CloseContext(m_GPAContextId);
+                GPA_Status statusGPACloseContext = GPUPerfAPI.m_pGpaFuncTable->GPA_CloseContext(m_GPAContextId);
 
                 if (statusGPACloseContext != GPA_STATUS_OK)
                 {
@@ -2254,7 +2193,7 @@ public:
 
         if (GPUPerfAPI.IsLoaded())
         {
-            GPUPerfAPI.GPA_Destroy();
+            GPUPerfAPI.m_pGpaFuncTable->GPA_Destroy();
 
             GPUPerfAPI.Unload();
         }
@@ -2615,7 +2554,7 @@ private:
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_BeginCommandList(m_GPASessionId, gpaPassIndex, pPrebuiltResources->cube.commandBuffer, GPA_COMMAND_LIST_PRIMARY, &pPrebuiltResources->cube.gpaCommandListId);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_BeginCommandList(m_GPASessionId, gpaPassIndex, pPrebuiltResources->cube.commandBuffer, GPA_COMMAND_LIST_PRIMARY, &pPrebuiltResources->cube.gpaCommandListId);
             }
 
             VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -2639,21 +2578,21 @@ private:
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_BeginSample(pPrebuiltResources->cube.gpaSampleId, pPrebuiltResources->cube.gpaCommandListId);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_BeginSample(pPrebuiltResources->cube.gpaSampleId, pPrebuiltResources->cube.gpaCommandListId);
             }
 
             vkCmdDraw(pPrebuiltResources->cube.commandBuffer, 36, 1, 0, 0);
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_EndSample(pPrebuiltResources->cube.gpaCommandListId);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_EndSample(pPrebuiltResources->cube.gpaCommandListId);
             }
 
             vkCmdEndRenderPass(pPrebuiltResources->cube.commandBuffer);
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_EndCommandList(pPrebuiltResources->cube.gpaCommandListId);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_EndCommandList(pPrebuiltResources->cube.gpaCommandListId);
             }
 
             VkResult resultEndCmdBuffer = vkEndCommandBuffer(pPrebuiltResources->cube.commandBuffer);
@@ -2678,7 +2617,7 @@ private:
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_BeginCommandList(m_GPASessionId, gpaPassIndex, pPrebuiltResources->wireframe.commandBuffer, GPA_COMMAND_LIST_PRIMARY, &pPrebuiltResources->wireframe.gpaCommandListId);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_BeginCommandList(m_GPASessionId, gpaPassIndex, pPrebuiltResources->wireframe.commandBuffer, GPA_COMMAND_LIST_PRIMARY, &pPrebuiltResources->wireframe.gpaCommandListId);
             }
 
             VkRenderPassBeginInfo renderPassBeginInfoWireframe = {};
@@ -2701,21 +2640,21 @@ private:
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_BeginSample(pPrebuiltResources->wireframe.gpaSampleId, pPrebuiltResources->wireframe.gpaCommandListId);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_BeginSample(pPrebuiltResources->wireframe.gpaSampleId, pPrebuiltResources->wireframe.gpaCommandListId);
             }
 
             vkCmdDraw(pPrebuiltResources->wireframe.commandBuffer, 36, 1, 0, 0);
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_EndSample(pPrebuiltResources->wireframe.gpaCommandListId);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_EndSample(pPrebuiltResources->wireframe.gpaCommandListId);
             }
 
             vkCmdEndRenderPass(pPrebuiltResources->wireframe.commandBuffer);
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_EndCommandList(pPrebuiltResources->wireframe.gpaCommandListId);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_EndCommandList(pPrebuiltResources->wireframe.gpaCommandListId);
             }
 
             VkResult resultEndCmdBufferWireframe = vkEndCommandBuffer(pPrebuiltResources->wireframe.commandBuffer);
@@ -2742,7 +2681,7 @@ private:
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_BeginCommandList(m_GPASessionId, gpaPassIndex, pPrebuiltResources->cubeAndWireframe.commandBufferCube, GPA_COMMAND_LIST_PRIMARY, &pPrebuiltResources->cubeAndWireframe.gpaCommandListIdCube);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_BeginCommandList(m_GPASessionId, gpaPassIndex, pPrebuiltResources->cubeAndWireframe.commandBufferCube, GPA_COMMAND_LIST_PRIMARY, &pPrebuiltResources->cubeAndWireframe.gpaCommandListIdCube);
             }
 
             VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
@@ -2767,7 +2706,7 @@ private:
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_BeginSample(pPrebuiltResources->cubeAndWireframe.gpaSampleId, pPrebuiltResources->cubeAndWireframe.gpaCommandListIdCube);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_BeginSample(pPrebuiltResources->cubeAndWireframe.gpaSampleId, pPrebuiltResources->cubeAndWireframe.gpaCommandListIdCube);
             }
 
             vkCmdDraw(pPrebuiltResources->cubeAndWireframe.commandBufferCube, 36, 1, 0, 0);
@@ -2776,14 +2715,14 @@ private:
             // Do not end the GPA Sample, because it will be continued on another command list.
             //if (enableGPA)
             //{
-            //    GPUPerfAPI.GPA_EndSample(pPrebuiltResources->cubeAndWireframe.gpaCommandListId);
+            //    GPUPerfAPI.m_pGpaFuncTable->GPA_EndSample(pPrebuiltResources->cubeAndWireframe.gpaCommandListId);
             //}
 
             vkCmdEndRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferCube);
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_EndCommandList(pPrebuiltResources->cubeAndWireframe.gpaCommandListIdCube);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_EndCommandList(pPrebuiltResources->cubeAndWireframe.gpaCommandListIdCube);
             }
 
             VkResult resultEndCmdBuffer = vkEndCommandBuffer(pPrebuiltResources->cubeAndWireframe.commandBufferCube);
@@ -2808,11 +2747,11 @@ private:
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_BeginCommandList(m_GPASessionId, gpaPassIndex, pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, GPA_COMMAND_LIST_PRIMARY, &pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_BeginCommandList(m_GPASessionId, gpaPassIndex, pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, GPA_COMMAND_LIST_PRIMARY, &pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
 
                 // COMMENT FOR DEMONSTRATION PURPOSES:
                 // Tell GPA that a sample that has previously been started will be continued onto the GPACommandListId that was just begun.
-                GPUPerfAPI.GPA_ContinueSampleOnCommandList(pPrebuiltResources->cubeAndWireframe.gpaSampleId, pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_ContinueSampleOnCommandList(pPrebuiltResources->cubeAndWireframe.gpaSampleId, pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
             }
 
             VkRenderPassBeginInfo renderPassBeginInfoWireframe = {};
@@ -2837,21 +2776,21 @@ private:
             // Do not begin a GPA Sample here, because it is automatically continued by GPA_ContinueSampleOnCommandList() above.
             //if (enableGPA)
             //{
-            //    GPUPerfAPI.GPA_BeginSample(pPrebuiltResources->cubeAndWireframe.gpaSampleId, pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
+            //    GPUPerfAPI.m_pGpaFuncTable->GPA_BeginSample(pPrebuiltResources->cubeAndWireframe.gpaSampleId, pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
             //}
 
             vkCmdDraw(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, 36, 1, 0, 0);
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_EndSample(pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_EndSample(pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
             }
 
             vkCmdEndRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe);
 
             if (enableGPA)
             {
-                GPUPerfAPI.GPA_EndCommandList(pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
+                GPUPerfAPI.m_pGpaFuncTable->GPA_EndCommandList(pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
             }
 
             VkResult resultEndCmdBufferWireframe = vkEndCommandBuffer(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe);

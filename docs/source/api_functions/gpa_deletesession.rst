@@ -37,3 +37,4 @@ Return value
     "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``sessionId`` parameter is NULL."
     "GPA_STATUS_ERROR_SESSION_NOT_FOUND", "The supplied ``sessionId`` parameter was not recognized as a previously-created session identifier."
     "GPA_STATUS_ERROR_FAILED", "The session could not be deleted."
+    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

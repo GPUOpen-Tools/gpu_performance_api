@@ -12,24 +12,16 @@
 #include "GPAHardwareCounters.h"
 #include "GPASoftwareCounters.h"
 #include "GPAUniqueObject.h"
-
-/// Macro to check whether the counter accessor is null
-#define CHECK_FOR_NULL_COUNTER_ACCESSOR(X)                  \
-    if(nullptr == X)                                        \
-    {                                                       \
-        GPA_LogDebugError("Accessor is unassigned.");       \
-        return GPA_STATUS_ERROR_FAILED;                     \
-    }
+#include "GPAContextCounterMediator.h"
 
 GPAContext::GPAContext(GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags) :
     m_supportedSampleTypes(GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER), // by default enable only discrete counters, descendants can override as necessary
-    m_pCounterScheduler(nullptr),
-    m_pCounterAccessor(nullptr),
     m_contextFlags(flags),
     m_hwInfo(hwInfo),
     m_invalidateAndFlushL2CacheEnabled(false),
     m_isOpen(false),
-    m_isAmdDevice(false)
+    m_isAmdDevice(false),
+    m_pActiveSession(nullptr)
 {
     gpa_uint32 vendorId;
 
@@ -38,6 +30,11 @@ GPAContext::GPAContext(GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags) :
     {
         m_isAmdDevice = true;
     }
+}
+
+GPAContext::~GPAContext()
+{
+    GPAContextCounterMediator::Instance()->RemoveContext(this);
 }
 
 GPA_Status GPAContext::GetSupportedSampleTypes(GPA_ContextSampleTypeFlags* pSampleTypes) const
@@ -50,88 +47,161 @@ GPA_Status GPAContext::GetSupportedSampleTypes(GPA_ContextSampleTypeFlags* pSamp
 
 GPA_Status GPAContext::GetNumCounters(gpa_uint32* pCount) const
 {
-    CHECK_FOR_NULL_COUNTER_ACCESSOR(m_pCounterAccessor);
     GPA_INTERNAL_CHECK_NULL_PARAM(pCount);
-    *pCount = m_pCounterAccessor->GetNumCounters();
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+
+    if (nullptr == pCounterAccessor)
+    {
+        GPA_LogDebugError("Accessor is unassigned.");
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    *pCount = pCounterAccessor->GetNumCounters();
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPAContext::GetCounterName(gpa_uint32 index,
                                       const char** ppName) const
 {
-    CHECK_FOR_NULL_COUNTER_ACCESSOR(m_pCounterAccessor);
     GPA_INTERNAL_CHECK_NULL_PARAM(ppName);
-    *ppName = m_pCounterAccessor->GetCounterName(index);
+
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+
+    if (nullptr == pCounterAccessor)
+    {
+        GPA_LogDebugError("Accessor is unassigned.");
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    *ppName = pCounterAccessor->GetCounterName(index);
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPAContext::GetCounterGroup(gpa_uint32 index,
                                        const char** ppGroup) const
 {
-    CHECK_FOR_NULL_COUNTER_ACCESSOR(m_pCounterAccessor);
     GPA_INTERNAL_CHECK_NULL_PARAM(ppGroup);
-    *ppGroup = m_pCounterAccessor->GetCounterGroup(index);
+
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+
+    if (nullptr == pCounterAccessor)
+    {
+        GPA_LogDebugError("Accessor is unassigned.");
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    *ppGroup = pCounterAccessor->GetCounterGroup(index);
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPAContext::GetCounterDescription(gpa_uint32 index,
                                              const char** ppDescription) const
 {
-    CHECK_FOR_NULL_COUNTER_ACCESSOR(m_pCounterAccessor);
     GPA_INTERNAL_CHECK_NULL_PARAM(ppDescription);
-    *ppDescription = m_pCounterAccessor->GetCounterDescription(index);
+
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+
+    if (nullptr == pCounterAccessor)
+    {
+        GPA_LogDebugError("Accessor is unassigned.");
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    *ppDescription = pCounterAccessor->GetCounterDescription(index);
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPAContext::GetCounterDataType(gpa_uint32 index,
                                           GPA_Data_Type* pCounterDataType) const
 {
-    CHECK_FOR_NULL_COUNTER_ACCESSOR(m_pCounterAccessor);
     GPA_INTERNAL_CHECK_NULL_PARAM(pCounterDataType);
-    *pCounterDataType = m_pCounterAccessor->GetCounterDataType(index);
+
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+
+    if (nullptr == pCounterAccessor)
+    {
+        GPA_LogDebugError("Accessor is unassigned.");
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    *pCounterDataType = pCounterAccessor->GetCounterDataType(index);
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPAContext::GetCounterUsageType(gpa_uint32 index,
                                            GPA_Usage_Type* pCounterUsageType) const
 {
-    CHECK_FOR_NULL_COUNTER_ACCESSOR(m_pCounterAccessor);
     GPA_INTERNAL_CHECK_NULL_PARAM(pCounterUsageType);
-    *pCounterUsageType = m_pCounterAccessor->GetCounterUsageType(index);
+
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+
+    if (nullptr == pCounterAccessor)
+    {
+        GPA_LogDebugError("Accessor is unassigned.");
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    *pCounterUsageType = pCounterAccessor->GetCounterUsageType(index);
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPAContext::GetCounterUuid(gpa_uint32 index, GPA_UUID* pCounterUuid) const
 {
-    CHECK_FOR_NULL_COUNTER_ACCESSOR(m_pCounterAccessor);
     GPA_INTERNAL_CHECK_NULL_PARAM(pCounterUuid);
-    *pCounterUuid = m_pCounterAccessor->GetCounterUuid(index);
+
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+
+    if (nullptr == pCounterAccessor)
+    {
+        GPA_LogDebugError("Accessor is unassigned.");
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    *pCounterUuid = pCounterAccessor->GetCounterUuid(index);
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPAContext::GetCounterSampleType(gpa_uint32 index, GPA_Counter_Sample_Type* pCounterSampleType) const
 {
-    CHECK_FOR_NULL_COUNTER_ACCESSOR(m_pCounterAccessor);
     GPA_INTERNAL_CHECK_NULL_PARAM(pCounterSampleType);
-    *pCounterSampleType = m_pCounterAccessor->GetCounterSampleType(index);
+
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+
+    if (nullptr == pCounterAccessor)
+    {
+        GPA_LogDebugError("Accessor is unassigned.");
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    *pCounterSampleType = pCounterAccessor->GetCounterSampleType(index);
     return GPA_STATUS_OK;
 }
 
 GPA_Status GPAContext::GetCounterIndex(const char* pCounterName,
                                        gpa_uint32* pIndex) const
 {
-    CHECK_FOR_NULL_COUNTER_ACCESSOR(m_pCounterAccessor);
     GPA_INTERNAL_CHECK_NULL_PARAM(pIndex);
-    return m_pCounterAccessor->GetCounterIndex(pCounterName, pIndex) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+
+    if (nullptr == pCounterAccessor)
+    {
+        GPA_LogDebugError("Accessor is unassigned.");
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    return pCounterAccessor->GetCounterIndex(pCounterName, pIndex) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 }
 
 bool GPAContext::GetCounterSourceLocalIndex(gpa_uint32 exposedCounterIndex, GPACounterSource* pSource, gpa_uint32* pSourceLocalIndex) const
 {
     assert(nullptr != pSource);
     assert(nullptr != pSourceLocalIndex);
-    assert(nullptr != m_pCounterAccessor);
 
-    GPACounterSourceInfo info = m_pCounterAccessor->GetCounterSourceInfo(exposedCounterIndex);
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    assert(nullptr != pCounterAccessor);
+
+    GPACounterSourceInfo info = pCounterAccessor->GetCounterSourceInfo(exposedCounterIndex);
 
     bool isValid = (GPACounterSource::UNKNOWN != info.m_counterSource);
 
@@ -161,32 +231,32 @@ bool GPAContext::AreSoftwareCountersExposed() const
 
 GPACounterSource GPAContext::GetCounterSource(gpa_uint32 internalCounterIndex) const
 {
-    const GPA_HardwareCounters* pHwCounters = m_pCounterAccessor->GetHardwareCounters();
-    const GPA_SoftwareCounters* pSwCounters = m_pCounterAccessor->GetSoftwareCounters();
-    GPACounterGroupAccessor counterGroupAccessor(
-        pHwCounters->m_pGroups,
-        pHwCounters->m_groupCount,
-        pHwCounters->m_pAdditionalGroups,
-        pHwCounters->m_additionalGroupCount,
-        pSwCounters->m_pGroups,
-        pSwCounters->m_groupCount);
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    GPACounterSource source = GPACounterSource::UNKNOWN;
 
-    counterGroupAccessor.SetCounterIndex(internalCounterIndex);
+    if (nullptr != pCounterAccessor)
+    {
+        const GPA_HardwareCounters* pHwCounters = pCounterAccessor->GetHardwareCounters();
+        const GPA_SoftwareCounters* pSwCounters = pCounterAccessor->GetSoftwareCounters();
 
-    GPACounterSource source;
+        GPACounterGroupAccessor counterGroupAccessor(
+            pHwCounters->m_pGroups,
+            pHwCounters->m_groupCount,
+            pHwCounters->m_pAdditionalGroups,
+            pHwCounters->m_additionalGroupCount,
+            pSwCounters->m_pGroups,
+            pSwCounters->m_groupCount);
 
-    if (counterGroupAccessor.IsSWCounter())
-    {
-        source = GPACounterSource::SOFTWARE;
-    }
-    else if (counterGroupAccessor.IsHWCounter())
-    {
-        source = GPACounterSource::HARDWARE;
-    }
-    else
-    {
-        source = GPACounterSource::UNKNOWN;
-        GPA_LogError("Unknown Counter type.");
+        counterGroupAccessor.SetCounterIndex(internalCounterIndex);
+
+        if (counterGroupAccessor.IsSWCounter())
+        {
+            source = GPACounterSource::SOFTWARE;
+        }
+        else if (counterGroupAccessor.IsHWCounter())
+        {
+            source = GPACounterSource::HARDWARE;
+        }
     }
 
     return source;
@@ -239,61 +309,13 @@ DeviceClockMode GPAContext::GetDeviceClockMode() const
 
 bool GPAContext::OpenCounters()
 {
-    bool success = false;
-
-    IGPACounterAccessor* pCounterAccessor = nullptr;
-    IGPACounterScheduler* pCounterScheduler = nullptr;
-
-    gpa_uint32 vendorId;
-    gpa_uint32 deviceId;
-    gpa_uint32 revisionId;
-
-    if (m_hwInfo.GetVendorID(vendorId) &&
-        m_hwInfo.GetDeviceID(deviceId) &&
-        m_hwInfo.GetRevisionID(revisionId))
-    {
-        GPA_Status result = GenerateCounters(
-                                GetAPIType(),
-                                vendorId,
-                                deviceId,
-                                revisionId,
-                                m_contextFlags,
-                                true,
-                                &pCounterAccessor,
-                                &pCounterScheduler);
-
-        if (GPA_STATUS_OK == result)
-        {
-            m_pCounterAccessor = pCounterAccessor;
-            m_pCounterScheduler = pCounterScheduler;
-
-            if (GPA_STATUS_OK == m_pCounterScheduler->SetCounterAccessor(m_pCounterAccessor, vendorId, deviceId, revisionId))
-            {
-                success = true;
-            }
-            else
-            {
-                GPA_LogError("Failed to set counter accessor.");
-            }
-        }
-    }
-
+    bool success = GPA_STATUS_OK == GPAContextCounterMediator::Instance()->GenerateCounters(this, m_contextFlags, true);
     return success;
 }
 
 GPAObjectType GPAContext::ObjectType() const
 {
     return GPAObjectType::GPA_OBJECT_TYPE_CONTEXT;
-}
-
-const IGPACounterAccessor* GPAContext::GetCounterAccessor() const noexcept
-{
-    return m_pCounterAccessor;
-}
-
-IGPACounterScheduler* GPAContext::GetCounterScheduler() const noexcept
-{
-    return m_pCounterScheduler;
 }
 
 bool GPAContext::DoesSessionExist(GPA_SessionId pSessionId) const
@@ -304,6 +326,96 @@ bool GPAContext::DoesSessionExist(GPA_SessionId pSessionId) const
 gpa_uint32 GPAContext::GetSessionCount() const
 {
     return static_cast<gpa_uint32>(m_gpaSessionList.size());
+}
+
+GPA_Status GPAContext::BeginSession(IGPASession* pGpaSession)
+{
+    GPA_Status retStatus = GPA_STATUS_OK;
+
+    if (nullptr == pGpaSession)
+    {
+        retStatus = GPA_STATUS_ERROR_NULL_POINTER;
+    }
+    else
+    {
+        m_activeSessionMutex.lock();
+
+        if (nullptr != m_pActiveSession)
+        {
+            if (m_pActiveSession != pGpaSession)
+            {
+                retStatus = GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE;
+            }
+            else
+            {
+                retStatus = GPA_STATUS_ERROR_SESSION_ALREADY_STARTED;
+            }
+        }
+
+        m_activeSessionMutex.unlock();
+
+        if (GPA_STATUS_OK == retStatus)
+        {
+            retStatus = pGpaSession->Begin();
+
+            if (GPA_STATUS_OK == retStatus)
+            {
+                m_activeSessionMutex.lock();
+                m_pActiveSession = pGpaSession;
+                m_activeSessionMutex.unlock();
+            }
+        }
+    }
+
+    return retStatus;
+}
+
+GPA_Status GPAContext::EndSession(IGPASession* pGpaSession)
+{
+    GPA_Status retStatus = GPA_STATUS_OK;
+
+    if (nullptr == pGpaSession)
+    {
+        retStatus = GPA_STATUS_ERROR_NULL_POINTER;
+    }
+    else
+    {
+        m_activeSessionMutex.lock();
+
+        if (nullptr == m_pActiveSession)
+        {
+            retStatus = GPA_STATUS_ERROR_SESSION_NOT_STARTED;
+        }
+        else
+        {
+            if (m_pActiveSession != pGpaSession)
+            {
+                retStatus = GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE;
+            }
+        }
+
+        m_activeSessionMutex.unlock();
+    }
+
+    if (GPA_STATUS_OK == retStatus)
+    {
+        retStatus = pGpaSession->End();
+
+        if (GPA_STATUS_OK == retStatus)
+        {
+            m_activeSessionMutex.lock();
+            m_pActiveSession = nullptr;
+            m_activeSessionMutex.unlock();
+        }
+    }
+
+    return retStatus;
+}
+
+const IGPASession* GPAContext::GetActiveSession() const
+{
+    std::lock_guard<std::mutex> lock(m_activeSessionMutex);
+    return m_pActiveSession;
 }
 
 void GPAContext::SetAsOpened(bool open)

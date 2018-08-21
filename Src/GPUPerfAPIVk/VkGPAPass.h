@@ -9,8 +9,7 @@
 #define _VK_GPA_PASS_H_
 
 #include "GPAPass.h"
-#include <vulkan/vulkan.h>
-#include <vk_amd_gpa_interface.h>
+#include "VkIncludes.h"
 
 // forward declaration
 class VkGPACommandList;
@@ -24,13 +23,11 @@ public:
     /// \param[in] pGpaSession GPA session object pointer
     /// \param[in] passIndex pass index
     /// \param[in] counterSource counter source
-    /// \param[in] pCounterScheduler counter scheduler
-    /// \param[in] pCounterAccessor counter accessor
+    /// \param[in] pPassCounters counter list for the pass
     VkGPAPass(IGPASession* pGpaSession,
               PassIndex passIndex,
               GPACounterSource counterSource,
-              IGPACounterScheduler* pCounterScheduler,
-              const IGPACounterAccessor* pCounterAccessor);
+              CounterList* pPassCounters);
 
     /// Delete default constructor
     VkGPAPass() = delete;

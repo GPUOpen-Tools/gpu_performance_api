@@ -229,7 +229,7 @@ protected:
     /// \param offset the offset of the result within that pass.
     void AddCounterResultLocation(unsigned int publicCounterIndex, unsigned int hardwareCounterIndex, unsigned int passIndex, unsigned int offset)
     {
-        GPA_CounterResultLocation location;
+        GPA_CounterResultLocation location = {};
         location.m_offset = static_cast<gpa_uint16>(offset);
         location.m_pass = static_cast<gpa_uint16>(passIndex);
 

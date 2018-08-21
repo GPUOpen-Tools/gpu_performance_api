@@ -10,6 +10,7 @@
 #include "GPAImplementor.h"
 #include "GPAUniqueObject.h"
 #include "Logging.h"
+#include "GPAContextCounterMediator.h"
 
 #if defined(WIN32)
     #include "Adapter.h"
@@ -38,7 +39,16 @@ GPA_Status GPAImplementor::Initialize(GPA_InitializeFlags flags)
         if (!m_isInitialized)
         {
             m_isInitialized = true;
-            gpaStatus = GPA_STATUS_OK;
+            GPAContextCounterMediator* pTemp = GPAContextCounterMediator::Instance();
+
+            if (nullptr == pTemp)
+            {
+                gpaStatus = GPA_STATUS_ERROR_FAILED;
+            }
+            else
+            {
+                gpaStatus = GPA_STATUS_OK;
+            }
         }
     }
 
@@ -52,6 +62,7 @@ GPA_Status GPAImplementor::Destroy()
     if (m_isInitialized)
     {
         m_isInitialized = false;
+        GPAContextCounterMediator::DeleteInstance();
         gpaStatus = GPA_STATUS_OK;
     }
 
@@ -246,6 +257,21 @@ bool GPAImplementor::DoesCommandListExist(GPA_CommandListId commandListId) const
 GPA_InitializeFlags GPAImplementor::GetInitializeFlags() const
 {
     return m_initFlags;
+}
+
+bool GPAImplementor::IsCommandListRequired() const
+{
+    return false;
+}
+
+bool GPAImplementor::IsContinueSampleOnCommandListSupported() const
+{
+    return false;
+}
+
+bool GPAImplementor::IsCopySecondarySampleSupported() const
+{
+    return false;
 }
 
 bool GPAImplementor::DoesContextInfoExist(GPAContextInfoPtr pContextInfo) const

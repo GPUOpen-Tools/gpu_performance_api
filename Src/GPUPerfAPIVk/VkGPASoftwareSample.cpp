@@ -11,6 +11,7 @@
 #include "GPASoftwareCounters.h"
 #include "GPAHardwareCounters.h"
 #include "VkGPAPass.h"
+#include "GPAContextCounterMediator.h"
 
 VkGPASoftwareSample::VkGPASoftwareSample(GPAPass* pPass,
                                          IGPACommandList* pCmdList,
@@ -53,7 +54,7 @@ bool VkGPASoftwareSample::BeginRequest()
         m_pContextState = reinterpret_cast<VkGPAContext*>(pVkGpaPass->GetGpaSession()->GetParentContext());
         const size_t counterCount = pVkGpaPass->GetEnabledCounterCount();
 
-        const IGPACounterAccessor* pCounterAccessor = m_pContextState->GetCounterAccessor();
+        const IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pContextState);
         const GPA_SoftwareCounters* pSwCounters = pCounterAccessor->GetSoftwareCounters();
         const GPA_HardwareCounters* pHwCounters = pCounterAccessor->GetHardwareCounters();
         m_activeCountersList.resize(counterCount);
@@ -63,7 +64,7 @@ bool VkGPASoftwareSample::BeginRequest()
         unsigned int counterIter = 0u;
         bool bCounterInfoCollected = true;
 
-        auto PopulateSoftwareCounterInfo = [&](const CounterIndex& counterIndex) -> bool
+        auto PopulateSoftwareCounterInfo = [&](const CounterIndex & counterIndex) -> bool
         {
             bool bIsCounterEnabled = true;
             gpa_uint32 swCounterIndex = counterIndex;
@@ -159,7 +160,8 @@ const
 {
     bool result = true;
 
-    const char* pCounterName = m_pContextState->GetCounterAccessor()->GetCounterName(counterIndex);
+    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pContextState);
+    const char* pCounterName = pCounterAccessor->GetCounterName(counterIndex);
 
     if (0 == strcmp("VKGPUTime", pCounterName))
     {
@@ -188,7 +190,7 @@ bool VkGPASoftwareSample::GetPipelineQueryCounterResult(
 const
 {
     bool result = true;
-    const IGPACounterAccessor* pCounterAccessor = m_pContextState->GetCounterAccessor();
+    const IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pContextState);
     const char* pCounterName = pCounterAccessor->GetCounterName(counterIndex);
 
     if (0 == strcmp("IAVertices", pCounterName))
@@ -260,7 +262,7 @@ bool VkGPASoftwareSample::UpdateResults()
 
     if (GPASampleState::PENDING_RESULTS == GetGpaSampleState() && !IsSecondary())
     {
-        GpaVkSoftwareQueryResults queryResults;
+        GpaVkSoftwareQueryResults queryResults = {};
         memset(&queryResults, 0, sizeof(queryResults));
 
         if (nullptr != m_pSwQueries)

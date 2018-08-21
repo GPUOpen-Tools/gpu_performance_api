@@ -8,30 +8,29 @@
 #include "GPAPass.h"
 #include "GPACommandList.h"
 #include "GPAHardwareCounters.h"
+#include "GPAContextCounterMediator.h"
 
 GPAPass::GPAPass(IGPASession* pGpaSession,
                  PassIndex passIndex,
                  GPACounterSource counterSource,
-                 IGPACounterScheduler* pCounterScheduler,
-                 const IGPACounterAccessor* pCounterAccessor):
+                 CounterList* pPassCounters):
     m_pGpaSession(pGpaSession),
     m_uiPassIndex(passIndex),
     m_counterSource(counterSource),
     m_isResultCollected(false),
     m_isResultReady(false),
     m_isTimingPass(false),
-    m_pCounterScheduler(pCounterScheduler),
-    m_pCounterAccessor(pCounterAccessor),
     m_gpaInternalSampleCounter(0u),
     m_commandListCounter(0u),
     m_isAllSampleValidInPass(false),
     m_isPassComplete(false)
 {
-    m_pCounterList = m_pCounterScheduler->GetCountersForPass(passIndex);
+    m_pCounterList = pPassCounters;
 
     if (nullptr != m_pCounterList && !m_pCounterList->empty())
     {
-        const GPA_HardwareCounters* pHardwareCounters = m_pCounterAccessor->GetHardwareCounters();
+        const GPA_HardwareCounters* pHardwareCounters =
+            GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
 
         if (pHardwareCounters->IsTimeCounterIndex(m_pCounterList->at(0)))
         {
@@ -512,16 +511,6 @@ bool GPAPass::IsResultsCollectedFromDriver() const
     return m_isResultCollected;
 }
 
-const IGPACounterAccessor* GPAPass::GetCounterAccessor() const
-{
-    return m_pCounterAccessor;
-}
-
-const IGPACounterScheduler* GPAPass::GetCounterScheduler() const
-{
-    return m_pCounterScheduler;
-}
-
 void GPAPass::AddCommandList(IGPACommandList* pGPACommandList)
 {
     std::lock_guard<std::mutex> lockCmdList(m_gpaCmdListMutex);
@@ -579,7 +568,8 @@ void GPAPass::IterateSkippedCounterList(std::function<bool(const CounterIndex& c
 
 gpa_uint32 GPAPass::GetBottomToBottomTimingCounterIndex() const
 {
-    const GPA_HardwareCounters* pHardwareCounters = m_pCounterAccessor->GetHardwareCounters();
+    const GPA_HardwareCounters* pHardwareCounters =
+        GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
 
     for (gpa_uint32 i = 0; i < static_cast<gpa_uint32>(m_pCounterList->size()); i++)
     {
@@ -594,7 +584,8 @@ gpa_uint32 GPAPass::GetBottomToBottomTimingCounterIndex() const
 
 gpa_uint32 GPAPass::GetTopToBottomTimingCounterIndex() const
 {
-    const GPA_HardwareCounters* pHardwareCounters = m_pCounterAccessor->GetHardwareCounters();
+    const GPA_HardwareCounters* pHardwareCounters =
+        GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
 
     for (gpa_uint32 i = 0; i < static_cast<gpa_uint32>(m_pCounterList->size()); i++)
     {

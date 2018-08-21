@@ -1,0 +1,100 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{f572e22b-d288-465c-8861-ae2ff6304a76}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AmdDxExt">
+      <UniqueIdentifier>{59f321d8-f841-477d-8e2c-483ca59cb438}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{d5aff145-b1fc-4447-921e-a58b15a2a72e}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{b12042b6-8c5f-4eb1-9068-2a744f5f0316}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPAPass.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPAContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPASession.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPASample.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11Utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPACommandList.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DX11GPAImplementor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Src\GPUPerfAPIDX11\DxxExtUtils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExt.h">
+      <Filter>AmdDxExt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExtApi.h">
+      <Filter>AmdDxExt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExtIface.h">
+      <Filter>AmdDxExt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExtPerfProfile.h">
+      <Filter>AmdDxExt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\Common\Src\AmdDxExt\AmdDxExtPerfProfileApi.h">
+      <Filter>AmdDxExt</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPAContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPAPass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPASession.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPASample.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11Utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPACommandList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11GPAImplementor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DxxExtUtils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\DXGetAMDDeviceInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPIDX11\DX11Include.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Src\GPUPerfAPI-Common\resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\..\Src\GPUPerfAPIDX11\GPUPerfAPIDX11.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

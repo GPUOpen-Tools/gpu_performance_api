@@ -9,6 +9,7 @@
 #include "GPAUniqueObject.h"
 #include "GLGPASession.h"
 #include "GPAHardwareCounters.h"
+#include "GPAContextCounterMediator.h"
 
 GLGPAContext::GLGPAContext(GLContextPtr context,
                            GPA_HWInfo& pHwInfo,
@@ -119,7 +120,8 @@ bool GLGPAContext::ValidateAndUpdateGLCounters() const
         else
         {
             // const_cast is the feasible and simple workaround here, as GL is the only API in which we are changing the hardware counter info
-            GPA_HardwareCounters* pHardwareCounters = const_cast<GPA_HardwareCounters*>(GetCounterAccessor()->GetHardwareCounters());
+            IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+            GPA_HardwareCounters* pHardwareCounters = const_cast<GPA_HardwareCounters*>(pCounterAccessor->GetHardwareCounters());
             unsigned int expectedDriverGroups = pHardwareCounters->m_groupCount + pHardwareCounters->m_additionalGroupCount - 1;
 
             if (nNumGroups < static_cast<int>(expectedDriverGroups))
@@ -219,7 +221,7 @@ bool GLGPAContext::ValidateAndUpdateGLCounters() const
                                 if (pHardwareCounters->m_pGroups[g].m_numCounters != static_cast<unsigned int>(nCounters))
                                 {
                                     std::stringstream error;
-                                    error << "GPUPerfAPI's group '" << pHardwareCounters->m_pGroups[g].m_pName << "' has " << pHardwareCounters->m_pGroups[g].m_numCounters << " counters, but OpenGL exposes '" << nCounters << ".";
+                                    error << "GPUPerfAPI's group '" << pHardwareCounters->m_pGroups[g].m_pName << "' has " << pHardwareCounters->m_pGroups[g].m_numCounters << " counters, but OpenGL exposes " << nCounters << ".";
 
                                     if (pHardwareCounters->m_pGroups[g].m_numCounters < static_cast<unsigned int>(nCounters))
                                     {

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief Interface representing the GPA context
@@ -14,6 +14,7 @@
 #include "IGPACounterAccessor.h"
 #include "IGPACounterScheduler.h"
 
+class IGPASession;  // forward declaration
 
 /// Device clock mode enum used to decode usage of GPA_OpenContext mode flag
 enum class DeviceClockMode : uint32_t
@@ -166,13 +167,19 @@ public:
     /// \return true if successfully opens the counter otherwise false
     virtual bool OpenCounters() = 0;
 
-    /// Returns the counter accessor for the context
-    /// \return Counter accessor pointer
-    virtual const IGPACounterAccessor* GetCounterAccessor() const noexcept = 0;
+    /// Begins the session on current context
+    /// \param[in] pGpaSession pointer to previously created session object
+    /// \return GPA_STATUS_OK on successful execution
+    virtual GPA_Status BeginSession(IGPASession* pGpaSession) = 0;
 
-    /// Returns the counter scheduler for the context
-    /// \return Counter scheduler pointer
-    virtual IGPACounterScheduler* GetCounterScheduler() const noexcept = 0;
+    /// Ends the session on current context
+    /// \param[in] pGpaSession pointer to previously created session object
+    /// \return GPA_STATUS_OK on successful execution
+    virtual GPA_Status EndSession(IGPASession* pGpaSession) = 0;
+
+    /// Returns the active session for the context
+    /// \return active session if any session is active otherwise nullptr
+    virtual const IGPASession* GetActiveSession() const = 0;
 };
 
 #endif // _I_GPA_CONTEXT_H_
