@@ -98,13 +98,7 @@ for key in gitMapping:
         except subprocess.CalledProcessError as e:
             print ("'git pull' failed with returncode: %d\n" % e.returncode)
             sys.exit(1)
-        sys.stdout.flush()
 
-        try:
-            subprocess.check_call(["git", "-C", targetPath, "checkout", reqdCommit], shell=SHELLARG)
-        except subprocess.CalledProcessError as e:
-            print ("'git checkout' failed with returncode: %d\n" % e.returncode)
-            sys.exit(1)
         sys.stderr.flush()
         sys.stdout.flush()
     else:
@@ -114,12 +108,19 @@ for key in gitMapping:
         print("Directory " + targetPath + " does not exist. \n\tUsing 'git clone' to get from " + ghRepoSource)
         sys.stdout.flush()
         try:
-            subprocess.check_call(["git", "-C", scriptRoot, "clone", ghRepoSource, targetPath, "--branch", reqdCommit], shell=SHELLARG)
+            subprocess.check_call(["git", "-C", scriptRoot, "clone", ghRepoSource, targetPath], shell=SHELLARG)
         except subprocess.CalledProcessError as e:
             print("'git clone' failed with returncode: %d\n" % e.returncode)
             sys.exit(1)
         sys.stderr.flush()
         sys.stdout.flush()
+    try:
+        subprocess.check_call(["git", "-C", targetPath, "checkout", reqdCommit], shell=SHELLARG)
+    except subprocess.CalledProcessError as e:
+        print ("'git checkout' failed with returncode: %d\n" % e.returncode)
+        sys.exit(1)
+    sys.stderr.flush()
+    sys.stdout.flush()
 
 def download(srcPath, destPath, FileName):
     # Assuming path is absolute
