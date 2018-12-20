@@ -124,4 +124,4 @@ Counter formulas are expressed in a Reverse Polish Notation and are made up the 
 * functions: The supported functions are: min, max, sum, ifnotzero, and vcomparemax4. "max and "sum" have variants that work on multiple items at once (i.e. sum16, sum64, etc.)
 * hardware params: The supported hardware params are "num_shader_engines". "num_simds", "su_clock_prim", "num_prim_pipes", and "TS_FREQ"
 
-For more details, see the "EvaluateExpression" function in the [GPAPublicCounters.cpp](Src/GPUPerfAPICounterGenerator/GPAPublicCounters.cpp) file.
+For more details, see the "EvaluateExpression" function in the [GPADerivedCounters.cpp](Src/GPUPerfAPICounterGenerator/GPADerivedCounters.cpp) file.
