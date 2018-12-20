@@ -5,6 +5,7 @@
 /// \brief  CL internal counter definitions for GFX6
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "GPAInternalCountersGfx6.h"
 #include "InternalCountersCLGfx6.h"
 

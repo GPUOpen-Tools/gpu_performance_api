@@ -1,6 +1,6 @@
 ﻿// =============================================================================
 // <copyright file="Form1.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2016 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2018 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -51,6 +51,8 @@ namespace PublicCounterCompiler
             apiName.Text = (string)Registry.GetValue(registryKey, registryApiEntry, string.Empty);
 
             GPUFamily.Text = (string)Registry.GetValue(registryKey, registryGpuFamilyEntry, string.Empty);
+
+            CompileButton.Text = "Compile " + CounterCompiler.derivedCounterFileInput.rootFilename + " Counters";
         }
 
         /// <summary>
@@ -111,7 +113,11 @@ namespace PublicCounterCompiler
 
             Registry.SetValue(registryKey, registryGpuFamilyEntry, gpu);
 
-            Program.CompileCounters(api, gpu);
+            // For compatibility with InternalCounterCompiler project
+            if (false == PublicCounterCompiler.CounterCompiler.CompileCounters(api, gpu))
+            {
+                Output("Failed to compile counters");
+            }
         }
 
         /// <summary>
@@ -124,7 +130,7 @@ namespace PublicCounterCompiler
         {
             richTextBoxOutput.Text = "";
 
-            Program.StartRSTDocumentation();
+            CounterCompiler.StartRSTDocumentation();
 
             if (string.IsNullOrEmpty(batchApiList.Text.Trim())
                 || string.IsNullOrEmpty(batchGpuFamilyList.Text.Trim()))
@@ -151,13 +157,25 @@ namespace PublicCounterCompiler
                         }
                     }
 
+                    if ("Gfx7" == gpu)
+                    {
+                        string[] unsupportedApis = new string[] { "HSA" };
+                        if (Array.IndexOf(unsupportedApis, api) >= 0)
+                        {
+                            Output("\nSkipping API " + api + " unsupported on " + gpu);
+                            continue;
+                        }
+                    }
+
                     Output("\nCompiling API " + api + " for GPU Family " + gpu);
 
-                    Program.CompileCounters(api, gpu);
+                    // For compatibility with InternalCounterCompiler project
+                    if (false == PublicCounterCompiler.CounterCompiler.CompileCounters(api, gpu))
+                    {
+                        Output("Failed to compile counters");
+                    }
                 }
             }
-
-            Program.DoneRSTDocumentation();
         }
 
         /// <summary>

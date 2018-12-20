@@ -81,7 +81,7 @@ LRESULT CALLBACK SampleWindowProc(
             switch (wParam)
             {
                 case 0x50: // keyboard P for profiling
-                    CubeSample::Instance()->ToggleProfling();
+                    CubeSample::Instance()->ToggleProfiling();
                     break;
 
                 case 0x57: // keyboard W for wireframe
@@ -169,7 +169,7 @@ void CubeSample::Init()
             m_scissorRect.right = 800l;
             m_scissorRect.bottom = 800l;
 
-            m_counterFileName = std::string(m_executablePath.begin(), m_executablePath.end()).append("Counter.csv");
+            m_counterFileName = std::string(m_executablePath.begin(), m_executablePath.end()).append("D3D12ColorCube_counterData.csv");
             m_gpaLogFileName = std::string(m_executablePath.begin(), m_executablePath.end()).append("GpaLog.txt");
 
             // wireframe
@@ -261,7 +261,7 @@ bool CubeSample::InitializeCommonResource()
         }
 
         AddIUnknown(m_pd3d12Device, MAKE_STRING(m_pd3d12Device));
-        result = m_pdxgiFactory2->MakeWindowAssociation(g_windowHandle, DXGI_MWA_NO_ALT_ENTER);  // This will ensure Alt-Enter wont't work
+        result = m_pdxgiFactory2->MakeWindowAssociation(g_windowHandle, DXGI_MWA_NO_ALT_ENTER);  // This will ensure Alt-Enter won't work
 
         if (FAILED(result))
         {
@@ -421,7 +421,7 @@ bool CubeSample::InitializeCommonResource()
             D3D12_SHADER_BYTECODE vsByteCode = { vertexShader->GetBufferPointer(), vertexShader->GetBufferSize() };
             D3D12_SHADER_BYTECODE psByteCode = { pixelShader->GetBufferPointer(), pixelShader->GetBufferSize() };
 
-            /// Create graphcis pipeline using root signature - one for wireframe and another for fill drawing
+            /// Create graphics pipeline using root signature - one for wireframe and another for fill drawing
             D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
             psoDesc.pRootSignature = m_pD3D12RootSignature;
             psoDesc.VS = vsByteCode;
@@ -771,7 +771,7 @@ void CubeSample::TopLeftViewport::Draw()
 {
     /*
      * In this view port, we will draw a cube on single primary command list
-     * and record the performace counter with one sample using GPA
+     * and record the performance counter with one sample using GPA
      */
 
     HRESULT result = m_pd3d12DirectCmdListAllocator->Reset();
@@ -1538,7 +1538,7 @@ void CubeSample::Destroy()
     }
 }
 
-void CubeSample::ToggleProfling()
+void CubeSample::ToggleProfiling()
 {
     m_profilingEnable = !m_profilingEnable;
 }

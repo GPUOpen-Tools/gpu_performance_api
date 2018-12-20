@@ -76,11 +76,11 @@ void VkGPAPass::InitializeSampleConfig()
             {
                 m_sampleBeginInfoAMD.sampleType = VK_GPA_SAMPLE_TYPE_TIMING_AMD;
 
-                if (m_pCounterList->at(0) == pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex)
+                if (true == pHardwareCounters->IsBottomOfPipeCounterIndex(m_pCounterList->at(0)))
                 {
                     m_sampleBeginInfoAMD.timingPreSample = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
                 }
-                else if (m_pCounterList->at(0) == pHardwareCounters->m_gpuTimeTopToBottomCounterIndex)
+                else if (true == pHardwareCounters->IsTopOfPipeCounterIndex(m_pCounterList->at(0)))
                 {
                     m_sampleBeginInfoAMD.timingPreSample = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
                 }

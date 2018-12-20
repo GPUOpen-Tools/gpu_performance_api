@@ -62,12 +62,13 @@ namespace PublicCounterCompiler
             // 
             // CompileButton
             // 
+            this.CompileButton.AutoSize = true;
             this.CompileButton.Location = new System.Drawing.Point(286, 60);
             this.CompileButton.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.CompileButton.Name = "CompileButton";
             this.CompileButton.Size = new System.Drawing.Size(220, 60);
             this.CompileButton.TabIndex = 2;
-            this.CompileButton.Text = "Compile Public Counters";
+            this.CompileButton.Text = "Compile Derived Counters";
             this.CompileButton.UseVisualStyleBackColor = true;
             this.CompileButton.Click += new System.EventHandler(this.CompileButton_Click);
             // 

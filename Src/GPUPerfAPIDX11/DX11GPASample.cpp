@@ -140,15 +140,15 @@ bool DX11GPASample::PopulateResult()
                 if (SUCCEEDED(hr))
                 {
                     // copy top data if requested
-                    if (GetPass()->GetTopToBottomTimingCounterIndex() != static_cast<DWORD>(-1))
+                    if (GetPass()->GetTopToBottomTimingDurationCounterIndex() != static_cast<DWORD>(-1))
                     {
-                        *(pSampleResult->GetResultBuffer()) = timingData[0];
+                        *pSampleResult->GetAsCounterSampleResult()->GetResultBuffer() = timingData[0];
                     }
 
                     // copy bottom data if requested
-                    if (GetPass()->GetBottomToBottomTimingCounterIndex() != static_cast<DWORD>(-1))
+                    if (GetPass()->GetBottomToBottomTimingDurationCounterIndex() != static_cast<DWORD>(-1))
                     {
-                        *(pSampleResult->GetResultBuffer()) = timingData[1];
+                        *pSampleResult->GetAsCounterSampleResult()->GetResultBuffer() = timingData[1];
                     }
 
                     populated = true;
@@ -166,7 +166,7 @@ bool DX11GPASample::PopulateResult()
         {
             for (size_t counterIter = 0; counterIter < counterCount; counterIter++)
             {
-                pSampleResult->GetResultBuffer()[counterIter] = m_ppCounters[counterIter]->GetData();
+                pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIter] = m_ppCounters[counterIter]->GetData();
             }
 
             populated = true;
@@ -226,11 +226,11 @@ bool DX11GPASample::BeginRequest()
             {
                 // counter not created, create here
                 D3D11_COUNTER_DESC ctrDesc = {};
-                ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex].m_counterIdDriver);
+                ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex].m_counterIdDriver);
 
-                if (pDx11GpaPass->GetTopToBottomTimingCounterIndex() != static_cast<DWORD>(-1))
+                if (pDx11GpaPass->GetTopToBottomTimingDurationCounterIndex() != static_cast<DWORD>(-1))
                 {
-                    ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[pHardwareCounters->m_gpuTimeTopToBottomCounterIndex].m_counterIdDriver);
+                    ctrDesc.Counter = static_cast<D3D11_COUNTER>(pHardwareCounters->m_counters[pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex].m_counterIdDriver);
                 }
 
                 assert(ctrDesc.Counter != 0);
@@ -429,7 +429,7 @@ bool DX11GPASample::CreateSampleExperiment()
 
                                     if (PE_OK != result)
                                     {
-                                        GPA_LogError("Unable to set the shader engine paramater.");
+                                        GPA_LogError("Unable to set the shader engine parameter.");
                                         engineParamSetsuccess = false;
                                         break;
                                     }

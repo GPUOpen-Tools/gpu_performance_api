@@ -29,7 +29,7 @@ public:
     GPAImplementor();
 
     /// Destructor
-    ~GPAImplementor() = default;
+    virtual ~GPAImplementor() = default;
 
     /// \copydoc IGPAImplementor::Initialize()
     GPA_Status Initialize(GPA_InitializeFlags flags) override;

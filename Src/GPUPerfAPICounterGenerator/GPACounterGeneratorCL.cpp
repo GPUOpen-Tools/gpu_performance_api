@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for CL counter generation
@@ -45,49 +45,82 @@ GPA_Status GPA_CounterGeneratorCL::GeneratePublicCounters(
     gpa_uint8 generateAsicSpecificCounters,
     GPA_DerivedCounters* pPublicCounters)
 {
-    if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
-    {
-        AutoDefineDerivedCountersCLGfx6(*pPublicCounters);
+    auto status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
 
-        if (generateAsicSpecificCounters)
-        {
-            CLGfx6Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
-        }
+    if (nullptr == pPublicCounters)
+    {
+        status = GPA_STATUS_ERROR_NULL_POINTER;
     }
-    else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
+    else if (pPublicCounters->m_countersGenerated)
     {
-        AutoDefineDerivedCountersCLGfx7(*pPublicCounters);
-
-        if (generateAsicSpecificCounters)
-        {
-            CLGfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
-        }
-    }
-    else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
-    {
-        AutoDefineDerivedCountersCLGfx8(*pPublicCounters);
-
-        if (generateAsicSpecificCounters)
-        {
-            CLGfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
-        }
-    }
-    else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
-    {
-        AutoDefineDerivedCountersCLGfx9(*pPublicCounters);
-
-        if (generateAsicSpecificCounters)
-        {
-            CLGfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
-        }
+        status = GPA_STATUS_OK;
     }
     else
     {
-        GPA_LogError("Unrecognized or unhandled hardware generation.");
-        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+        pPublicCounters->Clear();
+
+        if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
+        {
+            AutoDefinePublicDerivedCountersCLGfx6(*pPublicCounters);
+
+            if (generateAsicSpecificCounters)
+            {
+                CLGfx6Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+
+            status = GPA_STATUS_OK;
+        }
+        else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
+        {
+            AutoDefinePublicDerivedCountersCLGfx7(*pPublicCounters);
+
+            if (generateAsicSpecificCounters)
+            {
+                CLGfx7Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+
+            status = GPA_STATUS_OK;
+        }
+        else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
+        {
+            AutoDefinePublicDerivedCountersCLGfx8(*pPublicCounters);
+
+            if (generateAsicSpecificCounters)
+            {
+                CLGfx8Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+
+            status = GPA_STATUS_OK;
+        }
+        else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
+        {
+            AutoDefinePublicDerivedCountersCLGfx9(*pPublicCounters);
+
+            if (generateAsicSpecificCounters)
+            {
+                CLGfx9Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+
+            status = GPA_STATUS_OK;
+        }
     }
 
-    return GPA_STATUS_OK;
+    auto internalStatus = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+
+#ifdef AMDT_INTERNAL
+    internalStatus = GPA_LoadInternalCounters(GPA_API_OPENCL, desiredGeneration,asicType, generateAsicSpecificCounters, pPublicCounters);
+#endif
+
+    if (GPA_STATUS_OK == status)
+    {
+        pPublicCounters->m_countersGenerated = true;
+    }
+    else
+    {
+        status = internalStatus;
+    }
+
+    return status;
 }
 
 int GPA_CounterGeneratorCL::GetDriverGroupId(GDT_HW_GENERATION desiredGeneration, int blockIndex) const

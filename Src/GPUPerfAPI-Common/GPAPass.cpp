@@ -362,37 +362,41 @@ bool GPAPass::IsResultCollected() const
     return m_isResultCollected;
 }
 
-gpa_uint64 GPAPass::GetResult(ClientSampleId clientSampleId, CounterIndex internalCounterIndex) const
+GPA_Status GPAPass::GetResult(ClientSampleId clientSampleId, CounterIndex internalCounterIndex, gpa_uint64* pResultBuffer) const
 {
+    *pResultBuffer = 0;
+
     std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
 
-    gpa_uint64 result = 0u;
-
+    GPA_Status status = GPA_STATUS_OK;
     SamplesMap::const_iterator sampleIter = m_samplesUnorderedMap.find(clientSampleId);
 
     if (sampleIter == m_samplesUnorderedMap.cend())
     {
         GPA_LogError("Invalid SampleId supplied while getting pass results.");
+        status = GPA_STATUS_ERROR_INVALID_PARAMETER;
     }
     else
     {
         CounterIndex counterIndexWithinSample;
 
-        if (GetCounterIndexInPass(internalCounterIndex, counterIndexWithinSample))
+        if (GetCounterIndexInPass(internalCounterIndex, &counterIndexWithinSample))
         {
-            if (!sampleIter->second->GetResult(counterIndexWithinSample, &result))
+            if (!sampleIter->second->GetResult(counterIndexWithinSample, pResultBuffer))
             {
                 GPA_LogError("Failed to get counter result within pass.");
+                status = GPA_STATUS_ERROR_FAILED;
             }
         }
         else if (m_skippedCounterList.find(internalCounterIndex) == m_skippedCounterList.end())
         {
             // we didn't skip the counter, so we wrongly think it was in this pass.
             GPA_LogError("Failed to find internal counter index within pass counters.");
+            status = GPA_STATUS_ERROR_INVALID_PARAMETER;
         }
     }
 
-    return result;
+    return status;
 }
 
 bool GPAPass::DoesSampleExist(ClientSampleId clientSampleId) const
@@ -468,17 +472,16 @@ CounterCount GPAPass::GetNumEnabledCountersForPass() const
     return static_cast<CounterCount>(m_pCounterList->size() - m_skippedCounterList.size());
 }
 
-bool GPAPass::GetCounterIndexInPass(CounterIndex internalCounterIndex, CounterIndex& counterIndexInPassList) const
+bool GPAPass::GetCounterIndexInPass(CounterIndex internalCounterIndex, CounterIndex* pCounterIndexInPassList) const
 {
     bool found = false;
-
     if (!m_usedCounterListForPass.empty())
     {
         CounterList::const_iterator iter = std::find(m_usedCounterListForPass.begin(), m_usedCounterListForPass.end(), internalCounterIndex);
 
         if (m_usedCounterListForPass.end() != iter)
         {
-            counterIndexInPassList = static_cast<CounterIndex>(iter - m_usedCounterListForPass.begin());
+            *pCounterIndexInPassList = static_cast<CounterIndex>(iter - m_usedCounterListForPass.begin());
             found = true;
         }
     }
@@ -493,11 +496,9 @@ bool GPAPass::GetCounterByIndexInPass(CounterIndex counterIndexInPass, CounterIn
         assert(0);
         return false;
     }
-
     bool found = counterIndexInPass < m_usedCounterListForPass.size();
 
     *pInternalCounterIndex = static_cast<CounterIndex>(-1);
-
     if (found)
     {
         *pInternalCounterIndex = m_usedCounterListForPass[counterIndexInPass];
@@ -509,6 +510,11 @@ bool GPAPass::GetCounterByIndexInPass(CounterIndex counterIndexInPass, CounterIn
 bool GPAPass::IsResultsCollectedFromDriver() const
 {
     return m_isResultCollected;
+}
+
+const IGPACounterAccessor* GPAPass::GetSessionContextCounterAccessor() const
+{
+    return GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
 }
 
 void GPAPass::AddCommandList(IGPACommandList* pGPACommandList)
@@ -566,14 +572,14 @@ void GPAPass::IterateSkippedCounterList(std::function<bool(const CounterIndex& c
     }
 }
 
-gpa_uint32 GPAPass::GetBottomToBottomTimingCounterIndex() const
+gpa_uint32 GPAPass::GetBottomToBottomTimingDurationCounterIndex() const
 {
     const GPA_HardwareCounters* pHardwareCounters =
         GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
 
     for (gpa_uint32 i = 0; i < static_cast<gpa_uint32>(m_pCounterList->size()); i++)
     {
-        if ((*m_pCounterList)[i] == pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex)
+        if ((*m_pCounterList)[i] == pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex)
         {
             return i;
         }
@@ -582,14 +588,14 @@ gpa_uint32 GPAPass::GetBottomToBottomTimingCounterIndex() const
     return static_cast<gpa_uint32>(-1);
 }
 
-gpa_uint32 GPAPass::GetTopToBottomTimingCounterIndex() const
+gpa_uint32 GPAPass::GetTopToBottomTimingDurationCounterIndex() const
 {
     const GPA_HardwareCounters* pHardwareCounters =
         GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
 
     for (gpa_uint32 i = 0; i < static_cast<gpa_uint32>(m_pCounterList->size()); i++)
     {
-        if ((*m_pCounterList)[i] == pHardwareCounters->m_gpuTimeTopToBottomCounterIndex)
+        if ((*m_pCounterList)[i] == pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex)
         {
             return i;
         }

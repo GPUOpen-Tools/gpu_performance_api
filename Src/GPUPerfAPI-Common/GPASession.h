@@ -33,13 +33,13 @@ public:
     virtual ~GPASession();
 
     /// \copydoc IGPAInterfaceTrait::ObjectType()
-    inline GPAObjectType ObjectType() const override;
+    GPAObjectType ObjectType() const override;
 
     /// \copydoc IGPASession::GetParentContext()
-    inline IGPAContext* GetParentContext() const override;
+    IGPAContext* GetParentContext() const override;
 
     /// \copydoc IGPASession::GetState()
-    inline GPASessionState GetState() const override;
+    GPASessionState GetState() const override;
 
     /// \copydoc IGPASession::EnableCounter()
     GPA_Status EnableCounter(gpa_uint32 index) override;

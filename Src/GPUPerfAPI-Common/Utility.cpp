@@ -14,10 +14,12 @@
     #include <unistd.h>
 #endif
 
-EXTERN_C IMAGE_DOS_HEADER __ImageBase; ///< __ImageBase symbol exported by MSVC linker
+#ifdef _WIN32
+     EXTERN_C IMAGE_DOS_HEADER __ImageBase; ///< __ImageBase symbol exported by MSVC linker
 
-/// Macro for the HINST of the owning module
-#define HINST_THISCOMPONENT ((HINSTANCE)&__ImageBase)
+     /// Macro for the HINST of the owning module
+     #define HINST_THISCOMPONENT ((HINSTANCE)&__ImageBase)
+#endif
 
 void GPAUtil::wcstringToString(const wchar_t* pWstr, std::string& str)
 {
@@ -26,7 +28,7 @@ void GPAUtil::wcstringToString(const wchar_t* pWstr, std::string& str)
 
     for (size_t ci = 0; strLen > ci; ++ci)
     {
-        str[ci] = std::use_facet<std::ctype< wchar_t > >(std::locale()).narrow(pWstr[ci]);
+        str[ci] = std::use_facet<std::ctype< wchar_t > >(std::locale()).narrow(pWstr[ci], '\0');
     }
 }
 
@@ -39,16 +41,25 @@ bool GPAUtil::GetCurrentModulePath(std::string& currentModulePath)
 {
     bool success = true;
 
-    char szThisModuleName[MAX_PATH];
-
 #ifdef _WIN32
 
-    if (0 == GetModuleFileName(HINST_THISCOMPONENT, szThisModuleName, MAX_PATH))
+    char szThisModuleName[MAX_PATH];
+
+    if (0 == ::GetModuleFileNameA(HINST_THISCOMPONENT, szThisModuleName, MAX_PATH))
     {
         success = false;
     }
 
+    if (success)
+    {
+        char szThisModulePath[MAX_PATH];
+        strncpy_s(szThisModulePath, MAX_PATH, szThisModuleName, strrchr(szThisModuleName, '\\') + 1 - szThisModuleName);
+        currentModulePath = szThisModulePath;
+    }
+
 #else
+
+    char szThisModuleName[4096];
     int len;
     len = readlink("/proc/self/exe", szThisModuleName, 4096 - 1);
 
@@ -61,14 +72,14 @@ bool GPAUtil::GetCurrentModulePath(std::string& currentModulePath)
         success = false;
     }
 
-#endif
-
     if (success)
     {
-        char szThisModulePath[MAX_PATH];
-        strncpy_s(szThisModulePath, MAX_PATH, szThisModuleName, strrchr(szThisModuleName, '\\') + 1 - szThisModuleName);
+        char szThisModulePath[4096];
+        strncpy_s(szThisModulePath, 4096, szThisModuleName, strrchr(szThisModuleName, '/') + 1 - szThisModuleName);
         currentModulePath = szThisModulePath;
     }
+
+#endif
 
     return success;
 }

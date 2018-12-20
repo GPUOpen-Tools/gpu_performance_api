@@ -7,6 +7,8 @@
 
 #include "DX12GPASample.h"
 #include "DX12GPACommandList.h"
+#include "GPAHardwareCounters.h"
+#include "GPAContextCounterMediator.h"
 
 DX12GPASample::DX12GPASample(GPAPass* pPass,
                              IGPACommandList* pCmdList,
@@ -58,23 +60,14 @@ void DX12GPASample::ReleaseCounters()
 
 GPASampleResult* DX12GPASample::PopulateSampleResult()
 {
-    size_t sampleDataSize = 0u;
+    size_t sampleDataBytes = 0u;
 
     // Validate result space
-    if (!GetPass()->IsTimingPass())
-    {
-        sampleDataSize = GetSampleResultLocation()->GetNumCounters() * sizeof(gpa_uint64);
-    }
-    else
-    {
-        // If the pass is timing, we will have one result space to return the result, although
-        // we need to get the result in twice space size from the driver
-        sampleDataSize = GetSampleResultLocation()->GetNumCounters() * 2 * sizeof(gpa_uint64);
-    }
+    sampleDataBytes = GetSampleResultLocation()->GetBufferBytes();
 
-    if (0 != sampleDataSize)
+    if (0 != sampleDataBytes)
     {
-        if (nullptr != GetSampleResultLocation()->GetResultBuffer())
+        if (nullptr != GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer())
         {
             gpa_uint64* pResultBuffer = nullptr;
             gpa_uint64 timingData[2] = {};
@@ -82,18 +75,54 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
             if (GetPass()->IsTimingPass())
             {
                 pResultBuffer = timingData;
+                sampleDataBytes = sizeof(timingData);
             }
             else
             {
-                pResultBuffer = GetSampleResultLocation()->GetResultBuffer();
+                pResultBuffer = GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer();
             }
 
-            if (CopyResult(sampleDataSize, pResultBuffer))
+            if (CopyResult(sampleDataBytes, pResultBuffer))
             {
                 if (GetPass()->IsTimingPass())
                 {
-                    // There will be one counter result space for this
-                    *(GetSampleResultLocation()->GetResultBuffer()) = timingData[1] - timingData[0];
+                    const GPA_HardwareCounters* pHardwareCounters = GetPass()->GetSessionContextCounterAccessor()->GetHardwareCounters();
+
+                    for (CounterCount i = 0; i < GetPass()->GetEnabledCounterCount(); ++i)
+                    {
+                        CounterIndex counterIndex;
+                        GetPass()->GetCounterByIndexInPass(i, &counterIndex);
+
+                        if (counterIndex == pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex)
+                        {
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[1] - timingData[0];
+                        }
+                        else if (counterIndex == pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex)
+                        {
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[0];
+                        }
+                        else if (counterIndex == pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex)
+                        {
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[1];
+                        }
+                        else if (counterIndex == pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex)
+                        {
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[1] - timingData[0];
+                        }
+                        else if (counterIndex == pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex)
+                        {
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[0];
+                        }
+                        else if (counterIndex == pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex)
+                        {
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[1];
+                        }
+                        else
+                        {
+                            GPA_LogError("Unknown timing counter.");
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = 0;
+                        }
+                    }
                 }
 
                 if (IsSampleContinuing())
@@ -102,7 +131,7 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
 
                     for (size_t counterIter = 0; counterIter < GetPass()->GetEnabledCounterCount(); counterIter++)
                     {
-                        GetSampleResultLocation()->GetResultBuffer()[counterIter] += pSampleResult->GetResultBuffer()[counterIter];
+                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[counterIter] += pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIter];
                     }
                 }
 

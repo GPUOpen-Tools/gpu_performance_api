@@ -5,11 +5,12 @@
 /// \brief PublicCounterDefinitions for CLGFX7
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "PublicCounterDefsCLGfx7.h"
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-void AutoDefineDerivedCountersCLGfx7(GPA_DerivedCounters& c)
+void AutoDefinePublicDerivedCountersCLGfx7(GPA_DerivedCounters& c)
 {
     {
         vector< gpa_uint32 > internalCounters;

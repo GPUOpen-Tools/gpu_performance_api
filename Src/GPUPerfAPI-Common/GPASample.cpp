@@ -82,11 +82,11 @@ bool GPASample::GetResult(CounterIndex counterIndexInSample, gpa_uint64* pResult
             IsResultCollected())
         {
             if (nullptr != m_pSampleResult &&
-                counterIndexInSample < m_pSampleResult->GetNumCounters() &&
-                nullptr != m_pSampleResult->GetResultBuffer())
+                counterIndexInSample < m_pSampleResult->GetAsCounterSampleResult()->GetNumCounters() &&
+                nullptr != m_pSampleResult->GetAsCounterSampleResult()->GetResultBuffer())
             {
                 hasResult = true;
-                *pResult = m_pSampleResult->GetResultBuffer()[counterIndexInSample];
+                *pResult = m_pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIndexInSample];
             }
             else
             {
@@ -121,7 +121,7 @@ void GPASample::AllocateSampleResultSpace()
 {
     if (nullptr == m_pSampleResult)
     {
-        m_pSampleResult = new(std::nothrow) GPASampleResult(m_pPass->GetEnabledCounterCount());
+        m_pSampleResult = new(std::nothrow) GPACounterSampleResult(m_pPass->GetEnabledCounterCount());
     }
 }
 
@@ -225,10 +225,10 @@ GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsContinuedByClient()
 bool GPASample::IsSampleValid() const
 {
     // A sample is only valid if it is opened and either it is continued/copied on another command list or closed on the same command list on which it was created
-    return m_isOpened &&
-           ((m_isClosedByClient && !m_isContinuedByClient) ||
-            (!m_isClosedByClient && m_isContinuedByClient)) ||
-           m_isCopiedSample;
+    bool valid = (m_isOpened &&
+                 ((m_isClosedByClient && !m_isContinuedByClient) || (!m_isClosedByClient && m_isContinuedByClient))) ||
+                 m_isCopiedSample;
+    return valid;
 }
 
 bool GPASample::IsClosed() const

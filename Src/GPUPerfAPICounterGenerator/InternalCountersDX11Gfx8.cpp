@@ -5,6 +5,7 @@
 /// \brief  DX11 internal counter definitions for GFX8
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "GPAInternalCountersGfx8.h"
 #include "InternalCountersDX11Gfx8.h"
 
@@ -703,7 +704,7 @@ GPA_CounterGroupDesc HWDX11GroupsGfx8[] =
     {340, "CPC", 0, 24, 2},
     {341, "WD", 0, 37, 4},
     {342, "GPUTimeStamp", 0, 1, 1},
-    {343, "GPUTime", 0, 2, 2},
+    {343, "GPUTime", 0, 6, 2},
 };
 
 GPA_SQCounterGroupDesc HWDX11SQGroupsGfx8[] =
@@ -1305,10 +1306,14 @@ PE_BLOCK_ID HWDX11DriverEnumGfx8[] =
     PE_BLOCK_UNKNOWN,
 };
 
-const unsigned int HWDX11GPUTimeBottomToBottomIndexGfx8 = 51132;
-const unsigned int HWDX11GPUTimeTopToBottomIndexGfx8 = 51133;
+const unsigned int HWDX11GputimeBottomToBottomDurationIndexGfx8 = 51132; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for DX11 for Gfx8 family
+const unsigned int HWDX11GputimeBottomToBottomStartIndexGfx8 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for DX11 for Gfx8 family
+const unsigned int HWDX11GputimeBottomToBottomEndIndexGfx8 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for DX11 for Gfx8 family
+const unsigned int HWDX11GputimeTopToBottomDurationIndexGfx8 = 51135; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for DX11 for Gfx8 family
+const unsigned int HWDX11GputimeTopToBottomStartIndexGfx8 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the top of pipe for DX11 for Gfx8 family
+const unsigned int HWDX11GputimeTopToBottomEndIndexGfx8 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the bottom of pipe for DX11 for Gfx8 family
 const std::set<unsigned int> HWDX11TimestampBlockIdsGfx8 = { 343, 342 }; ///< Timestamp block id's for DX11 for Gfx8 family
-const std::set<unsigned int> HWDX11TimeCounterIndicesGfx8 = { 51132, 51133, 51131 }; ///< Timestamp counter indices for DX11 for Gfx8 family
+const std::set<unsigned int> HWDX11TimeCounterIndicesGfx8 = { 51132, 51133, 51134, 51135, 51136, 51137, 51131 }; ///< Timestamp counter indices for DX11 for Gfx8 family
 const unsigned int HWDX11GroupCountGfx8 = sizeof(HWDX11GroupsGfx8) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX11SQGroupCountGfx8 = sizeof(HWDX11SQGroupsGfx8) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX11SQIsolatedGroupCountGfx8 = sizeof(HWDX11SQIsolatedGroupsGfx8) / sizeof(unsigned int);

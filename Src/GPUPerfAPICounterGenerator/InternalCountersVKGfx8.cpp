@@ -5,6 +5,7 @@
 /// \brief  VK internal counter definitions for GFX8
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "GPAInternalCountersGfx8.h"
 #include "InternalCountersVKGfx8.h"
 
@@ -701,7 +702,7 @@ GPA_CounterGroupDesc HWVKGroupsGfx8[] =
     {339, "CPG", 0, 48, 2},
     {340, "CPC", 0, 24, 2},
     {341, "WD", 0, 37, 4},
-    {342, "GPUTime", 0, 2, 2},
+    {342, "GPUTime", 0, 6, 2},
 };
 
 GPA_SQCounterGroupDesc HWVKSQGroupsGfx8[] =
@@ -1302,10 +1303,14 @@ VkGpaPerfBlockAMD HWVKDriverEnumGfx8[] =
     VK_GPA_PERF_BLOCK_RANGE_SIZE_AMD,
 };
 
-const unsigned int HWVKGPUTimeBottomToBottomIndexGfx8 = 51131;
-const unsigned int HWVKGPUTimeTopToBottomIndexGfx8 = 51132;
+const unsigned int HWVKGputimeBottomToBottomDurationIndexGfx8 = 51131; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for VK for Gfx8 family
+const unsigned int HWVKGputimeBottomToBottomStartIndexGfx8 = 51132; ///< Index of time of the previous command reaching bottom of pipe for VK for Gfx8 family
+const unsigned int HWVKGputimeBottomToBottomEndIndexGfx8 = 51133; ///< Index of time of the current command reaching bottom of pipe for VK for Gfx8 family
+const unsigned int HWVKGputimeTopToBottomDurationIndexGfx8 = 51134; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for VK for Gfx8 family
+const unsigned int HWVKGputimeTopToBottomStartIndexGfx8 = 51135; ///< Index of time that the current command reaches the top of pipe for VK for Gfx8 family
+const unsigned int HWVKGputimeTopToBottomEndIndexGfx8 = 51136; ///< Index of time that the current command reaches the bottom of pipe for VK for Gfx8 family
 const std::set<unsigned int> HWVKTimestampBlockIdsGfx8 = { 342 }; ///< Timestamp block id's for VK for Gfx8 family
-const std::set<unsigned int> HWVKTimeCounterIndicesGfx8 = { 51131, 51132 }; ///< Timestamp counter indices for VK for Gfx8 family
+const std::set<unsigned int> HWVKTimeCounterIndicesGfx8 = { 51131, 51132, 51133, 51134, 51135, 51136 }; ///< Timestamp counter indices for VK for Gfx8 family
 const unsigned int HWVKGroupCountGfx8 = sizeof(HWVKGroupsGfx8) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWVKSQGroupCountGfx8 = sizeof(HWVKSQGroupsGfx8) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWVKSQIsolatedGroupCountGfx8 = sizeof(HWVKSQIsolatedGroupsGfx8) / sizeof(unsigned int);

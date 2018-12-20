@@ -17,6 +17,8 @@ Description
 Initializes the driver so that counters are exposed. This function must be
 called before the rendering context or device is created. In the case of
 DirectX 12 or Vulkan, this function must be called before a queue is created.
+In the case of ROCm/HSA, this function must be called before hsa_init() is
+called.
 
 Parameters
 %%%%%%%%%%

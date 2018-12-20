@@ -13,7 +13,7 @@ IGPAImplementor* s_pGpaImp = DX12GPAImplementor::Instance();
 
 DX12GPAImplementor::~DX12GPAImplementor()
 {
-    DeleteContexts();
+    Destroy();
 }
 
 GPA_API_Type DX12GPAImplementor::GetAPIType() const

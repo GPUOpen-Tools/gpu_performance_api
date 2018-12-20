@@ -24,7 +24,7 @@ class DX12GPAImplementor : public GPAImplementor, public TSingleton<DX12GPAImple
 public:
 
     /// Destructor
-    ~DX12GPAImplementor();
+    virtual ~DX12GPAImplementor();
 
     /// \copydoc IGPAInterfaceTrait::GetAPIType()
     GPA_API_Type GetAPIType() const override;

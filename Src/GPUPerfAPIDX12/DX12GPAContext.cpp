@@ -27,12 +27,7 @@ DX12GPAContext::DX12GPAContext(ID3D12Device* pD3D12Device,
 
 DX12GPAContext::~DX12GPAContext()
 {
-    // Release AMD D3D Factory
-    if (nullptr != m_pAmdExtD3DFactoryObject)
-    {
-        m_pAmdExtD3DFactoryObject->Release();
-        m_pAmdExtD3DFactoryObject = nullptr;
-    }
+    CleanUp();
 }
 
 bool DX12GPAContext::Initialize()
@@ -146,9 +141,9 @@ bool DX12GPAContext::InitializeAMDExtension()
 
             HMODULE hDll = nullptr;
 #ifdef X64
-            hDll = GetModuleHandle("amdxc64.dll");
+            hDll = ::GetModuleHandleW(L"amdxc64.dll");
 #else
-            hDll = GetModuleHandle("amdxc32.dll");
+            hDll = ::GetModuleHandleW(L"amdxc32.dll");
 #endif
 
             if (nullptr == hDll)
@@ -234,6 +229,13 @@ void DX12GPAContext::CleanUp()
         ClearSessionList();
         m_pGpaInterface->Release();
         m_pGpaInterface = nullptr;
+    }
+
+    // Release AMD D3D Factory
+    if (nullptr != m_pAmdExtD3DFactoryObject)
+    {
+        m_pAmdExtD3DFactoryObject->Release();
+        m_pAmdExtD3DFactoryObject = nullptr;
     }
 }
 

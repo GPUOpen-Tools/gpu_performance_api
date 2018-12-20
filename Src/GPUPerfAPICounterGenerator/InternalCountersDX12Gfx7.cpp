@@ -5,6 +5,7 @@
 /// \brief  DX12 internal counter definitions for GFX7
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "GPAInternalCountersGfx7.h"
 #include "InternalCountersDX12Gfx7.h"
 
@@ -549,7 +550,7 @@ GPA_CounterGroupDesc HWDX12GroupsGfx7[] =
     {263, "CPG", 0, 46, 2},
     {264, "CPC", 0, 22, 2},
     {265, "WD", 0, 10, 4},
-    {266, "GPUTime", 0, 2, 2},
+    {266, "GPUTime", 0, 6, 2},
 };
 
 GPA_SQCounterGroupDesc HWDX12SQGroupsGfx7[] =
@@ -1014,10 +1015,14 @@ AmdExtGpuBlock HWDX12DriverEnumGfx7[] =
     AmdExtGpuBlock::Count,
 };
 
-const unsigned int HWDX12GPUTimeBottomToBottomIndexGfx7 = 36722;
-const unsigned int HWDX12GPUTimeTopToBottomIndexGfx7 = 36723;
+const unsigned int HWDX12GputimeBottomToBottomDurationIndexGfx7 = 36722; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for DX12 for Gfx7 family
+const unsigned int HWDX12GputimeBottomToBottomStartIndexGfx7 = 36723; ///< Index of time of the previous command reaching bottom of pipe for DX12 for Gfx7 family
+const unsigned int HWDX12GputimeBottomToBottomEndIndexGfx7 = 36724; ///< Index of time of the current command reaching bottom of pipe for DX12 for Gfx7 family
+const unsigned int HWDX12GputimeTopToBottomDurationIndexGfx7 = 36725; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for DX12 for Gfx7 family
+const unsigned int HWDX12GputimeTopToBottomStartIndexGfx7 = 36726; ///< Index of time that the current command reaches the top of pipe for DX12 for Gfx7 family
+const unsigned int HWDX12GputimeTopToBottomEndIndexGfx7 = 36727; ///< Index of time that the current command reaches the bottom of pipe for DX12 for Gfx7 family
 const std::set<unsigned int> HWDX12TimestampBlockIdsGfx7 = { 266 }; ///< Timestamp block id's for DX12 for Gfx7 family
-const std::set<unsigned int> HWDX12TimeCounterIndicesGfx7 = { 36722, 36723 }; ///< Timestamp counter indices for DX12 for Gfx7 family
+const std::set<unsigned int> HWDX12TimeCounterIndicesGfx7 = { 36722, 36723, 36724, 36725, 36726, 36727 }; ///< Timestamp counter indices for DX12 for Gfx7 family
 const unsigned int HWDX12GroupCountGfx7 = sizeof(HWDX12GroupsGfx7) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX12SQGroupCountGfx7 = sizeof(HWDX12SQGroupsGfx7) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX12SQIsolatedGroupCountGfx7 = sizeof(HWDX12SQIsolatedGroupsGfx7) / sizeof(unsigned int);

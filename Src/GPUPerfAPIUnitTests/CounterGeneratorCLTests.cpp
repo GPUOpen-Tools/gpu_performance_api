@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Unit Tests for CL Counter Generator
@@ -11,10 +11,10 @@
 #include "GPUPerfAPITypes.h"
 #include "GPAInternalCounter.h"
 
-#include "counters/PublicCountersCLGfx6.h"
-#include "counters/PublicCountersCLGfx7.h"
-#include "counters/PublicCountersCLGfx8.h"
-#include "counters/PublicCountersCLGfx9.h"
+#include "counters/PublicDerivedCountersCLGfx6.h"
+#include "counters/PublicDerivedCountersCLGfx7.h"
+#include "counters/PublicDerivedCountersCLGfx8.h"
+#include "counters/PublicDerivedCountersCLGfx9.h"
 
 #ifdef AMDT_INTERNAL
     #include "InternalCountersCLGfx6.h"
@@ -27,8 +27,8 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
 {
     counterNames.clear();
 
-    const GPACounterDesc* pPublicCounters = nullptr;
-    size_t publicCounterCount = 0;
+    const GPACounterDesc* pPublicDerivedCounters = nullptr;
+    size_t publicDerivedCounterCount = 0;
 
     GPA_CounterGroupDesc* pHardwareGroups = nullptr;
     GPA_HardwareCounterDesc** ppHardwareCounters = nullptr;
@@ -37,8 +37,8 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
     switch (gen)
     {
         case GPA_HW_GENERATION_GFX6:
-            pPublicCounters = CLGFX6_PUBLIC_COUNTERS;
-            publicCounterCount = CLGFX6_PUBLIC_COUNTER_COUNT;
+            pPublicDerivedCounters = CLGFX6_PUBLIC_COUNTERS;
+            publicDerivedCounterCount = CLGFX6_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
             pHardwareGroups = HWCLGroupsGfx6;
             hwGroupCount = HWCLGroupCountGfx6;
@@ -47,8 +47,8 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             break;
 
         case GPA_HW_GENERATION_GFX7:
-            pPublicCounters = CLGFX7_PUBLIC_COUNTERS;
-            publicCounterCount = CLGFX7_PUBLIC_COUNTER_COUNT;
+            pPublicDerivedCounters = CLGFX7_PUBLIC_COUNTERS;
+            publicDerivedCounterCount = CLGFX7_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
             pHardwareGroups = HWCLGroupsGfx7;
             hwGroupCount = HWCLGroupCountGfx7;
@@ -57,8 +57,8 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             break;
 
         case GPA_HW_GENERATION_GFX8:
-            pPublicCounters = CLGFX8_PUBLIC_COUNTERS;
-            publicCounterCount = CLGFX8_PUBLIC_COUNTER_COUNT;
+            pPublicDerivedCounters = CLGFX8_PUBLIC_COUNTERS;
+            publicDerivedCounterCount = CLGFX8_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
             pHardwareGroups = HWCLGroupsGfx8;
             hwGroupCount = HWCLGroupCountGfx8;
@@ -67,8 +67,8 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             break;
 
         case GPA_HW_GENERATION_GFX9:
-            pPublicCounters = CLGFX9_PUBLIC_COUNTERS;
-            publicCounterCount = CLGFX9_PUBLIC_COUNTER_COUNT;
+            pPublicDerivedCounters = CLGFX9_PUBLIC_COUNTERS;
+            publicDerivedCounterCount = CLGFX9_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
             pHardwareGroups = HWCLGroupsGfx9;
             hwGroupCount = HWCLGroupCountGfx9;
@@ -80,9 +80,22 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             break;
     }
 
-    for (size_t i = 0; i < publicCounterCount; i++)
+    for (size_t i = 0; i < publicDerivedCounterCount; i++)
     {
-        counterNames.push_back(pPublicCounters[i].m_pName);
+        counterNames.push_back(pPublicDerivedCounters[i].m_pName);
+    }
+
+    // Optionally, get internal derived counters
+    const GPACounterDesc* pInternalDerivedCounters = nullptr;
+    size_t internalDerivedCounterCount = 0;
+
+#ifdef AMDT_INTERNAL
+    GPA_GetInternalDerivedCounters(GPA_API_OPENCL, gen, &pInternalDerivedCounters, &internalDerivedCounterCount);
+#endif
+
+    for (size_t i = 0; i < internalDerivedCounterCount; i++)
+    {
+        counterNames.push_back(pInternalDerivedCounters[i].m_pName);
     }
 
     for (unsigned int i = 0; i < hwGroupCount; i++)

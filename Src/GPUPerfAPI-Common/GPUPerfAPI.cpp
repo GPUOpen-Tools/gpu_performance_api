@@ -705,11 +705,15 @@ GPALIB_DECL GPA_Status GPA_GetCounterSampleType(
 
 //-----------------------------------------------------------------------------
 /// array of strings representing GPA_Data_Type
-static const char* g_counterDataTypeString[GPA_DATA_TYPE__LAST] =
+static const char* g_counterDataTypeString[] =
 {
     GPA_ENUM_STRING_VAL(GPA_DATA_TYPE_FLOAT64, "gpa_float64"),
     GPA_ENUM_STRING_VAL(GPA_DATA_TYPE_UINT64, "gpa_uint64")
 };
+
+static const size_t g_counterDataStringSize = sizeof(g_counterDataTypeString) / sizeof(const char*);
+
+static_assert(g_counterDataStringSize == GPA_DATA_TYPE__LAST, "GPA Counter Data Type string array missing entries");
 
 GPALIB_DECL GPA_Status GPA_GetDataTypeAsStr(
     GPA_Data_Type counterDataType,
@@ -739,7 +743,7 @@ GPALIB_DECL GPA_Status GPA_GetDataTypeAsStr(
 
 //-----------------------------------------------------------------------------
 /// array of strings representing GPA_Usage_Type
-static const char* g_usageTypeString[GPA_USAGE_TYPE__LAST] =
+static const char* g_usageTypeString[] =
 {
     GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_RATIO, "ratio"),
     GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_PERCENTAGE, "percentage"),
@@ -747,8 +751,13 @@ static const char* g_usageTypeString[GPA_USAGE_TYPE__LAST] =
     GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_MILLISECONDS, "milliseconds"),
     GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_BYTES, "bytes"),
     GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_ITEMS, "items"),
-    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_KILOBYTES, "kilobytes")
+    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_KILOBYTES, "kilobytes"),
+    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_NANOSECONDS, "nanoseconds")
 };
+
+static const size_t g_usageTypeStringSize = sizeof(g_usageTypeString) / sizeof(const char*);
+
+static_assert(g_usageTypeStringSize == GPA_USAGE_TYPE__LAST, "GPA Usage Type string array missing entries");
 
 GPALIB_DECL GPA_Status GPA_GetUsageTypeAsStr(
     GPA_Usage_Type counterUsageType,
@@ -810,7 +819,7 @@ GPALIB_DECL GPA_Status GPA_CreateSession(
         if ((GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER == sampleType && (GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER != (GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER & contextSampleTypes))) ||
             (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER == sampleType && (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER != (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER & contextSampleTypes))) ||
             (GPA_SESSION_SAMPLE_TYPE_SQTT == sampleType && (GPA_CONTEXT_SAMPLE_TYPE_SQTT != (GPA_CONTEXT_SAMPLE_TYPE_SQTT & contextSampleTypes))) ||
-            (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT == sampleType && ((GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT) != (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT & contextSampleTypes))))
+            (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT == sampleType && ((GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT) != ((GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT) & contextSampleTypes))))
         {
             GPA_LogError("Unable to create session: sampleTypes incompatible with context's sampleTypes.");
             return GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES;
@@ -901,7 +910,7 @@ GPALIB_DECL GPA_Status GPA_EndSession(
         IGPASession* pGpaSession = sessionId->Object();
         IGPAContext* pContext = pGpaSession->GetParentContext();
 
-        GPA_Status retStatus = retStatus = pContext->EndSession(pGpaSession);
+        GPA_Status retStatus = pContext->EndSession(pGpaSession);
 
         GPA_INTERNAL_LOG(GPA_EndSession,
                          MAKE_PARAM_STRING(sessionId) <<

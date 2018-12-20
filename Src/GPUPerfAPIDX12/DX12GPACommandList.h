@@ -45,7 +45,7 @@ public:
     /// \param[in] pDX12GpaPass pass object pointer
     /// \param[in] pCmd command list pointer
     /// \param[in] commandListId command list id
-    /// \param[in] cmdType commnad list type
+    /// \param[in] cmdType command list type
     DX12GPACommandList(DX12GPASession* pDX12GpaSession,
                        GPAPass* pDX12GpaPass,
                        void* pCmd,
@@ -136,6 +136,7 @@ private:
     bool                                                    m_isCommandListOpenInDriver;                ///< Flag indicating if the command list has been started in the driver (i.e. if it is in a recording state)
     bool                                                    m_isNonGPAResourceReleased;                 ///< flag indicating ID3DGraphicsCommand list has been released or not
     bool                                                    m_hasAnyHardwareCounters;                   ///< flag indicating if there are any non-skipped hardware counters in this request
+    bool                                                    m_usePre1850Config;                         ///< flag indicating whether to use pre-18.50 configuration
 };
 
 #endif // _DX12_GPA_COMMAND_LIST_H_

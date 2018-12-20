@@ -87,7 +87,7 @@
 #define GPA_DIRECTX11_LIB TFORMAT("GPUPerfAPIDX11") ///< Macro for base name of GPA DirectX 11 library
 #define GPA_DIRECTX12_LIB TFORMAT("GPUPerfAPIDX12") ///< Macro for base name of GPA DirectX 12 library
 #define GPA_VULKAN_LIB TFORMAT("GPUPerfAPIVK")      ///< Macro for base name of GPA Vulkan library
-#define GPA_HSA_LIB TFORMAT("GPUPerfAPIHSA")        ///< Macro for base name of GPA HSA library
+#define GPA_ROCM_LIB TFORMAT("GPUPerfAPIROCm")      ///< Macro for base name of GPA ROCm library
 
 #ifdef _WIN32
     #define GPA_LIB_PREFIX TFORMAT("")              ///< Macro for platform-specific lib file prefix
@@ -204,8 +204,8 @@ static const LocaleChar* GPAIL_GetLibraryFileName(GPA_API_Type pApiType)
             break;
 #else
 
-        case GPA_API_HSA:
-            STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_HSA_LIB);
+        case GPA_API_ROCM:
+            STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_ROCM_LIB);
             break;
 #endif
 

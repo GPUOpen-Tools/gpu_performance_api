@@ -12,9 +12,12 @@
 #include "DeviceInfoUtils.h"
 #include "GPACounterGeneratorCL.h"
 #include "GPACounterGeneratorGL.h"
-#include "GPACounterGeneratorHSA.h"
 #include "GPACounterGeneratorVK.h"
 #include "GPACounterGeneratorVKNonAMD.h"
+
+#ifdef _LINUX
+    #include "GPACounterGeneratorHSA.h"
+#endif
 
 #ifdef WIN32
     #include "GPACounterGeneratorDX11.h"
@@ -22,17 +25,20 @@
     #include "GPACounterGeneratorDX12.h"
     #include "GPACounterGeneratorDX12NonAMD.h"
     #include "Adapter.h"
-#endif // WIN32
+#endif
 
 #include "GPACounterSchedulerCL.h"
 #include "GPACounterSchedulerGL.h"
-#include "GPACounterSchedulerHSA.h"
 #include "GPACounterSchedulerVK.h"
+
+#ifdef _LINUX
+    #include "GPACounterSchedulerHSA.h"
+#endif
 
 #ifdef WIN32
     #include "GPACounterSchedulerDX11.h"
     #include "GPACounterSchedulerDX12.h"
-#endif // WIN32
+#endif
 
 #include "GPAInternalCountersGfx8.h"
 
@@ -42,9 +48,13 @@
 
 static GPA_CounterGeneratorCL s_generatorCL;                        ///< static instance of CL generator
 static GPA_CounterGeneratorGL s_generatorGL;                        ///< static instance of GL generator
-static GPA_CounterGeneratorHSA s_generatorHSA;                      ///< static instance of HSA generator
 static GPA_CounterGeneratorVK s_generatorVK;                        ///< static instance of VK generator
-static GPA_CounterGeneratorVKNonAMD s_generatorVKNonAAMD;       ///< static instance of Vulkan non-AMD generator
+static GPA_CounterGeneratorVKNonAMD s_generatorVKNonAAMD;           ///< static instance of Vulkan non-AMD generator
+
+#ifdef _LINUX
+    static GPA_CounterGeneratorHSA s_generatorHSA;                  ///< static instance of HSA generator
+#endif
+
 #ifdef WIN32
     static GPA_CounterGeneratorDX11 s_generatorDX11;                ///< static instance of DX11 generator
     static GPA_CounterGeneratorDX11NonAMD s_generatorDX11NonAMD;    ///< static instance of DX11 non-AMD generator
@@ -54,14 +64,16 @@ static GPA_CounterGeneratorVKNonAMD s_generatorVKNonAAMD;       ///< static inst
 
 static GPA_CounterSchedulerCL s_schedulerCL;                        ///< static instance of CL scheduler
 static GPA_CounterSchedulerGL s_schedulerGL;                        ///< static instance of GL scheduler
-static GPA_CounterSchedulerHSA s_schedulerHSA;                      ///< static instance of HSA scheduler
 static GPA_CounterSchedulerVK s_schedulerVK;                        ///< static instance of VK scheduler
+
+#ifdef _LINUX
+    static GPA_CounterSchedulerHSA s_schedulerHSA;                  ///< static instance of HSA scheduler
+#endif
+
 #ifdef WIN32
     static GPA_CounterSchedulerDX11 s_schedulerDX11;                ///< static instance of DX11 scheduler
     static GPA_CounterSchedulerDX12 s_schedulerDX12;                ///< static instance of DX12 scheduler
 #endif // WIN32
-
-static const unsigned int s_numberOfFijiMCCounters = 33;            ///< number of MC counters on Fiji
 
 GPA_Status GenerateCounters(
     GPA_API_Type desiredAPI,

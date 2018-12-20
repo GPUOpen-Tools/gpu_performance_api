@@ -58,30 +58,31 @@
         std::cout << "ERROR: Failed getting entrypoint '" #func "'" << std::endl;   \
     }
 
+// TODO: Unused function
 /// Callback that will be registered with the VK_KHR_debug_report extension
 /// so that the validation layers can report debugging messages.
-static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallback(
-    VkDebugReportFlagsEXT flags,
-    VkDebugReportObjectTypeEXT objType,
-    uint64_t obj,
-    size_t location,
-    int32_t code,
-    const char* layerPrefix,
-    const char* msg,
-    void* userData)
-{
-    UNREFERENCED_PARAMETER(flags);
-    UNREFERENCED_PARAMETER(objType);
-    UNREFERENCED_PARAMETER(obj);
-    UNREFERENCED_PARAMETER(location);
-    UNREFERENCED_PARAMETER(code);
-    UNREFERENCED_PARAMETER(layerPrefix);
-    UNREFERENCED_PARAMETER(userData);
+// static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallback(
+//     VkDebugReportFlagsEXT flags,
+//     VkDebugReportObjectTypeEXT objType,
+//     uint64_t obj,
+//     size_t location,
+//     int32_t code,
+//     const char* layerPrefix,
+//     const char* msg,
+//     void* userData)
+// {
+//     UNREFERENCED_PARAMETER(flags);
+//     UNREFERENCED_PARAMETER(objType);
+//     UNREFERENCED_PARAMETER(obj);
+//     UNREFERENCED_PARAMETER(location);
+//     UNREFERENCED_PARAMETER(code);
+//     UNREFERENCED_PARAMETER(layerPrefix);
+//     UNREFERENCED_PARAMETER(userData);
 
-    std::cout << "ERROR: validation layer: " << msg << std::endl;
+//     std::cout << "ERROR: validation layer: " << msg << std::endl;
 
-    return VK_FALSE;
-}
+//     return VK_FALSE;
+// }
 
 /// Callback function for any error messages that GPUPerfAPI produces.
 /// \param type The type of logging message.
@@ -207,8 +208,37 @@ public:
     /// \return True if the csv file was successfully opened; false otherwise.
     bool OpenCSVFile()
     {
-        m_csvFile.open(m_csvFileName.c_str(), std::ios_base::out | std::ios_base::app);
+#ifdef _WIN32
+        wchar_t modulepath[GPA_MAX_PATH];
+        GetModuleFileName(NULL, modulepath, sizeof(modulepath));
 
+        std::wstring moduleString(modulepath);
+        size_t lastSlashPosition = moduleString.find_last_of('\\');
+
+        std::wstring executablePath = std::wstring(moduleString.begin(), moduleString.begin() + (lastSlashPosition + 1));
+#else
+        int len;
+        char modulepath[GPA_MAX_PATH];
+        len = readlink("/proc/self/exe", modulepath, GPA_MAX_PATH - 1);
+
+        if (len != -1)
+        {
+            modulepath[len] = '\0';
+        }
+
+        std::string moduleString(modulepath);
+        size_t lastSlashPosition = moduleString.find_last_of('/');
+
+        std::string executablePath(modulepath);
+
+        if (std::string::npos != lastSlashPosition)
+        {
+            executablePath = std::string(moduleString.begin(), moduleString.begin() + (lastSlashPosition + 1));
+        }
+#endif
+
+        m_csvFileName = std::string(executablePath.begin(), executablePath.end()).append(m_csvFileName);
+        m_csvFile.open(m_csvFileName.c_str(), std::ios_base::out | std::ios_base::app);
         return m_csvFile.is_open();
     }
 
@@ -339,15 +369,16 @@ public:
         free(pResultsBuffer);
     }
 
+    /// GPA function table pointer
     GPAFunctionTable* m_pGpaFuncTable;
+
+    /// The name of the csv file that will be written.
+    std::string m_csvFileName = "VkColorCube_counterData.csv";
 
 private:
 
     /// The file stream for writing the csv file.
     std::fstream m_csvFile;
-
-    /// The name of the csv file that will be written.
-    const std::string m_csvFileName = "counterData.csv";
 
     /// Flag to indicate if the header has been written in the csv file.
     bool m_bHeaderWritten;
@@ -356,7 +387,7 @@ private:
 
 /// \brief Stores all the data needed for this demo.
 /// Assists with available and enabled extensions, but not much other functionality. The reason for this
-/// is so that the majority of Vulkan-related functionality flows as a linear progression rather than being
+/// is so that the majority of Vulkan related functionality flows as a linear progression rather than being
 /// split up into multiple smaller functions.
 class AMDVulkanDemo
 {
@@ -481,18 +512,18 @@ public:
     HWND CreateWindowWin32(WNDPROC demoWindowProcessor)
     {
         HWND hWindow = nullptr;
-        WNDCLASS windowClass;
-        memset(&windowClass, 0, sizeof(WNDCLASS));
+        WNDCLASSW windowClass;
+        memset(&windowClass, 0, sizeof(WNDCLASSW));
         windowClass.style = CS_HREDRAW | CS_VREDRAW;
         windowClass.hInstance = m_hInstance;
         windowClass.lpfnWndProc = demoWindowProcessor;
-        windowClass.lpszClassName = "GPA Demo Window Class";
+        windowClass.lpszClassName = L"GPA Demo Window Class";
         windowClass.hCursor = LoadCursor(nullptr, IDC_ARROW);
         windowClass.hbrBackground = (HBRUSH)GetStockObject(GRAY_BRUSH);
 
-        if (RegisterClassA(&windowClass))
+        if (::RegisterClassW(&windowClass))
         {
-            hWindow = CreateWindowEx(
+            hWindow = ::CreateWindowExW(
                           0,
                           windowClass.lpszClassName,
                           m_cLongName.c_str(),
@@ -511,7 +542,7 @@ public:
         return hWindow;
     }
 
-    /// Initialize a window on Win32 platformas.
+    /// Initialize a window on Win32 platforms.
     /// \param hInstance The application instance handle.
     /// \param windowMessageProcessor The function that will process window messages.
     /// \param nCmdShow Indicates how the window will be shown.
@@ -685,6 +716,7 @@ public:
                 return false;
             }
 
+            std::remove(GPUPerfAPI.m_csvFileName.c_str());
             return true;
         }
 
@@ -825,16 +857,17 @@ public:
             return false;
         }
 
+        //TODO: Debug report callback is only getting created but not getting used - unused variable
         // Register the debug report callback
-        VkDebugReportCallbackCreateInfoEXT debugReportCallbackCreateInfo = {};
-        debugReportCallbackCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-        debugReportCallbackCreateInfo.pNext = nullptr;
-        debugReportCallbackCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-        debugReportCallbackCreateInfo.pfnCallback = debugReportCallback;
-        debugReportCallbackCreateInfo.pUserData = nullptr;
+        // VkDebugReportCallbackCreateInfoEXT debugReportCallbackCreateInfo = {};
+        // debugReportCallbackCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
+        // debugReportCallbackCreateInfo.pNext = nullptr;
+        // debugReportCallbackCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
+        // debugReportCallbackCreateInfo.pfnCallback = debugReportCallback;
+        // debugReportCallbackCreateInfo.pUserData = nullptr;
 
-        PFN_vkCreateDebugReportCallbackEXT pvkCreateDebugReportCallback;
-        VK_INSTANCE_GET_PROC_ADDR(pvkCreateDebugReportCallback, m_vkInstance, vkCreateDebugReportCallbackEXT);
+        // PFN_vkCreateDebugReportCallbackEXT pvkCreateDebugReportCallback;
+        // VK_INSTANCE_GET_PROC_ADDR(pvkCreateDebugReportCallback, m_vkInstance, vkCreateDebugReportCallbackEXT);
 
         // There is also a concept of Vulkan Physical Devices (VkPhysicalDevice) which correspond to
         // physical hardware in the system. Physical devices may support different image formats, limits,
@@ -1565,10 +1598,13 @@ public:
         char modulepath[4096];
 
 #ifdef _WIN32
-        GetModuleFileName(NULL, modulepath, sizeof(modulepath));
+        ::GetModuleFileNameA(NULL, modulepath, sizeof(modulepath));
 #else
-        int len;
-        len = readlink("/proc/self/exe", modulepath, 4096);
+        int len = readlink("/proc/self/exe", modulepath, 4096);
+        if(len <= 0)
+        {
+            return false;
+        }
 #endif
 
         std::string moduleString(modulepath);
@@ -2222,7 +2258,7 @@ public:
     const std::string m_cShortName = "AMD VkColorCube";
 
     /// Longer name that will be displayed in the window title bar.
-    const std::string m_cLongName = "The AMD Vulkan Color Cube Sample";
+    const std::wstring m_cLongName = L"The AMD Vulkan Color Cube Sample";
 
     /// Default window width.
     const uint32_t m_cDefaultWindowWidth = 900;
@@ -2684,8 +2720,6 @@ private:
                 GPUPerfAPI.m_pGpaFuncTable->GPA_BeginCommandList(m_GPASessionId, gpaPassIndex, pPrebuiltResources->cubeAndWireframe.commandBufferCube, GPA_COMMAND_LIST_PRIMARY, &pPrebuiltResources->cubeAndWireframe.gpaCommandListIdCube);
             }
 
-            VkClearValue clearColor = { 0.0f, 0.0f, 0.0f, 1.0f };
-
             VkRenderPassBeginInfo renderPassBeginInfo = {};
             renderPassBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
             renderPassBeginInfo.pNext = nullptr;
@@ -2694,8 +2728,8 @@ private:
             renderPassBeginInfo.renderArea.offset = { 2 * static_cast<int32_t>(m_swapchainImageExtent.width) / 3, 0 };
             renderPassBeginInfo.renderArea.extent = m_swapchainImageExtent;
             renderPassBeginInfo.renderArea.extent.width /= 3u;
-            renderPassBeginInfo.clearValueCount = 0;// 1;
-            renderPassBeginInfo.pClearValues = nullptr;// &clearColor;
+            renderPassBeginInfo.clearValueCount = 0;
+            renderPassBeginInfo.pClearValues = nullptr;
 
             vkCmdBeginRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferCube, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 

@@ -47,7 +47,7 @@ void GPAInterfaceLoaderTest::SetUp()
     m_apiName[GPA_API_DIRECTX_12] = "DX12";
     m_apiName[GPA_API_OPENGL] = "OpenGL";
     m_apiName[GPA_API_OPENCL] = "OpenCL";
-    m_apiName[GPA_API_HSA] = "HSA";
+    m_apiName[GPA_API_ROCM] = "ROCm";
     m_apiName[GPA_API_VULKAN] = "Vulkan";
     m_apiName[GPA_API_NO_SUPPORT] = "ApiNotSupported";
 }
@@ -100,14 +100,14 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFileName)
 
 #ifdef _WIN32
 
-        if (GPA_API_HSA == apiType)
+        if (GPA_API_ROCM == apiType)
         {
             EXPECT_TRUE(libFileName.empty());
         }
         else
         {
             EXPECT_FALSE(libFileName.empty());
-            LocaleString libFileNamePrefix("GPUPerfAPI");
+            LocaleString libFileNamePrefix(L"GPUPerfAPI");
             EXPECT_TRUE(0 == libFileName.compare(0, libFileNamePrefix.length(), libFileNamePrefix));
         }
 
@@ -134,19 +134,19 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFullPath)
     for (int i = GPA_API__START; i < GPA_API_NO_SUPPORT; i++)
     {
         GPA_API_Type apiType = static_cast<GPA_API_Type>(i);
-        LocaleString libFileName = GPAApiManager::Instance()->GetLibraryFullPath(apiType, "c:/test/");
+        LocaleString libFileName = GPAApiManager::Instance()->GetLibraryFullPath(apiType, TFORMAT("c:/test/"));
 
 #ifdef _WIN32
 
-        if (GPA_API_HSA == apiType)
+        if (GPA_API_ROCM == apiType)
         {
             EXPECT_TRUE(libFileName.empty());
         }
         else
         {
             EXPECT_FALSE(libFileName.empty());
-            LocaleString libFileNamePrefix("GPUPerfAPI");
-            libFileNamePrefix = "c:/test/" + libFileNamePrefix;
+            LocaleString libFileNamePrefix(L"GPUPerfAPI");
+            libFileNamePrefix = L"c:/test/" + libFileNamePrefix;
             EXPECT_TRUE(0 == libFileName.compare(0, libFileNamePrefix.length(), libFileNamePrefix));
         }
 
@@ -170,6 +170,14 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFullPath)
 
 TEST_F(GPAInterfaceLoaderTest, TestDeleteInstance)
 {
+    GPA_API_Type secondAPI = GPA_API_OPENCL;
+
+#ifndef _WIN32
+#ifdef X86
+    secondAPI = GPA_API_OPENGL;
+#endif
+#endif
+
     // Using Vulkan and OpenCL here, since those exist on all platforms
     GPAApiManager::Instance()->LoadApi(GPA_API_VULKAN);
     GPAFunctionTable* pTempFuncTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN);
@@ -177,44 +185,52 @@ TEST_F(GPAInterfaceLoaderTest, TestDeleteInstance)
     GPAApiManager::DeleteInstance();
     pTempFuncTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN);
     EXPECT_EQ(nullptr, pTempFuncTable);
-    pTempFuncTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_OPENCL);
+    pTempFuncTable = GPAApiManager::Instance()->GetFunctionTable(secondAPI);
     EXPECT_EQ(nullptr, pTempFuncTable);
     GPAApiManager::DeleteInstance();
 
     GPAApiManager::Instance()->LoadApi(GPA_API_VULKAN);
-    GPAApiManager::Instance()->LoadApi(GPA_API_OPENCL);
+    GPAApiManager::Instance()->LoadApi(secondAPI);
     pTempFuncTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN);
     EXPECT_NE(nullptr, pTempFuncTable);
-    pTempFuncTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_OPENCL);
+    pTempFuncTable = GPAApiManager::Instance()->GetFunctionTable(secondAPI);
     EXPECT_NE(nullptr, pTempFuncTable);
     GPAApiManager::DeleteInstance();
 
     pTempFuncTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN);
     EXPECT_EQ(nullptr, pTempFuncTable);
-    pTempFuncTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_OPENCL);
+    pTempFuncTable = GPAApiManager::Instance()->GetFunctionTable(secondAPI);
     EXPECT_EQ(nullptr, pTempFuncTable);
     GPAApiManager::DeleteInstance();
 }
 
 TEST_F(GPAInterfaceLoaderTest, TestLoadAPIWithPath)
 {
+    GPA_API_Type secondAPI = GPA_API_OPENCL;
+
+#ifndef _WIN32
+#ifdef X86
+    secondAPI = GPA_API_OPENGL;
+#endif
+#endif
+
     LocaleString cwd = GPAIL_GetWorkingDirectoryPath();
     // Using Vulkan and OpenCL here, since those exist on all platforms
     GPAApiManager::Instance()->LoadApi(GPA_API_VULKAN, cwd);
     EXPECT_NE(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN));
     GPAApiManager::DeleteInstance();
     EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN));
-    EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_OPENCL));
+    EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(secondAPI));
     GPAApiManager::DeleteInstance();
 
     GPAApiManager::Instance()->LoadApi(GPA_API_VULKAN, cwd);
-    GPAApiManager::Instance()->LoadApi(GPA_API_OPENCL, cwd);
+    GPAApiManager::Instance()->LoadApi(secondAPI, cwd);
     EXPECT_NE(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN));
-    EXPECT_NE(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_OPENCL));
+    EXPECT_NE(nullptr, GPAApiManager::Instance()->GetFunctionTable(secondAPI));
     GPAApiManager::DeleteInstance();
 
     EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN));
-    EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_OPENCL));
+    EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(secondAPI));
     GPAApiManager::DeleteInstance();
 
     if ('/' == cwd[cwd.length() - 1])
@@ -226,17 +242,17 @@ TEST_F(GPAInterfaceLoaderTest, TestLoadAPIWithPath)
     EXPECT_NE(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN));
     GPAApiManager::DeleteInstance();
     EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN));
-    EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_OPENCL));
+    EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(secondAPI));
     GPAApiManager::DeleteInstance();
 
     GPAApiManager::Instance()->LoadApi(GPA_API_VULKAN, cwd);
-    GPAApiManager::Instance()->LoadApi(GPA_API_OPENCL, cwd);
+    GPAApiManager::Instance()->LoadApi(secondAPI, cwd);
     EXPECT_NE(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN));
-    EXPECT_NE(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_OPENCL));
+    EXPECT_NE(nullptr, GPAApiManager::Instance()->GetFunctionTable(secondAPI));
     GPAApiManager::DeleteInstance();
 
     EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN));
-    EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(GPA_API_OPENCL));
+    EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(secondAPI));
     GPAApiManager::DeleteInstance();
 }
 
@@ -263,9 +279,9 @@ INSTANTIATE_TEST_CASE_P(
     GPAInterfaceLoaderTest,
     ::testing::Values(
         GPA_API_VULKAN
-        , GPA_API_OPENCL
 #ifndef X86
-        , GPA_API_HSA
+        , GPA_API_OPENCL
+        , GPA_API_ROCM
 #endif
         , GPA_API_OPENGL
     )

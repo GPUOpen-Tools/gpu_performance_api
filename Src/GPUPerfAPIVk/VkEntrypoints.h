@@ -54,9 +54,9 @@ extern PFN_vkResetGpaSessionAMD _vkResetGpaSessionAMD;                          
 extern PFN_vkCmdCopyGpaSessionResultsAMD _vkCmdCopyGpaSessionResultsAMD;                       ///< Vulkan entrypoint
 
 /// Macro to get a procedure address from a Vulkan instance
-#define VK_GET_INSTANCE_PROC_ADDR(func) if (bResult) { bResult &= (nullptr != (_##func = (PFN_##func)_vkGetInstanceProcAddr(instance, #func ))); }
+#define VK_GET_INSTANCE_PROC_ADDR(func) if (bResult) { bResult &= (nullptr != (_##func = (PFN_##func)_vkGetInstanceProcAddr(instance, #func ))); if (!bResult) { GPA_LogError("Unable to initialize Instance entry point " #func "."); } }
 /// Macro to get a procedure address from a Vulkan device
-#define VK_GET_DEVICE_PROC_ADDR(func) if (bResult) { bResult &= (nullptr != (_##func = (PFN_##func)_vkGetDeviceProcAddr(device, #func ))); }
+#define VK_GET_DEVICE_PROC_ADDR(func) if (bResult) { bResult &= (nullptr != (_##func = (PFN_##func)_vkGetDeviceProcAddr(device, #func ))); if (!bResult) { GPA_LogError("Unable to initialize Device entry point " #func "."); } }
 
 namespace VkUtils
 {

@@ -199,7 +199,7 @@ bool GLGPAContext::ValidateAndUpdateGLCounters() const
 #else
                                 error << "GPUPerfAPI's group name '" << pHardwareCounters->m_pGroups[g].m_pName << "' does not match the OpenGL ES returned name of '" << strName << "'.";
 #endif // GLES
-                                GPA_LogError(error.str().c_str());
+                                GPA_LogMessage(error.str().c_str());
                             }
                             else
                             {
@@ -230,8 +230,8 @@ bool GLGPAContext::ValidateAndUpdateGLCounters() const
                                     }
                                     else
                                     {
-                                        // log as an error, because we should definitely fix this
-                                        GPA_LogError(error.str().c_str());
+                                        // log as a message, but we should definitely investigate this
+                                        GPA_LogMessage(error.str().c_str());
                                     }
                                 }
 

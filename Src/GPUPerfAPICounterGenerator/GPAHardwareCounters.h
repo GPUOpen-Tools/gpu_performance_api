@@ -48,8 +48,12 @@ public:
         m_additionalGroupCount = 0;
         m_pSQCounterGroups = nullptr;
         m_sqGroupCount = 0;
-        m_gpuTimeBottomToBottomCounterIndex = static_cast<unsigned int>(-1);
-        m_gpuTimeTopToBottomCounterIndex = static_cast<unsigned int>(-1);
+        m_gpuTimeBottomToBottomDurationCounterIndex = static_cast<unsigned int>(-1);
+        m_gpuTimeBottomToBottomStartCounterIndex = static_cast<unsigned int>(-1);
+        m_gpuTimeBottomToBottomEndCounterIndex = static_cast<unsigned int>(-1);
+        m_gpuTimeTopToBottomDurationCounterIndex = static_cast<unsigned int>(-1);
+        m_gpuTimeTopToBottomStartCounterIndex = static_cast<unsigned int>(-1);
+        m_gpuTimeTopToBottomEndCounterIndex = static_cast<unsigned int>(-1);
         m_countersGenerated = false;
         m_pIsolatedGroups = nullptr;
         m_isolatedGroupCount = 0;
@@ -146,22 +150,46 @@ public:
         return *iter;
     }
 
-    GPA_HardwareCounterDesc**               m_ppCounterGroupArray;                ///< List of counter groups as defined by the list of internal counters in each group.
-    GPA_CounterGroupDesc*                   m_pGroups;                            ///< List of internal counter groups
-    GPA_CounterGroupDesc*                   m_pAdditionalGroups;                  ///< List of internal counter groups exposed by the driver, but not known by GPA
-    unsigned int                            m_groupCount;                         ///< The number of internal counter groups
-    unsigned int                            m_additionalGroupCount;               ///< The number of internal counter groups exposed by the driver, but not known by GPA
-    GPA_SQCounterGroupDesc*                 m_pSQCounterGroups;                   ///< List of SQCounterGroupDesc
-    unsigned int                            m_sqGroupCount;                       ///< The number of internal SQ counter groups
-    std::set<unsigned int>                  m_timestampBlockIds;                  ///< Set of timestamp block id's
-    std::set<unsigned int>                  m_timeCounterIndices;                 ///< Set of timestamp counter indices
-    unsigned int                            m_gpuTimeBottomToBottomCounterIndex;  ///< the index of the GPUTime Bottom-to-Bottom counter (-1 if it doesn't exist)
-    unsigned int                            m_gpuTimeTopToBottomCounterIndex;     ///< the index of the GPUTime Top-to-Bottom counter (-1 if it doesn't exist)
-    bool                                    m_countersGenerated;                  ///< indicates that the internal counters have been generated
-    const uint32_t*                         m_pIsolatedGroups;                    ///< List of groups that are isolated from SQ groups
-    uint32_t                                m_isolatedGroupCount;                 ///< The number of isolated groups
-    std::vector<GPA_HardwareCounterDescExt> m_counters;                           ///< vector of hardware counters
-    std::vector<int>                        m_currentGroupUsedCounts;             ///< List of the number of counters which have been enabled in each group
+    /// Determines whether the indicated counter index is a bottom of pipe counter index
+    /// \param counterIndex The counter index to check
+    /// \return True if the counter index is a bottom of pipe counter
+    bool IsBottomOfPipeCounterIndex(unsigned int counterIndex) const
+    {
+        return counterIndex == m_gpuTimeBottomToBottomDurationCounterIndex
+            || counterIndex == m_gpuTimeBottomToBottomStartCounterIndex
+            || counterIndex == m_gpuTimeBottomToBottomEndCounterIndex;
+    }
+
+    /// Determines whether the indicated counter index is a top of pipe counter index
+    /// \param counterIndex The counter index to check
+    /// \return True if the counter index is a top of pipe counter
+    bool IsTopOfPipeCounterIndex(unsigned int counterIndex) const
+    {
+        return counterIndex == m_gpuTimeTopToBottomDurationCounterIndex
+            || counterIndex == m_gpuTimeTopToBottomStartCounterIndex
+            || counterIndex == m_gpuTimeTopToBottomEndCounterIndex;
+    }
+
+    GPA_HardwareCounterDesc**               m_ppCounterGroupArray;                        ///< List of counter groups as defined by the list of internal counters in each group.
+    GPA_CounterGroupDesc*                   m_pGroups;                                    ///< List of internal counter groups
+    GPA_CounterGroupDesc*                   m_pAdditionalGroups;                          ///< List of internal counter groups exposed by the driver, but not known by GPA
+    unsigned int                            m_groupCount;                                 ///< The number of internal counter groups
+    unsigned int                            m_additionalGroupCount;                       ///< The number of internal counter groups exposed by the driver, but not known by GPA
+    GPA_SQCounterGroupDesc*                 m_pSQCounterGroups;                           ///< List of SQCounterGroupDesc
+    unsigned int                            m_sqGroupCount;                               ///< The number of internal SQ counter groups
+    std::set<unsigned int>                  m_timestampBlockIds;                          ///< Set of timestamp block id's
+    std::set<unsigned int>                  m_timeCounterIndices;                         ///< Set of timestamp counter indices
+    unsigned int                            m_gpuTimeBottomToBottomDurationCounterIndex;  ///< the index of the GPUTime Bottom-to-Bottom duration counter (-1 if it doesn't exist)
+    unsigned int                            m_gpuTimeBottomToBottomStartCounterIndex;     ///< the index of the GPUTime Bottom-to-Bottom start counter (-1 if it doesn't exist)
+    unsigned int                            m_gpuTimeBottomToBottomEndCounterIndex;       ///< the index of the GPUTime Bottom-to-Bottom end counter (-1 if it doesn't exist)
+    unsigned int                            m_gpuTimeTopToBottomDurationCounterIndex;     ///< the index of the GPUTime Top-to-Bottom duration counter (-1 if it doesn't exist)
+    unsigned int                            m_gpuTimeTopToBottomStartCounterIndex;        ///< the index of the GPUTime Top-to-Bottom start counter (-1 if it doesn't exist)
+    unsigned int                            m_gpuTimeTopToBottomEndCounterIndex;          ///< the index of the GPUTime Top-to-Bottom end counter (-1 if it doesn't exist)
+    bool                                    m_countersGenerated;                          ///< indicates that the internal counters have been generated
+    const uint32_t*                         m_pIsolatedGroups;                            ///< List of groups that are isolated from SQ groups
+    uint32_t                                m_isolatedGroupCount;                         ///< The number of isolated groups
+    std::vector<GPA_HardwareCounterDescExt> m_counters;                                   ///< vector of hardware counters
+    std::vector<int>                        m_currentGroupUsedCounts;                     ///< List of the number of counters which have been enabled in each group
 };
 
 #endif //_GPA_HARDWARE_COUNTERS_H_

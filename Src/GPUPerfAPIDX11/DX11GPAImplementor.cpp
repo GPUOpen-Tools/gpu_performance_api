@@ -409,9 +409,9 @@ bool DX11GPAImplementor::InitializeAmdExtFunction() const
         HMODULE hDxxDll = nullptr;
 
 #ifdef X64
-        hDxxDll = GetModuleHandle("atidxx64.dll");
+        hDxxDll = ::GetModuleHandleW(L"atidxx64.dll");
 #else
-        hDxxDll = GetModuleHandle("atidxx32.dll");
+        hDxxDll = ::GetModuleHandleW(L"atidxx32.dll");
 #endif
 
         if (nullptr != hDxxDll)

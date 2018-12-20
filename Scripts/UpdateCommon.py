@@ -59,7 +59,8 @@ except OSError:
     print("Error calling command: git --version")
 
 # Defined an absolute URL to GPUOpen-Tools on github
-ghAmdRoot = "https://github.com/GPUOpen-Tools/"
+ghRoot = "https://github.com/"
+ghAmdRoot = ghRoot + "GPUOpen-Tools/"
 
 # GPUPerfAPI git project to folder map definitions
 # - gitMapping
@@ -75,14 +76,14 @@ args = parser.parse_args()
 scriptRoot = os.path.dirname(os.path.realpath(__file__))
 
 # for each dependency - test if it has already been fetched - if not, then fetch it, otherwise update it to top of tree
-for key in gitMapping:
+def UpdateGitHubRepo(repoRootUrl, location, commit):
     # convert targetPath to OS specific format
     # add script directory to targetPath
-    tmppath = os.path.join(scriptRoot, "..", gitMapping[key][0])
+    tmppath = os.path.join(scriptRoot, "..", location)
     # clean up targetPath, collapsing any ../ and converting / to \ for Windows
     targetPath = os.path.normpath(tmppath)
 
-    reqdCommit = gitMapping[key][1]
+    reqdCommit = commit
     # reqdCommit may be "None" - or user may override commit via command line. In this case, use tip of tree
     if((len(sys.argv) != 1 and sys.argv[1] == "latest") or reqdCommit is None):
         reqdCommit = "master"
@@ -109,7 +110,7 @@ for key in gitMapping:
         sys.stdout.flush()
     else:
         # directory doesn't exist - clone from git
-        ghRepoSource = ghAmdRoot + key
+        ghRepoSource = repoRootUrl + key
 
         print("Directory " + targetPath + " does not exist. \n\tUsing 'git clone' to get from " + ghRepoSource)
         sys.stdout.flush()
@@ -120,6 +121,9 @@ for key in gitMapping:
             sys.exit(1)
         sys.stderr.flush()
         sys.stdout.flush()
+
+for key in gitMapping:
+    UpdateGitHubRepo(ghAmdRoot, gitMapping[key][0], gitMapping[key][1])
 
 def download(srcPath, destPath, FileName):
     # Assuming path is absolute
@@ -234,8 +238,8 @@ def HandleGpaDx11GetDeviceInfo(src, dest, fileName, version, copyDest):
     copyArchive = os.path.join(scriptRoot, "..", copyDest)
     # clean up targetPath, collapsing any ../ and converting / to \ for Windows
     copyArchive = os.path.normpath(copyArchive)
-    dx11DeviceInfoPlatform64File="3_1/Bin/x64/GPUPerfAPIDXGetAMDDeviceInfo-x64.dll"
-    dx11DeviceInfoPlatformFile="3_1/Bin/x86/GPUPerfAPIDXGetAMDDeviceInfo.dll"
+    dx11DeviceInfoPlatform64File= version + "/Bin/x64/GPUPerfAPIDXGetAMDDeviceInfo-x64.dll"
+    dx11DeviceInfoPlatformFile= version + "/Bin/x86/GPUPerfAPIDXGetAMDDeviceInfo.dll"
     dx11DeviceInfoPlatform64FileAbsPath = os.path.join(copyArchive, dx11DeviceInfoPlatform64File)
     dx11DeviceInfoPlatformFileAbsPath = os.path.join(copyArchive, dx11DeviceInfoPlatformFile)
 
@@ -276,5 +280,3 @@ else:
 
         if key == "GPADX11GetDeviceInfo":
             HandleGpaDx11GetDeviceInfo(keyList[0], keyList[1], FileName, keyList[2], keyList[3])
-
-

@@ -176,8 +176,8 @@ std::string GPUPerfAPILoader::GetGPADllName(const std::string& dllPath, GPA_API_
             dllFullPath.append("GPUPerfAPICL");
             break;
 
-        case GPA_API_HSA:
-            dllFullPath.append("GPUPerfAPIHSA");
+        case GPA_API_ROCM:
+            dllFullPath.append("GPUPerfAPIROCm");
             break;
 
         case GPA_API_VULKAN:

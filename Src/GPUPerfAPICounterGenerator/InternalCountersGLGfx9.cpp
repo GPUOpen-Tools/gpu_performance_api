@@ -5,6 +5,7 @@
 /// \brief  GL internal counter definitions for GFX9
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "GPAInternalCountersGfx9.h"
 #include "InternalCountersGLGfx9.h"
 
@@ -154,22 +155,22 @@ GPA_CounterGroupDesc HWGLGroupsGfx9[] =
     {38, "TA15", 15, 119, 2},
     {39, "TCA0", 0, 35, 4},
     {40, "TCA1", 1, 35, 4},
-    {41, "TCC0", 0, 256, 4},
-    {42, "TCC1", 1, 256, 4},
-    {43, "TCC2", 2, 256, 4},
-    {44, "TCC3", 3, 256, 4},
-    {45, "TCC4", 4, 256, 4},
-    {46, "TCC5", 5, 256, 4},
-    {47, "TCC6", 6, 256, 4},
-    {48, "TCC7", 7, 256, 4},
-    {49, "TCC8", 8, 256, 4},
-    {50, "TCC9", 9, 256, 4},
-    {51, "TCC10", 10, 256, 4},
-    {52, "TCC11", 11, 256, 4},
-    {53, "TCC12", 12, 256, 4},
-    {54, "TCC13", 13, 256, 4},
-    {55, "TCC14", 14, 256, 4},
-    {56, "TCC15", 15, 256, 4},
+    {41, "TCC0", 0, 282, 4},
+    {42, "TCC1", 1, 282, 4},
+    {43, "TCC2", 2, 282, 4},
+    {44, "TCC3", 3, 282, 4},
+    {45, "TCC4", 4, 282, 4},
+    {46, "TCC5", 5, 282, 4},
+    {47, "TCC6", 6, 282, 4},
+    {48, "TCC7", 7, 282, 4},
+    {49, "TCC8", 8, 282, 4},
+    {50, "TCC9", 9, 282, 4},
+    {51, "TCC10", 10, 282, 4},
+    {52, "TCC11", 11, 282, 4},
+    {53, "TCC12", 12, 282, 4},
+    {54, "TCC13", 13, 282, 4},
+    {55, "TCC14", 14, 282, 4},
+    {56, "TCC15", 15, 282, 4},
     {57, "TD0", 0, 57, 2},
     {58, "TD1", 1, 57, 2},
     {59, "TD2", 2, 57, 2},
@@ -209,7 +210,7 @@ GPA_CounterGroupDesc HWGLGroupsGfx9[] =
     {93, "CPG", 0, 60, 2},
     {94, "CPC", 0, 35, 2},
     {95, "GPIN", 0, 5, 5},
-    {96, "GPUTime", 0, 2, 2},
+    {96, "GPUTime", 0, 6, 2},
 };
 
 GPA_SQCounterGroupDesc HWGLSQGroupsGfx9[] =
@@ -295,10 +296,14 @@ unsigned int HWGLSQIsolatedGroupsGfx9[] =
     88, // Tcp
 };
 
-const unsigned int HWGLGPUTimeBottomToBottomIndexGfx9 = 16190;
-const unsigned int HWGLGPUTimeTopToBottomIndexGfx9 = 16191;
+const unsigned int HWGLGputimeBottomToBottomDurationIndexGfx9 = 16606; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for GL for Gfx9 family
+const unsigned int HWGLGputimeBottomToBottomStartIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for GL for Gfx9 family
+const unsigned int HWGLGputimeBottomToBottomEndIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for GL for Gfx9 family
+const unsigned int HWGLGputimeTopToBottomDurationIndexGfx9 = 16609; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for GL for Gfx9 family
+const unsigned int HWGLGputimeTopToBottomStartIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the top of pipe for GL for Gfx9 family
+const unsigned int HWGLGputimeTopToBottomEndIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the bottom of pipe for GL for Gfx9 family
 const std::set<unsigned int> HWGLTimestampBlockIdsGfx9 = { 96 }; ///< Timestamp block id's for GL for Gfx9 family
-const std::set<unsigned int> HWGLTimeCounterIndicesGfx9 = { 16190, 16191 }; ///< Timestamp counter indices for GL for Gfx9 family
+const std::set<unsigned int> HWGLTimeCounterIndicesGfx9 = { 16606, 16607, 16608, 16609, 16610, 16611 }; ///< Timestamp counter indices for GL for Gfx9 family
 const unsigned int HWGLGroupCountGfx9 = sizeof(HWGLGroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWGLSQGroupCountGfx9 = sizeof(HWGLSQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWGLSQIsolatedGroupCountGfx9 = sizeof(HWGLSQIsolatedGroupsGfx9) / sizeof(unsigned int);

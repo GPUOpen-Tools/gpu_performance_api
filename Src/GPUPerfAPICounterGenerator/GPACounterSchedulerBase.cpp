@@ -412,7 +412,7 @@ CounterResultLocationMap* GPA_CounterSchedulerBase::GetCounterResultLocations(un
     return nullptr;
 }
 
-void GPA_CounterSchedulerBase::SetDrawCallCounts(const int& iCounts)
+void GPA_CounterSchedulerBase::SetDrawCallCounts(int iCounts)
 {
     DoSetDrawCallCounts(iCounts);
 }
@@ -464,7 +464,7 @@ void GPA_CounterSchedulerBase::DoEndPass()
     // do nothing in base class
 }
 
-void GPA_CounterSchedulerBase::DoSetDrawCallCounts(const int& iCount)
+void GPA_CounterSchedulerBase::DoSetDrawCallCounts(int iCount)
 {
     UNREFERENCED_PARAMETER(iCount);
     // do nothing in base

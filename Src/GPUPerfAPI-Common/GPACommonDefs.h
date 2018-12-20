@@ -15,6 +15,9 @@
 #include "Logging.h"
 #include <cassert>
 
+// Macro to make string
+#define GPA_STRINGIFY(X) #X
+
 // The following will be merged into GPUPerfAPITypes.h in a future version that supports streaming counters and sqtt data
 #define GPA_INITIALIZE_SIMULTANEOUS_QUEUES_ENABLE_BIT      static_cast<GPA_Initialize_Bits>(1)          ///< define for GPA_Initialize bit for enabling sqtt collection from all hardware queues
 #define GPA_SESSION_SAMPLE_TYPE_SQTT                       static_cast<GPA_Session_Sample_Type>(1)      ///< define for sqtt session sample type

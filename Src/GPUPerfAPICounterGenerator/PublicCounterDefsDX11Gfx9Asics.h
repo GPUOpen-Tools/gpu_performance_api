@@ -12,19 +12,30 @@
 
 #include "GPADerivedCounters.h"
 
+#include "PublicCounterDefsDX11Gfx9_Gfx906.h"
+#include "PublicCounterDefsDX11Gfx9_Placeholder4.h"
+
 namespace DX11Gfx9Asics
 {
 
 /// Updates default GPU generation derived counters with ASIC specific derived counters if available.
 /// \param desiredGeneration Hardware generation currently in use.
 /// \param asicType The ASIC type that is currently in use.
-/// \param counters Returned set of derived counters, if available.
-/// \return True if the ASIC matched one available, and counters was updated.
-inline void UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& counters)
+/// \param c Returned set of derived counters, if available.
+/// \return True if the ASIC matched one available, and c was updated.
+inline void UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c)
 {
-    UNREFERENCED_PARAMETER(desiredGeneration);
-    UNREFERENCED_PARAMETER(asicType);
-    UNREFERENCED_PARAMETER(counters);
+
+    if (DX11Gfx9_Gfx906::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, c))
+    {
+        return;
+    }
+
+    if (DX11Gfx9_Placeholder4::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, c))
+    {
+        return;
+    }
+
 }
 
 } // DX11Gfx9Asics

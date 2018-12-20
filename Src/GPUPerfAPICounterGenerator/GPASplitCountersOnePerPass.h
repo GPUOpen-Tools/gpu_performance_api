@@ -50,6 +50,7 @@ public:
                                             const std::vector<unsigned int>& maxCountersPerGroup,
                                             unsigned int& numScheduledCounters)
     {
+        UNREFERENCED_PARAMETER(softwareCountersToSchedule);
         // this will be the return value
         std::list<GPACounterPass> passPartitions;
 

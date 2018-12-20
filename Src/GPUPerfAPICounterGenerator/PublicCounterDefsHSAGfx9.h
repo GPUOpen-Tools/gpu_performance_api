@@ -12,8 +12,8 @@
 
 #include "GPADerivedCounters.h"
 
-/// Defines the public counters for HSAGFX9
-/// \param c public counters instance
-void AutoDefineDerivedCountersHSAGfx9(GPA_DerivedCounters& c);
+/// Defines the public derived counters for HSAGFX9
+/// \param c derived counters instance
+void AutoDefinePublicDerivedCountersHSAGfx9(GPA_DerivedCounters& c);
 
 #endif // _PUBLIC_COUNTER_DEFS_HSAGFX9_H_

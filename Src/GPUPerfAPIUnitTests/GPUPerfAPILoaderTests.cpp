@@ -42,7 +42,7 @@ void GPUPerfAPILoaderTest::SetUp()
     m_apiName[GPA_API_DIRECTX_12] = "DX12";
     m_apiName[GPA_API_OPENGL] = "OpenGL";
     m_apiName[GPA_API_OPENCL] = "OpenCL";
-    m_apiName[GPA_API_HSA] = "HSA";
+    m_apiName[GPA_API_ROCM] = "ROCm";
     m_apiName[GPA_API_VULKAN] = "Vulkan";
     m_apiName[GPA_API_NO_SUPPORT] = "ApiNotSupported";
 }
@@ -89,9 +89,9 @@ INSTANTIATE_TEST_CASE_P(
     GPUPerfAPILoaderTest,
     ::testing::Values(
         GPA_API_VULKAN
-        , GPA_API_OPENCL
 #ifndef X86
-        , GPA_API_HSA
+        , GPA_API_OPENCL
+        , GPA_API_ROCM
 #endif
         , GPA_API_OPENGL
     )

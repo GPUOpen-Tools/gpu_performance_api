@@ -62,7 +62,7 @@ bool VkUtils::Initialize_Vk_Entrypoints(VkInstance instance, VkDevice device)
     if (!s_isEntryPointsInitialized)
     {
 #ifdef _WIN32
-        HMODULE vulkanModule = GetModuleHandle("Vulkan-1.dll");
+        HMODULE vulkanModule = ::GetModuleHandleW(L"Vulkan-1.dll");
 #else
         void* vulkanModule = dlopen("libvulkan.so", RTLD_NOLOAD);
 

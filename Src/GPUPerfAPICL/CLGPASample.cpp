@@ -75,7 +75,7 @@ bool CLGPASample::UpdateResults()
 
                 if (m_clCounterBlocks[blockID]->IsComplete())
                 {
-                    GetSampleResultLocation()->GetResultBuffer()[i] = m_clCounterBlocks[blockID]->GetResult(counterID);
+                    GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = m_clCounterBlocks[blockID]->GetResult(counterID);
                     m_pClCounters[i].m_isCounterResultReady = true;
                     m_dataReadyCount++;
                 }

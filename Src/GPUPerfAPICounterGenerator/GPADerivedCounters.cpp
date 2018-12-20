@@ -182,7 +182,8 @@ static GPA_Status EvaluateExpression(
     vector< T > stack;
     T* pWriteResult = reinterpret_cast<T*>(pResult);
 
-    char* pContext;
+    char* pContext = nullptr;
+    pContext;//TODO: gcc is not considering unused in strtok_s
     char* pch = strtok_s(pBuf.data(), " ,", &pContext);
 
     while (nullptr != pch)
@@ -730,5 +731,3 @@ GPA_Status GPA_DerivedCounters::ComputeCounterValue(
 
     return status;
 }
-
-

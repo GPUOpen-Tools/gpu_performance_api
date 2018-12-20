@@ -5,6 +5,7 @@
 /// \brief  HSA internal counter definitions for GFX9
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "GPAInternalCountersGfx9.h"
 #include "InternalCountersHSAGfx9.h"
 
@@ -12,25 +13,13 @@
 
 GPA_HardwareCounterDesc* HSACounterGroupArrayGfx9[] =
 {
-    CB0countersGfx9,
-    CB1countersGfx9,
-    CB2countersGfx9,
-    CB3countersGfx9,
+    CPCcountersGfx9,
     CPFcountersGfx9,
-    DB0countersGfx9,
-    DB1countersGfx9,
-    DB2countersGfx9,
-    DB3countersGfx9,
+    GDScountersGfx9,
     GRBMcountersGfx9,
     GRBMSE0countersGfx9,
-    PA_SU0countersGfx9,
-    PA_SC0countersGfx9,
     SPI0countersGfx9,
     SQ0countersGfx9,
-    SQ_GS0countersGfx9,
-    SQ_VS0countersGfx9,
-    SQ_PS0countersGfx9,
-    SQ_HS0countersGfx9,
     SQ_CS0countersGfx9,
     SX0countersGfx9,
     TA0countersGfx9,
@@ -67,22 +56,6 @@ GPA_HardwareCounterDesc* HSACounterGroupArrayGfx9[] =
     TCC13countersGfx9,
     TCC14countersGfx9,
     TCC15countersGfx9,
-    TD0countersGfx9,
-    TD1countersGfx9,
-    TD2countersGfx9,
-    TD3countersGfx9,
-    TD4countersGfx9,
-    TD5countersGfx9,
-    TD6countersGfx9,
-    TD7countersGfx9,
-    TD8countersGfx9,
-    TD9countersGfx9,
-    TD10countersGfx9,
-    TD11countersGfx9,
-    TD12countersGfx9,
-    TD13countersGfx9,
-    TD14countersGfx9,
-    TD15countersGfx9,
     TCP0countersGfx9,
     TCP1countersGfx9,
     TCP2countersGfx9,
@@ -99,9 +72,25 @@ GPA_HardwareCounterDesc* HSACounterGroupArrayGfx9[] =
     TCP13countersGfx9,
     TCP14countersGfx9,
     TCP15countersGfx9,
-    GDScountersGfx9,
-    VGT0countersGfx9,
-    IA0countersGfx9,
+    TD0countersGfx9,
+    TD1countersGfx9,
+    TD2countersGfx9,
+    TD3countersGfx9,
+    TD4countersGfx9,
+    TD5countersGfx9,
+    TD6countersGfx9,
+    TD7countersGfx9,
+    TD8countersGfx9,
+    TD9countersGfx9,
+    TD10countersGfx9,
+    TD11countersGfx9,
+    TD12countersGfx9,
+    TD13countersGfx9,
+    TD14countersGfx9,
+    TD15countersGfx9,
+    MCVML2countersGfx9,
+    ATCcountersGfx9,
+    ATCL2countersGfx9,
     GCEA0countersGfx9,
     GCEA1countersGfx9,
     GCEA2countersGfx9,
@@ -118,173 +107,167 @@ GPA_HardwareCounterDesc* HSACounterGroupArrayGfx9[] =
     GCEA13countersGfx9,
     GCEA14countersGfx9,
     GCEA15countersGfx9,
-    WDcountersGfx9,
-    CPCcountersGfx9,
+    RPBcountersGfx9,
 };
 
 GPA_CounterGroupDesc HWHSAGroupsGfx9[] =
 {
-    {0, "CB0", 0, 438, 4},
-    {1, "CB1", 1, 438, 4},
-    {2, "CB2", 2, 438, 4},
-    {3, "CB3", 3, 438, 4},
-    {4, "CPF", 0, 32, 2},
-    {5, "DB0", 0, 328, 4},
-    {6, "DB1", 1, 328, 4},
-    {7, "DB2", 2, 328, 4},
-    {8, "DB3", 3, 328, 4},
-    {9, "GRBM", 0, 38, 2},
-    {10, "GRBMSE", 0, 16, 4},
-    {11, "PA_SU", 0, 351, 4},
-    {12, "PA_SC", 0, 492, 8},
-    {13, "SPI", 0, 196, 6},
-    {14, "SQ", 0, 374, 16},
-    {15, "SQ_GS", 0, 374, 16},
-    {16, "SQ_VS", 0, 374, 16},
-    {17, "SQ_PS", 0, 374, 16},
-    {18, "SQ_HS", 0, 374, 16},
-    {19, "SQ_CS", 0, 374, 16},
-    {20, "SX", 0, 208, 4},
-    {21, "TA0", 0, 119, 2},
-    {22, "TA1", 1, 119, 2},
-    {23, "TA2", 2, 119, 2},
-    {24, "TA3", 3, 119, 2},
-    {25, "TA4", 4, 119, 2},
-    {26, "TA5", 5, 119, 2},
-    {27, "TA6", 6, 119, 2},
-    {28, "TA7", 7, 119, 2},
-    {29, "TA8", 8, 119, 2},
-    {30, "TA9", 9, 119, 2},
-    {31, "TA10", 10, 119, 2},
-    {32, "TA11", 11, 119, 2},
-    {33, "TA12", 12, 119, 2},
-    {34, "TA13", 13, 119, 2},
-    {35, "TA14", 14, 119, 2},
-    {36, "TA15", 15, 119, 2},
-    {37, "TCA0", 0, 35, 4},
-    {38, "TCA1", 1, 35, 4},
-    {39, "TCC0", 0, 256, 4},
-    {40, "TCC1", 1, 256, 4},
-    {41, "TCC2", 2, 256, 4},
-    {42, "TCC3", 3, 256, 4},
-    {43, "TCC4", 4, 256, 4},
-    {44, "TCC5", 5, 256, 4},
-    {45, "TCC6", 6, 256, 4},
-    {46, "TCC7", 7, 256, 4},
-    {47, "TCC8", 8, 256, 4},
-    {48, "TCC9", 9, 256, 4},
-    {49, "TCC10", 10, 256, 4},
-    {50, "TCC11", 11, 256, 4},
-    {51, "TCC12", 12, 256, 4},
-    {52, "TCC13", 13, 256, 4},
-    {53, "TCC14", 14, 256, 4},
-    {54, "TCC15", 15, 256, 4},
-    {55, "TD0", 0, 57, 2},
-    {56, "TD1", 1, 57, 2},
-    {57, "TD2", 2, 57, 2},
-    {58, "TD3", 3, 57, 2},
-    {59, "TD4", 4, 57, 2},
-    {60, "TD5", 5, 57, 2},
-    {61, "TD6", 6, 57, 2},
-    {62, "TD7", 7, 57, 2},
-    {63, "TD8", 8, 57, 2},
-    {64, "TD9", 9, 57, 2},
-    {65, "TD10", 10, 57, 2},
-    {66, "TD11", 11, 57, 2},
-    {67, "TD12", 12, 57, 2},
-    {68, "TD13", 13, 57, 2},
-    {69, "TD14", 14, 57, 2},
-    {70, "TD15", 15, 57, 2},
-    {71, "TCP0", 0, 85, 4},
-    {72, "TCP1", 1, 85, 4},
-    {73, "TCP2", 2, 85, 4},
-    {74, "TCP3", 3, 85, 4},
-    {75, "TCP4", 4, 85, 4},
-    {76, "TCP5", 5, 85, 4},
-    {77, "TCP6", 6, 85, 4},
-    {78, "TCP7", 7, 85, 4},
-    {79, "TCP8", 8, 85, 4},
-    {80, "TCP9", 9, 85, 4},
-    {81, "TCP10", 10, 85, 4},
-    {82, "TCP11", 11, 85, 4},
-    {83, "TCP12", 12, 85, 4},
-    {84, "TCP13", 13, 85, 4},
-    {85, "TCP14", 14, 85, 4},
-    {86, "TCP15", 15, 85, 4},
-    {87, "GDS", 0, 121, 4},
-    {88, "VGT", 0, 148, 4},
-    {89, "IA", 0, 32, 4},
-    {90, "GCEA0", 0, 83, 2},
-    {91, "GCEA1", 1, 83, 2},
-    {92, "GCEA2", 2, 83, 2},
-    {93, "GCEA3", 3, 83, 2},
-    {94, "GCEA4", 4, 83, 2},
-    {95, "GCEA5", 5, 83, 2},
-    {96, "GCEA6", 6, 83, 2},
-    {97, "GCEA7", 7, 83, 2},
-    {98, "GCEA8", 8, 83, 2},
-    {99, "GCEA9", 9, 83, 2},
-    {100, "GCEA10", 10, 83, 2},
-    {101, "GCEA11", 11, 83, 2},
-    {102, "GCEA12", 12, 83, 2},
-    {103, "GCEA13", 13, 83, 2},
-    {104, "GCEA14", 14, 83, 2},
-    {105, "GCEA15", 15, 83, 2},
-    {106, "WD", 0, 58, 4},
-    {107, "CPC", 0, 35, 2},
+    {0, "CPC", 0, 35, 2},
+    {1, "CPF", 0, 32, 2},
+    {2, "GDS", 0, 121, 4},
+    {3, "GRBM", 0, 38, 2},
+    {4, "GRBMSE", 0, 16, 4},
+    {5, "SPI", 0, 196, 6},
+    {6, "SQ", 0, 374, 16},
+    {7, "SQ_CS", 0, 374, 16},
+    {8, "SX", 0, 208, 4},
+    {9, "TA0", 0, 119, 2},
+    {10, "TA1", 1, 119, 2},
+    {11, "TA2", 2, 119, 2},
+    {12, "TA3", 3, 119, 2},
+    {13, "TA4", 4, 119, 2},
+    {14, "TA5", 5, 119, 2},
+    {15, "TA6", 6, 119, 2},
+    {16, "TA7", 7, 119, 2},
+    {17, "TA8", 8, 119, 2},
+    {18, "TA9", 9, 119, 2},
+    {19, "TA10", 10, 119, 2},
+    {20, "TA11", 11, 119, 2},
+    {21, "TA12", 12, 119, 2},
+    {22, "TA13", 13, 119, 2},
+    {23, "TA14", 14, 119, 2},
+    {24, "TA15", 15, 119, 2},
+    {25, "TCA0", 0, 35, 4},
+    {26, "TCA1", 1, 35, 4},
+    {27, "TCC0", 0, 282, 4},
+    {28, "TCC1", 1, 282, 4},
+    {29, "TCC2", 2, 282, 4},
+    {30, "TCC3", 3, 282, 4},
+    {31, "TCC4", 4, 282, 4},
+    {32, "TCC5", 5, 282, 4},
+    {33, "TCC6", 6, 282, 4},
+    {34, "TCC7", 7, 282, 4},
+    {35, "TCC8", 8, 282, 4},
+    {36, "TCC9", 9, 282, 4},
+    {37, "TCC10", 10, 282, 4},
+    {38, "TCC11", 11, 282, 4},
+    {39, "TCC12", 12, 282, 4},
+    {40, "TCC13", 13, 282, 4},
+    {41, "TCC14", 14, 282, 4},
+    {42, "TCC15", 15, 282, 4},
+    {43, "TCP0", 0, 85, 4},
+    {44, "TCP1", 1, 85, 4},
+    {45, "TCP2", 2, 85, 4},
+    {46, "TCP3", 3, 85, 4},
+    {47, "TCP4", 4, 85, 4},
+    {48, "TCP5", 5, 85, 4},
+    {49, "TCP6", 6, 85, 4},
+    {50, "TCP7", 7, 85, 4},
+    {51, "TCP8", 8, 85, 4},
+    {52, "TCP9", 9, 85, 4},
+    {53, "TCP10", 10, 85, 4},
+    {54, "TCP11", 11, 85, 4},
+    {55, "TCP12", 12, 85, 4},
+    {56, "TCP13", 13, 85, 4},
+    {57, "TCP14", 14, 85, 4},
+    {58, "TCP15", 15, 85, 4},
+    {59, "TD0", 0, 57, 2},
+    {60, "TD1", 1, 57, 2},
+    {61, "TD2", 2, 57, 2},
+    {62, "TD3", 3, 57, 2},
+    {63, "TD4", 4, 57, 2},
+    {64, "TD5", 5, 57, 2},
+    {65, "TD6", 6, 57, 2},
+    {66, "TD7", 7, 57, 2},
+    {67, "TD8", 8, 57, 2},
+    {68, "TD9", 9, 57, 2},
+    {69, "TD10", 10, 57, 2},
+    {70, "TD11", 11, 57, 2},
+    {71, "TD12", 12, 57, 2},
+    {72, "TD13", 13, 57, 2},
+    {73, "TD14", 14, 57, 2},
+    {74, "TD15", 15, 57, 2},
+    {75, "MCVML2", 0, 21, 8},
+    {76, "ATC", 0, 24, 4},
+    {77, "ATCL2", 0, 8, 2},
+    {78, "GCEA0", 0, 83, 2},
+    {79, "GCEA1", 1, 83, 2},
+    {80, "GCEA2", 2, 83, 2},
+    {81, "GCEA3", 3, 83, 2},
+    {82, "GCEA4", 4, 83, 2},
+    {83, "GCEA5", 5, 83, 2},
+    {84, "GCEA6", 6, 83, 2},
+    {85, "GCEA7", 7, 83, 2},
+    {86, "GCEA8", 8, 83, 2},
+    {87, "GCEA9", 9, 83, 2},
+    {88, "GCEA10", 10, 83, 2},
+    {89, "GCEA11", 11, 83, 2},
+    {90, "GCEA12", 12, 83, 2},
+    {91, "GCEA13", 13, 83, 2},
+    {92, "GCEA14", 14, 83, 2},
+    {93, "GCEA15", 15, 83, 2},
+    {94, "RPB", 0, 95, 4},
 };
 
 GPA_SQCounterGroupDesc HWHSASQGroupsGfx9[] =
 {
-    {14, 0, SQ_ALL},
-    {15, 0, SQ_GS},
-    {16, 0, SQ_VS},
-    {17, 0, SQ_PS},
-    {18, 0, SQ_HS},
-    {19, 0, SQ_CS},
+    {6, 0, SQ_ALL},
+    {7, 0, SQ_CS},
 };
 
 
 unsigned int HWHSASQIsolatedGroupsGfx9[] =
 {
+    9, // Ta
+    10, // Ta
+    11, // Ta
+    12, // Ta
+    13, // Ta
+    14, // Ta
+    15, // Ta
+    16, // Ta
+    17, // Ta
+    18, // Ta
+    19, // Ta
+    20, // Ta
     21, // Ta
     22, // Ta
     23, // Ta
     24, // Ta
-    25, // Ta
-    26, // Ta
-    27, // Ta
-    28, // Ta
-    29, // Ta
-    30, // Ta
-    31, // Ta
-    32, // Ta
-    33, // Ta
-    34, // Ta
-    35, // Ta
-    36, // Ta
-    37, // Tca
-    38, // Tca
+    25, // Tca
+    26, // Tca
+    27, // Tcc
+    28, // Tcc
+    29, // Tcc
+    30, // Tcc
+    31, // Tcc
+    32, // Tcc
+    33, // Tcc
+    34, // Tcc
+    35, // Tcc
+    36, // Tcc
+    37, // Tcc
+    38, // Tcc
     39, // Tcc
     40, // Tcc
     41, // Tcc
     42, // Tcc
-    43, // Tcc
-    44, // Tcc
-    45, // Tcc
-    46, // Tcc
-    47, // Tcc
-    48, // Tcc
-    49, // Tcc
-    50, // Tcc
-    51, // Tcc
-    52, // Tcc
-    53, // Tcc
-    54, // Tcc
-    55, // Td
-    56, // Td
-    57, // Td
-    58, // Td
+    43, // Tcp
+    44, // Tcp
+    45, // Tcp
+    46, // Tcp
+    47, // Tcp
+    48, // Tcp
+    49, // Tcp
+    50, // Tcp
+    51, // Tcp
+    52, // Tcp
+    53, // Tcp
+    54, // Tcp
+    55, // Tcp
+    56, // Tcp
+    57, // Tcp
+    58, // Tcp
     59, // Td
     60, // Td
     61, // Td
@@ -297,22 +280,10 @@ unsigned int HWHSASQIsolatedGroupsGfx9[] =
     68, // Td
     69, // Td
     70, // Td
-    71, // Tcp
-    72, // Tcp
-    73, // Tcp
-    74, // Tcp
-    75, // Tcp
-    76, // Tcp
-    77, // Tcp
-    78, // Tcp
-    79, // Tcp
-    80, // Tcp
-    81, // Tcp
-    82, // Tcp
-    83, // Tcp
-    84, // Tcp
-    85, // Tcp
-    86, // Tcp
+    71, // Td
+    72, // Td
+    73, // Td
+    74, // Td
 };
 
 const std::set<unsigned int> HWHSATimestampBlockIdsGfx9 = {  }; ///< Timestamp block id's for HSA for Gfx9 family

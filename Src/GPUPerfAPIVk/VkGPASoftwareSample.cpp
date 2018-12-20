@@ -269,34 +269,34 @@ bool VkGPASoftwareSample::UpdateResults()
         {
             if (m_pSwQueries->GetSwSampleResults(m_swSampleId, queryResults))
             {
-                GetSampleResultLocation()->SetNumCounters(m_activeCountersList.size());
+                GetSampleResultLocation()->GetAsCounterSampleResult()->SetNumCounters(m_activeCountersList.size());
                 const size_t counterCount = m_activeCountersList.size();
-                isUpdated = (counterCount == GetSampleResultLocation()->GetNumCounters());
+                isUpdated = (counterCount == GetSampleResultLocation()->GetAsCounterSampleResult()->GetNumCounters());
 
                 for (size_t ci = 0; isUpdated && (counterCount > ci); ++ci)
                 {
                     switch (m_activeCountersList[ci].m_queryType)
                     {
                         case GPA_VK_QUERY_TYPE_OCCLUSION:
-                            GetSampleResultLocation()->GetResultBuffer()[ci] = queryResults.occlusion;
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci] = queryResults.occlusion;
                             break;
 
                         case GPA_VK_QUERY_TYPE_OCCLUSION_BINARY:
-                            GetSampleResultLocation()->GetResultBuffer()[ci] = queryResults.occlusionBinary;
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci] = queryResults.occlusionBinary;
                             break;
 
                         case GPA_VK_QUERY_TYPE_TIMESTAMP:
                             isUpdated = GetTimestampQueryCounterResult(
                                             queryResults,
                                             m_activeCountersList[ci].m_index,
-                                            GetSampleResultLocation()->GetResultBuffer()[ci]);
+                                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci]);
                             break;
 
                         case GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS:
                             isUpdated = GetPipelineQueryCounterResult(
                                             queryResults,
                                             m_activeCountersList[ci].m_index,
-                                            GetSampleResultLocation()->GetResultBuffer()[ci]);
+                                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci]);
                             break;
 
                         default:

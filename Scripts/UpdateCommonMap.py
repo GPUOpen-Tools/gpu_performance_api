@@ -11,9 +11,9 @@ gitMapping = {
  # Lib.
     "common-lib-amd-ADL"                  : ["../Common/Lib/AMD/ADL",               None],
     "common-lib-amd-APPSDK-3.0"           : ["../Common/Lib/AMD/APPSDK",            None],
-    "common-lib-ext-GoogleTest-1.7"       : ["../Common/Lib/Ext/GoogleTest",        None],
     "common-lib-ext-OpenGL"               : ["../Common/Lib/Ext/OpenGL",            None],
     "common-lib-ext-WindowsKits"          : ["../Common/Lib/Ext/Windows-Kits",      None],
+    "googletest"                          : ["../Common/Lib/Ext/GoogleTest",        "v1.8.x"],
 # Src.
     "common-src-ADLUtil"                  : ["../Common/Src/ADLUtil",               None],
     "common-src-AmdDxExt"                 : ["../Common/Src/AmdDxExt",              None],
@@ -21,13 +21,13 @@ gitMapping = {
     "common-src-DeviceInfo"               : ["../Common/Src/DeviceInfo",            None],
     "common-src-DynamicLibraryModule"     : ["../Common/Src/DynamicLibraryModule",  None],
     "common-src-TSingleton"               : ["../Common/Src/TSingleton",            None],
-    "common-src-Vsprops"                  : ["../Common/Src/Vsprops",               None],
+    "common-src-CMakeModules"             : ["../Common/Src/CMakeModules",          None],
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
 downloadWin = {
     "Vulkan" : [ "https://sdk.lunarg.com/sdk/download/1.0.68.0/windows/VulkanSDK-1.0.68.0-Installer.exe", "default", "1.0.68.0", "default"],
-    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/GPA/releases/download/v3.1a/GPUPerfAPI-3.1.571.0.zip" , "default", "3_1", "Common/Lib/AMD/GPUPerfAPI"]
+    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/GPA/releases/download/v3.2/GPUPerfAPI-3.2.623.0.zip" , "default", "3_2", "../Common/Lib/AMD/GPUPerfAPI"]
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root

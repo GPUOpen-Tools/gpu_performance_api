@@ -50,10 +50,11 @@ typedef enum ATIAsicIDEnum
     ATIASIC_ID_BAFFIN,                      ///< ATIASICID for Baffin (GFX8)
     ATIASIC_ID_LEXA,                        ///< ATIASICID for Lexa (GFX8)
     ATIASIC_ID_VEGAM,                       ///< ATIASICID for VegaM (GFX8)
-    ATIASIC_ID_VEGA10,                      ///< ATIASICID for Vega10 (GFX9)
-    ATIASIC_ID_VEGA_APU,                    ///< ATIASICID for Vega-based APU (GFX9)
+    ATIASIC_ID_GFX900,                      ///< ATIASICID for GFX900
+    ATIASIC_ID_GFX902,                      ///< ATIASICID for GFX902 (APU)
     ATIASIC_ID_PLACEHOLDER,                 ///< ATIASICID for placeholder APU
     ATIASIC_ID_PLACEHOLDER1,                ///< ATIASICID for placeholder GFX9
+    ATIASIC_ID_GFX906,                      ///< ATIASICID for GFX906
     ATIASIC_ID_UNKNOWN,                     ///< Unknown Asic
     ATIAsicId_First = ATIASIC_ID_TAHITI_P,  ///< First place holder
     ATIAsicId_LAST = ATIASIC_ID_UNKNOWN     ///< Last place holder

@@ -25,16 +25,39 @@ using ClientSampleId = unsigned int; ///< type alias for sample index
 using DriverSampleId = unsigned int; ///< type alias for index of the sample created by the driver extensions
 
 /// Stores counter results after they are returned from the sample.
+struct GPACounterSampleResult;
+
+/// Pure virtual base class for sample results
+/// This allows support for other types of GPASampleResult derived results in the future
 struct GPASampleResult
 {
-    /// Delete Default Constructor
-    GPASampleResult() = delete;
+    virtual size_t GetBufferBytes() const = 0;
 
+    virtual GPACounterSampleResult* GetAsCounterSampleResult() { return nullptr; }
+
+    virtual ~GPASampleResult() = default;
+
+protected:
+    GPASampleResult() {}
+};
+
+struct GPACounterSampleResult : public GPASampleResult
+{
     /// Constructor
     /// \param[in] numOfCounters number of counters
-    GPASampleResult(size_t numOfCounters)
+    GPACounterSampleResult(size_t numOfCounters)
     {
         SetNumCounters(numOfCounters);
+    }
+
+    virtual size_t GetBufferBytes() const override
+    {
+        return sizeof(uint64_t) * m_resultBuffer.size();
+    }
+
+    virtual GPACounterSampleResult* GetAsCounterSampleResult() override
+    {
+        return this;
     }
 
     /// Sets the number of counters
@@ -145,9 +168,9 @@ public:
     /// Gets the result of a single counter within this sample.
     /// If this sample has secondary samples, or continued samples, they should be included
     /// in this sample's result. Although the return value is typed uint64, it may actually
-    /// contain any 64-bit data type (ie: uint64 or float64).
+    /// contain any 64-bit data type: uint64 or float64
     /// \param[in] counterIndexInSample A counter index within this sample.
-    /// \param[out] pResult A pointer to a 64-bit datatype at which to store the counter result if it is available.
+    /// \param[out] pResult A pointer to a 64-bit data type at which to store the counter result if it is available.
     /// \return True if the result is available and could be copied; False if the result is not available or an error occurred.
     virtual bool GetResult(CounterIndex counterIndexInSample, gpa_uint64* pResult) const;
 

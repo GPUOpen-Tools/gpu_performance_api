@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Unit Tests for GL Counter Generator
@@ -9,10 +9,10 @@
 #include "GPUPerfAPITypes.h"
 #include "GPAInternalCounter.h"
 
-#include "counters/PublicCountersGLGfx6.h"
-#include "counters/PublicCountersGLGfx7.h"
-#include "counters/PublicCountersGLGfx8.h"
-#include "counters/PublicCountersGLGfx9.h"
+#include "counters/PublicDerivedCountersGLGfx6.h"
+#include "counters/PublicDerivedCountersGLGfx7.h"
+#include "counters/PublicDerivedCountersGLGfx8.h"
+#include "counters/PublicDerivedCountersGLGfx9.h"
 
 #ifdef AMDT_INTERNAL
     #include "InternalCountersGLGfx6.h"
@@ -84,6 +84,20 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
     for (size_t i = 0; i < publicCounterCount; i++)
     {
         counterNames.push_back(pPublicCounters[i].m_pName);
+    }
+
+
+    // Optionally, get internal derived counters
+    const GPACounterDesc* pInternalDerivedCounters = nullptr;
+    size_t internalDerivedCounterCount = 0;
+
+#ifdef AMDT_INTERNAL
+    GPA_GetInternalDerivedCounters(GPA_API_OPENGL, gen, &pInternalDerivedCounters, &internalDerivedCounterCount);
+#endif
+
+    for (size_t i = 0; i < internalDerivedCounterCount; i++)
+    {
+        counterNames.push_back(pInternalDerivedCounters[i].m_pName);
     }
 
     for (unsigned int i = 0; i < hwGroupCount; i++)

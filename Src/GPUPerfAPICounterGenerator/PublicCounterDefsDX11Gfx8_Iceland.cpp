@@ -5,6 +5,7 @@
 /// \brief PublicCounterDefinitions for DX11GFX8_ICELAND
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "PublicCounterDefsDX11Gfx8_Iceland.h"
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
@@ -14,7 +15,7 @@
 namespace DX11Gfx8_Iceland
 {
 
-bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c)
+bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
     UNREFERENCED_PARAMETER(c); // Unreferenced if there are no ASIC specific block instance registers

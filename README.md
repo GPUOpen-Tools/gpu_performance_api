@@ -22,45 +22,44 @@ as well as several third-party tools.
 
 ## Major Features
 * Provides a standard API for accessing GPU Performance counters for both graphics and compute workloads across multiple GPU APIs.
-* Supports Vulkan™, DirectX™ 12, DirectX 11, OpenGL, OpenCL™, and ROCm/HSA
+* Supports Vulkan™, DirectX™ 12, DirectX 11, OpenGL, OpenCL™, and ROCm/HSA.
 * Supports all current GCN-based Radeon graphics cards and APUs.
-* Supports both Windows and Linux
+* Supports both Windows and Linux.
 * Provides derived "public" counters based on raw HW counters
 * "Internal" version provides access to some raw hardware counters. See ["Public" vs "Internal" Versions](#public-vs-internal-versions) for more information.
 
 ## What's New
-* Version 3.2 (8/21/18)
+* Version 3.3 (12/20/18)
   * Add support for additional GPUs and APUs.
-  * Wrapped all GPA entrypoints in try/catch to ensure unhandled exceptions do not escape the GPA library.
-  * Add VS2017 project files.
-  * Bugs Fixed:
-    * Fixed https://github.com/GPUOpen-Tools/GPA/issues/18.
-    * Fixed support for scheduling counters on multiple sessions.
-    * OpenGL: Fixed a bug in GPASample cleanup.
+  * New CMake-based build system.
+  * Support building on Ubuntu 18.04.
+  * ROCm/HSA: uses new librocprofiler64.so rather than deprecated libhsa-runtime-tools64.so library for performance counter collection.
+  * Timing-based counters are now reported in nanoseconds instead of milliseconds.
+  * New timing counter to report top-of-pipe to bottom-of-pipe duration.
+  * GPA now builds GoogleTest libraries on the fly rather than using prebuilt binaries.
 
 ## System Requirements
-* An AMD Radeon GCN-based GPU or APU
+* An AMD Radeon GCN-based GPU or APU.
 * Radeon Software Crimson Adrenaline Edition 18.8.1 or later (Driver Packaging Version 18.30.01 or later).
+* HSA/ROCm version requires ROCm 2.0.
+  * For use with ROCm, please make sure that the optional ROCm package "rocprofiler-dev" is installed.
+    * Ubuntu: sudo apt install rocprofiler-dev
+    * CentOS: sudo yum install rocprofiler-dev
 * Pre-GCN-based GPUs or APUs are no longer supported by GPUPerfAPI. Please use an older version ([2.17](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/)) with older hardware.
-* Windows 7, 8.1, and 10
-* Ubuntu (16.04 and later) and RHEL (7 and later) distributions
+* Windows 7, 8.1, and 10.
+* Ubuntu (16.04 and later) and CentOS/RHEL (7 and later) distributions.
 
 ## Cloning the Repository
-To clone the GPA repository, execute the following git commands
+To clone the GPA repository, execute the following git command
   * git clone https://github.com/GPUOpen-Tools/GPA.git
 
-After cloning the repository, please run the following python script to retrieve the required dependencies (see [BUILD.md](BUILD.md) for more information):
-  * python Scripts/UpdateCommon.py
-
-UpdateCommon.py has replaced the use of git submodules in the GPA repository
+After cloning the repository, please run the following python script to retrieve the required dependencies and generate the build files (see [BUILD.md](BUILD.md) for more information):
+  * python PreBuild.py
 
 ## Source Code Directory Layout
-* [Build](Build) -- contains both Linux and Windows build-related files
-* [Common](Common) -- Common libs, header and source code not found in other repositories
+* [CMakeModules](CMakeModules) -- Common modules used in the CMake build system
 * [docs](docs) -- contains documentation sources and a Doxygen configuration file
-* [Src/DeviceInfo](Src/DeviceInfo) -- builds a lib containing the Common/Src/DeviceInfo code (Linux only)
 * [Src/Examples](Src/Examples) -- contains the source code for a DirectX 12 and Vulkan sample which use GPUPerfAPI
-* [Src/GPUPerfAPI](Src/GPUPerfAPI) -- builds a lib containing Src/GPUPerfAPI-Common/GPUPerfAPI.cpp (Linux only)
 * [Src/GPUPerfAPI-Common](Src/GPUPerfAPI-Common) -- contains source code for a Common library shared by all versions of GPUPerfAPI
 * [Src/GPUPerfAPICL](Src/GPUPerfAPICL) -- contains the source for the OpenCL™ version of GPUPerfAPI
 * [Src/GPUPerfAPICounterGenerator](Src/GPUPerfAPICounterGenerator) -- contains the source code for a Common library providing all counter data
@@ -69,7 +68,7 @@ UpdateCommon.py has replaced the use of git submodules in the GPA repository
 * [Src/GPUPerfAPIDX11](Src/GPUPerfAPIDX11) -- contains the source for the DirectX11 version of GPUPerfAPI
 * [Src/GPUPerfAPIDX12](Src/GPUPerfAPIDX12) -- contains the source for the DirectX12 version of GPUPerfAPI (Developer Preview)
 * [Src/GPUPerfAPIGL](Src/GPUPerfAPIGL) -- contains the source for the OpenGL version of GPUPerfAPI
-* [Src/GPUPerfAPIHSA](Src/GPUPerfAPIHSA) -- contains the source for the ROCm/HSA version of GPUPerfAPI
+* [Src/GPUPerfAPIROCm](Src/GPUPerfAPIROCm) -- contains the source for the ROCm/HSA version of GPUPerfAPI
 * [Src/GPUPerfAPIUnitTests](Src/GPUPerfAPIUnitTests) -- contains a small set of unit tests for GPUPerfAPI
 * [Src/GPUPerfAPIVk](Src/GPUPerfAPIVk) -- contains the source for the Vulkan version of GPUPerfAPI
 * [Src/PublicCounterCompiler](Src/PublicCounterCompiler) -- source code for a tool to generate C++ code for public counters from text files defining the counters.

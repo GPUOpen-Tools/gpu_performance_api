@@ -25,37 +25,37 @@ namespace DX12Gfx8Asics
 /// Updates default GPU generation derived counters with ASIC specific derived counters if available.
 /// \param desiredGeneration Hardware generation currently in use.
 /// \param asicType The ASIC type that is currently in use.
-/// \param counters Returned set of derived counters, if available.
-/// \return True if the ASIC matched one available, and counters was updated.
-inline void UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& counters)
+/// \param c Returned set of derived counters, if available.
+/// \return True if the ASIC matched one available, and c was updated.
+inline void UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c)
 {
 
-    if (DX12Gfx8_Baffin::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
+    if (DX12Gfx8_Baffin::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, c))
     {
         return;
     }
 
-    if (DX12Gfx8_Carrizo::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
+    if (DX12Gfx8_Carrizo::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, c))
     {
         return;
     }
 
-    if (DX12Gfx8_Ellesmere::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
+    if (DX12Gfx8_Ellesmere::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, c))
     {
         return;
     }
 
-    if (DX12Gfx8_Fiji::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
+    if (DX12Gfx8_Fiji::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, c))
     {
         return;
     }
 
-    if (DX12Gfx8_Iceland::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
+    if (DX12Gfx8_Iceland::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, c))
     {
         return;
     }
 
-    if (DX12Gfx8_Tonga::UpdateAsicSpecificCounters(desiredGeneration, asicType, counters))
+    if (DX12Gfx8_Tonga::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, c))
     {
         return;
     }

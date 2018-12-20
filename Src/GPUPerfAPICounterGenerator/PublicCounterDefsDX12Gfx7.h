@@ -12,8 +12,8 @@
 
 #include "GPADerivedCounters.h"
 
-/// Defines the public counters for DX12GFX7
-/// \param c public counters instance
-void AutoDefineDerivedCountersDX12Gfx7(GPA_DerivedCounters& c);
+/// Defines the public derived counters for DX12GFX7
+/// \param c derived counters instance
+void AutoDefinePublicDerivedCountersDX12Gfx7(GPA_DerivedCounters& c);
 
 #endif // _PUBLIC_COUNTER_DEFS_DX12GFX7_H_

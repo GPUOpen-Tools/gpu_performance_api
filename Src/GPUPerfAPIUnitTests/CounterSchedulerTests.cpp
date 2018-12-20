@@ -11,29 +11,29 @@
 #ifdef _WIN32
     #include "GPAInternalCounter.h"
 
-    #include "counters/PublicCountersDX11Gfx6.h"
-    #include "counters/PublicCountersDX11Gfx7.h"
-    #include "counters/PublicCountersDX11Gfx8.h"
-    #include "counters/PublicCountersDX11Gfx9.h"
+    #include "counters/PublicDerivedCountersDX11Gfx6.h"
+    #include "counters/PublicDerivedCountersDX11Gfx7.h"
+    #include "counters/PublicDerivedCountersDX11Gfx8.h"
+    #include "counters/PublicDerivedCountersDX11Gfx9.h"
 
     #include "InternalCountersDX11Gfx6.h"
     #include "InternalCountersDX11Gfx7.h"
     #include "InternalCountersDX11Gfx8.h"
     #include "InternalCountersDX11Gfx9.h"
 
-    #include "counters/PublicCountersDX12Gfx7.h"
-    #include "counters/PublicCountersDX12Gfx8.h"
-    #include "counters/PublicCountersDX12Gfx9.h"
+    #include "counters/PublicDerivedCountersDX12Gfx7.h"
+    #include "counters/PublicDerivedCountersDX12Gfx8.h"
+    #include "counters/PublicDerivedCountersDX12Gfx9.h"
 
     #include "InternalCountersDX12Gfx7.h"
     #include "InternalCountersDX12Gfx8.h"
     #include "InternalCountersDX12Gfx9.h"
 #endif
 
-#include "counters/PublicCountersCLGfx6.h"
-#include "counters/PublicCountersGLGfx6.h"
-#include "counters/PublicCountersGLGfx7.h"
-#include "counters/PublicCountersGLGfx8.h"
+#include "counters/PublicDerivedCountersCLGfx6.h"
+#include "counters/PublicDerivedCountersGLGfx6.h"
+#include "counters/PublicDerivedCountersGLGfx7.h"
+#include "counters/PublicDerivedCountersGLGfx8.h"
 
 #define MakeExpectedCounterLocationEntry(x, y) { expectedCountersPass##x[y], MakeLocation(x, y) },
 
@@ -84,15 +84,15 @@ TEST(CounterDLLTests, OpenCLResultLocations)
 {
     std::vector<unsigned int> counters =
     {
-        WavefrontsCLGfx6,
-        VALUInstsCLGfx6,
-        SALUInstsCLGfx6,
-        VFetchInstsCLGfx6,
-        SFetchInstsCLGfx6,
-        VWriteInstsCLGfx6,
-        VALUUtilizationCLGfx6,
-        VALUBusyCLGfx6,
-        SALUBusyCLGfx6,
+        WavefrontsPublicCLGfx6,
+        VALUInstsPublicCLGfx6,
+        SALUInstsPublicCLGfx6,
+        VFetchInstsPublicCLGfx6,
+        SFetchInstsPublicCLGfx6,
+        VWriteInstsPublicCLGfx6,
+        VALUUtilizationPublicCLGfx6,
+        VALUBusyPublicCLGfx6,
+        SALUBusyPublicCLGfx6,
     };
 
     std::vector<uint32_t> expectedCountersPass0 =
@@ -166,15 +166,15 @@ TEST(CounterDLLTests, OpenCLResultLocations)
 
     std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations =
     {
-        { WavefrontsCLGfx6, expectedLocationsWavefronts },
-        { VALUInstsCLGfx6, expectedLocationsVALUInsts },
-        { SALUInstsCLGfx6, expectedLocationsSALUInsts },
-        { VFetchInstsCLGfx6, expectedLocationsVFetchInsts },
-        { SFetchInstsCLGfx6, expectedLocationsSFetchInsts },
-        { VWriteInstsCLGfx6, expectedLocationsVWriteInsts },
-        { VALUUtilizationCLGfx6, expectedLocationsVALUUtilization },
-        { VALUBusyCLGfx6, expectedLocationsVALUBusy },
-        { SALUBusyCLGfx6, expectedLocationsSALUBusy }
+        { WavefrontsPublicCLGfx6, expectedLocationsWavefronts },
+        { VALUInstsPublicCLGfx6, expectedLocationsVALUInsts },
+        { SALUInstsPublicCLGfx6, expectedLocationsSALUInsts },
+        { VFetchInstsPublicCLGfx6, expectedLocationsVFetchInsts },
+        { SFetchInstsPublicCLGfx6, expectedLocationsSFetchInsts },
+        { VWriteInstsPublicCLGfx6, expectedLocationsVWriteInsts },
+        { VALUUtilizationPublicCLGfx6, expectedLocationsVALUUtilization },
+        { VALUBusyPublicCLGfx6, expectedLocationsVALUBusy },
+        { SALUBusyPublicCLGfx6, expectedLocationsSALUBusy }
     };
 
     VerifyCountersInPass(GPA_API_OPENCL, gDevIdSI, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
@@ -183,23 +183,23 @@ TEST(CounterDLLTests, OpenCLResultLocations)
 TEST(CounterDLLTests, OpenGLCounterScheduling)
 {
     std::vector<unsigned int> counters;
-    counters.push_back(GPUTimeGLGfx6);
-    counters.push_back(GPUBusyGLGfx6);
-    counters.push_back(TessellatorBusyGLGfx6);
+    counters.push_back(GPUTimePublicGLGfx6);
+    counters.push_back(GPUBusyPublicGLGfx6);
+    counters.push_back(TessellatorBusyPublicGLGfx6);
 
     VerifyHardwareNotSupported(GPA_API_OPENGL, gDevIdUnknown, FALSE);
     VerifyPassCount(GPA_API_OPENGL, gDevIdSI, FALSE, counters, 2);
 
     counters.clear();
-    counters.push_back(GPUTimeGLGfx7);
-    counters.push_back(GPUBusyGLGfx7);
-    counters.push_back(TessellatorBusyGLGfx7);
+    counters.push_back(GPUTimePublicGLGfx7);
+    counters.push_back(GPUBusyPublicGLGfx7);
+    counters.push_back(TessellatorBusyPublicGLGfx7);
     VerifyPassCount(GPA_API_OPENGL, gDevIdCI, FALSE, counters, 2);
 
     counters.clear();
-    counters.push_back(GPUTimeGLGfx8);
-    counters.push_back(GPUBusyGLGfx8);
-    counters.push_back(TessellatorBusyGLGfx8);
+    counters.push_back(GPUTimePublicGLGfx8);
+    counters.push_back(GPUBusyPublicGLGfx8);
+    counters.push_back(TessellatorBusyPublicGLGfx8);
     VerifyPassCount(GPA_API_OPENGL, gDevIdVI, FALSE, counters, 2);
 }
 
@@ -208,22 +208,22 @@ TEST(CounterDLLTests, OpenGLCounterScheduling)
 TEST(CounterDLLTests, DX11CounterScheduling)
 {
     std::vector<unsigned int> counters;
-    counters.push_back(GPUTimeDX11Gfx6);
-    counters.push_back(GPUBusyDX11Gfx6);
-    counters.push_back(TessellatorBusyDX11Gfx6);
+    counters.push_back(GPUTimePublicDX11Gfx6);
+    counters.push_back(GPUBusyPublicDX11Gfx6);
+    counters.push_back(TessellatorBusyPublicDX11Gfx6);
     VerifyHardwareNotSupported(GPA_API_DIRECTX_11, gDevIdUnknown, FALSE);
     VerifyPassCount(GPA_API_DIRECTX_11, gDevIdSI, FALSE, counters, 2);
 
     counters.clear();
-    counters.push_back(GPUTimeDX11Gfx7);
-    counters.push_back(GPUBusyDX11Gfx7);
-    counters.push_back(TessellatorBusyDX11Gfx7);
+    counters.push_back(GPUTimePublicDX11Gfx7);
+    counters.push_back(GPUBusyPublicDX11Gfx7);
+    counters.push_back(TessellatorBusyPublicDX11Gfx7);
     VerifyPassCount(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counters, 2);
 
     counters.clear();
-    counters.push_back(GPUTimeDX11Gfx8);
-    counters.push_back(GPUBusyDX11Gfx8);
-    counters.push_back(TessellatorBusyDX11Gfx8);
+    counters.push_back(GPUTimePublicDX11Gfx8);
+    counters.push_back(GPUBusyPublicDX11Gfx8);
+    counters.push_back(TessellatorBusyPublicDX11Gfx8);
     VerifyPassCount(GPA_API_DIRECTX_11, gDevIdVI, FALSE, counters, 2);
 }
 
@@ -231,12 +231,12 @@ TEST(CounterDLLTests, DX11CIBusyCounters)
 {
     std::vector<unsigned int> counters =
     {
-        VSBusyDX11Gfx7,
-        HSBusyDX11Gfx7,
-        DSBusyDX11Gfx7,
-        GSBusyDX11Gfx7,
-        PSBusyDX11Gfx7,
-        CSBusyDX11Gfx7
+        VSBusyPublicDX11Gfx7,
+        HSBusyPublicDX11Gfx7,
+        DSBusyPublicDX11Gfx7,
+        GSBusyPublicDX11Gfx7,
+        PSBusyPublicDX11Gfx7,
+        CSBusyPublicDX11Gfx7
     };
 
     std::vector<uint32_t> expectedCountersPass0 =
@@ -379,12 +379,12 @@ TEST(CounterDLLTests, DX11CIBusyCounters)
 
     std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations =
     {
-        { VSBusyDX11Gfx7, expectedLocationsVSBusyDX11Gfx7 },
-        { HSBusyDX11Gfx7, expectedLocationsHSBusyDX11Gfx7 },
-        { DSBusyDX11Gfx7, expectedLocationsDSBusyDX11Gfx7 },
-        { GSBusyDX11Gfx7, expectedLocationsGSBusyDX11Gfx7 },
-        { PSBusyDX11Gfx7, expectedLocationsPSBusyDX11Gfx7 },
-        { CSBusyDX11Gfx7, expectedLocationsCSBusyDX11Gfx7 }
+        { VSBusyPublicDX11Gfx7, expectedLocationsVSBusyDX11Gfx7 },
+        { HSBusyPublicDX11Gfx7, expectedLocationsHSBusyDX11Gfx7 },
+        { DSBusyPublicDX11Gfx7, expectedLocationsDSBusyDX11Gfx7 },
+        { GSBusyPublicDX11Gfx7, expectedLocationsGSBusyDX11Gfx7 },
+        { PSBusyPublicDX11Gfx7, expectedLocationsPSBusyDX11Gfx7 },
+        { CSBusyPublicDX11Gfx7, expectedLocationsCSBusyDX11Gfx7 }
     };
 
     VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
@@ -394,9 +394,9 @@ TEST(CounterDLLTests, DX11CIBusyCounters)
 TEST(CounterDLLTests, DX11CIHSBusyHSTimeGSTime)
 {
     std::vector<unsigned int> counters;
-    counters.push_back(HSBusyDX11Gfx7); // HSBusy
-    counters.push_back(HSTimeDX11Gfx7); // HSTime
-    counters.push_back(GSTimeDX11Gfx7); // GSTime
+    counters.push_back(HSBusyPublicDX11Gfx7);
+    counters.push_back(HSTimePublicDX11Gfx7);
+    counters.push_back(GSTimePublicDX11Gfx7);
 
     std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsHSBusy;
     std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsHSTime;
@@ -443,9 +443,9 @@ TEST(CounterDLLTests, DX11CIHSBusyHSTimeGSTime)
     expectedHwCountersPerPass.push_back(expectedCountersPass2);
 
     std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations;
-    expectedResultLocations[HSBusyDX11Gfx7] = expectedLocationsHSBusy;
-    expectedResultLocations[HSTimeDX11Gfx7] = expectedLocationsHSTime;
-    expectedResultLocations[GSTimeDX11Gfx7] = expectedLocationsGSTime;
+    expectedResultLocations[HSBusyPublicDX11Gfx7] = expectedLocationsHSBusy;
+    expectedResultLocations[HSTimePublicDX11Gfx7] = expectedLocationsHSTime;
+    expectedResultLocations[GSTimePublicDX11Gfx7] = expectedLocationsGSTime;
 
     VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
 }
@@ -455,8 +455,8 @@ TEST(CounterDLLTests, DX11CIHSTimeGSTime)
 {
     std::vector<unsigned int> counters =
     {
-        HSTimeDX11Gfx7,
-        GSTimeDX11Gfx7,
+        HSTimePublicDX11Gfx7,
+        GSTimePublicDX11Gfx7,
     };
 
 
@@ -507,8 +507,8 @@ TEST(CounterDLLTests, DX11CIHSTimeGSTime)
 
     std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations =
     {
-        { HSTimeDX11Gfx7, expectedLocationsHSTimeDX11Gfx7 },
-        { GSTimeDX11Gfx7, expectedLocationsGSTimeDX11Gfx7 }
+        { HSTimePublicDX11Gfx7, expectedLocationsHSTimeDX11Gfx7 },
+        { GSTimePublicDX11Gfx7, expectedLocationsGSTimeDX11Gfx7 }
     };
 
     VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
@@ -517,7 +517,7 @@ TEST(CounterDLLTests, DX11CIHSTimeGSTime)
 TEST(CounterDLLTests, DX11CIVSBusy)
 {
     std::vector<unsigned int> counters;
-    counters.push_back(VSBusyDX11Gfx7);
+    counters.push_back(VSBusyPublicDX11Gfx7);
 
     std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsVSBusy;
 
@@ -562,7 +562,7 @@ TEST(CounterDLLTests, DX11CIVSBusy)
     expectedHwCountersPerPass.push_back(expectedCountersPass2);
 
     std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations;
-    expectedResultLocations[VSBusyDX11Gfx7] = expectedLocationsVSBusy;
+    expectedResultLocations[VSBusyPublicDX11Gfx7] = expectedLocationsVSBusy;
 
     VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdCI, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
 }
@@ -577,30 +577,30 @@ void TestGPUTimeVSBusyVSTimeCountersForDevice(unsigned int deviceId)
 
     if (gDevIdSI == deviceId)
     {
-        GPUTimeIndex = GPUTimeDX11Gfx6;
-        VSBusyIndex = VSBusyDX11Gfx6;
-        VSTimeIndex = VSTimeDX11Gfx6;
+        GPUTimeIndex = GPUTimePublicDX11Gfx6;
+        VSBusyIndex = VSBusyPublicDX11Gfx6;
+        VSTimeIndex = VSTimePublicDX11Gfx6;
         expectedPasses = 3;
     }
     else if (gDevIdCI == deviceId)
     {
-        GPUTimeIndex = GPUTimeDX11Gfx7;
-        VSBusyIndex = VSBusyDX11Gfx7;
-        VSTimeIndex = VSTimeDX11Gfx7;
+        GPUTimeIndex = GPUTimePublicDX11Gfx7;
+        VSBusyIndex = VSBusyPublicDX11Gfx7;
+        VSTimeIndex = VSTimePublicDX11Gfx7;
         expectedPasses = 3;
     }
     else if (gDevIdVI == deviceId)
     {
-        GPUTimeIndex = GPUTimeDX11Gfx8;
-        VSBusyIndex = VSBusyDX11Gfx8;
-        VSTimeIndex = VSTimeDX11Gfx8;
+        GPUTimeIndex = GPUTimePublicDX11Gfx8;
+        VSBusyIndex = VSBusyPublicDX11Gfx8;
+        VSTimeIndex = VSTimePublicDX11Gfx8;
         expectedPasses = 3;
     }
     else if (gDevIdGfx9 == deviceId)
     {
-        GPUTimeIndex = GPUTimeDX11Gfx9;
-        VSBusyIndex = VSBusyDX11Gfx9;
-        VSTimeIndex = VSTimeDX11Gfx9;
+        GPUTimeIndex = GPUTimePublicDX11Gfx9;
+        VSBusyIndex = VSBusyPublicDX11Gfx9;
+        VSTimeIndex = VSTimePublicDX11Gfx9;
         expectedPasses = 2;
     }
 
@@ -726,170 +726,6 @@ void TestD3D11QueryCounter(unsigned int deviceId, unsigned int D3DQueryCounterIn
     VerifyCountersInPass(GPA_API_DIRECTX_11, deviceId, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
 }
 
-// Disable Software counter tests
-/*
-static unsigned int GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_Hw_Generation generation, unsigned int* pBottomToBottomIndex = nullptr )
-{
-    unsigned int numHwCounters = 0;
-
-    GPA_CounterGroupDesc* pHardwareGroups = nullptr;
-    unsigned int hwGroupCount = 0;
-
-    switch (generation)
-    {
-        case GPA_HW_GENERATION_GFX6:
-            pHardwareGroups = HWDX11GroupsGfx6;
-            hwGroupCount = HWDX11GroupCountGfx6;
-            if (pBottomToBottomIndex)
-            {
-                *pBottomToBottomIndex = HWDX11GPUTimeBottomToBottomIndexGfx6;
-            }
-            break;
-
-        case GPA_HW_GENERATION_GFX7:
-            pHardwareGroups = HWDX11GroupsGfx7;
-            hwGroupCount = HWDX11GroupCountGfx7;
-            if (pBottomToBottomIndex)
-            {
-                *pBottomToBottomIndex = HWDX11GPUTimeBottomToBottomIndexGfx7;
-            }
-            break;
-
-        case GPA_HW_GENERATION_GFX8:
-            pHardwareGroups = HWDX11GroupsGfx8;
-            hwGroupCount = HWDX11GroupCountGfx8;
-            if (pBottomToBottomIndex)
-            {
-                *pBottomToBottomIndex = HWDX11GPUTimeBottomToBottomIndexGfx8;
-            }
-            break;
-    }
-
-    for (unsigned int i = 0; i < hwGroupCount; i++)
-    {
-        numHwCounters += pHardwareGroups[i].m_numCounters;
-    }
-
-    return numHwCounters;
-}
-
-/// Test the D3D11 QUERY counters (software counters) across different generations
-TEST(CounterDLLTests, DX11D3DCounters)
-{
-    unsigned int D3DCounterIndex      = 0;  // this is the index into the software counters of "OCCLUSION" - see GPASwCounterManager.h
-    unsigned int publicCounterCount   = 0;  // this is the number of public counters exposed
-    unsigned int hardwareCounterCount = 0;  // this is the number of hardware counters exposed, which is used to offset the sw counter index
-
-    // Gfx6
-    D3DCounterIndex      = 1;
-    publicCounterCount  = DX11GFX6_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6);
-    TestD3D11QueryCounter(gDevIdSI, D3DCounterIndex, publicCounterCount, hardwareCounterCount);
-
-    // Gfx7
-    D3DCounterIndex      = 1;
-    publicCounterCount  = DX11GFX7_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7);
-    TestD3D11QueryCounter(gDevIdCI, D3DCounterIndex, publicCounterCount, hardwareCounterCount);
-
-    // Gfx8
-    D3DCounterIndex      = 1;
-    publicCounterCount  = DX11GFX8_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8);
-    TestD3D11QueryCounter(gDevIdVI, D3DCounterIndex, publicCounterCount, hardwareCounterCount);
-}
-
-TEST(CounterDLLTests, DX11D3DCountersAndGPUTime)
-{
-    unsigned int gpuTimeHWIndex = 0;
-    unsigned int D3DCounterIndex      = 0;  // this is the index into the software counters of "OCCLUSION" - see GPASwCounterManager.h
-    unsigned int publicCounterCount   = 0;  // this is the number of public counters exposed
-    unsigned int hardwareCounterCount = 0;  // this is the number of hardware counters exposed, which is used to offset the sw counter index
-
-    // Gfx6
-    D3DCounterIndex      = 1;
-    publicCounterCount   = DX11GFX6_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6, &gpuTimeHWIndex);
-    TestD3D11QueryCounter(gDevIdSI, D3DCounterIndex, publicCounterCount, hardwareCounterCount, gpuTimeHWIndex);
-
-    // Gfx7
-    D3DCounterIndex      = 1;
-    publicCounterCount   = DX11GFX7_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7, &gpuTimeHWIndex);
-    TestD3D11QueryCounter(gDevIdCI, D3DCounterIndex, publicCounterCount, hardwareCounterCount, gpuTimeHWIndex);
-
-    // Gfx8
-    D3DCounterIndex      = 1;
-    publicCounterCount   = DX11GFX8_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8, &gpuTimeHWIndex);
-    TestD3D11QueryCounter(gDevIdVI, D3DCounterIndex, publicCounterCount, hardwareCounterCount, gpuTimeHWIndex);
-}
-
-void TestAllD3D11QueryCounters(unsigned int deviceId, unsigned int D3DQueryCounterCount, unsigned int publicCounterCount, unsigned int hardwareCounterCount)
-{
-    std::vector<unsigned int> counters;
-    std::map<unsigned int, GPA_CounterResultLocation> expectedLocationsD3DQuery;
-    std::vector<unsigned int> expectedCountersPass1;
-    std::vector<unsigned int> expectedCountersPass2;
-    std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations;
-
-    for (gpa_uint16 i = 0; i < D3DQueryCounterCount; i++)
-    {
-        // the D3D query counters appear after the public counters
-        unsigned int queryCounterIndex = publicCounterCount + i;
-
-#ifdef AMDT_INTERNAL
-        // in the internal build, the D3D query counters are also after the hardware counters
-        queryCounterIndex += hardwareCounterCount;
-#endif
-
-        counters.push_back(queryCounterIndex);
-        expectedLocationsD3DQuery.clear();
-
-        if (0 == i) //SW GPUTime counter need a separate pass
-        {
-            expectedCountersPass1.push_back(hardwareCounterCount + i);
-            expectedLocationsD3DQuery[hardwareCounterCount + i] = MakeLocation(0, i);
-        }
-        else
-        {
-            expectedCountersPass2.push_back(hardwareCounterCount + i);
-            expectedLocationsD3DQuery[hardwareCounterCount + i] = MakeLocation(1, i - 1);
-        }
-
-        expectedResultLocations[queryCounterIndex] = expectedLocationsD3DQuery;
-    }
-
-    std::vector< std::vector<unsigned int> > expectedHwCountersPerPass;
-    expectedHwCountersPerPass.push_back(expectedCountersPass1);
-    expectedHwCountersPerPass.push_back(expectedCountersPass2);
-
-    VerifyCountersInPass(GPA_API_DIRECTX_11, deviceId, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
-}
-
-TEST(CounterDLLTests, AllDX11D3DCounters)
-{
-    unsigned int publicCounterCount = 0;  // this is the number of public counters exposed
-    unsigned int hardwareCounterCount = 0;  // this is the number of hardware counters exposed, which is used to offset the sw counter index
-    unsigned int D3DQueryCounterCount = 29; // there are currently 29 D3D11 query counters
-
-    // Gfx6
-    publicCounterCount   = DX11GFX6_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX6);
-    TestAllD3D11QueryCounters(gDevIdSI, D3DQueryCounterCount, publicCounterCount, hardwareCounterCount);
-
-    // Gfx7
-    publicCounterCount   = DX11GFX7_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX7);
-    TestAllD3D11QueryCounters(gDevIdCI, D3DQueryCounterCount, publicCounterCount, hardwareCounterCount);
-
-    // Gfx8
-    publicCounterCount   = DX11GFX8_PUBLIC_COUNTER_COUNT;
-    hardwareCounterCount = GetNumberOfDX11HardwareCountersAndGPUTimeIndex(GPA_HW_GENERATION_GFX8);
-    TestAllD3D11QueryCounters(gDevIdVI, D3DQueryCounterCount, publicCounterCount, hardwareCounterCount);
-}
-*/
-
 TEST(CounterDLLTests, DX11CIPSBusyCounterResult)
 {
     // test the result of PSBusy, which uses 9 internal counters
@@ -1013,19 +849,24 @@ TEST(CounterDLLTests, DX11EnableAndDisable)
 
 #endif
 
-TEST(CounterDLLTests, HSACounterScheduling)
+#ifdef _LINUX
+
+TEST(CounterDLLTests, ROCmCounterScheduling)
 {
     std::vector<unsigned int> counters;
     counters.push_back(0);
     counters.push_back(1);
     counters.push_back(2);
 
-    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdUnknown, FALSE);
-    VerifyHardwareNotSupported(GPA_API_HSA, gDevIdSI, FALSE);
+    VerifyHardwareNotSupported(GPA_API_ROCM, gDevIdUnknown, FALSE);
+    VerifyHardwareNotSupported(GPA_API_ROCM, gDevIdSI, FALSE);
+    VerifyHardwareNotSupported(GPA_API_ROCM, gDevIdCI, FALSE);
 
-    VerifyPassCount(GPA_API_HSA, gDevIdCI, FALSE, counters, 1);
-    VerifyPassCount(GPA_API_HSA, gDevIdVI, FALSE, counters, 1);
+    VerifyPassCount(GPA_API_ROCM, gDevIdVI, FALSE, counters, 1);
+    VerifyPassCount(GPA_API_ROCM, gDevIdGfx9, FALSE, counters, 1);
 }
+
+#endif
 
 /// GPA-127 Validation test.
 /// SQ counters must be isolated from TCC/TA/TCP/TCA/TD counters because PAL is now setting the
@@ -1036,7 +877,7 @@ TEST(CounterDLLTests, HSACounterScheduling)
 TEST(CounterDLLTests, SqIsolatedCounterSplitScheduler)
 {
     // CSVFetchInstsDX11Gfx8 TA and SQ counters
-    std::vector<uint32_t> counters = { CSVFetchInstsDX11Gfx8 };
+    std::vector<uint32_t> counters = { CSVFetchInstsPublicDX11Gfx8 };
 
     // Pass: 0  Counters: 64
     std::vector<uint32_t> expectedCountersPass0 =
@@ -1150,7 +991,7 @@ TEST(CounterDLLTests, SqIsolatedCounterSplitScheduler)
 
     std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations =
     {
-        { CSVFetchInstsDX11Gfx8, expectedLocations0 }
+        { CSVFetchInstsPublicDX11Gfx8, expectedLocations0 }
     };
 
     VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdGfx8, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
@@ -1163,10 +1004,10 @@ TEST(CounterDLLTests, Gpa159MultipleTimingCounters)
 {
     std::vector<uint32_t> counters =
     {
-        HSBusyCyclesDX12Gfx8,
-        HSTimeDX12Gfx8,
-        PSBusyCyclesDX12Gfx8,
-        PSTimeDX12Gfx8,
+        HSBusyCyclesPublicDX12Gfx8,
+        HSTimePublicDX12Gfx8,
+        PSBusyCyclesPublicDX12Gfx8,
+        PSTimePublicDX12Gfx8,
     };
 
     // Pass: 0  Counters: 17
@@ -1249,10 +1090,10 @@ TEST(CounterDLLTests, Gpa159MultipleTimingCounters)
 
     std::map< uint32_t, std::map<uint32_t, GPA_CounterResultLocation> > expectedResultLocations =
     {
-        { HSBusyCyclesDX12Gfx8, expectedLocations0 },
-        { HSTimeDX12Gfx8, expectedLocations1 },
-        { PSBusyCyclesDX12Gfx8, expectedLocations2 },
-        { PSTimeDX12Gfx8, expectedLocations3 }
+        { HSBusyCyclesPublicDX12Gfx8, expectedLocations0 },
+        { HSTimePublicDX12Gfx8, expectedLocations1 },
+        { PSBusyCyclesPublicDX12Gfx8, expectedLocations2 },
+        { PSTimePublicDX12Gfx8, expectedLocations3 }
     };
 
     VerifyCountersInPass(GPA_API_DIRECTX_12, gDevIdGfx8, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
@@ -1288,29 +1129,29 @@ TEST(CounterDLLTests, Gpa85MultipleTimingCounters)
 {
     std::vector<uint32_t> counters =
     {
-        VSVerticesInDX12Gfx8,
-        VSVALUInstCountDX12Gfx8,
-        VSVALUBusyDX12Gfx8,
-        VSSALUInstCountDX12Gfx8,
-        VSSALUBusyDX12Gfx8,
-        CSBusyDX12Gfx8,
-        CSTimeDX12Gfx8,
-        DSBusyDX12Gfx8,
-        DSTimeDX12Gfx8,
-        DepthStencilTestBusyDX12Gfx8,
-        GPUBusyDX12Gfx8,
-        GPUTimeDX12Gfx8,
-        GSBusyDX12Gfx8,
-        GSTimeDX12Gfx8,
-        PSBusyDX12Gfx8,
-        PSTimeDX12Gfx8,
-        PrimitiveAssemblyBusyDX12Gfx8,
-        TessellatorBusyDX12Gfx8,
-        TexUnitBusyDX12Gfx8,
-        HSTimeDX12Gfx8,
-        HSBusyDX12Gfx8,
-        VSBusyDX12Gfx8,
-        VSTimeDX12Gfx8,
+        VSVerticesInPublicDX12Gfx8,
+        VSVALUInstCountPublicDX12Gfx8,
+        VSVALUBusyPublicDX12Gfx8,
+        VSSALUInstCountPublicDX12Gfx8,
+        VSSALUBusyPublicDX12Gfx8,
+        CSBusyPublicDX12Gfx8,
+        CSTimePublicDX12Gfx8,
+        DSBusyPublicDX12Gfx8,
+        DSTimePublicDX12Gfx8,
+        DepthStencilTestBusyPublicDX12Gfx8,
+        GPUBusyPublicDX12Gfx8,
+        GPUTimePublicDX12Gfx8,
+        GSBusyPublicDX12Gfx8,
+        GSTimePublicDX12Gfx8,
+        PSBusyPublicDX12Gfx8,
+        PSTimePublicDX12Gfx8,
+        PrimitiveAssemblyBusyPublicDX12Gfx8,
+        TessellatorBusyPublicDX12Gfx8,
+        TexUnitBusyPublicDX12Gfx8,
+        HSTimePublicDX12Gfx8,
+        HSBusyPublicDX12Gfx8,
+        VSBusyPublicDX12Gfx8,
+        VSTimePublicDX12Gfx8,
     };
 
     // Pass: 0  Counters: 118
@@ -1923,29 +1764,29 @@ TEST(CounterDLLTests, Gpa85MultipleTimingCounters)
 
     std::map< uint32_t, std::map<uint32_t, GPA_CounterResultLocation> > expectedResultLocations =
     {
-        { VSVerticesInDX12Gfx8, expectedLocations0 },
-        { VSVALUInstCountDX12Gfx8, expectedLocations1 },
-        { VSVALUBusyDX12Gfx8, expectedLocations2 },
-        { VSSALUInstCountDX12Gfx8, expectedLocations3 },
-        { VSSALUBusyDX12Gfx8, expectedLocations4 },
-        { CSBusyDX12Gfx8, expectedLocations5 },
-        { CSTimeDX12Gfx8, expectedLocations6 },
-        { DSBusyDX12Gfx8, expectedLocations7 },
-        { DSTimeDX12Gfx8, expectedLocations8 },
-        { DepthStencilTestBusyDX12Gfx8, expectedLocations9 },
-        { GPUBusyDX12Gfx8, expectedLocations10 },
-        { GPUTimeDX12Gfx8, expectedLocations11 },
-        { GSBusyDX12Gfx8, expectedLocations12 },
-        { GSTimeDX12Gfx8, expectedLocations13 },
-        { PSBusyDX12Gfx8, expectedLocations14 },
-        { PSTimeDX12Gfx8, expectedLocations15 },
-        { PrimitiveAssemblyBusyDX12Gfx8, expectedLocations16 },
-        { TessellatorBusyDX12Gfx8, expectedLocations17 },
-        { TexUnitBusyDX12Gfx8, expectedLocations18 },
-        { HSTimeDX12Gfx8, expectedLocations19 },
-        { HSBusyDX12Gfx8, expectedLocations20 },
-        { VSBusyDX12Gfx8, expectedLocations21 },
-        { VSTimeDX12Gfx8, expectedLocations22 },
+        { VSVerticesInPublicDX12Gfx8, expectedLocations0 },
+        { VSVALUInstCountPublicDX12Gfx8, expectedLocations1 },
+        { VSVALUBusyPublicDX12Gfx8, expectedLocations2 },
+        { VSSALUInstCountPublicDX12Gfx8, expectedLocations3 },
+        { VSSALUBusyPublicDX12Gfx8, expectedLocations4 },
+        { CSBusyPublicDX12Gfx8, expectedLocations5 },
+        { CSTimePublicDX12Gfx8, expectedLocations6 },
+        { DSBusyPublicDX12Gfx8, expectedLocations7 },
+        { DSTimePublicDX12Gfx8, expectedLocations8 },
+        { DepthStencilTestBusyPublicDX12Gfx8, expectedLocations9 },
+        { GPUBusyPublicDX12Gfx8, expectedLocations10 },
+        { GPUTimePublicDX12Gfx8, expectedLocations11 },
+        { GSBusyPublicDX12Gfx8, expectedLocations12 },
+        { GSTimePublicDX12Gfx8, expectedLocations13 },
+        { PSBusyPublicDX12Gfx8, expectedLocations14 },
+        { PSTimePublicDX12Gfx8, expectedLocations15 },
+        { PrimitiveAssemblyBusyPublicDX12Gfx8, expectedLocations16 },
+        { TessellatorBusyPublicDX12Gfx8, expectedLocations17 },
+        { TexUnitBusyPublicDX12Gfx8, expectedLocations18 },
+        { HSTimePublicDX12Gfx8, expectedLocations19 },
+        { HSBusyPublicDX12Gfx8, expectedLocations20 },
+        { VSBusyPublicDX12Gfx8, expectedLocations21 },
+        { VSTimePublicDX12Gfx8, expectedLocations22 },
     };
 
     VerifyCountersInPass(GPA_API_DIRECTX_12, gDevIdGfx8, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
@@ -1958,9 +1799,9 @@ TEST(CounterDLLTests, Gpa83ThreePassTest)
 {
     std::vector<uint32_t> counters =
     {
-        VSVerticesInDX12Gfx8,
-        GPUTimeDX12Gfx8,
-        VSBusyDX12Gfx8
+        VSVerticesInPublicDX12Gfx8,
+        GPUTimePublicDX12Gfx8,
+        VSBusyPublicDX12Gfx8
     };
 
     // Pass: 0  Counters: 37
@@ -2053,9 +1894,9 @@ TEST(CounterDLLTests, Gpa83ThreePassTest)
 
     std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > expectedResultLocations =
     {
-        { VSVerticesInDX12Gfx8, expectedLocations0 },
-        { GPUTimeDX12Gfx8, expectedLocations1 },
-        { VSBusyDX12Gfx8, expectedLocations2 }
+        { VSVerticesInPublicDX12Gfx8, expectedLocations0 },
+        { GPUTimePublicDX12Gfx8, expectedLocations1 },
+        { VSBusyPublicDX12Gfx8, expectedLocations2 }
     };
 
     VerifyCountersInPass(GPA_API_DIRECTX_12, gDevIdGfx8, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);
@@ -2067,7 +1908,7 @@ TEST(CounterDLLTests, SwDev140743)
 {
     std::vector<uint32_t> counters =
     {
-        L1CacheHitCountDX11Gfx9
+        L1CacheHitCountPublicDX11Gfx9
     };
 
     // Pass: 0  Counters: 256
@@ -2448,7 +2289,7 @@ TEST(CounterDLLTests, SwDev140743)
 
     std::map< uint32_t, std::map<uint32_t, GPA_CounterResultLocation> > expectedResultLocations =
     {
-        { L1CacheHitCountDX11Gfx9, expectedLocations0 }
+        { L1CacheHitCountPublicDX11Gfx9, expectedLocations0 }
     };
 
     VerifyCountersInPass(GPA_API_DIRECTX_11, gDevIdGfx9, FALSE, counters, expectedHwCountersPerPass, expectedResultLocations);

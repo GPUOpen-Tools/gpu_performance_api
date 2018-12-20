@@ -37,12 +37,12 @@ bool GLGPACommandList::BeginSampleRequest(ClientSampleId clientSampleId,
 {
     UNREFERENCED_PARAMETER(clientSampleId);
 
-    bool success = false;
+    bool success = true;
 
     if (!GetPass()->IsTimingPass() && nullptr != m_pPreviousSample)
     {
         // Last sample already exist - collect its data first before proceeding
-        success = m_pPreviousSample->UpdateResults();
+        success &= m_pPreviousSample->UpdateResults();
     }
 
     if (!GetPass()->IsTimingPass())
@@ -50,7 +50,7 @@ bool GLGPACommandList::BeginSampleRequest(ClientSampleId clientSampleId,
         m_pPreviousSample = reinterpret_cast<GLGPASample*>(pGpaSample);
     }
 
-    return true;
+    return success;
 }
 
 bool GLGPACommandList::CloseLastSampleRequest()

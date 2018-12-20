@@ -5,6 +5,7 @@
 /// \brief  GL internal counter definitions for GFX7
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "GPAInternalCountersGfx7.h"
 #include "InternalCountersGLGfx7.h"
 
@@ -183,7 +184,7 @@ GPA_CounterGroupDesc HWGLGroupsGfx7[] =
     {80, "CPG", 0, 46, 2},
     {81, "CPC", 0, 22, 2},
     {82, "GPIN", 0, 5, 5},
-    {83, "GPUTime", 0, 2, 2},
+    {83, "GPUTime", 0, 6, 2},
 };
 
 GPA_SQCounterGroupDesc HWGLSQGroupsGfx7[] =
@@ -254,10 +255,14 @@ unsigned int HWGLSQIsolatedGroupsGfx7[] =
     73, // Tcp
 };
 
-const unsigned int HWGLGPUTimeBottomToBottomIndexGfx7 = 11279;
-const unsigned int HWGLGPUTimeTopToBottomIndexGfx7 = 11280;
+const unsigned int HWGLGputimeBottomToBottomDurationIndexGfx7 = 11279; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for GL for Gfx7 family
+const unsigned int HWGLGputimeBottomToBottomStartIndexGfx7 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for GL for Gfx7 family
+const unsigned int HWGLGputimeBottomToBottomEndIndexGfx7 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for GL for Gfx7 family
+const unsigned int HWGLGputimeTopToBottomDurationIndexGfx7 = 11282; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for GL for Gfx7 family
+const unsigned int HWGLGputimeTopToBottomStartIndexGfx7 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the top of pipe for GL for Gfx7 family
+const unsigned int HWGLGputimeTopToBottomEndIndexGfx7 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the bottom of pipe for GL for Gfx7 family
 const std::set<unsigned int> HWGLTimestampBlockIdsGfx7 = { 83 }; ///< Timestamp block id's for GL for Gfx7 family
-const std::set<unsigned int> HWGLTimeCounterIndicesGfx7 = { 11279, 11280 }; ///< Timestamp counter indices for GL for Gfx7 family
+const std::set<unsigned int> HWGLTimeCounterIndicesGfx7 = { 11279, 11280, 11281, 11282, 11283, 11284 }; ///< Timestamp counter indices for GL for Gfx7 family
 const unsigned int HWGLGroupCountGfx7 = sizeof(HWGLGroupsGfx7) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWGLSQGroupCountGfx7 = sizeof(HWGLSQGroupsGfx7) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWGLSQIsolatedGroupCountGfx7 = sizeof(HWGLSQIsolatedGroupsGfx7) / sizeof(unsigned int);

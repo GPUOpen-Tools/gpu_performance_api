@@ -5,17 +5,18 @@
 /// \brief PublicCounterDefinitions for DX11GFX9
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "PublicCounterDefsDX11Gfx9.h"
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
+void AutoDefinePublicDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
 {
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(54848);
+        internalCounters.push_back(55296);
 
-        c.DefineDerivedCounter("GPUTime", "Timing", "Time this API call took to execute on the GPU in milliseconds. Does not include time that draw calls are processed in parallel.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, internalCounters, "0,TS_FREQ,/,(1000),*", "00bfa9cd-5512-48e8-7055-7b592113b8cb");
+        c.DefineDerivedCounter("GPUTime", "Timing", "Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_NANOSECONDS, internalCounters, "0,TS_FREQ,/,(1000000000),*", "cbd338f2-de6c-7b14-92ad-ba724ca2e501");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -32,20 +33,20 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(50727);
-        internalCounters.push_back(50875);
-        internalCounters.push_back(51023);
-        internalCounters.push_back(51171);
+        internalCounters.push_back(51143);
+        internalCounters.push_back(51291);
+        internalCounters.push_back(51439);
+        internalCounters.push_back(51587);
         internalCounters.push_back(12484);
 
         c.DefineDerivedCounter("TessellatorBusy", "Timing", "The percentage of time the tessellation engine is busy.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,max,2,max,3,max,4,/,(100),*", "36af6c72-dcfb-8102-4fd4-ce8ddc573365");
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(50727);
-        internalCounters.push_back(50875);
-        internalCounters.push_back(51023);
-        internalCounters.push_back(51171);
+        internalCounters.push_back(51143);
+        internalCounters.push_back(51291);
+        internalCounters.push_back(51439);
+        internalCounters.push_back(51587);
 
         c.DefineDerivedCounter("TessellatorBusyCycles", "Timing", "Number of GPU cycles that the tessellation engine is busy.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, internalCounters, "0,1,max,2,max,3,max", "60289dcb-7b33-46e7-26d1-8a2121605543");
     }
@@ -78,7 +79,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(54848);
+        internalCounters.push_back(55296);
         internalCounters.push_back(16796);
         internalCounters.push_back(16992);
         internalCounters.push_back(17188);
@@ -89,7 +90,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
         internalCounters.push_back(17393);
         internalCounters.push_back(12484);
 
-        c.DefineDerivedCounter("VSTime", "Timing", "Time vertex shaders are busy in milliseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, internalCounters, "(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,0,TS_FREQ,/,(1000),*,*", "fee660c7-8e01-4dc5-e5d0-fcb61c17fb2c");
+        c.DefineDerivedCounter("VSTime", "Timing", "Time vertex shaders are busy in nanoseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_NANOSECONDS, internalCounters, "(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "d6ce819e-69af-a241-d07a-5dd8d146e436");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -120,7 +121,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(54848);
+        internalCounters.push_back(55296);
         internalCounters.push_back(16827);
         internalCounters.push_back(17023);
         internalCounters.push_back(17219);
@@ -131,7 +132,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
         internalCounters.push_back(17421);
         internalCounters.push_back(12484);
 
-        c.DefineDerivedCounter("HSTime", "Timing", "Time hull shaders are busy in milliseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, internalCounters, "(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,0,TS_FREQ,/,(1000),*,*", "8792e9f1-fb39-b92a-b230-f33df4c8a0de");
+        c.DefineDerivedCounter("HSTime", "Timing", "Time hull shaders are busy in nanoseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_NANOSECONDS, internalCounters, "(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "8386a863-dd34-1526-f703-0f0c7b241bc4");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -162,7 +163,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(54848);
+        internalCounters.push_back(55296);
         internalCounters.push_back(16815);
         internalCounters.push_back(17011);
         internalCounters.push_back(17207);
@@ -173,7 +174,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
         internalCounters.push_back(17406);
         internalCounters.push_back(12484);
 
-        c.DefineDerivedCounter("GSTime", "Timing", "Time geometry shaders are busy in milliseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, internalCounters, "(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,0,TS_FREQ,/,(1000),*,*", "86d56794-f391-b601-9388-851b646d346c");
+        c.DefineDerivedCounter("GSTime", "Timing", "Time geometry shaders are busy in nanoseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_NANOSECONDS, internalCounters, "(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "c73e715f-59af-76e8-9e22-097b94c066c4");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -204,7 +205,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(54848);
+        internalCounters.push_back(55296);
         internalCounters.push_back(16849);
         internalCounters.push_back(17045);
         internalCounters.push_back(17241);
@@ -215,7 +216,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
         internalCounters.push_back(17442);
         internalCounters.push_back(12484);
 
-        c.DefineDerivedCounter("PSTime", "Timing", "Time pixel shaders are busy in milliseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, internalCounters, "(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,0,TS_FREQ,/,(1000),*,*", "f564ee00-ffcf-f7f6-fcbf-f200205cd0cc");
+        c.DefineDerivedCounter("PSTime", "Timing", "Time pixel shaders are busy in nanoseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_NANOSECONDS, internalCounters, "(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,0,TS_FREQ,/,(1000000000),*,*", "edca7694-7416-e8a6-0c5a-63a5ad5f3d74");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -262,7 +263,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(54848);
+        internalCounters.push_back(55296);
         internalCounters.push_back(16837);
         internalCounters.push_back(17033);
         internalCounters.push_back(17229);
@@ -281,22 +282,22 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
         internalCounters.push_back(17435);
         internalCounters.push_back(12484);
 
-        c.DefineDerivedCounter("CSTime", "Timing", "Time compute shaders are busy in milliseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_MILLISECONDS, internalCounters, "1,2,3,4,5,6,7,8,comparemax4,9,10,11,12,13,14,15,16,comparemax4,max,17,/,(1),min,0,TS_FREQ,/,(1000),*,*", "5177faaf-f59d-ee23-6e36-0ea087dca9dc");
+        c.DefineDerivedCounter("CSTime", "Timing", "Time compute shaders are busy in nanoseconds.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_NANOSECONDS, internalCounters, "1,2,3,4,5,6,7,8,comparemax4,9,10,11,12,13,14,15,16,comparemax4,max,17,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "dbc24916-ecb2-7eef-8d63-7afadaaab6bc");
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(50622);
-        internalCounters.push_back(50770);
-        internalCounters.push_back(50918);
-        internalCounters.push_back(51066);
-        internalCounters.push_back(50603);
-        internalCounters.push_back(50751);
-        internalCounters.push_back(50899);
-        internalCounters.push_back(51047);
-        internalCounters.push_back(50698);
-        internalCounters.push_back(50846);
-        internalCounters.push_back(50994);
-        internalCounters.push_back(51142);
+        internalCounters.push_back(51038);
+        internalCounters.push_back(51186);
+        internalCounters.push_back(51334);
+        internalCounters.push_back(51482);
+        internalCounters.push_back(51019);
+        internalCounters.push_back(51167);
+        internalCounters.push_back(51315);
+        internalCounters.push_back(51463);
+        internalCounters.push_back(51114);
+        internalCounters.push_back(51262);
+        internalCounters.push_back(51410);
+        internalCounters.push_back(51558);
 
         c.DefineDerivedCounter("VSVerticesIn", "VertexShader", "The number of vertices processed by the VS.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,sum4,4,5,6,7,sum4,4,5,6,7,sum4,ifnotzero,8,9,10,11,sum4,8,9,10,11,sum4,ifnotzero", "810a04c8-2ff4-081d-766d-bfa2bd4ad916");
     }
@@ -366,10 +367,10 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(50707);
-        internalCounters.push_back(50855);
-        internalCounters.push_back(51003);
-        internalCounters.push_back(51151);
+        internalCounters.push_back(51123);
+        internalCounters.push_back(51271);
+        internalCounters.push_back(51419);
+        internalCounters.push_back(51567);
 
         c.DefineDerivedCounter("HSPatches", "HullShader", "The number of patches processed by the HS.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,sum4", "d1bbd27d-d591-4509-df52-d329fb73a98f");
     }
@@ -439,23 +440,23 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(50611);
-        internalCounters.push_back(50759);
-        internalCounters.push_back(50907);
-        internalCounters.push_back(51055);
+        internalCounters.push_back(51027);
+        internalCounters.push_back(51175);
+        internalCounters.push_back(51323);
+        internalCounters.push_back(51471);
 
         c.DefineDerivedCounter("GSPrimsIn", "GeometryShader", "The number of primitives passed into the GS.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,sum4", "20c29866-509a-aaab-2697-6b2c38f79953");
     }
     {
         vector< gpa_uint32 > internalCounters;
-        internalCounters.push_back(50622);
-        internalCounters.push_back(50770);
-        internalCounters.push_back(50918);
-        internalCounters.push_back(51066);
-        internalCounters.push_back(50603);
-        internalCounters.push_back(50751);
-        internalCounters.push_back(50899);
-        internalCounters.push_back(51047);
+        internalCounters.push_back(51038);
+        internalCounters.push_back(51186);
+        internalCounters.push_back(51334);
+        internalCounters.push_back(51482);
+        internalCounters.push_back(51019);
+        internalCounters.push_back(51167);
+        internalCounters.push_back(51315);
+        internalCounters.push_back(51463);
 
         c.DefineDerivedCounter("GSVerticesOut", "GeometryShader", "The number of vertices output by the GS.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,ifnotzero", "775b9736-319a-bd8a-48c9-68db9c91d978");
     }
@@ -551,7 +552,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
         internalCounters.push_back(13718);
         internalCounters.push_back(12484);
 
-        c.DefineDerivedCounter("PrimitiveAssemblyBusy", "Timing", "The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,4,-,8,12,+,16,+,20,(2),*,+,SU_CLOCKS_PRIM,*,-,1,5,-,9,13,+,17,+,21,(2),*,+,SU_CLOCKS_PRIM,*,-,max,2,6,-,10,14,+,18,+,22,(2),*,+,SU_CLOCKS_PRIM,*,-,max,3,7,-,11,15,+,19,+,23,(2),*,+,SU_CLOCKS_PRIM,*,-,max,(0),max,24,/,(100),*,(100),min", "54ac5640-c4d7-95e2-20e0-6a9fdfc07333");
+        c.DefineDerivedCounter("PrimitiveAssemblyBusy", "Timing", "The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,4,-,8,12,+,16,+,20,(2),*,+,SU_CLOCKS_PRIM,*,-,1,5,-,9,13,+,17,+,21,(2),*,+,SU_CLOCKS_PRIM,*,-,max,2,6,-,10,14,+,18,+,22,(2),*,+,SU_CLOCKS_PRIM,*,-,max,3,7,-,11,15,+,19,+,23,(2),*,+,SU_CLOCKS_PRIM,*,-,max,(0),max,24,/,(100),*,(100),min", "fe08f347-91cb-01b6-02e4-d79f7cb89a93");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -580,7 +581,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
         internalCounters.push_back(13367);
         internalCounters.push_back(13718);
 
-        c.DefineDerivedCounter("PrimitiveAssemblyBusyCycles", "Timing", "Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, internalCounters, "0,4,-,8,12,+,16,+,20,(2),*,+,SU_CLOCKS_PRIM,*,-,1,5,-,9,13,+,17,+,21,(2),*,+,SU_CLOCKS_PRIM,*,-,max,2,6,-,10,14,+,18,+,22,(2),*,+,SU_CLOCKS_PRIM,*,-,max,3,7,-,11,15,+,19,+,23,(2),*,+,SU_CLOCKS_PRIM,*,-,max,(0),max", "99777f2d-9626-c78a-a97c-c4505eba1e5f");
+        c.DefineDerivedCounter("PrimitiveAssemblyBusyCycles", "Timing", "Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, internalCounters, "0,4,-,8,12,+,16,+,20,(2),*,+,SU_CLOCKS_PRIM,*,-,1,5,-,9,13,+,17,+,21,(2),*,+,SU_CLOCKS_PRIM,*,-,max,2,6,-,10,14,+,18,+,22,(2),*,+,SU_CLOCKS_PRIM,*,-,max,3,7,-,11,15,+,19,+,23,(2),*,+,SU_CLOCKS_PRIM,*,-,max,(0),max", "b75bc709-9c04-bf6c-b3f2-511b66e70ed0");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -663,7 +664,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
         internalCounters.push_back(16406);
         internalCounters.push_back(16614);
 
-        c.DefineDerivedCounter("PSPixelsOut", "PixelShader", "Pixels exported from shader to color buffers. Does not include killed or alpha tested pixels; if there are multiple render targets, each render target receives one export, so this will be 2 for 1 pixel written to two RTs.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,sum4,4,5,6,7,sum4,8,9,10,11,sum4,12,13,14,15,sum4,sum4", "24cba16c-baa6-6ecd-95ad-92ecb1338da1");
+        c.DefineDerivedCounter("PSPixelsOut", "PixelShader", "Pixels exported from shader to color buffers. Does not include killed or alpha tested pixels", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,sum4,4,5,6,7,sum4,8,9,10,11,sum4,12,13,14,15,sum4,sum4", "edd35449-8cba-daa2-06f8-8f0eb2bd42c8");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -685,7 +686,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
         internalCounters.push_back(16616);
         internalCounters.push_back(12484);
 
-        c.DefineDerivedCounter("PSExportStalls", "PixelShader", "Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,/,(100),*", "9b4f466c-ff97-22bb-557d-84d3c4c51895");
+        c.DefineDerivedCounter("PSExportStalls", "PixelShader", "Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,/,(100),*", "d438414c-9ff5-d60a-1468-92040ce387c7");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -706,7 +707,7 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
         internalCounters.push_back(16408);
         internalCounters.push_back(16616);
 
-        c.DefineDerivedCounter("PSExportStallsCycles", "PixelShader", "Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max", "47c72aad-64e6-0864-d533-d8e0bc27c156");
+        c.DefineDerivedCounter("PSExportStallsCycles", "PixelShader", "Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, internalCounters, "0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max", "477bf668-a6d3-bd1b-823e-3aff43b2beb4");
     }
     {
         vector< gpa_uint32 > internalCounters;
@@ -2356,21 +2357,21 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(46284);
-        internalCounters.push_back(46540);
-        internalCounters.push_back(46796);
-        internalCounters.push_back(47052);
-        internalCounters.push_back(47308);
-        internalCounters.push_back(47564);
-        internalCounters.push_back(47820);
-        internalCounters.push_back(48076);
-        internalCounters.push_back(48332);
-        internalCounters.push_back(48588);
-        internalCounters.push_back(48844);
-        internalCounters.push_back(49100);
-        internalCounters.push_back(49356);
-        internalCounters.push_back(49612);
-        internalCounters.push_back(49868);
-        internalCounters.push_back(50124);
+        internalCounters.push_back(46566);
+        internalCounters.push_back(46848);
+        internalCounters.push_back(47130);
+        internalCounters.push_back(47412);
+        internalCounters.push_back(47694);
+        internalCounters.push_back(47976);
+        internalCounters.push_back(48258);
+        internalCounters.push_back(48540);
+        internalCounters.push_back(48822);
+        internalCounters.push_back(49104);
+        internalCounters.push_back(49386);
+        internalCounters.push_back(49668);
+        internalCounters.push_back(49950);
+        internalCounters.push_back(50232);
+        internalCounters.push_back(50514);
 
         c.DefineDerivedCounter("CSWriteUnitStalledCycles", "ComputeShader", "Number of GPU cycles the write unit is stalled.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16", "be164c60-5e48-acac-9622-29616d09aa9a");
     }
@@ -4682,190 +4683,190 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(46292);
-        internalCounters.push_back(46548);
-        internalCounters.push_back(46804);
-        internalCounters.push_back(47060);
-        internalCounters.push_back(47316);
-        internalCounters.push_back(47572);
-        internalCounters.push_back(47828);
-        internalCounters.push_back(48084);
-        internalCounters.push_back(48340);
-        internalCounters.push_back(48596);
-        internalCounters.push_back(48852);
-        internalCounters.push_back(49108);
-        internalCounters.push_back(49364);
-        internalCounters.push_back(49620);
-        internalCounters.push_back(49876);
-        internalCounters.push_back(50132);
+        internalCounters.push_back(46574);
+        internalCounters.push_back(46856);
+        internalCounters.push_back(47138);
+        internalCounters.push_back(47420);
+        internalCounters.push_back(47702);
+        internalCounters.push_back(47984);
+        internalCounters.push_back(48266);
+        internalCounters.push_back(48548);
+        internalCounters.push_back(48830);
+        internalCounters.push_back(49112);
+        internalCounters.push_back(49394);
+        internalCounters.push_back(49676);
+        internalCounters.push_back(49958);
+        internalCounters.push_back(50240);
+        internalCounters.push_back(50522);
         internalCounters.push_back(46293);
-        internalCounters.push_back(46549);
-        internalCounters.push_back(46805);
-        internalCounters.push_back(47061);
-        internalCounters.push_back(47317);
-        internalCounters.push_back(47573);
-        internalCounters.push_back(47829);
-        internalCounters.push_back(48085);
-        internalCounters.push_back(48341);
-        internalCounters.push_back(48597);
-        internalCounters.push_back(48853);
-        internalCounters.push_back(49109);
-        internalCounters.push_back(49365);
-        internalCounters.push_back(49621);
-        internalCounters.push_back(49877);
-        internalCounters.push_back(50133);
+        internalCounters.push_back(46575);
+        internalCounters.push_back(46857);
+        internalCounters.push_back(47139);
+        internalCounters.push_back(47421);
+        internalCounters.push_back(47703);
+        internalCounters.push_back(47985);
+        internalCounters.push_back(48267);
+        internalCounters.push_back(48549);
+        internalCounters.push_back(48831);
+        internalCounters.push_back(49113);
+        internalCounters.push_back(49395);
+        internalCounters.push_back(49677);
+        internalCounters.push_back(49959);
+        internalCounters.push_back(50241);
+        internalCounters.push_back(50523);
 
         c.DefineDerivedCounter("FetchSize", "GlobalMemory", "The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(64),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(32),*,+", "664bb3ef-6eca-86b1-1e2d-30cb897b5fa9");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(46280);
-        internalCounters.push_back(46536);
-        internalCounters.push_back(46792);
-        internalCounters.push_back(47048);
-        internalCounters.push_back(47304);
-        internalCounters.push_back(47560);
-        internalCounters.push_back(47816);
-        internalCounters.push_back(48072);
-        internalCounters.push_back(48328);
-        internalCounters.push_back(48584);
-        internalCounters.push_back(48840);
-        internalCounters.push_back(49096);
-        internalCounters.push_back(49352);
-        internalCounters.push_back(49608);
-        internalCounters.push_back(49864);
-        internalCounters.push_back(50120);
+        internalCounters.push_back(46562);
+        internalCounters.push_back(46844);
+        internalCounters.push_back(47126);
+        internalCounters.push_back(47408);
+        internalCounters.push_back(47690);
+        internalCounters.push_back(47972);
+        internalCounters.push_back(48254);
+        internalCounters.push_back(48536);
+        internalCounters.push_back(48818);
+        internalCounters.push_back(49100);
+        internalCounters.push_back(49382);
+        internalCounters.push_back(49664);
+        internalCounters.push_back(49946);
+        internalCounters.push_back(50228);
+        internalCounters.push_back(50510);
         internalCounters.push_back(46281);
-        internalCounters.push_back(46537);
-        internalCounters.push_back(46793);
-        internalCounters.push_back(47049);
-        internalCounters.push_back(47305);
-        internalCounters.push_back(47561);
-        internalCounters.push_back(47817);
-        internalCounters.push_back(48073);
-        internalCounters.push_back(48329);
-        internalCounters.push_back(48585);
-        internalCounters.push_back(48841);
-        internalCounters.push_back(49097);
-        internalCounters.push_back(49353);
-        internalCounters.push_back(49609);
-        internalCounters.push_back(49865);
-        internalCounters.push_back(50121);
+        internalCounters.push_back(46563);
+        internalCounters.push_back(46845);
+        internalCounters.push_back(47127);
+        internalCounters.push_back(47409);
+        internalCounters.push_back(47691);
+        internalCounters.push_back(47973);
+        internalCounters.push_back(48255);
+        internalCounters.push_back(48537);
+        internalCounters.push_back(48819);
+        internalCounters.push_back(49101);
+        internalCounters.push_back(49383);
+        internalCounters.push_back(49665);
+        internalCounters.push_back(49947);
+        internalCounters.push_back(50229);
+        internalCounters.push_back(50511);
 
         c.DefineDerivedCounter("WriteSize", "GlobalMemory", "The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(64),*,+", "f96f2c16-b1b4-4ec4-229c-fc82e6f80a82");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(46271);
-        internalCounters.push_back(46527);
-        internalCounters.push_back(46783);
-        internalCounters.push_back(47039);
-        internalCounters.push_back(47295);
-        internalCounters.push_back(47551);
-        internalCounters.push_back(47807);
-        internalCounters.push_back(48063);
-        internalCounters.push_back(48319);
-        internalCounters.push_back(48575);
-        internalCounters.push_back(48831);
-        internalCounters.push_back(49087);
-        internalCounters.push_back(49343);
-        internalCounters.push_back(49599);
-        internalCounters.push_back(49855);
-        internalCounters.push_back(50111);
+        internalCounters.push_back(46553);
+        internalCounters.push_back(46835);
+        internalCounters.push_back(47117);
+        internalCounters.push_back(47399);
+        internalCounters.push_back(47681);
+        internalCounters.push_back(47963);
+        internalCounters.push_back(48245);
+        internalCounters.push_back(48527);
+        internalCounters.push_back(48809);
+        internalCounters.push_back(49091);
+        internalCounters.push_back(49373);
+        internalCounters.push_back(49655);
+        internalCounters.push_back(49937);
+        internalCounters.push_back(50219);
+        internalCounters.push_back(50501);
         internalCounters.push_back(46273);
-        internalCounters.push_back(46529);
-        internalCounters.push_back(46785);
-        internalCounters.push_back(47041);
-        internalCounters.push_back(47297);
-        internalCounters.push_back(47553);
-        internalCounters.push_back(47809);
-        internalCounters.push_back(48065);
-        internalCounters.push_back(48321);
-        internalCounters.push_back(48577);
-        internalCounters.push_back(48833);
-        internalCounters.push_back(49089);
-        internalCounters.push_back(49345);
-        internalCounters.push_back(49601);
-        internalCounters.push_back(49857);
-        internalCounters.push_back(50113);
+        internalCounters.push_back(46555);
+        internalCounters.push_back(46837);
+        internalCounters.push_back(47119);
+        internalCounters.push_back(47401);
+        internalCounters.push_back(47683);
+        internalCounters.push_back(47965);
+        internalCounters.push_back(48247);
+        internalCounters.push_back(48529);
+        internalCounters.push_back(48811);
+        internalCounters.push_back(49093);
+        internalCounters.push_back(49375);
+        internalCounters.push_back(49657);
+        internalCounters.push_back(49939);
+        internalCounters.push_back(50221);
+        internalCounters.push_back(50503);
 
         c.DefineDerivedCounter("L2CacheHit", "GlobalMemory", "The percentage of fetch, write, atomic, and other instructions that hit the L2 cache. Value range: 0% (no hit) to 100% (optimal).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,+,/,(100),*", "d78fdf66-104f-8372-02c1-91d07d7dc62e");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(46271);
-        internalCounters.push_back(46527);
-        internalCounters.push_back(46783);
-        internalCounters.push_back(47039);
-        internalCounters.push_back(47295);
-        internalCounters.push_back(47551);
-        internalCounters.push_back(47807);
-        internalCounters.push_back(48063);
-        internalCounters.push_back(48319);
-        internalCounters.push_back(48575);
-        internalCounters.push_back(48831);
-        internalCounters.push_back(49087);
-        internalCounters.push_back(49343);
-        internalCounters.push_back(49599);
-        internalCounters.push_back(49855);
-        internalCounters.push_back(50111);
+        internalCounters.push_back(46553);
+        internalCounters.push_back(46835);
+        internalCounters.push_back(47117);
+        internalCounters.push_back(47399);
+        internalCounters.push_back(47681);
+        internalCounters.push_back(47963);
+        internalCounters.push_back(48245);
+        internalCounters.push_back(48527);
+        internalCounters.push_back(48809);
+        internalCounters.push_back(49091);
+        internalCounters.push_back(49373);
+        internalCounters.push_back(49655);
+        internalCounters.push_back(49937);
+        internalCounters.push_back(50219);
+        internalCounters.push_back(50501);
         internalCounters.push_back(46273);
-        internalCounters.push_back(46529);
-        internalCounters.push_back(46785);
-        internalCounters.push_back(47041);
-        internalCounters.push_back(47297);
-        internalCounters.push_back(47553);
-        internalCounters.push_back(47809);
-        internalCounters.push_back(48065);
-        internalCounters.push_back(48321);
-        internalCounters.push_back(48577);
-        internalCounters.push_back(48833);
-        internalCounters.push_back(49089);
-        internalCounters.push_back(49345);
-        internalCounters.push_back(49601);
-        internalCounters.push_back(49857);
-        internalCounters.push_back(50113);
+        internalCounters.push_back(46555);
+        internalCounters.push_back(46837);
+        internalCounters.push_back(47119);
+        internalCounters.push_back(47401);
+        internalCounters.push_back(47683);
+        internalCounters.push_back(47965);
+        internalCounters.push_back(48247);
+        internalCounters.push_back(48529);
+        internalCounters.push_back(48811);
+        internalCounters.push_back(49093);
+        internalCounters.push_back(49375);
+        internalCounters.push_back(49657);
+        internalCounters.push_back(49939);
+        internalCounters.push_back(50221);
+        internalCounters.push_back(50503);
 
         c.DefineDerivedCounter("L2CacheMiss", "GlobalMemory", "The percentage of fetch, write, atomic, and other instructions that miss the L2 cache. Value range: 0% (optimal) to 100% (all miss).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,+,/,(100),*", "4cd70885-41b3-25cd-92db-c76a0decc634");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(46271);
-        internalCounters.push_back(46527);
-        internalCounters.push_back(46783);
-        internalCounters.push_back(47039);
-        internalCounters.push_back(47295);
-        internalCounters.push_back(47551);
-        internalCounters.push_back(47807);
-        internalCounters.push_back(48063);
-        internalCounters.push_back(48319);
-        internalCounters.push_back(48575);
-        internalCounters.push_back(48831);
-        internalCounters.push_back(49087);
-        internalCounters.push_back(49343);
-        internalCounters.push_back(49599);
-        internalCounters.push_back(49855);
-        internalCounters.push_back(50111);
+        internalCounters.push_back(46553);
+        internalCounters.push_back(46835);
+        internalCounters.push_back(47117);
+        internalCounters.push_back(47399);
+        internalCounters.push_back(47681);
+        internalCounters.push_back(47963);
+        internalCounters.push_back(48245);
+        internalCounters.push_back(48527);
+        internalCounters.push_back(48809);
+        internalCounters.push_back(49091);
+        internalCounters.push_back(49373);
+        internalCounters.push_back(49655);
+        internalCounters.push_back(49937);
+        internalCounters.push_back(50219);
+        internalCounters.push_back(50501);
 
         c.DefineDerivedCounter("L2CacheHitCount", "GlobalMemory", "Count of fetch, write, atomic, and other instructions that hit the L2 cache.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "d0bce171-560c-1895-66b3-bc56abccb077");
     }
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(46273);
-        internalCounters.push_back(46529);
-        internalCounters.push_back(46785);
-        internalCounters.push_back(47041);
-        internalCounters.push_back(47297);
-        internalCounters.push_back(47553);
-        internalCounters.push_back(47809);
-        internalCounters.push_back(48065);
-        internalCounters.push_back(48321);
-        internalCounters.push_back(48577);
-        internalCounters.push_back(48833);
-        internalCounters.push_back(49089);
-        internalCounters.push_back(49345);
-        internalCounters.push_back(49601);
-        internalCounters.push_back(49857);
-        internalCounters.push_back(50113);
+        internalCounters.push_back(46555);
+        internalCounters.push_back(46837);
+        internalCounters.push_back(47119);
+        internalCounters.push_back(47401);
+        internalCounters.push_back(47683);
+        internalCounters.push_back(47965);
+        internalCounters.push_back(48247);
+        internalCounters.push_back(48529);
+        internalCounters.push_back(48811);
+        internalCounters.push_back(49093);
+        internalCounters.push_back(49375);
+        internalCounters.push_back(49657);
+        internalCounters.push_back(49939);
+        internalCounters.push_back(50221);
+        internalCounters.push_back(50503);
 
         c.DefineDerivedCounter("L2CacheMissCount", "GlobalMemory", "Count of fetch, write, atomic, and other instructions that miss the L2 cache.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "f2ab3a1a-ead6-9893-961b-88ba2a758807");
     }
@@ -4916,21 +4917,21 @@ void AutoDefineDerivedCountersDX11Gfx9(GPA_DerivedCounters& c)
     {
         vector< gpa_uint32 > internalCounters;
         internalCounters.push_back(46284);
-        internalCounters.push_back(46540);
-        internalCounters.push_back(46796);
-        internalCounters.push_back(47052);
-        internalCounters.push_back(47308);
-        internalCounters.push_back(47564);
-        internalCounters.push_back(47820);
-        internalCounters.push_back(48076);
-        internalCounters.push_back(48332);
-        internalCounters.push_back(48588);
-        internalCounters.push_back(48844);
-        internalCounters.push_back(49100);
-        internalCounters.push_back(49356);
-        internalCounters.push_back(49612);
-        internalCounters.push_back(49868);
-        internalCounters.push_back(50124);
+        internalCounters.push_back(46566);
+        internalCounters.push_back(46848);
+        internalCounters.push_back(47130);
+        internalCounters.push_back(47412);
+        internalCounters.push_back(47694);
+        internalCounters.push_back(47976);
+        internalCounters.push_back(48258);
+        internalCounters.push_back(48540);
+        internalCounters.push_back(48822);
+        internalCounters.push_back(49104);
+        internalCounters.push_back(49386);
+        internalCounters.push_back(49668);
+        internalCounters.push_back(49950);
+        internalCounters.push_back(50232);
+        internalCounters.push_back(50514);
         internalCounters.push_back(12484);
 
         c.DefineDerivedCounter("WriteUnitStalled", "GlobalMemory", "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*", "594ad3ce-d1ec-10fc-7d59-25738e397d72");

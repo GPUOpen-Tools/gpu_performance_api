@@ -73,7 +73,7 @@ public:
     CounterResultLocationMap* GetCounterResultLocations(unsigned int publicCounterIndex) override;
 
     /// \copydoc IGPACounterScheduler::SetDrawCallCounts()
-    void SetDrawCallCounts(const int& iCounts) override;
+    void SetDrawCallCounts(int iCounts) override;
 
 protected:
 
@@ -106,7 +106,7 @@ protected:
 
     /// Helper function called when setting draw call counts
     /// \param iCount draw call count per frame
-    virtual void DoSetDrawCallCounts(const int& iCount);
+    virtual void DoSetDrawCallCounts(int iCount);
 
     /// A map between a public counter index and the set of hardware counters that compose the public counter.
     /// For each hardware counter, there is a map from the hardware counter to the counter result location (pass and offset) for that specific counter.

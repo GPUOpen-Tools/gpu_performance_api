@@ -5,10 +5,6 @@
 /// \brief Base class for counter generation
 //==============================================================================
 
-#if defined(WIN32)
-    #include <Windows.h>
-#endif
-
 #include "GPACounterGeneratorBase.h"
 
 GPA_CounterGeneratorBase::GPA_CounterGeneratorBase()

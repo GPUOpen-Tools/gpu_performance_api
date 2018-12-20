@@ -101,7 +101,7 @@ public:
 
     /// Set draw call counts (internal support)
     /// \param iCounts the count of draw calls
-    virtual void SetDrawCallCounts(const int& iCounts) = 0;
+    virtual void SetDrawCallCounts(int iCounts) = 0;
 };
 
 #endif //_GPA_I_COUNTER_SCHEDULER_H_

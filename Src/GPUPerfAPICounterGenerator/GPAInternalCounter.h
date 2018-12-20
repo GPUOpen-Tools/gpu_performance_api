@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  definitions for internal counters
@@ -18,7 +18,7 @@
     #define GPA_HIDE_NAME(_CounterName) ""
 #endif
 
-/// Contains all information pertaining to an hardware counter
+/// Contains all information pertaining to a hardware counter
 struct GPA_HardwareCounterDesc
 {
     gpa_uint64 m_counterIndexInGroup;   ///< 0-based index of counter within the group
@@ -44,7 +44,7 @@ const int maxSoftwareCounterNameLength = 20;                ///< maximum length 
 const int maxSoftwareCounterGroupLength = 20;               ///< maximum length for a software counter group name
 const int maxSoftwareCounterDescriptionLength = 86;         ///< maximum length for a software counter description
 
-/// Contains all information pertaining to an software counter
+/// Contains all information pertaining to a software counter
 struct GPA_SoftwareCounterDesc
 {
     gpa_uint64 m_counterIndexInGroup;                         ///< 0-based index of counter within the group

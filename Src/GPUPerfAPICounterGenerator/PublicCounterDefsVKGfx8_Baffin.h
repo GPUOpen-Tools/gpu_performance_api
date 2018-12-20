@@ -15,12 +15,12 @@
 namespace VKGfx8_Baffin
 {
 
-/// Updates default GPU generation public counters with ASIC specific public counters if available.
+/// Updates default GPU generation public derived counters with ASIC specific versions if available.
 /// \param desiredGeneration Hardware generation currently in use.
 /// \param asicType The ASIC type that is currently in use.
-/// \param p public counters instance.
-/// \return True if the ASIC matched one available, and c was updated.
-extern bool UpdateAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& p);
+/// \param c Derived counters instance.
+/// \return True if the ASIC matched one available, and derivedCounters was updated.
+extern bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c);
 
 } //VKGfx8_Baffin
 

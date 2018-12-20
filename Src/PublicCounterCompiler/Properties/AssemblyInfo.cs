@@ -1,4 +1,16 @@
-﻿using System.Reflection;
+﻿// =====================================================================
+// <copyright file="AssemblyInfo.cs" company="Advanced Micro Devices, Inc.">
+//    Copyright (c) 2011-2018 Advanced Micro Devices, Inc. All rights reserved.
+// </copyright>
+// <author>
+//    AMD Developer Tools Team
+// </author>
+// <summary>
+//    Project assembly information
+// </summary>
+// =====================================================================
+
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -10,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("PublicCounterCompiler")]
-[assembly: AssemblyCopyright("Copyright ©  2008")]
+[assembly: AssemblyCopyright("Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

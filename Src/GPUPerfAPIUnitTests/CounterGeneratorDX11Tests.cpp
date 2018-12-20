@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Unit Tests for DX11 Counter Generator
@@ -10,12 +10,10 @@
 #include "GPUPerfAPITypes.h"
 #include "GPAInternalCounter.h"
 
-#include "counters/PublicCountersDX11Gfx6.h"
-#include "counters/PublicCountersDX11Gfx7.h"
-#include "counters/PublicCountersDX11Gfx8.h"
-#include "counters/PublicCountersDX11Gfx9.h"
-
-#include "counters/SWCountersDX11.h"
+#include "counters/PublicDerivedCountersDX11Gfx6.h"
+#include "counters/PublicDerivedCountersDX11Gfx7.h"
+#include "counters/PublicDerivedCountersDX11Gfx8.h"
+#include "counters/PublicDerivedCountersDX11Gfx9.h"
 
 #ifdef AMDT_INTERNAL
     #include "InternalCountersDX11Gfx6.h"
@@ -87,6 +85,20 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
         counterNames.push_back(pPublicCounters[i].m_pName);
     }
 
+
+    // Optionally, get internal derived counters
+    const GPACounterDesc* pInternalDerivedCounters = nullptr;
+    size_t internalDerivedCounterCount = 0;
+
+#ifdef AMDT_INTERNAL
+    GPA_GetInternalDerivedCounters(GPA_API_DIRECTX_11, gen, &pInternalDerivedCounters, &internalDerivedCounterCount);
+#endif
+
+    for (size_t i = 0; i < internalDerivedCounterCount; i++)
+    {
+        counterNames.push_back(pInternalDerivedCounters[i].m_pName);
+    }
+
     for (unsigned int i = 0; i < hwGroupCount; i++)
     {
         for (unsigned int j = 0; j < pHardwareGroups[i].m_numCounters; j++)
@@ -94,18 +106,6 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             counterNames.push_back(ppHardwareCounters[i][j].m_pName);
         }
     }
-
-    /* No more sw counters
-    for (size_t i = 0; i < DX11SW_COUNTER_COUNT; i++)
-    {
-        counterNames.push_back(DX11SW_COUNTERS[i].m_pName);
-    }
-
-    if (GPA_HW_GENERATION_NVIDIA == gen || GPA_HW_GENERATION_INTEL == gen)
-    {
-        counterNames[0] = "GPUTime";
-    }
-    */
 }
 
 // Test the DX11 counter names on all supported hardware

@@ -5,6 +5,7 @@
 /// \brief  DX12 internal counter definitions for GFX9
 //==============================================================================
 
+#include "GPAInternalCounter.h"
 #include "GPAInternalCountersGfx9.h"
 #include "InternalCountersDX12Gfx9.h"
 
@@ -601,22 +602,22 @@ GPA_CounterGroupDesc HWDX12GroupsGfx9[] =
     {244, "TCP61", 61, 85, 4},
     {245, "TCP62", 62, 85, 4},
     {246, "TCP63", 63, 85, 4},
-    {247, "TCC0", 0, 256, 4},
-    {248, "TCC1", 1, 256, 4},
-    {249, "TCC2", 2, 256, 4},
-    {250, "TCC3", 3, 256, 4},
-    {251, "TCC4", 4, 256, 4},
-    {252, "TCC5", 5, 256, 4},
-    {253, "TCC6", 6, 256, 4},
-    {254, "TCC7", 7, 256, 4},
-    {255, "TCC8", 8, 256, 4},
-    {256, "TCC9", 9, 256, 4},
-    {257, "TCC10", 10, 256, 4},
-    {258, "TCC11", 11, 256, 4},
-    {259, "TCC12", 12, 256, 4},
-    {260, "TCC13", 13, 256, 4},
-    {261, "TCC14", 14, 256, 4},
-    {262, "TCC15", 15, 256, 4},
+    {247, "TCC0", 0, 282, 4},
+    {248, "TCC1", 1, 282, 4},
+    {249, "TCC2", 2, 282, 4},
+    {250, "TCC3", 3, 282, 4},
+    {251, "TCC4", 4, 282, 4},
+    {252, "TCC5", 5, 282, 4},
+    {253, "TCC6", 6, 282, 4},
+    {254, "TCC7", 7, 282, 4},
+    {255, "TCC8", 8, 282, 4},
+    {256, "TCC9", 9, 282, 4},
+    {257, "TCC10", 10, 282, 4},
+    {258, "TCC11", 11, 282, 4},
+    {259, "TCC12", 12, 282, 4},
+    {260, "TCC13", 13, 282, 4},
+    {261, "TCC14", 14, 282, 4},
+    {262, "TCC15", 15, 282, 4},
     {263, "TCA0", 0, 35, 4},
     {264, "TCA1", 1, 35, 4},
     {265, "DB0", 0, 328, 4},
@@ -682,7 +683,7 @@ GPA_CounterGroupDesc HWDX12GroupsGfx9[] =
     {325, "GCEA13", 13, 83, 2},
     {326, "GCEA14", 14, 83, 2},
     {327, "GCEA15", 15, 83, 2},
-    {328, "RPB", 0, 63, 4},
+    {328, "RPB", 0, 95, 4},
     {329, "RMI0", 0, 257, 4},
     {330, "RMI1", 1, 257, 4},
     {331, "RMI2", 2, 257, 4},
@@ -691,7 +692,7 @@ GPA_CounterGroupDesc HWDX12GroupsGfx9[] =
     {334, "RMI5", 5, 257, 4},
     {335, "RMI6", 6, 257, 4},
     {336, "RMI7", 7, 257, 4},
-    {337, "GPUTime", 0, 2, 2},
+    {337, "GPUTime", 0, 6, 2},
 };
 
 GPA_SQCounterGroupDesc HWDX12SQGroupsGfx9[] =
@@ -1287,10 +1288,14 @@ AmdExtGpuBlock HWDX12DriverEnumGfx9[] =
     AmdExtGpuBlock::Count,
 };
 
-const unsigned int HWDX12GPUTimeBottomToBottomIndexGfx9 = 54847;
-const unsigned int HWDX12GPUTimeTopToBottomIndexGfx9 = 54848;
+const unsigned int HWDX12GputimeBottomToBottomDurationIndexGfx9 = 55295; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for DX12 for Gfx9 family
+const unsigned int HWDX12GputimeBottomToBottomStartIndexGfx9 = 55296; ///< Index of time of the previous command reaching bottom of pipe for DX12 for Gfx9 family
+const unsigned int HWDX12GputimeBottomToBottomEndIndexGfx9 = 55297; ///< Index of time of the current command reaching bottom of pipe for DX12 for Gfx9 family
+const unsigned int HWDX12GputimeTopToBottomDurationIndexGfx9 = 55298; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for DX12 for Gfx9 family
+const unsigned int HWDX12GputimeTopToBottomStartIndexGfx9 = 55299; ///< Index of time that the current command reaches the top of pipe for DX12 for Gfx9 family
+const unsigned int HWDX12GputimeTopToBottomEndIndexGfx9 = 55300; ///< Index of time that the current command reaches the bottom of pipe for DX12 for Gfx9 family
 const std::set<unsigned int> HWDX12TimestampBlockIdsGfx9 = { 337 }; ///< Timestamp block id's for DX12 for Gfx9 family
-const std::set<unsigned int> HWDX12TimeCounterIndicesGfx9 = { 54847, 54848 }; ///< Timestamp counter indices for DX12 for Gfx9 family
+const std::set<unsigned int> HWDX12TimeCounterIndicesGfx9 = { 55295, 55296, 55297, 55298, 55299, 55300 }; ///< Timestamp counter indices for DX12 for Gfx9 family
 const unsigned int HWDX12GroupCountGfx9 = sizeof(HWDX12GroupsGfx9) / sizeof(GPA_CounterGroupDesc);
 const unsigned int HWDX12SQGroupCountGfx9 = sizeof(HWDX12SQGroupsGfx9) / sizeof(GPA_SQCounterGroupDesc);
 const unsigned int HWDX12SQIsolatedGroupCountGfx9 = sizeof(HWDX12SQIsolatedGroupsGfx9) / sizeof(unsigned int);

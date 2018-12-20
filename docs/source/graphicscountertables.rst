@@ -10,10 +10,19 @@ Timing Group
     :header: "Counter Name", "Brief Description", "Availability"
     :widths: 15, 60, 25
 
-    "GPUTime", "Time this API call took to execute on the GPU in milliseconds. Does not include time that draw calls are processed in parallel.", "| Vega
+    "GPUTime", "Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.", "| Vega
     | Graphics IP v8
     | Graphics IP v7
     | Graphics IP v6"
+    "ExecutionDuration", "GPU command execution duration in nanoseconds, from the time the command enters the top of the pipeline (TOP) to the time the command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.", "| Vega
+    | Graphics IP v8
+    | Graphics IP v7"
+    "ExecutionStart", "GPU command execution start time in nanoseconds. This is the time the command enters the top of the pipeline (TOP).", "| Vega
+    | Graphics IP v8
+    | Graphics IP v7"
+    "ExecutionEnd", "GPU command execution end time in nanoseconds. This is the time the command reaches the bottom of the pipeline (BOP).", "| Vega
+    | Graphics IP v8
+    | Graphics IP v7"
     "GPUBusy", "The percentage of time GPU was busy.", "| Vega
     | Graphics IP v8
     | Graphics IP v7
@@ -35,7 +44,7 @@ Timing Group
     "VSBusyCycles", "Number of GPU cycles that the ShaderUnit has vertex shader work to do.", "| Vega
     | Graphics IP v8
     | Graphics IP v7"
-    "VSTime", "Time vertex shaders are busy in milliseconds.", "| Vega
+    "VSTime", "Time vertex shaders are busy in nanoseconds.", "| Vega
     | Graphics IP v8
     | Graphics IP v7
     | Graphics IP v6"
@@ -46,7 +55,7 @@ Timing Group
     "HSBusyCycles", "Number of GPU cycles that the ShaderUnit has hull shader work to do.", "| Vega
     | Graphics IP v8
     | Graphics IP v7"
-    "HSTime", "Time hull shaders are busy in milliseconds.", "| Vega
+    "HSTime", "Time hull shaders are busy in nanoseconds.", "| Vega
     | Graphics IP v8
     | Graphics IP v7
     | Graphics IP v6"
@@ -57,7 +66,7 @@ Timing Group
     "GSBusyCycles", "Number of GPU cycles that the ShaderUnit has geometry shader work to do.", "| Vega
     | Graphics IP v8
     | Graphics IP v7"
-    "GSTime", "Time geometry shaders are busy in milliseconds.", "| Vega
+    "GSTime", "Time geometry shaders are busy in nanoseconds.", "| Vega
     | Graphics IP v8
     | Graphics IP v7
     | Graphics IP v6"
@@ -68,7 +77,7 @@ Timing Group
     "PSBusyCycles", "Number of GPU cycles that the ShaderUnit has pixel shader work to do.", "| Vega
     | Graphics IP v8
     | Graphics IP v7"
-    "PSTime", "Time pixel shaders are busy in milliseconds.", "| Vega
+    "PSTime", "Time pixel shaders are busy in nanoseconds.", "| Vega
     | Graphics IP v8
     | Graphics IP v7
     | Graphics IP v6"
@@ -79,15 +88,15 @@ Timing Group
     "CSBusyCycles", "Number of GPU cycles that the ShaderUnit has compute shader work to do.", "| Vega
     | Graphics IP v8
     | Graphics IP v7"
-    "CSTime", "Time compute shaders are busy in milliseconds.", "| Vega
+    "CSTime", "Time compute shaders are busy in nanoseconds.", "| Vega
     | Graphics IP v8
     | Graphics IP v7
     | Graphics IP v6"
-    "PrimitiveAssemblyBusy", "The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.", "| Vega
+    "PrimitiveAssemblyBusy", "The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives", "| Vega
     | Graphics IP v8
     | Graphics IP v7
     | Graphics IP v6"
-    "PrimitiveAssemblyBusyCycles", "Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.", "| Vega
+    "PrimitiveAssemblyBusyCycles", "Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives", "| Vega
     | Graphics IP v8
     | Graphics IP v7"
     "TexUnitBusy", "The percentage of GPUTime the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.", "| Vega
@@ -109,7 +118,7 @@ Timing Group
     | Graphics IP v6"
     "DSBusyCycles", "Number of GPU cycles that the ShaderUnit has domain shader work to do.", "| Graphics IP v8
     | Graphics IP v7"
-    "DSTime", "Time domain shaders are busy in milliseconds.", "| Graphics IP v8
+    "DSTime", "Time domain shaders are busy in nanoseconds.", "| Graphics IP v8
     | Graphics IP v7
     | Graphics IP v6"
 
@@ -241,15 +250,15 @@ PixelShader Group
     :header: "Counter Name", "Brief Description", "Availability"
     :widths: 15, 60, 25
 
-    "PSPixelsOut", "Pixels exported from shader to color buffers. Does not include killed or alpha tested pixels; if there are multiple render targets, each render target receives one export, so this will be 2 for 1 pixel written to two RTs.", "| Vega
+    "PSPixelsOut", "Pixels exported from shader to color buffers. Does not include killed or alpha tested pixels", "| Vega
     | Graphics IP v8
     | Graphics IP v7
     | Graphics IP v6"
-    "PSExportStalls", "Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.", "| Vega
+    "PSExportStalls", "Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases", "| Vega
     | Graphics IP v8
     | Graphics IP v7
     | Graphics IP v6"
-    "PSExportStallsCycles", "Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.", "| Vega
+    "PSExportStallsCycles", "Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases", "| Vega
     | Graphics IP v8
     | Graphics IP v7"
     "PSVALUInstCount", "Average number of vector ALU instructions executed in the PS. Affected by flow control.", "| Vega

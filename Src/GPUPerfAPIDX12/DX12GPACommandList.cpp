@@ -5,13 +5,14 @@
 /// \brief DX12 GPA Command List Implementation
 //==============================================================================
 
-#include "DX12GPACommandList.h"
 #include "GPACommonDefs.h"
+#include "DX12GPACommandList.h"
 #include "DX12Utils.h"
 #include "DX12GPASession.h"
 #include "DX12GPAContext.h"
 #include "Logging.h"
 #include "DX12GPAPass.h"
+#include "ADLUtil.h"
 
 static const UINT32 S_INVALID_SAMPLE_INDEX = static_cast<UINT32>(-1); ///< Invalid sample index
 
@@ -19,8 +20,9 @@ DX12GPACommandList::DX12GPACommandList(DX12GPASession* pDX12GpaSession,
                                        GPAPass* pDX12GpaPass,
                                        void* pCmd,
                                        CommandListId commandListId,
-                                       GPA_Command_List_Type cmdType):
-    GPACommandList(pDX12GpaSession, pDX12GpaPass, commandListId, cmdType)
+                                       GPA_Command_List_Type cmdType)
+    : GPACommandList(pDX12GpaSession, pDX12GpaPass, commandListId, cmdType)
+    , m_usePre1850Config(false)
 {
     m_pCmdList = reinterpret_cast<ID3D12GraphicsCommandList*>(pCmd);
     unsigned int refCount = m_pCmdList->AddRef();
@@ -31,6 +33,22 @@ DX12GPACommandList::DX12GPACommandList(DX12GPASession* pDX12GpaSession,
 
     // Hardware counters are requested from the client even though it is not available in the driver
     m_hasAnyHardwareCounters = pDX12GpaPass->GetEnabledCounterCount() > 0;
+
+    // BeginSample configuration struct can change based on driver versions
+    uint32_t majorVer = 0;
+    uint32_t minorVer = 0;
+    uint32_t subMinorVer = 0;
+    AMDTADLUtils::Instance()->GetDriverVersion(majorVer, minorVer, subMinorVer);
+
+    // If the driver is unsigned, or the version is >= 18.50 use the default configuration
+    if (!(majorVer || minorVer || subMinorVer) || (majorVer > 18) || (majorVer == 18 && minorVer >= 50))
+    {
+        m_usePre1850Config = false;
+    }
+    else
+    {
+        m_usePre1850Config = true;
+    }
 }
 
 DX12GPACommandList::~DX12GPACommandList()
@@ -252,7 +270,17 @@ bool DX12GPACommandList::OpenHwSample(ClientSampleId clientSampleId, DriverSampl
 
             if (m_hasAnyHardwareCounters)
             {
-                *pDriverSampleId = m_pAmdExtSession->BeginSample(m_pCmdList, reinterpret_cast<DX12GPAPass*>(GetPass())->GetAmdExtSampleConfig());
+                // If the driver is unsigned, or the version is >= 18.50 use the default configuration
+                if (m_usePre1850Config)
+                {
+                    auto olderConfig = reinterpret_cast<DX12GPAPass*>(GetPass())->GetPre1850DriverExtSampleConfig();
+
+                    *pDriverSampleId = m_pAmdExtSession->BeginSample(m_pCmdList, *(AmdExtGpaSampleConfig*)(&olderConfig));
+                }
+                else
+                {
+                    *pDriverSampleId = m_pAmdExtSession->BeginSample(m_pCmdList, reinterpret_cast<DX12GPAPass*>(GetPass())->GetDriverExtSampleConfig());
+                }
 
                 if (*pDriverSampleId == S_INVALID_SAMPLE_INDEX)
                 {

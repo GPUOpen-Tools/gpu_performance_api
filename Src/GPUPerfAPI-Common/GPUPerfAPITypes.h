@@ -76,7 +76,9 @@ typedef unsigned int     gpa_uint32;  ///< GPA specific type for 32-bit unsigned
     typedef unsigned int       UINT;       ///< GPA specific type to define UINT on Linux
     typedef unsigned long long gpa_uint64; ///< GPA specific type for 64-bit unsigned integer
 
-    #define UNREFERENCED_PARAMETER(x)
+#ifndef UNREFERENCED_PARAMETER
+    #define UNREFERENCED_PARAMETER(x) (void)(x)
+#endif
 
     #define _strcmpi(a, b) strcasecmp(a, b)
     #define _stricmp(a, b) strcasecmp(a, b)
@@ -221,6 +223,7 @@ typedef enum
     GPA_USAGE_TYPE_BYTES,        ///< Result is in bytes
     GPA_USAGE_TYPE_ITEMS,        ///< Result is a count of items or objects (ie, vertices, triangles, threads, pixels, texels, etc)
     GPA_USAGE_TYPE_KILOBYTES,    ///< Result is in kilobytes
+    GPA_USAGE_TYPE_NANOSECONDS,  ///< Result is in nanoseconds
     GPA_USAGE_TYPE__LAST         ///< Marker indicating last element
 } GPA_Usage_Type;
 
@@ -253,7 +256,8 @@ typedef enum
     GPA_API_DIRECTX_12,                  ///< DirectX 12 API
     GPA_API_OPENGL,                      ///< OpenGL API
     GPA_API_OPENCL,                      ///< OpenCL API
-    GPA_API_HSA,                         ///< HSA API
+    GPA_API_ROCM,                        ///< ROCm API
+    GPA_API_HSA = GPA_API_ROCM,          ///< HSA API -- maps to ROCm API, enum value left here for backwards compatibility
     GPA_API_VULKAN,                      ///< Vulkan API
     GPA_API_NO_SUPPORT,                  ///< APIs which are not yet supported or for which support has been removed
     GPA_API__LAST                        ///< Marker indicating last element

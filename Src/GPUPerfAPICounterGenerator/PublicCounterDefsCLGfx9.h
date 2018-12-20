@@ -12,8 +12,8 @@
 
 #include "GPADerivedCounters.h"
 
-/// Defines the public counters for CLGFX9
-/// \param c public counters instance
-void AutoDefineDerivedCountersCLGfx9(GPA_DerivedCounters& c);
+/// Defines the public derived counters for CLGFX9
+/// \param c derived counters instance
+void AutoDefinePublicDerivedCountersCLGfx9(GPA_DerivedCounters& c);
 
 #endif // _PUBLIC_COUNTER_DEFS_CLGFX9_H_

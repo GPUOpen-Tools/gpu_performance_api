@@ -58,7 +58,7 @@ void GPAAPIErrorTest::SetUpTestCase()
     ms_apiName[GPA_API_DIRECTX_12] = "DX12";
     ms_apiName[GPA_API_OPENGL] = "OpenGL";
     ms_apiName[GPA_API_OPENCL] = "OpenCL";
-    ms_apiName[GPA_API_HSA] = "HSA";
+    ms_apiName[GPA_API_ROCM] = "ROCm";
     ms_apiName[GPA_API_VULKAN] = "Vulkan";
     ms_apiName[GPA_API_NO_SUPPORT] = "ApiNotSupported";
 }
@@ -1318,9 +1318,9 @@ INSTANTIATE_TEST_CASE_P(
     GPAAPIErrorTest,
     ::testing::Values(
         GPA_API_VULKAN
-        , GPA_API_OPENCL
 #ifndef X86
-    , GPA_API_HSA
+        , GPA_API_OPENCL
+        , GPA_API_ROCM
 #endif
         , GPA_API_OPENGL
     )

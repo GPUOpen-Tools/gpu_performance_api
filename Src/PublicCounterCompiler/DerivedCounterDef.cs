@@ -96,31 +96,6 @@ namespace PublicCounterCompiler
     public class DerivedCounterDef
     {
         /// <summary>
-        /// The name of the counter.
-        /// </summary>
-        private string name = string.Empty;
-
-        /// <summary>
-        /// The counter group.
-        /// </summary>
-        private string group = string.Empty;
-
-        /// <summary>
-        /// The counter description.
-        /// </summary>
-        private string desc = string.Empty;
-
-        /// <summary>
-        /// The counter type. data type?
-        /// </summary>
-        private string type = string.Empty;
-
-        /// <summary>
-        /// The counter usage.
-        /// </summary>
-        private string usage = string.Empty;
-
-        /// <summary>
         /// MD5 hash function used by reproducible counter GUID generation based on the
         /// counter name and description
         /// </summary>
@@ -306,24 +281,17 @@ namespace PublicCounterCompiler
         private List<HardwareCounterDef> counters = new List<HardwareCounterDef>();
 
         /// <summary>
-        /// The counter computation equation.
-        /// </summary>
-        private string comp = string.Empty;
-
-        /// <summary>
         /// Gets or sets the name of the counter.
         /// </summary>
         public string Name
         {
-            get
-            {
-                return this.name;
-            }
+            get;
+            set;
+        }
 
-            set
-            {
-                this.name = value;
-            }
+        public bool ValidName()
+        {
+            return !string.IsNullOrEmpty(Name);
         }
 
         /// <summary>
@@ -331,15 +299,8 @@ namespace PublicCounterCompiler
         /// </summary>
         public string Group
         {
-            get
-            {
-                return this.group;
-            }
-
-            set
-            {
-                this.group = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -347,15 +308,8 @@ namespace PublicCounterCompiler
         /// </summary>
         public string Desc
         {
-            get
-            {
-                return this.desc;
-            }
-
-            set
-            {
-                this.desc = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -363,15 +317,8 @@ namespace PublicCounterCompiler
         /// </summary>
         public string Type
         {
-            get
-            {
-                return this.type;
-            }
-
-            set
-            {
-                this.type = value;
-            }
+            get;
+            set;
         }
 
         /// <summary>
@@ -379,15 +326,13 @@ namespace PublicCounterCompiler
         /// </summary>
         public string Usage
         {
-            get
-            {
-                return this.usage;
-            }
+            get;
+            set;
+        }
 
-            set
-            {
-                this.usage = value;
-            }
+        public bool ValidUsage()
+        {
+            return !string.IsNullOrEmpty(Usage);
         }
 
         /// <summary>
@@ -395,15 +340,13 @@ namespace PublicCounterCompiler
         /// </summary>
         public string Comp
         {
-            get
-            {
-                return this.comp;
-            }
+            get;
+            set;
+        }
 
-            set
-            {
-                this.comp = value;
-            }
+        public bool ValidEquation()
+        {
+            return !string.IsNullOrEmpty(Comp);
         }
 
         /// <summary>
@@ -478,7 +421,7 @@ namespace PublicCounterCompiler
         {
             get
             {
-                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(name + desc));
+                byte[] data = md5Hash.ComputeHash(Encoding.UTF8.GetBytes(Name + Desc));
 
                 StringBuilder sBuilder = new StringBuilder();
 

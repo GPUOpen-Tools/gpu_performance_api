@@ -410,8 +410,7 @@ GPA_CommandListId GPASession::CreateCommandList(gpa_uint32 passIndex, void* pCmd
 
     std::lock_guard<std::mutex> lockResources(m_gpaSessionMutex);
 
-    if (passIndex >= 0 &&
-        passIndex < m_passes.size())
+    if (passIndex < m_passes.size())
     {
         GPAPass* pTmpPass = m_passes[passIndex];
 
@@ -478,8 +477,7 @@ bool GPASession::DoesCommandListExist(gpa_uint32 passIndex, GPA_CommandListId pC
     {
         std::lock_guard<std::mutex> lockResources(m_gpaSessionMutex);
 
-        if (passIndex >= 0 &&
-            passIndex < m_passes.size())
+        if (passIndex < m_passes.size())
         {
             GPAPass* pTmpPass = m_passes[passIndex];
 
@@ -697,13 +695,13 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
                 results.reserve(requiredCount);
                 types.reserve(requiredCount);
 
-                gpa_uint64* pAllResults = new(std::nothrow) gpa_uint64[requiredCount];
+                std::vector<gpa_uint64> allResults(requiredCount);
 
                 unsigned int resultIndex = 0;
 
                 for (std::vector<gpa_uint32>::iterator requiredCounterIter = internalCountersRequired.begin(); requiredCounterIter != internalCountersRequired.end(); ++requiredCounterIter)
                 {
-                    gpa_uint64* pResultBuffer = &(pAllResults[resultIndex]);
+                    gpa_uint64* pResultBuffer = &(allResults.data()[resultIndex]);
                     ++resultIndex;
                     results.push_back(pResultBuffer);
                     GPA_Data_Type type = GPA_DATA_TYPE_UINT64; // all hardware counters are UINT64
@@ -714,11 +712,10 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
                     if (resultLocationIter == resultLocations.end())
                     {
                         GPA_LogError("Could not find required counter among the results.");
-                        delete[] pAllResults;
                         return GPA_STATUS_ERROR_READING_SAMPLE_RESULT;
                     }
 
-                    *pResultBuffer = m_passes[resultLocationIter->second.m_pass]->GetResult(sampleId, *requiredCounterIter);
+                    status = m_passes[resultLocationIter->second.m_pass]->GetResult(sampleId, *requiredCounterIter, pResultBuffer);
 
 #ifdef AMDT_INTERNAL
                     gpa_uint32 numPublicCounters = pCounterAccessor->GetNumPublicCounters();
@@ -770,14 +767,6 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
                                                                          reinterpret_cast<gpa_uint64*>(pCounterSampleResults) + counterIndexIter,
                                                                          m_pParentContext->GetHwInfo());
                 }
-
-                delete[] pAllResults;
-
-                if (status != GPA_STATUS_OK)
-                {
-                    return status;
-                }
-
                 break;
             }
 
@@ -786,7 +775,7 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
                 gpa_uint64* pUint64Results = reinterpret_cast<gpa_uint64*>(pCounterSampleResults) + counterIndexIter;
 
                 gpa_uint16 counterResultPass = resultLocations[sourceLocalIndex].m_pass;
-                *pUint64Results = m_passes[counterResultPass]->GetResult(sampleId, internalCountersRequired[0]);
+                status = m_passes[counterResultPass]->GetResult(sampleId, internalCountersRequired[0], pUint64Results);
                 break;
             }
 
@@ -796,7 +785,7 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
 
                 auto iter = resultLocations.begin();
                 gpa_uint16 counterResultPass = iter->second.m_pass;
-                buf = m_passes[counterResultPass]->GetResult(sampleId, internalCountersRequired[0]);
+                status = m_passes[counterResultPass]->GetResult(sampleId, internalCountersRequired[0], &buf);
 
                 gpa_uint64* pUint64Results = reinterpret_cast<gpa_uint64*>(pCounterSampleResults) + counterIndexIter;
 
@@ -808,6 +797,11 @@ GPA_Status GPASession::GetSampleResult(gpa_uint32 sampleId, size_t sampleResultS
             case GPACounterSource::UNKNOWN: break;
 
             default: ;
+        }
+
+        if (status != GPA_STATUS_OK)
+        {
+            break;
         }
     }
 

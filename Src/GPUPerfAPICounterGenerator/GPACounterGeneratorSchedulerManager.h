@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class that will get the correct Generator and Scheduler for an API/Generation combination
@@ -35,7 +35,7 @@ public:
     /// \param apiType the API whose generator is needed
     /// \param generation the hardware generation whose generator is needed
     /// \param[out] pCounterGeneratorOut the generator registered for the specified API/HwGen
-    /// \return true if there is a generator registered for the API/HwGen, false otehrwise
+    /// \return true if there is a generator registered for the API/HwGen, false otherwise
     bool GetCounterGenerator(GPA_API_Type apiType, GDT_HW_GENERATION generation, GPA_CounterGeneratorBase*& pCounterGeneratorOut);
 
     /// Registers an API/HwGen-specific counter scheduler
@@ -49,7 +49,7 @@ public:
     /// \param apiType the API whose scheduler is needed
     /// \param generation the hardware generation whose scheduler is needed
     /// \param[out] pCounterSchedulerOut the scheduler registered for the specified API/HwGen
-    /// \return true if there is a scheduler registered for the API/HwGen, false otehrwise
+    /// \return true if there is a scheduler registered for the API/HwGen, false otherwise
     bool GetCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, IGPACounterScheduler*& pCounterSchedulerOut);
 
 protected:

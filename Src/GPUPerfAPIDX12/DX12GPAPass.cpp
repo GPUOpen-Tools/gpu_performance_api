@@ -249,12 +249,6 @@ bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples
     return success;
 }
 
-
-AmdExtGpaSampleConfig DX12GPAPass::GetAmdExtSampleConfig() const
-{
-    return m_amdExtsampleConfig;
-}
-
 DX12GPAPass::~DX12GPAPass()
 {
     if (AmdExtGpaSampleType::Timing != m_amdExtsampleConfig.type)
@@ -280,11 +274,11 @@ void DX12GPAPass::InitializeSampleConfig()
             {
                 m_amdExtsampleConfig.type = AmdExtGpaSampleType::Timing;
 
-                if (m_pCounterList->at(0) == pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex)
+                if (true == pHardwareCounters->IsBottomOfPipeCounterIndex(m_pCounterList->at(0)))
                 {
                     m_amdExtsampleConfig.timing.preSample = AmdExtHwPipePoint::HwPipeBottom;
                 }
-                else if (m_pCounterList->at(0) == pHardwareCounters->m_gpuTimeTopToBottomCounterIndex)
+                else if (true == pHardwareCounters->IsTopOfPipeCounterIndex(m_pCounterList->at(0)))
                 {
                     m_amdExtsampleConfig.timing.preSample = AmdExtHwPipePoint::HwPipeTop;
                 }

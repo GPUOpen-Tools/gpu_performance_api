@@ -275,7 +275,7 @@ bool GLGPAPass::GLPerfMonitor::Initialize()
 {
     // Create perf monitor
     oglUtils::_oglGenPerfMonitorsAMD(1, &m_glPerfMonitorId);
-    return !oglUtils::CheckForGLError("Unable to create AMD Permonitor GL extension.");
+    return !oglUtils::CheckForGLError("Unable to create AMD PerfMonitor GL extension.");
 }
 
 GLPerfMonitorId GLGPAPass::GLPerfMonitor::GetPerfMonitorId() const

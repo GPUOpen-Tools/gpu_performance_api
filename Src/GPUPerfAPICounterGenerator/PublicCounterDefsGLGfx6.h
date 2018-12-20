@@ -12,8 +12,8 @@
 
 #include "GPADerivedCounters.h"
 
-/// Defines the public counters for GLGFX6
-/// \param c public counters instance
-void AutoDefineDerivedCountersGLGfx6(GPA_DerivedCounters& c);
+/// Defines the public derived counters for GLGFX6
+/// \param c derived counters instance
+void AutoDefinePublicDerivedCountersGLGfx6(GPA_DerivedCounters& c);
 
 #endif // _PUBLIC_COUNTER_DEFS_GLGFX6_H_

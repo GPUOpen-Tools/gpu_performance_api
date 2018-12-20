@@ -126,28 +126,29 @@ public:
 
     /// Should confirm that results have been returned from all samples on this pass.
     /// By default, this is implemented to ask each individual sample if it is complete,
-    /// but may be overridden if more optimal solutions exist (ie, in DX12 and Vulkan).
+    /// but may be overridden if more optimal solutions exist (i.e., in DX12 and Vulkan).
     /// \return GPA_STATUS_OK on successful execution
     virtual GPA_Status IsComplete() const;
 
     /// Should confirm that results are ready to be collected in this pass.
     /// By default, this is implemented to ask each individual command list
-    /// if it is complete and ready to retreive the results,
-    /// but may be overridden if more optimal solutions exist (ie, in DX12 and Vulkan).
+    /// if it is complete and ready to retrieve the results,
+    /// but may be overridden if more optimal solutions exist (i.e., in DX12 and Vulkan).
     /// \return true if result is ready otherwise false
     virtual bool IsResultReady() const;
 
     /// Should confirm that results have been returned from all samples on this pass.
     /// By default, this is implemented to ask each individual sample if it is complete,
-    /// but may be overridden if more optimal solutions exist (ie, in DX12 and Vulkan).
+    /// but may be overridden if more optimal solutions exist (i.e., in DX12 and Vulkan).
     /// \return true if result is collected otherwise false
     virtual bool IsResultCollected() const;
 
     /// Gets the result for a specific counter within a specific sample.
-    /// \param[in] clientSampleId The Sample to get the result from.
-    /// \param[in] internalCounterIndex internal counter index
-    /// \return The 64-bit counter value.
-    virtual gpa_uint64 GetResult(ClientSampleId clientSampleId, CounterIndex internalCounterIndex) const;
+    /// \param[in] clientSampleId the Sample to get the result from.
+    /// \param[in] internalCounterIndex internal counter index.
+    /// \param[out] pResultBuffer the 64-bit counter value.
+    /// \return GPA_STATUS_OK on successful execution
+    virtual GPA_Status GetResult(ClientSampleId clientSampleId, CounterIndex internalCounterIndex, gpa_uint64* pResultBuffer) const;
 
     /// Checks to see if the supplied command list exists on this pass.
     /// \param pGpaCommandList The IGPACommandList to search for.
@@ -185,13 +186,13 @@ public:
     /// \return number of counters
     CounterCount GetNumEnabledCountersForPass() const;
 
-    /// Returns the index of the EOP to TOP timing counter
-    /// \return index of the EOP to EOP timing counter
-    gpa_uint32 GetBottomToBottomTimingCounterIndex() const;
+    /// Returns the index of the BOP to BOP timing counter
+    /// \return index of the BOP to BOP timing counter
+    gpa_uint32 GetBottomToBottomTimingDurationCounterIndex() const;
 
-    /// Returns the index of the TOP to TOP timing counter
-    /// \return index of the TOP to EOP timing counter
-    gpa_uint32 GetTopToBottomTimingCounterIndex() const;
+    /// Returns the index of the TOP to BOP timing counter
+    /// \return index of the TOP to BOP timing counter
+    gpa_uint32 GetTopToBottomTimingDurationCounterIndex() const;
 
     /// Iterate over all the counter in the pass
     /// \param[in] function function to be executed for each object in the list - function may return false to terminate iteration
@@ -210,6 +211,10 @@ public:
     /// \param[out] pInternalCounterIndex internal counter index from the counter generator
     /// \return true if counter index is found otherwise false
     bool GetCounterByIndexInPass(CounterIndex counterIndexInPass, CounterIndex* pInternalCounterIndex) const;
+
+    /// Returns the counter accessor for the pass' session context
+    /// \return counter accessor
+    const IGPACounterAccessor* GetSessionContextCounterAccessor() const;
 
 protected:
 
@@ -245,9 +250,9 @@ protected:
 
     /// Get the counter index in the list of the counters passed to the driver for sample creation
     /// \param[in] internalCounterIndex internal counter index from the counter generator
-    /// \param[out] counterIndexInPassList index of the counter in the list of the counters passed to the driver for sample creation
+    /// \param[out] pCounterIndexInPassList index of the counter in the list of the counters passed to the driver for sample creation
     /// \return true if the internal counter is passed to the driver for sampling otherwise false
-    bool GetCounterIndexInPass(CounterIndex internalCounterIndex, CounterIndex& counterIndexInPassList) const;
+    bool GetCounterIndexInPass(CounterIndex internalCounterIndex, CounterIndex* pCounterIndexInPassList) const;
 
     /// Returns the status of the result from the driver
     /// \return true if the result from the driver is copied to GPA memory otherwise false
@@ -283,14 +288,14 @@ private:
     bool                       m_isResultCollected;             ///< flag indicating completion of the pass i.e. data has been collected from the driver
     mutable bool               m_isResultReady;                 ///< flag indicating whether or not results are ready to be collected
     bool                       m_isTimingPass;                  ///< flag indicating pass is timing pass
-    mutable std::mutex         m_counterListMutex;              ///< Mutex to protect the m_usedCounterListForPass member;
+    mutable std::mutex         m_counterListMutex;              ///< Mutex to protect the m_usedCounterListForPass member
     CounterList                m_usedCounterListForPass;        ///< list of counters passed to driver for sample
-    SkippedCounters            m_skippedCounterList;            ///< List of unsupported counters - these are counters whose blocks are not suported by the API specific driver
+    SkippedCounters            m_skippedCounterList;            ///< List of unsupported counters - these are counters whose blocks are not supported by the API specific driver
     mutable std::mutex         m_gpaCmdListMutex;               ///< Mutex to protect the gpaCmdList
-    GPACommandLists            m_gpaCmdList;                    ///< list of api specific command Lists
+    GPACommandLists            m_gpaCmdList;                    ///< list of API specific command Lists
     mutable std::mutex         m_samplesUnorderedMapMutex;      ///< Mutex to protect the samples map
     SamplesMap                 m_samplesUnorderedMap;           ///< client sample id and GPASample object unordered map
-    ClientGpaSamplesMap        m_clientGpaSamplesMap;           ///< cleint sample id and internal sample id map
+    ClientGpaSamplesMap        m_clientGpaSamplesMap;           ///< client sample id and internal sample id map
     GpaInternalSampleCounter   m_gpaInternalSampleCounter;      ///< atomic counter for internal sample counter
     CommandListCounter         m_commandListCounter;            ///< counter representing number of command list created in this pass - This will help in validation and uniquely identifying two different command list
     mutable bool               m_isAllSampleValidInPass;        ///< flag indicating all the sample in the pass is valid or not - for cache

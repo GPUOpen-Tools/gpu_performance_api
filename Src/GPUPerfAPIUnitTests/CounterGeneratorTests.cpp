@@ -11,6 +11,12 @@
 #include <map>
 #include <algorithm>
 
+#ifdef _WIN32
+    const char* countersLibName = "GPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX".dll";
+#else
+    const char* countersLibName = "libGPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX".so";
+#endif
+
 LibHandle LoadLib(const char* pLibName)
 {
     LibHandle retVal = nullptr;

@@ -71,6 +71,11 @@ bool GPA_CounterGeneratorGL::GenerateDriverSuppliedInternalCounters(GPA_Hardware
             return false;
         }
 
+        if (static_cast<unsigned int>(nNumGroups) < pHardwareCounters->m_groupCount)
+        {
+            return false;
+        }
+
         // Get the group Ids
         GLuint* pPerfGroups = new(std::nothrow) GLuint[nNumGroups];
 
@@ -313,60 +318,96 @@ GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(
     gpa_uint8 generateAsicSpecificCounters,
     GPA_DerivedCounters* pPublicCounters)
 {
-    pPublicCounters->Clear();
+    auto status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
 
-    switch (desiredGeneration)
+    if (nullptr == pPublicCounters)
     {
-        case GDT_HW_GENERATION_SOUTHERNISLAND:
+        status = GPA_STATUS_ERROR_NULL_POINTER;
+    }
+    else if (pPublicCounters->m_countersGenerated)
+    {
+        status = GPA_STATUS_OK;
+    }
+    else
+    {
+        pPublicCounters->Clear();
+
+        switch (desiredGeneration)
         {
-            AutoDefineDerivedCountersGLGfx6(*pPublicCounters);
-
-            if (generateAsicSpecificCounters)
+            case GDT_HW_GENERATION_SOUTHERNISLAND:
             {
-                GLGfx6Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                AutoDefinePublicDerivedCountersGLGfx6(*pPublicCounters);
+
+                if (generateAsicSpecificCounters)
+                {
+                    GLGfx6Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                }
+
+                status = GPA_STATUS_OK;
             }
-        }
-        break;
+            break;
 
-        case GDT_HW_GENERATION_SEAISLAND:
-        {
-            AutoDefineDerivedCountersGLGfx7(*pPublicCounters);
-
-            if (generateAsicSpecificCounters)
+            case GDT_HW_GENERATION_SEAISLAND:
             {
-                GLGfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                AutoDefinePublicDerivedCountersGLGfx7(*pPublicCounters);
+
+                if (generateAsicSpecificCounters)
+                {
+                    GLGfx7Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                }
+
+                status = GPA_STATUS_OK;
             }
-        }
-        break;
+            break;
 
-        case GDT_HW_GENERATION_VOLCANICISLAND:
-        {
-            AutoDefineDerivedCountersGLGfx8(*pPublicCounters);
-
-            if (generateAsicSpecificCounters)
+            case GDT_HW_GENERATION_VOLCANICISLAND:
             {
-                GLGfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                AutoDefinePublicDerivedCountersGLGfx8(*pPublicCounters);
+
+                if (generateAsicSpecificCounters)
+                {
+                    GLGfx8Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                }
+
+                status = GPA_STATUS_OK;
             }
-        }
-        break;
+            break;
 
-        case GDT_HW_GENERATION_GFX9:
-        {
-            AutoDefineDerivedCountersGLGfx9(*pPublicCounters);
-
-            if (generateAsicSpecificCounters)
+            case GDT_HW_GENERATION_GFX9:
             {
-                GLGfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
-            }
-        }
-        break;
+                AutoDefinePublicDerivedCountersGLGfx9(*pPublicCounters);
 
-        default:
-            GPA_LogError("Unsupported or unrecognized hardware generation. Cannot generate public counters.");
-            return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+                if (generateAsicSpecificCounters)
+                {
+                    GLGfx9Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                }
+
+                status = GPA_STATUS_OK;
+            }
+            break;
+
+            default:
+                GPA_LogError("Unsupported or unrecognized hardware generation. Cannot generate public counters.");
+                break;
+        }
     }
 
-    return GPA_STATUS_OK;
+    auto internalStatus = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+
+#ifdef AMDT_INTERNAL
+    internalStatus = GPA_LoadInternalCounters(GPA_API_OPENGL, desiredGeneration,asicType, generateAsicSpecificCounters, pPublicCounters);
+#endif
+
+    if (GPA_STATUS_OK == status)
+    {
+        pPublicCounters->m_countersGenerated = true;
+    }
+    else
+    {
+        status = internalStatus;
+    }
+
+    return status;
 }
 
 GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(
@@ -392,8 +433,12 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(
             pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx6;
             pHardwareCounters->m_timestampBlockIds = HWGLTimestampBlockIdsGfx6;
             pHardwareCounters->m_timeCounterIndices = HWGLTimeCounterIndicesGfx6;
-            pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = HWGLGPUTimeBottomToBottomIndexGfx6;
-            pHardwareCounters->m_gpuTimeTopToBottomCounterIndex = HWGLGPUTimeTopToBottomIndexGfx6;
+            pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = HWGLGputimeBottomToBottomDurationIndexGfx6;
+            pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex = HWGLGputimeBottomToBottomStartIndexGfx6;
+            pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex = HWGLGputimeBottomToBottomEndIndexGfx6;
+            pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex = HWGLGputimeTopToBottomDurationIndexGfx6;
+            pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex = HWGLGputimeTopToBottomStartIndexGfx6;
+            pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex = HWGLGputimeTopToBottomEndIndexGfx6;
             break;
 
         case GDT_HW_GENERATION_SEAISLAND:
@@ -406,8 +451,12 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(
             pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx7;
             pHardwareCounters->m_timestampBlockIds = HWGLTimestampBlockIdsGfx7;
             pHardwareCounters->m_timeCounterIndices = HWGLTimeCounterIndicesGfx7;
-            pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = HWGLGPUTimeBottomToBottomIndexGfx7;
-            pHardwareCounters->m_gpuTimeTopToBottomCounterIndex = HWGLGPUTimeTopToBottomIndexGfx7;
+            pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = HWGLGputimeBottomToBottomDurationIndexGfx7;
+            pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex = HWGLGputimeBottomToBottomStartIndexGfx7;
+            pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex = HWGLGputimeBottomToBottomEndIndexGfx7;
+            pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex = HWGLGputimeTopToBottomDurationIndexGfx7;
+            pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex = HWGLGputimeTopToBottomStartIndexGfx7;
+            pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex = HWGLGputimeTopToBottomEndIndexGfx7;
             break;
 
         case GDT_HW_GENERATION_VOLCANICISLAND:
@@ -420,8 +469,12 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(
             pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx8;
             pHardwareCounters->m_timestampBlockIds = HWGLTimestampBlockIdsGfx8;
             pHardwareCounters->m_timeCounterIndices = HWGLTimeCounterIndicesGfx8;
-            pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = HWGLGPUTimeBottomToBottomIndexGfx8;
-            pHardwareCounters->m_gpuTimeTopToBottomCounterIndex = HWGLGPUTimeTopToBottomIndexGfx8;
+            pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = HWGLGputimeBottomToBottomDurationIndexGfx8;
+            pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex = HWGLGputimeBottomToBottomStartIndexGfx8;
+            pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex = HWGLGputimeBottomToBottomEndIndexGfx8;
+            pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex = HWGLGputimeTopToBottomDurationIndexGfx8;
+            pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex = HWGLGputimeTopToBottomStartIndexGfx8;
+            pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex = HWGLGputimeTopToBottomEndIndexGfx8;
             break;
 
         case GDT_HW_GENERATION_GFX9:
@@ -434,8 +487,12 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(
             pHardwareCounters->m_isolatedGroupCount  = HWGLSQIsolatedGroupCountGfx9;
             pHardwareCounters->m_timestampBlockIds = HWGLTimestampBlockIdsGfx9;
             pHardwareCounters->m_timeCounterIndices = HWGLTimeCounterIndicesGfx9;
-            pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = HWGLGPUTimeBottomToBottomIndexGfx9;
-            pHardwareCounters->m_gpuTimeTopToBottomCounterIndex = HWGLGPUTimeTopToBottomIndexGfx9;
+            pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = HWGLGputimeBottomToBottomDurationIndexGfx9;
+            pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex = HWGLGputimeBottomToBottomStartIndexGfx9;
+            pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex = HWGLGputimeBottomToBottomEndIndexGfx9;
+            pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex = HWGLGputimeTopToBottomDurationIndexGfx9;
+            pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex = HWGLGputimeTopToBottomStartIndexGfx9;
+            pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex = HWGLGputimeTopToBottomEndIndexGfx9;
             break;
 
         default:

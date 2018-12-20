@@ -1,6 +1,15 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.3 (12/20/18)
+  * Add support for additional GPUs and APUs.
+  * New CMake-based build system.
+  * Support building on Ubuntu 18.04.
+  * ROCm/HSA: use new librocprofiler64.so rather than deprecated libhsa-runtime-tools64.so library for performance counter collection.
+  * Timing-based counters are now reported in nanoseconds instead of milliseconds.
+  * New timing counter to report top-of-pipe to bottom-of-pipe duration.
+  * GPA now builds GoogleTest libraries on the fly rather than using prebuilt binaries.
+
 ## Version 3.2 (8/21/18)
   * Add support for additional GPUs and APUs.
   * Wrapped all GPA entrypoints in try/catch to ensure unhandled exceptions do not escape the GPA library.

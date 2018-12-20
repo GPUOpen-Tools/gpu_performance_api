@@ -4,8 +4,6 @@
 /// \file
 /// \brief  Class for VK counter generation
 //==============================================================================
-/// \author GPU Developer Tools
-/// \brief GPA_CounterGeneratorVK implementation
 
 #include "GPACounterGeneratorVK.h"
 #include "GPACounterGeneratorSchedulerManager.h"
@@ -77,11 +75,15 @@ GPA_Status GPA_CounterGeneratorVK::GeneratePublicCounters(
     gpa_uint8 generateAsicSpecificCounters,
     GPA_DerivedCounters* pPublicCounters)
 {
-    GPA_Status status = GPA_STATUS_OK;
+    auto status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
 
     if (nullptr == pPublicCounters)
     {
         status = GPA_STATUS_ERROR_NULL_POINTER;
+    }
+    else if (pPublicCounters->m_countersGenerated)
+    {
+        status = GPA_STATUS_OK;
     }
     else
     {
@@ -91,47 +93,62 @@ GPA_Status GPA_CounterGeneratorVK::GeneratePublicCounters(
         {
             case GDT_HW_GENERATION_SEAISLAND:
             {
-                AutoDefineDerivedCountersVKGfx7(*pPublicCounters);
+                AutoDefinePublicDerivedCountersVKGfx7(*pPublicCounters);
 
                 if (generateAsicSpecificCounters)
                 {
-                    VKGfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                    VKGfx7Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
                 }
 
-                pPublicCounters->m_countersGenerated = true;
+                status = GPA_STATUS_OK;
             }
             break;
 
             case GDT_HW_GENERATION_VOLCANICISLAND:
             {
-                AutoDefineDerivedCountersVKGfx8(*pPublicCounters);
+                AutoDefinePublicDerivedCountersVKGfx8(*pPublicCounters);
 
                 if (generateAsicSpecificCounters)
                 {
-                    VKGfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                    VKGfx8Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
                 }
 
-                pPublicCounters->m_countersGenerated = true;
+                status = GPA_STATUS_OK;
             }
             break;
 
             case GDT_HW_GENERATION_GFX9:
             {
-                AutoDefineDerivedCountersVKGfx9(*pPublicCounters);
+                AutoDefinePublicDerivedCountersVKGfx9(*pPublicCounters);
 
                 if (generateAsicSpecificCounters)
                 {
-                    VKGfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                    VKGfx9Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
                 }
 
-                pPublicCounters->m_countersGenerated = true;
+                status = GPA_STATUS_OK;
             }
             break;
 
             default:
-                status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+                GPA_LogError("Unsupported or unrecognized hardware generation. Cannot generate public counters.");
                 break;
         }
+    }
+
+    auto internalStatus = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+
+#ifdef AMDT_INTERNAL
+    internalStatus = GPA_LoadInternalCounters(GPA_API_VULKAN, desiredGeneration,asicType, generateAsicSpecificCounters, pPublicCounters);
+#endif
+
+    if (GPA_STATUS_OK == status)
+    {
+        pPublicCounters->m_countersGenerated = true;
+    }
+    else
+    {
+        status = internalStatus;
     }
 
     return status;
@@ -244,8 +261,12 @@ GPA_Status GPA_CounterGeneratorVK::GenerateHardwareCounters(
             pHardwareCounters->m_sqGroupCount = HWVKSQGroupCountGfx7;
             pHardwareCounters->m_timestampBlockIds = HWVKTimestampBlockIdsGfx7;
             pHardwareCounters->m_timeCounterIndices = HWVKTimeCounterIndicesGfx7;
-            pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = HWVKGPUTimeBottomToBottomIndexGfx7;
-            pHardwareCounters->m_gpuTimeTopToBottomCounterIndex = HWVKGPUTimeTopToBottomIndexGfx7;
+            pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = HWVKGputimeBottomToBottomDurationIndexGfx7;
+            pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex = HWVKGputimeBottomToBottomStartIndexGfx7;
+            pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex = HWVKGputimeBottomToBottomEndIndexGfx7;
+            pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex = HWVKGputimeTopToBottomDurationIndexGfx7;
+            pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex = HWVKGputimeTopToBottomStartIndexGfx7;
+            pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex = HWVKGputimeTopToBottomEndIndexGfx7;
             pHardwareCounters->m_pIsolatedGroups = HWVKSQIsolatedGroupsGfx7;
             pHardwareCounters->m_isolatedGroupCount = HWVKSQIsolatedGroupCountGfx7;
         }
@@ -258,8 +279,12 @@ GPA_Status GPA_CounterGeneratorVK::GenerateHardwareCounters(
             pHardwareCounters->m_sqGroupCount = HWVKSQGroupCountGfx8;
             pHardwareCounters->m_timestampBlockIds = HWVKTimestampBlockIdsGfx8;
             pHardwareCounters->m_timeCounterIndices = HWVKTimeCounterIndicesGfx8;
-            pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = HWVKGPUTimeBottomToBottomIndexGfx8;
-            pHardwareCounters->m_gpuTimeTopToBottomCounterIndex = HWVKGPUTimeTopToBottomIndexGfx8;
+            pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = HWVKGputimeBottomToBottomDurationIndexGfx8;
+            pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex = HWVKGputimeBottomToBottomStartIndexGfx8;
+            pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex = HWVKGputimeBottomToBottomEndIndexGfx8;
+            pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex = HWVKGputimeTopToBottomDurationIndexGfx8;
+            pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex = HWVKGputimeTopToBottomStartIndexGfx8;
+            pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex = HWVKGputimeTopToBottomEndIndexGfx8;
             pHardwareCounters->m_pIsolatedGroups = HWVKSQIsolatedGroupsGfx8;
             pHardwareCounters->m_isolatedGroupCount = HWVKSQIsolatedGroupCountGfx8;
         }
@@ -272,8 +297,12 @@ GPA_Status GPA_CounterGeneratorVK::GenerateHardwareCounters(
             pHardwareCounters->m_sqGroupCount = HWVKSQGroupCountGfx9;
             pHardwareCounters->m_timestampBlockIds = HWVKTimestampBlockIdsGfx9;
             pHardwareCounters->m_timeCounterIndices = HWVKTimeCounterIndicesGfx9;
-            pHardwareCounters->m_gpuTimeBottomToBottomCounterIndex = HWVKGPUTimeBottomToBottomIndexGfx9;
-            pHardwareCounters->m_gpuTimeTopToBottomCounterIndex = HWVKGPUTimeTopToBottomIndexGfx9;
+            pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = HWVKGputimeBottomToBottomDurationIndexGfx9;
+            pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex = HWVKGputimeBottomToBottomStartIndexGfx9;
+            pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex = HWVKGputimeBottomToBottomEndIndexGfx9;
+            pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex = HWVKGputimeTopToBottomDurationIndexGfx9;
+            pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex = HWVKGputimeTopToBottomStartIndexGfx9;
+            pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex = HWVKGputimeTopToBottomEndIndexGfx9;
             pHardwareCounters->m_pIsolatedGroups = HWVKSQIsolatedGroupsGfx9;
             pHardwareCounters->m_isolatedGroupCount = HWVKSQIsolatedGroupCountGfx9;
         }

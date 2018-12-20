@@ -78,7 +78,7 @@ public:
     /// Returns the counter result location for the given public counter index
     /// \param[in] pGpaContext GPA Context
     /// \param[in] publicCounterIndex index of the public counter
-    /// \return addres to result location map otherwise nullptr
+    /// \return address to result location map otherwise nullptr
     CounterResultLocationMap* GetCounterResultLocations(const IGPAContext* pGpaContext,
                                                         const unsigned int& publicCounterIndex);
 

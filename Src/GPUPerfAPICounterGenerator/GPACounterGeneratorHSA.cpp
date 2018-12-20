@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for HSA counter generation
@@ -12,15 +12,12 @@
     #include <sstream>
 #endif
 
-#include "PublicCounterDefsHSAGfx7.h"
 #include "PublicCounterDefsHSAGfx8.h"
 #include "PublicCounterDefsHSAGfx9.h"
 
-#include "PublicCounterDefsHSAGfx7Asics.h"
 #include "PublicCounterDefsHSAGfx8Asics.h"
 #include "PublicCounterDefsHSAGfx9Asics.h"
 
-#include "InternalCountersHSAGfx7.h"
 #include "InternalCountersHSAGfx8.h"
 #include "InternalCountersHSAGfx9.h"
 
@@ -28,9 +25,9 @@ GPA_CounterGeneratorHSA::GPA_CounterGeneratorHSA()
 {
     GPA_CounterGeneratorBase::SetAllowedCounters(true, true, false);
 
-    for (int gen = GDT_HW_GENERATION_SEAISLAND; gen < GDT_HW_GENERATION_LAST; gen++)
+    for (int gen = GDT_HW_GENERATION_VOLCANICISLAND; gen < GDT_HW_GENERATION_LAST; gen++)
     {
-        CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_HSA, static_cast<GDT_HW_GENERATION>(gen), this);
+        CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_ROCM, static_cast<GDT_HW_GENERATION>(gen), this);
     }
 }
 
@@ -40,45 +37,66 @@ GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(
     gpa_uint8 generateAsicSpecificCounters,
     GPA_DerivedCounters* pPublicCounters)
 {
-    if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
-    {
-        GPA_LogError("HSA is not supported on Gfx6 hardware.");
-        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
-    }
-    else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
-    {
-        AutoDefineDerivedCountersHSAGfx7(*pPublicCounters);
+    auto status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
 
-        if (generateAsicSpecificCounters)
-        {
-            HSAGfx7Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
-        }
-    }
-    else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
+    if (nullptr == pPublicCounters)
     {
-        AutoDefineDerivedCountersHSAGfx8(*pPublicCounters);
-
-        if (generateAsicSpecificCounters)
-        {
-            HSAGfx8Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
-        }
+        status = GPA_STATUS_ERROR_NULL_POINTER;
     }
-    else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
+    else if (pPublicCounters->m_countersGenerated)
     {
-        AutoDefineDerivedCountersHSAGfx9(*pPublicCounters);
-
-        if (generateAsicSpecificCounters)
-        {
-            HSAGfx9Asics::UpdateAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
-        }
+        status = GPA_STATUS_OK;
     }
     else
     {
-        GPA_LogError("Unrecognized or unhandled hardware generation.");
-        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+        if (desiredGeneration == GDT_HW_GENERATION_SOUTHERNISLAND)
+        {
+            GPA_LogError("HSA is not supported on Gfx6 hardware.");
+        }
+        else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
+        {
+            GPA_LogError("HSA is not supported on Gfx7 hardware.");
+        }
+        else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
+        {
+            AutoDefinePublicDerivedCountersHSAGfx8(*pPublicCounters);
+
+            if (generateAsicSpecificCounters)
+            {
+                HSAGfx8Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+
+            status = GPA_STATUS_OK;
+        }
+        else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
+        {
+            AutoDefinePublicDerivedCountersHSAGfx9(*pPublicCounters);
+
+            if (generateAsicSpecificCounters)
+            {
+                HSAGfx9Asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+
+            status = GPA_STATUS_OK;
+        }
     }
 
-    return GPA_STATUS_OK;
+    auto internalStatus = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+
+#ifdef AMDT_INTERNAL
+    internalStatus = GPA_LoadInternalCounters(GPA_API_ROCM, desiredGeneration,asicType, generateAsicSpecificCounters, pPublicCounters);
+#endif
+
+    if (GPA_STATUS_OK == status)
+    {
+        pPublicCounters->m_countersGenerated = true;
+    }
+    else
+    {
+        status = internalStatus;
+    }
+
+    return status;
 }
 
 GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(
@@ -98,13 +116,9 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(
     }
     else if (desiredGeneration == GDT_HW_GENERATION_SEAISLAND)
     {
-        pHardwareCounters->m_ppCounterGroupArray = HSACounterGroupArrayGfx7;
-        pHardwareCounters->m_pGroups             = HWHSAGroupsGfx7;
-        pHardwareCounters->m_groupCount          = HWHSAGroupCountGfx7;
-        pHardwareCounters->m_pSQCounterGroups    = HWHSASQGroupsGfx7;
-        pHardwareCounters->m_sqGroupCount        = HWHSASQGroupCountGfx7;
-        pHardwareCounters->m_pIsolatedGroups     = HWHSASQIsolatedGroupsGfx7;
-        pHardwareCounters->m_isolatedGroupCount  = HWHSASQIsolatedGroupCountGfx7;
+        // HSA does not support Gfx7 hardware
+        GPA_LogError("HSA is not supported on Gfx7 hardware.");
+        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {

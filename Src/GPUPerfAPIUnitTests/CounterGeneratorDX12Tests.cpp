@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Unit Tests for DX12 Counter Generator
@@ -12,11 +12,9 @@
 
 #include "counters/GPACounterDesc.h"
 
-#include "counters/PublicCountersDX12Gfx7.h"
-#include "counters/PublicCountersDX12Gfx8.h"
-#include "counters/PublicCountersDX12Gfx9.h"
-
-#include "counters/SWCountersDX12.h"
+#include "counters/PublicDerivedCountersDX12Gfx7.h"
+#include "counters/PublicDerivedCountersDX12Gfx8.h"
+#include "counters/PublicDerivedCountersDX12Gfx9.h"
 
 #ifdef AMDT_INTERNAL
     #include "InternalCountersDX12Gfx7.h"
@@ -78,6 +76,20 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
         counterNames.push_back(pPublicCounters[i].m_pName);
     }
 
+
+    // Optionally, get internal derived counters
+    const GPACounterDesc* pInternalDerivedCounters = nullptr;
+    size_t internalDerivedCounterCount = 0;
+
+#ifdef AMDT_INTERNAL
+    GPA_GetInternalDerivedCounters(GPA_API_DIRECTX_12, gen, &pInternalDerivedCounters, &internalDerivedCounterCount);
+#endif
+
+    for (size_t i = 0; i < internalDerivedCounterCount; i++)
+    {
+        counterNames.push_back(pInternalDerivedCounters[i].m_pName);
+    }
+
     for (unsigned int i = 0; i < hwGroupCount; i++)
     {
         for (unsigned int j = 0; j < pHardwareGroups[i].m_numCounters; j++)
@@ -85,13 +97,6 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
             counterNames.push_back(ppHardwareCounters[i][j].m_pName);
         }
     }
-
-    /* No more sw counters
-    for (size_t i = 0; i < DX12SW_COUNTER_COUNT; i++)
-    {
-        counterNames.push_back(DX12SW_COUNTERS[i].m_pName);
-    }
-    */
 }
 
 // Test the DX12 counter names on all supported hardware

@@ -71,7 +71,7 @@ public:
     void Destroy();
 
     /// Toggles the profiling
-    void ToggleProfling();
+    void ToggleProfiling();
 
     /// Toggles the wireframe
     void ToggleWireFrame();
@@ -88,7 +88,7 @@ private:
     /// constructor
     CubeSample();
 
-    /// Intializes the common resource
+    /// Initializes the common resource
     /// \return true upon successful execution
     bool InitializeCommonResource();
 
@@ -99,10 +99,10 @@ private:
     /// Uploads the cube data to the GPU
     bool UploadCubeData();
 
-    /// Wait for the GPU to finsh executing
+    /// Wait for the GPU to finish executing
     void WaitForGpuToFinish();
 
-    /// Adds the Iunknow to the list and adds a name for it
+    /// Adds the IUnknown to the list and adds a name for it
     void AddIUnknown(IUnknown* pUnknown, const std::string& name);
 
     using IUnknownNamePair = std::pair<std::wstring, IUnknown*>;                    // type alias for IUnknown name pair
@@ -165,7 +165,7 @@ private:
         /// Constructor
         Viewport();
 
-        /// Intialize the view port
+        /// Initialize the view port
         /// \return true upon successful operation
         virtual bool Init() = 0;
 
@@ -307,7 +307,7 @@ private:
         unsigned int                    m_bundleSampleId;                   ///< sample id for the bundle
         unsigned int                    m_bundleSampleIdOnPrimaryCmdList;   ///< sample id of the copied bundle sample
         ID3D12GraphicsCommandList*      m_secondCommandList;                ///< D3D12 second command list
-        GPA_CommandListId               m_gpaCmdListForSecondCmdList;       ///< gpa command list id for the secodn direct command list
+        GPA_CommandListId               m_gpaCmdListForSecondCmdList;       ///< gpa command list id for the second direct command list
 
     };
     #pragma endregion
@@ -394,7 +394,7 @@ public:
 
     /// Begins the command list for sampling
     /// \param[in] pGraphicsCmdList graphics command list
-    /// \param[in, out] gpaCmdId gpa command list upon succesful execution otherwise nullptr
+    /// \param[in, out] gpaCmdId gpa command list upon successful execution otherwise nullptr
     /// \return true upon successful execution otherwise false
     bool GPA_BeginCommandListForSampling(ID3D12GraphicsCommandList* pGraphicsCmdList, GPA_CommandListId& gpaCmdId) const;
 
