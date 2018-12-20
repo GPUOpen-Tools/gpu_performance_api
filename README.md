@@ -82,7 +82,7 @@ will be a "docs" directory. Simply open the index.html file in a web browser to 
 The documentation is hosted publicly at: http://gpuperfapi.readthedocs.io/en/latest/
 
 ## "Public" vs "Internal" Versions
-This open source release supports building both the "Public" and "Internal" versions of GPUPerfAPI. By default the Visual Studio solution and the Linux build scripts
+This open source release supports building both the "Public" and "Internal" versions of GPUPerfAPI. By default the CMake-generated Visual Studio solutions and Linux makefiles
 will produce what is referred to as the "Public" version of GPUPerfAPI. This version exposes "Public", or "Derived", counters. These are counters that are computed
 using a set of hardware counters. Until now, only the Public version of GPUPerfAPI was available on the AMD Developer website. As part of the open-source effort,
 we are also providing the ability to build the "Internal" versions of GPUPerfAPI. In addition to exposing the same counters as the Public version, the Internal version
