@@ -92,12 +92,17 @@ set(COUNTER_SPLITTING_ALGO_HEADERS
     GPASplitCountersMaxPerPass.h
     GPASplitCountersOnePerPass.h)
 
+set(COUNTERS_HEADER
+    GPAHardwareCounters.h
+    GPASoftwareCounters.h)
+
 set(HEADER_FILES ${INTERNALLY_EXPOSED_HEADER_FILES}
                  ${COUNTER_GENERATORS_HEADERS}
                  ${COUNTER_SCHEDULERS_HEADERS}
                  ${INTERNAL_COUNTERS_HEADERS}
                  ${PUBLIC_COUNTERS_HEADERS}
-                 ${COUNTER_SPLITTING_ALGO_HEADERS})
+                 ${COUNTER_SPLITTING_ALGO_HEADERS}
+                 ${COUNTERS_HEADER})
 
 set(SOURCE_FILES ${COUNTER_GENERATORS_SRC}
                  ${COUNTER_SCHEDULERS_SRC}
@@ -153,6 +158,7 @@ if(WIN32)
     source_group("Source Files\\${INTERNAL_COUNTER_FILTER}" FILES ${INTERNAL_COUNTERS_HEADERS} ${INTERNAL_COUNTERS_SRC})
     source_group("Source Files\\${PUBLIC_COUNTER_FILTER}" FILES ${PUBLIC_COUNTERS_HEADERS} ${PUBLIC_COUNTERS_SRC})
     source_group("Source Files\\CounterSplittingAlgorithms" FILES ${COUNTER_SPLITTING_ALGO_HEADERS})
+    source_group("Source Files" FILES ${COUNTERS_HEADER})
 
     foreach(API GL DX11 DX12 VK CL HSA)
         include ("CounterGenerator${API}.cmake")
