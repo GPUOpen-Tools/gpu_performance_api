@@ -17,7 +17,7 @@ Description
 
 Begins a sample in a command list. A sample is a particular workload for which
 counters will be collected. If the owning session was created with
-GPA_SAMPLE_TYPE_DISCRETE_COUNTER and one or more counters have been enabled,
+GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER and one or more counters have been enabled,
 then those counters will be collected for this sample. Each sample must be
 associated with a GPA command list. The command list must have been previously
 started before starting a sample. Samples can be created by multiple threads
