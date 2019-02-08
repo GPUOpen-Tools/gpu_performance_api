@@ -18,15 +18,16 @@ if(${GPA_ALL_OPEN_SOURCE})
                                                 "/opt/rocm/hsa/include/hsa")
         endif()
 
-        # ROCm path
-        find_file(ROCM_PATH "rocprofiler.h"
-                  HINTS "/opt/rocm/include"
+        # ROCProfiler header
+        find_file(ROCP_HEADER "rocprofiler.h"
+                  HINTS "/opt/rocm/include/rocprofiler" "/opt/rocm/include"
                   NO_DEFAULT_PATH)
-        if(${ROCM_PATH} STREQUAL "ROCM_PATH-NOTFOUND")
-            message("CMake: ROCm Profiler not found")
+        if(${ROCP_HEADER} STREQUAL "ROCP_HEADER-NOTFOUND")
+            message("CMake: ROCm Profiler header not found")
         else()
+            get_filename_component(ROCP_PATH ${ROCP_HEADER} DIRECTORY)
             set(ADDITIONAL_INCLUDE_DIRECTORIES ${ADDITIONAL_INCLUDE_DIRECTORIES}
-                                                "/opt/rocm/include")
+                                                ${ROCP_PATH})
         endif()
     endif()
 else()
