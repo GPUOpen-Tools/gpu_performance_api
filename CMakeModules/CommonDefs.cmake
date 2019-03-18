@@ -6,11 +6,11 @@ set(GPA_MAJOR_VERSION 3)
 set(GPA_MINOR_VERSION 0)
 
 if(NOT DEFINED GPA_ROOT)
-    set(GPA_ROOT ${CMAKE_SOURCE_DIR})
+    set(GPA_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 endif()
 
 if(NOT DEFINED GPA_OUTPUT_DIR)
-    set(GPA_OUTPUT_DIR ${CMAKE_SOURCE_DIR}/Output)
+    set(GPA_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/Output)
 endif()
 
 ## Set the Common Directories
