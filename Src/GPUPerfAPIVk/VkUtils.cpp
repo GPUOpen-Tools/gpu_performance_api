@@ -227,9 +227,9 @@ bool VkUtils::GetTimestampFrequency(VkPhysicalDevice vkPhysicalDevice, gpa_uint6
         VkPhysicalDeviceProperties properties;
         _vkGetPhysicalDeviceProperties(vkPhysicalDevice, &properties);
 
-        // Convert timestamp period from cycles / nanosecond to cycles / second
-        float timestampPeriod = properties.limits.timestampPeriod * 1000000000.0f;
-        timestampFrequency = static_cast<gpa_uint64>(timestampPeriod);
+        // Vulkan's timestampPeriod is expressed in nanoseconds per clock tick, convert to frequency in seconds
+        float timestampPeriod = properties.limits.timestampPeriod;
+        timestampFrequency    = static_cast<gpa_uint64>(1000000000.0f / (timestampPeriod));
 
         success = true;
     }
