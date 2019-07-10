@@ -2,7 +2,7 @@
 ---
 
 ## Version 3.4 (7/10/19)
-  * Add support for additional GPUs and APUs, including Navi series GPUs.
+  * Add support for additional GPUs and APUs, including Radeon 5700 Series GPUs.
   * Add support for setting stable GPU clocks for DirectX11, OpenGL and OpenCL.
   * Add an OpenGL sample application that uses GPUPerfAPI.
   * Add basic counter validation to sample applications.
