@@ -8,10 +8,8 @@
 #include "CLGPASession.h"
 #include "CLGPAPass.h"
 
-CLGPASession::CLGPASession(
-    IGPAContext* pParentContext,
-    GPA_Session_Sample_Type sampleType) :
-    GPASession(pParentContext, sampleType)
+CLGPASession::CLGPASession(IGPAContext* pParentContext, GPA_Session_Sample_Type sampleType)
+    : GPASession(pParentContext, sampleType)
 {
 }
 
@@ -24,10 +22,10 @@ GPAPass* CLGPASession::CreateAPIPass(PassIndex passIndex)
 {
     GPAPass* pRetPass = nullptr;
 
-    CounterList* passCounters = GetCountersForPass(passIndex);
+    CounterList*     passCounters  = GetCountersForPass(passIndex);
     GPACounterSource counterSource = GetParentContext()->GetCounterSource((*passCounters)[0]);
 
-    CLGPAPass* pClPass = new(std::nothrow) CLGPAPass(this, passIndex, counterSource, passCounters);
+    CLGPAPass* pClPass = new (std::nothrow) CLGPAPass(this, passIndex, counterSource, passCounters);
 
     if (nullptr == pClPass)
     {

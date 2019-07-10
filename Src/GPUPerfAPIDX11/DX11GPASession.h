@@ -11,14 +11,13 @@
 // GPA Common
 #include "GPASession.h"
 
-class DX11GPACommandList;   // forward declaration
-class DX11GPAContext;   // forward declaration
+class DX11GPACommandList;  // forward declaration
+class DX11GPAContext;      // forward declaration
 
 /// Class for DX11 GPA Session
 class DX11GPASession : public GPASession
 {
 public:
-
     /// Constructor
     /// \param[in] pParentContext The context Id on which this session is created
     /// \param[in] sampleType The sample type that will be created on this session
@@ -31,8 +30,7 @@ public:
     GPA_API_Type GetAPIType() const override;
 
 private:
-
     /// \copydoc GPASession::CreateAPIPass()
     GPAPass* CreateAPIPass(PassIndex passIndex) override;
 };
-#endif // _DX11_GPA_SESSION_H_
+#endif  // _DX11_GPA_SESSION_H_

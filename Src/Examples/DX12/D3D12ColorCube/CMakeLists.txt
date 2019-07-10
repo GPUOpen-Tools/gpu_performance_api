@@ -1,4 +1,4 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../../../")
@@ -13,9 +13,11 @@ include_directories(${GPA_SRC_COMMON})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/CubeSample.cpp
             ${CMAKE_CURRENT_SOURCE_DIR}/CubeSample.h
-            ${CMAKE_CURRENT_SOURCE_DIR}/../Sample.cpp)
+            ${CMAKE_CURRENT_SOURCE_DIR}/../Sample.cpp
+            ${CMAKE_CURRENT_SOURCE_DIR}/../Sample.h)
 
 add_executable(${GPA_PROJECT_NAME} WIN32 ${SOURCES})
+add_dependencies(${GPA_PROJECT_NAME} GPUPerfAPIDX12)
 ADD_GPA_USER_COMPILE_DEFINITIONS()
 target_link_libraries(${GPA_PROJECT_NAME} dxgi.lib
                                           d3d12.lib

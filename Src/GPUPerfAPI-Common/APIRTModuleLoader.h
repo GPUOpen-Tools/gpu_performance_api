@@ -51,14 +51,14 @@ public:
     {
         if (nullptr == m_pRtModule)
         {
-            m_pRtModule = new(std::nothrow) T();
+            m_pRtModule = new (std::nothrow) T();
         }
 
         return m_pRtModule;
     };
 
 private:
-    T* m_pRtModule = nullptr; ///< the DynamicLibraryModule instance that wraps the RT API
+    T* m_pRtModule = nullptr;  ///< the DynamicLibraryModule instance that wraps the RT API
 };
 
 #endif  //_API_RT_MODULE_LOADER_H_

@@ -7,9 +7,9 @@
 
 /// macro to mark a function for exporting
 #ifdef _LINUX
-    #define GPALIB_DECL extern "C"
+#define GPALIB_DECL extern "C" __attribute__ ((visibility ("default")))
 #else
-    #define GPALIB_DECL extern "C" __declspec( dllexport )
+#define GPALIB_DECL extern "C" __declspec(dllexport)
 #endif
 
 // std
@@ -27,97 +27,97 @@
 #include "IGPASession.h"
 #include "GPAVersion.h"
 
-extern IGPAImplementor* s_pGpaImp; ///< GPA implementor instance
+extern IGPAImplementor* s_pGpaImp;  ///< GPA implementor instance
 
 /// Macro for an enum value string
-#define GPA_ENUM_STRING_VAL(X,Y) Y
+#define GPA_ENUM_STRING_VAL(X, Y) Y
 
 /// Macro to check for a null parameter
-#define CHECK_NULL_PARAM(parameterName)                                                                             \
-    if (!parameterName)                                                                                             \
-    {                                                                                                               \
-        GPA_LogDebugError("Parameter '"#parameterName"' is NULL.");                                                 \
-        return GPA_STATUS_ERROR_NULL_POINTER;                                                                       \
+#define CHECK_NULL_PARAM(parameterName)                               \
+    if (!parameterName)                                               \
+    {                                                                 \
+        GPA_LogDebugError("Parameter '" #parameterName "' is NULL."); \
+        return GPA_STATUS_ERROR_NULL_POINTER;                         \
     }
 
 /// Macro to check for out of range counter index
-#define CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, contextId)                                                          \
-    gpa_uint32 numCounters;                                                                                         \
-    GPA_Status numCountersStatus = contextId->GetNumCounters(&numCounters);                                         \
-    if (GPA_STATUS_OK != numCountersStatus)                                                                         \
-    {                                                                                                               \
-        return numCountersStatus;                                                                                   \
-    }                                                                                                               \
-    if (index >= numCounters)                                                                                       \
-    {                                                                                                               \
-        std::stringstream message;                                                                                  \
-        message << "Parameter '"#index"' is " << #index << " but must be less than " << numCounters << ".";         \
-        GPA_LogError(message.str().c_str());                                                                        \
-        return GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;                                                                 \
+#define CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, contextId)                                                    \
+    gpa_uint32 numCounters;                                                                                   \
+    GPA_Status numCountersStatus = contextId->GetNumCounters(&numCounters);                                   \
+    if (GPA_STATUS_OK != numCountersStatus)                                                                   \
+    {                                                                                                         \
+        return numCountersStatus;                                                                             \
+    }                                                                                                         \
+    if (index >= numCounters)                                                                                 \
+    {                                                                                                         \
+        std::stringstream message;                                                                            \
+        message << "Parameter '" #index "' is " << #index << " but must be less than " << numCounters << "."; \
+        GPA_LogError(message.str().c_str());                                                                  \
+        return GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;                                                           \
     }
 
 /// Macro to check if a context is open
-#define CHECK_CONTEXT_IS_OPEN(context)                                                                              \
-    if (!context->IsOpen())                                                                                         \
-    {                                                                                                               \
-        GPA_LogError("Context has not been not opened.");                                                           \
-        return GPA_STATUS_ERROR_CONTEXT_NOT_OPEN;                                                                   \
+#define CHECK_CONTEXT_IS_OPEN(context)                    \
+    if (!context->IsOpen())                               \
+    {                                                     \
+        GPA_LogError("Context has not been not opened."); \
+        return GPA_STATUS_ERROR_CONTEXT_NOT_OPEN;         \
     }
 
 /// Macro to check if a context exists and is open
-#define CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId)                                                              \
-    if (!contextId)                                                                                                 \
-    {                                                                                                               \
-        GPA_LogError("Context object is null.");                                                                    \
-        return GPA_STATUS_ERROR_NULL_POINTER;                                                                       \
-    }                                                                                                               \
-    if (!s_pGpaImp->DoesContextExist(contextId))                                                                    \
-    {                                                                                                               \
-        GPA_LogError("Unknown context object.");                                                                    \
-        return GPA_STATUS_ERROR_CONTEXT_NOT_FOUND;                                                                  \
-    }                                                                                                               \
+#define CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId) \
+    if (!contextId)                                    \
+    {                                                  \
+        GPA_LogError("Context object is null.");       \
+        return GPA_STATUS_ERROR_NULL_POINTER;          \
+    }                                                  \
+    if (!s_pGpaImp->DoesContextExist(contextId))       \
+    {                                                  \
+        GPA_LogError("Unknown context object.");       \
+        return GPA_STATUS_ERROR_CONTEXT_NOT_FOUND;     \
+    }                                                  \
     CHECK_CONTEXT_IS_OPEN(contextId->Object())
 
 /// Macro to check if a session exists
-#define CHECK_SESSION_ID_EXISTS(sessionId)                                                                          \
-    if (!sessionId)                                                                                                 \
-    {                                                                                                               \
-        GPA_LogError("Session object is null.");                                                                    \
-        return GPA_STATUS_ERROR_NULL_POINTER;                                                                       \
-    }                                                                                                               \
-    if (!s_pGpaImp->DoesSessionExist(sessionId))                                                                    \
-    {                                                                                                               \
-        GPA_LogError("Unknown session object.");                                                                    \
-        return GPA_STATUS_ERROR_SESSION_NOT_FOUND;                                                                  \
+#define CHECK_SESSION_ID_EXISTS(sessionId)         \
+    if (!sessionId)                                \
+    {                                              \
+        GPA_LogError("Session object is null.");   \
+        return GPA_STATUS_ERROR_NULL_POINTER;      \
+    }                                              \
+    if (!s_pGpaImp->DoesSessionExist(sessionId))   \
+    {                                              \
+        GPA_LogError("Unknown session object.");   \
+        return GPA_STATUS_ERROR_SESSION_NOT_FOUND; \
     }
 
 /// Macro to check if a command list exists
-#define CHECK_COMMANDLIST_ID_EXISTS(commandListId)                                                                  \
-    if (!commandListId)                                                                                             \
-    {                                                                                                               \
-        GPA_LogError("Command list object is null.");                                                               \
-        return GPA_STATUS_ERROR_NULL_POINTER;                                                                       \
-    }                                                                                                               \
-    if (!s_pGpaImp->DoesCommandListExist(commandListId))                                                            \
-    {                                                                                                               \
-        GPA_LogError("Unknown command list object.");                                                               \
-        return GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND;                                                             \
+#define CHECK_COMMANDLIST_ID_EXISTS(commandListId)       \
+    if (!commandListId)                                  \
+    {                                                    \
+        GPA_LogError("Command list object is null.");    \
+        return GPA_STATUS_ERROR_NULL_POINTER;            \
+    }                                                    \
+    if (!s_pGpaImp->DoesCommandListExist(commandListId)) \
+    {                                                    \
+        GPA_LogError("Unknown command list object.");    \
+        return GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND;  \
     }
 
 /// Macro to check if a session is still running
-#define CHECK_SESSION_RUNNING(sessionId)                                                                            \
-    if ((*sessionId)->IsSessionRunning())                                                                           \
-    {                                                                                                               \
-        GPA_LogError("Session is still running. End the session before querying sample information.");              \
-        return GPA_STATUS_ERROR_SESSION_NOT_ENDED;                                                                  \
+#define CHECK_SESSION_RUNNING(sessionId)                                                               \
+    if ((*sessionId)->IsSessionRunning())                                                              \
+    {                                                                                                  \
+        GPA_LogError("Session is still running. End the session before querying sample information."); \
+        return GPA_STATUS_ERROR_SESSION_NOT_ENDED;                                                     \
     }
 
 /// Macro to check if a session is running while enabling/disabling counters
-#define CHECK_SESSION_RUNNING_FOR_COUNTERS(sessionId)                                                               \
-    if ((*sessionId)->IsSessionRunning())                                                                           \
-    {                                                                                                               \
-        GPA_LogError("Counter state cannot change while session is running.");                                      \
-        return GPA_STATUS_ERROR_CANNOT_CHANGE_COUNTERS_WHEN_SAMPLING;                                               \
+#define CHECK_SESSION_RUNNING_FOR_COUNTERS(sessionId)                          \
+    if ((*sessionId)->IsSessionRunning())                                      \
+    {                                                                          \
+        GPA_LogError("Counter state cannot change while session is running."); \
+        return GPA_STATUS_ERROR_CANNOT_CHANGE_COUNTERS_WHEN_SAMPLING;          \
     }
 
 #define MAKE_PARAM_STRING(X) #X << " : " << X << " "
@@ -159,25 +159,19 @@ GPA_Status CheckSampleIdExistsInSession(GPA_SessionId sessionId, gpa_uint32 samp
 }
 
 /// Macro to check the session sample type
-#define CHECK_SESSION_SAMPLE_TYPE(sampleType, additionalsampleType)                                                 \
-    GPA_Session_Sample_Type sessionSampleType = (*sessionId)->GetSampleType();                                      \
-    if (sampleType != sessionSampleType && additionalsampleType != sessionSampleType)                               \
-    {                                                                                                               \
-        GPA_LogError("Session does not support the correct sample type.");                                          \
-        return GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES;                                                          \
+#define CHECK_SESSION_SAMPLE_TYPE(sampleType, additionalsampleType)                   \
+    GPA_Session_Sample_Type sessionSampleType = (*sessionId)->GetSampleType();        \
+    if (sampleType != sessionSampleType && additionalsampleType != sessionSampleType) \
+    {                                                                                 \
+        GPA_LogError("Session does not support the correct sample type.");            \
+        return GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES;                            \
     }
 
-
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetVersion(
-    gpa_uint32* pMajorVersion,
-    gpa_uint32* pMinorVersion,
-    gpa_uint32* pBuild,
-    gpa_uint32* pUpdateVersion)
+GPALIB_DECL GPA_Status GPA_GetVersion(gpa_uint32* pMajorVersion, gpa_uint32* pMinorVersion, gpa_uint32* pBuild, gpa_uint32* pUpdateVersion)
 {
     try
     {
-
         PROFILE_FUNCTION(GPA_GetVersion);
         TRACE_FUNCTION(GPA_GetVersion);
 
@@ -186,16 +180,14 @@ GPALIB_DECL GPA_Status GPA_GetVersion(
         CHECK_NULL_PARAM(pBuild);
         CHECK_NULL_PARAM(pUpdateVersion);
 
-        *pMajorVersion = GPA_MAJOR_VERSION;
-        *pMinorVersion = GPA_MINOR_VERSION;
-        *pBuild = GPA_BUILD_NUMBER;
+        *pMajorVersion  = GPA_MAJOR_VERSION;
+        *pMinorVersion  = GPA_MINOR_VERSION;
+        *pBuild         = GPA_BUILD_NUMBER;
         *pUpdateVersion = GPA_UPDATE_VERSION;
 
         GPA_INTERNAL_LOG(GPA_GetVersion,
-                         MAKE_PARAM_STRING(*pMajorVersion) <<
-                         MAKE_PARAM_STRING(*pMinorVersion) <<
-                         MAKE_PARAM_STRING(*pBuild) <<
-                         MAKE_PARAM_STRING(*pUpdateVersion));
+                         MAKE_PARAM_STRING(*pMajorVersion)
+                             << MAKE_PARAM_STRING(*pMinorVersion) << MAKE_PARAM_STRING(*pBuild) << MAKE_PARAM_STRING(*pUpdateVersion));
 
         return GPA_STATUS_OK;
     }
@@ -206,8 +198,7 @@ GPALIB_DECL GPA_Status GPA_GetVersion(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetFuncTable(
-    void* pGPAFuncTable)
+GPALIB_DECL GPA_Status GPA_GetFuncTable(void* pGPAFuncTable)
 {
     try
     {
@@ -218,7 +209,7 @@ GPALIB_DECL GPA_Status GPA_GetFuncTable(
 
         GPAFunctionTable* pFuncTable = reinterpret_cast<GPAFunctionTable*>(pGPAFuncTable);
 
-        bool correctMajorVersion = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER == pFuncTable->m_majorVer;
+        bool       correctMajorVersion    = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER == pFuncTable->m_majorVer;
         gpa_uint32 clientSuppliedMinorVer = pFuncTable->m_minorVer;
 
         pFuncTable->m_majorVer = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER;
@@ -239,7 +230,7 @@ GPALIB_DECL GPA_Status GPA_GetFuncTable(
         }
 
         GPAFunctionTable gpaFuncTable;
-#define GPA_FUNCTION_PREFIX( func) gpaFuncTable.func = func;
+#define GPA_FUNCTION_PREFIX(func) gpaFuncTable.func = func;
 #include "GPAFunctions.h"
 #undef GPA_FUNCTION_PREFIX
 
@@ -259,14 +250,11 @@ GPALIB_DECL GPA_Status GPA_GetFuncTable(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_RegisterLoggingCallback(
-    GPA_Logging_Type loggingType,
-    GPA_LoggingCallbackPtrType pCallbackFuncPtr)
+GPALIB_DECL GPA_Status GPA_RegisterLoggingCallback(GPA_Logging_Type loggingType, GPA_LoggingCallbackPtrType pCallbackFuncPtr)
 {
     try
     {
-        if (!pCallbackFuncPtr &&
-            loggingType != GPA_LOGGING_NONE)
+        if (!pCallbackFuncPtr && loggingType != GPA_LOGGING_NONE)
         {
             GPA_LogDebugError("Parameter 'pCallbackFuncPtr' is NULL.");
             return GPA_STATUS_ERROR_NULL_POINTER;
@@ -293,9 +281,7 @@ GPALIB_DECL GPA_Status GPA_Initialize(GPA_InitializeFlags flags)
 
         GPA_Status retStatus = s_pGpaImp->Initialize(flags);
 
-        GPA_INTERNAL_LOG(GPA_Initialize,
-                         MAKE_PARAM_STRING(flags) <<
-                         MAKE_PARAM_STRING(retStatus))
+        GPA_INTERNAL_LOG(GPA_Initialize, MAKE_PARAM_STRING(flags) << MAKE_PARAM_STRING(retStatus))
 
         return retStatus;
     }
@@ -325,10 +311,7 @@ GPALIB_DECL GPA_Status GPA_Destroy()
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_OpenContext(
-    void* pContext,
-    GPA_OpenContextFlags flags,
-    GPA_ContextId* pContextId)
+GPALIB_DECL GPA_Status GPA_OpenContext(void* pContext, GPA_OpenContextFlags flags, GPA_ContextId* pContextId)
 {
     try
     {
@@ -347,10 +330,7 @@ GPALIB_DECL GPA_Status GPA_OpenContext(
         GPA_Status retStatus = s_pGpaImp->OpenContext(pContext, flags, pContextId);
 
         GPA_INTERNAL_LOG(GPA_OpenContext,
-                         MAKE_PARAM_STRING(pContext) <<
-                         MAKE_PARAM_STRING(flags) <<
-                         MAKE_PARAM_STRING(*pContextId) <<
-                         MAKE_PARAM_STRING(retStatus));
+                         MAKE_PARAM_STRING(pContext) << MAKE_PARAM_STRING(flags) << MAKE_PARAM_STRING(*pContextId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -361,8 +341,7 @@ GPALIB_DECL GPA_Status GPA_OpenContext(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_CloseContext(
-    GPA_ContextId contextId)
+GPALIB_DECL GPA_Status GPA_CloseContext(GPA_ContextId contextId)
 {
     try
     {
@@ -378,8 +357,7 @@ GPALIB_DECL GPA_Status GPA_CloseContext(
         }
 
         GPA_Status retStatus = s_pGpaImp->CloseContext(contextId);
-        GPA_INTERNAL_LOG(GPA_CloseContext, MAKE_PARAM_STRING(contextId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_CloseContext, MAKE_PARAM_STRING(contextId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -390,9 +368,7 @@ GPALIB_DECL GPA_Status GPA_CloseContext(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSupportedSampleTypes(
-    GPA_ContextId contextId,
-    GPA_ContextSampleTypeFlags* pSampleTypes)
+GPALIB_DECL GPA_Status GPA_GetSupportedSampleTypes(GPA_ContextId contextId, GPA_ContextSampleTypeFlags* pSampleTypes)
 {
     try
     {
@@ -411,10 +387,7 @@ GPALIB_DECL GPA_Status GPA_GetSupportedSampleTypes(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetDeviceAndRevisionId(
-    GPA_ContextId contextId,
-    gpa_uint32* pDeviceId,
-    gpa_uint32* pRevisionId)
+GPALIB_DECL GPA_Status GPA_GetDeviceAndRevisionId(GPA_ContextId contextId, gpa_uint32* pDeviceId, gpa_uint32* pRevisionId)
 {
     try
     {
@@ -435,10 +408,7 @@ GPALIB_DECL GPA_Status GPA_GetDeviceAndRevisionId(
         }
 
         GPA_INTERNAL_LOG(GPA_GetDeviceAndRevisionId,
-                         MAKE_PARAM_STRING(contextId) <<
-                         MAKE_PARAM_STRING(*pDeviceId) <<
-                         MAKE_PARAM_STRING(*pRevisionId) <<
-                         MAKE_PARAM_STRING(retStatus));
+                         MAKE_PARAM_STRING(contextId) << MAKE_PARAM_STRING(*pDeviceId) << MAKE_PARAM_STRING(*pRevisionId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -449,9 +419,7 @@ GPALIB_DECL GPA_Status GPA_GetDeviceAndRevisionId(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetDeviceName(
-    GPA_ContextId contextId,
-    const char** ppDeviceName)
+GPALIB_DECL GPA_Status GPA_GetDeviceName(GPA_ContextId contextId, const char** ppDeviceName)
 {
     try
     {
@@ -461,17 +429,15 @@ GPALIB_DECL GPA_Status GPA_GetDeviceName(
         CHECK_NULL_PARAM(ppDeviceName);
         CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
 
-        const GPA_HWInfo* hwInfo = (*contextId)->GetHwInfo();
-        GPA_Status retStatus = GPA_STATUS_ERROR_FAILED;
+        const GPA_HWInfo* hwInfo    = (*contextId)->GetHwInfo();
+        GPA_Status        retStatus = GPA_STATUS_ERROR_FAILED;
 
         if (nullptr != hwInfo && hwInfo->GetDeviceName(*ppDeviceName))
         {
             retStatus = GPA_STATUS_OK;
         }
 
-        GPA_INTERNAL_LOG(GPA_GetDeviceAndRevisionId,
-                         MAKE_PARAM_STRING(contextId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_GetDeviceAndRevisionId, MAKE_PARAM_STRING(contextId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -482,9 +448,7 @@ GPALIB_DECL GPA_Status GPA_GetDeviceName(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetNumCounters(
-    GPA_ContextId contextId,
-    gpa_uint32* pCount)
+GPALIB_DECL GPA_Status GPA_GetNumCounters(GPA_ContextId contextId, gpa_uint32* pCount)
 {
     try
     {
@@ -496,9 +460,7 @@ GPALIB_DECL GPA_Status GPA_GetNumCounters(
 
         GPA_Status retStatus = (*contextId)->GetNumCounters(pCount);
 
-        GPA_INTERNAL_LOG(GPA_GetNumCounters, MAKE_PARAM_STRING(contextId) <<
-                         MAKE_PARAM_STRING(*pCount) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_GetNumCounters, MAKE_PARAM_STRING(contextId) << MAKE_PARAM_STRING(*pCount) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -509,10 +471,7 @@ GPALIB_DECL GPA_Status GPA_GetNumCounters(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterName(
-    GPA_ContextId contextId,
-    gpa_uint32 index,
-    const char** ppName)
+GPALIB_DECL GPA_Status GPA_GetCounterName(GPA_ContextId contextId, gpa_uint32 index, const char** ppName)
 {
     try
     {
@@ -532,10 +491,7 @@ GPALIB_DECL GPA_Status GPA_GetCounterName(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterIndex(
-    GPA_ContextId contextId,
-    const char* pCounterName,
-    gpa_uint32* pIndex)
+GPALIB_DECL GPA_Status GPA_GetCounterIndex(GPA_ContextId contextId, const char* pCounterName, gpa_uint32* pIndex)
 {
     try
     {
@@ -566,10 +522,7 @@ GPALIB_DECL GPA_Status GPA_GetCounterIndex(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterGroup(
-    GPA_ContextId contextId,
-    gpa_uint32 index,
-    const char** ppGroup)
+GPALIB_DECL GPA_Status GPA_GetCounterGroup(GPA_ContextId contextId, gpa_uint32 index, const char** ppGroup)
 {
     try
     {
@@ -589,10 +542,7 @@ GPALIB_DECL GPA_Status GPA_GetCounterGroup(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterDescription(
-    GPA_ContextId contextId,
-    gpa_uint32 index,
-    const char** ppDescription)
+GPALIB_DECL GPA_Status GPA_GetCounterDescription(GPA_ContextId contextId, gpa_uint32 index, const char** ppDescription)
 {
     try
     {
@@ -612,10 +562,7 @@ GPALIB_DECL GPA_Status GPA_GetCounterDescription(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterDataType(
-    GPA_ContextId contextId,
-    gpa_uint32 index,
-    GPA_Data_Type* pCounterDataType)
+GPALIB_DECL GPA_Status GPA_GetCounterDataType(GPA_ContextId contextId, gpa_uint32 index, GPA_Data_Type* pCounterDataType)
 {
     try
     {
@@ -635,10 +582,7 @@ GPALIB_DECL GPA_Status GPA_GetCounterDataType(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterUsageType(
-    GPA_ContextId contextId,
-    gpa_uint32 index,
-    GPA_Usage_Type* pCounterUsageType)
+GPALIB_DECL GPA_Status GPA_GetCounterUsageType(GPA_ContextId contextId, gpa_uint32 index, GPA_Usage_Type* pCounterUsageType)
 {
     try
     {
@@ -658,10 +602,7 @@ GPALIB_DECL GPA_Status GPA_GetCounterUsageType(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterUuid(
-    GPA_ContextId contextId,
-    gpa_uint32 index,
-    GPA_UUID* pCounterUuid)
+GPALIB_DECL GPA_Status GPA_GetCounterUuid(GPA_ContextId contextId, gpa_uint32 index, GPA_UUID* pCounterUuid)
 {
     try
     {
@@ -681,10 +622,7 @@ GPALIB_DECL GPA_Status GPA_GetCounterUuid(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterSampleType(
-    GPA_ContextId contextId,
-    gpa_uint32 index,
-    GPA_Counter_Sample_Type* pCounterSampleType)
+GPALIB_DECL GPA_Status GPA_GetCounterSampleType(GPA_ContextId contextId, gpa_uint32 index, GPA_Counter_Sample_Type* pCounterSampleType)
 {
     try
     {
@@ -705,19 +643,14 @@ GPALIB_DECL GPA_Status GPA_GetCounterSampleType(
 
 //-----------------------------------------------------------------------------
 /// array of strings representing GPA_Data_Type
-static const char* g_counterDataTypeString[] =
-{
-    GPA_ENUM_STRING_VAL(GPA_DATA_TYPE_FLOAT64, "gpa_float64"),
-    GPA_ENUM_STRING_VAL(GPA_DATA_TYPE_UINT64, "gpa_uint64")
-};
+static const char* g_counterDataTypeString[] = {GPA_ENUM_STRING_VAL(GPA_DATA_TYPE_FLOAT64, "gpa_float64"),
+                                                GPA_ENUM_STRING_VAL(GPA_DATA_TYPE_UINT64, "gpa_uint64")};
 
 static const size_t g_counterDataStringSize = sizeof(g_counterDataTypeString) / sizeof(const char*);
 
 static_assert(g_counterDataStringSize == GPA_DATA_TYPE__LAST, "GPA Counter Data Type string array missing entries");
 
-GPALIB_DECL GPA_Status GPA_GetDataTypeAsStr(
-    GPA_Data_Type counterDataType,
-    const char** ppTypeStr)
+GPALIB_DECL GPA_Status GPA_GetDataTypeAsStr(GPA_Data_Type counterDataType, const char** ppTypeStr)
 {
     try
     {
@@ -743,25 +676,20 @@ GPALIB_DECL GPA_Status GPA_GetDataTypeAsStr(
 
 //-----------------------------------------------------------------------------
 /// array of strings representing GPA_Usage_Type
-static const char* g_usageTypeString[] =
-{
-    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_RATIO, "ratio"),
-    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_PERCENTAGE, "percentage"),
-    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_CYCLES, "cycles"),
-    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_MILLISECONDS, "milliseconds"),
-    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_BYTES, "bytes"),
-    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_ITEMS, "items"),
-    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_KILOBYTES, "kilobytes"),
-    GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_NANOSECONDS, "nanoseconds")
-};
+static const char* g_usageTypeString[] = {GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_RATIO, "ratio"),
+                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_PERCENTAGE, "percentage"),
+                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_CYCLES, "cycles"),
+                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_MILLISECONDS, "milliseconds"),
+                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_BYTES, "bytes"),
+                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_ITEMS, "items"),
+                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_KILOBYTES, "kilobytes"),
+                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_NANOSECONDS, "nanoseconds")};
 
 static const size_t g_usageTypeStringSize = sizeof(g_usageTypeString) / sizeof(const char*);
 
 static_assert(g_usageTypeStringSize == GPA_USAGE_TYPE__LAST, "GPA Usage Type string array missing entries");
 
-GPALIB_DECL GPA_Status GPA_GetUsageTypeAsStr(
-    GPA_Usage_Type counterUsageType,
-    const char** ppUsageTypeStr)
+GPALIB_DECL GPA_Status GPA_GetUsageTypeAsStr(GPA_Usage_Type counterUsageType, const char** ppUsageTypeStr)
 {
     try
     {
@@ -786,10 +714,7 @@ GPALIB_DECL GPA_Status GPA_GetUsageTypeAsStr(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_CreateSession(
-    GPA_ContextId contextId,
-    GPA_Session_Sample_Type sampleType,
-    GPA_SessionId* pSessionId)
+GPALIB_DECL GPA_Status GPA_CreateSession(GPA_ContextId contextId, GPA_Session_Sample_Type sampleType, GPA_SessionId* pSessionId)
 {
     try
     {
@@ -816,23 +741,24 @@ GPALIB_DECL GPA_Status GPA_CreateSession(
         }
 
         // next check that the set of sample types specified is compatible with context's set of supported sample types
-        if ((GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER == sampleType && (GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER != (GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER & contextSampleTypes))) ||
-            (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER == sampleType && (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER != (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER & contextSampleTypes))) ||
+        if ((GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER == sampleType &&
+             (GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER != (GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER & contextSampleTypes))) ||
+            (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER == sampleType &&
+             (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER != (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER & contextSampleTypes))) ||
             (GPA_SESSION_SAMPLE_TYPE_SQTT == sampleType && (GPA_CONTEXT_SAMPLE_TYPE_SQTT != (GPA_CONTEXT_SAMPLE_TYPE_SQTT & contextSampleTypes))) ||
-            (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT == sampleType && ((GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT) != ((GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT) & contextSampleTypes))))
+            (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT == sampleType &&
+             ((GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT) !=
+              ((GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT) & contextSampleTypes))))
         {
             GPA_LogError("Unable to create session: sampleTypes incompatible with context's sampleTypes.");
             return GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES;
         }
 
-        *pSessionId = (*contextId)->CreateSession(sampleType);
+        *pSessionId          = (*contextId)->CreateSession(sampleType);
         GPA_Status retStatus = (nullptr != (*pSessionId)) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 
         GPA_INTERNAL_LOG(GPA_CreateSession,
-                         MAKE_PARAM_STRING(contextId) <<
-                         MAKE_PARAM_STRING(sampleType) <<
-                         MAKE_PARAM_STRING(*pSessionId) <<
-                         MAKE_PARAM_STRING(retStatus));
+                         MAKE_PARAM_STRING(contextId) << MAKE_PARAM_STRING(sampleType) << MAKE_PARAM_STRING(*pSessionId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -843,8 +769,7 @@ GPALIB_DECL GPA_Status GPA_CreateSession(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_DeleteSession(
-    GPA_SessionId sessionId)
+GPALIB_DECL GPA_Status GPA_DeleteSession(GPA_SessionId sessionId)
 {
     try
     {
@@ -854,11 +779,9 @@ GPALIB_DECL GPA_Status GPA_DeleteSession(
         CHECK_SESSION_ID_EXISTS(sessionId);
 
         IGPAContext* pContextId = (*sessionId)->GetParentContext();
-        GPA_Status retStatus = pContextId->DeleteSession(sessionId) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+        GPA_Status   retStatus  = pContextId->DeleteSession(sessionId) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 
-        GPA_INTERNAL_LOG(GPA_DeleteSession,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_DeleteSession, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -869,8 +792,7 @@ GPALIB_DECL GPA_Status GPA_DeleteSession(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_BeginSession(
-    GPA_SessionId sessionId)
+GPALIB_DECL GPA_Status GPA_BeginSession(GPA_SessionId sessionId)
 {
     try
     {
@@ -879,14 +801,12 @@ GPALIB_DECL GPA_Status GPA_BeginSession(
 
         CHECK_SESSION_ID_EXISTS(sessionId);
         IGPASession* pGpaSession = sessionId->Object();
-        IGPAContext* pContext = pGpaSession->GetParentContext();
+        IGPAContext* pContext    = pGpaSession->GetParentContext();
         CHECK_CONTEXT_IS_OPEN(pContext);
 
         GPA_Status retStatus = pContext->BeginSession(pGpaSession);
 
-        GPA_INTERNAL_LOG(GPA_BeginSession,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_BeginSession, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -897,8 +817,7 @@ GPALIB_DECL GPA_Status GPA_BeginSession(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EndSession(
-    GPA_SessionId sessionId)
+GPALIB_DECL GPA_Status GPA_EndSession(GPA_SessionId sessionId)
 {
     try
     {
@@ -908,13 +827,11 @@ GPALIB_DECL GPA_Status GPA_EndSession(
         CHECK_SESSION_ID_EXISTS(sessionId);
 
         IGPASession* pGpaSession = sessionId->Object();
-        IGPAContext* pContext = pGpaSession->GetParentContext();
+        IGPAContext* pContext    = pGpaSession->GetParentContext();
 
         GPA_Status retStatus = pContext->EndSession(pGpaSession);
 
-        GPA_INTERNAL_LOG(GPA_EndSession,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_EndSession, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -925,9 +842,7 @@ GPALIB_DECL GPA_Status GPA_EndSession(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EnableCounter(
-    GPA_SessionId sessionId,
-    gpa_uint32 index)
+GPALIB_DECL GPA_Status GPA_EnableCounter(GPA_SessionId sessionId, gpa_uint32 index)
 {
     try
     {
@@ -940,9 +855,7 @@ GPALIB_DECL GPA_Status GPA_EnableCounter(
 
         GPA_Status retStatus = (*sessionId)->EnableCounter(index);
 
-        GPA_INTERNAL_LOG(GPA_EnableCounter,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_EnableCounter, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -953,9 +866,7 @@ GPALIB_DECL GPA_Status GPA_EnableCounter(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_DisableCounter(
-    GPA_SessionId sessionId,
-    gpa_uint32 index)
+GPALIB_DECL GPA_Status GPA_DisableCounter(GPA_SessionId sessionId, gpa_uint32 index)
 {
     try
     {
@@ -968,10 +879,7 @@ GPALIB_DECL GPA_Status GPA_DisableCounter(
 
         GPA_Status retStatus = (*sessionId)->DisableCounter(index);
 
-        GPA_INTERNAL_LOG(GPA_DisableCounter,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(index) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_DisableCounter, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(index) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -982,9 +890,7 @@ GPALIB_DECL GPA_Status GPA_DisableCounter(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EnableCounterByName(
-    GPA_SessionId sessionId,
-    const char* pCounterName)
+GPALIB_DECL GPA_Status GPA_EnableCounterByName(GPA_SessionId sessionId, const char* pCounterName)
 {
     try
     {
@@ -1000,7 +906,11 @@ GPALIB_DECL GPA_Status GPA_EnableCounterByName(
 
         if (GPA_STATUS_OK != status)
         {
-            return status;
+            std::string message = "Specified counter '";
+            message += pCounterName;
+            message += "' was not found. Please check spelling or availability.";
+            GPA_LogError(message.c_str());
+            return GPA_STATUS_ERROR_COUNTER_NOT_FOUND;
         }
 
         return GPA_EnableCounter(sessionId, index);
@@ -1012,9 +922,7 @@ GPALIB_DECL GPA_Status GPA_EnableCounterByName(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_DisableCounterByName(
-    GPA_SessionId sessionId,
-    const char* pCounterName)
+GPALIB_DECL GPA_Status GPA_DisableCounterByName(GPA_SessionId sessionId, const char* pCounterName)
 {
     try
     {
@@ -1030,7 +938,11 @@ GPALIB_DECL GPA_Status GPA_DisableCounterByName(
 
         if (GPA_STATUS_OK != status)
         {
-            return status;
+            std::string message = "Specified counter '";
+            message += pCounterName;
+            message += "' was not found. Please check spelling or availability.";
+            GPA_LogError(message.c_str());
+            return GPA_STATUS_ERROR_COUNTER_NOT_FOUND;
         }
 
         return GPA_DisableCounter(sessionId, index);
@@ -1042,8 +954,7 @@ GPALIB_DECL GPA_Status GPA_DisableCounterByName(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EnableAllCounters(
-    GPA_SessionId sessionId)
+GPALIB_DECL GPA_Status GPA_EnableAllCounters(GPA_SessionId sessionId)
 {
     try
     {
@@ -1075,9 +986,7 @@ GPALIB_DECL GPA_Status GPA_EnableAllCounters(
             }
         }
 
-        GPA_INTERNAL_LOG(GPA_EnableAllCounters,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_EnableAllCounters, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1088,8 +997,7 @@ GPALIB_DECL GPA_Status GPA_EnableAllCounters(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_DisableAllCounters(
-    GPA_SessionId sessionId)
+GPALIB_DECL GPA_Status GPA_DisableAllCounters(GPA_SessionId sessionId)
 {
     try
     {
@@ -1102,9 +1010,7 @@ GPALIB_DECL GPA_Status GPA_DisableAllCounters(
 
         GPA_Status retStatus = (*sessionId)->DisableAllCounters();
 
-        GPA_INTERNAL_LOG(GPA_DisableAllCounters,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_DisableAllCounters, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1115,9 +1021,7 @@ GPALIB_DECL GPA_Status GPA_DisableAllCounters(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetPassCount(
-    GPA_SessionId sessionId,
-    gpa_uint32* pNumPasses)
+GPALIB_DECL GPA_Status GPA_GetPassCount(GPA_SessionId sessionId, gpa_uint32* pNumPasses)
 {
     try
     {
@@ -1129,10 +1033,7 @@ GPALIB_DECL GPA_Status GPA_GetPassCount(
         CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
         GPA_Status retStatus = (*sessionId)->GetNumRequiredPasses(pNumPasses);
 
-        GPA_INTERNAL_LOG(GPA_GetPassCount,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(*pNumPasses) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_GetPassCount, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(*pNumPasses) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1143,9 +1044,7 @@ GPALIB_DECL GPA_Status GPA_GetPassCount(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetNumEnabledCounters(
-    GPA_SessionId sessionId,
-    gpa_uint32* pCount)
+GPALIB_DECL GPA_Status GPA_GetNumEnabledCounters(GPA_SessionId sessionId, gpa_uint32* pCount)
 {
     try
     {
@@ -1157,10 +1056,7 @@ GPALIB_DECL GPA_Status GPA_GetNumEnabledCounters(
         CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
         GPA_Status retStatus = (*sessionId)->GetNumEnabledCounters(pCount);
 
-        GPA_INTERNAL_LOG(GPA_GetNumEnabledCounters,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(*pCount) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_GetNumEnabledCounters, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(*pCount) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1171,10 +1067,7 @@ GPALIB_DECL GPA_Status GPA_GetNumEnabledCounters(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetEnabledIndex(
-    GPA_SessionId sessionId,
-    gpa_uint32 enabledNumber,
-    gpa_uint32* pEnabledCounterIndex)
+GPALIB_DECL GPA_Status GPA_GetEnabledIndex(GPA_SessionId sessionId, gpa_uint32 enabledNumber, gpa_uint32* pEnabledCounterIndex)
 {
     try
     {
@@ -1193,9 +1086,7 @@ GPALIB_DECL GPA_Status GPA_GetEnabledIndex(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_IsCounterEnabled(
-    GPA_SessionId sessionId,
-    gpa_uint32 counterIndex)
+GPALIB_DECL GPA_Status GPA_IsCounterEnabled(GPA_SessionId sessionId, gpa_uint32 counterIndex)
 {
     try
     {
@@ -1213,12 +1104,11 @@ GPALIB_DECL GPA_Status GPA_IsCounterEnabled(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_BeginCommandList(
-    GPA_SessionId sessionId,
-    gpa_uint32 passIndex,
-    void* pCommandList,
-    GPA_Command_List_Type commandListType,
-    GPA_CommandListId* pCommandListId)
+GPALIB_DECL GPA_Status GPA_BeginCommandList(GPA_SessionId         sessionId,
+                                            gpa_uint32            passIndex,
+                                            void*                 pCommandList,
+                                            GPA_Command_List_Type commandListType,
+                                            GPA_CommandListId*    pCommandListId)
 {
     try
     {
@@ -1297,12 +1187,8 @@ GPALIB_DECL GPA_Status GPA_BeginCommandList(
         GPA_Status retStatus = status ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 
         GPA_INTERNAL_LOG(GPA_BeginCommandList,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(passIndex) <<
-                         MAKE_PARAM_STRING(pCommandList) <<
-                         MAKE_PARAM_STRING(commandListType) <<
-                         MAKE_PARAM_STRING(*pCommandListId) <<
-                         MAKE_PARAM_STRING(retStatus));
+                         MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(passIndex) << MAKE_PARAM_STRING(pCommandList) << MAKE_PARAM_STRING(commandListType)
+                                                      << MAKE_PARAM_STRING(*pCommandListId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1313,8 +1199,7 @@ GPALIB_DECL GPA_Status GPA_BeginCommandList(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EndCommandList(
-    GPA_CommandListId commandListId)
+GPALIB_DECL GPA_Status GPA_EndCommandList(GPA_CommandListId commandListId)
 {
     try
     {
@@ -1331,9 +1216,7 @@ GPALIB_DECL GPA_Status GPA_EndCommandList(
 
         GPA_Status retStatus = (*commandListId)->End() ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 
-        GPA_INTERNAL_LOG(GPA_EndCommandList,
-                         MAKE_PARAM_STRING(commandListId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_EndCommandList, MAKE_PARAM_STRING(commandListId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1344,9 +1227,7 @@ GPALIB_DECL GPA_Status GPA_EndCommandList(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_BeginSample(
-    gpa_uint32 sampleId,
-    GPA_CommandListId commandListId)
+GPALIB_DECL GPA_Status GPA_BeginSample(gpa_uint32 sampleId, GPA_CommandListId commandListId)
 {
     try
     {
@@ -1359,7 +1240,7 @@ GPALIB_DECL GPA_Status GPA_BeginSample(
 
         // Only begin the sample if the current pass index is valid
         gpa_uint32 numRequiredPasses = 0;
-        retStatus = (*commandListId)->GetParentSession()->GetNumRequiredPasses(&numRequiredPasses);
+        retStatus                    = (*commandListId)->GetParentSession()->GetNumRequiredPasses(&numRequiredPasses);
 
         if (GPA_STATUS_OK == retStatus)
         {
@@ -1374,10 +1255,7 @@ GPALIB_DECL GPA_Status GPA_BeginSample(
             }
         }
 
-        GPA_INTERNAL_LOG(GPA_BeginSample,
-                         MAKE_PARAM_STRING(sampleId) <<
-                         MAKE_PARAM_STRING(commandListId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_BeginSample, MAKE_PARAM_STRING(sampleId) << MAKE_PARAM_STRING(commandListId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1388,8 +1266,7 @@ GPALIB_DECL GPA_Status GPA_BeginSample(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EndSample(
-    GPA_CommandListId commandListId)
+GPALIB_DECL GPA_Status GPA_EndSample(GPA_CommandListId commandListId)
 {
     try
     {
@@ -1402,7 +1279,7 @@ GPALIB_DECL GPA_Status GPA_EndSample(
 
         // Only end the sample if the current pass index is valid
         gpa_uint32 numRequiredPasses = 0;
-        retStatus = (*commandListId)->GetParentSession()->GetNumRequiredPasses(&numRequiredPasses);
+        retStatus                    = (*commandListId)->GetParentSession()->GetNumRequiredPasses(&numRequiredPasses);
 
         if (GPA_STATUS_OK == retStatus)
         {
@@ -1417,9 +1294,7 @@ GPALIB_DECL GPA_Status GPA_EndSample(
             }
         }
 
-        GPA_INTERNAL_LOG(GPA_EndSample,
-                         MAKE_PARAM_STRING(commandListId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_EndSample, MAKE_PARAM_STRING(commandListId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1430,9 +1305,7 @@ GPALIB_DECL GPA_Status GPA_EndSample(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_ContinueSampleOnCommandList(
-    gpa_uint32 srcSampleId,
-    GPA_CommandListId primaryCommandListId)
+GPALIB_DECL GPA_Status GPA_ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA_CommandListId primaryCommandListId)
 {
     try
     {
@@ -1456,9 +1329,7 @@ GPALIB_DECL GPA_Status GPA_ContinueSampleOnCommandList(
         retStatus = ((*primaryCommandListId)->GetParentSession()->ContinueSampleOnCommandList(srcSampleId, primaryCommandListId));
 
         GPA_INTERNAL_LOG(GPA_ContinueSampleOnCommandList,
-                         MAKE_PARAM_STRING(srcSampleId) <<
-                         MAKE_PARAM_STRING(primaryCommandListId) <<
-                         MAKE_PARAM_STRING(retStatus));
+                         MAKE_PARAM_STRING(srcSampleId) << MAKE_PARAM_STRING(primaryCommandListId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1469,11 +1340,10 @@ GPALIB_DECL GPA_Status GPA_ContinueSampleOnCommandList(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_CopySecondarySamples(
-    GPA_CommandListId secondaryCommandListId,
-    GPA_CommandListId primaryCommandListId,
-    gpa_uint32 numSamples,
-    gpa_uint32* pNewSampleIds)
+GPALIB_DECL GPA_Status GPA_CopySecondarySamples(GPA_CommandListId secondaryCommandListId,
+                                                GPA_CommandListId primaryCommandListId,
+                                                gpa_uint32        numSamples,
+                                                gpa_uint32*       pNewSampleIds)
 {
     try
     {
@@ -1489,14 +1359,12 @@ GPALIB_DECL GPA_Status GPA_CopySecondarySamples(
         CHECK_COMMANDLIST_ID_EXISTS(secondaryCommandListId);
         CHECK_COMMANDLIST_ID_EXISTS(primaryCommandListId);
 
-        GPA_Status retStatus = ((*primaryCommandListId)->GetParentSession()->CopySecondarySamples(secondaryCommandListId, primaryCommandListId, numSamples, pNewSampleIds));
+        GPA_Status retStatus =
+            ((*primaryCommandListId)->GetParentSession()->CopySecondarySamples(secondaryCommandListId, primaryCommandListId, numSamples, pNewSampleIds));
 
         GPA_INTERNAL_LOG(GPA_CopySecondarySamples,
-                         MAKE_PARAM_STRING(secondaryCommandListId) <<
-                         MAKE_PARAM_STRING(primaryCommandListId) <<
-                         MAKE_PARAM_STRING(numSamples) <<
-                         MAKE_PARAM_STRING(*pNewSampleIds) <<
-                         MAKE_PARAM_STRING(retStatus));
+                         MAKE_PARAM_STRING(secondaryCommandListId) << MAKE_PARAM_STRING(primaryCommandListId) << MAKE_PARAM_STRING(numSamples)
+                                                                   << MAKE_PARAM_STRING(*pNewSampleIds) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1507,9 +1375,7 @@ GPALIB_DECL GPA_Status GPA_CopySecondarySamples(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSampleCount(
-    GPA_SessionId sessionId,
-    gpa_uint32* pSampleCount)
+GPALIB_DECL GPA_Status GPA_GetSampleCount(GPA_SessionId sessionId, gpa_uint32* pSampleCount)
 {
     try
     {
@@ -1522,9 +1388,7 @@ GPALIB_DECL GPA_Status GPA_GetSampleCount(
 
         *pSampleCount = (*sessionId)->GetSampleCount();
 
-        GPA_INTERNAL_LOG(GPA_GetSampleCount,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(*pSampleCount));
+        GPA_INTERNAL_LOG(GPA_GetSampleCount, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(*pSampleCount));
 
         return GPA_STATUS_OK;
     }
@@ -1535,10 +1399,7 @@ GPALIB_DECL GPA_Status GPA_GetSampleCount(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSampleId(
-    GPA_SessionId sessionId,
-    gpa_uint32 index,
-    gpa_uint32* pSampleId)
+GPALIB_DECL GPA_Status GPA_GetSampleId(GPA_SessionId sessionId, gpa_uint32 index, gpa_uint32* pSampleId)
 {
     try
     {
@@ -1550,20 +1411,17 @@ GPALIB_DECL GPA_Status GPA_GetSampleId(
         CHECK_SESSION_RUNNING(sessionId);
 
         GPA_Status retStatus = GPA_STATUS_ERROR_SAMPLE_NOT_FOUND;
-        gpa_uint32 sampleId = 0u;
-        bool found = (*sessionId)->GetSampleIdByIndex(index, sampleId);
+        gpa_uint32 sampleId  = 0u;
+        bool       found     = (*sessionId)->GetSampleIdByIndex(index, sampleId);
 
         if (found)
         {
             *pSampleId = sampleId;
-            retStatus = GPA_STATUS_OK;
+            retStatus  = GPA_STATUS_OK;
         }
 
         GPA_INTERNAL_LOG(GPA_GetSampleId,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(index) <<
-                         MAKE_PARAM_STRING(*pSampleId) <<
-                         MAKE_PARAM_STRING(retStatus));
+                         MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(index) << MAKE_PARAM_STRING(*pSampleId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1574,8 +1432,7 @@ GPALIB_DECL GPA_Status GPA_GetSampleId(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_IsSessionComplete(
-    GPA_SessionId sessionId)
+GPALIB_DECL GPA_Status GPA_IsSessionComplete(GPA_SessionId sessionId)
 {
     try
     {
@@ -1601,9 +1458,7 @@ GPALIB_DECL GPA_Status GPA_IsSessionComplete(
             retStatus = GPA_STATUS_OK;
         }
 
-        GPA_INTERNAL_LOG(GPA_IsSessionComplete,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_IsSessionComplete, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1614,9 +1469,7 @@ GPALIB_DECL GPA_Status GPA_IsSessionComplete(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_IsPassComplete(
-    GPA_SessionId sessionId,
-    gpa_uint32 passIndex)
+GPALIB_DECL GPA_Status GPA_IsPassComplete(GPA_SessionId sessionId, gpa_uint32 passIndex)
 {
     try
     {
@@ -1647,10 +1500,7 @@ GPALIB_DECL GPA_Status GPA_IsPassComplete(
             }
         }
 
-        GPA_INTERNAL_LOG(GPA_IsSessionComplete,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(passIndex) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_IsSessionComplete, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(passIndex) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1661,10 +1511,7 @@ GPALIB_DECL GPA_Status GPA_IsPassComplete(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSampleResultSize(
-    GPA_SessionId sessionId,
-    gpa_uint32 sampleId,
-    size_t* pSampleResultSizeInBytes)
+GPALIB_DECL GPA_Status GPA_GetSampleResultSize(GPA_SessionId sessionId, gpa_uint32 sampleId, size_t* pSampleResultSizeInBytes)
 {
     try
     {
@@ -1685,11 +1532,9 @@ GPALIB_DECL GPA_Status GPA_GetSampleResultSize(
 
         *pSampleResultSizeInBytes = (*sessionId)->GetSampleResultSizeInBytes(sampleId);
 
-        GPA_INTERNAL_LOG(GPA_GetSampleResultSize,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(sampleId) <<
-                         MAKE_PARAM_STRING(*pSampleResultSizeInBytes) <<
-                         MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(
+            GPA_GetSampleResultSize,
+            MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(sampleId) << MAKE_PARAM_STRING(*pSampleResultSizeInBytes) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1700,11 +1545,7 @@ GPALIB_DECL GPA_Status GPA_GetSampleResultSize(
 }
 
 //-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSampleResult(
-    GPA_SessionId sessionId,
-    gpa_uint32 sampleId,
-    size_t sampleResultSizeInBytes,
-    void* pCounterSampleResults)
+GPALIB_DECL GPA_Status GPA_GetSampleResult(GPA_SessionId sessionId, gpa_uint32 sampleId, size_t sampleResultSizeInBytes, void* pCounterSampleResults)
 {
     try
     {
@@ -1726,11 +1567,8 @@ GPALIB_DECL GPA_Status GPA_GetSampleResult(
         retStatus = (*sessionId)->GetSampleResult(sampleId, sampleResultSizeInBytes, pCounterSampleResults);
 
         GPA_INTERNAL_LOG(GPA_GetSampleResult,
-                         MAKE_PARAM_STRING(sessionId) <<
-                         MAKE_PARAM_STRING(sampleId) <<
-                         MAKE_PARAM_STRING(sampleResultSizeInBytes) <<
-                         MAKE_PARAM_STRING(pCounterSampleResults) <<
-                         MAKE_PARAM_STRING(retStatus));
+                         MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(sampleId) << MAKE_PARAM_STRING(sampleResultSizeInBytes)
+                                                      << MAKE_PARAM_STRING(pCounterSampleResults) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
@@ -1742,18 +1580,14 @@ GPALIB_DECL GPA_Status GPA_GetSampleResult(
 
 //-----------------------------------------------------------------------------
 /// array of strings representing GPA_Status status strings
-static const char* g_statusString[] =
-{
-    GPA_ENUM_STRING_VAL(GPA_STATUS_OK, "GPA Status: Ok."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_RESULT_NOT_READY, "GPA Status: Counter Results Not Ready.")
-};
+static const char* g_statusString[] = {GPA_ENUM_STRING_VAL(GPA_STATUS_OK, "GPA Status: Ok."),
+                                       GPA_ENUM_STRING_VAL(GPA_STATUS_RESULT_NOT_READY, "GPA Status: Counter Results Not Ready.")};
 
 /// size of g_statusString array
 static size_t g_statusStringSize = sizeof(g_statusString) / sizeof(const char*);
 
 /// array of strings representing GPA_Status error strings
-static const char* g_errorString[] =
-{
+static const char* g_errorString[] = {
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_NULL_POINTER, "GPA Error: Null Pointer."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_CONTEXT_NOT_OPEN, "GPA Error: Context Not Open."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_CONTEXT_ALREADY_OPEN, "GPA Error: Coontext Already Opened."),
@@ -1796,14 +1630,12 @@ static const char* g_errorString[] =
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_TIMEOUT, "GPA Error: Attempt to Retrieve Data Failed due to Timeout."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_LIB_ALREADY_LOADED, "GPA Error: Library Is Already Loaded."),
     GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE, "GPA Error: Other Session Is Active."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_EXCEPTION, "GPA Error: Exception Occurred.")
-};
+    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_EXCEPTION, "GPA Error: Exception Occurred.")};
 
 /// size of g_errorString array
 static size_t g_errorStringSize = sizeof(g_errorString) / sizeof(const char*);
 
-GPALIB_DECL const char* GPA_GetStatusAsStr(
-    GPA_Status status)
+GPALIB_DECL const char* GPA_GetStatusAsStr(GPA_Status status)
 {
     try
     {

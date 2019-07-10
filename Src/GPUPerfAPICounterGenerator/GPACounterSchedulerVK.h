@@ -25,5 +25,4 @@ protected:
     virtual GPACounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const override;
 };
 
-#endif // _GPA_COUNTER_SCHEDULER_VK_H_
-
+#endif  // _GPA_COUNTER_SCHEDULER_VK_H_

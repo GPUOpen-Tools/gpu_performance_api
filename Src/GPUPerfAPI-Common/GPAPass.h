@@ -19,34 +19,30 @@
 #include "GPASample.h"
 #include "GPAContext.h"
 
-using PassIndex = unsigned int;                                    ///< type alias for pass index
-using SampleCount = unsigned int;                                  ///< type alias for sample count
-using CounterCount = unsigned int;                                 ///< type alias for counter count
-using CounterIndex = unsigned int;                                 ///< type alias for counter index
-using SamplesMap = std::unordered_map<ClientSampleId, GPASample*>; ///< type alias for map of client sample id and GPASample Object
-using GpaInternalSampleCounter = std::atomic<unsigned int>;        ///< type alias for GPA internal sample counter
-using ClientGpaSamplesMap = std::map<unsigned int, unsigned int>;  ///< type alias for map of internal sample id and client sample id
-using CounterList = std::vector<CounterIndex>;                     ///< type alias for counter list
-using SkippedCounters = std::set<CounterIndex>;                    ///< type alias for list of skipped counters
-using SampleIndex = unsigned int;                                  ///< type alias for sample indexes
-using GPACommandLists = std::vector<IGPACommandList*>;             ///< type alias for list of GPA command lists
-using CommandListCounter = unsigned int;                           ///< type alias for command list counter
-using CommandListId = unsigned int;                                ///< type alias for command list Id
+using PassIndex                = unsigned int;                                    ///< type alias for pass index
+using SampleCount              = unsigned int;                                    ///< type alias for sample count
+using CounterCount             = unsigned int;                                    ///< type alias for counter count
+using CounterIndex             = unsigned int;                                    ///< type alias for counter index
+using SamplesMap               = std::unordered_map<ClientSampleId, GPASample*>;  ///< type alias for map of client sample id and GPASample Object
+using GpaInternalSampleCounter = std::atomic<unsigned int>;                       ///< type alias for GPA internal sample counter
+using ClientGpaSamplesMap      = std::map<unsigned int, unsigned int>;            ///< type alias for map of internal sample id and client sample id
+using CounterList              = std::vector<CounterIndex>;                       ///< type alias for counter list
+using SkippedCounters          = std::set<CounterIndex>;                          ///< type alias for list of skipped counters
+using SampleIndex              = unsigned int;                                    ///< type alias for sample indexes
+using GPACommandLists          = std::vector<IGPACommandList*>;                   ///< type alias for list of GPA command lists
+using CommandListCounter       = unsigned int;                                    ///< type alias for command list counter
+using CommandListId            = unsigned int;                                    ///< type alias for command list Id
 
 /// Class for GPA pass
 class GPAPass
 {
 public:
-
     /// Constructor
     /// \param[in] pGpaSession GPA session object pointer
     /// \param[in] passIndex pass index
     /// \param[in] counterSource counter source
     /// \param[in] pPassCounters counter list for the pass
-    GPAPass(IGPASession* pGpaSession,
-            PassIndex passIndex,
-            GPACounterSource counterSource,
-            CounterList* pPassCounters);
+    GPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters);
 
     /// Delete default constructor
     GPAPass() = delete;
@@ -217,7 +213,6 @@ public:
     const IGPACounterAccessor* GetSessionContextCounterAccessor() const;
 
 protected:
-
     /// Checks to see if the supplied ClientSampleId has been opened on this pass.
     /// Does NOT lock the mutex, expects the calling method to do that.
     /// \param clientSampleId A user-supplied sampleId
@@ -235,18 +230,14 @@ protected:
     /// \param[in] sampleType Indicates whether the created sample should support Software or Hardware counters.
     /// \param[in] sampleId The client-supplied Id that will identify the created sample.
     /// \return A newly allocated API-specific GPASample object.
-    virtual GPASample* CreateAPISpecificSample(IGPACommandList* pCmdList,
-                                               GpaSampleType sampleType,
-                                               ClientSampleId sampleId) = 0;
+    virtual GPASample* CreateAPISpecificSample(IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId) = 0;
 
     /// Creates a command list
     /// \param[in] pCmd command list
     /// \param[in] commandListId command list id
     /// \param[in] cmdType type of the command list
     /// \return the API-specific command list or null if an error occurred
-    virtual IGPACommandList* CreateAPISpecificCommandList(void* pCmd,
-                                                          CommandListId commandListId,
-                                                          GPA_Command_List_Type cmdType) = 0;
+    virtual IGPACommandList* CreateAPISpecificCommandList(void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType) = 0;
 
     /// Get the counter index in the list of the counters passed to the driver for sample creation
     /// \param[in] internalCounterIndex internal counter index from the counter generator
@@ -269,11 +260,10 @@ protected:
     /// \param[in] pGPASample the sample being added
     void AddClientSample(ClientSampleId sampleId, GPASample* pGPASample);
 
-    const CounterList*                                     m_pCounterList; ///< list of counter in a pass
-    std::map<gpa_uint32, std::shared_ptr<GPASampleResult>> m_results;      ///< Maps a sample ID to a set of counter results.
+    const CounterList*                                     m_pCounterList;  ///< list of counter in a pass
+    std::map<gpa_uint32, std::shared_ptr<GPASampleResult>> m_results;       ///< Maps a sample ID to a set of counter results.
 
 private:
-
     /// Add the GPA command list
     /// \param[in] pGPACommandList GPA command list
     void AddCommandList(IGPACommandList* pGPACommandList);
@@ -282,24 +272,25 @@ private:
     /// \return true if pass is ready to collect the result
     bool IsAllSampleValidInPass() const;
 
-    IGPASession*               m_pGpaSession;                   ///< session of the pass
-    PassIndex                  m_uiPassIndex;                   ///< index of the pass
-    GPACounterSource           m_counterSource;                 ///< counter source of the counters in the pass
-    bool                       m_isResultCollected;             ///< flag indicating completion of the pass i.e. data has been collected from the driver
-    mutable bool               m_isResultReady;                 ///< flag indicating whether or not results are ready to be collected
-    bool                       m_isTimingPass;                  ///< flag indicating pass is timing pass
-    mutable std::mutex         m_counterListMutex;              ///< Mutex to protect the m_usedCounterListForPass member
-    CounterList                m_usedCounterListForPass;        ///< list of counters passed to driver for sample
-    SkippedCounters            m_skippedCounterList;            ///< List of unsupported counters - these are counters whose blocks are not supported by the API specific driver
-    mutable std::mutex         m_gpaCmdListMutex;               ///< Mutex to protect the gpaCmdList
-    GPACommandLists            m_gpaCmdList;                    ///< list of API specific command Lists
-    mutable std::mutex         m_samplesUnorderedMapMutex;      ///< Mutex to protect the samples map
-    SamplesMap                 m_samplesUnorderedMap;           ///< client sample id and GPASample object unordered map
-    ClientGpaSamplesMap        m_clientGpaSamplesMap;           ///< client sample id and internal sample id map
-    GpaInternalSampleCounter   m_gpaInternalSampleCounter;      ///< atomic counter for internal sample counter
-    CommandListCounter         m_commandListCounter;            ///< counter representing number of command list created in this pass - This will help in validation and uniquely identifying two different command list
-    mutable bool               m_isAllSampleValidInPass;        ///< flag indicating all the sample in the pass is valid or not - for cache
-    mutable bool               m_isPassComplete;                ///< flag indicating whether or not the command list and sample on them is complete
+    IGPASession*        m_pGpaSession;             ///< session of the pass
+    PassIndex           m_uiPassIndex;             ///< index of the pass
+    GPACounterSource    m_counterSource;           ///< counter source of the counters in the pass
+    bool                m_isResultCollected;       ///< flag indicating completion of the pass i.e. data has been collected from the driver
+    mutable bool        m_isResultReady;           ///< flag indicating whether or not results are ready to be collected
+    bool                m_isTimingPass;            ///< flag indicating pass is timing pass
+    mutable std::mutex  m_counterListMutex;        ///< Mutex to protect the m_usedCounterListForPass member
+    CounterList         m_usedCounterListForPass;  ///< list of counters passed to driver for sample
+    SkippedCounters     m_skippedCounterList;  ///< List of unsupported counters - these are counters whose blocks are not supported by the API specific driver
+    mutable std::mutex  m_gpaCmdListMutex;     ///< Mutex to protect the gpaCmdList
+    GPACommandLists     m_gpaCmdList;          ///< list of API specific command Lists
+    mutable std::mutex  m_samplesUnorderedMapMutex;       ///< Mutex to protect the samples map
+    SamplesMap          m_samplesUnorderedMap;            ///< client sample id and GPASample object unordered map
+    ClientGpaSamplesMap m_clientGpaSamplesMap;            ///< client sample id and internal sample id map
+    GpaInternalSampleCounter m_gpaInternalSampleCounter;  ///< atomic counter for internal sample counter
+    CommandListCounter
+                 m_commandListCounter;  ///< counter representing number of command list created in this pass - This will help in validation and uniquely identifying two different command list
+    mutable bool m_isAllSampleValidInPass;  ///< flag indicating all the sample in the pass is valid or not - for cache
+    mutable bool m_isPassComplete;          ///< flag indicating whether or not the command list and sample on them is complete
 };
 
 #endif  // _GPA_PASS_H_

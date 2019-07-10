@@ -17,6 +17,7 @@ pfn_clRetainPerfCounterAMD       my_clRetainPerfCounterAMD       = nullptr;
 pfn_clEnqueueBeginPerfCounterAMD my_clEnqueueBeginPerfCounterAMD = nullptr;
 pfn_clEnqueueEndPerfCounterAMD   my_clEnqueueEndPerfCounterAMD   = nullptr;
 pfn_clGetPerfCounterInfoAMD      my_clGetPerfCounterInfoAMD      = nullptr;
+pfn_clSetDeviceClockModeAMD      my_clSetDeviceClockModeAMD      = nullptr;
 
 bool InitPerfCounterAMDExtension(cl_platform_id platform)
 {
@@ -59,7 +60,8 @@ bool InitPerfCounterAMDExtension(cl_platform_id platform)
 
     if (nullptr == my_clEnqueueBeginPerfCounterAMD)
     {
-        my_clEnqueueBeginPerfCounterAMD = (pfn_clEnqueueBeginPerfCounterAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clEnqueueBeginPerfCounterAMD");
+        my_clEnqueueBeginPerfCounterAMD =
+            (pfn_clEnqueueBeginPerfCounterAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clEnqueueBeginPerfCounterAMD");
 
         if (nullptr == my_clEnqueueBeginPerfCounterAMD)
         {
@@ -69,7 +71,8 @@ bool InitPerfCounterAMDExtension(cl_platform_id platform)
 
     if (nullptr == my_clEnqueueEndPerfCounterAMD)
     {
-        my_clEnqueueEndPerfCounterAMD = (pfn_clEnqueueEndPerfCounterAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clEnqueueEndPerfCounterAMD");
+        my_clEnqueueEndPerfCounterAMD =
+            (pfn_clEnqueueEndPerfCounterAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clEnqueueEndPerfCounterAMD");
 
         if (nullptr == my_clEnqueueEndPerfCounterAMD)
         {
@@ -87,6 +90,16 @@ bool InitPerfCounterAMDExtension(cl_platform_id platform)
         }
     }
 
+    if (nullptr == my_clSetDeviceClockModeAMD)
+    {
+        my_clSetDeviceClockModeAMD = (pfn_clSetDeviceClockModeAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clSetDeviceClockModeAMD");
+
+        // TODO: return false once we no longer need to support pre-19.10 drivers
+        //if (nullptr == my_clSetDeviceClockModeAMD)
+        //{
+        //    return false;
+        //}
+    }
+
     return true;
 }
-

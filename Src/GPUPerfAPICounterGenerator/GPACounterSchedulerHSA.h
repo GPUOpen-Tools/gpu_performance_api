@@ -18,7 +18,6 @@ public:
     GPA_CounterSchedulerHSA();
 
 protected:
-
     /// For HSA, the preferred splitting algorithm is the consolidated one.
     /// This keeps the overall number of passes down to a reasonable number, but splits the counters up
     /// in a manner that allows them to be more consistent.
@@ -26,4 +25,4 @@ protected:
     virtual GPACounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const override;
 };
 
-#endif //_GPA_COUNTER_SCHEDULER_HSA_H_
+#endif  //_GPA_COUNTER_SCHEDULER_HSA_H_

@@ -20,7 +20,7 @@ GPA_Status GPACustomHwValidationManager::ValidateHW(void* pContext, GPA_HWInfo* 
 {
     GPA_Status retVal = GPA_STATUS_OK;
 
-    for (auto it = m_validationFunctionList.begin(); it != m_validationFunctionList.end() && GPA_STATUS_OK == retVal ; ++it)
+    for (auto it = m_validationFunctionList.begin(); it != m_validationFunctionList.end() && GPA_STATUS_OK == retVal; ++it)
     {
         retVal = (it->first)(pContext, pHwInfo, it->second);
     }

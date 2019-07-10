@@ -16,12 +16,12 @@
 #include "GPUPerfAPITypes.h"
 
 class GPA_CounterGeneratorBase;  ///< forward declaration
-class IGPACounterScheduler;     ///< forward declaration
+class IGPACounterScheduler;      ///< forward declaration
 
 /// Class that will get the correct Generator and Scheduler for an API/Generation combination
 class CounterGeneratorSchedulerManager : public TSingleton<CounterGeneratorSchedulerManager>
 {
-    friend class TSingleton<CounterGeneratorSchedulerManager>; ///< friend declaration to allow access to the constructor
+    friend class TSingleton<CounterGeneratorSchedulerManager>;  ///< friend declaration to allow access to the constructor
 
 public:
     /// Registers an API/HwGen-specific counter generator
@@ -78,4 +78,4 @@ protected:
     APITypeGenerationSchedulerMap m_counterSchedulerItems;
 };
 
-#endif // _GPA_COUNTER_GENERATOR_SCHEDULER_MANAGER_H_
+#endif  // _GPA_COUNTER_GENERATOR_SCHEDULER_MANAGER_H_

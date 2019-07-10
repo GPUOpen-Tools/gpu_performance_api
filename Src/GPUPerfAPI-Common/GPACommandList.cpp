@@ -7,16 +7,13 @@
 
 #include "GPACommandList.h"
 
-GPACommandList::GPACommandList(IGPASession* pGpaSession,
-                               GPAPass* pGpaPass,
-                               CommandListId commandListId,
-                               GPA_Command_List_Type commandListType):
-    m_pGpaSession(pGpaSession),
-    m_pGpaPass(pGpaPass),
-    m_pLastSample(nullptr),
-    m_commandListState(CommandListState::UNDEFINED),
-    m_commandListType(commandListType),
-    m_commandListId(commandListId)
+GPACommandList::GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId, GPA_Command_List_Type commandListType)
+    : m_pGpaSession(pGpaSession)
+    , m_pGpaPass(pGpaPass)
+    , m_pLastSample(nullptr)
+    , m_commandListState(CommandListState::UNDEFINED)
+    , m_commandListType(commandListType)
+    , m_commandListId(commandListId)
 {
 }
 
@@ -33,7 +30,7 @@ bool GPACommandList::Begin()
     {
         m_cmdListMutex.lock();
         m_commandListState = CommandListState::SAMPLE_RECORDING_BEGIN;
-        m_pLastSample = nullptr;
+        m_pLastSample      = nullptr;
         m_cmdListMutex.unlock();
         success = BeginCommandListRequest();
 
@@ -106,8 +103,7 @@ gpa_uint32 GPACommandList::GetSampleCount() const
     return static_cast<gpa_uint32>(m_clientSampleIdGpaSampleUnorderedMap.size());
 }
 
-bool GPACommandList::BeginSample(ClientSampleId clientSampleIndex,
-                                 GPASample* pSample)
+bool GPACommandList::BeginSample(ClientSampleId clientSampleIndex, GPASample* pSample)
 {
     bool succeeded = false;
 
@@ -208,8 +204,7 @@ GPASample* GPACommandList::GetSample(ClientSampleId clientSampleId) const
 
     GPASample* pRetGpaSample = nullptr;
 
-    ClientSampleIdGpaSampleUnorderedMap::const_iterator iter =
-        m_clientSampleIdGpaSampleUnorderedMap.find(clientSampleId);
+    ClientSampleIdGpaSampleUnorderedMap::const_iterator iter = m_clientSampleIdGpaSampleUnorderedMap.find(clientSampleId);
 
     if (iter != m_clientSampleIdGpaSampleUnorderedMap.end())
     {
@@ -248,8 +243,7 @@ void GPACommandList::IterateSampleUnorderedMap(std::function<bool(ClientSampleId
 {
     bool next = true;
 
-    for (auto it = m_clientSampleIdGpaSampleUnorderedMap.cbegin();
-         it != m_clientSampleIdGpaSampleUnorderedMap.cend() && next; ++it)
+    for (auto it = m_clientSampleIdGpaSampleUnorderedMap.cbegin(); it != m_clientSampleIdGpaSampleUnorderedMap.cend() && next; ++it)
     {
         next = function(*it);
     }
@@ -258,6 +252,5 @@ void GPACommandList::IterateSampleUnorderedMap(std::function<bool(ClientSampleId
 void GPACommandList::AddSample(ClientSampleId clientSampleId, GPASample* pGpaSample)
 {
     std::lock_guard<std::mutex> lockCmdList(m_cmdListMutex);
-    m_clientSampleIdGpaSampleUnorderedMap.insert(
-        ClientSampleIdGpaSamplePair(clientSampleId, pGpaSample));
+    m_clientSampleIdGpaSampleUnorderedMap.insert(ClientSampleIdGpaSamplePair(clientSampleId, pGpaSample));
 }

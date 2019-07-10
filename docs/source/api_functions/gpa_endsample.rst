@@ -16,10 +16,10 @@ Description
 
 Ends a sample in a command list. A sample is a particular workload for which
 counters will be collected. If the owning session was created with
-GPA_SAMPLE_TYPE_DISCRETE_COUNTER and one or more counters have been enabled,
-then those counters will be collected for this sample. Each sample must be
-associated with a GPA command list. Samples can be created by using multiple
-threads provided no two threads are creating samples on same command
+GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER and one or more counters have been
+enabled, then those counters will be collected for this sample. Each sample
+must be associated with a GPA command list. Samples can be created by using
+multiple threads provided no two threads are creating samples on same command
 list. You must provide a unique Id for every new sample. You may create as many
 samples as needed. However, nesting of samples is not allowed. Each sample must
 be wrapped in sequence of GPA_BeginSample/GPA_EndSample before starting another

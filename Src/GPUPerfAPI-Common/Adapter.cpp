@@ -12,32 +12,31 @@
 #include "Logging.h"
 #include "Utility.h"
 
-
 bool Adapter::getAsicInfoList(AsicInfoList& asicInfoList) const
 {
     IDXGIFactory* pDxgiFactory = nullptr;
-    HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDxgiFactory));
-    bool retVal = false;
+    HRESULT       hr           = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDxgiFactory));
+    bool          retVal       = false;
 
     if (SUCCEEDED(hr))
     {
         retVal = true;
         typedef std::vector<DXGI_ADAPTER_DESC> DxgiAdapterDescList;
-        static const size_t DxgiAdapterDescListInitalSize = 32;
-        DxgiAdapterDescList dxgiAdapterDescList(DxgiAdapterDescListInitalSize);
-        UINT adapterIndex = 0;
+        static const size_t                    DxgiAdapterDescListInitalSize = 32;
+        DxgiAdapterDescList                    dxgiAdapterDescList(DxgiAdapterDescListInitalSize);
+        UINT                                   adapterIndex = 0;
 
         while (SUCCEEDED(hr))
         {
             IDXGIAdapter* pDxgiAdapter = nullptr;
-            hr = pDxgiFactory->EnumAdapters(adapterIndex, &pDxgiAdapter);
+            hr                         = pDxgiFactory->EnumAdapters(adapterIndex, &pDxgiAdapter);
 
             if (SUCCEEDED(hr))
             {
                 hr = pDxgiAdapter->GetDesc(&(dxgiAdapterDescList[adapterIndex]));
 #ifdef _DEBUG
                 assert(SUCCEEDED(hr));
-#endif // _DEBUG
+#endif  // _DEBUG
                 pDxgiAdapter->Release();
             }
 
@@ -59,7 +58,7 @@ bool Adapter::getAsicInfoList(AsicInfoList& asicInfoList) const
             const size_t listSize = adapterIndex > 0 ? adapterIndex - 1 : 0;
             asicInfoList.resize(listSize);
 
-            for (size_t aii = 0 ; listSize > aii ; ++aii)
+            for (size_t aii = 0; listSize > aii; ++aii)
             {
                 dxgiAdapterDescToAsicInfo(dxgiAdapterDescList[aii], asicInfoList[aii]);
             }
@@ -77,7 +76,7 @@ void Adapter::dxgiAdapterDescToAsicInfo(const DXGI_ADAPTER_DESC& dxgiAdapterDesc
     std::stringstream strStream;
     strStream << std::hex << dxgiAdapterDesc.DeviceId;
     asicInfo.deviceIDString = strStream.str();
-    asicInfo.vendorID = dxgiAdapterDesc.VendorId;
-    asicInfo.deviceID = dxgiAdapterDesc.DeviceId;
-    asicInfo.revID = dxgiAdapterDesc.Revision;
+    asicInfo.vendorID       = dxgiAdapterDesc.VendorId;
+    asicInfo.deviceID       = dxgiAdapterDesc.DeviceId;
+    asicInfo.revID          = dxgiAdapterDesc.Revision;
 }

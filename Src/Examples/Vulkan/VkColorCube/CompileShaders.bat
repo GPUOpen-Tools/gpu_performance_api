@@ -1,4 +1,4 @@
-@ECHO off
+@ECHO on
 REM Copyright 2018 Advanced Micro Devices, Inc.
 
 SET outDir="%~1"

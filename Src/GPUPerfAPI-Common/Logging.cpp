@@ -10,7 +10,7 @@
 #include "Utility.h"
 
 #ifdef _WIN32
-    #pragma comment( lib, "Winmm.lib" )
+#pragma comment(lib, "Winmm.lib")
 #endif
 
 GPATracer gTracerSingleton;
@@ -35,13 +35,13 @@ GPATracer::GPATracer()
 #else
     // in public builds, the end-user should only see the functions they call
     m_topLevelOnly = true;
-#endif // AMDT_INTERNAL
+#endif  // AMDT_INTERNAL
 }
 
 void GPATracer::EnterFunction(const char* pFunctionName)
 {
     std::thread::id currentThreadId;
-    auto tabCounter = GetTabCounter(&currentThreadId);
+    auto            tabCounter = GetTabCounter(&currentThreadId);
 
     if ((!tabCounter->second && m_topLevelOnly) || !m_topLevelOnly)
     {
@@ -68,17 +68,16 @@ void GPATracer::EnterFunction(const char* pFunctionName)
 
 #else
         GPA_LogTrace(message.str().c_str());
-#endif // AMDT_INTERNAL
+#endif  // AMDT_INTERNAL
     }
 
     ++tabCounter->second;
 }
 
-
 void GPATracer::LeaveFunction(const char* pFunctionName)
 {
     std::thread::id currentThreadId;
-    auto tabCounter = GetTabCounter(&currentThreadId);
+    auto            tabCounter = GetTabCounter(&currentThreadId);
 
     if (tabCounter->second > 0)
     {
@@ -110,14 +109,14 @@ void GPATracer::LeaveFunction(const char* pFunctionName)
 
 #else
         GPA_LogTrace(message.str().c_str());
-#endif // AMDT_INTERNAL
+#endif  // AMDT_INTERNAL
     }
 }
 
 void GPATracer::OutputFunctionData(const char* pData)
 {
     std::thread::id currentThreadId;
-    auto tabCounter = GetTabCounter(&currentThreadId);
+    auto            tabCounter = GetTabCounter(&currentThreadId);
 
     if (((tabCounter->second) == 1 && m_topLevelOnly) || !m_topLevelOnly)
     {
@@ -143,7 +142,7 @@ void GPATracer::OutputFunctionData(const char* pData)
 
 #else
         GPA_LogTrace(message.str().c_str());
-#endif // AMDT_INTERNAL
+#endif  // AMDT_INTERNAL
     }
 }
 
@@ -158,7 +157,7 @@ std::map<std::thread::id, int32_t>::iterator GPATracer::GetTabCounter(std::threa
     if (ret == m_threadTabCountMap.end())
     {
         m_threadTabCountMap[*pCurrentThreadId] = 0;
-        ret = m_threadTabCountMap.find(*pCurrentThreadId);
+        ret                                    = m_threadTabCountMap.find(*pCurrentThreadId);
     }
 
 #ifdef _DEBUG
@@ -169,7 +168,6 @@ std::map<std::thread::id, int32_t>::iterator GPATracer::GetTabCounter(std::threa
 
     return ret;
 }
-
 
 ScopeTrace::ScopeTrace(const char* pTraceFunction)
 {
@@ -188,10 +186,10 @@ ScopeTrace::~ScopeTrace()
     }
 }
 
-GPALogger::GPALogger() :
-    m_loggingType(GPA_LOGGING_NONE),
-    m_loggingCallback(nullptr),
-    m_enableInternalLogging(false)
+GPALogger::GPALogger()
+    : m_loggingType(GPA_LOGGING_NONE)
+    , m_loggingCallback(nullptr)
+    , m_enableInternalLogging(false)
 {
 #ifdef _WIN32
     InitializeCriticalSection(&m_hLock);
@@ -224,12 +222,12 @@ void GPALogger::SetLoggingCallback(GPA_Logging_Type loggingType, GPA_LoggingCall
     if (nullptr == loggingCallback)
     {
         m_loggingCallback = nullptr;
-        m_loggingType = GPA_LOGGING_NONE;
+        m_loggingType     = GPA_LOGGING_NONE;
     }
     else
     {
         m_loggingCallback = loggingCallback;
-        m_loggingType = loggingType;
+        m_loggingType     = loggingType;
     }
 }
 
@@ -239,8 +237,7 @@ void GPALogger::Log(GPA_Logging_Type logType, const char* pMessage)
 
     // if the supplied message type is among those that the user wants be notified of,
     // then pass the message along.
-    if ((logType & m_loggingType) &&
-        nullptr != m_loggingCallback)
+    if ((logType & m_loggingType) && nullptr != m_loggingCallback)
     {
         m_loggingCallback(logType, pMessage);
 

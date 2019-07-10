@@ -1,6 +1,6 @@
 // =====================================================================
 // <copyright file="CounterCompiler.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2018 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2019 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -17,128 +17,100 @@ namespace PublicCounterCompiler
     using System.IO;
     using System.Windows.Forms;
     using System.Diagnostics;
+    using GPATools;
+    using static GPATools.Gpa;
+    using CounterGroup = System.String;
+    using CounterName = System.String;
+    using CounterDescription = System.String;
 
     /// <summary>
     /// Compiles the derived counters definitions into C++ files.
     /// </summary>
     public class CounterCompiler
     {
+        /// <summary>
+        /// Derived counter input file
+        /// </summary>
         public class DerivedCounterFileInput
         {
+            /// <summary>
+            /// Root filename
+            /// </summary>
             public string rootFilename;
+
+            /// <summary>
+            /// Compiler input path
+            /// </summary>
             public string compilerInputPath;
 
+            /// <summary>
+            /// Auto-generated compiler file input path
+            /// </summary>
+            public string autoGenCompilerInputFilePath;
+
+            /// <summary>
+            /// Derived counter h/cpp file output directory
+            /// </summary>
             public string outputDirectory;
+
+            /// <summary>
+            /// Counter list output directory
+            /// </summary>
             public string counterListOutputDirectory;
+
+            /// <summary>
+            /// Test output directory
+            /// </summary>
             public string testOutputDirectory;
         }
 
-        public static DerivedCounterFileInput derivedCounterFileInput = null;
-
-        public static bool isInternal = false;
+        /// <summary>
+        /// Derived counter file input
+        /// </summary>
+        public DerivedCounterFileInput derivedCounterFileInput = null;
 
         /// <summary>
-        /// Class to hold info for counter documentation
+        /// Flag indicated this is compiling internal derived counters (true), or public derived counters (false)
         /// </summary>
-        class PublicCounterDocInfo
-        {
-            /// <summary>
-            /// The public counter definition
-            /// </summary>
-            public DerivedCounterDef publicCounter = null;
-
-            /// <summary>
-            /// Flag indicating if the counter support GFX9
-            /// </summary>
-            public bool gfx9Supported = false;
-
-            /// <summary>
-            /// Flag indicating if the counter support GFX8
-            /// </summary>
-            public bool gfx8Supported = false;
-
-            /// <summary>
-            /// Flag indicating if the counter support GFX7
-            /// </summary>
-            public bool gfx7Supported = false;
-
-            /// <summary>
-            /// Flag indicating if the counter support GFX6
-            /// </summary>
-            public bool gfx6Supported = false;
-        }
+        public bool isInternal = false;
 
         /// <summary>
         /// A map of Counter Group to a map of counter name to documentation info for Graphics Counters
         /// </summary>
-        private static Dictionary<string, Dictionary<string, PublicCounterDocInfo>> docInfoMapGraphics = new Dictionary<string, Dictionary<string, PublicCounterDocInfo>>();
+        private Dictionary<GfxGeneration, Dictionary<CounterGroup, Dictionary<string, DerivedCounterDef>>>
+            docInfoMapGraphicsByGeneration =
+                new Dictionary<GfxGeneration, Dictionary<CounterGroup, Dictionary<string, DerivedCounterDef>>>();
 
         /// <summary>
         /// A map of Counter Group to a map of counter name to documentation info for Graphics Counters
         /// </summary>
-        private static Dictionary<string, Dictionary<string, PublicCounterDocInfo>> docInfoMapCompute = new Dictionary<string, Dictionary<string, PublicCounterDocInfo>>();
+        private Dictionary<GfxGeneration, Dictionary<CounterGroup, Dictionary<string, DerivedCounterDef>>>
+            docInfoMapComputeByGeneration =
+                new Dictionary<GfxGeneration, Dictionary<CounterGroup, Dictionary<string, DerivedCounterDef>>>();
 
         /// <summary>
         /// Indicates if this app is being run as a console app (true) or UI app (false)
         /// </summary>
-        public static bool isConsoleApp = true;
+        public bool isConsoleApp = true;
 
         /// <summary>
         /// List of global GPU generation internal counters
         /// </summary>
-        private static List<InternalCounterDef> globalInternalCounterList = null;
-
-        /// <summary>
-        /// Outputs a message to the console or the form
-        /// </summary>
-        /// <param name="strMsg">The message to output</param>
-        public static void Output(string strMsg)
-        {
-            if (isConsoleApp)
-            {
-                Console.WriteLine(strMsg);
-            }
-            else
-            {
-                Form1.Instance().Output(strMsg);
-            }
-            Debug.Print(strMsg);
-        }
+        private List<InternalCounterDef> globalInternalCounterList = null;
 
         /// <summary>
         /// Gets a value indicating whether invalid counters should be considered errors, or if they should be ignored.
         /// </summary>
         /// <returns>True to ignore the invalid counters; false if they should be considered errors.</returns>
-        public static bool IgnoreInvalidCounters()
+        public bool IgnoreInvalidCounters()
         {
             if (isConsoleApp)
             {
                 // by default, running from the console will ignore invalid counters
                 return true;
             }
-            else
-            {
-                return Form1.Instance().IgnoreInvalidCounters();
-            }
-        }
 
-        /// <summary>
-        /// Gets the GPA base path where files should be generated into
-        /// </summary>
-        /// <returns>the GPA base path where files should be generated into</returns>
-        public static string GetGPABasePath()
-        {
-            // calculate the proper path to output to
-            string CompilerOutputFolder = "Output\\";
-            int endPath = Application.StartupPath.IndexOf(CompilerOutputFolder) + CompilerOutputFolder.Length;
-
-            if (CompilerOutputFolder.Length == endPath)
-            {
-                Output(Application.ProductName + " was started out of unexpected folder.");
-                return "";
-            }
-
-            return Application.StartupPath.Substring(0, endPath - CompilerOutputFolder.Length);
+            return Form1.GetIgnoreInvalidCounters;
         }
 
         /// <summary>
@@ -147,17 +119,24 @@ namespace PublicCounterCompiler
         /// </summary>
         /// <param name="api">The API to compile counters for</param>
         /// <param name="generation">The HW generation</param>
+        /// <param name="infoHandler">Called in response to an informational message</param>
+        /// <param name="errorHandler">Called in response to a error condition</param>
         /// <returns>true on success, false if there were any errors</returns>
-        public static bool CompileCounters(string api, string generation)
+        public bool CompileCounters(
+            string api,
+            string generation,
+            Func<string, bool> infoHandler,
+            Func<string, bool> errorHandler
+            )
         {
             // Iterate over files that match the base of the counter name's generation file
-            string searchFilename = derivedCounterFileInput.rootFilename + "CounterNames" + api + generation + "*.txt";
+            string searchFilename = derivedCounterFileInput.rootFilename + GPATools.Gpa.CounterFileNamePrefix + api + generation + "*.txt";
 
-            string[] filenames = Directory.GetFiles(derivedCounterFileInput.compilerInputPath, searchFilename);
+            string[] filenames = Directory.GetFiles(derivedCounterFileInput.autoGenCompilerInputFilePath, searchFilename);
 
             if (filenames.Length == 0)
             {
-                Output("No files found at:" + derivedCounterFileInput.compilerInputPath + " matching:" + searchFilename);
+                infoHandler("No files found at:" + derivedCounterFileInput.compilerInputPath + " matching:" + searchFilename);
                 return false;
             }
 
@@ -183,14 +162,18 @@ namespace PublicCounterCompiler
                     suffix = "Compute";
                 }
 
-                string derivedCounterDefsFile = derivedCounterFileInput.compilerInputPath + derivedCounterFileInput.rootFilename + "CounterDefinitions" + suffix + generation + ".txt";
+                string derivedCounterDefsFile = derivedCounterFileInput.compilerInputPath +
+                                                derivedCounterFileInput.rootFilename +
+                                                GPATools.Gpa.CounterDefFilePrefix +
+                                                suffix +
+                                                generation + ".txt";
+
                 string section = api + generation;
-                string strError = string.Empty;
 
                 // Some files may not exist for certain combinations of APIs and architectures
                 if (!File.Exists(derivedCounterDefsFile))
                 {
-                    Output("Info: Unable to find file " + derivedCounterDefsFile);
+                    infoHandler("Info: Unable to find file " + derivedCounterDefsFile);
                     return true;
                 }
 
@@ -203,49 +186,58 @@ namespace PublicCounterCompiler
                     api,
                     generation,
                     asic,
-                    out strError))
+                    infoHandler,
+                    errorHandler))
                 {
-                    if (!string.IsNullOrEmpty(strError))
-                    {
-                        Output(strError);
-                    }
-
-                    Output(derivedCounterFileInput.rootFilename + "CounterDefs" + section + asic + ".cpp / .h written out to:" + derivedCounterFileInput.outputDirectory);
+                    infoHandler(derivedCounterFileInput.rootFilename + Gpa.CounterDefOutFileName + section + asic + ".cpp / .h written out to:" + derivedCounterFileInput.outputDirectory);
                 }
                 else
                 {
-                    Output(strError);
                     return false;
                 }
             }
 
             // Generate section + ASIC file
-            bool retVal = GenerateSectionAsicFiles(derivedCounterFileInput.rootFilename, api, generation, derivedCounterFileInput.outputDirectory, asicSpecificFiles);
+            bool retVal = GenerateSectionAsicFiles(derivedCounterFileInput.rootFilename, api, generation, derivedCounterFileInput.outputDirectory, asicSpecificFiles, infoHandler, errorHandler);
 
             if (retVal)
             {
-                Output("Counter generation completed successfully");
+                infoHandler("Counter generation completed successfully");
             }
             else
             {
-                Output("Counter generation failed");
+                errorHandler("Counter generation failed");
             }
 
             return retVal;
         }
 
-        private static bool GenerateSectionAsicFiles(
+        /// <summary>
+        /// Generates ASIC files
+        /// </summary>
+        /// <param name="rootFilename">Root filename for ASIC files.</param>
+        /// <param name="api">API being generated.</param>
+        /// <param name="generation">GPU generation.</param>
+        /// <param name="outputDirectory">Output directory.</param>
+        /// <param name="asicSpecificFiles">List of ASIC-specific files.</param>
+        /// <param name="infoHandler">Called in response to an informational message</param>
+        /// <param name="errorHandler">Called in response to a error condition</param>
+        /// <returns>True is files are successfully loaded and generated.</returns>
+        private bool GenerateSectionAsicFiles(
             string rootFilename,
             string api,
             string generation,
             string outputDirectory,
-            List<string> asicSpecificFiles)
+            List<string> asicSpecificFiles,
+            Func<string, bool> infoHandler,
+            Func<string, bool> errorHandler
+            )
         {
             string section = api + generation;
-            string filename = outputDirectory + rootFilename + "CounterDefs" + section + "Asics.h";
+            string filename = outputDirectory + rootFilename + Gpa.CounterDefOutFileName + section + "Asics.h";
 
             // Write header file
-            Output("Writing ASIC header to " + filename);
+            infoHandler("Writing ASIC header to " + filename);
             StreamWriter includeFile = null;
             try
             {
@@ -253,7 +245,7 @@ namespace PublicCounterCompiler
             }
             catch
             {
-                Output("ERROR: Failed to open file for writing: " + filename);
+                errorHandler("Failed to open file for writing: " + filename);
                 return false;
             }
 
@@ -278,49 +270,51 @@ namespace PublicCounterCompiler
                 includeFile.WriteLine("#include \"{0}CounterDefs{1}{2}.h\"", rootFilename, section, asic);
             }
 
-            includeFile.WriteLine();
+            if (0 != asicSpecificFiles.Count)
+            {
+                includeFile.WriteLine();
+            }
 
             includeFile.WriteLine("namespace {0}Asics", section);
             includeFile.WriteLine("{");
-            includeFile.WriteLine();
 
-            includeFile.WriteLine("/// Updates default GPU generation derived counters with ASIC specific derived counters if available.");
-            includeFile.WriteLine("/// \\param desiredGeneration Hardware generation currently in use.");
-            includeFile.WriteLine("/// \\param asicType The ASIC type that is currently in use.");
-            includeFile.WriteLine("/// \\param c Returned set of derived counters, if available.");
-            includeFile.WriteLine("/// \\return True if the ASIC matched one available, and c was updated.");
-            includeFile.WriteLine("inline void Update{0}AsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c)", rootFilename);
-            includeFile.WriteLine("{");
+            includeFile.WriteLine("    /// Updates default GPU generation derived counters with ASIC specific derived counters if available.");
+            includeFile.WriteLine("    /// \\param desiredGeneration Hardware generation currently in use.");
+            includeFile.WriteLine("    /// \\param asicType The ASIC type that is currently in use.");
+            includeFile.WriteLine("    /// \\param c Returned set of derived counters, if available.");
+            includeFile.WriteLine("    /// \\return True if the ASIC matched one available, and c was updated.");
+            includeFile.WriteLine("    inline void Update{0}AsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c)", rootFilename);
+            includeFile.WriteLine("    {");
 
             if (asicSpecificFiles.Count == 0)
             {
-                includeFile.WriteLine("    UNREFERENCED_PARAMETER(desiredGeneration);");
-                includeFile.WriteLine("    UNREFERENCED_PARAMETER(asicType);");
-                includeFile.WriteLine("    UNREFERENCED_PARAMETER(c);");
+                includeFile.WriteLine("        UNREFERENCED_PARAMETER(desiredGeneration);");
+                includeFile.WriteLine("        UNREFERENCED_PARAMETER(asicType);");
+                includeFile.WriteLine("        UNREFERENCED_PARAMETER(c);");
             }
             else
             {
-                includeFile.WriteLine();
-
-                foreach (string asic in asicSpecificFiles)
+                for (int i = 0; i < asicSpecificFiles.Count; ++i)
                 {
-                    includeFile.WriteLine("    if ({0}{1}::Update{2}AsicSpecificCounters(desiredGeneration, asicType, c))", section, asic, rootFilename);
-                    includeFile.WriteLine("    {");
-                    includeFile.WriteLine("        return;");
-                    includeFile.WriteLine("    }");
-                    includeFile.WriteLine();
+                    includeFile.WriteLine("        if ({0}{1}::Update{2}AsicSpecificCounters(desiredGeneration, asicType, c))", section, asicSpecificFiles[i], rootFilename);
+                    includeFile.WriteLine("        {");
+                    includeFile.WriteLine("            return;");
+                    includeFile.WriteLine("        }");
+                    if (i < asicSpecificFiles.Count - 1)
+                    {
+                        includeFile.WriteLine();
+                    }
                 }
             }
 
-            includeFile.WriteLine("}");
+            includeFile.WriteLine("    }");
 
             includeFile.WriteLine();
-            includeFile.WriteLine("} // " + section + "Asics");
+            includeFile.WriteLine("}  // namespace " + section + "Asics");
             includeFile.WriteLine();
 
-            includeFile.WriteLine("#endif // _{0}_COUNTER_DEFS_{1}_ASICS_H_", rootFilename.ToUpper(), section.ToUpper());
+            includeFile.WriteLine("#endif  // _{0}_COUNTER_DEFS_{1}_ASICS_H_", rootFilename.ToUpper(), section.ToUpper());
             includeFile.Close();
-
             return true;
         }
 
@@ -331,9 +325,9 @@ namespace PublicCounterCompiler
         /// <param name="component">Component of the formula that is referenced</param>
         /// <param name="index">Index of the component of the formula that is referenced</param>
         /// <param name="errorMessage">Error message</param>
-        private static void OutputCounterError(string counterName, string component, int index, string errorMessage)
+        private void OutputCounterError(string counterName, string component, int index, string errorMessage, Func<string, bool> errorHandler)
         {
-            Output("Error: " + counterName + " - " + errorMessage + " " + component + " at index " + index);
+            errorHandler(counterName + " - " + errorMessage + " " + component + " at index " + index);
         }
 
         /// <summary>
@@ -341,7 +335,7 @@ namespace PublicCounterCompiler
         /// </summary>
         /// <param name="counter">Derived counter to validate</param>
         /// <returns>True if the formula and referenced counters are correct, otherwise false.</returns>
-        private static bool ValidateFormulaAndReferencedCounter(DerivedCounterDef counter)
+        private bool ValidateFormulaAndReferencedCounter(DerivedCounterDef counter, Func<string, bool> infoHandler, Func<string, bool> errorHandler)
         {
             bool retVal = true;
 
@@ -363,7 +357,7 @@ namespace PublicCounterCompiler
                 // Empty
                 if (string.IsNullOrEmpty(component))
                 {
-                    OutputCounterError(counter.Name, component, componentIndex, "empty comp component");
+                    OutputCounterError(counter.Name, component, componentIndex, "empty comp component", errorHandler);
                     retVal = false;
                     break;
                 }
@@ -377,7 +371,7 @@ namespace PublicCounterCompiler
                     isNumeric = int.TryParse(component, out startingCounter);
                     if (!isNumeric)
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range");
+                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range", errorHandler);
                         retVal = false;
                         break;
                     }
@@ -385,7 +379,7 @@ namespace PublicCounterCompiler
                     int ellipsisIndex = component.IndexOf("..");
                     if (ellipsisIndex < 0)
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range");
+                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range", errorHandler);
                         retVal = false;
                         break;
                     }
@@ -394,21 +388,21 @@ namespace PublicCounterCompiler
                     isNumeric = int.TryParse(component.Substring(ellipsisIndex + 2), out endingCounter);
                     if (!isNumeric)
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range");
+                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range", errorHandler);
                         retVal = false;
                         break;
                     }
 
                     if (endingCounter <= startingCounter)
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range");
+                        OutputCounterError(counter.Name, component, componentIndex, "invalid hardware counter range", errorHandler);
                         retVal = false;
                         break;
                     }
 
                     if (((endingCounter - startingCounter) + 1) % 4 != 0)
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "hardware counter range is not a multiple of 4");
+                        OutputCounterError(counter.Name, component, componentIndex, "hardware counter range is not a multiple of 4", errorHandler);
                         retVal = false;
                         break;
                     }
@@ -420,7 +414,7 @@ namespace PublicCounterCompiler
                         var hardwareCounter = counter.GetCounter(i);
                         if (hardwareCounter == null)
                         {
-                            OutputCounterError(counter.Name, component, componentIndex, "reference to undefined hardware counter index");
+                            OutputCounterError(counter.Name, component, componentIndex, "reference to undefined hardware counter index", errorHandler);
                             retVal = false;
                             break;
                         }
@@ -440,7 +434,7 @@ namespace PublicCounterCompiler
 
                     if (index < 0 || index >= counter.GetCounterCount())
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "reference to out of range hardware counter index");
+                        OutputCounterError(counter.Name, component, componentIndex, "reference to out of range hardware counter index", errorHandler);
                         retVal = false;
                         break;
                     }
@@ -448,7 +442,7 @@ namespace PublicCounterCompiler
                     var hardwareCounter = counter.GetCounter(index);
                     if (hardwareCounter == null)
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "reference to undefined hardware counter index");
+                        OutputCounterError(counter.Name, component, componentIndex, "reference to undefined hardware counter index", errorHandler);
                         retVal = false;
                         break;
                     }
@@ -463,10 +457,11 @@ namespace PublicCounterCompiler
                 {
                     string n = component.Substring(1, component.Length - 2);
 
-                    isNumeric = int.TryParse(n, out index);
+                    float value = 0;
+                    isNumeric = float.TryParse(n, out value);
                     if (!isNumeric)
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "invalid numeric value");
+                        OutputCounterError(counter.Name, component, componentIndex, "invalid numeric value", errorHandler);
                         retVal = false;
                         break;
                     }
@@ -485,7 +480,7 @@ namespace PublicCounterCompiler
                         {
                             if (rpnStack.Count < 2)
                             {
-                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 2) for");
+                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 2) for", errorHandler);
                                 retVal = false;
                                 break;
                             }
@@ -496,26 +491,11 @@ namespace PublicCounterCompiler
                         }
                         continue;
 
-                    case "min":
-                        {
-                            if (rpnStack.Count < 2)
-                            {
-                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 2) for");
-                                retVal = false;
-                                break;
-                            }
-                            string result = component + "(";
-                            result += rpnStack.Pop() + ",";
-                            result += rpnStack.Pop() + ")";
-                            rpnStack.Push(result);
-                        }
-                        continue;
-
                     case "ifnotzero":
                         {
                             if (rpnStack.Count < 3)
                             {
-                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 3) for");
+                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 3) for", errorHandler);
                                 retVal = false;
                                 break;
                             }
@@ -525,7 +505,7 @@ namespace PublicCounterCompiler
                             // detect if condition is a constant value
                             if (result.Contains("("))
                             {
-                                OutputCounterError(counter.Name, component, componentIndex, "ifnotzero conditional expression is constant");
+                                OutputCounterError(counter.Name, component, componentIndex, "ifnotzero conditional expression is constant", errorHandler);
                                 retVal = false;
                                 break;
                             }
@@ -542,7 +522,7 @@ namespace PublicCounterCompiler
                         {
                             if (rpnStack.Count < 8)
                             {
-                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 8) for");
+                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 8) for", errorHandler);
                                 retVal = false;
                                 break;
                             }
@@ -571,51 +551,24 @@ namespace PublicCounterCompiler
                         continue;
 
                     case "num_shader_engines":
+                    case "num_shader_arrays":
                     case "num_simds":
                     case "su_clocks_prim":
                     case "num_prim_pipes":
                     case "ts_freq":
+                    case "num_cus":
                         rpnStack.Push(component);
                         continue;
                 }
 
-                // Special handling for sum{N}
-                if (component.Substring(0, 3) == "sum")
-                {
-                    int popCount = 0;
-                    string strCount = component.Substring(3);
-                    if (string.IsNullOrEmpty(strCount))
-                    {
-                        OutputCounterError(counter.Name, component, componentIndex, "sum operator missing number of components");
-                        retVal = false;
-                        break;
-                    }
+                // Special handling for [sum, min, max, avg, mul, div]{N}
+                var prefix3 = component.Substring(0, 3);
 
-                    isNumeric = int.TryParse(strCount, out popCount);
-                    if (!isNumeric)
-                    {
-                        OutputCounterError(counter.Name, component, componentIndex, "sum operator with invalid component count");
-                        retVal = false;
-                        break;
-                    }
-
-                    if (rpnStack.Count < popCount)
-                    {
-                        OutputCounterError(counter.Name, component, componentIndex, "attempt to sum more components than exist on stack");
-                        retVal = false;
-                        break;
-                    }
-
-                    for (int i = 0; i < popCount; ++i)
-                    {
-                        rpnStack.Pop();
-                    }
-                    rpnStack.Push("result:" + component);
-                    continue;
-                }
-
-                // Special handling for max{N}
-                if (component.Substring(0, 3) == "max")
+                if ("sum" == prefix3
+                    || "sub" == prefix3
+                    || "max" == prefix3
+                    || "min" == prefix3
+                    || "avg" == prefix3)
                 {
                     int popCount = 0;
                     string strCount = component.Substring(3);
@@ -628,24 +581,68 @@ namespace PublicCounterCompiler
                         isNumeric = int.TryParse(strCount, out popCount);
                         if (!isNumeric)
                         {
-                            OutputCounterError(counter.Name, component, componentIndex, "sum operator with invalid component count");
+                            OutputCounterError(counter.Name, component, componentIndex, prefix3 + " operator with invalid component count", errorHandler);
                             retVal = false;
                             break;
                         }
-                    }
 
-                    if (rpnStack.Count < popCount)
-                    {
-                        OutputCounterError(counter.Name, component, componentIndex, "attempt to sum more components than exist on stack");
-                        retVal = false;
-                        break;
+                        if (rpnStack.Count < popCount)
+                        {
+                            OutputCounterError(counter.Name, component, componentIndex, "attempt to " + prefix3 + " more components than exist on stack", errorHandler);
+                            retVal = false;
+                            break;
+                        }
                     }
 
                     for (int i = 0; i < popCount; ++i)
                     {
                         rpnStack.Pop();
                     }
+
                     rpnStack.Push("result:" + component);
+
+                    continue;
+                }
+
+                // Special handling for vector multiply and divide [vecMul, vecDiv, vecSum, vecSub]{N}
+                prefix3 = component.Substring(0, 3);
+
+                if ("vec" == prefix3)
+                {
+                    int popCount = 0;
+                    string strCount = component.Substring(6);
+                    if (string.IsNullOrEmpty(strCount))
+                    {
+                        popCount = 2;
+                    }
+                    else
+                    {
+                        isNumeric = int.TryParse(strCount, out popCount);
+                        if (!isNumeric)
+                        {
+                            OutputCounterError(counter.Name, component, componentIndex, prefix3 + " operator with invalid component count", errorHandler);
+                            retVal = false;
+                            break;
+                        }
+
+                        if (rpnStack.Count < popCount)
+                        {
+                            OutputCounterError(counter.Name, component, componentIndex, "attempt to " + prefix3 + " more components than exist on stack", errorHandler);
+                            retVal = false;
+                            break;
+                        }
+                    }
+
+                    for (int i = 0; i < (2 * popCount); ++i)
+                    {
+                        rpnStack.Pop();
+                    }
+
+                    for (int i = 0; i < popCount; ++i)
+                    {
+                        rpnStack.Push("result:" + component + i.ToString());
+                    }
+
                     continue;
                 }
 
@@ -656,7 +653,7 @@ namespace PublicCounterCompiler
                     string strCount = component.Substring(9);
                     if (string.IsNullOrEmpty(strCount))
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "dividesum operator missing number of components");
+                        OutputCounterError(counter.Name, component, componentIndex, "dividesum operator missing number of components", errorHandler);
                         retVal = false;
                         break;
                     }
@@ -664,14 +661,14 @@ namespace PublicCounterCompiler
                     isNumeric = int.TryParse(strCount, out popCount);
                     if (!isNumeric)
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "dividesum operator with invalid component count");
+                        OutputCounterError(counter.Name, component, componentIndex, "dividesum operator with invalid component count", errorHandler);
                         retVal = false;
                         break;
                     }
 
                     if (rpnStack.Count < popCount)
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "attempt to dividesum more components than exist on stack");
+                        OutputCounterError(counter.Name, component, componentIndex, "attempt to dividesum more components than exist on stack", errorHandler);
                         retVal = false;
                         break;
                     }
@@ -684,29 +681,33 @@ namespace PublicCounterCompiler
                     continue;
                 }
 
-                // Special handling for avg{N}
-                if (component.Substring(0, 3) == "avg")
+                // scalarSub[n], scalarMul[n] scalarDiv[n]
+                if (component.Substring(0, 9) == "scalarmul"
+                    || component.Substring(0, 9) == "scalardiv"
+                    || component.Substring(0, 9) == "scalarsub")
                 {
                     int popCount = 0;
-                    string strCount = component.Substring(3);
+                    string strCount = component.Substring(9);
                     if (string.IsNullOrEmpty(strCount))
                     {
-                        popCount = 2;
+                        OutputCounterError(counter.Name, component, componentIndex, "scalar operator missing number of components", errorHandler);
+                        retVal = false;
+                        break;
                     }
-                    else
+
+                    isNumeric = int.TryParse(strCount, out popCount);
+                    if (!isNumeric)
                     {
-                        isNumeric = int.TryParse(strCount, out popCount);
-                        if (!isNumeric)
-                        {
-                            OutputCounterError(counter.Name, component, componentIndex, "avg operator with invalid component count");
-                            retVal = false;
-                            break;
-                        }
+                        OutputCounterError(counter.Name, component, componentIndex, "scalar operator with invalid component count", errorHandler);
+                        retVal = false;
+                        break;
                     }
+
+                    popCount += 1;
 
                     if (rpnStack.Count < popCount)
                     {
-                        OutputCounterError(counter.Name, component, componentIndex, "attempt to avg more components than exist on stack");
+                        OutputCounterError(counter.Name, component, componentIndex, "not enough components on the stack for the specified scalar operator", errorHandler);
                         retVal = false;
                         break;
                     }
@@ -715,19 +716,23 @@ namespace PublicCounterCompiler
                     {
                         rpnStack.Pop();
                     }
-                    rpnStack.Push("result:" + component);
+
+                    for (int i = 0; i < (popCount - 1); ++i)
+                    {
+                        rpnStack.Push("result:" + component + i.ToString());
+                    }
                     continue;
                 }
 
                 // Unknown component - error
-                OutputCounterError(counter.Name, component, componentIndex, "unknown formula component");
+                OutputCounterError(counter.Name, component, componentIndex, "unknown formula component", errorHandler);
                 retVal = false;
             }
 
             // Validate stack contains a single result
             if (rpnStack.Count != 1)
             {
-                Output("Error: " + counter.Name + " stack incorrectly contains " + rpnStack.Count.ToString() + " entries instead a single result");
+                errorHandler(counter.Name + " stack incorrectly contains " + rpnStack.Count.ToString() + " entries instead a single result");
                 retVal = false;
             }
 
@@ -738,15 +743,15 @@ namespace PublicCounterCompiler
             {
                 if (hardwareCounter.Referenced == false)
                 {
-                    if (hardwareCounter.Name.Contains("SPI_PERF_PS_CTL_BUSY")
-                        || hardwareCounter.Name.Contains("SPI_PERF_PS_BUSY"))
+                    if (hardwareCounter.Name.StartsWith("SPI") && (hardwareCounter.Name.Contains("PERF_PS_CTL_BUSY")
+                        || hardwareCounter.Name.Contains("PERF_PS_BUSY")))
                     {
-                        Output("Info: " + counter.Name + " unreferenced block instance counter " + hardwareCounter.Name + " at index "
+                        infoHandler("Warning:" + counter.Name + " unreferenced block instance counter " + hardwareCounter.Name + " at index "
                             + counterIndex + ". This is required for some counter definitions.");
                     }
                     else
                     {
-                        Output("Error: " + counter.Name + " unreferenced block instance counter " + hardwareCounter.Name + " at index " + counterIndex);
+                        errorHandler(counter.Name + " unreferenced block instance counter " + hardwareCounter.Name + " at index " + counterIndex);
                         retVal = false;
                     }
                 }
@@ -762,18 +767,17 @@ namespace PublicCounterCompiler
         /// </summary>
         /// <param name="publicCounterList">List of public counter to validate</param>
         /// <returns>True if the formula and referenced counters are correct, otherwise false.</returns>
-        private static bool ValidateFormulaAndReferencedCounters(ref List<DerivedCounterDef> counters)
+        private bool ValidateFormulaAndReferencedCounters(ref List<DerivedCounterDef> counters, Func<string, bool> infoHandler, Func<string, bool> errorHandler)
         {
             bool retVal = true;
 
             foreach (DerivedCounterDef counter in counters)
             {
-                retVal &= ValidateFormulaAndReferencedCounter(counter);
+                retVal &= ValidateFormulaAndReferencedCounter(counter, infoHandler, errorHandler);
             }
 
             return retVal;
         }
-
 
         /// <summary>
         /// Generates output file of GPU counter data by API and ASIC for use in documentation, etc.
@@ -785,16 +789,18 @@ namespace PublicCounterCompiler
         /// <param name="api">API being generated.</param>
         /// <param name="generation">GPU generation.</param>
         /// <param name="asic">Optional ASIC name.</param>
-        /// <param name="strError">Error return.</param>
         /// <returns>True is files are successfully loaded and generated.</returns>
-        private static void GenerateDerivedCounterDocFile(
+        private void GenerateDerivedCounterDocFile(
             bool outputCsv,
             ref List<DerivedCounterDef> derivedCounterList,
             ref List<InternalCounterDef> internalCounterList,
             string outputDir,
             string api,
             string generation,
-            string asic)
+            string asic,
+            Func<string, bool> infoHandler,
+            Func<string, bool> errorHandler
+            )
         {
             // Ignore generating ASIC-specific docs for now, as the public counters are identical for the user.
             bool asicSpecific = !string.IsNullOrEmpty(asic);
@@ -814,7 +820,7 @@ namespace PublicCounterCompiler
             }
             catch
             {
-                Output("ERROR: Failed to open file for writing: " + docStream);
+                errorHandler("Failed to open file for writing: " + docStream);
                 return;
             }
 
@@ -847,7 +853,7 @@ namespace PublicCounterCompiler
             }
 
             docStream.Close();
-            Output("Counter Doc file written: " + docFilePath);
+            infoHandler("Counter Doc file written: " + docFilePath);
         }
 
         /// <summary>
@@ -856,71 +862,46 @@ namespace PublicCounterCompiler
         /// <param name="derivedCounterList">List of public counters.</param>
         /// <param name="generation">GPU generation.</param>
         /// <param name="docInfoMap">the counter info structure in which to add information</param>
-        private static void AddInfoToRSTDocInfo(
+        private void AddInfoToRSTDocInfo(
             ref List<DerivedCounterDef> derivedCounterList,
             string generation,
-            Dictionary<string, Dictionary<string, PublicCounterDocInfo>> docInfoMap)
+            Dictionary<GfxGeneration, Dictionary<CounterGroup, Dictionary<string, DerivedCounterDef>>> docInfoMap,
+            Func<string, bool> infoHandler
+            )
         {
+            GfxGeneration gfxGen = GfxGeneration.Unknown;
+
+            if ("Gfx10" == generation)
+            {
+                gfxGen = GfxGeneration.Gfx10;
+            }
+            else if ("Gfx9" == generation)
+            {
+                gfxGen = GfxGeneration.Gfx9;
+            }
+            else if ("Gfx8" == generation)
+            {
+                gfxGen = GfxGeneration.Gfx8;
+            }
+
             foreach (var counter in derivedCounterList)
             {
-                PublicCounterDocInfo counterInfo = null;
-                Dictionary<string, PublicCounterDocInfo> counterMap = null;
-
-                if (docInfoMap.ContainsKey(counter.Group))
+                if (!docInfoMap.ContainsKey(gfxGen))
                 {
-                    counterMap = docInfoMap[counter.Group];
-
-                    if (counterMap.ContainsKey(counter.Name))
-                    {
-                        // counter already in map
-                        counterInfo = counterMap[counter.Name];
-
-                        if (counterInfo.publicCounter.Desc != counter.Desc)
-                        {
-                            Output("Documentation Message: Same counter with diffferent description");
-                            string outputMsg = string.Format("    Name: {0}", counter.Name);
-                            Output(outputMsg);
-                            outputMsg = string.Format("   Previous description: {0}", counterInfo.publicCounter.Desc);
-                            Output(outputMsg);
-                            outputMsg = string.Format("   Current description: {0}", counter.Desc);
-                            Output(outputMsg);
-                        }
-                    }
-                    else
-                    {
-                        // counter not in map
-                        counterInfo = new PublicCounterDocInfo();
-                        counterInfo.publicCounter = counter;
-                        counterMap[counter.Name] = counterInfo;
-                    }
-                }
-                else
-                {
-                    // counter not in map
-                    counterInfo = new PublicCounterDocInfo();
-                    counterInfo.publicCounter = counter;
-                    counterMap = new Dictionary<string, PublicCounterDocInfo>();
-                    counterMap[counter.Name] = counterInfo;
-                    docInfoMap[counter.Group] = counterMap;
+                    docInfoMap.Add(gfxGen, new Dictionary<CounterGroup, Dictionary<string, DerivedCounterDef>>());
                 }
 
-                if ("Gfx9" == generation)
+                if (!docInfoMap[gfxGen].ContainsKey(counter.Group))
                 {
-                    counterInfo.gfx9Supported = true;
-                }
-                else if ("Gfx8" == generation)
-                {
-                    counterInfo.gfx8Supported = true;
-                }
-                else if ("Gfx7" == generation)
-                {
-                    counterInfo.gfx7Supported = true;
-                }
-                else if ("Gfx6" == generation)
-                {
-                    counterInfo.gfx6Supported = true;
+                    docInfoMap[gfxGen].Add(counter.Group, new Dictionary<string, DerivedCounterDef>());
                 }
 
+                if (!docInfoMap[gfxGen][counter.Group].ContainsKey(counter.Name))
+                {
+                    docInfoMap[gfxGen][counter.Group].Add(counter.Name, new DerivedCounterDef());
+                }
+
+                docInfoMap[gfxGen][counter.Group][counter.Name] = counter;
             }
         }
 
@@ -935,9 +916,10 @@ namespace PublicCounterCompiler
         /// <param name="api">API being generated.</param>
         /// <param name="sectionLabel">Section label: API + GPU generation.</param>
         /// <param name="asic">Optional ASIC name.</param>
-        /// <param name="strError">Error return.</param>
+        /// <param name="infoHandler">Called in response to an informational message</param>
+        /// <param name="errorHandler">Called in response to a error condition</param>
         /// <returns>True is files are successfully loaded and generated.</returns>
-        public static bool LoadFilesAndGenerateOutput(
+        public bool LoadFilesAndGenerateOutput(
             string rootFilename,
             string counterNamesFile,
             string derivedCounterDefFile,
@@ -947,22 +929,22 @@ namespace PublicCounterCompiler
             string api,
             string generation,
             string asic,
-            out string strError)
+            Func<string, bool> infoHandler,
+            Func<string, bool> errorHandler
+            )
         {
-            strError = string.Empty;
-
             string sectionLabel = api + generation;
 
             // Load the internal counters
             List<InternalCounterDef> internalCounterList = new List<InternalCounterDef>();
-            bool readOk = LoadInternalCounters(counterNamesFile, ref internalCounterList, asic, out strError);
+            bool readOk = LoadInternalCounters(counterNamesFile, ref internalCounterList, asic, infoHandler, errorHandler);
             if (!readOk)
             {
-                strError = "Error reading counter name file (" + counterNamesFile + ").\n" + strError;
+                errorHandler("Unable to read counter name file (" + counterNamesFile + ").\n");
                 return false;
             }
 
-            Output("Read " + internalCounterList.Count + " internal counters from " + counterNamesFile + ".");
+            infoHandler("Read " + internalCounterList.Count + " internal counters from " + counterNamesFile + ".");
 
             // Save global internal counters, or update ASIC specific internal counter list for completeness in order generate public counters
             if (string.IsNullOrEmpty(asic))
@@ -1007,58 +989,60 @@ namespace PublicCounterCompiler
             // load the public counter definitions using the filename in the second param
             List<DerivedCounterDef> publicCounterList = new List<DerivedCounterDef>();
             readOk = LoadDerivedCounterDefinitions(derivedCounterDefFile, ref publicCounterList, ref internalCounterList,
-                sectionLabel, asic, out strError);
+                sectionLabel, asic, infoHandler, errorHandler);
             if (!readOk)
             {
-                strError = "Error processing public counter file (" + derivedCounterDefFile + ").\n" + strError;
+                errorHandler("Unable to process public counter file (" + derivedCounterDefFile + ").\n");
                 return false;
             }
 
             if (publicCounterList.Count == 0)
             {
-                strError = "Error: 0 counters were exposed by the counter definitions file.";
+                errorHandler("0 counters were exposed by the counter definitions file.");
                 return false;
             }
             else
             {
-                Output("Read " + publicCounterList.Count + " public counters from " + derivedCounterDefFile + ".");
+                infoHandler("Read " + publicCounterList.Count + " public counters from " + derivedCounterDefFile + ".");
             }
 
-            if (ValidateFormulaAndReferencedCounters(ref publicCounterList) == false)
+            if (ValidateFormulaAndReferencedCounters(ref publicCounterList, infoHandler, errorHandler) == false)
             {
                 return false;
             }
 
             if (GenerateOutputFiles(ref internalCounterList, ref publicCounterList, rootFilename, api, generation, outputDir,
-                    counterListOutputDirectory, asic) == false)
+                    counterListOutputDirectory, asic, infoHandler, errorHandler) == false)
             {
                 return false;
             }
             else
             {
                 bool genTestOutputFilesStatus = GenerateTestOutputFiles(ref internalCounterList, ref publicCounterList, rootFilename,
-                    sectionLabel, testOutputDirectory, asic);
+                    sectionLabel, testOutputDirectory, asic, infoHandler, errorHandler);
                 if (false == genTestOutputFilesStatus)
                 {
-                    Output("Failed to generate output test files for " + sectionLabel);
+                    errorHandler("Failed to generate output test files for " + sectionLabel);
                 }
             }
 
-            if (Form1.Instance().GenerateCounterDocs)
+            if (Form1.GenerateCounterDocs)
             {
-                GenerateDerivedCounterDocFile(true, ref publicCounterList, ref internalCounterList, outputDir, api, generation, asic);
-                GenerateDerivedCounterDocFile(false, ref publicCounterList, ref internalCounterList, outputDir, api, generation, asic);
+                GenerateDerivedCounterDocFile(true, ref publicCounterList, ref internalCounterList, outputDir, api, generation, asic, infoHandler, errorHandler);
+                GenerateDerivedCounterDocFile(false, ref publicCounterList, ref internalCounterList, outputDir, api, generation, asic, infoHandler, errorHandler);
             }
 
             bool isGraphicsAPI = (api != "CL") && (api != "HSA");
 
-            AddInfoToRSTDocInfo(ref publicCounterList, generation, isGraphicsAPI ? docInfoMapGraphics : docInfoMapCompute);
+            if (!isInternal)
+            {
+                AddInfoToRSTDocInfo(ref publicCounterList, generation, isGraphicsAPI ? docInfoMapGraphicsByGeneration : docInfoMapComputeByGeneration, infoHandler);
+            }
 
-            strError = string.Empty;
             return true;
         }
 
-        private static bool CreateReadableEquation(ref DerivedCounterDef counterDef, string inputLine)
+        private bool CreateReadableEquation(ref DerivedCounterDef counterDef, string inputLine)
         {
             string[] equations = inputLine.Split('|');
 
@@ -1184,12 +1168,15 @@ namespace PublicCounterCompiler
         /// <param name="file">File of internal counters to load.</param>
         /// <param name="internalCounterList">Returned list of internal counter definitions.</param>
         /// <param name="asic">Optional ASIC name.</param>
-        /// <param name="strError">Optional returned error.</param>
+        /// <param name="infoHandler">Called in response to an informational message</param>
+        /// <param name="errorHandler">Called in response to a error condition</param>
         /// <returns>True if internal counters are successfully loaded.</returns>
-        public static bool LoadInternalCounters(string file,
+        public bool LoadInternalCounters(string file,
             ref List<InternalCounterDef> internalCounterList,
             string asic,
-            out string strError)
+            Func<string, bool> infoHandler,
+            Func<string, bool> errorHandler
+            )
         {
             bool isAsicSpecific = !string.IsNullOrEmpty(asic);
 
@@ -1200,7 +1187,7 @@ namespace PublicCounterCompiler
             }
             catch (Exception e)
             {
-                strError = "Error: Could not read contents of " + file + ": " + e.Message;
+                errorHandler("Could not read contents of " + file + ": " + e.Message);
                 return false;
             }
 
@@ -1216,17 +1203,14 @@ namespace PublicCounterCompiler
 
                 if (s.Contains("="))
                 {
-                    strError =
-                        "Error: Internal counter names may not contain = symbols. Change the counter name or change PCC public counter parsing to support = in names.";
+                    errorHandler("Internal counter names may not contain = symbols. Change the counter name or change PCC public counter parsing to support = in names.");
                     return false;
                 }
 
                 string[] counterText = s.Split(',');
                 if (counterText.Length != 3 && counterText.Length != 2)
                 {
-                    strError =
-                        "Error: Problem reading internal counter definition. Format is either: 'number , name , type' or 'name , type'. Line='" +
-                        s + "'";
+                    errorHandler("Problem reading internal counter definition. Format is either: 'number , name , type' or 'name , type'. Line='" + s + "'");
                     return false;
                 }
 
@@ -1236,7 +1220,7 @@ namespace PublicCounterCompiler
                     System.Int32.TryParse(counterText[0], out counterNumber);
                     if (usedCounterNumbers.Contains(counterNumber))
                     {
-                        strError = "Error: duplicate counter numbers detected. Line='" + s + "'";
+                        errorHandler("Duplicate counter numbers detected. Line='" + s + "'");
                         return false;
                     }
                     else if (counterNumber != lineNum)
@@ -1248,7 +1232,7 @@ namespace PublicCounterCompiler
                         }
                         else
                         {
-                            strError = "Error: internal counter numbers defined out of sequence. Line='" + s + "'";
+                            errorHandler("Internal counter numbers defined out of sequence. Line='" + s + "'");
                             return false;
                         }
                     }
@@ -1265,7 +1249,6 @@ namespace PublicCounterCompiler
                 lineNum++;
             }
 
-            strError = string.Empty;
             return true;
         }
 
@@ -1276,7 +1259,7 @@ namespace PublicCounterCompiler
         /// <param name="internalCounterList">Internal counter list.</param>
         /// <param name="index">Returned index of the counter.</param>
         /// <returns>True if the counter was found, otherwise false.</returns>
-        public static bool GetCounterIndex(string counterName,
+        public bool GetCounterIndex(string counterName,
             ref List<InternalCounterDef> internalCounterList,
             out int index)
         {
@@ -1315,23 +1298,23 @@ namespace PublicCounterCompiler
         /// <param name="asic">Optional ASIC name.</param>
         /// <param name="strError">Optional error return.</param>
         /// <returns>True if the public counter definitions are successfully loaded.</returns>
-        public static bool LoadDerivedCounterDefinitions(string file,
+        public bool LoadDerivedCounterDefinitions(string file,
             ref List<DerivedCounterDef> counterDefList,
             ref List<InternalCounterDef> internalCounterList,
             string activeSectionLabel,
             string asic,
-            out string strError)
+            Func<string, bool> infoHandler,
+            Func<string, bool> errorHandler
+            )
         {
-            strError = string.Empty;
-
             // Some files may not exist for certain combinations of APIs and architectures
             if (!File.Exists(file))
             {
-                Output("Info: Unable to find file " + file);
+                infoHandler("Info: Unable to find file " + file);
                 return true;
             }
 
-            Output("Reading: " + file);
+            infoHandler("Reading: " + file);
 
             string[] publicCounterDefs;
             try
@@ -1340,7 +1323,7 @@ namespace PublicCounterCompiler
             }
             catch (Exception e)
             {
-                strError = "Error: " + e.Message;
+                errorHandler(e.Message);
                 return false;
             }
 
@@ -1358,7 +1341,8 @@ namespace PublicCounterCompiler
 
                 string s = line.Trim();
 
-                // Trim any comments
+                // Trim any comments, but not from a counter description
+                if (!s.StartsWith("desc="))
                 {
                     int index = s.IndexOf(';');
                     if (index > -1)
@@ -1380,10 +1364,10 @@ namespace PublicCounterCompiler
                     includeFile = includeFile.Trim();
                     includeFile = pathToFile + "\\" + includeFile;
                     bool loadedInclude = LoadDerivedCounterDefinitions(includeFile, ref counterDefList,
-                        ref internalCounterList, activeSectionLabel, asic, out strError);
+                        ref internalCounterList, activeSectionLabel, asic, infoHandler, errorHandler);
                     if (!loadedInclude)
                     {
-                        strError = "Error: Loading of include file " + includeFile + " failed.\n" + strError;
+                        errorHandler("Loading of include file " + includeFile + " failed.\n");
                         return false;
                     }
 
@@ -1402,13 +1386,13 @@ namespace PublicCounterCompiler
                         // if we were trying to define a counter, but never did a comp for it, output a warning since the counter will not be generated
                         if (counterDef != null && !counterDef.ValidUsage())
                         {
-                            Output("Warning: no comp found for " + activeSectionLabel +
+                            infoHandler("Warning: no comp found for " + activeSectionLabel +
                                    ", will not expose counter for: " + counterDef.Name);
                         }
 
                         if (lineSplit[1].Length == 0)
                         {
-                            strError = "Error: name definition empty. Line='" + s + "'";
+                            errorHandler("Name definition empty. Line='" + s + "'");
                             return false;
                         }
 
@@ -1422,7 +1406,7 @@ namespace PublicCounterCompiler
                     {
                         if (!counterDef.ValidName())
                         {
-                            strError = "Error: name= should appear before group=. Line='" + s + "'";
+                            errorHandler("name= should appear before group=. Line='" + s + "'");
                             return false;
                         }
 
@@ -1432,7 +1416,7 @@ namespace PublicCounterCompiler
                     {
                         if (!counterDef.ValidName())
                         {
-                            strError = "Error: name= should appear before desc=. Line='" + s + "'";
+                            errorHandler("name= should appear before desc=. Line='" + s + "'");
                             return false;
                         }
 
@@ -1449,7 +1433,7 @@ namespace PublicCounterCompiler
                     {
                         if (!counterDef.ValidName())
                         {
-                            strError = "Error: name= should appear before type=. Line='" + s + "'";
+                            errorHandler("name= should appear before type=. Line='" + s + "'");
                             return false;
                         }
 
@@ -1464,9 +1448,7 @@ namespace PublicCounterCompiler
                         }
                         else
                         {
-                            strError =
-                                "Error: type not recognized. Check what you have entered, and also that PCC handles all relevant types. Line='" +
-                                s + "'";
+                            errorHandler("Type not recognized. Line='" + s + "'");
                             return false;
                         }
                     }
@@ -1474,7 +1456,7 @@ namespace PublicCounterCompiler
                     {
                         if (!counterDef.ValidName())
                         {
-                            strError = "Error: name= should appear before usage=. Line='" + s + "'";
+                            errorHandler("name= should appear before usage=. Line='" + s + "'");
                             return false;
                         }
 
@@ -1509,9 +1491,7 @@ namespace PublicCounterCompiler
                         }
                         else
                         {
-                            strError =
-                                "Error: usage not recognized. Check what you have entered, and also that PublicCounterCompiler handles all relevant types. Line='" +
-                                s + "'";
+                            errorHandler("Usage not recognized. Line='" + s + "'");
                             return false;
                         }
 
@@ -1526,23 +1506,19 @@ namespace PublicCounterCompiler
                         if (counterDef.ValidEquation())
                         {
                             // already done the comp for this counter, so skip this one
-                            strError = "Error: Duplicate equation. Line='" + s + "'";
+                            errorHandler("Duplicate equation. Line='" + s + "'");
                             return false;
                         }
 
                         if (!counterDef.ValidName())
                         {
-                            strError =
-                                "Error: comp= encountered before name=. Ensure name and optional description appear before comp=. Line='" +
-                                s + "'";
+                            errorHandler("comp= encountered before name=. Ensure name and optional description appear before comp=. Line='" + s + "'");
                             return false;
                         }
 
                         if (counterDef.GetCounterCount() == 0)
                         {
-                            strError =
-                                "Error: Block instance events must be defined before comp encountered. Line='" +
-                                s + "'";
+                            errorHandler("Block instance events must be defined before comp encountered. Line='" + s + "'");
                             return false;
                         }
 
@@ -1551,7 +1527,7 @@ namespace PublicCounterCompiler
                         // build a readable version of the comp for readable debugging, validation, output
                         if (!CreateReadableEquation(ref counterDef, lineSplit[1]))
                         {
-                            strError = "Error: Unable to create readable equation. Line='" + s + "'";
+                            errorHandler("Unable to create readable equation. Line='" + s + "'");
                             return false;
                         }
 
@@ -1681,9 +1657,7 @@ namespace PublicCounterCompiler
                     // must be an internal counter name
                     if (!counterDef.ValidName())
                     {
-                        strError = "Error: Encountered PI section " + s +
-                                   "before derived counter name " + counterDef.Name +
-                                   ". Check order of definitions.";
+                        errorHandler("Encountered API section " + s + " before derived counter name. Check order of definitions.");
                         return false;
                     }
 
@@ -1778,8 +1752,7 @@ namespace PublicCounterCompiler
                         {
                             if (counterDef.CounterDefined(index))
                             {
-                                strError = "Error: Counter named '" + counterDef.Name +
-                                           "' has a duplicate counter definition '" + s + "'.";
+                                errorHandler("Counter named '" + counterDef.Name + "' has a duplicate counter definition '" + s + "'.");
                                 return false;
                             }
 
@@ -1787,8 +1760,7 @@ namespace PublicCounterCompiler
                         }
                         else
                         {
-                            Output("Warning: Counter not recognized " + s +
-                                   ". Compare this spelling to the counter names file to see which is incorrect.");
+                            errorHandler("Counter named '" + counterDef.Name + "' uses an unrecognized hardware counter '" + counterName + "'.");
                             counterDef.AddCounter(s, index);
                             numInvalidCounterNames++;
                         }
@@ -1799,17 +1771,15 @@ namespace PublicCounterCompiler
             // if we were trying to define a counter, but never did a comp for it, output a warning since the counter will not be generated
             if (counterDef != null && !counterDef.ValidEquation())
             {
-                strError += "Warning: incomplete counter " + activeSectionLabel + ", will not expose counter for: " 
-                    + counterDef.Name + Environment.NewLine;
+                infoHandler("Warning: incomplete counter " + activeSectionLabel + ", will not expose counter for: "  + counterDef.Name);
             }
 
             if (numInvalidCounterNames > 0 && IgnoreInvalidCounters() == false)
             {
-                strError = "Error: Encountered " + numInvalidCounterNames + " invalid counter names.";
+                errorHandler("Encountered " + numInvalidCounterNames + " invalid counter names.");
                 return false;
             }
 
-            strError = string.Empty;
             return true;
         }
 
@@ -1819,30 +1789,40 @@ namespace PublicCounterCompiler
         /// </summary>
         /// <param name="input">the ellipsed string to expand</param>
         /// <returns>A list of numbers</returns>
-        private static List<int> ExpandEllipses(string input)
+        private List<int> ExpandEllipses(string input)
         {
             List<int> values = new List<int>();
             if (input.Contains(".."))
             {
                 // split on a decimal, we expect the 2nd result to be an empty value between the two ".."
                 string[] valueParts = input.Split('.');
-                int first = int.Parse(valueParts[0]);
-                int second = int.Parse(valueParts[2]);
-                System.Diagnostics.Debug.Assert(valueParts[1].Length == 0);
-                System.Diagnostics.Debug.Assert(first < second);
-                for (int i = first; i <= second; i++)
+                System.Diagnostics.Debug.Assert(3 <= valueParts.Length);
+                int first = 0;
+                int second = 0;
+                if (int.TryParse(valueParts[0], out first) &&
+                    int.TryParse(valueParts[2], out second))
                 {
-                    values.Add(i);
+                    System.Diagnostics.Debug.Assert(valueParts[1].Length == 0);
+                    System.Diagnostics.Debug.Assert(first < second);
+                    for (int i = first; i <= second; i++)
+                    {
+                        values.Add(i);
+                    }
                 }
             }
             else
             {
-                values.Add(int.Parse(input));
+                int value = 0;
+                if (int.TryParse(input, out value))
+                {
+                    values.Add(value);
+                }
             }
+
             return values;
         }
 
-        public static bool DerivedCounterReferencesAsicRegisters(ref List<InternalCounterDef> internalCounterList, DerivedCounterDef c)
+        public bool DerivedCounterReferencesAsicRegisters(ref List<InternalCounterDef> internalCounterList, DerivedCounterDef c)
         {
             foreach (DerivedCounterDef.HardwareCounterDef counter in c.GetCounters())
             {
@@ -1866,7 +1846,7 @@ namespace PublicCounterCompiler
         /// <param name="counterListOutputDirectory">Counter list output directory.</param>
         /// <param name="asic">Optional ASIC identifier.</param>
         /// <returns>True if the files could be generated; false on error.</returns>
-        public static bool GenerateOutputFiles(
+        public bool GenerateOutputFiles(
             ref List<InternalCounterDef> internalCounterList,
             ref List<DerivedCounterDef> counterDefList,
             string rootFilename,
@@ -1874,7 +1854,10 @@ namespace PublicCounterCompiler
             string generation,
             string outputDir,
             string counterListOutputDirectory,
-            string asic)
+            string asic,
+            Func<string, bool> infoHandler,
+            Func<string, bool> errorHandler
+            )
         {
             if (string.IsNullOrEmpty(counterListOutputDirectory))
             {
@@ -1897,10 +1880,10 @@ namespace PublicCounterCompiler
 
             Directory.CreateDirectory(counterListOutputDirectory);
 
-            string filename = string.Format("{0}{1}CounterDefs{2}{3}.h", outputDir, rootFilename, activeSectionLabel, asic);
+            string filename = string.Format("{0}{1}{2}{3}{4}.h", outputDir, rootFilename, Gpa.CounterDefOutFileName, activeSectionLabel, asic);
 
             // Write header file
-            Output("Writing header to " + filename);
+            infoHandler("Writing header to " + filename);
             StreamWriter hsw = null;
             try
             {
@@ -1908,7 +1891,7 @@ namespace PublicCounterCompiler
             }
             catch
             {
-                Output("ERROR: Failed to open file for writing: " + filename);
+                errorHandler("Failed to open file for writing: " + filename);
                 return false;
             }
 
@@ -1946,32 +1929,31 @@ namespace PublicCounterCompiler
             {
                 hsw.WriteLine("namespace {0}{1}", activeSectionLabel, asic);
                 hsw.WriteLine("{");
+                hsw.WriteLine("    /// Updates default GPU generation {0} derived counters with ASIC specific versions if available.", rootFilename.ToLower());
+                hsw.WriteLine("    /// \\param desiredGeneration Hardware generation currently in use.");
+                hsw.WriteLine("    /// \\param asicType The ASIC type that is currently in use.");
+                hsw.WriteLine("    /// \\param c Derived counters instance.");
+                hsw.WriteLine("    /// \\return True if the ASIC matched one available, and derivedCounters was updated.");
+                hsw.WriteLine("    extern bool Update{0}AsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c);", rootFilename);
                 hsw.WriteLine();
-                hsw.WriteLine("/// Updates default GPU generation {0} derived counters with ASIC specific versions if available.", rootFilename.ToLower());
-                hsw.WriteLine("/// \\param desiredGeneration Hardware generation currently in use.");
-                hsw.WriteLine("/// \\param asicType The ASIC type that is currently in use.");
-                hsw.WriteLine("/// \\param c Derived counters instance.");
-                hsw.WriteLine("/// \\return True if the ASIC matched one available, and derivedCounters was updated.");
-                hsw.WriteLine("extern bool Update{0}AsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c);", rootFilename);
-                hsw.WriteLine();
-                hsw.WriteLine("} //" + activeSectionLabel + asic);
+                hsw.WriteLine("}  // namespace " + activeSectionLabel + asic);
             }
 
             hsw.WriteLine();
 
             if (isInternal)
             {
-                hsw.WriteLine("#endif // AMDT_INTERNAL");
+                hsw.WriteLine("#endif  // AMDT_INTERNAL");
                 hsw.WriteLine();
             }
 
-            hsw.WriteLine("#endif // _PUBLIC_COUNTER_DEFS_{0}{1}_H_", activeSectionLabel.ToUpper(), asic.ToUpper());
+            hsw.WriteLine("#endif  // _PUBLIC_COUNTER_DEFS_{0}{1}_H_", activeSectionLabel.ToUpper(), asic.ToUpper());
             hsw.Close();
 
-            string cppFilename = string.Format("{0}{1}CounterDefs{2}{3}.cpp", outputDir, rootFilename, activeSectionLabel, asic);
+            string cppFilename = string.Format("{0}{1}{2}{3}{4}.cpp", outputDir, rootFilename, Gpa.CounterDefOutFileName, activeSectionLabel, asic);
 
             // Write cpp file
-            Output("Writing cpp to " + cppFilename);
+            infoHandler("Writing cpp to " + cppFilename);
             StreamWriter csw = null;
             try
             {
@@ -1979,7 +1961,7 @@ namespace PublicCounterCompiler
             }
             catch
             {
-                Output("ERROR: Failed to open file for writing: " + filename);
+                errorHandler("Failed to open file for writing: " + filename);
                 return false;
             }
 
@@ -1998,7 +1980,7 @@ namespace PublicCounterCompiler
                 csw.WriteLine();
             }
 
-            csw.WriteLine("#include \"GPAInternalCounter.h\"");
+            csw.WriteLine("#include \"{0}\"", Gpa.GPACounterHeaderFileStr);
             csw.WriteLine("#include \"{0}CounterDefs{1}{2}.h\"", rootFilename, activeSectionLabel, asic);
             csw.WriteLine();
             csw.WriteLine(
@@ -2012,15 +1994,14 @@ namespace PublicCounterCompiler
             }
             else
             {
-                csw.WriteLine("#include \"GPAInternalCounters{0}{1}.h\"", generation, asic);
+                csw.WriteLine("#include \"{0}{1}{2}.h\"", Gpa.HardwareCounterFileNamePrefix, generation, asic);
                 csw.WriteLine();
                 csw.WriteLine("namespace {0}{1}", activeSectionLabel, asic);
                 csw.WriteLine("{");
-                csw.WriteLine();
                 csw.WriteLine("bool Update{0}AsicSpecificCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, GPA_DerivedCounters& c)", rootFilename);
                 csw.WriteLine("{");
                 csw.WriteLine("    UNREFERENCED_PARAMETER(desiredGeneration);");
-                csw.WriteLine("    UNREFERENCED_PARAMETER(c); // Unreferenced if there are no ASIC specific block instance registers");
+                csw.WriteLine("    UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers");
                 csw.WriteLine();
                 csw.WriteLine("    if (!Counter{0}{1}::MatchAsic(asicType))", generation, asic);
                 csw.WriteLine("    {");
@@ -2037,14 +2018,14 @@ namespace PublicCounterCompiler
             {
                 string listFilename = string.Format("{0}{1}CounterNameList{2}{3}.txt", counterListOutputDirectory, rootFilename, activeSectionLabel, asic);
 
-                Output("Writing counter name list to " + listFilename);
+                infoHandler("Writing counter name list to " + listFilename);
                 try
                 {
                     lsw = new StreamWriter(listFilename);
                 }
                 catch
                 {
-                    Output("ERROR: Failed to open file for writing: " + filename);
+                    errorHandler("Failed to open file for writing: " + filename);
                     return false;
                 }
             }
@@ -2062,7 +2043,7 @@ namespace PublicCounterCompiler
                 }
 
                 csw.WriteLine("    {");
-                csw.WriteLine("        vector< gpa_uint32 > internalCounters;");
+                csw.WriteLine("        vector<gpa_uint32> internalCounters;");
                 foreach (DerivedCounterDef.HardwareCounterDef counter in c.GetCounters())
                 {
                     csw.WriteLine("        internalCounters.push_back({0});", counter.Id);
@@ -2094,21 +2075,18 @@ namespace PublicCounterCompiler
             else
             {
                 csw.WriteLine("    return true;");
-                csw.WriteLine();
                 csw.WriteLine("}");
                 csw.WriteLine();
-                csw.WriteLine("} // " + activeSectionLabel + asic);
+                csw.WriteLine("}  // namespace " + activeSectionLabel + asic);
                 csw.WriteLine();
             }
 
             if (isInternal)
             {
-                csw.WriteLine("#endif // AMDT_INTERNAL");
-                csw.WriteLine();
+                csw.WriteLine("#endif  // AMDT_INTERNAL");
             }
 
             csw.Close();
-
             if (lsw != null)
             {
                 lsw.Close();
@@ -2127,13 +2105,16 @@ namespace PublicCounterCompiler
         /// <param name="testOutputDirectory">Directory that will contain output test files</param>
         /// <param name="asic">Specific ASIC, or empty string.</param>
         /// <returns>True if files are successfully generated.</returns>
-        public static bool GenerateTestOutputFiles(
+        public bool GenerateTestOutputFiles(
             ref List<InternalCounterDef> internalCounterList,
             ref List<DerivedCounterDef> counterDefList,
             string rootFilename,
             string activeSectionLabel,
             string testOutputDirectory,
-            string asic)
+            string asic,
+            Func<string, bool> infoHandler,
+            Func<string, bool> errorHandler
+            )
         {
             if (string.IsNullOrEmpty(testOutputDirectory))
             {
@@ -2151,12 +2132,12 @@ namespace PublicCounterCompiler
                 testOutputDirectory = testOutputDirectory + "\\";
             }
 
-            string derivedCounterFileNamePrefix = rootFilename + "DerivedCounters";
+            string derivedCounterFileNamePrefix = rootFilename + Gpa.DerivedCounterOutFileName;
             string headerFileName = string.Format("{0}{1}{2}.h", derivedCounterFileNamePrefix, activeSectionLabel, asic);
             string headerFilePath = string.Format("{0}{1}", testOutputDirectory, headerFileName);
             string cppFilePath = string.Format("{0}{1}{2}{3}.cpp", testOutputDirectory, derivedCounterFileNamePrefix,
                 activeSectionLabel, asic);
-            Output("Writing header to " + cppFilePath);
+            infoHandler("Writing header to " + cppFilePath);
             StreamWriter cppStream = null;
             try
             {
@@ -2164,7 +2145,7 @@ namespace PublicCounterCompiler
             }
             catch
             {
-                Output("ERROR: Failed to open file for writing: " + cppFilePath);
+                errorHandler("Failed to open file for writing: " + cppFilePath);
                 return false;
             }
 
@@ -2183,11 +2164,11 @@ namespace PublicCounterCompiler
             cppStream.WriteLine();
             string derivedCountersConstant = activeSectionLabel.ToUpper() + asic.ToUpper() + "_" + rootFilename.ToUpper() + "_COUNTERS";
             string derivedCounterCountConstant = activeSectionLabel.ToUpper() + asic.ToUpper() + "_" + rootFilename.ToUpper() + "_COUNTER_COUNT";
-            cppStream.WriteLine("const GPACounterDesc {0}[{1}] =", derivedCountersConstant, derivedCounterCountConstant);
-            cppStream.WriteLine("{");
+            cppStream.WriteLine("const GPACounterDesc {0}[{1}] = {{", derivedCountersConstant, derivedCounterCountConstant);
+
             int counterCount = 0;
 
-            Output("Writing header to " + headerFilePath);
+            infoHandler("Writing header to " + headerFilePath);
             StreamWriter headerStream = null;
             try
             {
@@ -2195,7 +2176,7 @@ namespace PublicCounterCompiler
             }
             catch
             {
-                Output("ERROR: Failed to open file for writing: " + headerFilePath);
+                errorHandler("Failed to open file for writing: " + headerFilePath);
                 return false;
             }
 
@@ -2229,18 +2210,17 @@ namespace PublicCounterCompiler
             }
 
             cppStream.WriteLine("};");
-            cppStream.WriteLine();
             cppStream.Close();
 
             headerStream.WriteLine();
             headerStream.WriteLine("/// Number of public counters for {0}{1}", activeSectionLabel, asic);
-            headerStream.WriteLine("static const size_t {0} = {1};", derivedCounterCountConstant, counterCount);
+            headerStream.WriteLine("const size_t {0} = {1};", derivedCounterCountConstant, counterCount);
             headerStream.WriteLine();
             headerStream.WriteLine("/// Array of public counters for {0}{1}", activeSectionLabel, asic);
             headerStream.WriteLine("extern const GPACounterDesc {0}[{1}];", derivedCountersConstant,
                 derivedCounterCountConstant);
             headerStream.WriteLine();
-            headerStream.WriteLine("#endif // {0}", headerGuard);
+            headerStream.WriteLine("#endif  // {0}", headerGuard);
             headerStream.Close();
             return true;
         }
@@ -2248,10 +2228,10 @@ namespace PublicCounterCompiler
         /// <summary>
         /// Start the process of collecting information for RST documentation
         /// </summary>
-        public static void StartRSTDocumentation()
+        public void StartRSTDocumentation()
         {
-            docInfoMapGraphics.Clear();
-            docInfoMapCompute.Clear();
+            docInfoMapGraphicsByGeneration.Clear();
+            docInfoMapComputeByGeneration.Clear();
         }
 
         /// <summary>
@@ -2259,7 +2239,7 @@ namespace PublicCounterCompiler
         /// </summary>
         /// <param name="docStream">the stream in which to write data</param>
         /// <param name="groupKvp">the data to use to write the counter data</param>
-        private static void WriteRSTCounterTable(StreamWriter docStream, KeyValuePair<string, Dictionary<string, PublicCounterDocInfo>> groupKvp)
+        private void WriteRSTCounterTable(StreamWriter docStream, KeyValuePair<string, Dictionary<string, DerivedCounterDef>> groupKvp)
         {
             docStream.WriteLine();
             string groupHeading = string.Format("{0} Group", groupKvp.Key);
@@ -2267,104 +2247,103 @@ namespace PublicCounterCompiler
             docStream.WriteLine(new String('%', groupHeading.Length));
             docStream.WriteLine();
             docStream.WriteLine(".. csv-table::");
-            docStream.WriteLine("    :header: \"Counter Name\", \"Brief Description\", \"Availability\"");
-            docStream.WriteLine("    :widths: 15, 60, 25");
+            docStream.WriteLine("    :header: \"Counter Name\", \"Brief Description\"");
+            docStream.WriteLine("    :widths: 15, 80");
             docStream.WriteLine();
 
-            foreach (KeyValuePair<string, PublicCounterDocInfo> counterKvp in groupKvp.Value)
+            foreach (KeyValuePair<string, DerivedCounterDef> deriveCounterDef in groupKvp.Value)
             {
-                string hwGens = string.Empty;
-
-                if (counterKvp.Value.gfx9Supported)
-                {
-                    hwGens += "| Vega";
-                }
-
-                if (counterKvp.Value.gfx8Supported)
-                {
-                    if (hwGens != string.Empty)
-                    {
-                        hwGens += "\r\n    ";
-                    }
-
-                    hwGens += "| Graphics IP v8";
-                }
-                if (counterKvp.Value.gfx7Supported)
-                {
-                    if (hwGens != string.Empty)
-                    {
-                        hwGens += "\r\n    ";
-                    }
-
-                    hwGens += "| Graphics IP v7";
-                }
-                if (counterKvp.Value.gfx6Supported)
-                {
-                    if (hwGens != string.Empty)
-                    {
-                        hwGens += "\r\n    ";
-                    }
-
-                    hwGens += "| Graphics IP v6";
-                }
-
-                docStream.WriteLine("    \"{0}\", \"{1}\", \"{2}\"", counterKvp.Key, counterKvp.Value.publicCounter.Desc, hwGens);
+                docStream.WriteLine("    \"{0}\", \"{1}\"", deriveCounterDef.Key, deriveCounterDef.Value.Desc);
             }
         }
-
 
         /// <summary>
         /// Finish the process of collecting information for RST documentation. This will write the data to files.
         /// </summary>
-        public static void DoneRSTDocumentation()
+        public void DoneRSTDocumentation(Func<string, bool> infoHandler, Func<string, bool> errorHandler)
         {
-            string docOutputFile = GetGPABasePath() + "docs\\source\\graphicscountertables.rst";
-
-            StreamWriter docStream = null;
-            try
+            if (!isInternal)
             {
-                docStream = new StreamWriter(docOutputFile);
+                { // Graphics Counters
+                    foreach (var counterGroupByGfxGen in docInfoMapGraphicsByGeneration)
+                    {
+                        string docOutputFileName =
+                            "graphicscountertables" + GfxGenAsStr[counterGroupByGfxGen.Key] + ".rst";
+                        string docOutputFile = GPATools.Gpa.GetGpuPerfApiPath() +
+                                               GPATools.Gpa.GpaDocSourceDir + docOutputFileName;
+
+                        StreamWriter docStream = null;
+                        try
+                        {
+                            docStream = new StreamWriter(docOutputFile);
+                        }
+                        catch
+                        {
+                            errorHandler("Failed to open file for writing: " + docOutputFile);
+                            return;
+                        }
+
+                        docStream.WriteLine(".. Copyright(c) 2018-{0} Advanced Micro Devices, Inc.All rights reserved.",
+                            DateTime.Now.Year.ToString());
+                        docStream.WriteLine(".. Graphics Performance Counters for {0}", GfxGenerationDisplayName[counterGroupByGfxGen.Key]);
+                        docStream.WriteLine();
+                        docStream.WriteLine(
+                            ".. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.");
+
+                        docStream.WriteLine();
+                        string gfxHeading = string.Format("{0} Counters", GfxGenerationDisplayName[counterGroupByGfxGen.Key]);
+                        docStream.WriteLine(gfxHeading);
+                        docStream.WriteLine(new String('+', gfxHeading.Length));
+
+                        foreach (KeyValuePair<string, Dictionary<string, DerivedCounterDef>> groupKvp in counterGroupByGfxGen.Value)
+                        {
+                            WriteRSTCounterTable(docStream, groupKvp);
+                        }
+
+                        docStream.Close();
+                    }
+                }
+
+                { // Compute Counters
+                    foreach (var counterGroupByGfxGen in docInfoMapComputeByGeneration)
+                    {
+                        string docOutputFileName =
+                            "computecountertables" + GfxGenAsStr[counterGroupByGfxGen.Key] + ".rst";
+                        string docOutputFile = GPATools.Gpa.GetGpuPerfApiPath() +
+                                               GPATools.Gpa.GpaDocSourceDir + docOutputFileName;
+
+                        StreamWriter docStream = null;
+                        try
+                        {
+                            docStream = new StreamWriter(docOutputFile);
+                        }
+                        catch
+                        {
+                            errorHandler("Failed to open file for writing: " + docOutputFile);
+                            return;
+                        }
+
+                        docStream.WriteLine(".. Copyright(c) 2018-{0} Advanced Micro Devices, Inc.All rights reserved.",
+                            DateTime.Now.Year.ToString());
+                        docStream.WriteLine(".. Compute Performance Counters for {0}", GfxGenerationDisplayName[counterGroupByGfxGen.Key]);
+                        docStream.WriteLine();
+                        docStream.WriteLine(
+                            ".. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.");
+
+                        docStream.WriteLine();
+                        string gfxHeading = string.Format("{0} Counters", GfxGenerationDisplayName[counterGroupByGfxGen.Key]);
+                        docStream.WriteLine(gfxHeading);
+                        docStream.WriteLine(new String('+', gfxHeading.Length));
+
+                        foreach (KeyValuePair<string, Dictionary<string, DerivedCounterDef>> groupKvp in counterGroupByGfxGen.Value)
+                        {
+                            WriteRSTCounterTable(docStream, groupKvp);
+                        }
+
+                        docStream.Close();
+                    }
+                }
             }
-            catch
-            {
-                Output("ERROR: Failed to open file for writing: " + docOutputFile);
-                return;
-            }
-
-            docStream.WriteLine(".. Copyright(c) 2018 Advanced Micro Devices, Inc.All rights reserved.");
-            docStream.WriteLine(".. Graphics Performance Counters");
-            docStream.WriteLine();
-            docStream.WriteLine(".. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.");
-
-            foreach (KeyValuePair<string, Dictionary<string, PublicCounterDocInfo>> groupKvp in docInfoMapGraphics)
-            {
-                WriteRSTCounterTable(docStream, groupKvp);
-            }
-
-            docStream.Close();
-
-            docOutputFile = GetGPABasePath() + "docs\\source\\computecountertables.rst";
-
-            docStream = null;
-            try
-            {
-                docStream = new StreamWriter(docOutputFile);
-            }
-            catch
-            {
-                Output("ERROR: Failed to open file for writing: " + docOutputFile);
-                return;
-            }
-
-            docStream.WriteLine(".. Copyright(c) 2018 Advanced Micro Devices, Inc.All rights reserved.");
-            docStream.WriteLine(".. Compute Performance Counters");
-
-            foreach (KeyValuePair<string, Dictionary<string, PublicCounterDocInfo>> groupKvp in docInfoMapCompute)
-            {
-                WriteRSTCounterTable(docStream, groupKvp);
-            }
-
-            docStream.Close();
         }
     }
 }

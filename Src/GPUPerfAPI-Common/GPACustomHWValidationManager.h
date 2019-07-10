@@ -17,7 +17,7 @@ class GPACustomHwValidationManager : public TSingleton<GPACustomHwValidationMana
 {
 public:
     /// Typedef for the function pointer type used to validate hardware
-    typedef GPA_Status(*CustomHWValidationFuncPtr)(void*, GPA_HWInfo*, void*);
+    typedef GPA_Status (*CustomHWValidationFuncPtr)(void*, GPA_HWInfo*, void*);
 
     /// Registers a function that is used to validate hardware
     /// \param hwValidationFunc the function to call to validate hardware
@@ -31,8 +31,8 @@ public:
     GPA_Status ValidateHW(void* pContext, GPA_HWInfo* pHwInfo);
 
 private:
-    typedef std::pair<CustomHWValidationFuncPtr, void*> CustomValidationFuncPair; ///< typedef used to store validator/userdata pair
-    std::vector<CustomValidationFuncPair> m_validationFunctionList;               ///< list of validation functions
+    typedef std::pair<CustomHWValidationFuncPtr, void*> CustomValidationFuncPair;  ///< typedef used to store validator/userdata pair
+    std::vector<CustomValidationFuncPair>               m_validationFunctionList;  ///< list of validation functions
 };
 
-#endif // _GPA_CUSTOM_HW_VALIDATOR_H_
+#endif  // _GPA_CUSTOM_HW_VALIDATOR_H_

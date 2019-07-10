@@ -16,10 +16,10 @@
 #include <d3d12.h>
 
 // AMD Extension
-#pragma warning (push)
-#pragma warning (disable: 4201)
+#pragma warning(push)
+#pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
-#pragma warning (pop)
+#pragma warning(pop)
 
 // GPA Common
 #include "GPACommandList.h"
@@ -27,18 +27,17 @@
 #include "DX12GPAPass.h"
 #include "GPACommonDefs.h"
 
-class DX12GPASession;   // forward declaration
+class DX12GPASession;  // forward declaration
 
-using SampleResultSize = gpa_uint64;                                                    ///< type alias for size of sample result
-using SampleResult = gpa_uint64;                                                        ///< type alias for sample result
+using SampleResultSize = gpa_uint64;  ///< type alias for size of sample result
+using SampleResult     = gpa_uint64;  ///< type alias for sample result
 
 /// Class for DX12 GPA Command List
 class GPA_NOT_THREAD_SAFE_OBJECT DX12GPACommandList : public GPACommandList
 {
 public:
-
-    using BundleResultAmdExtSession = IAmdExtGpaSession*;           ///< type alias for bundle result session
-    using SecondaryDx12Cmd = DX12GPACommandList;                    ///< type alias for secondary dx12 command list
+    using BundleResultAmdExtSession = IAmdExtGpaSession*;  ///< type alias for bundle result session
+    using SecondaryDx12Cmd          = DX12GPACommandList;  ///< type alias for secondary dx12 command list
 
     /// Constructor
     /// \param[in] pDX12GpaSession dx12 GPA session
@@ -46,11 +45,7 @@ public:
     /// \param[in] pCmd command list pointer
     /// \param[in] commandListId command list id
     /// \param[in] cmdType command list type
-    DX12GPACommandList(DX12GPASession* pDX12GpaSession,
-                       GPAPass* pDX12GpaPass,
-                       void* pCmd,
-                       CommandListId commandListId,
-                       GPA_Command_List_Type cmdType);
+    DX12GPACommandList(DX12GPASession* pDX12GpaSession, GPAPass* pDX12GpaPass, void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType);
 
     /// Delete default constructor
     DX12GPACommandList() = delete;
@@ -73,8 +68,8 @@ public:
     /// \param[in] pDx12SecondaryCmd DirectX 12 GPA secondary command list object pointer
     /// \param[out] originalClientSampleIds list of original client sample ids created on secondary command list
     /// \return true upon successful operation otherwise false
-    bool CopyBundleSamples(std::vector<ClientSampleId> clientSampleIds,
-                           SecondaryDx12Cmd* pDx12SecondaryCmd,
+    bool CopyBundleSamples(std::vector<ClientSampleId>  clientSampleIds,
+                           SecondaryDx12Cmd*            pDx12SecondaryCmd,
                            std::vector<ClientSampleId>& originalClientSampleIds);
 
     /// Returns the command list GPA extension session
@@ -90,7 +85,6 @@ public:
     void ReleaseNonGPAResources();
 
 private:
-
     /// \copydoc GPACommandList::BeginCommandListRequest()
     bool BeginCommandListRequest() override final;
 
@@ -98,8 +92,7 @@ private:
     bool EndCommandListRequest() override final;
 
     /// \copydoc GPACommandList::BeginSampleRequest()
-    bool BeginSampleRequest(ClientSampleId clientSampleId,
-                            GPASample* pGpaSample) override final;
+    bool BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample) override final;
 
     /// \copydoc GPACommandList::CloseLastSampleRequest()
     bool CloseLastSampleRequest() override final;
@@ -124,19 +117,22 @@ private:
     /// \return true upon successful operation otherwise false
     bool CloseSwSample();
 
-    using BundleSamplesOnPrimaryCmd = std::unordered_set<ClientSampleId>;                                                               ///< type alias for set of client sample id for bundle samples
-    using BundleResultAmdExtSessionBundleSamplesOnPrimaryCmdPair = std::pair<BundleResultAmdExtSession, BundleSamplesOnPrimaryCmd>;     ///< type alias for pair of bundle result session and set of bundle samples
-    using BundleResultAmdExtSessionBundleSamplesOnPrimaryCmdMap = std::map<BundleResultAmdExtSession, BundleSamplesOnPrimaryCmd>;       ///< type alias for map of bundle result session and set of bundle samples
+    using BundleSamplesOnPrimaryCmd = std::unordered_set<ClientSampleId>;  ///< type alias for set of client sample id for bundle samples
+    using BundleResultAmdExtSessionBundleSamplesOnPrimaryCmdPair =
+        std::pair<BundleResultAmdExtSession, BundleSamplesOnPrimaryCmd>;  ///< type alias for pair of bundle result session and set of bundle samples
+    using BundleResultAmdExtSessionBundleSamplesOnPrimaryCmdMap =
+        std::map<BundleResultAmdExtSession, BundleSamplesOnPrimaryCmd>;  ///< type alias for map of bundle result session and set of bundle samples
 
-    std::mutex                                              m_dx12CmdListMutex;                         ///< Mutex for DX12 Cmd List object
-    ID3D12GraphicsCommandList*                              m_pCmdList;                                 ///< Command List
+    std::mutex                 m_dx12CmdListMutex;  ///< Mutex for DX12 Cmd List object
+    ID3D12GraphicsCommandList* m_pCmdList;          ///< Command List
 
-    IAmdExtGpaSession*                                      m_pAmdExtSession;                           ///< Amd Ext Gpa session
-    BundleResultAmdExtSessionBundleSamplesOnPrimaryCmdMap   m_secondarySampleAmdExtSessionMap;          ///< Map of bundle result session and client sample id - usage only applicable if the cmd is primary
-    bool                                                    m_isCommandListOpenInDriver;                ///< Flag indicating if the command list has been started in the driver (i.e. if it is in a recording state)
-    bool                                                    m_isNonGPAResourceReleased;                 ///< flag indicating ID3DGraphicsCommand list has been released or not
-    bool                                                    m_hasAnyHardwareCounters;                   ///< flag indicating if there are any non-skipped hardware counters in this request
-    bool                                                    m_usePre1850Config;                         ///< flag indicating whether to use pre-18.50 configuration
+    IAmdExtGpaSession* m_pAmdExtSession;  ///< Amd Ext Gpa session
+    BundleResultAmdExtSessionBundleSamplesOnPrimaryCmdMap
+         m_secondarySampleAmdExtSessionMap;  ///< Map of bundle result session and client sample id - usage only applicable if the cmd is primary
+    bool m_isCommandListOpenInDriver;        ///< Flag indicating if the command list has been started in the driver (i.e. if it is in a recording state)
+    bool m_isNonGPAResourceReleased;         ///< flag indicating ID3DGraphicsCommand list has been released or not
+    bool m_hasAnyHardwareCounters;           ///< flag indicating if there are any non-skipped hardware counters in this request
+    bool m_usePre1850Config;                 ///< flag indicating whether to use pre-18.50 configuration
 };
 
-#endif // _DX12_GPA_COMMAND_LIST_H_
+#endif  // _DX12_GPA_COMMAND_LIST_H_

@@ -7,11 +7,11 @@
 
 #include "GPASwCounterManager.h"
 
-SwCounterManager::SwCounterManager() :
-    m_amdCounters(0),
-    m_swGPUTimeCounter(0),
-    m_swGPUTimeEnabled(false),
-    m_swCountersGenerated(false)
+SwCounterManager::SwCounterManager()
+    : m_amdCounters(0)
+    , m_swGPUTimeCounter(0)
+    , m_swGPUTimeEnabled(false)
+    , m_swCountersGenerated(false)
 {
     m_swCounters.clear();
     m_enabledSwCounters.clear();
@@ -73,7 +73,7 @@ gpa_uint32 SwCounterManager::GetSwGPUTimeCounterIndex() const
 gpa_uint32 SwCounterManager::GetSwCounterPubIndex(const gpa_uint32 swIndex) const
 {
     gpa_uint32 pubIndex = 0;
-    auto search = m_swCounterIndexMap.find(swIndex);
+    auto       search   = m_swCounterIndexMap.find(swIndex);
 
     if (search != m_swCounterIndexMap.end())
     {

@@ -5,7 +5,6 @@
 /// \brief Class for DX12 counter generation for non-AMD hardware (used simply to register the generator)
 //==============================================================================
 
-
 #ifndef _GPA_COUNTER_GENERATOR_DX12_NON_AMD_H_
 #define _GPA_COUNTER_GENERATOR_DX12_NON_AMD_H_
 
@@ -19,4 +18,4 @@ public:
     GPA_CounterGeneratorDX12NonAMD();
 };
 
-#endif // _GPA_COUNTER_GENERATOR_DX12_NON_AMD_H_
+#endif  // _GPA_COUNTER_GENERATOR_DX12_NON_AMD_H_

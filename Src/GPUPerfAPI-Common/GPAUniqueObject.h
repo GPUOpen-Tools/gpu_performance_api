@@ -16,9 +16,9 @@
 #include "IGPAInterfaceTrait.h"
 #include "GPACommonDefs.h"
 
-class IGPAContext;          // forward declaration
-class IGPASession;          // forward declaration
-class IGPACommandList;      // forward declaration
+class IGPAContext;      // forward declaration
+class IGPASession;      // forward declaration
+class IGPACommandList;  // forward declaration
 
 /// GPAUniqueObject structure
 struct GPAUniqueObject
@@ -35,11 +35,10 @@ struct GPAUniqueObject
     virtual ~GPAUniqueObject();
 
 protected:
-
     /// constructor
     GPAUniqueObject();
 
-    IGPAInterfaceTrait* m_pInterface; ///< GPA Interface trait pointer
+    IGPAInterfaceTrait* m_pInterface;  ///< GPA Interface trait pointer
 };
 
 /// Context Id struct
@@ -111,12 +110,10 @@ struct _GPA_CommandListId : GPAUniqueObject
     GPAObjectType ObjectType() const override;
 };
 
-
 /// Singleton class to maintain Unique objects
 class GPAUniqueObjectManager
 {
 public:
-
     /// Destructor
     ~GPAUniqueObjectManager();
 
@@ -150,7 +147,6 @@ public:
     GPA_THREAD_SAFE_FUNCTION bool DoesExist(const GPAUniqueObject* pUniqueObject, unsigned int* pIndex = nullptr) const;
 
 private:
-
     /// Checks whether the interface exists or not
     /// Assumes that the caller has locked m_mutex.
     /// \param[in] pInterfaceTrait interface trait
@@ -165,9 +161,9 @@ private:
     /// \return index at which the object found otherwise -1
     bool DoesExist_NotThreadSafe(const GPAUniqueObject* pUniqueObject, unsigned int* pIndex = nullptr) const;
 
-    static GPAUniqueObjectManager* ms_pGpaUniqueObjectManger; ///< static instance of the GPA object manager
-    std::vector<GPAUniqueObject*>  m_gpaUniqueObjectList;     ///< List of unique object pointers
-    mutable std::mutex             m_mutex;                   ///< Mutex for unique object manager class
+    static GPAUniqueObjectManager* ms_pGpaUniqueObjectManger;  ///< static instance of the GPA object manager
+    std::vector<GPAUniqueObject*>  m_gpaUniqueObjectList;      ///< List of unique object pointers
+    mutable std::mutex             m_mutex;                    ///< Mutex for unique object manager class
 };
 
-#endif // _GPA_UNIQUE_OBJECT_H_
+#endif  // _GPA_UNIQUE_OBJECT_H_

@@ -14,14 +14,14 @@
 
 #include "GPUPerfAPITypes.h"
 
-class GPA_DataRequest; ///< forward declaration
+class GPA_DataRequest;  ///< forward declaration
 
 /// Manager class that will get the correct CounterDataRequest for the given HW generation
-template<typename T>
+template <typename T>
 class GPACounterDataRequestManager
 {
 public:
-    typedef T* (*CreateDataRequestFn)(void* pUserData); ///< Function typedef for creating data requests
+    typedef T* (*CreateDataRequestFn)(void* pUserData);  ///< Function typedef for creating data requests
 
     /// Register a counter data request creation function for a specified hardware generation
     /// \param generation the hardware generation
@@ -49,10 +49,14 @@ public:
 
 protected:
     /// Constructor
-    GPACounterDataRequestManager() {}
+    GPACounterDataRequestManager()
+    {
+    }
 
     /// Destructor
-    virtual ~GPACounterDataRequestManager() {}
+    virtual ~GPACounterDataRequestManager()
+    {
+    }
 
     /// Gets the default data request (if one is not registered). May allocate memory.
     /// \return the newly created data request
@@ -65,4 +69,4 @@ protected:
     GenerationDataRequestCreatorMap m_counterDataRequestItems;
 };
 
-#endif // _GPA_COUNTER_DATA_REQUEST_MANAGER_H_
+#endif  // _GPA_COUNTER_DATA_REQUEST_MANAGER_H_

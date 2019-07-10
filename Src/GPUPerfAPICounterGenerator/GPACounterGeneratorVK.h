@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class for VK counter generation
@@ -14,30 +14,46 @@
 class GPA_CounterGeneratorVK : public GPA_CounterGeneratorVKBase
 {
 public:
-
     /// Construct a GPA VK counter generator
     GPA_CounterGeneratorVK();
 
     /// Destroy this GPA VK counter generator
-    virtual ~GPA_CounterGeneratorVK();
+    virtual ~GPA_CounterGeneratorVK() = default;
+
+    /// Copy constructor - private override to prevent usage
+    GPA_CounterGeneratorVK(const GPA_CounterGeneratorVK&) = delete;
+
+    /// Move constructor - private override to prevent usage
+    GPA_CounterGeneratorVK(GPA_CounterGeneratorVK&&) = delete;
+
+    /// Copy operator - private override to prevent usage
+    /// \return reference to object
+    GPA_CounterGeneratorVK& operator=(const GPA_CounterGeneratorVK&) = delete;
+
+    /// Move operator - private override to prevent usage
+    /// \return reference to object
+    GPA_CounterGeneratorVK& operator=(GPA_CounterGeneratorVK&&) = delete;
 
 protected:
     /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
-    virtual GPA_Status GeneratePublicCounters(
-        GDT_HW_GENERATION desiredGeneration,
-        GDT_HW_ASIC_TYPE asicType,
-        gpa_uint8 generateAsicSpecificCounters,
-        GPA_DerivedCounters* pPublicCounters) override;
+    virtual GPA_Status GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
+                                              GDT_HW_ASIC_TYPE     asicType,
+                                              gpa_uint8            generateAsicSpecificCounters,
+                                              GPA_DerivedCounters* pPublicCounters) override;
 
     /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
-    virtual GPA_Status GenerateHardwareCounters(
-        GDT_HW_GENERATION desiredGeneration,
-        GDT_HW_ASIC_TYPE asicType,
-        gpa_uint8 generateAsicSpecificCounters,
-        GPA_HardwareCounters* pHardwareCounters) override;
+    virtual GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
+                                                GDT_HW_ASIC_TYPE      asicType,
+                                                gpa_uint8             generateAsicSpecificCounters,
+                                                GPA_HardwareCounters* pHardwareCounters) override;
+
+    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareExposedCounters
+    GPA_Status GenerateHardwareExposedCounters(GDT_HW_GENERATION     desiredGeneration,
+                                               GDT_HW_ASIC_TYPE      asicType,
+                                               gpa_uint8             generateAsicSpecificCounters,
+                                               GPA_HardwareCounters* pHardwareCounters) override;
 
 private:
-
     /// Checks if the given hw generation represents an AMD GPU
     /// \param generation the hardware generation to check
     /// \return true if the hardware generation represents and AMD GPU
@@ -56,20 +72,6 @@ private:
     /// \param generation the generation for which counters need to be generated
     /// \return true on success
     static bool GenerateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GDT_HW_GENERATION generation);
-
-    /// Copy constructor - private override to prevent usage
-    GPA_CounterGeneratorVK(const GPA_CounterGeneratorVK&) = delete;
-
-    /// Move constructor - private override to prevent usage
-    GPA_CounterGeneratorVK(GPA_CounterGeneratorVK&&) = delete;
-
-    /// Copy operator - private override to prevent usage
-    /// \return reference to object
-    GPA_CounterGeneratorVK& operator=(const GPA_CounterGeneratorVK&) = delete;
-
-    /// Move operator - private override to prevent usage
-    /// \return reference to object
-    GPA_CounterGeneratorVK& operator=(GPA_CounterGeneratorVK&&) = delete;
 };
 
-#endif // _GPA_COUNTER_GENERATOR_VK_H_
+#endif  // _GPA_COUNTER_GENERATOR_VK_H_

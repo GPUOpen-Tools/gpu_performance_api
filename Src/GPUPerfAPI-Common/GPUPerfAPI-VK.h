@@ -18,13 +18,10 @@
 #define VK_AMD_SHADER_CORE_PROPERTIES_EXTENSION_NAME "VK_AMD_shader_core_properties"
 
 /// Define a macro to help developers include all instance-level extensions required to support the AMD GPA Interface.
-#define AMD_GPA_REQUIRED_INSTANCE_EXTENSION_NAME_LIST     \
-    VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME
+#define AMD_GPA_REQUIRED_INSTANCE_EXTENSION_NAME_LIST VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME
 
 /// Define a macro to help developers include all device-level extensions required to support the AMD GPA Interface.
-#define AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST       \
-    VK_AMD_GPA_INTERFACE_EXTENSION_NAME,                  \
-    VK_AMD_SHADER_CORE_PROPERTIES_EXTENSION_NAME
+#define AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST VK_AMD_GPA_INTERFACE_EXTENSION_NAME, VK_AMD_SHADER_CORE_PROPERTIES_EXTENSION_NAME
 
 /// The struct that should be supplied to GPA_OpenContext().
 /// The instance, physicalDevice, and device should be set prior to
@@ -32,9 +29,9 @@
 /// will take place.
 typedef struct GPA_vkContextOpenInfo
 {
-    VkInstance instance;                ///< The instance on which to profile
-    VkPhysicalDevice physicalDevice;    ///< The physical device on which to profile
-    VkDevice device;                    ///< The device on which to profile
+    VkInstance       instance;        ///< The instance on which to profile
+    VkPhysicalDevice physicalDevice;  ///< The physical device on which to profile
+    VkDevice         device;          ///< The device on which to profile
 } GPA_vkContextOpenInfo;
 
-#endif // _GPUPERFAPI_VK_H_
+#endif  // _GPUPERFAPI_VK_H_

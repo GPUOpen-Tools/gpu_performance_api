@@ -10,21 +10,17 @@
 #include "VkCommandListSWQueryGroup.h"
 #include "VkEntrypoints.h"
 
-const VkQueryType VkCommandListSWQueryGroup::ms_queryTypes[] =
-{
-    VK_QUERY_TYPE_OCCLUSION,
-    VK_QUERY_TYPE_OCCLUSION,
-    VK_QUERY_TYPE_TIMESTAMP,
-    VK_QUERY_TYPE_PIPELINE_STATISTICS
-};
+const VkQueryType VkCommandListSWQueryGroup::ms_queryTypes[] = {VK_QUERY_TYPE_OCCLUSION,
+                                                                VK_QUERY_TYPE_OCCLUSION,
+                                                                VK_QUERY_TYPE_TIMESTAMP,
+                                                                VK_QUERY_TYPE_PIPELINE_STATISTICS};
 
 VkCommandListSWQueryGroup::VkCommandListSWQueryGroup()
-    :
-    m_maxSamples(0),
-    m_activeSampleCount(0),
-    m_device(VK_NULL_HANDLE),
-    m_commandBuffer(VK_NULL_HANDLE),
-    m_pQueriesResults(nullptr)
+    : m_maxSamples(0)
+    , m_activeSampleCount(0)
+    , m_device(VK_NULL_HANDLE)
+    , m_commandBuffer(VK_NULL_HANDLE)
+    , m_pQueriesResults(nullptr)
 {
     for (size_t qi = 0; GPA_VK_QUERY_TYPE_COUNT > qi; ++qi)
     {
@@ -33,11 +29,10 @@ VkCommandListSWQueryGroup::VkCommandListSWQueryGroup()
 }
 
 VkCommandListSWQueryGroup::VkCommandListSWQueryGroup(VkCommandListSWQueryGroup&& other)
-    :
-    m_maxSamples(other.m_maxSamples),
-    m_activeSampleCount(other.m_activeSampleCount),
-    m_commandBuffer(other.m_commandBuffer),
-    m_pQueriesResults(other.m_pQueriesResults)
+    : m_maxSamples(other.m_maxSamples)
+    , m_activeSampleCount(other.m_activeSampleCount)
+    , m_commandBuffer(other.m_commandBuffer)
+    , m_pQueriesResults(other.m_pQueriesResults)
 {
     for (size_t qi = 0; GPA_VK_QUERY_TYPE_COUNT > qi; ++qi)
     {
@@ -54,17 +49,17 @@ VkCommandListSWQueryGroup::~VkCommandListSWQueryGroup()
 
 VkCommandListSWQueryGroup& VkCommandListSWQueryGroup::operator=(VkCommandListSWQueryGroup&& other)
 {
-    m_maxSamples = other.m_maxSamples;
+    m_maxSamples        = other.m_maxSamples;
     m_activeSampleCount = other.m_activeSampleCount;
-    m_commandBuffer = other.m_commandBuffer;
-    m_device = other.m_device;
+    m_commandBuffer     = other.m_commandBuffer;
+    m_device            = other.m_device;
 
     for (size_t qi = 0; (GPA_VK_QUERY_TYPE_COUNT > qi); ++qi)
     {
         m_queryPools[qi] = other.m_queryPools[qi];
     }
 
-    m_pQueriesResults = other.m_pQueriesResults;
+    m_pQueriesResults       = other.m_pQueriesResults;
     other.m_pQueriesResults = nullptr;
 
     return (*this);
@@ -72,7 +67,7 @@ VkCommandListSWQueryGroup& VkCommandListSWQueryGroup::operator=(VkCommandListSWQ
 
 bool VkCommandListSWQueryGroup::Initialize(VkPhysicalDevice physicalDevice, VkDevice device, VkCommandBuffer commandBuffer, size_t groupSize)
 {
-    bool result = true;
+    bool result  = true;
     m_maxSamples = groupSize;
 
     for (size_t qi = 0; (GPA_VK_QUERY_TYPE_COUNT > qi) && result; ++qi)
@@ -103,7 +98,7 @@ bool VkCommandListSWQueryGroup::Initialize(VkPhysicalDevice physicalDevice, VkDe
 
     if (result)
     {
-        m_device = device;
+        m_device        = device;
         m_commandBuffer = commandBuffer;
 
         m_activeSampleQueries.clear();
@@ -165,8 +160,7 @@ void VkCommandListSWQueryGroup::ReleaseSwSample(const gpa_uint32 swSampleIndex)
     m_activeSampleCount--;
 }
 
-void VkCommandListSWQueryGroup::BeginSwQuery(
-    const gpa_uint32 swSampleIndex, const GPA_VK_SW_QUERY_TYPE queryType)
+void VkCommandListSWQueryGroup::BeginSwQuery(const gpa_uint32 swSampleIndex, const GPA_VK_SW_QUERY_TYPE queryType)
 {
     if (GPA_VK_QUERY_TYPE_TIMESTAMP == queryType)
     {
@@ -187,8 +181,7 @@ void VkCommandListSWQueryGroup::BeginSwQuery(
     m_activeSampleQueries[swSampleIndex][queryType] = true;
 }
 
-void VkCommandListSWQueryGroup::EndSwQuery(
-    const gpa_uint32 swSampleIndex, const GPA_VK_SW_QUERY_TYPE queryType)
+void VkCommandListSWQueryGroup::EndSwQuery(const gpa_uint32 swSampleIndex, const GPA_VK_SW_QUERY_TYPE queryType)
 {
     if (GPA_VK_QUERY_TYPE_TIMESTAMP == queryType)
     {
@@ -200,24 +193,17 @@ void VkCommandListSWQueryGroup::EndSwQuery(
     }
 }
 
-bool VkCommandListSWQueryGroup::GetSwSampleResults(
-    const gpa_uint32 swSampleIndex, GpaVkSoftwareQueryResults& queryResults)
+bool VkCommandListSWQueryGroup::GetSwSampleResults(const gpa_uint32 swSampleIndex, GpaVkSoftwareQueryResults& queryResults)
 {
-    uint64_t* pResultAvailableAddresses[GPA_VK_QUERY_TYPE_COUNT] =
-    {
-        &(m_pQueriesResults[swSampleIndex].occlusionAvailable),
-        &(m_pQueriesResults[swSampleIndex].occlusionBinaryAvailable),
-        &(m_pQueriesResults[2 * swSampleIndex].timestampEndAvailable),
-        &(m_pQueriesResults[swSampleIndex].pipelineStatsAvailable)
-    };
+    uint64_t* pResultAvailableAddresses[GPA_VK_QUERY_TYPE_COUNT] = {&(m_pQueriesResults[swSampleIndex].occlusionAvailable),
+                                                                    &(m_pQueriesResults[swSampleIndex].occlusionBinaryAvailable),
+                                                                    &(m_pQueriesResults[2 * swSampleIndex].timestampEndAvailable),
+                                                                    &(m_pQueriesResults[swSampleIndex].pipelineStatsAvailable)};
 
-    uint64_t* pResultAddresses[GPA_VK_QUERY_TYPE_COUNT] =
-    {
-        &(m_pQueriesResults[swSampleIndex].occlusion),
-        &(m_pQueriesResults[swSampleIndex].occlusionBinary),
-        &(m_pQueriesResults[2 * swSampleIndex].timestampBegin),
-        &(m_pQueriesResults[swSampleIndex].inputAssemblyVertices)
-    };
+    uint64_t* pResultAddresses[GPA_VK_QUERY_TYPE_COUNT] = {&(m_pQueriesResults[swSampleIndex].occlusion),
+                                                           &(m_pQueriesResults[swSampleIndex].occlusionBinary),
+                                                           &(m_pQueriesResults[2 * swSampleIndex].timestampBegin),
+                                                           &(m_pQueriesResults[swSampleIndex].inputAssemblyVertices)};
 
     // Initially all results are available.
     bool allResultsAvailable = true;
@@ -232,8 +218,8 @@ bool VkCommandListSWQueryGroup::GetSwSampleResults(
             {
                 // First, get a copy of the query results.
                 uint64_t* pResultAddress = pResultAddresses[qti];
-                size_t resultSize = ms_gpaVkSoftwareResultSizes[qti];
-                size_t resultStride = ms_gpaVkSoftwareResultStrides[qti];
+                size_t    resultSize     = ms_gpaVkSoftwareResultSizes[qti];
+                size_t    resultStride   = ms_gpaVkSoftwareResultStrides[qti];
 
                 uint32_t queryIndex = swSampleIndex;
                 uint32_t numQueries = 1;
@@ -250,7 +236,11 @@ bool VkCommandListSWQueryGroup::GetSwSampleResults(
                 // that the query results get updated each time we get them.
                 VkResult qpResults = _vkGetQueryPoolResults(m_device,
                                                             queryPool,
-                                                            queryIndex, numQueries, resultSize, pResultAddress, resultStride,
+                                                            queryIndex,
+                                                            numQueries,
+                                                            resultSize,
+                                                            pResultAddress,
+                                                            resultStride,
                                                             VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WITH_AVAILABILITY_BIT);
 
                 allResultsAvailable = (qpResults == VK_SUCCESS);
@@ -258,8 +248,8 @@ bool VkCommandListSWQueryGroup::GetSwSampleResults(
                 if (allResultsAvailable)
                 {
                     // Second, Check if the query results availability bit indicated that it was available.
-                    uint64_t* pResultAvailableAddress = pResultAvailableAddresses[qti];
-                    gpa_uint64 resultAvailable = *pResultAvailableAddress;
+                    uint64_t*  pResultAvailableAddress = pResultAvailableAddresses[qti];
+                    gpa_uint64 resultAvailable         = *pResultAvailableAddress;
 
                     if (resultAvailable == 0)
                     {
@@ -272,14 +262,10 @@ bool VkCommandListSWQueryGroup::GetSwSampleResults(
                         // CAVEAT: There's currently a bug in the availibility bit for PIPELINE_STATISTICS that
                         // it will report available even though all results are 0. So if we encounter this
                         // situation, report that results are actually NOT available.
-                        if (qti == GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS &&
-                            m_pQueriesResults[swSampleIndex].inputAssemblyVertices == 0 &&
-                            m_pQueriesResults[swSampleIndex].inputAssemblyPrimitives == 0 &&
-                            m_pQueriesResults[swSampleIndex].vertexShaderInvocations == 0 &&
-                            m_pQueriesResults[swSampleIndex].geometryShaderInvocations == 0 &&
-                            m_pQueriesResults[swSampleIndex].geometryShaderPrimitives == 0 &&
-                            m_pQueriesResults[swSampleIndex].clippingInvocations == 0 &&
-                            m_pQueriesResults[swSampleIndex].clippingPrimitives == 0 &&
+                        if (qti == GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS && m_pQueriesResults[swSampleIndex].inputAssemblyVertices == 0 &&
+                            m_pQueriesResults[swSampleIndex].inputAssemblyPrimitives == 0 && m_pQueriesResults[swSampleIndex].vertexShaderInvocations == 0 &&
+                            m_pQueriesResults[swSampleIndex].geometryShaderInvocations == 0 && m_pQueriesResults[swSampleIndex].geometryShaderPrimitives == 0 &&
+                            m_pQueriesResults[swSampleIndex].clippingInvocations == 0 && m_pQueriesResults[swSampleIndex].clippingPrimitives == 0 &&
                             m_pQueriesResults[swSampleIndex].fragmentShaderInvocations == 0 &&
                             m_pQueriesResults[swSampleIndex].tessellationControlShaderPatches == 0 &&
                             m_pQueriesResults[swSampleIndex].tessellationEvaluationShaderInvocations == 0 &&
@@ -294,7 +280,7 @@ bool VkCommandListSWQueryGroup::GetSwSampleResults(
                 }
             }
         }
-    } // end for each query type
+    }  // end for each query type
 
     if (allResultsAvailable)
     {
@@ -306,27 +292,22 @@ bool VkCommandListSWQueryGroup::GetSwSampleResults(
 
 bool VkCommandListSWQueryGroup::CreateSwQueryPool(VkDevice device, const GPA_VK_SW_QUERY_TYPE queryType)
 {
-    bool result = true;
+    bool                  result = true;
     VkQueryPoolCreateInfo queryPoolDesc;
     memset(&queryPoolDesc, 0, sizeof(queryPoolDesc));
-    queryPoolDesc.sType = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
-    queryPoolDesc.queryType = ms_queryTypes[queryType];
-    queryPoolDesc.flags = 0;
+    queryPoolDesc.sType      = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
+    queryPoolDesc.queryType  = ms_queryTypes[queryType];
+    queryPoolDesc.flags      = 0;
     queryPoolDesc.queryCount = (uint32_t)m_maxSamples;
 
     if (queryType == GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS)
     {
         queryPoolDesc.pipelineStatistics =
-            VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT |
-            VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT |
-            VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT |
-            VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT |
-            VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT |
-            VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT |
-            VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT |
-            VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT |
-            VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT |
-            VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT |
+            VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT | VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT |
+            VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT | VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT |
+            VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT | VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT |
+            VK_QUERY_PIPELINE_STATISTIC_CLIPPING_PRIMITIVES_BIT | VK_QUERY_PIPELINE_STATISTIC_FRAGMENT_SHADER_INVOCATIONS_BIT |
+            VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_CONTROL_SHADER_PATCHES_BIT | VK_QUERY_PIPELINE_STATISTIC_TESSELLATION_EVALUATION_SHADER_INVOCATIONS_BIT |
             VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT;
     }
 
@@ -339,7 +320,7 @@ bool VkCommandListSWQueryGroup::CreateSwQueryPool(VkDevice device, const GPA_VK_
     if (result)
     {
         VkQueryPool queryPool = VK_NULL_HANDLE;
-        result = (VK_SUCCESS == _vkCreateQueryPool(device, &queryPoolDesc, nullptr, &queryPool));
+        result                = (VK_SUCCESS == _vkCreateQueryPool(device, &queryPoolDesc, nullptr, &queryPool));
 
         if (result)
         {
@@ -347,8 +328,8 @@ bool VkCommandListSWQueryGroup::CreateSwQueryPool(VkDevice device, const GPA_VK_
             //pQueryPool->SetName(L"GPUPerfAPIVk QueryPool");
             m_queryPools[queryType] = queryPool;
 
-            m_pQueriesResults = new(std::nothrow) GpaVkSoftwareQueryResults[m_maxSamples];
-            result = (nullptr != m_pQueriesResults);
+            m_pQueriesResults = new (std::nothrow) GpaVkSoftwareQueryResults[m_maxSamples];
+            result            = (nullptr != m_pQueriesResults);
 
             if (result)
             {
@@ -358,7 +339,7 @@ bool VkCommandListSWQueryGroup::CreateSwQueryPool(VkDevice device, const GPA_VK_
         else
         {
             m_queryPools[queryType] = VK_NULL_HANDLE;
-            result = false;
+            result                  = false;
         }
     }
 

@@ -9,11 +9,7 @@
 
 #include "GPADerivedCounters.h"
 
-GPA_Status GPA_GetInternalDerivedCounters(
-    GPA_API_Type,
-    GPA_Hw_Generation,
-    const GPACounterDesc**,
-    size_t*)
+GPA_Status GPA_GetInternalDerivedCounters(GPA_API_Type, GPA_Hw_Generation, const GPACounterDesc**, size_t*)
 {
     return GPA_STATUS_ERROR_FAILED;
 }

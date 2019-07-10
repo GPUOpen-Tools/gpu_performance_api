@@ -22,14 +22,11 @@ struct VkPhysicalDeviceGpaPropertiesAMD;
 class VkGPAContext : public GPAContext
 {
 public:
-
     /// Constructor
     /// \param[in] openInfo Vulkan context info pointer
     /// \param[in] hwInfo hardware info
     /// \param[in] flags context flags
-    VkGPAContext(const GPA_vkContextOpenInfo* openInfo,
-                 GPA_HWInfo& hwInfo,
-                 GPA_OpenContextFlags flags);
+    VkGPAContext(const GPA_vkContextOpenInfo* openInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags);
 
     /// Destructor
     virtual ~VkGPAContext();
@@ -74,17 +71,16 @@ public:
     GPA_Status SetStableClocks(bool useProfilingClocks);
 
 private:
-
     /// Deletes a VkGPASession and its associated counter data
     /// Prerequisite: Assumes m_sessionList has been protected using m_sessionListMutex.
     /// \param[in] pVkGpaSession pointer to previously created session object
     /// \return true if operation is successful otherwise false
     bool DeleteVkGpaSession(VkGPASession* pVkGpaSession);
 
-    mutable std::mutex               m_sessionListMutex;    ///< Mutex to ensure the m_sessionList doesn't change while being accessed
-    VkPhysicalDevice                 m_physicalDevice;      ///< The physical device on which the device was created
-    VkDevice                         m_device;              ///< The device queries and counters are created on
-    VkPhysicalDeviceGpaPropertiesAMD m_amdDeviceProperties; ///< Physical Device properties exposed by the AMD GPA Extension
-    VkGpaDeviceClockModeAMD          m_clockMode;           ///< GPU Clock mode
+    mutable std::mutex               m_sessionListMutex;     ///< Mutex to ensure the m_sessionList doesn't change while being accessed
+    VkPhysicalDevice                 m_physicalDevice;       ///< The physical device on which the device was created
+    VkDevice                         m_device;               ///< The device queries and counters are created on
+    VkPhysicalDeviceGpaPropertiesAMD m_amdDeviceProperties;  ///< Physical Device properties exposed by the AMD GPA Extension
+    VkGpaDeviceClockModeAMD          m_clockMode;            ///< GPU Clock mode
 };
-#endif //_VK_GPA_CONTEXT_H_
+#endif  //_VK_GPA_CONTEXT_H_

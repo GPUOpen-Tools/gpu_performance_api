@@ -1,7 +1,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Copyright (c) 2010-2016 Advanced Micro Devices, Inc. All rights reserved.
 ;;
-;; Counter definitions for OpenCL for Gfx8 (GFX IP v8)
+;; Counter definitions for OpenCL/ROCm for Gfx8 (GFX IP v8)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;name=GPUBusy
@@ -10,8 +10,8 @@
 ;usage=percentage
 ;[CLGfx8]
 ;[HSAGfx8]
-;GRBM_GRBM_PERF_SEL_GUI_ACTIVE
-;GRBM_GRBM_PERF_SEL_COUNT
+;GRBM_PERF_SEL_GUI_ACTIVE
+;GRBM_PERF_SEL_COUNT
 ;eqn=0,1,/,(100),*,(100),min
 
 name=Wavefronts
@@ -20,7 +20,7 @@ type=gpa_float64
 usage=items
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_WAVES
+SQ_PERF_SEL_WAVES
 eqn=0
 
 name=VALUInsts
@@ -29,8 +29,8 @@ type=gpa_float64
 usage=items
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INSTS_VALU
-SQ_SQ_PERF_SEL_WAVES
+SQ_PERF_SEL_INSTS_VALU
+SQ_PERF_SEL_WAVES
 eqn=0,1,/
 
 name=SALUInsts
@@ -39,8 +39,8 @@ type=gpa_float64
 usage=items
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INSTS_SALU
-SQ_SQ_PERF_SEL_WAVES
+SQ_PERF_SEL_INSTS_SALU
+SQ_PERF_SEL_WAVES
 eqn=0,1,/
 
 name=VFetchInsts
@@ -49,9 +49,9 @@ type=gpa_float64
 usage=items
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INSTS_VMEM_RD
-TA*_TA_PERF_SEL_FLAT_READ_WAVEFRONTS[0..15]
-SQ_SQ_PERF_SEL_WAVES
+SQ_PERF_SEL_INSTS_VMEM_RD
+TA*_PERF_SEL_FLAT_READ_WAVEFRONTS[0..15]
+SQ_PERF_SEL_WAVES
 eqn=0,1..16,sum16,-,17,/
 
 
@@ -61,8 +61,8 @@ type=gpa_float64
 usage=items
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INSTS_SMEM
-SQ_SQ_PERF_SEL_WAVES
+SQ_PERF_SEL_INSTS_SMEM
+SQ_PERF_SEL_WAVES
 eqn=0,1,/
 
 name=VWriteInsts
@@ -71,9 +71,9 @@ type=gpa_float64
 usage=items
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INSTS_VMEM_WR
-TA*_TA_PERF_SEL_FLAT_WRITE_WAVEFRONTS[0..15]
-SQ_SQ_PERF_SEL_WAVES
+SQ_PERF_SEL_INSTS_VMEM_WR
+TA*_PERF_SEL_FLAT_WRITE_WAVEFRONTS[0..15]
+SQ_PERF_SEL_WAVES
 eqn=0,1..16,sum16,-,17,/
 
 name=FlatVMemInsts
@@ -82,9 +82,9 @@ type=gpa_float64
 usage=items
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INSTS_FLAT
-SQ_SQ_PERF_SEL_INSTS_FLAT_LDS_ONLY
-SQ_SQ_PERF_SEL_WAVES
+SQ_PERF_SEL_INSTS_FLAT
+SQ_PERF_SEL_INSTS_FLAT_LDS_ONLY
+SQ_PERF_SEL_WAVES
 eqn=0,1,-,2,/
 
 name=LDSInsts
@@ -93,9 +93,9 @@ type=gpa_float64
 usage=items
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INSTS_LDS
-SQ_SQ_PERF_SEL_INSTS_FLAT
-SQ_SQ_PERF_SEL_WAVES
+SQ_PERF_SEL_INSTS_LDS
+SQ_PERF_SEL_INSTS_FLAT
+SQ_PERF_SEL_WAVES
 eqn=0,1,-,2,/
 
 name=FlatLDSInsts
@@ -104,8 +104,8 @@ type=gpa_float64
 usage=items
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INSTS_FLAT_LDS_ONLY
-SQ_SQ_PERF_SEL_WAVES
+SQ_PERF_SEL_INSTS_FLAT_LDS_ONLY
+SQ_PERF_SEL_WAVES
 eqn=0,1,/
 
 name=GDSInsts
@@ -114,8 +114,8 @@ type=gpa_float64
 usage=items
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INSTS_GDS
-SQ_SQ_PERF_SEL_WAVES
+SQ_PERF_SEL_INSTS_GDS
+SQ_PERF_SEL_WAVES
 eqn=0,1,/
 
 name=VALUUtilization
@@ -124,8 +124,8 @@ type=gpa_float64
 usage=percentage
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_THREAD_CYCLES_VALU
-SQ_SQ_PERF_SEL_INST_CYCLES_VALU
+SQ_PERF_SEL_THREAD_CYCLES_VALU
+SQ_PERF_SEL_INST_CYCLES_VALU
 eqn=0,1,(64),*,/,(100),*,(100),min
 
 name=VALUBusy
@@ -134,8 +134,8 @@ type=gpa_float64
 usage=percentage
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INST_CYCLES_VALU
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+SQ_PERF_SEL_INST_CYCLES_VALU
+GRBM_PERF_SEL_GUI_ACTIVE
 eqn=0,(4),*,NUM_SIMDS,/,1,/,(100),*
 
 name=SALUBusy
@@ -144,9 +144,9 @@ type=gpa_float64
 usage=percentage
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_INST_CYCLES_SALU
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
-eqn=0,(4),*,NUM_SIMDS,NUM_SHADER_ENGINES,/,/,1,/,(100),*
+SQ_PERF_SEL_INST_CYCLES_SALU
+GRBM_PERF_SEL_GUI_ACTIVE
+eqn=0,NUM_CUS,/,1,/,(100),*
 
 name=FetchSize
 desc=#GlobalMemory#The total kilobytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
@@ -154,7 +154,7 @@ type=gpa_float64
 usage=kilobytes
 [CLGfx8]
 [HSAGfx8]
-TCC*_TCC_PERF_SEL_MC_RDREQ[0..15]
+TCC*_PERF_SEL_MC_RDREQ[0..15]
 eqn=0..15,sum16,(32),*,(1024),/
 
 name=WriteSize
@@ -163,7 +163,7 @@ type=gpa_float64
 usage=kilobytes
 [CLGfx8]
 [HSAGfx8]
-TCC*_TCC_PERF_SEL_MC_WRREQ[0..15]
+TCC*_PERF_SEL_MC_WRREQ[0..15]
 eqn=0..15,sum16,(32),*,(1024),/
 
 name=CacheHit
@@ -172,8 +172,8 @@ type=gpa_float64
 usage=percentage
 [CLGfx8]
 [HSAGfx8]
-TCC*_TCC_PERF_SEL_HIT[0..15]
-TCC*_TCC_PERF_SEL_MISS[0..15]
+TCC*_PERF_SEL_HIT[0..15]
+TCC*_PERF_SEL_MISS[0..15]
 eqn=0..15,sum16,0..15,sum16,16..31,sum16,+,/,(100),*
 
 name=MemUnitBusy
@@ -182,8 +182,8 @@ type=gpa_float64
 usage=percentage
 [CLGfx8]
 [HSAGfx8]
-TA*_TA_PERF_SEL_TA_BUSY[0..15]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+TA*_PERF_SEL_TA_BUSY[0..15]
+GRBM_PERF_SEL_GUI_ACTIVE
 eqn=0..15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*
 
 name=MemUnitStalled
@@ -192,8 +192,8 @@ type=gpa_float64
 usage=percentage
 [CLGfx8]
 [HSAGfx8]
-TCP*_TCP_PERF_SEL_TCP_TA_DATA_STALL_CYCLES[0..15]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+TCP*_PERF_SEL_TCP_TA_DATA_STALL_CYCLES[0..15]
+GRBM_PERF_SEL_GUI_ACTIVE
 eqn=0..15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*
 
 name=WriteUnitStalled
@@ -202,8 +202,8 @@ type=gpa_float64
 usage=percentage
 [CLGfx8]
 [HSAGfx8]
-TCC*_TCC_PERF_SEL_MC_WRREQ_STALL[0..15]
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+TCC*_PERF_SEL_MC_WRREQ_STALL[0..15]
+GRBM_PERF_SEL_GUI_ACTIVE
 eqn=0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max,13,max,14,max,15,max,16,/,(100),*
 
 ;name=ALUStalledByLDS
@@ -212,9 +212,9 @@ eqn=0,1,max,2,max,3,max,4,max,5,max,6,max,7,max,8,max,9,max,10,max,11,max,12,max
 ;usage=percentage
 ;[CLGfx8]
 ;[HSAGfx8]
-;SQ_SQ_PERF_SEL_WAIT_INST_LDS
-;SQ_SQ_PERF_SEL_WAVES
-;GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+;SQ_PERF_SEL_WAIT_INST_LDS
+;SQ_PERF_SEL_WAVES
+;GRBM_PERF_SEL_GUI_ACTIVE
 ;eqn=0,1,/,2,/,NUM_SHADER_ENGINES,/,(100),*
 
 name=LDSBankConflict
@@ -223,6 +223,6 @@ type=gpa_float64
 usage=percentage
 [CLGfx8]
 [HSAGfx8]
-SQ_SQ_PERF_SEL_LDS_BANK_CONFLICT
-GRBM_GRBM_PERF_SEL_GUI_ACTIVE
+SQ_PERF_SEL_LDS_BANK_CONFLICT
+GRBM_PERF_SEL_GUI_ACTIVE
 eqn=0,1,/,NUM_SIMDS,/,(100),*

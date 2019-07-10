@@ -17,10 +17,9 @@
 /// Class for ROCm GPA Implementation
 class ROCmGPAImplementor : public GPAImplementor, public TSingleton<ROCmGPAImplementor>
 {
-    friend class TSingleton<ROCmGPAImplementor>; ///< friend declaration to allow access to the constructor
+    friend class TSingleton<ROCmGPAImplementor>;  ///< friend declaration to allow access to the constructor
 
 public:
-
     /// Destructor
     ~ROCmGPAImplementor() = default;
 
@@ -40,7 +39,6 @@ public:
     bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const override final;
 
 private:
-
     /// Constructor
     ROCmGPAImplementor() = default;
 
@@ -68,4 +66,4 @@ private:
     bool UnsetROCPInterceptEnvVar(std::string& strErrorMsg) const;
 };
 
-#endif // _ROCM_GPA_IMPLEMENTOR_H_
+#endif  // _ROCM_GPA_IMPLEMENTOR_H_

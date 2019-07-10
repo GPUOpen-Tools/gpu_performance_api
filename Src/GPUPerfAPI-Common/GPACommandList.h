@@ -14,23 +14,20 @@
 #include "IGPACommandList.h"
 #include "GPASample.h"
 
-using ClientSampleIdGpaSamplePair = std::pair<ClientSampleId, GPASample*>;                      ///< type alias for pair of client sample id and GPA sample object pointer
-using ClientSampleIdGpaSampleUnorderedMap = std::unordered_map<ClientSampleId, GPASample*>;     ///< type alias for map of client sample id and GPA sample object pointer
+using ClientSampleIdGpaSamplePair = std::pair<ClientSampleId, GPASample*>;  ///< type alias for pair of client sample id and GPA sample object pointer
+using ClientSampleIdGpaSampleUnorderedMap =
+    std::unordered_map<ClientSampleId, GPASample*>;  ///< type alias for map of client sample id and GPA sample object pointer
 
 /// Class for GPA Command List
 class GPACommandList : public IGPACommandList
 {
 public:
-
     /// Constructor
     /// \param[in] pGpaSession GPA session pointer
     /// \param[in] pGpaPass pass object pointer
     /// \param[in] commandListId command list id
     /// \param[in] commandListType GPA command list type
-    GPACommandList(IGPASession* pGpaSession,
-                   GPAPass* pGpaPass,
-                   CommandListId commandListId,
-                   GPA_Command_List_Type commandListType = GPA_COMMAND_LIST_NONE);
+    GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId, GPA_Command_List_Type commandListType = GPA_COMMAND_LIST_NONE);
 
     /// Delete default constructor
     GPACommandList() = delete;
@@ -57,8 +54,7 @@ public:
     gpa_uint32 GetSampleCount() const override;
 
     /// \copydoc IGPACommandList::BeginSample()
-    bool BeginSample(ClientSampleId clientSampleIndex,
-                     GPASample* pSample) override;
+    bool BeginSample(ClientSampleId clientSampleIndex, GPASample* pSample) override;
 
     /// \copydoc IGPACommandList::GetLastSample()
     GPASample* GetLastSample() const override;
@@ -90,7 +86,6 @@ public:
     void IterateSampleUnorderedMap(std::function<bool(ClientSampleIdGpaSamplePair)> function) const;
 
 private:
-
     /// Begin API specific command list
     /// \return true if successful otherwise false
     virtual bool BeginCommandListRequest() = 0;
@@ -103,8 +98,7 @@ private:
     /// \param[in] clientSampleId index of the sample
     /// \param[in] pGpaSample The sample to start
     /// \return true if sample was successfully begun, false otherwise
-    virtual bool BeginSampleRequest(ClientSampleId clientSampleId,
-                                    GPASample* pGpaSample) = 0;
+    virtual bool BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample) = 0;
 
     /// Closes the most recent sample
     /// \return true if most recent sample was closed, false otherwise
@@ -118,19 +112,19 @@ private:
     /// Enum for the state of command list
     enum class CommandListState
     {
-        UNDEFINED,              ///< Undefined state
-        SAMPLE_RECORDING_BEGIN, ///< command list is ready to add samples
-        SAMPLE_RECORDING_END,   ///< command List is closed for adding samples
+        UNDEFINED,               ///< Undefined state
+        SAMPLE_RECORDING_BEGIN,  ///< command list is ready to add samples
+        SAMPLE_RECORDING_END,    ///< command List is closed for adding samples
     };
 
-    mutable std::mutex                  m_cmdListMutex;                        ///< Mutex for command list object
-    IGPASession*                        m_pGpaSession;                         ///< GPA session
-    GPAPass*                            m_pGpaPass;                            ///< GPA Pass
-    GPASample*                          m_pLastSample;                         ///< the current open sample on this command list
-    CommandListState                    m_commandListState;                    ///< command list state
-    ClientSampleIdGpaSampleUnorderedMap m_clientSampleIdGpaSampleUnorderedMap; ///< Unordered Map of client sample id and GPA sample object
-    GPA_Command_List_Type               m_commandListType;                     ///< GPA Command List type
-    CommandListId                       m_commandListId;                       ///< command list id
+    mutable std::mutex                  m_cmdListMutex;                         ///< Mutex for command list object
+    IGPASession*                        m_pGpaSession;                          ///< GPA session
+    GPAPass*                            m_pGpaPass;                             ///< GPA Pass
+    GPASample*                          m_pLastSample;                          ///< the current open sample on this command list
+    CommandListState                    m_commandListState;                     ///< command list state
+    ClientSampleIdGpaSampleUnorderedMap m_clientSampleIdGpaSampleUnorderedMap;  ///< Unordered Map of client sample id and GPA sample object
+    GPA_Command_List_Type               m_commandListType;                      ///< GPA Command List type
+    CommandListId                       m_commandListId;                        ///< command list id
 };
 
-#endif // _GPA_COMMAND_LIST_H_
+#endif  // _GPA_COMMAND_LIST_H_

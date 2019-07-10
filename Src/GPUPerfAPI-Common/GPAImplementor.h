@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Common GPA Implementation declarations
@@ -15,16 +15,15 @@
 #include "IGPAImplementor.h"
 #include "IGPAContext.h"
 
-using GPAContextInfoPtr = void*;                                                               ///< type alias for context info pointer
-using GPADeviceIdentifier = void*;                                                             ///< type alias for API-specific device identifier
-using GPADeviceIdentifierGPAContextPair = std::pair<GPADeviceIdentifier, IGPAContext*>;        ///< type alias for application and GPA context pair
-using GPADeviceIdentifierGPAContextMap = std::map<GPADeviceIdentifier, IGPAContext*>;          ///< type alias for application and GPA context map
+using GPAContextInfoPtr                 = void*;                                         ///< type alias for context info pointer
+using GPADeviceIdentifier               = void*;                                         ///< type alias for API-specific device identifier
+using GPADeviceIdentifierGPAContextPair = std::pair<GPADeviceIdentifier, IGPAContext*>;  ///< type alias for application and GPA context pair
+using GPADeviceIdentifierGPAContextMap  = std::map<GPADeviceIdentifier, IGPAContext*>;   ///< type alias for application and GPA context map
 
 /// Class for common GPA Implementation
 class GPAImplementor : public IGPAImplementor
 {
 public:
-
     /// Constructor
     GPAImplementor();
 
@@ -38,9 +37,7 @@ public:
     GPA_Status Destroy() override;
 
     /// \copydoc IGPAImplementor::OpenContext()
-    GPA_Status OpenContext(void* pContext,
-                           GPA_OpenContextFlags flags,
-                           GPA_ContextId* pContextId) override;
+    GPA_Status OpenContext(void* pContext, GPA_OpenContextFlags flags, GPA_ContextId* pContextId) override;
 
     /// \copydoc IGPAImplementor::CloseContext()
     GPA_Status CloseContext(GPA_ContextId contextId) override;
@@ -70,7 +67,6 @@ public:
     bool IsCopySecondarySampleSupported() const override;
 
 protected:
-
     /// Checks whether the device is supported
     /// \param[in] pContextInfo context info pointer
     /// \param[out] pHwInfo hardware information if device is supported
@@ -101,7 +97,6 @@ protected:
     bool DoesContextInfoExist(GPAContextInfoPtr pContextInfo) const;
 
 private:
-
     /// Performs the API-specific tasks needed to open a context
     /// \param[in] pContextInfo context info pointer
     /// \param[in] hwInfo hardware info
@@ -110,7 +105,7 @@ private:
     virtual IGPAContext* OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags) = 0;
 
     /// Performs the API-specific tasks needed to close the context and release the relevant resources
-    /// \param[in] pDeviceIdentifier API-Specific device indentifier
+    /// \param[in] pDeviceIdentifier API-Specific device identifier
     /// \param[in] pContext context object pointer
     /// \return true if closing of the context was successful otherwise false
     virtual bool CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pContext) = 0;
@@ -120,11 +115,10 @@ private:
     /// \return device identifier for the passed context info
     virtual GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const = 0;
 
-    mutable std::mutex               m_deviceGpaContextMapMutex;    ///< mutex for context manager
-    GPADeviceIdentifierGPAContextMap m_appContextInfoGpaContextMap; ///< map of application context info and GPA context
-    bool                             m_isInitialized;               ///< flag indicating if GPA has been initalized or not
-    GPA_InitializeFlags              m_initFlags;                   ///< flags specified when initializing GPA
+    mutable std::mutex               m_deviceGpaContextMapMutex;     ///< mutex for context manager
+    GPADeviceIdentifierGPAContextMap m_appContextInfoGpaContextMap;  ///< map of application context info and GPA context
+    bool                             m_isInitialized;                ///< flag indicating if GPA has been initialized or not
+    GPA_InitializeFlags              m_initFlags;                    ///< flags specified when initializing GPA
 };
 
-#endif // _GPA_IMPLEMENTOR_H_
-
+#endif  // _GPA_IMPLEMENTOR_H_

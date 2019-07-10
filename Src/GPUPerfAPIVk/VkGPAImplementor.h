@@ -44,7 +44,6 @@ public:
     bool IsCopySecondarySampleSupported() const override;
 
 private:
-
     /// Stores the instance that this GPA implementation is using.
     VkInstance m_vkInstance;
 
@@ -58,4 +57,4 @@ private:
     GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const override final;
 };
 
-#endif // _VK_GPA_IMPLEMENTOR_H_
+#endif  // _VK_GPA_IMPLEMENTOR_H_

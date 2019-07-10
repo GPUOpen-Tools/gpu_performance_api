@@ -9,15 +9,14 @@
 #include "GPAInterfaceLoader.h"
 #include <map>
 
-GPAApiManager* GPAApiManager::m_pGpaApiManager = nullptr;
-GPAFuncTableInfo* g_pFuncTableInfo = NULL;
+GPAApiManager*    GPAApiManager::m_pGpaApiManager = nullptr;
+GPAFuncTableInfo* g_pFuncTableInfo                = NULL;
 
 class GPAInterfaceLoaderTest : public ::testing::TestWithParam<GPA_API_Type>
 {
 public:
     GPAInterfaceLoaderTest()
-        :
-        ::testing::TestWithParam<GPA_API_Type>()
+        : ::testing::TestWithParam<GPA_API_Type>()
     {
     }
 
@@ -45,10 +44,10 @@ void GPAInterfaceLoaderTest::SetUp()
 {
     m_apiName[GPA_API_DIRECTX_11] = "DX11";
     m_apiName[GPA_API_DIRECTX_12] = "DX12";
-    m_apiName[GPA_API_OPENGL] = "OpenGL";
-    m_apiName[GPA_API_OPENCL] = "OpenCL";
-    m_apiName[GPA_API_ROCM] = "ROCm";
-    m_apiName[GPA_API_VULKAN] = "Vulkan";
+    m_apiName[GPA_API_OPENGL]     = "OpenGL";
+    m_apiName[GPA_API_OPENCL]     = "OpenCL";
+    m_apiName[GPA_API_ROCM]       = "ROCm";
+    m_apiName[GPA_API_VULKAN]     = "Vulkan";
     m_apiName[GPA_API_NO_SUPPORT] = "ApiNotSupported";
 }
 
@@ -82,7 +81,8 @@ void GPAInterfaceLoaderTest::Run()
         }
         else
         {
-            EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(static_cast<GPA_API_Type>(i))) << m_apiName.find(static_cast<GPA_API_Type>(i))->second << " should have null pointer in the GpaApiFunctionTable.";
+            EXPECT_EQ(nullptr, GPAApiManager::Instance()->GetFunctionTable(static_cast<GPA_API_Type>(i)))
+                << m_apiName.find(static_cast<GPA_API_Type>(i))->second << " should have null pointer in the GpaApiFunctionTable.";
         }
     }
 
@@ -95,7 +95,7 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFileName)
 {
     for (int i = GPA_API__START; i < GPA_API_NO_SUPPORT; i++)
     {
-        GPA_API_Type apiType = static_cast<GPA_API_Type>(i);
+        GPA_API_Type apiType     = static_cast<GPA_API_Type>(i);
         LocaleString libFileName = GPAApiManager::Instance()->GetLibraryFileName(apiType);
 
 #ifdef _WIN32
@@ -133,7 +133,7 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFullPath)
 {
     for (int i = GPA_API__START; i < GPA_API_NO_SUPPORT; i++)
     {
-        GPA_API_Type apiType = static_cast<GPA_API_Type>(i);
+        GPA_API_Type apiType     = static_cast<GPA_API_Type>(i);
         LocaleString libFileName = GPAApiManager::Instance()->GetLibraryFullPath(apiType, TFORMAT("c:/test/"));
 
 #ifdef _WIN32
@@ -262,28 +262,18 @@ TEST_P(GPAInterfaceLoaderTest, Api)
 }
 
 #ifdef _WIN32
-INSTANTIATE_TEST_CASE_P(
-    WindowsAPI,
-    GPAInterfaceLoaderTest,
-    ::testing::Values(
-        GPA_API_DIRECTX_11
-        , GPA_API_DIRECTX_12
-        , GPA_API_VULKAN
-        , GPA_API_OPENCL
-        , GPA_API_OPENGL
-    )
-);
+INSTANTIATE_TEST_CASE_P(WindowsAPI,
+                        GPAInterfaceLoaderTest,
+                        ::testing::Values(GPA_API_DIRECTX_11, GPA_API_DIRECTX_12, GPA_API_VULKAN, GPA_API_OPENCL, GPA_API_OPENGL));
 #else
-INSTANTIATE_TEST_CASE_P(
-    LinuxAPI,
-    GPAInterfaceLoaderTest,
-    ::testing::Values(
-        GPA_API_VULKAN
+INSTANTIATE_TEST_CASE_P(LinuxAPI,
+                        GPAInterfaceLoaderTest,
+                        ::testing::Values(GPA_API_VULKAN
 #ifndef X86
-        , GPA_API_OPENCL
-        , GPA_API_ROCM
+                                          ,
+                                          GPA_API_OPENCL,
+                                          GPA_API_ROCM
 #endif
-        , GPA_API_OPENGL
-    )
-);
+                                          ,
+                                          GPA_API_OPENGL));
 #endif

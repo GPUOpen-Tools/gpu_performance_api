@@ -1,4 +1,4 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 .. GPU Performance Counters
 
 .. _gpa_counters:
@@ -34,7 +34,9 @@ The following tables show the set of counters exposed for analysis of GPU
 Graphics workloads, as well the family of GPUs and APUs on which each counter
 is available:
 
-.. include:: graphicscountertables.rst
+.. include:: graphicscountertablesGfx10.rst
+.. include:: graphicscountertablesGfx9.rst
+.. include:: graphicscountertablesGfx8.rst
 
 Counters Exposed for Compute Performance Analysis
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -43,4 +45,7 @@ The following tables show the set of counters exposed for analysis of GPU
 Compute workloads, as well the family of GPUs and APUs on which each counter
 is available:
 
-.. include:: computecountertables.rst
+.. include:: computecountertablesGfx10.rst
+.. include:: computecountertablesGfx9.rst
+.. include:: computecountertablesGfx8.rst
+

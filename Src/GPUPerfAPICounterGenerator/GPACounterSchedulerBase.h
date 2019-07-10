@@ -25,10 +25,7 @@ public:
     void Reset() override;
 
     /// \copydoc IGPACounterScheduler::SetCounterAccessor()
-    GPA_Status SetCounterAccessor(IGPACounterAccessor* pCounterAccessor,
-                                  gpa_uint32 vendorId,
-                                  gpa_uint32 deviceId,
-                                  gpa_uint32 revisionId) override;
+    GPA_Status SetCounterAccessor(IGPACounterAccessor* pCounterAccessor, gpa_uint32 vendorId, gpa_uint32 deviceId, gpa_uint32 revisionId) override;
 
     /// \copydoc IGPACounterScheduler::GetNumEnabledCounters()
     gpa_uint32 GetNumEnabledCounters() const override;
@@ -43,7 +40,7 @@ public:
     void DisableAllCounters() override;
 
     /// \copydoc IGPACounterScheduler::GetEnabledIndex()
-    GPA_Status GetEnabledIndex(gpa_uint32 enabledIndex, gpa_uint32* pCounterAtIndex) const  override;
+    GPA_Status GetEnabledIndex(gpa_uint32 enabledIndex, gpa_uint32* pCounterAtIndex) const override;
 
     /// \copydoc IGPACounterScheduler::IsCounterEnabled()
     GPA_Status IsCounterEnabled(gpa_uint32 counterIndex) const override;
@@ -76,7 +73,6 @@ public:
     void SetDrawCallCounts(int iCounts) override;
 
 protected:
-
     /// Gets the preferred counter splitting algorithm
     /// \return the preferred counter splitting algorithm
     virtual GPACounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const = 0;
@@ -146,4 +142,4 @@ protected:
     unsigned int m_passIndex;
 };
 
-#endif //_GPA_COUNTER_GENERATOR_BASE_H_
+#endif  //_GPA_COUNTER_GENERATOR_BASE_H_

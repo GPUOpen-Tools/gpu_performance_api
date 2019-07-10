@@ -19,95 +19,38 @@ include(${GPA_CMAKE_MODULES_DIR}/GPA-Vulkan.cmake)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
-                    ${GPA_SRC_COMMON})
+                    ${GPA_SRC_COMMON}
+                    ${GPA_SRC_COUNTER_GENERATOR}
+                    ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}
+                    ${ADDITIONAL_COUNTER_DIR_INCLUDE})
 
-set(INTERNALLY_EXPOSED_HEADER_FILES
+set(COUNTER_GENERATOR_VS_FILTER CounterGenerators)
+set(COUNTER_SCHEDULER_VS_FILTER CounterSchedulers)
+set(HARDWARE_COUNTER_VS_FILTER HardwareCounters)
+set(DERIVED_COUNTER_VS_FILTER DerivedCounters)
+set(COUNTER_SPLITTING_ALGO_VS_FILTER CounterSplittingAlgorithms)
+
+set(INTERNALLY_EXPOSED_HEADERS
     GPACounterGenerator.h
     IGPACounterAccessor.h
     IGPACounterScheduler.h)
 
-set(COUNTER_GENERATORS_HEADERS
+set(COUNTER_GENERATOR_HEADERS
     GPACounterGeneratorBase.h
     GPACounterGeneratorSchedulerManager.h
     GPASwCounterManager.h)
 
-set(COUNTER_GENERATORS_SRC
+set(COUNTER_GENERATOR_SRC
     GPACounterGenerator.cpp
     GPACounterGeneratorBase.cpp
     GPACounterGeneratorSchedulerManager.cpp
     GPASwCounterManager.cpp)
 
-set(COUNTER_SCHEDULERS_HEADERS
+set(COUNTER_SCHEDULER_HEADERS
     GPACounterSchedulerBase.h)
 
-set(COUNTER_SCHEDULERS_SRC
+set(COUNTER_SCHEDULER_SRC
     GPACounterSchedulerBase.cpp)
-
-set(INTERNAL_COUNTERS_HEADERS
-    GPACounterGroupAccessor.h
-    GPAInternalCounter.h
-    GPAInternalCountersGfx6.h
-    GPAInternalCountersGfx7.h
-    GPAInternalCountersGfx8.h
-    GPAInternalCountersGfx8_Baffin.h
-    GPAInternalCountersGfx8_Carrizo.h
-    GPAInternalCountersGfx8_Ellesmere.h
-    GPAInternalCountersGfx8_Fiji.h
-    GPAInternalCountersGfx8_Iceland.h
-    GPAInternalCountersGfx8_Tonga.h
-    GPAInternalCountersGfx9.h
-    GPAInternalCountersGfx9_Placeholder4.h
-    GPAInternalCountersGfx9_Gfx906.h)
-
-if(NOT DEFINED COUNTER_DIR)
-    set(COUNTER_DIR ${CMAKE_CURRENT_LIST_DIR})
-endif()
-
-set(INTERNAL_COUNTERS_SRC
-    ${COUNTER_DIR}/GPAInternalCountersGfx6.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx7.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx8.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx8_Baffin.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx8_Carrizo.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx8_Ellesmere.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx8_Fiji.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx8_Iceland.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx8_Tonga.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx9.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx9_Placeholder4.cpp
-    ${COUNTER_DIR}/GPAInternalCountersGfx9_Gfx906.cpp
-    ${COUNTER_DIR}/LoadInternalCounters.cpp
-    ${ADDITIONAL_COUNTER_GEN_SOURCES})
-
-set(PUBLIC_COUNTERS_HEADERS
-    GPADerivedCounters.h)
-
-set(PUBLIC_COUNTERS_SRC
-    GPADerivedCounters.cpp)
-
-set(COUNTER_SPLITTING_ALGO_HEADERS
-    GPASplitCounterFactory.h
-    GPASplitCountersConsolidated.h
-    GPASplitCountersInterfaces.h
-    GPASplitCountersMaxPerPass.h
-    GPASplitCountersOnePerPass.h)
-
-set(COUNTERS_HEADER
-    GPAHardwareCounters.h
-    GPASoftwareCounters.h)
-
-set(HEADER_FILES ${INTERNALLY_EXPOSED_HEADER_FILES}
-                 ${COUNTER_GENERATORS_HEADERS}
-                 ${COUNTER_SCHEDULERS_HEADERS}
-                 ${INTERNAL_COUNTERS_HEADERS}
-                 ${PUBLIC_COUNTERS_HEADERS}
-                 ${COUNTER_SPLITTING_ALGO_HEADERS}
-                 ${COUNTERS_HEADER})
-
-set(SOURCE_FILES ${COUNTER_GENERATORS_SRC}
-                 ${COUNTER_SCHEDULERS_SRC}
-                 ${INTERNAL_COUNTERS_SRC}
-                 ${PUBLIC_COUNTERS_SRC})
 
 foreach(API GL DX11 DX12 VK CL HSA)
     if(NOT WIN32 AND (${API} STREQUAL "DX11" OR ${API} STREQUAL DX12))
@@ -117,16 +60,91 @@ foreach(API GL DX11 DX12 VK CL HSA)
         continue()
     endif()
     include ("CounterGenerator${API}.cmake")
-    set(HEADER_FILES ${HEADER_FILES} ${COUNTER_GENERATORS_API_HEADERS}
-                                     ${COUNTER_SCHEDULERS_API_HEADERS}
-                                     ${INTERNAL_COUNTERS_API_HEADERS}
-                                     ${PUBLIC_COUNTERS_API_HEADERS})
+    set(HEADER_FILES ${HEADER_FILES} ${COUNTER_GENERATOR_HEADERS_${API}}
+                                     ${COUNTER_SCHEDULER_HEADERS_${API}})
 
-    set(SOURCE_FILES ${SOURCE_FILES} ${COUNTER_GENERATORS_API_SRC}
-                                     ${COUNTER_SCHEDULERS_API_SRC}
-                                     ${INTERNAL_COUNTERS_API_SRC}
-                                     ${PUBLIC_COUNTERS_API_SRC})
+    set(SOURCE_FILES ${SOURCE_FILES} ${COUNTER_GENERATOR_SRC_${API}}
+                                     ${COUNTER_SCHEDULER_SRC_${API}})
+
+    if(WIN32)
+        source_group("Source Files\\${COUNTER_GENERATOR_VS_FILTER}\\${API}" FILES ${COUNTER_GENERATOR_HEADERS_${API}} ${COUNTER_GENERATOR_SRC_${API}})
+        source_group("Source Files\\${COUNTER_SCHEDULER_VS_FILTER}\\${API}" FILES ${COUNTER_SCHEDULER_HEADERS_${API}} ${COUNTER_SCHEDULER_SRC_${API}})
+    endif()
+
+    if(EXISTS ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR})
+        include(${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/GPAHWCounter${API}.cmake)
+        include(${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/PublicCounterDefs${API}.cmake)
+
+        set(HEADER_FILES ${HEADER_FILES} ${HW_COUNTER_HEADERS_${API}} ${PUBLIC_COUNTER_DEF_HEADERS_${API}} ${ADDITIONAL_COUNTER_DEF_HEADERS_${API}})
+        set(SOURCE_FILES ${SOURCE_FILES} ${HW_COUNTER_SRC_${API}} ${PUBLIC_COUNTER_DEF_SRC_${API}} ${ADDITIONAL_COUNTER_DEF_SRC_${API}})
+
+        if(WIN32)
+            source_group("Source Files\\${HARDWARE_COUNTER_VS_FILTER}\\AutoGenerated\\${API}" FILES ${HW_COUNTER_HEADERS_${API}} ${HW_COUNTER_SRC_${API}})
+            source_group("Source Files\\${DERIVED_COUNTER_VS_FILTER}\\AutoGenerated\\${API}" FILES ${PUBLIC_COUNTER_DEF_HEADERS_${API}}
+                                                                                                   ${ADDITIONAL_COUNTER_DEF_HEADERS_${API}}
+                                                                                                   ${PUBLIC_COUNTER_DEF_SRC_${API}}
+                                                                                                   ${ADDITIONAL_COUNTER_DEF_SRC_${API}})
+        endif()
+    endif()
 endforeach(API)
+
+set(HARDWARE_COUNTER_HEADERS
+    GPACounterGroupAccessor.h
+    GPACounter.h)
+
+
+if(NOT DEFINED COUNTER_DIR)
+    set(AUTOGEN_COUNTER_DIR ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR})
+    set(COUNTER_DIR ${CMAKE_CURRENT_LIST_DIR})
+endif()
+
+if(EXISTS ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR})
+    include(${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/GPAHWCounter.cmake)
+    include(${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}/GPAHWExposedCounters.cmake)
+endif()
+set(HARDWARE_COUNTER_SRC ${COUNTER_DIR}/LoadInternalCounters.cpp
+                         ${HW_COUNTER_HEADERS}
+                         ${ADDITIONAL_COUNTER_GEN_SOURCES})
+
+set(HARDWARE_EXPOSED_COUNTER ${HW_EXPOSED_COUNTER_HEADERS} ${HW_EXPOSED_COUNTER_SRC})
+
+if(EXISTS ${AUTOGEN_COUNTER_DIR})
+    include(${AUTOGEN_COUNTER_DIR}/GPAHWCounter.cmake)
+endif()
+set(HARDWARE_COUNTER_SRC ${HARDWARE_COUNTER_SRC} ${HW_COUNTER_SRC})
+
+set(DERIVED_COUNTER_HEADERS
+    GPADerivedCounters.h)
+
+set(DERIVED_COUNTER_SRC
+    GPADerivedCounters.cpp)
+
+set(COUNTER_SPLITTING_ALGO_HEADERS
+    GPASplitCounterFactory.h
+    GPASplitCountersConsolidated.h
+    GPASplitCountersInterfaces.h
+    GPASplitCountersMaxPerPass.h
+    GPASplitCountersOnePerPass.h)
+
+set(COUNTER_HEADERS
+    GPAHardwareCounters.h
+    GPASoftwareCounters.h)
+
+set(HEADER_FILES ${HEADER_FILES}
+                 ${INTERNALLY_EXPOSED_HEADERS}
+                 ${COUNTER_GENERATOR_HEADERS}
+                 ${COUNTER_SCHEDULER_HEADERS}
+                 ${HARDWARE_COUNTER_HEADERS}
+                 ${DERIVED_COUNTER_HEADERS}
+                 ${COUNTER_SPLITTING_ALGO_HEADERS}
+                 ${COUNTER_HEADERS})
+
+set(SOURCE_FILES ${SOURCE_FILES}
+                 ${COUNTER_GENERATOR_SRC}
+                 ${COUNTER_SCHEDULER_SRC}
+                 ${HARDWARE_COUNTER_SRC}
+                 ${DERIVED_COUNTER_SRC}
+                 ${HARDWARE_EXPOSED_COUNTER})
 
 set(SOURCES
     ${SOURCE_FILES}
@@ -142,30 +160,15 @@ ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME})
 ADD_LINKER_FLAGS()
 
 if(WIN32)
-    set(COUNTER_GENERATOR_FILTER CounterGenerators)
-    set(COUNTER_SCHEDULER_FILTER CounterSchedulers)
-    set(INTERNAL_COUNTER_FILTER InternalCounters)
-    set(PUBLIC_COUNTER_FILTER PublicCounters)
-
-    source_group("Internally Exposed Header Files" FILES ${INTERNALLY_EXPOSED_HEADER_FILES})
-    source_group("Internally Exposed Header Files" FILES ${INTERNALLY_EXPOSED_HEADER_FILES})
-    source_group("Internally Exposed Header Files" FILES ${INTERNALLY_EXPOSED_HEADER_FILES})
-    source_group("Internally Exposed Header Files" FILES ${INTERNALLY_EXPOSED_HEADER_FILES})
-    source_group("Internally Exposed Header Files" FILES ${INTERNALLY_EXPOSED_HEADER_FILES})
-
-    source_group("Source Files\\${COUNTER_GENERATOR_FILTER}" FILES ${COUNTER_GENERATORS_HEADERS} ${COUNTER_GENERATORS_SRC})
-    source_group("Source Files\\${COUNTER_SCHEDULER_FILTER}" FILES ${COUNTER_SCHEDULERS_HEADERS} ${COUNTER_SCHEDULERS_SRC})
-    source_group("Source Files\\${INTERNAL_COUNTER_FILTER}" FILES ${INTERNAL_COUNTERS_HEADERS} ${INTERNAL_COUNTERS_SRC})
-    source_group("Source Files\\${PUBLIC_COUNTER_FILTER}" FILES ${PUBLIC_COUNTERS_HEADERS} ${PUBLIC_COUNTERS_SRC})
-    source_group("Source Files\\CounterSplittingAlgorithms" FILES ${COUNTER_SPLITTING_ALGO_HEADERS})
-    source_group("Source Files" FILES ${COUNTERS_HEADER})
-
-    foreach(API GL DX11 DX12 VK CL HSA)
-        include ("CounterGenerator${API}.cmake")
-        source_group("Source Files\\${COUNTER_GENERATOR_FILTER}\\${API}" FILES ${COUNTER_GENERATORS_API_HEADERS} ${COUNTER_GENERATORS_API_SRC})
-        source_group("Source Files\\${COUNTER_SCHEDULER_FILTER}\\${API}" FILES ${COUNTER_SCHEDULERS_API_HEADERS} ${COUNTER_SCHEDULERS_API_SRC})
-        source_group("Source Files\\${INTERNAL_COUNTER_FILTER}\\${API}" FILES ${INTERNAL_COUNTERS_API_HEADERS} ${INTERNAL_COUNTERS_API_SRC})
-        source_group("Source Files\\${PUBLIC_COUNTER_FILTER}\\${API}" FILES ${PUBLIC_COUNTERS_API_HEADERS} ${PUBLIC_COUNTERS_API_SRC})
-    endforeach(API)
+    source_group("Internally Exposed Header Files" FILES ${INTERNALLY_EXPOSED_HEADERS})
+    source_group("Source Files\\${COUNTER_GENERATOR_VS_FILTER}" FILES ${COUNTER_GENERATOR_HEADERS} ${COUNTER_GENERATOR_SRC})
+    source_group("Source Files\\${COUNTER_SCHEDULER_VS_FILTER}" FILES ${COUNTER_SCHEDULER_HEADERS} ${COUNTER_SCHEDULER_SRC})
+    source_group("Source Files\\${HARDWARE_COUNTER_VS_FILTER}" FILES ${HARDWARE_COUNTER_HEADERS})
+    source_group("Source Files\\${HARDWARE_COUNTER_VS_FILTER}\\AutoGenerated" FILES ${HW_COUNTER_HEADERS} ${HW_COUNTER_SRC})
+    source_group("Source Files\\${DERIVED_COUNTER_VS_FILTER}" FILES ${DERIVED_COUNTER_HEADERS} ${DERIVED_COUNTER_SRC})
+    source_group("Source Files\\${COUNTER_SPLITTING_ALGO_VS_FILTER}" FILES ${COUNTER_SPLITTING_ALGO_HEADERS})
+    source_group("Source Files\\${HARDWARE_COUNTER_VS_FILTER}\\AutoGenerated" FILES ${HARDWARE_EXPOSED_COUNTER})
+    source_group("Source Files" FILES ${COUNTER_HEADERS})
 endif()
+
 

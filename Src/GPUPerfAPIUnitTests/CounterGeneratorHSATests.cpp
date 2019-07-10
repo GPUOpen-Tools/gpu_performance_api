@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Unit Tests for ROCm Counter Generator
@@ -7,52 +7,51 @@
 
 #include "CounterGeneratorTests.h"
 #include "GPUPerfAPITypes.h"
-#include "GPAInternalCounter.h"
+#include "GPACounter.h"
 
 #include "counters/PublicDerivedCountersHSAGfx8.h"
 #include "counters/PublicDerivedCountersHSAGfx9.h"
 
 #ifdef AMDT_INTERNAL
-    #include "InternalCountersHSAGfx8.h"
-    #include "InternalCountersHSAGfx9.h"
+#include "GPAHWCounterHSAGfx8.h"
+#include "GPAHWCounterHSAGfx9.h"
 #endif
 
 static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<const char*>& counterNames)
 {
     counterNames.clear();
 
-    const GPACounterDesc* pPublicCounters = nullptr;
-    size_t publicCounterCount = 0;
+    const GPACounterDesc* pPublicCounters    = nullptr;
+    size_t                publicCounterCount = 0;
 
-    GPA_CounterGroupDesc* pHardwareGroups = nullptr;
+    GPA_CounterGroupDesc*     pHardwareGroups    = nullptr;
     GPA_HardwareCounterDesc** ppHardwareCounters = nullptr;
-    unsigned int hwGroupCount = 0;
+    unsigned int              hwGroupCount       = 0;
 
     switch (gen)
     {
-
-        case GPA_HW_GENERATION_GFX8:
-            pPublicCounters = HSAGFX8_PUBLIC_COUNTERS;
-            publicCounterCount = HSAGFX8_PUBLIC_COUNTER_COUNT;
+    case GPA_HW_GENERATION_GFX8:
+        pPublicCounters    = HSAGFX8_PUBLIC_COUNTERS;
+        publicCounterCount = HSAGFX8_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
-            pHardwareGroups = HWHSAGroupsGfx8;
-            hwGroupCount = HWHSAGroupCountGfx8;
-            ppHardwareCounters = HSACounterGroupArrayGfx8;
+        pHardwareGroups    = CounterGfx8::HWHSAGroupsGfx8;
+        hwGroupCount       = CounterGfx8::HWHSAGroupCountGfx8;
+        ppHardwareCounters = CounterGfx8::HSACounterGroupArrayGfx8;
 #endif
-            break;
+        break;
 
-        case GPA_HW_GENERATION_GFX9:
-            pPublicCounters = HSAGFX9_PUBLIC_COUNTERS;
-            publicCounterCount = HSAGFX9_PUBLIC_COUNTER_COUNT;
+    case GPA_HW_GENERATION_GFX9:
+        pPublicCounters    = HSAGFX9_PUBLIC_COUNTERS;
+        publicCounterCount = HSAGFX9_PUBLIC_COUNTER_COUNT;
 #ifdef AMDT_INTERNAL
-            pHardwareGroups = HWHSAGroupsGfx9;
-            hwGroupCount = HWHSAGroupCountGfx9;
-            ppHardwareCounters = HSACounterGroupArrayGfx9;
+        pHardwareGroups    = CounterGfx9::HWHSAGroupsGfx9;
+        hwGroupCount       = CounterGfx9::HWHSAGroupCountGfx9;
+        ppHardwareCounters = CounterGfx9::HSACounterGroupArrayGfx9;
 #endif
-            break;
+        break;
 
-        default:
-            break;
+    default:
+        break;
     }
 
     for (size_t i = 0; i < publicCounterCount; i++)
@@ -61,8 +60,8 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
     }
 
     // Optionally, get internal derived counters
-    const GPACounterDesc* pInternalDerivedCounters = nullptr;
-    size_t internalDerivedCounterCount = 0;
+    const GPACounterDesc* pInternalDerivedCounters    = nullptr;
+    size_t                internalDerivedCounterCount = 0;
 
 #ifdef AMDT_INTERNAL
     GPA_GetInternalDerivedCounters(GPA_API_ROCM, gen, &pInternalDerivedCounters, &internalDerivedCounterCount);

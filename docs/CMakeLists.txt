@@ -8,7 +8,7 @@ set(ProjectName ${GPA_PROJECT_NAME})
 
 include(${GPA_CMAKE_MODULES_DIR}/Common.cmake)
 
-file(GLOB DOC_FILES ${DOC_FILES}/source/*.rst)
+file(GLOB DOC_FILES ${DOC_FILES} ${CMAKE_CURRENT_LIST_DIR}/source/*.rst)
 file(GLOB DOC_FILES ${DOC_FILES} ${CMAKE_CURRENT_LIST_DIR}/source/*.txt)
 file(GLOB DOC_FILES ${DOC_FILES} ${CMAKE_CURRENT_LIST_DIR}/source/*.py)
 file(GLOB DOC_FILES ${DOC_FILES} ${CMAKE_CURRENT_LIST_DIR}/source/api_functions/*.rst)

@@ -9,17 +9,17 @@
 #define GPA_LOGGING_H_
 
 #ifdef _WIN32
-    #include <Windows.h>
+#include <Windows.h>
 #endif
 
 #ifdef _LINUX
-    #include <pthread.h>
-    #include <string.h>
+#include <pthread.h>
+#include <string.h>
 
-    #define EnterCriticalSection pthread_mutex_lock
-    #define LeaveCriticalSection pthread_mutex_unlock
-    #include <stdarg.h>
-    #include <stdio.h>
+#define EnterCriticalSection pthread_mutex_lock
+#define LeaveCriticalSection pthread_mutex_unlock
+#include <stdarg.h>
+#include <stdio.h>
 #endif
 
 #include <string>
@@ -32,51 +32,54 @@
 #include "GPUPerfAPITypes.h"
 #include "GPUPerfAPIFunctionTypes.h"
 
-#define ENABLE_TRACING 1 ///< Macro to determine if tracing is enabled
+#define ENABLE_TRACING 1  ///< Macro to determine if tracing is enabled
 
 #if ENABLE_TRACING
 #undef TRACE_FUNCTION
 /// macro for tracing function calls
-#define TRACE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func) ///< Macro used for tracing functions
+#define TRACE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func)  ///< Macro used for tracing functions
 #ifdef AMDT_INTERNAL
 #undef TRACE_PRIVATE_FUNCTION
 #undef TRACE_PRIVATE_FUNCTION_WITH_ARGS
 /// macro for tracing private function calls
-#define TRACE_PRIVATE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func) ///< Macro used for tracing private functions
-#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...) \
-    TRACE_PRIVATE_FUNCTION(func); \
-    { std::ostringstream o; o << ##__VA_ARGS__; gTracerSingleton.OutputFunctionData(o.str().c_str()); }  ///< Macro used for tracing private function with parameters
-#else // public build
+#define TRACE_PRIVATE_FUNCTION(func) ScopeTrace _tempScopeTraceObject(#func)  ///< Macro used for tracing private functions
+#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)           \
+    TRACE_PRIVATE_FUNCTION(func);                             \
+    {                                                         \
+        std::ostringstream o;                                 \
+        o << ##__VA_ARGS__;                                   \
+        gTracerSingleton.OutputFunctionData(o.str().c_str()); \
+    }  ///< Macro used for tracing private function with parameters
+#else  // public build
 #undef TRACE_PRIVATE_FUNCTION
 #undef TRACE_PRIVATE_FUNCTION_WITH_ARGS
 /// macro for tracing private function calls
-#define TRACE_PRIVATE_FUNCTION(func) ///< Macro used for tracing private functions
+#define TRACE_PRIVATE_FUNCTION(func)                 ///< Macro used for tracing private functions
 #define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)  ///< Macro used for tracing private function with parameters
-#endif // AMDT_INTERNAL / public build
-#else // disable trace functions
+#endif                                               // AMDT_INTERNAL / public build
+#else                                                // disable trace functions
 #undef TRACE_FUNCTION
-#define TRACE_FUNCTION(func) ///< Macro used for tracing functions
+#define TRACE_FUNCTION(func)  ///< Macro used for tracing functions
 #undef TRACE_PRIVATE_FUNCTION
-#define TRACE_PRIVATE_FUNCTION(func) ///< Macro used for tracing private functions
-#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...) ///< Macro used for tracing private function with parameters
-#endif // trace functions
+#define TRACE_PRIVATE_FUNCTION(func)                 ///< Macro used for tracing private functions
+#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)  ///< Macro used for tracing private function with parameters
+#endif                                               // trace functions
 
 /// Internal GPA logger function
 /// \param[in] logType logging type
 /// \param[in] pLogMsg logging message
 extern void GPAInternalLogger(GPA_Logging_Type logType, const char* pLogMsg);
 
-#define GPA_INTERNAL_LOG(func, ...)                                                                                 \
-    std::stringstream logAdditionalMessage;                                                                         \
-    logAdditionalMessage << "ThreadId: " << std::this_thread::get_id() << #func << ": " << __VA_ARGS__ ;            \
-    GPAInternalLogger(GPA_LOGGING_INTERNAL, logAdditionalMessage.str().c_str());                                    \
+#define GPA_INTERNAL_LOG(func, ...)                                                                            \
+    std::stringstream logAdditionalMessage;                                                                    \
+    logAdditionalMessage << "ThreadId: " << std::this_thread::get_id() << " " << #func << ": " << __VA_ARGS__; \
+    GPAInternalLogger(GPA_LOGGING_INTERNAL, logAdditionalMessage.str().c_str());
 
 /// Passes log messages of various types to a user-supplied callback function
 /// if the user has elected to receive messages of that particular type.
 class GPALogger
 {
 public:
-
     /// Default constructor
     GPALogger();
 
@@ -125,7 +128,7 @@ public:
             EnterCriticalSection(&m_hLock);
 
             // Format string
-            char buffer[1024 * 50];
+            char    buffer[1024 * 50];
             va_list arglist;
             va_start(arglist, pMsgFmt);
 #ifdef WIN32
@@ -152,7 +155,7 @@ public:
             EnterCriticalSection(&m_hLock);
 
             // Format string
-            char buffer[1024 * 50];
+            char    buffer[1024 * 50];
             va_list arglist;
             va_start(arglist, pMsgFmt);
 #ifdef WIN32
@@ -168,12 +171,10 @@ public:
         }
     }
 
-
     /// Logs a formatted error message in debug builds; does nothing in release.
     /// \param pMsgFmt the message to format and pass along
     void LogDebugTrace(const char* pMsgFmt, ...)
     {
-
         // if the supplied message type is among those that the user wants be notified of,
         // then pass the message along.
         if (GPA_LOGGING_DEBUG_TRACE & m_loggingType)
@@ -181,7 +182,7 @@ public:
             EnterCriticalSection(&m_hLock);
 
             // Format string
-            char buffer[1024 * 50];
+            char    buffer[1024 * 50];
             va_list arglist;
             va_start(arglist, pMsgFmt);
 #ifdef WIN32
@@ -208,7 +209,7 @@ public:
             EnterCriticalSection(&m_hLock);
 
             // Format string
-            char buffer[1024 * 50];
+            char    buffer[1024 * 50];
             va_list arglist;
             va_start(arglist, pMsgFmt);
 #ifdef WIN32
@@ -243,7 +244,6 @@ public:
     std::string m_internalLogFileName;
 
 protected:
-
     /// User selected logging type that defines what messages they want to be notified of
     GPA_Logging_Type m_loggingType;
 
@@ -264,7 +264,7 @@ protected:
 #endif
 
 #ifdef _LINUX
-    pthread_mutex_t m_hLock;   ///< lock for thread-safe access
+    pthread_mutex_t m_hLock;  ///< lock for thread-safe access
 #endif
 };
 
@@ -290,12 +290,10 @@ extern GPALogger g_loggerSingleton;
 /// macro for debug logging of counter defs
 #define GPA_LogDebugCounterDefs g_loggerSingleton.LogDebugCounterDefs
 
-
 /// Utility class for tracing the start and end of functions.
 class GPATracer
 {
 public:
-
     /// Default constructor
     GPATracer();
 
@@ -313,7 +311,6 @@ public:
     void OutputFunctionData(const char* pData);
 
 private:
-
     /// Returns the pointer to the tab counter
     /// \param[out] pCurrentThreadId thread id of the caller
     /// \return pointer to the tab counter
@@ -346,9 +343,8 @@ public:
     ~ScopeTrace();
 
 protected:
-
     /// Stores the function being traced.
     std::string m_traceFunction;
 };
 
-#endif //GPA_LOGGING_H_
+#endif  //GPA_LOGGING_H_

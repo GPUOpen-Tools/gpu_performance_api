@@ -24,10 +24,7 @@ public:
     /// \param[in] pCmdList gpa command list
     /// \param[in] sampleType gpa sample type
     /// \param[in] sampleId user-supplied sample id
-    VkGPASample(GPAPass* pPass,
-                IGPACommandList* pCmdList,
-                GpaSampleType sampleType,
-                unsigned int sampleId);
+    VkGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, unsigned int sampleId);
 
     /// Destroy this Vk counter data request instance
     virtual ~VkGPASample() = default;
@@ -43,7 +40,7 @@ protected:
     virtual bool EndRequest() override = 0;
 
     /// \copydoc GPASample::ReleaseCounters()
-    virtual  void ReleaseCounters() override = 0;
+    virtual void ReleaseCounters() override = 0;
 
     /// Vulkan-Specific GPACommandList
     VkGPACommandList* m_pVkGpaCmdList;
@@ -67,4 +64,4 @@ private:
     VkGPASample& operator=(VkGPASample&&) = delete;
 };
 
-#endif // _VK_GPA_SAMPLE_H_
+#endif  // _VK_GPA_SAMPLE_H_

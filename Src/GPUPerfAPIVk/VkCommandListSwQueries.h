@@ -92,10 +92,10 @@ private:
 
     static const size_t ms_resultGroupSize = 256;  ///< The number of results to store in a group (additional samples will require an additional group)
 
-    VkPhysicalDevice          m_physicalDevice; ///< The physical device that the device is from
-    VkCommandBuffer           m_commandBuffer;  ///< The command buffer queries and counters are inserted to
-    VkDevice                  m_device;         ///< The device which created the command buffer
-    VkCommandListSWQueryGroup m_queryGroup;     ///< The query group for this command buffer
+    VkPhysicalDevice          m_physicalDevice;  ///< The physical device that the device is from
+    VkCommandBuffer           m_commandBuffer;   ///< The command buffer queries and counters are inserted to
+    VkDevice                  m_device;          ///< The device which created the command buffer
+    VkCommandListSWQueryGroup m_queryGroup;      ///< The query group for this command buffer
 };
 
-#endif // _VK_COMMAND_LIST_SW_QUERIES_H_
+#endif  // _VK_COMMAND_LIST_SW_QUERIES_H_

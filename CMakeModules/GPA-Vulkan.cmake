@@ -1,32 +1,27 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.7.2)
 
 if(${GPA_ALL_OPEN_SOURCE})
-    if(DEFINED ENV{VULKAN_SDK})
-        set(VULKAN_SDK $ENV{VULKAN_SDK})
+    find_package(Vulkan REQUIRED)
+    if(${Vulkan_FOUND})
+        set(VK_INC_DIRS ${Vulkan_INCLUDE_DIRS})
+        set(VK_LIB ${Vulkan_LIBRARIES})
         if(WIN32)
-            set(ADDITIONAL_INCLUDE_DIRECTORIES ${ADDITIONAL_INCLUDE_DIRECTORIES}
-                                           ${VULKAN_SDK}/Include)
+            if(CMAKE_SIZEOF_VOID_P EQUAL 8)
+                find_path(VK_TOOLS_DIR NAMES glslangValidator.exe PATHS "$ENV{VULKAN_SDK}/Bin")
+            else()
+                find_path(VK_TOOLS_DIR NAMES glslangValidator.exe PATHS "$ENV{VULKAN_SDK}/Bin32")
+            endif()
         else()
-            set(ADDITIONAL_INCLUDE_DIRECTORIES ${ADDITIONAL_INCLUDE_DIRECTORIES}
-                                   ${VULKAN_SDK}/include)
+            find_path(VK_TOOLS_DIR NAMES glslangValidator PATHS "$ENV{VULKAN_SDK}/bin")
         endif()
 
         set(ADDITIONAL_DEFINTIONS ${ADDITIONAL_DEFINTIONS}
-                          -DVULKAN_SDK="${VULKAN_SDK}")
+                                  -DVK_INC_DIRS="${VK_INC_DIRS}")
 
-        if(WIN32)
-            if(CMAKE_SIZEOF_VOID_P EQUAL 8)
-                set(ADDITIONAL_LINK_DIRECTORIES ${ADDITIONAL_LINK_DIRECTORIES}
-                                                ${VULKAN_SDK}/Lib)
-            else()
-                set(ADDITIONAL_LINK_DIRECTORIES ${ADDITIONAL_LINK_DIRECTORIES}
-                                                ${VULKAN_SDK}/Lib32)
-            endif()
-        else()
-            set(ADDITIONAL_LINK_DIRECTORIES ${ADDITIONAL_LINK_DIRECTORIES}
-                                            ${VULKAN_SDK}/lib)
-        endif()
+        set(ADDITIONAL_INCLUDE_DIRECTORIES  ${ADDITIONAL_INCLUDE_DIRECTORIES}
+                                            ${VK_INC_DIRS})
+
     else()
         message("CMake: Vulkan SDK not found")
     endif()

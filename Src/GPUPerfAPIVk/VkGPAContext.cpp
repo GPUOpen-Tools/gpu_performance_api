@@ -18,16 +18,14 @@
 #include "GPAUniqueObject.h"
 #include "VkUtils.h"
 
-VkGPAContext::VkGPAContext(const GPA_vkContextOpenInfo* openInfo,
-                           GPA_HWInfo& hwInfo,
-                           GPA_OpenContextFlags flags)
+VkGPAContext::VkGPAContext(const GPA_vkContextOpenInfo* openInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
     : GPAContext(hwInfo, flags)
 {
     m_physicalDevice = openInfo->physicalDevice;
-    m_device = openInfo->device;
+    m_device         = openInfo->device;
 
     m_amdDeviceProperties = {};
-    m_clockMode = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
+    m_clockMode           = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
 }
 
 VkGPAContext::~VkGPAContext()
@@ -39,13 +37,12 @@ VkGPAContext::~VkGPAContext()
         GPA_LogError("Driver was unable to set stable clocks back to default.");
 #ifdef __linux__
         GPA_LogMessage("In Linux, make sure to run your application with root privileges.");
-#endif //__linux__
+#endif  //__linux__
     }
 
     VkUtils::ReleasePhysicalDeviceGpaPropertiesAMD(&m_amdDeviceProperties);
 
-    auto deleteVkSession = [](IGPASession* pGpaSession) -> bool
-    {
+    auto deleteVkSession = [](IGPASession* pGpaSession) -> bool {
         if (nullptr != pGpaSession)
         {
             GPAUniqueObjectManager::Instance()->DeleteObject(pGpaSession);
@@ -72,7 +69,7 @@ GPA_Status VkGPAContext::Open()
         // counters are supported, set stable clocks
 
         // we don't want a failure when setting stable clocks to result in a
-        // fatal error returned from GetHwInfo. So we use a local status object
+        // fatal error returned from here. So we use a local status object
         // instead of modifying "result". We will still output log messages.
         GPA_Status setStableClocksStatus = SetStableClocks(true);
 
@@ -81,7 +78,7 @@ GPA_Status VkGPAContext::Open()
             GPA_LogError("Driver was unable to set stable clocks for profiling.");
 #ifdef __linux__
             GPA_LogMessage("In Linux, make sure to run your application with root privileges.");
-#endif //__linux__
+#endif  //__linux__
         }
 
         if (OpenCounters())
@@ -117,8 +114,8 @@ GPA_Status VkGPAContext::SetStableClocks(bool useProfilingClocks)
     else
     {
         VkGpaDeviceClockModeInfoAMD clockMode = {};
-        clockMode.sType = VK_STRUCTURE_TYPE_GPA_DEVICE_CLOCK_MODE_INFO_AMD;
-        clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
+        clockMode.sType                       = VK_STRUCTURE_TYPE_GPA_DEVICE_CLOCK_MODE_INFO_AMD;
+        clockMode.clockMode                   = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
 
         if (useProfilingClocks)
         {
@@ -126,30 +123,30 @@ GPA_Status VkGPAContext::SetStableClocks(bool useProfilingClocks)
 
             switch (deviceClockMode)
             {
-                case DeviceClockMode::Default:
-                    clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
-                    break;
+            case DeviceClockMode::Default:
+                clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
+                break;
 
-                case DeviceClockMode::Profiling:
-                    clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_PROFILING_AMD;
-                    break;
+            case DeviceClockMode::Profiling:
+                clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_PROFILING_AMD;
+                break;
 
-                case DeviceClockMode::MinimumMemory:
-                    clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_MIN_MEMORY_AMD;
-                    break;
+            case DeviceClockMode::MinimumMemory:
+                clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_MIN_MEMORY_AMD;
+                break;
 
-                case DeviceClockMode::MinimumEngine:
-                    clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_MIN_ENGINE_AMD;
-                    break;
+            case DeviceClockMode::MinimumEngine:
+                clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_MIN_ENGINE_AMD;
+                break;
 
-                case DeviceClockMode::Peak:
-                    clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_PEAK_AMD;
-                    break;
+            case DeviceClockMode::Peak:
+                clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_PEAK_AMD;
+                break;
 
-                default:
-                    assert(0);
-                    clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_PROFILING_AMD;
-                    break;
+            default:
+                assert(0);
+                clockMode.clockMode = VK_GPA_DEVICE_CLOCK_MODE_PROFILING_AMD;
+                break;
             }
         }
 
@@ -157,9 +154,9 @@ GPA_Status VkGPAContext::SetStableClocks(bool useProfilingClocks)
 
         if (clockMode.clockMode != m_clockMode)
         {
-            m_clockMode = clockMode.clockMode;
+            m_clockMode          = clockMode.clockMode;
             VkResult clockResult = _vkSetGpaDeviceClockModeAMD(m_device, &clockMode);
-            result = (clockResult == VK_SUCCESS) ? GPA_STATUS_OK : GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+            result               = (clockResult == VK_SUCCESS) ? GPA_STATUS_OK : GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
 
             if (VK_SUCCESS != clockResult)
             {
@@ -175,7 +172,7 @@ GPA_SessionId VkGPAContext::CreateSession(GPA_Session_Sample_Type sampleType)
 {
     GPA_SessionId sessionId = nullptr;
 
-    VkGPASession* pSession = new(std::nothrow) VkGPASession(this, sampleType);
+    VkGPASession* pSession = new (std::nothrow) VkGPASession(this, sampleType);
 
     if (nullptr != pSession)
     {
@@ -193,7 +190,7 @@ bool VkGPAContext::DeleteSession(GPA_SessionId sessionId)
     std::lock_guard<std::mutex> lockSessionList(m_sessionListMutex);
 
     VkGPASession* pVkSession = reinterpret_cast<VkGPASession*>(sessionId->Object());
-    isDeleted = DeleteVkGpaSession(pVkSession);
+    isDeleted                = DeleteVkGpaSession(pVkSession);
 
     return isDeleted;
 }
@@ -237,7 +234,14 @@ gpa_uint32 VkGPAContext::GetInstanceCount(VkGpaPerfBlockAMD block) const
 
     if (block < VK_GPA_PERF_BLOCK_RANGE_SIZE_AMD)
     {
-        instanceCount = static_cast<gpa_uint32>(m_amdDeviceProperties.pPerfBlocks[static_cast<size_t>(block)].instanceCount);
+        for (uint32_t i = 0; i < m_amdDeviceProperties.perfBlockCount; i++)
+        {
+            if (m_amdDeviceProperties.pPerfBlocks[i].blockType == block)
+            {
+                instanceCount = static_cast<gpa_uint32>(m_amdDeviceProperties.pPerfBlocks[i].instanceCount);
+                break;
+            }
+        }
     }
 
     return instanceCount;
@@ -249,7 +253,14 @@ gpa_uint32 VkGPAContext::GetMaxEventIdCount(VkGpaPerfBlockAMD block) const
 
     if (block < VK_GPA_PERF_BLOCK_RANGE_SIZE_AMD)
     {
-        maxEventId = static_cast<gpa_uint32>(m_amdDeviceProperties.pPerfBlocks[static_cast<size_t>(block)].maxEventID);
+        for (uint32_t i = 0; i < m_amdDeviceProperties.perfBlockCount; i++)
+        {
+            if (m_amdDeviceProperties.pPerfBlocks[i].blockType == block)
+            {
+                maxEventId = static_cast<gpa_uint32>(m_amdDeviceProperties.pPerfBlocks[i].maxEventID);
+                break;
+            }
+        }
     }
 
     return maxEventId;

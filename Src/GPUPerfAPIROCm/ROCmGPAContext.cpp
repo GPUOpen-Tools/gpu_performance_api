@@ -13,10 +13,9 @@
 #include "GPUPerfAPIROCmGlobals.h"
 #include "ROCmGPASample.h"
 
-ROCmGPAContext::ROCmGPAContext(GPA_HWInfo& pHwInfo,
-                               GPA_OpenContextFlags contextFlags) :
-    GPAContext(pHwInfo, contextFlags),
-    m_pRunningROCmSample(nullptr)
+ROCmGPAContext::ROCmGPAContext(GPA_HWInfo& pHwInfo, GPA_OpenContextFlags contextFlags)
+    : GPAContext(pHwInfo, contextFlags)
+    , m_pRunningROCmSample(nullptr)
 {
 }
 
@@ -28,7 +27,7 @@ GPA_SessionId ROCmGPAContext::CreateSession(GPA_Session_Sample_Type sampleType)
 {
     GPA_SessionId pRetSessionId = nullptr;
 
-    ROCmGPASession* pNewGpaROCmGpaSession = new(std::nothrow) ROCmGPASession(this, sampleType);
+    ROCmGPASession* pNewGpaROCmGpaSession = new (std::nothrow) ROCmGPASession(this, sampleType);
 
     if (nullptr == pNewGpaROCmGpaSession)
     {
@@ -124,7 +123,7 @@ bool ROCmGPAContext::SetRunningROCmSample(ROCmGPASample* pRunningROCmSample)
         if (nullptr != pRunningROCmSample)
         {
             m_pRunningROCmSample = pRunningROCmSample;
-            success = true;
+            success              = true;
         }
     }
 

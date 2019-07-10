@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA DX11 Context Implementation
@@ -11,23 +11,33 @@
 #include "DX11GPASession.h"
 #include "DxxExtUtils.h"
 
-DX11GPAContext::DX11GPAContext(ID3D11Device* pD3D11Device,
-                               GPA_HWInfo& hwInfo,
-                               GPA_OpenContextFlags contextFlags):
-    GPAContext(hwInfo, contextFlags)
+DX11GPAContext::DX11GPAContext(ID3D11Device* pD3D11Device, GPA_HWInfo& hwInfo, GPA_OpenContextFlags contextFlags)
+    : GPAContext(hwInfo, contextFlags),
+    m_pD3D11Device(pD3D11Device),
+    m_pDxExt(nullptr),
+    m_pDxExtPE(nullptr),
+    m_blockCounterInfo{},
+    m_blockInfoInit{},
+    m_gpuCaps(),
+    m_clockMode()
 {
-    m_pD3D11Device = pD3D11Device;
 #ifdef _DEBUG
     D3D_SET_OBJECT_NAME_A(m_pD3D11Device, "GPA_DX11DeviceRef");
 #endif
     ULONG refCount = m_pD3D11Device->AddRef();
     UNREFERENCED_PARAMETER(refCount);
-    m_pDxExt = nullptr;
-    m_pDxExtPE = nullptr;
+    m_gpuCaps.version = 0u;
 }
 
 DX11GPAContext::~DX11GPAContext()
 {
+    GPA_Status setStableClocksStatus = SetStableClocks(false);
+
+    if (GPA_STATUS_OK != setStableClocksStatus)
+    {
+        GPA_LogError("Driver was unable to set stable clocks back to default.");
+    }
+
     if (nullptr != m_pDxExtPE)
     {
         m_pDxExtPE->Release();
@@ -50,7 +60,7 @@ GPA_SessionId DX11GPAContext::CreateSession(GPA_Session_Sample_Type sampleType)
 {
     GPA_SessionId pRetSessionId = nullptr;
 
-    DX11GPASession* pNewDX11GpaSession = new(std::nothrow) DX11GPASession(this, sampleType);
+    DX11GPASession* pNewDX11GpaSession = new (std::nothrow) DX11GPASession(this, sampleType);
 
     if (nullptr == pNewDX11GpaSession)
     {
@@ -69,20 +79,20 @@ GPA_SessionId DX11GPAContext::CreateSession(GPA_Session_Sample_Type sampleType)
     return pRetSessionId;
 }
 
-bool DX11GPAContext::DeleteSession(GPA_SessionId pSessionId)
+bool DX11GPAContext::DeleteSession(GPA_SessionId sessionId)
 {
     bool success = false;
 
-    if (GPAUniqueObjectManager::Instance()->DoesExist(pSessionId))
+    if (GPAUniqueObjectManager::Instance()->DoesExist(sessionId))
     {
-        DX11GPASession* pDx11GpaSession = reinterpret_cast<DX11GPASession*>(pSessionId->Object());
+        DX11GPASession* pDx11GpaSession = reinterpret_cast<DX11GPASession*>(sessionId->Object());
 
         unsigned int index;
 
         if (GetIndex(pDx11GpaSession, &index))
         {
             RemoveGpaSession(pDx11GpaSession);
-            GPAUniqueObjectManager::Instance()->DeleteObject(pSessionId);
+            GPAUniqueObjectManager::Instance()->DeleteObject(sessionId);
             delete pDx11GpaSession;
             success = true;
         }
@@ -106,6 +116,13 @@ GPA_API_Type DX11GPAContext::GetAPIType() const
 bool DX11GPAContext::Initialize()
 {
     bool success = OpenCounters() && InitializeProfileAMDExtension();
+
+    GPA_Status setStableClocksStatus = SetStableClocks(true);
+
+    if (GPA_STATUS_OK != setStableClocksStatus)
+    {
+        GPA_LogError("Driver was unable to set stable clocks for profiling.");
+    }
 
     if (success)
     {
@@ -134,16 +151,14 @@ GPUIndex DX11GPAContext::GetActiveGpu() const
 {
     GPUIndex activeGpu = 0;
 
-    if (nullptr != m_pDxExt &&
-        nullptr != m_pDxExtPE &&
-        DxxExtUtils::IsMgpuPerfExtSupported(m_pDxExt))
+    if (nullptr != m_pDxExt && nullptr != m_pDxExtPE && DxxExtUtils::IsMgpuPerfExtSupported(m_pDxExt))
     {
         unsigned int activeGpuCount = 0;
-        unsigned int gpu = 0;
-        PE_RESULT peResult = PE_OK;
-        BOOL gpuProfileable = FALSE;
+        unsigned int gpu            = 0;
+        PE_RESULT    peResult       = PE_OK;
+        BOOL         gpuProfileable = FALSE;
 
-        constexpr unsigned int maxGpuCount = 8; // This value is taken from DXX ASIC info extension header
+        constexpr unsigned int maxGpuCount = 8;  // This value is taken from DXX ASIC info extension header
 
         // First pass get the number of active GPUs
         while ((PE_OK == peResult) && (maxGpuCount > gpu))
@@ -162,10 +177,10 @@ GPUIndex DX11GPAContext::GetActiveGpu() const
         {
             activeGpu = ms_activeGpuCF;
         }
-        else // Not ACF/CF - run a second pass to find the active GPU
+        else  // Not ACF/CF - run a second pass to find the active GPU
         {
-            gpu = 0;
-            peResult = PE_OK;
+            gpu            = 0;
+            peResult       = PE_OK;
             gpuProfileable = FALSE;
 
             while ((PE_OK == peResult) && (FALSE == gpuProfileable) && (maxGpuCount > gpu))
@@ -190,41 +205,157 @@ GPUIndex DX11GPAContext::GetCFActiveGpu() const
     return ms_activeGpuCF;
 }
 
+gpa_uint32 DX11GPAContext::GetInstanceCount(PE_BLOCK_ID block) const
+{
+    gpa_uint32 retVal = 0u;
+
+    if (m_blockInfoInit[block])
+    {
+        retVal = m_blockCounterInfo[block].instanceCount;
+    }
+
+    return retVal;
+}
+
+gpa_uint32 DX11GPAContext::GetMaxEventIdCount(PE_BLOCK_ID block) const
+{
+    gpa_uint32 retVal = 0u;
+
+    if (m_blockInfoInit[block])
+    {
+        retVal = m_blockCounterInfo[block].maxEventId;
+    }
+
+    return retVal;
+}
+
 bool DX11GPAContext::InitializeProfileAMDExtension()
 {
-    bool success = false;
+    bool success = true;
 
     PFNAmdDxExtCreate11 dx11ExtensionFunc = DX11GPAImplementor::Instance()->GetAmdExtFuncPointer();
 
-    if (nullptr != dx11ExtensionFunc)
+    if (nullptr == dx11ExtensionFunc)
+    {
+        GPA_LogError("AMD extension function is not initialized.");
+        success = false;
+    }
+    else
     {
         // Note: PFNAmdDxExtCreate11 adds a ref on the out parameter
         HRESULT hr = dx11ExtensionFunc(m_pD3D11Device, &m_pDxExt);
 
-        if (SUCCEEDED(hr))
+        if (FAILED(hr))
+        {
+            GPA_LogError("Unable to create DX11 extension.");
+            success = false;
+        }
+        else
         {
             m_pDxExtPE = reinterpret_cast<IAmdDxExtPerfProfile*>(m_pDxExt->GetExtInterface(AmdDxExtPerfProfileID));
 
-            if (nullptr != m_pDxExtPE)
-            {
-                success = true;
-            }
-            else
+            if (nullptr == m_pDxExtPE)
             {
                 m_pDxExt->Release();
                 m_pDxExt = nullptr;
                 GPA_LogError("Unable to initialize because the driver does not support the PerfProfile extension.");
+                success = false;
+            }
+            else
+            {
+                GPUIndex activeGpu = GetActiveGpu();
+
+                if (PE_OK != m_pDxExtPE->GetGpuCaps(activeGpu, &m_gpuCaps))
+                {
+                    GPA_LogError("Unable to get device capabilities from the driver.");
+                    success = false;
+                }
+
+                for (auto gpuBlockIter = 0u; gpuBlockIter < PE_BLOCK_ID_MAX; gpuBlockIter++)
+                {
+                    // Note: if using an older driver (one that doesn't support the new Perf Experiment interface -- see IsMgpuPerfExpSupported)
+                    //       gpuID will be 0. However, looking at driver sources, the implementation of GetBlockCounterInfo in those older
+                    //       drivers ignores this parameter anyway
+
+                    if (PE_OK == m_pDxExtPE->GetBlockCounterInfo(activeGpu, static_cast<PE_BLOCK_ID>(gpuBlockIter), &m_blockCounterInfo[gpuBlockIter]))
+                    {
+                        m_blockInfoInit[gpuBlockIter] = true;
+                        success &= true;
+                    }
+                    else
+                    {
+                        m_blockInfoInit[gpuBlockIter] = false;
+                    }
+                }
             }
         }
-        else
-        {
-            GPA_LogError("Unable to create DX11 extension.");
-        }
-    }
-    else
-    {
-        GPA_LogError("AMD extension function is not initialized.");
     }
 
     return success;
+}
+
+GPA_Status DX11GPAContext::SetStableClocks(bool useProfilingClocks)
+{
+    GPA_Status result = GPA_STATUS_OK;
+
+    // Only use Stable PState feature if driver supports at least extension version 3
+    if (3 > m_gpuCaps.version)
+    {
+        GPA_LogMessage("DX11 stable clock extension is not available.");
+
+        // TODO: return an error once we no longer need to support pre-19.30 drivers
+        // result = GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+    }
+    else
+    {
+        PE_CLOCK_MODE clockMode = PE_CLOCK_MODE_DEFAULT;
+
+        if (useProfilingClocks)
+        {
+            DeviceClockMode deviceClockMode = GetDeviceClockMode();
+
+            switch (deviceClockMode)
+            {
+            case DeviceClockMode::Default:
+                clockMode = PE_CLOCK_MODE_DEFAULT;
+                break;
+
+            case DeviceClockMode::Profiling:
+                clockMode = PE_CLOCK_MODE_PROFILING;
+                break;
+
+            case DeviceClockMode::MinimumMemory:
+                clockMode = PE_CLOCK_MODE_MIN_MEMORY;
+                break;
+
+            case DeviceClockMode::MinimumEngine:
+                clockMode = PE_CLOCK_MODE_MIN_ENGINE;
+                break;
+
+            case DeviceClockMode::Peak:
+                clockMode = PE_CLOCK_MODE_PEAK;
+                break;
+
+            default:
+                assert(0);
+                clockMode = PE_CLOCK_MODE_PROFILING;
+                break;
+            }
+        }
+
+        if (clockMode != m_clockMode)
+        {
+            m_clockMode = clockMode;
+
+            PE_RESULT status = m_pDxExtPE->SetClockMode(clockMode, nullptr);
+            result = (PE_OK == status) ? GPA_STATUS_OK : GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+
+            if (PE_OK != status)
+            {
+                GPA_LogError("Failed to set ClockMode for profiling.");
+            }
+        }
+    }
+
+    return result;
 }

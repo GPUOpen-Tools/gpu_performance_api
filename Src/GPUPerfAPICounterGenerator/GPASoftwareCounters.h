@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Maintains a set of software counters
@@ -8,7 +8,7 @@
 #ifndef _GPA_SOFTWARE_COUNTERS_H_
 #define _GPA_SOFTWARE_COUNTERS_H_
 
-#include "GPAInternalCounter.h"
+#include "GPACounter.h"
 #include "Logging.h"
 #include "GPASwCounterManager.h"
 #include <sstream>
@@ -42,9 +42,9 @@ public:
     {
         m_counters.clear();
         m_ppCounterGroupArray = nullptr;
-        m_pGroups = nullptr;
-        m_groupCount = 0;
-        m_countersGenerated = false;
+        m_pGroups             = nullptr;
+        m_groupCount          = 0;
+        m_countersGenerated   = false;
     }
 
     /// Obtains the number of software counters
@@ -92,7 +92,7 @@ public:
     GPA_Counter_Sample_Type GetCounterSampleType(gpa_uint32 index) const
     {
         UNREFERENCED_PARAMETER(index);
-        return GPA_COUNTER_SAMPLE_TYPE_DISCRETE; // all software counters are discrete counters
+        return GPA_COUNTER_SAMPLE_TYPE_DISCRETE;  // all software counters are discrete counters
     }
 
     /// Gets the type of the specified counter
@@ -103,11 +103,11 @@ public:
         return m_counters[index].m_pSoftwareCounter->m_type;
     }
 
-    GPA_SoftwareCounterDesc**               m_ppCounterGroupArray; ///< List of counter groups as defined by the list of counters in each group.
-    GPA_CounterGroupDesc*                   m_pGroups;             ///< List of internal counter groups
-    bool                                    m_countersGenerated;   ///< Indicates that the counters have been generated
-    std::vector<GPA_SoftwareCounterDescExt> m_counters;            ///< The list of software counters
-    unsigned int                            m_groupCount;          ///< The number of internal counter groups
+    GPA_SoftwareCounterDesc**               m_ppCounterGroupArray;  ///< List of counter groups as defined by the list of counters in each group.
+    GPA_CounterGroupDesc*                   m_pGroups;              ///< List of internal counter groups
+    bool                                    m_countersGenerated;    ///< Indicates that the counters have been generated
+    std::vector<GPA_SoftwareCounterDescExt> m_counters;             ///< The list of software counters
+    unsigned int                            m_groupCount;           ///< The number of internal counter groups
 };
 
-#endif //_GPA_SOFTWARE_COUNTERS_H_
+#endif  //_GPA_SOFTWARE_COUNTERS_H_

@@ -19,10 +19,9 @@
 /// Class for DX12 GPA Implementation
 class DX12GPAImplementor : public GPAImplementor, public TSingleton<DX12GPAImplementor>
 {
-    friend class TSingleton<DX12GPAImplementor>; ///< friend declaration to allow access to the constructor
+    friend class TSingleton<DX12GPAImplementor>;  ///< friend declaration to allow access to the constructor
 
 public:
-
     /// Destructor
     virtual ~DX12GPAImplementor();
 
@@ -48,7 +47,6 @@ public:
     bool IsCopySecondarySampleSupported() const override;
 
 private:
-
     /// Constructor
     DX12GPAImplementor() = default;
 
@@ -64,7 +62,7 @@ private:
     /// Deletes the GPA contexts
     void DeleteContexts();
 
-    std::vector<DX12GPAContext*> m_dx12GpaContextList; ///< DX12 GPA context list for housekeeping
+    std::vector<DX12GPAContext*> m_dx12GpaContextList;  ///< DX12 GPA context list for housekeeping
 };
 
-#endif // _DX12_GPA_IMPLEMENTOR_H_
+#endif  // _DX12_GPA_IMPLEMENTOR_H_

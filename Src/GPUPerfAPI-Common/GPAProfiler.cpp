@@ -15,34 +15,27 @@
 #include <iostream>
 #include <fstream>
 
-
 using namespace std;
-
 
 static DWORD getCPUFreq()
 {
     DWORD BufSize = sizeof(DWORD);
     DWORD dwMHz;
-    HKEY hKey;
+    HKEY  hKey;
 
     // open the key where the proc speed is hidden:
-    long lError = RegOpenKeyExA(HKEY_LOCAL_MACHINE,
-                                "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0",
-                                0,
-                                KEY_READ,
-                                &hKey);
+    long lError = RegOpenKeyExA(HKEY_LOCAL_MACHINE, "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0", 0, KEY_READ, &hKey);
 
     assert(lError == ERROR_SUCCESS);
     UNREFERENCED_PARAMETER(lError);
 
     // query the key;
-    RegQueryValueExA(hKey, "~MHz", nullptr, nullptr, (LPBYTE) &dwMHz, &BufSize);
+    RegQueryValueExA(hKey, "~MHz", nullptr, nullptr, (LPBYTE)&dwMHz, &BufSize);
 
     RegCloseKey(hKey);
 
     return dwMHz;
 }
-
 
 static __int64 GetRDTSCTicksPerSecond()
 {
@@ -58,10 +51,13 @@ static __int64 GetRDTSCTicksPerSecond()
     unsigned __int64 nCtr = 0, nFreq = 0, nCtrStop = 0;
 
     // retrieve performance-counter frequency per second:
-    if (!QueryPerformanceFrequency((LARGE_INTEGER*) &nFreq)) { return 0; }
+    if (!QueryPerformanceFrequency((LARGE_INTEGER*)&nFreq))
+    {
+        return 0;
+    }
 
     // retrieve the current value of the performance counter:
-    QueryPerformanceCounter((LARGE_INTEGER*) &nCtrStop);
+    QueryPerformanceCounter((LARGE_INTEGER*)&nCtrStop);
 
     // add the frequency to the counter-value:
     nCtrStop += nFreq / scaling;
@@ -72,15 +68,13 @@ static __int64 GetRDTSCTicksPerSecond()
     {
         // retrieve the value of the performance counter
         // until 1 sec has gone by:
-        QueryPerformanceCounter((LARGE_INTEGER*) &nCtr);
-    }
-    while (nCtr < nCtrStop);
+        QueryPerformanceCounter((LARGE_INTEGER*)&nCtr);
+    } while (nCtr < nCtrStop);
 
     cyclesStop = __rdtsc();
 
     return (cyclesStop - cyclesStart) * scaling;
 }
-
 
 // Constructor uses init to determine tick rate on this computer
 Profiler::Profiler()
@@ -98,7 +92,7 @@ bool Profiler::Init()
     SetThreadAffinityMask(GetCurrentThread(), 1);
 
     m_RDTSCTicksPerSecond = GetRDTSCTicksPerSecond();
-    DWORD freq = getCPUFreq();
+    DWORD freq            = getCPUFreq();
 
     DWORD freqCompare = DWORD(m_RDTSCTicksPerSecond / 1000000);
 
@@ -116,26 +110,23 @@ void Profiler::Reset()
     m_totalTimeBelowParent.clear();
     m_functionMap.clear();
 
-    m_totalTime = 0;
+    m_totalTime    = 0;
     m_timingErrors = 0;
-    m_active = false;
+    m_active       = false;
 }
-
 
 void Profiler::Start()
 {
     Reset();
-    m_active = true;
+    m_active    = true;
     m_startTime = __rdtsc();
 }
-
 
 void Profiler::Stop()
 {
     m_stopTime = __rdtsc();
-    m_active = false;
+    m_active   = false;
 }
-
 
 bool Profiler::EnterFunction(const char* pFunctionName)
 {
@@ -156,7 +147,6 @@ bool Profiler::EnterFunction(const char* pFunctionName)
 
     return true;
 }
-
 
 bool Profiler::LeaveFunction(const char* pFunctionName)
 {
@@ -217,17 +207,14 @@ bool Profiler::LeaveFunction(const char* pFunctionName)
         m_totalTime += deltaForThisInvocation;
     }
 
-
     return true;
 }
-
 
 FunctionInfo& Profiler::GetFunctionInfo(const char* pFunctionName)
 {
     FunctionInfo& fi = m_functionMap[std::string(pFunctionName)];
     return fi;
 }
-
 
 void Profiler::outputTime(std::stringstream& ss, __int64 time)
 {
@@ -236,9 +223,7 @@ void Profiler::outputTime(std::stringstream& ss, __int64 time)
     ss << "(";
     ss << time;
     ss << ")";
-
 }
-
 
 // create a string containing a report of all profiling
 std::string Profiler::GenerateReport()
@@ -312,11 +297,10 @@ std::string Profiler::GenerateReport()
     return str.str();
 }
 
-
 // generate a profiling report and write it to disk using the specified filename.
 void Profiler::WriteReport(std::string filename)
 {
-    string s = GenerateReport();
+    string   s = GenerateReport();
     ofstream file(filename.c_str(), ios::out);
 
     if (file.is_open())
@@ -326,10 +310,9 @@ void Profiler::WriteReport(std::string filename)
     }
 }
 
-
 Profiler gProfilerSingleton;
 
 #else
 // !ENABLE_PROFILING
 
-#endif   // ENABLE_PROFILING
+#endif  // ENABLE_PROFILING

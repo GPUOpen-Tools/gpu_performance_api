@@ -8,11 +8,8 @@
 #include "DX11GPASession.h"
 #include "DX11GPAPass.h"
 
-
-DX11GPASession::DX11GPASession(
-    IGPAContext* pParentContext,
-    GPA_Session_Sample_Type sampleType) :
-    GPASession(pParentContext, sampleType)
+DX11GPASession::DX11GPASession(IGPAContext* pParentContext, GPA_Session_Sample_Type sampleType)
+    : GPASession(pParentContext, sampleType)
 {
 }
 
@@ -25,13 +22,10 @@ GPAPass* DX11GPASession::CreateAPIPass(PassIndex passIndex)
 {
     GPAPass* pRetPass = nullptr;
 
-    CounterList* pPassCounters = GetCountersForPass(passIndex);
+    CounterList*     pPassCounters = GetCountersForPass(passIndex);
     GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
 
-    DX11GPAPass* pDx11Pass = new(std::nothrow) DX11GPAPass(this,
-                                                           passIndex,
-                                                           counterSource,
-                                                           pPassCounters);
+    DX11GPAPass* pDx11Pass = new (std::nothrow) DX11GPAPass(this, passIndex, counterSource, pPassCounters);
 
     if (nullptr == pDx11Pass)
     {

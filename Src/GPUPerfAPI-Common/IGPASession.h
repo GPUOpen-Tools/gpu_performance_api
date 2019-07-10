@@ -13,21 +13,21 @@
 #include "GPACommonDefs.h"
 #include "IGPAInterfaceTrait.h"
 
-class IGPAContext; // forward declaration
+class IGPAContext;  // forward declaration
 
 /// Enum for GPA Session limit
 enum GPASessionLimit : uint8_t
 {
-    GPA_SESSION_NO_LIMIT = 0    ///< GPA session no limit enum value
+    GPA_SESSION_NO_LIMIT = 0  ///< GPA session no limit enum value
 };
 
 /// Enum to track the state of a GPASession
 enum GPASessionState : uint8_t
 {
-    GPA_SESSION_STATE_NOT_STARTED = 0,          ///< Session has been created, but not yet started. This is when counters can be enabled and disabled.
-    GPA_SESSION_STATE_STARTED,                  ///< Session has been started, but not yet ended.
-    GPA_SESSION_STATE_ENDED_PENDING_RESULTS,    ///< Session has been ended, and is pending results.
-    GPA_SESSION_STATE_RESULT_COLLECTED,         ///< Session's results are available.
+    GPA_SESSION_STATE_NOT_STARTED = 0,        ///< Session has been created, but not yet started. This is when counters can be enabled and disabled.
+    GPA_SESSION_STATE_STARTED,                ///< Session has been started, but not yet ended.
+    GPA_SESSION_STATE_ENDED_PENDING_RESULTS,  ///< Session has been ended, and is pending results.
+    GPA_SESSION_STATE_RESULT_COLLECTED,       ///< Session's results are available.
 };
 
 /// Interface for the GPA Session Object
@@ -110,8 +110,7 @@ public:
     /// \param[in] sampleId User-supplied Id of the sample
     /// \param[in] commandListId the CommandlistId on which the sample should be started
     /// \return true if operation was successful otherwise false
-    virtual bool BeginSample(gpa_uint32 sampleId,
-                             GPA_CommandListId commandListId) = 0;
+    virtual bool BeginSample(gpa_uint32 sampleId, GPA_CommandListId commandListId) = 0;
 
     /// Ends the current sample on command list
     /// \param[in] commandListId the CommandlistId on which the sample should be ended
@@ -122,9 +121,7 @@ public:
     /// \param[in] srcSampleId source sample id
     /// \param[in] primaryCommandListId primary command list id on which sample is continuing
     /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
-    virtual GPA_Status ContinueSampleOnCommandList(
-        gpa_uint32 srcSampleId,
-        GPA_CommandListId primaryCommandListId) = 0;
+    virtual GPA_Status ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA_CommandListId primaryCommandListId) = 0;
 
     /// Copy secondary command list/buffer sample on primary command list/buffer
     /// \param[in] secondaryCmdListId secondary command list on secondary samples were created
@@ -132,11 +129,10 @@ public:
     /// \param[in] numSamples number of secondary samples
     /// \param[in] pNewSampleIds new sample ids on a primary command list
     /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
-    virtual GPA_Status CopySecondarySamples(
-        GPA_CommandListId secondaryCmdListId,
-        GPA_CommandListId primaryCmdListId,
-        gpa_uint32 numSamples,
-        gpa_uint32* pNewSampleIds) = 0;
+    virtual GPA_Status CopySecondarySamples(GPA_CommandListId secondaryCmdListId,
+                                            GPA_CommandListId primaryCmdListId,
+                                            gpa_uint32        numSamples,
+                                            gpa_uint32*       pNewSampleIds) = 0;
 
     /// Returns the number of samples created in this session
     /// \return number of samples
@@ -236,4 +232,4 @@ public:
     virtual std::vector<unsigned int>* GetCountersForPass(unsigned int passIndex) = 0;
 };
 
-#endif // _I_GPA_SESSION_H_
+#endif  // _I_GPA_SESSION_H_

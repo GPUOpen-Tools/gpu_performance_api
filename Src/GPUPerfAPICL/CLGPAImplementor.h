@@ -17,10 +17,9 @@
 /// Class for CL GPA Implementation
 class CLGPAImplementor : public GPAImplementor, public TSingleton<CLGPAImplementor>
 {
-    friend class TSingleton<CLGPAImplementor>; ///< friend declaration to allow access to the constructor
+    friend class TSingleton<CLGPAImplementor>;  ///< friend declaration to allow access to the constructor
 
 public:
-
     /// Destructor
     ~CLGPAImplementor() = default;
 
@@ -34,7 +33,6 @@ public:
     bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const override final;
 
 private:
-
     /// Constructor
     CLGPAImplementor() = default;
 
@@ -50,4 +48,4 @@ private:
     bool m_initPerfCounterAMDExtension = false;  ///< flag indicating if the CL extension function pointers have been initialized
 };
 
-#endif // _CL_GPA_IMPLEMENTOR_H_
+#endif  // _CL_GPA_IMPLEMENTOR_H_

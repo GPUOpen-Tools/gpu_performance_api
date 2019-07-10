@@ -9,12 +9,7 @@
 
 #include "GPADerivedCounters.h"
 
-GPA_Status GPA_LoadInternalCounters(
-    GPA_API_Type,
-    GDT_HW_GENERATION,
-    GDT_HW_ASIC_TYPE,
-    gpa_uint8,
-    GPA_DerivedCounters*)
+GPA_Status GPA_LoadInternalCounters(GPA_API_Type, GDT_HW_GENERATION, GDT_HW_ASIC_TYPE, gpa_uint8, GPA_DerivedCounters*)
 {
     return GPA_STATUS_ERROR_FAILED;
 }

@@ -22,14 +22,15 @@ include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_SRC_COMMON}
                     ${GPA_SRC_COUNTER_GENERATOR})
 
-set(HEADER_FILES ${GPA_SRC_COUNTER_GENERATOR}/GLInclude.h
+set(HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/GLInclude.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/ASICInfo.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/GLGPACommandList.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/GLGPAContext.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/GLGPAImplementor.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/GLGPAPass.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/GLGPASample.h
-                 ${CMAKE_CURRENT_SOURCE_DIR}/GLGPASession.h)
+                 ${CMAKE_CURRENT_SOURCE_DIR}/GLGPASession.h
+                 ${CMAKE_CURRENT_SOURCE_DIR}/GLAmdDriverExt.h)
 
 set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/ASICInfo.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/GLGPACommandList.cpp

@@ -12,13 +12,12 @@
 #include "IGPAInterfaceTrait.h"
 #include "GPAPass.h"
 
-class IGPASession;      // forward declaration
+class IGPASession;  // forward declaration
 
 /// Interface for GPA Command List
 class IGPACommandList : public IGPAInterfaceTrait
 {
 public:
-
     /// Virtual Destructor
     virtual ~IGPACommandList() = default;
 
@@ -79,4 +78,4 @@ public:
     virtual GPA_Command_List_Type GetCmdType() const = 0;
 };
 
-#endif // _I_GPA_COMMAND_LIST_H_
+#endif  // _I_GPA_COMMAND_LIST_H_

@@ -24,5 +24,4 @@ GPA_Status DXGetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& adapterDesc);
 /// \param[in] pDevice The device
 HMONITOR DXGetDeviceMonitor(IUnknown* pDevice);
 
-#endif // _GPA_DX_DX_UTILS_H_
-
+#endif  // _GPA_DX_DX_UTILS_H_

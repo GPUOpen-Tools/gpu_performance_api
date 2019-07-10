@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX12 GPA Pass Object Implementation
@@ -13,34 +13,23 @@
 #include "DX12Utils.h"
 #include "GPAContextCounterMediator.h"
 
-DX12GPAPass::DX12GPAPass(IGPASession* pGpaSession,
-                         PassIndex passIndex,
-                         GPACounterSource counterSource,
-                         CounterList* pPassCounters):
-    GPAPass(pGpaSession, passIndex, counterSource, pPassCounters),
-    m_isSampleConfigInitialized(false)
+DX12GPAPass::DX12GPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters)
+    : GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
+    , m_isSampleConfigInitialized(false)
 {
     InitializeSampleConfig();
 }
 
-GPASample* DX12GPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList,
-                                                GpaSampleType sampleType,
-                                                ClientSampleId sampleId)
+GPASample* DX12GPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
 {
-    DX12GPASample* pRetDx12GpaSample = nullptr;
-    DX12GPACommandList* pDx12GpaCmdList = reinterpret_cast<DX12GPACommandList*>(pCmdList);
+    DX12GPASample*      pRetDx12GpaSample = nullptr;
+    DX12GPACommandList* pDx12GpaCmdList   = reinterpret_cast<DX12GPACommandList*>(pCmdList);
 
     // First Check whether the command list is opened and last sample is closed
-    if (nullptr != pDx12GpaCmdList &&
-        nullptr == pDx12GpaCmdList->GetSample(sampleId) &&
-        pDx12GpaCmdList->IsCommandListRunning() &&
+    if (nullptr != pDx12GpaCmdList && nullptr == pDx12GpaCmdList->GetSample(sampleId) && pDx12GpaCmdList->IsCommandListRunning() &&
         pDx12GpaCmdList->IsLastSampleClosed())
     {
-        pRetDx12GpaSample = new(std::nothrow) DX12GPASample(
-            this,
-            pCmdList,
-            sampleType,
-            sampleId);
+        pRetDx12GpaSample = new (std::nothrow) DX12GPASample(this, pCmdList, sampleType, sampleId);
     }
 
     return pRetDx12GpaSample;
@@ -63,9 +52,7 @@ bool DX12GPAPass::UpdateResults()
     return isCompleted;
 }
 
-IGPACommandList* DX12GPAPass::CreateAPISpecificCommandList(void* pCmd,
-                                                           CommandListId commandListId,
-                                                           GPA_Command_List_Type cmdType)
+IGPACommandList* DX12GPAPass::CreateAPISpecificCommandList(void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType)
 {
     IGPACommandList* pRetCmdList = nullptr;
 
@@ -75,12 +62,8 @@ IGPACommandList* DX12GPAPass::CreateAPISpecificCommandList(void* pCmd,
     {
         if (commandListType != D3D12_COMMAND_LIST_TYPE_COPY)
         {
-            DX12GPACommandList* pDx12GpaCmdList = new(std::nothrow) DX12GPACommandList(
-                reinterpret_cast<DX12GPASession*>(GetGpaSession()),
-                this,
-                pCmd,
-                commandListId,
-                cmdType);
+            DX12GPACommandList* pDx12GpaCmdList =
+                new (std::nothrow) DX12GPACommandList(reinterpret_cast<DX12GPASession*>(GetGpaSession()), this, pCmd, commandListId, cmdType);
 
             if (nullptr != pDx12GpaCmdList)
             {
@@ -100,9 +83,7 @@ bool DX12GPAPass::EndSample(IGPACommandList* pCmdList)
 {
     bool success = false;
 
-    if (nullptr != pCmdList &&
-        pCmdList->IsCommandListRunning() &&
-        !pCmdList->IsLastSampleClosed())
+    if (nullptr != pCmdList && pCmdList->IsCommandListRunning() && !pCmdList->IsLastSampleClosed())
     {
         GPASample* pGpaSample = pCmdList->GetLastSample();
 
@@ -120,15 +101,14 @@ bool DX12GPAPass::EndSample(IGPACommandList* pCmdList)
 }
 
 bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples,
-                                       DX12GPACommandList* pDx12PrimaryGpaCmdList,
-                                       DX12GPACommandList* pDx12SecondaryGpaCmdList)
+                                       DX12GPACommandList*         pDx12PrimaryGpaCmdList,
+                                       DX12GPACommandList*         pDx12SecondaryGpaCmdList)
 {
-
     bool success = false;
 
     // 1. Validate all new sample id are unique
     // 2. Create new samples for new passed sample id
-    // 3. Update the session <-> Cmd Map
+    // 3. Update the session <-> CommandList Map
 
     bool isAllUniqueSampleIds = true;
 
@@ -139,8 +119,7 @@ bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples
 
     if (isAllUniqueSampleIds)
     {
-        if (GPA_COMMAND_LIST_PRIMARY == pDx12PrimaryGpaCmdList->GetCmdType() &&
-            GPA_COMMAND_LIST_SECONDARY == pDx12SecondaryGpaCmdList->GetCmdType())
+        if (GPA_COMMAND_LIST_PRIMARY == pDx12PrimaryGpaCmdList->GetCmdType() && GPA_COMMAND_LIST_SECONDARY == pDx12SecondaryGpaCmdList->GetCmdType())
         {
             if (pDx12PrimaryGpaCmdList->GetPass()->GetIndex() == pDx12SecondaryGpaCmdList->GetPass()->GetIndex())
             {
@@ -160,15 +139,14 @@ bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples
                             std::vector<ClientSampleId> originalClientSampleIds;
                             // Copy the results
 
-                            unsigned int index = 0;
+                            unsigned int                index = 0;
                             std::vector<DX12GPASample*> newSampleList;
 
                             for (auto iter = clientSamples.begin(); iter != clientSamples.end(); ++iter)
                             {
                                 GpaSampleType sampleType = GetCounterSource() == GPACounterSource::HARDWARE ? GpaSampleType::Hardware : GpaSampleType::Software;
-                                DX12GPASample* pNewSample = reinterpret_cast<DX12GPASample*>(CreateAPISpecificSample(pDx12PrimaryGpaCmdList,
-                                                                                             sampleType,
-                                                                                             *iter));
+                                DX12GPASample* pNewSample =
+                                    reinterpret_cast<DX12GPASample*>(CreateAPISpecificSample(pDx12PrimaryGpaCmdList, sampleType, *iter));
 
                                 if (nullptr != pNewSample)
                                 {
@@ -186,9 +164,7 @@ bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples
 
                             success = true;
 
-                            if (pDx12PrimaryGpaCmdList->CopyBundleSamples(clientSamples,
-                                                                          pDx12SecondaryGpaCmdList,
-                                                                          originalClientSampleIds))
+                            if (pDx12PrimaryGpaCmdList->CopyBundleSamples(clientSamples, pDx12SecondaryGpaCmdList, originalClientSampleIds))
                             {
                                 index = 0;
 
@@ -265,7 +241,7 @@ void DX12GPAPass::InitializeSampleConfig()
     {
         std::vector<AmdExtPerfCounterId> counterIds;
 
-        IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
+        IGPACounterAccessor*        pCounterAccessor  = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
         const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
 
         if (!m_pCounterList->empty())
@@ -274,11 +250,11 @@ void DX12GPAPass::InitializeSampleConfig()
             {
                 m_amdExtsampleConfig.type = AmdExtGpaSampleType::Timing;
 
-                if (true == pHardwareCounters->IsBottomOfPipeCounterIndex(m_pCounterList->at(0)))
+                if (pHardwareCounters->IsBottomOfPipeCounterIndex(m_pCounterList->at(0)))
                 {
                     m_amdExtsampleConfig.timing.preSample = AmdExtHwPipePoint::HwPipeBottom;
                 }
-                else if (true == pHardwareCounters->IsTopOfPipeCounterIndex(m_pCounterList->at(0)))
+                else if (pHardwareCounters->IsTopOfPipeCounterIndex(m_pCounterList->at(0)))
                 {
                     m_amdExtsampleConfig.timing.preSample = AmdExtHwPipePoint::HwPipeTop;
                 }
@@ -290,16 +266,16 @@ void DX12GPAPass::InitializeSampleConfig()
             {
                 AmdExtPerfExperimentShaderFlags maskValue = PerfShaderMaskAll;
 
-                m_amdExtsampleConfig.type = AmdExtGpaSampleType::Cumulative;
+                m_amdExtsampleConfig.type         = AmdExtGpaSampleType::Cumulative;
                 m_amdExtsampleConfig.flags.u32All = 0;
 
                 // add all desired counters
                 for (size_t i = 0; i < m_pCounterList->size(); i++)
                 {
                     const GPA_HardwareCounterDescExt* pCounter = &pHardwareCounters->m_counters[m_pCounterList->at(i)];
-                    AmdExtGpuBlock block = static_cast<AmdExtGpuBlock>(pCounter->m_groupIdDriver);
-                    UINT32 instance = static_cast<UINT32>(pHardwareCounters->m_pGroups[pCounter->m_groupIndex].m_blockInstance);
-                    UINT32 eventId = static_cast<UINT32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
+                    AmdExtGpuBlock                    block    = static_cast<AmdExtGpuBlock>(pCounter->m_groupIdDriver);
+                    UINT32                            instance = static_cast<UINT32>(pHardwareCounters->m_pGroups[pCounter->m_groupIndex].m_blockInstance);
+                    UINT32                            eventId  = static_cast<UINT32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
 
                     if (reinterpret_cast<DX12GPAContext*>(GetGpaSession()->GetParentContext())->GetInstanceCount(block) <= instance)
                     {
@@ -342,11 +318,12 @@ void DX12GPAPass::InitializeSampleConfig()
                     }
 
                     // Add counter to valid vector
-                    AmdExtPerfCounterId thisCounter = { block, instance, eventId };
+                    AmdExtPerfCounterId thisCounter = {block, instance, eventId};
                     counterIds.push_back(thisCounter);
 
                     // if dealing with an SQ counter, check if the the stage mask needs to be set
-                    if (pCounter->m_groupIndex >= pHardwareCounters->m_pSQCounterGroups[0].m_groupIndex && pCounter->m_groupIndex <= pHardwareCounters->m_pSQCounterGroups[pHardwareCounters->m_sqGroupCount - 1].m_groupIndex)
+                    if (pCounter->m_groupIndex >= pHardwareCounters->m_pSQCounterGroups[0].m_groupIndex &&
+                        pCounter->m_groupIndex <= pHardwareCounters->m_pSQCounterGroups[pHardwareCounters->m_sqGroupCount - 1].m_groupIndex)
                     {
                         GPA_SQShaderStage stage = SQ_ALL;
 
@@ -393,20 +370,20 @@ void DX12GPAPass::InitializeSampleConfig()
                 }
 
                 m_amdExtsampleConfig.perfCounters.numCounters = GetNumEnabledCountersForPass();
-                AmdExtPerfCounterId* pAmdExtPerfCounterId = new(std::nothrow) AmdExtPerfCounterId[m_pCounterList->size()];
+                AmdExtPerfCounterId* pAmdExtPerfCounterId     = new (std::nothrow) AmdExtPerfCounterId[m_pCounterList->size()];
 
                 if (nullptr != pAmdExtPerfCounterId)
                 {
                     memcpy(pAmdExtPerfCounterId, counterIds.data(), sizeof(AmdExtPerfCounterId) * counterIds.size());
                 }
 
-                m_amdExtsampleConfig.perfCounters.pIds = pAmdExtPerfCounterId;
+                m_amdExtsampleConfig.perfCounters.pIds                   = pAmdExtPerfCounterId;
                 m_amdExtsampleConfig.perfCounters.spmTraceSampleInterval = 0;
-                m_amdExtsampleConfig.perfCounters.gpuMemoryLimit = 0;
+                m_amdExtsampleConfig.perfCounters.gpuMemoryLimit         = 0;
 
                 // set shader mask
                 m_amdExtsampleConfig.flags.sqShaderMask = 1;
-                m_amdExtsampleConfig.sqShaderMask = maskValue;
+                m_amdExtsampleConfig.sqShaderMask       = maskValue;
             }
 
             // Insert L2 cache invalidate and flush around counter sample
@@ -424,8 +401,7 @@ void DX12GPAPass::ResetPass() const
 {
     LockCommandListMutex();
 
-    for (auto it = GetCmdList().begin();
-         it != GetCmdList().end(); ++it)
+    for (auto it = GetCmdList().begin(); it != GetCmdList().end(); ++it)
     {
         DX12GPACommandList* pDx12CmdList = reinterpret_cast<DX12GPACommandList*>(*it);
         pDx12CmdList->ReleaseNonGPAResources();

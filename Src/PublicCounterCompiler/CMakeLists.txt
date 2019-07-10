@@ -21,7 +21,10 @@ set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/Properties/AssemblyInfo.cs
             ${CMAKE_CURRENT_SOURCE_DIR}/InternalCounterDef.cs
             ${CMAKE_CURRENT_SOURCE_DIR}/packages.config
             ${CMAKE_CURRENT_SOURCE_DIR}/Program.cs
-            ${CMAKE_CURRENT_SOURCE_DIR}/CounterCompiler.cs)
+            ${CMAKE_CURRENT_SOURCE_DIR}/CounterCompiler.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/FileNameAndPaths.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/CMakeGenerator.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/CounterDefCMakeGen.cs)
 
 add_executable(${GPA_PROJECT_NAME} WIN32 ${SOURCES})
 target_compile_options(${GPA_PROJECT_NAME} PRIVATE "/langversion:6")

@@ -32,34 +32,27 @@ public:
     /// \param[in] flags Flags used to initialize the context. Should be a combination of GPA_OpenContext_Bits
     /// \param[out] pContextId Unique identifier of the opened context
     /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
-    virtual GPA_Status OpenContext(
-        void* pContext,
-        GPA_OpenContextFlags flags,
-        GPA_ContextId* pContextId) = 0;
+    virtual GPA_Status OpenContext(void* pContext, GPA_OpenContextFlags flags, GPA_ContextId* pContextId) = 0;
 
     /// Closes the counters in the specified context.
     /// \param[in] contextId Unique identifier of the opened context
     /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
-    virtual GPA_Status CloseContext(
-        GPA_ContextId contextId) = 0;
+    virtual GPA_Status CloseContext(GPA_ContextId contextId) = 0;
 
     /// Checks whether the context exists or not
     /// \param[in] contextId context id
     /// \return true if context is opened otherwise false
-    virtual bool DoesContextExist(
-        GPA_ContextId contextId) const = 0;
+    virtual bool DoesContextExist(GPA_ContextId contextId) const = 0;
 
     /// Checks whether the session exists or not
     /// \param[in] sessionId session id
     /// \return true if session exists otherwise false
-    virtual bool DoesSessionExist(
-        GPA_SessionId sessionId) const = 0;
+    virtual bool DoesSessionExist(GPA_SessionId sessionId) const = 0;
 
     /// Checks whether the command list exists or not
     /// \param[in] commandListId command list id
     /// \return true if command list exists otherwise false
-    virtual bool DoesCommandListExist(
-        GPA_CommandListId commandListId) const = 0;
+    virtual bool DoesCommandListExist(GPA_CommandListId commandListId) const = 0;
 
     /// Gets the flags used to initialize GPA. This is a mask of GPA_Initialize_Bits
     /// \return the flags used to initialize GPA
@@ -78,4 +71,4 @@ public:
     virtual bool IsCopySecondarySampleSupported() const = 0;
 };
 
-#endif // _I_GPA_IMPLEMENTOR_H_
+#endif  // _I_GPA_IMPLEMENTOR_H_

@@ -19,10 +19,9 @@
 /// Class for DX11 GPA Implementation
 class DX11GPAImplementor : public GPAImplementor, public TSingleton<DX11GPAImplementor>
 {
-    friend class TSingleton<DX11GPAImplementor>; ///< friend declaration to allow access to the constructor
+    friend class TSingleton<DX11GPAImplementor>;  ///< friend declaration to allow access to the constructor
 
 public:
-
     /// Destructor
     ~DX11GPAImplementor() = default;
 
@@ -40,7 +39,6 @@ public:
     PFNAmdDxExtCreate11 GetAmdExtFuncPointer() const;
 
 private:
-
     /// Returns the AMD hardware info for the given device and monitor
     /// \param[in] pD3D11Device DirectX 11 device pointer
     /// \param[in] hMonitor monitor instance
@@ -48,11 +46,7 @@ private:
     /// \param[in] primaryDeviceId device id
     /// \param[out] hwInfo hardware info
     /// \return true upon successful operation otherwise false
-    bool GetAmdHwInfo(ID3D11Device* pD3D11Device,
-                      HMONITOR hMonitor,
-                      const int& primaryVendorId,
-                      const int& primaryDeviceId,
-                      GPA_HWInfo& hwInfo) const;
+    bool GetAmdHwInfo(ID3D11Device* pD3D11Device, HMONITOR hMonitor, const int& primaryVendorId, const int& primaryDeviceId, GPA_HWInfo& hwInfo) const;
 
     /// Constructor
     DX11GPAImplementor();
@@ -70,8 +64,7 @@ private:
     /// \copydoc GPAImplementor::GetDeviceIdentifierFromContextInfo()
     GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const override final;
 
-    mutable PFNAmdDxExtCreate11     m_amdDxExtCreate11FuncPtr;                  ///< AMD DirectX 11 extension Function pointer
+    mutable PFNAmdDxExtCreate11 m_amdDxExtCreate11FuncPtr;  ///< AMD DirectX 11 extension Function pointer
 };
 
-#endif // _DX11_GPA_IMPLEMENTOR_H_
-
+#endif  // _DX11_GPA_IMPLEMENTOR_H_

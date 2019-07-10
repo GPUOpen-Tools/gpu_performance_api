@@ -13,16 +13,15 @@
 #include "GPAHardwareCounters.h"
 #include "GPACounterGeneratorBase.h"
 
-DX12GPAContext::DX12GPAContext(ID3D12Device* pD3D12Device,
-                               GPA_HWInfo& hwInfo,
-                               GPA_OpenContextFlags flags)
+DX12GPAContext::DX12GPAContext(ID3D12Device* pD3D12Device, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
     : GPAContext(hwInfo, flags)
 {
     m_pD3D12Device = pD3D12Device;
     m_pD3D12Device->AddRef();
     m_pAmdExtD3DFactoryObject = nullptr;
-    m_pGpaInterface = nullptr;
-    m_clockMode = AmdExtDeviceClockMode::Default;
+    m_pGpaInterface           = nullptr;
+    m_pGpaInterface2          = nullptr;
+    m_clockMode               = AmdExtDeviceClockMode::Default;
 }
 
 DX12GPAContext::~DX12GPAContext()
@@ -48,14 +47,13 @@ bool DX12GPAContext::Initialize()
     return isSucceeded;
 }
 
-
 GPA_SessionId DX12GPAContext::CreateSession(GPA_Session_Sample_Type sampleType)
 {
     GPA_SessionId pRetSessionId = nullptr;
 
     if (nullptr != m_pGpaInterface)
     {
-        DX12GPASession* pNewGpaDx12GpaSession = new(std::nothrow) DX12GPASession(this, sampleType, m_pGpaInterface);
+        DX12GPASession* pNewGpaDx12GpaSession = new (std::nothrow) DX12GPASession(this, sampleType, m_pGpaInterface);
 
         if (nullptr != pNewGpaDx12GpaSession)
         {
@@ -66,7 +64,6 @@ GPA_SessionId DX12GPAContext::CreateSession(GPA_Session_Sample_Type sampleType)
 
     return pRetSessionId;
 }
-
 
 bool DX12GPAContext::DeleteSession(GPA_SessionId sessionId)
 {
@@ -161,9 +158,7 @@ bool DX12GPAContext::InitializeAMDExtension()
                 }
                 else
                 {
-                    HRESULT hr = pAmdExtD3dCreateFunc(m_pD3D12Device,
-                                                      __uuidof(IAmdExtD3DFactory),
-                                                      reinterpret_cast<void**>(&m_pAmdExtD3DFactoryObject));
+                    HRESULT hr = pAmdExtD3dCreateFunc(m_pD3D12Device, __uuidof(IAmdExtD3DFactory), reinterpret_cast<void**>(&m_pAmdExtD3DFactoryObject));
 
                     if (FAILED(hr))
                     {
@@ -171,9 +166,17 @@ bool DX12GPAContext::InitializeAMDExtension()
                     }
                     else
                     {
-                        hr = m_pAmdExtD3DFactoryObject->CreateInterface(m_pD3D12Device,
-                                                                        __uuidof(IAmdExtGpaInterface),
-                                                                        reinterpret_cast<void**>(&m_pGpaInterface));
+                        hr = m_pAmdExtD3DFactoryObject->CreateInterface(
+                            m_pD3D12Device, __uuidof(IAmdExtGpaInterface2), reinterpret_cast<void**>(&m_pGpaInterface2));
+                        if (FAILED(hr))
+                        {
+                            hr = m_pAmdExtD3DFactoryObject->CreateInterface(
+                                m_pD3D12Device, __uuidof(IAmdExtGpaInterface), reinterpret_cast<void**>(&m_pGpaInterface));
+                        }
+                        else
+                        {
+                            m_pGpaInterface = m_pGpaInterface2;
+                        }
 
                         if (FAILED(hr))
                         {
@@ -181,7 +184,19 @@ bool DX12GPAContext::InitializeAMDExtension()
                         }
                         else
                         {
-                            hr = m_pGpaInterface->GetPerfExperimentProperties(&m_amdDeviceProps);
+                            if (nullptr != m_pGpaInterface2)
+                            {
+                                hr = m_pGpaInterface2->GetPerfExperimentProperties2(&m_amdDeviceProps, AmdExtGpuBlock::Count);
+                            }
+                            else if (nullptr != m_pGpaInterface)
+                            {
+                                hr = m_pGpaInterface->GetPerfExperimentProperties(&m_amdDeviceProps);
+                            }
+                            else
+                            {
+                                GPA_LogError("No valid GPA interface.");
+                                result = GPA_STATUS_ERROR_FAILED;
+                            }
 
                             if (FAILED(hr))
                             {
@@ -225,9 +240,22 @@ void DX12GPAContext::CleanUp()
 
     if (nullptr != m_pGpaInterface)
     {
-        IterateGpaSessionList([](IGPASession* pGpaSession)->bool {delete pGpaSession; return true; });
+        IterateGpaSessionList([](IGPASession* pGpaSession) -> bool {
+            delete pGpaSession;
+            return true;
+        });
         ClearSessionList();
-        m_pGpaInterface->Release();
+
+        if (nullptr != m_pGpaInterface2)
+        {
+            m_pGpaInterface2->Release();
+            m_pGpaInterface2 = nullptr;
+        }
+        else
+        {
+            m_pGpaInterface->Release();
+        }
+
         m_pGpaInterface = nullptr;
     }
 
@@ -251,29 +279,29 @@ void DX12GPAContext::SetStableClocks(bool useProfilingClocks)
 
             switch (deviceClockMode)
             {
-                case DeviceClockMode::Default:
-                    amdClockMode = AmdExtDeviceClockMode::Default;
-                    break;
+            case DeviceClockMode::Default:
+                amdClockMode = AmdExtDeviceClockMode::Default;
+                break;
 
-                case DeviceClockMode::MinimumEngine:
-                    amdClockMode = AmdExtDeviceClockMode::MinimumEngine;
-                    break;
+            case DeviceClockMode::MinimumEngine:
+                amdClockMode = AmdExtDeviceClockMode::MinimumEngine;
+                break;
 
-                case DeviceClockMode::MinimumMemory:
-                    amdClockMode = AmdExtDeviceClockMode::MinimumMemory;
-                    break;
+            case DeviceClockMode::MinimumMemory:
+                amdClockMode = AmdExtDeviceClockMode::MinimumMemory;
+                break;
 
-                case DeviceClockMode::Peak:
-                    amdClockMode = AmdExtDeviceClockMode::Peak;
-                    break;
+            case DeviceClockMode::Peak:
+                amdClockMode = AmdExtDeviceClockMode::Peak;
+                break;
 
-                case DeviceClockMode::Profiling:
-                    amdClockMode = AmdExtDeviceClockMode::Profiling;
-                    break;
+            case DeviceClockMode::Profiling:
+                amdClockMode = AmdExtDeviceClockMode::Profiling;
+                break;
 
-                default:
-                    amdClockMode = AmdExtDeviceClockMode::Profiling;
-                    break;
+            default:
+                amdClockMode = AmdExtDeviceClockMode::Profiling;
+                break;
             }
         }
 

@@ -27,9 +27,7 @@ public:
     /// \param[in] pPass pass object
     /// \param[in] pCmdList gpa command list
     /// \param[in] sampleId sample Id
-    VkGPASoftwareSample(GPAPass* pPass,
-                        IGPACommandList* pCmdList,
-                        unsigned int sampleId);
+    VkGPASoftwareSample(GPAPass* pPass, IGPACommandList* pCmdList, unsigned int sampleId);
 
     /// Destructor
     virtual ~VkGPASoftwareSample();
@@ -60,13 +58,13 @@ private:
     /// Struct to describe active counter
     struct ActiveCounter
     {
-        gpa_uint32 m_index;               ///< index of counter
-        GPA_VK_SW_QUERY_TYPE m_queryType; ///< query type of counter
+        gpa_uint32           m_index;      ///< index of counter
+        GPA_VK_SW_QUERY_TYPE m_queryType;  ///< query type of counter
     };
 
-    typedef std::vector<ActiveCounter> ActiveCounterListType; ///< Typedef for a list of counters
+    typedef std::vector<ActiveCounter> ActiveCounterListType;  ///< Typedef for a list of counters
 
-    static const gpa_uint32 ms_unitializedSampleId = 0xFFFFFFFF; ///< Value of an uninitialized sample id
+    static const gpa_uint32 ms_unitializedSampleId = 0xFFFFFFFF;  ///< Value of an uninitialized sample id
 
     /// Copy constructor - private override to disable usage
     VkGPASoftwareSample(const VkGPASoftwareSample&) = delete;
@@ -87,31 +85,24 @@ private:
     /// \param[in] queryResults The SW queries results
     /// \param[in] counterIndex The counter index
     /// \param[out] counterResult Counter result
-    bool GetTimestampQueryCounterResult(
-        const GpaVkSoftwareQueryResults& queryResults,
-        const gpa_uint32 counterIndex,
-        gpa_uint64& counterResult) const;
+    bool GetTimestampQueryCounterResult(const GpaVkSoftwareQueryResults& queryResults, const gpa_uint32 counterIndex, gpa_uint64& counterResult) const;
 
     /// Get counter result for a counter derived from the pipeline statistics query
     /// \return True if counter results were collected, false if not
     /// \param[in] queryResults The SW queries results
     /// \param[in] counterIndex The counter index
     /// \param[out] counterResult Counter result
-    bool GetPipelineQueryCounterResult(
-        const GpaVkSoftwareQueryResults& queryResults,
-        const gpa_uint32 counterIndex,
-        gpa_uint64& counterResult) const;
+    bool GetPipelineQueryCounterResult(const GpaVkSoftwareQueryResults& queryResults, const gpa_uint32 counterIndex, gpa_uint64& counterResult) const;
 
     /// \copydoc VkGPASample::UpdateResults()
     virtual bool UpdateResults() override;
 
-    VkGPAContext*           m_pContextState;      ///< The context the SW Sample is executed on
-    ActiveCounterListType   m_activeCountersList; ///< The list of active counters
-    unsigned int            m_activeQueries;      ///< The number of active queries
-    VkCommandBuffer         m_commandList;        ///< The command list the sample is executed on
-    gpa_uint32              m_swSampleId;         ///< The SW sample ID executed on the context
-    VkCommandListSwQueries* m_pSwQueries;         ///< The Software queries being used by this sample
+    VkGPAContext*           m_pContextState;       ///< The context the SW Sample is executed on
+    ActiveCounterListType   m_activeCountersList;  ///< The list of active counters
+    unsigned int            m_activeQueries;       ///< The number of active queries
+    VkCommandBuffer         m_commandList;         ///< The command list the sample is executed on
+    gpa_uint32              m_swSampleId;          ///< The SW sample ID executed on the context
+    VkCommandListSwQueries* m_pSwQueries;          ///< The Software queries being used by this sample
 };
 
-#endif // _VK_GPA_SOFTWARE_SAMPLE_H_
-
+#endif  // _VK_GPA_SOFTWARE_SAMPLE_H_

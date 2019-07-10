@@ -11,23 +11,20 @@
 #include "VkEntrypoints.h"
 #include "Logging.h"
 
-
 bool VkUtils::GetPhysicalDeviceGpaFeaturesAMD(VkPhysicalDevice vkPhysicalDevice, VkPhysicalDeviceGpaFeaturesAMD* pGpaFeaturesAMD)
 {
     bool bStatus = false;
 
     assert(nullptr != pGpaFeaturesAMD);
 
-    if (nullptr != pGpaFeaturesAMD &&
-        VkUtils::s_isEntryPointsInitialized &&
-        nullptr != _vkGetPhysicalDeviceFeatures2KHR)
+    if (nullptr != pGpaFeaturesAMD && VkUtils::s_isEntryPointsInitialized && nullptr != _vkGetPhysicalDeviceFeatures2KHR)
     {
-        *pGpaFeaturesAMD = {};
+        *pGpaFeaturesAMD       = {};
         pGpaFeaturesAMD->sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_FEATURES_AMD;
 
         VkPhysicalDeviceFeatures2KHR features = {};
-        features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR;
-        features.pNext = pGpaFeaturesAMD;
+        features.sType                        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR;
+        features.pNext                        = pGpaFeaturesAMD;
 
         _vkGetPhysicalDeviceFeatures2KHR(vkPhysicalDevice, &features);
         bStatus = true;
@@ -48,8 +45,7 @@ bool VkUtils::GetPhysicalDeviceGpaPropertiesAMD(VkPhysicalDevice vkPhysicalDevic
 
     VkPhysicalDeviceGpaFeaturesAMD gpaFeaturesAMD = {};
 
-    if (nullptr != pGpaPropertiesAMD &&
-        GetPhysicalDeviceGpaFeaturesAMD(vkPhysicalDevice, &gpaFeaturesAMD))
+    if (nullptr != pGpaPropertiesAMD && GetPhysicalDeviceGpaFeaturesAMD(vkPhysicalDevice, &gpaFeaturesAMD))
     {
         if (VK_TRUE == gpaFeaturesAMD.perfCounters)
         {
@@ -58,18 +54,18 @@ bool VkUtils::GetPhysicalDeviceGpaPropertiesAMD(VkPhysicalDevice vkPhysicalDevic
             // In case where MGPU support hides the GPU from the app, then
             // we will need to use Vk MGPU extension (and possibly ADL util)
             // to get the correct HW info
-            *pGpaPropertiesAMD = {};
+            *pGpaPropertiesAMD       = {};
             pGpaPropertiesAMD->sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES_AMD;
 
             VkPhysicalDeviceProperties2KHR properties = {};
-            properties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
-            properties.pNext = pGpaPropertiesAMD;
+            properties.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
+            properties.pNext                          = pGpaPropertiesAMD;
 
             _vkGetPhysicalDeviceProperties2KHR(vkPhysicalDevice, &properties);
 
             if (pGpaPropertiesAMD->perfBlockCount > 0)
             {
-                pGpaPropertiesAMD->pPerfBlocks = new(std::nothrow) VkGpaPerfBlockPropertiesAMD[pGpaPropertiesAMD->perfBlockCount];
+                pGpaPropertiesAMD->pPerfBlocks = new (std::nothrow) VkGpaPerfBlockPropertiesAMD[pGpaPropertiesAMD->perfBlockCount];
 
                 if (nullptr != pGpaPropertiesAMD->pPerfBlocks)
                 {
@@ -106,7 +102,7 @@ void VkUtils::ReleasePhysicalDeviceGpaPropertiesAMD(VkPhysicalDeviceGpaPropertie
         if (nullptr != pGpaPropertiesAMD->pPerfBlocks)
         {
             delete[] pGpaPropertiesAMD->pPerfBlocks;
-            pGpaPropertiesAMD->pPerfBlocks = nullptr;
+            pGpaPropertiesAMD->pPerfBlocks    = nullptr;
             pGpaPropertiesAMD->perfBlockCount = 0;
         }
     }
@@ -122,7 +118,7 @@ void VkUtils::DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vkPhysicalDev
 
         if (queueFamilyCount != 0)
         {
-            VkQueueFamilyProperties* pQueueFamilyProperties = new(std::nothrow) VkQueueFamilyProperties[queueFamilyCount];
+            VkQueueFamilyProperties* pQueueFamilyProperties = new (std::nothrow) VkQueueFamilyProperties[queueFamilyCount];
 
             if (nullptr == pQueueFamilyProperties)
             {
@@ -141,7 +137,8 @@ void VkUtils::DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vkPhysicalDev
                     }
                     else
                     {
-                        GPA_LogDebugMessage("QueueFamily %u has %u valid timestamp bits; it will support profiling.", i, pQueueFamilyProperties[i].timestampValidBits);
+                        GPA_LogDebugMessage(
+                            "QueueFamily %u has %u valid timestamp bits; it will support profiling.", i, pQueueFamilyProperties[i].timestampValidBits);
                     }
                 }
 
@@ -158,7 +155,7 @@ void VkUtils::DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vkPhysicalDev
         GPA_LogError("Vulkan entrypoints are not initialized.");
     }
 }
-#endif //_DEBUG
+#endif  //_DEBUG
 
 bool VkUtils::IsDeviceSupportedForProfiling(VkPhysicalDevice vkPhysicalDevice)
 {
@@ -171,7 +168,7 @@ bool VkUtils::IsDeviceSupportedForProfiling(VkPhysicalDevice vkPhysicalDevice)
 
         if (queueFamilyCount != 0)
         {
-            VkQueueFamilyProperties* pQueueFamilyProperties = new(std::nothrow) VkQueueFamilyProperties[queueFamilyCount];
+            VkQueueFamilyProperties* pQueueFamilyProperties = new (std::nothrow) VkQueueFamilyProperties[queueFamilyCount];
 
             if (pQueueFamilyProperties == nullptr)
             {
@@ -188,11 +185,11 @@ bool VkUtils::IsDeviceSupportedForProfiling(VkPhysicalDevice vkPhysicalDevice)
                 else
                 {
                     VkPhysicalDeviceGpaFeaturesAMD featuresAMD = {};
-                    featuresAMD.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_FEATURES_AMD;
+                    featuresAMD.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_FEATURES_AMD;
 
                     VkPhysicalDeviceFeatures2KHR features = {};
-                    features.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR;
-                    features.pNext = &featuresAMD;
+                    features.sType                        = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2_KHR;
+                    features.pNext                        = &featuresAMD;
 
                     _vkGetPhysicalDeviceFeatures2KHR(vkPhysicalDevice, &features);
 

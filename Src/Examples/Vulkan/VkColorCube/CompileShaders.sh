@@ -17,13 +17,13 @@ if [ -z ${OutDir} ]; then
     OutDir=./
 fi
 
-VK_SDK_DIR="$2"
-if [ -z VK_SDK_DIR ]; then
+VK_TOOLS_DIR="$2"
+if [ -z VK_TOOLS_DIR ]; then
   echo "No Vulkan SDK found"
   exit 1
 fi
 
-${VK_SDK_DIR}/bin/glslangValidator -V vkcolorcubeshader.vert -o ${OutDir}/vkcolorcubeshader.vert.spv
-${VK_SDK_DIR}/bin/glslangValidator -V vkcolorcubeshader.frag -o ${OutDir}/vkcolorcubeshader.frag.spv
-${VK_SDK_DIR}/bin/glslangValidator -V vkcolorcubewireframeshader.frag -o ${OutDir}/vkcolorcubewireframeshader.frag.spv
+${VK_TOOLS_DIR}/glslangValidator -V vkcolorcubeshader.vert -o ${OutDir}/vkcolorcubeshader.vert.spv
+${VK_TOOLS_DIR}/glslangValidator -V vkcolorcubeshader.frag -o ${OutDir}/vkcolorcubeshader.frag.spv
+${VK_TOOLS_DIR}/glslangValidator -V vkcolorcubewireframeshader.frag -o ${OutDir}/vkcolorcubewireframeshader.frag.spv
 

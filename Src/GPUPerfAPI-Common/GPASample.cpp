@@ -9,22 +9,19 @@
 #include "GPAPass.h"
 #include "IGPACommandList.h"
 
-GPASample::GPASample(GPAPass* pPass,
-                     IGPACommandList* pGpaCmdList,
-                     GpaSampleType sampleType,
-                     ClientSampleId clientSampleId):
-    m_pPass(pPass),
-    m_pGpaCmdList(pGpaCmdList),
-    m_gpaSampleType(sampleType),
-    m_clientSampleId(clientSampleId),
-    m_driverSampleId(0),
-    m_gpaSampleState(GPASampleState::INITIALIZED),
-    m_pSampleResult(nullptr),
-    m_pContinuingSample(nullptr),
-    m_isOpened(false),
-    m_isClosedByClient(false),
-    m_isContinuedByClient(false),
-    m_isCopiedSample(false)
+GPASample::GPASample(GPAPass* pPass, IGPACommandList* pGpaCmdList, GpaSampleType sampleType, ClientSampleId clientSampleId)
+    : m_pPass(pPass)
+    , m_pGpaCmdList(pGpaCmdList)
+    , m_gpaSampleType(sampleType)
+    , m_clientSampleId(clientSampleId)
+    , m_driverSampleId(0)
+    , m_gpaSampleState(GPASampleState::INITIALIZED)
+    , m_pSampleResult(nullptr)
+    , m_pContinuingSample(nullptr)
+    , m_isOpened(false)
+    , m_isClosedByClient(false)
+    , m_isContinuedByClient(false)
+    , m_isCopiedSample(false)
 {
     m_isSecondary = (GPA_COMMAND_LIST_SECONDARY == pGpaCmdList->GetCmdType());
 
@@ -46,7 +43,7 @@ GPA_THREAD_SAFE_FUNCTION bool GPASample::Begin()
     if (result)
     {
         m_gpaSampleState = GPASampleState::STARTED;
-        m_isOpened = true;
+        m_isOpened       = true;
     }
 
     return result;
@@ -78,15 +75,13 @@ bool GPASample::GetResult(CounterIndex counterIndexInSample, gpa_uint64* pResult
 
     if (!IsSecondary() || IsCopied())
     {
-        if (nullptr != pResult &&
-            IsResultCollected())
+        if (nullptr != pResult && IsResultCollected())
         {
-            if (nullptr != m_pSampleResult &&
-                counterIndexInSample < m_pSampleResult->GetAsCounterSampleResult()->GetNumCounters() &&
+            if (nullptr != m_pSampleResult && counterIndexInSample < m_pSampleResult->GetAsCounterSampleResult()->GetNumCounters() &&
                 nullptr != m_pSampleResult->GetAsCounterSampleResult()->GetResultBuffer())
             {
                 hasResult = true;
-                *pResult = m_pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIndexInSample];
+                *pResult  = m_pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIndexInSample];
             }
             else
             {
@@ -95,7 +90,7 @@ bool GPASample::GetResult(CounterIndex counterIndexInSample, gpa_uint64* pResult
         }
         else
         {
-            GPA_LogError("Either the sample is not completed or incorrect result location.");
+            GPA_LogError("Either the sample is not completed or the result buffer is invalid.");
         }
     }
 
@@ -121,7 +116,7 @@ void GPASample::AllocateSampleResultSpace()
 {
     if (nullptr == m_pSampleResult)
     {
-        m_pSampleResult = new(std::nothrow) GPACounterSampleResult(m_pPass->GetEnabledCounterCount());
+        m_pSampleResult = new (std::nothrow) GPACounterSampleResult(m_pPass->GetEnabledCounterCount());
     }
 }
 
@@ -152,13 +147,13 @@ GPASample* GPASample::GetContinuingSample() const
 
 GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsClosedByClient()
 {
-    bool success = false;
+    bool                        success = false;
     std::lock_guard<std::mutex> lockSample(m_sampleMutex);
 
     if (!m_isContinuedByClient)
     {
         m_isClosedByClient = true;
-        success = true;
+        success            = true;
     }
     else
     {
@@ -170,7 +165,7 @@ GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsClosedByClient()
 
 bool GPASample::SetAsCopied()
 {
-    bool success = false;
+    bool                        success = false;
     std::lock_guard<std::mutex> lockSample(m_sampleMutex);
     m_gpaSampleState = GPASampleState::PENDING_RESULTS;
 
@@ -206,12 +201,12 @@ bool GPASample::IsContinuedByClient() const
 GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsContinuedByClient()
 {
     std::lock_guard<std::mutex> lockSample(m_sampleMutex);
-    bool success = false;
+    bool                        success = false;
 
     if (!m_isClosedByClient)
     {
         m_isContinuedByClient = true;
-        success = true;
+        success               = true;
     }
     else
     {
@@ -219,15 +214,12 @@ GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsContinuedByClient()
     }
 
     return success;
-
 }
 
 bool GPASample::IsSampleValid() const
 {
     // A sample is only valid if it is opened and either it is continued/copied on another command list or closed on the same command list on which it was created
-    bool valid = (m_isOpened &&
-                 ((m_isClosedByClient && !m_isContinuedByClient) || (!m_isClosedByClient && m_isContinuedByClient))) ||
-                 m_isCopiedSample;
+    bool valid = (m_isOpened && ((m_isClosedByClient && !m_isContinuedByClient) || (!m_isClosedByClient && m_isContinuedByClient))) || m_isCopiedSample;
     return valid;
 }
 
@@ -276,7 +268,7 @@ bool GPASample::LinkContinuingSample(GPASample* pContinuingSample)
         else
         {
             m_pContinuingSample = pContinuingSample;
-            success = true;
+            success             = true;
         }
     }
 

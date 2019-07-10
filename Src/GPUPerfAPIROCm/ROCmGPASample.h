@@ -17,16 +17,12 @@
 class ROCmGPASample : public GPASample
 {
 public:
-
     /// Constructor
     /// \param[in] pPass GPA Pass object
     /// \param[in] pCmdList gpa command list
     /// \param[in] sampleType gpa sample type
     /// \param[in] sampleId user-supplied sample id
-    ROCmGPASample(GPAPass* pPass,
-                  IGPACommandList* pCmdList,
-                  GpaSampleType sampleType,
-                  ClientSampleId sampleId);
+    ROCmGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId);
 
     /// Delete default constructor
     ROCmGPASample() = delete;
@@ -47,19 +43,18 @@ public:
     void ReleaseCounters() override final;
 
 private:
-
     /// Structure to hold counter config and results.
     /// Passed to the Disaptch and Completion callbacks as user data
     struct DispatchData
     {
-        rocprofiler_feature_t* m_pFeatures       = nullptr; ///< rocprofiler feature array
-        unsigned               m_featureCount    = 0;       ///< the number of features
-        unsigned int           m_groupIndex      = 0;       ///< index of the current group
-        rocprofiler_group_t    m_group           = {};      ///< current profiling group
-        rocprofiler_t*         m_pContext        = nullptr; ///< current profiling context
-        bool                   m_isDataReady     = false;   ///< flag indicating if counter data is ready
-        std::vector<uint64_t>  m_counterResults;            ///< vector of counter results
-        ROCmGPAContext*        m_pROCmGpaContext = nullptr; ///< the context pointer
+        rocprofiler_feature_t* m_pFeatures    = nullptr;     ///< rocprofiler feature array
+        unsigned               m_featureCount = 0;           ///< the number of features
+        unsigned int           m_groupIndex   = 0;           ///< index of the current group
+        rocprofiler_group_t    m_group        = {};          ///< current profiling group
+        rocprofiler_t*         m_pContext     = nullptr;     ///< current profiling context
+        bool                   m_isDataReady  = false;       ///< flag indicating if counter data is ready
+        std::vector<uint64_t>  m_counterResults;             ///< vector of counter results
+        ROCmGPAContext*        m_pROCmGpaContext = nullptr;  ///< the context pointer
     };
 
     /// Callback function called for each dispatch
@@ -67,9 +62,7 @@ private:
     /// \param pUserData data provided by the user
     /// \param pGroup the rocprofiler group
     /// \return the status of the operation
-    static hsa_status_t DispatchCallback(const rocprofiler_callback_data_t* pCallbackData,
-                                         void* pUserData,
-                                         rocprofiler_group_t* pGroup);
+    static hsa_status_t DispatchCallback(const rocprofiler_callback_data_t* pCallbackData, void* pUserData, rocprofiler_group_t* pGroup);
 
     /// Callback function called when queues are destroyed
     /// \return the status of the operation
@@ -90,9 +83,9 @@ private:
     /// \return a countername string formatted for the rocprofiler library
     std::string GetRocmProfilerCounterName(const char* pGroupName, gpa_uint32 blockInstance, gpa_uint64 counterIndexInGroup) const;
 
-    ROCmGPAContext*          m_pROCmGpaContext; ///< Cache the context pointer
-    DispatchData*            m_pDispatchData;   ///< The dispatch data for this sample
-    std::vector<std::string> m_rocmCounters;    ///< List of ROCProfiler counters for this sample
+    ROCmGPAContext*          m_pROCmGpaContext;  ///< Cache the context pointer
+    DispatchData*            m_pDispatchData;    ///< The dispatch data for this sample
+    std::vector<std::string> m_rocmCounters;     ///< List of ROCProfiler counters for this sample
 };
 
 #endif  // _ROCM_GPA_SAMPLE_H_

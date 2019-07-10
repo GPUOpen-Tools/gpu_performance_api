@@ -15,9 +15,11 @@ CounterGeneratorSchedulerManager::~CounterGeneratorSchedulerManager()
 {
 }
 
-void CounterGeneratorSchedulerManager::RegisterCounterGenerator(GPA_API_Type apiType, GDT_HW_GENERATION generation, GPA_CounterGeneratorBase* pCounterGenerator, bool replaceExisting)
+void CounterGeneratorSchedulerManager::RegisterCounterGenerator(GPA_API_Type              apiType,
+                                                                GDT_HW_GENERATION         generation,
+                                                                GPA_CounterGeneratorBase* pCounterGenerator,
+                                                                bool                      replaceExisting)
 {
-
     GenerationGeneratorMap localMap;
 
     if (0 < m_counterGeneratorItems.count(apiType))
@@ -42,14 +44,17 @@ bool CounterGeneratorSchedulerManager::GetCounterGenerator(GPA_API_Type apiType,
         if (0 < m_counterGeneratorItems[apiType].count(generation))
         {
             pCounterGeneratorOut = m_counterGeneratorItems[apiType][generation];
-            retVal = true;
+            retVal               = true;
         }
     }
 
     return retVal;
 }
 
-void CounterGeneratorSchedulerManager::RegisterCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, IGPACounterScheduler* pCounterScheduler, bool replaceExisting)
+void CounterGeneratorSchedulerManager::RegisterCounterScheduler(GPA_API_Type          apiType,
+                                                                GDT_HW_GENERATION     generation,
+                                                                IGPACounterScheduler* pCounterScheduler,
+                                                                bool                  replaceExisting)
 {
     GenerationSchedulerMap localMap;
 
@@ -75,7 +80,7 @@ bool CounterGeneratorSchedulerManager::GetCounterScheduler(GPA_API_Type apiType,
         if (0 < m_counterSchedulerItems[apiType].count(generation))
         {
             pCounterSchedulerOut = m_counterSchedulerItems[apiType][generation];
-            retVal = true;
+            retVal               = true;
         }
     }
 

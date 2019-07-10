@@ -46,46 +46,31 @@ public:
     /// \param numIsolatedFromSqGroups The number of counter groups that must be isolated from SQ counter groups
     /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
     /// \return the counter splitter
-    static IGPASplitCounters* GetNewCounterSplitter(GPACounterSplitterAlgorithm algorithm,
+    static IGPASplitCounters* GetNewCounterSplitter(GPACounterSplitterAlgorithm   algorithm,
                                                     const std::set<unsigned int>& timestampBlockIds,
                                                     const std::set<unsigned int>& timeCounterIndices,
-                                                    unsigned int maxSQCounters,
-                                                    unsigned int numSQGroups,
-                                                    GPA_SQCounterGroupDesc* pSQCounterBlockInfo,
-                                                    unsigned int numIsolatedFromSqGroups,
-                                                    const unsigned int* pIsolatedFromSqGroups)
+                                                    unsigned int                  maxSQCounters,
+                                                    unsigned int                  numSQGroups,
+                                                    GPA_SQCounterGroupDesc*       pSQCounterBlockInfo,
+                                                    unsigned int                  numIsolatedFromSqGroups,
+                                                    const unsigned int*           pIsolatedFromSqGroups)
     {
         IGPASplitCounters* pSplitter = nullptr;
 
         if (MAX_PER_PASS == algorithm)
         {
-            pSplitter = new(std::nothrow) GPASplitCountersMaxPerPass(timestampBlockIds,
-                                                                     timeCounterIndices,
-                                                                     maxSQCounters,
-                                                                     numSQGroups,
-                                                                     pSQCounterBlockInfo,
-                                                                     numIsolatedFromSqGroups,
-                                                                     pIsolatedFromSqGroups);
+            pSplitter = new (std::nothrow) GPASplitCountersMaxPerPass(
+                timestampBlockIds, timeCounterIndices, maxSQCounters, numSQGroups, pSQCounterBlockInfo, numIsolatedFromSqGroups, pIsolatedFromSqGroups);
         }
         else if (ONE_PUBLIC_COUNTER_PER_PASS == algorithm)
         {
-            pSplitter = new(std::nothrow) GPASplitCountersOnePerPass(timestampBlockIds,
-                                                                     timeCounterIndices,
-                                                                     maxSQCounters,
-                                                                     numSQGroups,
-                                                                     pSQCounterBlockInfo,
-                                                                     numIsolatedFromSqGroups,
-                                                                     pIsolatedFromSqGroups);
+            pSplitter = new (std::nothrow) GPASplitCountersOnePerPass(
+                timestampBlockIds, timeCounterIndices, maxSQCounters, numSQGroups, pSQCounterBlockInfo, numIsolatedFromSqGroups, pIsolatedFromSqGroups);
         }
         else if (CONSOLIDATED == algorithm)
         {
-            pSplitter = new(std::nothrow) GPASplitCountersConsolidated(timestampBlockIds,
-                                                                       timeCounterIndices,
-                                                                       maxSQCounters,
-                                                                       numSQGroups,
-                                                                       pSQCounterBlockInfo,
-                                                                       numIsolatedFromSqGroups,
-                                                                       pIsolatedFromSqGroups);
+            pSplitter = new (std::nothrow) GPASplitCountersConsolidated(
+                timestampBlockIds, timeCounterIndices, maxSQCounters, numSQGroups, pSQCounterBlockInfo, numIsolatedFromSqGroups, pIsolatedFromSqGroups);
         }
         else
         {
@@ -102,10 +87,10 @@ public:
 
 private:
     /// private constructor to enforce use of static factory method
-    GPASplitCounterFactory(void) {};
+    GPASplitCounterFactory(void){};
 
     /// private virtual destructor
-    virtual ~GPASplitCounterFactory(void) {};
+    virtual ~GPASplitCounterFactory(void){};
 };
 
-#endif //_GPA_SPLIT_COUNTER_FACTORY_H_
+#endif  //_GPA_SPLIT_COUNTER_FACTORY_H_

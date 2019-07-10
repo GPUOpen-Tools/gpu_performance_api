@@ -10,20 +10,17 @@
 #include "GPAHardwareCounters.h"
 #include "GPAContextCounterMediator.h"
 
-GPAPass::GPAPass(IGPASession* pGpaSession,
-                 PassIndex passIndex,
-                 GPACounterSource counterSource,
-                 CounterList* pPassCounters):
-    m_pGpaSession(pGpaSession),
-    m_uiPassIndex(passIndex),
-    m_counterSource(counterSource),
-    m_isResultCollected(false),
-    m_isResultReady(false),
-    m_isTimingPass(false),
-    m_gpaInternalSampleCounter(0u),
-    m_commandListCounter(0u),
-    m_isAllSampleValidInPass(false),
-    m_isPassComplete(false)
+GPAPass::GPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters)
+    : m_pGpaSession(pGpaSession)
+    , m_uiPassIndex(passIndex)
+    , m_counterSource(counterSource)
+    , m_isResultCollected(false)
+    , m_isResultReady(false)
+    , m_isTimingPass(false)
+    , m_gpaInternalSampleCounter(0u)
+    , m_commandListCounter(0u)
+    , m_isAllSampleValidInPass(false)
+    , m_isPassComplete(false)
 {
     m_pCounterList = pPassCounters;
 
@@ -45,7 +42,7 @@ GPAPass::~GPAPass()
 
     for (auto it = m_gpaCmdList.begin(); it != m_gpaCmdList.end(); ++it)
     {
-        delete(*it);
+        delete (*it);
     }
 
     m_gpaCmdList.clear();
@@ -144,7 +141,7 @@ bool GPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrima
     // In this way, we need not to synchronize the samples on different command list (in multi-thread application they might be on different thread)
     // We will mark the parent sample as to be continued by the client
 
-    bool success = false;
+    bool       success       = false;
     GPASample* pParentSample = GetSampleById_NotThreadSafe(srcSampleId);
 
     if (nullptr != pParentSample)
@@ -152,21 +149,14 @@ bool GPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrima
         IGPACommandList* pParentSampleCmdList = pParentSample->GetCmdList();
 
         // Validate that both command list are different and passed command list is not secondary
-        if (nullptr != pParentSampleCmdList &&
-            nullptr != pPrimaryGpaCmdList &&
-            GPA_COMMAND_LIST_SECONDARY != pPrimaryGpaCmdList->GetCmdType() &&
+        if (nullptr != pParentSampleCmdList && nullptr != pPrimaryGpaCmdList && GPA_COMMAND_LIST_SECONDARY != pPrimaryGpaCmdList->GetCmdType() &&
             pPrimaryGpaCmdList != pParentSampleCmdList)
         {
-            if (nullptr != pParentSample &&
-                pPrimaryGpaCmdList->IsCommandListRunning() &&
-                pPrimaryGpaCmdList->IsLastSampleClosed())
+            if (nullptr != pParentSample && pPrimaryGpaCmdList->IsCommandListRunning() && pPrimaryGpaCmdList->IsLastSampleClosed())
             {
                 GpaSampleType sampleType = (GPACounterSource::HARDWARE == GetCounterSource()) ? GpaSampleType::Hardware : GpaSampleType::Software;
                 // We don't need to add this sample to the sample map as it will be linked to the parent sample
-                GPASample* pNewSample = CreateAPISpecificSample(
-                                            pPrimaryGpaCmdList,
-                                            sampleType,
-                                            srcSampleId);
+                GPASample* pNewSample = CreateAPISpecificSample(pPrimaryGpaCmdList, sampleType, srcSampleId);
 
                 if (nullptr != pNewSample)
                 {
@@ -188,12 +178,15 @@ bool GPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrima
             }
             else
             {
-                GPA_LogError("Unable to continue sample: Either the specified command list has already been closed or the previous sample has not been closed.");
+                GPA_LogError(
+                    "Unable to continue sample: Either the specified command list has already been closed or the previous sample has not been closed.");
             }
         }
         else
         {
-            GPA_LogError("Unable to continue sample: The specified command list must be a secondary command list and it must be different than the parent sample's command list.");
+            GPA_LogError(
+                "Unable to continue sample: The specified command list must be a secondary command list and it must be different than the parent sample's "
+                "command list.");
         }
     }
     else
@@ -226,7 +219,7 @@ SampleCount GPAPass::GetSampleCount() const
 bool GPAPass::GetSampleIdByIndex(SampleIndex sampleIndex, ClientSampleId& clientSampleId) const
 {
     std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
-    bool found = m_clientGpaSamplesMap.find(sampleIndex) != m_clientGpaSamplesMap.end();
+    bool                        found = m_clientGpaSamplesMap.find(sampleIndex) != m_clientGpaSamplesMap.end();
 
     if (found)
     {
@@ -240,7 +233,7 @@ bool GPAPass::IsAllSampleValidInPass() const
 {
     if (!m_isAllSampleValidInPass)
     {
-        bool success = true;
+        bool                        success = true;
         std::lock_guard<std::mutex> lockSamples(m_samplesUnorderedMapMutex);
 
         for (auto sampleIter = m_samplesUnorderedMap.cbegin(); sampleIter != m_samplesUnorderedMap.cend(); ++sampleIter)
@@ -336,12 +329,11 @@ GPA_Status GPAPass::IsComplete() const
 bool GPAPass::IsResultReady() const
 {
     std::lock_guard<std::mutex> lockCmdList(m_gpaCmdListMutex);
-    bool isReady = m_isResultReady;
+    bool                        isReady = m_isResultReady;
 
     if (!isReady)
     {
         isReady = true;
-
 
         for (auto cmdIter = m_gpaCmdList.cbegin(); cmdIter != m_gpaCmdList.cend() && isReady; ++cmdIter)
         {
@@ -368,7 +360,7 @@ GPA_Status GPAPass::GetResult(ClientSampleId clientSampleId, CounterIndex intern
 
     std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
 
-    GPA_Status status = GPA_STATUS_OK;
+    GPA_Status                 status     = GPA_STATUS_OK;
     SamplesMap::const_iterator sampleIter = m_samplesUnorderedMap.find(clientSampleId);
 
     if (sampleIter == m_samplesUnorderedMap.cend())
@@ -482,7 +474,7 @@ bool GPAPass::GetCounterIndexInPass(CounterIndex internalCounterIndex, CounterIn
         if (m_usedCounterListForPass.end() != iter)
         {
             *pCounterIndexInPassList = static_cast<CounterIndex>(iter - m_usedCounterListForPass.begin());
-            found = true;
+            found                    = true;
         }
     }
 

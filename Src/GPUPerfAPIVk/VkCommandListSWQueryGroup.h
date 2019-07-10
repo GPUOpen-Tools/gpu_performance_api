@@ -116,12 +116,12 @@ private:
     /// Indicates which query types are enabled by the user for each sample.
     std::map<gpa_uint32, bool[GPA_VK_QUERY_TYPE_COUNT]> m_activeSampleQueries;
 
-    size_t                        m_maxSamples;                          ///< The max number of samples that this group can hold
-    gpa_uint32                    m_activeSampleCount;                   ///< The number of active samples in this group
-    VkDevice                      m_device;                              ///< The device these queries are created on
-    VkCommandBuffer               m_commandBuffer;                       ///< The command list that queries and counters are inserted to
-    GpaVkSoftwareQueryResults*    m_pQueriesResults;                     ///< SW queries results
-    VkQueryPool                   m_queryPools[GPA_VK_QUERY_TYPE_COUNT]; ///< A QueryPool for each query type
+    size_t                     m_maxSamples;                           ///< The max number of samples that this group can hold
+    gpa_uint32                 m_activeSampleCount;                    ///< The number of active samples in this group
+    VkDevice                   m_device;                               ///< The device these queries are created on
+    VkCommandBuffer            m_commandBuffer;                        ///< The command list that queries and counters are inserted to
+    GpaVkSoftwareQueryResults* m_pQueriesResults;                      ///< SW queries results
+    VkQueryPool                m_queryPools[GPA_VK_QUERY_TYPE_COUNT];  ///< A QueryPool for each query type
 };
 
-#endif // _VK_COMMAND_LIST_SW_QUERY_GROUP_H_
+#endif  // _VK_COMMAND_LIST_SW_QUERY_GROUP_H_

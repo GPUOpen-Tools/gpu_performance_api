@@ -1,4 +1,4 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 
 GPA_OpenContext
 @@@@@@@@@@@@@@@
@@ -79,8 +79,7 @@ GPUTime counter) may be lower than expected or lower than the application can
 achieve during normal operation. Using the ``flags`` parameter when calling
 GPA_OpenContext, you can alter the GPU clock frequencies used while profiling.
 The table below explains the stable clock modes that can be specified via the
-``flags`` parameter. Currently only DirectX 12 and Vulkan support modifying
-the GPU clock mode used while profiling.
+``flags`` parameter.
 
 .. csv-table::
     :header: "Clock mode", "Description"
@@ -92,3 +91,12 @@ the GPU clock mode used while profiling.
     "``GPA_OPENCONTEXT_CLOCK_MODE_PEAK_BIT``", "Clocks are set to peak frequencies. In most cases this is safe to do for short periods of time while profiling. However, the GPU clock frequencies could still be reduced from peak level under power and thermal constraints."
     "``GPA_OPENCONTEXT_CLOCK_MODE_MIN_MEMORY_BIT``", "The memory clock frequency is set to the minimum level, whiles the engine clock is set to a power and thermal sustainable level."
     "``GPA_OPENCONTEXT_CLOCK_MODE_MIN_ENGINE_BIT``", "The engine clock frequency is set to the minimum level, whiles the memory clock is set to a power and thermal sustainable level."
+
+A Note about Raw Hardware Counters
+&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
+
+By default, GPA exposes a set of derived counters that are computed from one or
+more raw hardware counters. GPA can also be configured to expose the raw
+hardware counters directly. In order to do this, the ``flags`` parameter
+specified when calling GPA_OpenContext should include the
+``GPA_OPENCONTEXT_ENABLE_HARDWARE_COUNTERS_BIT`` bit.

@@ -10,8 +10,10 @@
 
 GPA_CounterGeneratorVKNonAMD::GPA_CounterGeneratorVKNonAMD()
 {
-    GPA_CounterGeneratorBase::SetAllowedCounters(false, false, true); //enable sw counters
+    GPA_CounterGeneratorBase::SetAllowedCounters(false, false, true);  //enable sw counters
 
-    CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_VULKAN, GDT_HW_GENERATION_INTEL, this, false);  // allow future registrations to override this default one
-    CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_VULKAN, GDT_HW_GENERATION_NVIDIA, this, false); // allow future registrations to override this default one
+    CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(
+        GPA_API_VULKAN, GDT_HW_GENERATION_INTEL, this, false);  // allow future registrations to override this default one
+    CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(
+        GPA_API_VULKAN, GDT_HW_GENERATION_NVIDIA, this, false);  // allow future registrations to override this default one
 }

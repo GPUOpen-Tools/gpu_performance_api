@@ -1,14 +1,13 @@
 //==============================================================================
-// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Manages a set of derived counters
 //==============================================================================
 
-
 #include <stdio.h>
 #include <sstream>
-#include <string.h> // for strcpy
+#include <string.h>  // for strcpy
 #include <algorithm>
 
 #include "Utility.h"
@@ -16,28 +15,28 @@
 #include "GPADerivedCounters.h"
 #include "GPACommonDefs.h"
 
-GPA_DerivedCounter::GPA_DerivedCounter(
-    unsigned int index,
-    const char* pName,
-    const char* pGroup,
-    const char* pDescription,
-    GPA_Data_Type dataType,
-    GPA_Usage_Type usageType,
-    vector< gpa_uint32 >& internalCountersRequired,
-    const char* pComputeExpression,
-    const char* pUuid):
-    m_index(index),
-    m_pName(pName),
-    m_pGroup(pGroup),
-    m_pDescription(pDescription),
-    m_dataType(dataType),
-    m_usageType(usageType),
-    m_internalCountersRequired(internalCountersRequired),
-    m_pComputeExpression(pComputeExpression)
+GPA_DerivedCounter::GPA_DerivedCounter(unsigned int        index,
+                                       const char*         pName,
+                                       const char*         pGroup,
+                                       const char*         pDescription,
+                                       GPA_Data_Type       dataType,
+                                       GPA_Usage_Type      usageType,
+                                       vector<gpa_uint32>& internalCountersRequired,
+                                       const char*         pComputeExpression,
+                                       const char*         pUuid)
+    : m_index(index)
+    , m_pName(pName)
+    , m_pGroup(pGroup)
+    , m_pDescription(pDescription)
+    , m_dataType(dataType)
+    , m_usageType(usageType)
+    , m_internalCountersRequired(internalCountersRequired)
+    , m_pComputeExpression(pComputeExpression)
 {
     uint32_t bytes[8];
 #ifdef _WIN32
-    sscanf_s(pUuid, "%08lX-%04hX-%04hX-%02X%02X-%02X%02X%02X%02X%02X%02X",
+    sscanf_s(pUuid,
+             "%08lX-%04hX-%04hX-%02X%02X-%02X%02X%02X%02X%02X%02X",
              &m_uuid.Data1,
              &m_uuid.Data2,
              &m_uuid.Data3,
@@ -48,8 +47,7 @@ GPA_DerivedCounter::GPA_DerivedCounter(
              &bytes[4],
              &bytes[5],
              &bytes[6],
-             &bytes[7]
-            );
+             &bytes[7]);
 
     for (int i = 0; i < _countof(bytes); ++i)
     {
@@ -57,7 +55,8 @@ GPA_DerivedCounter::GPA_DerivedCounter(
     }
 
 #else
-    sscanf(pUuid, "%08lX-%04hX-%04hX-%02X%02X-%02X%02X%02X%02X%02X%02X",
+    sscanf(pUuid,
+           "%08lX-%04hX-%04hX-%02X%02X-%02X%02X%02X%02X%02X%02X",
            &m_uuid.m_data1,
            &m_uuid.m_data2,
            &m_uuid.m_data3,
@@ -68,8 +67,7 @@ GPA_DerivedCounter::GPA_DerivedCounter(
            &bytes[4],
            &bytes[5],
            &bytes[6],
-           &bytes[7]
-          );
+           &bytes[7]);
 
     for (size_t i = 0; i < (sizeof(bytes) / sizeof(bytes[0])); ++i)
     {
@@ -79,29 +77,27 @@ GPA_DerivedCounter::GPA_DerivedCounter(
 #endif
 }
 
-GPA_DerivedCounter::GPA_DerivedCounter():
-    m_index(0u),
-    m_pName(nullptr),
-    m_pGroup(nullptr),
-    m_pDescription(nullptr),
-    m_dataType(GPA_DATA_TYPE__LAST),
-    m_usageType(GPA_USAGE_TYPE__LAST),
-    m_pComputeExpression(nullptr)
+GPA_DerivedCounter::GPA_DerivedCounter()
+    : m_index(0u)
+    , m_pName(nullptr)
+    , m_pGroup(nullptr)
+    , m_pDescription(nullptr)
+    , m_dataType(GPA_DATA_TYPE__LAST)
+    , m_usageType(GPA_USAGE_TYPE__LAST)
+    , m_pComputeExpression(nullptr)
 {
 }
 
-
 //------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-void GPA_DerivedCounters::DefineDerivedCounter(
-    const char* pName,
-    const char* pGroup,
-    const char* pDescription,
-    GPA_Data_Type dataType,
-    GPA_Usage_Type usageType,
-    vector< gpa_uint32 >& internalCountersRequired,
-    const char* pComputeExpression,
-    const char* pUuid)
+void GPA_DerivedCounters::DefineDerivedCounter(const char*         pName,
+                                               const char*         pGroup,
+                                               const char*         pDescription,
+                                               GPA_Data_Type       dataType,
+                                               GPA_Usage_Type      usageType,
+                                               vector<gpa_uint32>& internalCountersRequired,
+                                               const char*         pComputeExpression,
+                                               const char*         pUuid)
 {
     assert(pName);
     assert(pGroup);
@@ -117,10 +113,7 @@ void GPA_DerivedCounters::DefineDerivedCounter(
     m_counters.push_back(GPA_DerivedCounter(index, pName, pGroup, pDescription, dataType, usageType, internalCountersRequired, pComputeExpression, pUuid));
 }
 
-void GPA_DerivedCounters::UpdateAsicSpecificDerivedCounter(
-    const char* pName,
-    vector< gpa_uint32 >& internalCountersRequired,
-    const char* pComputeExpression)
+void GPA_DerivedCounters::UpdateAsicSpecificDerivedCounter(const char* pName, vector<gpa_uint32>& internalCountersRequired, const char* pComputeExpression)
 {
     for (auto& counter : m_counters)
     {
@@ -128,13 +121,18 @@ void GPA_DerivedCounters::UpdateAsicSpecificDerivedCounter(
         {
             counter.m_internalCountersRequired.clear();
             counter.m_internalCountersRequired = internalCountersRequired;
-            counter.m_pComputeExpression = pComputeExpression;
+            counter.m_pComputeExpression       = pComputeExpression;
             return;
         }
     }
 
-    // Error - counter name not found. Should not happen in practice.
-    assert(0);
+    // Errors aside, the counter will not be found if it's not supported on the ASIC
+    // e.g.: there's a discrete counter version, but not an SPM version
+    {
+        std::stringstream o;
+        o << "Warning: unable to find counter for ASIC-specific update:" << pName << ". This may be an unsupported SPM counter.";
+        GPA_LogMessage(o.str().c_str());
+    }
 }
 
 void GPA_DerivedCounters::Clear()
@@ -143,12 +141,240 @@ void GPA_DerivedCounters::Clear()
     m_countersGenerated = false;
 }
 
-
 gpa_uint32 GPA_DerivedCounters::GetNumCounters() const
 {
     return static_cast<gpa_uint32>(m_counters.size());
 }
 
+/// Performs a sum of the specified number of stack values
+/// T is derived counter type
+/// \param[in out] stack RPN counter formula expression stack
+/// \param count number of stack items
+template <class T>
+void SumN(std::vector<T>& stack, int32_t count)
+{
+    T sum = 0;
+
+    // pop the last count items and add them together
+    for (int i = 0; i < count; i++)
+    {
+        T value = stack.back();
+        stack.pop_back();
+
+        sum += value;
+    }
+
+    stack.push_back(sum);
+}
+
+/// Performs a summation of a two blocks of vectors
+/// T is derived counter type
+/// \param[in out] stack RPN counter formula expression stack
+/// \param vectorWidth width of the vector
+template <class T>
+void VecSumN(std::vector<T>& stack, int32_t vectorWidth)
+{
+    // Get values2
+    std::vector<T> values2;
+
+    for (int32_t i = 0; i < vectorWidth; ++i)
+    {
+        values2.push_back(stack.back());
+        stack.pop_back();
+    }
+
+    // Get values1
+    std::vector<T> values1;
+
+    for (int32_t i = 0; i < vectorWidth; ++i)
+    {
+        values1.push_back(stack.back());
+        stack.pop_back();
+    }
+
+    // Sum and push back
+    for (int32_t i = vectorWidth - 1; i >= 0; --i)
+    {
+        T value = values1[i] + values2[i];
+        stack.push_back(value);
+    }
+}
+
+/// Performs a subtraction of a vector from another vector
+/// T is derived counter type
+/// \param[in out] stack RPN counter formula expression stack
+/// \param vectorWidth width of the vector
+template <class T>
+void VecSubN(std::vector<T>& stack, int32_t vectorWidth)
+{
+    // Get values2
+    std::vector<T> values2;
+
+    for (int32_t i = 0; i < vectorWidth; ++i)
+    {
+        values2.push_back(stack.back());
+        stack.pop_back();
+    }
+
+    // Get values1
+    std::vector<T> values1;
+
+    for (int32_t i = 0; i < vectorWidth; ++i)
+    {
+        values1.push_back(stack.back());
+        stack.pop_back();
+    }
+
+    // Subtract and push back
+    for (int32_t i = vectorWidth - 1; i >= 0; --i)
+    {
+        T value = values1[i] - values2[i];
+        stack.push_back(value);
+    }
+}
+
+/// Performs a divide of a vector by another vector
+/// T is derived counter type
+/// \param[in out] stack RPN counter formula expression stack
+/// \param vectorWidth width of the vector
+template <class T>
+void VecDivN(std::vector<T>& stack, int32_t vectorWidth)
+{
+    // Get the divisors
+    std::vector<T> divisors;
+
+    for (int32_t i = 0; i < vectorWidth; ++i)
+    {
+        divisors.push_back(stack.back());
+        stack.pop_back();
+    }
+
+    // Get the dividends
+    std::vector<T> dividends;
+
+    for (int32_t i = 0; i < vectorWidth; ++i)
+    {
+        dividends.push_back(stack.back());
+        stack.pop_back();
+    }
+
+    // Divide and push back
+    for (int32_t i = vectorWidth - 1; i >= 0; --i)
+    {
+        T value = divisors[i] ? (dividends[i] / divisors[i]) : static_cast<T>(0);
+        stack.push_back(value);
+    }
+}
+
+/// Performs an average of the specified number of stack values
+/// T is derived counter type
+/// \param[in out] stack RPN counter formula expression stack
+/// \param count number of stack items
+template <class T>
+void AvgN(std::vector<T>& stack, int32_t count)
+{
+    T value = 0;
+
+    for (int32_t i = 0; i < count; ++i)
+    {
+        value += stack.back();
+        stack.pop_back();
+    }
+
+    value /= static_cast<T>(count);
+
+    stack.push_back(value);
+}
+
+/// Performs a scalar subtraction of a vector
+/// T is derived counter type
+/// \param[in out] stack RPN counter formula expression stack
+/// \param vectorWidth width of the vector
+template <class T>
+void ScalarSubN(std::vector<T>& stack, int32_t vectorWidth)
+{
+    T arg = stack.back();
+    stack.pop_back();
+
+    // Get the dividends
+    std::vector<T> dividends;
+
+    for (int32_t i = 0; i < vectorWidth; ++i)
+    {
+        dividends.push_back(stack.back());
+        stack.pop_back();
+    }
+
+    // Divide and push back
+    for (int32_t i = vectorWidth - 1; i >= 0; --i)
+    {
+        T value = arg - dividends[i];
+
+        if (value < 0)
+        {
+            assert(0);
+            value = 0;
+        }
+
+        stack.push_back(value);
+    }
+}
+
+/// Performs a scalar divide of a vector
+/// T is derived counter type
+/// \param[in out] stack RPN counter formula expression stack
+/// \param vectorWidth width of the vector
+template <class T>
+void ScalarDivN(std::vector<T>& stack, int32_t vectorWidth)
+{
+    T divisor = stack.back();
+    stack.pop_back();
+
+    // Get the dividends
+    std::vector<T> dividends;
+
+    for (int32_t i = 0; i < vectorWidth; ++i)
+    {
+        dividends.push_back(stack.back());
+        stack.pop_back();
+    }
+
+    // Divide and push back
+    for (int32_t i = vectorWidth - 1; i >= 0; --i)
+    {
+        T value = divisor ? (dividends[i] / divisor) : static_cast<T>(0);
+        stack.push_back(value);
+    }
+}
+
+/// Performs a scalar multiply of a vector
+/// T is derived counter type
+/// \param[in out] stack RPN counter formula expression stack
+/// \param vectorWidth width of the vector
+template <class T>
+void ScalarMulN(std::vector<T>& stack, int32_t vectorWidth)
+{
+    // Get the multiplicands
+    std::vector<T> multiplicands;
+
+    for (int32_t i = 0; i < vectorWidth; ++i)
+    {
+        multiplicands.push_back(stack.back());
+        stack.pop_back();
+    }
+
+    T multiplier = stack.back();
+    stack.pop_back();
+
+    assert(multiplier != 0);
+
+    // Multiply and push back
+    for (int32_t i = vectorWidth - 1; i >= 0; --i)
+    {
+        T value = multiplicands[i] * multiplier;
+        stack.push_back(value);
+    }
+}
 
 /// Evaluates a counter formula expression
 /// T is derived counter type
@@ -158,13 +384,12 @@ gpa_uint32 GPA_DerivedCounters::GetNumCounters() const
 /// \param resultType the counter result type
 /// \param pHwInfo the hardware info
 /// \return GPA_STATUS_OK on success, otherwise an error code
-template<class T, class InternalCounterType>
-static GPA_Status EvaluateExpression(
-    const char* pExpression,
-    void* pResult,
-    const vector< gpa_uint64* >& results,
-    GPA_Data_Type resultType,
-    const GPA_HWInfo* pHwInfo)
+template <class T, class InternalCounterType>
+static GPA_Status EvaluateExpression(const char*                      pExpression,
+                                     void*                            pResult,
+                                     const vector<const gpa_uint64*>& results,
+                                     GPA_Data_Type                    resultType,
+                                     const GPA_HWInfo*                pHwInfo)
 {
     GPA_Status status = GPA_STATUS_OK;
 
@@ -174,16 +399,16 @@ static GPA_Status EvaluateExpression(
         return GPA_STATUS_ERROR_INVALID_PARAMETER;
     }
 
-    size_t expressionLen = strlen(pExpression) + 1;
+    size_t            expressionLen = strlen(pExpression) + 1;
     std::vector<char> pBuf(expressionLen);
 
     strcpy_s(pBuf.data(), expressionLen, pExpression);
 
-    vector< T > stack;
-    T* pWriteResult = reinterpret_cast<T*>(pResult);
+    vector<T> stack;
+    T*        pWriteResult = reinterpret_cast<T*>(pResult);
 
     char* pContext = nullptr;
-    pContext;//TODO: gcc is not considering unused in strtok_s
+    pContext;  //TODO: gcc is not considering unused in strtok_s
     char* pch = strtok_s(pBuf.data(), " ,", &pContext);
 
     while (nullptr != pch)
@@ -239,7 +464,7 @@ static GPA_Status EvaluateExpression(
         else if (*pch == '(')
         {
             // constant
-            T constant = static_cast<T>(0);
+            T   constant   = static_cast<T>(0);
             int scanResult = 0;
 
             if (resultType == GPA_DATA_TYPE_FLOAT64)
@@ -248,7 +473,7 @@ static GPA_Status EvaluateExpression(
                 scanResult = sscanf(pch, "(%lf)", reinterpret_cast<gpa_float64*>(&constant));
 #else
                 scanResult = sscanf_s(pch, "(%lf)", reinterpret_cast<gpa_float64*>(&constant));
-#endif // _LINUX
+#endif  // _LINUX
             }
             else if (resultType == GPA_DATA_TYPE_UINT64)
             {
@@ -256,7 +481,7 @@ static GPA_Status EvaluateExpression(
                 scanResult = sscanf(pch, "(%llu)", reinterpret_cast<gpa_uint64*>(&constant));
 #else
                 scanResult = sscanf_s(pch, "(%I64u)", reinterpret_cast<gpa_uint64*>(&constant));
-#endif // _LINUX
+#endif  // _LINUX
             }
             else
             {
@@ -276,6 +501,10 @@ static GPA_Status EvaluateExpression(
         {
             stack.push_back(static_cast<T>(pHwInfo->GetNumberShaderEngines()));
         }
+        else if (_strcmpi(pch, "num_shader_arrays") == 0)
+        {
+            stack.push_back(static_cast<T>(pHwInfo->GetNumberShaderArrays()));
+        }
         else if (_strcmpi(pch, "num_simds") == 0)
         {
             stack.push_back(static_cast<T>(pHwInfo->GetNumberSIMDs()));
@@ -287,6 +516,10 @@ static GPA_Status EvaluateExpression(
         else if (_strcmpi(pch, "num_prim_pipes") == 0)
         {
             stack.push_back(static_cast<T>(pHwInfo->GetNumberPrimPipes()));
+        }
+        else if (_strcmpi(pch, "num_cus") == 0)
+        {
+            stack.push_back(static_cast<T>(pHwInfo->GetNumberCUs()));
         }
         else if (_strcmpi(pch, "TS_FREQ") == 0)
         {
@@ -331,6 +564,25 @@ static GPA_Status EvaluateExpression(
 
             stack.push_back(maxValue);
         }
+        else if (_strcmpi(pch, "max10") == 0)
+        {
+            assert(stack.size() >= 10);
+
+            // initialize the max value to the 1st item
+            T maxValue = stack.back();
+            stack.pop_back();
+
+            // pop the last 9 items and compute the max
+            for (int i = 0; i < 9; i++)
+            {
+                T value = stack.back();
+                stack.pop_back();
+
+                maxValue = (maxValue > value) ? maxValue : value;
+            }
+
+            stack.push_back(maxValue);
+        }
         else if (_strcmpi(pch, "max16") == 0)
         {
             assert(stack.size() >= 16);
@@ -341,6 +593,25 @@ static GPA_Status EvaluateExpression(
 
             // pop the last 15 items and compute the max
             for (int i = 0; i < 15; i++)
+            {
+                T value = stack.back();
+                stack.pop_back();
+
+                maxValue = (maxValue > value) ? maxValue : value;
+            }
+
+            stack.push_back(maxValue);
+        }
+        else if (_strcmpi(pch, "max24") == 0)
+        {
+            assert(stack.size() >= 24);
+
+            // initialize the max value to the 1st item
+            T maxValue = stack.back();
+            stack.pop_back();
+
+            // pop the last 23 items and compute the max
+            for (int i = 0; i < 23; i++)
             {
                 T value = stack.back();
                 stack.pop_back();
@@ -398,6 +669,25 @@ static GPA_Status EvaluateExpression(
 
             // pop the last 63 items and compute the max
             for (int i = 0; i < 63; i++)
+            {
+                T value = stack.back();
+                stack.pop_back();
+
+                maxValue = (maxValue > value) ? maxValue : value;
+            }
+
+            stack.push_back(maxValue);
+        }
+        else if (_strcmpi(pch, "max80") == 0)
+        {
+            assert(stack.size() >= 80);
+
+            // initialize the max value to the 1st item
+            T maxValue = stack.back();
+            stack.pop_back();
+
+            // pop the last 79 items and compute the max
+            for (int i = 0; i < 79; i++)
             {
                 T value = stack.back();
                 stack.pop_back();
@@ -480,165 +770,311 @@ static GPA_Status EvaluateExpression(
                 stack.push_back(*iter);
             }
         }
+        else if (_strcmpi(pch, "sum2") == 0)
+        {
+            const int valueCount = 2;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
+        }
         else if (_strcmpi(pch, "sum4") == 0)
         {
-            assert(stack.size() >= 4);
-            T sum = 0;
-
-            // pop the last 4 items and add them together
-            for (int i = 0; i < 4; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                sum += value;
-            }
-
-            stack.push_back(sum);
+            const int valueCount = 4;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
         }
         else if (_strcmpi(pch, "sum8") == 0)
         {
-            assert(stack.size() >= 8);
-            T sum = 0;
-
-            // pop the last 8 items and add them together
-            for (int i = 0; i < 8; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                sum += value;
-            }
-
-            stack.push_back(sum);
+            const int valueCount = 8;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
         }
         else if (_strcmpi(pch, "sum10") == 0)
         {
-            assert(stack.size() >= 10);
-            T sum = 0;
-
-            // pop the last 10 items and add them together
-            for (int i = 0; i < 10; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                sum += value;
-            }
-
-            stack.push_back(sum);
+            const int valueCount = 10;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
         }
         else if (_strcmpi(pch, "sum11") == 0)
         {
-            assert(stack.size() >= 11);
-            T sum = 0;
-
-            // pop the last 11 items and add them together
-            for (int i = 0; i < 11; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                sum += value;
-            }
-
-            stack.push_back(sum);
+            const int valueCount = 11;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
         }
         else if (_strcmpi(pch, "sum12") == 0)
         {
-            assert(stack.size() >= 12);
-            T sum = 0;
-
-            // pop the last 12 items and add them together
-            for (int i = 0; i < 12; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                sum += value;
-            }
-
-            stack.push_back(sum);
+            const int valueCount = 12;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
         }
         else if (_strcmpi(pch, "sum16") == 0)
         {
-            assert(stack.size() >= 16);
-            T sum = 0;
-
-            // pop the last 16 items and add them together
-            for (int i = 0; i < 16; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                sum += value;
-            }
-
-            stack.push_back(sum);
+            const int valueCount = 16;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
+        }
+        else if (_strcmpi(pch, "sum24") == 0)
+        {
+            const int valueCount = 24;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
         }
         else if (_strcmpi(pch, "sum32") == 0)
         {
-            assert(stack.size() >= 32);
-            T sum = 0;
-
-            // pop the last 32 items and add them together
-            for (int i = 0; i < 32; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                sum += value;
-            }
-
-            stack.push_back(sum);
+            const int valueCount = 32;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
+        }
+        else if (_strcmpi(pch, "sum40") == 0)
+        {
+            const int valueCount = 40;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
         }
         else if (_strcmpi(pch, "sum44") == 0)
         {
-            assert(stack.size() >= 44);
-            T sum = 0;
-
-            // pop the last 44 items and add them together
-            for (int i = 0; i < 44; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                sum += value;
-            }
-
-            stack.push_back(sum);
+            const int valueCount = 44;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
         }
         else if (_strcmpi(pch, "sum64") == 0)
         {
-            assert(stack.size() >= 64);
-            T sum = 0;
-
-            // pop the last 64 items and add them together
-            for (int i = 0; i < 64; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                sum += value;
-            }
-
-            stack.push_back(sum);
+            const int valueCount = 64;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
+        }
+        else if (_strcmpi(pch, "sum80") == 0)
+        {
+            const int valueCount = 80;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
         }
         else if (_strcmpi(pch, "sum256") == 0)
         {
-            assert(stack.size() >= 256);
-            T sum = 0;
-
-            // pop the last 256 items and add them together
-            for (int i = 0; i < 256; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                sum += value;
-            }
-
-            stack.push_back(sum);
+            const int valueCount = 256;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
+        }
+        else if (_strcmpi(pch, "sum320") == 0)
+        {
+            const int valueCount = 320;
+            assert(stack.size() >= valueCount);
+            SumN(stack, valueCount);
+        }
+        else if (_strcmpi(pch, "vecsum2") == 0)
+        {
+            const int32_t vectorWidth = 2;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec2
+            VecSumN<T>(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecsum4") == 0)
+        {
+            const int32_t vectorWidth = 4;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec4
+            VecSumN<T>(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecsum8") == 0)
+        {
+            const int32_t vectorWidth = 8;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec8
+            VecSumN<T>(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecsum16") == 0)
+        {
+            const int32_t vectorWidth = 16;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec16
+            VecSumN<T>(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecsum64") == 0)
+        {
+            const int32_t vectorWidth = 64;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec64
+            VecSumN<T>(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecsub2") == 0)
+        {
+            const int32_t vectorWidth = 2;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec2
+            VecSubN<T>(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecsub16") == 0)
+        {
+            const int32_t vectorWidth = 16;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec16
+            VecSubN<T>(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecdiv2") == 0)
+        {
+            const int32_t vectorWidth = 2;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec2
+            VecDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecdiv4") == 0)
+        {
+            const int32_t vectorWidth = 4;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec4
+            VecDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecdiv8") == 0)
+        {
+            const int32_t vectorWidth = 8;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec8
+            VecDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecdiv10") == 0)
+        {
+            const int32_t vectorWidth = 10;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec10
+            VecDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecdiv16") == 0)
+        {
+            const int32_t vectorWidth = 16;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec16
+            VecDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecdiv20") == 0)
+        {
+            const int32_t vectorWidth = 20;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec20
+            VecDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecdiv32") == 0)
+        {
+            const int32_t vectorWidth = 32;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec32
+            VecDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecdiv64") == 0)
+        {
+            const int32_t vectorWidth = 64;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec64
+            VecDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "vecdiv80") == 0)
+        {
+            const int32_t vectorWidth = 80;
+            assert(stack.size() >= 2 * vectorWidth);  // 2 vectors with vec80
+            VecDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "avg2") == 0)
+        {
+            const int32_t valueCount = 2;
+            assert(stack.size() >= valueCount);
+            AvgN(stack, valueCount);
+        }
+        else if (_strcmpi(pch, "avg4") == 0)
+        {
+            const int32_t valueCount = 4;
+            assert(stack.size() >= valueCount);
+            AvgN(stack, valueCount);
+        }
+        else if (_strcmpi(pch, "avg8") == 0)
+        {
+            const int32_t valueCount = 8;
+            assert(stack.size() >= valueCount);
+            AvgN(stack, valueCount);
+        }
+        else if (_strcmpi(pch, "avg16") == 0)
+        {
+            const int32_t valueCount = 16;
+            assert(stack.size() >= valueCount);
+            AvgN(stack, valueCount);
+        }
+        else if (_strcmpi(pch, "avg20") == 0)
+        {
+            const int32_t valueCount = 20;
+            assert(stack.size() >= valueCount);
+            AvgN(stack, valueCount);
+        }
+        else if (_strcmpi(pch, "scalarSub10") == 0)
+        {
+            const int32_t vectorWidth = 10;
+            assert(stack.size() >= (vectorWidth + 1));  // vec10 + 1 scalar
+            ScalarSubN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarSub20") == 0)
+        {
+            const int32_t vectorWidth = 20;
+            assert(stack.size() >= (vectorWidth + 1));  // vec20 + 1 scalar
+            ScalarSubN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarSub40") == 0)
+        {
+            const int32_t vectorWidth = 40;
+            assert(stack.size() >= (vectorWidth + 1));  // vec40 + 1 scalar
+            ScalarSubN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarSub80") == 0)
+        {
+            const int32_t vectorWidth = 80;
+            assert(stack.size() >= (vectorWidth + 1));  // vec80 + 1 scalar
+            ScalarSubN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarDiv2") == 0)
+        {
+            const int32_t vectorWidth = 2;
+            assert(stack.size() >= (vectorWidth + 1));  // vec2 + 1 scalar
+            ScalarDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarDiv4") == 0)
+        {
+            const int32_t vectorWidth = 4;
+            assert(stack.size() >= (vectorWidth + 1));  // vec4 + 1 scalar
+            ScalarDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarDiv8") == 0)
+        {
+            const int32_t vectorWidth = 8;
+            assert(stack.size() >= (vectorWidth + 1));  // vec8 + 1 scalar
+            ScalarDivN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarMul2") == 0)
+        {
+            const int32_t vectorWidth = 2;
+            assert(stack.size() >= (vectorWidth + 1));  // vec2 + 1 scalar
+            ScalarMulN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarMul4") == 0)
+        {
+            const int32_t vectorWidth = 4;
+            assert(stack.size() >= (vectorWidth + 1));  // vec4 + 1 scalar
+            ScalarMulN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarMul8") == 0)
+        {
+            const int32_t vectorWidth = 8;
+            assert(stack.size() >= (vectorWidth + 1));  // vec8 + 1 scalar
+            ScalarMulN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarMul16") == 0)
+        {
+            const int32_t vectorWidth = 16;
+            assert(stack.size() >= (vectorWidth + 1));  // vec16 + 1 scalar
+            ScalarMulN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarMul20") == 0)
+        {
+            const int32_t vectorWidth = 20;
+            assert(stack.size() >= (vectorWidth + 1));  // vec20 + 1 scalar
+            ScalarMulN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarMul32") == 0)
+        {
+            const int32_t vectorWidth = 32;
+            assert(stack.size() >= (vectorWidth + 1));  // vec32 + 1 scalar
+            ScalarMulN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarMul40") == 0)
+        {
+            const int32_t vectorWidth = 40;
+            assert(stack.size() >= (vectorWidth + 1));  // vec40 + 1 scalar
+            ScalarMulN(stack, vectorWidth);
+        }
+        else if (_strcmpi(pch, "scalarMul64") == 0)
+        {
+            const int32_t vectorWidth = 64;
+            assert(stack.size() >= (vectorWidth + 1));  // vec64 + 1 scalar
+            ScalarMulN(stack, vectorWidth);
         }
         else
         {
@@ -652,11 +1088,10 @@ static GPA_Status EvaluateExpression(
             UNREFERENCED_PARAMETER(scanResult);
             assert(scanResult == 1);
 
-
             if (index < results.size())
             {
-                InternalCounterType internalVal = *reinterpret_cast<InternalCounterType*>(results[index]);
-                T internalValFloat = static_cast<T>(internalVal);
+                const InternalCounterType internalVal      = *reinterpret_cast<const InternalCounterType*>(results[index]);
+                T                         internalValFloat = static_cast<T>(internalVal);
                 stack.push_back(internalValFloat);
             }
             else
@@ -686,13 +1121,11 @@ static GPA_Status EvaluateExpression(
     return status;
 }
 
-GPA_Status GPA_DerivedCounters::ComputeCounterValue(
-    gpa_uint32 counterIndex,
-    const vector< gpa_uint64* >& results,
-    vector< GPA_Data_Type >& internalCounterTypes,
-    void* pResult,
-    const GPA_HWInfo* pHwInfo
-) const
+GPA_Status GPA_DerivedCounters::ComputeCounterValue(gpa_uint32                       counterIndex,
+                                                    const vector<const gpa_uint64*>& results,
+                                                    vector<GPA_Data_Type>&           internalCounterTypes,
+                                                    void*                            pResult,
+                                                    const GPA_HWInfo*                pHwInfo) const
 {
     if (nullptr == m_counters[counterIndex].m_pComputeExpression)
     {
@@ -710,11 +1143,13 @@ GPA_Status GPA_DerivedCounters::ComputeCounterValue(
     {
         if (m_counters[counterIndex].m_dataType == GPA_DATA_TYPE_FLOAT64)
         {
-            status = EvaluateExpression<gpa_float64, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, m_counters[counterIndex].m_dataType, pHwInfo);
+            status = EvaluateExpression<gpa_float64, gpa_uint64>(
+                m_counters[counterIndex].m_pComputeExpression, pResult, results, m_counters[counterIndex].m_dataType, pHwInfo);
         }
         else if (m_counters[counterIndex].m_dataType == GPA_DATA_TYPE_UINT64)
         {
-            status = EvaluateExpression<gpa_uint64, gpa_uint64>(m_counters[counterIndex].m_pComputeExpression, pResult, results, m_counters[counterIndex].m_dataType, pHwInfo);
+            status = EvaluateExpression<gpa_uint64, gpa_uint64>(
+                m_counters[counterIndex].m_pComputeExpression, pResult, results, m_counters[counterIndex].m_dataType, pHwInfo);
         }
         else
         {

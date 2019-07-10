@@ -25,13 +25,13 @@ bool DX12GPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, 
 {
     bool success = false;
 
-    IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
+    IUnknown*     pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
     ID3D12Device* pD3D12Device;
 
     if (DX12Utils::GetD3D12Device(pUnknownPtr, &pD3D12Device) && DX12Utils::IsFeatureLevelSupported(pD3D12Device))
     {
         DXGI_ADAPTER_DESC adapterDesc;
-        GPA_Status result = DX12Utils::DX12GetAdapterDesc(pD3D12Device, adapterDesc);
+        GPA_Status        result = DX12Utils::DX12GetAdapterDesc(pD3D12Device, adapterDesc);
 
         if (GPA_STATUS_OK == result)
         {
@@ -44,7 +44,7 @@ bool DX12GPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, 
             hwInfo.SetDeviceID(adapterDesc.DeviceId);
             hwInfo.SetRevisionID(adapterDesc.Revision);
             std::wstring adapterNameW(adapterDesc.Description);
-            std::string adapterName(adapterNameW.begin(), adapterNameW.end());
+            std::string  adapterName(adapterNameW.begin(), adapterNameW.end());
             hwInfo.SetDeviceName(adapterName.c_str());
             GDT_HW_GENERATION hwGen = GDT_HW_GENERATION_NONE;
 
@@ -92,11 +92,10 @@ bool DX12GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
 
     bool success = false;
 
-    IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
+    IUnknown*     pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
     ID3D12Device* pD3D12Device;
 
-    if (DX12Utils::GetD3D12Device(pUnknownPtr, &pD3D12Device) &&
-        DX12Utils::IsFeatureLevelSupported(pD3D12Device))
+    if (DX12Utils::GetD3D12Device(pUnknownPtr, &pD3D12Device) && DX12Utils::IsFeatureLevelSupported(pD3D12Device))
     {
         success = true;
     }
@@ -127,14 +126,13 @@ bool DX12GPAImplementor::IsCopySecondarySampleSupported() const
 
 IGPAContext* DX12GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
 {
-    IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
+    IUnknown*     pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
     ID3D12Device* pD3D12Device;
-    IGPAContext* pRetGpaContext = nullptr;
+    IGPAContext*  pRetGpaContext = nullptr;
 
-    if (DX12Utils::GetD3D12Device(pUnknownPtr, &pD3D12Device) &&
-        DX12Utils::IsFeatureLevelSupported(pD3D12Device))
+    if (DX12Utils::GetD3D12Device(pUnknownPtr, &pD3D12Device) && DX12Utils::IsFeatureLevelSupported(pD3D12Device))
     {
-        DX12GPAContext* pDX12GpaContext = new(std::nothrow) DX12GPAContext(pD3D12Device, hwInfo, flags);
+        DX12GPAContext* pDX12GpaContext = new (std::nothrow) DX12GPAContext(pD3D12Device, hwInfo, flags);
 
         if (nullptr != pDX12GpaContext)
         {

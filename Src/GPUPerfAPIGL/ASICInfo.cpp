@@ -1,373 +1,392 @@
 //==============================================================================
-// Copyright (c) 2006-2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2006-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  Utility routines for retreiving ASIC information
+/// \brief  Utility routines for retrieving ASIC information
 //==============================================================================
 
-
-//=================================================================================================================================
-//
-//          Includes / defines / typedefs / static member variable initialization block
-//
-//=================================================================================================================================
-#include "ASICInfo.h"
-
 #ifdef _WIN32
-    #include <windows.h>
+#include <windows.h>
 #endif
 
-#include "GLEntryPoints.h"
 #include <assert.h>
 #include <string>
 #include <sstream>
 
-#include "Logging.h"
-
 #ifdef _LINUX
-    #include <string.h>
-    #include <stdlib.h>
+#include <string.h>
+#include <stdlib.h>
 #endif
 
 #include <ADLUtil.h>
 
-/// Driver-defined ASIC info group
-#define ASIC_GROUP   "GPIN"
-/// Driver-defined ASIC type counter
-#define ASIC_TYPE    "GPIN_000"
+#include "Logging.h"
+#include "GLInclude.h"
+#include "ASICInfo.h"
 
-//=================================================================================================================================
-//
-//          Private Function(s)
-//
-//=================================================================================================================================
+#define ASIC_GROUP "GPIN"      ///< Driver-defined ASIC info group
+#define ASIC_TYPE_INDEX     0  ///< Driver-defined counter index for asic type
+#define ASIC_NUM_SIMD_INDEX 1  ///< Driver-defined counter index for number of SIMDs
+#define ASIC_NUM_RB_INDEX   2  ///< Driver-defined counter index for number of RBs
+#define ASIC_NUM_SPI_INDEX  3  ///< Driver-defined counter index for number of SPIs
+#define ASIC_NUM_SE_INDEX   4  ///< Driver-defined counter index for number of SEs
+#define ASIC_NUM_SA_INDEX   5  ///< Driver-defined counter index for number of SAs
+#define ASIC_NUM_CU_INDEX   6  ///< Driver-defined counter index for number of CUs
+#define ASIC_DEV_ID_INDEX   7  ///< Driver-defined counter index for device id
+#define ASIC_DEV_REV_INDEX  8  ///< Driver-defined counter index for revision id
 
-//=========================================================================================================
-/// Get the group ID for the given string
-/// \param pGroupStr Pointer to group string name
-/// \return -1 if group not found, group ID otherwise
-//=========================================================================================================
-GLint GetGroupID(const char* pGroupStr)
+namespace oglUtils
 {
-    GLint nNumGroups = 0;
-
-    // Get the number of performance counter groups
-    oglUtils::_oglGetPerfMonitorGroupsAMD(&nNumGroups, 0, nullptr);
-
-    if (nNumGroups > 0)
+    /// Get the group ID for ASICInfo group
+    /// \return -1 if group not found, group ID otherwise
+    GLint GetASICInfoGroupID()
     {
-        GLuint* pPerfGroups = new(std::nothrow) GLuint[nNumGroups];
+        GLint nNumGroups = 0;
 
-        if (nullptr != pPerfGroups)
+        // Get the number of performance counter groups
+        _oglGetPerfMonitorGroupsAMD(&nNumGroups, 0, nullptr);
+
+        if (nNumGroups > 0)
         {
-            // Get the group Ids
-            oglUtils::_oglGetPerfMonitorGroupsAMD(nullptr, nNumGroups, pPerfGroups);
+            GLuint* pPerfGroups = new (std::nothrow) GLuint[nNumGroups];
 
-            for (int i = 0; i < nNumGroups; i++)
+            if (nullptr != pPerfGroups)
             {
-                char groupStr[256];
+                // Get the group Ids
+                _oglGetPerfMonitorGroupsAMD(nullptr, nNumGroups, pPerfGroups);
 
-                // Get the group name
-                oglUtils::_oglGetPerfMonitorGroupStringAMD(pPerfGroups[i], 255, nullptr, groupStr);
-
-                if (!strcmp(groupStr, pGroupStr))
+                for (int i = 0; i < nNumGroups; i++)
                 {
-                    GLint nGroupID = pPerfGroups[i];
-                    delete[] pPerfGroups;
-                    return nGroupID;
-                }
-            }
+                    char groupStr[256];
 
-            delete[] pPerfGroups;
+                    // Get the group name
+                    _oglGetPerfMonitorGroupStringAMD(pPerfGroups[i], 255, nullptr, groupStr);
+
+                    if (!strcmp(groupStr, ASIC_GROUP))
+                    {
+                        GLint nGroupID = pPerfGroups[i];
+                        delete[] pPerfGroups;
+                        return nGroupID;
+                    }
+                }
+
+                delete[] pPerfGroups;
+            }
         }
+
+        return -1;
     }
 
-    return -1;
-}
-
-//=========================================================================================================
-/// Get the value of a counter by name in a given group
-/// \param nGroup GroupID to find counter in
-/// \param pCounterStr String name of counter
-/// \param rValue Value of counter (returned)
-/// \return false if counter not found, true otherwise
-//=========================================================================================================
-bool GetCounterValue(GLint nGroup, const char* pCounterStr, GLuint& rValue)
-{
-    GLint nNumCounters;
-    bool bResult = false;
-
-    // Start by getting the list of counters in the group
-    oglUtils::_oglGetPerfMonitorCountersAMD(nGroup, &nNumCounters, nullptr, 0, nullptr);
-
-    if (nNumCounters > 0)
+    /// Get the corresponding ASIC type for the specified ASIC ID
+    /// \param asicID the ASIC ID whose tpye is needed
+    /// \return the ASIC type of the specified ASIC ID
+    ASICType GetASICTypeFromAsicID(AsicID asicID)
     {
-        GLuint* pCounterList = new(std::nothrow) GLuint[nNumCounters];
+        ASICType retVal = ASIC_UNKNOWN;
+
+        // Decode the ASIC Type
+        switch (asicID)
+        {
+        case ASIC_ID_TAHITI_P:
+        case ASIC_ID_PITCAIRN_PM:
+        case ASIC_ID_CAPEVERDE_M:
+        case ASIC_ID_OLAND_M:
+        case ASIC_ID_HAINAN_M:
+            GPA_LogMessage("Recognized a GFX6 card.");
+            retVal = ASIC_Gfx6;
+            break;
+
+        case ASIC_ID_BONAIRE_M:
+        case ASIC_ID_HAWAII_P:
+            GPA_LogMessage("Recognized a GFX7 card.");
+            retVal = ASIC_Gfx7;
+            break;
+
+        case ASIC_ID_KALINDI:
+        case ASIC_ID_GODAVARI:
+        case ASIC_ID_SPECTRE:
+        case ASIC_ID_SPOOKY:
+            GPA_LogMessage("Recognized an APU with GFX7 graphics.");
+            retVal = ASIC_Gfx7;
+            break;
+
+        case ASIC_ID_ICELAND_M:
+        case ASIC_ID_TONGA_P:
+        case ASIC_ID_FIJI_P:
+        case ASIC_ID_ELLESMERE:
+        case ASIC_ID_BAFFIN:
+        case ASIC_ID_LEXA:
+        case ASIC_ID_VEGAM:
+            GPA_LogMessage("Recognized a GFX8 card.");
+            retVal = ASIC_Gfx8;
+            break;
+
+        case ASIC_ID_CARRIZO:
+        case ASIC_ID_STONEY:
+            GPA_LogMessage("Recognized an APU with GFX8 graphics.");
+            retVal = ASIC_Gfx8;
+            break;
+
+        case ASIC_ID_GFX900:
+        case ASIC_ID_PLACEHOLDER1:
+        case ASIC_ID_GFX906:
+            GPA_LogMessage("Recognized a GFX9 card.");
+            retVal = ASIC_Gfx9;
+            break;
+
+        case ASIC_ID_GFX902:
+        case ASIC_ID_PLACEHOLDER:
+        case ASIC_ID_PLACEHOLDER2:
+        case ASIC_ID_PLACEHOLDER3:
+            GPA_LogMessage("Recognized an APU with GFX9 graphics.");
+            retVal = ASIC_Gfx9;
+            break;
+
+        case ASIC_ID_GFX1010:
+        case ASIC_ID_GFX1010LITE:
+        case ASIC_ID_PLACEHOLDER4:
+        case ASIC_ID_PLACEHOLDER5:
+        case ASIC_ID_GFX1012:
+        case ASIC_ID_PLACEHOLDER6:
+        case ASIC_ID_PLACEHOLDER7:
+            GPA_LogMessage("Recognized a GFX10 card.");
+            retVal = ASIC_Gfx10;
+            break;
+
+        default:
+            std::stringstream errorMessage;
+            errorMessage << "Unrecognized asic type: " << asicID << ".";
+            GPA_LogError(errorMessage.str().c_str());
+            assert(0);  // Unknown ASIC Type, need to update enums list from UGL driver
+            retVal = ASIC_UNKNOWN;
+        }
+
+        return retVal;
+    }
+
+#ifndef GLES
+
+    /// Parses a version number like this: "4.2.12325 Compatibility Profile Context 13.100.0.0"
+    /// to extract the "12325" portion.
+    /// \param pVersion the version string to extract the number from
+    /// \return 0 on failure, the build version number on success
+    int ExtractVersionNumber(const GLubyte* pVersion)
+    {
+        //initialize to INT_MAX to simulate most recent driver
+        int version = INT_MAX;
+
+        if (nullptr != pVersion)
+        {
+            const char* pcszVer = reinterpret_cast<const char*>(pVersion);
+
+            std::string strVer(pcszVer);
+
+            // the build number ends at the first space
+            size_t endBuild = strVer.find_first_of(' ');
+
+            // truncate the input at the first space
+            strVer = strVer.substr(0, endBuild);
+
+            // the build number starts after the last decimal point
+            size_t startBuild = strVer.find_last_of('.') + 1;
+
+            // parse the version number
+            std::istringstream iss(strVer.substr(startBuild, endBuild - startBuild));
+            iss >> version;
+
+            // couldn't extract version -- return INT_MAX to simulate most recent driver
+            if (iss.fail())
+            {
+                version = INT_MAX;
+            }
+        }
+
+        return version;
+    }
+
+#endif
+
+    /// Populate the ASIC Info struct with the GPIN counters
+    /// \param[out] asicInfo AsicInfo struct populated by GPIN group
+    /// \return false if unable to query GPIN counters, true otherwise
+    bool GetAsicInfo(ASICInfo& asicInfo)
+    {
+        GLint numCounters = 0;
+        bool  bResult     = false;
+
+#ifndef GLES
+        const GLubyte* pVersion  = _oglGetString(GL_VERSION);
+        asicInfo.m_driverVersion = ExtractVersionNumber(pVersion);
+#else
+        int nVersion = INT_MAX;
+#endif
+
+        if (asicInfo.m_driverVersion < s_GL_DRIVER_VER_WITH_ONLY_GCN_SUPPORT)
+        {
+            // pre-GCN devices were removed from the driver starting with version 13452.
+            // if the driver version is earlier than that we will return an error.
+            GPA_LogError("OpenGL driver version is too old. Please update your driver.");
+            return false;
+        }
+
+        GLint group = GetASICInfoGroupID();
+
+        if (-1 == group)
+        {
+            GPA_LogError("Unable to find the GPIN group.");
+            return false;
+        }
+
+        // Start by getting the list of counters in the group
+        _oglGetPerfMonitorCountersAMD(group, &numCounters, nullptr, 0, nullptr);
+
+        GLuint* pCounterList = new (std::nothrow) GLuint[numCounters];
 
         if (nullptr != pCounterList)
         {
             // Get the list of counters in the group
-            oglUtils::_oglGetPerfMonitorCountersAMD(nGroup, nullptr, nullptr, nNumCounters, pCounterList);
+            _oglGetPerfMonitorCountersAMD(group, nullptr, nullptr, numCounters, pCounterList);
 
-            for (int i = 0; i < nNumCounters; i++)
+            GLuint monitor    = 0;
+            GLuint resultSize = 0;
+
+            // Create a monitor for all GPIN counters
+            _oglGenPerfMonitorsAMD(1, &monitor);
+
+            // Enable all GPIN counters
+            for (int i = 0; i < numCounters; i++)
             {
-                char counterStr[256];
+                _oglSelectPerfMonitorCountersAMD(monitor, GL_TRUE, group, 1, &pCounterList[i]);
+            }
 
-                oglUtils::_oglGetPerfMonitorCounterStringAMD(nGroup, pCounterList[i], 255, nullptr, counterStr);
+            // begin / end the monitor so that the data is obtained
+            _oglBeginPerfMonitorAMD(monitor);
+            _oglEndPerfMonitorAMD(monitor);
 
-                if (!strcmp(pCounterStr, counterStr))
+            // Get the counter result size
+            _oglGetPerfMonitorCounterDataAMD(monitor, GL_PERFMON_RESULT_SIZE_AMD, sizeof(resultSize), &resultSize, nullptr);
+
+            // Result should be 3 GLuint per counter
+            GLint expectedResultSize = (3 * sizeof(GLuint)) * numCounters;
+            assert((GLint)resultSize == expectedResultSize);
+
+            if ((GLint)resultSize == expectedResultSize)
+            {
+                GLubyte* pCounterData = new (std::nothrow) GLubyte[resultSize];
+
+                if (nullptr != pCounterData)
                 {
-                    GLuint monitor;
-                    GLuint nResultSize;
+                    // Get the counter results
+                    _oglGetPerfMonitorCounterDataAMD(monitor, GL_PERFMON_RESULT_AMD, resultSize, (GLuint*)pCounterData, nullptr);
 
-                    // Counter found, now create a monitor with it and get its value
-                    oglUtils::_oglGenPerfMonitorsAMD(1, &monitor);
-
-                    oglUtils::_oglSelectPerfMonitorCountersAMD(monitor, GL_TRUE, nGroup, 1, &pCounterList[i]);
-
-                    // need to begin / end the monitor so that the data is obtained
-                    oglUtils::_oglBeginPerfMonitorAMD(monitor);
-                    oglUtils::_oglEndPerfMonitorAMD(monitor);
-
-                    // Get the counter result size
-                    oglUtils::_oglGetPerfMonitorCounterDataAMD(monitor, GL_PERFMON_RESULT_SIZE_AMD, 4, &nResultSize, nullptr);
-
-                    assert((GLint)nResultSize == 3 * sizeof(GLuint));
-
-                    // Result should just be 3 GLuint per counter
-                    if ((GLint)nResultSize == 3 * sizeof(GLuint))
+                    for (int i = 0; i < numCounters; i++)
                     {
-                        GLubyte* pCounterData;
-                        pCounterData = new(std::nothrow) GLubyte[nResultSize];
+                        // index into the result array for each counter -- the result is the third GLuint out of the three
+                        unsigned int value = ((GLuint*)pCounterData)[(i * 3) + 2];
 
-                        if (nullptr != pCounterData)
+                        switch (i)
                         {
-                            // Get the counter results
-                            oglUtils::_oglGetPerfMonitorCounterDataAMD(monitor, GL_PERFMON_RESULT_AMD, nResultSize, (GLuint*)pCounterData, nullptr);
-                            rValue = ((GLuint*)pCounterData)[2];
-                            bResult = true;
+                        case ASIC_TYPE_INDEX:
+                            asicInfo.m_asicID   = static_cast<AsicID>(value);
+                            asicInfo.m_asicType = GetASICTypeFromAsicID(asicInfo.m_asicID);
+                            break;
 
-                            delete[] pCounterData;
+                        case ASIC_NUM_SIMD_INDEX:
+                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                            {
+                                asicInfo.m_numSIMD = value;
+                            }
+                            break;
+
+                        case ASIC_NUM_RB_INDEX:
+                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                            {
+                                asicInfo.m_numRB = value;
+                            }
+                            break;
+
+                        case ASIC_NUM_SPI_INDEX:
+                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                            {
+                                asicInfo.m_numSPI = value;
+                            }
+                            break;
+
+                        case ASIC_NUM_SE_INDEX:
+                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                            {
+                                asicInfo.m_numSE = value;
+                            }
+                            break;
+
+                        case ASIC_NUM_SA_INDEX:
+                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                            {
+                                asicInfo.m_numSA = value;
+                            }
+                            break;
+
+                        case ASIC_NUM_CU_INDEX:
+                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                            {
+                                asicInfo.m_numCU = value;
+                            }
+                            break;
+
+                        case ASIC_DEV_ID_INDEX:
+                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                            {
+                                asicInfo.m_deviceId = value;
+                            }
+                            break;
+
+                        case ASIC_DEV_REV_INDEX:
+                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                            {
+                                asicInfo.m_deviceRev = value;
+                            }
+                            break;
                         }
+
+                        _oglSelectPerfMonitorCountersAMD(monitor, GL_FALSE, group, 1, &pCounterList[i]);
                     }
 
-                    oglUtils::_oglSelectPerfMonitorCountersAMD(monitor, GL_FALSE, nGroup, 1, &pCounterList[i]);
-                    oglUtils::_oglDeletePerfMonitorsAMD(1, &monitor);
-                    break;
+                    bResult = true;
+
+                    delete[] pCounterData;
                 }
             }
 
+            _oglDeletePerfMonitorsAMD(1, &monitor);
+
             delete[] pCounterList;
         }
+
+        return bResult;
     }
 
-    return bResult;
-}
-
-/// Parses a version number like this: "4.2.12325 Compatibility Profile Context 13.100.0.0"
-/// to extract the "12325" portion.
-/// \param pVersion the version string to extract the number from
-/// \return 0 on failure, the build version number on success
-int extractVersionNumber(const GLubyte* pVersion)
-{
-    const char* pcszVer = reinterpret_cast<const char*>(pVersion);
-
-    std::string strVer(pcszVer);
-
-    // the build number ends at the first space
-    int nEndBuild = (int)strVer.find_first_of(' ');
-
-    // truncate the input at the first space
-    strVer = strVer.substr(0, nEndBuild);
-
-    // the build number starts after the last decimal point
-    int nStartBuild = (int)strVer.find_last_of('.') + 1;
-
-    // parse the version number
-    int nVersion = atoi(strVer.substr(nStartBuild, nEndBuild - nStartBuild).c_str());
-
-    // couldn't extract version -- return MAX_INT to simulate most recent driver
-    if (0 == nVersion)
+    bool GetASICInfo(ASICInfo& asicInfo)
     {
-        nVersion = INT_MAX;
+        if (nullptr == _oglGetPerfMonitorCountersAMD || nullptr == _oglGetPerfMonitorGroupStringAMD || nullptr == _oglGetPerfMonitorCounterInfoAMD ||
+            nullptr == _oglGetPerfMonitorCounterStringAMD || nullptr == _oglGenPerfMonitorsAMD || nullptr == _oglDeletePerfMonitorsAMD ||
+            nullptr == _oglSelectPerfMonitorCountersAMD || nullptr == _oglBeginPerfMonitorAMD || nullptr == _oglEndPerfMonitorAMD ||
+            nullptr == _oglGetPerfMonitorCounterDataAMD)
+        {
+            // No AMD_performance_monitor support, means no ASIC info
+            GPA_LogError("One or more of the GL_AMD_performance_monitor functions were not found.");
+            return false;
+        }
+
+        if (!GetAsicInfo(asicInfo))
+        {
+            GPA_LogError("Unable to get the asic info.");
+            return false;
+        }
+
+        std::stringstream message;
+        message << "ASIC ID returned from driver is: " << asicInfo.m_asicID << " and GL_VERSION is: " << asicInfo.m_driverVersion << ".";
+        GPA_LogMessage(message.str().c_str());
+
+        return true;
     }
-
-    return nVersion;
-}
-
-//=================================================================================================================================
-//
-//          Public Function(s)
-//
-//=================================================================================================================================
-
-//=========================================================================================================
-bool GetASICInfo(ASICInfo& rASICInfo)
-{
-    if (nullptr == oglUtils::_oglGetPerfMonitorCountersAMD      ||
-        nullptr == oglUtils::_oglGetPerfMonitorGroupStringAMD   ||
-        nullptr == oglUtils::_oglGetPerfMonitorCounterInfoAMD   ||
-        nullptr == oglUtils::_oglGetPerfMonitorCounterStringAMD ||
-        nullptr == oglUtils::_oglGenPerfMonitorsAMD             ||
-        nullptr == oglUtils::_oglDeletePerfMonitorsAMD          ||
-        nullptr == oglUtils::_oglSelectPerfMonitorCountersAMD   ||
-        nullptr == oglUtils::_oglBeginPerfMonitorAMD            ||
-        nullptr == oglUtils::_oglEndPerfMonitorAMD              ||
-        nullptr == oglUtils::_oglGetPerfMonitorCounterDataAMD)
-    {
-        // No AMD_peformance_monitor support, means no ASIC info
-        GPA_LogError("One or more of the GL_AMD_performance_monitor functions were not found.");
-        return false;
-    }
-
-    // Find the ASIC info group (GPIN = GPu INformation)
-    GLint nASICGroupId = GetGroupID(ASIC_GROUP);
-
-    if (nASICGroupId == -1)
-    {
-        GPA_LogError("Unable to find the GPIN group.");
-        return false;
-    }
-
-    // Get the ASIC ID
-    GLuint nAsicType = 0;
-
-    if (!GetCounterValue(nASICGroupId, ASIC_TYPE, nAsicType))
-    {
-        GPA_LogError("Unable to get the asic id.");
-        return false;
-    }
-
-    // query the driver version so that we can correct the asic ID after a driver
-    // change that happened for 10.2, where support for pre-R6xx hardware was removed
-    //(legacy driver will support that)
-
-#ifndef GLES
-    // Since GL ES didn't exist before version 9551, there's no need to check the
-    // version number. For now, it is assumed the version number will be >9551
-
-    const GLubyte* pVersion = oglUtils::_oglGetString(GL_VERSION);
-    int nVersion = extractVersionNumber(pVersion);
-
-    std::stringstream message;
-    message << "ASIC ID returned from driver is: " << nAsicType << " and GL_VERSION is: " << reinterpret_cast<const char*>(pVersion) << ".";
-    GPA_LogMessage(message.str().c_str());
-#else
-    int nVersion = INT_MAX;
-#endif
-
-    if (nVersion < 13452)
-    {
-        // pre-GCN devices were removed from the driver starting with version 13452.
-        // if the driver version is earlier than that we will return an error.
-        GPA_LogError("OpenGL driver version is too old. Please update your driver.");
-        return false;
-    }
-
-    // store the Asic Revision ID
-    rASICInfo.eAsicRev = (ATIAsicID) nAsicType;
-
-    // Decode the ASIC Type
-    if (nAsicType == ATIASIC_ID_TAHITI_P ||
-        nAsicType == ATIASIC_ID_PITCAIRN_PM ||
-        nAsicType == ATIASIC_ID_CAPEVERDE_M ||
-        nAsicType == ATIASIC_ID_OLAND_M ||
-        nAsicType == ATIASIC_ID_HAINAN_M)
-    {
-        GPA_LogMessage("Recognized a GFX6 card.");
-        rASICInfo.eAsicType = ASIC_Gfx6;
-    }
-    else if (nAsicType == ATIASIC_ID_BONAIRE_M ||
-             nAsicType == ATIASIC_ID_HAWAII_P)
-    {
-        GPA_LogMessage("Recognized a GFX7 card.");
-        rASICInfo.eAsicType = ASIC_Gfx7;
-    }
-    else if (nAsicType == ATIASIC_ID_KALINDI ||
-             nAsicType == ATIASIC_ID_GODAVARI ||
-             nAsicType == ATIASIC_ID_SPECTRE ||
-             nAsicType == ATIASIC_ID_SPOOKY)
-    {
-        GPA_LogMessage("Recognized an APU with GFX7 graphics.");
-        rASICInfo.eAsicType = ASIC_Gfx7;
-    }
-    else if (nAsicType == ATIASIC_ID_ICELAND_M ||
-             nAsicType == ATIASIC_ID_TONGA_P ||
-             nAsicType == ATIASIC_ID_FIJI_P ||
-             nAsicType == ATIASIC_ID_ELLESMERE ||
-             nAsicType == ATIASIC_ID_BAFFIN ||
-             nAsicType == ATIASIC_ID_LEXA ||
-             nAsicType == ATIASIC_ID_VEGAM)
-    {
-        GPA_LogMessage("Recognized a GFX8 card.");
-        rASICInfo.eAsicType = ASIC_Gfx8;
-    }
-    else if (nAsicType == ATIASIC_ID_CARRIZO ||
-             nAsicType == ATIASIC_ID_STONEY)
-    {
-        GPA_LogMessage("Recognized an APU with GFX8 graphics.");
-        rASICInfo.eAsicType = ASIC_Gfx8;
-    }
-    else if (nAsicType == ATIASIC_ID_GFX900 ||
-             nAsicType == ATIASIC_ID_PLACEHOLDER1 ||
-             nAsicType == ATIASIC_ID_GFX906)
-    {
-        GPA_LogMessage("Recognized a GFX9 card.");
-        rASICInfo.eAsicType = ASIC_Gfx9;
-    }
-    else if (nAsicType == ATIASIC_ID_GFX902 ||
-             nAsicType == ATIASIC_ID_PLACEHOLDER)
-    {
-        GPA_LogMessage("Recognized an APU with GFX9 graphics.");
-        rASICInfo.eAsicType = ASIC_Gfx9;
-    }
-    else
-    {
-        std::stringstream errorMessage;
-        errorMessage << "Unrecognized asic type: " << nAsicType << ".";
-        GPA_LogError(errorMessage.str().c_str());
-        assert(0); // Unknown ASIC Type, need to update enums list from UGL driver
-        rASICInfo.eAsicType = ASIC_UNKNOWN;
-        return false;
-    }
-
-    // Now, fill in the rest of the ASIC structure
-    switch (rASICInfo.eAsicType)
-    {
-        case ASIC_Gfx6:
-        case ASIC_Gfx7:
-        case ASIC_Gfx8:
-        case ASIC_Gfx9:
-            if (!GetCounterValue(nASICGroupId, "GPIN_001", rASICInfo.nNumSIMD))
-            {
-                GPA_LogError("Unable to query GPIN_001.");
-                return false;
-            }
-
-            if (!GetCounterValue(nASICGroupId, "GPIN_002", rASICInfo.nNumQuadPipe))
-            {
-                GPA_LogError("Unable to query GPIN_002.");
-                return false;
-            }
-
-            if (!GetCounterValue(nASICGroupId, "GPIN_003", rASICInfo.nNumRB))
-            {
-                GPA_LogError("Unable to query GPIN_003.");
-                return false;
-            }
-
-            if (!GetCounterValue(nASICGroupId, "GPIN_004", rASICInfo.nNumSPI))
-            {
-                GPA_LogError("Unable to query GPIN_004.");
-                return false;
-            }
-
-            break;
-
-        default:
-            break;
-    }
-
-    return true;
-}
-
+}  // namespace oglUtils

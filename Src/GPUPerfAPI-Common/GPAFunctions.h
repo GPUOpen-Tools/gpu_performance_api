@@ -6,8 +6,8 @@
 //==============================================================================
 
 #ifndef GPA_FUNCTION_PREFIX
-    #define GPA_FUNCTION_PREFIX( f )             ///< placeholder macro in case it's not defined before including this file
-    #define NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX ///< used a a flag to indicate whether or not the macro needs to be undefined later
+#define GPA_FUNCTION_PREFIX(f)                ///< placeholder macro in case it's not defined before including this file
+#define NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX  ///< used a a flag to indicate whether or not the macro needs to be undefined later
 #endif
 
 // GPA API Table
@@ -87,6 +87,6 @@ GPA_FUNCTION_PREFIX(GPA_GetSampleId)
 GPA_FUNCTION_PREFIX(GPA_GetVersion)
 
 #ifdef NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX
-    #undef GPA_FUNCTION_PREFIX
-    #undef NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX
+#undef GPA_FUNCTION_PREFIX
+#undef NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX
 #endif

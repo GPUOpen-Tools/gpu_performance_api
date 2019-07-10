@@ -14,29 +14,28 @@
 #include "GPAContext.h"
 
 #ifndef GLES
-    #ifdef _WIN32
-        using GLContextPtr = HGLRC;         ///< type alias for GL Context
-    #else
-        using GLContextPtr = GLXContext;    ///< type alias for GL Context
-    #endif
+#ifdef _WIN32
+using GLContextPtr = HGLRC;  ///< type alias for GL Context
 #else
-    using GLContextPtr = EGLContext;        ///< type alias for GL Context
-#endif // GLES
-
+using GLContextPtr = GLXContext;  ///< type alias for GL Context
+#endif
+#else
+using GLContextPtr = EGLContext;  ///< type alias for GL Context
+#endif  // GLES
 
 /// Class for OpenGL GPA Context
 class GLGPAContext : public GPAContext
 {
 public:
-
     /// Constructor
     /// \param[in] context context pointer
     /// \param[in] pHwInfo the hardware info used to create the context
     /// \param[in] contextFlags the flags used to create the context
-    GLGPAContext(GLContextPtr context, GPA_HWInfo& pHwInfo, GPA_OpenContextFlags contextFlags);
+    /// \param[in] driverVersion the version number of the GL driver
+    GLGPAContext(GLContextPtr context, GPA_HWInfo& pHwInfo, GPA_OpenContextFlags contextFlags, int driverVersion);
 
     /// Destructor
-    ~GLGPAContext() = default;
+    ~GLGPAContext();
 
     /// \copydoc IGPAContext::CreateSession()
     GPA_SessionId CreateSession(GPA_Session_Sample_Type sampleType) override;
@@ -58,13 +57,19 @@ public:
     /// \return the GL rendering context
     const GLContextPtr& GetGLContext() const;
 
-private:
+    /// Enable/disable the stable power state, using the stable clock mode specified when opening the context
+    /// \param[in] useProfilingClocks true to use GPU clocks for profiling, false to use default clock mode
+    /// \return GPA_STATUS_OK on success
+    GPA_Status SetStableClocks(bool useProfilingClocks);
 
+private:
     /// Validates the counter from counter generator and gl driver counters and updates it if necessary
     /// \return true upon successful operation otherwise false
     bool ValidateAndUpdateGLCounters() const;
 
-    GLContextPtr m_glContext;   ///< GL rendering context pointer
+    GLContextPtr            m_glContext;      ///< GL rendering context pointer
+    oglUtils::AMDXClockMode m_clockMode;      ///< GPU Clock mode
+    int                     m_driverVersion;  ///< GL driver version
 };
 
-#endif // _CL_GPA_CONTEXT_H_
+#endif  // _CL_GPA_CONTEXT_H_

@@ -10,8 +10,8 @@
 // static initialization
 GPAUniqueObjectManager* GPAUniqueObjectManager::ms_pGpaUniqueObjectManger = nullptr;
 
-GPAUniqueObject::GPAUniqueObject() :
-    m_pInterface(nullptr)
+GPAUniqueObject::GPAUniqueObject()
+    : m_pInterface(nullptr)
 {
 }
 
@@ -94,7 +94,7 @@ GPAUniqueObjectManager* GPAUniqueObjectManager::Instance()
 {
     if (nullptr == ms_pGpaUniqueObjectManger)
     {
-        ms_pGpaUniqueObjectManger = new(std::nothrow) GPAUniqueObjectManager();
+        ms_pGpaUniqueObjectManger = new (std::nothrow) GPAUniqueObjectManager();
     }
 
     return ms_pGpaUniqueObjectManger;
@@ -110,20 +110,20 @@ GPA_THREAD_SAFE_FUNCTION GPAUniqueObject* GPAUniqueObjectManager::CreateObject(I
     {
         switch (pInterfaceTrait->ObjectType())
         {
-            case GPAObjectType::GPA_OBJECT_TYPE_CONTEXT:
-                pRetUniqueObject = new(std::nothrow) _GPA_ContextId(pInterfaceTrait);
-                break;
+        case GPAObjectType::GPA_OBJECT_TYPE_CONTEXT:
+            pRetUniqueObject = new (std::nothrow) _GPA_ContextId(pInterfaceTrait);
+            break;
 
-            case GPAObjectType::GPA_OBJECT_TYPE_SESSION:
-                pRetUniqueObject = new(std::nothrow) _GPA_SessionId(pInterfaceTrait);
-                break;
+        case GPAObjectType::GPA_OBJECT_TYPE_SESSION:
+            pRetUniqueObject = new (std::nothrow) _GPA_SessionId(pInterfaceTrait);
+            break;
 
-            case GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST:
-                pRetUniqueObject = new(std::nothrow) _GPA_CommandListId(pInterfaceTrait);
-                break;
+        case GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST:
+            pRetUniqueObject = new (std::nothrow) _GPA_CommandListId(pInterfaceTrait);
+            break;
 
-            default:
-                pRetUniqueObject = nullptr;
+        default:
+            pRetUniqueObject = nullptr;
         }
 
         if (nullptr != pRetUniqueObject)
@@ -165,8 +165,7 @@ GPA_THREAD_SAFE_FUNCTION void GPAUniqueObjectManager::DeleteObject(const IGPAInt
     }
 }
 
-GPA_THREAD_SAFE_FUNCTION bool GPAUniqueObjectManager::DoesExist(const IGPAInterfaceTrait* pInterfaceTrait,
-                                                                unsigned int* pIndex) const
+GPA_THREAD_SAFE_FUNCTION bool GPAUniqueObjectManager::DoesExist(const IGPAInterfaceTrait* pInterfaceTrait, unsigned int* pIndex) const
 {
     bool objectFound = false;
 
@@ -178,19 +177,16 @@ GPA_THREAD_SAFE_FUNCTION bool GPAUniqueObjectManager::DoesExist(const IGPAInterf
     return objectFound;
 }
 
-bool GPAUniqueObjectManager::DoesExist_NotThreadSafe(const IGPAInterfaceTrait* pInterfaceTrait,
-                                                     unsigned int* pIndex) const
+bool GPAUniqueObjectManager::DoesExist_NotThreadSafe(const IGPAInterfaceTrait* pInterfaceTrait, unsigned int* pIndex) const
 {
-    bool objectFound = false;
-    unsigned int localIndex = 0u;
+    bool         objectFound = false;
+    unsigned int localIndex  = 0u;
 
     if (!m_gpaUniqueObjectList.empty())
     {
-        for (std::vector<GPAUniqueObject*>::const_iterator it = m_gpaUniqueObjectList.cbegin();
-             it != m_gpaUniqueObjectList.cend(); ++it)
+        for (std::vector<GPAUniqueObject*>::const_iterator it = m_gpaUniqueObjectList.cbegin(); it != m_gpaUniqueObjectList.cend(); ++it)
         {
-            if ((*it)->Interface() == pInterfaceTrait &&
-                (*it)->ObjectType() == pInterfaceTrait->ObjectType())
+            if ((*it)->Interface() == pInterfaceTrait && (*it)->ObjectType() == pInterfaceTrait->ObjectType())
             {
                 objectFound = true;
                 break;
@@ -208,8 +204,7 @@ bool GPAUniqueObjectManager::DoesExist_NotThreadSafe(const IGPAInterfaceTrait* p
     return objectFound;
 }
 
-GPA_THREAD_SAFE_FUNCTION bool GPAUniqueObjectManager::DoesExist(const GPAUniqueObject* pUniqueObject,
-                                                                unsigned int* pIndex) const
+GPA_THREAD_SAFE_FUNCTION bool GPAUniqueObjectManager::DoesExist(const GPAUniqueObject* pUniqueObject, unsigned int* pIndex) const
 {
     bool objectFound = false;
 
@@ -219,19 +214,15 @@ GPA_THREAD_SAFE_FUNCTION bool GPAUniqueObjectManager::DoesExist(const GPAUniqueO
     return objectFound;
 }
 
-
-bool GPAUniqueObjectManager::DoesExist_NotThreadSafe(const GPAUniqueObject* pUniqueObject,
-                                                     unsigned int* pIndex) const
+bool GPAUniqueObjectManager::DoesExist_NotThreadSafe(const GPAUniqueObject* pUniqueObject, unsigned int* pIndex) const
 {
-    bool objectFound = false;
-    unsigned int localIndex = 0u;
+    bool         objectFound = false;
+    unsigned int localIndex  = 0u;
 
     if (!m_gpaUniqueObjectList.empty())
     {
-        for (std::vector<GPAUniqueObject*>::const_iterator it = m_gpaUniqueObjectList.begin();
-             it != m_gpaUniqueObjectList.end() && !objectFound; ++it)
+        for (std::vector<GPAUniqueObject*>::const_iterator it = m_gpaUniqueObjectList.begin(); it != m_gpaUniqueObjectList.end() && !objectFound; ++it)
         {
-
             if (*it == pUniqueObject)
             {
                 objectFound = true;
@@ -239,7 +230,6 @@ bool GPAUniqueObjectManager::DoesExist_NotThreadSafe(const GPAUniqueObject* pUni
             }
 
             localIndex++;
-
         }
     }
 

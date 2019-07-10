@@ -13,17 +13,14 @@
 #include "VkGPAPass.h"
 #include "GPAContextCounterMediator.h"
 
-VkGPASoftwareSample::VkGPASoftwareSample(GPAPass* pPass,
-                                         IGPACommandList* pCmdList,
-                                         unsigned int sampleId)
-    :
-    VkGPASample(pPass, pCmdList, GpaSampleType::Software, sampleId),
-    m_pContextState(nullptr),
-    m_activeCountersList(),
-    m_activeQueries(0),
-    m_commandList(m_pVkGpaCmdList->GetVkCommandBuffer()),
-    m_swSampleId(ms_unitializedSampleId),
-    m_pSwQueries(nullptr)
+VkGPASoftwareSample::VkGPASoftwareSample(GPAPass* pPass, IGPACommandList* pCmdList, unsigned int sampleId)
+    : VkGPASample(pPass, pCmdList, GpaSampleType::Software, sampleId)
+    , m_pContextState(nullptr)
+    , m_activeCountersList()
+    , m_activeQueries(0)
+    , m_commandList(m_pVkGpaCmdList->GetVkCommandBuffer())
+    , m_swSampleId(ms_unitializedSampleId)
+    , m_pSwQueries(nullptr)
 {
 }
 
@@ -32,7 +29,7 @@ VkGPASoftwareSample::~VkGPASoftwareSample()
     m_pContextState = nullptr;
     m_activeCountersList.clear();
     m_activeQueries = 0;
-    m_swSampleId = ms_unitializedSampleId;
+    m_swSampleId    = ms_unitializedSampleId;
 }
 
 void VkGPASoftwareSample::AssignQueries(VkCommandListSwQueries* pSwQueries)
@@ -50,31 +47,29 @@ bool VkGPASoftwareSample::BeginRequest()
     }
     else
     {
-        VkGPAPass* pVkGpaPass = reinterpret_cast<VkGPAPass*>(GetPass());
-        m_pContextState = reinterpret_cast<VkGPAContext*>(pVkGpaPass->GetGpaSession()->GetParentContext());
+        VkGPAPass* pVkGpaPass     = reinterpret_cast<VkGPAPass*>(GetPass());
+        m_pContextState           = reinterpret_cast<VkGPAContext*>(pVkGpaPass->GetGpaSession()->GetParentContext());
         const size_t counterCount = pVkGpaPass->GetEnabledCounterCount();
 
-        const IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pContextState);
-        const GPA_SoftwareCounters* pSwCounters = pCounterAccessor->GetSoftwareCounters();
-        const GPA_HardwareCounters* pHwCounters = pCounterAccessor->GetHardwareCounters();
+        const IGPACounterAccessor*  pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pContextState);
+        const GPA_SoftwareCounters* pSwCounters      = pCounterAccessor->GetSoftwareCounters();
+        const GPA_HardwareCounters* pHwCounters      = pCounterAccessor->GetHardwareCounters();
         m_activeCountersList.resize(counterCount);
 
         gpa_uint32 hardwareCountersCount = pHwCounters->GetNumCounters();
 
-        unsigned int counterIter = 0u;
-        bool bCounterInfoCollected = true;
+        unsigned int counterIter           = 0u;
+        bool         bCounterInfoCollected = true;
 
-        auto PopulateSoftwareCounterInfo = [&](const CounterIndex & counterIndex) -> bool
-        {
-            bool bIsCounterEnabled = true;
-            gpa_uint32 swCounterIndex = counterIndex;
-            m_activeCountersList[counterIter].m_index =
-            SwCounterManager::Instance()->GetSwCounterPubIndex(swCounterIndex);
+        auto PopulateSoftwareCounterInfo = [&](const CounterIndex& counterIndex) -> bool {
+            bool       bIsCounterEnabled              = true;
+            gpa_uint32 swCounterIndex                 = counterIndex;
+            m_activeCountersList[counterIter].m_index = SwCounterManager::Instance()->GetSwCounterPubIndex(swCounterIndex);
 
             // software counter indices are after the hardware counter
-            gpa_uint32 counterIdDriver = pSwCounters->m_counters[swCounterIndex - hardwareCountersCount].m_counterIdDriver;
+            gpa_uint32 counterIdDriver                    = pSwCounters->m_counters[swCounterIndex - hardwareCountersCount].m_counterIdDriver;
             m_activeCountersList[counterIter].m_queryType = static_cast<GPA_VK_SW_QUERY_TYPE>(counterIdDriver);
-            bIsCounterEnabled = (counterIdDriver < sizeof(m_activeQueries));
+            bIsCounterEnabled                             = (counterIdDriver < sizeof(m_activeQueries));
 
             if (bIsCounterEnabled)
             {
@@ -92,8 +87,8 @@ bool VkGPASoftwareSample::BeginRequest()
         if (result)
         {
             unsigned int activeQueries = m_activeQueries;
-            bool beginQuery = (0 != activeQueries);
-            result = m_pSwQueries->BeginSwSample(m_swSampleId);
+            bool         beginQuery    = (0 != activeQueries);
+            result                     = m_pSwQueries->BeginSwSample(m_swSampleId);
 
             if (result)
             {
@@ -103,7 +98,7 @@ bool VkGPASoftwareSample::BeginRequest()
 #ifdef _WIN32
                     _BitScanForward(reinterpret_cast<unsigned long*>(&queryType), activeQueries);
 #else
-                    queryType = static_cast<GPA_VK_SW_QUERY_TYPE>(__builtin_clz(activeQueries)); // TODO: verify that this works
+                    queryType = static_cast<GPA_VK_SW_QUERY_TYPE>(__builtin_clz(activeQueries));  // TODO: verify that this works
 #endif
                     m_pSwQueries->BeginSwQuery(m_swSampleId, queryType);
                     activeQueries &= ~(0x1 << static_cast<unsigned int>(queryType));
@@ -127,7 +122,7 @@ bool VkGPASoftwareSample::EndRequest()
     else
     {
         unsigned int activeQueries = m_activeQueries;
-        bool endQuery = (0 != activeQueries);
+        bool         endQuery      = (0 != activeQueries);
 
         while (endQuery)
         {
@@ -135,7 +130,7 @@ bool VkGPASoftwareSample::EndRequest()
 #ifdef _WIN32
             _BitScanForward(reinterpret_cast<unsigned long*>(&queryType), activeQueries);
 #else
-            queryType = static_cast<GPA_VK_SW_QUERY_TYPE>(__builtin_clz(activeQueries)); //TODO: verify that this works
+            queryType = static_cast<GPA_VK_SW_QUERY_TYPE>(__builtin_clz(activeQueries));          //TODO: verify that this works
 #endif
             m_pSwQueries->EndSwQuery(m_swSampleId, queryType);
             activeQueries &= ~(0x1 << static_cast<unsigned int>(queryType));
@@ -152,16 +147,14 @@ void VkGPASoftwareSample::ReleaseCounters()
 {
 }
 
-bool VkGPASoftwareSample::GetTimestampQueryCounterResult(
-    const GpaVkSoftwareQueryResults& queryResults,
-    const gpa_uint32 counterIndex,
-    gpa_uint64& counterResult)
-const
+bool VkGPASoftwareSample::GetTimestampQueryCounterResult(const GpaVkSoftwareQueryResults& queryResults,
+                                                         const gpa_uint32                 counterIndex,
+                                                         gpa_uint64&                      counterResult) const
 {
     bool result = true;
 
     IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pContextState);
-    const char* pCounterName = pCounterAccessor->GetCounterName(counterIndex);
+    const char*          pCounterName     = pCounterAccessor->GetCounterName(counterIndex);
 
     if (0 == strcmp("VKGPUTime", pCounterName))
     {
@@ -183,15 +176,13 @@ const
     return result;
 }
 
-bool VkGPASoftwareSample::GetPipelineQueryCounterResult(
-    const GpaVkSoftwareQueryResults& queryResults,
-    const gpa_uint32 counterIndex,
-    gpa_uint64& counterResult)
-const
+bool VkGPASoftwareSample::GetPipelineQueryCounterResult(const GpaVkSoftwareQueryResults& queryResults,
+                                                        const gpa_uint32                 counterIndex,
+                                                        gpa_uint64&                      counterResult) const
 {
-    bool result = true;
+    bool                       result           = true;
     const IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pContextState);
-    const char* pCounterName = pCounterAccessor->GetCounterName(counterIndex);
+    const char*                pCounterName     = pCounterAccessor->GetCounterName(counterIndex);
 
     if (0 == strcmp("IAVertices", pCounterName))
     {
@@ -271,37 +262,33 @@ bool VkGPASoftwareSample::UpdateResults()
             {
                 GetSampleResultLocation()->GetAsCounterSampleResult()->SetNumCounters(m_activeCountersList.size());
                 const size_t counterCount = m_activeCountersList.size();
-                isUpdated = (counterCount == GetSampleResultLocation()->GetAsCounterSampleResult()->GetNumCounters());
+                isUpdated                 = (counterCount == GetSampleResultLocation()->GetAsCounterSampleResult()->GetNumCounters());
 
                 for (size_t ci = 0; isUpdated && (counterCount > ci); ++ci)
                 {
                     switch (m_activeCountersList[ci].m_queryType)
                     {
-                        case GPA_VK_QUERY_TYPE_OCCLUSION:
-                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci] = queryResults.occlusion;
-                            break;
+                    case GPA_VK_QUERY_TYPE_OCCLUSION:
+                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci] = queryResults.occlusion;
+                        break;
 
-                        case GPA_VK_QUERY_TYPE_OCCLUSION_BINARY:
-                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci] = queryResults.occlusionBinary;
-                            break;
+                    case GPA_VK_QUERY_TYPE_OCCLUSION_BINARY:
+                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci] = queryResults.occlusionBinary;
+                        break;
 
-                        case GPA_VK_QUERY_TYPE_TIMESTAMP:
-                            isUpdated = GetTimestampQueryCounterResult(
-                                            queryResults,
-                                            m_activeCountersList[ci].m_index,
-                                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci]);
-                            break;
+                    case GPA_VK_QUERY_TYPE_TIMESTAMP:
+                        isUpdated = GetTimestampQueryCounterResult(
+                            queryResults, m_activeCountersList[ci].m_index, GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci]);
+                        break;
 
-                        case GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS:
-                            isUpdated = GetPipelineQueryCounterResult(
-                                            queryResults,
-                                            m_activeCountersList[ci].m_index,
-                                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci]);
-                            break;
+                    case GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS:
+                        isUpdated = GetPipelineQueryCounterResult(
+                            queryResults, m_activeCountersList[ci].m_index, GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci]);
+                        break;
 
-                        default:
-                            isUpdated = false;
-                            break;
+                    default:
+                        isUpdated = false;
+                        break;
                     }
                 }
 

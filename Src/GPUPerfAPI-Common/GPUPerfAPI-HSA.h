@@ -11,4 +11,4 @@
 
 #include "GPUPerfAPI-ROCm.h"
 
-#endif // _GPUPERFAPI_HSA_H_
+#endif  // _GPUPERFAPI_HSA_H_

@@ -9,13 +9,11 @@
 #include <map>
 #include "utils/GPUPerfAPILoader.h"
 
-
 class GPUPerfAPILoaderTest : public ::testing::TestWithParam<GPA_API_Type>
 {
 public:
     GPUPerfAPILoaderTest()
-        :
-        ::testing::TestWithParam<GPA_API_Type>()
+        : ::testing::TestWithParam<GPA_API_Type>()
     {
     }
 
@@ -40,10 +38,10 @@ void GPUPerfAPILoaderTest::SetUp()
 {
     m_apiName[GPA_API_DIRECTX_11] = "DX11";
     m_apiName[GPA_API_DIRECTX_12] = "DX12";
-    m_apiName[GPA_API_OPENGL] = "OpenGL";
-    m_apiName[GPA_API_OPENCL] = "OpenCL";
-    m_apiName[GPA_API_ROCM] = "ROCm";
-    m_apiName[GPA_API_VULKAN] = "Vulkan";
+    m_apiName[GPA_API_OPENGL]     = "OpenGL";
+    m_apiName[GPA_API_OPENCL]     = "OpenCL";
+    m_apiName[GPA_API_ROCM]       = "ROCm";
+    m_apiName[GPA_API_VULKAN]     = "Vulkan";
     m_apiName[GPA_API_NO_SUPPORT] = "ApiNotSupported";
 }
 
@@ -58,13 +56,12 @@ void GPUPerfAPILoaderTest::Run()
     const char* pApiName = m_apiName.find(Api)->second;
 
     GPUPerfAPILoader gpaLoader;
-    const char* dllPath = "";
-    const char* errorMessage = "";
+    const char*      dllPath      = "";
+    const char*      errorMessage = "";
 
-    EXPECT_TRUE(gpaLoader.Load(dllPath, Api, &errorMessage)) << "GPA loading with the legacy method failed for " << pApiName
-                                                             << ". Error message: " << errorMessage;
+    EXPECT_TRUE(gpaLoader.Load(dllPath, Api, &errorMessage))
+        << "GPA loading with the legacy method failed for " << pApiName << ". Error message: " << errorMessage;
 }
-
 
 TEST_P(GPUPerfAPILoaderTest, Api)
 {
@@ -72,28 +69,18 @@ TEST_P(GPUPerfAPILoaderTest, Api)
 }
 
 #ifdef _WIN32
-INSTANTIATE_TEST_CASE_P(
-    WindowsAPI,
-    GPUPerfAPILoaderTest,
-    ::testing::Values(
-        GPA_API_DIRECTX_11
-        , GPA_API_DIRECTX_12
-        , GPA_API_VULKAN
-        , GPA_API_OPENCL
-        , GPA_API_OPENGL
-    )
-);
+INSTANTIATE_TEST_CASE_P(WindowsAPI,
+                        GPUPerfAPILoaderTest,
+                        ::testing::Values(GPA_API_DIRECTX_11, GPA_API_DIRECTX_12, GPA_API_VULKAN, GPA_API_OPENCL, GPA_API_OPENGL));
 #else
-INSTANTIATE_TEST_CASE_P(
-    LinuxAPI,
-    GPUPerfAPILoaderTest,
-    ::testing::Values(
-        GPA_API_VULKAN
+INSTANTIATE_TEST_CASE_P(LinuxAPI,
+                        GPUPerfAPILoaderTest,
+                        ::testing::Values(GPA_API_VULKAN
 #ifndef X86
-        , GPA_API_OPENCL
-        , GPA_API_ROCM
+                                          ,
+                                          GPA_API_OPENCL,
+                                          GPA_API_ROCM
 #endif
-        , GPA_API_OPENGL
-    )
-);
+                                          ,
+                                          GPA_API_OPENGL));
 #endif

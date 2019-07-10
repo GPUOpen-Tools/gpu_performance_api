@@ -13,13 +13,12 @@
 /// Enum for GPA Object types
 enum class GPAObjectType : unsigned char
 {
-    GPA_OBJECT_TYPE_UNDEFINED,      ///< Undefined object
-    GPA_OBJECT_TYPE_IMPLEMENTATION, ///< Implementation object
-    GPA_OBJECT_TYPE_CONTEXT,        ///< context object
-    GPA_OBJECT_TYPE_SESSION,        ///< session object
-    GPA_OBJECT_TYPE_COMMAND_LIST    ///< command list object
+    GPA_OBJECT_TYPE_UNDEFINED,       ///< Undefined object
+    GPA_OBJECT_TYPE_IMPLEMENTATION,  ///< Implementation object
+    GPA_OBJECT_TYPE_CONTEXT,         ///< context object
+    GPA_OBJECT_TYPE_SESSION,         ///< session object
+    GPA_OBJECT_TYPE_COMMAND_LIST     ///< command list object
 };
-
 
 /// Interface for API specific Object
 class IGPAInterfaceTrait
@@ -37,4 +36,4 @@ public:
     virtual GPAObjectType ObjectType() const = 0;
 };
 
-#endif // _I_GPA_INTERFACE_TRAIT_H_
+#endif  // _I_GPA_INTERFACE_TRAIT_H_

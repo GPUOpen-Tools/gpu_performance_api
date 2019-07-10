@@ -8,10 +8,7 @@
 #include "VkGPASample.h"
 #include "VkGPACommandList.h"
 
-VkGPASample::VkGPASample(GPAPass* pPass,
-                         IGPACommandList* pCmdList,
-                         GpaSampleType sampleType,
-                         unsigned int sampleId)
+VkGPASample::VkGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, unsigned int sampleId)
     : GPASample(pPass, pCmdList, sampleType, sampleId)
 {
     m_pVkGpaCmdList = static_cast<VkGPACommandList*>(pCmdList);

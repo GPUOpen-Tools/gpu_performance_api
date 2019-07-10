@@ -17,16 +17,12 @@
 class GLGPASample : public GPASample
 {
 public:
-
     /// Constructor
     /// \param[in] pPass GPA Pass object
     /// \param[in] pCmdList gpa command list
     /// \param[in] sampleType gpa sample type
     /// \param[in] sampleId user-supplied sample id
-    GLGPASample(GPAPass* pPass,
-                IGPACommandList* pCmdList,
-                GpaSampleType sampleType,
-                ClientSampleId sampleId);
+    GLGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId);
 
     /// Delete default constructor
     GLGPASample() = delete;
@@ -47,7 +43,6 @@ public:
     void ReleaseCounters() override final;
 
 private:
-
     /// Copies the result from the driver to sample result buffer
     /// \return true upon successful operation otherwise false
     bool CopyResults();
@@ -64,18 +59,18 @@ private:
     union SampleDataBuffer
     {
         /// constructor
-        SampleDataBuffer():
-            m_glPerfMonitorId(0u)
+        SampleDataBuffer()
+            : m_glPerfMonitorId(0u)
         {
             m_gpuTimeQuery[0] = m_gpuTimeQuery[1] = 0u;
         }
 
-        GLuint                        m_gpuTimeQuery[2];        ///< The Query used to get GPUTime results
-        GLPerfMonitorId               m_glPerfMonitorId;        ///< Sample perf monitor Id for hardware counters
+        GLuint          m_gpuTimeQuery[2];  ///< The Query used to get GPUTime results
+        GLPerfMonitorId m_glPerfMonitorId;  ///< Sample perf monitor Id for hardware counters
     };
 
-    GLGPAPass*                      m_pGlGpaPass;               ///< Cache the GPA pass pointer
-    SampleDataBuffer                m_sampleDataBuffer;         ///< Buffer for getting data from driver
+    GLGPAPass*       m_pGlGpaPass;        ///< Cache the GPA pass pointer
+    SampleDataBuffer m_sampleDataBuffer;  ///< Buffer for getting data from driver
 };
 
 #endif  // _GL_GPA_SAMPLE_H_

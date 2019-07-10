@@ -9,25 +9,17 @@
 #include "ROCmGPACommandList.h"
 #include "ROCmGPASample.h"
 
-ROCmGPAPass::ROCmGPAPass(IGPASession* pGpaSession,
-                         PassIndex passIndex,
-                         GPACounterSource counterSource,
-                         CounterList* pPassCounters):
-    GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
+ROCmGPAPass::ROCmGPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters)
+    : GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
 {
     EnableAllCountersForPass();
 }
 
-GPASample* ROCmGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList,
-                                                GpaSampleType sampleType,
-                                                ClientSampleId sampleId)
+GPASample* ROCmGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
 {
     GPASample* pRetSample = nullptr;
 
-    ROCmGPASample* pROCmGpaSample = new(std::nothrow) ROCmGPASample(this,
-                                                                    pCmdList,
-                                                                    sampleType,
-                                                                    sampleId);
+    ROCmGPASample* pROCmGpaSample = new (std::nothrow) ROCmGPASample(this, pCmdList, sampleType, sampleId);
 
     if (nullptr == pROCmGpaSample)
     {
@@ -39,11 +31,9 @@ GPASample* ROCmGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList,
     }
 
     return pRetSample;
-
 }
 
-bool ROCmGPAPass::ContinueSample(ClientSampleId srcSampleId,
-                                 IGPACommandList* pPrimaryGpaCmdList)
+bool ROCmGPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrimaryGpaCmdList)
 {
     // continuing samples not supported for ROCm
     UNREFERENCED_PARAMETER(srcSampleId);
@@ -51,14 +41,12 @@ bool ROCmGPAPass::ContinueSample(ClientSampleId srcSampleId,
     return false;
 }
 
-IGPACommandList* ROCmGPAPass::CreateAPISpecificCommandList(void* pCmd,
-                                                           CommandListId commandListId,
-                                                           GPA_Command_List_Type cmdType)
+IGPACommandList* ROCmGPAPass::CreateAPISpecificCommandList(void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType)
 {
     UNREFERENCED_PARAMETER(pCmd);
     UNREFERENCED_PARAMETER(cmdType);
 
-    ROCmGPACommandList* pRetCmdList = new(std::nothrow) ROCmGPACommandList(GetGpaSession(), this, commandListId);
+    ROCmGPACommandList* pRetCmdList = new (std::nothrow) ROCmGPACommandList(GetGpaSession(), this, commandListId);
     return pRetCmdList;
 }
 

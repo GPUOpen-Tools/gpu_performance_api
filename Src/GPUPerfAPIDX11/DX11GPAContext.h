@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA DX11 Context declarations
@@ -16,23 +16,20 @@
 // GPA Common
 #include "GPAContext.h"
 
-class DX11GPASession;           // forward Declaration
+class DX11GPASession;  // forward Declaration
 
-using DX11GPASessionList = std::list<DX11GPASession*>;            ///< type alias for list of DX11GPASession objects
-using GPUIndex = unsigned int;                                    ///< type alias for GPU index
+using DX11GPASessionList = std::list<DX11GPASession*>;  ///< type alias for list of DX11GPASession objects
+using GPUIndex           = unsigned int;                ///< type alias for GPU index
 
 /// Class for DirectX 11 GPA Context
 class DX11GPAContext : public GPAContext
 {
 public:
-
     /// Constructor
     /// \param[in] pD3D11Device ID3D11Device pointer
     /// \param[in] hwInfo hardware info
     /// \param[in] contextFlags context flags
-    DX11GPAContext(ID3D11Device* pD3D11Device,
-                   GPA_HWInfo& hwInfo,
-                   GPA_OpenContextFlags contextFlags);
+    DX11GPAContext(ID3D11Device* pD3D11Device, GPA_HWInfo& hwInfo, GPA_OpenContextFlags contextFlags);
 
     /// Destructor
     ~DX11GPAContext();
@@ -65,7 +62,7 @@ public:
     /// \return DirectX 11 device pointer
     ID3D11Device* GetDevice() const;
 
-    /// Get the index of the acitve GPU
+    /// Get the index of the active GPU
     /// \return Index of the active GPU or ActiveGpuCF if more than 1 GPU is active
     GPUIndex GetActiveGpu() const;
 
@@ -73,16 +70,34 @@ public:
     /// \return CF/ACDF active GPU
     GPUIndex GetCFActiveGpu() const;
 
-private:
+    /// Get the number of instances of the specified block
+    /// \param[in] block the block whose number of instances is needed
+    /// \return the number of instances of the specific block. Could be zero if block does not exist
+    gpa_uint32 GetInstanceCount(PE_BLOCK_ID block) const;
 
+    /// Get the max event id of the specified block
+    /// \param[in] block the block whose max event id is needed
+    /// \return the max event id of the specified block. Could be zero if block does not exist
+    gpa_uint32 GetMaxEventIdCount(PE_BLOCK_ID block) const;
+
+    /// Enable/disable the stable power state, using the stable clock mode specified when opening the context
+    /// \param[in] useProfilingClocks true to use GPU clocks for profiling, false to use default clock mode
+    /// \return GPA_STATUS_OK on success
+    GPA_Status SetStableClocks(bool useProfilingClocks);
+
+private:
     /// Initializes the AMD extensions
     /// \return true if the AMD extensions were initialized
     bool InitializeProfileAMDExtension();
 
-    ID3D11Device*         m_pD3D11Device;              ///< DirectX 11 Device pointer
-    IAmdDxExt*            m_pDxExt;                    ///< The AMD Dx Extension interface
-    IAmdDxExtPerfProfile* m_pDxExtPE;                  ///< The Perf Experiment extension interface
-    static const GPUIndex ms_activeGpuCF = 0xffffffff; ///< CF/ACF active GPU
+    ID3D11Device*         m_pD3D11Device;                       ///< DirectX 11 Device pointer
+    IAmdDxExt*            m_pDxExt;                             ///< The AMD Dx Extension interface
+    IAmdDxExtPerfProfile* m_pDxExtPE;                           ///< The Perf Experiment extension interface
+    static const GPUIndex ms_activeGpuCF = 0xffffffff;          ///< CF/ACF active GPU
+    PE_BLOCK_COUNTER_INFO m_blockCounterInfo[PE_BLOCK_ID_MAX];  ///< block counter info
+    bool                  m_blockInfoInit[PE_BLOCK_ID_MAX];     ///< flags indicating the block info has been initialized or not
+    PE_CAPS_INFO          m_gpuCaps;                            ///< GPU capabilities
+    PE_CLOCK_MODE         m_clockMode;                          ///< GPU Clock mode
 };
 
-#endif // _DX11_GPA_CONTEXT_H_
+#endif  // _DX11_GPA_CONTEXT_H_

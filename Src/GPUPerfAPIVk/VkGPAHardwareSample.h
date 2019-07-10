@@ -21,16 +21,12 @@
 class VkGPAHardwareSample : public VkGPASample
 {
 public:
-
     /// Constructor
     /// \param[in] pPass pass object
     /// \param[in] pCmdList gpa command list
     /// \param[in] sampleId sample Id
     /// \param[in] device vk device
-    VkGPAHardwareSample(GPAPass* pPass,
-                        IGPACommandList* pCmdList,
-                        unsigned int sampleId,
-                        VkDevice device);
+    VkGPAHardwareSample(GPAPass* pPass, IGPACommandList* pCmdList, unsigned int sampleId, VkDevice device);
 
     /// Destructor
     virtual ~VkGPAHardwareSample();
@@ -48,7 +44,6 @@ public:
     virtual bool UpdateResults() override;
 
 private:
-
     /// Copy constructor - private override to disable usage
     VkGPAHardwareSample(const VkGPAHardwareSample&) = delete;
 
@@ -74,12 +69,12 @@ private:
     /// \return true if copying of data was successful otherwise false
     bool CopyResult(size_t sampleDataSize, void* pResultBuffer) const;
 
-    VkGpaSessionAMD m_gpaSession;             ///< The underlying driver extension session that this sample is on.
-    gpa_uint32      m_numCounters;            ///< number of counters in this sample
-    uint32_t        m_sampleIndex;            ///< index of the sample being measured
-    VkDevice        m_device;                 ///< The device on which the counters are being collected
-    VkCommandBuffer m_commandBuffer;          ///< the command buffer for this sample
-    bool            m_hasAnyHardwareCounters; ///< flag indicating if there are any non-skipped hardware counters in this request
+    VkGpaSessionAMD m_gpaSession;              ///< The underlying driver extension session that this sample is on.
+    gpa_uint32      m_numCounters;             ///< number of counters in this sample
+    uint32_t        m_sampleIndex;             ///< index of the sample being measured
+    VkDevice        m_device;                  ///< The device on which the counters are being collected
+    VkCommandBuffer m_commandBuffer;           ///< the command buffer for this sample
+    bool            m_hasAnyHardwareCounters;  ///< flag indicating if there are any non-skipped hardware counters in this request
 };
 
-#endif // _VK_GPA_HARDWARE_SAMPLE_H_
+#endif  // _VK_GPA_HARDWARE_SAMPLE_H_

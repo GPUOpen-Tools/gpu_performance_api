@@ -15,7 +15,6 @@
 class GLGPASession : public GPASession
 {
 public:
-
     /// Constructor
     /// \param[in] pParentContext The context Id on which this session is created
     /// \param[in] sampleType The sample type that will be created on this session
@@ -28,8 +27,7 @@ public:
     GPA_API_Type GetAPIType() const override;
 
 private:
-
     /// \copydoc GPASession::CreateAPIPass()
     GPAPass* CreateAPIPass(PassIndex passIndex) override;
 };
-#endif // _GL_GPA_SESSION_H_
+#endif  // _GL_GPA_SESSION_H_

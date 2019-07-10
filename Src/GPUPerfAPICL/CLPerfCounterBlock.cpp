@@ -17,15 +17,13 @@
 #include "CLRTModuleLoader.h"
 #include "Logging.h"
 
-clPerfCounterBlock::clPerfCounterBlock(cl_device_id    clDevice,
-                                       cl_ulong        blockID,
-                                       cl_uint         maxActive,
-                                       std::vector< cl_ulong > pCounters): m_clDevice(clDevice),
-    m_blockID(blockID),
-    m_maxActive(maxActive),
-    m_pCounters(pCounters),
-    m_pclCounters(nullptr),
-    m_isResultReady(false)
+clPerfCounterBlock::clPerfCounterBlock(cl_device_id clDevice, cl_ulong blockID, cl_uint maxActive, std::vector<cl_ulong> pCounters)
+    : m_clDevice(clDevice)
+    , m_blockID(blockID)
+    , m_maxActive(maxActive)
+    , m_pCounters(pCounters)
+    , m_pclCounters(nullptr)
+    , m_isResultReady(false)
 {
     Create();
 }
@@ -56,10 +54,10 @@ void clPerfCounterBlock::Create()
         return;
     }
 
-    cl_int  error;
+    cl_int                  error;
     cl_perfcounter_property properties[4][2];
 
-    m_pclCounters = new(std::nothrow) cl_perfcounter_amd[m_pCounters.size()];
+    m_pclCounters = new (std::nothrow) cl_perfcounter_amd[m_pCounters.size()];
 
     if (nullptr == m_pclCounters)
     {
@@ -78,7 +76,7 @@ void clPerfCounterBlock::Create()
     {
         for (cl_uint j = 0; j < m_maxActive; ++j)
         {
-            cl_uint index    = i * m_maxActive + j;
+            cl_uint index = i * m_maxActive + j;
 
             if (index >= m_pCounters.size())
             {
@@ -93,9 +91,8 @@ void clPerfCounterBlock::Create()
             if (CL_SUCCESS != error)
             {
                 std::stringstream ss;
-                ss << "clCreatePerfCounterAMD failed (pass: " << i << ", index in pass: "
-                   << j << ", global index: " << index << ", counter: " << m_pCounters[index]
-                   << "). Error code=" << error << ".";
+                ss << "clCreatePerfCounterAMD failed (pass: " << i << ", index in pass: " << j << ", global index: " << index
+                   << ", counter: " << m_pCounters[index] << "). Error code=" << error << ".";
                 GPA_LogError(ss.str().c_str());
 
                 return;
@@ -113,30 +110,24 @@ bool clPerfCounterBlock::CollectData(const cl_event* clEvent)
 
     assert(nullptr != m_pclCounters);
 
-    if (m_pCounters.empty() ||
-        nullptr == m_pclCounters)
+    if (m_pCounters.empty() || nullptr == m_pclCounters)
     {
         return false;
     }
 
-    cl_int error;
+    cl_int   error;
     cl_ulong result;
 
     OCLRTModuleLoader::Instance()->GetAPIRTModule()->WaitForEvents(1, clEvent);
 
     for (cl_uint i = 0; i < m_pCounters.size(); ++i)
     {
-        error = my_clGetPerfCounterInfoAMD(m_pclCounters[i],
-                                           CL_PERFCOUNTER_DATA,
-                                           sizeof(cl_ulong),
-                                           &result,
-                                           nullptr);
+        error = my_clGetPerfCounterInfoAMD(m_pclCounters[i], CL_PERFCOUNTER_DATA, sizeof(cl_ulong), &result, nullptr);
 
         if (CL_SUCCESS != error)
         {
             std::stringstream ss;
-            ss << "clGetPerfCounterInfoAMD failed (counter index: " << i << ", counter: "
-               << m_pCounters[i] << "). Error code=" << error << ".";
+            ss << "clGetPerfCounterInfoAMD failed (counter index: " << i << ", counter: " << m_pCounters[i] << "). Error code=" << error << ".";
             GPA_LogError(ss.str().c_str());
 
             return false;

@@ -73,6 +73,12 @@ if(CMAKE_SIZEOF_VOID_P EQUAL 8)
     add_subdirectory(${GPA_SRC_VK_COLOR_CUBE} ${CMAKE_BINARY_DIR}/${GPA_SRC_VK_COLOR_CUBE_REL_PATH})
 endif()
 
+if(WIN32)
+    add_subdirectory(${GPA_SRC_GL_TRIANGLE} ${CMAKE_BINARY_DIR}/${GPA_SRC_GL_TRIANGLE_REL_PATH})
+elseif(CMAKE_SIZEOF_VOID_P EQUAL 8)
+    add_subdirectory(${GPA_SRC_GL_TRIANGLE} ${CMAKE_BINARY_DIR}/${GPA_SRC_GL_TRIANGLE_REL_PATH})
+endif()
+
 if(NOT ${skiptests})
     # Build GoogleTest libs
     add_subdirectory(${GPA_SRC_GOOGLE_TEST} ${CMAKE_BINARY_DIR}/${GPA_SRC_GOOGLE_TEST_REL_PATH})

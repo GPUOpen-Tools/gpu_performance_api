@@ -9,6 +9,7 @@
 #define _CL_GPA_CONTEXT_H_
 
 #include <CL/cl.h>
+#include <CL/internal/cl_profile_amd.h>
 
 // GPA Common
 #include "GPAContext.h"
@@ -17,7 +18,6 @@
 class CLGPAContext : public GPAContext
 {
 public:
-
     /// Constructor
     /// \param[in] clCommandQueue the CL Command queue used to create the context
     /// \param[in] hwInfo the hardware info used to create the context
@@ -25,7 +25,7 @@ public:
     CLGPAContext(cl_command_queue& clCommandQueue, GPA_HWInfo& hwInfo, GPA_OpenContextFlags contextFlags);
 
     /// Destructor
-    ~CLGPAContext() = default;
+    ~CLGPAContext();
 
     /// \copydoc IGPAContext::CreateSession()
     GPA_SessionId CreateSession(GPA_Session_Sample_Type sampleType) override;
@@ -52,10 +52,22 @@ public:
     /// \return the CL command queue
     const cl_command_queue& GetCLCommandQueue() const;
 
-private:
+    /// Enable/disable the stable power state, using the stable clock mode specified when opening the context
+    /// \param[in] useProfilingClocks true to use GPU clocks for profiling, false to use default clock mode
+    /// \return GPA_STATUS_OK on success
+    GPA_Status SetStableClocks(bool useProfilingClocks);
 
-    cl_command_queue m_clCommandQueue;   ///< CL command queue for this context
-    cl_device_id     m_clDeviceId;       ///< CL device id for this context
+private:
+    /// Parses a version number returned from clGetDeviceInfo(CL_DRIVER_VERSION)
+    /// The string has the format: "2840.16 (PAL,HSAIL)", and we want to extract the "2840" portion.
+    /// \param pVersion the version string to extract the number from
+    /// \return 0 on failure, the build version number on success
+    int ExtractDriverVersion(const char* pVersion) const;
+
+    cl_command_queue       m_clCommandQueue;   ///< CL command queue for this context
+    cl_device_id           m_clDeviceId;       ///< CL device id for this context
+    cl_DeviceClockMode_AMD m_clockMode;        ///< GPU Clock mode
+    int                    m_clDriverVersion;  ///> CL driver version
 };
 
-#endif // _CL_GPA_CONTEXT_H_
+#endif  // _CL_GPA_CONTEXT_H_

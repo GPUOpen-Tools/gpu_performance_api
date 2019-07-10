@@ -8,9 +8,8 @@
 #include "ROCmGPASession.h"
 #include "ROCmGPAPass.h"
 
-ROCmGPASession::ROCmGPASession(IGPAContext* pParentContext,
-                               GPA_Session_Sample_Type sampleType) :
-    GPASession(pParentContext, sampleType)
+ROCmGPASession::ROCmGPASession(IGPAContext* pParentContext, GPA_Session_Sample_Type sampleType)
+    : GPASession(pParentContext, sampleType)
 {
 }
 
@@ -23,13 +22,10 @@ GPAPass* ROCmGPASession::CreateAPIPass(PassIndex passIndex)
 {
     GPAPass* pRetPass = nullptr;
 
-    CounterList* pPassCounters = GetCountersForPass(passIndex);
+    CounterList*     pPassCounters = GetCountersForPass(passIndex);
     GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
 
-    ROCmGPAPass* pROCmPass = new(std::nothrow) ROCmGPAPass(this,
-                                                           passIndex,
-                                                           counterSource,
-                                                           pPassCounters);
+    ROCmGPAPass* pROCmPass = new (std::nothrow) ROCmGPAPass(this, passIndex, counterSource, pPassCounters);
 
     if (nullptr == pROCmPass)
     {

@@ -29,7 +29,7 @@ GPA_Status GPA_CounterSchedulerDX11::EnableCounter(gpa_uint32 index)
 
     if (NVIDIA_VENDOR_ID == m_vendorId)
     {
-        if (index < SwCounterManager::Instance()->GetNumSwCounters()) //SW counter
+        if (index < SwCounterManager::Instance()->GetNumSwCounters())  //SW counter
         {
             SwCounterManager::Instance()->EnableSwCounter(index);
         }
@@ -42,7 +42,7 @@ GPA_Status GPA_CounterSchedulerDX11::EnableCounter(gpa_uint32 index)
         }
     }
 
-#endif // WIN32
+#endif  // WIN32
 
     return status;
 }
@@ -57,7 +57,7 @@ GPA_Status GPA_CounterSchedulerDX11::DoDisableCounter(gpa_uint32 index)
 
         if (NVIDIA_VENDOR_ID == m_vendorId)
         {
-            if (index < SwCounterManager::Instance()->GetNumSwCounters()) //SW counter
+            if (index < SwCounterManager::Instance()->GetNumSwCounters())  //SW counter
             {
                 SwCounterManager::Instance()->DisableSwCounter(index);
             }
@@ -72,7 +72,7 @@ GPA_Status GPA_CounterSchedulerDX11::DoDisableCounter(gpa_uint32 index)
             }
         }
 
-#endif // WIN32
+#endif  // WIN32
     }
 
     return status;

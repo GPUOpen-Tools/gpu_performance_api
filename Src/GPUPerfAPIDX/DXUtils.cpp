@@ -19,8 +19,7 @@ GPA_Status DXGetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& adapterDesc)
     else
     {
         IDXGIDevice1* pDXGIDevice = nullptr;
-        HRESULT hr = pDevice->QueryInterface(
-                         __uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice));
+        HRESULT       hr          = pDevice->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice));
 
         if (FAILED(hr) || (nullptr == pDXGIDevice))
         {
@@ -30,7 +29,7 @@ GPA_Status DXGetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& adapterDesc)
         else
         {
             IDXGIAdapter* pAdapter = nullptr;
-            hr = pDXGIDevice->GetAdapter(&pAdapter);
+            hr                     = pDXGIDevice->GetAdapter(&pAdapter);
 
             if (FAILED(hr) || (nullptr == pAdapter))
             {
@@ -69,7 +68,7 @@ HMONITOR DXGetDeviceMonitor(IUnknown* pDevice)
     else
     {
         IDXGIDevice1* pDXGIDevice = nullptr;
-        HRESULT hr = pDevice->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice));
+        HRESULT       hr          = pDevice->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice));
 
         if (FAILED(hr) || (nullptr == pDXGIDevice))
         {
@@ -78,7 +77,7 @@ HMONITOR DXGetDeviceMonitor(IUnknown* pDevice)
         else
         {
             IDXGIAdapter* pAdapter = nullptr;
-            hr = pDXGIDevice->GetAdapter(&pAdapter);
+            hr                     = pDXGIDevice->GetAdapter(&pAdapter);
 
             if (FAILED(hr) || (nullptr == pAdapter))
             {
@@ -87,7 +86,7 @@ HMONITOR DXGetDeviceMonitor(IUnknown* pDevice)
             else
             {
                 IDXGIOutput* pOutput = nullptr;
-                hr = pAdapter->EnumOutputs(0, &pOutput);
+                hr                   = pAdapter->EnumOutputs(0, &pOutput);
 
                 if (S_OK != hr)
                 {

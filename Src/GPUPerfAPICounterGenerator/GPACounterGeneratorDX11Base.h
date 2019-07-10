@@ -14,36 +14,29 @@
 class GPA_CounterGeneratorDX11Base : public GPA_CounterGeneratorBase
 {
 public:
-
     /// Constructor
     GPA_CounterGeneratorDX11Base();
 
     /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
-    virtual GPA_Status GeneratePublicCounters(
-        GDT_HW_GENERATION desiredGeneration,
-        GDT_HW_ASIC_TYPE asicType,
-        gpa_uint8 generateAsicSpecificCounters,
-        GPA_DerivedCounters* pPublicCounters) override;
+    virtual GPA_Status GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
+                                              GDT_HW_ASIC_TYPE     asicType,
+                                              gpa_uint8            generateAsicSpecificCounters,
+                                              GPA_DerivedCounters* pPublicCounters) override;
 
     /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
-    virtual GPA_Status GenerateHardwareCounters(
-        GDT_HW_GENERATION desiredGeneration,
-        GDT_HW_ASIC_TYPE asicType,
-        gpa_uint8 generateAsicSpecificCounters,
-        GPA_HardwareCounters* pHardwareCounters) override;
+    virtual GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
+                                                GDT_HW_ASIC_TYPE      asicType,
+                                                gpa_uint8             generateAsicSpecificCounters,
+                                                GPA_HardwareCounters* pHardwareCounters) override;
 
     /// \copydoc GPA_CounterGeneratorBase::GenerateSoftwareCounters
-    virtual GPA_Status GenerateSoftwareCounters(
-        GDT_HW_GENERATION desiredGeneration,
-        GDT_HW_ASIC_TYPE asicType,
-        gpa_uint8 generateAsicSpecificCounters,
-        GPA_SoftwareCounters* pSoftwareCounters) override;
+    virtual GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION     desiredGeneration,
+                                                GDT_HW_ASIC_TYPE      asicType,
+                                                gpa_uint8             generateAsicSpecificCounters,
+                                                GPA_SoftwareCounters* pSoftwareCounters) override;
 
     /// \copydoc IGPACounterAccessor::ComputeSWCounterValue()
-    void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex,
-                               gpa_uint64 value,
-                               void* pResult,
-                               const GPA_HWInfo* pHwInfo) const override;
+    void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const override;
 
     /// Get the D3D11_QUERY enum value based on our own software counter index
     /// \param index Our SW counter index
@@ -60,8 +53,7 @@ public:
     static bool IsAMDGPU(GDT_HW_GENERATION generation);
 
 private:
-
-    GPA_CounterGroupDesc m_d3dCounterGroup = {0, "D3D11", 0, 0, 0}; ///< description for D3D11 counter group
+    GPA_CounterGroupDesc m_d3dCounterGroup = {0, "D3D11", 0, 0, 0};  ///< description for D3D11 counter group
 };
 
-#endif //_GPA_COUNTER_GENERATOR_DX11_BASE_H_
+#endif  //_GPA_COUNTER_GENERATOR_DX11_BASE_H_

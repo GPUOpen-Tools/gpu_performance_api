@@ -18,16 +18,12 @@
 class CLGPASample : public GPASample
 {
 public:
-
     /// Constructor
     /// \param[in] pPass GPA Pass object
     /// \param[in] pCmdList gpa command list
     /// \param[in] sampleType gpa sample type
     /// \param[in] sampleId user-supplied sample id
-    CLGPASample(GPAPass* pPass,
-                IGPACommandList* pCmdList,
-                GpaSampleType sampleType,
-                ClientSampleId sampleId);
+    CLGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId);
 
     /// Delete default constructor
     CLGPASample() = delete;
@@ -48,7 +44,6 @@ public:
     void ReleaseCounters() override final;
 
 private:
-
     /// Obtains the index of the specified group ID
     /// \param blockID [out] the index of the block
     /// \param groupID the ID of the group to find.
@@ -70,20 +65,20 @@ private:
         /// Destructor
         ~CLCounter() = default;
 
-        gpa_uint32 m_counterID       = 0;      ///< ID that is calculated in the CounterDefinition files
-        gpa_uint32 m_counterGroup    = 0;      ///< group that this counter is in
-        gpa_uint32 m_counterIndex    = 0;      ///< index to this counter within its group
-        bool m_isCounterResultReady  = false;  ///< indicates whether the result has been stored in the pCounterResult buffer
+        gpa_uint32 m_counterID            = 0;      ///< ID that is calculated in the CounterDefinition files
+        gpa_uint32 m_counterGroup         = 0;      ///< group that this counter is in
+        gpa_uint32 m_counterIndex         = 0;      ///< index to this counter within its group
+        bool       m_isCounterResultReady = false;  ///< indicates whether the result has been stored in the pCounterResult buffer
     };
 
-    CLGPAContext*                    m_pCLGpaContext;         ///< Cache the context pointer
-    CLCounter*                       m_pClCounters;           ///< store the counters' data
+    CLGPAContext* m_pCLGpaContext;  ///< Cache the context pointer
+    CLCounter*    m_pClCounters;    ///< store the counters' data
 
-    std::vector<clPerfCounterBlock*> m_clCounterBlocks;       ///< store the data to interface with opencl counters per HW block
-    std::vector<cl_perfcounter_amd>  m_clCounterList;         ///< store the opencl counters
-    cl_event                         m_clEvent;               ///< cl event to synchronize the counters
+    std::vector<clPerfCounterBlock*> m_clCounterBlocks;  ///< store the data to interface with opencl counters per HW block
+    std::vector<cl_perfcounter_amd>  m_clCounterList;    ///< store the opencl counters
+    cl_event                         m_clEvent;          ///< cl event to synchronize the counters
 
-    gpa_uint32                       m_dataReadyCount;        ///< number of counters with data ready
+    gpa_uint32 m_dataReadyCount;  ///< number of counters with data ready
 };
 
 #endif  // _CL_GPA_SAMPLE_H_

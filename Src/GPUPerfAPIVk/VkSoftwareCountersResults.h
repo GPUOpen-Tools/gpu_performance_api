@@ -25,26 +25,26 @@ typedef enum
 /// Struct used to store Vk query results
 struct GpaVkSoftwareQueryResults
 {
-    uint64_t occlusion;                                        ///< Occlusion results
-    uint64_t occlusionAvailable;                               ///< Occlusion results are Available
-    uint64_t occlusionBinary;                                  ///< Occlusion binary results
-    uint64_t occlusionBinaryAvailable;                         ///< Occlusion binary results are Available
-    uint64_t timestampBegin;                                   ///< TimestampBegin results
-    uint64_t timestampBeginAvailable;                          ///< TImestampBegin results are available
-    uint64_t timestampEnd;                                     ///< TimestampEnd results
-    uint64_t timestampEndAvailable;                            ///< TImestampEnd results are available
-    uint64_t inputAssemblyVertices;                            ///< Pipeline Stats: Input Assembly vertices results
-    uint64_t inputAssemblyPrimitives;                          ///< Pipeline Stats: Input Assembly primitives results
-    uint64_t vertexShaderInvocations;                          ///< Pipeline Stats: vertex shader invocations results
-    uint64_t geometryShaderInvocations;                        ///< Pipeline Stats: geometry shader invocations results
-    uint64_t geometryShaderPrimitives;                         ///< Pipeline Stats: geometry shader primitives results
-    uint64_t clippingInvocations;                              ///< Pipeline Stats: clipping invocations results
-    uint64_t clippingPrimitives;                               ///< Pipeline Stats: clipping primitives results
-    uint64_t fragmentShaderInvocations;                        ///< Pipeline Stats: fragment shader invocations results
-    uint64_t tessellationControlShaderPatches;                 ///< Pipeline Stats: tessellation control shader patches results
-    uint64_t tessellationEvaluationShaderInvocations;          ///< Pipeline Stats: tessellation evalutation shader invocations results
-    uint64_t computeShaderInvocations;                         ///< Pipeline Stats: compute shader invocations results
-    uint64_t pipelineStatsAvailable;                           ///< Pipeline Stats results are available
+    uint64_t occlusion;                                ///< Occlusion results
+    uint64_t occlusionAvailable;                       ///< Occlusion results are Available
+    uint64_t occlusionBinary;                          ///< Occlusion binary results
+    uint64_t occlusionBinaryAvailable;                 ///< Occlusion binary results are Available
+    uint64_t timestampBegin;                           ///< TimestampBegin results
+    uint64_t timestampBeginAvailable;                  ///< TImestampBegin results are available
+    uint64_t timestampEnd;                             ///< TimestampEnd results
+    uint64_t timestampEndAvailable;                    ///< TImestampEnd results are available
+    uint64_t inputAssemblyVertices;                    ///< Pipeline Stats: Input Assembly vertices results
+    uint64_t inputAssemblyPrimitives;                  ///< Pipeline Stats: Input Assembly primitives results
+    uint64_t vertexShaderInvocations;                  ///< Pipeline Stats: vertex shader invocations results
+    uint64_t geometryShaderInvocations;                ///< Pipeline Stats: geometry shader invocations results
+    uint64_t geometryShaderPrimitives;                 ///< Pipeline Stats: geometry shader primitives results
+    uint64_t clippingInvocations;                      ///< Pipeline Stats: clipping invocations results
+    uint64_t clippingPrimitives;                       ///< Pipeline Stats: clipping primitives results
+    uint64_t fragmentShaderInvocations;                ///< Pipeline Stats: fragment shader invocations results
+    uint64_t tessellationControlShaderPatches;         ///< Pipeline Stats: tessellation control shader patches results
+    uint64_t tessellationEvaluationShaderInvocations;  ///< Pipeline Stats: tessellation evalutation shader invocations results
+    uint64_t computeShaderInvocations;                 ///< Pipeline Stats: compute shader invocations results
+    uint64_t pipelineStatsAvailable;                   ///< Pipeline Stats results are available
 };
 
 /// An array whose indexes correspond to the GPA_VK_SW_QUERY_TYPE enums and
@@ -52,25 +52,12 @@ struct GpaVkSoftwareQueryResults
 /// Occlusion queries only need two 64-bit uints (one for the result, and one for the availability bit).
 /// Timestamps need four 64-bit uints because we collect both 'begin' and 'end' timestamps.
 /// Pipeline Stats have 11 64-bit uint results, plus an availablity bit.
-static const size_t ms_gpaVkSoftwareResultSizes[] =
-{
-    sizeof(uint64_t) * 2,
-    sizeof(uint64_t) * 2,
-    sizeof(uint64_t) * 4,
-    sizeof(uint64_t) * 12
-};
+static const size_t ms_gpaVkSoftwareResultSizes[] = {sizeof(uint64_t) * 2, sizeof(uint64_t) * 2, sizeof(uint64_t) * 4, sizeof(uint64_t) * 12};
 
 /// An array whose indexes correspond to the GPA_VK_SW_QUERY_TYPE enums and
 /// whose values indicate the memory stride (in bytes) to collect the query results.
 /// Occlusion and Timestamps only need to stride two 64-bit uints (the result and the availability bit).
 /// Pipeline Stat queries need to stride over all 11 results and the availability bit.
-static const size_t ms_gpaVkSoftwareResultStrides[] =
-{
-    sizeof(uint64_t) * 2,
-    sizeof(uint64_t) * 2,
-    sizeof(uint64_t) * 2,
-    sizeof(uint64_t) * 12
-};
+static const size_t ms_gpaVkSoftwareResultStrides[] = {sizeof(uint64_t) * 2, sizeof(uint64_t) * 2, sizeof(uint64_t) * 2, sizeof(uint64_t) * 12};
 
-#endif // _VK_SOFTWARE_COUNTERS_RESULTS_H_
-
+#endif  // _VK_SOFTWARE_COUNTERS_RESULTS_H_

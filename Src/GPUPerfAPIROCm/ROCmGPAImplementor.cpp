@@ -84,8 +84,7 @@ GPA_API_Type ROCmGPAImplementor::GetAPIType() const
     return GPA_API_ROCM;
 }
 
-bool ROCmGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
-                                          GPA_HWInfo& hwInfo) const
+bool ROCmGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const
 {
     bool isSuccess = true;
 
@@ -99,12 +98,12 @@ bool ROCmGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
     else
     {
         GPA_ROCm_Context* pROCmContext = nullptr;
-        GPA_ROCm_Context localROCmContext;
+        GPA_ROCm_Context  localROCmContext;
 
         if (ROCmGlobalFlags::Instance()->m_wasInitializeCalled)
         {
-            pROCmContext = &localROCmContext;
-            hsa_queue_t* pQueue = static_cast<hsa_queue_t*>(pContextInfo);
+            pROCmContext           = &localROCmContext;
+            hsa_queue_t* pQueue    = static_cast<hsa_queue_t*>(pContextInfo);
             pROCmContext->m_pQueue = pQueue;
             pROCmContext->m_pAgent = &ROCmGlobalFlags::Instance()->m_queueAgentMap[pQueue];
         }
@@ -125,7 +124,7 @@ bool ROCmGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
             //----------------------------------------------------
             // Check device type
             hsa_device_type_t deviceType;
-            hsa_status_t status = pHsaModule->agent_get_info(device, HSA_AGENT_INFO_DEVICE, &deviceType);
+            hsa_status_t      status = pHsaModule->agent_get_info(device, HSA_AGENT_INFO_DEVICE, &deviceType);
 
             if (HSA_STATUS_SUCCESS != status || HSA_DEVICE_TYPE_GPU != deviceType)
             {
@@ -159,7 +158,7 @@ bool ROCmGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                     else
                     {
                         GDT_GfxCardInfo cardInfo;
-                        bool isDeviceSupported = false;
+                        bool            isDeviceSupported = false;
 
                         if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(deviceId, REVISION_ID_ANY, cardInfo))
                         {
@@ -188,7 +187,8 @@ bool ROCmGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                         else
                         {
                             uint32_t computeUnitCount = 0;
-                            status = pHsaModule->agent_get_info(device, static_cast<hsa_agent_info_t>(HSA_AMD_AGENT_INFO_COMPUTE_UNIT_COUNT), &computeUnitCount);
+                            status =
+                                pHsaModule->agent_get_info(device, static_cast<hsa_agent_info_t>(HSA_AMD_AGENT_INFO_COMPUTE_UNIT_COUNT), &computeUnitCount);
 
                             if (HSA_STATUS_SUCCESS != status)
                             {
@@ -198,6 +198,7 @@ bool ROCmGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                             }
                             else
                             {
+                                hwInfo.SetNumberCUs(static_cast<size_t>(computeUnitCount));
                                 uint32_t simdsPerCU = 0;
                                 status = pHsaModule->agent_get_info(device, static_cast<hsa_agent_info_t>(HSA_AMD_AGENT_INFO_NUM_SIMDS_PER_CU), &simdsPerCU);
 
@@ -209,7 +210,35 @@ bool ROCmGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                                 }
                                 else
                                 {
-                                    hwInfo.SetNumberSIMDs(computeUnitCount * simdsPerCU);
+                                    hwInfo.SetNumberSIMDs(static_cast<size_t>(computeUnitCount * simdsPerCU));
+                                }
+                            }
+
+                            uint32_t shaderEngineCount = 0;
+                            status =
+                                pHsaModule->agent_get_info(device, static_cast<hsa_agent_info_t>(HSA_AMD_AGENT_INFO_NUM_SHADER_ENGINES), &shaderEngineCount);
+
+                            if (HSA_STATUS_SUCCESS != status)
+                            {
+                                // intentionally not setting isSuccess to false here
+                                // this is non-fatal and if it fails, we will fall back to the hardcoded shader engine count
+                                GPA_LogError("Unable to get shader engine count.");
+                            }
+                            else
+                            {
+                                hwInfo.SetNumberShaderEngines(static_cast<size_t>(shaderEngineCount));
+                                uint32_t ShaderArraysPerSE = 0;
+                                status = pHsaModule->agent_get_info(device, static_cast<hsa_agent_info_t>(HSA_AMD_AGENT_INFO_NUM_SHADER_ARRAYS_PER_SE), &ShaderArraysPerSE);
+
+                                if (HSA_STATUS_SUCCESS != status)
+                                {
+                                    // intentionally not setting isSuccess to false here
+                                    // this is non-fatal and if it fails, we will fall back to the hardcoded simd count
+                                    GPA_LogError("Unable to get shader arrays per shader engine.");
+                                }
+                                else
+                                {
+                                    hwInfo.SetNumberShaderArrays(static_cast<size_t>(shaderEngineCount * ShaderArraysPerSE));
                                 }
                             }
                         }
@@ -223,8 +252,7 @@ bool ROCmGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
 }
 
 // TODO: this implementation doesn't do much -- is it needed?
-bool ROCmGPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo,
-                                            const GPA_HWInfo& hwInfo) const
+bool ROCmGPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const
 {
     UNREFERENCED_PARAMETER(pContextInfo);
 
@@ -244,9 +272,7 @@ bool ROCmGPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
     return isSupported;
 }
 
-IGPAContext* ROCmGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
-                                                GPA_HWInfo& hwInfo,
-                                                GPA_OpenContextFlags flags)
+IGPAContext* ROCmGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
 {
     ROCmGPAContext* pRetGpaContext = nullptr;
 
@@ -259,12 +285,12 @@ IGPAContext* ROCmGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
     else
     {
         GPA_ROCm_Context* pROCmContext = nullptr;
-        GPA_ROCm_Context localROCmContext;
+        GPA_ROCm_Context  localROCmContext;
 
         if (ROCmGlobalFlags::Instance()->m_wasInitializeCalled)
         {
-            pROCmContext = &localROCmContext;
-            hsa_queue_t* pQueue = static_cast<hsa_queue_t*>(pContextInfo);
+            pROCmContext           = &localROCmContext;
+            hsa_queue_t* pQueue    = static_cast<hsa_queue_t*>(pContextInfo);
             pROCmContext->m_pQueue = pQueue;
             pROCmContext->m_pAgent = &ROCmGlobalFlags::Instance()->m_queueAgentMap[pQueue];
         }
@@ -279,7 +305,7 @@ IGPAContext* ROCmGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
         }
         else
         {
-            ROCmGPAContext* pROCmGpaContext = new(std::nothrow) ROCmGPAContext(hwInfo, flags);
+            ROCmGPAContext* pROCmGpaContext = new (std::nothrow) ROCmGPAContext(hwInfo, flags);
 
             if (nullptr == pROCmGpaContext)
             {
@@ -311,9 +337,10 @@ bool ROCmGPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, 
     if (nullptr != pContext)
     {
         delete reinterpret_cast<ROCmGPAContext*>(pContext);
+        pContext = nullptr;
     }
 
-    return (nullptr != pContext) && (nullptr != pDeviceIdentifier);
+    return (nullptr == pContext) && (nullptr != pDeviceIdentifier);
 }
 
 GPADeviceIdentifier ROCmGPAImplementor::GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const
@@ -321,8 +348,8 @@ GPADeviceIdentifier ROCmGPAImplementor::GetDeviceIdentifierFromContextInfo(GPACo
     return pContextInfo;
 }
 
-static const char* s_HSA_ROCP_INTERCEPT_ENV_VAR_NAME = "ROCP_HSA_INTERCEPT"; ///< The ROCP Intercept environment variable name
-static const char* s_HSA_ROCP_INTERCEPT_ENV_VAR_VALUE = "1";                 ///< The ROCP Intercept environment variable value
+static const char* s_HSA_ROCP_INTERCEPT_ENV_VAR_NAME  = "ROCP_HSA_INTERCEPT";  ///< The ROCP Intercept environment variable name
+static const char* s_HSA_ROCP_INTERCEPT_ENV_VAR_VALUE = "1";                   ///< The ROCP Intercept environment variable value
 
 bool ROCmGPAImplementor::SetROCPInterceptEnvVar(std::string& strErrorMsg) const
 {
@@ -331,7 +358,7 @@ bool ROCmGPAImplementor::SetROCPInterceptEnvVar(std::string& strErrorMsg) const
 
 #ifndef _WIN32
     int result = setenv(s_HSA_ROCP_INTERCEPT_ENV_VAR_NAME, s_HSA_ROCP_INTERCEPT_ENV_VAR_VALUE, 1);
-    retVal = (0 == result);
+    retVal     = (0 == result);
 
     if (!retVal)
     {
@@ -353,7 +380,7 @@ bool ROCmGPAImplementor::UnsetROCPInterceptEnvVar(std::string& strErrorMsg) cons
 
 #ifndef _WIN32
     int result = unsetenv(s_HSA_ROCP_INTERCEPT_ENV_VAR_NAME);
-    retVal = (0 == result);
+    retVal     = (0 == result);
 
     if (!retVal)
     {
@@ -398,13 +425,13 @@ bool ROCmGPAImplementor::SetToolsLibEnvVars()
     retVal = 0 != dladdr(reinterpret_cast<void*>(&ROCmGPAImplementor::SetToolsLibEnvVars), &dlInfo);
 
     toolsLibVal.append(" ");
-    toolsLibVal.append(dlInfo.dli_fname); // set this module as a tools lib so we can intercept hsa_queue_create
+    toolsLibVal.append(dlInfo.dli_fname);  // set this module as a tools lib so we can intercept hsa_queue_create
 
     retVal = 0 == setenv(szHSAToolsLibEnvVar, toolsLibVal.c_str(), 1);
 
     if (retVal)
     {
-        retVal = 0 == setenv(szROCPToolLibEnvVar, dlInfo.dli_fname, 1); // set this module as a rocprofiler lib so queue interception works
+        retVal = 0 == setenv(szROCPToolLibEnvVar, dlInfo.dli_fname, 1);  // set this module as a rocprofiler lib so queue interception works
     }
 #endif
 

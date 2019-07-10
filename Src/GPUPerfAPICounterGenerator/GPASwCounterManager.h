@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class to manage the D3D11 Query-based software counters
@@ -9,7 +9,7 @@
 #define _GPA_SW_COUNTER_MANAGER_H_
 
 #include "TSingleton.h"
-#include "GPAInternalCounter.h"
+#include "GPACounter.h"
 #include <vector>
 #include <set>
 #include <unordered_map>
@@ -48,14 +48,14 @@ enum class D3DCOUNTERS : gpa_uint32
     OVERFLOWPRED_S3
 };
 
-typedef std::vector<GPA_SoftwareCounterDesc>        SwCounterDescVec;    ///< Typedef for a list of software counters
-typedef std::set<gpa_uint32>                        EnabledSwCounterSet; ///< Typedef for a set of enabled counters
-typedef std::unordered_map<gpa_uint32, gpa_uint32>  CounterIndexMap;     ///< Typedef for a map of counter indices
+typedef std::vector<GPA_SoftwareCounterDesc>       SwCounterDescVec;     ///< Typedef for a list of software counters
+typedef std::set<gpa_uint32>                       EnabledSwCounterSet;  ///< Typedef for a set of enabled counters
+typedef std::unordered_map<gpa_uint32, gpa_uint32> CounterIndexMap;      ///< Typedef for a map of counter indices
 
 /// singleton wrapper class for DX11 SW counters.
 class SwCounterManager : public TSingleton<SwCounterManager>
 {
-public :
+public:
     /// default constructor
     SwCounterManager();
 
@@ -121,7 +121,7 @@ public :
     /// get public counter index of SW counter from SW counter map
     /// \param swIndex the SW index of the SW counter
     /// \return public counter index
-    gpa_uint32  GetSwCounterPubIndex(const gpa_uint32 swIndex) const;
+    gpa_uint32 GetSwCounterPubIndex(const gpa_uint32 swIndex) const;
 
     /// clear m_swCounterIndexMap
     void ClearSwCounterMap();
@@ -146,14 +146,13 @@ private:
     /// \return reference to object
     SwCounterManager& operator=(SwCounterManager&) = delete;
 
-    SwCounterDescVec    m_swCounters;          ///<vector containing SW D3D11 counters
-    EnabledSwCounterSet m_enabledSwCounters;   ///< set of currently enabled SW D3D11 counters(ids)
-    gpa_uint32          m_amdCounters;         ///< number of AMD counters
-    CounterIndexMap     m_swCounterIndexMap;   ///< SW counter public index, SW index map
-    gpa_uint32          m_swGPUTimeCounter;    ///< SW GPUTime counter public index
-    bool                m_swGPUTimeEnabled;    ///< Indicates if SW GPUTime counter is enabled
-    bool                m_swCountersGenerated; ///< Indicates if SW counters have been generated
+    SwCounterDescVec    m_swCounters;           ///<vector containing SW D3D11 counters
+    EnabledSwCounterSet m_enabledSwCounters;    ///< set of currently enabled SW D3D11 counters(ids)
+    gpa_uint32          m_amdCounters;          ///< number of AMD counters
+    CounterIndexMap     m_swCounterIndexMap;    ///< SW counter public index, SW index map
+    gpa_uint32          m_swGPUTimeCounter;     ///< SW GPUTime counter public index
+    bool                m_swGPUTimeEnabled;     ///< Indicates if SW GPUTime counter is enabled
+    bool                m_swCountersGenerated;  ///< Indicates if SW counters have been generated
 };
 
-#endif // _GPA_SW_COUNTER_MANAGER_H_
-
+#endif  // _GPA_SW_COUNTER_MANAGER_H_

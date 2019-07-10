@@ -15,14 +15,11 @@
 class ROCmGPACommandList : public GPACommandList
 {
 public:
-
     /// Constructor
     /// \param[in] pGpaSession GPA session pointer
     /// \param[in] pGpaPass pass object pointer
     /// \param[in] commandListId command list id
-    ROCmGPACommandList(IGPASession* pGpaSession,
-                       GPAPass* pGpaPass,
-                       CommandListId commandListId);
+    ROCmGPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId);
 
     /// Delete default constructor
     ROCmGPACommandList() = delete;
@@ -34,7 +31,6 @@ public:
     GPA_API_Type GetAPIType() const override;
 
 private:
-
     /// \copydoc GPACommandList::BeginCommandListRequest()
     bool BeginCommandListRequest() override final;
 
@@ -42,11 +38,10 @@ private:
     bool EndCommandListRequest() override final;
 
     /// \copydoc GPACommandList::BeginSampleRequest()
-    bool BeginSampleRequest(ClientSampleId clientSampleId,
-                            GPASample* pGpaSample) override final;
+    bool BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample) override final;
 
     /// \copydoc GPACommandList::CloseLastSampleRequest()
     bool CloseLastSampleRequest() override final;
 };
 
-#endif // _ROCM_GPA_COMMAND_LIST_H_
+#endif  // _ROCM_GPA_COMMAND_LIST_H_

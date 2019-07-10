@@ -14,14 +14,11 @@
 #include "CLGPAPass.h"
 #include "GPAContextCounterMediator.h"
 
-CLGPASample::CLGPASample(GPAPass* pPass,
-                         IGPACommandList* pCmdList,
-                         GpaSampleType sampleType,
-                         ClientSampleId sampleId) :
-    GPASample(pPass, pCmdList, sampleType, sampleId),
-    m_pClCounters(nullptr),
-    m_clEvent(nullptr),
-    m_dataReadyCount(0)
+CLGPASample::CLGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
+    : GPASample(pPass, pCmdList, sampleType, sampleId)
+    , m_pClCounters(nullptr)
+    , m_clEvent(nullptr)
+    , m_dataReadyCount(0)
 {
     if (nullptr != pPass)
     {
@@ -60,7 +57,7 @@ bool CLGPASample::UpdateResults()
         {
             if (!m_pClCounters[i].m_isCounterResultReady)
             {
-                gpa_uint32 groupID = m_pClCounters[i].m_counterGroup;
+                gpa_uint32 groupID   = m_pClCounters[i].m_counterGroup;
                 gpa_uint32 counterID = m_pClCounters[i].m_counterIndex;
 
                 // find the corresponding block with uGroupID
@@ -76,7 +73,7 @@ bool CLGPASample::UpdateResults()
                 if (m_clCounterBlocks[blockID]->IsComplete())
                 {
                     GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = m_clCounterBlocks[blockID]->GetResult(counterID);
-                    m_pClCounters[i].m_isCounterResultReady = true;
+                    m_pClCounters[i].m_isCounterResultReady                                     = true;
                     m_dataReadyCount++;
                 }
             }
@@ -105,7 +102,7 @@ bool CLGPASample::BeginRequest()
     {
         CounterCount counterCount = GetPass()->GetEnabledCounterCount();
 
-        m_pClCounters = new(std::nothrow) CLCounter[counterCount];
+        m_pClCounters = new (std::nothrow) CLCounter[counterCount];
 
         if (nullptr == m_pClCounters)
         {
@@ -113,20 +110,20 @@ bool CLGPASample::BeginRequest()
             return false;
         }
 
-        IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pCLGpaContext);
+        IGPACounterAccessor*        pCounterAccessor  = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pCLGpaContext);
         const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
 
-        bool populateCounterInfoStatus = true;
-        unsigned int counterGroupSize = 0u;
+        bool         populateCounterInfoStatus = true;
+        unsigned int counterGroupSize          = 0u;
 
-        auto PopulateCLPerFCounterInfo = [&](GroupCountersPair groupCountersPair) -> bool
-        {
+        auto PopulateCLPerFCounterInfo = [&](GroupCountersPair groupCountersPair) -> bool {
             bool counterStatus = true;
 
-            gpa_uint32 maxCountersEnabled = static_cast<gpa_uint32>(pHardwareCounters->m_pGroups[groupCountersPair.first].m_maxActiveCounters);
-            clPerfCounterBlock* clBlock = nullptr;
+            gpa_uint32          maxCountersEnabled = static_cast<gpa_uint32>(pHardwareCounters->m_pGroups[groupCountersPair.first].m_maxActiveDiscreteCounters);
+            clPerfCounterBlock* clBlock            = nullptr;
 
-            clBlock = new(std::nothrow) clPerfCounterBlock(m_pCLGpaContext->GetCLDeviceId(), groupCountersPair.first, maxCountersEnabled, groupCountersPair.second);
+            clBlock =
+                new (std::nothrow) clPerfCounterBlock(m_pCLGpaContext->GetCLDeviceId(), groupCountersPair.first, maxCountersEnabled, groupCountersPair.second);
 
             if (nullptr == clBlock)
             {
@@ -158,10 +155,8 @@ bool CLGPASample::BeginRequest()
 
         assert(m_clCounterBlocks.size() == counterGroupSize);
 
-        if (CL_SUCCESS != my_clEnqueueBeginPerfCounterAMD(m_pCLGpaContext->GetCLCommandQueue(),
-                                                          static_cast<cl_uint>(m_clCounterList.size()),
-                                                          &m_clCounterList[0],
-                                                          0, 0, 0))
+        if (CL_SUCCESS !=
+            my_clEnqueueBeginPerfCounterAMD(m_pCLGpaContext->GetCLCommandQueue(), static_cast<cl_uint>(m_clCounterList.size()), &m_clCounterList[0], 0, 0, 0))
         {
             //Reset(selectionID, pCounters);
             return false;
@@ -169,12 +164,11 @@ bool CLGPASample::BeginRequest()
 
         unsigned int counterCountIter = 0;
 
-        auto AddClCounterToSample = [&](const CounterIndex& counterIndex)->bool
-        {
+        auto AddClCounterToSample = [&](const CounterIndex& counterIndex) -> bool {
             const GPA_HardwareCounterDescExt* pCounter = pCounterAccessor->GetHardwareCounterExt(counterIndex);
 
             // GPA_LogDebugMessage( "ENABLED COUNTER: %x.", m_pCounters[i] );
-            m_pClCounters[counterCountIter].m_counterID = counterIndex;
+            m_pClCounters[counterCountIter].m_counterID    = counterIndex;
             m_pClCounters[counterCountIter].m_counterGroup = pCounter->m_groupIdDriver;
             m_pClCounters[counterCountIter].m_counterIndex = static_cast<gpa_uint32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
             counterCountIter++;
@@ -182,7 +176,6 @@ bool CLGPASample::BeginRequest()
         };
 
         pClGpaPass->IterateEnabledCounterList(AddClCounterToSample);
-
     }
     else
     {
@@ -195,10 +188,9 @@ bool CLGPASample::BeginRequest()
 
 bool CLGPASample::EndRequest()
 {
-    bool success = (CL_SUCCESS == my_clEnqueueEndPerfCounterAMD(m_pCLGpaContext->GetCLCommandQueue(),
-                                                                static_cast<cl_uint>(m_clCounterList.size()),
-                                                                &m_clCounterList[0],
-                                                                0, 0, &m_clEvent));
+    bool success =
+        (CL_SUCCESS == my_clEnqueueEndPerfCounterAMD(
+                           m_pCLGpaContext->GetCLCommandQueue(), static_cast<cl_uint>(m_clCounterList.size()), &m_clCounterList[0], 0, 0, &m_clEvent));
 
     return success;
 }

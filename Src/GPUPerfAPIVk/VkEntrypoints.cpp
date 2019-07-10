@@ -9,50 +9,50 @@
 #include "GPACommonDefs.h"
 
 #ifdef _LINUX
-    #include <dlfcn.h>
+#include <dlfcn.h>
 #endif
 
 // Instance entrypoints
-PFN_vkGetPhysicalDeviceProperties _vkGetPhysicalDeviceProperties = nullptr;
+PFN_vkGetPhysicalDeviceProperties            _vkGetPhysicalDeviceProperties            = nullptr;
 PFN_vkGetPhysicalDeviceQueueFamilyProperties _vkGetPhysicalDeviceQueueFamilyProperties = nullptr;
-PFN_vkGetPhysicalDeviceMemoryProperties _vkGetPhysicalDeviceMemoryProperties = nullptr;
-PFN_vkGetPhysicalDeviceFeatures _vkGetPhysicalDeviceFeatures = nullptr;
-PFN_vkGetBufferMemoryRequirements _vkGetBufferMemoryRequirements = nullptr;
-PFN_vkGetPhysicalDeviceProperties2KHR _vkGetPhysicalDeviceProperties2KHR = nullptr;
-PFN_vkGetPhysicalDeviceFeatures2KHR _vkGetPhysicalDeviceFeatures2KHR = nullptr;
+PFN_vkGetPhysicalDeviceMemoryProperties      _vkGetPhysicalDeviceMemoryProperties      = nullptr;
+PFN_vkGetPhysicalDeviceFeatures              _vkGetPhysicalDeviceFeatures              = nullptr;
+PFN_vkGetBufferMemoryRequirements            _vkGetBufferMemoryRequirements            = nullptr;
+PFN_vkGetPhysicalDeviceProperties2KHR        _vkGetPhysicalDeviceProperties2KHR        = nullptr;
+PFN_vkGetPhysicalDeviceFeatures2KHR          _vkGetPhysicalDeviceFeatures2KHR          = nullptr;
 
 // Device entrypoints
-PFN_vkGetDeviceQueue _vkGetDeviceQueue = nullptr;
-PFN_vkCreateQueryPool _vkCreateQueryPool = nullptr;
-PFN_vkDestroyQueryPool _vkDestroyQueryPool = nullptr;
-PFN_vkCreateBuffer _vkCreateBuffer = nullptr;
-PFN_vkDestroyBuffer _vkDestroyBuffer = nullptr;
-PFN_vkAllocateMemory _vkAllocateMemory = nullptr;
-PFN_vkBindBufferMemory _vkBindBufferMemory = nullptr;
-PFN_vkFreeMemory _vkFreeMemory = nullptr;
-PFN_vkMapMemory _vkMapMemory = nullptr;
-PFN_vkUnmapMemory _vkUnmapMemory = nullptr;
+PFN_vkGetDeviceQueue          _vkGetDeviceQueue          = nullptr;
+PFN_vkCreateQueryPool         _vkCreateQueryPool         = nullptr;
+PFN_vkDestroyQueryPool        _vkDestroyQueryPool        = nullptr;
+PFN_vkCreateBuffer            _vkCreateBuffer            = nullptr;
+PFN_vkDestroyBuffer           _vkDestroyBuffer           = nullptr;
+PFN_vkAllocateMemory          _vkAllocateMemory          = nullptr;
+PFN_vkBindBufferMemory        _vkBindBufferMemory        = nullptr;
+PFN_vkFreeMemory              _vkFreeMemory              = nullptr;
+PFN_vkMapMemory               _vkMapMemory               = nullptr;
+PFN_vkUnmapMemory             _vkUnmapMemory             = nullptr;
 PFN_vkFlushMappedMemoryRanges _vkFlushMappedMemoryRanges = nullptr;
-PFN_vkCmdResetQueryPool _vkCmdResetQueryPool = nullptr;
-PFN_vkCmdBeginQuery _vkCmdBeginQuery = nullptr;
-PFN_vkCmdEndQuery _vkCmdEndQuery = nullptr;
-PFN_vkCmdWriteTimestamp _vkCmdWriteTimestamp = nullptr;
+PFN_vkCmdResetQueryPool       _vkCmdResetQueryPool       = nullptr;
+PFN_vkCmdBeginQuery           _vkCmdBeginQuery           = nullptr;
+PFN_vkCmdEndQuery             _vkCmdEndQuery             = nullptr;
+PFN_vkCmdWriteTimestamp       _vkCmdWriteTimestamp       = nullptr;
 PFN_vkCmdCopyQueryPoolResults _vkCmdCopyQueryPoolResults = nullptr;
-PFN_vkGetQueryPoolResults _vkGetQueryPoolResults = nullptr;
-PFN_vkCmdCopyBuffer _vkCmdCopyBuffer = nullptr;
-PFN_vkDeviceWaitIdle _vkDeviceWaitIdle = nullptr;
+PFN_vkGetQueryPoolResults     _vkGetQueryPoolResults     = nullptr;
+PFN_vkCmdCopyBuffer           _vkCmdCopyBuffer           = nullptr;
+PFN_vkDeviceWaitIdle          _vkDeviceWaitIdle          = nullptr;
 
 // vk_amd_gpa_interface device extension
-PFN_vkCreateGpaSessionAMD _vkCreateGpaSessionAMD = nullptr;
-PFN_vkDestroyGpaSessionAMD _vkDestroyGpaSessionAMD = nullptr;
-PFN_vkSetGpaDeviceClockModeAMD _vkSetGpaDeviceClockModeAMD = nullptr;
-PFN_vkCmdBeginGpaSessionAMD _vkCmdBeginGpaSessionAMD = nullptr;
-PFN_vkCmdEndGpaSessionAMD _vkCmdEndGpaSessionAMD = nullptr;
-PFN_vkCmdBeginGpaSampleAMD _vkCmdBeginGpaSampleAMD = nullptr;
-PFN_vkCmdEndGpaSampleAMD _vkCmdEndGpaSampleAMD = nullptr;
-PFN_vkGetGpaSessionStatusAMD _vkGetGpaSessionStatusAMD = nullptr;
-PFN_vkGetGpaSessionResultsAMD _vkGetGpaSessionResultsAMD = nullptr;
-PFN_vkResetGpaSessionAMD _vkResetGpaSessionAMD = nullptr;
+PFN_vkCreateGpaSessionAMD         _vkCreateGpaSessionAMD         = nullptr;
+PFN_vkDestroyGpaSessionAMD        _vkDestroyGpaSessionAMD        = nullptr;
+PFN_vkSetGpaDeviceClockModeAMD    _vkSetGpaDeviceClockModeAMD    = nullptr;
+PFN_vkCmdBeginGpaSessionAMD       _vkCmdBeginGpaSessionAMD       = nullptr;
+PFN_vkCmdEndGpaSessionAMD         _vkCmdEndGpaSessionAMD         = nullptr;
+PFN_vkCmdBeginGpaSampleAMD        _vkCmdBeginGpaSampleAMD        = nullptr;
+PFN_vkCmdEndGpaSampleAMD          _vkCmdEndGpaSampleAMD          = nullptr;
+PFN_vkGetGpaSessionStatusAMD      _vkGetGpaSessionStatusAMD      = nullptr;
+PFN_vkGetGpaSessionResultsAMD     _vkGetGpaSessionResultsAMD     = nullptr;
+PFN_vkResetGpaSessionAMD          _vkResetGpaSessionAMD          = nullptr;
 PFN_vkCmdCopyGpaSessionResultsAMD _vkCmdCopyGpaSessionResultsAMD = nullptr;
 
 bool VkUtils::s_isEntryPointsInitialized = false;
@@ -123,7 +123,7 @@ bool VkUtils::Initialize_Vk_Entrypoints(VkInstance instance, VkDevice device)
 #ifdef _WIN32
         PFN_vkGetDeviceProcAddr _vkGetDeviceProcAddr = reinterpret_cast<PFN_vkGetDeviceProcAddr>(GetProcAddress(vulkanModule, "vkGetDeviceProcAddr"));
 #else
-        PFN_vkGetDeviceProcAddr _vkGetDeviceProcAddr = reinterpret_cast<PFN_vkGetDeviceProcAddr>(dlsym(vulkanModule, "vkGetDeviceProcAddr"));
+        PFN_vkGetDeviceProcAddr   _vkGetDeviceProcAddr   = reinterpret_cast<PFN_vkGetDeviceProcAddr>(dlsym(vulkanModule, "vkGetDeviceProcAddr"));
 #endif
 
         bResult &= (nullptr != _vkGetDeviceProcAddr);
@@ -174,7 +174,6 @@ bool VkUtils::Initialize_Vk_Entrypoints(VkInstance instance, VkDevice device)
             }
 
             s_isEntryPointsInitialized = true;
-
         }
     }
 

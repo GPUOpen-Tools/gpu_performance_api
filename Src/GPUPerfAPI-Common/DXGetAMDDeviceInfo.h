@@ -9,12 +9,12 @@
 #define _DX_GET_AMD_DEVICE_INFO_H_
 
 #ifndef GPALIB_DECL
-    /// macro for exporting an API function
-    #ifdef __cplusplus
-        #define GPALIB_DECL extern "C" __declspec( dllimport )
-    #else
-        #define GPALIB_DECL __declspec( dllimport )
-    #endif
+/// macro for exporting an API function
+#ifdef __cplusplus
+#define GPALIB_DECL extern "C" __declspec(dllimport)
+#else
+#define GPALIB_DECL __declspec(dllimport)
+#endif
 #endif
 
 #include <windows.h>
@@ -26,4 +26,4 @@
 /// \return bool if an AMD device is associated with hMonitor
 GPALIB_DECL bool DXGetAMDDeviceInfo(HMONITOR hMonitor, int& vendorId, int& deviceId);
 
-#endif // _DX_GET_AMD_DEVICE_INFO_H_
+#endif  // _DX_GET_AMD_DEVICE_INFO_H_

@@ -12,19 +12,18 @@
 #include "VkEntrypoints.h"
 #include "GPAContextCounterMediator.h"
 
-VkGPAHardwareSample::VkGPAHardwareSample(GPAPass* pPass,
-                                         IGPACommandList* pCmdList,
-                                         unsigned int sampleId,
-                                         VkDevice device) :
-    VkGPASample(pPass, pCmdList, GpaSampleType::Hardware, sampleId),
-    m_numCounters(0),
-    m_sampleIndex(0),
-    m_device(device),
-    m_commandBuffer(m_pVkGpaCmdList->GetVkCommandBuffer()),
-    m_hasAnyHardwareCounters(false)
+static const uint32_t S_INVALID_SAMPLE_INDEX = static_cast<uint32_t>(-1);  ///< Invalid sample index
+
+VkGPAHardwareSample::VkGPAHardwareSample(GPAPass* pPass, IGPACommandList* pCmdList, unsigned int sampleId, VkDevice device)
+    : VkGPASample(pPass, pCmdList, GpaSampleType::Hardware, sampleId)
+    , m_numCounters(0)
+    , m_sampleIndex(S_INVALID_SAMPLE_INDEX)
+    , m_device(device)
+    , m_commandBuffer(m_pVkGpaCmdList->GetVkCommandBuffer())
+    , m_hasAnyHardwareCounters(false)
 {
     VkGPACommandList* pVkGpaCmdList = dynamic_cast<VkGPACommandList*>(pCmdList);
-    m_gpaSession = (nullptr != pVkGpaCmdList) ? pVkGpaCmdList->GetAmdExtSession() : VK_NULL_HANDLE;
+    m_gpaSession                    = (nullptr != pVkGpaCmdList) ? pVkGpaCmdList->GetAmdExtSession() : VK_NULL_HANDLE;
 }
 
 VkGPAHardwareSample::~VkGPAHardwareSample()
@@ -39,7 +38,7 @@ bool VkGPAHardwareSample::BeginRequest()
 {
     bool result = false;
 
-    m_numCounters = GetPass()->GetEnabledCounterCount();
+    m_numCounters            = GetPass()->GetEnabledCounterCount();
     m_hasAnyHardwareCounters = m_numCounters > 0;
 
     VkGPAPass* pVkGpaPass = dynamic_cast<VkGPAPass*>(GetPass());
@@ -53,7 +52,7 @@ bool VkGPAHardwareSample::BeginRequest()
         if (GetPass()->IsTimingPass() || m_hasAnyHardwareCounters)
         {
             VkResult beginResult = _vkCmdBeginGpaSampleAMD(m_commandBuffer, m_gpaSession, pVkGpaPass->GetVkSampleBeginInfo(), &m_sampleIndex);
-            result = (VK_SUCCESS == beginResult);
+            result               = (VK_SUCCESS == beginResult && S_INVALID_SAMPLE_INDEX != m_sampleIndex);
 
             if (result)
             {
@@ -124,7 +123,7 @@ GPASampleResult* VkGPAHardwareSample::PopulateSampleResults()
     }
 
     gpa_uint64* pResultBuffer = nullptr;
-    gpa_uint64 timingData[2];
+    gpa_uint64  timingData[2] = {};
 
     if (sampleDataSize > 0)
     {
@@ -198,7 +197,8 @@ GPASampleResult* VkGPAHardwareSample::PopulateSampleResults()
                     {
                         for (size_t counterIter = 0; counterIter < GetSampleResultLocation()->GetAsCounterSampleResult()->GetNumCounters(); counterIter++)
                         {
-                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[counterIter] += pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIter];
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[counterIter] +=
+                                pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIter];
                         }
                     }
                 }
@@ -262,7 +262,7 @@ bool VkGPAHardwareSample::CopyResult(size_t sampleDataSize, void* pResultBuffer)
 
                     if (VK_SUCCESS == isReady)
                     {
-                        size_t sampleDataSizeInDriver = 0u;
+                        size_t   sampleDataSizeInDriver = 0u;
                         VkResult gotResultSize = _vkGetGpaSessionResultsAMD(vkDevice, extSession, GetDriverSampleId(), &sampleDataSizeInDriver, nullptr);
                         assert(VK_SUCCESS == gotResultSize);
                         assert(sampleDataSize == sampleDataSizeInDriver);

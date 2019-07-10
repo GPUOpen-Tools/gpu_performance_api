@@ -1,11 +1,28 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.4 (7/10/19)
+  * Add support for additional GPUs and APUs, including Navi series GPUs.
+  * Add support for setting stable GPU clocks for DirectX11, OpenGL and OpenCL.
+  * Add an OpenGL sample application that uses GPUPerfAPI.
+  * Add basic counter validation to sample applications.
+  * Add support for enabling individual hardware counters that make up derived counters.
+  * Add two new GFX9 GlobalMemory Counters for graphics: LocalVidMemBytes and PcieBytes.
+  * Reformat source code using clang-format.
+  * Update counter documentation to contain per-hardware-generation tables.
+  * Bugs Fixed:
+    * Fixed error handling in GPA_GetEnabledIndex, GPA_EnableCounterByName and GPA_DisbleCounterByName.
+    * Fixed an issue with Vulkan timing counters (https://github.com/GPUOpen-Tools/GPA/issues/40).
+    * Fixed an issue with SALUBusy counters.
+    * Fixed an issue with HiZQuadsCulledCount and HiZQuadsSurvivingCount counters on GFX8 GPUs.
+    * Fixed an issue with MemUnitBusy and MemUnitStalled counters on GFX8 GPUs.
+    * Fixed an issue with VSVALUBusyCycles counter on GFX9 GPUs.
+
 ## Version 3.3 (12/20/18)
   * Add support for additional GPUs and APUs.
   * New CMake-based build system.
   * Support building on Ubuntu 18.04.
-  * ROCm/HSA: use new librocprofiler64.so rather than deprecated libhsa-runtime-tools64.so library for performance counter collection.
+  * ROCm/HSA: uses new librocprofiler64.so rather than deprecated libhsa-runtime-tools64.so library for performance counter collection.
   * Timing-based counters are now reported in nanoseconds instead of milliseconds.
   * New timing counter to report top-of-pipe to bottom-of-pipe duration.
   * GPA now builds GoogleTest libraries on the fly rather than using prebuilt binaries.

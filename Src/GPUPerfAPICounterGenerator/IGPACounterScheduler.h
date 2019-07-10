@@ -15,10 +15,10 @@
 #include "IGPACounterAccessor.h"
 #include "GPUPerfAPITypes.h"
 
-using HardwareCounterIndex = unsigned int; ///< type alias for internal hardware counter
-using DerivedCounterIndex = unsigned int;  ///< type alias for derived counter
+using HardwareCounterIndex              = unsigned int;  ///< type alias for internal hardware counter
+using DerivedCounterIndex               = unsigned int;  ///< type alias for derived counter
 using HardwareCounterResultLocationPair = std::pair<HardwareCounterIndex, GPA_CounterResultLocation>;
-using CounterResultLocationMap = std::map<HardwareCounterIndex, GPA_CounterResultLocation> ; ///< type alias for map of Counter Result Locations
+using CounterResultLocationMap          = std::map<HardwareCounterIndex, GPA_CounterResultLocation>;  ///< type alias for map of Counter Result Locations
 
 /// An interface for enabling and disabling counters and getting the resulting number of necessary passes
 class IGPACounterScheduler
@@ -104,4 +104,4 @@ public:
     virtual void SetDrawCallCounts(int iCounts) = 0;
 };
 
-#endif //_GPA_I_COUNTER_SCHEDULER_H_
+#endif  //_GPA_I_COUNTER_SCHEDULER_H_

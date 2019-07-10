@@ -10,9 +10,7 @@
 #include "VkGPACommandList.h"
 #include "VkGPAPass.h"
 
-VkGPASession::VkGPASession(
-    IGPAContext* parentContextId,
-    GPA_Session_Sample_Type sampleType)
+VkGPASession::VkGPASession(IGPAContext* parentContextId, GPA_Session_Sample_Type sampleType)
     : GPASession(parentContextId, sampleType)
 {
 }
@@ -26,11 +24,10 @@ GPA_Status VkGPASession::ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA
 {
     bool succeed = false;
 
-    if (primaryCommandListId->Object()->GetAPIType() == GetAPIType() &&
-        primaryCommandListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST)
+    if (primaryCommandListId->Object()->GetAPIType() == GetAPIType() && primaryCommandListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST)
     {
         VkGPACommandList* pVkGpaCmdList = reinterpret_cast<VkGPACommandList*>(primaryCommandListId->Object());
-        VkGPAPass* pVkGpaPass = reinterpret_cast<VkGPAPass*>(pVkGpaCmdList->GetPass());
+        VkGPAPass*        pVkGpaPass    = reinterpret_cast<VkGPAPass*>(pVkGpaCmdList->GetPass());
 
         if (nullptr != pVkGpaPass)
         {
@@ -57,16 +54,17 @@ GPA_Status VkGPASession::ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA
     return succeed ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
 }
 
-GPA_Status VkGPASession::CopySecondarySamples(GPA_CommandListId secondaryCmdListId, GPA_CommandListId primaryCmdListId, gpa_uint32 numSamples, gpa_uint32* pNewSampleIds)
+GPA_Status VkGPASession::CopySecondarySamples(GPA_CommandListId secondaryCmdListId,
+                                              GPA_CommandListId primaryCmdListId,
+                                              gpa_uint32        numSamples,
+                                              gpa_uint32*       pNewSampleIds)
 {
     bool isCopied = false;
 
-    if (secondaryCmdListId->Object()->GetAPIType() == GPA_API_VULKAN &&
-        secondaryCmdListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST &&
-        primaryCmdListId->Object()->GetAPIType() == GPA_API_VULKAN &&
-        primaryCmdListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST)
+    if (secondaryCmdListId->Object()->GetAPIType() == GPA_API_VULKAN && secondaryCmdListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST &&
+        primaryCmdListId->Object()->GetAPIType() == GPA_API_VULKAN && primaryCmdListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST)
     {
-        VkGPACommandList* pVkPrimaryCmd = reinterpret_cast<VkGPACommandList*>(primaryCmdListId->Object());
+        VkGPACommandList* pVkPrimaryCmd   = reinterpret_cast<VkGPACommandList*>(primaryCmdListId->Object());
         VkGPACommandList* pVkSecondaryCmd = reinterpret_cast<VkGPACommandList*>(secondaryCmdListId->Object());
 
         VkGPAPass* pVkPass = reinterpret_cast<VkGPAPass*>(pVkPrimaryCmd->GetPass());
@@ -91,13 +89,10 @@ GPAPass* VkGPASession::CreateAPIPass(PassIndex passIndex)
 {
     GPAPass* pRetPass = nullptr;
 
-    CounterList* pPassCounters = GetCountersForPass(passIndex);
+    CounterList*     pPassCounters = GetCountersForPass(passIndex);
     GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
 
-    VkGPAPass* pVkGpaPass = new(std::nothrow) VkGPAPass(this,
-                                                        passIndex,
-                                                        counterSource,
-                                                        pPassCounters);
+    VkGPAPass* pVkGpaPass = new (std::nothrow) VkGPAPass(this, passIndex, counterSource, pPassCounters);
 
     if (nullptr != pVkGpaPass)
     {

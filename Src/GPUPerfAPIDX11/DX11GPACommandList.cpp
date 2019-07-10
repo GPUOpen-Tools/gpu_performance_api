@@ -7,8 +7,8 @@
 
 #include "DX11GPACommandList.h"
 
-DX11GPACommandList::DX11GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId):
-    GPACommandList(pGpaSession, pGpaPass, commandListId)
+DX11GPACommandList::DX11GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId)
+    : GPACommandList(pGpaSession, pGpaPass, commandListId)
 {
 }
 
@@ -29,8 +29,7 @@ bool DX11GPACommandList::EndCommandListRequest()
     return true;
 }
 
-bool DX11GPACommandList::BeginSampleRequest(ClientSampleId clientSampleId,
-                                            GPASample* pGpaSample)
+bool DX11GPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample)
 {
     GPA_STUB_FUNCTION;
     UNREFERENCED_PARAMETER(clientSampleId);
@@ -43,6 +42,3 @@ bool DX11GPACommandList::CloseLastSampleRequest()
     GPA_STUB_FUNCTION;
     return true;
 }
-
-
-

@@ -13,26 +13,18 @@
 #include "GPAHardwareCounters.h"
 #include "GPAContextCounterMediator.h"
 
-CLGPAPass::CLGPAPass(IGPASession* pGpaSession,
-                     PassIndex passIndex,
-                     GPACounterSource counterSource,
-                     CounterList* pPassCounters):
-    GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
+CLGPAPass::CLGPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters)
+    : GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
 {
     EnableAllCountersForPass();
     InitializeCLCounterInfo();
 }
 
-GPASample* CLGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList,
-                                              GpaSampleType sampleType,
-                                              ClientSampleId sampleId)
+GPASample* CLGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
 {
     GPASample* pRetSample = nullptr;
 
-    CLGPASample* pCLGpaSample = new(std::nothrow) CLGPASample(this,
-                                                              pCmdList,
-                                                              sampleType,
-                                                              sampleId);
+    CLGPASample* pCLGpaSample = new (std::nothrow) CLGPASample(this, pCmdList, sampleType, sampleId);
 
     if (nullptr == pCLGpaSample)
     {
@@ -44,11 +36,9 @@ GPASample* CLGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList,
     }
 
     return pRetSample;
-
 }
 
-bool CLGPAPass::ContinueSample(ClientSampleId srcSampleId,
-                               IGPACommandList* pPrimaryGpaCmdList)
+bool CLGPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrimaryGpaCmdList)
 {
     // continuing samples not supported for OpenCL
     UNREFERENCED_PARAMETER(srcSampleId);
@@ -56,14 +46,12 @@ bool CLGPAPass::ContinueSample(ClientSampleId srcSampleId,
     return false;
 }
 
-IGPACommandList* CLGPAPass::CreateAPISpecificCommandList(void* pCmd,
-                                                         CommandListId commandListId,
-                                                         GPA_Command_List_Type cmdType)
+IGPACommandList* CLGPAPass::CreateAPISpecificCommandList(void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType)
 {
     UNREFERENCED_PARAMETER(pCmd);
     UNREFERENCED_PARAMETER(cmdType);
 
-    CLGPACommandList* pRetCmdList = new(std::nothrow) CLGPACommandList(GetGpaSession(), this, commandListId);
+    CLGPACommandList* pRetCmdList = new (std::nothrow) CLGPACommandList(GetGpaSession(), this, commandListId);
 
     if (nullptr == pRetCmdList)
     {
@@ -97,14 +85,13 @@ void CLGPAPass::IterateCLCounterMap(std::function<bool(GroupCountersPair groupCo
 
 void CLGPAPass::InitializeCLCounterInfo()
 {
-    CLGPAContext* pCLGpaContext = reinterpret_cast<CLGPAContext*>(GetGpaSession()->GetParentContext());
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(pCLGpaContext);
+    CLGPAContext*               pCLGpaContext     = reinterpret_cast<CLGPAContext*>(GetGpaSession()->GetParentContext());
+    IGPACounterAccessor*        pCounterAccessor  = GPAContextCounterMediator::Instance()->GetCounterAccessor(pCLGpaContext);
     const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
-    gpa_uint32 groupCount = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
+    gpa_uint32                  groupCount        = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
     UNREFERENCED_PARAMETER(groupCount);
 
-    auto AddCounterToCLCounterInfo = [&](CounterIndex counterIndex)-> bool
-    {
+    auto AddCounterToCLCounterInfo = [&](CounterIndex counterIndex) -> bool {
         const GPA_HardwareCounterDescExt* pCounter = pCounterAccessor->GetHardwareCounterExt(counterIndex);
 
         gpa_uint32 groupIndex = pCounter->m_groupIdDriver;

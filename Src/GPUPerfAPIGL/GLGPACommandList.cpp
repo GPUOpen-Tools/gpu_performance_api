@@ -7,11 +7,9 @@
 
 #include "GLGPACommandList.h"
 
-GLGPACommandList::GLGPACommandList(IGPASession* pGpaSession,
-                                   GPAPass* pGpaPass,
-                                   CommandListId commandListId) :
-    GPACommandList(pGpaSession, pGpaPass, commandListId),
-    m_pPreviousSample(nullptr)
+GLGPACommandList::GLGPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId)
+    : GPACommandList(pGpaSession, pGpaPass, commandListId)
+    , m_pPreviousSample(nullptr)
 {
 }
 
@@ -32,8 +30,7 @@ bool GLGPACommandList::EndCommandListRequest()
     return true;
 }
 
-bool GLGPACommandList::BeginSampleRequest(ClientSampleId clientSampleId,
-                                          GPASample* pGpaSample)
+bool GLGPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample)
 {
     UNREFERENCED_PARAMETER(clientSampleId);
 

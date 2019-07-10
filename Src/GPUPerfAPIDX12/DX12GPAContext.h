@@ -12,23 +12,22 @@
 #include <mutex>
 
 // AMD Ext
-#pragma warning (push)
-#pragma warning (disable: 4201)
+#pragma warning(push)
+#pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
-#pragma warning (pop)
+#pragma warning(pop)
 #include <AmdExtD3D.h>
 
 // GPA Common
 #include "GPAContext.h"
 #include "GPACommonDefs.h"
 
-class DX12GPASession;   // forward declaration
+class DX12GPASession;  // forward declaration
 
 /// Class for DX12 GPA Context
 class GPA_THREAD_SAFE_OBJECT DX12GPAContext : public GPAContext
 {
 public:
-
     /// Constructor
     /// \param[in] pD3D12Device ID3D12Device pointer
     /// \param[in] hwInfo hardware info
@@ -72,7 +71,6 @@ public:
     void CleanUp();
 
 private:
-
     /// Initializes the AMD Driver extension objects for the context
     /// \return true upon successful initialization otherwise false
     bool InitializeAMDExtension();
@@ -81,12 +79,13 @@ private:
     /// \param[in] useProfilingClocks true to use GPU clocks for profiling, false to use default clock mode
     void SetStableClocks(bool useProfilingClocks);
 
-    mutable std::mutex                                      m_dx12GpaContextMutex;              ///< Mutex for DX12 GPA Context
-    ID3D12Device*                                           m_pD3D12Device;                     ///< D3D12Device pointer
-    IAmdExtD3DFactory*                                      m_pAmdExtD3DFactoryObject;          ///< Driver extension object
-    IAmdExtGpaInterface*                                    m_pGpaInterface;                    ///< The GPA Interface from the driver
-    AmdExtPerfExperimentProperties                          m_amdDeviceProps;                   ///< Device properties reported by the driver
-    AmdExtDeviceClockMode                                   m_clockMode;                        ///< GPU Clock mode
+    mutable std::mutex             m_dx12GpaContextMutex;      ///< Mutex for DX12 GPA Context
+    ID3D12Device*                  m_pD3D12Device;             ///< D3D12Device pointer
+    IAmdExtD3DFactory*             m_pAmdExtD3DFactoryObject;  ///< Driver extension object
+    IAmdExtGpaInterface*           m_pGpaInterface;            ///< The GPA Interface from the driver
+    IAmdExtGpaInterface2*          m_pGpaInterface2;           ///< The GPA Interface2 from the driver
+    AmdExtPerfExperimentProperties m_amdDeviceProps;           ///< Device properties reported by the driver
+    AmdExtDeviceClockMode          m_clockMode;                ///< GPU Clock mode
 };
 
-#endif // _DX12_GPA_CONTEXT_H_
+#endif  // _DX12_GPA_CONTEXT_H_

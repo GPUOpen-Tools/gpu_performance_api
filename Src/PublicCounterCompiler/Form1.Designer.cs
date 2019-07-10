@@ -171,7 +171,7 @@ namespace PublicCounterCompiler
             this.batchGpuFamilyList.Name = "batchGpuFamilyList";
             this.batchGpuFamilyList.Size = new System.Drawing.Size(268, 26);
             this.batchGpuFamilyList.TabIndex = 18;
-            this.batchGpuFamilyList.Text = "Gfx9,Gfx8,Gfx7,Gfx6";
+            this.batchGpuFamilyList.Text = "Gfx10,Gfx9,Gfx8";
             // 
             // label2
             // 

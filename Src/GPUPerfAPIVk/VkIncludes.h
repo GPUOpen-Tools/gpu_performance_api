@@ -12,7 +12,7 @@
 #include <vk_amd_gpa_interface.h>
 
 #ifndef VK_AMD_SHADER_CORE_PROPERTIES_SPEC_VERSION
-    #include <vk_amd_shader_core_properties.h>
+#include <vk_amd_shader_core_properties.h>
 #endif
 
-#endif //_VK_INCLUDES_H_
+#endif  //_VK_INCLUDES_H_

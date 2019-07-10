@@ -5,7 +5,6 @@
 /// \brief  DXX Utility functions
 //==============================================================================
 
-
 #ifndef _GPUPERFAPI_DXXEXTUTILS_H_
 #define _GPUPERFAPI_DXXEXTUTILS_H_
 
@@ -13,10 +12,10 @@
 
 namespace DxxExtUtils
 {
-/// Test if MGPU performance extension is supported
-/// \param[in] pDxxExt DXX extension
-/// \return True if MGPU performance extension is supported, false if not
-bool IsMgpuPerfExtSupported(IAmdDxExt* pDxxExt);
-}
+    /// Test if MGPU performance extension is supported
+    /// \param[in] pDxxExt DXX extension
+    /// \return True if MGPU performance extension is supported, false if not
+    bool IsMgpuPerfExtSupported(IAmdDxExt* pDxxExt);
+}  // namespace DxxExtUtils
 
-#endif // _GPUPERFAPI_DXXEXTUTILS_H_
+#endif  // _GPUPERFAPI_DXXEXTUTILS_H_

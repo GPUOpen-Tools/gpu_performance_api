@@ -13,19 +13,14 @@
 #include "GPACounterGeneratorVKBase.h"
 #include "GPAContextCounterMediator.h"
 
-VkGPAPass::VkGPAPass(IGPASession* pGpaSession,
-                     PassIndex passIndex,
-                     GPACounterSource counterSource,
-                     CounterList* pPassCounters):
-    GPAPass(pGpaSession, passIndex, counterSource, pPassCounters),
-    m_isSampleBeginInfoInitialized(false)
+VkGPAPass::VkGPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters)
+    : GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
+    , m_isSampleBeginInfoInitialized(false)
 {
     InitializeSampleConfig();
 }
 
-GPASample* VkGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList,
-                                              GpaSampleType sampleType,
-                                              unsigned int sampleId)
+GPASample* VkGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList, GpaSampleType sampleType, unsigned int sampleId)
 {
     VkGPAContext* pContext = reinterpret_cast<VkGPAContext*>(pCmdList->GetParentSession()->GetParentContext());
     assert(nullptr != pContext);
@@ -34,27 +29,19 @@ GPASample* VkGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList,
 
     if (GpaSampleType::Hardware == sampleType)
     {
-        pSample = new(std::nothrow) VkGPAHardwareSample(this, pCmdList, sampleId, pContext->GetVkDevice());
+        pSample = new (std::nothrow) VkGPAHardwareSample(this, pCmdList, sampleId, pContext->GetVkDevice());
     }
     else if (GpaSampleType::Software == sampleType)
     {
-        pSample = new(std::nothrow) VkGPASoftwareSample(this, pCmdList, sampleId);
+        pSample = new (std::nothrow) VkGPASoftwareSample(this, pCmdList, sampleId);
     }
 
     return pSample;
 }
 
-IGPACommandList* VkGPAPass::CreateAPISpecificCommandList(void* pCmd,
-                                                         CommandListId commandListId,
-                                                         GPA_Command_List_Type cmdType)
+IGPACommandList* VkGPAPass::CreateAPISpecificCommandList(void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType)
 {
-
-    VkGPACommandList* pVkCmdList = new(std::nothrow) VkGPACommandList(
-        reinterpret_cast<VkGPASession*>(GetGpaSession()),
-        this,
-        pCmd,
-        commandListId,
-        cmdType);
+    VkGPACommandList* pVkCmdList = new (std::nothrow) VkGPACommandList(reinterpret_cast<VkGPASession*>(GetGpaSession()), this, pCmd, commandListId, cmdType);
 
     return pVkCmdList;
 }
@@ -63,11 +50,11 @@ void VkGPAPass::InitializeSampleConfig()
 {
     if (!m_isSampleBeginInfoInitialized && GPACounterSource::HARDWARE == GetCounterSource())
     {
-        m_sampleBeginInfoAMD = {};
+        m_sampleBeginInfoAMD       = {};
         m_sampleBeginInfoAMD.sType = VK_STRUCTURE_TYPE_GPA_SAMPLE_BEGIN_INFO_AMD;
         m_sampleBeginInfoAMD.pNext = nullptr;
 
-        IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
+        IGPACounterAccessor*        pCounterAccessor  = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
         const GPA_HardwareCounters* pHardwareCounters = (reinterpret_cast<const GPA_CounterGeneratorVKBase*>(pCounterAccessor))->GetHardwareCounters();
 
         if (!m_pCounterList->empty())
@@ -76,11 +63,11 @@ void VkGPAPass::InitializeSampleConfig()
             {
                 m_sampleBeginInfoAMD.sampleType = VK_GPA_SAMPLE_TYPE_TIMING_AMD;
 
-                if (true == pHardwareCounters->IsBottomOfPipeCounterIndex(m_pCounterList->at(0)))
+                if (pHardwareCounters->IsBottomOfPipeCounterIndex(m_pCounterList->at(0)))
                 {
                     m_sampleBeginInfoAMD.timingPreSample = VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT;
                 }
-                else if (true == pHardwareCounters->IsTopOfPipeCounterIndex(m_pCounterList->at(0)))
+                else if (pHardwareCounters->IsTopOfPipeCounterIndex(m_pCounterList->at(0)))
                 {
                     m_sampleBeginInfoAMD.timingPreSample = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
                 }
@@ -99,9 +86,9 @@ void VkGPAPass::InitializeSampleConfig()
                 for (size_t i = 0; i < m_pCounterList->size(); i++)
                 {
                     const GPA_HardwareCounterDescExt* pCounter = &pHardwareCounters->m_counters[m_pCounterList->at(i)];
-                    VkGpaPerfBlockAMD block = static_cast<VkGpaPerfBlockAMD>(pCounter->m_groupIdDriver);
-                    gpa_uint32 instance = pHardwareCounters->m_pGroups[pCounter->m_groupIndex].m_blockInstance;
-                    gpa_uint32 eventId = static_cast<gpa_uint32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
+                    VkGpaPerfBlockAMD                 block    = static_cast<VkGpaPerfBlockAMD>(pCounter->m_groupIdDriver);
+                    gpa_uint32                        instance = pHardwareCounters->m_pGroups[pCounter->m_groupIndex].m_blockInstance;
+                    gpa_uint32                        eventId  = static_cast<gpa_uint32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
 
                     if (reinterpret_cast<VkGPAContext*>(GetGpaSession()->GetParentContext())->GetInstanceCount(block) <= instance)
                     {
@@ -145,14 +132,15 @@ void VkGPAPass::InitializeSampleConfig()
 
                     // Add counter to valid vector
                     VkGpaPerfCounterAMD thisCounter;
-                    thisCounter.blockType = block;
+                    thisCounter.blockType     = block;
                     thisCounter.blockInstance = instance;
-                    thisCounter.eventID = eventId;
+                    thisCounter.eventID       = eventId;
 
                     m_counterIds.push_back(thisCounter);
 
                     // if dealing with an SQ counter, check if the the stage mask needs to be set
-                    if (pCounter->m_groupIndex >= pHardwareCounters->m_pSQCounterGroups[0].m_groupIndex && pCounter->m_groupIndex <= pHardwareCounters->m_pSQCounterGroups[pHardwareCounters->m_sqGroupCount - 1].m_groupIndex)
+                    if (pCounter->m_groupIndex >= pHardwareCounters->m_pSQCounterGroups[0].m_groupIndex &&
+                        pCounter->m_groupIndex <= pHardwareCounters->m_pSQCounterGroups[pHardwareCounters->m_sqGroupCount - 1].m_groupIndex)
                     {
                         GPA_SQShaderStage stage = SQ_ALL;
 
@@ -198,19 +186,19 @@ void VkGPAPass::InitializeSampleConfig()
                     EnableCounterForPass(m_pCounterList->at(i));
                 }
 
-                m_sampleBeginInfoAMD.perfCounterCount = GetNumEnabledCountersForPass();
-                m_sampleBeginInfoAMD.pPerfCounters = m_counterIds.data();
+                m_sampleBeginInfoAMD.perfCounterCount                 = GetNumEnabledCountersForPass();
+                m_sampleBeginInfoAMD.pPerfCounters                    = m_counterIds.data();
                 m_sampleBeginInfoAMD.streamingPerfTraceSampleInterval = 0;
-                m_sampleBeginInfoAMD.sqThreadTraceDeviceMemoryLimit = 0;
-                m_sampleBeginInfoAMD.perfCounterDeviceMemoryLimit = 0;
-                m_sampleBeginInfoAMD.cacheFlushOnCounterCollection = VK_FALSE;
+                m_sampleBeginInfoAMD.sqThreadTraceDeviceMemoryLimit   = 0;
+                m_sampleBeginInfoAMD.perfCounterDeviceMemoryLimit     = 0;
+                m_sampleBeginInfoAMD.cacheFlushOnCounterCollection    = VK_FALSE;
 
                 // set shader mask
                 m_sampleBeginInfoAMD.sqShaderMaskEnable = VK_TRUE;
-                m_sampleBeginInfoAMD.sqShaderMask = maskValue;
+                m_sampleBeginInfoAMD.sqShaderMask       = maskValue;
 
                 // sq Thread trace
-                m_sampleBeginInfoAMD.sqThreadTraceEnable = VK_FALSE;
+                m_sampleBeginInfoAMD.sqThreadTraceEnable                    = VK_FALSE;
                 m_sampleBeginInfoAMD.sqThreadTraceSuppressInstructionTokens = VK_TRUE;
             }
 
@@ -223,7 +211,7 @@ void VkGPAPass::InitializeSampleConfig()
             m_isSampleBeginInfoInitialized = true;
         }
     }
-    else // software counter
+    else  // software counter
     {
         // enable all desired counters
         EnableAllCountersForPass();
@@ -261,8 +249,8 @@ bool VkGPAPass::EndSample(IGPACommandList* pCmdList)
 
 bool VkGPAPass::CopySecondarySamples(VkGPACommandList* pSecondaryVkGPACmdList,
                                      VkGPACommandList* pPrimaryVkGPACmdList,
-                                     gpa_uint32 numSamples,
-                                     gpa_uint32* pNewSampleIds)
+                                     gpa_uint32        numSamples,
+                                     gpa_uint32*       pNewSampleIds)
 {
     bool copied = false;
 
@@ -279,8 +267,7 @@ bool VkGPAPass::CopySecondarySamples(VkGPACommandList* pSecondaryVkGPACmdList,
 
     if (areNewSamplesUnique)
     {
-        if (GPA_COMMAND_LIST_PRIMARY == pPrimaryVkGPACmdList->GetCmdType() &&
-            GPA_COMMAND_LIST_SECONDARY == pSecondaryVkGPACmdList->GetCmdType())
+        if (GPA_COMMAND_LIST_PRIMARY == pPrimaryVkGPACmdList->GetCmdType() && GPA_COMMAND_LIST_SECONDARY == pSecondaryVkGPACmdList->GetCmdType())
         {
             if (pPrimaryVkGPACmdList->GetPass()->GetIndex() == pSecondaryVkGPACmdList->GetPass()->GetIndex())
             {
@@ -300,15 +287,14 @@ bool VkGPAPass::CopySecondarySamples(VkGPACommandList* pSecondaryVkGPACmdList,
                             std::vector<ClientSampleId> originalClientSampleIds;
 
                             // Create new sample objects to represent the copied samples
-                            unsigned int index = 0;
+                            unsigned int              index = 0;
                             std::vector<VkGPASample*> newSampleList;
 
                             for (gpa_uint32 i = 0; i < numSamples; ++i)
                             {
                                 GpaSampleType sampleType = GetCounterSource() == GPACounterSource::HARDWARE ? GpaSampleType::Hardware : GpaSampleType::Software;
-                                VkGPASample* pNewSample = reinterpret_cast<VkGPASample*>(CreateAPISpecificSample(pSecondaryVkGPACmdList,
-                                                                                         sampleType,
-                                                                                         pNewSampleIds[i]));
+                                VkGPASample*  pNewSample =
+                                    reinterpret_cast<VkGPASample*>(CreateAPISpecificSample(pSecondaryVkGPACmdList, sampleType, pNewSampleIds[i]));
 
                                 if (nullptr != pNewSample)
                                 {

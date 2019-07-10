@@ -7,10 +7,8 @@
 
 #include "CLGPACommandList.h"
 
-CLGPACommandList::CLGPACommandList(IGPASession* pGpaSession,
-                                   GPAPass* pGpaPass,
-                                   CommandListId commandListId) :
-    GPACommandList(pGpaSession, pGpaPass, commandListId)
+CLGPACommandList::CLGPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId)
+    : GPACommandList(pGpaSession, pGpaPass, commandListId)
 {
 }
 
@@ -31,8 +29,7 @@ bool CLGPACommandList::EndCommandListRequest()
     return true;
 }
 
-bool CLGPACommandList::BeginSampleRequest(ClientSampleId clientSampleId,
-                                          GPASample* pGpaSample)
+bool CLGPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample)
 {
     GPA_STUB_FUNCTION;
     UNREFERENCED_PARAMETER(clientSampleId);
@@ -45,4 +42,3 @@ bool CLGPACommandList::CloseLastSampleRequest()
     GPA_STUB_FUNCTION;
     return true;
 }
-

@@ -11,6 +11,6 @@
 #include "APIRTModuleLoader.h"
 #include "OpenCLModule.h"
 
-typedef APIRTModuleLoader<OpenCLModule> OCLRTModuleLoader; ///< Typedef for the OpenCL RT Module Loader
+typedef APIRTModuleLoader<OpenCLModule> OCLRTModuleLoader;  ///< Typedef for the OpenCL RT Module Loader
 
 #endif  //_CL_RT_MODULE_LOADER_H_

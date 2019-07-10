@@ -1,4 +1,4 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 
 GPA_DisableCounterByName
 @@@@@@@@@@@@@@@@@@@@@@@@
@@ -42,6 +42,6 @@ Return value
     "GPA_STATUS_ERROR_CANNOT_CHANGE_COUNTERS_WHEN_SAMPLING", "The set of enabled counters cannot be changed after GPA_BeginSession is called."
     "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied session's parent context is not currently open."
     "GPA_STATUS_ERROR_NOT_ENABLED", "The specified counter is not currently enabled."
-    "GPA_STATUS_ERROR_FAILED", "| The specified counter name is not valid.
-    | An error occurred while trying to disable the counter."
+    "GPA_STATUS_ERROR_COUNTER_NOT_FOUND", "The specified counter name is not valid."
+    "GPA_STATUS_ERROR_FAILED", "An error occurred while trying to disable the counter."
     "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."

@@ -20,11 +20,11 @@ GPA_Status DX12Utils::DX12GetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& a
     }
     else
     {
-        ID3D12Device* dx12Device = static_cast<ID3D12Device*>(pDevice);
-        LUID adapterLuid = dx12Device->GetAdapterLuid();
+        ID3D12Device* dx12Device  = static_cast<ID3D12Device*>(pDevice);
+        LUID          adapterLuid = dx12Device->GetAdapterLuid();
 
         IDXGIFactory* pDXGIFactory = nullptr;
-        HRESULT hr = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDXGIFactory));
+        HRESULT       hr           = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDXGIFactory));
 
         if (FAILED(hr) || (nullptr == pDXGIFactory))
         {
@@ -64,33 +64,30 @@ GPA_Status DX12Utils::DX12GetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& a
 
 bool DX12Utils::IsD3D12CommandList(void* pCmd, D3D12_COMMAND_LIST_TYPE* cmdType)
 {
-    IUnknown* pUnknown = static_cast<IUnknown*>(pCmd);
+    IUnknown*                  pUnknown = static_cast<IUnknown*>(pCmd);
     ID3D12GraphicsCommandList* pD3DCommandList;
-    HRESULT hr = pUnknown->QueryInterface(__uuidof(ID3D12GraphicsCommandList), reinterpret_cast<void**>(&pD3DCommandList));
-    bool result = SUCCEEDED(hr);
+    HRESULT                    hr     = pUnknown->QueryInterface(__uuidof(ID3D12GraphicsCommandList), reinterpret_cast<void**>(&pD3DCommandList));
+    bool                       result = SUCCEEDED(hr);
 
     if (result && nullptr != cmdType)
     {
         *cmdType = pD3DCommandList->GetType();
-        pD3DCommandList->Release();     // We need to release this as QueryInterface will call AddRef
+        pD3DCommandList->Release();  // We need to release this as QueryInterface will call AddRef
     }
 
     return result;
 }
 
-bool DX12Utils::IsSameCmdType(const D3D12_COMMAND_LIST_TYPE* pDX12CmdType,
-                              const GPA_Command_List_Type* pGpaCmdType)
+bool DX12Utils::IsSameCmdType(const D3D12_COMMAND_LIST_TYPE* pDX12CmdType, const GPA_Command_List_Type* pGpaCmdType)
 {
     if (nullptr != pDX12CmdType && nullptr != pGpaCmdType)
     {
-        if (D3D12_COMMAND_LIST_TYPE_BUNDLE == *pDX12CmdType &&
-            GPA_COMMAND_LIST_SECONDARY == *pGpaCmdType)
+        if (D3D12_COMMAND_LIST_TYPE_BUNDLE == *pDX12CmdType && GPA_COMMAND_LIST_SECONDARY == *pGpaCmdType)
         {
             return true;
         }
 
-        if (D3D12_COMMAND_LIST_TYPE_BUNDLE != *pDX12CmdType &&
-            GPA_COMMAND_LIST_PRIMARY == *pGpaCmdType)
+        if (D3D12_COMMAND_LIST_TYPE_BUNDLE != *pDX12CmdType && GPA_COMMAND_LIST_PRIMARY == *pGpaCmdType)
         {
             return true;
         }
@@ -101,7 +98,7 @@ bool DX12Utils::IsSameCmdType(const D3D12_COMMAND_LIST_TYPE* pDX12CmdType,
 
 bool DX12Utils::GetD3D12Device(IUnknown* pInterfacePointer, ID3D12Device** ppD3D12Device)
 {
-    bool success = false;
+    bool success   = false;
     *ppD3D12Device = nullptr;
 
     // Check to see if it's an ID3D12Device
@@ -134,50 +131,40 @@ bool DX12Utils::GetD3D12Device(IUnknown* pInterfacePointer, ID3D12Device** ppD3D
 
 bool DX12Utils::IsFeatureLevelSupported(ID3D12Device* pD3D12Device)
 {
-    bool isHardwareSupported = false;
-    D3D12_FEATURE_DATA_FEATURE_LEVELS featureLevels;
-    const D3D_FEATURE_LEVEL requestedFeatureLevels[] =
-    {
+    D3D12_FEATURE_DATA_FEATURE_LEVELS featureLevels            = {};
+    const D3D_FEATURE_LEVEL           requestedFeatureLevels[] = {
+        D3D_FEATURE_LEVEL_11_0,
+        D3D_FEATURE_LEVEL_11_1,
         D3D_FEATURE_LEVEL_12_0,
         D3D_FEATURE_LEVEL_12_1,
     };
 
-    featureLevels.NumFeatureLevels =
-        (sizeof(requestedFeatureLevels) / sizeof(D3D_FEATURE_LEVEL));
+    featureLevels.NumFeatureLevels        = _countof(requestedFeatureLevels);
     featureLevels.pFeatureLevelsRequested = requestedFeatureLevels;
-    featureLevels.MaxSupportedFeatureLevel = D3D_FEATURE_LEVEL_12_1;
-    HRESULT hr = pD3D12Device->CheckFeatureSupport(
-                     D3D12_FEATURE_FEATURE_LEVELS, &featureLevels, sizeof(featureLevels));
 
-    if (SUCCEEDED(hr))
-    {
-        if (D3D_FEATURE_LEVEL_12_0 <= featureLevels.MaxSupportedFeatureLevel)
-        {
-            isHardwareSupported = true;
-        }
-    }
+    HRESULT hr = pD3D12Device->CheckFeatureSupport(D3D12_FEATURE_FEATURE_LEVELS, &featureLevels, sizeof(featureLevels));
 
-    return isHardwareSupported;
+    return SUCCEEDED(hr);
 }
 
 bool DX12Utils::GetTimestampFrequency(ID3D12Device* pD3D12Device, UINT64& timestampFrequency)
 {
-    bool isSucceeded = false;
-    ID3D12CommandQueue* pQueue = nullptr;
+    bool                     isSucceeded = false;
+    ID3D12CommandQueue*      pQueue      = nullptr;
     D3D12_COMMAND_QUEUE_DESC queueDesc;
     ZeroMemory(&queueDesc, sizeof(queueDesc));
-    queueDesc.Type = D3D12_COMMAND_LIST_TYPE_DIRECT;
+    queueDesc.Type  = D3D12_COMMAND_LIST_TYPE_DIRECT;
     queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-    HRESULT hr = pD3D12Device->CreateCommandQueue(&queueDesc, __uuidof(ID3D12CommandQueue), reinterpret_cast<PVOID*>(&pQueue));
+    HRESULT hr      = pD3D12Device->CreateCommandQueue(&queueDesc, __uuidof(ID3D12CommandQueue), reinterpret_cast<PVOID*>(&pQueue));
 
     if (SUCCEEDED(hr) || nullptr != pQueue)
     {
         UINT64 frequency = 0;
-        hr = pQueue->GetTimestampFrequency(&frequency);
+        hr               = pQueue->GetTimestampFrequency(&frequency);
 
         if (SUCCEEDED(hr))
         {
-            isSucceeded = true;
+            isSucceeded        = true;
             timestampFrequency = frequency;
         }
 

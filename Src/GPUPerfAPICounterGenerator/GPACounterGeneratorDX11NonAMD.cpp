@@ -10,8 +10,10 @@
 
 GPA_CounterGeneratorDX11NonAMD::GPA_CounterGeneratorDX11NonAMD()
 {
-    GPA_CounterGeneratorBase::SetAllowedCounters(false, false, true); //enable sw counters
+    GPA_CounterGeneratorBase::SetAllowedCounters(false, false, true);  //enable sw counters
 
-    CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_DIRECTX_11, GDT_HW_GENERATION_INTEL, this, false);  // allow future registrations to override this default one
-    CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(GPA_API_DIRECTX_11, GDT_HW_GENERATION_NVIDIA, this, false); // allow future registrations to override this default one
+    CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(
+        GPA_API_DIRECTX_11, GDT_HW_GENERATION_INTEL, this, false);  // allow future registrations to override this default one
+    CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(
+        GPA_API_DIRECTX_11, GDT_HW_GENERATION_NVIDIA, this, false);  // allow future registrations to override this default one
 }

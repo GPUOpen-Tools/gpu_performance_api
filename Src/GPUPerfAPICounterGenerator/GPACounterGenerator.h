@@ -5,7 +5,6 @@
 /// \brief  GPUPerfAPI Counter Generator function
 //==============================================================================
 
-
 #ifndef _GPA_COUNTER_GENERATOR_H_
 #define _GPA_COUNTER_GENERATOR_H_
 
@@ -28,14 +27,13 @@
 /// \return GPA_STATUS_ERROR_NOT_ENABLED if the desired API is not allowing any counters to be exposed
 /// \return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED if the desired generation is not supported
 /// \return GPA_STATUS_OK if the desired API and generation are supported
-GPA_Status GenerateCounters(
-    GPA_API_Type desiredAPI,
-    gpa_uint32 vendorId,
-    gpa_uint32 deviceId,
-    gpa_uint32 revisionId,
-    GPA_OpenContextFlags flags,
-    gpa_uint8 generateAsicSpecificCounters,
-    IGPACounterAccessor** ppCounterAccessorOut,
-    IGPACounterScheduler** ppCounterSchedulerOut);
+GPA_Status GenerateCounters(GPA_API_Type           desiredAPI,
+                            gpa_uint32             vendorId,
+                            gpa_uint32             deviceId,
+                            gpa_uint32             revisionId,
+                            GPA_OpenContextFlags   flags,
+                            gpa_uint8              generateAsicSpecificCounters,
+                            IGPACounterAccessor**  ppCounterAccessorOut,
+                            IGPACounterScheduler** ppCounterSchedulerOut);
 
-#endif // _GPA_COUNTER_GENERATOR_H_
+#endif  // _GPA_COUNTER_GENERATOR_H_

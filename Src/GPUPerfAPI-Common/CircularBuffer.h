@@ -10,14 +10,14 @@
 
 #include <assert.h>
 #ifdef _LINUX
-    #include <cstddef>
+#include <cstddef>
 #endif
 
 /// A circular buffer that can store objects of a templated type.
-template<class T> class CircularBuffer
+template <class T>
+class CircularBuffer
 {
 public:
-
     /// Initializes a new instance of the CircularBuffer<T> class
     CircularBuffer()
     {
@@ -41,7 +41,7 @@ public:
         }
         else
         {
-            m_pArray = new(std::nothrow) T[obj.getSize()];
+            m_pArray = new (std::nothrow) T[obj.getSize()];
 
             if (nullptr != m_pArray)
             {
@@ -54,18 +54,18 @@ public:
 
         m_headIndex = obj.getHeadIndex();
         m_tailIndex = obj.getTailIndex();
-        m_size = obj.getSize();         // maximum number of elements in the buffer at any one time
-        m_count = obj.getCount();       // current number of elements in the buffer
+        m_size      = obj.getSize();   // maximum number of elements in the buffer at any one time
+        m_count     = obj.getCount();  // current number of elements in the buffer
     }
 
     /// Equal operator
     /// \param obj The source circular buffer
     /// \return this object is updated based on the values of the source buffer
-    CircularBuffer<T>& operator = (const CircularBuffer<T>& obj)
+    CircularBuffer<T>& operator=(const CircularBuffer<T>& obj)
     {
         // assignment means data copy of array
         delete[] m_pArray;
-        m_pArray = new(std::nothrow) T[obj.getSize()];
+        m_pArray = new (std::nothrow) T[obj.getSize()];
 
         if (nullptr != m_pArray)
         {
@@ -91,8 +91,8 @@ public:
     {
         m_headIndex = 0;
         m_tailIndex = 0;
-        m_size = 0;
-        m_count = 0;
+        m_size      = 0;
+        m_count     = 0;
     }
 
     /// Sets the size of the circular buffer.
@@ -105,7 +105,7 @@ public:
         initialize();
         delete[] m_pArray;
 
-        m_pArray = new(std::nothrow) T[size];
+        m_pArray = new (std::nothrow) T[size];
 
         if (nullptr != m_pArray)
         {
@@ -343,7 +343,6 @@ public:
     }
 
 protected:
-
     /// Gets the head index of the circular buffer
     /// \return the index of the head of the buffer.
     unsigned int getHeadIndex() const
@@ -358,11 +357,11 @@ protected:
         return m_tailIndex;
     }
 
-    T* m_pArray;               ///< underlying array of this circular buffer
+    T*           m_pArray;     ///< underlying array of this circular buffer
     unsigned int m_headIndex;  ///< index of the head
     unsigned int m_tailIndex;  ///< index of the tail (insertion index)
     unsigned int m_size;       ///< maximum number of elements in the buffer at any one time
     unsigned int m_count;      ///< current number of elements in the buffer
 };
 
-#endif //_GPA_CIRCULAR_BUFFER_H_
+#endif  //_GPA_CIRCULAR_BUFFER_H_

@@ -10,10 +10,9 @@
 
 #include "APIRTModuleLoader.h"
 #include "HSAModule.h"
-#include "HSAToolsRTModule.h"
 #include "ROCProfilerModule.h"
 
-typedef APIRTModuleLoader<HSAModule> HSARTModuleLoader;               ///< Typedef for the HSA RT Module Loader
-typedef APIRTModuleLoader<ROCProfilerModule> ROCProfilerModuleLoader; ///< Typedef for the ROC Profiler Module Loader
+typedef APIRTModuleLoader<HSAModule>         HSARTModuleLoader;        ///< Typedef for the HSA RT Module Loader
+typedef APIRTModuleLoader<ROCProfilerModule> ROCProfilerModuleLoader;  ///< Typedef for the ROC Profiler Module Loader
 
 #endif  //_HSA_RT_MODULE_LOADER_H_

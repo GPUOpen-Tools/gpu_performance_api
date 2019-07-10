@@ -9,19 +9,19 @@
 #define _DX12_GPA_PASS_H_
 
 // AMD Ext
-#pragma warning (push)
-#pragma warning (disable: 4201)
+#pragma warning(push)
+#pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
-#pragma warning (pop)
+#pragma warning(pop)
 
 // GPA Common
 #include "GPAPass.h"
 #include "IGPACommandList.h"
 
-class DX12GPACommandList;               // forward declaration
+class DX12GPACommandList;  // forward declaration
 
 #pragma warning(push, 3)
-#pragma warning(disable: 4201) // nonstandard extension used: nameless struct/union
+#pragma warning(disable : 4201)  // nonstandard extension used: nameless struct/union
 
 /// Input structure for CmdBeginGpuProfilerSample.
 ///
@@ -38,19 +38,19 @@ struct AmdExtGpaSampleConfigPre1850
     {
         struct
         {
-            UINT32 sampleInternalOperations : 1;  ///< Include BLTs and internal driver operations in the
+            UINT32 sampleInternalOperations : 1;       ///< Include BLTs and internal driver operations in the
                                                        ///  results.
             UINT32 cacheFlushOnCounterCollection : 1;  ///< Insert cache flush and invalidate events before and
                                                        ///  after every sample.
-            UINT32 sqShaderMask : 1;  ///< Whether or not the contents of sqShaderMask are valid.
-            UINT32 reserved : 29; ///< Reserved for future use.
+            UINT32 sqShaderMask : 1;                   ///< Whether or not the contents of sqShaderMask are valid.
+            UINT32 reserved : 29;                      ///< Reserved for future use.
         };
-        UINT32 u32All;                                 ///< Bit flags packed as uint32.
-    } flags;                                           ///< Bit flags controlling sample operation for all sample
-                                                       ///  types.
+        UINT32 u32All;  ///< Bit flags packed as uint32.
+    } flags;            ///< Bit flags controlling sample operation for all sample
+                        ///  types.
 
-    AmdExtPerfExperimentShaderFlags sqShaderMask;      ///< Indicates which hardware shader stages should be
-                                                       ///  sampled. Only valid if flags.sqShaderMask is set to 1.
+    AmdExtPerfExperimentShaderFlags sqShaderMask;  ///< Indicates which hardware shader stages should be
+                                                   ///  sampled. Only valid if flags.sqShaderMask is set to 1.
 
     struct
     {
@@ -67,7 +67,7 @@ struct AmdExtGpaSampleConfigPre1850
         const AmdExtPerfCounterId* pIds;
 
         /// Period for SPM sample collection in cycles.  Only relevant for _trace_ samples.
-        UINT32  spmTraceSampleInterval;
+        UINT32 spmTraceSampleInterval;
 
         /// Maximum amount of GPU memory in bytes this sample can allocate for SPM data.  Only relevant for _trace_
         /// samples.
@@ -80,16 +80,16 @@ struct AmdExtGpaSampleConfigPre1850
         {
             struct
             {
-                UINT32 enable : 1;  ///< Include SQTT data in the trace.
+                UINT32 enable : 1;                    ///< Include SQTT data in the trace.
                 UINT32 supressInstructionTokens : 1;  ///< Prevents capturing instruction-level SQTT tokens,
                                                       ///  significantly reducing the amount of sample data.
-                UINT32 reserved : 30; ///< Reserved for future use.
+                UINT32 reserved : 30;                 ///< Reserved for future use.
             };
-            UINT32 u32All;                            ///< Bit flags packed as uint32.
-        } flags;                                      ///< Bit flags controlling SQTT samples.
-        UINT64 gpuMemoryLimit;                        ///< Maximum amount of GPU memory in bytes this sample can allocate for the SQTT
-                                                      ///  buffer.  If 0, allocate maximum size to prevent dropping tokens toward the
-                                                      ///  end of the sample.
+            UINT32 u32All;      ///< Bit flags packed as uint32.
+        } flags;                ///< Bit flags controlling SQTT samples.
+        UINT64 gpuMemoryLimit;  ///< Maximum amount of GPU memory in bytes this sample can allocate for the SQTT
+                                ///  buffer.  If 0, allocate maximum size to prevent dropping tokens toward the
+                                ///  end of the sample.
 
     } sqtt;  ///< SQ thread trace configuration (only valid for _trace_ samples).
 
@@ -97,7 +97,7 @@ struct AmdExtGpaSampleConfigPre1850
     {
         AmdExtHwPipePoint preSample;   ///< The point in the GPU pipeline where the begin timestamp should take place.
         AmdExtHwPipePoint postSample;  ///< The point in the GPU pipeline where the end timestamp should take place.
-    } timing;   ///< Timestamp configuration. (only valid for timing samples)
+    } timing;                          ///< Timestamp configuration. (only valid for timing samples)
 
     /// Translate from newer configuration to this older configuration
     /// \updatedConfig[in] updated GPA sample configuration
@@ -118,7 +118,7 @@ struct AmdExtGpaSampleConfigPre1850
         memcpy(&perfCounters, &updatedConfig.perfCounters, sizeof(perfCounters));
 
         // sqtt struct differs between older and newer configuration
-        sqtt.flags.u32All = updatedConfig.sqtt.flags.u32All;
+        sqtt.flags.u32All   = updatedConfig.sqtt.flags.u32All;
         sqtt.gpuMemoryLimit = updatedConfig.sqtt.gpuMemoryLimit;
 
         memcpy(&timing, &updatedConfig.timing, sizeof(timing));
@@ -133,29 +133,21 @@ struct AmdExtGpaSampleConfigPre1850
 class DX12GPAPass : public GPAPass
 {
 public:
-
     /// Constructor
     /// \param[in] pGpaSession GPA session object pointer
     /// \param[in] passIndex pass index
     /// \param[in] counterSource counter source
     /// \param[in] pPassCounters counter list for the pass
-    DX12GPAPass(IGPASession* pGpaSession,
-                PassIndex passIndex,
-                GPACounterSource counterSource,
-                CounterList* pPassCounters);
+    DX12GPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters);
 
     /// \copydoc GPAPass::CreateAPISpecificSample
-    GPASample* CreateAPISpecificSample(IGPACommandList* pCmdList,
-                                       GpaSampleType sampleType,
-                                       ClientSampleId sampleId) override final;
+    GPASample* CreateAPISpecificSample(IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId) override final;
 
     /// \copydoc GPAPass::UpdateResults
     bool UpdateResults() override final;
 
     /// \copydoc GPAPass::CreateAPISpecificCommandList
-    IGPACommandList* CreateAPISpecificCommandList(void* pCmd,
-                                                  CommandListId commandListId,
-                                                  GPA_Command_List_Type cmdType) override final;
+    IGPACommandList* CreateAPISpecificCommandList(void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType) override final;
 
     /// \copydoc GPAPass::EndSample
     bool EndSample(IGPACommandList* pCmdList) override final;
@@ -166,8 +158,8 @@ public:
     /// \param[in] pDx12SecondaryGpaCmdList DirectX 12 gpa secondary command list object pointer
     /// \return true if samples are successfully copied
     bool CopySecondarySamples(std::vector<ClientSampleId> clientSamples,
-                              DX12GPACommandList* pDx12PrimaryGpaCmdList,
-                              DX12GPACommandList* pDx12SecondaryGpaCmdList);
+                              DX12GPACommandList*         pDx12PrimaryGpaCmdList,
+                              DX12GPACommandList*         pDx12SecondaryGpaCmdList);
 
     /// Returns the current sample config for the set of counters in the pass
     /// \return AMD extension sample config for the set of counters in the pass
@@ -189,15 +181,14 @@ public:
     ~DX12GPAPass();
 
 private:
-
     /// Initializes the sample config for the pass if pass counter source is hardware
     void InitializeSampleConfig();
 
     /// Removes the irrelevant resources
     void ResetPass() const;
 
-    AmdExtGpaSampleConfig                                   m_amdExtsampleConfig;                   ///< AMD Extension configuration for hardware samples
-    bool                                                    m_isSampleConfigInitialized;            ///< flag indicating whether the sample config is initialized or not for the hardware samples
+    AmdExtGpaSampleConfig m_amdExtsampleConfig;         ///< AMD Extension configuration for hardware samples
+    bool                  m_isSampleConfigInitialized;  ///< flag indicating whether the sample config is initialized or not for the hardware samples
 };
 
-#endif // _DX12_GPA_PASS_H_
+#endif  // _DX12_GPA_PASS_H_

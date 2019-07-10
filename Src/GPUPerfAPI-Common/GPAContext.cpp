@@ -14,19 +14,19 @@
 #include "GPAUniqueObject.h"
 #include "GPAContextCounterMediator.h"
 
-GPAContext::GPAContext(GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags) :
-    m_supportedSampleTypes(GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER), // by default enable only discrete counters, descendants can override as necessary
-    m_contextFlags(flags),
-    m_hwInfo(hwInfo),
-    m_invalidateAndFlushL2CacheEnabled(false),
-    m_isOpen(false),
-    m_isAmdDevice(false),
-    m_pActiveSession(nullptr)
+GPAContext::GPAContext(GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
+    : m_supportedSampleTypes(GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER)
+    ,  // by default enable only discrete counters, descendants can override as necessary
+    m_contextFlags(flags)
+    , m_hwInfo(hwInfo)
+    , m_invalidateAndFlushL2CacheEnabled(false)
+    , m_isOpen(false)
+    , m_isAmdDevice(false)
+    , m_pActiveSession(nullptr)
 {
     gpa_uint32 vendorId;
 
-    if (m_hwInfo.GetVendorID(vendorId) &&
-        AMD_VENDOR_ID == vendorId)
+    if (m_hwInfo.GetVendorID(vendorId) && AMD_VENDOR_ID == vendorId)
     {
         m_isAmdDevice = true;
     }
@@ -60,8 +60,7 @@ GPA_Status GPAContext::GetNumCounters(gpa_uint32* pCount) const
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPAContext::GetCounterName(gpa_uint32 index,
-                                      const char** ppName) const
+GPA_Status GPAContext::GetCounterName(gpa_uint32 index, const char** ppName) const
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(ppName);
 
@@ -77,8 +76,7 @@ GPA_Status GPAContext::GetCounterName(gpa_uint32 index,
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPAContext::GetCounterGroup(gpa_uint32 index,
-                                       const char** ppGroup) const
+GPA_Status GPAContext::GetCounterGroup(gpa_uint32 index, const char** ppGroup) const
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(ppGroup);
 
@@ -94,8 +92,7 @@ GPA_Status GPAContext::GetCounterGroup(gpa_uint32 index,
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPAContext::GetCounterDescription(gpa_uint32 index,
-                                             const char** ppDescription) const
+GPA_Status GPAContext::GetCounterDescription(gpa_uint32 index, const char** ppDescription) const
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(ppDescription);
 
@@ -111,8 +108,7 @@ GPA_Status GPAContext::GetCounterDescription(gpa_uint32 index,
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPAContext::GetCounterDataType(gpa_uint32 index,
-                                          GPA_Data_Type* pCounterDataType) const
+GPA_Status GPAContext::GetCounterDataType(gpa_uint32 index, GPA_Data_Type* pCounterDataType) const
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(pCounterDataType);
 
@@ -128,8 +124,7 @@ GPA_Status GPAContext::GetCounterDataType(gpa_uint32 index,
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPAContext::GetCounterUsageType(gpa_uint32 index,
-                                           GPA_Usage_Type* pCounterUsageType) const
+GPA_Status GPAContext::GetCounterUsageType(gpa_uint32 index, GPA_Usage_Type* pCounterUsageType) const
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(pCounterUsageType);
 
@@ -177,8 +172,7 @@ GPA_Status GPAContext::GetCounterSampleType(gpa_uint32 index, GPA_Counter_Sample
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPAContext::GetCounterIndex(const char* pCounterName,
-                                       gpa_uint32* pIndex) const
+GPA_Status GPAContext::GetCounterIndex(const char* pCounterName, gpa_uint32* pIndex) const
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(pIndex);
 
@@ -207,7 +201,7 @@ bool GPAContext::GetCounterSourceLocalIndex(gpa_uint32 exposedCounterIndex, GPAC
 
     if (isValid)
     {
-        *pSource = info.m_counterSource;
+        *pSource           = info.m_counterSource;
         *pSourceLocalIndex = info.m_localIndex;
     }
 
@@ -232,20 +226,19 @@ bool GPAContext::AreSoftwareCountersExposed() const
 GPACounterSource GPAContext::GetCounterSource(gpa_uint32 internalCounterIndex) const
 {
     IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
-    GPACounterSource source = GPACounterSource::UNKNOWN;
+    GPACounterSource     source           = GPACounterSource::UNKNOWN;
 
     if (nullptr != pCounterAccessor)
     {
         const GPA_HardwareCounters* pHwCounters = pCounterAccessor->GetHardwareCounters();
         const GPA_SoftwareCounters* pSwCounters = pCounterAccessor->GetSoftwareCounters();
 
-        GPACounterGroupAccessor counterGroupAccessor(
-            pHwCounters->m_pGroups,
-            pHwCounters->m_groupCount,
-            pHwCounters->m_pAdditionalGroups,
-            pHwCounters->m_additionalGroupCount,
-            pSwCounters->m_pGroups,
-            pSwCounters->m_groupCount);
+        GPACounterGroupAccessor counterGroupAccessor(pHwCounters->m_pGroups,
+                                                     pHwCounters->m_groupCount,
+                                                     pHwCounters->m_pAdditionalGroups,
+                                                     pHwCounters->m_additionalGroupCount,
+                                                     pSwCounters->m_pGroups,
+                                                     pSwCounters->m_groupCount);
 
         counterGroupAccessor.SetCounterIndex(internalCounterIndex);
 
@@ -426,10 +419,9 @@ void GPAContext::SetAsOpened(bool open)
 bool GPAContext::IsAMDDevice() const
 {
     gpa_uint32 vendorId;
-    bool isAmd = false;
+    bool       isAmd = false;
 
-    if (m_hwInfo.GetVendorID(vendorId) &&
-        AMD_VENDOR_ID == vendorId)
+    if (m_hwInfo.GetVendorID(vendorId) && AMD_VENDOR_ID == vendorId)
     {
         isAmd = true;
     }
@@ -452,7 +444,7 @@ void GPAContext::RemoveGpaSession(IGPASession* pGpaSession)
 void GPAContext::IterateGpaSessionList(std::function<bool(IGPASession* pGpaSession)> function) const
 {
     std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
-    bool next = true;
+    bool                        next = true;
 
     for (auto it = m_gpaSessionList.cbegin(); it != m_gpaSessionList.cend() && next; ++it)
     {
@@ -468,7 +460,7 @@ void GPAContext::ClearSessionList()
 
 bool GPAContext::GetIndex(IGPASession* pGpaSession, unsigned int* pIndex) const
 {
-    bool found = false;
+    bool         found = false;
     unsigned int index = 0;
 
     std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
@@ -488,7 +480,6 @@ bool GPAContext::GetIndex(IGPASession* pGpaSession, unsigned int* pIndex) const
         }
 
         index++;
-
     }
 
     return found;

@@ -10,11 +10,8 @@
 #include "GPAHardwareCounters.h"
 #include "GPAContextCounterMediator.h"
 
-DX12GPASample::DX12GPASample(GPAPass* pPass,
-                             IGPACommandList* pCmdList,
-                             GpaSampleType sampleType,
-                             ClientSampleId sampleId):
-    GPASample(pPass, pCmdList, sampleType, sampleId)
+DX12GPASample::DX12GPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
+    : GPASample(pPass, pCmdList, sampleType, sampleId)
 {
 }
 
@@ -70,11 +67,11 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
         if (nullptr != GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer())
         {
             gpa_uint64* pResultBuffer = nullptr;
-            gpa_uint64 timingData[2] = {};
+            gpa_uint64  timingData[2] = {};
 
             if (GetPass()->IsTimingPass())
             {
-                pResultBuffer = timingData;
+                pResultBuffer   = timingData;
                 sampleDataBytes = sizeof(timingData);
             }
             else
@@ -131,7 +128,8 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
 
                     for (size_t counterIter = 0; counterIter < GetPass()->GetEnabledCounterCount(); counterIter++)
                     {
-                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[counterIter] += pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIter];
+                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[counterIter] +=
+                            pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIter];
                     }
                 }
 
@@ -153,7 +151,7 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
 
 bool DX12GPASample::CopyResult(size_t sampleDataSize, void* pResultBuffer) const
 {
-    bool isDataReady = false;
+    bool isDataReady                 = false;
     bool isAnyHardwareCounterEnabled = GetPass()->GetEnabledCounterCount() > 0;
 
     if (nullptr != pResultBuffer)
@@ -181,8 +179,8 @@ bool DX12GPASample::CopyResult(size_t sampleDataSize, void* pResultBuffer) const
             {
                 if (pResultSession->IsReady())
                 {
-                    size_t sampleDataSizeInDriver = 0u;
-                    HRESULT driverResult = pResultSession->GetResults(GetDriverSampleId(), &sampleDataSizeInDriver, nullptr);
+                    size_t  sampleDataSizeInDriver = 0u;
+                    HRESULT driverResult           = pResultSession->GetResults(GetDriverSampleId(), &sampleDataSizeInDriver, nullptr);
                     assert(SUCCEEDED(driverResult));
                     assert(sampleDataSize == sampleDataSizeInDriver);
 
@@ -210,7 +208,7 @@ bool DX12GPASample::CopyResult(size_t sampleDataSize, void* pResultBuffer) const
         else
         {
             // there is no hardware counter enabled in the driver, put zeros in all result location
-            memcpy(pResultBuffer, 0, sampleDataSize);
+            memset(pResultBuffer, 0, sampleDataSize);
             isDataReady = true;
         }
     }

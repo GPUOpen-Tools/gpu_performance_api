@@ -13,12 +13,12 @@
 #include "GPAContextCounterMediator.h"
 
 #if defined(WIN32)
-    #include "Adapter.h"
+#include "Adapter.h"
 #endif
 
-GPAImplementor::GPAImplementor() :
-    m_isInitialized(false),
-    m_initFlags(GPA_INITIALIZE_DEFAULT_BIT)
+GPAImplementor::GPAImplementor()
+    : m_isInitialized(false)
+    , m_initFlags(GPA_INITIALIZE_DEFAULT_BIT)
 {
 }
 
@@ -28,8 +28,7 @@ GPA_Status GPAImplementor::Initialize(GPA_InitializeFlags flags)
 
     GPA_Status gpaStatus = GPA_STATUS_ERROR_GPA_ALREADY_INITIALIZED;
 
-    if (GPA_INITIALIZE_DEFAULT_BIT != flags &&
-        GPA_INITIALIZE_SIMULTANEOUS_QUEUES_ENABLE_BIT != flags)
+    if (GPA_INITIALIZE_DEFAULT_BIT != flags && GPA_INITIALIZE_SIMULTANEOUS_QUEUES_ENABLE_BIT != flags)
     {
         GPA_LogError("Invalid flags passed to GPA_Initialize.");
         gpaStatus = GPA_STATUS_ERROR_INVALID_PARAMETER;
@@ -38,7 +37,7 @@ GPA_Status GPAImplementor::Initialize(GPA_InitializeFlags flags)
     {
         if (!m_isInitialized)
         {
-            m_isInitialized = true;
+            m_isInitialized                  = true;
             GPAContextCounterMediator* pTemp = GPAContextCounterMediator::Instance();
 
             if (nullptr == pTemp)
@@ -69,9 +68,7 @@ GPA_Status GPAImplementor::Destroy()
     return gpaStatus;
 }
 
-GPA_Status GPAImplementor::OpenContext(void* pContext,
-                                       GPA_OpenContextFlags flags,
-                                       GPA_ContextId* pContextId)
+GPA_Status GPAImplementor::OpenContext(void* pContext, GPA_OpenContextFlags flags, GPA_ContextId* pContextId)
 {
     // validate that only a single clock mode is specified
     unsigned int numClockModes = 0;
@@ -113,7 +110,7 @@ GPA_Status GPAImplementor::OpenContext(void* pContext,
         if (GPA_STATUS_OK == IsDeviceSupported(pContext, &hwInfo))
         {
             IGPAContext* pNewGPAContext = nullptr;
-            pNewGPAContext = OpenAPIContext(pContext, hwInfo, flags);
+            pNewGPAContext              = OpenAPIContext(pContext, hwInfo, flags);
 
             if (nullptr != pNewGPAContext)
             {
@@ -145,23 +142,21 @@ GPA_Status GPAImplementor::CloseContext(GPA_ContextId contextId)
 {
     GPA_Status gpaStatus = GPA_STATUS_OK;
 
-    if (GPAObjectType::GPA_OBJECT_TYPE_CONTEXT == contextId->ObjectType() &&
-        contextId->Object()->GetAPIType() == GetAPIType())
+    if (GPAObjectType::GPA_OBJECT_TYPE_CONTEXT == contextId->ObjectType() && contextId->Object()->GetAPIType() == GetAPIType())
     {
         std::lock_guard<std::mutex> lock(m_deviceGpaContextMapMutex);
 
         IGPAContext* pContext = contextId->Object();
 
         // find the context
-        bool isFound = false;
+        bool                                       isFound   = false;
         GPADeviceIdentifierGPAContextMap::iterator foundIter = m_appContextInfoGpaContextMap.end();
 
-        for (auto iter = m_appContextInfoGpaContextMap.begin();
-             !isFound && iter != m_appContextInfoGpaContextMap.end(); ++iter)
+        for (auto iter = m_appContextInfoGpaContextMap.begin(); !isFound && iter != m_appContextInfoGpaContextMap.end(); ++iter)
         {
             if (iter->second == pContext)
             {
-                isFound = true;
+                isFound   = true;
                 foundIter = iter;
             }
         }
@@ -207,9 +202,7 @@ bool GPAImplementor::DoesContextExist(GPA_ContextId contextId) const
     {
         contextFound = GPAUniqueObjectManager::Instance()->DoesExist(contextId);
 
-        if (contextFound &&
-            GPAObjectType::GPA_OBJECT_TYPE_CONTEXT == contextId->ObjectType() &&
-            GetAPIType() == contextId->Object()->GetAPIType())
+        if (contextFound && GPAObjectType::GPA_OBJECT_TYPE_CONTEXT == contextId->ObjectType() && GetAPIType() == contextId->Object()->GetAPIType())
         {
             contextFound = true;
         }
@@ -226,8 +219,7 @@ bool GPAImplementor::DoesSessionExist(GPA_SessionId sessionId) const
     {
         sessionFound = GPAUniqueObjectManager::Instance()->DoesExist(sessionId);
 
-        if (sessionFound &&
-            GPAObjectType::GPA_OBJECT_TYPE_SESSION == sessionId->ObjectType())
+        if (sessionFound && GPAObjectType::GPA_OBJECT_TYPE_SESSION == sessionId->ObjectType())
         {
             sessionFound = true;
         }
@@ -244,8 +236,7 @@ bool GPAImplementor::DoesCommandListExist(GPA_CommandListId commandListId) const
     {
         commandListFound = GPAUniqueObjectManager::Instance()->DoesExist(commandListId);
 
-        if (commandListFound &&
-            GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST == commandListId->ObjectType())
+        if (commandListFound && GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST == commandListId->ObjectType())
         {
             commandListFound = true;
         }
@@ -281,9 +272,9 @@ bool GPAImplementor::DoesContextInfoExist(GPAContextInfoPtr pContextInfo) const
 
 GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA_HWInfo* pHwInfo) const
 {
-    bool foundMatchingHWInfo = false;
+    bool         foundMatchingHWInfo = false;
     AsicInfoList asicInfoList;
-    GPA_HWInfo apiHwInfo;
+    GPA_HWInfo   apiHwInfo;
 
     if (!GetHwInfoFromAPI(pContextInfo, apiHwInfo))
     {
@@ -333,7 +324,7 @@ GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA
 
 #if defined(WIN32)
 
-    if (!foundMatchingHWInfo) // ADL will not be available on a clean system that has never had the AMD driver installed
+    if (!foundMatchingHWInfo)  // ADL will not be available on a clean system that has never had the AMD driver installed
     {
         Adapter adapter;
         asicInfoList.clear();
@@ -386,7 +377,7 @@ GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA
         }
     }
 
-#endif // WIN32
+#endif  // WIN32
 
     if (!foundMatchingHWInfo)
     {

@@ -23,14 +23,13 @@ enum class DeviceClockMode : uint32_t
     MinimumEngine,  ///< Engine clock is set to the lowest available level. Memory clock is set to thermal and power sustainable level.
     MinimumMemory,  ///< Memory clock is set to the lowest available level. Engine clock is set to thermal and power sustainable level.
     Peak,           ///< Clocks set to maximum when possible. Fan set to maximum. Note: Under power and thermal constraints device will clock down.
-    Profiling,      ///< Scale down from peak ratio. Clocks are set to a constant amount which is known to be power and thermal sustainable. The engine/memory clock ratio will be kept the same as much as possible.
+    Profiling,  ///< Scale down from peak ratio. Clocks are set to a constant amount which is known to be power and thermal sustainable. The engine/memory clock ratio will be kept the same as much as possible.
 };
 
 /// Interface for GPA Context Object
 class IGPAContext : public IGPAInterfaceTrait
 {
 public:
-
     /// Virtual Destructor
     virtual ~IGPAContext() = default;
 
@@ -182,4 +181,4 @@ public:
     virtual const IGPASession* GetActiveSession() const = 0;
 };
 
-#endif // _I_GPA_CONTEXT_H_
+#endif  // _I_GPA_CONTEXT_H_

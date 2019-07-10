@@ -14,16 +14,12 @@
 class DX12GPASample : public GPASample
 {
 public:
-
     /// Constructor
     /// \param[in] pPass GPA Pass object
     /// \param[in] pCmdList gpa command list
     /// \param[in] sampleType gpa sample type
     /// \param[in] sampleId user-supplied sample id
-    DX12GPASample(GPAPass* pPass,
-                  IGPACommandList* pCmdList,
-                  GpaSampleType sampleType,
-                  ClientSampleId sampleId);
+    DX12GPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId);
 
     /// \copydoc GPASample::UpdateResults
     bool UpdateResults() override final;
@@ -38,7 +34,6 @@ public:
     void ReleaseCounters() override final;
 
 private:
-
     /// Populates the sample result
     /// \return result of the sample
     GPASampleResult* PopulateSampleResult();

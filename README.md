@@ -7,6 +7,9 @@ It can help analyze the performance and execution characteristics of application
 is used by [Radeon Compute Profiler](https://github.com/GPUOpen-Tools/RCP) and [CodeXL](https://github.com/GPUOpen-Tools/CodeXL)
 as well as several third-party tools.
 
+## Downloads
+Prebuilt binaries can be downloaded from the Releases page: https://github.com/GPUOpen-Tools/GPA/releases
+
 ## Table of Contents
 * [Major Features](#major-features)
 * [What's New](#whats-new)
@@ -14,7 +17,7 @@ as well as several third-party tools.
 * [Cloning the Repository](#cloning-the-repository)
 * [Source Code Directory Layout](#source-code-directory-layout)
 * [Documentation](#documentation)
-* ["Public" vs "Internal" Versions](#public-vs-internal-versions)
+* [Raw Hardware Counters](#raw-hardware-counters)
 * [Known Issues](#known-issues)
 * [Building the Source Code](BUILD.md)
 * [License](LICENSE)
@@ -23,29 +26,38 @@ as well as several third-party tools.
 ## Major Features
 * Provides a standard API for accessing GPU Performance counters for both graphics and compute workloads across multiple GPU APIs.
 * Supports Vulkan™, DirectX™ 12, DirectX 11, OpenGL, OpenCL™, and ROCm/HSA.
-* Supports all current GCN-based Radeon graphics cards and APUs.
+* Supports all current Radeon graphics cards and APUs based on Graphics IP version 8 and newer.
 * Supports both Windows and Linux.
-* Provides derived "public" counters based on raw HW counters
-* "Internal" version provides access to some raw hardware counters. See ["Public" vs "Internal" Versions](#public-vs-internal-versions) for more information.
+* Provides derived "public" counters based on raw hardware counters.
+* Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-* Version 3.3 (12/20/18)
-  * Add support for additional GPUs and APUs.
-  * New CMake-based build system.
-  * Support building on Ubuntu 18.04.
-  * ROCm/HSA: uses new librocprofiler64.so rather than deprecated libhsa-runtime-tools64.so library for performance counter collection.
-  * Timing-based counters are now reported in nanoseconds instead of milliseconds.
-  * New timing counter to report top-of-pipe to bottom-of-pipe duration.
-  * GPA now builds GoogleTest libraries on the fly rather than using prebuilt binaries.
+* Version 3.4 (7/10/19)
+  * Add support for additional GPUs and APUs, including Navi series GPUs.
+  * Add support for setting stable GPU clocks for DirectX11, OpenGL and OpenCL.
+  * Add an OpenGL sample application that uses GPUPerfAPI.
+  * Add basic counter validation to sample applications.
+  * Add support for enabling individual hardware counters that make up derived counters.
+  * Add two new GFX9 GlobalMemory Counters for graphics: LocalVidMemBytes and PcieBytes.
+  * Reformat source code using clang-format.
+  * Update counter documentation to contain per-hardware-generation tables.
+  * Bugs Fixed:
+    * Fixed error handling in GPA_GetEnabledIndex, GPA_EnableCounterByName and GPA_DisbleCounterByName.
+    * Fixed an issue with Vulkan timing counters (https://github.com/GPUOpen-Tools/GPA/issues/40).
+    * Fixed an issue with SALUBusy counters.
+    * Fixed an issue with HiZQuadsCulledCount and HiZQuadsSurvivingCount counters on GFX8 GPUs.
+    * Fixed an issue with MemUnitBusy and MemUnitStalled counters on GFX8 GPUs.
+    * Fixed an issue with VSVALUBusyCycles counter on GFX9 GPUs.
 
 ## System Requirements
-* An AMD Radeon GCN-based GPU or APU.
-* Radeon Software Crimson Adrenaline Edition 18.8.1 or later (Driver Packaging Version 18.30.01 or later).
-* HSA/ROCm version requires ROCm 2.0.
+* An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
+* Windows: Radeon Software Adrenaline 2019 Edition 19.7.1 or later (Driver Packaging Version 19.30 or later).
+* Linux: Radeon Software for Linux Revision 19.20 or later (19.30 required for AMD Radeon 5700 Series GPUs).
+* HSA/ROCm version requires ROCm 2.0 or newer.
   * For use with ROCm, please make sure that the optional ROCm package "rocprofiler-dev" is installed.
     * Ubuntu: sudo apt install rocprofiler-dev
     * CentOS: sudo yum install rocprofiler-dev
-* Pre-GCN-based GPUs or APUs are no longer supported by GPUPerfAPI. Please use an older version ([2.17](http://developer.amd.com/tools-and-sdks/graphics-development/gpuperfapi/)) with older hardware.
+* Radeon GPUs or APUs based on Graphics IP version 6 and 7 are no longer supported by GPUPerfAPI. Please use an older version (([3.3](https://github.com/GPUOpen-Tools/GPA/releases/tag/v3.3))) with older hardware.
 * Windows 7, 8.1, and 10.
 * Ubuntu (16.04 and later) and CentOS/RHEL (7 and later) distributions.
 
@@ -59,14 +71,15 @@ After cloning the repository, please run the following python script to retrieve
 ## Source Code Directory Layout
 * [CMakeModules](CMakeModules) -- Common modules used in the CMake build system
 * [docs](docs) -- contains documentation sources and a Doxygen configuration file
-* [Src/Examples](Src/Examples) -- contains the source code for a DirectX 12 and Vulkan sample which use GPUPerfAPI
+* [Src/AutoGenerated](Src/AutoGenerated) -- contains auto-generated source code used when building GPUPerfAPI
+* [Src/Examples](Src/Examples) -- contains the source code for a DirectX 12, Vulkan and OpenGL sample which use GPUPerfAPI
 * [Src/GPUPerfAPI-Common](Src/GPUPerfAPI-Common) -- contains source code for a Common library shared by all versions of GPUPerfAPI
 * [Src/GPUPerfAPICL](Src/GPUPerfAPICL) -- contains the source for the OpenCL™ version of GPUPerfAPI
 * [Src/GPUPerfAPICounterGenerator](Src/GPUPerfAPICounterGenerator) -- contains the source code for a Common library providing all counter data
 * [Src/GPUPerfAPICounters](Src/GPUPerfAPICounters) -- contains the source code for a library that can be used to query counters without an active GPUPerfAPI context
 * [Src/GPUPerfAPIDX](Src/GPUPerfAPIDX) -- contains source code shared by the DirectX versions of GPUPerfAPI
 * [Src/GPUPerfAPIDX11](Src/GPUPerfAPIDX11) -- contains the source for the DirectX11 version of GPUPerfAPI
-* [Src/GPUPerfAPIDX12](Src/GPUPerfAPIDX12) -- contains the source for the DirectX12 version of GPUPerfAPI (Developer Preview)
+* [Src/GPUPerfAPIDX12](Src/GPUPerfAPIDX12) -- contains the source for the DirectX12 version of GPUPerfAPI
 * [Src/GPUPerfAPIGL](Src/GPUPerfAPIGL) -- contains the source for the OpenGL version of GPUPerfAPI
 * [Src/GPUPerfAPIROCm](Src/GPUPerfAPIROCm) -- contains the source for the ROCm/HSA version of GPUPerfAPI
 * [Src/GPUPerfAPIUnitTests](Src/GPUPerfAPIUnitTests) -- contains a small set of unit tests for GPUPerfAPI
@@ -81,17 +94,12 @@ will be a "docs" directory. Simply open the index.html file in a web browser to 
 
 The documentation is hosted publicly at: http://gpuperfapi.readthedocs.io/en/latest/
 
-## "Public" vs "Internal" Versions
-This open source release supports building both the "Public" and "Internal" versions of GPUPerfAPI. By default the CMake-generated Visual Studio solutions and Linux makefiles
-will produce what is referred to as the "Public" version of GPUPerfAPI. This version exposes "Public", or "Derived", counters. These are counters that are computed
-using a set of hardware counters. Until now, only the Public version of GPUPerfAPI was available on the AMD Developer website. As part of the open-source effort,
-we are also providing the ability to build the "Internal" versions of GPUPerfAPI. In addition to exposing the same counters as the Public version, the Internal version
-also exposes some of the hardware Counters available in the GPU/APU. It's important to note that not all hardware counters receive the same validation as other parts of
-the hardware on all GPUs, so in some cases accuracy of counter data cannot be guaranteed. The usage of the Internal version is identical to the Public version. The only
-difference will be in the name of the library an application loads at runtime and the list of counters exposed by the library. See the [Build Instructions](BUILD.md) for
-more information on how to build and use the Internal version. In the future, we see there being only a single version of GPUPerfAPI, with perhaps a change in the API to
-allow users of GPA to indicate whether the library exposes just the Derived counters or both the Derived and the Hardware counters. We realize using the term "Internal"
-for something which is no longer actually Internal-to-AMD can be a bit confusing, and we will aim to change this in the future.
+## Raw Hardware Counters
+This release exposes both "Derived" counters and "Raw Hardware" counters. Derived counters are counters that are computed using a set of raw hardware counters.
+While querying raw hardware counters was possible in earlier GPUPerfAPI releases, the current release makes it much simpler. In previous releases, you had to build
+GPUPerfAPI with special build flags in order to produce an "Internal" version that exposed the raw hardware counters. Current versions allow you to access the raw
+hardware counters in a default build, by simply specifying a new flag when calling GPA_OpenContext. The current CMake build system still allows you to produce an "Internal"
+build of GPUPerfAPI that also exposes the raw hardware counters, but that is a deprecated build and it is likely to be removed in a future release.
 
 ## Known Issues
  * Adjusting the GPU clock mode on Linux is accomplished by writing to <br><br>/sys/class/drm/card\<N\>/device/power_dpm_force_performance_level<br><br> where \<N\> is
@@ -100,3 +108,15 @@ for something which is no longer actually Internal-to-AMD can be a bit confusing
    achieve this. Note, however, that changing the permissions on a system file like this could circumvent security. Also, on multi-GPU systems, you may have to replace
    "card0" with the appropriate card number. Permissions on this file may be reset when rebooting the system:
    * sudo chmod ugo+w /sys/class/drm/card0/device/power_dpm_force_performance_level
+ * The following performance counter values may not be accurate for DirectX 11 applications running on a Radeon 5700 Series GPU. This is expected to be addressed in a future
+   driver release:
+   * VSVerticesIn, HSPatches, DSVerticesIn: These may incorrectly report zero values.
+   * VALUInstCount, SALUInstCount, VALUBusy, SALUBusy for all shader stages: These values should be representative of performance, but may not be 100% accurate.
+   * Most of the ComputeShader counters (all except the MemUnit and WriteUnit counters): These values should be representative of performance, but may not be 100% accurate.
+ * The following performance counter values may not be accurate for OpenGL applications running on a Radeon 5700 Series GPU. This is expected to be addressed in a future
+   driver release:
+   * VALUInstCount, SALUInstCount, VALUBusy, SALUBusy for all shader stages: These values should be representative of performance, but may not be 100% accurate.
+   * Most of the ComputeShader counters (all except the MemUnit and WriteUnit counters): These values should be representative of performance, but may not be 100% accurate.
+   * MemUnit counters (in ComputeShader and GlobalMemory groups), TextureUnit counters and L0Cache counters will be incorrect.
+ * Setting the GPU clock mode is not working correctly for Radeon 5700 Series GPUs, potentially leading to some inconsistencies in counter values from one run to the next.
+   This is expected to be addressed in a future driver release.

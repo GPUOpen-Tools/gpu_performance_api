@@ -7,10 +7,8 @@
 
 #include "ROCmGPACommandList.h"
 
-ROCmGPACommandList::ROCmGPACommandList(IGPASession* pGpaSession,
-                                       GPAPass* pGpaPass,
-                                       CommandListId commandListId) :
-    GPACommandList(pGpaSession, pGpaPass, commandListId)
+ROCmGPACommandList::ROCmGPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId)
+    : GPACommandList(pGpaSession, pGpaPass, commandListId)
 {
 }
 
@@ -31,8 +29,7 @@ bool ROCmGPACommandList::EndCommandListRequest()
     return true;
 }
 
-bool ROCmGPACommandList::BeginSampleRequest(ClientSampleId clientSampleId,
-                                            GPASample* pGpaSample)
+bool ROCmGPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample)
 {
     GPA_STUB_FUNCTION;
     UNREFERENCED_PARAMETER(clientSampleId);

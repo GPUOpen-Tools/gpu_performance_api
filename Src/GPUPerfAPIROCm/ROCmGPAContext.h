@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA ROCm Context declarations
@@ -9,20 +9,18 @@
 #define _ROCM_GPA_CONTEXT_H_
 
 // HSA
-#include <hsa_ext_profiler.h>
 #include "HSARTModuleLoader.h"
 
 // GPA Common
 #include "GPUPerfAPI-ROCm.h"
 #include "GPAContext.h"
 
-class ROCmGPASample;     // forward Declaration
+class ROCmGPASample;  // forward Declaration
 
 /// Class for ROCm GPA Context
 class ROCmGPAContext : public GPAContext
 {
 public:
-
     /// Constructor
     /// \param[in] pHwInfo the hardware info used to create the context
     /// \param[in] contextFlags the flags used to create the context
@@ -68,8 +66,8 @@ public:
     void CloseROCmSample();
 
 private:
-    GPA_ROCm_Context m_rocmContext;       ///< ROCm Context object for this context
-    ROCmGPASample*  m_pRunningROCmSample; ///< ROCm sample for which begin had been called
+    GPA_ROCm_Context m_rocmContext;         ///< ROCm Context object for this context
+    ROCmGPASample*   m_pRunningROCmSample;  ///< ROCm sample for which begin had been called
 };
 
-#endif // _ROCM_GPA_CONTEXT_H_
+#endif  // _ROCM_GPA_CONTEXT_H_

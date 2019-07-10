@@ -1,6 +1,6 @@
 ﻿// =============================================================================
 // <copyright file="Form1.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2018 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2019 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -40,53 +40,94 @@ namespace PublicCounterCompiler
         /// </summary>
         private static string registryGpuFamilyEntry = "PccGpuFamily";
 
+        /// <summary>
+        /// Counter compiler instance
+        /// </summary>
+        public CounterCompiler counterCompiler;
 
         /// <summary>
         /// Initializes a new instance of the Form1 class.
         /// </summary>
-        public Form1()
+        public Form1(CounterCompiler _counterCompiler)
         {
+            counterCompiler = _counterCompiler;
+
             InitializeComponent();
 
             apiName.Text = (string)Registry.GetValue(registryKey, registryApiEntry, string.Empty);
 
             GPUFamily.Text = (string)Registry.GetValue(registryKey, registryGpuFamilyEntry, string.Empty);
 
-            CompileButton.Text = "Compile " + CounterCompiler.derivedCounterFileInput.rootFilename + " Counters";
+            CompileButton.Text = "Compile " + counterCompiler.derivedCounterFileInput.rootFilename + " Counters";
         }
 
         /// <summary>
         /// Accessor to the singleton instance
         /// </summary>
         /// <returns>The instance of the form</returns>
-        public static Form1 Instance()
+        public static Form1 Instance(CounterCompiler _counterCompiler)
         {
             if (instance == null)
             {
-                instance = new Form1();
+                instance = new Form1(_counterCompiler);
             }
 
             return instance;
         }
 
         /// <summary>
-        /// Adds a message to the output window
+        /// Determines whether invalid counters should be ignored
         /// </summary>
-        /// <param name="strMsg">The message to add to the output window</param>
-        public void Output(string strMsg)
+        /// <returns>True if invalid counters should be ignored</returns>
+        public static bool GetIgnoreInvalidCounters
         {
-            richTextBoxOutput.Text += strMsg + "\n";
-            richTextBoxOutput.SelectionStart = richTextBoxOutput.Text.Length;
-            richTextBoxOutput.ScrollToCaret();
+            get
+            {
+                return instance.IgnoreInvalidCountersCheckBox.Checked;
+            }
         }
 
         /// <summary>
-        /// Gets the checked state of the IngoreInvalidCounters box
+        /// Adds a message to the output window
         /// </summary>
-        /// <returns>Whether or not to ignore invalid counters</returns>
-        public bool IgnoreInvalidCounters()
+        /// <param name="message">The message to add to the output window</param>
+        public bool DisplayMessageHandler(string message)
         {
-            return IgnoreInvalidCountersCheckBox.Checked;
+            if (counterCompiler.isConsoleApp)
+            {
+                Console.Out.Write(message);
+            }
+            else
+            {
+                richTextBoxOutput.Text += message + "\n";
+                richTextBoxOutput.SelectionStart = richTextBoxOutput.Text.Length;
+                richTextBoxOutput.ScrollToCaret();
+            }
+
+            System.Diagnostics.Debug.Print(message);
+            return true;
+        }
+
+        /// <summary>
+        /// Lambda callback error handler used by RegSpec file loading
+        /// </summary>
+        /// <param name="message">Error message.</param>
+        /// <returns>true if any additional error handling occurred, otherwise false.</returns>
+        public bool ErrorHandler(string message)
+        {
+            if (counterCompiler.isConsoleApp)
+            {
+                Console.Out.Write("Error:" + message);
+            }
+            else
+            {
+                richTextBoxOutput.Text += "Error:" + message + "\n";
+                richTextBoxOutput.SelectionStart = richTextBoxOutput.Text.Length;
+                richTextBoxOutput.ScrollToCaret();
+            }
+
+            System.Diagnostics.Debug.Print("Error:" + message);
+            return false;
         }
 
         /// <summary>
@@ -114,9 +155,9 @@ namespace PublicCounterCompiler
             Registry.SetValue(registryKey, registryGpuFamilyEntry, gpu);
 
             // For compatibility with InternalCounterCompiler project
-            if (false == PublicCounterCompiler.CounterCompiler.CompileCounters(api, gpu))
+            if (false == counterCompiler.CompileCounters(api, gpu, DisplayMessageHandler, ErrorHandler))
             {
-                Output("Failed to compile counters");
+                ErrorHandler("Failed to compile counters");
             }
         }
 
@@ -130,7 +171,7 @@ namespace PublicCounterCompiler
         {
             richTextBoxOutput.Text = "";
 
-            CounterCompiler.StartRSTDocumentation();
+            counterCompiler.StartRSTDocumentation();
 
             if (string.IsNullOrEmpty(batchApiList.Text.Trim())
                 || string.IsNullOrEmpty(batchGpuFamilyList.Text.Trim()))
@@ -146,47 +187,28 @@ namespace PublicCounterCompiler
             {
                 foreach (var gpu in gpus)
                 {
-                    // We know there are some invalid combinations on Gfx6
-                    if ("Gfx6" == gpu)
-                    {
-                        string[] unsupportedApis = new string[] { "DX12", "VK", "HSA" };
-                        if (Array.IndexOf(unsupportedApis, api) >= 0)
-                        {
-                            Output("\nSkipping API " + api + " unsupported on " + gpu);
-                            continue;
-                        }
-                    }
-
-                    if ("Gfx7" == gpu)
-                    {
-                        string[] unsupportedApis = new string[] { "HSA" };
-                        if (Array.IndexOf(unsupportedApis, api) >= 0)
-                        {
-                            Output("\nSkipping API " + api + " unsupported on " + gpu);
-                            continue;
-                        }
-                    }
-
-                    Output("\nCompiling API " + api + " for GPU Family " + gpu);
+                    DisplayMessageHandler("\nCompiling API " + api + " for GPU Family " + gpu);
 
                     // For compatibility with InternalCounterCompiler project
-                    if (false == PublicCounterCompiler.CounterCompiler.CompileCounters(api, gpu))
+                    if (false == counterCompiler.CompileCounters(api, gpu, DisplayMessageHandler, ErrorHandler))
                     {
-                        Output("Failed to compile counters");
+                        ErrorHandler("Failed to compile counters");
                     }
                 }
             }
+
+            counterCompiler.DoneRSTDocumentation(DisplayMessageHandler, ErrorHandler);
         }
 
         /// <summary>
         /// Gets the checked state of the Generate Counter Docs button.
         /// </summary>
         /// <returns>True if counter docs should be generated</returns>
-        public bool GenerateCounterDocs
+        static public bool GenerateCounterDocs
         {
             get
             {
-                return checkBoxGenerateCounterDocs.Checked;
+                return instance.checkBoxGenerateCounterDocs.Checked;
             }
         }
 

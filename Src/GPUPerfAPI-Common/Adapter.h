@@ -8,7 +8,6 @@
 #ifndef _GPA_COMMON_ADAPTER_H_
 #define _GPA_COMMON_ADAPTER_H_
 
-
 #include <vector>
 #include <dxgi.h>
 
@@ -30,7 +29,6 @@ public:
     bool getAsicInfoList(AsicInfoList& asicInfoList) const;
 
 private:
-
     /// copy constructor
     Adapter(const Adapter&) = default;
 
@@ -44,4 +42,4 @@ private:
     static void dxgiAdapterDescToAsicInfo(const DXGI_ADAPTER_DESC& dxgiAdapterDesc, ADLUtil_ASICInfo& asicInfo);
 };
 
-#endif // _GPA_COMMON_ADAPTER_H_
+#endif  // _GPA_COMMON_ADAPTER_H_

@@ -1,20 +1,21 @@
 //==============================================================================
-// Copyright (c) 2012-2017 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Helper functions for Counter Generator Unit Tests
 //==============================================================================
 
-#include "CounterGeneratorTests.h"
-#include "GPAHWInfo.h"
-#include "GPAContextState.h"
 #include <map>
 #include <algorithm>
 
+#include "CounterGeneratorTests.h"
+#include "GPAHWInfo.h"
+#include "GPASplitCountersInterfaces.h"
+
 #ifdef _WIN32
-    const char* countersLibName = "GPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX".dll";
+const char* countersLibName = "GPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX ".dll";
 #else
-    const char* countersLibName = "libGPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX".so";
+const char* countersLibName = "libGPUPerfAPICounters" AMDT_PLATFORM_SUFFIX AMDT_DEBUG_SUFFIX AMDT_BUILD_SUFFIX ".so";
 #endif
 
 LibHandle LoadLib(const char* pLibName)
@@ -23,7 +24,7 @@ LibHandle LoadLib(const char* pLibName)
 #ifdef _WIN32
     retVal = LoadLibraryA(pLibName);
 #else
-    retVal = dlopen(pLibName, RTLD_NOW);
+    retVal    = dlopen(pLibName, RTLD_NOW);
 #endif
 
     return retVal;
@@ -56,14 +57,15 @@ void* GetEntryPoint(LibHandle libHandle, const char* pEntrypointName)
 void VerifyNotImplemented(GPA_API_Type api, unsigned int deviceId, gpa_uint8 generateAsicSpecificCounters)
 {
     LibHandle libHandle = LoadLib(countersLibName);
-    ASSERT_NE((LibHandle)nullptr, libHandle);
+    ASSERT_NE((LibHandle) nullptr, libHandle);
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetEntryPoint(libHandle, "GPA_GetAvailableCounters");
 
     if (nullptr != GPA_GetAvailableCounters_fn)
     {
-        IGPACounterAccessor* pCounterAccessor = nullptr;
+        IGPACounterAccessor*  pCounterAccessor  = nullptr;
         IGPACounterScheduler* pCounterScheduler = nullptr;
-        GPA_Status status = GPA_GetAvailableCounters_fn(api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
+        GPA_Status            status            = GPA_GetAvailableCounters_fn(
+            api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
         EXPECT_EQ(GPA_STATUS_ERROR_COUNTER_NOT_FOUND, status);
     }
 
@@ -73,13 +75,15 @@ void VerifyNotImplemented(GPA_API_Type api, unsigned int deviceId, gpa_uint8 gen
 void VerifyNotImplemented(GPA_API_Type api, GPA_Hw_Generation generation, gpa_uint8 generateAsicSpecificCounters)
 {
     LibHandle libHandle = LoadLib(countersLibName);
-    ASSERT_NE((LibHandle)nullptr, libHandle);
-    GPA_GetAvailableCountersByGenerationProc GPA_GetAvailableCountersByGeneration_fn = (GPA_GetAvailableCountersByGenerationProc)GetEntryPoint(libHandle, "GPA_GetAvailableCountersByGeneration");
+    ASSERT_NE((LibHandle) nullptr, libHandle);
+    GPA_GetAvailableCountersByGenerationProc GPA_GetAvailableCountersByGeneration_fn =
+        (GPA_GetAvailableCountersByGenerationProc)GetEntryPoint(libHandle, "GPA_GetAvailableCountersByGeneration");
 
     if (nullptr != GPA_GetAvailableCountersByGeneration_fn)
     {
         IGPACounterAccessor* pCounterAccessor = nullptr;
-        GPA_Status status = GPA_GetAvailableCountersByGeneration_fn(api, generation, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor);
+        GPA_Status           status =
+            GPA_GetAvailableCountersByGeneration_fn(api, generation, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor);
         EXPECT_EQ(GPA_STATUS_ERROR_COUNTER_NOT_FOUND, status);
     }
 
@@ -89,14 +93,15 @@ void VerifyNotImplemented(GPA_API_Type api, GPA_Hw_Generation generation, gpa_ui
 void VerifyHardwareNotSupported(GPA_API_Type api, unsigned int deviceId, gpa_uint8 generateAsicSpecificCounters)
 {
     LibHandle libHandle = LoadLib(countersLibName);
-    ASSERT_NE((LibHandle)nullptr, libHandle);
+    ASSERT_NE((LibHandle) nullptr, libHandle);
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetEntryPoint(libHandle, "GPA_GetAvailableCounters");
 
     if (nullptr != GPA_GetAvailableCounters_fn)
     {
-        IGPACounterAccessor* pCounterAccessor = nullptr;
+        IGPACounterAccessor*  pCounterAccessor  = nullptr;
         IGPACounterScheduler* pCounterScheduler = nullptr;
-        GPA_Status status = GPA_GetAvailableCounters_fn(api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
+        GPA_Status            status            = GPA_GetAvailableCounters_fn(
+            api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
         EXPECT_EQ(GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED, status);
         EXPECT_EQ(nullptr, pCounterAccessor);
         EXPECT_EQ(nullptr, pCounterScheduler);
@@ -107,13 +112,15 @@ void VerifyHardwareNotSupported(GPA_API_Type api, unsigned int deviceId, gpa_uin
 
 void VerifyHardwareNotSupported(GPA_API_Type api, GPA_Hw_Generation generation, gpa_uint8 generateAsicSpecificCounters)
 {
-    LibHandle libHandle = LoadLib(countersLibName);
-    GPA_GetAvailableCountersByGenerationProc GPA_GetAvailableCountersByGeneration_fn = (GPA_GetAvailableCountersByGenerationProc)GetEntryPoint(libHandle, "GPA_GetAvailableCountersByGeneration");
+    LibHandle                                libHandle = LoadLib(countersLibName);
+    GPA_GetAvailableCountersByGenerationProc GPA_GetAvailableCountersByGeneration_fn =
+        (GPA_GetAvailableCountersByGenerationProc)GetEntryPoint(libHandle, "GPA_GetAvailableCountersByGeneration");
 
     if (nullptr != GPA_GetAvailableCountersByGeneration_fn)
     {
         IGPACounterAccessor* pCounterAccessor = nullptr;
-        GPA_Status status = GPA_GetAvailableCountersByGeneration_fn(api, generation, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor);
+        GPA_Status           status =
+            GPA_GetAvailableCountersByGeneration_fn(api, generation, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor);
         EXPECT_EQ(GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED, status);
         EXPECT_EQ(nullptr, pCounterAccessor);
     }
@@ -124,14 +131,15 @@ void VerifyHardwareNotSupported(GPA_API_Type api, GPA_Hw_Generation generation, 
 void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, gpa_uint8 generateAsicSpecificCounters, std::vector<const char*> expectedNames)
 {
     LibHandle libHandle = LoadLib(countersLibName);
-    ASSERT_NE((LibHandle)nullptr, libHandle);
+    ASSERT_NE((LibHandle) nullptr, libHandle);
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetEntryPoint(libHandle, "GPA_GetAvailableCounters");
 
     if (nullptr != GPA_GetAvailableCounters_fn)
     {
-        IGPACounterAccessor* pCounterAccessor = nullptr;
+        IGPACounterAccessor*  pCounterAccessor  = nullptr;
         IGPACounterScheduler* pCounterScheduler = nullptr;
-        GPA_Status status = GPA_GetAvailableCounters_fn(api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
+        GPA_Status            status            = GPA_GetAvailableCounters_fn(
+            api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
         EXPECT_EQ(GPA_STATUS_OK, status);
         EXPECT_NE((IGPACounterAccessor*)nullptr, pCounterAccessor);
         EXPECT_NE((IGPACounterScheduler*)nullptr, pCounterScheduler);
@@ -167,7 +175,7 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, gpa_uint8 gener
                 EXPECT_NE('#', pDesc[0]);
             }
 
-#else // not AMDT_INTERNAL
+#else  // not AMDT_INTERNAL
 
             if (expectedNames.size() == numCounters)
             {
@@ -189,7 +197,7 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, gpa_uint8 gener
                 }
             }
 
-#endif // AMDT_INTERNAL
+#endif  // AMDT_INTERNAL
         }
     }
 
@@ -199,13 +207,15 @@ void VerifyCounterNames(GPA_API_Type api, unsigned int deviceId, gpa_uint8 gener
 void VerifyCounterNames(GPA_API_Type api, GPA_Hw_Generation generation, gpa_uint8 generateAsicSpecificCounters, std::vector<const char*> expectedNames)
 {
     LibHandle libHandle = LoadLib(countersLibName);
-    ASSERT_NE((LibHandle)nullptr, libHandle);
-    GPA_GetAvailableCountersByGenerationProc GPA_GetAvailableCountersByGeneration_fn = (GPA_GetAvailableCountersByGenerationProc)GetEntryPoint(libHandle, "GPA_GetAvailableCountersByGeneration");
+    ASSERT_NE((LibHandle) nullptr, libHandle);
+    GPA_GetAvailableCountersByGenerationProc GPA_GetAvailableCountersByGeneration_fn =
+        (GPA_GetAvailableCountersByGenerationProc)GetEntryPoint(libHandle, "GPA_GetAvailableCountersByGeneration");
 
     if (nullptr != GPA_GetAvailableCountersByGeneration_fn)
     {
         IGPACounterAccessor* pCounterAccessor = nullptr;
-        GPA_Status status = GPA_GetAvailableCountersByGeneration_fn(api, generation, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor);
+        GPA_Status           status =
+            GPA_GetAvailableCountersByGeneration_fn(api, generation, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor);
         EXPECT_EQ(GPA_STATUS_OK, status);
         EXPECT_NE((IGPACounterAccessor*)nullptr, pCounterAccessor);
 
@@ -240,7 +250,7 @@ void VerifyCounterNames(GPA_API_Type api, GPA_Hw_Generation generation, gpa_uint
                 EXPECT_NE('#', pDesc[0]);
             }
 
-#else // not AMDT_INTERNAL
+#else  // not AMDT_INTERNAL
 
             if (expectedNames.size() == numCounters)
             {
@@ -262,25 +272,29 @@ void VerifyCounterNames(GPA_API_Type api, GPA_Hw_Generation generation, gpa_uint
                 }
             }
 
-#endif // AMDT_INTERNAL
+#endif  // AMDT_INTERNAL
         }
     }
 
     UnloadLib(libHandle);
 }
 
-
-void VerifyPassCount(GPA_API_Type api, unsigned int deviceId, gpa_uint8 generateAsicSpecificCounters, const std::vector<unsigned int>& countersToEnable, unsigned int expectedNumPasses)
+void VerifyPassCount(GPA_API_Type                     api,
+                     unsigned int                     deviceId,
+                     gpa_uint8                        generateAsicSpecificCounters,
+                     const std::vector<unsigned int>& countersToEnable,
+                     unsigned int                     expectedNumPasses)
 {
     LibHandle libHandle = LoadLib(countersLibName);
-    ASSERT_NE((LibHandle)nullptr, libHandle);
+    ASSERT_NE((LibHandle) nullptr, libHandle);
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetEntryPoint(libHandle, "GPA_GetAvailableCounters");
 
     if (nullptr != GPA_GetAvailableCounters_fn)
     {
-        IGPACounterAccessor* pCounterAccessor = nullptr;
+        IGPACounterAccessor*  pCounterAccessor  = nullptr;
         IGPACounterScheduler* pCounterScheduler = nullptr;
-        GPA_Status status = GPA_GetAvailableCounters_fn(api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
+        GPA_Status            status            = GPA_GetAvailableCounters_fn(
+            api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
         EXPECT_EQ(GPA_STATUS_OK, status);
         EXPECT_NE((IGPACounterAccessor*)nullptr, pCounterAccessor);
         EXPECT_NE((IGPACounterScheduler*)nullptr, pCounterScheduler);
@@ -295,7 +309,7 @@ void VerifyPassCount(GPA_API_Type api, unsigned int deviceId, gpa_uint8 generate
                 EXPECT_EQ(GPA_STATUS_OK, enabled);
             }
 
-            gpa_uint32 requiredPasses = 0;
+            gpa_uint32 requiredPasses  = 0;
             GPA_Status passCountStatus = pCounterScheduler->GetNumRequiredPasses(&requiredPasses);
             EXPECT_EQ(GPA_STATUS_OK, passCountStatus);
 
@@ -312,33 +326,25 @@ void VerifyPassCount(GPA_API_Type api, unsigned int deviceId, gpa_uint8 generate
     UnloadLib(libHandle);
 }
 
-void VerifyCountersInPass(
-    GPA_API_Type api,
-    unsigned int deviceId,
-    gpa_uint8 generateAsicSpecificCounters,
-    const std::vector<unsigned int>& countersToEnable,
-    const std::vector< std::vector<unsigned int> >& expectedHwCountersPerPass,
-    const std::map< unsigned int, std::map<unsigned int, GPA_CounterResultLocation> >& expectedResultLocations)
+void VerifyCountersInPass(GPA_API_Type                                                                      api,
+                          unsigned int                                                                      deviceId,
+                          gpa_uint8                                                                         generateAsicSpecificCounters,
+                          const std::vector<unsigned int>&                                                  countersToEnable,
+                          const std::vector<std::vector<unsigned int> >&                                    expectedHwCountersPerPass,
+                          const std::map<unsigned int, std::map<unsigned int, GPA_CounterResultLocation> >& expectedResultLocations)
 {
     LibHandle libHandle = LoadLib(countersLibName);
-    ASSERT_NE((LibHandle)nullptr, libHandle);
+    ASSERT_NE((LibHandle) nullptr, libHandle);
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetEntryPoint(libHandle, "GPA_GetAvailableCounters");
 
     if (nullptr != GPA_GetAvailableCounters_fn)
     {
-        IGPACounterAccessor* pCounterAccessor = nullptr;
+        IGPACounterAccessor*  pCounterAccessor  = nullptr;
         IGPACounterScheduler* pCounterScheduler = nullptr;
 
         // Get all the counters (based on API and the deviceID), an accessor, and a scheduler
         GPA_Status status = GPA_GetAvailableCounters_fn(
-                                api,
-                                AMD_VENDOR_ID,
-                                deviceId,
-                                REVISION_ID_ANY,
-                                GPA_OPENCONTEXT_DEFAULT_BIT,
-                                generateAsicSpecificCounters,
-                                &pCounterAccessor,
-                                &pCounterScheduler);
+            api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
 
         EXPECT_EQ(GPA_STATUS_OK, status);
         EXPECT_NE((IGPACounterAccessor*)nullptr, pCounterAccessor);
@@ -418,10 +424,11 @@ void VerifyCountersInPass(
 
                     if (expectedResultLocation.size() == pCounterResultLocation->size())
                     {
-                        for (auto hardwareCounterIter = expectedResultLocation.begin(); hardwareCounterIter != expectedResultLocation.end(); hardwareCounterIter++)
+                        for (auto hardwareCounterIter = expectedResultLocation.begin(); hardwareCounterIter != expectedResultLocation.end();
+                             hardwareCounterIter++)
                         {
                             unsigned int expectedOffset = hardwareCounterIter->second.m_offset;
-                            unsigned int expectedPass = hardwareCounterIter->second.m_pass;
+                            unsigned int expectedPass   = hardwareCounterIter->second.m_pass;
 
                             auto locationIter = pCounterResultLocation->find(hardwareCounterIter->first);
 
@@ -448,33 +455,24 @@ void VerifyCountersInPass(
     UnloadLib(libHandle);
 }
 
-static void ExplainCounters(
-    GPA_API_Type api,
-    uint32_t deviceId,
-    gpa_uint8 generateAsicSpecificCounters,
-    const std::vector<uint32_t>& countersToEnable,
-    std::stringstream* pOutputStream
-)
+static void ExplainCounters(GPA_API_Type                 api,
+                            uint32_t                     deviceId,
+                            gpa_uint8                    generateAsicSpecificCounters,
+                            const std::vector<uint32_t>& countersToEnable,
+                            std::stringstream*           pOutputStream)
 {
     LibHandle libHandle = LoadLib(countersLibName);
-    ASSERT_NE((LibHandle)nullptr, libHandle);
+    ASSERT_NE((LibHandle) nullptr, libHandle);
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetEntryPoint(libHandle, "GPA_GetAvailableCounters");
 
     if (nullptr != GPA_GetAvailableCounters_fn)
     {
-        IGPACounterAccessor* pCounterAccessor = nullptr;
+        IGPACounterAccessor*  pCounterAccessor  = nullptr;
         IGPACounterScheduler* pCounterScheduler = nullptr;
 
         // Get all the counters (based on API and the deviceID), an accessor, and a scheduler
         GPA_Status status = GPA_GetAvailableCounters_fn(
-                                api,
-                                AMD_VENDOR_ID,
-                                deviceId,
-                                REVISION_ID_ANY,
-                                GPA_OPENCONTEXT_DEFAULT_BIT,
-                                generateAsicSpecificCounters,
-                                &pCounterAccessor,
-                                &pCounterScheduler);
+            api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
 
         EXPECT_EQ(GPA_STATUS_OK, status);
         EXPECT_NE((IGPACounterAccessor*)nullptr, pCounterAccessor);
@@ -551,10 +549,11 @@ static void ExplainCounters(
 
                 if (nullptr != pCounterResultLocation)
                 {
-                    for (auto hardwareCounterIter = pCounterResultLocation->begin(); hardwareCounterIter != pCounterResultLocation->end(); hardwareCounterIter++)
+                    for (auto hardwareCounterIter = pCounterResultLocation->begin(); hardwareCounterIter != pCounterResultLocation->end();
+                         hardwareCounterIter++)
                     {
                         unsigned int expectedOffset = hardwareCounterIter->second.m_offset;
-                        unsigned int expectedPass = hardwareCounterIter->second.m_pass;
+                        unsigned int expectedPass   = hardwareCounterIter->second.m_pass;
 
                         *pOutputStream << "    MakeExpectedCounterLocationEntry(" << expectedPass << ", " << expectedOffset << ")\n";
 
@@ -595,13 +594,11 @@ static void ExplainCounters(
     UnloadLib(libHandle);
 }
 
-void ExplainCountersInPassAndResultLocations(
-    GPA_API_Type api,
-    unsigned int deviceId,
-    gpa_uint8 generateAsicSpecificCounters,
-    const std::vector<uint32_t>& countersToEnable,
-    std::stringstream* pOutputStream
-)
+void ExplainCountersInPassAndResultLocations(GPA_API_Type                 api,
+                                             uint32_t                     deviceId,
+                                             gpa_uint8                    generateAsicSpecificCounters,
+                                             const std::vector<uint32_t>& countersToEnable,
+                                             std::stringstream*           pOutputStream)
 {
     *pOutputStream << "Total number of counters:" << countersToEnable.size() << "\n\n";
 
@@ -616,7 +613,7 @@ void ExplainCountersInPassAndResultLocations(
         {
             *pOutputStream << "*** Explaining counter " << (i + 1) << " of " << countersToEnable.size() << " ***\n";
 
-            ExplainCounters(api, deviceId, generateAsicSpecificCounters, std::vector<uint32_t> { countersToEnable[i] }, pOutputStream);
+            ExplainCounters(api, deviceId, generateAsicSpecificCounters, std::vector<uint32_t>{countersToEnable[i]}, pOutputStream);
         }
     }
 
@@ -624,23 +621,23 @@ void ExplainCountersInPassAndResultLocations(
     ExplainCounters(api, deviceId, generateAsicSpecificCounters, countersToEnable, pOutputStream);
 }
 
-void VerifyCounterCalculation(
-    GPA_API_Type api,
-    unsigned int deviceId,
-    gpa_uint8 generateAsicSpecificCounters,
-    char* counterName,
-    std::vector<gpa_uint64*>& sampleResults,
-    gpa_float64 expectedResult)
+void VerifyCounterCalculation(GPA_API_Type                          api,
+                              unsigned int                          deviceId,
+                              gpa_uint8                             generateAsicSpecificCounters,
+                              char*                                 counterName,
+                              const std::vector<const gpa_uint64*>& sampleResults,
+                              gpa_float64                           expectedResult)
 {
     LibHandle libHandle = LoadLib(countersLibName);
-    ASSERT_NE((LibHandle)nullptr, libHandle);
+    ASSERT_NE((LibHandle) nullptr, libHandle);
     GPA_GetAvailableCountersProc GPA_GetAvailableCounters_fn = (GPA_GetAvailableCountersProc)GetEntryPoint(libHandle, "GPA_GetAvailableCounters");
 
     if (nullptr != GPA_GetAvailableCounters_fn)
     {
-        IGPACounterAccessor* pCounterAccessor = nullptr;
+        IGPACounterAccessor*  pCounterAccessor  = nullptr;
         IGPACounterScheduler* pCounterScheduler = nullptr;
-        GPA_Status status = GPA_GetAvailableCounters_fn(api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
+        GPA_Status            status            = GPA_GetAvailableCounters_fn(
+            api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
         EXPECT_EQ(GPA_STATUS_OK, status);
         EXPECT_NE((IGPACounterAccessor*)nullptr, pCounterAccessor);
         EXPECT_NE((IGPACounterScheduler*)nullptr, pCounterScheduler);
@@ -648,8 +645,8 @@ void VerifyCounterCalculation(
         if (nullptr != pCounterScheduler)
         {
             std::vector<GPA_Data_Type> internalCounterTypes;
-            gpa_float64 result = 0;
-            GPA_HWInfo hwInfo;                              ///< TODO ? Find this from the scheduler
+            gpa_float64                result = 0;
+            GPA_HWInfo                 hwInfo;  ///< TODO ? Find this from the scheduler
 
             size_t numResults = sampleResults.size();
 

@@ -9,13 +9,13 @@
 #define _GPU_PERFAPI_LOADER_H_
 
 #ifdef _WIN32
-    #include <windows.h>
+#include <windows.h>
 #endif
 
 #if defined(_LINUX) || defined(LINUX)
-    #include <stdio.h>
-    #include <stdlib.h>
-    #include <dlfcn.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <dlfcn.h>
 #endif
 
 #include <string>
@@ -24,13 +24,11 @@
 #include "GPUPerfAPITypes.h"
 #include "GPUPerfAPIFunctionTypes.h"
 
-
 // class to load the GPA at run-time
 // To call a function create an instance of GPUPerfAPILoader and use . notation to access the function as normal
 class GPUPerfAPILoader
 {
 public:
-
     /// constructor
     GPUPerfAPILoader();
     // destructor
@@ -51,14 +49,13 @@ public:
     bool Loaded();
 
     /// Define all GPA public functions
-#define GPA_FUNCTION_PREFIX( f )                  \
-    f##PtrType f;
+#define GPA_FUNCTION_PREFIX(f) f##PtrType f;
 #include "GPAFunctions.h"
 #undef GPA_FUNCTION_PREFIX
 
 protected:
 #ifdef _WIN32
-    HMODULE m_hMod; ///< DLL module handle
+    HMODULE m_hMod;  ///< DLL module handle
 #else
     void* pHandle;  ///< shared library handle
 #endif
@@ -71,4 +68,4 @@ private:
     std::string GetGPADllName(const std::string& dllPath, GPA_API_Type api);
 };
 
-#endif //_GPU_PERFAPI_LOADER_H_
+#endif  //_GPU_PERFAPI_LOADER_H_

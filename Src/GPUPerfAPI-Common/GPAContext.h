@@ -17,7 +17,7 @@
 #include "IGPAContext.h"
 #include "IGPASession.h"
 
-using GPASessionList = std::list<IGPASession*>;         ///< type alias for list of IGPASession objects
+using GPASessionList = std::list<IGPASession*>;  ///< type alias for list of IGPASession objects
 
 /// Abstract GPAContext for common context code
 class GPAContext : public IGPAContext
@@ -111,7 +111,6 @@ public:
     const IGPASession* GetActiveSession() const override;
 
 protected:
-
     /// constructor
     /// \param[in] hwInfo the hardware info for the context
     /// \param[in] flags creation flags for context
@@ -146,19 +145,18 @@ protected:
     /// \return true if the index was found, false otherwise
     bool GetIndex(IGPASession* pGpaSession, unsigned int* pIndex = nullptr) const;
 
-    GPA_ContextSampleTypeFlags m_supportedSampleTypes;             ///< the supported sample type
+    GPA_ContextSampleTypeFlags m_supportedSampleTypes;  ///< the supported sample type
 
 private:
-
-    GPA_OpenContextFlags  m_contextFlags;                     ///< context flags
-    GPA_HWInfo            m_hwInfo;                           ///< hw info
-    bool                  m_invalidateAndFlushL2CacheEnabled; ///< flag indicating flush and invalidation of L2 cache is enabled or not
-    bool                  m_isOpen;                           ///< flag indicating context is open or not
-    GPASessionList        m_gpaSessionList;                   ///< list of GPA sessions in the context
-    bool                  m_isAmdDevice;                      ///< flag indicating whether the device is AMD or not
-    mutable std::mutex    m_gpaSessionListMutex;              ///< Mutex for GPA session list
-    IGPASession*          m_pActiveSession;                   ///< gpa session to keep track of active session
-    mutable std::mutex    m_activeSessionMutex;               ///< mutex for active session
+    GPA_OpenContextFlags m_contextFlags;                      ///< context flags
+    GPA_HWInfo           m_hwInfo;                            ///< hw info
+    bool                 m_invalidateAndFlushL2CacheEnabled;  ///< flag indicating flush and invalidation of L2 cache is enabled or not
+    bool                 m_isOpen;                            ///< flag indicating context is open or not
+    GPASessionList       m_gpaSessionList;                    ///< list of GPA sessions in the context
+    bool                 m_isAmdDevice;                       ///< flag indicating whether the device is AMD or not
+    mutable std::mutex   m_gpaSessionListMutex;               ///< Mutex for GPA session list
+    IGPASession*         m_pActiveSession;                    ///< gpa session to keep track of active session
+    mutable std::mutex   m_activeSessionMutex;                ///< mutex for active session
 };
 
-#endif // _GPA_CONTEXT_H_
+#endif  // _GPA_CONTEXT_H_

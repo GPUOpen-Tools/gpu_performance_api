@@ -11,16 +11,16 @@
 #include <hsa_api_trace.h>
 
 #ifdef _LINUX
-    #define GPALIB_DECL extern "C"
+#define GPALIB_DECL extern "C"
 #else
-    #define GPALIB_DECL extern "C" __declspec( dllexport )
+#define GPALIB_DECL extern "C" __declspec(dllexport)
 #endif
 
 #include "GPUPerfAPIROCmGlobals.h"
 
-decltype(hsa_queue_create)* g_realQueueCreateFn = nullptr; ///< pointer to the real hsa_queue_create function
+decltype(hsa_queue_create)* g_realQueueCreateFn = nullptr;  ///< pointer to the real hsa_queue_create function
 
-std::map<hsa_queue_t*, hsa_agent_t> g_queueAgentMap; ///< typedef for a map from queue to agent
+std::map<hsa_queue_t*, hsa_agent_t> g_queueAgentMap;  ///< typedef for a map from queue to agent
 
 /// replacement function for hsa_queue_create
 /// \param agent parameter to hsa_queue_create
@@ -32,11 +32,14 @@ std::map<hsa_queue_t*, hsa_agent_t> g_queueAgentMap; ///< typedef for a map from
 /// \param group_segment_size parameter to hsa_queue_create
 /// \param ppQueue parameter to hsa_queue_create
 /// \return the hsa_status_t result of the real API function
-hsa_status_t HSA_API
-my_hsa_queue_create(hsa_agent_t agent, uint32_t size, hsa_queue_type32_t type,
-                    void(*pCallback)(hsa_status_t status, hsa_queue_t* pSource, void* pData),
-                    void* pData, uint32_t private_segment_size,
-                    uint32_t group_segment_size, hsa_queue_t** ppQueue)
+hsa_status_t HSA_API my_hsa_queue_create(hsa_agent_t        agent,
+                                         uint32_t           size,
+                                         hsa_queue_type32_t type,
+                                         void (*pCallback)(hsa_status_t status, hsa_queue_t* pSource, void* pData),
+                                         void*         pData,
+                                         uint32_t      private_segment_size,
+                                         uint32_t      group_segment_size,
+                                         hsa_queue_t** ppQueue)
 {
     hsa_status_t retVal = g_realQueueCreateFn(agent, size, type, pCallback, pData, private_segment_size, group_segment_size, ppQueue);
 
@@ -58,7 +61,7 @@ GPALIB_DECL bool OnLoad(void* pTable, uint64_t runtimeVersion, uint64_t /*failed
 
     if (retVal)
     {
-        g_realQueueCreateFn = reinterpret_cast<HsaApiTable*>(pTable)->core_->hsa_queue_create_fn;
+        g_realQueueCreateFn                                                = reinterpret_cast<HsaApiTable*>(pTable)->core_->hsa_queue_create_fn;
         reinterpret_cast<HsaApiTable*>(pTable)->core_->hsa_queue_create_fn = my_hsa_queue_create;
     }
 

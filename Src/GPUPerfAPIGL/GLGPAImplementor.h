@@ -17,10 +17,9 @@
 /// Class for GL GPA Implementation
 class GLGPAImplementor : public GPAImplementor, public TSingleton<GLGPAImplementor>
 {
-    friend class TSingleton<GLGPAImplementor>; ///< friend declaration to allow access to the constructor
+    friend class TSingleton<GLGPAImplementor>;  ///< friend declaration to allow access to the constructor
 
 public:
-
     /// Destructor
     ~GLGPAImplementor() = default;
 
@@ -34,7 +33,6 @@ public:
     bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const override final;
 
 private:
-
     /// Constructor
     GLGPAImplementor();
 
@@ -47,7 +45,8 @@ private:
     /// \copydoc GPAImplementor::GetDeviceIdentifierFromContextInfo()
     GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const override final;
 
-    mutable bool m_isGlEntryPointsInitialized;            ///< flag indicating the GL entry point has been initialized or not
+    mutable bool m_isGlEntryPointsInitialized;  ///< flag indicating the GL entry point has been initialized or not
+    mutable int  m_glDriverVersion;             ///< GL driver version returned in the asic info
 };
 
-#endif // _GL_GPA_IMPLEMENTOR_H_
+#endif  // _GL_GPA_IMPLEMENTOR_H_

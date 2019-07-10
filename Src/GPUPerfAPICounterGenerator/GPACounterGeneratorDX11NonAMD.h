@@ -18,4 +18,4 @@ public:
     GPA_CounterGeneratorDX11NonAMD();
 };
 
-#endif // _GPA_COUNTER_GENERATOR_DX11_NON_AMD_H_
+#endif  // _GPA_COUNTER_GENERATOR_DX11_NON_AMD_H_

@@ -29,7 +29,6 @@
 // GPA_BeginSample  1647    0.440372    0.440372     0.00220656(5942836)     1.33964e-006(3608)  0.00220656(5942836)     1.33964e-006(3608)
 // GPA_BeginSession 1   5.65964 5.68611  0.0284912(76734166)     0.0284912(76734166)     0.0283585(76376984)     0.0283585(76376984)
 
-
 // Description of output:
 
 // all numbers not in brackets are in seconds
@@ -56,7 +55,6 @@
 #include <map>
 #include <string>
 #include <sstream>
-
 
 // these macros refer to a singleton profiling object defined in GPAProfiler.cpp
 
@@ -88,14 +86,12 @@ class FunctionInfo
 {
 public:
     unsigned int calls;
-    __int64 totalTime;
-    __int64 timeBelow;
+    __int64      totalTime;
+    __int64      timeBelow;
 };
-
 
 class Profiler
 {
-
 public:
     Profiler();
 
@@ -116,28 +112,26 @@ public:
     FunctionInfo& GetFunctionInfo(const char* pFunctionName);
 
     std::string GenerateReport();
-    void WriteReport(std::string filename);
+    void        WriteReport(std::string filename);
 
 protected:
     void outputTime(std::stringstream& ss, __int64 time);
 
-    __int64 m_RDTSCTicksPerSecond;
+    __int64              m_RDTSCTicksPerSecond;
     std::vector<__int64> m_startedTimestamps;
     std::vector<__int64> m_totalTimeBelowParent;
 
     std::map<std::string, FunctionInfo> m_functionMap;
 
-    __int64 m_totalTime;
+    __int64      m_totalTime;
     unsigned int m_timingErrors;
 
-    bool m_active;
+    bool    m_active;
     __int64 m_startTime;
     __int64 m_stopTime;
 };
 
-
 extern Profiler gProfilerSingleton;
-
 
 class ScopeProfile
 {
@@ -157,9 +151,8 @@ public:
 
 protected:
     const char* m_pFunctionName;
-    std::mutex m_mutex;
+    std::mutex  m_mutex;
 };
-
 
 #else
 
@@ -189,4 +182,4 @@ protected:
 
 #endif
 
-#endif // _GPA_PROFILER_H_
+#endif  // _GPA_PROFILER_H_

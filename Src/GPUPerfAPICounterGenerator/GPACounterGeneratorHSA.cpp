@@ -9,7 +9,7 @@
 #include "Logging.h"
 
 #ifdef EXTRA_COUNTER_INFO
-    #include <sstream>
+#include <sstream>
 #endif
 
 #include "PublicCounterDefsHSAGfx8.h"
@@ -18,8 +18,8 @@
 #include "PublicCounterDefsHSAGfx8Asics.h"
 #include "PublicCounterDefsHSAGfx9Asics.h"
 
-#include "InternalCountersHSAGfx8.h"
-#include "InternalCountersHSAGfx9.h"
+#include "GPAHWCounterHSAGfx8.h"
+#include "GPAHWCounterHSAGfx9.h"
 
 GPA_CounterGeneratorHSA::GPA_CounterGeneratorHSA()
 {
@@ -31,11 +31,10 @@ GPA_CounterGeneratorHSA::GPA_CounterGeneratorHSA()
     }
 }
 
-GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(
-    GDT_HW_GENERATION desiredGeneration,
-    GDT_HW_ASIC_TYPE asicType,
-    gpa_uint8 generateAsicSpecificCounters,
-    GPA_DerivedCounters* pPublicCounters)
+GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
+                                                           GDT_HW_ASIC_TYPE     asicType,
+                                                           gpa_uint8            generateAsicSpecificCounters,
+                                                           GPA_DerivedCounters* pPublicCounters)
 {
     auto status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
 
@@ -84,7 +83,7 @@ GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(
     auto internalStatus = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
 
 #ifdef AMDT_INTERNAL
-    internalStatus = GPA_LoadInternalCounters(GPA_API_ROCM, desiredGeneration,asicType, generateAsicSpecificCounters, pPublicCounters);
+    internalStatus = GPA_LoadInternalCounters(GPA_API_ROCM, desiredGeneration, asicType, generateAsicSpecificCounters, pPublicCounters);
 #endif
 
     if (GPA_STATUS_OK == status)
@@ -99,11 +98,10 @@ GPA_Status GPA_CounterGeneratorHSA::GeneratePublicCounters(
     return status;
 }
 
-GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(
-    GDT_HW_GENERATION desiredGeneration,
-    GDT_HW_ASIC_TYPE asicType,
-    gpa_uint8 generateAsicSpecificCounters,
-    GPA_HardwareCounters* pHardwareCounters)
+GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
+                                                             GDT_HW_ASIC_TYPE      asicType,
+                                                             gpa_uint8             generateAsicSpecificCounters,
+                                                             GPA_HardwareCounters* pHardwareCounters)
 {
     UNREFERENCED_PARAMETER(asicType);
     UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
@@ -122,23 +120,23 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(
     }
     else if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
-        pHardwareCounters->m_ppCounterGroupArray = HSACounterGroupArrayGfx8;
-        pHardwareCounters->m_pGroups             = HWHSAGroupsGfx8;
-        pHardwareCounters->m_groupCount          = HWHSAGroupCountGfx8;
-        pHardwareCounters->m_pSQCounterGroups    = HWHSASQGroupsGfx8;
-        pHardwareCounters->m_sqGroupCount        = HWHSASQGroupCountGfx8;
-        pHardwareCounters->m_pIsolatedGroups     = HWHSASQIsolatedGroupsGfx8;
-        pHardwareCounters->m_isolatedGroupCount  = HWHSASQIsolatedGroupCountGfx8;
+        pHardwareCounters->m_ppCounterGroupArray = CounterGfx8::HSACounterGroupArrayGfx8;
+        pHardwareCounters->m_pGroups             = CounterGfx8::HWHSAGroupsGfx8;
+        pHardwareCounters->m_groupCount          = CounterGfx8::HWHSAGroupCountGfx8;
+        pHardwareCounters->m_pSQCounterGroups    = CounterGfx8::HWHSASQGroupsGfx8;
+        pHardwareCounters->m_sqGroupCount        = CounterGfx8::HWHSASQGroupCountGfx8;
+        pHardwareCounters->m_pIsolatedGroups     = CounterGfx8::HWHSASQIsolatedGroupsGfx8;
+        pHardwareCounters->m_isolatedGroupCount  = CounterGfx8::HWHSASQIsolatedGroupCountGfx8;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
-        pHardwareCounters->m_ppCounterGroupArray = HSACounterGroupArrayGfx9;
-        pHardwareCounters->m_pGroups             = HWHSAGroupsGfx9;
-        pHardwareCounters->m_groupCount          = HWHSAGroupCountGfx9;
-        pHardwareCounters->m_pSQCounterGroups    = HWHSASQGroupsGfx9;
-        pHardwareCounters->m_sqGroupCount        = HWHSASQGroupCountGfx9;
-        pHardwareCounters->m_pIsolatedGroups     = HWHSASQIsolatedGroupsGfx9;
-        pHardwareCounters->m_isolatedGroupCount  = HWHSASQIsolatedGroupCountGfx9;
+        pHardwareCounters->m_ppCounterGroupArray = CounterGfx9::HSACounterGroupArrayGfx9;
+        pHardwareCounters->m_pGroups             = CounterGfx9::HWHSAGroupsGfx9;
+        pHardwareCounters->m_groupCount          = CounterGfx9::HWHSAGroupCountGfx9;
+        pHardwareCounters->m_pSQCounterGroups    = CounterGfx9::HWHSASQGroupsGfx9;
+        pHardwareCounters->m_sqGroupCount        = CounterGfx9::HWHSASQGroupCountGfx9;
+        pHardwareCounters->m_pIsolatedGroups     = CounterGfx9::HWHSASQIsolatedGroupsGfx9;
+        pHardwareCounters->m_isolatedGroupCount  = CounterGfx9::HWHSASQIsolatedGroupCountGfx9;
     }
     else
     {
@@ -170,9 +168,9 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(
             {
                 // for each internal counter
                 counter.m_pHardwareCounter = &(pGroup[j]);
-                counter.m_groupIndex      = i;
-                counter.m_groupIdDriver = i;
-                counter.m_counterIdDriver = 0;
+                counter.m_groupIndex       = i;
+                counter.m_groupIdDriver    = i;
+                counter.m_counterIdDriver  = 0;
 
 #if defined(_DEBUG) && defined(_WIN32) && defined(AMDT_INTERNAL)
 
@@ -180,13 +178,14 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(
                 {
                     fwrite("    \"", 1, 5, pFile);
                     std::string tmpName(counter.m_pHardwareCounter->m_pName);
-                    size_t size = tmpName.size();
+                    size_t      size = tmpName.size();
                     fwrite(counter.m_pHardwareCounter->m_pName, 1, size, pFile);
                     fwrite("\",", 1, 2, pFile);
 #ifdef EXTRA_COUNTER_INFO
                     // this can be useful for debugging counter definitions
                     std::stringstream ss;
-                    ss << " " << counter.m_groupIndex << ", " << counter.m_groupIdDriver << ", " << counter.m_pHardwareCounter->m_counterIndexInGroup << ", " << counter.m_counterIdDriver;
+                    ss << " " << counter.m_groupIndex << ", " << counter.m_groupIdDriver << ", " << counter.m_pHardwareCounter->m_counterIndexInGroup << ", "
+                       << counter.m_counterIdDriver;
                     std::string tmpCounterInfo(ss.str());
                     size = tmpCounterInfo.size();
                     fwrite(tmpCounterInfo.c_str(), 1, size, pFile);
@@ -218,11 +217,10 @@ GPA_Status GPA_CounterGeneratorHSA::GenerateHardwareCounters(
     return GPA_STATUS_OK;
 }
 
-GPA_Status GPA_CounterGeneratorHSA::GenerateSoftwareCounters(
-    GDT_HW_GENERATION desiredGeneration,
-    GDT_HW_ASIC_TYPE asicType,
-    gpa_uint8 generateAsicSpecificCounters,
-    GPA_SoftwareCounters* pSoftwareCounters)
+GPA_Status GPA_CounterGeneratorHSA::GenerateSoftwareCounters(GDT_HW_GENERATION     desiredGeneration,
+                                                             GDT_HW_ASIC_TYPE      asicType,
+                                                             gpa_uint8             generateAsicSpecificCounters,
+                                                             GPA_SoftwareCounters* pSoftwareCounters)
 {
     UNREFERENCED_PARAMETER(desiredGeneration);
     UNREFERENCED_PARAMETER(asicType);

@@ -26,19 +26,17 @@ GPA_API_Type DX11GPAImplementor::GetAPIType() const
     return GPA_API_DIRECTX_11;
 }
 
-bool DX11GPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
-                                          GPA_HWInfo& hwInfo) const
+bool DX11GPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const
 {
     bool isSuccess = false;
 
-    IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
+    IUnknown*     pUnknownPtr  = static_cast<IUnknown*>(pContextInfo);
     ID3D11Device* pD3D11Device = nullptr;
 
-    if (DX11Utils::GetD3D11Device(pUnknownPtr, &pD3D11Device) &&
-        DX11Utils::IsFeatureLevelSupported(pD3D11Device))
+    if (DX11Utils::GetD3D11Device(pUnknownPtr, &pD3D11Device) && DX11Utils::IsFeatureLevelSupported(pD3D11Device))
     {
         DXGI_ADAPTER_DESC adapterDesc;
-        GPA_Status gpaStatus = DXGetAdapterDesc(pD3D11Device, adapterDesc);
+        GPA_Status        gpaStatus = DXGetAdapterDesc(pD3D11Device, adapterDesc);
 
         if (GPA_STATUS_OK == gpaStatus)
         {
@@ -68,7 +66,7 @@ bool DX11GPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
                 hwInfo.SetDeviceID(adapterDesc.DeviceId);
                 hwInfo.SetRevisionID(adapterDesc.Revision);
                 std::wstring adapterNameW(adapterDesc.Description);
-                std::string adapterName(adapterNameW.begin(), adapterNameW.end());
+                std::string  adapterName(adapterNameW.begin(), adapterNameW.end());
                 hwInfo.SetDeviceName(adapterName.c_str());
 
                 if (NVIDIA_VENDOR_ID == adapterDesc.VendorId)
@@ -84,7 +82,10 @@ bool DX11GPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
             }
             else
             {
-                GPA_LogError("Unknown device adapter.");
+                std::stringstream ss;
+                ss << "Unknown device adapter (vendorid=" << adapterDesc.VendorId << ", deviceid=" << adapterDesc.DeviceId
+                   << ", revision=" << adapterDesc.Revision << ").";
+                GPA_LogError(ss.str().c_str());
             }
         }
         else
@@ -100,27 +101,25 @@ bool DX11GPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo,
     return isSuccess;
 }
 
-bool DX11GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo,
-                                            const GPA_HWInfo& hwInfo) const
+bool DX11GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const
 {
     bool isSupported = false;
 
-    IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
+    IUnknown*     pUnknownPtr  = static_cast<IUnknown*>(pContextInfo);
     ID3D11Device* pD3D11Device = nullptr;
 
-    if (DX11Utils::GetD3D11Device(pUnknownPtr, &pD3D11Device) &&
-        DX11Utils::IsFeatureLevelSupported(pD3D11Device))
+    if (DX11Utils::GetD3D11Device(pUnknownPtr, &pD3D11Device) && DX11Utils::IsFeatureLevelSupported(pD3D11Device))
     {
         GPA_Status status = GPA_STATUS_OK;
 
         if (hwInfo.IsAMD())
         {
-            unsigned int majorVer = 0;
-            unsigned int minorVer = 0;
-            unsigned int subMinorVer = 0;
-            ADLUtil_Result adlResult = AMDTADLUtils::Instance()->GetDriverVersion(majorVer, minorVer, subMinorVer);
+            unsigned int   majorVer    = 0;
+            unsigned int   minorVer    = 0;
+            unsigned int   subMinorVer = 0;
+            ADLUtil_Result adlResult   = AMDTADLUtils::Instance()->GetDriverVersion(majorVer, minorVer, subMinorVer);
 
-            static const unsigned int MIN_MAJOR_VER = 16;
+            static const unsigned int MIN_MAJOR_VER        = 16;
             static const unsigned int MIN_MINOR_VER_FOR_16 = 15;
 
             if ((ADL_SUCCESS == adlResult || ADL_WARNING == adlResult))
@@ -144,7 +143,7 @@ bool DX11GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
         else
         {
             GPA_HWInfo tempHwInfo = hwInfo;
-            status = GPACustomHwValidationManager::Instance()->ValidateHW(pContextInfo, &tempHwInfo);
+            status                = GPACustomHwValidationManager::Instance()->ValidateHW(pContextInfo, &tempHwInfo);
         }
 
         if (GPA_STATUS_OK == status)
@@ -156,17 +155,15 @@ bool DX11GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
     return isSupported;
 }
 
-IGPAContext* DX11GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo,
-                                                GPA_HWInfo& hwInfo,
-                                                GPA_OpenContextFlags flags)
+IGPAContext* DX11GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
 {
-    IUnknown* pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
+    IUnknown*     pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
     ID3D11Device* pD3D11Device;
-    IGPAContext* pRetGpaContext = nullptr;
+    IGPAContext*  pRetGpaContext = nullptr;
 
     if (DX11Utils::GetD3D11Device(pUnknownPtr, &pD3D11Device) && DX11Utils::IsFeatureLevelSupported(pD3D11Device))
     {
-        DX11GPAContext* pDX11GpaContext = new(std::nothrow) DX11GPAContext(pD3D11Device, hwInfo, flags);
+        DX11GPAContext* pDX11GpaContext = new (std::nothrow) DX11GPAContext(pD3D11Device, hwInfo, flags);
 
         if (nullptr != pDX11GpaContext)
         {
@@ -197,9 +194,10 @@ bool DX11GPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, 
     if (nullptr != pContext)
     {
         delete reinterpret_cast<DX11GPAContext*>(pContext);
+        pContext = nullptr;
     }
 
-    return (nullptr != pContext) && (nullptr != pDeviceIdentifier);
+    return (nullptr == pContext) && (nullptr != pDeviceIdentifier);
 }
 
 PFNAmdDxExtCreate11 DX11GPAImplementor::GetAmdExtFuncPointer() const
@@ -208,10 +206,10 @@ PFNAmdDxExtCreate11 DX11GPAImplementor::GetAmdExtFuncPointer() const
 }
 
 bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
-                                      HMONITOR hMonitor,
-                                      const int& primaryVendorId,
-                                      const int& primaryDeviceId,
-                                      GPA_HWInfo& hwInfo) const
+                                      HMONITOR      hMonitor,
+                                      const int&    primaryVendorId,
+                                      const int&    primaryDeviceId,
+                                      GPA_HWInfo&   hwInfo) const
 {
     bool success = false;
 
@@ -221,9 +219,9 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
 
         if (nullptr != AmdDxExtCreate11)
         {
-            IAmdDxExt* pExt = nullptr;
+            IAmdDxExt*            pExt            = nullptr;
             IAmdDxExtPerfProfile* pExtPerfProfile = nullptr;
-            HRESULT hr = AmdDxExtCreate11(pD3D11Device, &pExt);
+            HRESULT               hr              = AmdDxExtCreate11(pD3D11Device, &pExt);
 
             if (SUCCEEDED(hr))
             {
@@ -248,8 +246,8 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
                     }
                     else
                     {
-                        PE_RESULT peResult = PE_OK;
-                        BOOL gpuProfileable = FALSE;
+                        PE_RESULT peResult       = PE_OK;
+                        BOOL      gpuProfileable = FALSE;
 
                         while ((PE_OK == peResult) && (FALSE == gpuProfileable))
                         {
@@ -263,7 +261,7 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
                         }
                         else
                         {
-                            --gpuIndex; // gpu is over incremented in the loop above
+                            --gpuIndex;  // gpu is over incremented in the loop above
                         }
                     }
                 }
@@ -284,7 +282,6 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
 
                 if (GPAUtil::GetCurrentModulePath(strDLLName))
                 {
-
                     int vendorId = primaryVendorId;
                     int deviceId = primaryDeviceId;
 
@@ -314,9 +311,10 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
 
                     if (nullptr != hModule)
                     {
-                        static const char* pEntryPointName = "DXGetAMDDeviceInfo";
+                        static const char*                    pEntryPointName = "DXGetAMDDeviceInfo";
                         typedef decltype(DXGetAMDDeviceInfo)* DXGetAMDDeviceInfo_FuncType;
-                        DXGetAMDDeviceInfo_FuncType DXGetAMDDeviceInfoFunc = reinterpret_cast<DXGetAMDDeviceInfo_FuncType>(GetProcAddress(hModule, pEntryPointName));
+                        DXGetAMDDeviceInfo_FuncType           DXGetAMDDeviceInfoFunc =
+                            reinterpret_cast<DXGetAMDDeviceInfo_FuncType>(GetProcAddress(hModule, pEntryPointName));
 
                         if (nullptr != DXGetAMDDeviceInfoFunc)
                         {
@@ -395,8 +393,8 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
     return success;
 }
 
-DX11GPAImplementor::DX11GPAImplementor():
-    m_amdDxExtCreate11FuncPtr(nullptr)
+DX11GPAImplementor::DX11GPAImplementor()
+    : m_amdDxExtCreate11FuncPtr(nullptr)
 {
 }
 
@@ -421,7 +419,7 @@ bool DX11GPAImplementor::InitializeAmdExtFunction() const
             if (nullptr != AmdDxExtCreate11)
             {
                 m_amdDxExtCreate11FuncPtr = AmdDxExtCreate11;
-                success = true;
+                success                   = true;
             }
         }
     }

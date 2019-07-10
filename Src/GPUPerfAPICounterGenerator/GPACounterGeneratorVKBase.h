@@ -28,34 +28,29 @@ public:
 
 protected:
     /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
-    virtual GPA_Status GeneratePublicCounters(
-        GDT_HW_GENERATION desiredGeneration,
-        GDT_HW_ASIC_TYPE asicType,
-        gpa_uint8 generateAsicSpecificCounters,
-        GPA_DerivedCounters* pPublicCounters) override;
+    virtual GPA_Status GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
+                                              GDT_HW_ASIC_TYPE     asicType,
+                                              gpa_uint8            generateAsicSpecificCounters,
+                                              GPA_DerivedCounters* pPublicCounters) override;
 
     /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
-    virtual GPA_Status GenerateHardwareCounters(
-        GDT_HW_GENERATION desiredGeneration,
-        GDT_HW_ASIC_TYPE asicType,
-        gpa_uint8 generateAsicSpecificCounters,
-        GPA_HardwareCounters* pHardwareCounters) override;
+    virtual GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
+                                                GDT_HW_ASIC_TYPE      asicType,
+                                                gpa_uint8             generateAsicSpecificCounters,
+                                                GPA_HardwareCounters* pHardwareCounters) override;
 
     /// \copydoc GPA_CounterGeneratorBase::GenerateSoftwareCounters
-    virtual GPA_Status GenerateSoftwareCounters(
-        GDT_HW_GENERATION desiredGeneration,
-        GDT_HW_ASIC_TYPE asicType,
-        gpa_uint8 generateAsicSpecificCounters,
-        GPA_SoftwareCounters* pSoftwareCounters) override;
+    virtual GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION     desiredGeneration,
+                                                GDT_HW_ASIC_TYPE      asicType,
+                                                gpa_uint8             generateAsicSpecificCounters,
+                                                GPA_SoftwareCounters* pSoftwareCounters) override;
 
     /// \copydoc GPA_CounterGeneratorBase::ComputeSWCounterValue
-    virtual void ComputeSWCounterValue(
-        gpa_uint32 softwareCounterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const override;
+    virtual void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const override;
 
 private:
-
-    static const GPA_SoftwareCounterDesc s_VKSWCounters[];  ///< VK SW counters list
-    static const size_t s_VKSWCountersCount;                ///< VK SW counter list size
+    static const GPA_SoftwareCounterDesc s_VKSWCounters[];     ///< VK SW counters list
+    static const size_t                  s_VKSWCountersCount;  ///< VK SW counter list size
     /// Copy constructor - private override to prevent usage
     GPA_CounterGeneratorVKBase(const GPA_CounterGeneratorVKBase&) = delete;
 
@@ -75,4 +70,4 @@ private:
     GPA_Status GenerateVKSoftwareCounters();
 };
 
-#endif // _GPA_COUNTER_GENERATOR_VK_BASE_H_
+#endif  // _GPA_COUNTER_GENERATOR_VK_BASE_H_
