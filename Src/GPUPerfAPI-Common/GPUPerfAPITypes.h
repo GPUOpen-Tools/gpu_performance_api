@@ -194,7 +194,8 @@ typedef enum
 {
     GPA_OPENCONTEXT_DEFAULT_BIT =
         0,  ///< Open contexts using all default options (all counters exposed, clocks are set to stable frequencies which are known to be power and thermal sustainable. The ratio between the engine and memory clock frequencies will be kept the same as much as possible)
-    GPA_OPENCONTEXT_HIDE_PUBLIC_COUNTERS_BIT   = 0x01,  ///< Prevent the public counters from being exposed
+    GPA_OPENCONTEXT_HIDE_DERIVED_COUNTERS_BIT  = 0x01,                                       ///< Prevent the derived counters from being exposed
+    GPA_OPENCONTEXT_HIDE_PUBLIC_COUNTERS_BIT   = GPA_OPENCONTEXT_HIDE_DERIVED_COUNTERS_BIT,  ///< For backwards compatibility
     GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT = 0x02,  ///< Prevent the software counters from being exposed
     GPA_OPENCONTEXT_HIDE_HARDWARE_COUNTERS_BIT = 0x04,  ///< Prevent the hardware counters from being exposed
     GPA_OPENCONTEXT_CLOCK_MODE_NONE_BIT =

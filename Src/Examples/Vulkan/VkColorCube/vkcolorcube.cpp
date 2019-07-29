@@ -158,7 +158,8 @@ AMDVulkanDemo::AMDVulkanDemo()
 #endif
     };
 
-    m_requiredDeviceExtensions = {VK_KHR_SWAPCHAIN_EXTENSION_NAME, AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST};
+    m_requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME, AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST };
+    m_optionalDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME, AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST, AMD_GPA_OPTIONAL_DEVICE_EXTENSION_NAME_LIST };
 }
 
 AMDVulkanDemo::~AMDVulkanDemo()
@@ -773,11 +774,20 @@ bool AMDVulkanDemo::InitializeVulkan()
     deviceCreateInfo.pQueueCreateInfos       = &deviceQueueCreateInfo;
     deviceCreateInfo.enabledLayerCount       = 0;
     deviceCreateInfo.ppEnabledLayerNames     = nullptr;
-    deviceCreateInfo.enabledExtensionCount   = static_cast<uint32_t>(m_requiredDeviceExtensions.size());
-    deviceCreateInfo.ppEnabledExtensionNames = m_requiredDeviceExtensions.data();
+    deviceCreateInfo.enabledExtensionCount   = static_cast<uint32_t>(m_optionalDeviceExtensions.size());
+    deviceCreateInfo.ppEnabledExtensionNames = m_optionalDeviceExtensions.data();
     deviceCreateInfo.pEnabledFeatures        = &m_vkPhysicalDeviceFeatures;
 
     VkResult resultCreateDevice = vkCreateDevice(m_vkPhysicalDevice, &deviceCreateInfo, nullptr, &m_vkDevice);
+
+    if (resultCreateDevice == VK_ERROR_EXTENSION_NOT_PRESENT)
+    {
+        // try again with only required extensions
+        deviceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(m_requiredDeviceExtensions.size());
+        deviceCreateInfo.ppEnabledExtensionNames = m_requiredDeviceExtensions.data();
+
+        resultCreateDevice = vkCreateDevice(m_vkPhysicalDevice, &deviceCreateInfo, nullptr, &m_vkDevice);
+    }
 
     if (resultCreateDevice != VK_SUCCESS)
     {

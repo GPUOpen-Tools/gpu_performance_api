@@ -166,7 +166,12 @@ bool DX12GPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, 
     if (nullptr != pContext)
     {
         DX12GPAContext* pDx12GpaContext = reinterpret_cast<DX12GPAContext*>(pContext);
-        pDx12GpaContext->CleanUp();
+        /*
+         * Deleting the context resources at this point is causing
+         * some issue in driver as some of the resources are still in use on factory object
+         * We will defer the release of driver extension resources at time of destroying the GPA
+         */
+        pDx12GpaContext->SetStableClocks(false);
         m_dx12GpaContextList.push_back(pDx12GpaContext);
     }
 

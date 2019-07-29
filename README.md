@@ -51,13 +51,13 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
-* Windows: Radeon Software Adrenaline 2019 Edition 19.7.1 or later (Driver Packaging Version 19.30 or later).
+* Windows: Radeon Software Adrenaline 2019 Edition 19.7.3 or later (Driver Packaging Version 19.30 or later).
 * Linux: Radeon Software for Linux Revision 19.20 or later (19.30 required for AMD Radeon 5700 Series GPUs).
 * HSA/ROCm version requires ROCm 2.0 or newer.
   * For use with ROCm, please make sure that the optional ROCm package "rocprofiler-dev" is installed.
     * Ubuntu: sudo apt install rocprofiler-dev
     * CentOS: sudo yum install rocprofiler-dev
-* Radeon GPUs or APUs based on Graphics IP version 6 and 7 are no longer supported by GPUPerfAPI. Please use an older version (([3.3](https://github.com/GPUOpen-Tools/GPA/releases/tag/v3.3))) with older hardware.
+* Radeon GPUs or APUs based on Graphics IP version 6 and 7 are no longer supported by GPUPerfAPI. Please use an older version ([3.3](https://github.com/GPUOpen-Tools/GPA/releases/tag/v3.3)) with older hardware.
 * Windows 7, 8.1, and 10.
 * Ubuntu (16.04 and later) and CentOS/RHEL (7 and later) distributions.
 
@@ -110,13 +110,11 @@ build of GPUPerfAPI that also exposes the raw hardware counters, but that is a d
    * sudo chmod ugo+w /sys/class/drm/card0/device/power_dpm_force_performance_level
  * The following performance counter values may not be accurate for DirectX 11 applications running on a Radeon 5700 Series GPU. This is expected to be addressed in a future
    driver release:
-   * VSVerticesIn, HSPatches, DSVerticesIn: These may incorrectly report zero values.
    * VALUInstCount, SALUInstCount, VALUBusy, SALUBusy for all shader stages: These values should be representative of performance, but may not be 100% accurate.
    * Most of the ComputeShader counters (all except the MemUnit and WriteUnit counters): These values should be representative of performance, but may not be 100% accurate.
  * The following performance counter values may not be accurate for OpenGL applications running on a Radeon 5700 Series GPU. This is expected to be addressed in a future
    driver release:
    * VALUInstCount, SALUInstCount, VALUBusy, SALUBusy for all shader stages: These values should be representative of performance, but may not be 100% accurate.
    * Most of the ComputeShader counters (all except the MemUnit and WriteUnit counters): These values should be representative of performance, but may not be 100% accurate.
-   * MemUnit counters (in ComputeShader and GlobalMemory groups), TextureUnit counters and L0Cache counters will be incorrect.
- * Setting the GPU clock mode is not working correctly for Radeon 5700 Series GPUs, potentially leading to some inconsistencies in counter values from one run to the next.
-   This is expected to be addressed in a future driver release.
+ * On Linux, setting the GPU clock mode is not working correctly for Radeon 5700 Series GPUs, potentially leading to some inconsistencies in counter values from one run to the
+   next. This is expected to be addressed in a future driver release.

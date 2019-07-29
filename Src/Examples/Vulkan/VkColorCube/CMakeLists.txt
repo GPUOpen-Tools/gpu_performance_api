@@ -35,13 +35,13 @@ if(WIN32)
                        COMMAND CompileShaders.bat ${GPA_OUTPUT_DIR}/$<CONFIG>/
                        BYPRODUCTS vkcolorcubeshader.vert.spv vkcolorcubeshader.frag.spv
                        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-                       COMMENT "Compiling Vulkan Shaders vkcolorcubeshader.vert vkcolorcubeshader.frag")
+                       COMMENT "Compiling Vulkan Shaders vkcolorcubeshader.vert vkcolorcubeshader.frag vkcolorcubewireframeshader.frag")
 else()
     add_custom_command(TARGET ${GPA_PROJECT_NAME} PRE_BUILD
                        COMMAND ${CMAKE_CURRENT_LIST_DIR}/CompileShaders.sh ${GPA_OUTPUT_DIR}/$<CONFIG>/ ${VK_TOOLS_DIR}
                        BYPRODUCTS vkcolorcubeshader.vert.spv vkcolorcubeshader.frag.spv
                        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-                       COMMENT "Compiling Vulkan Shaders vkcolorcubeshader.vert vkcolorcubeshader.frag")
+                       COMMENT "Compiling Vulkan Shaders vkcolorcubeshader.vert vkcolorcubeshader.frag vkcolorcubewireframeshader.frag")
 endif()
 
 set_target_properties(${GPA_PROJECT_NAME} PROPERTIES FOLDER "Examples/Vulkan")

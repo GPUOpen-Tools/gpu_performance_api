@@ -65,6 +65,9 @@ public:
     /// Sets the running sample to null
     void CloseROCmSample();
 
+    /// \copydoc IGPAContext::SetStableClocks()
+    GPA_Status SetStableClocks(bool useProfilingClocks) override;
+
 private:
     GPA_ROCm_Context m_rocmContext;         ///< ROCm Context object for this context
     ROCmGPASample*   m_pRunningROCmSample;  ///< ROCm sample for which begin had been called

@@ -159,6 +159,9 @@ private:
     /// List of device extension names that are required by this demo.
     std::vector<const char*> m_requiredDeviceExtensions;
 
+    /// List of device extension names that are optional for this demo.
+    std::vector<const char*> m_optionalDeviceExtensions;
+
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
     /// Application windowing instance
     HINSTANCE m_hInstance;

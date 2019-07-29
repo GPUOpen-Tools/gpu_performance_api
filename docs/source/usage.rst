@@ -347,15 +347,17 @@ Specific Usage Note for Vulkan
 In order to enable counter collection in the Vulkan driver, several Vulkan
 extensions are required. The application being profiled with GPUPerfAPI will
 need to request those extensions as part of the Vulkan instance and device
-initialization. GPUPerfAPI simplifies this by defining two macros in the
+initialization. GPUPerfAPI simplifies this by defining three macros in the
 GPUPerfAPI-Vk.h header file: ``AMD_GPA_REQUIRED_INSTANCE_EXTENSION_NAME_LIST``
-for the required instance extensions and
+for the required instance extensions,
 ``AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST`` for the required device
-extensions. The extensions defined in
+extensions and ``AMD_GPA_OPTIONAL_DEVICE_EXTENSION_NAME_LIST`` for optional,
+but recommended, device extensions. The extensions defined in
 ``AMD_GPA_REQUIRED_INSTANCE_EXTENSION_NAME_LIST`` should be included in the
 ``VkInstanceCreateInfo`` structure that is passed to the ``vkCreateInstance``
 function. Similarly, the extensions defined in
-``AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST`` should be included in the
+``AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST`` and
+``AMD_GPA_OPTIONAL_DEVICE_EXTENSION_NAME_LIST`` should be included in the
 ``VkDeviceCreateInfo`` structure that is passed to ``vkCreateDevice`` function.
 
 .. _specific_usage_bundles:

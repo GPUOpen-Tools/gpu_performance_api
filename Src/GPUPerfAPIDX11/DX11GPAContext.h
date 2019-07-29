@@ -80,10 +80,8 @@ public:
     /// \return the max event id of the specified block. Could be zero if block does not exist
     gpa_uint32 GetMaxEventIdCount(PE_BLOCK_ID block) const;
 
-    /// Enable/disable the stable power state, using the stable clock mode specified when opening the context
-    /// \param[in] useProfilingClocks true to use GPU clocks for profiling, false to use default clock mode
-    /// \return GPA_STATUS_OK on success
-    GPA_Status SetStableClocks(bool useProfilingClocks);
+    /// \copydoc IGPAContext::SetStableClocks()
+    GPA_Status SetStableClocks(bool useProfilingClocks) override;
 
 private:
     /// Initializes the AMD extensions

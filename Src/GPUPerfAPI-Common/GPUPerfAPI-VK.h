@@ -17,11 +17,17 @@
 /// Define the AMD shader core properties extension name
 #define VK_AMD_SHADER_CORE_PROPERTIES_EXTENSION_NAME "VK_AMD_shader_core_properties"
 
+/// Define the AMD shader core properties 2 extension name
+#define VK_AMD_SHADER_CORE_PROPERTIES_EXTENSION_NAME2 "VK_AMD_shader_core_properties2"
+
 /// Define a macro to help developers include all instance-level extensions required to support the AMD GPA Interface.
 #define AMD_GPA_REQUIRED_INSTANCE_EXTENSION_NAME_LIST VK_KHR_GET_PHYSICAL_DEVICE_PROPERTIES_2_EXTENSION_NAME
 
 /// Define a macro to help developers include all device-level extensions required to support the AMD GPA Interface.
 #define AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST VK_AMD_GPA_INTERFACE_EXTENSION_NAME, VK_AMD_SHADER_CORE_PROPERTIES_EXTENSION_NAME
+
+/// Define a macro to help developers include optional device-level extensions to support the AMD GPA Interface.
+#define AMD_GPA_OPTIONAL_DEVICE_EXTENSION_NAME_LIST VK_AMD_SHADER_CORE_PROPERTIES_EXTENSION_NAME2
 
 /// The struct that should be supplied to GPA_OpenContext().
 /// The instance, physicalDevice, and device should be set prior to

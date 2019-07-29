@@ -179,6 +179,11 @@ public:
     /// Returns the active session for the context
     /// \return active session if any session is active otherwise nullptr
     virtual const IGPASession* GetActiveSession() const = 0;
+
+    /// Enable/disable the stable power state, using the stable clock mode specified when opening the context
+    /// \param[in] useProfilingClocks true to use GPU clocks for profiling, false to use default clock mode
+    /// \return GPA_STATUS_OK on success
+    virtual GPA_Status SetStableClocks(bool useProfilingClocks) = 0;
 };
 
 #endif  // _I_GPA_CONTEXT_H_

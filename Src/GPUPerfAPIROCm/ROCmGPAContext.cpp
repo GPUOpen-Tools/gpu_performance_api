@@ -134,3 +134,9 @@ void ROCmGPAContext::CloseROCmSample()
 {
     m_pRunningROCmSample = nullptr;
 }
+
+GPA_Status ROCmGPAContext::SetStableClocks(bool useProfilingClocks)
+{
+    UNREFERENCED_PARAMETER(useProfilingClocks);
+    return GPA_STATUS_OK;
+}

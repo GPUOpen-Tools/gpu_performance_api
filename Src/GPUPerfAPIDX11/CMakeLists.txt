@@ -26,7 +26,9 @@ set(AMD_DX_EXT_HEADERS ${AMD_DX_EXT_DIR}/AmdDxExt.h
                        ${AMD_DX_EXT_DIR}/AmdDxExtApi.h
                        ${AMD_DX_EXT_DIR}/AmdDxExtIface.h
                        ${AMD_DX_EXT_DIR}/AmdDxExtPerfProfile.h
-                       ${AMD_DX_EXT_DIR}/AmdDxExtPerfProfileApi.h)
+                       ${AMD_DX_EXT_DIR}/AmdDxExtPerfProfileApi.h
+                       ${AMD_DX_EXT_DIR}/AmdDxExtASICInfo.h
+                       ${AMD_DX_EXT_DIR}/AmdDxExtASICInfoApi.h)
 
 set(HEADER_FILES ${AMD_DX_EXT_HEADERS}
                  ${GPA_SRC_COMMON}/DXGetAMDDeviceInfo.h
@@ -63,7 +65,7 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       GPUPerfAPICounterGenerator)
 
 if(${GPA_ALL_OPEN_SOURCE})
-    set(GPA_DX11_GET_DEVICE_INFO ${COMMON_DIR_LIB}/AMD/GPUPerfAPI/3_2/Bin/${AMDTPlatform}/GPUPerfAPIDXGetAMDDeviceInfo)
+    set(GPA_DX11_GET_DEVICE_INFO ${COMMON_DIR_LIB}/AMD/GPUPerfAPI/3_4/Bin/${AMDTPlatform}/GPUPerfAPIDXGetAMDDeviceInfo)
     add_custom_command(TARGET ${GPA_PROJECT_NAME} POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E copy ${GPA_DX11_GET_DEVICE_INFO}${AMDTPlatformSuffix}.dll ${CMAKE_CURRENT_LIST_DIR}/${DEPTH}/Output/$<CONFIG> VERBATIM
                        COMMENT "Copying GPUPerfAPIDXGetDeviceInfo to output folder...")

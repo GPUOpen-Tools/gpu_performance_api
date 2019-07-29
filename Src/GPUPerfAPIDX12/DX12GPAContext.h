@@ -67,17 +67,16 @@ public:
     /// \return ID3D12Device pointer
     ID3D12Device* GetD3D12Device() const;
 
-    /// Destroys all the allocated resources for the context
-    void CleanUp();
+    /// \copydoc IGPAContext::SetStableClocks()
+    GPA_Status SetStableClocks(bool useProfilingClocks) override;
 
 private:
     /// Initializes the AMD Driver extension objects for the context
     /// \return true upon successful initialization otherwise false
     bool InitializeAMDExtension();
 
-    /// Enable/disable the stable power state, using the stable clock mode specified when opening the context
-    /// \param[in] useProfilingClocks true to use GPU clocks for profiling, false to use default clock mode
-    void SetStableClocks(bool useProfilingClocks);
+    /// Destroys all the allocated resources for the context
+    void CleanUp();
 
     mutable std::mutex             m_dx12GpaContextMutex;      ///< Mutex for DX12 GPA Context
     ID3D12Device*                  m_pD3D12Device;             ///< D3D12Device pointer

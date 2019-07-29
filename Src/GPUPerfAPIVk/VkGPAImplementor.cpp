@@ -50,8 +50,12 @@ bool VkGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GP
                     // In case where MGPU support hides the GPU from the app, then
                     // we will need to use Vk MGPU extension (and possibly ADL util)
                     // to get the correct HW info
+                    VkPhysicalDeviceShaderCoreProperties2AMD shaderCoreProperties2AMD = {};
+                    shaderCoreProperties2AMD.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES2_AMD;
+
                     VkPhysicalDeviceShaderCorePropertiesAMD shaderCorePropertiesAMD = {};
                     shaderCorePropertiesAMD.sType                                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD;
+                    shaderCorePropertiesAMD.pNext = &shaderCoreProperties2AMD;
 
                     VkPhysicalDeviceProperties2KHR physicalDeviceProperties = {};
                     physicalDeviceProperties.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
@@ -104,21 +108,27 @@ bool VkGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GP
 
                                     size_t numSEs        = static_cast<size_t>(shaderCorePropertiesAMD.shaderEngineCount);
                                     size_t numTotalSAs   = static_cast<size_t>(shaderCorePropertiesAMD.shaderArraysPerEngineCount * numSEs);
-                                    size_t numTotalCUs   = static_cast<size_t>(shaderCorePropertiesAMD.computeUnitsPerShaderArray * numTotalSAs);
+                                    size_t numTotalCUs   = 0;
+
+                                    if (shaderCoreProperties2AMD.activeComputeUnitCount != 0)
+                                    {
+                                        numTotalCUs = static_cast<size_t>(shaderCoreProperties2AMD.activeComputeUnitCount);
+                                    }
+                                    else if (hwGen < GDT_HW_GENERATION_GFX10)
+                                    {
+                                        numTotalCUs = static_cast<size_t>(shaderCorePropertiesAMD.computeUnitsPerShaderArray * numTotalSAs);
+                                    }
+                                    else
+                                    {
+                                        numTotalCUs = hwInfo.GetNumberCUs();
+                                    }
+
                                     size_t numTotalSIMDs = static_cast<size_t>(shaderCorePropertiesAMD.simdPerComputeUnit * numTotalCUs);
 
                                     if (0 != numTotalSIMDs)
                                     {
                                         hwInfo.SetNumberSIMDs(numTotalSIMDs);
-
-                                        // for now, don't use the driver-reported number of CUs for GFX10
-                                        // just use the number in the device info table
-                                        // this will be reverted once a driver fix is available
-                                        if (hwGen < GDT_HW_GENERATION_GFX10)
-                                        {
-                                            hwInfo.SetNumberCUs(numTotalCUs);
-                                        }
-
+                                        hwInfo.SetNumberCUs(numTotalCUs);
                                         hwInfo.SetNumberShaderArrays(numTotalSAs);
                                         hwInfo.SetNumberShaderEngines(numSEs);
                                     }

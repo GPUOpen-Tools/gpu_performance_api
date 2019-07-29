@@ -57,10 +57,8 @@ public:
     /// \return the GL rendering context
     const GLContextPtr& GetGLContext() const;
 
-    /// Enable/disable the stable power state, using the stable clock mode specified when opening the context
-    /// \param[in] useProfilingClocks true to use GPU clocks for profiling, false to use default clock mode
-    /// \return GPA_STATUS_OK on success
-    GPA_Status SetStableClocks(bool useProfilingClocks);
+    /// \copydoc IGPAContext::SetStableClocks()
+    GPA_Status SetStableClocks(bool useProfilingClocks) override;
 
 private:
     /// Validates the counter from counter generator and gl driver counters and updates it if necessary

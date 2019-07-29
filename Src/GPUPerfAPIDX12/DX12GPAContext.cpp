@@ -229,8 +229,6 @@ void DX12GPAContext::CleanUp()
 {
     std::lock_guard<std::mutex> lockContextResources(m_dx12GpaContextMutex);
 
-    SetStableClocks(false);
-
     // Release Device
     if (nullptr != m_pD3D12Device)
     {
@@ -267,7 +265,7 @@ void DX12GPAContext::CleanUp()
     }
 }
 
-void DX12GPAContext::SetStableClocks(bool useProfilingClocks)
+GPA_Status DX12GPAContext::SetStableClocks(bool useProfilingClocks)
 {
     if (nullptr != m_pGpaInterface)
     {
@@ -311,4 +309,6 @@ void DX12GPAContext::SetStableClocks(bool useProfilingClocks)
             m_pGpaInterface->SetClockMode(m_clockMode, nullptr);
         }
     }
+
+    return GPA_STATUS_OK;
 }

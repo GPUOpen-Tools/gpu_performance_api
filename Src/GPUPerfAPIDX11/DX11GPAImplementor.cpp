@@ -16,8 +16,7 @@
 #include "DXGetAMDDeviceInfo.h"
 #include "GPACustomHWValidationManager.h"
 #include "GPACommonDefs.h"
-
-#include <AmdDxExtPerfProfileApi.h>
+#include "DX11Include.h"
 
 IGPAImplementor* s_pGpaImp = DX11GPAImplementor::Instance();
 
@@ -268,16 +267,6 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
 
                 hwInfo.SetGpuIndex(static_cast<unsigned int>(gpuIndex));
 
-                if (nullptr != pExtPerfProfile)
-                {
-                    pExtPerfProfile->Release();
-                }
-
-                if (nullptr != pExt)
-                {
-                    pExt->Release();
-                }
-
                 std::string strDLLName;
 
                 if (GPAUtil::GetCurrentModulePath(strDLLName))
@@ -361,6 +350,50 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
                                 hwInfo.SetTimeStampFrequency(deviceFrequency);
                             }
 
+                            unsigned int   majorVer = 0;
+                            unsigned int   minorVer = 0;
+                            unsigned int   subMinorVer = 0;
+                            ADLUtil_Result adlResult = AMDTADLUtils::Instance()->GetDriverVersion(majorVer, minorVer, subMinorVer);
+
+                            static const unsigned int MIN_MAJOR_VER = 19;
+                            static const unsigned int MIN_MINOR_VER_FOR_30 = 30;
+
+                            if ((ADL_SUCCESS == adlResult || ADL_WARNING == adlResult))
+                            {
+                                if (majorVer >= MIN_MAJOR_VER && minorVer >= MIN_MINOR_VER_FOR_30)
+                                {
+                                    if (nullptr != pExt)
+                                    {
+                                        IAmdDxExtASICInfo* pExtAsicInfo = reinterpret_cast<IAmdDxExtASICInfo*>(pExt->GetExtInterface(AmdDxExtASICInfoID));
+
+                                        if (nullptr != pExtAsicInfo)
+                                        {
+                                            AmdDxASICInfoParam infoParam = {};
+                                            AmdDxASICInfo*     pNewAsicInfo = new (std::nothrow) AmdDxASICInfo();
+
+                                            if (nullptr != pNewAsicInfo)
+                                            {
+                                                infoParam.pASICInfo = pNewAsicInfo;
+                                                pExtAsicInfo->GetInfoData(&infoParam);
+
+                                                if (nullptr != infoParam.pASICInfo && gpuIndex < infoParam.pASICInfo->gpuCount)
+                                                {
+                                                    AmdDxASICInfoHWInfo asicInfo = infoParam.pASICInfo->hwInfo[gpuIndex];
+                                                    hwInfo.SetNumberCUs(asicInfo.totalCU);
+                                                    hwInfo.SetNumberShaderEngines(asicInfo.numShaderEngines);
+                                                    hwInfo.SetNumberShaderArrays(asicInfo.numShaderArraysPerSE);
+                                                    hwInfo.SetNumberSIMDs(asicInfo.totalCU * asicInfo.numSimdsPerCU);
+                                                }
+
+                                                delete pNewAsicInfo;
+                                            }
+
+                                            pExtAsicInfo->Release();
+                                        }
+                                    }
+                                }
+                            }
+
                             success = true;
                             break;
                         }
@@ -369,6 +402,16 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
                 else
                 {
                     GPA_LogError("Unable to get the module path.");
+                }
+
+                if (nullptr != pExtPerfProfile)
+                {
+                    pExtPerfProfile->Release();
+                }
+
+                if (nullptr != pExt)
+                {
+                    pExt->Release();
                 }
             }
             else
