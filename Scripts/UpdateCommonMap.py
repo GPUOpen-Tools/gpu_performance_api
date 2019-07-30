@@ -27,7 +27,7 @@ gitMapping = {
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
 downloadWin = {
     "Vulkan" : [ "https://sdk.lunarg.com/sdk/download/1.0.68.0/windows/VulkanSDK-1.0.68.0-Installer.exe", "default", "1.0.68.0", "default"],
-    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/GPA/releases/download/v3.2/GPUPerfAPI-3.2.623.0.zip" , "default", "3_2", "../Common/Lib/AMD/GPUPerfAPI"]
+    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/GPA/releases/download/v3.4/GPUPerfAPI-3.4.1319.zip" , "default", "3_4", "../Common/Lib/AMD/GPUPerfAPI"]
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
