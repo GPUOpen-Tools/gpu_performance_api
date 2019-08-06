@@ -1284,33 +1284,16 @@ bool AMDVulkanDemo::InitializeVulkan()
         return false;
     }
 
-    char modulepath[4096];
-
-#ifdef _WIN32
-    ::GetModuleFileNameA(NULL, modulepath, sizeof(modulepath));
-#else
-    int len = readlink("/proc/self/exe", modulepath, 4096);
-
-    if (len <= 0)
-    {
-        return false;
-    }
-
-#endif
-
-    std::string moduleString(modulepath);
-    size_t      lastSlashPosition = moduleString.find_last_of('\\');
-
-    std::string m_executablePath = std::string(moduleString.begin(), moduleString.begin() + (lastSlashPosition + 1));
-    std::string vertexShaderFile = m_executablePath;
+    std::string executablePath = m_GpuPerfApiHelper.GetExecutablePath();
+    std::string vertexShaderFile = executablePath;
     vertexShaderFile.append("vkcolorcubeshader.vert.spv");
     m_vertexShaderModule = LoadShader(vertexShaderFile.c_str());
 
-    std::string fragmentShaderFile = m_executablePath;
+    std::string fragmentShaderFile = executablePath;
     fragmentShaderFile.append("vkcolorcubeshader.frag.spv");
     m_fragmentShaderModule = LoadShader(fragmentShaderFile.c_str());
 
-    std::string wireFrameShader = m_executablePath;
+    std::string wireFrameShader = executablePath;
     wireFrameShader.append("vkcolorcubewireframeshader.frag.spv");
     m_fragmentShaderWireframeModule = LoadShader(wireFrameShader.c_str());
 
