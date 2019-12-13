@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Interfaces used for counter splitting
@@ -85,10 +85,10 @@ class IGPACounterGroupAccessor
 {
 public:
     /// Initializes an instance of the IGPACounterAccessor interface.
-    IGPACounterGroupAccessor(){};
+    IGPACounterGroupAccessor() = default;
 
     /// Virtual destructor
-    virtual ~IGPACounterGroupAccessor(){};
+    virtual ~IGPACounterGroupAccessor() = default;
 
     /// Sets the counter index of which to get the group and counter Id.
     /// \param index The counter index.
@@ -181,7 +181,7 @@ public:
 
     /// Get the counter result locations
     /// \return The map of counter result locations
-    std::map<unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > GetCounterResultLocations()
+    std::map<unsigned int, std::map<unsigned int, GPA_CounterResultLocation> > GetCounterResultLocations() const
     {
         return m_counterResultLocationMap;
     }
@@ -272,7 +272,7 @@ protected:
     }
 
     //--------------------------------------------------------------------------
-    /// Tests to see if the counter group must be isolated from the isloated SQ counter groups
+    /// Tests to see if the counter group must be isolated from the isolated SQ counter groups
     /// \param pAccessor The counter accessor that describes the counter that needs to be scheduled.
     /// \return True if a counter must be isolated from isolated SQ group counters
     bool IsCounterGroupIsolatedFromIsolatedSqCounterGroup(const IGPACounterGroupAccessor* pAccessor) const
@@ -433,7 +433,7 @@ protected:
                  it != m_sqShaderStageGroupMap[static_cast<GPA_SQShaderStage>(i)].end();
                  ++it)
             {
-                if (currentPassData.m_numUsedCountersPerBlock[*it].size() > 0)
+                if (!currentPassData.m_numUsedCountersPerBlock[*it].empty())
                 {
                     return false;
                 }

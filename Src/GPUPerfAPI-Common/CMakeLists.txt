@@ -34,8 +34,6 @@ set(PUBLIC_HEADERS
     GPAInterfaceLoader.h
     GPUPerfAPI.h
     GPUPerfAPIFunctionTypes.h
-    GPUPerfAPI-HSA.h
-    GPUPerfAPI-ROCm.h
     GPUPerfAPIStub.h
     GPUPerfAPITypes.h
     GPUPerfAPI-VK.h)

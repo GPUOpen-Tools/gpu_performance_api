@@ -46,7 +46,6 @@ void GPAInterfaceLoaderTest::SetUp()
     m_apiName[GPA_API_DIRECTX_12] = "DX12";
     m_apiName[GPA_API_OPENGL]     = "OpenGL";
     m_apiName[GPA_API_OPENCL]     = "OpenCL";
-    m_apiName[GPA_API_ROCM]       = "ROCm";
     m_apiName[GPA_API_VULKAN]     = "Vulkan";
     m_apiName[GPA_API_NO_SUPPORT] = "ApiNotSupported";
 }
@@ -73,6 +72,11 @@ void GPAInterfaceLoaderTest::Run()
     // it is assumed the GPA_API_Type enum values increment by one
     for (int i = GPA_API__START; i < GPA_API__LAST; i++)
     {
+        if(GPA_API_DEPRECATED == i)
+        {
+            continue;
+        }
+
         ASSERT_NE(0u, m_apiName.count(static_cast<GPA_API_Type>(i))) << "API name out of range.";
 
         if (Api == i)
@@ -96,20 +100,19 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFileName)
     for (int i = GPA_API__START; i < GPA_API_NO_SUPPORT; i++)
     {
         GPA_API_Type apiType     = static_cast<GPA_API_Type>(i);
+
+        if(GPA_API_DEPRECATED == apiType)
+        {
+            continue;
+        }
+
         LocaleString libFileName = GPAApiManager::Instance()->GetLibraryFileName(apiType);
 
 #ifdef _WIN32
 
-        if (GPA_API_ROCM == apiType)
-        {
-            EXPECT_TRUE(libFileName.empty());
-        }
-        else
-        {
-            EXPECT_FALSE(libFileName.empty());
-            LocaleString libFileNamePrefix(L"GPUPerfAPI");
-            EXPECT_TRUE(0 == libFileName.compare(0, libFileNamePrefix.length(), libFileNamePrefix));
-        }
+        EXPECT_FALSE(libFileName.empty());
+        LocaleString libFileNamePrefix(L"GPUPerfAPI");
+        EXPECT_TRUE(0 == libFileName.compare(0, libFileNamePrefix.length(), libFileNamePrefix));
 
 #else
 
@@ -120,8 +123,8 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFileName)
         else
         {
             EXPECT_FALSE(libFileName.empty());
-            LocaleString libFileNamePrefix("GPUPerfAPI");
-            libFileNamePrefix = "lib" + libFileNamePrefix;
+            LocaleString libFileNamePrefix(TFORMAT("GPUPerfAPI"));
+            libFileNamePrefix = TFORMAT("lib") + libFileNamePrefix;
             EXPECT_TRUE(0 == libFileName.compare(0, libFileNamePrefix.length(), libFileNamePrefix));
         }
 
@@ -134,21 +137,20 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFullPath)
     for (int i = GPA_API__START; i < GPA_API_NO_SUPPORT; i++)
     {
         GPA_API_Type apiType     = static_cast<GPA_API_Type>(i);
+
+        if(GPA_API_DEPRECATED == apiType)
+        {
+            continue;
+        }
+
         LocaleString libFileName = GPAApiManager::Instance()->GetLibraryFullPath(apiType, TFORMAT("c:/test/"));
 
 #ifdef _WIN32
 
-        if (GPA_API_ROCM == apiType)
-        {
-            EXPECT_TRUE(libFileName.empty());
-        }
-        else
-        {
-            EXPECT_FALSE(libFileName.empty());
-            LocaleString libFileNamePrefix(L"GPUPerfAPI");
-            libFileNamePrefix = L"c:/test/" + libFileNamePrefix;
-            EXPECT_TRUE(0 == libFileName.compare(0, libFileNamePrefix.length(), libFileNamePrefix));
-        }
+        EXPECT_FALSE(libFileName.empty());
+        LocaleString libFileNamePrefix(L"GPUPerfAPI");
+        libFileNamePrefix = L"c:/test/" + libFileNamePrefix;
+        EXPECT_TRUE(0 == libFileName.compare(0, libFileNamePrefix.length(), libFileNamePrefix));
 
 #else
 
@@ -159,8 +161,8 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFullPath)
         else
         {
             EXPECT_FALSE(libFileName.empty());
-            LocaleString libFileNamePrefix("GPUPerfAPI");
-            libFileNamePrefix = "c:/test/lib" + libFileNamePrefix;
+            LocaleString libFileNamePrefix(TFORMAT("GPUPerfAPI"));
+            libFileNamePrefix = TFORMAT("c:/test/lib") + libFileNamePrefix;
             EXPECT_TRUE(0 == libFileName.compare(0, libFileNamePrefix.length(), libFileNamePrefix));
         }
 
@@ -270,10 +272,7 @@ INSTANTIATE_TEST_CASE_P(LinuxAPI,
                         GPAInterfaceLoaderTest,
                         ::testing::Values(GPA_API_VULKAN
 #ifndef X86
-                                          ,
-                                          GPA_API_OPENCL,
-                                          GPA_API_ROCM
+                                          ,GPA_API_OPENCL
 #endif
-                                          ,
-                                          GPA_API_OPENGL));
+                                          ,GPA_API_OPENGL));
 #endif

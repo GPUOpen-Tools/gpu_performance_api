@@ -24,7 +24,6 @@ namespace GPATools
         VK,
         GL,
         CL,
-        ROCM
     };
 
     enum GfxGeneration
@@ -58,7 +57,6 @@ namespace GPATools
         public static string DX11 = "DX11";
         public static string GL = "GL";
         public static string CL = "CL";
-        public static string HSA = "HSA";
         public static string VK = "VK";
         public static Dictionary<GfxGeneration, string> GfxGenAsStr = new Dictionary<GfxGeneration, string>();
         public static Dictionary<Api, string> ApiAsStr = new Dictionary<Api, string>();
@@ -169,7 +167,6 @@ namespace GPATools
             ApiAsStr.Add(Api.VK, VK);
             ApiAsStr.Add(Api.GL, GL);
             ApiAsStr.Add(Api.CL, CL);
-            ApiAsStr.Add(Api.ROCM, HSA);
         }
 
         /// <summary>
@@ -202,11 +199,6 @@ namespace GPATools
             if (filename.Contains(CL))
             {
                 return CL;
-            }
-
-            if (filename.Contains(HSA))
-            {
-                return HSA;
             }
 
             return null;

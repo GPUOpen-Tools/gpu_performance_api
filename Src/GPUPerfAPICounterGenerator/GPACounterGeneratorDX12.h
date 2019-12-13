@@ -53,6 +53,14 @@ protected:
                                                gpa_uint8             generateAsicSpecificCounters,
                                                GPA_HardwareCounters* pHardwareCounters) override;
 
+#ifdef AMDT_INTERNAL
+    /// \copydoc GPA_CounterGeneratorBase::GenerateInternalDerivedCounters
+    GPA_Status GenerateInternalDerivedCounters(GDT_HW_GENERATION    desiredGeneration,
+                                               GDT_HW_ASIC_TYPE     asicType,
+                                               gpa_uint8            generateAsicSpecificCounters,
+                                               GPA_DerivedCounters* pPublicCounters) override;
+#endif
+
 private:
     /// Helper function to indicates whether the specified HW generation represents an AMD GPU
     /// \param generation the hw generation to check

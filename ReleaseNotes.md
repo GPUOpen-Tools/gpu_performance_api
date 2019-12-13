@@ -1,6 +1,21 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.5 (12/13/19)
+  * Add support for additional GPUs and APUs, including Radeon 5500 and Radeon 5300 Series GPUs.
+  * Add DirectX11 sample application using GPUPerfAPI.
+  * Add per-API static counter generation.
+  * Decrease in GPUPerfAPI binaries size.
+  * Add script to package GPUPerfAPI post-build.
+  * Remove ROCm/HSA support.
+  * Add Unicode support in GPUPerfAPI for Linux.
+  * Bugs Fixed:
+    * Fixed CMake files to respect supported build flags.
+    * Fixed crash when DX12 debug layer was enabled.
+    * Fixed an issue with loading of shader in GPA Vulkan sample app.
+    * Fixed an issue in Vulkan build with newer Vulkan SDK with amd_shader_core_properties2 extension
+    * Fixed an issue with crash on unsupported Gfx6 and Gfx7 GPUs.
+
 ## Version 3.4 (7/10/19)
   * Add support for additional GPUs and APUs, including Radeon 5700 Series GPUs.
   * Add support for setting stable GPU clocks for DirectX11, OpenGL and OpenCL.

@@ -1,4 +1,4 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 include(${GPA_CMAKE_MODULES_DIR}/CommonDefs.cmake)
@@ -15,9 +15,10 @@ if(WIN32)
     add_compile_options("$<$<CONFIG:RELEASE>:/MT>"
                         "$<$<CONFIG:DEBUG>:/MTd>")
     set(AMDTCrt "MT")
-    add_compile_options(-DUNICODE
-                        -D_UNICODE)
 endif()
+
+add_compile_options(-DUNICODE
+                    -D_UNICODE)
 
 if(WIN32)
     set(CURRENT_CONFIG "Debug/Release")
@@ -27,26 +28,35 @@ endif()
 
 ## Handling project
 if(NOT ${ProjectName} STREQUAL "")
-    message("CMake: Evaluating and including project ${ProjectName} for config ${CURRENT_CONFIG} for ${AMDTPlatform} platform in ${PROJECT_NAME} solution")
+    message(STATUS "Evaluating and including project ${ProjectName} for config ${CURRENT_CONFIG} for ${AMDTPlatform} platform in ${PROJECT_NAME} solution")
 endif()
 
-if(WIN32)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${GPA_OUTPUT_DIR}/Release)
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${GPA_OUTPUT_DIR}/Debug)
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${GPA_OUTPUT_DIR}/Release)
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${GPA_OUTPUT_DIR}/Debug)
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${GPA_OUTPUT_DIR}/Release)
-    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${GPA_OUTPUT_DIR}/Debug)
+if(${USE_DEFAULT_OUTPUT_DIRECTORY})
+    if(WIN32)
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE ${GPA_OUTPUT_DIR}/release)
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_DEBUG ${GPA_OUTPUT_DIR}/debug)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_RELEASE ${GPA_OUTPUT_DIR}/release)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_DEBUG ${GPA_OUTPUT_DIR}/debug)
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_RELEASE ${GPA_OUTPUT_DIR}/release)
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${GPA_OUTPUT_DIR}/debug)
+    else()
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${GPA_OUTPUT_DIR}/${CMAKE_BUILD_TYPE})
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${GPA_OUTPUT_DIR}/${CMAKE_BUILD_TYPE})
+    endif()
 else()
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${GPA_OUTPUT_DIR}/${CMAKE_BUILD_TYPE})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY  ${GPA_OUTPUT_DIR}/${CMAKE_BUILD_TYPE})
+    if(NOT DEFINED CMAKE_RUNTIME_OUTPUT_DIRECTORY OR NOT DEFINED CMAKE_LIBRARY_OUTPUT_DIRECTORY)
+        message(FATAL_ERROR "Output Directories are not set.")
+    endif()
 endif()
 
 add_definitions(-DUSE_POINTER_SINGLETON)
 
 if(NOT WIN32)
-    set(CMAKE_C_COMPILER gcc)
-    set(CMAKE_CXX_COMPILER g++)
+    if(${USE_DEFAULT_COMPILER})
+        set(CMAKE_C_COMPILER gcc)
+        set(CMAKE_CXX_COMPILER g++)
+    endif()
+
     set(GPA_COMMON_LINK_ARCHIVE_FLAG -Wl,--whole-archive)
     set(GPA_COMMON_LINK_NO_ARCHIVE_FLAG -Wl,--no-whole-archive)
     add_compile_options(-Wno-unknown-pragmas -Wno-strict-aliasing -Wno-non-virtual-dtor -Wno-unused-value -msse -fvisibility=hidden)

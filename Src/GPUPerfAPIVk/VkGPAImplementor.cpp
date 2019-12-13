@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA Vk API implementation
@@ -18,7 +18,14 @@
 #include "DeviceInfoUtils.h"
 #include "GPUPerfAPI-VK.h"
 
+#include "GPACounterGeneratorVK.h"
+#include "GPACounterGeneratorVKNonAMD.h"
+#include "GPACounterSchedulerVK.h"
+
 IGPAImplementor* s_pGpaImp = VkGPAImplementor::Instance();
+static GPA_CounterGeneratorVK s_generatorVK;  ///< static instance of VK generator
+static GPA_CounterGeneratorVKNonAMD s_generatorVKNonAMD;  ///< static instance of Vulkan non-AMD generator
+static GPA_CounterSchedulerVK s_schedulerVK;  ///< static instance of VK scheduler
 
 GPA_API_Type VkGPAImplementor::GetAPIType() const
 {
@@ -51,7 +58,7 @@ bool VkGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GP
                     // we will need to use Vk MGPU extension (and possibly ADL util)
                     // to get the correct HW info
                     VkPhysicalDeviceShaderCoreProperties2AMD shaderCoreProperties2AMD = {};
-                    shaderCoreProperties2AMD.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES2_AMD;
+                    shaderCoreProperties2AMD.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_2_AMD;
 
                     VkPhysicalDeviceShaderCorePropertiesAMD shaderCorePropertiesAMD = {};
                     shaderCorePropertiesAMD.sType                                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD;

@@ -1,4 +1,4 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -13,7 +13,9 @@ include(${CMAKE_COMMON_SRC_GLOBAL_ADL_UTIL})
 include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
 include(${CMAKE_COMMON_SRC_GLOBAL_AMD_VK_EXT})
-include(${CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK})
+if(WIN32)
+    include(${CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK})
+endif()
 include(${GPA_CMAKE_MODULES_DIR}/GPA-Vulkan.cmake)
 
 INCLUDE_ADDITIONAL_MODULE()
@@ -56,6 +58,9 @@ set(SOURCES
     ${SOURCE_FILES}
     ${HEADER_FILES})
 
+if(ANDROID)
+    add_compile_options(-Wno-unused-private-field)
+endif()
 ADD_SHARED_LIBRARY(${GPA_PROJECT_NAME} ${DEPTH}/GPAFunctionExports.def)
 INCLUDE_WIN_RESOURCE()
 
@@ -63,7 +68,7 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       ${GPA_COMMON_LINK_ARCHIVE_FLAG}
                       GPUPerfAPI-Common
                       ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
-                      GPUPerfAPICounterGenerator)
+                      GPUPerfAPICounterGenerator-VK)
 
 ADD_LINKER_FLAGS()
 

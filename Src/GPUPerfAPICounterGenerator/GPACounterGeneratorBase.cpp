@@ -263,6 +263,18 @@ bool GPA_CounterGeneratorBase::SetCounterName(gpa_uint32 index, const char* pNam
 
     return false;
 }
+
+GPA_Status GPA_CounterGeneratorBase::GenerateInternalDerivedCounters(GDT_HW_GENERATION desiredGeneration,
+    GDT_HW_ASIC_TYPE asicType,
+    gpa_uint8 generateAsicSpecificCounters,
+    GPA_DerivedCounters* pPublicCounters)
+{
+    UNREFERENCED_PARAMETER(desiredGeneration);
+    UNREFERENCED_PARAMETER(asicType);
+    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+    UNREFERENCED_PARAMETER(pPublicCounters);
+    return GPA_STATUS_OK;
+}
 #endif
 
 bool GPA_CounterGeneratorBase::GetCounterIndex(const char* pName, gpa_uint32* pIndex) const

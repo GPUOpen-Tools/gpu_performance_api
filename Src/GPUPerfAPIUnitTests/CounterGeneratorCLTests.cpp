@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Unit Tests for CL Counter Generator

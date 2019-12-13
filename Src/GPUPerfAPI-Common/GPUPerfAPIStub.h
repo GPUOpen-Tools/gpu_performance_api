@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA Stub entrypoints
@@ -10,6 +10,8 @@
 
 #pragma warning(push)
 #pragma warning(disable : 4100)
+
+#include <string.h>
 
 #define RETURN_GPA_SUCCESS return GPA_STATUS_OK
 
@@ -310,7 +312,6 @@ static inline GPA_Status GPA_GetFuncTable(void* pGPAFuncTable)
 #undef GPA_FUNCTION_PREFIX
 
     memcpy(pGPAFuncTable, &localFuncTable, clientSuppliedMinorVer);
-
     return GPA_STATUS_OK;
 }
 

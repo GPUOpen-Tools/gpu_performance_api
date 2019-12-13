@@ -46,7 +46,6 @@ namespace GPATools
             CounterDefs.Add(Gpa.VK, new FileList());
             CounterDefs.Add(Gpa.GL, new FileList());
             CounterDefs.Add(Gpa.CL, new FileList());
-            CounterDefs.Add(Gpa.HSA, new FileList());
 
             // PublicDerivedCounters - GPA
             DerivedCounters.Add(Gpa.DX12, new FileList());
@@ -54,7 +53,6 @@ namespace GPATools
             DerivedCounters.Add(Gpa.VK, new FileList());
             DerivedCounters.Add(Gpa.GL, new FileList());
             DerivedCounters.Add(Gpa.CL, new FileList());
-            DerivedCounters.Add(Gpa.HSA, new FileList());
         }
 
         /// <summary>

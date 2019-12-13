@@ -8,6 +8,10 @@
 #ifndef _ASIC_INFO_H_
 #define _ASIC_INFO_H_
 
+#include <map>
+#include <TSingleton.h>
+#include "DeviceInfo.h"
+
 namespace oglUtils
 {
     /// ASIC type enum
@@ -67,6 +71,15 @@ namespace oglUtils
         AsicId_LAST  = ASIC_ID_UNKNOWN    ///< Last place holder
     } AsicID;
 
+    /// Asic Id specific information
+    typedef struct _AsicIdInfo
+    {
+        ASICType         asic_type;          ///< asic hardware generation
+        GDT_HW_ASIC_TYPE gdt_asic_type;      ///< GDT hardware asic type
+        uint32_t         default_device_id;  ///< default device id
+        bool             is_apu;             ///< flag indicating the asic is APU or not
+    } AsicIdInfo;
+
     /// Asic-specific information
     typedef struct _ASICInfo
     {
@@ -85,10 +98,44 @@ namespace oglUtils
         unsigned int m_numSPI        = s_UNASSIGNED_ASIC_INFO;  ///< The number of shader processor interpolators
     } ASICInfo;
 
-    /// Get the ASIC information
-    /// \param[out] asicInfo The structure to fill out with the current ASIC information
-    /// \return True if the ASIC information could be identified, false if not.
-    bool GetASICInfo(ASICInfo& asicInfo);
+    class AsicInfoManager : public TSingleton<AsicInfoManager>
+    {
+        friend class TSingleton<AsicInfoManager>;
+
+    public:
+
+        ///Destructor
+        ~AsicInfoManager();
+
+        /// Get the asic info from the driver using GPIN counter
+        /// \param[out] asicInfo AsicInfo struct populated by GPIN group
+        /// \return false if unable to query GPIN counters, true otherwise
+        bool GetAsicInfoFromDriver(ASICInfo& asicInfo);
+
+        /// Returns the fallback Asic info based on asic id
+        /// \param[in] asic_id asic id
+        /// \param[out] gdt_hw_asic_type gdt hardware asic type based on asic id
+        /// \param[out] default_device_id device id based on asic id
+        /// \return true if the ASIC information could be identified, false if not.
+        bool GetFallbackAsicInfo(const AsicID& asic_id, GDT_HW_ASIC_TYPE& gdt_hw_asic_type, uint32_t& default_device_id);
+
+    private:
+
+        /// Constructor
+        AsicInfoManager();
+
+        /// Initializes the asic info
+        void InitializeAsicInfo();
+
+        /// Get the corresponding ASIC type for the specified ASIC ID
+        /// \param asic_id the ASIC ID whose type is needed
+        /// \return the ASIC type of the specified ASIC ID
+        ASICType GetASICTypeFromAsicID(AsicID asic_id);
+
+        std::map<AsicID, AsicIdInfo> asic_id_info_map_;          ///< map containing info of driver defined asic Ids
+        bool                         is_asic_info_initialized_;  ///< flag indicating asic info is initialized or not
+    };
+
 }  // namespace oglUtils
 
 #endif  // _ASIC_INFO_H_

@@ -1,4 +1,4 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -62,7 +62,7 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       dxguid.lib
                       GPUPerfAPI-Common
                       GPUPerfAPIDX
-                      GPUPerfAPICounterGenerator)
+                      GPUPerfAPICounterGenerator-DX11)
 
 if(${GPA_ALL_OPEN_SOURCE})
     set(GPA_DX11_GET_DEVICE_INFO ${COMMON_DIR_LIB}/AMD/GPUPerfAPI/3_4/Bin/${AMDTPlatform}/GPUPerfAPIDXGetAMDDeviceInfo)

@@ -10,19 +10,10 @@
 
 #include <map>
 
+#include "GLInclude.h"
+#include "GLFuncTypes.h"
+
 #ifndef GLES
-
-#ifdef _WIN32
-#include <Windows.h>
-#include <GL/gl.h>
-#include <GL/glext.h>
-#include <GL/wglext.h>
-#endif
-
-#ifdef _LINUX
-#include <GL/glx.h>
-#include <GL/glxext.h>
-#endif
 
 // used for defining the proc addresses which are initialized below
 #ifdef _WIN32
@@ -40,30 +31,36 @@
 
 #else
 
-#ifdef _WIN32
-typedef unsigned __int64 uint64_t;
-#endif
-
-// by default, GLES uses 32 bits for 64 bit types. GPA extensions require 64 bits
-#define _USE64BIT
-
-#include <stdint.h>
-#include <GLES/egl.h>
-#include <GLES3/gl3.h>
-#include <GLES2/gl2ext.h>
 
 #define GET_PROC_ADDRESS_TYPE eglGetProcAddress
 #define GET_PROC_ADDRESS_FUNC _eglGetProcAddress
 
 #endif  // GLES
 
+#ifdef _LINUX
+#include <dlfcn.h>
+#define LOAD_SYMBOL dlsym
+#else
+#define LOAD_SYMBOL GetProcAddress
+#endif
+
 #ifdef WIN32
 typedef HMODULE LibHandle;
-#define GET_PROC_ADDRESS(f, type, name) (f) = (type)oglUtils::GET_PROC_ADDRESS_FUNC(name);
+#define GET_CONTEXT_PROC_ADDRESS(f, type, name) (f) = reinterpret_cast<type>(oglUtils::GET_PROC_ADDRESS_FUNC(name));
 #else
 typedef void* LibHandle;
-#define GET_PROC_ADDRESS(f, type, name) (f) = (type)oglUtils::GET_PROC_ADDRESS_FUNC((const GLubyte*)name);
+#ifdef GLES
+#define GET_CONTEXT_PROC_ADDRESS(f, type, name) (f) = reinterpret_cast<type>(oglUtils::GET_PROC_ADDRESS_FUNC((const char*)name));
+#else
+#define GET_CONTEXT_PROC_ADDRESS(f, type, name) (f) = reinterpret_cast<type>(oglUtils::GET_PROC_ADDRESS_FUNC((const GLubyte*)name));
 #endif
+#endif
+
+#define LOAD_LIBRARY_SYMBOL(varName, type)                                                \
+    if (nullptr == (varName))                                                             \
+    {                                                                                     \
+        (varName) = reinterpret_cast<decltype(type)*>(LOAD_SYMBOL(s_glLibHandle, #type)); \
+    }
 
 //declarations for GLX_MESA_query_renderer extension (subset -- just what is needed for GPA GL)
 #ifndef GLX_MESA_query_renderer
@@ -71,48 +68,44 @@ typedef void* LibHandle;
 #define GLX_RENDERER_DEVICE_ID_MESA 0x8184  /// constant used to query the device id using the MESA extension
 #endif                                      /* GLX_MESA_query_renderer */
 
-#include "GLFuncTypes.h"
+#ifdef GLES
+    // GL_EXT_disjoint_timer_query
+    #define PFNGLGENQUERIESPROC             PFNGLGENQUERIESEXTPROC
+    #define PFNGLDELETEQUERIESPROC          PFNGLDELETEQUERIESEXTPROC
+    #define PFNGLGETQUERYOBJECTIVPROC       PFNGLGETQUERYOBJECTIVEXTPROC
+    #define PFNGLQUERYCOUNTERPROC           PFNGLQUERYCOUNTEREXTPROC
+#endif
 
 namespace oglUtils
 {
     extern decltype(GET_PROC_ADDRESS_TYPE)* GET_PROC_ADDRESS_FUNC;
 
-#define DECLARE_CORE_FUNCS(type, typeString) extern decltype(type)* _o##type;
+    // Timer query GL extensions
+    extern PFNGLGENQUERIESPROC              _oglGenQueries;
+    extern PFNGLDELETEQUERIESPROC           _oglDeleteQueries;
+    extern PFNGLGETQUERYOBJECTIVPROC        _oglGetQueryObjectiv;
+    extern PFNGLQUERYCOUNTERPROC            _oglQueryCounter;
 
-#include "GLFunctions.h"
-    GL_CORE_FUNCTIONS(DECLARE_CORE_FUNCS)
+    extern decltype(glFlush)*               _oglFlush;
+    extern decltype(glGetString)*           _oglGetString;
+    extern decltype(glGetIntegerv)*         _oglGetIntegerv;
+    extern decltype(glGetError)*            _oglGetError;
+    extern PFNGLGETSTRINGIPROC              _oglGetStringi;
 
-#undef DECLARE_CORE_FUNCS
+    extern PFNGLGETQUERYOBJECTUI64VEXTPROC  _oglGetQueryObjectui64vEXT; // Exists in GL and GLES as extension
 
-#define DECLARE_GL_PLATFORM_CORE_FUNCS(type, typeString) extern decltype(type)* _##type;
-
-#ifdef WIN32
-    WGL_CORE_FUNCTIONS(DECLARE_GL_PLATFORM_CORE_FUNCS)
-#else
-    GLX_CORE_FUNCTIONS(DECLARE_GL_PLATFORM_CORE_FUNCS)
-#endif
-
-#undef DECLARE_GL_PLATFORM_CORE_FUNCS
-
-#define DECLARE_EXT_FUNCS(type, typeString) extern type _o##typeString;
-
-#include "GLFunctions.h"
-    GL_EXT_FUNCTIONS(DECLARE_EXT_FUNCS)
-    GL_AMD_EXT_FUNCTIONS(DECLARE_EXT_FUNCS)
-
-#undef DECLARE_EXT_FUNCS
-
-// AMD GPU association extension functions
-#define DECLARE_AMD_ASSOCIATION_FUNCS(type, typeString) extern type _##typeString;
-
-#include "GLFunctions.h"
-#ifdef WIN32
-    WGL_AMD_EXT_FUNCTIONS(DECLARE_AMD_ASSOCIATION_FUNCS)
-#else
-    GLX_AMD_EXT_FUNCTIONS(DECLARE_AMD_ASSOCIATION_FUNCS)
-#endif
-
-#undef DECLARE_AMD_ASSOCIATION_FUNCS
+    /// AMD perf monitor extensions
+    extern PFNGLGETPERFMONITORGROUPSAMDPROC         _oglGetPerfMonitorGroupsAMD;
+    extern PFNGLGETPERFMONITORCOUNTERSAMDPROC       _oglGetPerfMonitorCountersAMD;
+    extern PFNGLGETPERFMONITORGROUPSTRINGAMDPROC    _oglGetPerfMonitorGroupStringAMD;
+    extern PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC  _oglGetPerfMonitorCounterStringAMD;
+    extern PFNGLGETPERFMONITORCOUNTERINFOAMDPROC    _oglGetPerfMonitorCounterInfoAMD;
+    extern PFNGLGENPERFMONITORSAMDPROC              _oglGenPerfMonitorsAMD;
+    extern PFNGLDELETEPERFMONITORSAMDPROC           _oglDeletePerfMonitorsAMD;
+    extern PFNGLSELECTPERFMONITORCOUNTERSAMDPROC    _oglSelectPerfMonitorCountersAMD;
+    extern PFNGLBEGINPERFMONITORAMDPROC             _oglBeginPerfMonitorAMD;
+    extern PFNGLENDPERFMONITORAMDPROC               _oglEndPerfMonitorAMD;
+    extern PFNGLGETPERFMONITORCOUNTERDATAAMDPROC    _oglGetPerfMonitorCounterDataAMD;
 
 #ifdef DEBUG_GL_ERRORS
     extern PFN_OGL_GLDEBUGMESSAGECONTROLARB  _oglDebugMessageControlARB;
@@ -139,28 +132,16 @@ namespace oglUtils
     ///         true otherwise
     bool InitializeGLFunctions();
 
+    /// Query supported extensions
+    void QuerySupportedExtensions();
+
     /// Initializes the GL core functions
     /// \return true upon success otherwise false
     bool InitializeGLCoreFunctions();
 
-    /// Query supported extensions
-    void QuerySupportedExtensions();
-
-    /// Initializes the OpenGL extension function to use with current rendering context
-    /// \return true upon successful otherwise false
-    bool InitCtxExtFunctions();
-
     /// Initializes the OpenGL AMD perf extension function to use with current rendering context
     /// \return true upon successful otherwise false
     bool InitCtxAmdPerfExtFunctions();
-
-    /// Initializes the OpenGL AMD Multi-GPU extension function to use with current rendering context
-    /// \return true upon successful otherwise false
-    bool InitCtxAmdMultiGpuExtFunctions();
-
-    /// Returns whether the AMD GPU association for multiple GPU are available or not
-    /// \return true if AMD extension exist otherwise false
-    bool IsAmdGpuAssociationSupported();
 
     extern const char* s_pAMDRenderer;               ///< AMD Renderer string
     extern const char* s_pRadeonRenderer;            ///< Radeon Renderer string

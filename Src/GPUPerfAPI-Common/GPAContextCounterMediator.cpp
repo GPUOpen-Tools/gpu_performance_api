@@ -56,10 +56,10 @@ GPA_Status GPAContextCounterMediator::GenerateCounters(const IGPAContext* pGpaCo
 
     if (pHwInfo->GetVendorID(vendorId) && pHwInfo->GetDeviceID(deviceId) && pHwInfo->GetRevisionID(revisionId))
     {
-        GPA_Status result = ::GenerateCounters(
+        retStatus = ::GenerateCounters(
             pGpaContext->GetAPIType(), vendorId, deviceId, revisionId, flags, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
 
-        if (GPA_STATUS_OK == result)
+        if (GPA_STATUS_OK == retStatus)
         {
             GPAContextStatus contextStatus = {pCounterScheduler, pCounterAccessor};
 

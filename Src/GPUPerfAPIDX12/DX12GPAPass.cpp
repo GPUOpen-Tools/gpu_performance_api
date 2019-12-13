@@ -15,6 +15,7 @@
 
 DX12GPAPass::DX12GPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters)
     : GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
+    , m_amdExtsampleConfig()
     , m_isSampleConfigInitialized(false)
 {
     InitializeSampleConfig();
@@ -248,7 +249,11 @@ void DX12GPAPass::InitializeSampleConfig()
         {
             if (IsTimingPass())
             {
-                m_amdExtsampleConfig.type = AmdExtGpaSampleType::Timing;
+                m_amdExtsampleConfig.type                                = AmdExtGpaSampleType::Timing;
+                m_amdExtsampleConfig.flags.u32All                        = 1;
+                m_amdExtsampleConfig.sqShaderMask                        = PerfShaderMaskAll;
+                m_amdExtsampleConfig.perfCounters                        = {};
+                m_amdExtsampleConfig.sqtt                                = {};
 
                 if (pHardwareCounters->IsBottomOfPipeCounterIndex(m_pCounterList->at(0)))
                 {
@@ -380,6 +385,8 @@ void DX12GPAPass::InitializeSampleConfig()
                 m_amdExtsampleConfig.perfCounters.pIds                   = pAmdExtPerfCounterId;
                 m_amdExtsampleConfig.perfCounters.spmTraceSampleInterval = 0;
                 m_amdExtsampleConfig.perfCounters.gpuMemoryLimit         = 0;
+                m_amdExtsampleConfig.sqtt                                = {};
+                m_amdExtsampleConfig.timing                              = {};
 
                 // set shader mask
                 m_amdExtsampleConfig.flags.sqShaderMask = 1;

@@ -35,7 +35,6 @@ GPA_OpenContext:
     "OpenGL", "| Windows: ``HGLRC``
     | Linux: ``GLXContext``"
     "OpenCL", "| ``cl_command_queue*``"
-    "ROCm/HSA", "| ``hsa_queue_t*``"
 
 Parameters
 %%%%%%%%%%

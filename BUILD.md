@@ -31,7 +31,7 @@ order to clone/update any dependent repositories.
 present on the system, this script will instead do a "git pull" on those repositories to ensure that they are up to date. Please re-run
 this script everytime you pull new changes from GPA repository.
  * NOTE: For GPA 3.3 or newer, if you are updating an existing clone of the GPA repo from a GPA release prior than 3.3, you will first need to delete the Common/Lib/Ext/GoogleTest directory. Starting with GPA 3.3, GPA is now using a fork of the official GoogleTest repo. Failure to remove this directory will lead to git errors when running PreBuild.py or UpdateCommon.py.
- * This script will also download and execute the Vulkan™ SDK installer.
+ * This script will also download and execute the Vulkanï¿½ SDK installer.
    * On Windows, running the installer may require elevation.  If you've previously installed the required Vulkan version, UpdateCommon will simply copy the files form the default installation location into the correct place into the GPUPerfAPI directory tree.
    * UpdateCommon is set up to install the version of the Vulkan SDK which was used during development. If you want to use a newer version of the SDK, the following file will need to be updated:
      * [UpdateCommonMap.py](Scripts/UpdateCommonMap.py)
@@ -50,7 +50,6 @@ this script everytime you pull new changes from GPA repository.
    * `--skipvulkan`: Does not generate build files for Vulkan version of GPA
    * `--skipopengl`: Does not generate build files for OpenGL version of GPA
    * `--skipopencl`: Does not generate build files for OpenCL version of GPA
-   * `--skiprocm`: Does not generate build files for ROCm version of GPA (Linux only)
    * `--skiptests`: Does not generate build files for unit tests
    * `--skipdocs`: Does not generate build files for documentation
    * `--cmakecmd="CMD"`: Override the "cmake" command with "CMD"
@@ -78,11 +77,6 @@ this script everytime you pull new changes from GPA repository.
 ##### Prerequisites
  * Install the Mesa common development package: sudo apt-get install mesa-common-dev
  * For 32-bit builds, install the multilib packages: sudo apt-get install gcc-multilib g++-multilib
- * In order to build the ROCm/HSA version of GPA, you will need all or part of the ROCm stack installed
-   * Follow the ROCm installation instructions to install either rocm-dkms or rocm-dev: https://rocm.github.io/ROCmInstall.html
-     * In addition, please make sure that the optional ROCm package "rocprofiler-dev" is installed:
-       * Ubuntu: sudo apt install rocprofiler-dev
-       * CentOS: sudo yum install rocprofiler-dev
 
 ##### Build Instructions
  * Execute "make" in the CMakeBuild/x64/debug to build the 64-bit debug version of GPA
@@ -102,7 +96,7 @@ and [docs](docs) directories.
 There are three ways to execute the tool:
 * With no parameters - it opens the user interface with no fields prepopulated
 * With two parameters - it opens the user interface with the two main fields prepopulated. When you press the "Compile Public Counters" button it will load the correct input files and generate the output files in the correct location.
-  * Param 1: API -- the API to compile counters for (ex: GL, CL, HSA, DX11, DX12, VK, etc).
+  * Param 1: API -- the API to compile counters for (ex: GL, CL, DX11, DX12, VK, etc).
   * Param 2: HW generation: the generation to compile counters for (ex: Gfx6, Gfx7, Gfx8, etc.)
 * With six or seven parameters - the user interface does not open. It simply generates the c++ files using the specified input and output file locations
   * Param 1: Counter names file - text file containing hardware counter names and type (CounterNames[API][GEN].txt)

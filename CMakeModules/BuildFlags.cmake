@@ -1,4 +1,4 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 ## GPA has only Debug and Release
@@ -30,12 +30,6 @@ if(${usingscript})
         set(build-debug OFF CACHE BOOL "Turn on to generate debug config of the project")
     endif()
 
-    if(${build-32bit})
-        set(CMAKE_SIZEOF_VOID_P 4)
-    else()
-        set(CMAKE_SIZEOF_VOID_P 8)
-    endif()
-
     if(NOT WIN32)
         if(${build-debug})
             set(CMAKE_BUILD_TYPE debug)
@@ -43,6 +37,12 @@ if(${usingscript})
             set(CMAKE_BUILD_TYPE release)
         endif()
     endif()
+endif()
+
+if(${build-32bit})
+    set(CMAKE_SIZEOF_VOID_P 4)
+else()
+    set(CMAKE_SIZEOF_VOID_P 8)
 endif()
 
 # DX11 variable
@@ -70,11 +70,6 @@ if(NOT DEFINED skipopencl)
     set(skipopencl OFF CACHE BOOL "Turn on to skip OpenCL in the build" FORCE)
 endif()
 
-# ROCm variable
-if(NOT DEFINED skiprocm)
-    set(skiprocm OFF CACHE BOOL "Turn on to skip ROCm in the build" FORCE)
-endif()
-
 # Tests variable
 if(NOT DEFINED skiptests)
     set(skiptests OFF CACHE BOOL "Turn on to skip Tests in the build" FORCE)
@@ -83,4 +78,14 @@ endif()
 # Sphinx documentation
 if(NOT DEFINED skipdocs)
     set(skipdocs OFF CACHE BOOL "Turn on to skip sphinx documentation in the build" FORCE)
+endif()
+
+# Default Output directory
+if(NOT DEFINED USE_DEFAULT_OUTPUT_DIRECTORY)
+    set(USE_DEFAULT_OUTPUT_DIRECTORY ON)
+endif()
+
+# Default compiler
+if(NOT DEFINED USE_DEFAULT_COMPILER)
+    set(USE_DEFAULT_COMPILER ON)
 endif()

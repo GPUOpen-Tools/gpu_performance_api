@@ -90,6 +90,11 @@ typedef unsigned long long gpa_uint64;  ///< GPA specific type for 64-bit unsign
 #define strnlen_s(a, b) strlen(a)
 #define strncpy_s(a, b, c, d) strncpy(a, c, d)
 
+#define wcscat_s(dest, destSize, src) wcscat(dest, src)
+#define wcscpy_s(dest, destSize, src) wcscpy(dest, src)
+#define wcsncpy_s(dest, destSize, src, count) wcsncpy(dest, src, count)
+#define wcsnlen_s(str, strLength) wcsnlen(str, strLength)
+
 #ifndef TRUE
 #define TRUE 1
 #endif
@@ -263,8 +268,7 @@ typedef enum
     GPA_API_DIRECTX_12,                   ///< DirectX 12 API
     GPA_API_OPENGL,                       ///< OpenGL API
     GPA_API_OPENCL,                       ///< OpenCL API
-    GPA_API_ROCM,                         ///< ROCm API
-    GPA_API_HSA = GPA_API_ROCM,           ///< HSA API -- maps to ROCm API, enum value left here for backwards compatibility
+    GPA_API_DEPRECATED,                   ///< API support has been deprecated
     GPA_API_VULKAN,                       ///< Vulkan API
     GPA_API_NO_SUPPORT,                   ///< APIs which are not yet supported or for which support has been removed
     GPA_API__LAST                         ///< Marker indicating last element
@@ -290,7 +294,7 @@ typedef enum
 /// Command list / command buffer types
 typedef enum
 {
-    GPA_COMMAND_LIST_NONE,  ///< no command list, used for APIs that do not directly expose command lists or command buffers (DirectX 11, OpenGL, OpenCL, HSA)
+    GPA_COMMAND_LIST_NONE,  ///< no command list, used for APIs that do not directly expose command lists or command buffers (DirectX 11, OpenGL, OpenCL)
     GPA_COMMAND_LIST_PRIMARY,    ///< corresponds to DirectX 12 direct/compute/copy command list and Vulkan primary vkCommandBuffer
     GPA_COMMAND_LIST_SECONDARY,  ///< corresponds to DirectX 12 bundle and Vulkan secondary vkCommandBuffer
     GPA_COMMAND_LIST__LAST       ///< Marker indicating last element

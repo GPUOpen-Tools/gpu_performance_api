@@ -157,6 +157,17 @@ private:
     /// \param pName the alternate counter name to be used for the hardware counter
     /// \return true upon success otherwise false
     bool SetCounterName(gpa_uint32 index, const char* pName);
+
+    /// Entry point to load internal counters
+    /// \param desiredGeneration the generation whose counters are needed
+    /// \param asicType the ASIC whose counters are needed
+    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
+    /// \param[out] pPublicCounters the generated counters
+    /// \return GPA_STATUS_OK on success
+    virtual GPA_Status GenerateInternalDerivedCounters(GDT_HW_GENERATION    desiredGeneration,
+                                        GDT_HW_ASIC_TYPE     asicType,
+                                        gpa_uint8            generateAsicSpecificCounters,
+                                        GPA_DerivedCounters* pPublicCounters);
 #endif
 
     bool m_doAllowPublicCounters;           ///< flag indicating whether or not public counters are allowed

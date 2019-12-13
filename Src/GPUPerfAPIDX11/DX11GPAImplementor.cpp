@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief DX11 GPA Implementation
@@ -16,9 +16,15 @@
 #include "DXGetAMDDeviceInfo.h"
 #include "GPACustomHWValidationManager.h"
 #include "GPACommonDefs.h"
+#include "GPACounterGeneratorDX11.h"
+#include "GPACounterGeneratorDX11NonAMD.h"
+#include "GPACounterSchedulerDX11.h"
 #include "DX11Include.h"
 
 IGPAImplementor* s_pGpaImp = DX11GPAImplementor::Instance();
+static GPA_CounterGeneratorDX11       s_generatorDX11;        ///< static instance of DX11 generator
+static GPA_CounterGeneratorDX11NonAMD s_generatorDX11NonAMD;  ///< static instance of DX11 non-AMD generator
+static GPA_CounterSchedulerDX11       s_schedulerDX11;        ///< static instance of DX11 scheduler
 
 GPA_API_Type DX11GPAImplementor::GetAPIType() const
 {
@@ -350,12 +356,12 @@ bool DX11GPAImplementor::GetAmdHwInfo(ID3D11Device* pD3D11Device,
                                 hwInfo.SetTimeStampFrequency(deviceFrequency);
                             }
 
-                            unsigned int   majorVer = 0;
-                            unsigned int   minorVer = 0;
+                            unsigned int   majorVer    = 0;
+                            unsigned int   minorVer    = 0;
                             unsigned int   subMinorVer = 0;
-                            ADLUtil_Result adlResult = AMDTADLUtils::Instance()->GetDriverVersion(majorVer, minorVer, subMinorVer);
+                            ADLUtil_Result adlResult   = AMDTADLUtils::Instance()->GetDriverVersion(majorVer, minorVer, subMinorVer);
 
-                            static const unsigned int MIN_MAJOR_VER = 19;
+                            static const unsigned int MIN_MAJOR_VER        = 19;
                             static const unsigned int MIN_MINOR_VER_FOR_30 = 30;
 
                             if ((ADL_SUCCESS == adlResult || ADL_WARNING == adlResult))

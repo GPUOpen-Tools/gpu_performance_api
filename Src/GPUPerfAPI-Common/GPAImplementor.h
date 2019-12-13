@@ -115,6 +115,11 @@ private:
     /// \return device identifier for the passed context info
     virtual GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const = 0;
 
+    /// Returns whether the device generation is supported or not
+    /// \param[in] hwInfo hardware information
+    /// \return true if device generation is supported otherwise false
+    bool IsDeviceGenerationSupported(const GPA_HWInfo& hwInfo) const;
+
     mutable std::mutex               m_deviceGpaContextMapMutex;     ///< mutex for context manager
     GPADeviceIdentifierGPAContextMap m_appContextInfoGpaContextMap;  ///< map of application context info and GPA context
     bool                             m_isInitialized;                ///< flag indicating if GPA has been initialized or not

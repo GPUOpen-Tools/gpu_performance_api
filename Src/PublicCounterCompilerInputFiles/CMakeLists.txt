@@ -34,7 +34,7 @@ include (${GPA_CMAKE_MODULES_DIR}/Common.cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 if(EXISTS ${GPA_AUTOGEN_PUBLIC_COUNTER_INPUT_FILES})
-    foreach(API GL DX11 DX12 VK CL HSA)
+    foreach(API GL DX11 DX12 VK CL)
         include(${GPA_AUTOGEN_PUBLIC_COUNTER_INPUT_FILES}/PublicCounterNames${API}.cmake)
         set(SOURCES ${SOURCES}
                     ${PUBLIC_COUNTER_NAMES_${API}})

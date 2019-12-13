@@ -48,7 +48,6 @@
 #include <wchar.h>
 #include <stdlib.h>
 #include <string.h>
-
 #ifdef __cplusplus
 #include <string>
 #endif
@@ -68,6 +67,9 @@ typedef std::wstring LocaleString;  ///< Typedef for ANSI vs. Unicode string
 #define STR_COPY(dest, destSize, src) wcscpy_s(dest, destSize, src)                   ///< Macro for safe strcpy
 #define STR_NCOPY(dest, destSize, src, count) wcsncpy_s(dest, destSize, src, count);  ///< Macro for safe strncpy
 #define STR_LEN(str, strLength) wcsnlen_s(str, strLength)                             ///< Macro for safe strnlen
+#define MEM_CPY(dest, src, count) wmemcpy(dest, src, count)
+#define MEM_SET(ptr, wc, num) wmemset(ptr, wc, num)
+
 #else
 typedef char        LocaleChar;    ///< Typedef for ANSI vs. Unicode character
 #ifdef __cplusplus
@@ -80,6 +82,8 @@ typedef std::string LocaleString;  ///< Typedef for ANSI vs. Unicode string
 #define STR_COPY(dest, destSize, src) strcpy_s(dest, destSize, src)                   ///< Macro for safe strcpy
 #define STR_NCOPY(dest, destSize, src, count) strncpy_s(dest, destSize, src, count);  ///< Macro for safe strncpy
 #define STR_LEN(str, strLength) strnlen_s(str, strLength)                             ///< Macro for safe strnlen
+#define MEM_CPY(dest, src, count) memcpy(dest, src, count)
+#define MEM_SET(ptr, wc, num) memset(ptr, wc, num)
 #endif
 
 #define GPA_OPENCL_LIB TFORMAT("GPUPerfAPICL")       ///< Macro for base name of GPA OpenCL library
@@ -87,7 +91,6 @@ typedef std::string LocaleString;  ///< Typedef for ANSI vs. Unicode string
 #define GPA_DIRECTX11_LIB TFORMAT("GPUPerfAPIDX11")  ///< Macro for base name of GPA DirectX 11 library
 #define GPA_DIRECTX12_LIB TFORMAT("GPUPerfAPIDX12")  ///< Macro for base name of GPA DirectX 12 library
 #define GPA_VULKAN_LIB TFORMAT("GPUPerfAPIVK")       ///< Macro for base name of GPA Vulkan library
-#define GPA_ROCM_LIB TFORMAT("GPUPerfAPIROCm")       ///< Macro for base name of GPA ROCm library
 
 #ifdef _WIN32
 #define GPA_LIB_PREFIX TFORMAT("")           ///< Macro for platform-specific lib file prefix
@@ -155,27 +158,32 @@ static const LocaleChar* GPAIL_GetWorkingDirectoryPath()
     static LocaleChar workingDirectoryStaticString[GPA_MAX_PATH];
 
     workingDirectoryStaticString[0] = 0;
-
     LocaleChar tempWorkingDirectoryPath[GPA_MAX_PATH] = {0};
 
 #ifdef _WIN32
     GetModuleFileName(NULL, tempWorkingDirectoryPath, ARRAY_LENGTH(tempWorkingDirectoryPath));
 #else
     int len;
-    len = readlink("/proc/self/exe", tempWorkingDirectoryPath, ARRAY_LENGTH(tempWorkingDirectoryPath) - 1);
+    char tempWorkingDirectoryPathInChar[GPA_MAX_PATH] = {0};
+    len = readlink("/proc/self/exe", tempWorkingDirectoryPathInChar, ARRAY_LENGTH(tempWorkingDirectoryPathInChar) - 1);
 
     if (len != -1)
     {
         tempWorkingDirectoryPath[len] = '\0';
     }
 
+#ifdef UNICODE
+    mbstowcs(tempWorkingDirectoryPath, tempWorkingDirectoryPathInChar, ARRAY_LENGTH(tempWorkingDirectoryPathInChar));
+#else
+    MEM_CPY(tempWorkingDirectoryPath, tempWorkingDirectoryPathInChar, ARRAY_LENGTH(tempWorkingDirectoryPathInChar));
+#endif
 #endif
 
     unsigned int lastSlashPos = 0;
 
     Win2UnixPathSeparator(tempWorkingDirectoryPath, &lastSlashPos);
 
-    memset(workingDirectoryStaticString, 0, sizeof(LocaleChar) * ARRAY_LENGTH(workingDirectoryStaticString));
+    MEM_SET(workingDirectoryStaticString, 0, ARRAY_LENGTH(workingDirectoryStaticString));
     STR_NCOPY(workingDirectoryStaticString, ARRAY_LENGTH(workingDirectoryStaticString), tempWorkingDirectoryPath, lastSlashPos);
     return workingDirectoryStaticString;
 }
@@ -194,18 +202,12 @@ static inline const LocaleChar* GPAIL_GetLibraryFileName(GPA_API_Type pApiType)
     switch (pApiType)
     {
 #ifdef _WIN32
-
     case GPA_API_DIRECTX_11:
         STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_DIRECTX11_LIB);
         break;
 
     case GPA_API_DIRECTX_12:
         STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_DIRECTX12_LIB);
-        break;
-#else
-
-    case GPA_API_ROCM:
-        STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_ROCM_LIB);
         break;
 #endif
 
@@ -222,7 +224,7 @@ static inline const LocaleChar* GPAIL_GetLibraryFileName(GPA_API_Type pApiType)
         break;
 
     default:
-        memset(filenameStaticString, 0, sizeof(filenameStaticString));
+        MEM_SET(filenameStaticString, 0, ARRAY_LENGTH(filenameStaticString));
         return filenameStaticString;
     }
 
@@ -283,7 +285,7 @@ static inline const LocaleChar* GPAIL_GetLibraryFullPath(GPA_API_Type apiType, c
             tempWorkingDirectory[stringLength + 1] = '\0';
         }
 
-        memset(libPathStaticString, 0, sizeof(libPathStaticString));
+        MEM_SET(libPathStaticString, 0, ARRAY_LENGTH(libPathStaticString));
         STR_COPY(libPathStaticString, ARRAY_LENGTH(libPathStaticString), tempWorkingDirectory);
         STR_CAT(libPathStaticString, ARRAY_LENGTH(libPathStaticString), tempLibFileName);
     }
@@ -361,7 +363,16 @@ static inline GPA_Status GPAIL_LoadApi(GPA_API_Type apiType, const LocaleChar* p
 #ifdef _WIN32
             libHandle                      = LoadLibrary(pLibFullPath);
 #else
+
+#ifdef UNICODE
+            char libFullPathChar[GPA_MAX_PATH];
+            int ret = wcstombs(libFullPathChar, pLibFullPath, GPA_MAX_PATH);
+            libFullPathChar[ret] = '\0';
+            libHandle = dlopen(libFullPathChar, RTLD_LAZY);
+#else
             libHandle = dlopen(pLibFullPath, RTLD_LAZY);
+#endif
+
 #endif
             GPA_GetFuncTablePtrType funcTableFn;
 

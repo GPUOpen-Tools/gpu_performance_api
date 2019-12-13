@@ -8,6 +8,11 @@
 #ifndef _VK_COLOR_CUBE_H_
 #define _VK_COLOR_CUBE_H_
 
+#ifdef ANDROID
+#define VK_USE_PLATFORM_ANDROID_KHR
+#include <android_native_app_glue.h>
+#else
+
 // platform-specific headers
 #ifdef _WIN32
 // Tell the linker that this is a windowed app, not a console app;
@@ -19,6 +24,7 @@
 #ifdef __linux__
 #define VK_USE_PLATFORM_XCB_KHR
 #endif  // __linux__
+#endif
 
 // Headers needed on all platforms
 #include <algorithm>
@@ -43,8 +49,9 @@
 class AMDVulkanDemo
 {
 public:
-    /// Constructor
-    AMDVulkanDemo();
+
+    /// returns the static instance of AMDVulkanDemo
+    static AMDVulkanDemo* Instance();
 
     /// Destructor
     ~AMDVulkanDemo();
@@ -134,7 +141,23 @@ public:
     /// Default window height.
     const uint32_t m_cDefaultWindowHeight = 300;
 
+#ifdef ANDROID
+    inline void SetWindow(ANativeWindow* pNativeWindow)
+    {
+        m_pAnativeWindow = pNativeWindow;
+    }
+
+    inline void SetNativeActivity(ANativeActivity* pNativeActivity)
+    {
+        m_pNativeActivity = pNativeActivity;
+    }
+#endif
+
 private:
+
+    /// Constructor
+    AMDVulkanDemo();
+
     /// Caches an extension name that should have been returned by vkEnumerateInstanceExtensionProperties.
     /// \param pExtensionName A name to add to the list of supported instance extensions.
     void AddSupportedInstanceExtension(const char* pExtensionName);
@@ -407,6 +430,17 @@ private:
 
     /// GPA helper
     GPAHelper m_GpuPerfApiHelper;
+
+#ifdef ANDROID
+    /// Android Native window
+    ANativeWindow* m_pAnativeWindow;
+
+    /// Android Native activity
+    ANativeActivity* m_pNativeActivity;
+#endif
+
+    /// static instance of the app
+    static AMDVulkanDemo* ms_pAmdVulkanDemo;
 };
 
 /// Struct to hold values of command line arguments.

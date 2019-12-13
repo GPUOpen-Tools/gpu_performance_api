@@ -1,4 +1,4 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -13,7 +13,9 @@ include(${CMAKE_COMMON_SRC_GLOBAL_ADL_UTIL})
 include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
 include(${CMAKE_COMMON_LIB_GLOBAL_EXT_OPENGL})
-include(${CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK})
+if(WIN32)
+    include(${CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK})
+endif()
 
 INCLUDE_ADDITIONAL_MODULE()
 
@@ -22,7 +24,7 @@ include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_SRC_COMMON}
                     ${GPA_SRC_COUNTER_GENERATOR})
 
-set(HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/GLInclude.h
+set(HEADER_FILES ${GPA_SRC_COUNTER_GENERATOR}/GLInclude.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/ASICInfo.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/GLGPACommandList.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/GLGPAContext.h
@@ -51,6 +53,6 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       ${GPA_COMMON_LINK_ARCHIVE_FLAG}
                       GPUPerfAPI-Common
                       ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
-                      GPUPerfAPICounterGenerator)
+                      GPUPerfAPICounterGenerator-GL)
 
 ADD_LINKER_FLAGS()

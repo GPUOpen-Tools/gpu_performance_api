@@ -20,20 +20,14 @@ public:
     /// \param hardwareGroupCount the number of hardware counter groups
     /// \param pHardwareAdditionalGroups the additional hardware counter groups
     /// \param hardwareAdditionalGroupCount the number of additional hardware counter groups
-    /// \param pSoftwareGroups the software counter groups
-    /// \param softwareGroupCount the number of software counter groups
     GPACounterGroupAccessor(GPA_CounterGroupDesc* pHardwareGroups,
                             unsigned int          hardwareGroupCount,
                             GPA_CounterGroupDesc* pHardwareAdditionalGroups,
-                            unsigned int          hardwareAdditionalGroupCount,
-                            GPA_CounterGroupDesc* pSoftwareGroups,
-                            unsigned int          softwareGroupCount)
+                            unsigned int          hardwareAdditionalGroupCount)
         : m_pHardwareGroups(pHardwareGroups)
         , m_hardwareGroupCount(hardwareGroupCount)
         , m_pHardwareAdditionalGroups(pHardwareAdditionalGroups)
         , m_hardwareAdditionalGroupCount(hardwareAdditionalGroupCount)
-        , m_pSoftwareGroups(pSoftwareGroups)
-        , m_softwareGroupCount(softwareGroupCount)
         , m_groupIndex(0)
         , m_counterIndex(0)
     {
@@ -192,13 +186,11 @@ private:
     unsigned int          m_hardwareGroupCount;            ///< stores the number of hardware counter groups in the array.
     GPA_CounterGroupDesc* m_pHardwareAdditionalGroups;     ///< Points to the array of internal additional hardware counter groups
     unsigned int          m_hardwareAdditionalGroupCount;  ///< stores the number of additional hardware counter groups in the array.
-    GPA_CounterGroupDesc* m_pSoftwareGroups;               ///< Points to the array of internal software counter groups
-    unsigned int          m_softwareGroupCount;            ///< stores the number of software counter groups in the array.
     unsigned int          m_groupIndex;                    ///< Stores the group index of the set counter index.
     unsigned int          m_counterIndex;                  ///< Stores the counter index within the group of the set counter index.
     bool                  m_isHW;                          ///< flag to record if the counter is hardware or not
-    bool                  m_isAdditionalHW;  ///< flag to record if the counter is an additional HW counter (one exposed by the driver but not by GPA)
-    bool                  m_isSW;            ///< flag to record if the counter is SW
+    bool                  m_isAdditionalHW;                ///< flag to record if the counter is an additional HW counter (one exposed by the driver but not by GPA)
+    bool                  m_isSW;                          ///< flag to record if the counter is SW
 };
 
 #endif  // _GPA_COUNTER_GROUP_ACCESSOR_H_

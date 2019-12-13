@@ -18,10 +18,9 @@ import string
 import subprocess
 import sys
 import time
-import urllib
 import zipfile
+import gpa_utils as GpaUtils
 
-PYTHON_MAJOR_VER=sys.version_info.major
 MACHINE_OS = ""
 VULKAN_LIB_FILENAME = ""
 VULKAN_LIB_PATH = "/lib/"
@@ -35,9 +34,6 @@ elif "linux" in platform.system().lower():
 else:
     print("Operating system not recognized correctly")
     sys.exit(1)
-
-if PYTHON_MAJOR_VER == 3:
-    import urllib.request
 
 # to allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file
 scriptRoot = os.path.dirname(os.path.realpath(__file__))
@@ -70,7 +66,7 @@ from UpdateCommonMap import *
 parser = argparse.ArgumentParser(description='UpdateCommon args')
 parser.add_argument('--skipvulkansdk', action='store_true', default=False, help='Prevents script from checking for the Vulkan SDK')
 parser.add_argument('--downloadvulkansdk', action='store_true', default=False, help='Tells script to install the Vulkan SDK, regardless if one is already installed')
-args = parser.parse_args()
+parser.add_argument('--showrevisions', action='store_true', default=False, help='Show git revisions of HEAD in dependent repo')
 
 # to allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file
 scriptRoot = os.path.dirname(os.path.realpath(__file__))
@@ -122,35 +118,18 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
         sys.stderr.flush()
         sys.stdout.flush()
 
-for key in gitMapping:
-    UpdateGitHubRepo(ghAmdRoot, gitMapping[key][0], gitMapping[key][1])
+def ShowRevisions():
+    repos_revision_map={}
 
-def download(srcPath, destPath, FileName):
-    # Assuming path is absolute
-    if False == os.path.isabs(destPath):
-        print("Destination path is not valid")
-        return False
+    for key in gitMapping:
+        local_git_repo_path = os.path.join(scriptRoot, "..", gitMapping[key][0])
+        local_git_repo_path = os.path.normpath(local_git_repo_path)
+        revision_str = GpaUtils.GetGitLocalRepoHead(local_git_repo_path)
+        if revision_str is not None:
+            repos_revision_map[key] = revision_str
 
-    # clean up path, collapsing any ../ and converting / to \ for Windows
-    destPath = os.path.normpath(destPath)
-
-    if False == os.path.isdir(destPath):
-        os.makedirs(destPath)
-
-    targetPath = os.path.join(destPath, FileName)
-    print("Downloading " + FileName + " to " + destPath)
-
-    if PYTHON_MAJOR_VER < 3:
-        urllib.urlretrieve(srcPath, targetPath)
-    else:
-        urllib.request.urlretrieve(srcPath, targetPath)
-
-    if (os.path.isfile(targetPath)):
-        print("File Downloaded Successfully")
-        return True
-    else:
-        print("Unable to download file")
-        return False
+    for repo in repos_revision_map:
+        print ('{0:35}    :    {1}'.format(repo, repos_revision_map[repo]))
 
 def HandleVulkan(vulkanSrc, VulkanDest, vulkanInstallerFileName, version, installationPath):
     VULKAN_SDK = os.environ.get("VULKAN_SDK")
@@ -197,7 +176,7 @@ def HandleVulkan(vulkanSrc, VulkanDest, vulkanInstallerFileName, version, instal
                 return
 
     vulkanSrc = vulkanSrc + "?Human=true"
-    if (download(vulkanSrc, DEST_PATH, VulkanSDKFile)):
+    if (GpaUtils.Download(vulkanSrc, DEST_PATH, VulkanSDKFile)):
         st = os.stat(VulkanSDKInstaller)
         os.chmod(VulkanSDKInstaller, st.st_mode | stat.S_IEXEC)
         print("Starting VulkanSDK installer. Please follow the instructions...")
@@ -247,7 +226,7 @@ def HandleGpaDx11GetDeviceInfo(src, dest, fileName, version, copyDest):
         print("The DXGetAMDDeviceInfo libraries already exist")
         return
 
-    if(download(src, DEST_PATH, GpaDx11GetDeviceInfoArchiveFileName)):
+    if(GpaUtils.Download(src, DEST_PATH, GpaDx11GetDeviceInfoArchiveFileName)):
         print("GPAGetDeviceInfo version " + version + " downloaded successfully")
         dx11getDeviceInfoArchive = zipfile.ZipFile(GpaDx11GetDeviceInfoArchiveAbsPath)
         dx11getDeviceInfoArchive.extract(dx11DeviceInfoPlatform64File, copyArchive)
@@ -264,19 +243,29 @@ def HandleGpaDx11GetDeviceInfo(src, dest, fileName, version, copyDest):
         print("Unable to download the GPUPerfAPI archive")
         return
 
-if "Linux" == MACHINE_OS:
-    for key in downloadLinux:
-        keyList = downloadLinux[key]
-        if key == "Vulkan":
+if __name__ == "__main__":
+    args = parser.parse_args()
+
+    if args.showrevisions == True:
+        ShowRevisions()
+        sys.exit(0)
+
+    for key in gitMapping:
+        UpdateGitHubRepo(ghAmdRoot, gitMapping[key][0], gitMapping[key][1])
+
+    if "Linux" == MACHINE_OS:
+        for key in downloadLinux:
+            keyList = downloadLinux[key]
+            if key == "Vulkan":
+                FileName = str(keyList[0]).rpartition("/")[2]
+                HandleVulkan(keyList[0], keyList[1], FileName, keyList[2], keyList[3])
+
+    else:
+        for key in downloadWin:
+            keyList = downloadWin[key]
             FileName = str(keyList[0]).rpartition("/")[2]
-            HandleVulkan(keyList[0], keyList[1], FileName, keyList[2], keyList[3])
+            if key == "Vulkan":
+                HandleVulkan(keyList[0], keyList[1], FileName, keyList[2], keyList[3])
 
-else:
-    for key in downloadWin:
-        keyList = downloadWin[key]
-        FileName = str(keyList[0]).rpartition("/")[2]
-        if key == "Vulkan":
-            HandleVulkan(keyList[0], keyList[1], FileName, keyList[2], keyList[3])
-
-        if key == "GPADX11GetDeviceInfo":
-            HandleGpaDx11GetDeviceInfo(keyList[0], keyList[1], FileName, keyList[2], keyList[3])
+            if key == "GPADX11GetDeviceInfo":
+                HandleGpaDx11GetDeviceInfo(keyList[0], keyList[1], FileName, keyList[2], keyList[3])

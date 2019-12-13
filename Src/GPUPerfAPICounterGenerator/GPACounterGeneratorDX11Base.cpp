@@ -175,8 +175,6 @@ void GPA_CounterGeneratorDX11Base::GenerateD3DSoftwareCounters(GDT_HW_GENERATION
     tempCounter.m_type = GPA_DATA_TYPE_UINT64;
     SwCounterManager::Instance()->AddSwCounter(tempCounter);  //Occlusion
 
-    //D3D11_QUERY_DATA_PIPELINE_STATISTICS description from http://msdn.microsoft.com/en-us/library/windows/desktop/ff476192%28v=vs.85%29.aspx
-
     tempCounter.m_counterIndexInGroup = counterIndexInGroup++;
     sprintf_s(tempCounter.m_group, maxSoftwareCounterGroupLength, "%s", "D3D11");
     sprintf_s(tempCounter.m_description, maxSoftwareCounterDescriptionLength, "%s", "Number of vertices read by input assembler.");

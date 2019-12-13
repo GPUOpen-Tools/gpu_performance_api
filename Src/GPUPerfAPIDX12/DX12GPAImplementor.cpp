@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  DX12 GPA Implementation
@@ -8,12 +8,18 @@
 #include "DX12GPAImplementor.h"
 #include "DX12Utils.h"
 #include "DeviceInfoUtils.h"
+#include "GPACounterGeneratorDX12.h"
+#include "GPACounterGeneratorDX12NonAMD.h"
+#include "GPACounterSchedulerDX12.h"
 
 IGPAImplementor* s_pGpaImp = DX12GPAImplementor::Instance();
+static GPA_CounterGeneratorDX12       s_generatorDX12;        ///< static instance of DX12 generator
+static GPA_CounterGeneratorDX12NonAMD s_generatorDX12NonAMD;  ///< static instance of DX12 non-AMD generator
+static GPA_CounterSchedulerDX12       s_schedulerDX12;        ///< static instance of DX12 scheduler
 
 DX12GPAImplementor::~DX12GPAImplementor()
 {
-    Destroy();
+    DX12GPAImplementor::Destroy();
 }
 
 GPA_API_Type DX12GPAImplementor::GetAPIType() const

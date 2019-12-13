@@ -164,7 +164,7 @@ public:
     virtual void UpdateAsicSpecificDerivedCounter(const char* pName, vector<gpa_uint32>& internalCountersRequired, const char* pComputeExpression);
 
     /// Adds a derived counter to the set of available counters
-    /// \param derivedCounter the dereived counter to add
+    /// \param derivedCounter the derived counter to add
     virtual void AddDerivedCounter(GPA_DerivedCounter& derivedCounter)
     {
         m_counters.push_back(derivedCounter);
@@ -212,25 +212,11 @@ protected:
 
 #ifdef AMDT_INTERNAL
 
-/// Entry point to load internal counters
-/// \param apiType the API whose counters are needed
-/// \param desiredGeneration the generation whose counters are needed
-/// \param asicType the ASIC whose counters are needed
-/// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
-/// \param[out] pPublicCounters the generated counters
-/// \return GPA_STATUS_OK on success
-GPA_Status GPA_LoadInternalCounters(GPA_API_Type         apiType,
-                                    GDT_HW_GENERATION    desiredGeneration,
-                                    GDT_HW_ASIC_TYPE     asicType,
-                                    gpa_uint8            generateAsicSpecificCounters,
-                                    GPA_DerivedCounters* pPublicCounters);
-
 struct GPACounterDesc;
-
 /// Entry point to get internal derived counters
 /// \param apiType the API whose counters are needed
 /// \param desiredGeneration the generation whose counters are needed
-/// \param pInternalDervedCounters[out] pointer to array of internal derived counters
+/// \param ppInternalDerivedCounters[out] pointer to array of internal derived counters
 /// \param pInternalDerivedCounterCount[out] pointer to count of internal derived counters
 /// \return internalDerivedCounterCount
 GPA_Status GPA_GetInternalDerivedCounters(GPA_API_Type           apiType,
@@ -239,5 +225,6 @@ GPA_Status GPA_GetInternalDerivedCounters(GPA_API_Type           apiType,
                                           size_t*                pInternalDerivedCounterCount);
 
 #endif  // AMDT_INTERNAL
+
 
 #endif  // _GPA_DERIVED_COUNTERS_H_

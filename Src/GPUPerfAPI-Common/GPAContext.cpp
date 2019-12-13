@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief GPA Common Context class implementation
@@ -231,14 +231,9 @@ GPACounterSource GPAContext::GetCounterSource(gpa_uint32 internalCounterIndex) c
     if (nullptr != pCounterAccessor)
     {
         const GPA_HardwareCounters* pHwCounters = pCounterAccessor->GetHardwareCounters();
-        const GPA_SoftwareCounters* pSwCounters = pCounterAccessor->GetSoftwareCounters();
 
-        GPACounterGroupAccessor counterGroupAccessor(pHwCounters->m_pGroups,
-                                                     pHwCounters->m_groupCount,
-                                                     pHwCounters->m_pAdditionalGroups,
-                                                     pHwCounters->m_additionalGroupCount,
-                                                     pSwCounters->m_pGroups,
-                                                     pSwCounters->m_groupCount);
+        GPACounterGroupAccessor counterGroupAccessor(
+            pHwCounters->m_pGroups, pHwCounters->m_groupCount, pHwCounters->m_pAdditionalGroups, pHwCounters->m_additionalGroupCount);
 
         counterGroupAccessor.SetCounterIndex(internalCounterIndex);
 

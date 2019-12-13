@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Base Class for counter scheduling
@@ -55,7 +55,7 @@ GPA_Status GPA_CounterSchedulerBase::SetCounterAccessor(IGPACounterAccessor* pCo
 
 gpa_uint32 GPA_CounterSchedulerBase::GetNumEnabledCounters() const
 {
-    return (gpa_uint32)m_enabledPublicIndices.size();
+    return static_cast<gpa_uint32>(m_enabledPublicIndices.size());
 }
 
 GPA_Status GPA_CounterSchedulerBase::EnableCounter(gpa_uint32 index)
@@ -91,7 +91,7 @@ GPA_Status GPA_CounterSchedulerBase::EnableCounter(gpa_uint32 index)
 GPA_Status GPA_CounterSchedulerBase::DisableCounter(gpa_uint32 index)
 {
     // see if counter enabled
-    for (int i = 0; i < (int)m_enabledPublicIndices.size(); i++)
+    for (int i = 0; i < static_cast<int>(m_enabledPublicIndices.size()); i++)
     {
         if (m_enabledPublicIndices[i] == index)
         {
@@ -192,7 +192,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
 {
     if (!m_counterSelectionChanged)
     {
-        *pNumRequiredPassesOut = (gpa_uint32)m_passPartitions.size();
+        *pNumRequiredPassesOut = static_cast<gpa_uint32>(m_passPartitions.size());
         return GPA_STATUS_OK;
     }
 
@@ -207,7 +207,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
 
     unsigned int numSQMaxCounters = 0;
 
-    GDT_DeviceInfo deviceInfo;
+    GDT_DeviceInfo deviceInfo = {};
 
     if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(m_deviceId, m_revisionId, deviceInfo))
     {
@@ -254,7 +254,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
 
             if (requiredCounters.size() == 1)
             {
-                GPAHardwareCounterIndices indices;
+                GPAHardwareCounterIndices indices = {};
                 indices.m_publicIndex   = *counterIter;
                 indices.m_hardwareIndex = requiredCounters[0];
                 internalCountersToSchedule.push_back(indices);
@@ -271,7 +271,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
 
             if (requiredCounters.size() == 1)
             {
-                GPASoftwareCounterIndices indices;
+                GPASoftwareCounterIndices indices = {};
                 indices.m_publicIndex = *counterIter;
 
                 indices.m_softwareIndex = requiredCounters
@@ -323,16 +323,14 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
     GPACounterGroupAccessor accessor(pHWCounters->m_pGroups,
                                      pHWCounters->m_groupCount,
                                      pHWCounters->m_pAdditionalGroups,
-                                     pHWCounters->m_additionalGroupCount,
-                                     pSWCounters->m_pGroups,
-                                     pSWCounters->m_groupCount);
+                                     pHWCounters->m_additionalGroupCount);
 
     unsigned int numInternalCountersScheduled = 0;
 
     m_passPartitions = pSplitter->SplitCounters(publicCountersToSplit,
                                                 internalCountersToSchedule,
                                                 softwareCountersToSchedule,
-                                                (IGPACounterGroupAccessor*)&accessor,
+                                                reinterpret_cast<IGPACounterGroupAccessor*>(&accessor),
                                                 maxCountersPerGroup,
                                                 numInternalCountersScheduled);
 
@@ -342,7 +340,7 @@ GPA_Status GPA_CounterSchedulerBase::GetNumRequiredPasses(gpa_uint32* pNumRequir
     pSplitter = nullptr;
 
     m_counterSelectionChanged = false;
-    *pNumRequiredPassesOut    = (gpa_uint32)m_passPartitions.size();
+    *pNumRequiredPassesOut    = static_cast<gpa_uint32>(m_passPartitions.size());
 
     return GPA_STATUS_OK;
 }
@@ -379,7 +377,7 @@ std::vector<unsigned int>* GPA_CounterSchedulerBase::GetCountersForPass(gpa_uint
 
     while (i < passIndex)
     {
-        iter++;
+        ++iter;
         i++;
     }
 

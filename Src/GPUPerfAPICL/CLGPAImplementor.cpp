@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief CL GPA Implementation
@@ -18,7 +18,12 @@
 #include "CLGPAContext.h"
 #include "CLPerfCounterAMDExtension.h"
 
+#include "GPACounterGeneratorCL.h"
+#include "GPACounterSchedulerCL.h"
+
 IGPAImplementor* s_pGpaImp = CLGPAImplementor::Instance();
+static GPA_CounterGeneratorCL s_generatorCL;  ///< static instance of CL generator
+static GPA_CounterSchedulerCL s_schedulerCL;  ///< static instance of CL scheduler
 
 GPA_API_Type CLGPAImplementor::GetAPIType() const
 {

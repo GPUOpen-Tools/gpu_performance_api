@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class that will get the correct Generator and Scheduler for an API/Generation combination
@@ -54,10 +54,10 @@ public:
 
 protected:
     /// Constructor
-    CounterGeneratorSchedulerManager();
+    CounterGeneratorSchedulerManager() = default;
 
     /// Destructor
-    virtual ~CounterGeneratorSchedulerManager();
+    virtual ~CounterGeneratorSchedulerManager() = default;
 
     /// typedef for HWGen to Generator Map
     typedef std::map<GDT_HW_GENERATION, GPA_CounterGeneratorBase*> GenerationGeneratorMap;

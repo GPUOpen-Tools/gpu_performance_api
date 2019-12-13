@@ -5,18 +5,6 @@
 /// \brief  Vulkan Color Cube Sample
 //==============================================================================
 
-// platform-specific headers
-#ifdef _WIN32
-// Tell the linker that this is a windowed app, not a console app;
-// defining this in code allows for flexibility with other operating systems.
-#pragma comment(linker, "/subsystem:windows")
-#define VK_USE_PLATFORM_WIN32_KHR
-#endif  // _WIN32
-
-#ifdef __linux__
-#define VK_USE_PLATFORM_XCB_KHR
-#endif  // __linux__
-
 // Headers needed on all platforms
 #include <algorithm>
 #include <assert.h>
@@ -32,6 +20,25 @@
 #include <string.h>
 #include <thread>
 #include <vector>
+
+#ifdef ANDROID
+#define VK_USE_PLATFORM_ANDROID_KHR
+#include <android/asset_manager.h>
+#else
+
+#ifdef _WIN32
+// Tell the linker that this is a windowed app, not a console app;
+// defining this in code allows for flexibility with other operating systems.
+#pragma comment(linker, "/subsystem:windows")
+#define VK_USE_PLATFORM_WIN32_KHR
+#endif  // _WIN32
+
+#ifdef __linux__
+#define VK_USE_PLATFORM_XCB_KHR
+#endif  // __linux__
+
+#endif
+
 #include <vulkan/vulkan.h>
 #include "vkcolorcube.h"
 #include "GPUPerfAPI-VK.h"
@@ -149,6 +156,9 @@ AMDVulkanDemo::AMDVulkanDemo()
 
     m_requiredInstanceExtensions = {
         VK_KHR_SURFACE_EXTENSION_NAME,
+#ifdef ANDROID
+        VK_KHR_ANDROID_SURFACE_EXTENSION_NAME,
+#endif
         VK_EXT_DEBUG_REPORT_EXTENSION_NAME,
         AMD_GPA_REQUIRED_INSTANCE_EXTENSION_NAME_LIST,
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
@@ -160,6 +170,18 @@ AMDVulkanDemo::AMDVulkanDemo()
 
     m_requiredDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME, AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST };
     m_optionalDeviceExtensions = { VK_KHR_SWAPCHAIN_EXTENSION_NAME, AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST, AMD_GPA_OPTIONAL_DEVICE_EXTENSION_NAME_LIST };
+}
+
+AMDVulkanDemo* AMDVulkanDemo::ms_pAmdVulkanDemo = nullptr;
+
+AMDVulkanDemo* AMDVulkanDemo::Instance()
+{
+    if(nullptr == ms_pAmdVulkanDemo)
+    {
+        ms_pAmdVulkanDemo = new (std::nothrow) AMDVulkanDemo();
+    }
+
+    return ms_pAmdVulkanDemo;
 }
 
 AMDVulkanDemo::~AMDVulkanDemo()
@@ -339,24 +361,56 @@ xcb_connection_t* AMDVulkanDemo::InitializeWindowXCB()
 }
 #endif  // VK_USE_PLATFORM_XCB_KHR
 
+
+
 VkShaderModule AMDVulkanDemo::LoadShader(const char* filename)
 {
-    std::ifstream shaderFile(filename, std::ios::binary | std::ios::in);
+
+    std::vector<char> shaderBytes;
+#ifdef ANDROID
+    std::string shaderPath = filename;
+    if(nullptr != m_pNativeActivity)
+    {
+        AAsset* shaderFile = AAssetManager_open(m_pNativeActivity->assetManager, shaderPath.c_str(), AASSET_MODE_BUFFER);
+
+        if(nullptr != shaderFile)
+        {
+            size_t shaderByteCodeLength = AAsset_getLength(shaderFile);
+            shaderBytes.resize(shaderByteCodeLength);
+
+            if( shaderByteCodeLength == AAsset_read(shaderFile, shaderBytes.data(), shaderByteCodeLength))
+            {
+                std::cout <<"Success";
+            }
+
+            AAsset_close(shaderFile);
+        }
+    }
+    else
+    {
+        std::cout << "No native activity";
+    }
+
+#else
+
+    std::string shaderPath = m_GpuPerfApiHelper.GetExecutablePath();
+    shaderPath.append(filename);
+    std::ifstream shaderFile(shaderPath, std::ios::binary | std::ios::in);
 
     if (!shaderFile.is_open())
     {
-        std::cout << "ERROR: Failed to read shader file: '" << filename << "'" << std::endl;
+        std::cout << "ERROR: Failed to read shader file: '" << shaderPath << "'" << std::endl;
         return VK_NULL_HANDLE;
     }
 
     shaderFile.seekg(0, shaderFile.end);
     size_t length = static_cast<size_t>(shaderFile.tellg());
     shaderFile.seekg(0);
-
-    std::vector<char> shaderBytes(length);
-
+    shaderBytes.resize(length);
     shaderFile.read(shaderBytes.data(), length);
     shaderFile.close();
+
+#endif
 
     VkShaderModuleCreateInfo shaderModuleCreateInfo = {};
     shaderModuleCreateInfo.sType                    = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
@@ -369,7 +423,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* filename)
 
     if (resultCreateShaderModule != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create shader module for '" << filename << "'." << std::endl;
+        std::cout << "ERROR: Failed to create shader module for '" << shaderPath << "'." << std::endl;
         return VK_NULL_HANDLE;
     }
 
@@ -378,6 +432,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* filename)
 
 bool AMDVulkanDemo::InitializeGPA()
 {
+#ifndef ANDROID
     if (!m_GpuPerfApiHelper.Load())
     {
         std::cout << "ERROR: Failed to Load GPA library." << std::endl;
@@ -407,6 +462,44 @@ bool AMDVulkanDemo::InitializeGPA()
         return true;
     }
 
+#else
+    #ifdef _DEBUG
+        #ifdef AMDT_INTERNAL
+            void* gpaLib = dlopen("libGPUPerfAPIVK-d-Internal.so", RTLD_NOW);
+        #else
+            void* gpaLib = dlopen("libGPUPerfAPIVK-d.so", RTLD_NOW);
+        #endif
+    #else
+        #ifdef AMDT_INTERNAL
+            void* gpaLib = dlopen("libGPUPerfAPIVK-Internal.so", RTLD_NOW);
+        #else
+            void* gpaLib = dlopen("libGPUPerfAPIVK.so", RTLD_NOW);
+        #endif
+    #endif
+
+    if(nullptr != gpaLib)
+    {
+        GPA_GetFuncTablePtrType funcTableFn = (GPA_GetFuncTablePtrType)(dlsym(gpaLib, "GPA_GetFuncTable"));
+        if(nullptr != funcTableFn)
+        {
+            GPAFunctionTable* pGpaFuncTable = new(std::nothrow) GPAFunctionTable();
+
+            if(nullptr != pGpaFuncTable)
+            {
+                pGpaFuncTable->m_majorVer = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER;
+                pGpaFuncTable->m_minorVer = GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER;
+                GPA_Status status         = funcTableFn((void*)(pGpaFuncTable));
+
+                if(GPA_STATUS_OK == status)
+                {
+                    m_GpuPerfApiHelper.m_pGpaFuncTable = pGpaFuncTable;
+                    return true;
+                }
+            }
+        }
+    }
+#endif
+
     return false;
 }
 
@@ -420,6 +513,10 @@ bool AMDVulkanDemo::InitializeVulkan()
     //
     // In order to render to a window on each platform, the corresponding instance extensions must be available.
     // The specific device also needs to support the swapchain extension.
+
+    #ifdef ANDROID
+        InitializeGPA();
+    #endif
 
     uint32_t instanceLayerCount            = 0;
     VkResult resultInstanceLayerProperties = vkEnumerateInstanceLayerProperties(&instanceLayerCount, NULL);
@@ -499,31 +596,19 @@ bool AMDVulkanDemo::InitializeVulkan()
     };
 
     VkApplicationInfo appInfo = {};
-
     appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
-
     appInfo.pNext = nullptr;
-
     appInfo.pApplicationName = m_cShortName.c_str();
-
     appInfo.applicationVersion = 1;
-
     appInfo.apiVersion = VK_API_VERSION_1_0;
 
     VkInstanceCreateInfo instanceCreateInfo = {};
-
     instanceCreateInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
-
     instanceCreateInfo.pNext = nullptr;
-
     instanceCreateInfo.pApplicationInfo = &appInfo;
-
     instanceCreateInfo.enabledExtensionCount = static_cast<uint32_t>(m_requiredInstanceExtensions.size());
-
     instanceCreateInfo.ppEnabledExtensionNames = m_requiredInstanceExtensions.data();
-
     instanceCreateInfo.enabledLayerCount = static_cast<uint32_t>(layers.size());
-
     instanceCreateInfo.ppEnabledLayerNames = layers.data();
 
     // This demo doesn't do any special memory allocation handling,
@@ -627,9 +712,20 @@ bool AMDVulkanDemo::InitializeVulkan()
         std::cout << "ERROR: Failed to create XCB surface." << std::endl;
         return false;
     }
+#elif defined(VK_USE_PLATFORM_ANDROID_KHR)
+    assert(m_pAnativeWindow != nullptr);
 
+    VkAndroidSurfaceCreateInfoKHR surfaceCreateInfo{};
+      surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR,
+      surfaceCreateInfo.pNext = nullptr,
+      surfaceCreateInfo.flags = 0,
+      surfaceCreateInfo.window = m_pAnativeWindow;
+
+    VkResult result = vkCreateAndroidSurfaceKHR(m_vkInstance, &surfaceCreateInfo, nullptr,
+                                    &m_vkSurface);
+                                    std::cout << result;
 #else
-    std::cout << "ERROR: The current platform is not supported - no VkSurface will be created!");
+    std::cout << "ERROR: The current platform is not supported - no VkSurface will be created!";
     assert(!"The current platform is not supported - no VkSurface will be created!");
     return false;
 #endif
@@ -843,10 +939,14 @@ bool AMDVulkanDemo::InitializeVulkan()
         }
 
 #ifndef AMDT_INTERNAL
-        // Enable all the counters.
+#ifdef ANDROID
         GPA_Status statusGPAEnableAllCounters = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableAllCounters(m_GPASessionId);
 #else
-        GPA_Status statusGPAEnableAllCounters = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableCounterByName(m_GPASessionId, "GPUTime");
+        // Enable all the counters.
+        GPA_Status statusGPAEnableAllCounters = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableAllCounters(m_GPASessionId);
+#endif
+#else
+        GPA_Status statusGPAEnableAllCounters = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableCounterByName(m_GPASessionId, "CPF_PERF_SEL_CPF_STAT_BUSY");
 #endif
         if (statusGPAEnableAllCounters != GPA_STATUS_OK)
         {
@@ -1284,17 +1384,13 @@ bool AMDVulkanDemo::InitializeVulkan()
         return false;
     }
 
-    std::string executablePath = m_GpuPerfApiHelper.GetExecutablePath();
-    std::string vertexShaderFile = executablePath;
-    vertexShaderFile.append("vkcolorcubeshader.vert.spv");
+    std::string vertexShaderFile = "vkcolorcubeshader.vert.spv";
     m_vertexShaderModule = LoadShader(vertexShaderFile.c_str());
 
-    std::string fragmentShaderFile = executablePath;
-    fragmentShaderFile.append("vkcolorcubeshader.frag.spv");
+    std::string fragmentShaderFile = "vkcolorcubeshader.frag.spv";
     m_fragmentShaderModule = LoadShader(fragmentShaderFile.c_str());
 
-    std::string wireFrameShader = executablePath;
-    wireFrameShader.append("vkcolorcubewireframeshader.frag.spv");
+    std::string wireFrameShader = "vkcolorcubewireframeshader.frag.spv";
     m_fragmentShaderWireframeModule = LoadShader(wireFrameShader.c_str());
 
     if (m_vertexShaderModule == VK_NULL_HANDLE || m_fragmentShaderModule == VK_NULL_HANDLE || m_fragmentShaderWireframeModule == VK_NULL_HANDLE)
@@ -1577,6 +1673,9 @@ bool AMDVulkanDemo::InitializeVulkan()
 /// Draws the scene in a method that can be called on any platform.
 void AMDVulkanDemo::DrawScene()
 {
+    if(!m_bInitialized)
+        return;
+
     // Get the index of an image in the swapchain that is available to be rendered into.
     // The previously discussed presentation modes may affect the order that the swapchain images become available
     // for rendering, so it is necessary to ask which image the presentation engine wants to use next.
@@ -2253,9 +2352,6 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
     }
 }
 
-/// A global instance of the Demo.
-static AMDVulkanDemo gs_Demo;
-
 /// Print command line usage information
 void Usage()
 {
@@ -2330,9 +2426,9 @@ LRESULT CALLBACK demoWindowMessageProcessorWin32(HWND hWindow, UINT uMessage, WP
         // if there was an error during initialization which would display a message box and
         // cause the window to paint. If this happens, skip drawing and let the default windowing
         // behavior occur.
-        if (gs_Demo.Initialized())
+        if (AMDVulkanDemo::Instance()->Initialized())
         {
-            gs_Demo.DrawScene();
+            AMDVulkanDemo::Instance()->DrawScene();
             return 0;
         }
     }
@@ -2358,16 +2454,16 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
         return -1;
     }
 
-    gs_Demo.SetPrintGPACounterInfo(args.m_bPrintGPACounterInfo);
-    gs_Demo.SetPrintDebugOutput(args.m_bPrintDebugOutput);
-    gs_Demo.SetExitAfterProfile(args.m_bExitAfterProfile);
-    gs_Demo.SetVerifyCounters(args.m_bVerifyCounters);
-    gs_Demo.SetIncludeHwCounters(args.m_bIncludeHwCounters);
+    AMDVulkanDemo::Instance()->SetPrintGPACounterInfo(args.m_bPrintGPACounterInfo);
+    AMDVulkanDemo::Instance()->SetPrintDebugOutput(args.m_bPrintDebugOutput);
+    AMDVulkanDemo::Instance()->SetExitAfterProfile(args.m_bExitAfterProfile);
+    AMDVulkanDemo::Instance()->SetVerifyCounters(args.m_bVerifyCounters);
+    AMDVulkanDemo::Instance()->SetIncludeHwCounters(args.m_bIncludeHwCounters);
 
     // First load GPUPerfAPI if needed
     if (args.m_bUseGPA)
     {
-        if (!gs_Demo.InitializeGPA())
+        if (!AMDVulkanDemo::Instance()->InitializeGPA())
         {
             return -1;
         }
@@ -2375,23 +2471,23 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
     // Create a window for the demo to render into before initializing Vulkan since the window
     // surface is needed as part of the vulkan initialization.
-    HWND hWindow = gs_Demo.InitializeWindowWin32(hInstance, demoWindowMessageProcessorWin32, nShowCmd);
+    HWND hWindow = AMDVulkanDemo::Instance()->InitializeWindowWin32(hInstance, demoWindowMessageProcessorWin32, nShowCmd);
 
     if (hWindow == nullptr)
     {
         return -1;
     }
 
-    if (gs_Demo.InitializeVulkan())
+    if (AMDVulkanDemo::Instance()->InitializeVulkan())
     {
         // Main message loop
-        while (!gs_Demo.Exit())
+        while (!AMDVulkanDemo::Instance()->Exit())
         {
             PeekMessage(&message, NULL, 0, 0, PM_REMOVE);
 
             if (message.message == WM_QUIT)
             {
-                gs_Demo.Exit(true);
+                AMDVulkanDemo::Instance()->Exit(true);
             }
             else
             {
@@ -2427,9 +2523,9 @@ void demoWindowMessageProcessorXcb(xcb_generic_event_t* pEvent)
     {
         const xcb_client_message_event_t* pClientMessage = (const xcb_client_message_event_t*)pEvent;
 
-        if (pClientMessage->data.data32[0] == gs_Demo.m_xcbAtomWmDeleteWindow->atom)
+        if (pClientMessage->data.data32[0] == AMDVulkanDemo::Instance()->m_xcbAtomWmDeleteWindow->atom)
         {
-            gs_Demo.Exit(true);
+            AMDVulkanDemo::Instance()->Exit(true);
         }
     }
 
@@ -2441,7 +2537,7 @@ void demoWindowMessageProcessorXcb(xcb_generic_event_t* pEvent)
 
         if (pKeyRelease->detail == 0x9)  // Escape key
         {
-            gs_Demo.Exit(true);
+            AMDVulkanDemo::Instance()->Exit(true);
         }
     }
     }
@@ -2459,15 +2555,15 @@ int main(const int argc, const char* argv[])
         return -1;
     }
 
-    gs_Demo.SetPrintGPACounterInfo(args.m_bPrintGPACounterInfo);
-    gs_Demo.SetPrintDebugOutput(args.m_bPrintDebugOutput);
-    gs_Demo.SetExitAfterProfile(args.m_bExitAfterProfile);
-    gs_Demo.SetVerifyCounters(args.m_bVerifyCounters);
+    AMDVulkanDemo::Instance()->SetPrintGPACounterInfo(args.m_bPrintGPACounterInfo);
+    AMDVulkanDemo::Instance()->SetPrintDebugOutput(args.m_bPrintDebugOutput);
+    AMDVulkanDemo::Instance()->SetExitAfterProfile(args.m_bExitAfterProfile);
+    AMDVulkanDemo::Instance()->SetVerifyCounters(args.m_bVerifyCounters);
 
     // First load GPUPerfAPI if needed
     if (args.m_bUseGPA)
     {
-        if (!gs_Demo.InitializeGPA())
+        if (!AMDVulkanDemo::Instance()->InitializeGPA())
         {
             return -1;
         }
@@ -2475,20 +2571,20 @@ int main(const int argc, const char* argv[])
 
     // Create a window for the demo to render into before initializing Vulkan since the window
     // surface is needed as part of the vulkan initialization.
-    xcb_connection_t* pConnection = gs_Demo.InitializeWindowXCB();
+    xcb_connection_t* pConnection = AMDVulkanDemo::Instance()->InitializeWindowXCB();
 
     if (pConnection == nullptr)
     {
         return -1;
     }
 
-    if (gs_Demo.InitializeVulkan())
+    if (AMDVulkanDemo::Instance()->InitializeVulkan())
     {
         xcb_flush(pConnection);
         xcb_generic_event_t* event;
 
         // Main message loop
-        while (!gs_Demo.Exit())
+        while (!AMDVulkanDemo::Instance()->Exit())
         {
             event = xcb_poll_for_event(pConnection);
 
@@ -2503,9 +2599,9 @@ int main(const int argc, const char* argv[])
             // if there was an error during initialization which would display a message box and
             // cause the window to paint. If this happens, skip drawing and let the default windowing
             // behavior occur.
-            if (gs_Demo.Initialized())
+            if (AMDVulkanDemo::Instance()->Initialized())
             {
-                gs_Demo.DrawScene();
+                AMDVulkanDemo::Instance()->DrawScene();
             }
         }
     }

@@ -16,14 +16,21 @@ CMakeVS2015Generators = {'x86':'Visual Studio 14 2015', 'x64':'Visual Studio 14 
 CMakeVS2017Generators = {'x86':'Visual Studio 15 2017', 'x64':'Visual Studio 15 2017 Win64'}
 CMakeMakeFileGenerators = {'x86':'Unix Makefiles', 'x64':'Unix Makefiles'}
 CMakeCmd = "cmake"
+ScriptParser = argparse.ArgumentParser(description="Utility script to generate GPA Unix/Windows projects")
+VerbosityEnable=False
 
-def GenerateProjectFileUsingCMake(Generator, Platform, Config, additionalArgs, CMakeListDir, clean, internal):
+def Log(var):
+    if VerbosityEnable==True:
+        print(var)
+
+
+def GenerateProjectFileUsingCMake(Generator, Platform, Config, additionalArgs, CMakeListDir, clean, buildDirName):
     # Store the previous working directory
     currentCwd = os.getcwd()
-    buildDirName="CMakeBuild"
+    Log("Current Directory is " + currentCwd)
 
-    if internal==True:
-        buildDirName="CMakeBuild-Internal"
+    if buildDirName is None:
+        buildDirName="CMakeBuild"
 
     if sys.platform == "win32":
         buildDir = os.path.join(CMakeListDir, buildDirName, Platform)
@@ -34,13 +41,16 @@ def GenerateProjectFileUsingCMake(Generator, Platform, Config, additionalArgs, C
 
     if clean == True:
         shutil.rmtree(buildDir, ignore_errors=True)
+        Log("Deleting directory " + buildDir)
 
     # Create Diretories if it doesn't exist
     if False == os.path.isdir(buildDir):
         os.makedirs(buildDir)
+        Log("Creating creating " + buildDir)
 
     # Change directory to CMake Build dir
     os.chdir(buildDir)
+    Log("Changing directory to " + buildDir)
 
     if Platform == "x86":
         platformArg = "-Dbuild-32bit=ON"
@@ -52,14 +62,17 @@ def GenerateProjectFileUsingCMake(Generator, Platform, Config, additionalArgs, C
     else:
         configArg = "-Dbuild-debug=OFF"
 
+    print("Running CMake with arguments:")
+    for cmakearg in additionalArgs:
+        print(cmakearg)
+
     CMakeArgs = [CMakeCmd, "-G", Generator, "-Dusingscript=ON", configArg, platformArg]
 
     for args in additionalArgs:
         CMakeArgs.append(args)
 
     CMakeArgs.append(CMakeListDir)
-
-    print(CMakeArgs)
+    Log("cmake" + CMakeListDir)
 
     # Run CMake - Generate projects
     if sys.platform == "win32":
@@ -79,43 +92,31 @@ def GenerateProjectFileUsingCMake(Generator, Platform, Config, additionalArgs, C
 
 def DefineCMakeArguments():
     # parse the command line arguments
-    scriptParser = argparse.ArgumentParser(description="Utility script to generate GPA Unix/Windows projects")
 
     if sys.platform == "win32":
-        scriptParser.add_argument("--vs", default="2017", choices=["2015", "2017"], help="specify the version of Visual Studio to be used with this script (default: 2017)")
+        ScriptParser.add_argument("--vs", default="2017", choices=["2015", "2017"], help="specify the version of Visual Studio to be used with this script (default: 2017)")
 
-    scriptParser.add_argument("--config", choices=["debug", "release"], help="specify the build config for Makefiles (default: both)")
-    scriptParser.add_argument("--platform", choices=["x86", "x64"], help="specify the platform for the project has to be generated (default: both)" )
-    scriptParser.add_argument("--clean", action="store_true", help="delete any directories created by this script")
-    scriptParser.add_argument("--internal", action="store_true", help="CMake will generate project files for internal builds")
+    ScriptParser.add_argument("--config", choices=["debug", "release"], help="specify the build config for Makefiles (default: both)")
+    ScriptParser.add_argument("--platform", choices=["x86", "x64"], help="specify the platform for the project has to be generated (default: both)" )
+    ScriptParser.add_argument("--clean", action="store_true", help="delete any directories created by this script")
 
     if sys.platform == "win32":
-        scriptParser.add_argument("--skipdx11", action="store_true", help="skip DX11 from the CMake generated project")
-        scriptParser.add_argument("--skipdx12", action="store_true", help="skip DX12 from the CMake generated project")
+        ScriptParser.add_argument("--skipdx11", action="store_true", help="skip DX11 from the CMake generated project")
+        ScriptParser.add_argument("--skipdx12", action="store_true", help="skip DX12 from the CMake generated project")
 
-    scriptParser.add_argument("--skipvulkan", action="store_true", help="skip Vulkan from the CMake generated project")
-    scriptParser.add_argument("--skipopengl", action="store_true", help="skip OpenGL from the CMake generated project")
-    scriptParser.add_argument("--skipopencl", action="store_true", help="skip OpenCL from the CMake generated project")
-
-    if sys.platform != "win32":
-        scriptParser.add_argument("--skiprocm", action="store_true", help="skip ROCm from the CMake generated project")
-
-    scriptParser.add_argument("--skiptests", action="store_true", help="skip Tests from the CMake generated project")
-    scriptParser.add_argument("--skipdocs", action="store_true", help="skip Docs from the CMake generated project")
-    scriptParser.add_argument("--nofetch", action="store_true", help="skip fetching repo dependencies")
-    scriptParser.add_argument("--cmakecmd", type=str, default="cmake", help="command to use in place of 'cmake'")
-
-    scriptParserArgs = scriptParser.parse_args()
-    return scriptParserArgs
+    ScriptParser.add_argument("--skipvulkan", action="store_true", help="skip Vulkan from the CMake generated project")
+    ScriptParser.add_argument("--skipopengl", action="store_true", help="skip OpenGL from the CMake generated project")
+    ScriptParser.add_argument("--skipopencl", action="store_true", help="skip OpenCL from the CMake generated project")
+    ScriptParser.add_argument("--skiptests", action="store_true", help="skip Tests from the CMake generated project")
+    ScriptParser.add_argument("--skipdocs", action="store_true", help="skip Docs from the CMake generated project")
+    ScriptParser.add_argument("--nofetch", action="store_true", help="skip fetching repo dependencies")
+    ScriptParser.add_argument("--cmakecmd", type=str, default="cmake", help="command to use in place of 'cmake'")
+    ScriptParser.add_argument("--verbose", action="store_true", help="Turns on the verbosity of the script'")
+    ScriptParser.add_argument("--android", action="store_true", help="CMake will generate project files for android")
 
 def ParseCMakeArguments(cmakeParsedArgs):
 
     CMakeAdditionalArgs=[""]
-
-    if cmakeParsedArgs.internal == True:
-        CMakeAdditionalArgs.append("-Dbuild-internal=ON")
-    else:
-        CMakeAdditionalArgs.append("-Dbuild-internal=OFF")
 
     if sys.platform == "win32":
         if cmakeParsedArgs.skipdx11 == True:
@@ -142,12 +143,6 @@ def ParseCMakeArguments(cmakeParsedArgs):
         CMakeAdditionalArgs.append("-Dskipopencl=ON")
     else:
         CMakeAdditionalArgs.append("-Dskipopencl=OFF")
-
-    if sys.platform != "win32":
-        if cmakeParsedArgs.skiprocm == True:
-            CMakeAdditionalArgs.append("-Dskiprocm=ON")
-        else:
-            CMakeAdditionalArgs.append("-Dskiprocm=OFF")
 
     if cmakeParsedArgs.skiptests == True:
         CMakeAdditionalArgs.append("-Dskiptests=ON")
@@ -186,5 +181,8 @@ def ParseCMakeArguments(cmakeParsedArgs):
 
     global CMakeCmd
     CMakeCmd = cmakeParsedArgs.cmakecmd
+
+    global VerbosityEnable
+    VerbosityEnable=cmakeParsedArgs.verbose
 
     return CMakeAdditionalArgs

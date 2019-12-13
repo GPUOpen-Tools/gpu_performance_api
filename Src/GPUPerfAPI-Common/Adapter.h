@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2008-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2008-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  This is the main include file for Adapter.cpp to enumerate adapters
@@ -25,7 +25,7 @@ public:
 
     /// Get ASIC information for all GPUs in the system
     /// \param[out] asicInfoList the ADLUtil_ASICInfo vector
-    /// \return True if ASIC info list was retrieved succcessfully, false if not
+    /// \return True if ASIC info list was retrieved successfully, false if not
     bool getAsicInfoList(AsicInfoList& asicInfoList) const;
 
 private:

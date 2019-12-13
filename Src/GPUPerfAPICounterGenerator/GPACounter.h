@@ -10,6 +10,7 @@
 
 #include "GPUPerfAPITypes.h"
 #include "GPASplitCountersInterfaces.h"
+#include <cstring>
 
 /// macro to remove counter names from public builds
 #ifdef AMDT_INTERNAL
@@ -83,8 +84,37 @@ inline GPA_UUID GetCounterUuid(const char* counterName, const char* counterDescr
     *reinterpret_cast<size_t*>(&uuid.Data1) = std::hash<std::string>{}(counterName);
     *reinterpret_cast<size_t*>(&uuid.Data4) = std::hash<std::string>{}(counterDescription);
 #else
-    *reinterpret_cast<size_t*>(&uuid.m_data1) = std::hash<std::string>{}(counterName);
-    *reinterpret_cast<size_t*>(&uuid.m_data4) = std::hash<std::string>{}(counterDescription);
+    /*
+    We need 4 32-bit hash to generate UUID
+    */
+    {
+        size_t hash = std::hash<std::string>{}(counterName);
+        memset(&uuid.m_data1, 0, sizeof(uuid.m_data1));
+        memcpy(&uuid.m_data1, &hash, sizeof(uint32_t));
+    }
+
+    {
+        std::string tempString = counterName;
+        tempString.append(counterDescription);
+        size_t hash = std::hash<std::string>{}(tempString);
+        // Assign m_data2 and m_data3
+        memcpy(&uuid.m_data2, &hash, sizeof(uint32_t));
+    }
+
+    {
+        std::string tempString = counterDescription;
+        tempString.append(counterName);
+        size_t hash = std::hash<std::string>{}(tempString);
+        /// Assign 4 byte data to first 4 byte of m_data4
+        memcpy(&uuid.m_data4, &hash, sizeof(uint32_t));
+    }
+
+    {
+        size_t hash = std::hash<std::string>{}(counterDescription);
+        /// Assign 4 byte data to last 4 byte of m_data4
+        memcpy(&uuid.m_data4[4], &hash, sizeof(uint32_t));
+    }
+
 #endif
     return uuid;
 }

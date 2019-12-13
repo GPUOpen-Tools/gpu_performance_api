@@ -1,4 +1,4 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -48,6 +48,6 @@ INCLUDE_WIN_RESOURCE()
 target_link_libraries(${GPA_PROJECT_NAME}
                       GPUPerfAPI-Common
                       GPUPerfAPIDX
-                      GPUPerfAPICounterGenerator)
+                      GPUPerfAPICounterGenerator-DX12)
 
 ADD_LINKER_FLAGS()

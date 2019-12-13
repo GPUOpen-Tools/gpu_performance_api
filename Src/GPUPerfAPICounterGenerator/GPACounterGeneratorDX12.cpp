@@ -138,7 +138,7 @@ GPA_Status GPA_CounterGeneratorDX12::GeneratePublicCounters(GDT_HW_GENERATION   
     auto internalStatus = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
 
 #ifdef AMDT_INTERNAL
-    internalStatus = GPA_LoadInternalCounters(GPA_API_DIRECTX_12, desiredGeneration, asicType, generateAsicSpecificCounters, pPublicCounters);
+    internalStatus = GenerateInternalDerivedCounters(desiredGeneration, asicType, generateAsicSpecificCounters, pPublicCounters);
 #endif
 
     if (GPA_STATUS_OK == status)

@@ -1,4 +1,4 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -28,25 +28,34 @@ include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${ADDITIONAL_DERIVED_COUNTERS_INCLUDE})
 
 set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/APIErrorTests.cpp
-                 ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorCLTests.cpp
-                 ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorGLTests.cpp
-                 ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorTests.cpp
-                 ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorVKTests.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/CounterSchedulerTests.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/GPAInterfaceLoaderTests.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/GPUPerfAPILoaderTests.cpp
                  ${CMAKE_CURRENT_SOURCE_DIR}/GPUPerfAPIUnitTests.cpp
+                 ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorTests.cpp
                  ${ADDITIONAL_UNIT_TEST_SOURCES})
 
-if(WIN32)
-    set(SOURCE_FILES ${SOURCE_FILES}
-                     ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorDX11Tests.cpp
-                     ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorDX12Tests.cpp)
+
+if(NOT ${skipopencl})
+    set(SOURCE_FILES ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorCLTests.cpp)
 endif()
 
-if(NOT WIN32)
-    set(SOURCE_FILES ${SOURCE_FILES}
-                     ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorHSATests.cpp)
+if(NOT ${skipopengl})
+    set(SOURCE_FILES ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorGLTests.cpp)
+endif()
+
+if(NOT ${skipvulkan})
+    set(SOURCE_FILES ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorVKTests.cpp)
+endif()
+
+if(WIN32)
+    if(NOT ${skipdx12})
+        set(SOURCE_FILES ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorDX12Tests.cpp)
+    endif()
+
+    if(NOT ${skipdx11})
+        set(SOURCE_FILES ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorDX11Tests.cpp)
+    endif()
 endif()
 
 if(NOT DEFINED UNITTEST_COUNTER_DIR)
@@ -58,13 +67,11 @@ set(INTERNAL_COUNTERS_SRC
 
 set(HEADER_FILES "${CMAKE_CURRENT_SOURCE_DIR}/CounterGeneratorTests.h")
 
-foreach(API GL DX11 DX12 VK CL HSA)
+foreach(API GL DX11 DX12 VK CL)
     if(NOT WIN32 AND (${API} STREQUAL "DX11" OR ${API} STREQUAL DX12))
         continue()
     endif()
-    if(WIN32 AND (${API} STREQUAL "HSA"))
-        continue()
-    endif()
+
     if(EXISTS ${GPA_AUTOGEN_SRC_TESTS})
         include (${GPA_AUTOGEN_SRC_TESTS}/counters/PublicDerivedCounters${API}.cmake)
         set(COUNTER_FILES ${COUNTER_FILES}
@@ -99,16 +106,50 @@ endif()
 add_compile_options(${ADDITIONAL_COMPILE_OPTIONS})
 link_directories(${ADDITIONAL_LINK_DIRECTORIES})
 add_executable(${GPA_PROJECT_NAME} ${SOURCES})
+add_dependencies(${GPA_PROJECT_NAME} GPUPerfAPICounters)
 ADD_GPA_USER_COMPILE_DEFINITIONS()
+
+if(NOT ${skipvulkan})
+    set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-VK)
+    add_definitions(-DVK)
+endif()
+
+if(NOT ${skipopengl})
+    set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-GL)
+    add_definitions(-DGL)
+endif()
+
+if(NOT ${skipopencl})
+    set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-CL)
+    add_definitions(-DCL)
+endif()
+
+if(WIN32)
+    if(NOT ${skipdx12})
+        set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-DX12)
+        add_definitions(-DDX12)
+    endif()
+
+    if(NOT ${skipdx11})
+        set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-DX11)
+        add_definitions(-DDX11)
+    endif()
+endif()
+
 target_link_libraries(${GPA_PROJECT_NAME}
                       GPUPerfAPI-Common
-                      GPUPerfAPICounterGenerator
+                      ${LIB_NAMES}
                       gtest
                       $<$<PLATFORM_ID:Linux>:dl>
                       $<$<PLATFORM_ID:Linux>:pthread>)
 
 ADD_LINKER_FLAGS()
 set_target_properties(${GPA_PROJECT_NAME} PROPERTIES FOLDER Tests)
+
+if(UNIX)
+    set_property(TARGET ${GPA_PROJECT_NAME} PROPERTY LINK_FLAGS "-Wl,-rpath=${CMAKE_RUNTIME_OUTPUT_DIRECTORY}")
+endif()
+
 SET_EXECUTABLE_NAME(${GPA_PROJECT_NAME})
 
 if(WIN32)

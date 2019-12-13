@@ -133,7 +133,7 @@ GPA_Status GPA_CounterGeneratorVK::GeneratePublicCounters(GDT_HW_GENERATION    d
     auto internalStatus = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
 
 #ifdef AMDT_INTERNAL
-    internalStatus = GPA_LoadInternalCounters(GPA_API_VULKAN, desiredGeneration, asicType, generateAsicSpecificCounters, pPublicCounters);
+    internalStatus = GenerateInternalDerivedCounters(desiredGeneration, asicType, generateAsicSpecificCounters, pPublicCounters);
 #endif
 
     if (GPA_STATUS_OK == status)

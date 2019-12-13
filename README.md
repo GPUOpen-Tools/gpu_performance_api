@@ -22,41 +22,36 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * [Building the Source Code](BUILD.md)
 * [License](LICENSE)
 * [Historical Release Notes](ReleaseNotes.md)
+* [Style and Format Change](#Style-and-Format-Change)
 
 ## Major Features
 * Provides a standard API for accessing GPU Performance counters for both graphics and compute workloads across multiple GPU APIs.
-* Supports Vulkan™, DirectX™ 12, DirectX 11, OpenGL, OpenCL™, and ROCm/HSA.
+* Supports Vulkan™, DirectX™ 12, DirectX 11, OpenGL, and OpenCL™.
 * Supports all current Radeon graphics cards and APUs based on Graphics IP version 8 and newer.
 * Supports both Windows and Linux.
 * Provides derived "public" counters based on raw hardware counters.
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-* Version 3.4 (7/10/19)
-  * Add support for additional GPUs and APUs, including Radeon 5700 Series GPUs.
-  * Add support for setting stable GPU clocks for DirectX11, OpenGL and OpenCL.
-  * Add an OpenGL sample application that uses GPUPerfAPI.
-  * Add basic counter validation to sample applications.
-  * Add support for enabling individual hardware counters that make up derived counters.
-  * Add two new GFX9 GlobalMemory Counters for graphics: LocalVidMemBytes and PcieBytes.
-  * Reformat source code using clang-format.
-  * Update counter documentation to contain per-hardware-generation tables.
+* Version 3.5 (12/13/19)
+  * Add support for additional GPUs and APUs, including Radeon 5500 and Radeon 5300 Series GPUs.
+  * Add DirectX11 sample application using GPUPerfAPI.
+  * Add per-API static counter generation.
+  * Decrease in GPUPerfAPI binaries size.
+  * Add script to package GPUPerfAPI post-build.
+  * Remove ROCm/HSA support.
+  * Add Unicode support in GPUPerfAPI for Linux.
   * Bugs Fixed:
-    * Fixed error handling in GPA_GetEnabledIndex, GPA_EnableCounterByName and GPA_DisbleCounterByName.
-    * Fixed an issue with Vulkan timing counters (https://github.com/GPUOpen-Tools/GPA/issues/40).
-    * Fixed an issue with SALUBusy counters.
-    * Fixed an issue with HiZQuadsCulledCount and HiZQuadsSurvivingCount counters on GFX8 GPUs.
-    * Fixed an issue with MemUnitBusy and MemUnitStalled counters on GFX8 GPUs.
-    * Fixed an issue with VSVALUBusyCycles counter on GFX9 GPUs.
+    * Fixed CMake files to respect supported build flags.
+    * Fixed crash when DX12 debug layer was enabled.
+    * Fixed an issue with loading of shader in GPA Vulkan sample app.
+    * Fixed an issue in Vulkan build with newer Vulkan SDK with amd_shader_core_properties2 extension
+    * Fixed an issue with crash on unsupported Gfx6 and Gfx7 GPUs.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
 * Windows: Radeon Software Adrenaline 2019 Edition 19.7.3 or later (Driver Packaging Version 19.30 or later).
 * Linux: Radeon Software for Linux Revision 19.20 or later (19.30 required for AMD Radeon 5700 Series GPUs).
-* HSA/ROCm version requires ROCm 2.0 or newer.
-  * For use with ROCm, please make sure that the optional ROCm package "rocprofiler-dev" is installed.
-    * Ubuntu: sudo apt install rocprofiler-dev
-    * CentOS: sudo yum install rocprofiler-dev
 * Radeon GPUs or APUs based on Graphics IP version 6 and 7 are no longer supported by GPUPerfAPI. Please use an older version ([3.3](https://github.com/GPUOpen-Tools/GPA/releases/tag/v3.3)) with older hardware.
 * Windows 7, 8.1, and 10.
 * Ubuntu (16.04 and later) and CentOS/RHEL (7 and later) distributions.
@@ -81,7 +76,6 @@ After cloning the repository, please run the following python script to retrieve
 * [Src/GPUPerfAPIDX11](Src/GPUPerfAPIDX11) -- contains the source for the DirectX11 version of GPUPerfAPI
 * [Src/GPUPerfAPIDX12](Src/GPUPerfAPIDX12) -- contains the source for the DirectX12 version of GPUPerfAPI
 * [Src/GPUPerfAPIGL](Src/GPUPerfAPIGL) -- contains the source for the OpenGL version of GPUPerfAPI
-* [Src/GPUPerfAPIROCm](Src/GPUPerfAPIROCm) -- contains the source for the ROCm/HSA version of GPUPerfAPI
 * [Src/GPUPerfAPIUnitTests](Src/GPUPerfAPIUnitTests) -- contains a small set of unit tests for GPUPerfAPI
 * [Src/GPUPerfAPIVk](Src/GPUPerfAPIVk) -- contains the source for the Vulkan version of GPUPerfAPI
 * [Src/PublicCounterCompiler](Src/PublicCounterCompiler) -- source code for a tool to generate C++ code for public counters from text files defining the counters.
@@ -118,3 +112,9 @@ build of GPUPerfAPI that also exposes the raw hardware counters, but that is a d
    * Most of the ComputeShader counters (all except the MemUnit and WriteUnit counters): These values should be representative of performance, but may not be 100% accurate.
  * On Linux, setting the GPU clock mode is not working correctly for Radeon 5700 Series GPUs, potentially leading to some inconsistencies in counter values from one run to the
    next. This is expected to be addressed in a future driver release.
+
+## Style and Format Change
+
+The source code of this product is being reformatted to follow the Google C++ Style Guide https://google.github.io/styleguide/cppguide.html.
+In the interim you may encounter a mix of both an older C++ coding style, as well as the newer Google C++ Style.
+Please refer to the _clang-format file in the root directory of the product for additional style information.

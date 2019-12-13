@@ -104,8 +104,7 @@ GPALIB_DECL GPA_Status GPA_RegisterLoggingCallback(GPA_Logging_Type loggingType,
 /// \brief Initializes the driver so that counters are exposed.
 ///
 /// This function must be called before the rendering context or device is created. In the case of DirectX 12
-/// or Vulkan, this function must be called before a queue is created. For HSA/ROCm, this function must be called
-/// before the first call to hsa_init.
+/// or Vulkan, this function must be called before a queue is created.
 /// \param[in] flags Flags used to initialize GPA. This should be a combination of GPA_Initialize_Bits.
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPALIB_DECL GPA_Status GPA_Initialize(GPA_InitializeFlags flags);
@@ -382,10 +381,10 @@ GPALIB_DECL GPA_Status GPA_IsCounterEnabled(GPA_SessionId sessionId, gpa_uint32 
 ///
 /// You will be unable to create samples on the specified command list before GPA_BeginCommandList is called.
 /// Command list corresponds to ID3D12GraphicsCommandList in DirectX 12 and vkCommandBuffer in Vulkan.
-/// In OpenCL/OpenGL/HSA/DirectX 11, use GPA_NULL_COMMAND_LIST for the pCommandList parameter and GPA_COMMAND_LIST_NONE for the commandListType parameter.
+/// In OpenCL/OpenGL/DirectX 11, use GPA_NULL_COMMAND_LIST for the pCommandList parameter and GPA_COMMAND_LIST_NONE for the commandListType parameter.
 /// \param[in] sessionId unique identifier of the GPA Session Object.
 /// \param[in] passIndex 0-based index of the pass.
-/// \param[in] pCommandList the command list on which to begin sampling - ignored in OpenCL/HSA/OpenGL/DX11 applications.
+/// \param[in] pCommandList the command list on which to begin sampling - ignored in OpenCL/OpenGL/DX11 applications.
 /// \param[in] commandListType command list type.
 /// \param[out] pCommandListId GPA-generated unique command list id.
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
@@ -398,7 +397,7 @@ GPALIB_DECL GPA_Status GPA_BeginCommandList(GPA_SessionId         sessionId,
 /// \brief Ends command list for sampling.
 ///
 /// You will be unable to create samples on the specified command list after GPA_EndCommandList is called.
-/// \param[in] commandListId the command list on which to end sampling - ignored in OpenCL/HSA/OpenGL applications.
+/// \param[in] commandListId the command list on which to end sampling - ignored in OpenCL/OpenGL applications.
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.
 GPALIB_DECL GPA_Status GPA_EndCommandList(GPA_CommandListId commandListId);
 

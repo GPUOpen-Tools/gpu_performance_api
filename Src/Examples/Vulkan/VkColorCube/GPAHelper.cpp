@@ -155,12 +155,26 @@ std::string GPAHelper::GetExecutablePath()
 
 std::string GPAHelper::GetCSVFileName() const
 {
+#ifdef ANDROID
+    // This path is dedicated to the app
+    std::string tempString("/sdcard/Android/data/com.amd.gpa.vkcolorcube/");
+    tempString.append(m_csvFileName);
+    return tempString;
+#else
     return GetExecutablePath().append(m_csvFileName);
+#endif
 }
 
 std::string GPAHelper::GetGPALogFileName()
 {
+#ifdef ANDROID
+    // This path is dedicated to the app
+    std::string tempString("/sdcard/Android/data/com.amd.gpa.vkcolorcube/");
+    tempString.append(ms_gpaLogFileName);
+    return tempString;
+#else
     return GetExecutablePath().append(ms_gpaLogFileName);
+#endif
 }
 
 bool GPAHelper::OpenCSVFile()

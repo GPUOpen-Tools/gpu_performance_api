@@ -35,7 +35,6 @@ for each API
     "OpenCL", "| 64-bit Windows: GPUPerfAPICL-x64.dll
     | 32-bit Windows: GPUPerfAPICL.dll
     | 64-bit Linux: libGPUPerfAPICL.so"
-    "ROCm/HSA", "| 64-bit Linux: libGPUPerfAPIROCm.so"
 
 To use the GPUPerfAPI library:
 
@@ -122,8 +121,7 @@ Initializing and Destroying a GPUPerfAPI Instance
 GPUPerfAPI must be initialized before the rendering context or device is
 created, so that the driver can be prepared for accessing hardware data.
 In the case of DirectX 12 or Vulkan, initialization must be done before
-a queue is created. For HSA/ROCm, this function must be called before the
-first call to ``hsa_init``. Once you are done using GPUPerfAPI, you should
+a queue is created. Once you are done using GPUPerfAPI, you should
 destroy the GPUPerfAPI instance. In the case of DirectX 12, destruction
 must be done before the device is destroyed.
 
@@ -172,7 +170,6 @@ required type which should be passed to GPA_OpenContext:
     "OpenGL", "| Windows: ``HGLRC``
     | Linux: ``GLXContext``"
     "OpenCL", "| ``cl_command_queue*``"
-    "ROCm/HSA", "| ``hsa_queue_t*``"
 
 Querying a Context and Counters
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@

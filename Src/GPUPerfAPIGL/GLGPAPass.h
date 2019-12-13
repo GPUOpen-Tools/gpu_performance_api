@@ -11,8 +11,7 @@
 // GPA Common
 #include "GPAPass.h"
 #include "IGPACommandList.h"
-
-#include "GLInclude.h"
+#include "GLEntryPoints.h"
 
 using GLPerfMonitorId = GLuint;  ///< type alias for GL perf monitor id
 

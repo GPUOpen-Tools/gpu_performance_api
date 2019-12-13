@@ -9,50 +9,34 @@
 #include "GLEntryPoints.h"
 #include "Logging.h"
 
-#ifdef _LINUX
-#include <dlfcn.h>
-#define LOAD_SYMBOL dlsym
-#else
-#define LOAD_SYMBOL GetProcAddress
-#endif
-
 namespace oglUtils
 {
     decltype(GET_PROC_ADDRESS_TYPE)* GET_PROC_ADDRESS_FUNC = nullptr;
 
-#define DEFINE_CORE_FUNCS(type, typeString) decltype(type)* _o##type = nullptr;
+    decltype(glFlush)*       _oglFlush       = nullptr;
+    decltype(glGetString)*   _oglGetString   = nullptr;
+    decltype(glGetIntegerv)* _oglGetIntegerv = nullptr;
+    decltype(glGetError)*    _oglGetError    = nullptr;
+    PFNGLGETSTRINGIPROC      _oglGetStringi  = nullptr;
 
-#include "GLFunctions.h"
-    GL_CORE_FUNCTIONS(DEFINE_CORE_FUNCS)
+    PFNGLGETQUERYOBJECTIVPROC       _oglGetQueryObjectiv       = nullptr;
+    PFNGLGENQUERIESPROC             _oglGenQueries             = nullptr;
+    PFNGLDELETEQUERIESPROC          _oglDeleteQueries          = nullptr;
+    PFNGLQUERYCOUNTERPROC           _oglQueryCounter           = nullptr;
+    PFNGLGETQUERYOBJECTUI64VEXTPROC _oglGetQueryObjectui64vEXT = nullptr;
 
-#undef DEFINE_CORE_FUNCS
-
-#define DEFINE_GL_PLATFORM_CORE_FUNCS(type, typeString) decltype(type)* _##type = nullptr;
-
-#ifdef WIN32
-    WGL_CORE_FUNCTIONS(DEFINE_GL_PLATFORM_CORE_FUNCS)
-#else
-    GLX_CORE_FUNCTIONS(DEFINE_GL_PLATFORM_CORE_FUNCS)
-#endif
-#undef DEFINE_GL_PLATFORM_CORE_FUNCS
-
-#define DEFINE_FUNC_PTRS(type, typeString) type _o##typeString = nullptr;
-
-#include "GLFunctions.h"
-    GL_EXT_FUNCTIONS(DEFINE_FUNC_PTRS)
-    GL_AMD_EXT_FUNCTIONS(DEFINE_FUNC_PTRS)
-#undef DEFINE_FUNC_PTRS
-
-// AMD GPU association extension functions
-#define DECLARE_AMD_ASSOCIATION_FUNCS(type, typeString) type _##typeString = nullptr;
-
-#include "GLFunctions.h"
-#ifdef WIN32
-    WGL_AMD_EXT_FUNCTIONS(DECLARE_AMD_ASSOCIATION_FUNCS)
-#else
-    GLX_AMD_EXT_FUNCTIONS(DECLARE_AMD_ASSOCIATION_FUNCS)
-#endif
-#undef DECLARE_AMD_ASSOCIATION_FUNCS
+    /// AMD perf monitor extensions
+    PFNGLGETPERFMONITORGROUPSAMDPROC        _oglGetPerfMonitorGroupsAMD        = nullptr;
+    PFNGLGETPERFMONITORCOUNTERSAMDPROC      _oglGetPerfMonitorCountersAMD      = nullptr;
+    PFNGLGETPERFMONITORGROUPSTRINGAMDPROC   _oglGetPerfMonitorGroupStringAMD   = nullptr;
+    PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC _oglGetPerfMonitorCounterStringAMD = nullptr;
+    PFNGLGETPERFMONITORCOUNTERINFOAMDPROC   _oglGetPerfMonitorCounterInfoAMD   = nullptr;
+    PFNGLGENPERFMONITORSAMDPROC             _oglGenPerfMonitorsAMD             = nullptr;
+    PFNGLDELETEPERFMONITORSAMDPROC          _oglDeletePerfMonitorsAMD          = nullptr;
+    PFNGLSELECTPERFMONITORCOUNTERSAMDPROC   _oglSelectPerfMonitorCountersAMD   = nullptr;
+    PFNGLBEGINPERFMONITORAMDPROC            _oglBeginPerfMonitorAMD            = nullptr;
+    PFNGLENDPERFMONITORAMDPROC              _oglEndPerfMonitorAMD              = nullptr;
+    PFNGLGETPERFMONITORCOUNTERDATAAMDPROC   _oglGetPerfMonitorCounterDataAMD   = nullptr;
 
 #ifdef DEBUG_GL_ERRORS
     // Function pointers for the GL_ARB_debug_output extension - used to improve error reporting.
@@ -74,6 +58,9 @@ namespace oglUtils
     const char* s_pIntelRenderer              = "Intel";
     bool        s_areGLFunctionsInitialized   = false;
     LibHandle   s_glLibHandle                 = nullptr;
+#ifdef GLES
+    LibHandle   s_eglLibHandle                = nullptr;
+#endif
     bool        s_isSupportedExtensionQueried = false;
 
     std::map<GLExtension, Supported> s_glExtensions = {{std::string("GL_AMD_performance_monitor"), false},
@@ -83,72 +70,124 @@ namespace oglUtils
                                                        {std::string("GLX_MESA_query_renderer"), false},
                                                        {std::string("WGL_AMD_gpu_association"), false},
                                                        {std::string("GLX_AMD_GPU_association"), false}};
+
+    const int s_GL_DRIVER_VER_WITH_ONLY_GCN_SUPPORT           = 13452;  ///< GL driver version where pre-GCN hardware was dropped
+    const int s_GL_DRIVER_VER_WITH_LINUX_STABLE_CLOCK_SUPPORT = 13562;  ///< GL driver version where stable clocks are working on Linux
+    const int s_GL_DRIVER_VER_WITH_GPIN_COUNTERS              = 13565;  ///< GL driver version where GPIN counters have been validated
+
+    bool CheckForGLError(const std::string& onErrorMessage)
+    {
+        bool   errorFound = false;
+        GLenum glError    = oglUtils::_oglGetError();
+
+        if (glError != GL_NO_ERROR)
+        {
+            switch (glError)
+            {
+            case GL_INVALID_ENUM:
+            case GL_INVALID_VALUE:
+            case GL_INVALID_OPERATION:
+            case GL_STACK_OVERFLOW:
+            case GL_STACK_UNDERFLOW:
+            case GL_OUT_OF_MEMORY:
+                errorFound = true;
+                GPA_LogError(onErrorMessage.c_str());
+                break;
+
+            default:
+                assert(glError == GL_NO_ERROR);
+                break;
+            }
+        }
+
+        return errorFound;
+    }
 }  // namespace oglUtils
+
+
 
 bool oglUtils::LoadGL()
 {
     if (nullptr == s_glLibHandle)
     {
 #ifdef _WIN32
+#ifndef GLES
         s_glLibHandle = LoadLibraryA("opengl32.dll");
-#ifdef GLES
+#else
         s_glLibHandle = LoadLibraryA("libEGL.dll");
 #endif
 #else
+#ifndef GLES
         s_glLibHandle = dlopen("libGL.so", RTLD_LAZY);
-#ifdef GLES
-        s_glLibHandle = dlopen("libEGL.so", RTLD_LAZY);
+#else
+        s_eglLibHandle = dlopen("libEGL.so", RTLD_NOW);
+
+        if(nullptr == s_glLibHandle)
+        {
+            s_glLibHandle = dlopen("libGLESv3.so", RTLD_NOW);
+
+            if(nullptr == s_glLibHandle)
+            {
+                s_glLibHandle = dlopen("libGLESv2.so", RTLD_NOW);
+
+                if(nullptr == s_glLibHandle)
+                {
+                    s_glLibHandle = dlopen("libGLES.so", RTLD_NOW);
+                }
+            }
+        }
 #endif
 #endif
     }
 
+#ifndef GLES
     return nullptr != s_glLibHandle;
+#else
+    return nullptr != s_glLibHandle && nullptr != s_eglLibHandle;
+#endif
 }
 
-#define LOAD_LIBRARY_SYMBOL(varName, type)                                              \
-    if (nullptr == varName)                                                             \
-    {                                                                                   \
-        varName = reinterpret_cast<decltype(type)*>(LOAD_SYMBOL(s_glLibHandle, #type)); \
+void oglUtils::QuerySupportedExtensions()
+{
+    if (nullptr != _oglGetString && !s_isSupportedExtensionQueried)
+    {
+        GPA_LogMessage("Using OpenGL 1.x method to query extensions.");
+        GLint numExtensions = 0;
+        _oglGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
+
+        if(nullptr != _oglGetStringi)
+        {
+            for (GLint i = 0; i < numExtensions; i++)
+            {
+                const char* pExtension = reinterpret_cast<const char*>(_oglGetStringi(GL_EXTENSIONS, i));
+
+                if ((nullptr != pExtension) && (s_glExtensions.find(pExtension) != s_glExtensions.end()))
+                {
+                    s_glExtensions[pExtension] = true;
+                }
+            }
+        }
+
+        s_isSupportedExtensionQueried = true;
     }
+}
 
 bool oglUtils::InitializeGLCoreFunctions()
 {
     if (LoadGL())
     {
+        // Load GL core functions
         LOAD_LIBRARY_SYMBOL(_oglFlush, glFlush);
         LOAD_LIBRARY_SYMBOL(_oglGetString, glGetString);
         LOAD_LIBRARY_SYMBOL(_oglGetIntegerv, glGetIntegerv);
         LOAD_LIBRARY_SYMBOL(_oglGetError, glGetError);
 
-        if (nullptr == _oglFlush || nullptr == _oglGetString || nullptr == _oglGetIntegerv || nullptr == _oglGetError)
+        if (nullptr == _oglFlush ||
+            nullptr == _oglGetString ||
+            nullptr == _oglGetIntegerv ||
+            nullptr == _oglGetError)
         {
             GPA_LogMessage("Unable to Initialize GL core functions.");
-            return false;
-        }
-
-        bool found = true;
-#define DEFINE_GL_PLATFORM_CORE_FUNCS(type, typeString) \
-    LOAD_LIBRARY_SYMBOL(_##typeString, type)            \
-    found &= _##typeString != nullptr;
-
-#ifdef WIN32
-        WGL_CORE_FUNCTIONS(DEFINE_GL_PLATFORM_CORE_FUNCS)
-#else
-        GLX_CORE_FUNCTIONS(DEFINE_GL_PLATFORM_CORE_FUNCS)
-#endif
-#undef DEFINE_GL_PLATFORM_CORE_FUNCS
-
-        if (!found)
-        {
-            GPA_LogMessage("Unable to Initialize GL Platform core functions.");
-            return false;
-        }
-
-        GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(s_glLibHandle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
-
-        if (nullptr == GET_PROC_ADDRESS_FUNC)
-        {
-            GPA_LogError("Unable to Initialize required extension functions.");
             return false;
         }
 
@@ -158,36 +197,46 @@ bool oglUtils::InitializeGLCoreFunctions()
     return false;
 }
 
-void oglUtils::QuerySupportedExtensions()
+bool oglUtils::InitCtxAmdPerfExtFunctions()
 {
-    if (InitializeGLCoreFunctions() && InitCtxExtFunctions() && nullptr != _oglGetString && !s_isSupportedExtensionQueried)
+    if (LoadGL())
     {
-        GPA_LogMessage("Using OpenGL 1.x method to query extensions.");
-        GLint numExtensions = 0;
-        _oglGetIntegerv(GL_NUM_EXTENSIONS, &numExtensions);
-
-        for (GLint i = 0; i < numExtensions; i++)
+        if(nullptr == GET_PROC_ADDRESS_FUNC)
         {
-            const char* pExtension = reinterpret_cast<const char*>(_oglGetStringi(GL_EXTENSIONS, i));
-
-            if ((nullptr != pExtension) && (s_glExtensions.find(pExtension) != s_glExtensions.end()))
-            {
-                s_glExtensions[pExtension] = true;
-            }
+#ifndef GLES
+            GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(s_glLibHandle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
+#else
+            GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(s_eglLibHandle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
+#endif
         }
 
-        s_isSupportedExtensionQueried = true;
-    }
-}
+        // Load AMD Perf extension functions
+        GET_CONTEXT_PROC_ADDRESS(_oglGetPerfMonitorGroupsAMD, PFNGLGETPERFMONITORGROUPSAMDPROC, "glGetPerfMonitorGroupsAMD");
+        GET_CONTEXT_PROC_ADDRESS(_oglGetPerfMonitorCountersAMD, PFNGLGETPERFMONITORCOUNTERSAMDPROC, "glGetPerfMonitorCountersAMD");
+        GET_CONTEXT_PROC_ADDRESS(_oglGetPerfMonitorGroupStringAMD, PFNGLGETPERFMONITORGROUPSTRINGAMDPROC, "glGetPerfMonitorGroupStringAMD");
+        GET_CONTEXT_PROC_ADDRESS(_oglGetPerfMonitorCounterStringAMD, PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC, "glGetPerfMonitorCounterStringAMD");
+        GET_CONTEXT_PROC_ADDRESS(_oglGetPerfMonitorCounterInfoAMD, PFNGLGETPERFMONITORCOUNTERINFOAMDPROC, "glGetPerfMonitorCounterInfoAMD");
+        GET_CONTEXT_PROC_ADDRESS(_oglGenPerfMonitorsAMD, PFNGLGENPERFMONITORSAMDPROC, "glGenPerfMonitorsAMD");
+        GET_CONTEXT_PROC_ADDRESS(_oglDeletePerfMonitorsAMD, PFNGLDELETEPERFMONITORSAMDPROC, "glDeletePerfMonitorsAMD");
+        GET_CONTEXT_PROC_ADDRESS(_oglSelectPerfMonitorCountersAMD, PFNGLSELECTPERFMONITORCOUNTERSAMDPROC, "glSelectPerfMonitorCountersAMD");
+        GET_CONTEXT_PROC_ADDRESS(_oglBeginPerfMonitorAMD, PFNGLBEGINPERFMONITORAMDPROC, "glBeginPerfMonitorAMD");
+        GET_CONTEXT_PROC_ADDRESS(_oglEndPerfMonitorAMD, PFNGLENDPERFMONITORAMDPROC, "glEndPerfMonitorAMD");
+        GET_CONTEXT_PROC_ADDRESS(_oglGetPerfMonitorCounterDataAMD, PFNGLGETPERFMONITORCOUNTERDATAAMDPROC, "glGetPerfMonitorCounterDataAMD");
 
-bool oglUtils::IsAmdGpuAssociationSupported()
-{
-    QuerySupportedExtensions();
-#ifdef WIN32
-    return s_glExtensions["WGL_AMD_gpu_association"];
-#else
-    return s_glExtensions["GLX_AMD_GPU_association"];
-#endif
+        return (nullptr != _oglGetPerfMonitorGroupsAMD &&
+                nullptr != _oglGetPerfMonitorCountersAMD &&
+                nullptr != _oglGetPerfMonitorGroupStringAMD &&
+                nullptr != _oglGetPerfMonitorCounterStringAMD &&
+                nullptr != _oglGetPerfMonitorCounterInfoAMD &&
+                nullptr != _oglGenPerfMonitorsAMD &&
+                nullptr != _oglDeletePerfMonitorsAMD &&
+                nullptr != _oglSelectPerfMonitorCountersAMD &&
+                nullptr != _oglBeginPerfMonitorAMD &&
+                nullptr != _oglEndPerfMonitorAMD &&
+                nullptr != _oglGetPerfMonitorCounterDataAMD);
+    }
+
+    return false;
 }
 
 bool oglUtils::InitializeGLFunctions()
@@ -205,18 +254,96 @@ bool oglUtils::InitializeGLFunctions()
         return false;
     }
 
+#ifndef GLES
+    GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(s_glLibHandle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
+#else
+    GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(s_eglLibHandle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
+#endif
+
     if (!InitializeGLCoreFunctions())
     {
         GPA_LogError("Unable to Initialize required GL functions.");
         return false;
     }
 
+    GET_CONTEXT_PROC_ADDRESS(_oglGetStringi, PFNGLGETSTRINGIPROC, "glGetStringi");
+
     QuerySupportedExtensions();
 
     bool bPerfMonExtFound    = s_glExtensions["GL_AMD_performance_monitor"];
     bool bTimerQueryExtFound = s_glExtensions["GL_ARB_timer_query"] || s_glExtensions["GL_EXT_disjoint_timer_query"];
 
-    if (!InitCtxExtFunctions())
+    if (!InitCtxAmdPerfExtFunctions())
+    {
+        if (bPerfMonExtFound)
+        {
+            GPA_LogError("The GL_AMD_performance_monitor extension is exposed by the driver, but not all entry points are available.");
+        }
+        else
+        {
+            GPA_LogError("The GL_AMD_performance_monitor extension is not exposed by the driver.");
+        }
+
+        const GLubyte* pRenderer = _oglGetString(GL_RENDERER);
+
+        if (nullptr == pRenderer)
+        {
+            retVal = false;  // return error if unable to retrieve renderer;
+        }
+        else if (strstr(reinterpret_cast<const char*>(pRenderer), s_pATIRenderer) == 0 || strstr(reinterpret_cast<const char*>(pRenderer), s_pAMDRenderer) == 0)
+        {
+            retVal = false;  // return error if AMD extension is missing on AMD hardware
+        }
+    }
+
+    GET_CONTEXT_PROC_ADDRESS(_oglSetGpaDeviceClockModeAMDX, PFN_GL_SETGPADEVICECLOCKMODEAMDX, "glSetGpaDeviceClockModeAMDX");
+    GET_CONTEXT_PROC_ADDRESS(_oglGetQueryObjectui64vEXT, PFNGLGETQUERYOBJECTUI64VPROC, "glGetQueryObjectui64v");
+
+#if defined(GLES) && !defined(WIN32)
+    GET_CONTEXT_PROC_ADDRESS(_oglGetQueryObjectiv, PFNGLGETQUERYOBJECTIVPROC, "glGetQueryObjectivEXT");
+    GET_CONTEXT_PROC_ADDRESS(_oglGenQueries, PFNGLGENQUERIESPROC, "glGenQueriesEXT");
+    GET_CONTEXT_PROC_ADDRESS(_oglDeleteQueries, PFNGLDELETEQUERIESPROC, "glDeleteQueriesEXT");
+    GET_CONTEXT_PROC_ADDRESS(_oglQueryCounter, PFNGLQUERYCOUNTERPROC, "glQueryCounterEXT");
+#else
+    GET_CONTEXT_PROC_ADDRESS(_oglGetQueryObjectiv, PFNGLGETQUERYOBJECTIVPROC, "glGetQueryObjectiv");
+    GET_CONTEXT_PROC_ADDRESS(_oglGenQueries, PFNGLGENQUERIESPROC, "glGenQueries");
+    GET_CONTEXT_PROC_ADDRESS(_oglDeleteQueries, PFNGLDELETEQUERIESPROC, "glDeleteQueries");
+    GET_CONTEXT_PROC_ADDRESS(_oglQueryCounter, PFNGLQUERYCOUNTERPROC, "glQueryCounter");
+#endif
+
+#ifdef GLES
+#ifndef GL_TIMESTAMP
+#define GL_TIMESTAMP GL_TIMESTAMP_EXT
+#endif  // GL_TIMESTAMP
+#endif  // GLES
+
+    if (nullptr == _oglGetQueryObjectiv)
+    {
+        GPA_LogMessage("glGetQueryObjectiv entry point not exposed by the driver.");
+    }
+
+    if (nullptr == _oglGenQueries)
+    {
+        GPA_LogMessage("glGenQueries entry point not exposed by the driver.");
+    }
+
+    if (nullptr == _oglDeleteQueries)
+    {
+        GPA_LogMessage("glDeleteQueries entry point not exposed by the driver.");
+    }
+
+    if (nullptr == _oglQueryCounter)
+    {
+        GPA_LogMessage("glQueryCounter entry point not exposed by the driver.");
+    }
+
+    if (nullptr == _oglGetQueryObjectui64vEXT)
+    {
+        GPA_LogMessage("glGetQueryObjectui64vEXT entry point not exposed by the driver.");
+    }
+
+    if (nullptr == _oglGetStringi || nullptr == _oglGetQueryObjectui64vEXT || nullptr == _oglGetQueryObjectiv || nullptr == _oglGenQueries ||
+        nullptr == _oglDeleteQueries || nullptr == _oglQueryCounter)
     {
         if (bTimerQueryExtFound)
         {
@@ -241,10 +368,10 @@ bool oglUtils::InitializeGLFunctions()
 #ifdef DEBUG_GL_ERRORS
     bool bDebugOutputExtFound = s_glExtensions["GL_AMD_debug_output"];
     // GL_AMD_debug_output extension
-    GET_PROC_ADDRESS(_oglDebugMessageControlARB, PFN_OGL_GLDEBUGMESSAGECONTROLARB, "glDebugMessageControlAMD");
-    GET_PROC_ADDRESS(_oglDebugMessageInsertARB, PFN_OGL_GLDEBUGMESSAGEINSERTARB, "glDebugMessageInsertAMD");
-    GET_PROC_ADDRESS(_oglDebugMessageCallbackARB, PFN_OGL_GLDEBUGMESSAGECALLBACKARB, "glDebugMessageCallbackAMD");
-    GET_PROC_ADDRESS(_oglGetDebugMessageLogARB, PFN_OGL_GLGETDEBUGMESSAGELOGARB, "glGetDebugMessageLogAMD");
+    GET_CONTEXT_PROC_ADDRESS(_oglDebugMessageControlARB, PFN_OGL_GLDEBUGMESSAGECONTROLARB, "glDebugMessageControlAMD");
+    GET_CONTEXT_PROC_ADDRESS(_oglDebugMessageInsertARB, PFN_OGL_GLDEBUGMESSAGEINSERTARB, "glDebugMessageInsertAMD");
+    GET_CONTEXT_PROC_ADDRESS(_oglDebugMessageCallbackARB, PFN_OGL_GLDEBUGMESSAGECALLBACKARB, "glDebugMessageCallbackAMD");
+    GET_CONTEXT_PROC_ADDRESS(_oglGetDebugMessageLogARB, PFN_OGL_GLGETDEBUGMESSAGELOGARB, "glGetDebugMessageLogAMD");
 
     if (nullptr == _oglDebugMessageControlARB || nullptr == _oglDebugMessageInsertARB || nullptr == _oglDebugMessageCallbackARB ||
         nullptr == _oglGetDebugMessageLogARB)
@@ -262,29 +389,6 @@ bool oglUtils::InitializeGLFunctions()
     }
 
 #endif
-
-    if (!InitCtxAmdPerfExtFunctions())
-    {
-        if (bPerfMonExtFound)
-        {
-            GPA_LogError("The GL_AMD_performance_monitor extension is exposed by the driver, but not all entry points are available.");
-        }
-        else
-        {
-            GPA_LogError("The GL_AMD_performance_monitor extension is not exposed by the driver.");
-        }
-
-        const GLubyte* pRenderer = _oglGetString(GL_RENDERER);
-
-        if (nullptr == pRenderer)
-        {
-            retVal = false;  // return error if unable to retrieve renderer;
-        }
-        else if (strstr(reinterpret_cast<const char*>(pRenderer), s_pATIRenderer) == 0 || strstr(reinterpret_cast<const char*>(pRenderer), s_pAMDRenderer) == 0)
-        {
-            retVal = false;  // return error if AMD extension is missing on AMD hardware
-        }
-    }
 
 #ifndef WIN32
     bool bMesaQueryRendererExtFound = s_glExtensions["GLX_MESA_query_renderer"];
@@ -310,119 +414,4 @@ bool oglUtils::InitializeGLFunctions()
 
     s_areGLFunctionsInitialized = retVal;
     return retVal;
-}
-
-bool oglUtils::InitCtxExtFunctions()
-{
-    if (LoadGL() && InitializeGLCoreFunctions() && nullptr != GET_PROC_ADDRESS_FUNC)
-    {
-        GET_PROC_ADDRESS(_oglGetStringi, PFNGLGETSTRINGIPROC, "glGetStringi");
-        GET_PROC_ADDRESS(_oglGetQueryObjectui64vEXT, PFNGLGETQUERYOBJECTUI64VEXTPROC, "glGetQueryObjectui64vEXT");
-
-#if defined(GLES) && defined(WIN32)
-        GET_PROC_ADDRESS(_oglGetQueryObjectiv, PFNGLGETQUERYOBJECTIVPROC, "glGetQueryObjectivEXT");
-        GET_PROC_ADDRESS(_oglGenQueries, PFNGLGENQUERIESPROC, "glGenQueriesEXT");
-        GET_PROC_ADDRESS(_oglDeleteQueries, PFNGLDELETEQUERIESPROC, "glDeleteQueriesEXT");
-        GET_PROC_ADDRESS(_oglQueryCounter, PFNGLQUERYCOUNTERPROC, "glQueryCounterEXT");
-
-        if (nullptr == _oglGetQueryObjectiv)
-        {
-            GET_PROC_ADDRESS(_oglGetQueryObjectiv, PFNGLGETQUERYOBJECTIVPROC, "glGetQueryObjectiv");
-        }
-
-        if (nullptr == _oglGenQueries)
-        {
-            GET_PROC_ADDRESS(_oglGenQueries, PFNGLGENQUERIESPROC, "glGenQueries");
-        }
-
-        if (nullptr == _oglDeleteQueries)
-        {
-            GET_PROC_ADDRESS(_oglDeleteQueries, PFNGLDELETEQUERIESPROC, "glDeleteQueries");
-        }
-
-        if (nullptr == _oglQueryCounter)
-        {
-            GET_PROC_ADDRESS(_oglQueryCounter, PFNGLQUERYCOUNTERPROC, "glQueryCounter");
-        }
-
-#else
-        GET_PROC_ADDRESS(_oglGetQueryObjectiv, PFNGLGETQUERYOBJECTIVPROC, "glGetQueryObjectiv");
-        GET_PROC_ADDRESS(_oglGenQueries, PFNGLGENQUERIESPROC, "glGenQueries");
-        GET_PROC_ADDRESS(_oglDeleteQueries, PFNGLDELETEQUERIESPROC, "glDeleteQueries");
-        GET_PROC_ADDRESS(_oglQueryCounter, PFNGLQUERYCOUNTERPROC, "glQueryCounter");
-#endif
-
-#ifdef GLES
-#ifndef GL_TIMESTAMP
-#define GL_TIMESTAMP GL_TIMESTAMP_EXT
-#endif  // GL_TIMESTAMP
-#endif  // GLES
-
-        GET_PROC_ADDRESS(_oglGetQueryObjectui64v, PFNGLGETQUERYOBJECTUI64VPROC, "glGetQueryObjectui64v");
-
-        if (nullptr == _oglGetQueryObjectui64v)
-        {
-            GPA_LogMessage("glGetQueryObjectui64v entry point not exposed by the driver.");
-        }
-
-        return !(nullptr == _oglGetQueryObjectui64vEXT || nullptr == _oglGetQueryObjectiv || nullptr == _oglGenQueries || nullptr == _oglDeleteQueries ||
-                 nullptr == _oglQueryCounter);
-    }
-
-    return false;
-}
-
-bool oglUtils::InitCtxAmdPerfExtFunctions()
-{
-    if (LoadGL() && InitializeGLCoreFunctions() && nullptr != GET_PROC_ADDRESS_FUNC)
-    {
-        bool success = false;
-
-// GL_AMD_performance_monitor extension
-#define INIT_AMD_PERF_EXT_FUNC(type, typeString)        \
-    GET_PROC_ADDRESS(_o##typeString, type, #typeString) \
-    success = success || (nullptr != _o##typeString);
-
-#include "GLFunctions.h"
-        GL_AMD_EXT_FUNCTIONS(INIT_AMD_PERF_EXT_FUNC)
-#undef INIT_AMD_PERF_EXT_FUNC
-
-        // GL_SETGPADEVICECLOCKMODEAMDX extension
-        GET_PROC_ADDRESS(_oglSetGpaDeviceClockModeAMDX, PFN_GL_SETGPADEVICECLOCKMODEAMDX, "glSetGpaDeviceClockModeAMDX");
-
-#if defined(_LINUX) || defined(LINUX)
-        // GLX_MESA_query_renderer extension
-        GET_PROC_ADDRESS(_oglXQueryCurrentRendererIntegerMESA, PFN_GLX_QUERYCURRENTRENDERERINTEGERMESA, "glXQueryCurrentRendererIntegerMESA");
-#endif
-
-        return success || (nullptr != _oglSetGpaDeviceClockModeAMDX);
-    }
-
-    return false;
-}
-
-bool oglUtils::InitCtxAmdMultiGpuExtFunctions()
-{
-    if (LoadGL() && InitializeGLCoreFunctions() && nullptr != GET_PROC_ADDRESS_FUNC)
-    {
-        QuerySupportedExtensions();
-        bool success = false;
-
-#define INIT_GL_AMD_EXT_FUNC(type, typeString)         \
-    GET_PROC_ADDRESS(_##typeString, type, #typeString) \
-    success = success || (nullptr != _##typeString);
-
-#include "GLFunctions.h"
-#ifdef WIN32
-        WGL_AMD_EXT_FUNCTIONS(INIT_GL_AMD_EXT_FUNC)
-#else
-        GLX_AMD_EXT_FUNCTIONS(INIT_GL_AMD_EXT_FUNC)
-#endif
-
-#undef INIT_GL_AMD_EXT_FUNC
-
-        return success;
-    }
-
-    return false;
 }

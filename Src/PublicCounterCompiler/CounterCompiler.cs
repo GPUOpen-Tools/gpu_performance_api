@@ -157,7 +157,7 @@ namespace PublicCounterCompiler
 
                 // Suffix
                 string suffix = string.Empty;
-                if (api == "CL" || api == "HSA")
+                if (api == "CL")
                 {
                     suffix = "Compute";
                 }
@@ -1032,7 +1032,7 @@ namespace PublicCounterCompiler
                 GenerateDerivedCounterDocFile(false, ref publicCounterList, ref internalCounterList, outputDir, api, generation, asic, infoHandler, errorHandler);
             }
 
-            bool isGraphicsAPI = (api != "CL") && (api != "HSA");
+            bool isGraphicsAPI = (api != "CL");
 
             if (!isInternal)
             {

@@ -8,7 +8,8 @@
 #ifndef _GL_GPA_CONTEXT_H_
 #define _GL_GPA_CONTEXT_H_
 
-#include "GLInclude.h"
+#include "GLEntryPoints.h"
+#include "GLAmdDriverExt.h"
 
 // GPA Common
 #include "GPAContext.h"

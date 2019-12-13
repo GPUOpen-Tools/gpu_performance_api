@@ -8,7 +8,7 @@
 #include <chrono>
 #include <thread>
 #include "GLGPASample.h"
-#include "GLInclude.h"
+#include "GLEntryPoints.h"
 
 GLGPASample::GLGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
     : GPASample(pPass, pCmdList, sampleType, sampleId)

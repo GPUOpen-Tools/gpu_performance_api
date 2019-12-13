@@ -189,7 +189,7 @@ namespace PublicCounterCompiler
             this.batchApiList.Name = "batchApiList";
             this.batchApiList.Size = new System.Drawing.Size(268, 26);
             this.batchApiList.TabIndex = 1;
-            this.batchApiList.Text = "DX12,VK,DX11,GL,CL,HSA";
+            this.batchApiList.Text = "DX12,VK,DX11,GL,CL";
             // 
             // label1
             // 

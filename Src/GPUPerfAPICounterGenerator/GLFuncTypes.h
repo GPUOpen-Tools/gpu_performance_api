@@ -8,20 +8,6 @@
 #ifndef _GL_FUNC_TYPES_H_
 #define _GL_FUNC_TYPES_H_
 
-#ifndef GLES
-#ifdef _WIN32
-#include <GL/glext.h>
-#endif
-
-#ifdef _LINUX
-#include <GL/glxext.h>
-#endif
-#else
-#include <GLES/egl.h>
-#include <GLES3/gl3.h>
-#include <GLES2/gl2ext.h>
-#endif
-
 namespace oglUtils
 {
     typedef unsigned int GLhandle;                                                                        ///< Workaround missing def in headers

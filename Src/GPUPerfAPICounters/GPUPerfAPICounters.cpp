@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Implements a library that allows access to the available counters
@@ -19,6 +19,62 @@
 #include "DeviceInfoUtils.h"
 #include "GPAHWInfo.h"
 #include "Logging.h"
+
+#include "GPACounterGeneratorCL.h"
+#include "GPACounterGeneratorGL.h"
+#include "GPACounterGeneratorVK.h"
+#include "GPACounterGeneratorVKNonAMD.h"
+
+#ifdef WIN32
+#include "GPACounterGeneratorDX11.h"
+#include "GPACounterGeneratorDX11NonAMD.h"
+#include "GPACounterGeneratorDX12.h"
+#include "GPACounterGeneratorDX12NonAMD.h"
+#include "Adapter.h"
+#endif
+
+#include "GPACounterSchedulerCL.h"
+#include "GPACounterSchedulerGL.h"
+#include "GPACounterSchedulerVK.h"
+
+#ifdef WIN32
+#include "GPACounterSchedulerDX11.h"
+#include "GPACounterSchedulerDX12.h"
+#endif
+
+#include "GPACounterGeneratorSchedulerManager.h"
+
+// these statics are needed to make sure the generators/schedulers get registered with CounterAccessorSchedulerManager
+
+#ifdef CL
+    static GPA_CounterGeneratorCL       s_generatorCL;         ///< static instance of CL generator
+    static GPA_CounterSchedulerCL       s_schedulerCL;  ///< static instance of CL scheduler
+#endif
+
+#ifdef GL
+    static GPA_CounterGeneratorGL       s_generatorGL;         ///< static instance of GL generator
+    static GPA_CounterSchedulerGL       s_schedulerGL;  ///< static instance of GL scheduler
+#endif
+
+#ifdef VK
+    static GPA_CounterGeneratorVK       s_generatorVK;         ///< static instance of VK generator
+    static GPA_CounterGeneratorVKNonAMD s_generatorVKNonAMD;  ///< static instance of Vulkan non-AMD generator
+    static GPA_CounterSchedulerVK       s_schedulerVK;         ///< static instance of VK scheduler
+#endif
+
+#ifdef WIN32
+#ifdef DX11
+    static GPA_CounterGeneratorDX11       s_generatorDX11;        ///< static instance of DX11 generator
+    static GPA_CounterGeneratorDX11NonAMD s_generatorDX11NonAMD;  ///< static instance of DX11 non-AMD generator
+    static GPA_CounterSchedulerDX11       s_schedulerDX11;        ///< static instance of DX11 scheduler
+#endif
+
+#ifdef DX12
+    static GPA_CounterGeneratorDX12       s_generatorDX12;        ///< static instance of DX12 generator
+    static GPA_CounterGeneratorDX12NonAMD s_generatorDX12NonAMD;  ///< static instance of DX12 non-AMD generator
+    static GPA_CounterSchedulerDX12       s_schedulerDX12;        ///< static instance of DX12 scheduler
+#endif
+#endif
 
 GPUPERFAPI_COUNTERS_DECL GPA_Status GPA_GetAvailableCounters(GPA_API_Type           api,
                                                              gpa_uint32             vendorId,

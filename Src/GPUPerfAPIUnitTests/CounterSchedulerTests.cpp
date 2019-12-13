@@ -41,6 +41,8 @@ GPA_CounterResultLocation MakeLocation(gpa_uint16 pass, gpa_uint16 offset)
     return location;
 }
 
+#if defined(WIN32) || (defined(_LINUX) && defined(X64))
+
 // Test the openCL counter names on VI hardware
 TEST(CounterDLLTests, OpenCLCounterSchedulingVI)
 {
@@ -285,6 +287,7 @@ TEST(CounterDLLTests, OpenCLResultLocations)
     }
     #pragma endregion
 }
+#endif
 
 TEST(CounterDLLTests, OpenGLCounterScheduling)
 {
@@ -1027,25 +1030,6 @@ TEST(CounterDLLTests, DX11EnableAndDisable)
     passCountStatus = pCounterScheduler->GetNumRequiredPasses(&requiredPasses);
     EXPECT_EQ(GPA_STATUS_OK, passCountStatus);
     EXPECT_EQ(1, requiredPasses);
-}
-
-#endif
-
-#ifdef _LINUX
-
-TEST(CounterDLLTests, ROCmCounterScheduling)
-{
-    std::vector<unsigned int> counters;
-    counters.push_back(0);
-    counters.push_back(1);
-    counters.push_back(2);
-
-    VerifyHardwareNotSupported(GPA_API_ROCM, gDevIdUnknown, FALSE);
-    VerifyHardwareNotSupported(GPA_API_ROCM, gDevIdSI, FALSE);
-    VerifyHardwareNotSupported(GPA_API_ROCM, gDevIdCI, FALSE);
-
-    VerifyPassCount(GPA_API_ROCM, gDevIdVI, FALSE, counters, 1);
-    VerifyPassCount(GPA_API_ROCM, gDevIdGfx9, FALSE, counters, 1);
 }
 
 #endif

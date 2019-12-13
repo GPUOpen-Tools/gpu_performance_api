@@ -10,7 +10,8 @@ import PreBuildCMakeCommon
 
 # script root
 PreBuildScriptRoot = os.path.dirname(os.path.realpath(__file__))
-args = PreBuildCMakeCommon.DefineCMakeArguments()
+PreBuildCMakeCommon.DefineCMakeArguments()
+args = PreBuildCMakeCommon.ScriptParser.parse_args()
 
 if args.nofetch == False:
     # Run CMake - Generate projects
@@ -30,21 +31,39 @@ if args.clean == True:
 else:
     firstClean = False
 
-if args.internal == True:
-    internalBuild=True
-else:
-    internalBuild=False
+buildDirName = "CMakeBuild"
+
+if args.android == True:
+    buildDirName = "CMakeBuild-Android"
 
 CMakeAdditionalArgs = PreBuildCMakeCommon.ParseCMakeArguments(args)
+
+if args.android == True:
+    PreBuildCMakeCommon.CMakeGeneratorUsePlatforms.remove('x86')
+    android_ndk=os.environ["ANDROID_NDK"]
+    if android_ndk == "":
+        print("Android environment variable is not defined. Exiting.")
+        exit(1)
+    CMakeAdditionalArgs.append("-DBUILD_ANDROID=ON")
+    CMakeAdditionalArgs.append("-DANDROID_ABI=x86_64")
+    CMakeAdditionalArgs.append("-DANDROID_PLATFORM=24")
+    CMakeAdditionalArgs.append("-DANDROID_NATIVE_API_LEVEL=24")
+    CMakeAdditionalArgs.append("-DANDROID_STL=c++_static")
+    CMakeAdditionalArgs.append("-Dskipopengl=ON")
+    CMakeAdditionalArgs.append("-Dskipopencl=ON")
+    CMakeAdditionalArgs.append("-Dskiptests=ON")
+    CMakeAdditionalArgs.append("-Dskipdocs=ON")
+    CMakeAdditionalArgs.append("-Dbuild-32bit=OFF")
+
 print(PreBuildCMakeCommon.CMakeGenerator)
 if sys.platform == "win32":
     for platform in PreBuildCMakeCommon.CMakeGeneratorUsePlatforms:
-        if PreBuildCMakeCommon.GenerateProjectFileUsingCMake(PreBuildCMakeCommon.CMakeGenerator[platform], platform, "debug", CMakeAdditionalArgs, PreBuildScriptRoot, firstClean, internalBuild) == False:
+        if PreBuildCMakeCommon.GenerateProjectFileUsingCMake(PreBuildCMakeCommon.CMakeGenerator[platform], platform, "debug", CMakeAdditionalArgs, PreBuildScriptRoot, firstClean, buildDirName) == False:
             print("Unable to generate project files")
 else:
     for platform in PreBuildCMakeCommon.CMakeGeneratorUsePlatforms:
         for config in PreBuildCMakeCommon.CMakeGeneratorConfigs:
-            if  PreBuildCMakeCommon.GenerateProjectFileUsingCMake(PreBuildCMakeCommon.CMakeGenerator[platform], platform, config, CMakeAdditionalArgs, PreBuildScriptRoot, firstClean, internalBuild) == False:
+            if  PreBuildCMakeCommon.GenerateProjectFileUsingCMake(PreBuildCMakeCommon.CMakeGenerator[platform], platform, config, CMakeAdditionalArgs, PreBuildScriptRoot, firstClean, buildDirName) == False:
                 print("Unable to generate project files")
 
 

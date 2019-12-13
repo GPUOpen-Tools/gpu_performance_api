@@ -1,4 +1,4 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -13,7 +13,9 @@ include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
 include(${CMAKE_COMMON_SRC_GLOBAL_DYNAMIC_LIBRARY_MODULE})
 include(${CMAKE_COMMON_LIB_GLOBAL_AMD_OPENCL_NO_LIB})
-include(${CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK})
+if(WIN32)
+    include(${CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK})
+endif()
 
 INCLUDE_ADDITIONAL_MODULE()
 
@@ -66,7 +68,7 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       ${GPA_COMMON_LINK_ARCHIVE_FLAG}
                       GPUPerfAPI-Common
                       ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
-                      GPUPerfAPICounterGenerator)
+                      GPUPerfAPICounterGenerator-CL)
 
 ADD_LINKER_FLAGS()
 

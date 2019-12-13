@@ -1,19 +1,11 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2019 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  Class that will get the correct Generator and Scheduler for an API/Generation combination
 //==============================================================================
 
 #include "GPACounterGeneratorSchedulerManager.h"
-
-CounterGeneratorSchedulerManager::CounterGeneratorSchedulerManager()
-{
-}
-
-CounterGeneratorSchedulerManager::~CounterGeneratorSchedulerManager()
-{
-}
 
 void CounterGeneratorSchedulerManager::RegisterCounterGenerator(GPA_API_Type              apiType,
                                                                 GDT_HW_GENERATION         generation,
@@ -27,7 +19,7 @@ void CounterGeneratorSchedulerManager::RegisterCounterGenerator(GPA_API_Type    
         localMap = m_counterGeneratorItems[apiType];
     }
 
-    if (0 == localMap.count(generation) || replaceExisting == true)
+    if (0 == localMap.count(generation) || replaceExisting)
     {
         localMap[generation] = pCounterGenerator;
     }
@@ -63,7 +55,7 @@ void CounterGeneratorSchedulerManager::RegisterCounterScheduler(GPA_API_Type    
         localMap = m_counterSchedulerItems[apiType];
     }
 
-    if (0 == localMap.count(generation) || replaceExisting == true)
+    if (0 == localMap.count(generation) || replaceExisting)
     {
         localMap[generation] = pCounterScheduler;
     }

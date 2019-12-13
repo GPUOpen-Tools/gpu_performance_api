@@ -270,6 +270,20 @@ bool GPAImplementor::DoesContextInfoExist(GPAContextInfoPtr pContextInfo) const
     return m_appContextInfoGpaContextMap.find(GetDeviceIdentifierFromContextInfo(pContextInfo)) != m_appContextInfoGpaContextMap.cend();
 }
 
+bool GPAImplementor::IsDeviceGenerationSupported(const GPA_HWInfo& hwInfo) const
+{
+    GDT_HW_GENERATION deviceGeneration = GDT_HW_GENERATION_NONE;
+    if (hwInfo.GetHWGeneration(deviceGeneration))
+    {
+        if (deviceGeneration >= GDT_HW_GENERATION_VOLCANICISLAND)
+        {
+            return true;
+        }
+    }
+
+    return false;
+}
+
 GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA_HWInfo* pHwInfo) const
 {
     bool         foundMatchingHWInfo = false;
@@ -392,6 +406,12 @@ GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA
             GPA_LogError("Cannot update device information.");
             return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
         }
+    }
+
+    // Check we support the device generation
+    if (!IsDeviceGenerationSupported(apiHwInfo))
+    {
+        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
     }
 
     // Give the API-specific implementation a chance to verify that the hardware is supported.

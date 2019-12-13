@@ -10,7 +10,7 @@ the GPU.
 
 This API is designed to:
 
-* Support Vulkan™, DirectX™ 12, DirectX 11, OpenGL, OpenCL™, and ROCm/HSA on
+* Support Vulkan™, DirectX™ 12, DirectX 11, OpenGL, and OpenCL™ on
   GCN-based Radeon™ graphics cards and APUs.
 * Support Microsoft Windows® and Linux®.
 * Provide derived counters based on raw hardware performance counters.

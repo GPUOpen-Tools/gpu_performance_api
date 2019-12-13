@@ -7,8 +7,6 @@ entrypoints
 API
 vkCommandBuffer
 vkEndCommandBuffer
-ROCm
-HSA
 GPU
 shaders
 vertices

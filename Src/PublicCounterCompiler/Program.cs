@@ -88,7 +88,7 @@ namespace PublicCounterCompiler
                 Console.WriteLine("Usage: PublicCounterCompiler [API] [HW generation]");
                 Console.WriteLine(
                     "   opens the user interface and populates the input fields with the following parameters:");
-                Console.WriteLine("   [API] - the API to compile counters for (ex: GL, CL, HSA, DX11, etc)");
+                Console.WriteLine("   [API] - the API to compile counters for (ex: GL, CL, DX11, etc)");
                 Console.WriteLine(
                     "   [HW generation] - the generation to compile counters for (ex: R10xx, R11xx, R12xx, etc)");
                 Console.WriteLine(
@@ -104,7 +104,7 @@ namespace PublicCounterCompiler
                 Console.WriteLine(
                     "   [Test output Dir] - the directory to generate the test output in (Ex: the path to the Src/GPUPerfAPIUnitTests/counters directory)");
                 Console.WriteLine(
-                    "   [API] - the API to compile counters for (ex: GL, CL, HSA, DX11, etc)");
+                    "   [API] - the API to compile counters for (ex: GL, CL, DX11, etc)");
                 Console.WriteLine(
                     "   [HW generation] - the generation to compile counters for (ex: R10xx, R11xx, R12xx, etc)");
                 Console.WriteLine(

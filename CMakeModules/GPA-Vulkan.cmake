@@ -21,10 +21,11 @@ if(${GPA_ALL_OPEN_SOURCE})
 
         set(ADDITIONAL_INCLUDE_DIRECTORIES  ${ADDITIONAL_INCLUDE_DIRECTORIES}
                                             ${VK_INC_DIRS})
-
     else()
-        message("CMake: Vulkan SDK not found")
+        message(STATUS "Vulkan SDK not found")
     endif()
 else()
     include(${CMAKE_COMMON_LIB_GLOBAL_EXT_VULKAN})
 endif()
+
+message(STATUS "Using vulkan headers from ${VK_INC_DIRS}, libraries from ${VK_LIB} and tools from ${VK_TOOLS_DIR}")
