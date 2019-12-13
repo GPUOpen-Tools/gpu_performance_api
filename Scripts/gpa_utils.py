@@ -9,6 +9,13 @@ import os
 import subprocess
 import urllib
 
+SHELLARG = False
+# The environment variable SHELL is only set for Cygwin or Linux
+SHELLTYPE = os.environ.get('SHELL')
+if ( SHELLTYPE == None ):
+    # running on windows under default shell
+    SHELLARG = True
+
 if sys.version_info.major == 3:
     import urllib.request
 
@@ -73,4 +80,35 @@ def Download(source_url, dest_dir, file_name):
         return True
     else:
         print("Unable to download file")
+        return False
+
+def SwitchToBranchOrRef(localrepopath, branch_or_ref):
+    if os.path.isdir(localrepopath):
+        currentDir = os.getcwd()
+        os.chdir(localrepopath)
+        commandArgs = ["git", "checkout", branch_or_ref]
+        try:
+            sys.stdout.flush()
+            p = subprocess.check_call(commandArgs, shell=SHELLARG)
+            sys.stdout.flush()
+            sys.stderr.flush()
+            os.chdir(currentDir)
+        except subprocess.CalledProcessError as e:
+            print ("'git clone' failed with returncode: %d\n" % e.returncode)
+            os.chdir(currentDir)
+            sys.stderr.flush()
+            sys.exit(1)
+
+def CloneGitRepo(remote, branch, target):
+    target = os.path.normpath(target)
+    commandArgs = ["git", "clone", remote, target]
+    try:
+        sys.stdout.flush()
+        subprocess.check_call(commandArgs, shell=SHELLARG)
+        sys.stdout.flush()
+        sys.stderr.flush()
+        return True
+    except subprocess.CalledProcessError as e:
+        print ("'git clone' failed with returncode: %d\n" % e.returncode)
+        sys.stderr.flush()
         return False
