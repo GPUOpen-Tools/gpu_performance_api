@@ -50,8 +50,8 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
-* Windows: Radeon Software Adrenaline 2019 Edition 19.7.3 or later (Driver Packaging Version 19.30 or later).
-* Linux: Radeon Software for Linux Revision 19.20 or later (19.30 required for AMD Radeon 5700 Series GPUs).
+* Windows: Radeon Software Adrenaline 2020 Edition 19.12.2 or later (Driver Packaging Version 19.50 or later).
+* Linux: Radeon Software for Linux Revision 19.50 or later.
 * Radeon GPUs or APUs based on Graphics IP version 6 and 7 are no longer supported by GPUPerfAPI. Please use an older version ([3.3](https://github.com/GPUOpen-Tools/GPA/releases/tag/v3.3)) with older hardware.
 * Windows 7, 8.1, and 10.
 * Ubuntu (16.04 and later) and CentOS/RHEL (7 and later) distributions.
