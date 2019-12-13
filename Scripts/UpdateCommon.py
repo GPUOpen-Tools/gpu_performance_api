@@ -110,13 +110,12 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
 
         print("Directory " + targetPath + " does not exist. \n\tUsing 'git clone' to get from " + ghRepoSource)
         sys.stdout.flush()
-        try:
-            subprocess.check_call(["git", "-C", scriptRoot, "clone", ghRepoSource, targetPath, "--branch", reqdCommit], shell=SHELLARG)
-        except subprocess.CalledProcessError as e:
-            print("'git clone' failed with returncode: %d\n" % e.returncode)
+
+        if False == GpaUtils.CloneGitRepo(ghRepoSource, reqdCommit, targetPath):
             sys.exit(1)
-        sys.stderr.flush()
-        sys.stdout.flush()
+
+        if reqdCommit is not None:
+            GpaUtils.SwitchToBranchOrRef(targetPath, reqdCommit)
 
 def ShowRevisions():
     repos_revision_map={}
