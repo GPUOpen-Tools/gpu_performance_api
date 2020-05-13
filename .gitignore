@@ -6,6 +6,7 @@
 *.user
 *.userosscache
 *.sln.docstates
+compile_commands.json
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
@@ -29,7 +30,7 @@ Doc/public
 *.so
 *.a
 *.pyc
-CMakeBuild*/
+build/CMakeBuild*/
 
 # Visual Studo 2015 cache/options directory
 .vs/

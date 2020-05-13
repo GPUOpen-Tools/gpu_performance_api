@@ -1,6 +1,12 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.6 (05/13/20)
+  * Add support for additional GPUs and APUs, including AMD Ryzen™ 4000 Series APUs.
+  * Add two new GFX10 GlobalMemory Counters for graphics using DX12 and Vulkan: LocalVidMemBytes and PcieBytes.
+  * Add VS2019 project support to CMake.
+  * Restructure of GPA source layout to adhere to google style.
+
 ## Version 3.5 (12/13/19)
   * Add support for additional GPUs and APUs, including Radeon 5500 and Radeon 5300 Series GPUs.
   * Add DirectX11 sample application using GPUPerfAPI.

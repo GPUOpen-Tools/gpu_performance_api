@@ -1,0 +1,99 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "gpa_version.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "windows.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE
+BEGIN
+    "#include ""..\gpu_perf_api_common\resource.h""\r\n"
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+2 TEXTINCLUDE
+BEGIN
+    "\r\n"
+    "\0"
+END
+
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Version
+//
+
+VS_VERSION_INFO VERSIONINFO
+ FILEVERSION GPA_MAJOR_VERSION,GPA_MINOR_VERSION,GPA_BUILD_NUMBER,GPA_UPDATE_VERSION
+ PRODUCTVERSION  GPA_MAJOR_VERSION,GPA_MINOR_VERSION,GPA_BUILD_NUMBER,GPA_UPDATE_VERSION
+ FILEFLAGSMASK 0x17L
+#ifdef _DEBUG
+ FILEFLAGS 0x1L
+#else
+ FILEFLAGS 0x0L
+#endif
+ FILEOS 0x4L
+ FILETYPE 0x2L
+ FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "Advanced Micro Devices, Inc."
+            VALUE "FileDescription", "GPUPerfAPICounters"
+            VALUE "FileVersion", GPA_MAJOR_VERSION_STR "." GPA_MINOR_VERSION_STR "." GPA_BUILD_NUMBER_STR "." GPA_UPDATE_VERSION_STR
+            VALUE "InternalName", "GPUPerfAPICounters"
+            VALUE "LegalCopyright", GPA_COPYRIGHT_STR
+            VALUE "OriginalFilename", "GPUPerfAPICounters" AMDT_PROJECT_SUFFIX_STR ".dll"
+            VALUE "ProductName", "GPUPerfAPICounters"
+            VALUE "ProductVersion", GPA_MAJOR_VERSION_STR "." GPA_MINOR_VERSION_STR "." GPA_BUILD_NUMBER_STR "." GPA_UPDATE_VERSION_STR
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+
