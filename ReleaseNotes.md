@@ -1,7 +1,7 @@
 ﻿# GPU Performance API Release Notes
 ---
 
-## Version 3.6 (05/13/20)
+## Version 3.6 (05/14/20)
   * Add support for additional GPUs and APUs, including AMD Ryzen™ 4000 Series APUs.
   * Add two new GFX10 GlobalMemory Counters for graphics using DX12 and Vulkan: LocalVidMemBytes and PcieBytes.
   * Add VS2019 project support to CMake.

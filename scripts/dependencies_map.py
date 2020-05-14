@@ -1,4 +1,4 @@
-# UpdateCommonMap.py
+# dependencies_map.py
 #
 #    Map of GitHub project names to clone target paths, relative to the GPUPerfAPI
 #    project root on the local disk.
