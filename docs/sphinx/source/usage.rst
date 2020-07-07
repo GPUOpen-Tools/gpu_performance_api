@@ -65,9 +65,10 @@ initialize the DirectX 12 version of GPA:
 
     #include "GPAInterfaceLoader.h"
 
+    #ifdef __cplusplus
     GPAApiManager* GPAApiManager::m_pGpaApiManager = nullptr;
-
-    GPAFunctionTable* pGpaFunctionTable = nullptr;
+    #endif
+    GPAFuncTableInfo* g_pFuncTableInfo = NULL;
 
     bool InitializeGPA()
     {
