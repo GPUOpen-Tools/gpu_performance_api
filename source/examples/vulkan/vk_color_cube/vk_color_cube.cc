@@ -590,7 +590,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (bEnableValidation)
     {
-        layers.push_back("VK_LAYER_LUNARG_standard_validation");
+        layers.push_back("VK_LAYER_KHRONOS_validation");
     };
 
     VkApplicationInfo appInfo  = {};
