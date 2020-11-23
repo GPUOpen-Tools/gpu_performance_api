@@ -22,7 +22,8 @@ enum APP_ERRORS
 {
     GL_ERROR       = GPA_LOGGING_DEBUG_ALL + 1,     ///< GL errors
     WIN_ERROR,                                      ///< Windows error
-    X_SERVER_ERROR                                  ///< X server error on Linux
+    X_SERVER_ERROR,                                 ///< X server error on Linux
+    GENERAL_ERROR                                   ///< any app error unrelated to GPA and platform
 };
 
 extern void GPALogger(GPA_Logging_Type logType, const char* logMsg);

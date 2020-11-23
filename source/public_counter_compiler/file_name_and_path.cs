@@ -1,6 +1,6 @@
 ﻿// =====================================================================
 // <copyright file="FileNameAndPaths.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2019 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -31,39 +31,39 @@ namespace GPATools
         Gfx8,
         Gfx9,
         Gfx10,
+        Gfx103,
         Unknown
     };
 
     class Gpa
     {
-        public static string GpaStr = "GPA\\";
-        public static string AutoGenPublicCounterInputDir = GpaStr + "source\\auto_generated\\public_counter_compiler_input_files\\";
-        public static string AutoGenCounterGeneratorOutDir = GpaStr + "source\\auto_generated\\gpu_perf_api_counter_generator\\";
-        public static string PublicStr = "Public";
-        public static string InternalStr = "Internal";
-        public static string public_file_prefix = "public_";
-        public static string internal_file_prefix = "internal_";
-        public static string CounterFileNamePrefix = "counter_names_";
-        public static string CounterListOutDir = "counter_list_files\\";
-        public static string AutoGenTestOutDir = GpaStr + "source\\auto_generated\\gpu_perf_api_unit_tests\\counters\\";
-        public static string GpaDocSourceDir = GpaStr + "docs\\sphinx\\source\\";
-        public static string CounterDefDir = GpaStr + "source\\public_counter_compiler_input_files\\";
-        public static string CounterDefFilePrefix = "counter_definitions_";
-        public static string CounterDefOutFileName = "counter_definitions_";
-        public static string DerivedCounterOutFileName = "derived_counters_";
-        public static string GPACounterHeaderFileStr = "gpa_counter.h";
-        public static string HardwareCounterFileNamePrefix = "gpa_hw_counter_";
-        public static string ApiCountersFileNamePrefix = "gpa_hw_counter_";
-        public static string HardwareExposedCounterFileSuffix = "gpa_hw_exposed_counters_";
-        public static string counter_name_list_file_prefix = "counter_name_list_";
-        public static string DX12 = "dx12";
-        public static string DX11 = "dx11";
-        public static string GL = "gl";
-        public static string CL = "cl";
-        public static string VK = "vk";
-        public static string gfx8_str = "gfx8";
-        public static string gfx9_str = "gfx9";
-        public static string gfx10_str = "gfx10";
+        public const string GpaStr = "GPA\\";
+        public const string AutoGenPublicCounterInputDir = GpaStr + "source\\auto_generated\\public_counter_compiler_input_files\\";
+        public const string AutoGenCounterGeneratorOutDir = GpaStr + "source\\auto_generated\\gpu_perf_api_counter_generator\\";
+        public const string PublicStr = "Public";
+        public const string InternalStr = "Internal";
+        public const string public_file_prefix = "public_";
+        public const string internal_file_prefix = "internal_";
+        public const string CounterFileNamePrefix = "counter_names_";
+        public const string CounterListOutDir = "counter_list_files\\";
+        public const string AutoGenTestOutDir = GpaStr + "source\\auto_generated\\gpu_perf_api_unit_tests\\counters\\";
+        public const string GpaDocSourceDir = GpaStr + "docs\\sphinx\\source\\";
+        public const string CounterDefDir = GpaStr + "source\\public_counter_compiler_input_files\\";
+        public const string CounterDefinitionsStr = "counter_definitions_";
+        public const string DerivedCounterOutFileName = "derived_counters_";
+        public const string GPACounterHeaderFileStr = "gpa_counter.h";
+        public const string gpaHwCounterFilenamePrefix = "gpa_hw_counter_";
+        public const string HardwareExposedCounterFileSuffix = "gpa_hw_exposed_counters_";
+        public const string counter_name_list_file_prefix = "counter_name_list_";
+        public const string DX12 = "dx12";
+        public const string DX11 = "dx11";
+        public const string GL = "gl";
+        public const string CL = "cl";
+        public const string VK = "vk";
+        public const string gfx8_str = "gfx8";
+        public const string gfx9_str = "gfx9";
+        public const string gfx10_str = "gfx10";
+        public const string gfx103_str = "gfx103";
         public static Dictionary<GfxGeneration, string> GfxGenAsStr = new Dictionary<GfxGeneration, string>();
         public static Dictionary<Api, string> ApiAsStr = new Dictionary<Api, string>();
         public static Dictionary<GfxGeneration, string> GfxGenerationDisplayName = new Dictionary<GfxGeneration, string>();
@@ -166,11 +166,13 @@ namespace GPATools
                 Directory.CreateDirectory(pathName);
             }
 
+            GfxGenAsStr.Add(GfxGeneration.Gfx103, gfx103_str);
             GfxGenAsStr.Add(GfxGeneration.Gfx10, gfx10_str);
             GfxGenAsStr.Add(GfxGeneration.Gfx9, gfx9_str);
             GfxGenAsStr.Add(GfxGeneration.Gfx8, gfx8_str);
 
-            GfxGenerationDisplayName.Add(GfxGeneration.Gfx10, "Navi");
+            GfxGenerationDisplayName.Add(GfxGeneration.Gfx103, "RDNA2");
+            GfxGenerationDisplayName.Add(GfxGeneration.Gfx10, "RDNA");
             GfxGenerationDisplayName.Add(GfxGeneration.Gfx9, "Vega");
             GfxGenerationDisplayName.Add(GfxGeneration.Gfx8, "Graphics IP v8");
 

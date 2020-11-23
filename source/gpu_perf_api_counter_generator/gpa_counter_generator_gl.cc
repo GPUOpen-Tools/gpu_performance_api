@@ -16,14 +16,17 @@
 #include "public_counter_definitions_gl_gfx8.h"
 #include "public_counter_definitions_gl_gfx9.h"
 #include "public_counter_definitions_gl_gfx10.h"
+#include "public_counter_definitions_gl_gfx103.h"
 
 #include "public_counter_definitions_gl_gfx8_asics.h"
 #include "public_counter_definitions_gl_gfx9_asics.h"
 #include "public_counter_definitions_gl_gfx10_asics.h"
+#include "public_counter_definitions_gl_gfx103_asics.h"
 
 #include "gpa_hw_counter_gl_gfx8.h"
 #include "gpa_hw_counter_gl_gfx9.h"
 #include "gpa_hw_counter_gl_gfx10.h"
+#include "gpa_hw_counter_gl_gfx103.h"
 
 #include "gpa_counter_generator_scheduler_manager.h"
 
@@ -326,11 +329,11 @@ GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(GDT_HW_GENERATION    d
         {
         case GDT_HW_GENERATION_VOLCANICISLAND:
         {
-            AutoDefinePublicDerivedCountersGLGfx8(*pPublicCounters);
+            AutoDefinePublicDerivedCountersGL_Gfx8(*pPublicCounters);
 
             if (generateAsicSpecificCounters)
             {
-                glgfx8asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                gl_gfx8_asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
             }
 
             status = GPA_STATUS_OK;
@@ -339,11 +342,11 @@ GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(GDT_HW_GENERATION    d
 
         case GDT_HW_GENERATION_GFX9:
         {
-            AutoDefinePublicDerivedCountersGLGfx9(*pPublicCounters);
+            AutoDefinePublicDerivedCountersGL_Gfx9(*pPublicCounters);
 
             if (generateAsicSpecificCounters)
             {
-                glgfx9asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                gl_gfx9_asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
             }
 
             status = GPA_STATUS_OK;
@@ -352,11 +355,24 @@ GPA_Status GPA_CounterGeneratorGL::GeneratePublicCounters(GDT_HW_GENERATION    d
 
         case GDT_HW_GENERATION_GFX10:
         {
-            AutoDefinePublicDerivedCountersGLGfx10(*pPublicCounters);
+            AutoDefinePublicDerivedCountersGL_Gfx10(*pPublicCounters);
 
             if (generateAsicSpecificCounters)
             {
-                glgfx10asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                gl_gfx10_asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+
+            status = GPA_STATUS_OK;
+        }
+        break;
+
+        case GDT_HW_GENERATION_GFX103:
+        {
+            AutoDefinePublicDerivedCountersGL_Gfx103(*pPublicCounters);
+
+            if (generateAsicSpecificCounters)
+            {
+                gl_gfx103_asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
             }
 
             status = GPA_STATUS_OK;
@@ -412,63 +428,83 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareCounters(GDT_HW_GENERATION   
     switch (desiredGeneration)
     {
     case GDT_HW_GENERATION_VOLCANICISLAND:
-        pHardwareCounters->m_ppCounterGroupArray                       = countergfx8::gl_counter_group_array_gfx8;
-        pHardwareCounters->m_pGroups                                   = countergfx8::hw_gl_groups_gfx8;
-        pHardwareCounters->m_groupCount                                = countergfx8::hw_gl_group_count_gfx8;
-        pHardwareCounters->m_pSQCounterGroups                          = countergfx8::hw_gl_sq_groups_gfx8;
-        pHardwareCounters->m_sqGroupCount                              = countergfx8::hw_gl_sq_group_count_gfx8;
-        pHardwareCounters->m_pIsolatedGroups                           = countergfx8::hw_gl_sq_isolated_groups_gfx8;
-        pHardwareCounters->m_isolatedGroupCount                        = countergfx8::hw_gl_sq_isolated_group_count_gfx8;
-        pHardwareCounters->m_timestampBlockIds                         = countergfx8::hw_gl_timestamp_block_ids_gfx8;
-        pHardwareCounters->m_timeCounterIndices                        = countergfx8::hw_gl_time_counter_indices_gfx8;
-        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = countergfx8::hw_gl_gputimebottomtobottomduration_index_gfx8;
-        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = countergfx8::hw_gl_gputimebottomtobottomstart_index_gfx8;
-        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = countergfx8::hw_gl_gputimebottomtobottomend_index_gfx8;
-        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = countergfx8::hw_gl_gputimetoptobottomduration_index_gfx8;
-        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = countergfx8::hw_gl_gputimetoptobottomstart_index_gfx8;
-        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = countergfx8::hw_gl_gputimetoptobottomend_index_gfx8;
-        pHardwareCounters->m_pPaddedCounters                           = countergfx8::gl_padded_counter_by_group_gfx8;
-        pHardwareCounters->m_paddedCounterCount                        = countergfx8::gl_padded_counter_group_count_gfx8;
+        pHardwareCounters->m_ppCounterGroupArray                       = counter_gl_gfx8::gl_counter_group_array_gfx8;
+        pHardwareCounters->m_pGroups                                   = counter_gl_gfx8::hw_gl_groups_gfx8;
+        pHardwareCounters->m_groupCount                                = counter_gl_gfx8::hw_gl_group_count_gfx8;
+        pHardwareCounters->m_pSQCounterGroups                          = counter_gl_gfx8::hw_gl_sq_groups_gfx8;
+        pHardwareCounters->m_sqGroupCount                              = counter_gl_gfx8::hw_gl_sq_group_count_gfx8;
+        pHardwareCounters->m_pIsolatedGroups                           = counter_gl_gfx8::hw_gl_sq_isolated_groups_gfx8;
+        pHardwareCounters->m_isolatedGroupCount                        = counter_gl_gfx8::hw_gl_sq_isolated_group_count_gfx8;
+        pHardwareCounters->m_timestampBlockIds                         = counter_gl_gfx8::hw_gl_timestamp_block_ids_gfx8;
+        pHardwareCounters->m_timeCounterIndices                        = counter_gl_gfx8::hw_gl_time_counter_indices_gfx8;
+        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = counter_gl_gfx8::hw_gl_gputimebottomtobottomduration_index_gfx8;
+        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = counter_gl_gfx8::hw_gl_gputimebottomtobottomstart_index_gfx8;
+        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = counter_gl_gfx8::hw_gl_gputimebottomtobottomend_index_gfx8;
+        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = counter_gl_gfx8::hw_gl_gputimetoptobottomduration_index_gfx8;
+        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = counter_gl_gfx8::hw_gl_gputimetoptobottomstart_index_gfx8;
+        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = counter_gl_gfx8::hw_gl_gputimetoptobottomend_index_gfx8;
+        pHardwareCounters->m_pPaddedCounters                           = counter_gl_gfx8::gl_padded_counter_by_group_gfx8;
+        pHardwareCounters->m_paddedCounterCount                        = counter_gl_gfx8::gl_padded_counter_group_count_gfx8;
         break;
 
     case GDT_HW_GENERATION_GFX9:
-        pHardwareCounters->m_ppCounterGroupArray                       = countergfx9::gl_counter_group_array_gfx9;
-        pHardwareCounters->m_pGroups                                   = countergfx9::hw_gl_groups_gfx9;
-        pHardwareCounters->m_groupCount                                = countergfx9::hw_gl_group_count_gfx9;
-        pHardwareCounters->m_pSQCounterGroups                          = countergfx9::hw_gl_sq_groups_gfx9;
-        pHardwareCounters->m_sqGroupCount                              = countergfx9::hw_gl_sq_group_count_gfx9;
-        pHardwareCounters->m_pIsolatedGroups                           = countergfx9::hw_gl_sq_isolated_groups_gfx9;
-        pHardwareCounters->m_isolatedGroupCount                        = countergfx9::hw_gl_sq_isolated_group_count_gfx9;
-        pHardwareCounters->m_timestampBlockIds                         = countergfx9::hw_gl_timestamp_block_ids_gfx9;
-        pHardwareCounters->m_timeCounterIndices                        = countergfx9::hw_gl_time_counter_indices_gfx9;
-        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = countergfx9::hw_gl_gputimebottomtobottomduration_index_gfx9;
-        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = countergfx9::hw_gl_gputimebottomtobottomstart_index_gfx9;
-        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = countergfx9::hw_gl_gputimebottomtobottomend_index_gfx9;
-        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = countergfx9::hw_gl_gputimetoptobottomduration_index_gfx9;
-        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = countergfx9::hw_gl_gputimetoptobottomstart_index_gfx9;
-        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = countergfx9::hw_gl_gputimetoptobottomend_index_gfx9;
-        pHardwareCounters->m_pPaddedCounters                           = countergfx9::gl_padded_counter_by_group_gfx9;
-        pHardwareCounters->m_paddedCounterCount                        = countergfx9::gl_padded_counter_group_count_gfx9;
+        pHardwareCounters->m_ppCounterGroupArray                       = counter_gl_gfx9::gl_counter_group_array_gfx9;
+        pHardwareCounters->m_pGroups                                   = counter_gl_gfx9::hw_gl_groups_gfx9;
+        pHardwareCounters->m_groupCount                                = counter_gl_gfx9::hw_gl_group_count_gfx9;
+        pHardwareCounters->m_pSQCounterGroups                          = counter_gl_gfx9::hw_gl_sq_groups_gfx9;
+        pHardwareCounters->m_sqGroupCount                              = counter_gl_gfx9::hw_gl_sq_group_count_gfx9;
+        pHardwareCounters->m_pIsolatedGroups                           = counter_gl_gfx9::hw_gl_sq_isolated_groups_gfx9;
+        pHardwareCounters->m_isolatedGroupCount                        = counter_gl_gfx9::hw_gl_sq_isolated_group_count_gfx9;
+        pHardwareCounters->m_timestampBlockIds                         = counter_gl_gfx9::hw_gl_timestamp_block_ids_gfx9;
+        pHardwareCounters->m_timeCounterIndices                        = counter_gl_gfx9::hw_gl_time_counter_indices_gfx9;
+        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = counter_gl_gfx9::hw_gl_gputimebottomtobottomduration_index_gfx9;
+        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = counter_gl_gfx9::hw_gl_gputimebottomtobottomstart_index_gfx9;
+        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = counter_gl_gfx9::hw_gl_gputimebottomtobottomend_index_gfx9;
+        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = counter_gl_gfx9::hw_gl_gputimetoptobottomduration_index_gfx9;
+        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = counter_gl_gfx9::hw_gl_gputimetoptobottomstart_index_gfx9;
+        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = counter_gl_gfx9::hw_gl_gputimetoptobottomend_index_gfx9;
+        pHardwareCounters->m_pPaddedCounters                           = counter_gl_gfx9::gl_padded_counter_by_group_gfx9;
+        pHardwareCounters->m_paddedCounterCount                        = counter_gl_gfx9::gl_padded_counter_group_count_gfx9;
         break;
 
     case GDT_HW_GENERATION_GFX10:
-        pHardwareCounters->m_ppCounterGroupArray                       = countergfx10::gl_counter_group_array_gfx10;
-        pHardwareCounters->m_pGroups                                   = countergfx10::hw_gl_groups_gfx10;
-        pHardwareCounters->m_groupCount                                = countergfx10::hw_gl_group_count_gfx10;
-        pHardwareCounters->m_pSQCounterGroups                          = countergfx10::hw_gl_sq_groups_gfx10;
-        pHardwareCounters->m_sqGroupCount                              = countergfx10::hw_gl_sq_group_count_gfx10;
-        pHardwareCounters->m_pIsolatedGroups                           = countergfx10::hw_gl_sq_isolated_groups_gfx10;
-        pHardwareCounters->m_isolatedGroupCount                        = countergfx10::hw_gl_sq_isolated_group_count_gfx10;
-        pHardwareCounters->m_timestampBlockIds                         = countergfx10::hw_gl_timestamp_block_ids_gfx10;
-        pHardwareCounters->m_timeCounterIndices                        = countergfx10::hw_gl_time_counter_indices_gfx10;
-        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = countergfx10::hw_gl_gputimebottomtobottomduration_index_gfx10;
-        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = countergfx10::hw_gl_gputimebottomtobottomstart_index_gfx10;
-        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = countergfx10::hw_gl_gputimebottomtobottomend_index_gfx10;
-        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = countergfx10::hw_gl_gputimetoptobottomduration_index_gfx10;
-        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = countergfx10::hw_gl_gputimetoptobottomstart_index_gfx10;
-        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = countergfx10::hw_gl_gputimetoptobottomend_index_gfx10;
-        pHardwareCounters->m_pPaddedCounters                           = countergfx10::gl_padded_counter_by_group_gfx10;
-        pHardwareCounters->m_paddedCounterCount                        = countergfx10::gl_padded_counter_group_count_gfx10;
+        pHardwareCounters->m_ppCounterGroupArray                       = counter_gl_gfx10::gl_counter_group_array_gfx10;
+        pHardwareCounters->m_pGroups                                   = counter_gl_gfx10::hw_gl_groups_gfx10;
+        pHardwareCounters->m_groupCount                                = counter_gl_gfx10::hw_gl_group_count_gfx10;
+        pHardwareCounters->m_pSQCounterGroups                          = counter_gl_gfx10::hw_gl_sq_groups_gfx10;
+        pHardwareCounters->m_sqGroupCount                              = counter_gl_gfx10::hw_gl_sq_group_count_gfx10;
+        pHardwareCounters->m_pIsolatedGroups                           = counter_gl_gfx10::hw_gl_sq_isolated_groups_gfx10;
+        pHardwareCounters->m_isolatedGroupCount                        = counter_gl_gfx10::hw_gl_sq_isolated_group_count_gfx10;
+        pHardwareCounters->m_timestampBlockIds                         = counter_gl_gfx10::hw_gl_timestamp_block_ids_gfx10;
+        pHardwareCounters->m_timeCounterIndices                        = counter_gl_gfx10::hw_gl_time_counter_indices_gfx10;
+        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = counter_gl_gfx10::hw_gl_gputimebottomtobottomduration_index_gfx10;
+        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = counter_gl_gfx10::hw_gl_gputimebottomtobottomstart_index_gfx10;
+        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = counter_gl_gfx10::hw_gl_gputimebottomtobottomend_index_gfx10;
+        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = counter_gl_gfx10::hw_gl_gputimetoptobottomduration_index_gfx10;
+        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = counter_gl_gfx10::hw_gl_gputimetoptobottomstart_index_gfx10;
+        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = counter_gl_gfx10::hw_gl_gputimetoptobottomend_index_gfx10;
+        pHardwareCounters->m_pPaddedCounters                           = counter_gl_gfx10::gl_padded_counter_by_group_gfx10;
+        pHardwareCounters->m_paddedCounterCount                        = counter_gl_gfx10::gl_padded_counter_group_count_gfx10;
+        break;
+
+    case GDT_HW_GENERATION_GFX103:
+        pHardwareCounters->m_ppCounterGroupArray                       = counter_gl_gfx103::gl_counter_group_array_gfx103;
+        pHardwareCounters->m_pGroups                                   = counter_gl_gfx103::hw_gl_groups_gfx103;
+        pHardwareCounters->m_groupCount                                = counter_gl_gfx103::hw_gl_group_count_gfx103;
+        pHardwareCounters->m_pSQCounterGroups                          = counter_gl_gfx103::hw_gl_sq_groups_gfx103;
+        pHardwareCounters->m_sqGroupCount                              = counter_gl_gfx103::hw_gl_sq_group_count_gfx103;
+        pHardwareCounters->m_pIsolatedGroups                           = counter_gl_gfx103::hw_gl_sq_isolated_groups_gfx103;
+        pHardwareCounters->m_isolatedGroupCount                        = counter_gl_gfx103::hw_gl_sq_isolated_group_count_gfx103;
+        pHardwareCounters->m_timestampBlockIds                         = counter_gl_gfx103::hw_gl_timestamp_block_ids_gfx103;
+        pHardwareCounters->m_timeCounterIndices                        = counter_gl_gfx103::hw_gl_time_counter_indices_gfx103;
+        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = counter_gl_gfx103::hw_gl_gputimebottomtobottomduration_index_gfx103;
+        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = counter_gl_gfx103::hw_gl_gputimebottomtobottomstart_index_gfx103;
+        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = counter_gl_gfx103::hw_gl_gputimebottomtobottomend_index_gfx103;
+        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = counter_gl_gfx103::hw_gl_gputimetoptobottomduration_index_gfx103;
+        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = counter_gl_gfx103::hw_gl_gputimetoptobottomstart_index_gfx103;
+        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = counter_gl_gfx103::hw_gl_gputimetoptobottomend_index_gfx103;
+        pHardwareCounters->m_pPaddedCounters                           = counter_gl_gfx103::gl_padded_counter_by_group_gfx103;
+        pHardwareCounters->m_paddedCounterCount                        = counter_gl_gfx103::gl_padded_counter_group_count_gfx103;
         break;
 
     default:
@@ -532,21 +568,27 @@ GPA_Status GPA_CounterGeneratorGL::GenerateHardwareExposedCounters(GDT_HW_GENERA
     switch (desiredGeneration)
     {
     case GDT_HW_GENERATION_VOLCANICISLAND:
-        pHardwareCounters->m_ppHardwareExposedCounter         = countergfx8::gl_exposed_counters_group_array_gfx8;
-        pHardwareCounters->m_pHardwareExposedCounterGroups    = countergfx8::hw_gl_exposed_counters_by_group_gfx8;
-        pHardwareCounters->m_hardwareExposedCounterGroupCount = countergfx8::hw_gl_exposed_counters_group_count_gfx8;
+        pHardwareCounters->m_ppHardwareExposedCounter         = counter_gl_gfx8::gl_exposed_counters_group_array_gfx8;
+        pHardwareCounters->m_pHardwareExposedCounterGroups    = counter_gl_gfx8::hw_gl_exposed_counters_by_group_gfx8;
+        pHardwareCounters->m_hardwareExposedCounterGroupCount = counter_gl_gfx8::hw_gl_exposed_counters_group_count_gfx8;
         break;
 
     case GDT_HW_GENERATION_GFX9:
-        pHardwareCounters->m_ppHardwareExposedCounter         = countergfx9::gl_exposed_counters_group_array_gfx9;
-        pHardwareCounters->m_pHardwareExposedCounterGroups    = countergfx9::hw_gl_exposed_counters_by_group_gfx9;
-        pHardwareCounters->m_hardwareExposedCounterGroupCount = countergfx9::hw_gl_exposed_counters_group_count_gfx9;
+        pHardwareCounters->m_ppHardwareExposedCounter         = counter_gl_gfx9::gl_exposed_counters_group_array_gfx9;
+        pHardwareCounters->m_pHardwareExposedCounterGroups    = counter_gl_gfx9::hw_gl_exposed_counters_by_group_gfx9;
+        pHardwareCounters->m_hardwareExposedCounterGroupCount = counter_gl_gfx9::hw_gl_exposed_counters_group_count_gfx9;
         break;
 
     case GDT_HW_GENERATION_GFX10:
-        pHardwareCounters->m_ppHardwareExposedCounter         = countergfx10::gl_exposed_counters_group_array_gfx10;
-        pHardwareCounters->m_pHardwareExposedCounterGroups    = countergfx10::hw_gl_exposed_counters_by_group_gfx10;
-        pHardwareCounters->m_hardwareExposedCounterGroupCount = countergfx10::hw_gl_exposed_counters_group_count_gfx10;
+        pHardwareCounters->m_ppHardwareExposedCounter         = counter_gl_gfx10::gl_exposed_counters_group_array_gfx10;
+        pHardwareCounters->m_pHardwareExposedCounterGroups    = counter_gl_gfx10::hw_gl_exposed_counters_by_group_gfx10;
+        pHardwareCounters->m_hardwareExposedCounterGroupCount = counter_gl_gfx10::hw_gl_exposed_counters_group_count_gfx10;
+        break;
+
+    case GDT_HW_GENERATION_GFX103:
+        pHardwareCounters->m_ppHardwareExposedCounter         = counter_gl_gfx103::gl_exposed_counters_group_array_gfx103;
+        pHardwareCounters->m_pHardwareExposedCounterGroups    = counter_gl_gfx103::hw_gl_exposed_counters_by_group_gfx103;
+        pHardwareCounters->m_hardwareExposedCounterGroupCount = counter_gl_gfx103::hw_gl_exposed_counters_group_count_gfx103;
         break;
 
     default:

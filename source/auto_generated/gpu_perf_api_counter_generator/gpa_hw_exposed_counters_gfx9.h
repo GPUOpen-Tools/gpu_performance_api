@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA hardware exposed counter info for GFX9
@@ -13,7 +13,7 @@
 
 #include "gpa_counter.h"
 
-namespace countergfx9
+namespace counter_gfx9
 {
 extern GPA_HardwareCounterDesc cpf_exposed_counters_gfx9[]; ///< Array of hardware exposed counters for cpf block for gfx9
 extern GPA_HardwareCounterDesc cb0_exposed_counters_gfx9[]; ///< Array of hardware exposed counters for cb0 block for gfx9
@@ -262,5 +262,5 @@ extern GPA_HardwareCounterDesc gcea13_exposed_counters_gfx9[]; ///< Array of har
 extern GPA_HardwareCounterDesc gcea14_exposed_counters_gfx9[]; ///< Array of hardware exposed counters for gcea14 block for gfx9
 extern GPA_HardwareCounterDesc gcea15_exposed_counters_gfx9[]; ///< Array of hardware exposed counters for gcea15 block for gfx9
 extern GPA_HardwareCounterDesc gputime_exposed_counters_gfx9[]; ///< Array of hardware exposed counters for gputime block for gfx9
-} // countergfx9
+} // counter_gfx9
 #endif  //_GPA_HW_EXPOSED_COUNTERS_

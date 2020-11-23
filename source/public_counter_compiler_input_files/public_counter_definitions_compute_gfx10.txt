@@ -118,20 +118,20 @@ desc=#GlobalMemory#The total kilobytes fetched from the video memory. This is me
 type=gpa_float64
 usage=kilobytes
 [CLGfx10]
-GL2C*_PERF_SEL_EA_RDREQ_32B[0..23]
-GL2C*_PERF_SEL_EA_RDREQ_64B[0..23]
-GL2C*_PERF_SEL_EA_RDREQ_96B[0..23]
-GL2C*_PERF_SEL_EA_RDREQ_128B[0..23]
-eqn=0..23,sum24,(32),*,24..47,sum24,(64),*,48..71,sum24,(96),*,72..95,sum24,(128),*,sum4,(1024),/
+GL2C*_PERF_SEL_EA_RDREQ_32B[0..15]
+GL2C*_PERF_SEL_EA_RDREQ_64B[0..15]
+GL2C*_PERF_SEL_EA_RDREQ_96B[0..15]
+GL2C*_PERF_SEL_EA_RDREQ_128B[0..15]
+eqn=0..15,sum16,(32),*,16..31,sum16,(64),*,32..47,sum16,(96),*,48..63,sum16,(128),*,sum4,(1024),/
 
 name=WriteSize
 desc=#GlobalMemory#The total kilobytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
 type=gpa_float64
 usage=kilobytes
 [CLGfx10]
-GL2C*_PERF_SEL_MC_WRREQ[0..23]
-GL2C*_PERF_SEL_EA_WRREQ_64B[0..23]
-eqn=0..23,sum24,24..47,sum24,-,(32),*,24..47,sum24,(64),*,+,(1024),/
+GL2C*_PERF_SEL_MC_WRREQ[0..15]
+GL2C*_PERF_SEL_EA_WRREQ_64B[0..15]
+eqn=0..15,sum16,16..31,sum16,-,(32),*,16..31,sum16,(64),*,+,(1024),/
 
 name=L0CacheHit
 desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the data in L0 cache. Value range: 0% (no hit) to 100% (optimal).
@@ -156,9 +156,9 @@ desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instruction
 type=gpa_float64
 usage=percentage
 [CLGfx10]
-GL2C*_PERF_SEL_REQ[0..23]
-GL2C*_PERF_SEL_MISS[0..23]
-eqn=(0),(1),24..47,sum24,0..23,sum24,/,-,(100),*,0..23,sum24,ifnotzero
+GL2C*_PERF_SEL_REQ[0..15]
+GL2C*_PERF_SEL_MISS[0..15]
+eqn=(0),(1),16..31,sum16,0..15,sum16,/,-,(100),*,0..15,sum16,ifnotzero
 
 name=MemUnitBusy
 desc=#GlobalMemory#The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).
@@ -183,9 +183,9 @@ desc=#GlobalMemory#The percentage of GPUTime the Write unit is stalled. Value ra
 type=gpa_float64
 usage=percentage
 [CLGfx10]
-GL2C*_PERF_SEL_MC_WRREQ_STALL[0..23]
+GL2C*_PERF_SEL_MC_WRREQ_STALL[0..15]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..23,max24,24,/,(100),*
+eqn=0..15,max16,16,/,(100),*
 
 ;name=ALUStalledByLDS
 ;desc=#LocalMemory#The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).

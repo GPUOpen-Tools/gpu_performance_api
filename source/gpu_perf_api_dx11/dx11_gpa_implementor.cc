@@ -139,12 +139,13 @@ bool DX11GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
             {
                 if (majorVer < MIN_MAJOR_VER || (majorVer == MIN_MAJOR_VER && minorVer < MIN_MINOR_VER_FOR_16))
                 {
-                    GPA_LogError("Driver version 16.15 or newer is required.");
-
                     if (0 != majorVer || 0 != minorVer || 0 != subMinorVer)
                     {
                         // This is an error
                         status = GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+                        std::stringstream ss;
+                        ss << "Driver version reported by ADL is incompatible. Found " << majorVer << "." << minorVer << "." << subMinorVer << ", 16.15 or newer is required.";
+                        GPA_LogError(ss.str().c_str());
                     }
                     else
                     {

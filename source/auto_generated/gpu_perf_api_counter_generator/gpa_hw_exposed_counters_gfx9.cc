@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA hardware exposed counter info for GFX9
@@ -10,7 +10,7 @@
 #include "gpa_counter.h"
 #include "gpu_perf_api_types.h"
 
-namespace countergfx9
+namespace counter_gfx9
 {
 
     GPA_HardwareCounterDesc cpf_exposed_counters_gfx9[] = {
@@ -3427,4 +3427,4 @@ namespace countergfx9
     {4, "GPUTime_TOP_TO_BOTTOM_START", "GPUTime", "time that the current command reaches the top of pipe", GPA_DATA_TYPE_UINT64, 0, GPA_UINT64_MAX},
     {5, "GPUTime_TOP_TO_BOTTOM_END", "GPUTime", "time that the current command reaches the bottom of pipe", GPA_DATA_TYPE_UINT64, 0, GPA_UINT64_MAX},
 };
-} // countergfx9
+} // counter_gfx9

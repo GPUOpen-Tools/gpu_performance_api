@@ -34,6 +34,7 @@ set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/api_error_tests.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api_loader_tests.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api_unit_tests.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/counter_generator_tests.cc
+                 ${GPA_SRC_COUNTER_GENERATOR}/gpa_derived_counter_evaluator.inc
                  ${ADDITIONAL_UNIT_TEST_SOURCES})
 
 

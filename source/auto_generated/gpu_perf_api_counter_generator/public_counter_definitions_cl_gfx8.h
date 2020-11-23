@@ -14,6 +14,6 @@
 
 /// Defines the Public derived counters for CL 
 /// \param c derived counters instance
-void AutoDefinePublicDerivedCountersCLGfx8(GPA_DerivedCounters& c);
+void AutoDefinePublicDerivedCountersCL_Gfx8(GPA_DerivedCounters& c);
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_CL_GFX8_H_

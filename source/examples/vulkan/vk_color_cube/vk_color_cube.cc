@@ -21,26 +21,7 @@
 #include <thread>
 #include <vector>
 
-#ifdef ANDROID
-#define VK_USE_PLATFORM_ANDROID_KHR
-#include <android/asset_manager.h>
-#else
-
-#ifdef _WIN32
-// Tell the linker that this is a windowed app, not a console app;
-// defining this in code allows for flexibility with other operating systems.
-#pragma comment(linker, "/subsystem:windows")
-#define VK_USE_PLATFORM_WIN32_KHR
-#endif  // _WIN32
-
-#ifdef __linux__
-#define VK_USE_PLATFORM_XCB_KHR
-#endif  // __linux__
-
-#endif
-
-#include <vulkan/vulkan.h>
-
+#include "vk_util.h"
 #include "vk_color_cube.h"
 #include "gpu_perf_api_vk.h"
 
@@ -50,49 +31,6 @@
 #include <dlfcn.h>
 #include <unistd.h>
 #endif
-
-// Macro to simplify querying instance procedure addresses and reporting & returning errors.
-#define VK_INSTANCE_GET_PROC_ADDR(result, instance, func)                         \
-    result = (PFN_##func)vkGetInstanceProcAddr(instance, #func);                  \
-    if (result == nullptr)                                                        \
-    {                                                                             \
-        std::cout << "ERROR: Failed getting entrypoint '" #func "'" << std::endl; \
-        return false;                                                             \
-    }
-
-// Macro to simplify querying instance procedure addresses and reporting errors.
-#define VK_INSTANCE_GET_PROC_ADDR_VOID(result, instance, func)                    \
-    result = (PFN_##func)vkGetInstanceProcAddr(instance, #func);                  \
-    if (result == nullptr)                                                        \
-    {                                                                             \
-        std::cout << "ERROR: Failed getting entrypoint '" #func "'" << std::endl; \
-    }
-
-// TODO: Unused function
-/// Callback that will be registered with the VK_KHR_debug_report extension
-/// so that the validation layers can report debugging messages.
-// static VKAPI_ATTR VkBool32 VKAPI_CALL debugReportCallback(
-//     VkDebugReportFlagsEXT flags,
-//     VkDebugReportObjectTypeEXT objType,
-//     uint64_t obj,
-//     size_t location,
-//     int32_t code,
-//     const char* layerPrefix,
-//     const char* msg,
-//     void* userData)
-// {
-//     UNREFERENCED_PARAMETER(flags);
-//     UNREFERENCED_PARAMETER(objType);
-//     UNREFERENCED_PARAMETER(obj);
-//     UNREFERENCED_PARAMETER(location);
-//     UNREFERENCED_PARAMETER(code);
-//     UNREFERENCED_PARAMETER(layerPrefix);
-//     UNREFERENCED_PARAMETER(userData);
-
-//     std::cout << "ERROR: validation layer: " << msg << std::endl;
-
-//     return VK_FALSE;
-// }
 
 GPAApiManager*    GPAApiManager::m_pGpaApiManager = nullptr;
 GPAFuncTableInfo* g_pFuncTableInfo                = nullptr;
@@ -417,7 +355,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* filename)
     shaderModuleCreateInfo.pCode                    = reinterpret_cast<const uint32_t*>(shaderBytes.data());
 
     VkShaderModule shaderModule;
-    VkResult       resultCreateShaderModule = vkCreateShaderModule(m_vkDevice, &shaderModuleCreateInfo, nullptr, &shaderModule);
+    VkResult       resultCreateShaderModule = _vkCreateShaderModule(m_vkDevice, &shaderModuleCreateInfo, nullptr, &shaderModule);
 
     if (resultCreateShaderModule != VK_SUCCESS)
     {
@@ -516,14 +454,19 @@ bool AMDVulkanDemo::InitializeVulkan()
     InitializeGPA();
 #endif
 
+    if (!AMDVulkanDemoVkUtils::InitVulkanModule())
+    {
+        return false;
+    }
+
     uint32_t instanceLayerCount            = 0;
-    VkResult resultInstanceLayerProperties = vkEnumerateInstanceLayerProperties(&instanceLayerCount, NULL);
+    VkResult resultInstanceLayerProperties = _vkEnumerateInstanceLayerProperties(&instanceLayerCount, NULL);
 
     if (resultInstanceLayerProperties == VK_SUCCESS && instanceLayerCount > 0)
     {
         std::vector<VkLayerProperties> instanceLayerProperties;
         instanceLayerProperties.resize(instanceLayerCount);
-        resultInstanceLayerProperties = vkEnumerateInstanceLayerProperties(&instanceLayerCount, instanceLayerProperties.data());
+        resultInstanceLayerProperties = _vkEnumerateInstanceLayerProperties(&instanceLayerCount, instanceLayerProperties.data());
 
         if (resultInstanceLayerProperties == VK_SUCCESS && m_bPrintDebugOutput)
         {
@@ -536,7 +479,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     uint32_t    instanceExtensionCount            = 0;
     const char* pLayerName                        = NULL;
-    VkResult    resultInstanceExtensionProperties = vkEnumerateInstanceExtensionProperties(pLayerName, &instanceExtensionCount, NULL);
+    VkResult    resultInstanceExtensionProperties = _vkEnumerateInstanceExtensionProperties(pLayerName, &instanceExtensionCount, NULL);
 
     if (resultInstanceExtensionProperties != VK_SUCCESS || instanceExtensionCount == 0)
     {
@@ -546,7 +489,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     {
         std::vector<VkExtensionProperties> instanceExtensionProperties;
         instanceExtensionProperties.resize(instanceExtensionCount);
-        resultInstanceExtensionProperties = vkEnumerateInstanceExtensionProperties(pLayerName, &instanceExtensionCount, instanceExtensionProperties.data());
+        resultInstanceExtensionProperties = _vkEnumerateInstanceExtensionProperties(pLayerName, &instanceExtensionCount, instanceExtensionProperties.data());
 
         if (resultInstanceExtensionProperties != VK_SUCCESS)
         {
@@ -613,7 +556,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     // so there's no need for AllocationCallbacks.
     VkAllocationCallbacks* pCallbacks = nullptr;
 
-    VkResult createResult = vkCreateInstance(&instanceCreateInfo, pCallbacks, &m_vkInstance);
+    VkResult createResult = _vkCreateInstance(&instanceCreateInfo, pCallbacks, &m_vkInstance);
 
     if (VK_SUCCESS != createResult)
     {
@@ -621,17 +564,10 @@ bool AMDVulkanDemo::InitializeVulkan()
         return false;
     }
 
-    //TODO: Debug report callback is only getting created but not getting used - unused variable
-    // Register the debug report callback
-    // VkDebugReportCallbackCreateInfoEXT debugReportCallbackCreateInfo = {};
-    // debugReportCallbackCreateInfo.sType = VK_STRUCTURE_TYPE_DEBUG_REPORT_CALLBACK_CREATE_INFO_EXT;
-    // debugReportCallbackCreateInfo.pNext = nullptr;
-    // debugReportCallbackCreateInfo.flags = VK_DEBUG_REPORT_ERROR_BIT_EXT | VK_DEBUG_REPORT_WARNING_BIT_EXT;
-    // debugReportCallbackCreateInfo.pfnCallback = debugReportCallback;
-    // debugReportCallbackCreateInfo.pUserData = nullptr;
-
-    // PFN_vkCreateDebugReportCallbackEXT pvkCreateDebugReportCallback;
-    // VK_INSTANCE_GET_PROC_ADDR(pvkCreateDebugReportCallback, m_vkInstance, vkCreateDebugReportCallbackEXT);
+    if(!AMDVulkanDemoVkUtils::InitInstanceFunctions(m_vkInstance))
+    {
+        return false;
+    }
 
     // There is also a concept of Vulkan Physical Devices (VkPhysicalDevice) which correspond to
     // physical hardware in the system. Physical devices may support different image formats, limits,
@@ -640,7 +576,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     // On those physical devices, multiple logical devices (VkDevice) can be created which different
     // extensions or layers enabled, along with with specific features and queue types.
     uint32_t physicalDeviceCount  = 0;
-    VkResult resultGetPhysDevices = vkEnumeratePhysicalDevices(m_vkInstance, &physicalDeviceCount, nullptr);
+    VkResult resultGetPhysDevices = _vkEnumeratePhysicalDevices(m_vkInstance, &physicalDeviceCount, nullptr);
 
     if (resultGetPhysDevices != VK_SUCCESS || physicalDeviceCount == 0)
     {
@@ -651,7 +587,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     {
         std::vector<VkPhysicalDevice> physicalDevices;
         physicalDevices.resize(physicalDeviceCount);
-        resultGetPhysDevices = vkEnumeratePhysicalDevices(m_vkInstance, &physicalDeviceCount, physicalDevices.data());
+        resultGetPhysDevices = _vkEnumeratePhysicalDevices(m_vkInstance, &physicalDeviceCount, physicalDevices.data());
 
         if (resultGetPhysDevices != VK_SUCCESS)
         {
@@ -666,7 +602,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
             for (uint32_t i = 0; i < physicalDeviceCount; ++i)
             {
-                vkGetPhysicalDeviceProperties(physicalDevices[i], &physicalDeviceProperties);
+                _vkGetPhysicalDeviceProperties(physicalDevices[i], &physicalDeviceProperties);
                 std::cout << "PhysicalDevice[" << i << "]: " << physicalDeviceProperties.deviceName << std::endl;
             }
         }
@@ -675,9 +611,9 @@ bool AMDVulkanDemo::InitializeVulkan()
         // Theoretically, an application might query this for each available physical device
         // and then use the information to select a physical device to use for rendering.
         m_vkPhysicalDevice = physicalDevices[m_cDefaultPhysicalDeviceIndex];
-        vkGetPhysicalDeviceProperties(m_vkPhysicalDevice, &m_vkPhysicalDeviceProperties);
-        vkGetPhysicalDeviceFeatures(m_vkPhysicalDevice, &m_vkPhysicalDeviceFeatures);
-        vkGetPhysicalDeviceMemoryProperties(m_vkPhysicalDevice, &m_vkPhysicalDeviceMemoryProperties);
+        _vkGetPhysicalDeviceProperties(m_vkPhysicalDevice, &m_vkPhysicalDeviceProperties);
+        _vkGetPhysicalDeviceFeatures(m_vkPhysicalDevice, &m_vkPhysicalDeviceFeatures);
+        _vkGetPhysicalDeviceMemoryProperties(m_vkPhysicalDevice, &m_vkPhysicalDeviceMemoryProperties);
     }
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
@@ -687,7 +623,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     surfaceCreateInfo.pNext                       = nullptr;
     surfaceCreateInfo.hinstance                   = m_hInstance;
     surfaceCreateInfo.hwnd                        = m_hWindow;
-    VkResult resultCreateSurface                  = vkCreateWin32SurfaceKHR(m_vkInstance, &surfaceCreateInfo, nullptr, &m_vkSurface);
+    VkResult resultCreateSurface                  = _vkCreateWin32SurfaceKHR(m_vkInstance, &surfaceCreateInfo, nullptr, &m_vkSurface);
 
     if (resultCreateSurface != VK_SUCCESS || m_vkSurface == VK_NULL_HANDLE)
     {
@@ -703,7 +639,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     surfaceCreateInfo.flags                     = 0;
     surfaceCreateInfo.connection                = m_pXcbConnection;
     surfaceCreateInfo.window                    = m_xcbWindow;
-    VkResult resultCreateSurface                = vkCreateXcbSurfaceKHR(m_vkInstance, &surfaceCreateInfo, nullptr, &m_vkSurface);
+    VkResult resultCreateSurface                = _vkCreateXcbSurfaceKHR(m_vkInstance, &surfaceCreateInfo, nullptr, &m_vkSurface);
 
     if (resultCreateSurface != VK_SUCCESS || m_vkSurface == VK_NULL_HANDLE)
     {
@@ -717,7 +653,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     surfaceCreateInfo.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR, surfaceCreateInfo.pNext = nullptr, surfaceCreateInfo.flags = 0,
     surfaceCreateInfo.window = m_pAnativeWindow;
 
-    VkResult result = vkCreateAndroidSurfaceKHR(m_vkInstance, &surfaceCreateInfo, nullptr, &m_vkSurface);
+    VkResult result = _vkCreateAndroidSurfaceKHR(m_vkInstance, &surfaceCreateInfo, nullptr, &m_vkSurface);
     std::cout << result;
 #else
     std::cout << "ERROR: The current platform is not supported - no VkSurface will be created!";
@@ -736,7 +672,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     // would need to transfer the generated image from the graphics queue to the present queue to display it.
     // NOTE: This code does not support the situation of using different queues for graphics and present.
     uint32_t queueFamilyCount = 0;
-    vkGetPhysicalDeviceQueueFamilyProperties(m_vkPhysicalDevice, &queueFamilyCount, nullptr);
+    _vkGetPhysicalDeviceQueueFamilyProperties(m_vkPhysicalDevice, &queueFamilyCount, nullptr);
 
     if (queueFamilyCount == 0)
     {
@@ -746,7 +682,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     std::vector<VkQueueFamilyProperties> queueFamilyProperties;
     queueFamilyProperties.resize(queueFamilyCount);
-    vkGetPhysicalDeviceQueueFamilyProperties(m_vkPhysicalDevice, &queueFamilyCount, queueFamilyProperties.data());
+    _vkGetPhysicalDeviceQueueFamilyProperties(m_vkPhysicalDevice, &queueFamilyCount, queueFamilyProperties.data());
 
     // Select first queue family that supports both graphics and present for the surface created above.
     bool bFoundSupportingQueue = false;
@@ -768,7 +704,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         // Check if the device supports presenting to this surface
         VkBool32 bSupportsPresent     = VK_FALSE;
-        VkResult resultSurfaceSupport = vkGetPhysicalDeviceSurfaceSupportKHR(m_vkPhysicalDevice, queueFamilyIndex, m_vkSurface, &bSupportsPresent);
+        VkResult resultSurfaceSupport = _vkGetPhysicalDeviceSurfaceSupportKHR(m_vkPhysicalDevice, queueFamilyIndex, m_vkSurface, &bSupportsPresent);
 
         if (resultSurfaceSupport == VK_SUCCESS && bSupportsPresent == VK_TRUE && m_bPrintDebugOutput)
         {
@@ -797,7 +733,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     // Query available device extensions
     uint32_t availableDeviceExtensionCount = 0;
-    VkResult resultGetDeviceExtensions     = vkEnumerateDeviceExtensionProperties(m_vkPhysicalDevice, nullptr, &availableDeviceExtensionCount, nullptr);
+    VkResult resultGetDeviceExtensions     = _vkEnumerateDeviceExtensionProperties(m_vkPhysicalDevice, nullptr, &availableDeviceExtensionCount, nullptr);
 
     if (resultGetDeviceExtensions != VK_SUCCESS)
     {
@@ -809,7 +745,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     std::vector<VkExtensionProperties> availableDeviceExtensions;
     availableDeviceExtensions.resize(availableDeviceExtensionCount);
     resultGetDeviceExtensions =
-        vkEnumerateDeviceExtensionProperties(m_vkPhysicalDevice, nullptr, &availableDeviceExtensionCount, availableDeviceExtensions.data());
+        _vkEnumerateDeviceExtensionProperties(m_vkPhysicalDevice, nullptr, &availableDeviceExtensionCount, availableDeviceExtensions.data());
 
     if (resultGetDeviceExtensions != VK_SUCCESS)
     {
@@ -869,7 +805,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     deviceCreateInfo.ppEnabledExtensionNames = m_optionalDeviceExtensions.data();
     deviceCreateInfo.pEnabledFeatures        = &m_vkPhysicalDeviceFeatures;
 
-    VkResult resultCreateDevice = vkCreateDevice(m_vkPhysicalDevice, &deviceCreateInfo, nullptr, &m_vkDevice);
+    VkResult resultCreateDevice = _vkCreateDevice(m_vkPhysicalDevice, &deviceCreateInfo, nullptr, &m_vkDevice);
 
     if (resultCreateDevice == VK_ERROR_EXTENSION_NOT_PRESENT)
     {
@@ -877,12 +813,17 @@ bool AMDVulkanDemo::InitializeVulkan()
         deviceCreateInfo.enabledExtensionCount   = static_cast<uint32_t>(m_requiredDeviceExtensions.size());
         deviceCreateInfo.ppEnabledExtensionNames = m_requiredDeviceExtensions.data();
 
-        resultCreateDevice = vkCreateDevice(m_vkPhysicalDevice, &deviceCreateInfo, nullptr, &m_vkDevice);
+        resultCreateDevice = _vkCreateDevice(m_vkPhysicalDevice, &deviceCreateInfo, nullptr, &m_vkDevice);
     }
 
     if (resultCreateDevice != VK_SUCCESS)
     {
         std::cout << "ERROR: Failed to create device\n." << std::endl;
+        return false;
+    }
+
+    if(!AMDVulkanDemoVkUtils::InitDeviceFunctions(m_vkDevice))
+    {
         return false;
     }
 
@@ -933,16 +874,54 @@ bool AMDVulkanDemo::InitializeVulkan()
             return false;
         }
 
+        GPA_Status statusGPAEnableAllCounters = GPA_STATUS_OK;
+        if (!counter_file_name_.empty())
+        {
+            std::fstream counter_file_stream;
+            counter_file_stream.open(counter_file_name_.c_str(), std::ios_base::in);
+            std::vector<std::string> counter_list;
+            char                     temp_counter[256];
+            if (counter_file_stream.is_open())
+            {
+                while (counter_file_stream.getline(temp_counter, 256))
+                {
+                    counter_list.push_back(std::string(temp_counter));
+                }
+
+                counter_file_stream.close();
+
+                bool success_enable_counter = true;
+                for (std::vector<std::string>::const_iterator it = counter_list.cbegin(); it != counter_list.cend(); ++it)
+                {
+                    GPA_Status gpa_status = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableCounterByName(m_GPASessionId, it->c_str());
+                    success_enable_counter &= gpa_status == GPA_STATUS_OK;
+                }
+
+                if (!success_enable_counter)
+                {
+                    statusGPAEnableAllCounters = GPA_STATUS_ERROR_COUNTER_NOT_FOUND;
+                }
+            }
+            else
+            {
+                std::stringstream error;
+                error << "Unable to open Counter file " << counter_file_name_.c_str() << " . Not enabling any counters";
+            }
+        }
+        else
+        {
 #ifndef AMDT_INTERNAL
 #ifdef ANDROID
-        GPA_Status statusGPAEnableAllCounters = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableAllCounters(m_GPASessionId);
+            statusGPAEnableAllCounters = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableAllCounters(m_GPASessionId);
 #else
-        // Enable all the counters.
-        GPA_Status statusGPAEnableAllCounters = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableAllCounters(m_GPASessionId);
+            // Enable all the counters.
+            statusGPAEnableAllCounters = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableAllCounters(m_GPASessionId);
 #endif
 #else
-        GPA_Status statusGPAEnableAllCounters = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableCounterByName(m_GPASessionId, "CPF_PERF_SEL_CPF_STAT_BUSY");
+            statusGPAEnableAllCounters = m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EnableCounterByName(m_GPASessionId, "CPF_PERF_SEL_CPF_STAT_BUSY");
 #endif
+        }
+
         if (statusGPAEnableAllCounters != GPA_STATUS_OK)
         {
             std::cout << "ERROR: Failed to enable all GPA counters." << std::endl;
@@ -976,12 +955,12 @@ bool AMDVulkanDemo::InitializeVulkan()
     }
 
     // Get a queue from the graphics queue family
-    vkGetDeviceQueue(m_vkDevice, m_queueFamilyIndexGraphics, m_queueIndex, &m_vkQueue);
+    _vkGetDeviceQueue(m_vkDevice, m_queueFamilyIndexGraphics, m_queueIndex, &m_vkQueue);
 
     // Now the surface format needs to be selected from those available. The preference is for
     // B8G8R8A8_UNORM, but a different format will be okay.
     uint32_t formatCount             = 0;
-    VkResult resultGetSurfaceFormats = vkGetPhysicalDeviceSurfaceFormatsKHR(m_vkPhysicalDevice, m_vkSurface, &formatCount, nullptr);
+    VkResult resultGetSurfaceFormats = _vkGetPhysicalDeviceSurfaceFormatsKHR(m_vkPhysicalDevice, m_vkSurface, &formatCount, nullptr);
 
     if (resultGetSurfaceFormats != VK_SUCCESS || formatCount == 0)
     {
@@ -991,7 +970,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     std::vector<VkSurfaceFormatKHR> surfaceFormats;
     surfaceFormats.resize(formatCount);
-    resultGetSurfaceFormats = vkGetPhysicalDeviceSurfaceFormatsKHR(m_vkPhysicalDevice, m_vkSurface, &formatCount, surfaceFormats.data());
+    resultGetSurfaceFormats = _vkGetPhysicalDeviceSurfaceFormatsKHR(m_vkPhysicalDevice, m_vkSurface, &formatCount, surfaceFormats.data());
 
     if (resultGetSurfaceFormats != VK_SUCCESS)
     {
@@ -1029,7 +1008,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     // Get presentation modes
     uint32_t presentModeCount      = 0;
-    VkResult resultGetPresentModes = vkGetPhysicalDeviceSurfacePresentModesKHR(m_vkPhysicalDevice, m_vkSurface, &presentModeCount, nullptr);
+    VkResult resultGetPresentModes = _vkGetPhysicalDeviceSurfacePresentModesKHR(m_vkPhysicalDevice, m_vkSurface, &presentModeCount, nullptr);
 
     if (resultGetPresentModes != VK_SUCCESS)
     {
@@ -1039,7 +1018,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     std::vector<VkPresentModeKHR> presentModes;
     presentModes.resize(presentModeCount);
-    resultGetPresentModes = vkGetPhysicalDeviceSurfacePresentModesKHR(m_vkPhysicalDevice, m_vkSurface, &presentModeCount, presentModes.data());
+    resultGetPresentModes = _vkGetPhysicalDeviceSurfacePresentModesKHR(m_vkPhysicalDevice, m_vkSurface, &presentModeCount, presentModes.data());
 
     if (resultGetPresentModes != VK_SUCCESS)
     {
@@ -1076,7 +1055,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     }
 
     // Get surface capabilities to determine the acceptable sizes of the swapchain images that will be presented to the surface.
-    VkResult resultSurfaceCapabilities = vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_vkPhysicalDevice, m_vkSurface, &m_vkSurfaceCapabilities);
+    VkResult resultSurfaceCapabilities = _vkGetPhysicalDeviceSurfaceCapabilitiesKHR(m_vkPhysicalDevice, m_vkSurface, &m_vkSurfaceCapabilities);
 
     if (resultSurfaceCapabilities != VK_SUCCESS)
     {
@@ -1139,7 +1118,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     swapchainCreateInfo.clipped      = VK_TRUE;
     swapchainCreateInfo.oldSwapchain = VK_NULL_HANDLE;
 
-    VkResult resultCreateSwapchain = vkCreateSwapchainKHR(m_vkDevice, &swapchainCreateInfo, nullptr, &m_vkSwapchain);
+    VkResult resultCreateSwapchain = _vkCreateSwapchainKHR(m_vkDevice, &swapchainCreateInfo, nullptr, &m_vkSwapchain);
 
     if (resultCreateSwapchain != VK_SUCCESS)
     {
@@ -1149,7 +1128,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     // The Vulkan implementation may have created more more swapchain images, so query the number again, and actually get handles
     // to those image objects.
-    VkResult resultGetSwapchainImages = vkGetSwapchainImagesKHR(m_vkDevice, m_vkSwapchain, &swapchainImageCount, nullptr);
+    VkResult resultGetSwapchainImages = _vkGetSwapchainImagesKHR(m_vkDevice, m_vkSwapchain, &swapchainImageCount, nullptr);
 
     if (resultGetSwapchainImages != VK_SUCCESS)
     {
@@ -1158,7 +1137,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     }
 
     m_perSwapchainImageResources.swapchainImages.resize(swapchainImageCount);
-    resultGetSwapchainImages = vkGetSwapchainImagesKHR(m_vkDevice, m_vkSwapchain, &swapchainImageCount, m_perSwapchainImageResources.swapchainImages.data());
+    resultGetSwapchainImages = _vkGetSwapchainImagesKHR(m_vkDevice, m_vkSwapchain, &swapchainImageCount, m_perSwapchainImageResources.swapchainImages.data());
 
     if (resultGetSwapchainImages != VK_SUCCESS)
     {
@@ -1198,7 +1177,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         imageViewCreateInfo.subresourceRange.baseArrayLayer = 0;
         imageViewCreateInfo.subresourceRange.layerCount     = 1;
 
-        VkResult resultCreateImageView = vkCreateImageView(m_vkDevice, &imageViewCreateInfo, nullptr, &m_perSwapchainImageResources.swapchainImageViews[i]);
+        VkResult resultCreateImageView = _vkCreateImageView(m_vkDevice, &imageViewCreateInfo, nullptr, &m_perSwapchainImageResources.swapchainImageViews[i]);
 
         if (resultCreateImageView != VK_SUCCESS)
         {
@@ -1267,7 +1246,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     renderPassCreateInfoInitial.dependencyCount        = 0;
     renderPassCreateInfoInitial.pDependencies          = nullptr;
 
-    VkResult resultCreateRenderPass = vkCreateRenderPass(m_vkDevice, &renderPassCreateInfoInitial, nullptr, &m_vkRenderPassInitial);
+    VkResult resultCreateRenderPass = _vkCreateRenderPass(m_vkDevice, &renderPassCreateInfoInitial, nullptr, &m_vkRenderPassInitial);
 
     if (resultCreateRenderPass != VK_SUCCESS)
     {
@@ -1299,7 +1278,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     renderPassCreateInfoMid.dependencyCount        = 0;
     renderPassCreateInfoMid.pDependencies          = nullptr;
 
-    VkResult resultCreateRenderPassMid = vkCreateRenderPass(m_vkDevice, &renderPassCreateInfoMid, nullptr, &m_vkRenderPassMid);
+    VkResult resultCreateRenderPassMid = _vkCreateRenderPass(m_vkDevice, &renderPassCreateInfoMid, nullptr, &m_vkRenderPassMid);
 
     if (resultCreateRenderPassMid != VK_SUCCESS)
     {
@@ -1329,7 +1308,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     renderPassCreateInfoFinal.dependencyCount        = 0;
     renderPassCreateInfoFinal.pDependencies          = nullptr;
 
-    VkResult resultCreateRenderPassFinal = vkCreateRenderPass(m_vkDevice, &renderPassCreateInfoFinal, nullptr, &m_vkRenderPassFinal);
+    VkResult resultCreateRenderPassFinal = _vkCreateRenderPass(m_vkDevice, &renderPassCreateInfoFinal, nullptr, &m_vkRenderPassFinal);
 
     if (resultCreateRenderPassFinal != VK_SUCCESS)
     {
@@ -1352,7 +1331,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         framebufferCreateInfo.height          = m_swapchainImageExtent.height;
         framebufferCreateInfo.layers          = 1;
 
-        VkResult resultCreateFramebuffer = vkCreateFramebuffer(m_vkDevice, &framebufferCreateInfo, nullptr, &m_perSwapchainImageResources.vkFramebuffers[i]);
+        VkResult resultCreateFramebuffer = _vkCreateFramebuffer(m_vkDevice, &framebufferCreateInfo, nullptr, &m_perSwapchainImageResources.vkFramebuffers[i]);
 
         if (resultCreateFramebuffer != VK_SUCCESS)
         {
@@ -1371,7 +1350,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     pipelineLayoutCreateInfo.pushConstantRangeCount     = 0;
     pipelineLayoutCreateInfo.pPushConstantRanges        = nullptr;
 
-    VkResult resultCreatePipelineLayout = vkCreatePipelineLayout(m_vkDevice, &pipelineLayoutCreateInfo, nullptr, &m_vkPipelineLayout);
+    VkResult resultCreatePipelineLayout = _vkCreatePipelineLayout(m_vkDevice, &pipelineLayoutCreateInfo, nullptr, &m_vkPipelineLayout);
 
     if (resultCreatePipelineLayout != VK_SUCCESS)
     {
@@ -1539,7 +1518,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     graphicsPipelineCreateInfo.basePipelineHandle           = VK_NULL_HANDLE;
     graphicsPipelineCreateInfo.basePipelineIndex            = -1;
 
-    VkResult resultCreateGraphicsPipelines = vkCreateGraphicsPipelines(m_vkDevice, VK_NULL_HANDLE, 1, &graphicsPipelineCreateInfo, nullptr, &m_vkPipeline);
+    VkResult resultCreateGraphicsPipelines = _vkCreateGraphicsPipelines(m_vkDevice, VK_NULL_HANDLE, 1, &graphicsPipelineCreateInfo, nullptr, &m_vkPipeline);
 
     if (resultCreateGraphicsPipelines != VK_SUCCESS)
     {
@@ -1566,7 +1545,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     graphicsPipelineCreateInfoWireframe.pColorBlendState             = &pipelineColorBlendStateCreateInfo;
 
     VkResult resultCreateGraphicsPipelineWireframe =
-        vkCreateGraphicsPipelines(m_vkDevice, VK_NULL_HANDLE, 1, &graphicsPipelineCreateInfoWireframe, nullptr, &m_vkPipelineWireframe);
+        _vkCreateGraphicsPipelines(m_vkDevice, VK_NULL_HANDLE, 1, &graphicsPipelineCreateInfoWireframe, nullptr, &m_vkPipelineWireframe);
 
     if (resultCreateGraphicsPipelineWireframe != VK_SUCCESS)
     {
@@ -1593,7 +1572,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     cmdPoolCreateInfo.flags                   = 0;
     cmdPoolCreateInfo.queueFamilyIndex        = m_queueFamilyIndexGraphics;
 
-    VkResult resultCreateCommandPool = vkCreateCommandPool(m_vkDevice, &cmdPoolCreateInfo, nullptr, &m_vkCommandPool);
+    VkResult resultCreateCommandPool = _vkCreateCommandPool(m_vkDevice, &cmdPoolCreateInfo, nullptr, &m_vkCommandPool);
 
     if (resultCreateCommandPool != VK_NULL_HANDLE)
     {
@@ -1607,7 +1586,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     semaphoreCreateInfo.pNext                 = nullptr;
     semaphoreCreateInfo.flags                 = 0;
 
-    VkResult resultCreateSemaphore = vkCreateSemaphore(m_vkDevice, &semaphoreCreateInfo, nullptr, &m_vkSemaphoreAcquiredSwapchainImage);
+    VkResult resultCreateSemaphore = _vkCreateSemaphore(m_vkDevice, &semaphoreCreateInfo, nullptr, &m_vkSemaphoreAcquiredSwapchainImage);
 
     if (resultCreateSemaphore != VK_SUCCESS)
     {
@@ -1615,7 +1594,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         return false;
     }
 
-    resultCreateSemaphore = vkCreateSemaphore(m_vkDevice, &semaphoreCreateInfo, nullptr, &m_vkSemaphoreFinishedRendering);
+    resultCreateSemaphore = _vkCreateSemaphore(m_vkDevice, &semaphoreCreateInfo, nullptr, &m_vkSemaphoreFinishedRendering);
 
     if (resultCreateSemaphore != VK_SUCCESS)
     {
@@ -1679,7 +1658,7 @@ void AMDVulkanDemo::DrawScene()
     // render-to-texture operations could be submitted before this call, and other CPU-side operations could be done,
     // Then this call is executed to obtain an image index and do the final render and presentation.
     uint32_t swapchainImageIndex    = 0;
-    VkResult resultAcquireNextImage = vkAcquireNextImageKHR(
+    VkResult resultAcquireNextImage = _vkAcquireNextImageKHR(
         m_vkDevice, m_vkSwapchain, std::numeric_limits<uint64_t>::max(), m_vkSemaphoreAcquiredSwapchainImage, VK_NULL_HANDLE, &swapchainImageIndex);
 
     if (resultAcquireNextImage != VK_SUCCESS)
@@ -1743,7 +1722,7 @@ void AMDVulkanDemo::DrawScene()
     submitInfo.signalSemaphoreCount         = 1;
     submitInfo.pSignalSemaphores            = signalSemaphores;
 
-    VkResult resultQueueSubmit = vkQueueSubmit(m_vkQueue, 1, &submitInfo, VK_NULL_HANDLE);
+    VkResult resultQueueSubmit = _vkQueueSubmit(m_vkQueue, 1, &submitInfo, VK_NULL_HANDLE);
 
     if (resultQueueSubmit != VK_SUCCESS)
     {
@@ -1764,7 +1743,7 @@ void AMDVulkanDemo::DrawScene()
     presentInfo.pImageIndices      = &swapchainImageIndex;
     presentInfo.pResults           = nullptr;
 
-    VkResult resultPresent = vkQueuePresentKHR(m_vkQueue, &presentInfo);
+    VkResult resultPresent = _vkQueuePresentKHR(m_vkQueue, &presentInfo);
 
     if (resultPresent != VK_SUCCESS)
     {
@@ -1857,7 +1836,7 @@ void AMDVulkanDemo::Destroy()
 
     if (m_vkDevice != VK_NULL_HANDLE)
     {
-        VkResult resultDeviceWaitIdle = vkDeviceWaitIdle(m_vkDevice);
+        VkResult resultDeviceWaitIdle = _vkDeviceWaitIdle(m_vkDevice);
 
         if (resultDeviceWaitIdle != VK_SUCCESS)
         {
@@ -1866,79 +1845,79 @@ void AMDVulkanDemo::Destroy()
 
         if (m_vkSemaphoreAcquiredSwapchainImage != VK_NULL_HANDLE)
         {
-            vkDestroySemaphore(m_vkDevice, m_vkSemaphoreAcquiredSwapchainImage, nullptr);
+            _vkDestroySemaphore(m_vkDevice, m_vkSemaphoreAcquiredSwapchainImage, nullptr);
             m_vkSemaphoreAcquiredSwapchainImage = VK_NULL_HANDLE;
         }
 
         if (m_vkSemaphoreFinishedRendering != VK_NULL_HANDLE)
         {
-            vkDestroySemaphore(m_vkDevice, m_vkSemaphoreFinishedRendering, nullptr);
+            _vkDestroySemaphore(m_vkDevice, m_vkSemaphoreFinishedRendering, nullptr);
             m_vkSemaphoreFinishedRendering = VK_NULL_HANDLE;
         }
 
         if (m_vkCommandPool != VK_NULL_HANDLE)
         {
-            vkDestroyCommandPool(m_vkDevice, m_vkCommandPool, nullptr);
+            _vkDestroyCommandPool(m_vkDevice, m_vkCommandPool, nullptr);
             m_vkCommandPool = VK_NULL_HANDLE;
         }
 
         if (m_vkPipelineLayout != VK_NULL_HANDLE)
         {
-            vkDestroyPipelineLayout(m_vkDevice, m_vkPipelineLayout, nullptr);
+            _vkDestroyPipelineLayout(m_vkDevice, m_vkPipelineLayout, nullptr);
             m_vkPipelineLayout = VK_NULL_HANDLE;
         }
 
         if (m_vertexShaderModule != VK_NULL_HANDLE)
         {
-            vkDestroyShaderModule(m_vkDevice, m_vertexShaderModule, nullptr);
+            _vkDestroyShaderModule(m_vkDevice, m_vertexShaderModule, nullptr);
             m_vertexShaderModule = VK_NULL_HANDLE;
         }
 
         if (m_fragmentShaderModule != VK_NULL_HANDLE)
         {
-            vkDestroyShaderModule(m_vkDevice, m_fragmentShaderModule, nullptr);
+            _vkDestroyShaderModule(m_vkDevice, m_fragmentShaderModule, nullptr);
             m_fragmentShaderModule = VK_NULL_HANDLE;
         }
 
         if (m_vkPipeline != VK_NULL_HANDLE)
         {
-            vkDestroyPipeline(m_vkDevice, m_vkPipeline, nullptr);
+            _vkDestroyPipeline(m_vkDevice, m_vkPipeline, nullptr);
             m_vkPipeline = VK_NULL_HANDLE;
         }
 
         if (m_fragmentShaderWireframeModule != VK_NULL_HANDLE)
         {
-            vkDestroyShaderModule(m_vkDevice, m_fragmentShaderWireframeModule, nullptr);
+            _vkDestroyShaderModule(m_vkDevice, m_fragmentShaderWireframeModule, nullptr);
             m_fragmentShaderWireframeModule = VK_NULL_HANDLE;
         }
 
         if (m_vkPipelineWireframe != VK_NULL_HANDLE)
         {
-            vkDestroyPipeline(m_vkDevice, m_vkPipelineWireframe, nullptr);
+            _vkDestroyPipeline(m_vkDevice, m_vkPipelineWireframe, nullptr);
             m_vkPipeline = VK_NULL_HANDLE;
         }
 
         if (m_vkRenderPassInitial != VK_NULL_HANDLE)
         {
-            vkDestroyRenderPass(m_vkDevice, m_vkRenderPassInitial, nullptr);
+            _vkDestroyRenderPass(m_vkDevice, m_vkRenderPassInitial, nullptr);
             m_vkRenderPassInitial = VK_NULL_HANDLE;
         }
 
         if (m_vkRenderPassMid != VK_NULL_HANDLE)
         {
-            vkDestroyRenderPass(m_vkDevice, m_vkRenderPassMid, nullptr);
+            _vkDestroyRenderPass(m_vkDevice, m_vkRenderPassMid, nullptr);
             m_vkRenderPassMid = VK_NULL_HANDLE;
         }
 
         if (m_vkRenderPassFinal != VK_NULL_HANDLE)
         {
-            vkDestroyRenderPass(m_vkDevice, m_vkRenderPassFinal, nullptr);
+            _vkDestroyRenderPass(m_vkDevice, m_vkRenderPassFinal, nullptr);
             m_vkRenderPassFinal = VK_NULL_HANDLE;
         }
 
         for (uint32_t i = 0; i < m_perSwapchainImageResources.vkFramebuffers.size(); ++i)
         {
-            vkDestroyFramebuffer(m_vkDevice, m_perSwapchainImageResources.vkFramebuffers[i], nullptr);
+            _vkDestroyFramebuffer(m_vkDevice, m_perSwapchainImageResources.vkFramebuffers[i], nullptr);
         }
 
         m_perSwapchainImageResources.vkFramebuffers.clear();
@@ -1949,7 +1928,7 @@ void AMDVulkanDemo::Destroy()
 
             if (view != VK_NULL_HANDLE)
             {
-                vkDestroyImageView(m_vkDevice, view, nullptr);
+                _vkDestroyImageView(m_vkDevice, view, nullptr);
             }
         }
 
@@ -1957,11 +1936,11 @@ void AMDVulkanDemo::Destroy()
 
         if (m_vkSwapchain != VK_NULL_HANDLE)
         {
-            vkDestroySwapchainKHR(m_vkDevice, m_vkSwapchain, nullptr);
+            _vkDestroySwapchainKHR(m_vkDevice, m_vkSwapchain, nullptr);
             m_vkSwapchain = VK_NULL_HANDLE;
         }
 
-        vkDestroyDevice(m_vkDevice, nullptr);
+        _vkDestroyDevice(m_vkDevice, nullptr);
         m_vkDevice = VK_NULL_HANDLE;
     }
 
@@ -1969,19 +1948,17 @@ void AMDVulkanDemo::Destroy()
     {
         if (m_vkSurface != VK_NULL_HANDLE)
         {
-            vkDestroySurfaceKHR(m_vkInstance, m_vkSurface, nullptr);
+            _vkDestroySurfaceKHR(m_vkInstance, m_vkSurface, nullptr);
             m_vkSurface = VK_NULL_HANDLE;
         }
 
         if (m_vkDebugReportCallback != VK_NULL_HANDLE)
         {
-            PFN_vkDestroyDebugReportCallbackEXT pvkDestroyDebugReportCallback;
-            VK_INSTANCE_GET_PROC_ADDR_VOID(pvkDestroyDebugReportCallback, m_vkInstance, vkDestroyDebugReportCallbackEXT);
-            pvkDestroyDebugReportCallback(m_vkInstance, m_vkDebugReportCallback, nullptr);
+            _vkDestroyDebugReportCallbackEXT(m_vkInstance, m_vkDebugReportCallback, nullptr);
             m_vkDebugReportCallback = VK_NULL_HANDLE;
         }
 
-        vkDestroyInstance(m_vkInstance, NULL);
+        _vkDestroyInstance(m_vkInstance, NULL);
         m_vkInstance = VK_NULL_HANDLE;
     }
 
@@ -2072,7 +2049,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
     // Generate calls to draw the cube.
     {
         // Allocate a command buffer for the cube.
-        VkResult resultAllocateCmdBuffers = vkAllocateCommandBuffers(m_vkDevice, &cmdBufferAllocInfo, &(pPrebuiltResources->cube.commandBuffer));
+        VkResult resultAllocateCmdBuffers = _vkAllocateCommandBuffers(m_vkDevice, &cmdBufferAllocInfo, &(pPrebuiltResources->cube.commandBuffer));
 
         if (resultAllocateCmdBuffers != VK_SUCCESS)
         {
@@ -2080,7 +2057,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
             return;
         }
 
-        vkBeginCommandBuffer(pPrebuiltResources->cube.commandBuffer, &cmdBufferBeginInfo);
+        _vkBeginCommandBuffer(pPrebuiltResources->cube.commandBuffer, &cmdBufferBeginInfo);
 
         if (enableGPA)
         {
@@ -2100,33 +2077,33 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
         renderPassBeginInfo.clearValueCount       = 1;
         renderPassBeginInfo.pClearValues          = &clearColor;
 
-        vkCmdBeginRenderPass(pPrebuiltResources->cube.commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+        _vkCmdBeginRenderPass(pPrebuiltResources->cube.commandBuffer, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdSetViewport(pPrebuiltResources->cube.commandBuffer, 0, 1, &viewports[0]);
-        vkCmdSetScissor(pPrebuiltResources->cube.commandBuffer, 0, 1, &scissorRects[0]);
+        _vkCmdSetViewport(pPrebuiltResources->cube.commandBuffer, 0, 1, &viewports[0]);
+        _vkCmdSetScissor(pPrebuiltResources->cube.commandBuffer, 0, 1, &scissorRects[0]);
 
-        vkCmdBindPipeline(pPrebuiltResources->cube.commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_vkPipeline);
+        _vkCmdBindPipeline(pPrebuiltResources->cube.commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_vkPipeline);
 
         if (enableGPA)
         {
             m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_BeginSample(pPrebuiltResources->cube.gpaSampleId, pPrebuiltResources->cube.gpaCommandListId);
         }
 
-        vkCmdDraw(pPrebuiltResources->cube.commandBuffer, 36, 1, 0, 0);
+        _vkCmdDraw(pPrebuiltResources->cube.commandBuffer, 36, 1, 0, 0);
 
         if (enableGPA)
         {
             m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EndSample(pPrebuiltResources->cube.gpaCommandListId);
         }
 
-        vkCmdEndRenderPass(pPrebuiltResources->cube.commandBuffer);
+        _vkCmdEndRenderPass(pPrebuiltResources->cube.commandBuffer);
 
         if (enableGPA)
         {
             m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EndCommandList(pPrebuiltResources->cube.gpaCommandListId);
         }
 
-        VkResult resultEndCmdBuffer = vkEndCommandBuffer(pPrebuiltResources->cube.commandBuffer);
+        VkResult resultEndCmdBuffer = _vkEndCommandBuffer(pPrebuiltResources->cube.commandBuffer);
 
         if (resultEndCmdBuffer != VK_SUCCESS)
         {
@@ -2136,7 +2113,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
 
     // Now generate calls to overlay the wireframe
     {
-        VkResult resultAllocateCmdBuffers = vkAllocateCommandBuffers(m_vkDevice, &cmdBufferAllocInfo, &(pPrebuiltResources->wireframe.commandBuffer));
+        VkResult resultAllocateCmdBuffers = _vkAllocateCommandBuffers(m_vkDevice, &cmdBufferAllocInfo, &(pPrebuiltResources->wireframe.commandBuffer));
 
         if (resultAllocateCmdBuffers != VK_SUCCESS)
         {
@@ -2144,7 +2121,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
             return;
         }
 
-        vkBeginCommandBuffer(pPrebuiltResources->wireframe.commandBuffer, &cmdBufferBeginInfo);
+        _vkBeginCommandBuffer(pPrebuiltResources->wireframe.commandBuffer, &cmdBufferBeginInfo);
 
         if (enableGPA)
         {
@@ -2166,33 +2143,33 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
         renderPassBeginInfoWireframe.clearValueCount = 0;
         renderPassBeginInfoWireframe.pClearValues    = nullptr;
 
-        vkCmdBeginRenderPass(pPrebuiltResources->wireframe.commandBuffer, &renderPassBeginInfoWireframe, VK_SUBPASS_CONTENTS_INLINE);
+        _vkCmdBeginRenderPass(pPrebuiltResources->wireframe.commandBuffer, &renderPassBeginInfoWireframe, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdSetViewport(pPrebuiltResources->wireframe.commandBuffer, 0, 1, &viewports[1]);
-        vkCmdSetScissor(pPrebuiltResources->wireframe.commandBuffer, 0, 1, &scissorRects[1]);
+        _vkCmdSetViewport(pPrebuiltResources->wireframe.commandBuffer, 0, 1, &viewports[1]);
+        _vkCmdSetScissor(pPrebuiltResources->wireframe.commandBuffer, 0, 1, &scissorRects[1]);
 
-        vkCmdBindPipeline(pPrebuiltResources->wireframe.commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_vkPipelineWireframe);
+        _vkCmdBindPipeline(pPrebuiltResources->wireframe.commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, m_vkPipelineWireframe);
 
         if (enableGPA)
         {
             m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_BeginSample(pPrebuiltResources->wireframe.gpaSampleId, pPrebuiltResources->wireframe.gpaCommandListId);
         }
 
-        vkCmdDraw(pPrebuiltResources->wireframe.commandBuffer, 36, 1, 0, 0);
+        _vkCmdDraw(pPrebuiltResources->wireframe.commandBuffer, 36, 1, 0, 0);
 
         if (enableGPA)
         {
             m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EndSample(pPrebuiltResources->wireframe.gpaCommandListId);
         }
 
-        vkCmdEndRenderPass(pPrebuiltResources->wireframe.commandBuffer);
+        _vkCmdEndRenderPass(pPrebuiltResources->wireframe.commandBuffer);
 
         if (enableGPA)
         {
             m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EndCommandList(pPrebuiltResources->wireframe.gpaCommandListId);
         }
 
-        VkResult resultEndCmdBufferWireframe = vkEndCommandBuffer(pPrebuiltResources->wireframe.commandBuffer);
+        VkResult resultEndCmdBufferWireframe = _vkEndCommandBuffer(pPrebuiltResources->wireframe.commandBuffer);
 
         if (resultEndCmdBufferWireframe != VK_SUCCESS)
         {
@@ -2205,7 +2182,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
     {
         // Allocate a command buffer for the cube.
         VkResult resultAllocateCmdBuffers =
-            vkAllocateCommandBuffers(m_vkDevice, &cmdBufferAllocInfo, &(pPrebuiltResources->cubeAndWireframe.commandBufferCube));
+            _vkAllocateCommandBuffers(m_vkDevice, &cmdBufferAllocInfo, &(pPrebuiltResources->cubeAndWireframe.commandBufferCube));
 
         if (resultAllocateCmdBuffers != VK_SUCCESS)
         {
@@ -2213,7 +2190,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
             return;
         }
 
-        vkBeginCommandBuffer(pPrebuiltResources->cubeAndWireframe.commandBufferCube, &cmdBufferBeginInfo);
+        _vkBeginCommandBuffer(pPrebuiltResources->cubeAndWireframe.commandBufferCube, &cmdBufferBeginInfo);
 
         if (enableGPA)
         {
@@ -2235,12 +2212,12 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
         renderPassBeginInfo.clearValueCount = 0;
         renderPassBeginInfo.pClearValues    = nullptr;
 
-        vkCmdBeginRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferCube, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+        _vkCmdBeginRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferCube, &renderPassBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdSetViewport(pPrebuiltResources->cubeAndWireframe.commandBufferCube, 0, 1, &viewports[2]);
-        vkCmdSetScissor(pPrebuiltResources->cubeAndWireframe.commandBufferCube, 0, 1, &scissorRects[2]);
+        _vkCmdSetViewport(pPrebuiltResources->cubeAndWireframe.commandBufferCube, 0, 1, &viewports[2]);
+        _vkCmdSetScissor(pPrebuiltResources->cubeAndWireframe.commandBufferCube, 0, 1, &scissorRects[2]);
 
-        vkCmdBindPipeline(pPrebuiltResources->cubeAndWireframe.commandBufferCube, VK_PIPELINE_BIND_POINT_GRAPHICS, m_vkPipeline);
+        _vkCmdBindPipeline(pPrebuiltResources->cubeAndWireframe.commandBufferCube, VK_PIPELINE_BIND_POINT_GRAPHICS, m_vkPipeline);
 
         if (enableGPA)
         {
@@ -2248,7 +2225,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
                                                                 pPrebuiltResources->cubeAndWireframe.gpaCommandListIdCube);
         }
 
-        vkCmdDraw(pPrebuiltResources->cubeAndWireframe.commandBufferCube, 36, 1, 0, 0);
+        _vkCmdDraw(pPrebuiltResources->cubeAndWireframe.commandBufferCube, 36, 1, 0, 0);
 
         // COMMENT FOR DEMONSTRATION PURPOSES:
         // Do not end the GPA Sample, because it will be continued on another command list.
@@ -2257,14 +2234,14 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
         //    m_GpuPerfApiHelperHelper.m_pGpaFuncTable->GPA_EndSample(pPrebuiltResources->cubeAndWireframe.gpaCommandListId);
         //}
 
-        vkCmdEndRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferCube);
+        _vkCmdEndRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferCube);
 
         if (enableGPA)
         {
             m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EndCommandList(pPrebuiltResources->cubeAndWireframe.gpaCommandListIdCube);
         }
 
-        VkResult resultEndCmdBuffer = vkEndCommandBuffer(pPrebuiltResources->cubeAndWireframe.commandBufferCube);
+        VkResult resultEndCmdBuffer = _vkEndCommandBuffer(pPrebuiltResources->cubeAndWireframe.commandBufferCube);
 
         if (resultEndCmdBuffer != VK_SUCCESS)
         {
@@ -2275,7 +2252,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
     // Now generate calls to overlay the wireframe
     {
         VkResult resultAllocateCmdBuffers =
-            vkAllocateCommandBuffers(m_vkDevice, &cmdBufferAllocInfo, &(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe));
+            _vkAllocateCommandBuffers(m_vkDevice, &cmdBufferAllocInfo, &(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe));
 
         if (resultAllocateCmdBuffers != VK_SUCCESS)
         {
@@ -2283,7 +2260,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
             return;
         }
 
-        vkBeginCommandBuffer(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, &cmdBufferBeginInfo);
+        _vkBeginCommandBuffer(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, &cmdBufferBeginInfo);
 
         if (enableGPA)
         {
@@ -2310,12 +2287,12 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
         renderPassBeginInfoWireframe.clearValueCount = 0;
         renderPassBeginInfoWireframe.pClearValues    = nullptr;
 
-        vkCmdBeginRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, &renderPassBeginInfoWireframe, VK_SUBPASS_CONTENTS_INLINE);
+        _vkCmdBeginRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, &renderPassBeginInfoWireframe, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdSetViewport(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, 0, 1, &viewports[2]);
-        vkCmdSetScissor(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, 0, 1, &scissorRects[2]);
+        _vkCmdSetViewport(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, 0, 1, &viewports[2]);
+        _vkCmdSetScissor(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, 0, 1, &scissorRects[2]);
 
-        vkCmdBindPipeline(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, VK_PIPELINE_BIND_POINT_GRAPHICS, m_vkPipelineWireframe);
+        _vkCmdBindPipeline(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, VK_PIPELINE_BIND_POINT_GRAPHICS, m_vkPipelineWireframe);
 
         // COMMENT FOR DEMONSTRATION PURPOSES:
         // Do not begin a GPA Sample here, because it is automatically continued by GPA_ContinueSampleOnCommandList() above.
@@ -2324,21 +2301,21 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltR
         //    m_GpuPerfApiHelperHelper.m_pGpaFuncTable->GPA_BeginSample(pPrebuiltResources->cubeAndWireframe.gpaSampleId, pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
         //}
 
-        vkCmdDraw(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, 36, 1, 0, 0);
+        _vkCmdDraw(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe, 36, 1, 0, 0);
 
         if (enableGPA)
         {
             m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EndSample(pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
         }
 
-        vkCmdEndRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe);
+        _vkCmdEndRenderPass(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe);
 
         if (enableGPA)
         {
             m_GpuPerfApiHelper.m_pGpaFuncTable->GPA_EndCommandList(pPrebuiltResources->cubeAndWireframe.gpaCommandListIdWireframe);
         }
 
-        VkResult resultEndCmdBufferWireframe = vkEndCommandBuffer(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe);
+        VkResult resultEndCmdBufferWireframe = _vkEndCommandBuffer(pPrebuiltResources->cubeAndWireframe.commandBufferWireframe);
 
         if (resultEndCmdBufferWireframe != VK_SUCCESS)
         {
@@ -2391,6 +2368,26 @@ bool ParseCommandLine(const int argc, const char* argv[], CommandLineArgs& args)
         else if (0 == thisArg.compare("--includehwcounters"))
         {
             args.m_bIncludeHwCounters = true;
+        }
+        else if (0 == thisArg.compare("--counterfile"))
+        {
+            i++;
+
+            if (i < argc)
+            {
+                std::istringstream iss(argv[i]);
+
+                iss >> args.counter_file_name;
+
+                if (iss.fail())
+                {
+                    success = false;
+                }
+            }
+            else
+            {
+                success = false;
+            }
         }
         else
         {
@@ -2454,6 +2451,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
     AMDVulkanDemo::Instance()->SetExitAfterProfile(args.m_bExitAfterProfile);
     AMDVulkanDemo::Instance()->SetVerifyCounters(args.m_bVerifyCounters);
     AMDVulkanDemo::Instance()->SetIncludeHwCounters(args.m_bIncludeHwCounters);
+    AMDVulkanDemo::Instance()->SetCounterFromFile(args.counter_file_name);
 
     // First load GPUPerfAPI if needed
     if (args.m_bUseGPA)

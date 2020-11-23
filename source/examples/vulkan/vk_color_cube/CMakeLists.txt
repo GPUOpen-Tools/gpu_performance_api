@@ -27,12 +27,14 @@ set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/vk_color_cube.cc
             ${CMAKE_CURRENT_SOURCE_DIR}/vk_color_cube.h
             ${CMAKE_CURRENT_SOURCE_DIR}/gpa_helper.h
             ${CMAKE_CURRENT_SOURCE_DIR}/gpa_helper.cc
+            ${CMAKE_CURRENT_SOURCE_DIR}/vk_util.h
+            ${CMAKE_CURRENT_SOURCE_DIR}/vk_util.cc
             ${ADDITIONAL_SOURCE})
 
 add_definitions(${ADDITIONAL_DEFINTIONS})
 link_directories(${ADDITIONAL_LINK_DIRECTORIES})
 
-set(LINK_LIBS ${GPA_PROJECT_NAME} ${VK_LIB})
+set(LINK_LIBS ${GPA_PROJECT_NAME})
 
 if(ANDROID)
     add_library(${GPA_PROJECT_NAME} SHARED ${SOURCES})

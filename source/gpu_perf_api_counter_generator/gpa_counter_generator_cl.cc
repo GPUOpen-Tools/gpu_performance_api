@@ -15,14 +15,17 @@
 #include "public_counter_definitions_cl_gfx8.h"
 #include "public_counter_definitions_cl_gfx9.h"
 #include "public_counter_definitions_cl_gfx10.h"
+#include "public_counter_definitions_cl_gfx103.h"
 
 #include "public_counter_definitions_cl_gfx8_asics.h"
 #include "public_counter_definitions_cl_gfx9_asics.h"
 #include "public_counter_definitions_cl_gfx10_asics.h"
+#include "public_counter_definitions_cl_gfx103_asics.h"
 
 #include "gpa_hw_counter_cl_gfx8.h"
 #include "gpa_hw_counter_cl_gfx9.h"
 #include "gpa_hw_counter_cl_gfx10.h"
+#include "gpa_hw_counter_cl_gfx103.h"
 
 #include "gpa_counter_generator_scheduler_manager.h"
 
@@ -57,33 +60,44 @@ GPA_Status GPA_CounterGeneratorCL::GeneratePublicCounters(GDT_HW_GENERATION    d
 
         if (desired_generation == GDT_HW_GENERATION_VOLCANICISLAND)
         {
-            AutoDefinePublicDerivedCountersCLGfx8(*public_counters);
+            AutoDefinePublicDerivedCountersCL_Gfx8(*public_counters);
 
             if (generate_asic_specific_counters)
             {
-                clgfx8asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                cl_gfx8_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
             }
 
             status = GPA_STATUS_OK;
         }
         else if (desired_generation == GDT_HW_GENERATION_GFX9)
         {
-            AutoDefinePublicDerivedCountersCLGfx9(*public_counters);
+            AutoDefinePublicDerivedCountersCL_Gfx9(*public_counters);
 
             if (generate_asic_specific_counters)
             {
-                clgfx9asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                cl_gfx9_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
             }
 
             status = GPA_STATUS_OK;
         }
         else if (desired_generation == GDT_HW_GENERATION_GFX10)
         {
-            AutoDefinePublicDerivedCountersCLGfx10(*public_counters);
+            AutoDefinePublicDerivedCountersCL_Gfx10(*public_counters);
 
             if (generate_asic_specific_counters)
             {
-                clgfx10asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                cl_gfx10_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+            }
+
+            status = GPA_STATUS_OK;
+        }
+        else if (desired_generation == GDT_HW_GENERATION_GFX103)
+        {
+            AutoDefinePublicDerivedCountersCL_Gfx103(*public_counters);
+
+            if (generate_asic_specific_counters)
+            {
+                cl_gfx103_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
             }
 
             status = GPA_STATUS_OK;
@@ -156,33 +170,43 @@ GPA_Status GPA_CounterGeneratorCL::GenerateHardwareCounters(GDT_HW_GENERATION   
 
     if (desired_generation == GDT_HW_GENERATION_VOLCANICISLAND)
     {
-        hardware_counters->m_ppCounterGroupArray = countergfx8::cl_counter_group_array_gfx8;
-        hardware_counters->m_pGroups             = countergfx8::hw_cl_groups_gfx8;
-        hardware_counters->m_groupCount          = countergfx8::hw_cl_group_count_gfx8;
-        hardware_counters->m_pSQCounterGroups    = countergfx8::hw_cl_sq_groups_gfx8;
-        hardware_counters->m_sqGroupCount        = countergfx8::hw_cl_sq_group_count_gfx8;
-        hardware_counters->m_pIsolatedGroups     = countergfx8::hw_cl_sq_isolated_groups_gfx8;
-        hardware_counters->m_isolatedGroupCount  = countergfx8::hw_cl_sq_isolated_group_count_gfx8;
+        hardware_counters->m_ppCounterGroupArray = counter_cl_gfx8::cl_counter_group_array_gfx8;
+        hardware_counters->m_pGroups             = counter_cl_gfx8::hw_cl_groups_gfx8;
+        hardware_counters->m_groupCount          = counter_cl_gfx8::hw_cl_group_count_gfx8;
+        hardware_counters->m_pSQCounterGroups    = counter_cl_gfx8::hw_cl_sq_groups_gfx8;
+        hardware_counters->m_sqGroupCount        = counter_cl_gfx8::hw_cl_sq_group_count_gfx8;
+        hardware_counters->m_pIsolatedGroups     = counter_cl_gfx8::hw_cl_sq_isolated_groups_gfx8;
+        hardware_counters->m_isolatedGroupCount  = counter_cl_gfx8::hw_cl_sq_isolated_group_count_gfx8;
     }
     else if (desired_generation == GDT_HW_GENERATION_GFX9)
     {
-        hardware_counters->m_ppCounterGroupArray = countergfx9::cl_counter_group_array_gfx9;
-        hardware_counters->m_pGroups             = countergfx9::hw_cl_groups_gfx9;
-        hardware_counters->m_groupCount          = countergfx9::hw_cl_group_count_gfx9;
-        hardware_counters->m_pSQCounterGroups    = countergfx9::hw_cl_sq_groups_gfx9;
-        hardware_counters->m_sqGroupCount        = countergfx9::hw_cl_sq_group_count_gfx9;
-        hardware_counters->m_pIsolatedGroups     = countergfx9::hw_cl_sq_isolated_groups_gfx9;
-        hardware_counters->m_isolatedGroupCount  = countergfx9::hw_cl_sq_isolated_group_count_gfx9;
+        hardware_counters->m_ppCounterGroupArray = counter_cl_gfx9::cl_counter_group_array_gfx9;
+        hardware_counters->m_pGroups             = counter_cl_gfx9::hw_cl_groups_gfx9;
+        hardware_counters->m_groupCount          = counter_cl_gfx9::hw_cl_group_count_gfx9;
+        hardware_counters->m_pSQCounterGroups    = counter_cl_gfx9::hw_cl_sq_groups_gfx9;
+        hardware_counters->m_sqGroupCount        = counter_cl_gfx9::hw_cl_sq_group_count_gfx9;
+        hardware_counters->m_pIsolatedGroups     = counter_cl_gfx9::hw_cl_sq_isolated_groups_gfx9;
+        hardware_counters->m_isolatedGroupCount  = counter_cl_gfx9::hw_cl_sq_isolated_group_count_gfx9;
     }
     else if (desired_generation == GDT_HW_GENERATION_GFX10)
     {
-        hardware_counters->m_ppCounterGroupArray = countergfx10::cl_counter_group_array_gfx10;
-        hardware_counters->m_pGroups             = countergfx10::hw_cl_groups_gfx10;
-        hardware_counters->m_groupCount          = countergfx10::hw_cl_group_count_gfx10;
-        hardware_counters->m_pSQCounterGroups    = countergfx10::hw_cl_sq_groups_gfx10;
-        hardware_counters->m_sqGroupCount        = countergfx10::hw_cl_sq_group_count_gfx10;
-        hardware_counters->m_pIsolatedGroups     = countergfx10::hw_cl_sq_isolated_groups_gfx10;
-        hardware_counters->m_isolatedGroupCount  = countergfx10::hw_cl_sq_isolated_group_count_gfx10;
+        hardware_counters->m_ppCounterGroupArray = counter_cl_gfx10::cl_counter_group_array_gfx10;
+        hardware_counters->m_pGroups             = counter_cl_gfx10::hw_cl_groups_gfx10;
+        hardware_counters->m_groupCount          = counter_cl_gfx10::hw_cl_group_count_gfx10;
+        hardware_counters->m_pSQCounterGroups    = counter_cl_gfx10::hw_cl_sq_groups_gfx10;
+        hardware_counters->m_sqGroupCount        = counter_cl_gfx10::hw_cl_sq_group_count_gfx10;
+        hardware_counters->m_pIsolatedGroups     = counter_cl_gfx10::hw_cl_sq_isolated_groups_gfx10;
+        hardware_counters->m_isolatedGroupCount  = counter_cl_gfx10::hw_cl_sq_isolated_group_count_gfx10;
+    }
+    else if (desired_generation == GDT_HW_GENERATION_GFX103)
+    {
+        hardware_counters->m_ppCounterGroupArray = counter_cl_gfx103::cl_counter_group_array_gfx103;
+        hardware_counters->m_pGroups             = counter_cl_gfx103::hw_cl_groups_gfx103;
+        hardware_counters->m_groupCount          = counter_cl_gfx103::hw_cl_group_count_gfx103;
+        hardware_counters->m_pSQCounterGroups    = counter_cl_gfx103::hw_cl_sq_groups_gfx103;
+        hardware_counters->m_sqGroupCount        = counter_cl_gfx103::hw_cl_sq_group_count_gfx103;
+        hardware_counters->m_pIsolatedGroups     = counter_cl_gfx103::hw_cl_sq_isolated_groups_gfx103;
+        hardware_counters->m_isolatedGroupCount  = counter_cl_gfx103::hw_cl_sq_isolated_group_count_gfx103;
     }
     else
     {
@@ -302,21 +326,27 @@ GPA_Status GPA_CounterGeneratorCL::GenerateHardwareExposedCounters(GDT_HW_GENERA
 
     if (desired_generation == GDT_HW_GENERATION_VOLCANICISLAND)
     {
-        hardware_counters->m_ppHardwareExposedCounter         = countergfx8::cl_exposed_counters_group_array_gfx8;
-        hardware_counters->m_pHardwareExposedCounterGroups    = countergfx8::hw_cl_exposed_counters_by_group_gfx8;
-        hardware_counters->m_hardwareExposedCounterGroupCount = countergfx8::hw_cl_exposed_counters_group_count_gfx8;
+        hardware_counters->m_ppHardwareExposedCounter         = counter_cl_gfx8::cl_exposed_counters_group_array_gfx8;
+        hardware_counters->m_pHardwareExposedCounterGroups    = counter_cl_gfx8::hw_cl_exposed_counters_by_group_gfx8;
+        hardware_counters->m_hardwareExposedCounterGroupCount = counter_cl_gfx8::hw_cl_exposed_counters_group_count_gfx8;
     }
     else if (desired_generation == GDT_HW_GENERATION_GFX9)
     {
-        hardware_counters->m_ppHardwareExposedCounter         = countergfx9::cl_exposed_counters_group_array_gfx9;
-        hardware_counters->m_pHardwareExposedCounterGroups    = countergfx9::hw_cl_exposed_counters_by_group_gfx9;
-        hardware_counters->m_hardwareExposedCounterGroupCount = countergfx9::hw_cl_exposed_counters_group_count_gfx9;
+        hardware_counters->m_ppHardwareExposedCounter         = counter_cl_gfx9::cl_exposed_counters_group_array_gfx9;
+        hardware_counters->m_pHardwareExposedCounterGroups    = counter_cl_gfx9::hw_cl_exposed_counters_by_group_gfx9;
+        hardware_counters->m_hardwareExposedCounterGroupCount = counter_cl_gfx9::hw_cl_exposed_counters_group_count_gfx9;
     }
     else if (desired_generation == GDT_HW_GENERATION_GFX10)
     {
-        hardware_counters->m_ppHardwareExposedCounter         = countergfx10::cl_exposed_counters_group_array_gfx10;
-        hardware_counters->m_pHardwareExposedCounterGroups    = countergfx10::hw_cl_exposed_counters_by_group_gfx10;
-        hardware_counters->m_hardwareExposedCounterGroupCount = countergfx10::hw_cl_exposed_counters_group_count_gfx10;
+        hardware_counters->m_ppHardwareExposedCounter         = counter_cl_gfx10::cl_exposed_counters_group_array_gfx10;
+        hardware_counters->m_pHardwareExposedCounterGroups    = counter_cl_gfx10::hw_cl_exposed_counters_by_group_gfx10;
+        hardware_counters->m_hardwareExposedCounterGroupCount = counter_cl_gfx10::hw_cl_exposed_counters_group_count_gfx10;
+    }
+    else if (desired_generation == GDT_HW_GENERATION_GFX103)
+    {
+        hardware_counters->m_ppHardwareExposedCounter         = counter_cl_gfx103::cl_exposed_counters_group_array_gfx103;
+        hardware_counters->m_pHardwareExposedCounterGroups    = counter_cl_gfx103::hw_cl_exposed_counters_by_group_gfx103;
+        hardware_counters->m_hardwareExposedCounterGroupCount = counter_cl_gfx103::hw_cl_exposed_counters_group_count_gfx103;
     }
     else
     {

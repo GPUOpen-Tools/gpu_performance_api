@@ -134,28 +134,39 @@
 #define CBSlowPixelPctPublicDX12Gfx10 118
 #define CBSlowPixelCountPublicDX12Gfx10 119
 #define L0CacheHitPublicDX12Gfx10 120
-#define L0CacheHitCountPublicDX12Gfx10 121
-#define L0CacheMissCountPublicDX12Gfx10 122
-#define L1CacheHitPublicDX12Gfx10 123
-#define L1CacheHitCountPublicDX12Gfx10 124
-#define L1CacheMissCountPublicDX12Gfx10 125
-#define L2CacheHitPublicDX12Gfx10 126
-#define L2CacheMissPublicDX12Gfx10 127
-#define L2CacheHitCountPublicDX12Gfx10 128
-#define L2CacheMissCountPublicDX12Gfx10 129
-#define FetchSizePublicDX12Gfx10 130
-#define WriteSizePublicDX12Gfx10 131
-#define MemUnitBusyPublicDX12Gfx10 132
-#define MemUnitBusyCyclesPublicDX12Gfx10 133
-#define MemUnitStalledPublicDX12Gfx10 134
-#define MemUnitStalledCyclesPublicDX12Gfx10 135
-#define WriteUnitStalledPublicDX12Gfx10 136
-#define WriteUnitStalledCyclesPublicDX12Gfx10 137
-#define LocalVidMemBytesPublicDX12Gfx10 138
-#define PcieBytesPublicDX12Gfx10 139
+#define L0CacheRequestCountPublicDX12Gfx10 121
+#define L0CacheHitCountPublicDX12Gfx10 122
+#define L0CacheMissCountPublicDX12Gfx10 123
+#define ScalarCacheHitPublicDX12Gfx10 124
+#define ScalarCacheRequestCountPublicDX12Gfx10 125
+#define ScalarCacheHitCountPublicDX12Gfx10 126
+#define ScalarCacheMissCountPublicDX12Gfx10 127
+#define InstCacheHitPublicDX12Gfx10 128
+#define InstCacheRequestCountPublicDX12Gfx10 129
+#define InstCacheHitCountPublicDX12Gfx10 130
+#define InstCacheMissCountPublicDX12Gfx10 131
+#define L1CacheHitPublicDX12Gfx10 132
+#define L1CacheRequestCountPublicDX12Gfx10 133
+#define L1CacheHitCountPublicDX12Gfx10 134
+#define L1CacheMissCountPublicDX12Gfx10 135
+#define L2CacheHitPublicDX12Gfx10 136
+#define L2CacheMissPublicDX12Gfx10 137
+#define L2CacheRequestCountPublicDX12Gfx10 138
+#define L2CacheHitCountPublicDX12Gfx10 139
+#define L2CacheMissCountPublicDX12Gfx10 140
+#define FetchSizePublicDX12Gfx10 141
+#define WriteSizePublicDX12Gfx10 142
+#define MemUnitBusyPublicDX12Gfx10 143
+#define MemUnitBusyCyclesPublicDX12Gfx10 144
+#define MemUnitStalledPublicDX12Gfx10 145
+#define MemUnitStalledCyclesPublicDX12Gfx10 146
+#define WriteUnitStalledPublicDX12Gfx10 147
+#define WriteUnitStalledCyclesPublicDX12Gfx10 148
+#define LocalVidMemBytesPublicDX12Gfx10 149
+#define PcieBytesPublicDX12Gfx10 150
 
 /// Number of public counters for DX12Gfx10
-const size_t DX12GFX10_PUBLIC_COUNTER_COUNT = 140;
+const size_t DX12GFX10_PUBLIC_COUNTER_COUNT = 151;
 
 /// Array of public counters for DX12Gfx10
 extern const GPACounterDesc DX12GFX10_PUBLIC_COUNTERS[DX12GFX10_PUBLIC_COUNTER_COUNT];

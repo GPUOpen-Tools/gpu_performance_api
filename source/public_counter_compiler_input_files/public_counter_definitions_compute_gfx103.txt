@@ -1,0 +1,207 @@
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Copyright (c) 2020 Advanced Micro Devices, Inc. All rights reserved.
+;;
+;; Counter definitions for OpenCL for Gfx103 (GFX IP v10.3)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;name=GPUBusy
+;desc=#Timing#The percentage of time GPU was busy.
+;type=gpa_float64
+;usage=percentage
+;[CLGfx103]
+;CPF_PERF_SEL_CPF_STAT_BUSY
+;CPF_PERF_SEL_ALWAYS_COUNT
+;eqn=0,1,/,(100),*,(100),min
+
+name=Wavefronts
+desc=#General#Total wavefronts.
+type=gpa_float64
+usage=items
+[CLGfx103]
+SQ_PERF_SEL_WAVES
+eqn=0
+
+name=VALUInsts
+desc=#General#The average number of vector ALU instructions executed per work-item (affected by flow control).
+type=gpa_float64
+usage=items
+[CLGfx103]
+SQ_PERF_SEL_INSTS_VALU
+SQ_PERF_SEL_WAVES
+eqn=0,1,/
+
+name=SALUInsts
+desc=#General#The average number of scalar ALU instructions executed per work-item (affected by flow control).
+type=gpa_float64
+usage=items
+[CLGfx103]
+SQ_PERF_SEL_INSTS_SALU
+SQ_PERF_SEL_WAVES
+eqn=0,1,/
+
+name=VFetchInsts
+desc=#General#The average number of vector fetch instructions from the video memory executed per work-item (affected by flow control). Excludes FLAT instructions that fetch from video memory.
+type=gpa_float64
+usage=items
+[CLGfx103]
+SQ_PERF_SEL_INSTS_TEX_LOAD
+SQ_PERF_SEL_WAVES
+eqn=0,1,/
+
+name=SFetchInsts
+desc=#General#The average number of scalar fetch instructions from the video memory executed per work-item (affected by flow control).
+type=gpa_float64
+usage=items
+[CLGfx103]
+SQ_PERF_SEL_INSTS_SMEM
+SQ_PERF_SEL_WAVES
+eqn=0,1,/
+
+name=VWriteInsts
+desc=#General#The average number of vector write instructions to the video memory executed per work-item (affected by flow control). Excludes FLAT instructions that write to video memory.
+type=gpa_float64
+usage=items
+[CLGfx103]
+SQ_PERF_SEL_INSTS_TEX_STORE
+SQ_PERF_SEL_WAVES
+eqn=0,1,/
+
+name=LDSInsts
+desc=#LocalMemory#The average number of LDS read or LDS write instructions executed per work item (affected by flow control).
+type=gpa_float64
+usage=items
+[CLGfx103]
+SQ_PERF_SEL_INSTS_LDS
+SQ_PERF_SEL_WAVES
+eqn=0,1,/
+
+name=GDSInsts
+desc=#General#The average number of GDS read or GDS write instructions executed per work item (affected by flow control).
+type=gpa_float64
+usage=items
+[CLGfx103]
+SQ_PERF_SEL_INSTS_GDS
+SQ_PERF_SEL_WAVES
+eqn=0,1,/
+
+name=VALUUtilization
+desc=#General#The percentage of active vector ALU threads in a wave. A lower number can mean either more thread divergence in a wave or that the work-group size is not a multiple of the wave size. Value range: 0% (bad), 100% (ideal - no thread divergence).
+type=gpa_float64
+usage=percentage
+[CLGfx103]
+SQ_PERF_SEL_ITEM_CYCLES_VALU
+SQ_PERF_SEL_INST_CYCLES_VALU
+SQ_PERF_SEL_WAVES_32
+eqn=0,1,(64),(32),2,ifnotzero,*,/,(100),*,(100),min
+
+name=VALUBusy
+desc=#General#The percentage of GPUTime vector ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).
+type=gpa_float64
+usage=percentage
+[CLGfx103]
+SQ_PERF_SEL_INST_CYCLES_VALU
+CPF_PERF_SEL_CPF_STAT_BUSY
+eqn=0,NUM_SIMDS,/,1,/,(100),*
+
+name=SALUBusy
+desc=#General#The percentage of GPUTime scalar ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).
+type=gpa_float64
+usage=percentage
+[CLGfx103]
+SQ_PERF_SEL_INSTS_SALU
+CPF_PERF_SEL_CPF_STAT_BUSY
+eqn=0,NUM_CUS,/,1,/,(100),*
+
+name=FetchSize
+desc=#GlobalMemory#The total kilobytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
+type=gpa_float64
+usage=kilobytes
+[CLGfx103]
+GL2C*_PERF_SEL_EA_RDREQ_32B[0..23]
+GL2C*_PERF_SEL_EA_RDREQ_64B[0..23]
+GL2C*_PERF_SEL_EA_RDREQ_96B[0..23]
+GL2C*_PERF_SEL_EA_RDREQ_128B[0..23]
+eqn=0..23,sum24,(32),*,24..47,sum24,(64),*,48..71,sum24,(96),*,72..95,sum24,(128),*,sum4,(1024),/
+
+name=WriteSize
+desc=#GlobalMemory#The total kilobytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
+type=gpa_float64
+usage=kilobytes
+[CLGfx103]
+GL2C*_PERF_SEL_MC_WRREQ[0..23]
+GL2C*_PERF_SEL_EA_WRREQ_64B[0..23]
+eqn=0..23,sum24,24..47,sum24,-,(32),*,24..47,sum24,(64),*,+,(1024),/
+
+name=L0CacheHit
+desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the data in L0 cache. Value range: 0% (no hit) to 100% (optimal).
+type=gpa_float64
+usage=percentage
+[CLGfx103]
+TCP*_PERF_SEL_REQ[0..15]
+TCP*_PERF_SEL_REQ_MISS[0..15]
+eqn=(0),(1),16..31,sum16,0..15,sum16,/,-,(100),*,0..15,sum16,ifnotzero
+
+name=L1CacheHit
+desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the data in L1 cache. Writes and atomics always miss this cache. Value range: 0% (no hit) to 100% (optimal).
+type=gpa_float64
+usage=percentage
+[CLGfx103]
+GL1C_PERF_SEL_REQ
+GL1C_PERF_SEL_REQ_MISS
+eqn=(0),(1),1,0,/,-,(100),*,0,ifnotzero
+
+name=L2CacheHit
+desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the data in L2 cache. Value range: 0% (no hit) to 100% (optimal).
+type=gpa_float64
+usage=percentage
+[CLGfx103]
+GL2C*_PERF_SEL_REQ[0..23]
+GL2C*_PERF_SEL_MISS[0..23]
+eqn=(0),(1),24..47,sum24,0..23,sum24,/,-,(100),*,0..23,sum24,ifnotzero
+
+name=MemUnitBusy
+desc=#GlobalMemory#The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).
+type=gpa_float64
+usage=percentage
+[CLGfx103]
+TA*_PERF_SEL_TA_BUSY[0..15]
+CPF_PERF_SEL_CPF_STAT_BUSY
+eqn=0..15,max16,16,/,NUM_SHADER_ARRAYS,/,(100),*
+
+name=MemUnitStalled
+desc=#GlobalMemory#The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).
+type=gpa_float64
+usage=percentage
+[CLGfx103]
+TCP*_PERF_SEL_TCP_TA_REQ_STALL[0..15]
+CPF_PERF_SEL_CPF_STAT_BUSY
+eqn=0..15,max16,16,/,NUM_SHADER_ARRAYS,/,(100),*
+
+name=WriteUnitStalled
+desc=#GlobalMemory#The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).
+type=gpa_float64
+usage=percentage
+[CLGfx103]
+GL2C*_PERF_SEL_MC_WRREQ_STALL[0..23]
+CPF_PERF_SEL_CPF_STAT_BUSY
+eqn=0..23,max24,24,/,(100),*
+
+;name=ALUStalledByLDS
+;desc=#LocalMemory#The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).
+;type=gpa_float64
+;usage=percentage
+;[CLGfx103]
+;SQ_PERF_SEL_WAIT_INST_LDS
+;SQ_PERF_SEL_WAVES
+;CPF_PERF_SEL_CPF_STAT_BUSY
+;eqn=0,1,/,2,/,NUM_SHADER_ENGINES,/,(100),*
+
+name=LDSBankConflict
+desc=#LocalMemory#The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad).
+type=gpa_float64
+usage=percentage
+[CLGfx103]
+SQ_SQC_PERF_SEL_LDS_BANK_CONFLICT
+CPF_PERF_SEL_CPF_STAT_BUSY
+eqn=0,1,/,NUM_SIMDS,/,(100),*

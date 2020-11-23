@@ -12,19 +12,19 @@
 
 #include "gpa_hw_counter_gfx9_placeholder4.h"
 
-namespace vkgfx9placeholder4
+namespace vk_gfx9_placeholder4
 {
 bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers
 
-    if (!countergfx9placeholder4::MatchAsic(asic_type))
+    if (!counter_gfx9_placeholder4::MatchAsic(asic_type))
     {
         return false;
     }
 
-    countergfx9placeholder4::OverrideBlockInstanceCounters(asic_type);
+    counter_gfx9_placeholder4::OverrideBlockInstanceCounters(asic_type);
 
     {
         vector<gpa_uint32> internalCounters;
@@ -958,5 +958,5 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
     return true;
 }
 
-}  // namespace vkgfx9placeholder4
+}  // namespace vk_gfx9_placeholder4
 

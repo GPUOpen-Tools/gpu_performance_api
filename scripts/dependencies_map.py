@@ -2,7 +2,7 @@
 #
 #    Map of GitHub project names to clone target paths, relative to the GPUPerfAPI
 #    project root on the local disk.
-#    This script is used by the UpdateCommon.py script
+#    This script is used by the fetch_dependencies.py script
 
 # GitHub GPUOpen-Tools projects map
 # Define a set of dependencies that exist as separate git projects. The parameters are:
@@ -26,11 +26,36 @@ gitMapping = {
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
 downloadWin = {
-    "Vulkan" : [ "https://sdk.lunarg.com/sdk/download/1.0.68.0/windows/VulkanSDK-1.0.68.0-Installer.exe", "default", "1.0.68.0", "default"],
-    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/GPA/releases/download/v3.5/GPUPerfAPI-3.5.1431.zip" , "default", "3_5", "../Common/Lib/AMD/GPUPerfAPI"]
+    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/gpu_performance_api/releases/download/v3.6/GPUPerfAPI-3.6.0.119.zip" , "default", "3_6", "../Common/Lib/AMD/GPUPerfAPI"]
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
 downloadLinux = {
-    "Vulkan" : [ "https://sdk.lunarg.com/sdk/download/1.0.68.0/linux/Vulkansdk-linux-x86_64-1.0.68.0.run", "default", "1.0.68.0", "default"]
 }
+
+def parse_args():
+    import argparse
+    parser = argparse.ArgumentParser(description='Print the GPA git project dependency to local folder mapping.')
+    parser.add_argument('--project', '-p', action='store', default=None,
+                        help='Return expected relative path for the specified project.')
+    args = parser.parse_args()
+    return args
+
+def get_all_mapping(display, project=None):
+    import os.path
+
+    dependencies_map = []
+    if display:
+        if project != None:
+            normed_path = os.path.normpath(gitMapping[project][0])
+            print(normed_path)
+        else:
+            for git_repo in gitMapping:
+                print("%s\t%s" % (git_repo, os.path.normpath(gitMapping[git_repo][0])))
+                dependencies_map[git_repo] = gitMapping[git_repo][0]
+
+    return dependencies_map
+
+if __name__ == "__main__":
+    script_args = parse_args()
+    get_all_mapping(display=True, project=script_args.project)

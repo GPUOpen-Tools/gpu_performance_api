@@ -67,6 +67,30 @@ bool ParseCommandLine(const int argc, const char* argv[])
         {
             args.m_includeHwCounters = true;
         }
+        else if (0 == thisArg.compare("--counterfile"))
+        {
+            i++;
+
+            if (i < argc)
+            {
+                std::istringstream iss(argv[i]);
+
+                iss >> args.counter_file_name;
+
+                if (iss.fail())
+                {
+                    success = false;
+                }
+                else
+                {
+                    args.counter_provided = true;
+                }
+            }
+            else
+            {
+                success = false;
+            }
+        }
         else
         {
             success = false;

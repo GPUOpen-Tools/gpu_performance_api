@@ -14,6 +14,6 @@
 
 /// Defines the Public derived counters for GL 
 /// \param c derived counters instance
-void AutoDefinePublicDerivedCountersGLGfx9(GPA_DerivedCounters& c);
+void AutoDefinePublicDerivedCountersGL_Gfx9(GPA_DerivedCounters& c);
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_GL_GFX9_H_

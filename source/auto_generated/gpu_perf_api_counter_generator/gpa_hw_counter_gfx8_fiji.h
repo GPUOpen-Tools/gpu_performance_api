@@ -10,12 +10,14 @@
 #ifndef _GPA_HW_COUNTER_GFX8_FIJI_H_
 #define _GPA_HW_COUNTER_GFX8_FIJI_H_
 
+// clang-format off
+
 #include <set>
 
 struct GPA_HardwareCounterDesc;
 #include "gpa_hw_counter_gfx8.h"
 
-namespace countergfx8fiji
+namespace counter_gfx8_fiji
 {
 /// Uses the input ASIC type to determine if this data provides an ASIC specific version.
 /// \param asic_type The ASIC type that is currently in use.
@@ -91,45 +93,49 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
         return false;
     }
 
-    ReplaceBlockInstanceCounters(countergfx8::vgt0_counters_gfx8, vgt0_counters_gfx8_fiji, 146);
-    ReplaceBlockInstanceCounters(countergfx8::vgt1_counters_gfx8, vgt1_counters_gfx8_fiji, 146);
-    ReplaceBlockInstanceCounters(countergfx8::vgt2_counters_gfx8, vgt2_counters_gfx8_fiji, 146);
-    ReplaceBlockInstanceCounters(countergfx8::vgt3_counters_gfx8, vgt3_counters_gfx8_fiji, 146);
-    ReplaceBlockInstanceCounters(countergfx8::mc0_counters_gfx8, mc0_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc1_counters_gfx8, mc1_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc2_counters_gfx8, mc2_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc3_counters_gfx8, mc3_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc4_counters_gfx8, mc4_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc5_counters_gfx8, mc5_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc6_counters_gfx8, mc6_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc7_counters_gfx8, mc7_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc8_counters_gfx8, mc8_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc9_counters_gfx8, mc9_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc10_counters_gfx8, mc10_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc11_counters_gfx8, mc11_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc12_counters_gfx8, mc12_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc13_counters_gfx8, mc13_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc14_counters_gfx8, mc14_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc15_counters_gfx8, mc15_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc16_counters_gfx8, mc16_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc17_counters_gfx8, mc17_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc18_counters_gfx8, mc18_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc19_counters_gfx8, mc19_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc20_counters_gfx8, mc20_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc21_counters_gfx8, mc21_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc22_counters_gfx8, mc22_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc23_counters_gfx8, mc23_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc24_counters_gfx8, mc24_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc25_counters_gfx8, mc25_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc26_counters_gfx8, mc26_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc27_counters_gfx8, mc27_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc28_counters_gfx8, mc28_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc29_counters_gfx8, mc29_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc30_counters_gfx8, mc30_counters_gfx8_fiji, 33);
-    ReplaceBlockInstanceCounters(countergfx8::mc31_counters_gfx8, mc31_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt0_counters_gfx8, vgt0_counters_gfx8_fiji, 146);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt1_counters_gfx8, vgt1_counters_gfx8_fiji, 146);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt2_counters_gfx8, vgt2_counters_gfx8_fiji, 146);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt3_counters_gfx8, vgt3_counters_gfx8_fiji, 146);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc0_counters_gfx8, mc0_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc1_counters_gfx8, mc1_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc2_counters_gfx8, mc2_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc3_counters_gfx8, mc3_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc4_counters_gfx8, mc4_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc5_counters_gfx8, mc5_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc6_counters_gfx8, mc6_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc7_counters_gfx8, mc7_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc8_counters_gfx8, mc8_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc9_counters_gfx8, mc9_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc10_counters_gfx8, mc10_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc11_counters_gfx8, mc11_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc12_counters_gfx8, mc12_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc13_counters_gfx8, mc13_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc14_counters_gfx8, mc14_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc15_counters_gfx8, mc15_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc16_counters_gfx8, mc16_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc17_counters_gfx8, mc17_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc18_counters_gfx8, mc18_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc19_counters_gfx8, mc19_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc20_counters_gfx8, mc20_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc21_counters_gfx8, mc21_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc22_counters_gfx8, mc22_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc23_counters_gfx8, mc23_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc24_counters_gfx8, mc24_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc25_counters_gfx8, mc25_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc26_counters_gfx8, mc26_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc27_counters_gfx8, mc27_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc28_counters_gfx8, mc28_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc29_counters_gfx8, mc29_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc30_counters_gfx8, mc30_counters_gfx8_fiji, 33);
+    ReplaceBlockInstanceCounters(counter_gfx8::mc31_counters_gfx8, mc31_counters_gfx8_fiji, 33);
 
     return true;
 }
-} // countergfx8fiji
+
+bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type);
+} // counter_gfx8_fiji
 
 #endif  // _GPA_HW_COUNTER_GFX8_FIJI_H_
+
+// clang-format on

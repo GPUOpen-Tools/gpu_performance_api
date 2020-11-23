@@ -34,6 +34,7 @@ The following tables show the set of counters exposed for analysis of GPU
 Graphics workloads, as well the family of GPUs and APUs on which each counter
 is available:
 
+.. include:: graphics_counter_tables_gfx103.rst
 .. include:: graphics_counter_tables_gfx10.rst
 .. include:: graphics_counter_tables_gfx9.rst
 .. include:: graphics_counter_tables_gfx8.rst
@@ -45,6 +46,7 @@ The following tables show the set of counters exposed for analysis of GPU
 Compute workloads, as well the family of GPUs and APUs on which each counter
 is available:
 
+.. include:: compute_counter_tables_gfx103.rst
 .. include:: compute_counter_tables_gfx10.rst
 .. include:: compute_counter_tables_gfx9.rst
 .. include:: compute_counter_tables_gfx8.rst

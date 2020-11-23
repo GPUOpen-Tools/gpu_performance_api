@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA hardware exposed counter info for GFX10
@@ -13,7 +13,7 @@
 
 #include "gpa_counter.h"
 
-namespace countergfx10
+namespace counter_gfx10
 {
 extern GPA_HardwareCounterDesc cpf_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cpf block for gfx10
 extern GPA_HardwareCounterDesc grbm_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for grbm block for gfx10
@@ -22,10 +22,6 @@ extern GPA_HardwareCounterDesc pa_su0_exposed_counters_gfx10[]; ///< Array of ha
 extern GPA_HardwareCounterDesc pa_su1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_su1 block for gfx10
 extern GPA_HardwareCounterDesc pa_su2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_su2 block for gfx10
 extern GPA_HardwareCounterDesc pa_su3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_su3 block for gfx10
-extern GPA_HardwareCounterDesc pa_su4_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_su4 block for gfx10
-extern GPA_HardwareCounterDesc pa_su5_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_su5 block for gfx10
-extern GPA_HardwareCounterDesc pa_su6_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_su6 block for gfx10
-extern GPA_HardwareCounterDesc pa_su7_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_su7 block for gfx10
 extern GPA_HardwareCounterDesc pa_sc0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc0 block for gfx10
 extern GPA_HardwareCounterDesc pa_sc1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc1 block for gfx10
 extern GPA_HardwareCounterDesc pa_sc2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc2 block for gfx10
@@ -34,58 +30,28 @@ extern GPA_HardwareCounterDesc pa_sc4_exposed_counters_gfx10[]; ///< Array of ha
 extern GPA_HardwareCounterDesc pa_sc5_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc5 block for gfx10
 extern GPA_HardwareCounterDesc pa_sc6_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc6 block for gfx10
 extern GPA_HardwareCounterDesc pa_sc7_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc7 block for gfx10
-extern GPA_HardwareCounterDesc pa_sc8_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc8 block for gfx10
-extern GPA_HardwareCounterDesc pa_sc9_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc9 block for gfx10
-extern GPA_HardwareCounterDesc pa_sc10_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc10 block for gfx10
-extern GPA_HardwareCounterDesc pa_sc11_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc11 block for gfx10
-extern GPA_HardwareCounterDesc pa_sc12_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc12 block for gfx10
-extern GPA_HardwareCounterDesc pa_sc13_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc13 block for gfx10
-extern GPA_HardwareCounterDesc pa_sc14_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc14 block for gfx10
-extern GPA_HardwareCounterDesc pa_sc15_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for pa_sc15 block for gfx10
 extern GPA_HardwareCounterDesc spi0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for spi0 block for gfx10
 extern GPA_HardwareCounterDesc spi1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for spi1 block for gfx10
-extern GPA_HardwareCounterDesc spi2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for spi2 block for gfx10
-extern GPA_HardwareCounterDesc spi3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for spi3 block for gfx10
 extern GPA_HardwareCounterDesc sq0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq0 block for gfx10
 extern GPA_HardwareCounterDesc sq1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq1 block for gfx10
-extern GPA_HardwareCounterDesc sq2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq2 block for gfx10
-extern GPA_HardwareCounterDesc sq3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq3 block for gfx10
 extern GPA_HardwareCounterDesc sq_es0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_es0 block for gfx10
 extern GPA_HardwareCounterDesc sq_es1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_es1 block for gfx10
-extern GPA_HardwareCounterDesc sq_es2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_es2 block for gfx10
-extern GPA_HardwareCounterDesc sq_es3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_es3 block for gfx10
 extern GPA_HardwareCounterDesc sq_gs0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_gs0 block for gfx10
 extern GPA_HardwareCounterDesc sq_gs1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_gs1 block for gfx10
-extern GPA_HardwareCounterDesc sq_gs2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_gs2 block for gfx10
-extern GPA_HardwareCounterDesc sq_gs3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_gs3 block for gfx10
 extern GPA_HardwareCounterDesc sq_vs0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_vs0 block for gfx10
 extern GPA_HardwareCounterDesc sq_vs1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_vs1 block for gfx10
-extern GPA_HardwareCounterDesc sq_vs2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_vs2 block for gfx10
-extern GPA_HardwareCounterDesc sq_vs3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_vs3 block for gfx10
 extern GPA_HardwareCounterDesc sq_ps0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_ps0 block for gfx10
 extern GPA_HardwareCounterDesc sq_ps1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_ps1 block for gfx10
-extern GPA_HardwareCounterDesc sq_ps2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_ps2 block for gfx10
-extern GPA_HardwareCounterDesc sq_ps3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_ps3 block for gfx10
 extern GPA_HardwareCounterDesc sq_ls0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_ls0 block for gfx10
 extern GPA_HardwareCounterDesc sq_ls1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_ls1 block for gfx10
-extern GPA_HardwareCounterDesc sq_ls2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_ls2 block for gfx10
-extern GPA_HardwareCounterDesc sq_ls3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_ls3 block for gfx10
 extern GPA_HardwareCounterDesc sq_hs0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_hs0 block for gfx10
 extern GPA_HardwareCounterDesc sq_hs1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_hs1 block for gfx10
-extern GPA_HardwareCounterDesc sq_hs2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_hs2 block for gfx10
-extern GPA_HardwareCounterDesc sq_hs3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_hs3 block for gfx10
 extern GPA_HardwareCounterDesc sq_cs0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_cs0 block for gfx10
 extern GPA_HardwareCounterDesc sq_cs1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_cs1 block for gfx10
-extern GPA_HardwareCounterDesc sq_cs2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_cs2 block for gfx10
-extern GPA_HardwareCounterDesc sq_cs3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sq_cs3 block for gfx10
 extern GPA_HardwareCounterDesc sx0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sx0 block for gfx10
 extern GPA_HardwareCounterDesc sx1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sx1 block for gfx10
 extern GPA_HardwareCounterDesc sx2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sx2 block for gfx10
 extern GPA_HardwareCounterDesc sx3_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sx3 block for gfx10
-extern GPA_HardwareCounterDesc sx4_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sx4 block for gfx10
-extern GPA_HardwareCounterDesc sx5_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sx5 block for gfx10
-extern GPA_HardwareCounterDesc sx6_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sx6 block for gfx10
-extern GPA_HardwareCounterDesc sx7_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for sx7 block for gfx10
 extern GPA_HardwareCounterDesc ta0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta0 block for gfx10
 extern GPA_HardwareCounterDesc ta1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta1 block for gfx10
 extern GPA_HardwareCounterDesc ta2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta2 block for gfx10
@@ -126,46 +92,6 @@ extern GPA_HardwareCounterDesc ta36_exposed_counters_gfx10[]; ///< Array of hard
 extern GPA_HardwareCounterDesc ta37_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta37 block for gfx10
 extern GPA_HardwareCounterDesc ta38_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta38 block for gfx10
 extern GPA_HardwareCounterDesc ta39_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta39 block for gfx10
-extern GPA_HardwareCounterDesc ta40_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta40 block for gfx10
-extern GPA_HardwareCounterDesc ta41_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta41 block for gfx10
-extern GPA_HardwareCounterDesc ta42_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta42 block for gfx10
-extern GPA_HardwareCounterDesc ta43_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta43 block for gfx10
-extern GPA_HardwareCounterDesc ta44_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta44 block for gfx10
-extern GPA_HardwareCounterDesc ta45_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta45 block for gfx10
-extern GPA_HardwareCounterDesc ta46_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta46 block for gfx10
-extern GPA_HardwareCounterDesc ta47_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta47 block for gfx10
-extern GPA_HardwareCounterDesc ta48_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta48 block for gfx10
-extern GPA_HardwareCounterDesc ta49_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta49 block for gfx10
-extern GPA_HardwareCounterDesc ta50_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta50 block for gfx10
-extern GPA_HardwareCounterDesc ta51_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta51 block for gfx10
-extern GPA_HardwareCounterDesc ta52_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta52 block for gfx10
-extern GPA_HardwareCounterDesc ta53_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta53 block for gfx10
-extern GPA_HardwareCounterDesc ta54_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta54 block for gfx10
-extern GPA_HardwareCounterDesc ta55_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta55 block for gfx10
-extern GPA_HardwareCounterDesc ta56_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta56 block for gfx10
-extern GPA_HardwareCounterDesc ta57_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta57 block for gfx10
-extern GPA_HardwareCounterDesc ta58_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta58 block for gfx10
-extern GPA_HardwareCounterDesc ta59_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta59 block for gfx10
-extern GPA_HardwareCounterDesc ta60_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta60 block for gfx10
-extern GPA_HardwareCounterDesc ta61_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta61 block for gfx10
-extern GPA_HardwareCounterDesc ta62_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta62 block for gfx10
-extern GPA_HardwareCounterDesc ta63_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta63 block for gfx10
-extern GPA_HardwareCounterDesc ta64_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta64 block for gfx10
-extern GPA_HardwareCounterDesc ta65_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta65 block for gfx10
-extern GPA_HardwareCounterDesc ta66_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta66 block for gfx10
-extern GPA_HardwareCounterDesc ta67_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta67 block for gfx10
-extern GPA_HardwareCounterDesc ta68_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta68 block for gfx10
-extern GPA_HardwareCounterDesc ta69_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta69 block for gfx10
-extern GPA_HardwareCounterDesc ta70_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta70 block for gfx10
-extern GPA_HardwareCounterDesc ta71_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta71 block for gfx10
-extern GPA_HardwareCounterDesc ta72_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta72 block for gfx10
-extern GPA_HardwareCounterDesc ta73_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta73 block for gfx10
-extern GPA_HardwareCounterDesc ta74_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta74 block for gfx10
-extern GPA_HardwareCounterDesc ta75_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta75 block for gfx10
-extern GPA_HardwareCounterDesc ta76_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta76 block for gfx10
-extern GPA_HardwareCounterDesc ta77_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta77 block for gfx10
-extern GPA_HardwareCounterDesc ta78_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta78 block for gfx10
-extern GPA_HardwareCounterDesc ta79_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for ta79 block for gfx10
 extern GPA_HardwareCounterDesc tcp0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp0 block for gfx10
 extern GPA_HardwareCounterDesc tcp1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp1 block for gfx10
 extern GPA_HardwareCounterDesc tcp2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp2 block for gfx10
@@ -206,46 +132,6 @@ extern GPA_HardwareCounterDesc tcp36_exposed_counters_gfx10[]; ///< Array of har
 extern GPA_HardwareCounterDesc tcp37_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp37 block for gfx10
 extern GPA_HardwareCounterDesc tcp38_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp38 block for gfx10
 extern GPA_HardwareCounterDesc tcp39_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp39 block for gfx10
-extern GPA_HardwareCounterDesc tcp40_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp40 block for gfx10
-extern GPA_HardwareCounterDesc tcp41_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp41 block for gfx10
-extern GPA_HardwareCounterDesc tcp42_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp42 block for gfx10
-extern GPA_HardwareCounterDesc tcp43_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp43 block for gfx10
-extern GPA_HardwareCounterDesc tcp44_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp44 block for gfx10
-extern GPA_HardwareCounterDesc tcp45_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp45 block for gfx10
-extern GPA_HardwareCounterDesc tcp46_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp46 block for gfx10
-extern GPA_HardwareCounterDesc tcp47_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp47 block for gfx10
-extern GPA_HardwareCounterDesc tcp48_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp48 block for gfx10
-extern GPA_HardwareCounterDesc tcp49_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp49 block for gfx10
-extern GPA_HardwareCounterDesc tcp50_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp50 block for gfx10
-extern GPA_HardwareCounterDesc tcp51_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp51 block for gfx10
-extern GPA_HardwareCounterDesc tcp52_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp52 block for gfx10
-extern GPA_HardwareCounterDesc tcp53_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp53 block for gfx10
-extern GPA_HardwareCounterDesc tcp54_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp54 block for gfx10
-extern GPA_HardwareCounterDesc tcp55_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp55 block for gfx10
-extern GPA_HardwareCounterDesc tcp56_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp56 block for gfx10
-extern GPA_HardwareCounterDesc tcp57_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp57 block for gfx10
-extern GPA_HardwareCounterDesc tcp58_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp58 block for gfx10
-extern GPA_HardwareCounterDesc tcp59_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp59 block for gfx10
-extern GPA_HardwareCounterDesc tcp60_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp60 block for gfx10
-extern GPA_HardwareCounterDesc tcp61_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp61 block for gfx10
-extern GPA_HardwareCounterDesc tcp62_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp62 block for gfx10
-extern GPA_HardwareCounterDesc tcp63_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp63 block for gfx10
-extern GPA_HardwareCounterDesc tcp64_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp64 block for gfx10
-extern GPA_HardwareCounterDesc tcp65_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp65 block for gfx10
-extern GPA_HardwareCounterDesc tcp66_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp66 block for gfx10
-extern GPA_HardwareCounterDesc tcp67_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp67 block for gfx10
-extern GPA_HardwareCounterDesc tcp68_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp68 block for gfx10
-extern GPA_HardwareCounterDesc tcp69_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp69 block for gfx10
-extern GPA_HardwareCounterDesc tcp70_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp70 block for gfx10
-extern GPA_HardwareCounterDesc tcp71_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp71 block for gfx10
-extern GPA_HardwareCounterDesc tcp72_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp72 block for gfx10
-extern GPA_HardwareCounterDesc tcp73_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp73 block for gfx10
-extern GPA_HardwareCounterDesc tcp74_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp74 block for gfx10
-extern GPA_HardwareCounterDesc tcp75_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp75 block for gfx10
-extern GPA_HardwareCounterDesc tcp76_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp76 block for gfx10
-extern GPA_HardwareCounterDesc tcp77_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp77 block for gfx10
-extern GPA_HardwareCounterDesc tcp78_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp78 block for gfx10
-extern GPA_HardwareCounterDesc tcp79_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for tcp79 block for gfx10
 extern GPA_HardwareCounterDesc gl2c0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for gl2c0 block for gfx10
 extern GPA_HardwareCounterDesc gl2c1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for gl2c1 block for gfx10
 extern GPA_HardwareCounterDesc gl2c2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for gl2c2 block for gfx10
@@ -302,22 +188,6 @@ extern GPA_HardwareCounterDesc cb12_exposed_counters_gfx10[]; ///< Array of hard
 extern GPA_HardwareCounterDesc cb13_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb13 block for gfx10
 extern GPA_HardwareCounterDesc cb14_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb14 block for gfx10
 extern GPA_HardwareCounterDesc cb15_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb15 block for gfx10
-extern GPA_HardwareCounterDesc cb16_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb16 block for gfx10
-extern GPA_HardwareCounterDesc cb17_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb17 block for gfx10
-extern GPA_HardwareCounterDesc cb18_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb18 block for gfx10
-extern GPA_HardwareCounterDesc cb19_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb19 block for gfx10
-extern GPA_HardwareCounterDesc cb20_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb20 block for gfx10
-extern GPA_HardwareCounterDesc cb21_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb21 block for gfx10
-extern GPA_HardwareCounterDesc cb22_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb22 block for gfx10
-extern GPA_HardwareCounterDesc cb23_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb23 block for gfx10
-extern GPA_HardwareCounterDesc cb24_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb24 block for gfx10
-extern GPA_HardwareCounterDesc cb25_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb25 block for gfx10
-extern GPA_HardwareCounterDesc cb26_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb26 block for gfx10
-extern GPA_HardwareCounterDesc cb27_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb27 block for gfx10
-extern GPA_HardwareCounterDesc cb28_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb28 block for gfx10
-extern GPA_HardwareCounterDesc cb29_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb29 block for gfx10
-extern GPA_HardwareCounterDesc cb30_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb30 block for gfx10
-extern GPA_HardwareCounterDesc cb31_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for cb31 block for gfx10
 extern GPA_HardwareCounterDesc db0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db0 block for gfx10
 extern GPA_HardwareCounterDesc db1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db1 block for gfx10
 extern GPA_HardwareCounterDesc db2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db2 block for gfx10
@@ -334,22 +204,6 @@ extern GPA_HardwareCounterDesc db12_exposed_counters_gfx10[]; ///< Array of hard
 extern GPA_HardwareCounterDesc db13_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db13 block for gfx10
 extern GPA_HardwareCounterDesc db14_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db14 block for gfx10
 extern GPA_HardwareCounterDesc db15_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db15 block for gfx10
-extern GPA_HardwareCounterDesc db16_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db16 block for gfx10
-extern GPA_HardwareCounterDesc db17_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db17 block for gfx10
-extern GPA_HardwareCounterDesc db18_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db18 block for gfx10
-extern GPA_HardwareCounterDesc db19_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db19 block for gfx10
-extern GPA_HardwareCounterDesc db20_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db20 block for gfx10
-extern GPA_HardwareCounterDesc db21_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db21 block for gfx10
-extern GPA_HardwareCounterDesc db22_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db22 block for gfx10
-extern GPA_HardwareCounterDesc db23_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db23 block for gfx10
-extern GPA_HardwareCounterDesc db24_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db24 block for gfx10
-extern GPA_HardwareCounterDesc db25_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db25 block for gfx10
-extern GPA_HardwareCounterDesc db26_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db26 block for gfx10
-extern GPA_HardwareCounterDesc db27_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db27 block for gfx10
-extern GPA_HardwareCounterDesc db28_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db28 block for gfx10
-extern GPA_HardwareCounterDesc db29_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db29 block for gfx10
-extern GPA_HardwareCounterDesc db30_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db30 block for gfx10
-extern GPA_HardwareCounterDesc db31_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for db31 block for gfx10
 extern GPA_HardwareCounterDesc gcea0_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for gcea0 block for gfx10
 extern GPA_HardwareCounterDesc gcea1_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for gcea1 block for gfx10
 extern GPA_HardwareCounterDesc gcea2_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for gcea2 block for gfx10
@@ -367,5 +221,5 @@ extern GPA_HardwareCounterDesc gcea13_exposed_counters_gfx10[]; ///< Array of ha
 extern GPA_HardwareCounterDesc gcea14_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for gcea14 block for gfx10
 extern GPA_HardwareCounterDesc gcea15_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for gcea15 block for gfx10
 extern GPA_HardwareCounterDesc gputime_exposed_counters_gfx10[]; ///< Array of hardware exposed counters for gputime block for gfx10
-} // countergfx10
+} // counter_gfx10
 #endif  //_GPA_HW_EXPOSED_COUNTERS_

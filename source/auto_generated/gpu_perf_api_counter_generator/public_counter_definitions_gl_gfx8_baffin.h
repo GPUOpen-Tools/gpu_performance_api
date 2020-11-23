@@ -12,7 +12,7 @@
 
 #include "gpa_derived_counter.h"
 
-namespace glgfx8baffin
+namespace gl_gfx8_baffin
 {
     /// Updates default GPU generation Public derived counters with ASIC specific versions if available.
     /// \param desired_generation Hardware generation currently in use.
@@ -21,6 +21,6 @@ namespace glgfx8baffin
     /// \return True if the ASIC matched one available, and derivedCounters was updated.
     extern bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c);
 
-}  // namespace glgfx8baffin
+}  // namespace gl_gfx8_baffin
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_GL_GFX8_BAFFIN_H_

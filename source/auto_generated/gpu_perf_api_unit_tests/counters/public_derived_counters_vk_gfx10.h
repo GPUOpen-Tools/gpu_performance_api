@@ -134,28 +134,39 @@
 #define CBSlowPixelPctPublicVKGfx10 118
 #define CBSlowPixelCountPublicVKGfx10 119
 #define L0CacheHitPublicVKGfx10 120
-#define L0CacheHitCountPublicVKGfx10 121
-#define L0CacheMissCountPublicVKGfx10 122
-#define L1CacheHitPublicVKGfx10 123
-#define L1CacheHitCountPublicVKGfx10 124
-#define L1CacheMissCountPublicVKGfx10 125
-#define L2CacheHitPublicVKGfx10 126
-#define L2CacheMissPublicVKGfx10 127
-#define L2CacheHitCountPublicVKGfx10 128
-#define L2CacheMissCountPublicVKGfx10 129
-#define FetchSizePublicVKGfx10 130
-#define WriteSizePublicVKGfx10 131
-#define MemUnitBusyPublicVKGfx10 132
-#define MemUnitBusyCyclesPublicVKGfx10 133
-#define MemUnitStalledPublicVKGfx10 134
-#define MemUnitStalledCyclesPublicVKGfx10 135
-#define WriteUnitStalledPublicVKGfx10 136
-#define WriteUnitStalledCyclesPublicVKGfx10 137
-#define LocalVidMemBytesPublicVKGfx10 138
-#define PcieBytesPublicVKGfx10 139
+#define L0CacheRequestCountPublicVKGfx10 121
+#define L0CacheHitCountPublicVKGfx10 122
+#define L0CacheMissCountPublicVKGfx10 123
+#define ScalarCacheHitPublicVKGfx10 124
+#define ScalarCacheRequestCountPublicVKGfx10 125
+#define ScalarCacheHitCountPublicVKGfx10 126
+#define ScalarCacheMissCountPublicVKGfx10 127
+#define InstCacheHitPublicVKGfx10 128
+#define InstCacheRequestCountPublicVKGfx10 129
+#define InstCacheHitCountPublicVKGfx10 130
+#define InstCacheMissCountPublicVKGfx10 131
+#define L1CacheHitPublicVKGfx10 132
+#define L1CacheRequestCountPublicVKGfx10 133
+#define L1CacheHitCountPublicVKGfx10 134
+#define L1CacheMissCountPublicVKGfx10 135
+#define L2CacheHitPublicVKGfx10 136
+#define L2CacheMissPublicVKGfx10 137
+#define L2CacheRequestCountPublicVKGfx10 138
+#define L2CacheHitCountPublicVKGfx10 139
+#define L2CacheMissCountPublicVKGfx10 140
+#define FetchSizePublicVKGfx10 141
+#define WriteSizePublicVKGfx10 142
+#define MemUnitBusyPublicVKGfx10 143
+#define MemUnitBusyCyclesPublicVKGfx10 144
+#define MemUnitStalledPublicVKGfx10 145
+#define MemUnitStalledCyclesPublicVKGfx10 146
+#define WriteUnitStalledPublicVKGfx10 147
+#define WriteUnitStalledCyclesPublicVKGfx10 148
+#define LocalVidMemBytesPublicVKGfx10 149
+#define PcieBytesPublicVKGfx10 150
 
 /// Number of public counters for VKGfx10
-const size_t VKGFX10_PUBLIC_COUNTER_COUNT = 140;
+const size_t VKGFX10_PUBLIC_COUNTER_COUNT = 151;
 
 /// Array of public counters for VKGfx10
 extern const GPACounterDesc VKGFX10_PUBLIC_COUNTERS[VKGFX10_PUBLIC_COUNTER_COUNT];

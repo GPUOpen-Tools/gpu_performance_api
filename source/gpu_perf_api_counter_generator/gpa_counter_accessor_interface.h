@@ -157,6 +157,13 @@ public:
                                  const GpaShaderMask& gpa_shader_mask,
                                  gpa_uint32*       counter_index) const = 0;
 
+
+    /// Returns the publicly-exposed index of the hardware counter with the specified index.
+    /// \param[in] hardware_counter_index hardware counter index
+    /// \param[out] public_interface_counter_index publicly-exposed counter index
+    /// \return true if successful otherwise false
+    virtual bool GetPublicInterfaceCounterIndex(const gpa_uint32& hardware_counter_index, gpa_uint32* public_interface_counter_index) const = 0;
+
     /// Get the hardware counters
     /// \return the hardware counters
     virtual const GPA_HardwareCounters* GetHardwareCounters() const = 0;
@@ -165,10 +172,10 @@ public:
     /// \return the software counters
     virtual const GPA_SoftwareCounters* GetSoftwareCounters() const = 0;
 
-    /// Get the derived counter info
-    /// \param[in] derived_counter_index public counter index
+    /// Get the counter info
+    /// \param[in] counter_index public counter index
     /// \return GPA_STATUS_OK on success otherwise an error code
-    virtual GpaDerivedCounterInfo* GetDerivedCounterInfo(const gpa_uint32& derived_counter_index) const = 0;
+    virtual GpaCounterInfo* GetCounterInfo(const gpa_uint32& counter_index) const = 0;
 
     /// Virtual Destructor
     virtual ~IGPACounterAccessor() = default;

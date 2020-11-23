@@ -134,23 +134,40 @@ namespace PublicCounterCompiler
             Func<string, bool> errorHandler
             )
         {
+            string baseGfxFileName = derivedCounterFileInput.rootFilename + GPATools.Gpa.CounterFileNamePrefix + api.ToLower() + "_" + generation.ToLower() + ".txt";
+            string[] baseGfxFileNames = Directory.GetFiles(derivedCounterFileInput.autoGenCompilerInputFilePath, baseGfxFileName);
+
             // Iterate over files that match the base of the counter name's generation file
-            string searchFilename = derivedCounterFileInput.rootFilename + GPATools.Gpa.CounterFileNamePrefix + api.ToLower() + "_" + generation.ToLower() + "*.txt";
+            string searchForAsicFilename = derivedCounterFileInput.rootFilename + GPATools.Gpa.CounterFileNamePrefix + api.ToLower() + "_" + generation.ToLower() + "_*.txt";
 
-            string[] filenames = Directory.GetFiles(derivedCounterFileInput.autoGenCompilerInputFilePath, searchFilename);
+            string[] asicfileNames = Directory.GetFiles(derivedCounterFileInput.autoGenCompilerInputFilePath, searchForAsicFilename);
 
-            if (filenames.Length == 0)
+            List<String> fileNames = new List<string>();
+
+            foreach (string counterNamesFile in baseGfxFileNames)
             {
-                infoHandler("No files found at:" + derivedCounterFileInput.compilerInputPath + " matching:" + searchFilename);
+                fileNames.Add(counterNamesFile);
+            }
+
+            foreach (string counterNamesFile in asicfileNames)
+            {
+                fileNames.Add(counterNamesFile);
+            }
+
+            if (fileNames.Count == 0)
+            {
+                infoHandler("No files found at:" + derivedCounterFileInput.compilerInputPath + " matching:" + baseGfxFileName);
                 return false;
             }
 
             List<string> asicSpecificFiles = new List<string>();
 
-            foreach (string counterNamesFile in filenames)
+            string baseCounterDefFile = "";
+            foreach (string counterNamesFile in fileNames)
             {
                 // Determine the specific ASIC, if any
                 string baseFilename = Path.GetFileNameWithoutExtension(counterNamesFile);
+                bool isBaseDeriveCounterDefFileParsing = false;
 
                 int asicIndex = baseFilename.IndexOf(generation.ToLower());
                 string asic = baseFilename.Substring(asicIndex + generation.Length);
@@ -159,6 +176,11 @@ namespace PublicCounterCompiler
                 {
                     asic = asic.Substring(1, asic.Length - 1);
                     asicSpecificFiles.Add(asic);
+                    isBaseDeriveCounterDefFileParsing = false;
+                }
+                else
+                {
+                    isBaseDeriveCounterDefFileParsing = true;
                 }
 
                 // Suffix
@@ -170,17 +192,32 @@ namespace PublicCounterCompiler
 
                 string derivedCounterDefsFile = derivedCounterFileInput.compilerInputPath +
                                                 derivedCounterFileInput.rootFilename +
-                                                GPATools.Gpa.CounterDefFilePrefix +
+                                                GPATools.Gpa.CounterDefinitionsStr +
                                                 suffix +
-                                                generation.ToLower() + ".txt";
+                                                generation.ToLower() +
+                                                (!String.IsNullOrEmpty(asic) ? "_" + asic.ToLower() : "") +
+                                                ".txt";
 
                 string section = api + generation;
+
+                if (isBaseDeriveCounterDefFileParsing && String.IsNullOrEmpty(baseCounterDefFile))
+                {
+                    baseCounterDefFile = derivedCounterDefsFile;
+                }
 
                 // Some files may not exist for certain combinations of APIs and architectures
                 if (!File.Exists(derivedCounterDefsFile))
                 {
-                    infoHandler("Info: Unable to find file " + derivedCounterDefsFile);
-                    return true;
+                    if (!isBaseDeriveCounterDefFileParsing && !String.IsNullOrEmpty(baseCounterDefFile))
+                    {
+                        infoHandler("Info: Unable to find file " + derivedCounterDefsFile + " Using base counter def file.");
+                        derivedCounterDefsFile = baseCounterDefFile;
+                    }
+                    else
+                    {
+                        infoHandler("Info: Unable to find file " + derivedCounterDefsFile);
+                        return true;
+                    }
                 }
 
                 if (LoadFilesAndGenerateOutput(derivedCounterFileInput.rootFilename,
@@ -195,7 +232,7 @@ namespace PublicCounterCompiler
                     infoHandler,
                     errorHandler))
                 {
-                    infoHandler(derivedCounterFileInput.rootFilename + Gpa.CounterDefOutFileName + section + asic + ".cpp / .h written out to:" + derivedCounterFileInput.outputDirectory);
+                    infoHandler(derivedCounterFileInput.rootFilename + Gpa.CounterDefinitionsStr + section + asic + ".cpp / .h written out to:" + derivedCounterFileInput.outputDirectory);
                 }
                 else
                 {
@@ -239,8 +276,8 @@ namespace PublicCounterCompiler
             Func<string, bool> errorHandler
             )
         {
-            string section = api + generation;
-            string filename = outputDirectory + rootFilename + Gpa.CounterDefOutFileName +
+            string section = api + "_" + generation;
+            string filename = outputDirectory + rootFilename + Gpa.CounterDefinitionsStr +
                               api.ToLower() + "_" + generation.ToLower() + "_" + "asics.h";
 
             // Write header file
@@ -257,8 +294,7 @@ namespace PublicCounterCompiler
             }
 
             includeFile.WriteLine("//==============================================================================");
-            includeFile.WriteLine("// Copyright (c) 2010-{0} Advanced Micro Devices, Inc. All rights reserved.",
-                DateTime.Today.Year);
+            includeFile.WriteLine("// Copyright (c) 2010-{0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Today.Year);
             includeFile.WriteLine("/// \\author AMD Developer Tools Team");
             includeFile.WriteLine("/// \\file");
             includeFile.WriteLine("/// \\brief {0} Counter Definitions ASIC file for {1}", derivedCounterFileInput.compiler_type_str, section.ToUpper());
@@ -272,9 +308,12 @@ namespace PublicCounterCompiler
             includeFile.WriteLine("#include \"gpa_derived_counter.h\"");
             includeFile.WriteLine();
 
-            foreach(string asic in asicSpecificFiles)
+            includeFile.WriteLine("#include \"gpa_hw_counter_{0}_{1}.h\"", api.ToLower(), generation.ToLower());
+            includeFile.WriteLine();
+
+            foreach (string asic in asicSpecificFiles)
             {
-                includeFile.WriteLine("#include \"{0}{1}{2}_{3}_{4}.h\"", rootFilename, CounterDefFilePrefix, api.ToLower(), generation.ToLower(), asic.ToLower());
+                includeFile.WriteLine("#include \"{0}{1}{2}_{3}_{4}.h\"", rootFilename, CounterDefinitionsStr, api.ToLower(), generation.ToLower(), asic.ToLower());
             }
 
             if (0 != asicSpecificFiles.Count)
@@ -282,7 +321,7 @@ namespace PublicCounterCompiler
                 includeFile.WriteLine();
             }
 
-            includeFile.WriteLine("namespace {0}asics", section.ToLower());
+            includeFile.WriteLine("namespace {0}_asics", section.ToLower());
             includeFile.WriteLine("{");
 
             includeFile.WriteLine("    /// Updates default GPU generation derived counters with ASIC specific derived counters if available.");
@@ -301,16 +340,17 @@ namespace PublicCounterCompiler
             }
             else
             {
+                includeFile.WriteLine("        // Override max block events first so we could chain these if we want");
+                includeFile.WriteLine("        counter_{0}::OverrideMaxBlockEvents(asic_type);", section.ToLower());
+                includeFile.WriteLine();
+
                 for (int i = 0; i < asicSpecificFiles.Count; ++i)
                 {
-                    includeFile.WriteLine("        if ({0}{1}::Update{2}AsicSpecificCounters(desired_generation, asic_type, c))", section.ToLower(), asicSpecificFiles[i].ToLower(), derivedCounterFileInput.compiler_type_str);
+                    includeFile.WriteLine("        if ({0}_{1}::Update{2}AsicSpecificCounters(desired_generation, asic_type, c))", section.ToLower(), asicSpecificFiles[i].ToLower(), derivedCounterFileInput.compiler_type_str);
                     includeFile.WriteLine("        {");
                     includeFile.WriteLine("            return;");
                     includeFile.WriteLine("        }");
-                    if (i < asicSpecificFiles.Count - 1)
-                    {
-                        includeFile.WriteLine();
-                    }
+                    includeFile.WriteLine();
                 }
             }
 
@@ -556,6 +596,38 @@ namespace PublicCounterCompiler
                             rpnStack.Push(result);
                         }
                         continue;
+
+                    case "comparemax2":
+                        {
+                            if (rpnStack.Count < 4)
+                            {
+                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 4) for", errorHandler);
+                                retVal = false;
+                                break;
+                            }
+                            string result = string.Empty;
+                            result = "max(";
+                            for (int i = 0; i < 2; ++i)
+                            {
+                                result = rpnStack.Pop();
+                                if (i != 1)
+                                {
+                                    result += ", ";
+                                }
+                            }
+                            result = ") ? ret(";
+                            for (int i = 0; i < 2; ++i)
+                            {
+                                result = rpnStack.Pop();
+                                if (i != 1)
+                                {
+                                    result += ", ";
+                                }
+                            }
+                            result = ")";
+                            rpnStack.Push(result);
+                        }
+                            continue;
 
                     case "num_shader_engines":
                     case "num_shader_arrays":
@@ -878,7 +950,11 @@ namespace PublicCounterCompiler
         {
             GfxGeneration gfxGen = GfxGeneration.Unknown;
 
-            if ("Gfx10" == generation)
+            if ("Gfx103" == generation)
+            {
+                gfxGen = GfxGeneration.Gfx103;
+            }
+            else if ("Gfx10" == generation)
             {
                 gfxGen = GfxGeneration.Gfx10;
             }
@@ -1005,7 +1081,7 @@ namespace PublicCounterCompiler
 
             if (publicCounterList.Count == 0)
             {
-                errorHandler("0 counters were exposed by the counter definitions file.");
+                infoHandler("0 counters were exposed by the counter definitions file.");
                 return false;
             }
             else
@@ -1573,13 +1649,13 @@ namespace PublicCounterCompiler
                             counterDef.Comp = string.Empty;
 
                             string[] equations = equation.Split('|');
-                            foreach(string eqn in equations)
+                            foreach (string eqn in equations)
                             {
                                 string[] compParts = eqn.Split(',');
 
                                 string newEqn = string.Empty;
 
-                                foreach(string part in compParts)
+                                foreach (string part in compParts)
                                 {
                                     if (!string.IsNullOrEmpty(newEqn) && newEqn.EndsWith(",") == false)
                                     {
@@ -1778,7 +1854,7 @@ namespace PublicCounterCompiler
             // if we were trying to define a counter, but never did a comp for it, output a warning since the counter will not be generated
             if (counterDef != null && !counterDef.ValidEquation())
             {
-                infoHandler("Warning: incomplete counter " + activeSectionLabel + ", will not expose counter for: "  + counterDef.Name);
+                infoHandler("Warning: incomplete counter " + activeSectionLabel + ", will not expose counter for: " + counterDef.Name);
             }
 
             if (numInvalidCounterNames > 0 && IgnoreInvalidCounters() == false)
@@ -1874,7 +1950,7 @@ namespace PublicCounterCompiler
             bool asicSpecific = !string.IsNullOrEmpty(asic);
             string asic_prefix_str = asicSpecific ? "_" + asic.ToLower() : "";
 
-            string activeSectionLabel = api + generation;
+            string activeSectionLabel = api + "_" + generation;
 
             if (outputDir.Length > 0 && !outputDir.EndsWith("\\"))
             {
@@ -1888,14 +1964,14 @@ namespace PublicCounterCompiler
 
             Directory.CreateDirectory(counterListOutputDirectory);
 
-            string filename = string.Format("{0}{1}{2}{3}{4}.h", outputDir, rootFilename, Gpa.CounterDefOutFileName, api.ToLower() + "_" + generation.ToLower(), asic_prefix_str);
+            string filename = string.Format("{0}{1}{2}{3}{4}.h", outputDir, rootFilename, Gpa.CounterDefinitionsStr, api.ToLower() + "_" + generation.ToLower(), asic_prefix_str);
 
             // Write header file
             infoHandler("Writing header to " + filename);
-            StreamWriter hsw = null;
+            StreamWriter includeFile = null;
             try
             {
-                hsw = new StreamWriter(filename);
+                includeFile = new StreamWriter(filename);
             }
             catch
             {
@@ -1903,69 +1979,69 @@ namespace PublicCounterCompiler
                 return false;
             }
 
-            hsw.WriteLine("//==============================================================================");
-            hsw.WriteLine("// Copyright (c) 2010-{0} Advanced Micro Devices, Inc. All rights reserved.",
+            includeFile.WriteLine("//==============================================================================");
+            includeFile.WriteLine("// Copyright (c) 2010-{0} Advanced Micro Devices, Inc. All rights reserved.",
                 DateTime.Today.Year);
-            hsw.WriteLine("/// \\author AMD Developer Tools Team");
-            hsw.WriteLine("/// \\file");
-            hsw.WriteLine("/// \\brief {0} Counter Definitions for {1}{2}{3}", derivedCounterFileInput.compiler_type_str, api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
-            hsw.WriteLine("//==============================================================================");
-            hsw.WriteLine();
-            hsw.WriteLine("#ifndef _{0}COUNTER_DEFINITIONS_{1}_{2}{3}_H_", rootFilename.ToUpper(), api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
-            hsw.WriteLine("#define _{0}COUNTER_DEFINITIONS_{1}_{2}{3}_H_", rootFilename.ToUpper(), api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
-            hsw.WriteLine();
+            includeFile.WriteLine("/// \\author AMD Developer Tools Team");
+            includeFile.WriteLine("/// \\file");
+            includeFile.WriteLine("/// \\brief {0} Counter Definitions for {1}{2}{3}", derivedCounterFileInput.compiler_type_str, api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
+            includeFile.WriteLine("//==============================================================================");
+            includeFile.WriteLine();
+            includeFile.WriteLine("#ifndef _{0}COUNTER_DEFINITIONS_{1}_{2}{3}_H_", rootFilename.ToUpper(), api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
+            includeFile.WriteLine("#define _{0}COUNTER_DEFINITIONS_{1}_{2}{3}_H_", rootFilename.ToUpper(), api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
+            includeFile.WriteLine();
 
             if (isInternal)
             {
-                hsw.WriteLine("#ifdef AMDT_INTERNAL");
-                hsw.WriteLine();
+                includeFile.WriteLine("#ifdef AMDT_INTERNAL");
+                includeFile.WriteLine();
             }
 
-            hsw.WriteLine(
+            includeFile.WriteLine(
                 "//*** Note, this is an auto-generated file. Do not edit. Execute {0}CounterCompiler to rebuild.", derivedCounterFileInput.compiler_type_str);
-            hsw.WriteLine();
-            hsw.WriteLine("#include \"gpa_derived_counter.h\"");
-            hsw.WriteLine();
+            includeFile.WriteLine();
+            includeFile.WriteLine("#include \"gpa_derived_counter.h\"");
+            includeFile.WriteLine();
 
             if (!asicSpecific)
             {
-                hsw.WriteLine("/// Defines the {0} derived counters for {1} {2}", derivedCounterFileInput.compiler_type_str, api.ToUpper(), asic_prefix_str.ToUpper());
-                hsw.WriteLine("/// \\param c derived counters instance");
-                hsw.WriteLine("void AutoDefine{0}DerivedCounters{1}(GPA_DerivedCounters& c);", derivedCounterFileInput.compiler_type_str, activeSectionLabel);
+                includeFile.WriteLine("/// Defines the {0} derived counters for {1} {2}", derivedCounterFileInput.compiler_type_str, api.ToUpper(), asic_prefix_str.ToUpper());
+                includeFile.WriteLine("/// \\param c derived counters instance");
+                includeFile.WriteLine("void AutoDefine{0}DerivedCounters{1}(GPA_DerivedCounters& c);", derivedCounterFileInput.compiler_type_str, activeSectionLabel);
             }
             else
             {
-                hsw.WriteLine("namespace {0}{1}", activeSectionLabel.ToLower(), asic.ToLower());
-                hsw.WriteLine("{");
-                hsw.WriteLine("    /// Updates default GPU generation {0} derived counters with ASIC specific versions if available.", derivedCounterFileInput.compiler_type_str);
-                hsw.WriteLine("    /// \\param desired_generation Hardware generation currently in use.");
-                hsw.WriteLine("    /// \\param asic_type The ASIC type that is currently in use.");
-                hsw.WriteLine("    /// \\param c Derived counters instance.");
-                hsw.WriteLine("    /// \\return True if the ASIC matched one available, and derivedCounters was updated.");
-                hsw.WriteLine("    extern bool Update{0}AsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c);", derivedCounterFileInput.compiler_type_str);
-                hsw.WriteLine();
-                hsw.WriteLine("}  // namespace " + activeSectionLabel.ToLower() + asic.ToLower());
+                includeFile.WriteLine("namespace {0}_{1}", activeSectionLabel.ToLower(), asic.ToLower());
+                includeFile.WriteLine("{");
+                includeFile.WriteLine("    /// Updates default GPU generation {0} derived counters with ASIC specific versions if available.", derivedCounterFileInput.compiler_type_str);
+                includeFile.WriteLine("    /// \\param desired_generation Hardware generation currently in use.");
+                includeFile.WriteLine("    /// \\param asic_type The ASIC type that is currently in use.");
+                includeFile.WriteLine("    /// \\param c Derived counters instance.");
+                includeFile.WriteLine("    /// \\return True if the ASIC matched one available, and derivedCounters was updated.");
+                includeFile.WriteLine("    extern bool Update{0}AsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c);", derivedCounterFileInput.compiler_type_str);
+                includeFile.WriteLine();
+                includeFile.WriteLine("}}  // namespace {0}_{1}", activeSectionLabel.ToLower(), asic.ToLower());
             }
 
-            hsw.WriteLine();
+            includeFile.WriteLine();
 
             if (isInternal)
             {
-                hsw.WriteLine("#endif  // AMDT_INTERNAL");
-                hsw.WriteLine();
+                includeFile.WriteLine("#endif  // AMDT_INTERNAL");
+                includeFile.WriteLine();
             }
 
-            hsw.WriteLine("#endif  // _PUBLIC_COUNTER_DEFINITIONS_{0}_{1}{2}_H_", api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
-            hsw.Close();
+            includeFile.WriteLine("#endif  // _PUBLIC_COUNTER_DEFINITIONS_{0}_{1}{2}_H_", api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
+            includeFile.Close();
 
-            string cppFilename = string.Format("{0}{1}{2}{3}{4}.cc", outputDir, rootFilename, Gpa.CounterDefOutFileName, api.ToLower() + "_" + generation.ToLower(), asic_prefix_str.ToLower());
+            string cppFilename = string.Format("{0}{1}{2}{3}{4}.cc", outputDir, rootFilename, Gpa.CounterDefinitionsStr, api.ToLower() + "_" + generation.ToLower(), asic_prefix_str.ToLower());
 
             // Write cpp file
             infoHandler("Writing cpp to " + cppFilename);
-            StreamWriter csw = null;
+            StreamWriter cppFile = null;
             try
             {
-                csw = new StreamWriter(cppFilename);
+                cppFile = new StreamWriter(cppFilename);
             }
             catch
             {
@@ -1973,51 +2049,51 @@ namespace PublicCounterCompiler
                 return false;
             }
 
-            csw.WriteLine("//==============================================================================");
-            csw.WriteLine("// Copyright (c) 2010-{0} Advanced Micro Devices, Inc. All rights reserved.",
+            cppFile.WriteLine("//==============================================================================");
+            cppFile.WriteLine("// Copyright (c) 2010-{0} Advanced Micro Devices, Inc. All rights reserved.",
                 DateTime.Today.Year);
-            csw.WriteLine("/// \\author AMD Developer Tools Team");
-            csw.WriteLine("/// \\file");
-            csw.WriteLine("/// \\brief {0} Counter Definitions for {1} {2} {3}", derivedCounterFileInput.compiler_type_str, api.ToUpper(), generation.ToUpper(), asic_prefix_str);
-            csw.WriteLine("//==============================================================================");
-            csw.WriteLine();
+            cppFile.WriteLine("/// \\author AMD Developer Tools Team");
+            cppFile.WriteLine("/// \\file");
+            cppFile.WriteLine("/// \\brief {0} Counter Definitions for {1} {2} {3}", derivedCounterFileInput.compiler_type_str, api.ToUpper(), generation.ToUpper(), asic_prefix_str);
+            cppFile.WriteLine("//==============================================================================");
+            cppFile.WriteLine();
 
             if (isInternal)
             {
-                csw.WriteLine("#ifdef AMDT_INTERNAL");
-                csw.WriteLine();
+                cppFile.WriteLine("#ifdef AMDT_INTERNAL");
+                cppFile.WriteLine();
             }
 
-            csw.WriteLine("#include \"{0}\"", Gpa.GPACounterHeaderFileStr);
-            csw.WriteLine("#include \"{0}counter_definitions_{1}_{2}{3}.h\"", rootFilename.ToLower(), api.ToLower(), generation.ToLower(), asic_prefix_str.ToLower());
-            csw.WriteLine();
-            csw.WriteLine(
+            cppFile.WriteLine("#include \"{0}\"", Gpa.GPACounterHeaderFileStr);
+            cppFile.WriteLine("#include \"{0}counter_definitions_{1}_{2}{3}.h\"", rootFilename.ToLower(), api.ToLower(), generation.ToLower(), asic_prefix_str.ToLower());
+            cppFile.WriteLine();
+            cppFile.WriteLine(
                 "// *** Note, this is an auto-generated file. Do not edit. Execute {0}CounterCompiler to rebuild.", derivedCounterFileInput.compiler_type_str);
-            csw.WriteLine();
+            cppFile.WriteLine();
 
             if (!asicSpecific)
             {
-                csw.WriteLine("void AutoDefine{0}DerivedCounters{1}{2}(GPA_DerivedCounters& c)", derivedCounterFileInput.compiler_type_str, activeSectionLabel, asic);
-                csw.WriteLine("{");
+                cppFile.WriteLine("void AutoDefine{0}DerivedCounters{1}{2}(GPA_DerivedCounters& c)", derivedCounterFileInput.compiler_type_str, activeSectionLabel, asic);
+                cppFile.WriteLine("{");
             }
             else
             {
-                csw.WriteLine("#include \"{0}{1}{2}.h\"", Gpa.HardwareCounterFileNamePrefix, generation.ToLower(), asic_prefix_str.ToLower());
-                csw.WriteLine();
-                csw.WriteLine("namespace {0}{1}", activeSectionLabel.ToLower(), asic.ToLower());
-                csw.WriteLine("{");
-                csw.WriteLine("bool Update{0}AsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c)", derivedCounterFileInput.compiler_type_str);
-                csw.WriteLine("{");
-                csw.WriteLine("    UNREFERENCED_PARAMETER(desired_generation);");
-                csw.WriteLine("    UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers");
-                csw.WriteLine();
-                csw.WriteLine("    if (!counter{0}{1}::MatchAsic(asic_type))", generation.ToLower(), asic.ToLower());
-                csw.WriteLine("    {");
-                csw.WriteLine("        return false;");
-                csw.WriteLine("    }");
-                csw.WriteLine();
-                csw.WriteLine("    counter{0}{1}::OverrideBlockInstanceCounters(asic_type);", generation.ToLower(), asic.ToLower());
-                csw.WriteLine();
+                cppFile.WriteLine("#include \"{0}{1}{2}.h\"", Gpa.gpaHwCounterFilenamePrefix, generation.ToLower(), asic_prefix_str.ToLower());
+                cppFile.WriteLine();
+                cppFile.WriteLine("namespace {0}_{1}", activeSectionLabel.ToLower(), asic.ToLower());
+                cppFile.WriteLine("{");
+                cppFile.WriteLine("bool Update{0}AsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c)", derivedCounterFileInput.compiler_type_str);
+                cppFile.WriteLine("{");
+                cppFile.WriteLine("    UNREFERENCED_PARAMETER(desired_generation);");
+                cppFile.WriteLine("    UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers");
+                cppFile.WriteLine();
+                cppFile.WriteLine("    if (!counter_{0}_{1}::MatchAsic(asic_type))", generation.ToLower(), asic.ToLower());
+                cppFile.WriteLine("    {");
+                cppFile.WriteLine("        return false;");
+                cppFile.WriteLine("    }");
+                cppFile.WriteLine();
+                cppFile.WriteLine("    counter_{0}_{1}::OverrideBlockInstanceCounters(asic_type);", generation.ToLower(), asic.ToLower());
+                cppFile.WriteLine();
             }
 
             StreamWriter lsw = null;
@@ -2050,51 +2126,51 @@ namespace PublicCounterCompiler
                     lsw.WriteLine("{0} - {1}", c.Name, c.Desc);
                 }
 
-                csw.WriteLine("    {");
-                csw.WriteLine("        vector<gpa_uint32> internalCounters;");
+                cppFile.WriteLine("    {");
+                cppFile.WriteLine("        vector<gpa_uint32> internalCounters;");
                 foreach (DerivedCounterDef.HardwareCounterDef counter in c.GetCounters())
                 {
-                    csw.WriteLine("        internalCounters.push_back({0});", counter.Id);
+                    cppFile.WriteLine("        internalCounters.push_back({0});", counter.Id);
                 }
 
-                csw.WriteLine();
+                cppFile.WriteLine();
 
                 if (!asicSpecific)
                 {
-                    csw.WriteLine(
+                    cppFile.WriteLine(
                     "        c.DefineDerivedCounter(\"{0}\", \"{1}\", \"{2}\", {3}, {4}, internalCounters, \"{5}\", \"{6}\");",
                     c.Name, c.Group, c.Desc, c.Type, c.Usage, c.Comp, c.GuidHash.ToString("D"));
                 }
                 else
                 {
-                    csw.WriteLine(
+                    cppFile.WriteLine(
                     "        c.UpdateAsicSpecificDerivedCounter(\"{0}\", internalCounters, \"{1}\");",
                     c.Name, c.Comp);
                 }
 
-                csw.WriteLine("    }");
+                cppFile.WriteLine("    }");
             }
 
             if (!asicSpecific)
             {
-                csw.WriteLine("}");
-                csw.WriteLine();
+                cppFile.WriteLine("}");
+                cppFile.WriteLine();
             }
             else
             {
-                csw.WriteLine("    return true;");
-                csw.WriteLine("}");
-                csw.WriteLine();
-                csw.WriteLine("}  // namespace " + activeSectionLabel.ToLower() + asic.ToLower());
-                csw.WriteLine();
+                cppFile.WriteLine("    return true;");
+                cppFile.WriteLine("}");
+                cppFile.WriteLine();
+                cppFile.WriteLine("}}  // namespace {0}_{1}", activeSectionLabel.ToLower(), asic.ToLower());
+                cppFile.WriteLine();
             }
 
             if (isInternal)
             {
-                csw.WriteLine("#endif  // AMDT_INTERNAL");
+                cppFile.WriteLine("#endif  // AMDT_INTERNAL");
             }
 
-            csw.Close();
+            cppFile.Close();
             if (lsw != null)
             {
                 lsw.Close();
@@ -2219,8 +2295,8 @@ namespace PublicCounterCompiler
             foreach (DerivedCounterDef publicCounter in counterDefList)
             {
                 ++counterCount;
-                cppStream.WriteLine("    {{\"{0}\", \"{1}\", \"{2}\", {3}, {4}, {5}}},", publicCounter.Name,
-                    publicCounter.Group, publicCounter.Desc, publicCounter.Type, publicCounter.Usage, publicCounter.GuidHash.ToString("X").Replace(",", ", "));
+                cppStream.WriteLine("    {{\"{0}\", \"{1}\", \"{2}\", \"{3}\", {4}, {5}, {6}, {7}}},", publicCounter.Name,
+                    publicCounter.Group, publicCounter.Desc, publicCounter.Comp, publicCounter.GetCounterCount(), publicCounter.Type, publicCounter.Usage, publicCounter.GuidHash.ToString("X").Replace(",", ", "));
                 headerStream.WriteLine("#define {0}{1}{2}{3} {4}", publicCounter.Name, derivedCounterFileInput.compiler_type_str, activeSectionLabel, asic, counterIndex);
                 counterIndex++;
             }

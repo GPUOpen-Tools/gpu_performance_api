@@ -10,12 +10,14 @@
 #ifndef _GPA_HW_COUNTER_GFX9_GFX909_H_
 #define _GPA_HW_COUNTER_GFX9_GFX909_H_
 
+// clang-format off
+
 #include <set>
 
 struct GPA_HardwareCounterDesc;
 #include "gpa_hw_counter_gfx9.h"
 
-namespace countergfx9gfx909
+namespace counter_gfx9_gfx909
 {
 /// Uses the input ASIC type to determine if this data provides an ASIC specific version.
 /// \param asic_type The ASIC type that is currently in use.
@@ -114,68 +116,72 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
         return false;
     }
 
-    ReplaceBlockInstanceCounters(countergfx9::cb0_counters_gfx9, cb0_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb1_counters_gfx9, cb1_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb2_counters_gfx9, cb2_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb3_counters_gfx9, cb3_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb4_counters_gfx9, cb4_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb5_counters_gfx9, cb5_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb6_counters_gfx9, cb6_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb7_counters_gfx9, cb7_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb8_counters_gfx9, cb8_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb9_counters_gfx9, cb9_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb10_counters_gfx9, cb10_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb11_counters_gfx9, cb11_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb12_counters_gfx9, cb12_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb13_counters_gfx9, cb13_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb14_counters_gfx9, cb14_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::cb15_counters_gfx9, cb15_counters_gfx9_gfx909, 444);
-    ReplaceBlockInstanceCounters(countergfx9::pa_su0_counters_gfx9, pa_su0_counters_gfx9_gfx909, 351);
-    ReplaceBlockInstanceCounters(countergfx9::pa_su1_counters_gfx9, pa_su1_counters_gfx9_gfx909, 351);
-    ReplaceBlockInstanceCounters(countergfx9::pa_su2_counters_gfx9, pa_su2_counters_gfx9_gfx909, 351);
-    ReplaceBlockInstanceCounters(countergfx9::pa_su3_counters_gfx9, pa_su3_counters_gfx9_gfx909, 351);
-    ReplaceBlockInstanceCounters(countergfx9::pa_sc0_counters_gfx9, pa_sc0_counters_gfx9_gfx909, 492);
-    ReplaceBlockInstanceCounters(countergfx9::pa_sc1_counters_gfx9, pa_sc1_counters_gfx9_gfx909, 492);
-    ReplaceBlockInstanceCounters(countergfx9::pa_sc2_counters_gfx9, pa_sc2_counters_gfx9_gfx909, 492);
-    ReplaceBlockInstanceCounters(countergfx9::pa_sc3_counters_gfx9, pa_sc3_counters_gfx9_gfx909, 492);
-    ReplaceBlockInstanceCounters(countergfx9::tcc0_counters_gfx9, tcc0_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc1_counters_gfx9, tcc1_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc2_counters_gfx9, tcc2_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc3_counters_gfx9, tcc3_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc4_counters_gfx9, tcc4_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc5_counters_gfx9, tcc5_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc6_counters_gfx9, tcc6_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc7_counters_gfx9, tcc7_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc8_counters_gfx9, tcc8_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc9_counters_gfx9, tcc9_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc10_counters_gfx9, tcc10_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc11_counters_gfx9, tcc11_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc12_counters_gfx9, tcc12_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc13_counters_gfx9, tcc13_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc14_counters_gfx9, tcc14_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::tcc15_counters_gfx9, tcc15_counters_gfx9_gfx909, 256);
-    ReplaceBlockInstanceCounters(countergfx9::ia0_counters_gfx9, ia0_counters_gfx9_gfx909, 31);
-    ReplaceBlockInstanceCounters(countergfx9::ia1_counters_gfx9, ia1_counters_gfx9_gfx909, 31);
-    ReplaceBlockInstanceCounters(countergfx9::rpb_counters_gfx9, rpb_counters_gfx9_gfx909, 63);
-    ReplaceBlockInstanceCounters(countergfx9::gcea0_counters_gfx9, gcea0_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea1_counters_gfx9, gcea1_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea2_counters_gfx9, gcea2_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea3_counters_gfx9, gcea3_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea4_counters_gfx9, gcea4_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea5_counters_gfx9, gcea5_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea6_counters_gfx9, gcea6_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea7_counters_gfx9, gcea7_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea8_counters_gfx9, gcea8_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea9_counters_gfx9, gcea9_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea10_counters_gfx9, gcea10_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea11_counters_gfx9, gcea11_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea12_counters_gfx9, gcea12_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea13_counters_gfx9, gcea13_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea14_counters_gfx9, gcea14_counters_gfx9_gfx909, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea15_counters_gfx9, gcea15_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb0_counters_gfx9, cb0_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb1_counters_gfx9, cb1_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb2_counters_gfx9, cb2_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb3_counters_gfx9, cb3_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb4_counters_gfx9, cb4_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb5_counters_gfx9, cb5_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb6_counters_gfx9, cb6_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb7_counters_gfx9, cb7_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb8_counters_gfx9, cb8_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb9_counters_gfx9, cb9_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb10_counters_gfx9, cb10_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb11_counters_gfx9, cb11_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb12_counters_gfx9, cb12_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb13_counters_gfx9, cb13_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb14_counters_gfx9, cb14_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::cb15_counters_gfx9, cb15_counters_gfx9_gfx909, 444);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_su0_counters_gfx9, pa_su0_counters_gfx9_gfx909, 351);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_su1_counters_gfx9, pa_su1_counters_gfx9_gfx909, 351);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_su2_counters_gfx9, pa_su2_counters_gfx9_gfx909, 351);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_su3_counters_gfx9, pa_su3_counters_gfx9_gfx909, 351);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_sc0_counters_gfx9, pa_sc0_counters_gfx9_gfx909, 492);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_sc1_counters_gfx9, pa_sc1_counters_gfx9_gfx909, 492);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_sc2_counters_gfx9, pa_sc2_counters_gfx9_gfx909, 492);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_sc3_counters_gfx9, pa_sc3_counters_gfx9_gfx909, 492);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc0_counters_gfx9, tcc0_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc1_counters_gfx9, tcc1_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc2_counters_gfx9, tcc2_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc3_counters_gfx9, tcc3_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc4_counters_gfx9, tcc4_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc5_counters_gfx9, tcc5_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc6_counters_gfx9, tcc6_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc7_counters_gfx9, tcc7_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc8_counters_gfx9, tcc8_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc9_counters_gfx9, tcc9_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc10_counters_gfx9, tcc10_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc11_counters_gfx9, tcc11_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc12_counters_gfx9, tcc12_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc13_counters_gfx9, tcc13_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc14_counters_gfx9, tcc14_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::tcc15_counters_gfx9, tcc15_counters_gfx9_gfx909, 256);
+    ReplaceBlockInstanceCounters(counter_gfx9::ia0_counters_gfx9, ia0_counters_gfx9_gfx909, 31);
+    ReplaceBlockInstanceCounters(counter_gfx9::ia1_counters_gfx9, ia1_counters_gfx9_gfx909, 31);
+    ReplaceBlockInstanceCounters(counter_gfx9::rpb_counters_gfx9, rpb_counters_gfx9_gfx909, 63);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea0_counters_gfx9, gcea0_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea1_counters_gfx9, gcea1_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea2_counters_gfx9, gcea2_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea3_counters_gfx9, gcea3_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea4_counters_gfx9, gcea4_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea5_counters_gfx9, gcea5_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea6_counters_gfx9, gcea6_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea7_counters_gfx9, gcea7_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea8_counters_gfx9, gcea8_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea9_counters_gfx9, gcea9_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea10_counters_gfx9, gcea10_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea11_counters_gfx9, gcea11_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea12_counters_gfx9, gcea12_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea13_counters_gfx9, gcea13_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea14_counters_gfx9, gcea14_counters_gfx9_gfx909, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea15_counters_gfx9, gcea15_counters_gfx9_gfx909, 83);
 
     return true;
 }
-} // countergfx9gfx909
+
+bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type);
+} // counter_gfx9_gfx909
 
 #endif  // _GPA_HW_COUNTER_GFX9_GFX909_H_
+
+// clang-format on

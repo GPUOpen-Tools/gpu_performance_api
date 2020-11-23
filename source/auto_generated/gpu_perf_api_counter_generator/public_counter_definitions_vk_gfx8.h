@@ -14,6 +14,6 @@
 
 /// Defines the Public derived counters for VK 
 /// \param c derived counters instance
-void AutoDefinePublicDerivedCountersVKGfx8(GPA_DerivedCounters& c);
+void AutoDefinePublicDerivedCountersVK_Gfx8(GPA_DerivedCounters& c);
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_VK_GFX8_H_

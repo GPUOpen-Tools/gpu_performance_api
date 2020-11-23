@@ -5,6 +5,8 @@
 /// \brief  GL Sample
 //==============================================================================
 
+#include <iostream>
+
 #include "gpa_helper.h"
 
 #ifdef _WIN32
@@ -27,11 +29,17 @@ struct CommandLineArgs
 
     /// Flag indicating whether or not to include hardware counters in non-internal builds
     bool m_includeHwCounters = false;
+
+    /// Flag indicating whether the counter file is given or not
+    bool counter_provided = false;
+
+    /// Counter file name
+    std::string counter_file_name;
 };
 
 CommandLineArgs g_args;
-unsigned int    g_windowWidth     = 500;
-unsigned int    g_windowHeight    = 500;
+unsigned int    g_windowWidth     = 800;
+unsigned int    g_windowHeight    = 800;
 std::wstring    g_windowClassName = L"OpenGL Triangle Sample App";
 
 #ifdef _LINUX
@@ -78,11 +86,42 @@ int DrawTriangle()
     }
 
     RETURN_IF_FAILED(GPAHelper::Instance()->CreateGpaSession());
+
+    if (g_args.counter_provided)
+    {
+        std::fstream counter_file_stream;
+        counter_file_stream.open(g_args.counter_file_name.c_str(), std::ios_base::in);
+        std::vector<std::string> counter_list;
+        char                     temp_counter[256];
+        if (counter_file_stream.is_open())
+        {
+            while (counter_file_stream.getline(temp_counter, 256))
+            {
+                counter_list.push_back(std::string(temp_counter));
+            }
+
+            counter_file_stream.close();
+
+            for (std::vector<std::string>::const_iterator it = counter_list.cbegin(); it != counter_list.cend(); ++it)
+            {
+                RETURN_IF_FAILED(GPAHelper::Instance()->EnableCounterByName(it->c_str()));
+            }
+        }
+        else
+        {
+            std::stringstream error;
+            error << "Unable to open Counter file " << g_args.counter_file_name.c_str() << " . Not enabling any counters";
+            LOG_ERROR(GENERAL_ERROR, error.str().c_str());
+        }
+    }
+    else
+    {
 #ifndef AMDT_INTERNAL
-    RETURN_IF_FAILED(GPAHelper::Instance()->EnableAllCounters());
+        RETURN_IF_FAILED(GPAHelper::Instance()->EnableAllCounters());
 #else
-    RETURN_IF_FAILED(GPAHelper::Instance()->EnableCounterByName("GPUTime"));
+        RETURN_IF_FAILED(GPAHelper::Instance()->EnableCounterByName("GPUTime"));
 #endif
+    }
     RETURN_IF_FAILED(GPAHelper::Instance()->OnGpaSessionStart());
 
     GL_FUNC(glFlush(), "glFlush failed", __LINE__);
@@ -96,7 +135,7 @@ int DrawTriangle()
         RETURN_IF_FAILED(GPAHelper::Instance()->BeginSample());
         GL_FUNC(glFlush(), "glFlush failed", __LINE__);
         GL_FUNC(glFinish(), "glFinish failed", __LINE__);
-        GL_FUNC(glViewport(0, 0, 500, 500), "glViewPort failed", __LINE__);
+        GL_FUNC(glViewport(0, 0, g_windowWidth, g_windowHeight), "glViewPort failed", __LINE__);
         glBegin(GL_TRIANGLES);
         GLfloat v1[] = {0.0f, 0.75f, 1.0f};
         GLfloat v2[] = {-0.75f, -0.75f, 0.0f};
@@ -162,6 +201,30 @@ bool ParseCommandLine(int argc, char* argv[])
         else if (0 == thisArg.compare("--includehwcounters"))
         {
             g_args.m_includeHwCounters = true;
+        }
+        else if (0 == thisArg.compare("--counterfile"))
+        {
+            i++;
+
+            if (i < argc)
+            {
+                std::istringstream iss(argv[i]);
+
+                iss >> g_args.counter_file_name;
+
+                if (iss.fail())
+                {
+                    success = false;
+                }
+                else
+                {
+                    g_args.counter_provided = true;
+                }
+            }
+            else
+            {
+                success = false;
+            }
         }
         else
         {

@@ -12,7 +12,7 @@
 
 #include "gpa_derived_counter.h"
 
-namespace dx11gfx8tonga
+namespace dx11_gfx8_tonga
 {
     /// Updates default GPU generation Public derived counters with ASIC specific versions if available.
     /// \param desired_generation Hardware generation currently in use.
@@ -21,6 +21,6 @@ namespace dx11gfx8tonga
     /// \return True if the ASIC matched one available, and derivedCounters was updated.
     extern bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c);
 
-}  // namespace dx11gfx8tonga
+}  // namespace dx11_gfx8_tonga
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_DX11_GFX8_TONGA_H_

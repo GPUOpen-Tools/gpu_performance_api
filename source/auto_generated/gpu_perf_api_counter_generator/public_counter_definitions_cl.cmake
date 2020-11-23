@@ -4,6 +4,8 @@ cmake_minimum_required(VERSION 3.5.1)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PUBLIC_COUNTER_DEF_HEADERS_CL
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx10.h
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx103.h
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx103_asics.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx10_asics.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx8.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx8_asics.h
@@ -21,6 +23,7 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx9_placeholder4.h)
 
 set(PUBLIC_COUNTER_DEF_SRC_CL
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx10.cc
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx103.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx8.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx8_baffin.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_cl_gfx8_carrizo.cc

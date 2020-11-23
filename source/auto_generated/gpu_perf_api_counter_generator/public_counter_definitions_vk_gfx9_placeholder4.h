@@ -12,7 +12,7 @@
 
 #include "gpa_derived_counter.h"
 
-namespace vkgfx9placeholder4
+namespace vk_gfx9_placeholder4
 {
     /// Updates default GPU generation Public derived counters with ASIC specific versions if available.
     /// \param desired_generation Hardware generation currently in use.
@@ -21,6 +21,6 @@ namespace vkgfx9placeholder4
     /// \return True if the ASIC matched one available, and derivedCounters was updated.
     extern bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c);
 
-}  // namespace vkgfx9placeholder4
+}  // namespace vk_gfx9_placeholder4
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_VK_GFX9_PLACEHOLDER4_H_

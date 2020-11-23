@@ -14,6 +14,6 @@
 
 /// Defines the Public derived counters for DX12 
 /// \param c derived counters instance
-void AutoDefinePublicDerivedCountersDX12Gfx9(GPA_DerivedCounters& c);
+void AutoDefinePublicDerivedCountersDX12_Gfx9(GPA_DerivedCounters& c);
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_DX12_GFX9_H_

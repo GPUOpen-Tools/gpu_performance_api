@@ -12,22 +12,22 @@
 
 #include "gpa_hw_counter_gfx8_carrizo.h"
 
-namespace clgfx8carrizo
+namespace cl_gfx8_carrizo
 {
 bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers
 
-    if (!countergfx8carrizo::MatchAsic(asic_type))
+    if (!counter_gfx8_carrizo::MatchAsic(asic_type))
     {
         return false;
     }
 
-    countergfx8carrizo::OverrideBlockInstanceCounters(asic_type);
+    counter_gfx8_carrizo::OverrideBlockInstanceCounters(asic_type);
 
     return true;
 }
 
-}  // namespace clgfx8carrizo
+}  // namespace cl_gfx8_carrizo
 

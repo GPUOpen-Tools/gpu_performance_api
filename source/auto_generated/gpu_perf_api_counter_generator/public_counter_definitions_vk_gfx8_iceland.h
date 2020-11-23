@@ -12,7 +12,7 @@
 
 #include "gpa_derived_counter.h"
 
-namespace vkgfx8iceland
+namespace vk_gfx8_iceland
 {
     /// Updates default GPU generation Public derived counters with ASIC specific versions if available.
     /// \param desired_generation Hardware generation currently in use.
@@ -21,6 +21,6 @@ namespace vkgfx8iceland
     /// \return True if the ASIC matched one available, and derivedCounters was updated.
     extern bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c);
 
-}  // namespace vkgfx8iceland
+}  // namespace vk_gfx8_iceland
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_VK_GFX8_ICELAND_H_

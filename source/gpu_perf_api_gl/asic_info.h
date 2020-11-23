@@ -22,6 +22,7 @@ namespace oglUtils
         ASIC_Gfx8,    ///< GFX8 Family
         ASIC_Gfx9,    ///< GFX9 Family
         ASIC_Gfx10,   ///< GFX10 Family
+        ASIC_Gfx103,  ///< GFX103 Family
         ASIC_UNKNOWN  ///< unknown asic family
     } ASICType;
 
@@ -64,8 +65,13 @@ namespace oglUtils
         ASIC_ID_PLACEHOLDER4,             ///< ATIASICID for placeholder GFX10
         ASIC_ID_PLACEHOLDER5,             ///< ATIASICID for placeholder GFX10
         ASIC_ID_GFX1012,                  ///< ATIASICID for GFX1012
-        ASIC_ID_PLACEHOLDER6,             ///< ATIASICID for placeholder GFX10
-        ASIC_ID_PLACEHOLDER7,             ///< ATIASICID for placeholder GFX10
+        ASIC_ID_GFX1030,                  ///< ATIASICID for GFX10.3
+        ASIC_ID_GFX1030LITE,              ///< ATIASICID for GFX10.3 Lite
+        ASIC_ID_PLACEHOLDER6,             ///< ATIASICID for placeholder GFX10.3
+        ASIC_ID_PLACEHOLDER7,             ///< ATIASICID for placeholder GFX10.3
+        ASIC_ID_PLACEHOLDER8,             ///< ATIASICID for placeholder GFX10.3
+        ASIC_ID_PLACEHOLDER9,             ///< ATIASICID for placeholder GFX10.3
+        ASIC_ID_PLACEHOLDER10,            ///< ATIASICID for placeholder GFX10.3
         ASIC_ID_UNKNOWN,                  ///< Unknown Asic
         AsicId_First = ASIC_ID_TAHITI_P,  ///< First place holder
         AsicId_LAST  = ASIC_ID_UNKNOWN    ///< Last place holder

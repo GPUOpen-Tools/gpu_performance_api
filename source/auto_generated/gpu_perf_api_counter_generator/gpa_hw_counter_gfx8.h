@@ -10,9 +10,11 @@
 #ifndef _GPA_HW_COUNTER_GFX8_H_
 #define _GPA_HW_COUNTER_GFX8_H_
 
+// clang-format off
+
 struct GPA_HardwareCounterDesc;
 
-namespace countergfx8
+namespace counter_gfx8
 {
     extern GPA_HardwareCounterDesc sdma0_counters_gfx8[]; ///< Array of internal counters for sdma0 block for gfx8 family
     extern GPA_HardwareCounterDesc sdma1_counters_gfx8[]; ///< Array of internal counters for sdma1 block for gfx8 family
@@ -359,6 +361,8 @@ namespace countergfx8
     extern GPA_HardwareCounterDesc gputimestamp_counters_gfx8[]; ///< Array of internal counters for gputimestamp block for gfx8 family
     extern GPA_HardwareCounterDesc gputime_counters_gfx8[]; ///< Array of internal counters for gputime block for gfx8 family
     extern GPA_HardwareCounterDesc gpin_counters_gfx8[]; ///< Array of internal counters for gpin block for gfx8 family
-} // countergfx8
+} // counter_gfx8
 
 #endif  // _GPA_HW_COUNTER_GFX8_H_
+
+// clang-format on

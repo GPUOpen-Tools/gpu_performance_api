@@ -9,6 +9,8 @@
 #define _GPA_COUNTER_H_
 
 #include <cstring>
+#include <string>
+#include <memory>
 
 #include "gpu_perf_api_types.h"
 #include "gpa_split_counters_interfaces.h"
@@ -120,5 +122,26 @@ inline GPA_UUID GetCounterUuid(const char* counterName, const char* counterDescr
 #endif
     return uuid;
 }
+
+/// Forward declaration
+class BlockMap;
+
+/// Builds ASIC block map for updating max discrete and SPM events
+/// \param counter_group_list list of counters
+/// \param max_count count of items in list
+/// \return shared pointer to BlockMap
+std::shared_ptr<BlockMap> BuildBlockMap(GPA_CounterGroupDesc* counter_group_list, uint32_t max_count);
+
+/// Update max discrete events for a block
+/// \param block_map the block map
+/// \param block_name name of the block to update
+/// \param max_discrete_events new maximum discrete events value
+void UpdateMaxDiscreteBlockEvents(BlockMap* block_map, const char* block_name, uint32_t max_discrete_events);
+
+/// Update max SPM events for a block
+/// \param block_map the block map
+/// \param block_name name of the block to update
+/// \param max_spm_events new maximum SPM events value
+void UpdateMaxSpmBlockEvents(BlockMap* block_map, const char* block_name, uint32_t max_spm_events);
 
 #endif  //_GPA_INTERNAL_COUNTER_H_

@@ -12,7 +12,7 @@
 
 #include "gpa_derived_counter.h"
 
-namespace glgfx8ellesmere
+namespace gl_gfx8_ellesmere
 {
     /// Updates default GPU generation Public derived counters with ASIC specific versions if available.
     /// \param desired_generation Hardware generation currently in use.
@@ -21,6 +21,6 @@ namespace glgfx8ellesmere
     /// \return True if the ASIC matched one available, and derivedCounters was updated.
     extern bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c);
 
-}  // namespace glgfx8ellesmere
+}  // namespace gl_gfx8_ellesmere
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_GL_GFX8_ELLESMERE_H_

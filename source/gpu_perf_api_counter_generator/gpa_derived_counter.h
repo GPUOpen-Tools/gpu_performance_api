@@ -50,7 +50,7 @@ public:
     /// Returns the derived counter info
     /// \param[in] gpa_counter_accessor hardware counter accessor
     /// \return pointer to derived counter info
-    GpaDerivedCounterInfo* GetDerivedCounterHardwareInfo(const IGPACounterAccessor* gpa_counter_accessor);
+    GpaCounterInfo* GetCounterInfo(const IGPACounterAccessor* gpa_counter_accessor);
 
     unsigned int       m_index;                     ///< index of this counter
     const char*        m_pName;                     ///< The name of the counter
@@ -68,9 +68,9 @@ private:
     /// \return true upon success otherwise false
     bool InitializeDerivedCounterHardwareInfo(const IGPACounterAccessor* gpa_counter_accessor);
 
-    GpaDerivedCounterInfo*    derived_counter_hardware_info_;  ///< derived counter info for the counter
-    bool                      derived_counter_info_init_;      ///< flag indicating derive counter is initialized
-    std::vector<GpaHwCounter> hw_counter_info_list_;           ///< list of gpa hardware counter
+    GpaCounterInfo*           counter_info_;               ///< derived counter info for the counter
+    bool                      derived_counter_info_init_;  ///< flag indicating derive counter is initialized
+    std::vector<GpaHwCounter> hw_counter_info_list_;       ///< list of gpa hardware counter
 };
 
 /// The set of available derived counters
@@ -246,6 +246,5 @@ GPA_Status GPA_GetInternalDerivedCounters(GPA_API_Type           apiType,
                                           size_t*                pInternalDerivedCounterCount);
 
 #endif  // AMDT_INTERNAL
-
 
 #endif  // _GPA_DERIVED_COUNTERS_H_

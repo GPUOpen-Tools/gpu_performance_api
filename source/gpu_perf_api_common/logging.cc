@@ -199,8 +199,11 @@ GPALogger::GPALogger()
     pthread_mutexattr_t mutexattr;
     pthread_mutexattr_init(&mutexattr);
     // Set the mutex as a recursive mutex
+#ifdef __APPLE__
+    pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE);
+#else
     pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE_NP);
-
+#endif
     // create the mutex with the attributes set
     pthread_mutex_init(&m_hLock, &mutexattr);
 

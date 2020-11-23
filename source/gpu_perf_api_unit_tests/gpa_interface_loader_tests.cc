@@ -66,6 +66,14 @@ void GPAInterfaceLoaderTest::Run()
     ASSERT_NE(0u, m_apiName.count(Api)) << "API name out of range.";
     const char* pApiName = m_apiName.find(Api)->second;
 
+    // skip OpenCL on linux
+#ifndef _WIN32
+    if (GPA_API_OPENCL == Api)
+    {
+        return;
+    }
+#endif
+
     // check if API loading succeeds
     EXPECT_EQ(GPA_STATUS_OK, GPAApiManager::Instance()->LoadApi(Api)) << "GPAApiManager failed to load API: " << pApiName;
 
@@ -117,7 +125,7 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFileName)
 
 #else
 
-        if (GPA_API_DIRECTX_11 == apiType || GPA_API_DIRECTX_12 == apiType)
+        if (GPA_API_DIRECTX_11 == apiType || GPA_API_DIRECTX_12 == apiType || GPA_API_OPENCL == apiType)
         {
             EXPECT_TRUE(libFileName.empty());
         }
@@ -155,7 +163,7 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFullPath)
 
 #else
 
-        if (GPA_API_DIRECTX_11 == apiType || GPA_API_DIRECTX_12 == apiType)
+        if (GPA_API_DIRECTX_11 == apiType || GPA_API_DIRECTX_12 == apiType || GPA_API_OPENCL == apiType)
         {
             EXPECT_TRUE(libFileName.empty());
         }
@@ -173,13 +181,7 @@ TEST_F(GPAInterfaceLoaderTest, TestGetLibraryFullPath)
 
 TEST_F(GPAInterfaceLoaderTest, TestDeleteInstance)
 {
-    GPA_API_Type secondAPI = GPA_API_OPENCL;
-
-#ifndef _WIN32
-#ifdef X86
-    secondAPI = GPA_API_OPENGL;
-#endif
-#endif
+    GPA_API_Type secondAPI = GPA_API_OPENGL;
 
     // Using Vulkan and OpenCL here, since those exist on all platforms
     GPAApiManager::Instance()->LoadApi(GPA_API_VULKAN);
@@ -209,13 +211,7 @@ TEST_F(GPAInterfaceLoaderTest, TestDeleteInstance)
 
 TEST_F(GPAInterfaceLoaderTest, TestLoadAPIWithPath)
 {
-    GPA_API_Type secondAPI = GPA_API_OPENCL;
-
-#ifndef _WIN32
-#ifdef X86
-    secondAPI = GPA_API_OPENGL;
-#endif
-#endif
+    GPA_API_Type secondAPI = GPA_API_OPENGL;
 
     LocaleString cwd = GPAIL_GetWorkingDirectoryPath();
     // Using Vulkan and OpenCL here, since those exist on all platforms
@@ -271,9 +267,6 @@ INSTANTIATE_TEST_CASE_P(WindowsAPI,
 #else
 INSTANTIATE_TEST_CASE_P(LinuxAPI,
                         GPAInterfaceLoaderTest,
-                        ::testing::Values(GPA_API_VULKAN
-#ifndef X86
-                                          ,GPA_API_OPENCL
-#endif
-                                          ,GPA_API_OPENGL));
+                        ::testing::Values(GPA_API_VULKAN,
+                                          GPA_API_OPENGL));
 #endif

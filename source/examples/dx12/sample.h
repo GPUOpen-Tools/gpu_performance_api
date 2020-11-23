@@ -26,6 +26,12 @@ struct CommandLineArgs
 
     /// Flag indicating whether or not to include hardware counters in non-internal builds
     bool m_includeHwCounters = false;
+
+    /// Flag indicating whether the counter file is given or not
+    bool counter_provided = false;
+
+    /// Counter file name
+    std::string counter_file_name;
 };
 
 extern CommandLineArgs args;

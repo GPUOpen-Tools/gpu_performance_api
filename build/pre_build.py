@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
 #! /usr/bin/python
 # Utility Python Script to generate GPA projects on Windows and Linux
 
@@ -17,7 +17,7 @@ def pre_build(build_args):
     if build_args.nofetch == False:
         fetch_dependencies_script = os.path.join(gpa_root, "scripts", "fetch_dependencies.py")
         fetch_dependencies_script = os.path.normpath(fetch_dependencies_script)
-        fetch_dependencies_args = ["python", fetch_dependencies_script]
+        fetch_dependencies_args = [sys.executable, fetch_dependencies_script]
         fetch_dependencies_process = subprocess.Popen(fetch_dependencies_args)
         fetch_dependencies_process.wait()
         sys.stdout.flush()
@@ -37,6 +37,11 @@ def pre_build(build_args):
         build_dir_name = "cmake_bld_android"
 
     cmake_additional_args = PreBuildCMakeCommon.parse_cmake_arguments(build_args)
+
+    if build_args.build is not None:
+        cmake_additional_args.append("-Dbuild=" + build_args.build)
+    else:
+        cmake_additional_args.append("-Dbuild=0")
 
     if build_args.android == True:
         PreBuildCMakeCommon.cmake_generator_platforms.remove('x86')
@@ -75,10 +80,3 @@ if __name__ == "__main__":
     script_parser = PreBuildCMakeCommon.define_cmake_arguments()
     build_args = script_parser.parse_args()
     pre_build(build_args)
-
-
-
-
-
-
-

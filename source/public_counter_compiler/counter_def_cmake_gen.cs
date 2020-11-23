@@ -65,7 +65,7 @@ namespace GPATools
 
             // PublicCounterDefs*
             {
-                int indexOf = file.IndexOf((IsInternal ? Gpa.internal_file_prefix : Gpa.public_file_prefix) + Gpa.CounterDefOutFileName, StringComparison.Ordinal);
+                int indexOf = file.IndexOf((IsInternal ? Gpa.internal_file_prefix : Gpa.public_file_prefix) + Gpa.CounterDefinitionsStr, StringComparison.Ordinal);
                 if (indexOf != -1)
                 {
                     string api = Gpa.GetApiFromFileName(file);
@@ -110,7 +110,7 @@ namespace GPATools
                         init = true;
                         string CMakeFileName = Gpa.GetDirectoryFromFilePath(fileName) + "\\" +
                                                TypePrefix.ToLower() + "_" +
-                                               Gpa.CounterDefOutFileName + api.Key + ".cmake";
+                                               Gpa.CounterDefinitionsStr + api.Key + ".cmake";
                         CMakeWriter = new StreamWriter(CMakeFileName);
                         CMakeWriter.WriteLine(
                             "## Copyright (c) {0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Today.Year);

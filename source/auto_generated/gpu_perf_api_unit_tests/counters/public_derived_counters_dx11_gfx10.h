@@ -131,26 +131,29 @@
 #define CBSlowPixelPctPublicDX11Gfx10 115
 #define CBSlowPixelCountPublicDX11Gfx10 116
 #define L0CacheHitPublicDX11Gfx10 117
-#define L0CacheHitCountPublicDX11Gfx10 118
-#define L0CacheMissCountPublicDX11Gfx10 119
-#define L1CacheHitPublicDX11Gfx10 120
-#define L1CacheHitCountPublicDX11Gfx10 121
-#define L1CacheMissCountPublicDX11Gfx10 122
-#define L2CacheHitPublicDX11Gfx10 123
-#define L2CacheMissPublicDX11Gfx10 124
-#define L2CacheHitCountPublicDX11Gfx10 125
-#define L2CacheMissCountPublicDX11Gfx10 126
-#define FetchSizePublicDX11Gfx10 127
-#define WriteSizePublicDX11Gfx10 128
-#define MemUnitBusyPublicDX11Gfx10 129
-#define MemUnitBusyCyclesPublicDX11Gfx10 130
-#define MemUnitStalledPublicDX11Gfx10 131
-#define MemUnitStalledCyclesPublicDX11Gfx10 132
-#define WriteUnitStalledPublicDX11Gfx10 133
-#define WriteUnitStalledCyclesPublicDX11Gfx10 134
+#define L0CacheRequestCountPublicDX11Gfx10 118
+#define L0CacheHitCountPublicDX11Gfx10 119
+#define L0CacheMissCountPublicDX11Gfx10 120
+#define L1CacheHitPublicDX11Gfx10 121
+#define L1CacheRequestCountPublicDX11Gfx10 122
+#define L1CacheHitCountPublicDX11Gfx10 123
+#define L1CacheMissCountPublicDX11Gfx10 124
+#define L2CacheHitPublicDX11Gfx10 125
+#define L2CacheMissPublicDX11Gfx10 126
+#define L2CacheRequestCountPublicDX11Gfx10 127
+#define L2CacheHitCountPublicDX11Gfx10 128
+#define L2CacheMissCountPublicDX11Gfx10 129
+#define FetchSizePublicDX11Gfx10 130
+#define WriteSizePublicDX11Gfx10 131
+#define MemUnitBusyPublicDX11Gfx10 132
+#define MemUnitBusyCyclesPublicDX11Gfx10 133
+#define MemUnitStalledPublicDX11Gfx10 134
+#define MemUnitStalledCyclesPublicDX11Gfx10 135
+#define WriteUnitStalledPublicDX11Gfx10 136
+#define WriteUnitStalledCyclesPublicDX11Gfx10 137
 
 /// Number of public counters for DX11Gfx10
-const size_t DX11GFX10_PUBLIC_COUNTER_COUNT = 135;
+const size_t DX11GFX10_PUBLIC_COUNTER_COUNT = 138;
 
 /// Array of public counters for DX11Gfx10
 extern const GPACounterDesc DX11GFX10_PUBLIC_COUNTERS[DX11GFX10_PUBLIC_COUNTER_COUNT];

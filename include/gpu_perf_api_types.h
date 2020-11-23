@@ -285,6 +285,7 @@ typedef enum
     GPA_HW_GENERATION_VOLCANICISLAND = GPA_HW_GENERATION_GFX8,  ///< For backwards compatibility
     GPA_HW_GENERATION_GFX9,                                     ///< GFX IP 9
     GPA_HW_GENERATION_GFX10,                                    ///< GFX IP 10
+    GPA_HW_GENERATION_GFX103,                                   ///< GFX IP 10.3
     GPA_HW_GENERATION__LAST                                     ///< Marker indicating last element
 } GPA_Hw_Generation;
 

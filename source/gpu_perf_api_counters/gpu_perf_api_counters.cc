@@ -16,6 +16,7 @@
 #include <string.h>
 #include <vector>
 #include "gpu_perf_api_counters.h"
+#include "gpa_hardware_counters.h"
 #include "gpa_counter_context.h"
 #include "gpa_version.h"
 
@@ -69,13 +70,11 @@ GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_GetFuncTable(void* gpa_count
     return GPA_STATUS_OK;
 }
 
-GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_OpenCounterContext(GPA_API_Type         api,
-                                                                       gpa_uint32           vendor_id,
-                                                                       gpa_uint32           device_id,
-                                                                       gpa_uint32           revision_id,
-                                                                       GPA_OpenContextFlags context_flags,
-                                                                       gpa_uint8            generate_asic_specific_counters,
-                                                                       GPA_CounterContext*  gpa_virtual_context)
+GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_OpenCounterContext(GPA_API_Type                  api,
+                                                                       GpaCounterContextHardwareInfo gpa_counter_context_hardware_info,
+                                                                       GPA_OpenContextFlags          context_flags,
+                                                                       gpa_uint8                     generate_asic_specific_counters,
+                                                                       GPA_CounterContext*           gpa_virtual_context)
 {
     if (nullptr == gpa_virtual_context)
     {
@@ -86,7 +85,7 @@ GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_OpenCounterContext(GPA_API_T
     const GPA_OpenContextFlags context_flags_temp = context_flags | GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT;
 
     return GpaCounterContextManager::Instance()->OpenCounterContext(
-        api, vendor_id, device_id, revision_id, context_flags_temp, generate_asic_specific_counters, gpa_virtual_context);
+        api, gpa_counter_context_hardware_info, context_flags_temp, generate_asic_specific_counters, gpa_virtual_context);
 }
 
 GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_CloseCounterContext(const GPA_CounterContext gpa_virtual_context)
@@ -162,8 +161,7 @@ GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_GetCounterIndex(const GPA_Co
                                                                     const GpaCounterParam*   gpa_counter_info,
                                                                     gpa_uint32*              gpa_counter_index)
 {
-    if (nullptr == gpa_virtual_context ||
-        nullptr == gpa_counter_info)
+    if (nullptr == gpa_virtual_context || nullptr == gpa_counter_info)
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
@@ -352,11 +350,11 @@ GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_GetCounterSampleType(const G
     return GPA_STATUS_ERROR_FAILED;
 }
 
-GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_GetDerivedCounterInfo(const GPA_CounterContext      gpa_virtual_context,
-                                                                          gpa_uint32                    gpa_derived_counter_index,
-                                                                          const GpaDerivedCounterInfo** gpa_derived_counter_info)
+GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_GetCounterInfo(const GPA_CounterContext gpa_virtual_context,
+                                                                   gpa_uint32               gpa_counter_index,
+                                                                   const GpaCounterInfo**   gpa_counter_info)
 {
-    if (nullptr == gpa_virtual_context || nullptr == gpa_derived_counter_info)
+    if (nullptr == gpa_virtual_context || nullptr == gpa_counter_info)
     {
         return GPA_STATUS_ERROR_NULL_POINTER;
     }
@@ -370,11 +368,11 @@ GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_GetDerivedCounterInfo(const 
 
     if (nullptr != counter_accessor)
     {
-        GpaDerivedCounterInfo* gpa_derived_counter_info_temp = counter_accessor->GetDerivedCounterInfo(gpa_derived_counter_index);
+        GpaCounterInfo* gpa_counter_info_temp = counter_accessor->GetCounterInfo(gpa_counter_index);
 
-        if (nullptr != gpa_derived_counter_info_temp)
+        if (nullptr != gpa_counter_info_temp)
         {
-            *gpa_derived_counter_info = gpa_derived_counter_info_temp;
+            *gpa_counter_info = gpa_counter_info_temp;
             return GPA_STATUS_OK;
         }
     }
@@ -472,4 +470,105 @@ GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_GetPassCount(const GPA_Count
     }
 
     return counter_scheduling_status;
+}
+
+GPU_PERF_API_COUNTERS_DECL GPA_Status GpaCounterLib_GetCountersByPass(const GPA_CounterContext gpa_virtual_context,
+                                                                      gpa_uint32               gpa_counter_count,
+                                                                      const gpa_uint32*        gpa_counter_indices,
+                                                                      gpa_uint32*              pass_count,
+                                                                      gpa_uint32*              counter_by_pass_list,
+                                                                      GpaPassCounter*          gpa_pass_counters)
+{
+    if (nullptr == gpa_virtual_context || nullptr == gpa_counter_indices || nullptr == pass_count)
+    {
+        return GPA_STATUS_ERROR_NULL_POINTER;
+    }
+
+    if (0 == gpa_counter_count)
+    {
+        return GPA_STATUS_ERROR_INVALID_PARAMETER;
+    }
+
+    if (!GpaCounterContextManager::Instance()->IsCounterContextOpen(gpa_virtual_context))
+    {
+        return GPA_STATUS_ERROR_CONTEXT_NOT_OPEN;
+    }
+
+    const IGPACounterAccessor* counter_accessor = GpaCounterContextManager::Instance()->GetCounterAccessor(gpa_virtual_context);
+
+    if (nullptr == counter_accessor)
+    {
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    IGPACounterScheduler* counter_scheduler = GpaCounterContextManager::Instance()->GetCounterScheduler(gpa_virtual_context);
+
+    if (nullptr == counter_scheduler)
+    {
+        return GPA_STATUS_ERROR_FAILED;
+    }
+
+    counter_scheduler->DisableAllCounters();
+
+    gpa_uint32 counter_index             = 0u;
+    bool       enabled_counters          = true;
+    GPA_Status counter_scheduling_status = GPA_STATUS_OK;
+
+    for (gpa_uint32 counter_index_iter = 0u; counter_index_iter < gpa_counter_count; ++counter_index_iter)
+    {
+        counter_index             = gpa_counter_indices[counter_index_iter];
+        counter_scheduling_status = counter_scheduler->EnableCounter(counter_index);
+        enabled_counters &= GPA_STATUS_OK == counter_scheduling_status;
+    }
+
+    if (enabled_counters)
+    {
+        gpa_uint32 number_of_pass_req;
+        counter_scheduling_status = counter_scheduler->GetNumRequiredPasses(&number_of_pass_req);
+
+        if (nullptr == counter_by_pass_list)
+        {
+            *pass_count = number_of_pass_req;
+        }
+        else
+        {
+            if (nullptr == gpa_pass_counters)
+            {
+                std::vector<unsigned int> counter_in_pass;
+                for (unsigned int i = 0; i < *pass_count; i++)
+                {
+                    counter_in_pass         = *counter_scheduler->GetCountersForPass(i);
+                    counter_by_pass_list[i] = static_cast<gpa_uint32>(counter_in_pass.size());
+                    counter_in_pass.clear();
+                }
+            }
+        }
+
+        if (nullptr != gpa_pass_counters)
+        {
+            std::vector<gpa_uint32> pass_counter_vec;
+            for (unsigned int i = 0; i < *pass_count; i++)
+            {
+                GpaPassCounter* pass_counter = &gpa_pass_counters[i];
+                pass_counter_vec             = *counter_scheduler->GetCountersForPass(pass_counter->pass_index);
+
+                if (!pass_counter_vec.empty() && nullptr != pass_counter->counter_indices)
+                {
+                    gpa_uint32 public_interface_counter_index;
+
+                    for (size_t j = 0; j < (pass_counter_vec.size() < pass_counter->counter_count ? pass_counter_vec.size() : pass_counter->counter_count); j++)
+                    {
+                        counter_accessor->GetPublicInterfaceCounterIndex(pass_counter_vec.at(j), &public_interface_counter_index);
+                        pass_counter->counter_indices[j] = public_interface_counter_index;
+                    }
+                }
+
+                pass_counter_vec.clear();
+            }
+        }
+
+        counter_scheduler->DisableAllCounters();
+    }
+
+    return GPA_STATUS_OK;
 }

@@ -10,7 +10,7 @@
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-void AutoDefinePublicDerivedCountersCLGfx8(GPA_DerivedCounters& c)
+void AutoDefinePublicDerivedCountersCL_Gfx8(GPA_DerivedCounters& c)
 {
     {
         vector<gpa_uint32> internalCounters;

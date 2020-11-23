@@ -79,8 +79,11 @@ public:
         GPA_INTERNAL_HW_BLOCK_GCR,                                     ///< The Gpa hardware block is GCR
         GPA_INTERNAL_HW_BLOCK_PH,                                      ///< The Gpa hardware block is PH
         GPA_INTERNAL_HW_BLOCK_UTCL1,                                   ///< The Gpa hardware block is UTCL1
-        GPA_INTERNAL_HQ_BLOCK_SQ_FIRST,                                ///< The Gpa hardware block is SQ
-        GPA_INTERNAL_HW_BLOCK_SQ_PS = GPA_INTERNAL_HQ_BLOCK_SQ_FIRST,  ///< The Gpa hardware block is SQ_PS
+        GPA_INTERNAL_HW_BLOCK_GEDIST,                                  ///< The Gpa hardware block is GEDIST
+        GPA_INTERNAL_HW_BLOCK_GESE,                                    ///< The Gpa hardware block is GESE
+        GPA_INTERNAL_HW_BLOCK_DFMALL,                                  ///< The Gpa hardware block is DFMALL
+        GPA_INTERNAL_HW_BLOCK_SQ_FIRST,                                ///< The Gpa hardware block is SQ
+        GPA_INTERNAL_HW_BLOCK_SQ_PS = GPA_INTERNAL_HW_BLOCK_SQ_FIRST,  ///< The Gpa hardware block is SQ_PS
         GPA_INTERNAL_HW_BLOCK_SQ_VS,                                   ///< The Gpa hardware block is SQ_VS
         GPA_INTERNAL_HW_BLOCK_SQ_GS,                                   ///< The Gpa hardware block is SQ_GS
         GPA_INTERNAL_HW_BLOCK_SQ_ES,                                   ///< The Gpa hardware block is SQ_ES
@@ -141,7 +144,10 @@ public:
             static_assert(GPA_HW_BLOCK_GCR == static_cast<GpaHwBlock>(GPA_INTERNAL_HW_BLOCK_GCR), "Mismatched block");
             static_assert(GPA_HW_BLOCK_PH == static_cast<GpaHwBlock>(GPA_INTERNAL_HW_BLOCK_PH), "Mismatched block");
             static_assert(GPA_HW_BLOCK_UTCL1 == static_cast<GpaHwBlock>(GPA_INTERNAL_HW_BLOCK_UTCL1), "Mismatched block");
-            static_assert(GPA_HW_BLOCK_COUNT == static_cast<GpaHwBlock>(GPA_INTERNAL_HQ_BLOCK_SQ_FIRST), "Mismatched block");
+            static_assert(GPA_HW_BLOCK_GEDIST == static_cast<GpaHwBlock>(GPA_INTERNAL_HW_BLOCK_GEDIST), "Mismatched block");
+            static_assert(GPA_HW_BLOCK_GESE == static_cast<GpaHwBlock>(GPA_INTERNAL_HW_BLOCK_GESE), "Mismatched block");
+            static_assert(GPA_HW_BLOCK_DFMALL == static_cast<GpaHwBlock>(GPA_INTERNAL_HW_BLOCK_DFMALL), "Mismatched block");
+            static_assert(GPA_HW_BLOCK_COUNT == static_cast<GpaHwBlock>(GPA_INTERNAL_HW_BLOCK_SQ_FIRST), "Mismatched block");
 
             hardware_block_string_ = {GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_CPF, "CPF"),       GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_IA, "IA"),
                                       GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_VGT, "VGT"),       GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_PA, "PA_SU"),
@@ -166,17 +172,26 @@ public:
                                       GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_CHC, "CHC"),       GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_CHCG, "CHCG"),
                                       GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_GUS, "GUS"),       GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_GCR, "GCR"),
                                       GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_PH, "PA_PH"),      GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_UTCL1, "UTCL1"),
-                                      GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_PS, "SQ_PS"),   GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_VS, "SQ_VS"),
-                                      GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_GS, "SQ_GS"),   GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_ES, "SQ_ES"),
-                                      GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_HS, "SQ_HS"),   GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_LS, "SQ_LS"),
-                                      GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_CS, "SQ_CS")};
+                                      GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_GEDIST, "GEDIST"), GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_GESE, "GESE"),
+                                      GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_DFMALL, "DFMALL"), GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_PS, "SQ_PS"),
+                                      GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_VS, "SQ_VS"),   GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_GS, "SQ_GS"),
+                                      GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_ES, "SQ_ES"),   GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_HS, "SQ_HS"),
+                                      GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_LS, "SQ_LS"),   GPA_ENUM_STRING_VAL(GPA_INTERNAL_HW_BLOCK_SQ_CS, "SQ_CS")};
         }
 
         Clear();
     }
 
     /// Destructor
-    virtual ~GPA_HardwareCounters() = default;
+    virtual ~GPA_HardwareCounters()
+    {
+        for (auto it = counter_info_map_.begin(); it != counter_info_map_.end(); ++it)
+        {
+            delete it->second;
+        }
+
+        counter_info_map_.clear();
+    }
 
     /// Clears all counter data
     void Clear()
@@ -207,6 +222,7 @@ public:
         m_hardwareExposedCounters.clear();
         m_hardwareExposedCounterInternalIndices.clear();
         m_hardwareExposedCountersGenerated = false;
+        counter_info_map_.clear();
     }
 
     /// Obtains the number of hardware counters
@@ -237,7 +253,6 @@ public:
                   gpa_uint32*          counter_index) const
     {
         auto update_hardware_info_in_cache = [&](GpaInternalHardwareBlock gpa_internal_hardware_block) -> bool {
-
             if (gpa_hw_block_hardware_block_group_cache_.empty())
             {
                 gpa_hw_block_hardware_block_group_cache_.resize(GpaInternalHardwareBlock::GPA_INTERNAL_HW_BLOCK_COUNT);
@@ -285,8 +300,7 @@ public:
                         current_block_string.clear();
                         current_block_string = std::string(m_pGroups[group_iter].m_pName);
 
-                        if (hardware_block_string.find("SQ") != std::string::npos ||
-                            hardware_block_string.find("GL1C") != std::string::npos)
+                        if (hardware_block_string.find("SQ") != std::string::npos || hardware_block_string.find("GL1C") != std::string::npos)
                         {
                             std::stringstream hardware_block_str_with_instance;
                             hardware_block_str_with_instance << hardware_block_string.c_str() << instance_iter;
@@ -448,11 +462,13 @@ public:
         GpaInternalHardwareBlock internal_hw_block = GPA_INTERNAL_HW_BLOCK_COUNT;
         bool                     found             = false;
 
-        for (auto block_iter = hardware_block_string_.cbegin(); block_iter != hardware_block_string_.cend(); ++block_iter)
+        // Iterate backwards so that "SQ_PS" won't match "SQ". By iteratring backwards, "SQ_PS" will always find SQ_PS"
+        // before "SQ".
+        for (auto block_iter = hardware_block_string_.rbegin(); block_iter != hardware_block_string_.rend(); ++block_iter)
         {
             if (group_name.find(*block_iter) != std::string::npos)
             {
-                internal_hw_block = static_cast<GpaInternalHardwareBlock>(block_iter - hardware_block_string_.cbegin());
+                internal_hw_block = static_cast<GpaInternalHardwareBlock>(hardware_block_string_.rend() - block_iter - 1);
                 found             = true;
                 break;
             }
@@ -460,7 +476,7 @@ public:
 
         if (found)
         {
-            if (internal_hw_block >= GPA_INTERNAL_HQ_BLOCK_SQ_FIRST)
+            if (internal_hw_block >= GPA_INTERNAL_HW_BLOCK_SQ_FIRST)
             {
                 static_assert((GPA_INTERNAL_HW_BLOCK_SQ_PS - GPA_HW_BLOCK_COUNT) == GPA_SHADER_MASK_PS, "");
                 static_assert((GPA_INTERNAL_HW_BLOCK_SQ_VS - GPA_HW_BLOCK_COUNT) == GPA_SHADER_MASK_VS, "");
@@ -471,11 +487,12 @@ public:
                 static_assert((GPA_INTERNAL_HW_BLOCK_SQ_CS - GPA_HW_BLOCK_COUNT) == GPA_SHADER_MASK_CS, "");
 
                 gpa_hw_block    = GPA_HW_BLOCK_SQ;
-                gpa_shader_mask = static_cast<GpaShaderMask>(internal_hw_block - GPA_INTERNAL_HQ_BLOCK_SQ_FIRST);
+                gpa_shader_mask = static_cast<GpaShaderMask>(internal_hw_block - GPA_INTERNAL_HW_BLOCK_SQ_FIRST);
             }
             else
             {
-                gpa_hw_block = static_cast<GpaHwBlock>(internal_hw_block);
+                gpa_hw_block    = static_cast<GpaHwBlock>(internal_hw_block);
+                gpa_shader_mask = GPA_SHADER_MASK_ALL;
             }
         }
     }
@@ -490,43 +507,89 @@ public:
 
     bool GetHardwareInfo(const gpa_uint32& counter_index, GpaHwCounter& gpa_hw_counter) const
     {
+        if (counter_index == m_gpuTimeBottomToBottomDurationCounterIndex)
+        {
+            gpa_hw_counter.is_timing_block                    = true;
+            gpa_hw_counter.gpu_time_bottom_to_bottom_duration = m_gpuTimeBottomToBottomDurationCounterIndex;
+            counter_hardware_info_map_.insert(std::pair<CounterIndex, GpaHwCounter>(counter_index, gpa_hw_counter));
+            return true;
+        }
+        if (counter_index == m_gpuTimeBottomToBottomStartCounterIndex)
+        {
+            gpa_hw_counter.is_timing_block                 = true;
+            gpa_hw_counter.gpu_time_bottom_to_bottom_start = m_gpuTimeBottomToBottomStartCounterIndex;
+            counter_hardware_info_map_.insert(std::pair<CounterIndex, GpaHwCounter>(counter_index, gpa_hw_counter));
+            return true;
+        }
+
+        if (counter_index == m_gpuTimeBottomToBottomEndCounterIndex)
+        {
+            gpa_hw_counter.is_timing_block               = true;
+            gpa_hw_counter.gpu_time_bottom_to_bottom_end = m_gpuTimeBottomToBottomEndCounterIndex;
+            counter_hardware_info_map_.insert(std::pair<CounterIndex, GpaHwCounter>(counter_index, gpa_hw_counter));
+            return true;
+        }
+
+        if (counter_index == m_gpuTimeTopToBottomDurationCounterIndex)
+        {
+            gpa_hw_counter.is_timing_block                 = true;
+            gpa_hw_counter.gpu_time_top_to_bottom_duration = m_gpuTimeTopToBottomDurationCounterIndex;
+            counter_hardware_info_map_.insert(std::pair<CounterIndex, GpaHwCounter>(counter_index, gpa_hw_counter));
+            return true;
+        }
+
+        if (counter_index == m_gpuTimeTopToBottomStartCounterIndex)
+        {
+            gpa_hw_counter.is_timing_block              = true;
+            gpa_hw_counter.gpu_time_top_to_bottom_start = m_gpuTimeTopToBottomStartCounterIndex;
+            counter_hardware_info_map_.insert(std::pair<CounterIndex, GpaHwCounter>(counter_index, gpa_hw_counter));
+            return true;
+        }
+
+        if (counter_index == m_gpuTimeTopToBottomEndCounterIndex)
+        {
+            gpa_hw_counter.is_timing_block            = true;
+            gpa_hw_counter.gpu_time_top_to_bottom_end = m_gpuTimeTopToBottomEndCounterIndex;
+            counter_hardware_info_map_.insert(std::pair<CounterIndex, GpaHwCounter>(counter_index, gpa_hw_counter));
+            return true;
+        }
+
         if (counter_index <= m_counters.size())
         {
-            auto counter_hardware_info = counter_hardware_info_map_.find(counter_index);
+            const auto counter_hardware_info = counter_hardware_info_map_.find(counter_index);
 
             if (counter_hardware_info != counter_hardware_info_map_.end())
             {
                 gpa_hw_counter = counter_hardware_info->second;
                 return true;
             }
-            else
+
+            bool       found_counter      = false;
+            gpa_uint32 counter_group      = 0u;
+            gpa_uint32 counter_index_iter = 0u;
+
+            do
             {
-                bool       found_counter      = false;
-                gpa_uint32 counter_group      = 0u;
-                gpa_uint32 counter_index_iter = 0u;
-
-                do
+                const gpa_uint32 temp_counter_index = counter_index_iter + m_pGroups[counter_group].m_numCounters;
+                if (counter_index < temp_counter_index)
                 {
-                    gpa_uint32 temp_counter_index = counter_index_iter + m_pGroups[counter_group].m_numCounters;
-                    if (counter_index < temp_counter_index)
-                    {
-                        found_counter = true;
-                    }
-                    else
-                    {
-                        ++counter_group;
-                        counter_index_iter = temp_counter_index;
-                    }
-                } while (!found_counter);
-
-                if (found_counter)
-                {
-                    gpa_hw_counter.gpa_hw_block_event_id = counter_index - counter_index_iter;
-                    gpa_hw_counter.gpa_hw_block_instance = m_pGroups[counter_group].m_blockInstance;
-                    GetHardwareBlock(counter_group, gpa_hw_counter.gpa_hw_block, gpa_hw_counter.gpa_shader_mask);
-                    counter_hardware_info_map_.insert(std::pair<CounterIndex, GpaHwCounter>(counter_index, gpa_hw_counter));
-                    return true;
+                    found_counter = true;
                 }
+                else
+                {
+                    ++counter_group;
+                    counter_index_iter = temp_counter_index;
+                }
+            } while (!found_counter);
+
+            if (found_counter)
+            {
+                gpa_hw_counter.is_timing_block       = false;
+                gpa_hw_counter.gpa_hw_block_event_id = counter_index - counter_index_iter;
+                gpa_hw_counter.gpa_hw_block_instance = m_pGroups[counter_group].m_blockInstance;
+                GetHardwareBlock(counter_group, gpa_hw_counter.gpa_hw_block, gpa_hw_counter.gpa_shader_mask);
+                counter_hardware_info_map_.insert(std::pair<CounterIndex, GpaHwCounter>(counter_index, gpa_hw_counter));
+                return true;
             }
         }
 
@@ -571,6 +634,35 @@ public:
     gpa_uint32 GetHardwareExposedCounterInternalIndex(gpa_uint32 exposedCounterIndex) const
     {
         return m_hardwareExposedCounterInternalIndices[exposedCounterIndex];
+    }
+
+    /// Returns the counter info of the hardware exposed counter
+    /// \param[in] exposedCounterIndex exposed counter index
+    /// \return counter info
+    GpaCounterInfo* GetCounterInfo(gpa_uint32 exposedCounterIndex) const
+    {
+        auto            counter_info     = counter_info_map_.find(exposedCounterIndex);
+        GpaCounterInfo* gpa_counter_info = nullptr;
+
+        if (counter_info == counter_info_map_.end())
+        {
+            gpa_counter_info = new (std::nothrow) GpaCounterInfo();
+
+            if (nullptr != gpa_counter_info)
+            {
+                gpa_counter_info->is_derived_counter = false;
+                GpaHwCounter hw_counter;
+                GetHardwareInfo(exposedCounterIndex, hw_counter);
+                gpa_counter_info->gpa_hw_counter = &counter_hardware_info_map_[exposedCounterIndex];
+                counter_info_map_[exposedCounterIndex] = gpa_counter_info;
+            }
+        }
+        else
+        {
+            gpa_counter_info = counter_info->second;
+        }
+
+        return gpa_counter_info;
     }
 
     /// Return the number of padded counters in the group
@@ -690,15 +782,16 @@ public:
 
     /// Hardware exposed counters
     GPA_HardwareCounterDesc**
-                                         m_ppHardwareExposedCounter;  ///< List of counter groups as defined by the list of hardware exposed counters counters in each group.
-    GPA_CounterGroupExposedCounterDesc*  m_pHardwareExposedCounterGroups;          ///< List of hardware exposed counter groups
-    unsigned int                         m_hardwareExposedCounterGroupCount;       ///< The number of hardware exposed counter groups
-    std::vector<GPA_HardwareCounterDesc> m_hardwareExposedCounters;                ///< vector of hardware exposed counters
-    std::vector<gpa_uint32>              m_hardwareExposedCounterInternalIndices;  ///< internal hardware index for the hardware exposed counter
-    bool                                 m_hardwareExposedCountersGenerated;       ///< indicates that the hardware exposed counters have been generated
-    GPA_PaddedCounterDesc*               m_pPaddedCounters;                        ///< List of GPA padded counters by groups
-    unsigned int                         m_paddedCounterCount;                     ///< Count of GPA padded counter by group
-    static std::vector<std::string>      hardware_block_string_;                   ///< internal hardware block string map
+                                                    m_ppHardwareExposedCounter;  ///< List of counter groups as defined by the list of hardware exposed counters counters in each group.
+    GPA_CounterGroupExposedCounterDesc*             m_pHardwareExposedCounterGroups;          ///< List of hardware exposed counter groups
+    unsigned int                                    m_hardwareExposedCounterGroupCount;       ///< The number of hardware exposed counter groups
+    std::vector<GPA_HardwareCounterDesc>            m_hardwareExposedCounters;                ///< vector of hardware exposed counters
+    std::vector<gpa_uint32>                         m_hardwareExposedCounterInternalIndices;  ///< internal hardware index for the hardware exposed counter
+    bool                                            m_hardwareExposedCountersGenerated;  ///< indicates that the hardware exposed counters have been generated
+    GPA_PaddedCounterDesc*                          m_pPaddedCounters;                   ///< List of GPA padded counters by groups
+    unsigned int                                    m_paddedCounterCount;                ///< Count of GPA padded counter by group
+    static std::vector<std::string>                 hardware_block_string_;              ///< internal hardware block string map
+    mutable std::map<CounterIndex, GpaCounterInfo*> counter_info_map_;                   ///< map from counter index to counter info
 
 #ifdef AMDT_INTERNAL
     std::unordered_map<gpa_uint32, std::string> m_alternateNameMap;  ///< a map from counter index to the alternate name for that counter

@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 3.5.1)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PUBLIC_COUNTER_NAMES_CL
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_cl_gfx10.txt
+${CMAKE_CURRENT_LIST_DIR}/public_counter_names_cl_gfx103.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_cl_gfx8.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_cl_gfx8_baffin.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_cl_gfx8_carrizo.txt

@@ -12,22 +12,22 @@
 
 #include "gpa_hw_counter_gfx8_baffin.h"
 
-namespace clgfx8baffin
+namespace cl_gfx8_baffin
 {
 bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers
 
-    if (!countergfx8baffin::MatchAsic(asic_type))
+    if (!counter_gfx8_baffin::MatchAsic(asic_type))
     {
         return false;
     }
 
-    countergfx8baffin::OverrideBlockInstanceCounters(asic_type);
+    counter_gfx8_baffin::OverrideBlockInstanceCounters(asic_type);
 
     return true;
 }
 
-}  // namespace clgfx8baffin
+}  // namespace cl_gfx8_baffin
 

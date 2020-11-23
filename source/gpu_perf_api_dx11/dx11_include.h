@@ -15,6 +15,6 @@
 #include "AmdDxExtASICInfoApi.h"
 #include "AmdDxExtPerfProfileApi.h"
 
-#define PE_BLOCK_ID_MAX PE_BLOCK_MAX_GFX10  /// macro for count of DX11 block id, notably we need to update this with every next generation
+#define PE_BLOCK_ID_MAX PE_BLOCK_MAX_GFX10_3  /// macro for count of DX11 block id, notably we need to update this with every next generation
 
 #endif  // _DX11_INCLUDE_H_

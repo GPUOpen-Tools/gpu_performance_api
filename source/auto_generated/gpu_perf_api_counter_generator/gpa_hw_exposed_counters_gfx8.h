@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GPA hardware exposed counter info for GFX8
@@ -13,7 +13,7 @@
 
 #include "gpa_counter.h"
 
-namespace countergfx8
+namespace counter_gfx8
 {
 extern GPA_HardwareCounterDesc cb0_exposed_counters_gfx8[]; ///< Array of hardware exposed counters for cb0 block for gfx8
 extern GPA_HardwareCounterDesc cb1_exposed_counters_gfx8[]; ///< Array of hardware exposed counters for cb1 block for gfx8
@@ -245,5 +245,5 @@ extern GPA_HardwareCounterDesc vgt1_exposed_counters_gfx8[]; ///< Array of hardw
 extern GPA_HardwareCounterDesc vgt2_exposed_counters_gfx8[]; ///< Array of hardware exposed counters for vgt2 block for gfx8
 extern GPA_HardwareCounterDesc vgt3_exposed_counters_gfx8[]; ///< Array of hardware exposed counters for vgt3 block for gfx8
 extern GPA_HardwareCounterDesc gputime_exposed_counters_gfx8[]; ///< Array of hardware exposed counters for gputime block for gfx8
-} // countergfx8
+} // counter_gfx8
 #endif  //_GPA_HW_EXPOSED_COUNTERS_

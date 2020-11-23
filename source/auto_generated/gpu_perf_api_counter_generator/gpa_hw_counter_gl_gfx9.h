@@ -10,13 +10,15 @@
 #ifndef _GPA_HW_COUNTER_GL_GFX9_H_
 #define _GPA_HW_COUNTER_GL_GFX9_H_
 
+// clang-format off
+
 #include <set>
 
 struct GPA_HardwareCounterDesc;
 struct GPA_CounterGroupDesc;
 struct GPA_SQCounterGroupDesc;
 
-namespace countergfx9
+namespace counter_gl_gfx9
 {
     extern GPA_HardwareCounterDesc*           gl_counter_group_array_gfx9[]; ///< Array of hardware counter groups for gl for gfx9 family
     extern GPA_HardwareCounterDesc*           gl_exposed_counters_group_array_gfx9[]; ///< Array of hardware exposed counter groups for gl for gfx9 family
@@ -38,6 +40,19 @@ namespace countergfx9
     extern const unsigned int                 gl_padded_counter_group_count_gfx9; ///< reserved counter group count for gl for gfx9 family
     extern const unsigned int                 hw_gl_sq_group_count_gfx9; ///< Hardware SQ Group Count for gl for gfx9 family
     extern const unsigned int                 hw_gl_sq_isolated_group_count_gfx9; ///< Hardware Isolated Group Count for gl for gfx9 family
-}; // namespace
+
+/// If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
+/// \param asic_type The ASIC type that is currently in use.
+/// \return True if the ASIC is matched by this file and block instances are updated, otherwise false.
+inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
+{
+    UNREFERENCED_PARAMETER(asic_type);
+
+
+    return true;
+}
+} //  namespace counter_gl_gfx9
+
+// clang-format on
 
 #endif  // _GPA_HW_COUNTER_GL_GFX9_H_

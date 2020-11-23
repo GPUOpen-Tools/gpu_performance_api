@@ -33,16 +33,23 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-* Version 3.6 (05/15/20)
-  * Add support for additional GPUs and APUs, including AMD Ryzen™ 4000 Series APUs.
-  * Add two new GFX10 GlobalMemory Counters for graphics using DX12 and Vulkan: LocalVidMemBytes and PcieBytes.
-  * Add VS2019 project support to CMake.
-  * Restructure of GPA source layout to adhere to google style.
+* Version 3.7 (11/24/20)
+  * Add support for additional GPUs and APUs, including AMD RDNA™ 2 Radeon™ RX 6000 series GPUs.
+  * New RT counters for DXR workloads on AMD RDNA™ 2 Radeon™ RX 6000 series GPUs.
+    * RayTriTests, and RayBoxTests: These counters collect the number of ray intersections for triangles and boxes, respectively.
+    * TotalRayTests: This counter collects the aggregated number of ray-box and ray-triangle intersection tests.
+    * RayTestsPerWave: This counter collects ray intersection test count at a more granular level – per wave.
+  * New Scalar and Instruction cache counters on AMD RDNA™ Radeon™ RX 5000 series GPUs.
+    * Scalar cache: ScalarCacheHit, ScalarCacheRequestCount, ScalarCacheHitCount, ScalarCacheMissCount
+    * Instruction cache: InstCacheHit, InstCacheRequestCount, InstCacheHitCount, InstCacheMissCount
+  * Update the Vulkan® sample to remove the static link and use the system-specific Vulkan® loader.
+  * Remove OpenCL™ support from Linux.
+  * Remove downloading the Vulkan® SDK by the build script.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
-* Windows: Radeon Software Adrenaline 2020 Edition 19.12.2 or later (Driver Packaging Version 19.50 or later).
-* Linux: Radeon Software for Linux Revision 19.50 or later.
+* Windows: Radeon Software Adrenaline 2020 Edition 20.11.2 or later (Driver Packaging Version 20.45 or later).
+* Linux: Radeon Software for Linux Revision 20.45 or later.
 * Radeon GPUs or APUs based on Graphics IP version 6 and 7 are no longer supported by GPUPerfAPI. Please use an older version ([3.3](https://github.com/GPUOpen-Tools/GPA/releases/tag/v3.3)) with older hardware.
 * Windows 7, 8.1, and 10.
 * Ubuntu (16.04 and later) and CentOS/RHEL (7 and later) distributions.
@@ -88,14 +95,17 @@ hardware counters in a default build, by simply specifying a new flag when calli
 build of GPUPerfAPI that also exposes the raw hardware counters, but that is a deprecated build and it is likely to be removed in a future release.
 
 ## Known Issues
+ * On Ubuntu 20.04 LTS, Vulkan ICD may not be set to use AMD Vulkan ICD. In this case, it needs to be explicitly set to use AMD Vulkan ICD before using the GPA.
+   It can be done by setting the "VK_ICD_FILENAMES" environment variable to "/etc/vulkan/icd.d/amd_icd64.json"
+ * VSVerticesIn, HSPatches, and DSVerticesIn counters aren't availbale on Radeon RX 6000 Series GPU using OpenGL.
+ * FetchSize counter will show an error when enabled on Radeon RX 6000 Series GPU using OpenGL. This is expected to be fixed in a future driver release.
  * Adjusting the GPU clock mode on Linux is accomplished by writing to <br><br>/sys/class/drm/card\<N\>/device/power_dpm_force_performance_level<br><br> where \<N\> is
    the index of the card in question. By default this file is only modifiable by root, so the application being profiled would have to be run as root in order for it to
    modify the clock mode. It is possible to modify the permissions for the file instead so that it can be written by unprivileged users. The following command will
    achieve this. Note, however, that changing the permissions on a system file like this could circumvent security. Also, on multi-GPU systems, you may have to replace
    "card0" with the appropriate card number. Permissions on this file may be reset when rebooting the system:
    * sudo chmod ugo+w /sys/class/drm/card0/device/power_dpm_force_performance_level
- * The following performance counter values may not be accurate for DirectX 11 applications running on a Radeon 5700 Series GPU. This is expected to be addressed in a future
-   driver release:
+ * The following performance counter values may not be accurate for DirectX 11 applications running on a Radeon 5700, and 6000 Series GPU. This is expected to be fixed in a future driver release.
    * VALUInstCount, SALUInstCount, VALUBusy, SALUBusy for all shader stages: These values should be representative of performance, but may not be 100% accurate.
    * Most of the ComputeShader counters (all except the MemUnit and WriteUnit counters): These values should be representative of performance, but may not be 100% accurate.
  * The following performance counter values may not be accurate for OpenGL applications running on a Radeon 5700 Series GPU. This is expected to be addressed in a future

@@ -40,12 +40,10 @@
 #endif
 #endif
 
-GpaCounterContext::GpaCounterContext(const GPA_API_Type&         api_type,
-                                     const gpa_uint32&           vendor_id,
-                                     const gpa_uint32&           device_id,
-                                     const gpa_uint32&           revision_id,
-                                     const GPA_OpenContextFlags& context_flags,
-                                     const gpa_uint8&            generate_asic_specific_counters)
+GpaCounterContext::GpaCounterContext(const GPA_API_Type&                  api_type,
+                                     const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
+                                     const GPA_OpenContextFlags&          context_flags,
+                                     const gpa_uint8&                     generate_asic_specific_counters)
     : gpa_api_type_(api_type)
     , asic_specific_(generate_asic_specific_counters)
     , gpa_open_context_flags_(context_flags)
@@ -53,9 +51,44 @@ GpaCounterContext::GpaCounterContext(const GPA_API_Type&         api_type,
     , gpa_counter_accessor_(nullptr)
     , gpa_counter_scheduler_(nullptr)
 {
-    gpa_hw_info_.SetVendorID(vendor_id);
-    gpa_hw_info_.SetDeviceID(device_id);
-    gpa_hw_info_.SetRevisionID(revision_id);
+    gpa_hw_info_.SetVendorID(gpa_counter_context_hardware_info.vendor_id);
+    gpa_hw_info_.SetDeviceID(gpa_counter_context_hardware_info.device_id);
+    gpa_hw_info_.SetRevisionID(gpa_counter_context_hardware_info.revision_id);
+
+    if (0 < gpa_counter_context_hardware_info.gpa_hardware_attribute_count && nullptr != gpa_counter_context_hardware_info.gpa_hardware_attributes)
+    {
+        for (unsigned int i = 0; i < gpa_counter_context_hardware_info.gpa_hardware_attribute_count; i++)
+        {
+            const GpaHardwareAttribute gpa_hardware_attribute = gpa_counter_context_hardware_info.gpa_hardware_attributes[i];
+            const gpa_uint32           attribute_val          = gpa_hardware_attribute.gpa_hardware_attribute_value;
+
+            switch (gpa_hardware_attribute.gpa_hardware_attribute_type)
+            {
+            case GPA_HARDWARE_ATTRIBUTE_NUM_SHADER_ENGINES:
+                gpa_hw_info_.SetNumberShaderEngines(attribute_val);
+                break;
+            case GPA_HARDWARE_ATTRIBUTE_NUM_SHADER_ARRAYS:
+                gpa_hw_info_.SetNumberShaderArrays(attribute_val);
+                break;
+            case GPA_HARDWARE_ATTRIBUTE_NUM_SIMDS:
+                gpa_hw_info_.SetNumberSIMDs(attribute_val);
+                break;
+            case GPA_HARDWARE_ATTRIBUTE_NUM_COMPUTE_UNITS:
+                gpa_hw_info_.SetNumberCUs(attribute_val);
+                break;
+            case GPA_HARDWARE_ATTRIBUTE_TIMESTAMP_FREQUENCY:
+                gpa_hw_info_.SetTimeStampFrequency(attribute_val);
+                break;
+            case GPA_HARDWARE_ATTRIBUTE_NUM_RENDER_BACKENDS:
+            case GPA_HARDWARE_ATTRIBUTE_CLOCKS_PER_PRIMITIVE:
+            case GPA_HARDWARE_ATTRIBUTE_NUM_PRIMITIVE_PIPES:
+            case GPA_HARDWARE_ATTRIBUTE_PEAK_VERTICES_PER_CLOCK:
+            case GPA_HARDWARE_ATTRIBUTE_PEAK_PRIMITIVES_PER_CLOCK:
+            case GPA_HARDWARE_ATTRIBUTE_PEAK_PIXELS_PER_CLOCK:
+                GPA_LogDebugMessage("Unused attributes");
+            }
+        }
+    }
 }
 
 bool GpaCounterContext::InitCounters()
@@ -70,7 +103,7 @@ bool GpaCounterContext::InitCounters()
 
             if (gpa_hw_info_.GetVendorID(vendorId) && gpa_hw_info_.GetDeviceID(deviceId) && gpa_hw_info_.GetRevisionID(revisionId))
             {
-                GPA_Status status = ::GenerateCounters(
+                const GPA_Status status = ::GenerateCounters(
                     gpa_api_type_, vendorId, deviceId, revisionId, gpa_open_context_flags_, asic_specific_, &gpa_counter_accessor_, &gpa_counter_scheduler_);
 
                 if (GPA_STATUS_OK == status)
@@ -145,18 +178,16 @@ GpaCounterContextManager::~GpaCounterContextManager()
     CloseAllContext();
 }
 
-GPA_Status GpaCounterContextManager::OpenCounterContext(const GPA_API_Type&         api_type,
-                                                        const gpa_uint32&           vendor_id,
-                                                        const gpa_uint32&           device_id,
-                                                        const gpa_uint32&           revision_id,
-                                                        const GPA_OpenContextFlags& context_flags,
-                                                        const gpa_uint8&            generate_asic_specific_counters,
-                                                        GPA_CounterContext*         gpa_counter_context)
+GPA_Status GpaCounterContextManager::OpenCounterContext(const GPA_API_Type&                  api_type,
+                                                        const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
+                                                        const GPA_OpenContextFlags&          context_flags,
+                                                        const gpa_uint8&                     generate_asic_specific_counters,
+                                                        GPA_CounterContext*                  gpa_counter_context)
 {
     Init(api_type);
 
     GpaCounterContext* gpa_new_counter_context =
-        new (std::nothrow) GpaCounterContext(api_type, vendor_id, device_id, revision_id, context_flags, generate_asic_specific_counters);
+        new (std::nothrow) GpaCounterContext(api_type, gpa_counter_context_hardware_info, context_flags, generate_asic_specific_counters);
 
     if (nullptr != gpa_new_counter_context)
     {

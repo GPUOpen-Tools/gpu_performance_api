@@ -209,14 +209,14 @@ static inline const LocaleChar* GPAIL_GetLibraryFileName(GPA_API_Type pApiType)
     case GPA_API_DIRECTX_12:
         STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_DIRECTX12_LIB);
         break;
+
+    case GPA_API_OPENCL:
+        STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_OPENCL_LIB);
+        break;
 #endif
 
     case GPA_API_OPENGL:
         STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_OPENGL_LIB);
-        break;
-
-    case GPA_API_OPENCL:
-        STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_OPENCL_LIB);
         break;
 
     case GPA_API_VULKAN:

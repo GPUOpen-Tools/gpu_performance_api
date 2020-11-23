@@ -34,7 +34,9 @@ GPA_HWInfo::GPA_HWInfo()
     , m_numShaderArrays(0)
     , m_numShaderArraysSet(false)
     , m_suClockPrim(0)
+    , m_suClockPrimSet(false)
     , m_numPrimPipes(0)
+    , m_numPrimPipesSet(false)
 {
 }
 
@@ -146,6 +148,18 @@ void GPA_HWInfo::SetNumberShaderArrays(const size_t& numSAs)
     m_numShaderArrays    = numSAs;
 }
 
+void GPA_HWInfo::SetSUClocksPrim(const size_t& suClockPrims)
+{
+    m_suClockPrimSet = true;
+    m_suClockPrim    = suClockPrims;
+}
+
+void GPA_HWInfo::SetNumberPrimPipes(const size_t& numPrimPipes)
+{
+    m_numPrimPipesSet = true;
+    m_numPrimPipes    = numPrimPipes;
+}
+
 //-----------------------------------------------------------------------------
 bool GPA_HWInfo::UpdateDeviceInfoBasedOnDeviceID()
 {
@@ -231,8 +245,16 @@ bool GPA_HWInfo::UpdateDeviceInfoBasedOnDeviceID()
             SetNumberSIMDs(deviceInfo.numberSIMDs());
         }
 
-        m_suClockPrim = deviceInfo.m_suClocksPrim;
-        m_numPrimPipes = deviceInfo.m_nNumPrimPipes;
+        if (!m_suClockPrimSet)
+        {
+            SetSUClocksPrim(deviceInfo.m_suClocksPrim);
+        }
+
+        if (!m_numPrimPipesSet)
+        {
+            SetNumberPrimPipes(deviceInfo.m_nNumPrimPipes);
+        }
+
         m_asicType = cardInfo.m_asicType;
         SetDeviceName(cardInfo.m_szMarketingName);
         SetHWGeneration(cardInfo.m_generation);

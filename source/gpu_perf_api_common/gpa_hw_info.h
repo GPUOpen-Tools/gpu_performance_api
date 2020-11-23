@@ -68,8 +68,16 @@ public:
     void SetNumberShaderEngines(const size_t& numSEs);
 
     /// Sets the number of shader arrays
-    /// \param numShaderArrays The number of shader arrays
+    /// \param numSAs The number of shader arrays
     void SetNumberShaderArrays(const size_t& numSAs);
+
+    /// Sets the SU clock primitives
+    /// \param suClockPrims The number of SU clock primitives
+    void SetSUClocksPrim(const size_t& suClockPrims);
+
+    /// Sets the number of primitive pipes
+    /// \param numPrimPipes The number of primitive pipes
+    void SetNumberPrimPipes(const size_t& numPrimPipes);
 
     /// Gets the number of shader engines
     /// \return the number of shader engines
@@ -236,7 +244,10 @@ private:
     bool   m_numShaderArraysSet;  ///< Indicates the shader engines has been set or not
 
     size_t m_suClockPrim;  ///< Number of clocks it takes to process a primitive
+    bool   m_suClockPrimSet; ///< Indicates whether the SU Clock prim is set or not
+
     size_t m_numPrimPipes; ///< Number of primitive pipes
+    bool   m_numPrimPipesSet; ///< Indicates whether primitives pipe is set or not
 };
 
 #endif  //_GPA_HW_INFO_H_

@@ -10,6 +10,8 @@
 #ifndef _GPA_HW_COUNTER_DX11_GFX10_H_
 #define _GPA_HW_COUNTER_DX11_GFX10_H_
 
+// clang-format off
+
 #include <windows.h>
 #include <AmdDxExtPerfProfile.h>
 
@@ -19,7 +21,7 @@ struct GPA_HardwareCounterDesc;
 struct GPA_CounterGroupDesc;
 struct GPA_SQCounterGroupDesc;
 
-namespace countergfx10
+namespace counter_dx11_gfx10
 {
     extern GPA_HardwareCounterDesc*           dx11_counter_group_array_gfx10[]; ///< Array of hardware counter groups for dx11 for gfx10 family
     extern GPA_HardwareCounterDesc*           dx11_exposed_counters_group_array_gfx10[]; ///< Array of hardware exposed counter groups for dx11 for gfx10 family
@@ -42,6 +44,19 @@ namespace countergfx10
     extern const unsigned int                 dx11_padded_counter_group_count_gfx10; ///< reserved counter group count for dx11 for gfx10 family
     extern const unsigned int                 hw_dx11_sq_group_count_gfx10; ///< Hardware SQ Group Count for dx11 for gfx10 family
     extern const unsigned int                 hw_dx11_sq_isolated_group_count_gfx10; ///< Hardware Isolated Group Count for dx11 for gfx10 family
-}; // namespace
+
+/// If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
+/// \param asic_type The ASIC type that is currently in use.
+/// \return True if the ASIC is matched by this file and block instances are updated, otherwise false.
+inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
+{
+    UNREFERENCED_PARAMETER(asic_type);
+
+
+    return true;
+}
+} //  namespace counter_dx11_gfx10
+
+// clang-format on
 
 #endif  // _GPA_HW_COUNTER_DX11_GFX10_H_

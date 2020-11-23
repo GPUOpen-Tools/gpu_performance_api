@@ -12,7 +12,7 @@
 
 #include "gpa_derived_counter.h"
 
-namespace dx12gfx8fiji
+namespace dx12_gfx8_fiji
 {
     /// Updates default GPU generation Public derived counters with ASIC specific versions if available.
     /// \param desired_generation Hardware generation currently in use.
@@ -21,6 +21,6 @@ namespace dx12gfx8fiji
     /// \return True if the ASIC matched one available, and derivedCounters was updated.
     extern bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c);
 
-}  // namespace dx12gfx8fiji
+}  // namespace dx12_gfx8_fiji
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_DX12_GFX8_FIJI_H_

@@ -2,17 +2,19 @@
 // Copyright (c) 2010-2020 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief Public Counter Definitions ASIC file for GLGFX10
+/// \brief Public Counter Definitions ASIC file for GL_GFX10
 //==============================================================================
 
-#ifndef _PUBLIC_COUNTER_DEFINITIONS_GLGFX10_ASICS_H_
-#define _PUBLIC_COUNTER_DEFINITIONS_GLGFX10_ASICS_H_
+#ifndef _PUBLIC_COUNTER_DEFINITIONS_GL_GFX10_ASICS_H_
+#define _PUBLIC_COUNTER_DEFINITIONS_GL_GFX10_ASICS_H_
 
 //*** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
 #include "gpa_derived_counter.h"
 
-namespace glgfx10asics
+#include "gpa_hw_counter_gl_gfx10.h"
+
+namespace gl_gfx10_asics
 {
     /// Updates default GPU generation derived counters with ASIC specific derived counters if available.
     /// \param desired_generation Hardware generation currently in use.
@@ -26,6 +28,6 @@ namespace glgfx10asics
         UNREFERENCED_PARAMETER(c);
     }
 
-}  // namespace glgfx10asics
+}  // namespace gl_gfx10asics
 
-#endif  // _PUBLIC__COUNTER_DEFINITIONS_GLGFX10_ASICS_H_
+#endif  // _PUBLIC__COUNTER_DEFINITIONS_GL_GFX10_ASICS_H_

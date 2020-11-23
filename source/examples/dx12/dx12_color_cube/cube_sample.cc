@@ -1810,12 +1810,41 @@ bool CubeSample::GPA_EnableCounters()
     {
         if (nullptr != m_gpaSessionId)
         {
-#ifndef AMDT_INTERNAL
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_EnableAllCounters(m_gpaSessionId);
-#else
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_EnableCounterByName(m_gpaSessionId, "GPUTime");
+            if (args.counter_provided)
+            {
+                std::fstream counter_file_stream;
+                counter_file_stream.open(args.counter_file_name.c_str(), std::ios_base::in);
+                std::vector<std::string> counter_list;
+                char                     temp_counter[256];
+                if (counter_file_stream.is_open())
+                {
+                    while (counter_file_stream.getline(temp_counter, 256))
+                    {
+                        counter_list.push_back(std::string(temp_counter));
+                    }
 
+                    counter_file_stream.close();
+
+                    for (std::vector<std::string>::const_iterator it = counter_list.cbegin(); it != counter_list.cend(); ++it)
+                    {
+                        m_pGpaFunctionTable->GPA_EnableCounterByName(m_gpaSessionId, it->c_str());
+                    }
+                }
+                else
+                {
+                    std::stringstream error;
+                    error << "Unable to open Counter file " << args.counter_file_name.c_str() << " . Not enabling any counters";
+                }
+            }
+            else
+            {
+#ifndef AMDT_INTERNAL
+                success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_EnableAllCounters(m_gpaSessionId);
+#else
+                success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_EnableCounterByName(m_gpaSessionId, "GPUTime");
 #endif
+            }
+
             success = success && GPA_STATUS_OK == m_pGpaFunctionTable->GPA_GetPassCount(m_gpaSessionId, &m_passRequired);
         }
         else

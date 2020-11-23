@@ -1,6 +1,19 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.7 (11/24/20)
+  * Add support for additional GPUs and APUs, including AMD RDNA™ 2 Radeon™ RX 6000 series GPUs.
+  * New RT counters for DXR workloads on AMD RDNA™ 2 Radeon™ RX 6000 series GPUs.
+    * RayTriTests, and RayBoxTests: These counters collect the number of ray intersections for triangles and boxes, respectively.
+    * TotalRayTests: This counter collects the aggregated number of ray-box and ray-triangle intersection tests.
+    * RayTestsPerWave: This counter collects ray intersection test count at a more granular level – per wave.
+  * New Scalar and Instruction cache counters on AMD RDNA™ Radeon™ RX 5000 series GPUs.
+    * Scalar cache: ScalarCacheHit, ScalarCacheRequestCount, ScalarCacheHitCount, ScalarCacheMissCount
+    * Instruction cache: InstCacheHit, InstCacheRequestCount, InstCacheHitCount, InstCacheMissCount
+  * Update the Vulkan® sample to remove the static link and use the system-specific Vulkan® loader.
+  * Remove OpenCL™ support from Linux.
+  * Remove downloading the Vulkan® SDK by the build script.
+
 ## Version 3.6 (05/15/20)
   * Add support for additional GPUs and APUs, including AMD Ryzen™ 4000 Series APUs.
   * Add two new GFX10 GlobalMemory Counters for graphics using DX12 and Vulkan: LocalVidMemBytes and PcieBytes.

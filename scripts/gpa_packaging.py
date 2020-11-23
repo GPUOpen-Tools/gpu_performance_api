@@ -35,7 +35,10 @@ def GetGpaBinaryName(binary_name, is_executable, is_debug, is_32_bit, additional
             platform_suffix = "-x64"
     else:
         if is_executable == False:
-            binary_extension = ".so"
+            if sys.platform == "darwin":
+                binary_extension = ".dylib"
+            else:
+                binary_extension = ".so"
             platform_prefix="lib"
         if is_32_bit == True:
             platform_suffix = "32"
@@ -229,15 +232,17 @@ class GpaPackage:
                          "gpu_perf_api_vk.h",
                          "gpu_perf_api_counters.h"]
 
-    _gpa_binaries=["GPUPerfAPIVK",
-                   "GPUPerfAPIGL",
-                   "GPUPerfAPICL",
-                   "GPUPerfAPICounters"]
+    _gpa_binaries=["GPUPerfAPICounters"]
+
+    if sys.platform == "win32" or sys.platform.startswith("linux"):
+        _gpa_binaries.append("GPUPerfAPIVK")
+        _gpa_binaries.append("GPUPerfAPIGL")
 
     if sys.platform == "win32":
         _gpa_binaries.append("GPUPerfAPIDX11")
         _gpa_binaries.append("GPUPerfAPIDX12")
         _gpa_binaries.append("GPUPerfAPIDXGetAMDDeviceInfo")
+        _gpa_binaries.append("GPUPerfAPICL")
 
     _other_files=["NOTICES.txt",
                  "LICENSE"]

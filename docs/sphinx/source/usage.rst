@@ -33,8 +33,7 @@ for each API
     | 64-bit Linux: libGPUPerfAPIGL.so
     | 32-bit Linux: libGPUPerfAPIGL32.so"
     "OpenCL", "| 64-bit Windows: GPUPerfAPICL-x64.dll
-    | 32-bit Windows: GPUPerfAPICL.dll
-    | 64-bit Linux: libGPUPerfAPICL.so"
+    | 32-bit Windows: GPUPerfAPICL.dll"
 
 To use the GPUPerfAPI library:
 

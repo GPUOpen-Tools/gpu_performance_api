@@ -76,7 +76,8 @@ endif()
 set(HARDWARE_COUNTER_SRC ${HARDWARE_COUNTER_SRC} ${HW_COUNTER_SRC})
 
 set(DERIVED_COUNTER_HEADERS
-    gpa_derived_counter.h)
+    gpa_derived_counter.h
+    gpa_derived_counter_evaluator.inc)
 
 set(DERIVED_COUNTER_SRC
     gpa_derived_counter.cc)

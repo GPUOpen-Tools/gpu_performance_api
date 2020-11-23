@@ -6,6 +6,12 @@ set(DEPTH "./")
 message(STATUS "Generating project files for GPA....")
 set(GPA_CMAKE_MODULES_DIR   ${CMAKE_CURRENT_SOURCE_DIR}/build/cmake_modules)
 
+if(NOT DEFINED build)
+    set(GPA_BUILD_NUMBER 0)
+else()
+    set(GPA_BUILD_NUMBER ${build})
+endif()
+
 include(${GPA_CMAKE_MODULES_DIR}/gpa_version.cmake)
 include(${GPA_CMAKE_MODULES_DIR}/defs.cmake)
 include(${GPA_CMAKE_MODULES_DIR}/build_flags.cmake)

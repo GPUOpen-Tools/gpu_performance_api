@@ -205,6 +205,7 @@ GPA_Status GPA_CounterGeneratorDX12Base::GenerateSoftwareCounters(GDT_HW_GENERAT
     case GDT_HW_GENERATION_VOLCANICISLAND:
     case GDT_HW_GENERATION_GFX9:
     case GDT_HW_GENERATION_GFX10:
+    case GDT_HW_GENERATION_GFX103:
     case GDT_HW_GENERATION_INTEL:
     case GDT_HW_GENERATION_NVIDIA:
         break;

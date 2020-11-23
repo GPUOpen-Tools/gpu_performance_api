@@ -14,6 +14,6 @@
 
 /// Defines the Public derived counters for DX11 
 /// \param c derived counters instance
-void AutoDefinePublicDerivedCountersDX11Gfx10(GPA_DerivedCounters& c);
+void AutoDefinePublicDerivedCountersDX11_Gfx10(GPA_DerivedCounters& c);
 
 #endif  // _PUBLIC_COUNTER_DEFINITIONS_DX11_GFX10_H_

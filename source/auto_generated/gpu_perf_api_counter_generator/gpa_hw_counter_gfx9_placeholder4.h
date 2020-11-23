@@ -10,12 +10,14 @@
 #ifndef _GPA_HW_COUNTER_GFX9_PLACEHOLDER4_H_
 #define _GPA_HW_COUNTER_GFX9_PLACEHOLDER4_H_
 
+// clang-format off
+
 #include <set>
 
 struct GPA_HardwareCounterDesc;
 #include "gpa_hw_counter_gfx9.h"
 
-namespace countergfx9placeholder4
+namespace counter_gfx9_placeholder4
 {
 /// Uses the input ASIC type to determine if this data provides an ASIC specific version.
 /// \param asic_type The ASIC type that is currently in use.
@@ -81,35 +83,39 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
         return false;
     }
 
-    ReplaceBlockInstanceCounters(countergfx9::pa_su0_counters_gfx9, pa_su0_counters_gfx9_placeholder4, 351);
-    ReplaceBlockInstanceCounters(countergfx9::pa_su1_counters_gfx9, pa_su1_counters_gfx9_placeholder4, 351);
-    ReplaceBlockInstanceCounters(countergfx9::pa_su2_counters_gfx9, pa_su2_counters_gfx9_placeholder4, 351);
-    ReplaceBlockInstanceCounters(countergfx9::pa_su3_counters_gfx9, pa_su3_counters_gfx9_placeholder4, 351);
-    ReplaceBlockInstanceCounters(countergfx9::pa_sc0_counters_gfx9, pa_sc0_counters_gfx9_placeholder4, 492);
-    ReplaceBlockInstanceCounters(countergfx9::pa_sc1_counters_gfx9, pa_sc1_counters_gfx9_placeholder4, 492);
-    ReplaceBlockInstanceCounters(countergfx9::pa_sc2_counters_gfx9, pa_sc2_counters_gfx9_placeholder4, 492);
-    ReplaceBlockInstanceCounters(countergfx9::pa_sc3_counters_gfx9, pa_sc3_counters_gfx9_placeholder4, 492);
-    ReplaceBlockInstanceCounters(countergfx9::ia0_counters_gfx9, ia0_counters_gfx9_placeholder4, 31);
-    ReplaceBlockInstanceCounters(countergfx9::ia1_counters_gfx9, ia1_counters_gfx9_placeholder4, 31);
-    ReplaceBlockInstanceCounters(countergfx9::gcea0_counters_gfx9, gcea0_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea1_counters_gfx9, gcea1_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea2_counters_gfx9, gcea2_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea3_counters_gfx9, gcea3_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea4_counters_gfx9, gcea4_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea5_counters_gfx9, gcea5_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea6_counters_gfx9, gcea6_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea7_counters_gfx9, gcea7_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea8_counters_gfx9, gcea8_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea9_counters_gfx9, gcea9_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea10_counters_gfx9, gcea10_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea11_counters_gfx9, gcea11_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea12_counters_gfx9, gcea12_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea13_counters_gfx9, gcea13_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea14_counters_gfx9, gcea14_counters_gfx9_placeholder4, 83);
-    ReplaceBlockInstanceCounters(countergfx9::gcea15_counters_gfx9, gcea15_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_su0_counters_gfx9, pa_su0_counters_gfx9_placeholder4, 351);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_su1_counters_gfx9, pa_su1_counters_gfx9_placeholder4, 351);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_su2_counters_gfx9, pa_su2_counters_gfx9_placeholder4, 351);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_su3_counters_gfx9, pa_su3_counters_gfx9_placeholder4, 351);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_sc0_counters_gfx9, pa_sc0_counters_gfx9_placeholder4, 492);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_sc1_counters_gfx9, pa_sc1_counters_gfx9_placeholder4, 492);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_sc2_counters_gfx9, pa_sc2_counters_gfx9_placeholder4, 492);
+    ReplaceBlockInstanceCounters(counter_gfx9::pa_sc3_counters_gfx9, pa_sc3_counters_gfx9_placeholder4, 492);
+    ReplaceBlockInstanceCounters(counter_gfx9::ia0_counters_gfx9, ia0_counters_gfx9_placeholder4, 31);
+    ReplaceBlockInstanceCounters(counter_gfx9::ia1_counters_gfx9, ia1_counters_gfx9_placeholder4, 31);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea0_counters_gfx9, gcea0_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea1_counters_gfx9, gcea1_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea2_counters_gfx9, gcea2_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea3_counters_gfx9, gcea3_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea4_counters_gfx9, gcea4_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea5_counters_gfx9, gcea5_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea6_counters_gfx9, gcea6_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea7_counters_gfx9, gcea7_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea8_counters_gfx9, gcea8_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea9_counters_gfx9, gcea9_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea10_counters_gfx9, gcea10_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea11_counters_gfx9, gcea11_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea12_counters_gfx9, gcea12_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea13_counters_gfx9, gcea13_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea14_counters_gfx9, gcea14_counters_gfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::gcea15_counters_gfx9, gcea15_counters_gfx9_placeholder4, 83);
 
     return true;
 }
-} // countergfx9placeholder4
+
+bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type);
+} // counter_gfx9_placeholder4
 
 #endif  // _GPA_HW_COUNTER_GFX9_PLACEHOLDER4_H_
+
+// clang-format on

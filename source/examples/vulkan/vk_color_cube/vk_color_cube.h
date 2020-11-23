@@ -86,6 +86,13 @@ public:
     /// \param bIncludeHwCounters True to include hardware counters in the set of enabled counters in non-internal builds
     void SetIncludeHwCounters(bool bIncludeHwCounters);
 
+    /// Sets a counter file name
+    /// \param counter_file_name input counter file
+    void SetCounterFromFile(std::string counter_file_name)
+    {
+        counter_file_name_ = counter_file_name;
+    }
+
     /// Indicates that the Demo has been fully initialized.
     /// \return True if initialization has completed; false otherwise.
     bool Initialized() const;
@@ -412,6 +419,9 @@ private:
     /// Flag to indicate that the demo has been successfully initialized.
     bool m_bInitialized;
 
+    /// Counter file name
+    std::string counter_file_name_;
+
     /// Flag to indicate that the demo should exit.
     bool m_bExit;
 
@@ -464,6 +474,9 @@ struct CommandLineArgs
 
     /// Flag indicating whether or not hardware counters should be enabled in non-internal builds
     bool m_bIncludeHwCounters = false;
+
+    /// Counter file name
+    std::string counter_file_name;
 };
 
 #endif  // _VK_COLOR_CUBE_H_

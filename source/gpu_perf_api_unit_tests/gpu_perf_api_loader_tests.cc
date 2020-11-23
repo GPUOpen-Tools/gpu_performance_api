@@ -74,9 +74,6 @@ INSTANTIATE_TEST_CASE_P(WindowsAPI,
 #else
 INSTANTIATE_TEST_CASE_P(LinuxAPI,
                         GPUPerfAPILoaderTest,
-                        ::testing::Values(GPA_API_VULKAN
-#ifndef X86
-                                          ,GPA_API_OPENCL
-#endif
-                                          ,GPA_API_OPENGL));
+                        ::testing::Values(GPA_API_VULKAN,
+                                          GPA_API_OPENGL));
 #endif

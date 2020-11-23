@@ -10,7 +10,7 @@
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-void AutoDefinePublicDerivedCountersCLGfx10(GPA_DerivedCounters& c)
+void AutoDefinePublicDerivedCountersCL_Gfx10(GPA_DerivedCounters& c)
 {
     {
         vector<gpa_uint32> internalCounters;
@@ -107,14 +107,6 @@ void AutoDefinePublicDerivedCountersCLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(21661);
         internalCounters.push_back(21896);
         internalCounters.push_back(22131);
-        internalCounters.push_back(22366);
-        internalCounters.push_back(22601);
-        internalCounters.push_back(22836);
-        internalCounters.push_back(23071);
-        internalCounters.push_back(23306);
-        internalCounters.push_back(23541);
-        internalCounters.push_back(23776);
-        internalCounters.push_back(24011);
         internalCounters.push_back(18607);
         internalCounters.push_back(18842);
         internalCounters.push_back(19077);
@@ -131,14 +123,6 @@ void AutoDefinePublicDerivedCountersCLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(21662);
         internalCounters.push_back(21897);
         internalCounters.push_back(22132);
-        internalCounters.push_back(22367);
-        internalCounters.push_back(22602);
-        internalCounters.push_back(22837);
-        internalCounters.push_back(23072);
-        internalCounters.push_back(23307);
-        internalCounters.push_back(23542);
-        internalCounters.push_back(23777);
-        internalCounters.push_back(24012);
         internalCounters.push_back(18608);
         internalCounters.push_back(18843);
         internalCounters.push_back(19078);
@@ -155,14 +139,6 @@ void AutoDefinePublicDerivedCountersCLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(21663);
         internalCounters.push_back(21898);
         internalCounters.push_back(22133);
-        internalCounters.push_back(22368);
-        internalCounters.push_back(22603);
-        internalCounters.push_back(22838);
-        internalCounters.push_back(23073);
-        internalCounters.push_back(23308);
-        internalCounters.push_back(23543);
-        internalCounters.push_back(23778);
-        internalCounters.push_back(24013);
         internalCounters.push_back(18609);
         internalCounters.push_back(18844);
         internalCounters.push_back(19079);
@@ -179,16 +155,8 @@ void AutoDefinePublicDerivedCountersCLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(21664);
         internalCounters.push_back(21899);
         internalCounters.push_back(22134);
-        internalCounters.push_back(22369);
-        internalCounters.push_back(22604);
-        internalCounters.push_back(22839);
-        internalCounters.push_back(23074);
-        internalCounters.push_back(23309);
-        internalCounters.push_back(23544);
-        internalCounters.push_back(23779);
-        internalCounters.push_back(24014);
 
-        c.DefineDerivedCounter("FetchSize", "GlobalMemory", "The total kilobytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(64),*,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,sum24,(96),*,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum24,(128),*,sum4,(1024),/", "d91ac445-b44f-f821-9123-9d829e544c33");
+        c.DefineDerivedCounter("FetchSize", "GlobalMemory", "The total kilobytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(64),*,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum16,(96),*,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum16,(128),*,sum4,(1024),/", "d91ac445-b44f-f821-9123-9d829e544c33");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -208,14 +176,6 @@ void AutoDefinePublicDerivedCountersCLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(21647);
         internalCounters.push_back(21882);
         internalCounters.push_back(22117);
-        internalCounters.push_back(22352);
-        internalCounters.push_back(22587);
-        internalCounters.push_back(22822);
-        internalCounters.push_back(23057);
-        internalCounters.push_back(23292);
-        internalCounters.push_back(23527);
-        internalCounters.push_back(23762);
-        internalCounters.push_back(23997);
         internalCounters.push_back(18593);
         internalCounters.push_back(18828);
         internalCounters.push_back(19063);
@@ -232,16 +192,8 @@ void AutoDefinePublicDerivedCountersCLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(21648);
         internalCounters.push_back(21883);
         internalCounters.push_back(22118);
-        internalCounters.push_back(22353);
-        internalCounters.push_back(22588);
-        internalCounters.push_back(22823);
-        internalCounters.push_back(23058);
-        internalCounters.push_back(23293);
-        internalCounters.push_back(23528);
-        internalCounters.push_back(23763);
-        internalCounters.push_back(23998);
 
-        c.DefineDerivedCounter("WriteSize", "GlobalMemory", "The total kilobytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(64),*,+,(1024),/", "e09d95da-2772-f7cb-51f5-4fad27bb998b");
+        c.DefineDerivedCounter("WriteSize", "GlobalMemory", "The total kilobytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(64),*,+,(1024),/", "e09d95da-2772-f7cb-51f5-4fad27bb998b");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -305,14 +257,6 @@ void AutoDefinePublicDerivedCountersCLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(21575);
         internalCounters.push_back(21810);
         internalCounters.push_back(22045);
-        internalCounters.push_back(22280);
-        internalCounters.push_back(22515);
-        internalCounters.push_back(22750);
-        internalCounters.push_back(22985);
-        internalCounters.push_back(23220);
-        internalCounters.push_back(23455);
-        internalCounters.push_back(23690);
-        internalCounters.push_back(23925);
         internalCounters.push_back(18552);
         internalCounters.push_back(18787);
         internalCounters.push_back(19022);
@@ -329,16 +273,8 @@ void AutoDefinePublicDerivedCountersCLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(21607);
         internalCounters.push_back(21842);
         internalCounters.push_back(22077);
-        internalCounters.push_back(22312);
-        internalCounters.push_back(22547);
-        internalCounters.push_back(22782);
-        internalCounters.push_back(23017);
-        internalCounters.push_back(23252);
-        internalCounters.push_back(23487);
-        internalCounters.push_back(23722);
-        internalCounters.push_back(23957);
 
-        c.DefineDerivedCounter("L2CacheHit", "GlobalMemory", "The percentage of fetch, write, atomic, and other instructions that hit the data in L2 cache. Value range: 0% (no hit) to 100% (optimal).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "(0),(1),24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,ifnotzero", "7507935e-ed29-f169-ee27-9b0fa9b88f3c");
+        c.DefineDerivedCounter("L2CacheHit", "GlobalMemory", "The percentage of fetch, write, atomic, and other instructions that hit the data in L2 cache. Value range: 0% (no hit) to 100% (optimal).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "(0),(1),16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,ifnotzero", "7507935e-ed29-f169-ee27-9b0fa9b88f3c");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -402,17 +338,9 @@ void AutoDefinePublicDerivedCountersCLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(21651);
         internalCounters.push_back(21886);
         internalCounters.push_back(22121);
-        internalCounters.push_back(22356);
-        internalCounters.push_back(22591);
-        internalCounters.push_back(22826);
-        internalCounters.push_back(23061);
-        internalCounters.push_back(23296);
-        internalCounters.push_back(23531);
-        internalCounters.push_back(23766);
-        internalCounters.push_back(24001);
         internalCounters.push_back(1868);
 
-        c.DefineDerivedCounter("WriteUnitStalled", "GlobalMemory", "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*", "594ad3ce-d1ec-10fc-7d59-25738e397d72");
+        c.DefineDerivedCounter("WriteUnitStalled", "GlobalMemory", "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*", "594ad3ce-d1ec-10fc-7d59-25738e397d72");
     }
     {
         vector<gpa_uint32> internalCounters;

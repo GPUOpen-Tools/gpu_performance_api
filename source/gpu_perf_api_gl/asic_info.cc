@@ -126,7 +126,7 @@ namespace oglUtils
          * This static assert will help to find error when we update the AsicIdEnum for new hardware.
          * Upon failure, we need to add suitable entry for public device and update the static assert for update count.
          */
-        static_assert(AsicId_LAST == 36, "AsicIdEnum has changed, add suitable entry for asic info.");
+        static_assert(AsicId_LAST == 41, "AsicIdEnum has changed, add suitable entry for asic info.");
 
         if (!is_asic_info_initialized_)
         {
@@ -322,12 +322,19 @@ namespace oglUtils
                     asic_id_info.default_device_id = 0x7340;
                     break;
 
-                case ASIC_ID_PLACEHOLDER6:
-                    asic_id_info.asic_type = ASIC_Gfx10;
+                case ASIC_ID_GFX1030:
+                    asic_id_info.asic_type         = ASIC_Gfx103;
+                    asic_id_info.gdt_asic_type     = GDT_GFX10_3_0;
+                    asic_id_info.default_device_id = 0x731F;
                     break;
 
+                case ASIC_ID_PLACEHOLDER6:
                 case ASIC_ID_PLACEHOLDER7:
-                    asic_id_info.asic_type = ASIC_Gfx10;
+                case ASIC_ID_PLACEHOLDER8:
+                case ASIC_ID_PLACEHOLDER9:
+                case ASIC_ID_PLACEHOLDER10:
+                    asic_id_info.asic_type = ASIC_Gfx103;
+                    asic_id_info.gdt_asic_type = GDT_GFX10_3_0;
                     break;
 
                 default:

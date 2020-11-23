@@ -10,7 +10,7 @@
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
+void AutoDefinePublicDerivedCountersGL_Gfx10(GPA_DerivedCounters& c)
 {
     {
         vector<gpa_uint32> internalCounters;
@@ -650,19 +650,11 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19439);
         internalCounters.push_back(19674);
         internalCounters.push_back(19909);
-        internalCounters.push_back(20144);
-        internalCounters.push_back(20379);
-        internalCounters.push_back(20614);
-        internalCounters.push_back(20849);
-        internalCounters.push_back(21084);
-        internalCounters.push_back(21319);
-        internalCounters.push_back(21554);
-        internalCounters.push_back(21789);
         internalCounters.push_back(1868);
         internalCounters.push_back(4846);
         internalCounters.push_back(4852);
 
-        c.DefineDerivedCounter("CSWriteUnitStalled", "ComputeShader", "The percentage of GPUTime the write unit is stalled.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*,25,26,+,ifnotzero", "55118f7a-8f92-726f-78c6-407f689a2eb4");
+        c.DefineDerivedCounter("CSWriteUnitStalled", "ComputeShader", "The percentage of GPUTime the write unit is stalled.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*,17,18,+,ifnotzero", "55118f7a-8f92-726f-78c6-407f689a2eb4");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -682,18 +674,10 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19439);
         internalCounters.push_back(19674);
         internalCounters.push_back(19909);
-        internalCounters.push_back(20144);
-        internalCounters.push_back(20379);
-        internalCounters.push_back(20614);
-        internalCounters.push_back(20849);
-        internalCounters.push_back(21084);
-        internalCounters.push_back(21319);
-        internalCounters.push_back(21554);
-        internalCounters.push_back(21789);
         internalCounters.push_back(4846);
         internalCounters.push_back(4852);
 
-        c.DefineDerivedCounter("CSWriteUnitStalledCycles", "ComputeShader", "Number of GPU cycles the write unit is stalled.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,25,+,ifnotzero", "be164c60-5e48-acac-9622-29616d09aa9a");
+        c.DefineDerivedCounter("CSWriteUnitStalledCycles", "ComputeShader", "Number of GPU cycles the write unit is stalled.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,17,+,ifnotzero", "be164c60-5e48-acac-9622-29616d09aa9a");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -1521,7 +1505,28 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(15138);
         internalCounters.push_back(15215);
 
-        c.DefineDerivedCounter("L0CacheHit", "GlobalMemory", "The percentage of fetch, write, atomic, and other instructions that hit the data in L0 cache. Value range: 0% (no hit) to 100% (optimal).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "(0),(1),16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,ifnotzero", "be1e0578-82b8-ad7f-ba3f-3afce150937a");
+        c.DefineDerivedCounter("L0CacheHit", "MemoryCache", "The percentage of read requests that hit the data in the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "(0),(1),16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,ifnotzero", "286c786e-9a42-3371-9dea-dd54e6e612e9");
+    }
+    {
+        vector<gpa_uint32> internalCounters;
+        internalCounters.push_back(14051);
+        internalCounters.push_back(14128);
+        internalCounters.push_back(14205);
+        internalCounters.push_back(14282);
+        internalCounters.push_back(14359);
+        internalCounters.push_back(14436);
+        internalCounters.push_back(14513);
+        internalCounters.push_back(14590);
+        internalCounters.push_back(14667);
+        internalCounters.push_back(14744);
+        internalCounters.push_back(14821);
+        internalCounters.push_back(14898);
+        internalCounters.push_back(14975);
+        internalCounters.push_back(15052);
+        internalCounters.push_back(15129);
+        internalCounters.push_back(15206);
+
+        c.DefineDerivedCounter("L0CacheRequestCount", "MemoryCache", "The number of read requests made to the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "74983cae-ee57-2e1b-d990-5128fef84e1f");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -1558,7 +1563,7 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(15138);
         internalCounters.push_back(15215);
 
-        c.DefineDerivedCounter("L0CacheHitCount", "GlobalMemory", "Count of fetch, write, atomic, and other instructions that hit the data in L0 cache.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-", "467f8740-98f0-2211-b8e2-3d60c40d9921");
+        c.DefineDerivedCounter("L0CacheHitCount", "MemoryCache", "The number of read requests which result in a cache hit from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-", "c0de7338-069b-c5ba-ead3-c65e030cd2ac");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -1579,27 +1584,70 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(15138);
         internalCounters.push_back(15215);
 
-        c.DefineDerivedCounter("L0CacheMissCount", "GlobalMemory", "Count of fetch, write, atomic, and other instructions that miss the data in L0 cache.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "db23a1fd-a359-64d4-7283-f6a02bd8db64");
+        c.DefineDerivedCounter("L0CacheMissCount", "MemoryCache", "The number of read requests which result in a cache miss from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "a2f08766-ea1b-6eae-6eaf-faa04125d3e6");
     }
     {
         vector<gpa_uint32> internalCounters;
         internalCounters.push_back(15891);
         internalCounters.push_back(15895);
 
-        c.DefineDerivedCounter("L1CacheHit", "GlobalMemory", "The percentage of fetch, write, atomic, and other instructions that hit the data in L1 cache. Writes and atomics always miss this cache. Value range: 0% (no hit) to 100% (optimal).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "(0),(1),1,0,/,-,(100),*,0,ifnotzero", "b10c589c-f7a5-b8f2-46c2-e0aed4a84105");
+        c.DefineDerivedCounter("L1CacheHit", "MemoryCache", "The percentage of read or write requests that hit the data in the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "(0),(1),1,0,/,-,(100),*,0,ifnotzero", "5a34915a-24b8-8baf-2bf8-5878e7894ae3");
+    }
+    {
+        vector<gpa_uint32> internalCounters;
+        internalCounters.push_back(15891);
+
+        c.DefineDerivedCounter("L1CacheRequestCount", "MemoryCache", "The number of read or write requests made to the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0", "29c76c67-4611-205d-0b88-d08668df03c5");
     }
     {
         vector<gpa_uint32> internalCounters;
         internalCounters.push_back(15891);
         internalCounters.push_back(15895);
 
-        c.DefineDerivedCounter("L1CacheHitCount", "GlobalMemory", "Count of fetch, write, atomic, and other instructions that hit the data in L1 cache. Writes and atomics always miss this cache.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,-", "e58da8e8-3c2d-723d-9e95-97888210155b");
+        c.DefineDerivedCounter("L1CacheHitCount", "MemoryCache", "The number of read or write requests which result in a cache hit from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,-", "1ae150c3-f2d0-82c6-a51b-a77fd8d5fc33");
     }
     {
         vector<gpa_uint32> internalCounters;
         internalCounters.push_back(15895);
 
-        c.DefineDerivedCounter("L1CacheMissCount", "GlobalMemory", "Count of fetch, write, atomic, and other instructions that miss the data in L1 cache. Writes and atomics always miss this cache.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0", "b9ee1c8c-9c9b-8b7e-6d9b-a7a94053a0ee");
+        c.DefineDerivedCounter("L1CacheMissCount", "MemoryCache", "The number of read or write requests which result in a cache miss from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0", "71bfec6d-257b-849d-e212-cdf5c1b1de65");
+    }
+    {
+        vector<gpa_uint32> internalCounters;
+        internalCounters.push_back(16340);
+        internalCounters.push_back(16575);
+        internalCounters.push_back(16810);
+        internalCounters.push_back(17045);
+        internalCounters.push_back(17280);
+        internalCounters.push_back(17515);
+        internalCounters.push_back(17750);
+        internalCounters.push_back(17985);
+        internalCounters.push_back(18220);
+        internalCounters.push_back(18455);
+        internalCounters.push_back(18690);
+        internalCounters.push_back(18925);
+        internalCounters.push_back(19160);
+        internalCounters.push_back(19395);
+        internalCounters.push_back(19630);
+        internalCounters.push_back(19865);
+        internalCounters.push_back(16308);
+        internalCounters.push_back(16543);
+        internalCounters.push_back(16778);
+        internalCounters.push_back(17013);
+        internalCounters.push_back(17248);
+        internalCounters.push_back(17483);
+        internalCounters.push_back(17718);
+        internalCounters.push_back(17953);
+        internalCounters.push_back(18188);
+        internalCounters.push_back(18423);
+        internalCounters.push_back(18658);
+        internalCounters.push_back(18893);
+        internalCounters.push_back(19128);
+        internalCounters.push_back(19363);
+        internalCounters.push_back(19598);
+        internalCounters.push_back(19833);
+
+        c.DefineDerivedCounter("L2CacheMiss", "MemoryCache", "The percentage of read or write requests that miss the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (optimal) to 100% (all miss).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,/,(100),*", "8aee5458-a58e-11b6-5131-7f19ed070117");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -1619,93 +1667,8 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19363);
         internalCounters.push_back(19598);
         internalCounters.push_back(19833);
-        internalCounters.push_back(20068);
-        internalCounters.push_back(20303);
-        internalCounters.push_back(20538);
-        internalCounters.push_back(20773);
-        internalCounters.push_back(21008);
-        internalCounters.push_back(21243);
-        internalCounters.push_back(21478);
-        internalCounters.push_back(21713);
-        internalCounters.push_back(16340);
-        internalCounters.push_back(16575);
-        internalCounters.push_back(16810);
-        internalCounters.push_back(17045);
-        internalCounters.push_back(17280);
-        internalCounters.push_back(17515);
-        internalCounters.push_back(17750);
-        internalCounters.push_back(17985);
-        internalCounters.push_back(18220);
-        internalCounters.push_back(18455);
-        internalCounters.push_back(18690);
-        internalCounters.push_back(18925);
-        internalCounters.push_back(19160);
-        internalCounters.push_back(19395);
-        internalCounters.push_back(19630);
-        internalCounters.push_back(19865);
-        internalCounters.push_back(20100);
-        internalCounters.push_back(20335);
-        internalCounters.push_back(20570);
-        internalCounters.push_back(20805);
-        internalCounters.push_back(21040);
-        internalCounters.push_back(21275);
-        internalCounters.push_back(21510);
-        internalCounters.push_back(21745);
 
-        c.DefineDerivedCounter("L2CacheHit", "GlobalMemory", "The percentage of fetch, write, atomic, and other instructions that hit the L2 cache. Value range: 0% (no hit) to 100% (optimal).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "(0),(1),24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,ifnotzero", "d78fdf66-104f-8372-02c1-91d07d7dc62e");
-    }
-    {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(16340);
-        internalCounters.push_back(16575);
-        internalCounters.push_back(16810);
-        internalCounters.push_back(17045);
-        internalCounters.push_back(17280);
-        internalCounters.push_back(17515);
-        internalCounters.push_back(17750);
-        internalCounters.push_back(17985);
-        internalCounters.push_back(18220);
-        internalCounters.push_back(18455);
-        internalCounters.push_back(18690);
-        internalCounters.push_back(18925);
-        internalCounters.push_back(19160);
-        internalCounters.push_back(19395);
-        internalCounters.push_back(19630);
-        internalCounters.push_back(19865);
-        internalCounters.push_back(20100);
-        internalCounters.push_back(20335);
-        internalCounters.push_back(20570);
-        internalCounters.push_back(20805);
-        internalCounters.push_back(21040);
-        internalCounters.push_back(21275);
-        internalCounters.push_back(21510);
-        internalCounters.push_back(21745);
-        internalCounters.push_back(16308);
-        internalCounters.push_back(16543);
-        internalCounters.push_back(16778);
-        internalCounters.push_back(17013);
-        internalCounters.push_back(17248);
-        internalCounters.push_back(17483);
-        internalCounters.push_back(17718);
-        internalCounters.push_back(17953);
-        internalCounters.push_back(18188);
-        internalCounters.push_back(18423);
-        internalCounters.push_back(18658);
-        internalCounters.push_back(18893);
-        internalCounters.push_back(19128);
-        internalCounters.push_back(19363);
-        internalCounters.push_back(19598);
-        internalCounters.push_back(19833);
-        internalCounters.push_back(20068);
-        internalCounters.push_back(20303);
-        internalCounters.push_back(20538);
-        internalCounters.push_back(20773);
-        internalCounters.push_back(21008);
-        internalCounters.push_back(21243);
-        internalCounters.push_back(21478);
-        internalCounters.push_back(21713);
-
-        c.DefineDerivedCounter("L2CacheMiss", "GlobalMemory", "The percentage of fetch, write, atomic, and other instructions that miss the L2 cache. Value range: 0% (optimal) to 100% (all miss).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*", "4cd70885-41b3-25cd-92db-c76a0decc634");
+        c.DefineDerivedCounter("L2CacheRequestCount", "MemoryCache", "The number of read or write requests made to the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "21e9219c-e725-0d96-06b1-b21698b736b2");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -1725,14 +1688,6 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19363);
         internalCounters.push_back(19598);
         internalCounters.push_back(19833);
-        internalCounters.push_back(20068);
-        internalCounters.push_back(20303);
-        internalCounters.push_back(20538);
-        internalCounters.push_back(20773);
-        internalCounters.push_back(21008);
-        internalCounters.push_back(21243);
-        internalCounters.push_back(21478);
-        internalCounters.push_back(21713);
         internalCounters.push_back(16340);
         internalCounters.push_back(16575);
         internalCounters.push_back(16810);
@@ -1749,16 +1704,8 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19395);
         internalCounters.push_back(19630);
         internalCounters.push_back(19865);
-        internalCounters.push_back(20100);
-        internalCounters.push_back(20335);
-        internalCounters.push_back(20570);
-        internalCounters.push_back(20805);
-        internalCounters.push_back(21040);
-        internalCounters.push_back(21275);
-        internalCounters.push_back(21510);
-        internalCounters.push_back(21745);
 
-        c.DefineDerivedCounter("L2CacheHitCount", "GlobalMemory", "Count of fetch, write, atomic, and other instructions that hit the L2 cache.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-", "d0bce171-560c-1895-66b3-bc56abccb077");
+        c.DefineDerivedCounter("L2CacheHitCount", "MemoryCache", "The number of read or write requests which result in a cache hit from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-", "29ddcb92-d3dd-951b-1b23-efe52e4eeee4");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -1778,16 +1725,8 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19395);
         internalCounters.push_back(19630);
         internalCounters.push_back(19865);
-        internalCounters.push_back(20100);
-        internalCounters.push_back(20335);
-        internalCounters.push_back(20570);
-        internalCounters.push_back(20805);
-        internalCounters.push_back(21040);
-        internalCounters.push_back(21275);
-        internalCounters.push_back(21510);
-        internalCounters.push_back(21745);
 
-        c.DefineDerivedCounter("L2CacheMissCount", "GlobalMemory", "Count of fetch, write, atomic, and other instructions that miss the L2 cache.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "f2ab3a1a-ead6-9893-961b-88ba2a758807");
+        c.DefineDerivedCounter("L2CacheMissCount", "MemoryCache", "The number of read or write requests which result in a cache miss from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_ITEMS, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "376eec7b-ab25-9012-06b5-63291a17fd47");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -1807,14 +1746,6 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19449);
         internalCounters.push_back(19684);
         internalCounters.push_back(19919);
-        internalCounters.push_back(20154);
-        internalCounters.push_back(20389);
-        internalCounters.push_back(20624);
-        internalCounters.push_back(20859);
-        internalCounters.push_back(21094);
-        internalCounters.push_back(21329);
-        internalCounters.push_back(21564);
-        internalCounters.push_back(21799);
         internalCounters.push_back(16395);
         internalCounters.push_back(16630);
         internalCounters.push_back(16865);
@@ -1831,14 +1762,6 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19450);
         internalCounters.push_back(19685);
         internalCounters.push_back(19920);
-        internalCounters.push_back(20155);
-        internalCounters.push_back(20390);
-        internalCounters.push_back(20625);
-        internalCounters.push_back(20860);
-        internalCounters.push_back(21095);
-        internalCounters.push_back(21330);
-        internalCounters.push_back(21565);
-        internalCounters.push_back(21800);
         internalCounters.push_back(16396);
         internalCounters.push_back(16631);
         internalCounters.push_back(16866);
@@ -1855,14 +1778,6 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19451);
         internalCounters.push_back(19686);
         internalCounters.push_back(19921);
-        internalCounters.push_back(20156);
-        internalCounters.push_back(20391);
-        internalCounters.push_back(20626);
-        internalCounters.push_back(20861);
-        internalCounters.push_back(21096);
-        internalCounters.push_back(21331);
-        internalCounters.push_back(21566);
-        internalCounters.push_back(21801);
         internalCounters.push_back(16397);
         internalCounters.push_back(16632);
         internalCounters.push_back(16867);
@@ -1879,16 +1794,8 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19452);
         internalCounters.push_back(19687);
         internalCounters.push_back(19922);
-        internalCounters.push_back(20157);
-        internalCounters.push_back(20392);
-        internalCounters.push_back(20627);
-        internalCounters.push_back(20862);
-        internalCounters.push_back(21097);
-        internalCounters.push_back(21332);
-        internalCounters.push_back(21567);
-        internalCounters.push_back(21802);
 
-        c.DefineDerivedCounter("FetchSize", "GlobalMemory", "The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(64),*,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,sum24,(96),*,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum24,(128),*,sum4", "664bb3ef-6eca-86b1-1e2d-30cb897b5fa9");
+        c.DefineDerivedCounter("FetchSize", "GlobalMemory", "The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_BYTES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(64),*,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum16,(96),*,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,sum16,(128),*,sum4", "664bb3ef-6eca-86b1-1e2d-30cb897b5fa9");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -1908,14 +1815,6 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19435);
         internalCounters.push_back(19670);
         internalCounters.push_back(19905);
-        internalCounters.push_back(20140);
-        internalCounters.push_back(20375);
-        internalCounters.push_back(20610);
-        internalCounters.push_back(20845);
-        internalCounters.push_back(21080);
-        internalCounters.push_back(21315);
-        internalCounters.push_back(21550);
-        internalCounters.push_back(21785);
         internalCounters.push_back(16381);
         internalCounters.push_back(16616);
         internalCounters.push_back(16851);
@@ -1932,16 +1831,8 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19436);
         internalCounters.push_back(19671);
         internalCounters.push_back(19906);
-        internalCounters.push_back(20141);
-        internalCounters.push_back(20376);
-        internalCounters.push_back(20611);
-        internalCounters.push_back(20846);
-        internalCounters.push_back(21081);
-        internalCounters.push_back(21316);
-        internalCounters.push_back(21551);
-        internalCounters.push_back(21786);
 
-        c.DefineDerivedCounter("WriteSize", "GlobalMemory", "The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_KILOBYTES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(64),*,+", "f96f2c16-b1b4-4ec4-229c-fc82e6f80a82");
+        c.DefineDerivedCounter("WriteSize", "GlobalMemory", "The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_BYTES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(64),*,+", "f96f2c16-b1b4-4ec4-229c-fc82e6f80a82");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -2041,17 +1932,9 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19439);
         internalCounters.push_back(19674);
         internalCounters.push_back(19909);
-        internalCounters.push_back(20144);
-        internalCounters.push_back(20379);
-        internalCounters.push_back(20614);
-        internalCounters.push_back(20849);
-        internalCounters.push_back(21084);
-        internalCounters.push_back(21319);
-        internalCounters.push_back(21554);
-        internalCounters.push_back(21789);
         internalCounters.push_back(1868);
 
-        c.DefineDerivedCounter("WriteUnitStalled", "GlobalMemory", "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*", "594ad3ce-d1ec-10fc-7d59-25738e397d72");
+        c.DefineDerivedCounter("WriteUnitStalled", "GlobalMemory", "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_PERCENTAGE, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*", "594ad3ce-d1ec-10fc-7d59-25738e397d72");
     }
     {
         vector<gpa_uint32> internalCounters;
@@ -2071,16 +1954,8 @@ void AutoDefinePublicDerivedCountersGLGfx10(GPA_DerivedCounters& c)
         internalCounters.push_back(19439);
         internalCounters.push_back(19674);
         internalCounters.push_back(19909);
-        internalCounters.push_back(20144);
-        internalCounters.push_back(20379);
-        internalCounters.push_back(20614);
-        internalCounters.push_back(20849);
-        internalCounters.push_back(21084);
-        internalCounters.push_back(21319);
-        internalCounters.push_back(21554);
-        internalCounters.push_back(21789);
 
-        c.DefineDerivedCounter("WriteUnitStalledCycles", "GlobalMemory", "Number of GPU cycles the Write unit is stalled.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24", "ede3305e-abd4-d6bf-6b00-ffc57a29fce3");
+        c.DefineDerivedCounter("WriteUnitStalledCycles", "GlobalMemory", "Number of GPU cycles the Write unit is stalled.", GPA_DATA_TYPE_FLOAT64, GPA_USAGE_TYPE_CYCLES, internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16", "ede3305e-abd4-d6bf-6b00-ffc57a29fce3");
     }
 }
 

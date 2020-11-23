@@ -83,14 +83,17 @@ public:
                          const GpaShaderMask& gpa_shader_mask,
                          gpa_uint32*       counter_index) const override;
 
+    /// \copydoc IGPACounterAccessor::GetPublicInterfaceCounterIndex()
+    bool GetPublicInterfaceCounterIndex(const gpa_uint32& hardware_counter_index, gpa_uint32* public_interface_counter_index) const override;
+
     /// \copydoc IGPACounterAccessor::GetHardwareCounters()
     const GPA_HardwareCounters* GetHardwareCounters() const override;
 
     /// \copydoc IGPACounterAccessor::GetSoftwareCounters()
     const GPA_SoftwareCounters* GetSoftwareCounters() const override;
 
-    /// \copydoc IGPACounterAccessor::GetDerivedCounterInfo()
-    GpaDerivedCounterInfo* GetDerivedCounterInfo(const gpa_uint32& derived_counter_index) const override;
+    /// \copydoc IGPACounterAccessor::GetCounterInfo()
+    GpaCounterInfo* GetCounterInfo(const gpa_uint32& derived_counter_index) const override;
 
     /// Generate the counters for the specified generation
     /// \param desiredGeneration the generation whose counters are needed

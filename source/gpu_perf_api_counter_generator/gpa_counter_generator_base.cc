@@ -481,6 +481,29 @@ bool GPA_CounterGeneratorBase::GetCounterIndex(const GpaHwBlock&    gpa_hardware
     return counter_found;
 }
 
+bool GPA_CounterGeneratorBase::GetPublicInterfaceCounterIndex(const gpa_uint32& hardware_counter_index, gpa_uint32* public_interface_counter_index) const
+{
+    if (!m_doAllowHardwareCounters && !m_doAllowPublicCounters && !m_doAllowHardwareExposedCounters && !m_doAllowSoftwareCounters)
+    {
+        return false;
+    }
+
+    gpa_uint32 ret_counter_index = hardware_counter_index;
+
+    if (!m_doAllowHardwareCounters && m_doAllowHardwareExposedCounters)
+    {
+        m_hardwareCounters.GetHardwareExposedCounterIndex(ret_counter_index, ret_counter_index);
+    }
+
+    if (m_doAllowPublicCounters)
+    {
+        ret_counter_index += m_publicCounters.GetNumCounters();
+    }
+
+    *public_interface_counter_index = ret_counter_index;
+    return true;
+}
+
 const char* GPA_CounterGeneratorBase::GetCounterGroup(gpa_uint32 index) const
 {
     if (m_doAllowPublicCounters)
@@ -875,18 +898,39 @@ const GPA_SoftwareCounters* GPA_CounterGeneratorBase::GetSoftwareCounters() cons
     return &m_softwareCounters;
 }
 
-GpaDerivedCounterInfo* GPA_CounterGeneratorBase::GetDerivedCounterInfo(const gpa_uint32& derived_counter_index) const
+GpaCounterInfo* GPA_CounterGeneratorBase::GetCounterInfo(const gpa_uint32& counter_index) const
 {
-    GPA_DerivedCounter* derived_counter = const_cast<GPA_DerivedCounter*>(GetPublicCounter(derived_counter_index));
-
-    if (nullptr != derived_counter)
+    gpa_uint32 internal_counter_index = counter_index;
+    if (m_doAllowPublicCounters)
     {
-        return derived_counter->GetDerivedCounterHardwareInfo(this);
+        if (internal_counter_index > m_publicCounters.GetNumCounters())
+        {
+            internal_counter_index -= m_publicCounters.GetNumCounters();
+        }
+        else
+        {
+            GPA_DerivedCounter* derived_counter = const_cast<GPA_DerivedCounter*>(GetPublicCounter(counter_index));
+
+            if (nullptr != derived_counter)
+            {
+                return derived_counter->GetCounterInfo(this);
+            }
+        }
+    }
+
+    if (m_doAllowHardwareCounters && internal_counter_index < m_hardwareCounters.GetNumCounters())
+    {
+        return m_hardwareCounters.GetCounterInfo(internal_counter_index);
+    }
+
+    if (m_doAllowHardwareExposedCounters && internal_counter_index < m_hardwareCounters.GetNumCounters())
+    {
+        const gpa_uint32 exposed_counter_index = m_hardwareCounters.GetHardwareExposedCounterInternalIndex(internal_counter_index);
+        return m_hardwareCounters.GetCounterInfo(exposed_counter_index);
     }
 
     return nullptr;
 }
-
 
 GPACounterSourceInfo GPA_CounterGeneratorBase::GetCounterSourceInfo(gpa_uint32 globalIndex) const
 {

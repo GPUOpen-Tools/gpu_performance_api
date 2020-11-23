@@ -22,6 +22,7 @@ set(ADDITIONAL_SOURCE
     ${ADL_UTIL_DIR}/ADLUtil.cpp
     ${DYNAMIC_LIBRARY_MODULE}/DynamicLibraryModule.cpp
     ${DEVICE_INFO}/DeviceInfoUtils.cpp
+    ${DEVICE_INFO}/DeviceInfo.cpp
     ${ADDITIONAL_DEVICEINFO_SOURCES})
 
 set(ADDITIONAL_SOURCE_HEADERS
@@ -96,7 +97,8 @@ set(SOURCES
 
 ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME})
 target_link_libraries(${GPA_PROJECT_NAME}
-                      ${LINK_LIBS})
+                      ${LINK_LIBS}
+                      $<$<PLATFORM_ID:Linux>:pthread>)
 
 ADD_LINKER_FLAGS()
 

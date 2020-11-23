@@ -11,14 +11,17 @@
 #include "gpa_hw_counter_dx12_gfx8.h"
 #include "gpa_hw_counter_dx12_gfx9.h"
 #include "gpa_hw_counter_dx12_gfx10.h"
+#include "gpa_hw_counter_dx12_gfx103.h"
 
 #include "public_counter_definitions_dx12_gfx8.h"
 #include "public_counter_definitions_dx12_gfx9.h"
 #include "public_counter_definitions_dx12_gfx10.h"
+#include "public_counter_definitions_dx12_gfx103.h"
 
 #include "public_counter_definitions_dx12_gfx8_asics.h"
 #include "public_counter_definitions_dx12_gfx9_asics.h"
 #include "public_counter_definitions_dx12_gfx10_asics.h"
+#include "public_counter_definitions_dx12_gfx103_asics.h"
 
 bool GPA_CounterGeneratorDX12::IsAMDGPU(GDT_HW_GENERATION generation)
 {
@@ -39,17 +42,22 @@ UINT GPA_CounterGeneratorDX12::CalculateBlockIdDX12(GDT_HW_GENERATION generation
     {
         if (generation == GDT_HW_GENERATION_VOLCANICISLAND)
         {
-            return static_cast<UINT>(countergfx8::hw_dx12_driver_enum_gfx8[groupIndex]);
+            return static_cast<UINT>(counter_dx12_gfx8::hw_dx12_driver_enum_gfx8[groupIndex]);
         }
 
         if (generation == GDT_HW_GENERATION_GFX9)
         {
-            return static_cast<UINT>(countergfx9::hw_dx12_driver_enum_gfx9[groupIndex]);
+            return static_cast<UINT>(counter_dx12_gfx9::hw_dx12_driver_enum_gfx9[groupIndex]);
         }
 
         if (generation == GDT_HW_GENERATION_GFX10)
         {
-            return static_cast<UINT>(countergfx10::hw_dx12_driver_enum_gfx10[groupIndex]);
+            return static_cast<UINT>(counter_dx12_gfx10::hw_dx12_driver_enum_gfx10[groupIndex]);
+        }
+
+        if (generation == GDT_HW_GENERATION_GFX103)
+        {
+            return static_cast<UINT>(counter_dx12_gfx103::hw_dx12_driver_enum_gfx103[groupIndex]);
         }
 
         // don't recognize the specified hardware generation.
@@ -93,11 +101,11 @@ GPA_Status GPA_CounterGeneratorDX12::GeneratePublicCounters(GDT_HW_GENERATION   
         {
         case GDT_HW_GENERATION_VOLCANICISLAND:
         {
-            AutoDefinePublicDerivedCountersDX12Gfx8(*pPublicCounters);
+            AutoDefinePublicDerivedCountersDX12_Gfx8(*pPublicCounters);
 
             if (generateAsicSpecificCounters)
             {
-                dx12gfx8asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                dx12_gfx8_asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
             }
 
             status = GPA_STATUS_OK;
@@ -106,11 +114,11 @@ GPA_Status GPA_CounterGeneratorDX12::GeneratePublicCounters(GDT_HW_GENERATION   
 
         case GDT_HW_GENERATION_GFX9:
         {
-            AutoDefinePublicDerivedCountersDX12Gfx9(*pPublicCounters);
+            AutoDefinePublicDerivedCountersDX12_Gfx9(*pPublicCounters);
 
             if (generateAsicSpecificCounters)
             {
-                dx12gfx9asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                dx12_gfx9_asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
             }
 
             status = GPA_STATUS_OK;
@@ -119,16 +127,28 @@ GPA_Status GPA_CounterGeneratorDX12::GeneratePublicCounters(GDT_HW_GENERATION   
 
         case GDT_HW_GENERATION_GFX10:
         {
-            AutoDefinePublicDerivedCountersDX12Gfx10(*pPublicCounters);
+            AutoDefinePublicDerivedCountersDX12_Gfx10(*pPublicCounters);
 
             if (generateAsicSpecificCounters)
             {
-                dx12gfx10asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+                dx12_gfx10_asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
             }
 
             status = GPA_STATUS_OK;
         }
         break;
+
+        case GDT_HW_GENERATION_GFX103:
+        {
+            AutoDefinePublicDerivedCountersDX12_Gfx103(*pPublicCounters);
+
+            if (generateAsicSpecificCounters)
+            {
+                dx12_gfx103_asics::UpdatePublicAsicSpecificCounters(desiredGeneration, asicType, *pPublicCounters);
+            }
+
+            status = GPA_STATUS_OK;
+        }
 
         default:
             break;
@@ -246,57 +266,75 @@ GPA_Status GPA_CounterGeneratorDX12::GenerateHardwareCounters(GDT_HW_GENERATION 
 
     if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
-        pHardwareCounters->m_ppCounterGroupArray                       = countergfx8::dx12_counter_group_array_gfx8;
-        pHardwareCounters->m_pGroups                                   = countergfx8::hw_dx12_groups_gfx8;
-        pHardwareCounters->m_groupCount                                = countergfx8::hw_dx12_group_count_gfx8;
-        pHardwareCounters->m_pSQCounterGroups                          = countergfx8::hw_dx12_sq_groups_gfx8;
-        pHardwareCounters->m_sqGroupCount                              = countergfx8::hw_dx12_sq_group_count_gfx8;
-        pHardwareCounters->m_timestampBlockIds                         = countergfx8::hw_dx12_timestamp_block_ids_gfx8;
-        pHardwareCounters->m_timeCounterIndices                        = countergfx8::hw_dx12_time_counter_indices_gfx8;
-        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = countergfx8::hw_dx12_gputimebottomtobottomduration_index_gfx8;
-        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = countergfx8::hw_dx12_gputimebottomtobottomstart_index_gfx8;
-        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = countergfx8::hw_dx12_gputimebottomtobottomend_index_gfx8;
-        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = countergfx8::hw_dx12_gputimetoptobottomduration_index_gfx8;
-        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = countergfx8::hw_dx12_gputimetoptobottomstart_index_gfx8;
-        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = countergfx8::hw_dx12_gputimetoptobottomend_index_gfx8;
-        pHardwareCounters->m_pIsolatedGroups                           = countergfx8::hw_dx12_sq_isolated_groups_gfx8;
-        pHardwareCounters->m_isolatedGroupCount                        = countergfx8::hw_dx12_sq_isolated_group_count_gfx8;
+        pHardwareCounters->m_ppCounterGroupArray                       = counter_dx12_gfx8::dx12_counter_group_array_gfx8;
+        pHardwareCounters->m_pGroups                                   = counter_dx12_gfx8::hw_dx12_groups_gfx8;
+        pHardwareCounters->m_groupCount                                = counter_dx12_gfx8::hw_dx12_group_count_gfx8;
+        pHardwareCounters->m_pSQCounterGroups                          = counter_dx12_gfx8::hw_dx12_sq_groups_gfx8;
+        pHardwareCounters->m_sqGroupCount                              = counter_dx12_gfx8::hw_dx12_sq_group_count_gfx8;
+        pHardwareCounters->m_timestampBlockIds                         = counter_dx12_gfx8::hw_dx12_timestamp_block_ids_gfx8;
+        pHardwareCounters->m_timeCounterIndices                        = counter_dx12_gfx8::hw_dx12_time_counter_indices_gfx8;
+        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = counter_dx12_gfx8::hw_dx12_gputimebottomtobottomduration_index_gfx8;
+        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = counter_dx12_gfx8::hw_dx12_gputimebottomtobottomstart_index_gfx8;
+        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = counter_dx12_gfx8::hw_dx12_gputimebottomtobottomend_index_gfx8;
+        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = counter_dx12_gfx8::hw_dx12_gputimetoptobottomduration_index_gfx8;
+        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = counter_dx12_gfx8::hw_dx12_gputimetoptobottomstart_index_gfx8;
+        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = counter_dx12_gfx8::hw_dx12_gputimetoptobottomend_index_gfx8;
+        pHardwareCounters->m_pIsolatedGroups                           = counter_dx12_gfx8::hw_dx12_sq_isolated_groups_gfx8;
+        pHardwareCounters->m_isolatedGroupCount                        = counter_dx12_gfx8::hw_dx12_sq_isolated_group_count_gfx8;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
-        pHardwareCounters->m_ppCounterGroupArray                       = countergfx9::dx12_counter_group_array_gfx9;
-        pHardwareCounters->m_pGroups                                   = countergfx9::hw_dx12_groups_gfx9;
-        pHardwareCounters->m_groupCount                                = countergfx9::hw_dx12_group_count_gfx9;
-        pHardwareCounters->m_pSQCounterGroups                          = countergfx9::hw_dx12_sq_groups_gfx9;
-        pHardwareCounters->m_sqGroupCount                              = countergfx9::hw_dx12_sq_group_count_gfx9;
-        pHardwareCounters->m_timestampBlockIds                         = countergfx9::hw_dx12_timestamp_block_ids_gfx9;
-        pHardwareCounters->m_timeCounterIndices                        = countergfx9::hw_dx12_time_counter_indices_gfx9;
-        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = countergfx9::hw_dx12_gputimebottomtobottomduration_index_gfx9;
-        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = countergfx9::hw_dx12_gputimebottomtobottomstart_index_gfx9;
-        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = countergfx9::hw_dx12_gputimebottomtobottomend_index_gfx9;
-        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = countergfx9::hw_dx12_gputimetoptobottomduration_index_gfx9;
-        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = countergfx9::hw_dx12_gputimetoptobottomstart_index_gfx9;
-        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = countergfx9::hw_dx12_gputimetoptobottomend_index_gfx9;
-        pHardwareCounters->m_pIsolatedGroups                           = countergfx9::hw_dx12_sq_isolated_groups_gfx9;
-        pHardwareCounters->m_isolatedGroupCount                        = countergfx9::hw_dx12_sq_isolated_group_count_gfx9;
+        pHardwareCounters->m_ppCounterGroupArray                       = counter_dx12_gfx9::dx12_counter_group_array_gfx9;
+        pHardwareCounters->m_pGroups                                   = counter_dx12_gfx9::hw_dx12_groups_gfx9;
+        pHardwareCounters->m_groupCount                                = counter_dx12_gfx9::hw_dx12_group_count_gfx9;
+        pHardwareCounters->m_pSQCounterGroups                          = counter_dx12_gfx9::hw_dx12_sq_groups_gfx9;
+        pHardwareCounters->m_sqGroupCount                              = counter_dx12_gfx9::hw_dx12_sq_group_count_gfx9;
+        pHardwareCounters->m_timestampBlockIds                         = counter_dx12_gfx9::hw_dx12_timestamp_block_ids_gfx9;
+        pHardwareCounters->m_timeCounterIndices                        = counter_dx12_gfx9::hw_dx12_time_counter_indices_gfx9;
+        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = counter_dx12_gfx9::hw_dx12_gputimebottomtobottomduration_index_gfx9;
+        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = counter_dx12_gfx9::hw_dx12_gputimebottomtobottomstart_index_gfx9;
+        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = counter_dx12_gfx9::hw_dx12_gputimebottomtobottomend_index_gfx9;
+        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = counter_dx12_gfx9::hw_dx12_gputimetoptobottomduration_index_gfx9;
+        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = counter_dx12_gfx9::hw_dx12_gputimetoptobottomstart_index_gfx9;
+        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = counter_dx12_gfx9::hw_dx12_gputimetoptobottomend_index_gfx9;
+        pHardwareCounters->m_pIsolatedGroups                           = counter_dx12_gfx9::hw_dx12_sq_isolated_groups_gfx9;
+        pHardwareCounters->m_isolatedGroupCount                        = counter_dx12_gfx9::hw_dx12_sq_isolated_group_count_gfx9;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX10)
     {
-        pHardwareCounters->m_ppCounterGroupArray                       = countergfx10::dx12_counter_group_array_gfx10;
-        pHardwareCounters->m_pGroups                                   = countergfx10::hw_dx12_groups_gfx10;
-        pHardwareCounters->m_groupCount                                = countergfx10::hw_dx12_group_count_gfx10;
-        pHardwareCounters->m_pSQCounterGroups                          = countergfx10::hw_dx12_sq_groups_gfx10;
-        pHardwareCounters->m_sqGroupCount                              = countergfx10::hw_dx12_sq_group_count_gfx10;
-        pHardwareCounters->m_timestampBlockIds                         = countergfx10::hw_dx12_timestamp_block_ids_gfx10;
-        pHardwareCounters->m_timeCounterIndices                        = countergfx10::hw_dx12_time_counter_indices_gfx10;
-        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = countergfx10::hw_dx12_gputimebottomtobottomduration_index_gfx10;
-        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = countergfx10::hw_dx12_gputimebottomtobottomstart_index_gfx10;
-        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = countergfx10::hw_dx12_gputimebottomtobottomend_index_gfx10;
-        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = countergfx10::hw_dx12_gputimetoptobottomduration_index_gfx10;
-        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = countergfx10::hw_dx12_gputimetoptobottomstart_index_gfx10;
-        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = countergfx10::hw_dx12_gputimetoptobottomend_index_gfx10;
-        pHardwareCounters->m_pIsolatedGroups                           = countergfx10::hw_dx12_sq_isolated_groups_gfx10;
-        pHardwareCounters->m_isolatedGroupCount                        = countergfx10::hw_dx12_sq_isolated_group_count_gfx10;
+        pHardwareCounters->m_ppCounterGroupArray                       = counter_dx12_gfx10::dx12_counter_group_array_gfx10;
+        pHardwareCounters->m_pGroups                                   = counter_dx12_gfx10::hw_dx12_groups_gfx10;
+        pHardwareCounters->m_groupCount                                = counter_dx12_gfx10::hw_dx12_group_count_gfx10;
+        pHardwareCounters->m_pSQCounterGroups                          = counter_dx12_gfx10::hw_dx12_sq_groups_gfx10;
+        pHardwareCounters->m_sqGroupCount                              = counter_dx12_gfx10::hw_dx12_sq_group_count_gfx10;
+        pHardwareCounters->m_timestampBlockIds                         = counter_dx12_gfx10::hw_dx12_timestamp_block_ids_gfx10;
+        pHardwareCounters->m_timeCounterIndices                        = counter_dx12_gfx10::hw_dx12_time_counter_indices_gfx10;
+        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = counter_dx12_gfx10::hw_dx12_gputimebottomtobottomduration_index_gfx10;
+        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = counter_dx12_gfx10::hw_dx12_gputimebottomtobottomstart_index_gfx10;
+        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = counter_dx12_gfx10::hw_dx12_gputimebottomtobottomend_index_gfx10;
+        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = counter_dx12_gfx10::hw_dx12_gputimetoptobottomduration_index_gfx10;
+        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = counter_dx12_gfx10::hw_dx12_gputimetoptobottomstart_index_gfx10;
+        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = counter_dx12_gfx10::hw_dx12_gputimetoptobottomend_index_gfx10;
+        pHardwareCounters->m_pIsolatedGroups                           = counter_dx12_gfx10::hw_dx12_sq_isolated_groups_gfx10;
+        pHardwareCounters->m_isolatedGroupCount                        = counter_dx12_gfx10::hw_dx12_sq_isolated_group_count_gfx10;
+    }
+    else if (desiredGeneration == GDT_HW_GENERATION_GFX103)
+    {
+        pHardwareCounters->m_ppCounterGroupArray                       = counter_dx12_gfx103::dx12_counter_group_array_gfx103;
+        pHardwareCounters->m_pGroups                                   = counter_dx12_gfx103::hw_dx12_groups_gfx103;
+        pHardwareCounters->m_groupCount                                = counter_dx12_gfx103::hw_dx12_group_count_gfx103;
+        pHardwareCounters->m_pSQCounterGroups                          = counter_dx12_gfx103::hw_dx12_sq_groups_gfx103;
+        pHardwareCounters->m_sqGroupCount                              = counter_dx12_gfx103::hw_dx12_sq_group_count_gfx103;
+        pHardwareCounters->m_timestampBlockIds                         = counter_dx12_gfx103::hw_dx12_timestamp_block_ids_gfx103;
+        pHardwareCounters->m_timeCounterIndices                        = counter_dx12_gfx103::hw_dx12_time_counter_indices_gfx103;
+        pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex = counter_dx12_gfx103::hw_dx12_gputimebottomtobottomduration_index_gfx103;
+        pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex    = counter_dx12_gfx103::hw_dx12_gputimebottomtobottomstart_index_gfx103;
+        pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex      = counter_dx12_gfx103::hw_dx12_gputimebottomtobottomend_index_gfx103;
+        pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex    = counter_dx12_gfx103::hw_dx12_gputimetoptobottomduration_index_gfx103;
+        pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex       = counter_dx12_gfx103::hw_dx12_gputimetoptobottomstart_index_gfx103;
+        pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex         = counter_dx12_gfx103::hw_dx12_gputimetoptobottomend_index_gfx103;
+        pHardwareCounters->m_pIsolatedGroups                           = counter_dx12_gfx103::hw_dx12_sq_isolated_groups_gfx103;
+        pHardwareCounters->m_isolatedGroupCount                        = counter_dx12_gfx103::hw_dx12_sq_isolated_group_count_gfx103;
     }
     else
     {
@@ -343,21 +381,27 @@ GPA_Status GPA_CounterGeneratorDX12::GenerateHardwareExposedCounters(GDT_HW_GENE
 
     if (desiredGeneration == GDT_HW_GENERATION_VOLCANICISLAND)
     {
-        pHardwareCounters->m_ppHardwareExposedCounter         = countergfx8::dx12_exposed_counters_group_array_gfx8;
-        pHardwareCounters->m_pHardwareExposedCounterGroups    = countergfx8::hw_dx12_exposed_counters_by_group_gfx8;
-        pHardwareCounters->m_hardwareExposedCounterGroupCount = countergfx8::hw_dx12_exposed_counters_group_count_gfx8;
+        pHardwareCounters->m_ppHardwareExposedCounter         = counter_dx12_gfx8::dx12_exposed_counters_group_array_gfx8;
+        pHardwareCounters->m_pHardwareExposedCounterGroups    = counter_dx12_gfx8::hw_dx12_exposed_counters_by_group_gfx8;
+        pHardwareCounters->m_hardwareExposedCounterGroupCount = counter_dx12_gfx8::hw_dx12_exposed_counters_group_count_gfx8;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX9)
     {
-        pHardwareCounters->m_ppHardwareExposedCounter         = countergfx9::dx12_exposed_counters_group_array_gfx9;
-        pHardwareCounters->m_pHardwareExposedCounterGroups    = countergfx9::hw_dx12_exposed_counters_by_group_gfx9;
-        pHardwareCounters->m_hardwareExposedCounterGroupCount = countergfx9::hw_dx12_exposed_counters_group_count_gfx9;
+        pHardwareCounters->m_ppHardwareExposedCounter         = counter_dx12_gfx9::dx12_exposed_counters_group_array_gfx9;
+        pHardwareCounters->m_pHardwareExposedCounterGroups    = counter_dx12_gfx9::hw_dx12_exposed_counters_by_group_gfx9;
+        pHardwareCounters->m_hardwareExposedCounterGroupCount = counter_dx12_gfx9::hw_dx12_exposed_counters_group_count_gfx9;
     }
     else if (desiredGeneration == GDT_HW_GENERATION_GFX10)
     {
-        pHardwareCounters->m_ppHardwareExposedCounter         = countergfx10::dx12_exposed_counters_group_array_gfx10;
-        pHardwareCounters->m_pHardwareExposedCounterGroups    = countergfx10::hw_dx12_exposed_counters_by_group_gfx10;
-        pHardwareCounters->m_hardwareExposedCounterGroupCount = countergfx10::hw_dx12_exposed_counters_group_count_gfx10;
+        pHardwareCounters->m_ppHardwareExposedCounter         = counter_dx12_gfx10::dx12_exposed_counters_group_array_gfx10;
+        pHardwareCounters->m_pHardwareExposedCounterGroups    = counter_dx12_gfx10::hw_dx12_exposed_counters_by_group_gfx10;
+        pHardwareCounters->m_hardwareExposedCounterGroupCount = counter_dx12_gfx10::hw_dx12_exposed_counters_group_count_gfx10;
+    }
+    else if (desiredGeneration == GDT_HW_GENERATION_GFX103)
+    {
+        pHardwareCounters->m_ppHardwareExposedCounter         = counter_dx12_gfx103::dx12_exposed_counters_group_array_gfx103;
+        pHardwareCounters->m_pHardwareExposedCounterGroups    = counter_dx12_gfx103::hw_dx12_exposed_counters_by_group_gfx103;
+        pHardwareCounters->m_hardwareExposedCounterGroupCount = counter_dx12_gfx103::hw_dx12_exposed_counters_group_count_gfx103;
     }
     else
     {

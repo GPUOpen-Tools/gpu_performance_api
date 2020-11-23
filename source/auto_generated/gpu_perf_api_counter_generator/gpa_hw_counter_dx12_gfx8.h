@@ -10,6 +10,8 @@
 #ifndef _GPA_HW_COUNTER_DX12_GFX8_H_
 #define _GPA_HW_COUNTER_DX12_GFX8_H_
 
+// clang-format off
+
 #include <windows.h>
 #pragma warning (push)
 #pragma warning (disable: 4201)
@@ -22,7 +24,7 @@ struct GPA_HardwareCounterDesc;
 struct GPA_CounterGroupDesc;
 struct GPA_SQCounterGroupDesc;
 
-namespace countergfx8
+namespace counter_dx12_gfx8
 {
     extern GPA_HardwareCounterDesc*           dx12_counter_group_array_gfx8[]; ///< Array of hardware counter groups for dx12 for gfx8 family
     extern GPA_HardwareCounterDesc*           dx12_exposed_counters_group_array_gfx8[]; ///< Array of hardware exposed counter groups for dx12 for gfx8 family
@@ -45,6 +47,59 @@ namespace countergfx8
     extern const unsigned int                 dx12_padded_counter_group_count_gfx8; ///< reserved counter group count for dx12 for gfx8 family
     extern const unsigned int                 hw_dx12_sq_group_count_gfx8; ///< Hardware SQ Group Count for dx12 for gfx8 family
     extern const unsigned int                 hw_dx12_sq_isolated_group_count_gfx8; ///< Hardware Isolated Group Count for dx12 for gfx8 family
-}; // namespace
+
+/// If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
+/// \param asic_type The ASIC type that is currently in use.
+/// \return True if the ASIC is matched by this file and block instances are updated, otherwise false.
+inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
+{
+    UNREFERENCED_PARAMETER(asic_type);
+
+    // dx12 specific max event overrides
+    auto block_map = BuildBlockMap(hw_dx12_groups_gfx8, hw_dx12_group_count_gfx8);
+
+    UpdateMaxSpmBlockEvents(block_map.get(), "CPF", 4);
+    UpdateMaxSpmBlockEvents(block_map.get(), "IA", 4);
+    UpdateMaxSpmBlockEvents(block_map.get(), "VGT", 6);
+    UpdateMaxSpmBlockEvents(block_map.get(), "PA_SU", 6);
+    UpdateMaxSpmBlockEvents(block_map.get(), "PA_SC", 4);
+    UpdateMaxSpmBlockEvents(block_map.get(), "SPI", 16);
+    UpdateMaxSpmBlockEvents(block_map.get(), "SQ", 16);
+    UpdateMaxSpmBlockEvents(block_map.get(), "SX", 8);
+    UpdateMaxSpmBlockEvents(block_map.get(), "TA", 4);
+    UpdateMaxSpmBlockEvents(block_map.get(), "TD", 4);
+    UpdateMaxSpmBlockEvents(block_map.get(), "TCP", 6);
+    UpdateMaxSpmBlockEvents(block_map.get(), "TCC", 8);
+    UpdateMaxSpmBlockEvents(block_map.get(), "TCA", 8);
+    UpdateMaxSpmBlockEvents(block_map.get(), "DB", 6);
+    UpdateMaxSpmBlockEvents(block_map.get(), "CB", 4);
+    UpdateMaxSpmBlockEvents(block_map.get(), "GDS", 4);
+    UpdateMaxSpmBlockEvents(block_map.get(), "SRBM", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "GRBM", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "GRBMSE", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "RLC", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "SDMA", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "MC", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "CPG", 4);
+    UpdateMaxSpmBlockEvents(block_map.get(), "CPC", 4);
+    UpdateMaxSpmBlockEvents(block_map.get(), "WD", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "TCS", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "ATC", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "ATCL2", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "MCVML2", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "GCEA", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "RPB", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "RMI", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "IH", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "GPIN", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "GPUTimeStamp", 0);
+    UpdateMaxSpmBlockEvents(block_map.get(), "GPUTime", 0);
+
+
+    return true;
+}
+} //  namespace counter_dx12_gfx8
+
+// clang-format on
 
 #endif  // _GPA_HW_COUNTER_DX12_GFX8_H_

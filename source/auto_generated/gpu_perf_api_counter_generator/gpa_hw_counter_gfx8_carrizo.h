@@ -10,12 +10,14 @@
 #ifndef _GPA_HW_COUNTER_GFX8_CARRIZO_H_
 #define _GPA_HW_COUNTER_GFX8_CARRIZO_H_
 
+// clang-format off
+
 #include <set>
 
 struct GPA_HardwareCounterDesc;
 #include "gpa_hw_counter_gfx8.h"
 
-namespace countergfx8carrizo
+namespace counter_gfx8_carrizo
 {
 /// Uses the input ASIC type to determine if this data provides an ASIC specific version.
 /// \param asic_type The ASIC type that is currently in use.
@@ -59,13 +61,17 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
         return false;
     }
 
-    ReplaceBlockInstanceCounters(countergfx8::vgt0_counters_gfx8, vgt0_counters_gfx8_carrizo, 146);
-    ReplaceBlockInstanceCounters(countergfx8::vgt1_counters_gfx8, vgt1_counters_gfx8_carrizo, 146);
-    ReplaceBlockInstanceCounters(countergfx8::vgt2_counters_gfx8, vgt2_counters_gfx8_carrizo, 146);
-    ReplaceBlockInstanceCounters(countergfx8::vgt3_counters_gfx8, vgt3_counters_gfx8_carrizo, 146);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt0_counters_gfx8, vgt0_counters_gfx8_carrizo, 146);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt1_counters_gfx8, vgt1_counters_gfx8_carrizo, 146);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt2_counters_gfx8, vgt2_counters_gfx8_carrizo, 146);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt3_counters_gfx8, vgt3_counters_gfx8_carrizo, 146);
 
     return true;
 }
-} // countergfx8carrizo
+
+bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type);
+} // counter_gfx8_carrizo
 
 #endif  // _GPA_HW_COUNTER_GFX8_CARRIZO_H_
+
+// clang-format on

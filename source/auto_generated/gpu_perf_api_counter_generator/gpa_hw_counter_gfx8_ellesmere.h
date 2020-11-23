@@ -10,12 +10,14 @@
 #ifndef _GPA_HW_COUNTER_GFX8_ELLESMERE_H_
 #define _GPA_HW_COUNTER_GFX8_ELLESMERE_H_
 
+// clang-format off
+
 #include <set>
 
 struct GPA_HardwareCounterDesc;
 #include "gpa_hw_counter_gfx8.h"
 
-namespace countergfx8ellesmere
+namespace counter_gfx8_ellesmere
 {
 /// Uses the input ASIC type to determine if this data provides an ASIC specific version.
 /// \param asic_type The ASIC type that is currently in use.
@@ -59,13 +61,17 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
         return false;
     }
 
-    ReplaceBlockInstanceCounters(countergfx8::vgt0_counters_gfx8, vgt0_counters_gfx8_ellesmere, 147);
-    ReplaceBlockInstanceCounters(countergfx8::vgt1_counters_gfx8, vgt1_counters_gfx8_ellesmere, 147);
-    ReplaceBlockInstanceCounters(countergfx8::vgt2_counters_gfx8, vgt2_counters_gfx8_ellesmere, 147);
-    ReplaceBlockInstanceCounters(countergfx8::vgt3_counters_gfx8, vgt3_counters_gfx8_ellesmere, 147);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt0_counters_gfx8, vgt0_counters_gfx8_ellesmere, 147);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt1_counters_gfx8, vgt1_counters_gfx8_ellesmere, 147);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt2_counters_gfx8, vgt2_counters_gfx8_ellesmere, 147);
+    ReplaceBlockInstanceCounters(counter_gfx8::vgt3_counters_gfx8, vgt3_counters_gfx8_ellesmere, 147);
 
     return true;
 }
-} // countergfx8ellesmere
+
+bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type);
+} // counter_gfx8_ellesmere
 
 #endif  // _GPA_HW_COUNTER_GFX8_ELLESMERE_H_
+
+// clang-format on

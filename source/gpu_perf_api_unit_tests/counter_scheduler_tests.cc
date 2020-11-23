@@ -43,7 +43,7 @@ GPA_CounterResultLocation MakeLocation(gpa_uint16 pass, gpa_uint16 offset)
     return location;
 }
 
-#if defined(WIN32) || (defined(_LINUX) && defined(X64))
+#ifdef _WIN32
 
 // Test the openCL counter names on VI hardware
 TEST(CounterDLLTests, OpenCLCounterSchedulingVI)
@@ -997,8 +997,9 @@ TEST(CounterDLLTests, DX11EnableAndDisable)
     GPA_Status gpa_status = get_func_table_ptr(&gpa_counter_lib_func_table);
     EXPECT_EQ(GPA_STATUS_OK, gpa_status);
 
+    GpaCounterContextHardwareInfo counter_context_hardware_info = {AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, nullptr, 0};
     GPA_CounterContext gpa_counter_context;
-    gpa_status = gpa_counter_lib_func_table.GpaCounterLib_OpenCounterContext(api, AMD_VENDOR_ID, deviceId, REVISION_ID_ANY, GPA_OPENCONTEXT_DEFAULT_BIT, FALSE, &gpa_counter_context);
+    gpa_status = gpa_counter_lib_func_table.GpaCounterLib_OpenCounterContext(api, counter_context_hardware_info, GPA_OPENCONTEXT_DEFAULT_BIT, FALSE, &gpa_counter_context);
     EXPECT_EQ(GPA_STATUS_OK, gpa_status);
 
     std::vector<gpa_uint32> enable_counter_list;
@@ -1028,6 +1029,8 @@ TEST(CounterDLLTests, DX11EnableAndDisable)
     EXPECT_EQ(1, req_pass);
 
     gpa_counter_lib_func_table.GpaCounterLib_CloseCounterContext(gpa_counter_context);
+
+    FreeLibrary(hDll);
 }
 
 #endif
