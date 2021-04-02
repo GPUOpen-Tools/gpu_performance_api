@@ -1,45 +1,48 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Class to manage the resources used for Vk SW queries
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Class to manage the resources used for Vk SW queries
 //==============================================================================
+
+#include "gpu_perf_api_vk/vk_command_list_sw_query_group.h"
+
 #include <string.h>
 
-#include "logging.h"
-#include "vk_command_list_sw_query_group.h"
-#include "vk_entry_points.h"
+#include "gpu_perf_api_common/logging.h"
 
-const VkQueryType VkCommandListSWQueryGroup::ms_queryTypes[] = {VK_QUERY_TYPE_OCCLUSION,
-                                                                VK_QUERY_TYPE_OCCLUSION,
-                                                                VK_QUERY_TYPE_TIMESTAMP,
-                                                                VK_QUERY_TYPE_PIPELINE_STATISTICS};
+#include "gpu_perf_api_vk/vk_entry_points.h"
+
+const VkQueryType VkCommandListSWQueryGroup::kQueryTypes[] = {VK_QUERY_TYPE_OCCLUSION,
+                                                              VK_QUERY_TYPE_OCCLUSION,
+                                                              VK_QUERY_TYPE_TIMESTAMP,
+                                                              VK_QUERY_TYPE_PIPELINE_STATISTICS};
 
 VkCommandListSWQueryGroup::VkCommandListSWQueryGroup()
-    : m_maxSamples(0)
-    , m_activeSampleCount(0)
-    , m_device(VK_NULL_HANDLE)
-    , m_commandBuffer(VK_NULL_HANDLE)
-    , m_pQueriesResults(nullptr)
+    : max_samples_(0)
+    , active_sample_count_(0)
+    , device_(VK_NULL_HANDLE)
+    , command_buffer_(VK_NULL_HANDLE)
+    , queries_results_(nullptr)
 {
-    for (size_t qi = 0; GPA_VK_QUERY_TYPE_COUNT > qi; ++qi)
+    for (size_t query_index = 0; kGpaVkQueryTypeCount > query_index; ++query_index)
     {
-        m_queryPools[qi] = VK_NULL_HANDLE;
+        query_pools_[query_index] = VK_NULL_HANDLE;
     }
 }
 
 VkCommandListSWQueryGroup::VkCommandListSWQueryGroup(VkCommandListSWQueryGroup&& other)
-    : m_maxSamples(other.m_maxSamples)
-    , m_activeSampleCount(other.m_activeSampleCount)
-    , m_commandBuffer(other.m_commandBuffer)
-    , m_pQueriesResults(other.m_pQueriesResults)
+    : max_samples_(other.max_samples_)
+    , active_sample_count_(other.active_sample_count_)
+    , command_buffer_(other.command_buffer_)
+    , queries_results_(other.queries_results_)
 {
-    for (size_t qi = 0; GPA_VK_QUERY_TYPE_COUNT > qi; ++qi)
+    for (size_t query_index = 0; kGpaVkQueryTypeCount > query_index; ++query_index)
     {
-        m_queryPools[qi] = other.m_queryPools[qi];
+        query_pools_[query_index] = other.query_pools_[query_index];
     }
 
-    other.m_pQueriesResults = nullptr;
+    other.queries_results_ = nullptr;
 }
 
 VkCommandListSWQueryGroup::~VkCommandListSWQueryGroup()
@@ -49,48 +52,48 @@ VkCommandListSWQueryGroup::~VkCommandListSWQueryGroup()
 
 VkCommandListSWQueryGroup& VkCommandListSWQueryGroup::operator=(VkCommandListSWQueryGroup&& other)
 {
-    m_maxSamples        = other.m_maxSamples;
-    m_activeSampleCount = other.m_activeSampleCount;
-    m_commandBuffer     = other.m_commandBuffer;
-    m_device            = other.m_device;
+    max_samples_         = other.max_samples_;
+    active_sample_count_ = other.active_sample_count_;
+    command_buffer_      = other.command_buffer_;
+    device_              = other.device_;
 
-    for (size_t qi = 0; (GPA_VK_QUERY_TYPE_COUNT > qi); ++qi)
+    for (size_t query_index = 0; (kGpaVkQueryTypeCount > query_index); ++query_index)
     {
-        m_queryPools[qi] = other.m_queryPools[qi];
+        query_pools_[query_index] = other.query_pools_[query_index];
     }
 
-    m_pQueriesResults       = other.m_pQueriesResults;
-    other.m_pQueriesResults = nullptr;
+    queries_results_       = other.queries_results_;
+    other.queries_results_ = nullptr;
 
     return (*this);
 }
 
-bool VkCommandListSWQueryGroup::Initialize(VkPhysicalDevice physicalDevice, VkDevice device, VkCommandBuffer commandBuffer, size_t groupSize)
+bool VkCommandListSWQueryGroup::Initialize(VkPhysicalDevice physical_device, VkDevice device, VkCommandBuffer command_buffer, size_t grouop_size)
 {
     bool result  = true;
-    m_maxSamples = groupSize;
+    max_samples_ = grouop_size;
 
-    for (size_t qi = 0; (GPA_VK_QUERY_TYPE_COUNT > qi) && result; ++qi)
+    for (size_t query_index = 0; (kGpaVkQueryTypeCount > query_index) && result; ++query_index)
     {
-        if (VK_NULL_HANDLE == m_queryPools[qi])
+        if (VK_NULL_HANDLE == query_pools_[query_index])
         {
-            VkBool32 bCreateQueryPool = VK_TRUE;
+            VkBool32 create_query_pool = VK_TRUE;
 
-            if (ms_queryTypes[qi] == VK_QUERY_TYPE_PIPELINE_STATISTICS)
+            if (kQueryTypes[query_index] == VK_QUERY_TYPE_PIPELINE_STATISTICS)
             {
                 VkPhysicalDeviceFeatures features;
-                _vkGetPhysicalDeviceFeatures(physicalDevice, &features);
-                bCreateQueryPool = features.pipelineStatisticsQuery;
+                _vkGetPhysicalDeviceFeatures(physical_device, &features);
+                create_query_pool = features.pipelineStatisticsQuery;
             }
 
-            if (bCreateQueryPool == VK_TRUE)
+            if (create_query_pool == VK_TRUE)
             {
-                result &= CreateSwQueryPool(device, (GPA_VK_SW_QUERY_TYPE)qi);
+                result &= CreateSwQueryPool(device, (GpaVkSwQueryType)query_index);
 
                 if (result)
                 {
-                    // Reset the query pool so that it can be used
-                    _vkCmdResetQueryPool(commandBuffer, m_queryPools[qi], 0, (uint32_t)m_maxSamples);
+                    // Reset the query pool so that it can be used.
+                    _vkCmdResetQueryPool(command_buffer, query_pools_[query_index], 0, (uint32_t)max_samples_);
                 }
             }
         }
@@ -98,10 +101,10 @@ bool VkCommandListSWQueryGroup::Initialize(VkPhysicalDevice physicalDevice, VkDe
 
     if (result)
     {
-        m_device        = device;
-        m_commandBuffer = commandBuffer;
+        device_         = device;
+        command_buffer_ = command_buffer;
 
-        m_activeSampleQueries.clear();
+        active_sample_queries_.clear();
     }
     else
     {
@@ -113,196 +116,195 @@ bool VkCommandListSWQueryGroup::Initialize(VkPhysicalDevice physicalDevice, VkDe
 
 void VkCommandListSWQueryGroup::Cleanup()
 {
-    if (nullptr != m_pQueriesResults)
+    if (nullptr != queries_results_)
     {
-        delete[] m_pQueriesResults;
-        m_pQueriesResults = nullptr;
+        delete[] queries_results_;
+        queries_results_ = nullptr;
     }
 
-    m_activeSampleQueries.clear();
+    active_sample_queries_.clear();
 
-    if (VK_NULL_HANDLE != m_device)
+    if (VK_NULL_HANDLE != device_)
     {
-        VkResult waitResult = _vkDeviceWaitIdle(m_device);
+        VkResult wait_result = _vkDeviceWaitIdle(device_);
 
-        if (waitResult == VK_SUCCESS)
+        if (wait_result == VK_SUCCESS)
         {
-            for (size_t qti = 0; qti < GPA_VK_QUERY_TYPE_COUNT; ++qti)
+            for (size_t query_index = 0; query_index < kGpaVkQueryTypeCount; ++query_index)
             {
-                if (VK_NULL_HANDLE != m_queryPools[qti])
+                if (VK_NULL_HANDLE != query_pools_[query_index])
                 {
-                    _vkDestroyQueryPool(m_device, m_queryPools[qti], nullptr);
+                    _vkDestroyQueryPool(device_, query_pools_[query_index], nullptr);
                 }
             }
         }
     }
 }
 
-gpa_uint32 VkCommandListSWQueryGroup::GetSampleCount() const
+GpaUInt32 VkCommandListSWQueryGroup::GetSampleCount() const
 {
-    return m_activeSampleCount;
+    return active_sample_count_;
 }
 
 void VkCommandListSWQueryGroup::BeginSwSample()
 {
-    m_activeSampleCount++;
+    active_sample_count_++;
 }
 
-void VkCommandListSWQueryGroup::EndSwSample(const gpa_uint32 swSampleIndex)
+void VkCommandListSWQueryGroup::EndSwSample(const GpaUInt32 sample_index)
 {
-    UNREFERENCED_PARAMETER(swSampleIndex);
+    UNREFERENCED_PARAMETER(sample_index);
 }
 
-void VkCommandListSWQueryGroup::ReleaseSwSample(const gpa_uint32 swSampleIndex)
+void VkCommandListSWQueryGroup::ReleaseSwSample(const GpaUInt32 sample_index)
 {
-    UNREFERENCED_PARAMETER(swSampleIndex);
-    memset(&(m_pQueriesResults[swSampleIndex]), 0, sizeof(m_pQueriesResults[swSampleIndex]));
-    m_activeSampleCount--;
+    UNREFERENCED_PARAMETER(sample_index);
+    memset(&(queries_results_[sample_index]), 0, sizeof(queries_results_[sample_index]));
+    active_sample_count_--;
 }
 
-void VkCommandListSWQueryGroup::BeginSwQuery(const gpa_uint32 swSampleIndex, const GPA_VK_SW_QUERY_TYPE queryType)
+void VkCommandListSWQueryGroup::BeginSwQuery(const GpaUInt32 sample_index, const GpaVkSwQueryType query_type)
 {
-    if (GPA_VK_QUERY_TYPE_TIMESTAMP == queryType)
+    if (kGpaVkQueryTypeTimestamp == query_type)
     {
-        _vkCmdWriteTimestamp(m_commandBuffer, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, m_queryPools[queryType], 2 * swSampleIndex);
+        _vkCmdWriteTimestamp(command_buffer_, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, query_pools_[query_type], 2 * sample_index);
     }
     else
     {
         VkQueryControlFlags flags = 0;
 
-        if (GPA_VK_QUERY_TYPE_OCCLUSION == queryType)
+        if (kGpaVkQueryTypeOcclusion == query_type)
         {
             flags = VK_QUERY_CONTROL_PRECISE_BIT;
         }
 
-        _vkCmdBeginQuery(m_commandBuffer, m_queryPools[queryType], swSampleIndex, flags);
+        _vkCmdBeginQuery(command_buffer_, query_pools_[query_type], sample_index, flags);
     }
 
-    m_activeSampleQueries[swSampleIndex][queryType] = true;
+    active_sample_queries_[sample_index][query_type] = true;
 }
 
-void VkCommandListSWQueryGroup::EndSwQuery(const gpa_uint32 swSampleIndex, const GPA_VK_SW_QUERY_TYPE queryType)
+void VkCommandListSWQueryGroup::EndSwQuery(const GpaUInt32 sample_index, const GpaVkSwQueryType query_type)
 {
-    if (GPA_VK_QUERY_TYPE_TIMESTAMP == queryType)
+    if (kGpaVkQueryTypeTimestamp == query_type)
     {
-        _vkCmdWriteTimestamp(m_commandBuffer, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, m_queryPools[queryType], 2 * swSampleIndex + 1);
+        _vkCmdWriteTimestamp(command_buffer_, VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, query_pools_[query_type], 2 * sample_index + 1);
     }
     else
     {
-        _vkCmdEndQuery(m_commandBuffer, m_queryPools[queryType], swSampleIndex);
+        _vkCmdEndQuery(command_buffer_, query_pools_[query_type], sample_index);
     }
 }
 
-bool VkCommandListSWQueryGroup::GetSwSampleResults(const gpa_uint32 swSampleIndex, GpaVkSoftwareQueryResults& queryResults)
+bool VkCommandListSWQueryGroup::GetSwSampleResults(const GpaUInt32 sample_index, GpaVkSoftwareQueryResults& queryResults)
 {
-    uint64_t* pResultAvailableAddresses[GPA_VK_QUERY_TYPE_COUNT] = {&(m_pQueriesResults[swSampleIndex].occlusionAvailable),
-                                                                    &(m_pQueriesResults[swSampleIndex].occlusionBinaryAvailable),
-                                                                    &(m_pQueriesResults[2 * swSampleIndex].timestampEndAvailable),
-                                                                    &(m_pQueriesResults[swSampleIndex].pipelineStatsAvailable)};
+    uint64_t* result_available_addresses[kGpaVkQueryTypeCount] = {&(queries_results_[sample_index].occlusionAvailable),
+                                                                  &(queries_results_[sample_index].occlusionBinaryAvailable),
+                                                                  &(queries_results_[2 * sample_index].timestampEndAvailable),
+                                                                  &(queries_results_[sample_index].pipelineStatsAvailable)};
 
-    uint64_t* pResultAddresses[GPA_VK_QUERY_TYPE_COUNT] = {&(m_pQueriesResults[swSampleIndex].occlusion),
-                                                           &(m_pQueriesResults[swSampleIndex].occlusionBinary),
-                                                           &(m_pQueriesResults[2 * swSampleIndex].timestampBegin),
-                                                           &(m_pQueriesResults[swSampleIndex].inputAssemblyVertices)};
+    uint64_t* result_addresses[kGpaVkQueryTypeCount] = {&(queries_results_[sample_index].occlusion),
+                                                        &(queries_results_[sample_index].occlusionBinary),
+                                                        &(queries_results_[2 * sample_index].timestampBegin),
+                                                        &(queries_results_[sample_index].inputAssemblyVertices)};
 
     // Initially all results are available.
-    bool allResultsAvailable = true;
+    bool all_results_available = true;
 
-    for (size_t qti = 0; GPA_VK_QUERY_TYPE_COUNT > qti; ++qti)
+    for (size_t query_type_index = 0; kGpaVkQueryTypeCount > query_type_index; ++query_type_index)
     {
-        if (m_activeSampleQueries[swSampleIndex][qti] == true)
+        if (active_sample_queries_[sample_index][query_type_index] == true)
         {
-            VkQueryPool queryPool = m_queryPools[qti];
+            VkQueryPool query_pool = query_pools_[query_type_index];
 
-            if (VK_NULL_HANDLE != queryPool)
+            if (VK_NULL_HANDLE != query_pool)
             {
                 // First, get a copy of the query results.
-                uint64_t* pResultAddress = pResultAddresses[qti];
-                size_t    resultSize     = ms_gpaVkSoftwareResultSizes[qti];
-                size_t    resultStride   = ms_gpaVkSoftwareResultStrides[qti];
+                uint64_t* result_address = result_addresses[query_type_index];
+                size_t    result_size    = kGpaVkSoftwareResultSizes[query_type_index];
+                size_t    result_stride  = kGpaVkSoftwareResultStrides[query_type_index];
 
-                uint32_t queryIndex = swSampleIndex;
-                uint32_t numQueries = 1;
+                uint32_t query_index = sample_index;
+                uint32_t num_queries = 1;
 
-                if (qti == GPA_VK_QUERY_TYPE_TIMESTAMP)
+                if (query_type_index == kGpaVkQueryTypeTimestamp)
                 {
-                    // timestamp has 2 queries (begin and end)
-                    queryIndex = 2 * swSampleIndex;
-                    numQueries = 2;
+                    // Timestamp has 2 queries (begin and end).
+                    query_index = 2 * sample_index;
+                    num_queries = 2;
                 }
 
-                // get the results back
+                // Get the results back.
                 // NOTE: because we may loop over this multiple times, it is possible
                 // that the query results get updated each time we get them.
-                VkResult qpResults = _vkGetQueryPoolResults(m_device,
-                                                            queryPool,
-                                                            queryIndex,
-                                                            numQueries,
-                                                            resultSize,
-                                                            pResultAddress,
-                                                            resultStride,
-                                                            VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WITH_AVAILABILITY_BIT);
+                VkResult results = _vkGetQueryPoolResults(device_,
+                                                          query_pool,
+                                                          query_index,
+                                                          num_queries,
+                                                          result_size,
+                                                          result_address,
+                                                          result_stride,
+                                                          VK_QUERY_RESULT_64_BIT | VK_QUERY_RESULT_WITH_AVAILABILITY_BIT);
 
-                allResultsAvailable = (qpResults == VK_SUCCESS);
+                all_results_available = (results == VK_SUCCESS);
 
-                if (allResultsAvailable)
+                if (all_results_available)
                 {
                     // Second, Check if the query results availability bit indicated that it was available.
-                    uint64_t*  pResultAvailableAddress = pResultAvailableAddresses[qti];
-                    gpa_uint64 resultAvailable         = *pResultAvailableAddress;
+                    uint64_t* results_available_address = result_available_addresses[query_type_index];
+                    GpaUInt64 result_available          = *results_available_address;
 
-                    if (resultAvailable == 0)
+                    if (result_available == 0)
                     {
-                        allResultsAvailable = false;
+                        all_results_available = false;
                     }
                     else
                     {
                         // Result is available, which matches initial assumption.
-
                         // CAVEAT: There's currently a bug in the availibility bit for PIPELINE_STATISTICS that
                         // it will report available even though all results are 0. So if we encounter this
                         // situation, report that results are actually NOT available.
-                        if (qti == GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS && m_pQueriesResults[swSampleIndex].inputAssemblyVertices == 0 &&
-                            m_pQueriesResults[swSampleIndex].inputAssemblyPrimitives == 0 && m_pQueriesResults[swSampleIndex].vertexShaderInvocations == 0 &&
-                            m_pQueriesResults[swSampleIndex].geometryShaderInvocations == 0 && m_pQueriesResults[swSampleIndex].geometryShaderPrimitives == 0 &&
-                            m_pQueriesResults[swSampleIndex].clippingInvocations == 0 && m_pQueriesResults[swSampleIndex].clippingPrimitives == 0 &&
-                            m_pQueriesResults[swSampleIndex].fragmentShaderInvocations == 0 &&
-                            m_pQueriesResults[swSampleIndex].tessellationControlShaderPatches == 0 &&
-                            m_pQueriesResults[swSampleIndex].tessellationEvaluationShaderInvocations == 0 &&
-                            m_pQueriesResults[swSampleIndex].computeShaderInvocations == 0)
+                        if (query_type_index == kGpaVkQueryTypePipelineStatistics && queries_results_[sample_index].inputAssemblyVertices == 0 &&
+                            queries_results_[sample_index].inputAssemblyPrimitives == 0 && queries_results_[sample_index].vertexShaderInvocations == 0 &&
+                            queries_results_[sample_index].geometryShaderInvocations == 0 && queries_results_[sample_index].geometryShaderPrimitives == 0 &&
+                            queries_results_[sample_index].clippingInvocations == 0 && queries_results_[sample_index].clippingPrimitives == 0 &&
+                            queries_results_[sample_index].fragmentShaderInvocations == 0 &&
+                            queries_results_[sample_index].tessellationControlShaderPatches == 0 &&
+                            queries_results_[sample_index].tessellationEvaluationShaderInvocations == 0 &&
+                            queries_results_[sample_index].computeShaderInvocations == 0)
                         {
                             // CAVEAT: There's currently a bug in the availibility bit that it will report available
                             // even though all results are 0. So if we encounter this situation, report that results
                             // are actually NOT available.
-                            allResultsAvailable = false;
+                            all_results_available = false;
                         }
                     }
                 }
             }
         }
-    }  // end for each query type
-
-    if (allResultsAvailable)
-    {
-        queryResults = m_pQueriesResults[swSampleIndex];
     }
 
-    return allResultsAvailable;
+    if (all_results_available)
+    {
+        queryResults = queries_results_[sample_index];
+    }
+
+    return all_results_available;
 }
 
-bool VkCommandListSWQueryGroup::CreateSwQueryPool(VkDevice device, const GPA_VK_SW_QUERY_TYPE queryType)
+bool VkCommandListSWQueryGroup::CreateSwQueryPool(VkDevice device, const GpaVkSwQueryType query_type)
 {
     bool                  result = true;
-    VkQueryPoolCreateInfo queryPoolDesc;
-    memset(&queryPoolDesc, 0, sizeof(queryPoolDesc));
-    queryPoolDesc.sType      = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
-    queryPoolDesc.queryType  = ms_queryTypes[queryType];
-    queryPoolDesc.flags      = 0;
-    queryPoolDesc.queryCount = (uint32_t)m_maxSamples;
+    VkQueryPoolCreateInfo query_pool_description;
+    memset(&query_pool_description, 0, sizeof(query_pool_description));
+    query_pool_description.sType      = VK_STRUCTURE_TYPE_QUERY_POOL_CREATE_INFO;
+    query_pool_description.queryType  = kQueryTypes[query_type];
+    query_pool_description.flags      = 0;
+    query_pool_description.queryCount = (uint32_t)max_samples_;
 
-    if (queryType == GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS)
+    if (query_type == kGpaVkQueryTypePipelineStatistics)
     {
-        queryPoolDesc.pipelineStatistics =
+        query_pool_description.pipelineStatistics =
             VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_VERTICES_BIT | VK_QUERY_PIPELINE_STATISTIC_INPUT_ASSEMBLY_PRIMITIVES_BIT |
             VK_QUERY_PIPELINE_STATISTIC_VERTEX_SHADER_INVOCATIONS_BIT | VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_INVOCATIONS_BIT |
             VK_QUERY_PIPELINE_STATISTIC_GEOMETRY_SHADER_PRIMITIVES_BIT | VK_QUERY_PIPELINE_STATISTIC_CLIPPING_INVOCATIONS_BIT |
@@ -311,35 +313,33 @@ bool VkCommandListSWQueryGroup::CreateSwQueryPool(VkDevice device, const GPA_VK_
             VK_QUERY_PIPELINE_STATISTIC_COMPUTE_SHADER_INVOCATIONS_BIT;
     }
 
-    if (queryType == GPA_VK_QUERY_TYPE_TIMESTAMP)
+    if (query_type == kGpaVkQueryTypeTimestamp)
     {
-        // we keep track of both begin and end timestamps, so we need 2x as many queries
-        queryPoolDesc.queryCount *= 2;
+        // We keep track of both begin and end timestamps, so we need 2x as many queries.
+        query_pool_description.queryCount *= 2;
     }
 
     if (result)
     {
-        VkQueryPool queryPool = VK_NULL_HANDLE;
-        result                = (VK_SUCCESS == _vkCreateQueryPool(device, &queryPoolDesc, nullptr, &queryPool));
+        VkQueryPool query_pool = VK_NULL_HANDLE;
+        result                 = (VK_SUCCESS == _vkCreateQueryPool(device, &query_pool_description, nullptr, &query_pool));
 
         if (result)
         {
-            // TODO: Check for the debugging extension to be able to tag objects with names
-            //pQueryPool->SetName(L"GPUPerfAPIVk QueryPool");
-            m_queryPools[queryType] = queryPool;
+            query_pools_[query_type] = query_pool;
 
-            m_pQueriesResults = new (std::nothrow) GpaVkSoftwareQueryResults[m_maxSamples];
-            result            = (nullptr != m_pQueriesResults);
+            queries_results_ = new (std::nothrow) GpaVkSoftwareQueryResults[max_samples_];
+            result           = (nullptr != queries_results_);
 
             if (result)
             {
-                memset(m_pQueriesResults, 0, sizeof(GpaVkSoftwareQueryResults) * m_maxSamples);
+                memset(queries_results_, 0, sizeof(GpaVkSoftwareQueryResults) * max_samples_);
             }
         }
         else
         {
-            m_queryPools[queryType] = VK_NULL_HANDLE;
-            result                  = false;
+            query_pools_[query_type] = VK_NULL_HANDLE;
+            result                   = false;
         }
     }
 

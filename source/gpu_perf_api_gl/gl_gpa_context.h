@@ -1,74 +1,82 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GPA GL Context declarations
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GPA GL Context declarations
 //==============================================================================
 
-#ifndef _GL_GPA_CONTEXT_H_
-#define _GL_GPA_CONTEXT_H_
+#ifndef GPU_PERF_API_GL_GPA_CONTEXT_H_
+#define GPU_PERF_API_GL_GPA_CONTEXT_H_
 
-#include "gl_entry_points.h"
-#include "gl_amd_driver_ext.h"
+#include "gpu_perf_api_common/gpa_context.h"
 
-// GPA Common
-#include "gpa_context.h"
+#include "gpu_perf_api_counter_generator/gl_entry_points.h"
+
+#include "gpu_perf_api_gl/gl_amd_driver_ext.h"
 
 #ifndef GLES
 #ifdef _WIN32
-using GLContextPtr = HGLRC;  ///< type alias for GL Context
+using GlContextPtr = HGLRC;  ///< Type alias for GL Context.
 #else
-using GLContextPtr = GLXContext;  ///< type alias for GL Context
+using GlContextPtr = GLXContext;  ///< Type alias for GL Context.
 #endif
 #else
-using GLContextPtr = EGLContext;  ///< type alias for GL Context
+using GlContextPtr = EGLContext;  ///< Type alias for GL Context.
 #endif  // GLES
 
-/// Class for OpenGL GPA Context
-class GLGPAContext : public GPAContext
+/// @brief Class for OpenGL GPA Context
+class GlGpaContext : public GpaContext
 {
 public:
-    /// Constructor
-    /// \param[in] context context pointer
-    /// \param[in] pHwInfo the hardware info used to create the context
-    /// \param[in] contextFlags the flags used to create the context
-    /// \param[in] driverVersion the version number of the GL driver
-    GLGPAContext(GLContextPtr context, GPA_HWInfo& pHwInfo, GPA_OpenContextFlags contextFlags, int driverVersion);
+    /// @brief Constructor
+    ///
+    /// @param [in] context Context pointer.
+    /// @param [in] hw_info The hardware info used to create the context.
+    /// @param [in] context_flags The flags used to create the context.
+    /// @param [in] driver_version The version number of the GL driver.
+    GlGpaContext(GlContextPtr context, GpaHwInfo& hw_info, GpaOpenContextFlags context_flags, int driver_version);
 
-    /// Destructor
-    ~GLGPAContext();
+    /// @brief Destructor.
+    ~GlGpaContext();
 
-    /// \copydoc IGPAContext::CreateSession()
-    GPA_SessionId CreateSession(GPA_Session_Sample_Type sampleType) override;
+    /// @copydoc IGpaContext::CreateSession()
+    GpaSessionId CreateSession(GpaSessionSampleType sample_type) override;
 
-    /// \copydoc IGPAContext::DeleteSession()
-    bool DeleteSession(GPA_SessionId sessionId) override;
+    /// @copydoc IGpaContext::DeleteSession()
+    bool DeleteSession(GpaSessionId session_id) override;
 
-    /// \copydoc IGPAContext::GetMaxGPASessions()
-    gpa_uint32 GetMaxGPASessions() const override;
+    /// @copydoc IGpaContext::GetMaxGpaSessions()
+    GpaUInt32 GetMaxGpaSessions() const override;
 
-    /// \copydoc IGPAInterfaceTrait::GetAPIType()
-    GPA_API_Type GetAPIType() const override;
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    GpaApiType GetApiType() const override;
 
-    /// Initializes the OpenGL context
-    /// \return true if initialization is successful otherwise false
+    /// @brief Initializes the OpenGL context.
+    ///
+    /// @return Success status of initialization.
+    /// @retval True on success.
+    /// @retval False on failure.
     bool Initialize();
 
-    /// Gets the GL rendering context
-    /// \return the GL rendering context
-    const GLContextPtr& GetGLContext() const;
+    /// @brief Gets the GL rendering context.
+    ///
+    /// @return The GL rendering context.
+    const GlContextPtr& GetGlContext() const;
 
-    /// \copydoc IGPAContext::SetStableClocks()
-    GPA_Status SetStableClocks(bool useProfilingClocks) override;
+    /// @copydoc IGpaContext::SetStableClocks()
+    GpaStatus SetStableClocks(bool use_profiling_clocks) override;
 
 private:
-    /// Validates the counter from counter generator and gl driver counters and updates it if necessary
-    /// \return true upon successful operation otherwise false
-    bool ValidateAndUpdateGLCounters() const;
+    /// @brief Validates the counter from counter generator and gl driver counters and updates it if necessary.
+    ///
+    /// @return Success status of validation.
+    /// @retval True on success.
+    /// @retval False on failure.
+    bool ValidateAndUpdateGlCounters() const;
 
-    GLContextPtr            m_glContext;      ///< GL rendering context pointer
-    oglUtils::AMDXClockMode m_clockMode;      ///< GPU Clock mode
-    int                     m_driverVersion;  ///< GL driver version
+    GlContextPtr             gl_context_;      ///< GL rendering context pointer.
+    ogl_utils::AmdXClockMode clock_mode_;      ///< GPU Clock mode.
+    int                      driver_version_;  ///< GL driver version.
 };
 
-#endif  // _CL_GPA_CONTEXT_H_
+#endif  // GPU_PERF_API_GL_GPA_CONTEXT_H_

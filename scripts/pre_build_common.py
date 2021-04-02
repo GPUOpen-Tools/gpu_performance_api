@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+# Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 # Utility Python Script to generate GPA projects on Windows and Linux
 
 import os
@@ -131,7 +131,7 @@ def parse_cmake_arguments(cmake_arguments):
     cmake_additional_args=[""]
 
     if cmake_arguments.verbose == True:
-        CMakeAdditionalArgs.append("-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON")
+        cmake_additional_args.append("-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON")
 
     if sys.platform == "win32":
         if cmake_arguments.skipdx11 == True:

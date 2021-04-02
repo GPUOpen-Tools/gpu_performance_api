@@ -1,8 +1,9 @@
 #! /usr/bin/python3
+# Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 #
 # Simple script to update a set of common directories that are needed as dependencies of the GPUPerfAPI
 # Usage:
-#   UpdateCommon.py [latest]
+#   fetch_dependencies.py [latest]
 #
 # If "latest" is specified, the latest commit will be checked out.
 # Otherwise, the repos will be updated to the commit specified in the "gitMapping" table.

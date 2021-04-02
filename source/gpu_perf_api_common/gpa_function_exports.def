@@ -1,4 +1,52 @@
 EXPORTS
+    GpaGetFuncTable
+    GpaRegisterLoggingCallback
+    GpaInitialize
+    GpaDestroy
+    GpaOpenContext
+    GpaCloseContext
+    GpaGetSupportedSampleTypes
+    GpaGetDeviceAndRevisionId
+    GpaGetDeviceName
+    GpaGetNumCounters
+    GpaGetCounterName
+    GpaGetCounterIndex
+    GpaGetCounterGroup
+    GpaGetCounterDescription
+    GpaGetCounterDataType
+    GpaGetCounterUsageType
+    GpaGetCounterUuid
+    GpaGetCounterSampleType
+    GpaGetDataTypeAsStr
+    GpaGetUsageTypeAsStr
+    GpaCreateSession
+    GpaDeleteSession
+    GpaBeginSession
+    GpaEndSession
+    GpaEnableCounter
+    GpaDisableCounter
+    GpaEnableCounterByName
+    GpaDisableCounterByName
+    GpaEnableAllCounters
+    GpaDisableAllCounters
+    GpaGetPassCount
+    GpaGetNumEnabledCounters
+    GpaGetEnabledIndex
+    GpaIsCounterEnabled
+    GpaBeginCommandList
+    GpaEndCommandList
+    GpaBeginSample
+    GpaEndSample
+    GpaContinueSampleOnCommandList
+    GpaCopySecondarySamples
+    GpaGetSampleCount
+    GpaIsPassComplete
+    GpaIsSessionComplete
+    GpaGetSampleResultSize
+    GpaGetSampleResult
+    GpaGetStatusAsStr
+    GpaGetSampleId
+    GpaGetVersion
     GPA_GetFuncTable
     GPA_RegisterLoggingCallback
     GPA_Initialize

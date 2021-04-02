@@ -1,480 +1,483 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GPA Common Context class implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GPA Common Context class implementation.
 //==============================================================================
 
-#include "gpa_context.h"
-#include "gpa_common_defs.h"
-#include "gpa_counter_generator.h"
-#include "gpa_counter_group_accessor.h"
-#include "gpa_hardware_counters.h"
-#include "gpa_software_counters.h"
-#include "gpa_unique_object.h"
-#include "gpa_context_counter_mediator.h"
+#include "gpu_perf_api_common/gpa_context.h"
 
-GPAContext::GPAContext(GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
-    : m_supportedSampleTypes(GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER)
-    ,  // by default enable only discrete counters, descendants can override as necessary
-    m_contextFlags(flags)
-    , m_hwInfo(hwInfo)
-    , m_invalidateAndFlushL2CacheEnabled(false)
-    , m_isOpen(false)
-    , m_isAmdDevice(false)
-    , m_pActiveSession(nullptr)
+#include "gpu_perf_api_counter_generator/gpa_counter_generator.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_group_accessor.h"
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+#include "gpu_perf_api_counter_generator/gpa_software_counters.h"
+
+#include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
+#include "gpu_perf_api_common/gpa_unique_object.h"
+
+GpaContext::GpaContext(GpaHwInfo& hw_info, GpaOpenContextFlags flags)
+    : supported_sample_types_(kGpaContextSampleTypeDiscreteCounter)
+    , context_flags_(flags)
+    , hw_info_(hw_info)
+    , invalidate_and_flush_l2_cache_enabled_(false)
+    , is_open_(false)
+    , is_amd_device_(false)
+    , active_session_(nullptr)
 {
-    gpa_uint32 vendorId;
+    GpaUInt32 vendor_id;
 
-    if (m_hwInfo.GetVendorID(vendorId) && AMD_VENDOR_ID == vendorId)
+    if (hw_info_.GetVendorId(vendor_id) && kAmdVendorId == vendor_id)
     {
-        m_isAmdDevice = true;
+        is_amd_device_ = true;
     }
 }
 
-GPAContext::~GPAContext()
+GpaContext::~GpaContext()
 {
-    GPAContextCounterMediator::Instance()->RemoveContext(this);
+    GpaContextCounterMediator::Instance()->RemoveContext(this);
 }
 
-GPA_Status GPAContext::GetSupportedSampleTypes(GPA_ContextSampleTypeFlags* pSampleTypes) const
+GpaStatus GpaContext::GetSupportedSampleTypes(GpaContextSampleTypeFlags* sample_types) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(pSampleTypes);
+    GPA_INTERNAL_CHECK_NULL_PARAM(sample_types);
 
-    *pSampleTypes = m_supportedSampleTypes;
-    return GPA_STATUS_OK;
+    *sample_types = supported_sample_types_;
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContext::GetNumCounters(gpa_uint32* pCount) const
+GpaStatus GpaContext::GetNumCounters(GpaUInt32* counter_count) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(pCount);
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    GPA_INTERNAL_CHECK_NULL_PARAM(counter_count);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
 
-    if (nullptr == pCounterAccessor)
+    if (nullptr == counter_accessor)
     {
-        GPA_LogDebugError("Accessor is unassigned.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
     }
 
-    *pCount = pCounterAccessor->GetNumCounters();
-    return GPA_STATUS_OK;
+    *counter_count = counter_accessor->GetNumCounters();
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContext::GetCounterName(gpa_uint32 index, const char** ppName) const
+GpaStatus GpaContext::GetCounterName(GpaUInt32 index, const char** counter_name) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(ppName);
+    GPA_INTERNAL_CHECK_NULL_PARAM(counter_name);
 
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
 
-    if (nullptr == pCounterAccessor)
+    if (nullptr == counter_accessor)
     {
-        GPA_LogDebugError("Accessor is unassigned.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
     }
 
-    *ppName = pCounterAccessor->GetCounterName(index);
-    return GPA_STATUS_OK;
+    *counter_name = counter_accessor->GetCounterName(index);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContext::GetCounterGroup(gpa_uint32 index, const char** ppGroup) const
+GpaStatus GpaContext::GetCounterGroup(GpaUInt32 index, const char** counter_group) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(ppGroup);
+    GPA_INTERNAL_CHECK_NULL_PARAM(counter_group);
 
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
 
-    if (nullptr == pCounterAccessor)
+    if (nullptr == counter_accessor)
     {
-        GPA_LogDebugError("Accessor is unassigned.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
     }
 
-    *ppGroup = pCounterAccessor->GetCounterGroup(index);
-    return GPA_STATUS_OK;
+    *counter_group = counter_accessor->GetCounterGroup(index);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContext::GetCounterDescription(gpa_uint32 index, const char** ppDescription) const
+GpaStatus GpaContext::GetCounterDescription(GpaUInt32 index, const char** counter_description) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(ppDescription);
+    GPA_INTERNAL_CHECK_NULL_PARAM(counter_description);
 
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
 
-    if (nullptr == pCounterAccessor)
+    if (nullptr == counter_accessor)
     {
-        GPA_LogDebugError("Accessor is unassigned.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
     }
 
-    *ppDescription = pCounterAccessor->GetCounterDescription(index);
-    return GPA_STATUS_OK;
+    *counter_description = counter_accessor->GetCounterDescription(index);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContext::GetCounterDataType(gpa_uint32 index, GPA_Data_Type* pCounterDataType) const
+GpaStatus GpaContext::GetCounterDataType(GpaUInt32 index, GpaDataType* counter_data_type) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(pCounterDataType);
+    GPA_INTERNAL_CHECK_NULL_PARAM(counter_data_type);
 
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
 
-    if (nullptr == pCounterAccessor)
+    if (nullptr == counter_accessor)
     {
-        GPA_LogDebugError("Accessor is unassigned.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
     }
 
-    *pCounterDataType = pCounterAccessor->GetCounterDataType(index);
-    return GPA_STATUS_OK;
+    *counter_data_type = counter_accessor->GetCounterDataType(index);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContext::GetCounterUsageType(gpa_uint32 index, GPA_Usage_Type* pCounterUsageType) const
+GpaStatus GpaContext::GetCounterUsageType(GpaUInt32 index, GpaUsageType* counter_usage_type) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(pCounterUsageType);
+    GPA_INTERNAL_CHECK_NULL_PARAM(counter_usage_type);
 
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
 
-    if (nullptr == pCounterAccessor)
+    if (nullptr == counter_accessor)
     {
-        GPA_LogDebugError("Accessor is unassigned.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
     }
 
-    *pCounterUsageType = pCounterAccessor->GetCounterUsageType(index);
-    return GPA_STATUS_OK;
+    *counter_usage_type = counter_accessor->GetCounterUsageType(index);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContext::GetCounterUuid(gpa_uint32 index, GPA_UUID* pCounterUuid) const
+GpaStatus GpaContext::GetCounterUuid(GpaUInt32 index, GpaUuid* counter_uuid) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(pCounterUuid);
+    GPA_INTERNAL_CHECK_NULL_PARAM(counter_uuid);
 
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
 
-    if (nullptr == pCounterAccessor)
+    if (nullptr == counter_accessor)
     {
-        GPA_LogDebugError("Accessor is unassigned.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
     }
 
-    *pCounterUuid = pCounterAccessor->GetCounterUuid(index);
-    return GPA_STATUS_OK;
+    *counter_uuid = counter_accessor->GetCounterUuid(index);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContext::GetCounterSampleType(gpa_uint32 index, GPA_Counter_Sample_Type* pCounterSampleType) const
+GpaStatus GpaContext::GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType* counter_sample_type) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(pCounterSampleType);
+    GPA_INTERNAL_CHECK_NULL_PARAM(counter_sample_type);
 
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
 
-    if (nullptr == pCounterAccessor)
+    if (nullptr == counter_accessor)
     {
-        GPA_LogDebugError("Accessor is unassigned.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
     }
 
-    *pCounterSampleType = pCounterAccessor->GetCounterSampleType(index);
-    return GPA_STATUS_OK;
+    *counter_sample_type = counter_accessor->GetCounterSampleType(index);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContext::GetCounterIndex(const char* pCounterName, gpa_uint32* pIndex) const
+GpaStatus GpaContext::GetCounterIndex(const char* pCounterName, GpaUInt32* counter_index) const
 {
-    GPA_INTERNAL_CHECK_NULL_PARAM(pIndex);
+    GPA_INTERNAL_CHECK_NULL_PARAM(counter_index);
 
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
 
-    if (nullptr == pCounterAccessor)
+    if (nullptr == counter_accessor)
     {
-        GPA_LogDebugError("Accessor is unassigned.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_DEBUG_ERROR("Accessor is unassigned.");
+        return kGpaStatusErrorFailed;
     }
 
-    return pCounterAccessor->GetCounterIndex(pCounterName, pIndex) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+    return counter_accessor->GetCounterIndex(pCounterName, counter_index) ? kGpaStatusOk : kGpaStatusErrorFailed;
 }
 
-bool GPAContext::GetCounterSourceLocalIndex(gpa_uint32 exposedCounterIndex, GPACounterSource* pSource, gpa_uint32* pSourceLocalIndex) const
+bool GpaContext::GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, GpaCounterSource* counter_source, GpaUInt32* source_local_index) const
 {
-    assert(nullptr != pSource);
-    assert(nullptr != pSourceLocalIndex);
+    assert(nullptr != counter_source);
+    assert(nullptr != source_local_index);
 
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
-    assert(nullptr != pCounterAccessor);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
+    assert(nullptr != counter_accessor);
 
-    GPACounterSourceInfo info = pCounterAccessor->GetCounterSourceInfo(exposedCounterIndex);
+    GpaCounterSourceInfo info = counter_accessor->GetCounterSourceInfo(exposed_counter_index);
 
-    bool isValid = (GPACounterSource::UNKNOWN != info.m_counterSource);
+    bool isValid = (GpaCounterSource::kUnknown != info.counter_source);
 
     if (isValid)
     {
-        *pSource           = info.m_counterSource;
-        *pSourceLocalIndex = info.m_localIndex;
+        *counter_source     = info.counter_source;
+        *source_local_index = info.local_counter_index;
     }
 
     return isValid;
 }
 
-bool GPAContext::ArePublicCountersExposed() const
+bool GpaContext::ArePublicCountersExposed() const
 {
-    return (m_contextFlags & GPA_OPENCONTEXT_HIDE_PUBLIC_COUNTERS_BIT) == 0;
+    return (context_flags_ & kGpaOpenContextHidePublicCountersBit) == 0;
 }
 
-bool GPAContext::AreHardwareCountersExposed() const
+bool GpaContext::AreHardwareCountersExposed() const
 {
-    return (m_contextFlags & GPA_OPENCONTEXT_HIDE_HARDWARE_COUNTERS_BIT) == 0;
+    return (context_flags_ & kGpaOpenContextHideHardwareCountersBit) == 0;
 }
 
-bool GPAContext::AreSoftwareCountersExposed() const
+bool GpaContext::AreSoftwareCountersExposed() const
 {
-    return (m_contextFlags & GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT) == 0;
+    return (context_flags_ & kGpaOpenContextHideSoftwareCountersBit) == 0;
 }
 
-GPACounterSource GPAContext::GetCounterSource(gpa_uint32 internalCounterIndex) const
+GpaCounterSource GpaContext::GetCounterSource(GpaUInt32 internal_counter_index) const
 {
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
-    GPACounterSource     source           = GPACounterSource::UNKNOWN;
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
+    GpaCounterSource     source           = GpaCounterSource::kUnknown;
 
-    if (nullptr != pCounterAccessor)
+    if (nullptr != counter_accessor)
     {
-        const GPA_HardwareCounters* pHwCounters = pCounterAccessor->GetHardwareCounters();
+        const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
 
-        GPACounterGroupAccessor counterGroupAccessor(
-            pHwCounters->m_pGroups, pHwCounters->m_groupCount, pHwCounters->m_pAdditionalGroups, pHwCounters->m_additionalGroupCount);
+        GpaCounterGroupAccessor counter_group_accessor(hardware_counters->internal_counter_groups_,
+                                                       hardware_counters->group_count_,
+                                                       hardware_counters->additional_groups_,
+                                                       hardware_counters->additional_group_count_);
 
-        counterGroupAccessor.SetCounterIndex(internalCounterIndex);
+        counter_group_accessor.SetCounterIndex(internal_counter_index);
 
-        if (counterGroupAccessor.IsSWCounter())
+        if (counter_group_accessor.IsSwCounter())
         {
-            source = GPACounterSource::SOFTWARE;
+            source = GpaCounterSource::kSoftware;
         }
-        else if (counterGroupAccessor.IsHWCounter())
+        else if (counter_group_accessor.IsHwCounter())
         {
-            source = GPACounterSource::HARDWARE;
+            source = GpaCounterSource::kHardware;
         }
     }
 
     return source;
 }
 
-void GPAContext::SetInvalidateAndFlushL2Cache(bool shouldInvalidateAndFlushL2Cache)
+void GpaContext::SetInvalidateAndFlushL2Cache(bool should_invalidate_and_flush_l2_cache)
 {
-    m_invalidateAndFlushL2CacheEnabled = shouldInvalidateAndFlushL2Cache;
+    invalidate_and_flush_l2_cache_enabled_ = should_invalidate_and_flush_l2_cache;
 }
 
-bool GPAContext::IsInvalidateAndFlushL2CacheEnabled() const
+bool GpaContext::IsInvalidateAndFlushL2CacheEnabled() const
 {
-    return m_invalidateAndFlushL2CacheEnabled;
+    return invalidate_and_flush_l2_cache_enabled_;
 }
 
-const GPA_HWInfo* GPAContext::GetHwInfo() const
+const GpaHwInfo* GpaContext::GetHwInfo() const
 {
-    return &m_hwInfo;
+    return &hw_info_;
 }
 
-bool GPAContext::IsOpen() const
+bool GpaContext::IsOpen() const
 {
-    return m_isOpen;
+    return is_open_;
 }
 
-DeviceClockMode GPAContext::GetDeviceClockMode() const
+DeviceClockMode GpaContext::GetDeviceClockMode() const
 {
-    if (m_contextFlags & GPA_OPENCONTEXT_CLOCK_MODE_NONE_BIT)
+    if (context_flags_ & kGpaOpenContextClockModeNoneBit)
     {
-        return DeviceClockMode::Default;
+        return DeviceClockMode::kDefault;
     }
 
-    if (m_contextFlags & GPA_OPENCONTEXT_CLOCK_MODE_PEAK_BIT)
+    if (context_flags_ & kGpaOpenContextClockModePeakBit)
     {
-        return DeviceClockMode::Peak;
+        return DeviceClockMode::kPeak;
     }
 
-    if (m_contextFlags & GPA_OPENCONTEXT_CLOCK_MODE_MIN_MEMORY_BIT)
+    if (context_flags_ & kGpaOpenContextClockModeMinMemoryBit)
     {
-        return DeviceClockMode::MinimumMemory;
+        return DeviceClockMode::kMinimumMemory;
     }
 
-    if (m_contextFlags & GPA_OPENCONTEXT_CLOCK_MODE_MIN_ENGINE_BIT)
+    if (context_flags_ & kGpaOpenContextClockModeMinEngineBit)
     {
-        return DeviceClockMode::MinimumEngine;
+        return DeviceClockMode::kMinimumEngine;
     }
 
-    return DeviceClockMode::Profiling;
+    return DeviceClockMode::kProfiling;
 }
 
-bool GPAContext::OpenCounters()
+bool GpaContext::OpenCounters()
 {
-    bool success = GPA_STATUS_OK == GPAContextCounterMediator::Instance()->GenerateCounters(this, m_contextFlags, true);
+    bool success = (kGpaStatusOk == GpaContextCounterMediator::Instance()->GenerateCounters(this, context_flags_, true));
     return success;
 }
 
-GPAObjectType GPAContext::ObjectType() const
+GpaObjectType GpaContext::ObjectType() const
 {
-    return GPAObjectType::GPA_OBJECT_TYPE_CONTEXT;
+    return GpaObjectType::kGpaObjectTypeContext;
 }
 
-bool GPAContext::DoesSessionExist(GPA_SessionId pSessionId) const
+bool GpaContext::DoesSessionExist(GpaSessionId gpa_session_id) const
 {
-    return GetIndex(pSessionId->Object());
+    return GetIndex(gpa_session_id->Object());
 }
 
-gpa_uint32 GPAContext::GetSessionCount() const
+GpaUInt32 GpaContext::GetSessionCount() const
 {
-    return static_cast<gpa_uint32>(m_gpaSessionList.size());
+    return static_cast<GpaUInt32>(gpa_session_list_.size());
 }
 
-GPA_Status GPAContext::BeginSession(IGPASession* pGpaSession)
+GpaStatus GpaContext::BeginSession(IGpaSession* gpa_session)
 {
-    GPA_Status retStatus = GPA_STATUS_OK;
+    GpaStatus ret_status = kGpaStatusOk;
 
-    if (nullptr == pGpaSession)
+    if (nullptr == gpa_session)
     {
-        retStatus = GPA_STATUS_ERROR_NULL_POINTER;
+        ret_status = kGpaStatusErrorNullPointer;
     }
     else
     {
-        m_activeSessionMutex.lock();
+        active_session_mutex_.lock();
 
-        if (nullptr != m_pActiveSession)
+        if (nullptr != active_session_)
         {
-            if (m_pActiveSession != pGpaSession)
+            if (active_session_ != gpa_session)
             {
-                retStatus = GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE;
+                ret_status = kGpaStatusErrorOtherSessionActive;
             }
             else
             {
-                retStatus = GPA_STATUS_ERROR_SESSION_ALREADY_STARTED;
+                ret_status = kGpaStatusErrorSessionAlreadyStarted;
             }
         }
 
-        m_activeSessionMutex.unlock();
+        active_session_mutex_.unlock();
 
-        if (GPA_STATUS_OK == retStatus)
+        if (kGpaStatusOk == ret_status)
         {
-            retStatus = pGpaSession->Begin();
+            ret_status = gpa_session->Begin();
 
-            if (GPA_STATUS_OK == retStatus)
+            if (kGpaStatusOk == ret_status)
             {
-                m_activeSessionMutex.lock();
-                m_pActiveSession = pGpaSession;
-                m_activeSessionMutex.unlock();
+                active_session_mutex_.lock();
+                active_session_ = gpa_session;
+                active_session_mutex_.unlock();
             }
         }
     }
 
-    return retStatus;
+    return ret_status;
 }
 
-GPA_Status GPAContext::EndSession(IGPASession* pGpaSession)
+GpaStatus GpaContext::EndSession(IGpaSession* gpa_session)
 {
-    GPA_Status retStatus = GPA_STATUS_OK;
+    GpaStatus ret_status = kGpaStatusOk;
 
-    if (nullptr == pGpaSession)
+    if (nullptr == gpa_session)
     {
-        retStatus = GPA_STATUS_ERROR_NULL_POINTER;
+        ret_status = kGpaStatusErrorNullPointer;
     }
     else
     {
-        m_activeSessionMutex.lock();
+        active_session_mutex_.lock();
 
-        if (nullptr == m_pActiveSession)
+        if (nullptr == active_session_)
         {
-            retStatus = GPA_STATUS_ERROR_SESSION_NOT_STARTED;
+            ret_status = kGpaStatusErrorSessionNotStarted;
         }
         else
         {
-            if (m_pActiveSession != pGpaSession)
+            if (active_session_ != gpa_session)
             {
-                retStatus = GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE;
+                ret_status = kGpaStatusErrorOtherSessionActive;
             }
         }
 
-        m_activeSessionMutex.unlock();
+        active_session_mutex_.unlock();
     }
 
-    if (GPA_STATUS_OK == retStatus)
+    if (kGpaStatusOk == ret_status)
     {
-        retStatus = pGpaSession->End();
+        ret_status = gpa_session->End();
 
-        if (GPA_STATUS_OK == retStatus)
+        if (kGpaStatusOk == ret_status)
         {
-            m_activeSessionMutex.lock();
-            m_pActiveSession = nullptr;
-            m_activeSessionMutex.unlock();
+            active_session_mutex_.lock();
+            active_session_ = nullptr;
+            active_session_mutex_.unlock();
         }
     }
 
-    return retStatus;
+    return ret_status;
 }
 
-const IGPASession* GPAContext::GetActiveSession() const
+const IGpaSession* GpaContext::GetActiveSession() const
 {
-    std::lock_guard<std::mutex> lock(m_activeSessionMutex);
-    return m_pActiveSession;
+    std::lock_guard<std::mutex> lock(active_session_mutex_);
+    return active_session_;
 }
 
-void GPAContext::SetAsOpened(bool open)
+void GpaContext::SetAsOpened(bool open)
 {
-    m_isOpen = open;
+    is_open_ = open;
 }
 
-bool GPAContext::IsAMDDevice() const
+bool GpaContext::IsAmdDevice() const
 {
-    gpa_uint32 vendorId;
-    bool       isAmd = false;
+    GpaUInt32 vendor_id;
+    bool      is_amd = false;
 
-    if (m_hwInfo.GetVendorID(vendorId) && AMD_VENDOR_ID == vendorId)
+    if (hw_info_.GetVendorId(vendor_id) && kAmdVendorId == vendor_id)
     {
-        isAmd = true;
+        is_amd = true;
     }
 
-    return isAmd;
+    return is_amd;
 }
 
-void GPAContext::AddGpaSession(IGPASession* pGpaSession)
+void GpaContext::AddGpaSession(IGpaSession* gpa_session)
 {
-    std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
-    m_gpaSessionList.push_back(pGpaSession);
+    std::lock_guard<std::mutex> lock_session_list(gpa_session_list_mutex_);
+    gpa_session_list_.push_back(gpa_session);
 }
 
-void GPAContext::RemoveGpaSession(IGPASession* pGpaSession)
+void GpaContext::RemoveGpaSession(IGpaSession* gpa_session)
 {
-    std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
-    m_gpaSessionList.remove(pGpaSession);
+    std::lock_guard<std::mutex> lock_session_list(gpa_session_list_mutex_);
+    gpa_session_list_.remove(gpa_session);
 }
 
-void GPAContext::IterateGpaSessionList(std::function<bool(IGPASession* pGpaSession)> function) const
+void GpaContext::IterateGpaSessionList(std::function<bool(IGpaSession* gpa_session)> function) const
 {
-    std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
+    std::lock_guard<std::mutex> lock_session_list(gpa_session_list_mutex_);
     bool                        next = true;
 
-    for (auto it = m_gpaSessionList.cbegin(); it != m_gpaSessionList.cend() && next; ++it)
+    for (auto it = gpa_session_list_.cbegin(); it != gpa_session_list_.cend() && next; ++it)
     {
         next = function(*it);
     }
 }
 
-void GPAContext::ClearSessionList()
+void GpaContext::ClearSessionList()
 {
-    std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
-    m_gpaSessionList.clear();
+    std::lock_guard<std::mutex> lock_session_list(gpa_session_list_mutex_);
+    gpa_session_list_.clear();
 }
 
-bool GPAContext::GetIndex(IGPASession* pGpaSession, unsigned int* pIndex) const
+bool GpaContext::GetIndex(IGpaSession* gpa_session, unsigned int* index) const
 {
-    bool         found = false;
-    unsigned int index = 0;
+    bool         found      = false;
+    unsigned int temp_index = 0;
 
-    std::lock_guard<std::mutex> lockSessionList(m_gpaSessionListMutex);
+    std::lock_guard<std::mutex> lock_session_list(gpa_session_list_mutex_);
 
-    for (auto iter = m_gpaSessionList.cbegin(); iter != m_gpaSessionList.cend(); ++iter)
+    for (auto iter = gpa_session_list_.cbegin(); iter != gpa_session_list_.cend(); ++iter)
     {
-        if (pGpaSession == *iter)
+        if (gpa_session == *iter)
         {
             found = true;
 
-            if (nullptr != pIndex)
+            if (nullptr != index)
             {
-                *pIndex = index;
+                *index = temp_index;
             }
 
             break;
         }
 
-        index++;
+        temp_index++;
     }
 
     return found;

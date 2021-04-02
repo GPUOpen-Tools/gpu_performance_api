@@ -1,448 +1,482 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Cube Sample header
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Cube Sample header.
 //==============================================================================
 
-#ifndef _CUBE_SAMPLE_H_
-#define _CUBE_SAMPLE_H_
+#ifndef GPU_PERF_API_EXAMPLES_DX12_DX12_COLOR_CUBE_CUBE_SAMPLE_
+#define GPU_PERF_API_EXAMPLES_DX12_DX12_COLOR_CUBE_CUBE_SAMPLE_
 
-#include <dxgi1_4.h>
+#include <atomic>
+#include <fstream>
+#include <functional>
+#include <sstream>
+#include <stack>
+#include <vector>
 
 #ifdef _DEBUG
 #include <dxgidebug.h>
 #endif
 
+#include <dxgi1_4.h>
 #include <d3d12.h>
-#include <stack>
-#include <fstream>
-#include <sstream>
-#include <atomic>
-#include <functional>
 
-//#define DISABLE_GPA 1 - Uncomment to disable GPA
+//#define DISABLE_GPA 1 // Uncomment to disable GPA.
+#include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
-#include "gpu_perf_api_interface_loader.h"
-
-/*
- * This sample demonstrates various usage of GPA
- * by drawing a cube.
- */
-
-/// class for cube sample
+/// @brief Class for cube sample, demonstraing usage of GPA by drawing a cube.
 class CubeSample
 {
 public:
-    /// Get the static instance of the cube sample
-    /// \return static instance of the cube sample
+    /// @brief Get the static instance of the cube sample.
+    ///
+    /// @return Static instance of the cube sample.
     static CubeSample* Instance();
 
-    /// Initializes the cube sample
+    /// @brief Initializes the cube sample.
     void Init();
 
-    /// Draw the cube sample
+    /// @brief Draw the cube sample.
     void Draw();
 
-    /// Release the cube sample resources
+    /// @brief Release the cube sample resources.
     void Destroy();
 
-    /// Toggles the profiling
+    /// @brief Toggles the profiling.
     void ToggleProfiling();
 
-    /// Toggles the wireframe
+    /// @brief Toggles the wireframe.
     void ToggleWireFrame();
 
 private:
-    /// struct for vertex data
+    /// @brief struct for vertex data.
     struct VertexData
     {
-        float position[4];  ///< position
-        float color[4];     ///< color
+        float position[4];  ///< Position.
+        float color[4];     ///< Color.
     };
 
-    /// constructor
+    /// @brief Constructor.
     CubeSample();
 
-    /// Initializes the common resource
-    /// \return true upon successful execution
+    /// @brief Initializes the common resource.
+    ///
+    /// @return True upon successful execution.
     bool InitializeCommonResource();
 
-    /// Initializes the view port resources
-    /// \return true upon successful execution
+    /// @brief Initializes the view port resources.
+    ///
+    /// @return True upon successful execution.
     bool InitializeViewPortResource();
 
-    /// Uploads the cube data to the GPU
+    /// @brief Uploads the cube data to the GPU.
     bool UploadCubeData();
 
-    /// Wait for the GPU to finish executing
+    /// @brief Wait for the GPU to finish executing.
     void WaitForGpuToFinish();
 
-    /// Adds the IUnknown to the list and adds a name for it
-    void AddIUnknown(IUnknown* pUnknown, const std::string& name);
+    /// @brief Adds the IUnknown to the list and adds a name for it.
+    void AddIUnknown(IUnknown* unknown, const std::string& name);
 
-    using IUnknownNamePair    = std::pair<std::wstring, IUnknown*>;       // type alias for IUnknown name pair
-    using IUnknownNameCache   = std::stack<IUnknownNamePair>;             // type alias for stack of IUnknownNamePairs
-    using GraphicsCommandList = std::vector<ID3D12GraphicsCommandList*>;  // type alias for the list of graphics command list
+    using IUnknownNamePair    = std::pair<std::wstring, IUnknown*>;       ///< Type alias for IUnknown name pair.
+    using IUnknownNameCache   = std::stack<IUnknownNamePair>;             ///< Type alias for stack of IUnknownNamePairs.
+    using GraphicsCommandList = std::vector<ID3D12GraphicsCommandList*>;  ///< Type alias for the list of graphics command. list.
 
-    static constexpr unsigned int ms_frameCount    = 2;  ///< frame count
-    static constexpr unsigned int ms_viewPortCount = 4;  ///< number of viewports
-    static CubeSample*            ms_pCubeSample;        ///< static instance of the cube sample
+    static constexpr unsigned int kFrameCount    = 2;  ///< Frame count.
+    static constexpr unsigned int kViewportCount = 4;  ///< Number of viewports.
+    static CubeSample*            cube_sample;         ///< Static instance of the cube sample.
 
-    /// Adds the command list to a list for housekeeping
-    /// \param[in] pGraphicsCommandList graphics command list
-    void AddCommandList(ID3D12GraphicsCommandList* pGraphicsCommandList);
+    /// @brief Adds the command list to a list for housekeeping.
+    ///
+    /// @param [in] graphics_command_list Graphics command list.
+    void AddCommandList(ID3D12GraphicsCommandList* graphics_command_list);
 
-    /// Resets the pass resources;
+    /// Resets the pass resources.
     void ResetGpaPassInfo();
 
 #pragma region CommonResource
-    ID3D12Device*        m_pd3d12Device;         ///< D3D12 Device
-    ID3D12RootSignature* m_pD3D12RootSignature;  ///< D3D12 root signature
+    ID3D12Device*        d3d12_device_;          ///< D3D12 Device.
+    ID3D12RootSignature* d3d12_root_signature_;  ///< D3D12 root signature.
 #ifdef _DEBUG
-    ID3D12Debug* m_pd3d12DebugInterface;  ///< D3D12 debug interface
-    IDXGIDebug*  m_pdxgiDebug;            ///< DXGI debug interface
+    ID3D12Debug* d3d12_debug_interface;  ///< D3D12 debug interface.
+    IDXGIDebug*  dxgi_debug_;            ///< DXGI debug interface.
 #endif
-    IDXGIFactory2*           m_pdxgiFactory2;                ///< DXGI Factory 2
-    ID3D12PipelineState*     m_pfillDrawPipeline;            ///< solid draw pipeline state
-    ID3D12PipelineState*     m_pWireframePipeline;           ///< wireframe draw pipeline state
-    ID3D12Resource*          m_pVertexBuffer;                ///< D3D12 vertex buffer
-    D3D12_VERTEX_BUFFER_VIEW m_vertexBufferView;             ///< vertex buffer view
-    ID3D12Resource*          m_pIndexBuffer;                 ///< D3D12 index buffer
-    D3D12_INDEX_BUFFER_VIEW  m_indexBufferView;              ///< index buffer view
-    D3D12_RECT               m_scissorRect;                  ///< scissor rectangle
-    ID3D12Resource*          m_pRTVResource[ms_frameCount];  ///< D3D12 render target view resource - for dx12 allowed swap effect, we need minimum of two
-    HANDLE                   m_fenceEvent;                   ///< fence event
-    ID3D12Fence*             m_pd3d12Fence;                  ///< Fence
-    unsigned int             m_fenceValue;                   ///< fence value
-    IDXGISwapChain3*         m_pdxgiSwapChain3;              ///< swap chain
-    unsigned int             m_currentBackBufferIndex;       ///< current back buffer index of the swap chain
-    ID3D12PipelineState*     m_pCurrentPipelineState;        ///< D3D12 current pipeline state
-    ID3D12DescriptorHeap*    m_pd3d12DescriptorHeap;         ///< D3D12 Descriptor heap
-    UINT                     m_RTVdescriptorIncrementSize;   ///< RTV Descriptor heap increment size
-    ID3D12CommandQueue*      m_pd3d12CommandQueue;           ///< D3D12 command queue
-    GraphicsCommandList      m_graphicsCommandListVector;    ///< D3D12 Graphics Command list vector
-    bool                     m_pipelineStateChanged;         ///< Flag indicating if the pipeline state has changed
+    IDXGIFactory2*           dxgi_factory_2_;             ///< DXGI Factory 2.
+    ID3D12PipelineState*     fill_draw_pipeline_;         ///< Solid draw pipeline state.
+    ID3D12PipelineState*     wire_frame_pipeline_;        ///< Wireframe draw pipeline state.
+    ID3D12Resource*          vertex_buffer_;              ///< D3D12 vertex buffer.
+    D3D12_VERTEX_BUFFER_VIEW vertex_buffer_view_;         ///< Vertex buffer view.
+    ID3D12Resource*          index_buffer_;               ///< D3D12 index buffer.
+    D3D12_INDEX_BUFFER_VIEW  index_buffer_view_;          ///< Index buffer view.
+    D3D12_RECT               scissor_rect_;               ///< Scissor rectangle.
+    ID3D12Resource*          rtv_resource_[kFrameCount];  ///< D3D12 render target view resource - for dx12 allowed swap effect, we need minimum of two.
+    HANDLE                   fence_event_;                ///< Fence event.
+    ID3D12Fence*             d3d12_fence_;                ///< Fence.
+    unsigned int             fence_value_;                ///< Fence value.
+    IDXGISwapChain3*         dxgi_swap_chain_3_;          ///< Swap chain.
+    unsigned int             current_back_buffer_index_;  ///< Current back buffer index of the swap chain.
+    ID3D12PipelineState*     current_pipeline_state_;     ///< D3D12 current pipeline state.
+    ID3D12DescriptorHeap*    d3d12_descriptor_heap_;      ///< D3D12 Descriptor heap.
+    UINT                     rtv_view_desc_size;          ///< RTV Descriptor heap increment size.
+    ID3D12CommandQueue*      d3d12_command_queue_;        ///< D3D12 command queue.
+    GraphicsCommandList      graphics_command_queue_;     ///< D3D12 Graphics Command list vector.
+    bool                     pipeline_state_changed_;     ///< Flag indicating if the pipeline state has changed.
 
 #pragma endregion
 
 #pragma region Viewports
+    /// @brief Viewport class.
+    ///
+    /// Will be inherited by demo viewports.
     class Viewport
     {
     public:
-        static constexpr unsigned int ms_undefinedSampleId = 0xFFFF;  ///< unassigned sample id
+        static constexpr unsigned int kUndefinedSampleId = 0xFFFF;  ///< Unassigned sample id.
 
-        D3D12_VIEWPORT             m_viewport;                      ///< view port
-        ID3D12GraphicsCommandList* m_pd3d12CommandList;             ///< D3D12 command list
-        ID3D12CommandAllocator*    m_pd3d12DirectCmdListAllocator;  ///< D3D12 Command Allocator
-        bool                       m_viewportInitialized;           ///< flag indicating viewport size is initialized
-        D3D12_RECT                 m_viewPortRect;                  ///< view port size rect
-        GPA_CommandListId          m_gpaCommandListId;              ///< gpa command list id
-        unsigned int               m_sampleId;                      ///< sample id
+        D3D12_VIEWPORT             viewport_;                             ///< Viewport.
+        ID3D12GraphicsCommandList* d3d_command_list_;                     ///< D3D12 command list.
+        ID3D12CommandAllocator*    d3d12_direct_command_list_allocator_;  ///< D3D12 Command Allocator.
+        bool                       viewport_initialized_;                 ///< Flag indicating viewport size is initialized.
+        D3D12_RECT                 viewport_rect_;                        ///< Viewport size rect.
+        GpaCommandListId           gpa_command_list_;                     ///< GPA command list id.
+        unsigned int               sample_id_;                            ///< Sample id.
 
-        /// Constructor
+        /// @brief Constructor.
         Viewport();
 
-        /// Initialize the view port
-        /// \return true upon successful operation
+        /// @brief Initialize the view port.
+        ///
+        /// @return True upon successful operation.
         virtual bool Init() = 0;
 
-        /// Draws the view port
+        /// @brief Draws the view port.
         virtual void Draw() = 0;
 
-        /// Resets for the next pass
+        /// @brief Resets for the next pass.
         virtual void ResetForNextPass() = 0;
 
-        /// Iterates over the viewport sample(s)
-        virtual void IterateSamples(std::function<void(const unsigned int& sampleIndex)> func) const = 0;
+        /// @brief Iterates over the viewport sample(s).
+        virtual void IterateSamples(std::function<void(const unsigned int& sample_index)> func) const = 0;
 
-        /// Destructor
+        /// @brief Destructor.
         virtual ~Viewport() = default;
     };
 
 #pragma region TopLeftViewport
+    /// @brief TopLeftViewport class.
+    ///
+    /// Demonstrates GPA with single command list.
     class TopLeftViewport : Viewport
     {
-        /*
-         * This view port will demonstrate to use GPA with single command list
-         */
     public:
-        const float m_clearColor[4] = {0.1f, 0.0f, 0.0f, 0.1f};  // Light Red
+        const float kClearColor[4] = {0.1f, 0.0f, 0.0f, 0.1f};  ///< Light Red.
 
-        /// Constructor
+        /// @brief Constructor.
         TopLeftViewport();
 
-        /// \copydoc Viewport::Init
+        /// @copydoc Viewport::Init()
         bool Init() override;
 
-        /// \copydoc Viewport::Draw
+        /// @copydoc Viewport::Draw()
         void Draw() override;
 
-        /// \copydoc Viewport::ResetForNextPass
+        /// @copydoc Viewport::ResetForNextPass()
         void ResetForNextPass() override;
 
-        /// \copydoc Viewport::IterateSamples
-        void IterateSamples(std::function<void(const unsigned int& sampleIndex)> func) const override;
+        /// @copydoc Viewport::IterateSamples()
+        void IterateSamples(std::function<void(const unsigned int& sample_index)> func) const override;
     };
 #pragma endregion
 
 #pragma region TopRightViewport
+    /// @brief TopRightViewport class.
+    ///
+    /// Demonstrates GPA with bundles.
     class TopRightViewport : Viewport
     {
-        /*
-        * This view port will demonstrate to use GPA with bundles
-        */
     public:
-        const float m_clearColor[4] = {0.0f, 0.1f, 0.0f, 0.1f};  // Light Green
+        const float kClearColor[4] = {0.0f, 0.1f, 0.0f, 0.1f};  ///< Light Green.
 
-        /// Constructor
+        /// @brief Constructor.
         TopRightViewport();
 
-        /// \copydoc Viewport::Init
+        /// @copydoc Viewport::Init()
         bool Init() override;
 
-        /// \copydoc Viewport::Draw
+        /// @copydoc Viewport::Draw()
         void Draw() override;
 
-        /// \copydoc Viewport::ResetForNextPass
+        /// @copydoc Viewport::ResetForNextPass()
         void ResetForNextPass() override;
 
-        /// \copydoc Viewport::IterateSamples
-        void IterateSamples(std::function<void(const unsigned int& sampleIndex)> func) const override;
+        /// @copydoc Viewport::IterateSamples()
+        void IterateSamples(std::function<void(const unsigned int& sample_index)> func) const override;
 
     private:
-        ID3D12CommandAllocator*    m_pBundleCommandAllocator;  ///< D3D12 Command allocator
-        ID3D12GraphicsCommandList* m_pBundleCmdList;           ///< D3D12 bundle command list
-        GPA_CommandListId          m_gpaCmdListForBundle;      ///< gpa command list id for the bundle
-        unsigned int               m_bundleSampleId;           ///< sample id on the bundle
+        ID3D12CommandAllocator*    bundle_command_allocator_;     ///< D3D12 Command allocator.
+        ID3D12GraphicsCommandList* bundle_command_list_;          ///< D3D12 bundle command list.
+        GpaCommandListId           gpa_command_list_for_bundle_;  ///< GPA command list id for the bundle.
+        unsigned int               bundle_sample_id_;             ///< Sample id on the bundle.
     };
 #pragma endregion
 
 #pragma region BottomLeftViewport
+    /// @brief BottomLeftViewport class.
+    ///
+    /// Demonstrates GPA usage across command lists.
     class BottomLeftViewport : Viewport
     {
-        /*
-        * This view port will demonstrate to use GPA across command lists
-        */
     public:
-        const float m_clearColor[4] = {0.0f, 0.0f, 0.1f, 0.1f};  // Light Blue
+        const float kClearColor[4] = {0.0f, 0.0f, 0.1f, 0.1f};  ///< Light Blue.
 
-        /// Constructor
+        /// @brief Constructor.
         BottomLeftViewport();
 
-        /// \copydoc Viewport::Init
+        /// @copydoc Viewport::Init()
         bool Init() override;
 
-        /// \copydoc Viewport::Draw
+        /// @copydoc Viewport::Draw()
         void Draw() override;
 
-        /// \copydoc Viewport::ResetForNextPass
+        /// @copydoc Viewport::ResetForNextPass()
         void ResetForNextPass() override;
 
-        /// \copydoc Viewport::IterateSamples
-        void IterateSamples(std::function<void(const unsigned int& sampleIndex)> func) const override;
+        /// @copydoc Viewport::IterateSamples()
+        void IterateSamples(std::function<void(const unsigned int& sample_index)> func) const override;
 
     private:
-        ID3D12CommandAllocator*    m_pSecondCmdListAllocator;     ///< D3D12 Command Allocator
-        ID3D12GraphicsCommandList* m_pSecondCmdList;              ///< D3D12 Command list
-        GPA_CommandListId          m_gpaCmdListForSecondCmdList;  ///< gpa command list id of the second direct command list
+        ID3D12CommandAllocator*    second_command_list_allocator_;             ///< D3D12 Command Allocator.
+        ID3D12GraphicsCommandList* second_command_list_;                       ///< D3D12 Command list.
+        GpaCommandListId           gpa_command_list_for_second_command_list_;  ///< GPA command list id of the second direct command list.
     };
 #pragma endregion
 
 #pragma region BottomRightViewport
+    /// @brief BottomRightViewport class.
+    ///
+    /// Demonstrates GPA usage across command lists and bundles.
     class BottomRightViewport : Viewport
     {
-        /*
-        * This view port will demonstrate to use GPA across command lists and bundles
-        */
     public:
-        const float m_clearColor[4] = {0.1f, 0.1f, 0.1f, 0.1f};  // Gray
+        const float kClearColor[4] = {0.1f, 0.1f, 0.1f, 0.1f};  ///< Gray.
 
-        /// Constructor
+        /// Constructor.
         BottomRightViewport();
 
-        /// \copydoc Viewport::Init
+        /// @copydoc Viewport::Init()
         bool Init() override;
 
-        /// \copydoc Viewport::Draw
+        /// @copydoc Viewport::Draw()
         void Draw() override;
 
-        /// \copydoc Viewport::ResetForNextPass
+        /// @copydoc Viewport::ResetForNextPass()
         void ResetForNextPass() override;
 
-        /// \copydoc Viewport::IterateSamples
-        void IterateSamples(std::function<void(const unsigned int& sampleIndex)> func) const override;
+        /// @copydoc Viewport::IterateSamples()
+        void IterateSamples(std::function<void(const unsigned int& sample_index)> func) const override;
 
     private:
-        ID3D12CommandAllocator*    m_pSecondCommandListAllocator;     ///< D3D12 Command allocator
-        ID3D12CommandAllocator*    m_pBundleCommandListAllocator;     ///< D3D12 command allocator
-        ID3D12GraphicsCommandList* m_pBundle;                         ///< D3D12 bundle command list
-        GPA_CommandListId          m_gpaCmdListForBundle;             ///< gpa command list id for the bundle
-        unsigned int               m_bundleSampleId;                  ///< sample id for the bundle
-        unsigned int               m_bundleSampleIdOnPrimaryCmdList;  ///< sample id of the copied bundle sample
-        ID3D12GraphicsCommandList* m_secondCommandList;               ///< D3D12 second command list
-        GPA_CommandListId          m_gpaCmdListForSecondCmdList;      ///< gpa command list id for the second direct command list
+        ID3D12CommandAllocator*    second_command_list_allocator_;             ///< D3D12 Command allocator.
+        ID3D12CommandAllocator*    bundle_command_list_allocator_;             ///< D3D12 command allocator.
+        ID3D12GraphicsCommandList* bundle_;                                    ///< D3D12 bundle command list.
+        GpaCommandListId           gpa_command_list_for_bundle_;               ///< GPA command list id for the bundle.
+        unsigned int               bundle_sample_id_;                          ///< Sample id for the bundle.
+        unsigned int               bundle_sample_id_on_primary_command_list_;  ///< Sample id of the copied bundle sample.
+        ID3D12GraphicsCommandList* second_command_list_;                       ///< D3D12 second command list.
+        GpaCommandListId           gpa_command_list_for_second_command_list_;  ///< GPA command list id for the second direct command list.
     };
 #pragma endregion
 
 #pragma endregion
 
 #pragma region ViewportResource
-    TopLeftViewport           m_topLeftViewport;      ///< top left view port
-    TopRightViewport          m_topRightViewport;     ///< top right view port
-    BottomLeftViewport        m_bottomLeftViewport;   ///< bottom left view port
-    BottomRightViewport       m_bottomRightViewport;  ///< bottom right view port
-    std::atomic<bool>         m_wireframe;            ///< flag indicating wireframe mode is enabled
-    IUnknownNameCache         m_appCreatedIUnknown;   ///< list of all the created unknowns
-    std::atomic<bool>         m_profilingEnable;      ///< flag indicating profiling is enabled or not
-    std::vector<unsigned int> m_profiledFrame;        ///< list of frame profiled using GPA
-    unsigned int              m_frameCounter;         ///< frame counter
-    std::stringstream         m_content;              ///< content stream
-    std::stringstream         m_header;               ///< header stream
-    bool                      m_isHeaderWritten;      ///< flag indicating header is written or not
+    TopLeftViewport           top_left_viewport_;          ///< Top left view port.
+    TopRightViewport          top_right_viewport_;         ///< Top right view port.
+    BottomLeftViewport        bottom_left_viewport_;       ///< Bottom left view port.
+    BottomRightViewport       bottom_right_viewport_;      ///< Bottom right view port.
+    std::atomic<bool>         wire_frame_;                 ///< Flag indicating wireframe mode is enabled.
+    IUnknownNameCache         app_created_unknown_cache_;  ///< List of all the created unknowns.
+    std::atomic<bool>         profiling_enable_;           ///< Flag indicating profiling is enabled or not.
+    std::vector<unsigned int> profiled_frame_;             ///< List of frame profiled using GPA.
+    unsigned int              frame_counter_;              ///< Frame counter.
+    std::stringstream         content_;                    ///< Content stream.
+    std::stringstream         header_;                     ///< Header stream.
+    bool                      is_header_written_;          ///< Flag indicating header is written or not.
 
-    GPAFunctionTable* m_pGpaFunctionTable;  ///< GPA function table
-    GPA_ContextId     m_gpaContextId;       ///< GPA context id
-    GPA_SessionId     m_gpaSessionId;       ///< GPA session id
-    gpa_uint32        m_deviceId;           ///< Device Id
-    gpa_uint32        m_revisionId;         ///< Revision Id
-    std::string       m_deviceName;         ///< Device Name
+    GpaFunctionTable* gpa_function_table_;  ///< GPA function table.
+    GpaContextId      gpa_context_id_;      ///< GPA context id.
+    GpaSessionId      gpa_session_id_;      ///< GPA session id.
+    GpaUInt32         device_id_;           ///< Device Id.
+    GpaUInt32         revision_id_;         ///< Revision Id.
+    std::string       device_name_;         ///< Device Name.
 
-    unsigned int m_passRequired;           ///< number of pass required for the enabled set of counters
-    int          m_currentPass;            ///< current pass
-    int          m_sampleCounter;          ///< sample counter
-    std::string  m_counterFileName;        ///< name of the counter data file
-    std::string  m_gpaLogFileName;         ///< name of the GPA log file
-    std::fstream m_gpaLogFileStream;       ///< GPA log file stream
-    std::fstream m_counterDataFileStream;  ///< counter data file stream
-    std::string  m_executablePath;         ///< path of the sample executable
+    unsigned int num_passes_required_;       ///< Number of pass required for the enabled set of counters.
+    int          current_pass_;              ///< Current pass.
+    int          sample_counter_;            ///< Sample counter.
+    std::string  counter_file_name_;         ///< Name of the counter data file.
+    std::string  gpa_log_file_name_;         ///< Name of the GPA log file.
+    std::fstream gpa_log_file_stream_;       ///< GPA log file stream.
+    std::fstream counter_data_file_stream_;  ///< Counter data file stream.
+    std::string  executable_path_;           ///< Path of the sample executable.
 #pragma endregion
 
 public:
 #pragma region GPA_Wrappers
-    /// Initializes GPA and open its context
-    /// \return true upon successful operation
-    bool GPA_InitializeAndOpenContext();
+    /// @brief Initializes GPA and open its context.
+    ///
+    /// @return True upon successful operation.
+    bool GpaInitializeAndOpenContext();
 
-    /// Releases the GPA and closes its context
-    /// \return true upon successful operation
-    bool GPA_ReleaseContextAndDestroy();
+    /// @brief Releases the GPA and closes its context.
+    ///
+    /// @return True upon successful operation.
+    bool GpaReleaseContextAndDestroy();
 
-    /// Enables GPA counters
-    /// \return true upon successful operation
-    bool GPA_EnableCounters();
+    /// @brief Enables GPA counters.
+    ///
+    /// @return True upon successful operation.
+    bool GpaEnableCounters();
 
-    /// Creates the GPA profiling session
-    /// \return true upon successful operation
-    bool GPA_CreateProfilingSession();
+    /// @brief Creates the GPA profiling session.
+    ///
+    /// @return True upon successful operation.
+    bool GpaCreateProfilingSession();
 
-    /// Deletes the GPA profiling session
-    /// \return true upon successful operation
-    bool GPA_DeleteProfilingSession();
+    /// @brief Deletes the GPA profiling session.
+    ///
+    /// @return True upon successful operation.
+    bool GpaDeleteProfilingSession();
 
-    /// Begins the GPA profiling session
-    /// \return true upon successful operation
-    bool GPA_BeginProfilingSession();
+    /// @brief Begins the GPA profiling session.
+    ///
+    /// @return True upon successful operation.
+    bool GpaBeginProfilingSession();
 
-    /// Ends the GPA profiling session
-    /// \return true upon successful operation
-    bool GPA_EndProfilingSession() const;
+    /// @brief Ends the GPA profiling session.
+    ///
+    /// @return True upon successful operation.
+    bool GpaEndProfilingSession() const;
 
-    /// Begins workload for the GPA session pass
-    /// \return true upon successful operation
-    bool GPA_BeginPass();
+    /// @brief Begins workload for the GPA session pass.
+    ///
+    /// @return True upon successful operation.
+    bool GpaBeginPass();
 
-    /// Ends the GPA session pass
-    /// \return true upon successful operation
-    bool GPA_EndPass();
+    /// @brief Ends the GPA session pass.
+    ///
+    /// @return True upon successful operation.
+    bool GpaEndPass();
 
-    /// Resets the information needed for the next pass
-    /// \return true upon successful operation
-    bool GPA_NextPassNeeded() const;
+    /// @brief Resets the information needed for the next pass.
+    ///
+    /// @return True upon successful operation.
+    bool GpaNextPassNeeded() const;
 
-    /// Begins the command list for sampling
-    /// \param[in] pGraphicsCmdList graphics command list
-    /// \param[in, out] gpaCmdId gpa command list upon successful execution otherwise nullptr
-    /// \return true upon successful execution otherwise false
-    bool GPA_BeginCommandListForSampling(ID3D12GraphicsCommandList* pGraphicsCmdList, GPA_CommandListId& gpaCmdId) const;
+    /// @brief Begins the command list for sampling.
+    ///
+    /// @param [in] graphics_command_list Graphics command list.
+    /// @param [in,out] gpa_command_list_id GPA command list upon successful execution otherwise nullptr.
+    ///
+    /// @return True upon successful execution otherwise false.
+    bool GpaBeginCommandListForSampling(ID3D12GraphicsCommandList* graphics_command_list, GpaCommandListId& gpa_command_list_id) const;
 
-    /// Ends the command list for sampling
-    /// \param[in] gpaCmdListId gpa command list
-    /// \return true upon successful operation
-    bool GPA_EndCommandListForSampling(GPA_CommandListId& gpaCmdListId) const;
+    /// @brief Ends the command list for sampling.
+    ///
+    /// @param [in] gpa_command_list_id GPA command list.
+    ///
+    /// @return True upon successful operation.
+    bool GpaEndCommandListForSampling(GpaCommandListId& gpa_command_list_id) const;
 
-    /// Begins GPA sample
-    /// \param[in] sampleId sample id
-    /// \param[in] gpaCmdListId gpa command list
-    /// \return true upon successful operation
-    bool GPA_BeginSample(GPA_CommandListId gpaCmdListId, const unsigned int& sampleId) const;
+    /// @brief Begins GPA sample.
+    ///
+    /// @param [in] gpa_command_list_id GPA command list.
+    /// @param [in] sample_id Sample id.
+    ///
+    /// @return True upon successful operation.
+    bool GpaBeginSample(GpaCommandListId gpa_command_list_id, const unsigned int& sample_id) const;
 
-    /// Ends a GPA sample
-    /// \param[in] gpaCmdListId gpa command list
-    /// \return true upon successful operation
-    bool GPA_EndSample(GPA_CommandListId gpaCmdListId) const;
+    /// @brief Ends a GPA sample.
+    ///
+    /// @param [in] gpa_command_list_id GPA command list.
+    ///
+    /// @return True upon successful operation.
+    bool GpaEndSample(GpaCommandListId gpa_command_list_id) const;
 
-    /// Copies a GPA secondary command list samples on primary command list
-    /// \param[in] pSecondaryGpaCmdList primary gpa command list
-    /// \param[in] pPrimaryGpaCmdList secondary command list
-    /// \param[in] sampleIdList list of sample ids
-    /// \return true upon successful operation
-    bool GPA_CopyBundleSample(GPA_CommandListId pSecondaryGpaCmdList, GPA_CommandListId pPrimaryGpaCmdList, std::vector<gpa_uint32> sampleIdList) const;
+    /// @brief Copies a GPA secondary command list samples on primary command list.
+    //
+    /// @param [in] secondary_gpa_command_list Secondary gpa command list.
+    /// @param [in] primary_gpa_command_list Primary command list.
+    /// @param [in] sample_id_list List of sample ids.
+    ///
+    /// @return True upon successful operation.
+    bool GpaCopyBundleSample(GpaCommandListId       secondary_gpa_command_list,
+                             GpaCommandListId       primary_gpa_command_list,
+                             std::vector<GpaUInt32> sample_id_list) const;
 
-    /// Continues the sample on another command list
-    /// \param[in] srcSampleId source sample id
-    /// \param[in] gpaCmdId primary command list id
-    /// \return true upon successful execution otherwise false
-    bool GPA_ContinueSample(unsigned int srcSampleId, GPA_CommandListId gpaCmdId) const;
+    /// @brief Continues the sample on another command list.
+    ///
+    /// @param [in] src_sample_id Source sample id.
+    /// @param [in] gpa_command_list_id GPA command list id.
+    ///
+    /// @return True upon successful execution otherwise false.
+    bool GpaContinueSample(unsigned int src_sample_id, GpaCommandListId gpa_command_list_id) const;
 
-    /// Enum to define type of counter validation to perform
+    /// @brief Enum to define type of counter validation to perform.
     typedef enum
     {
-        COMPARE_TYPE_EQUAL,                     ///< Counter value must be equal to a specified value
-        COMPARE_TYPE_GREATER_THAN,              ///< Counter value must be greater than a specified value
-        COMPARE_TYPE_GREATER_THAN_OR_EQUAL_TO,  ///< Counter value must be greater than or equal to a specified value
-        COMPARE_TYPE_LESS_THAN,                 ///< Counter value must be less than a specified value
-        COMPARE_TYPE_LESS_THAN_OR_EQUAL_TO,     ///< Counter value must be less than or equal to a specified value
+        kCompareTypeEqual,                 ///< Counter value must be equal to a specified value.
+        kCompareTypeGreaterThan,           ///< Counter value must be greater than a specified value.
+        kComapreTypeGreaterThanOrEqualTo,  ///< Counter value must be greater than or equal to a specified value.
+        kCompareTypeLessThan,              ///< Counter value must be less than a specified value.
+        kCompareTypeLessThanOrEqualTo,     ///< Counter value must be less than or equal to a specified value.
     } CompareType;
 
-    /// Compare retrieved counter value to an expected value
-    /// \param frameNumber the frame number containing the counter being compared
-    /// \param sampleIndex the sample index of the counter being compared
-    /// \param pCounterName the name of the counter being compared
-    /// \param counterValue the retrieved counter value
-    /// \param compareType the type of compare to perform
-    /// \param compareVal the expected counter value (subject to the compare type)
-    /// \return true if the counter value compares successfully, false otherwise
-    bool GPA_CounterValueCompare(unsigned int frameNumber,
-                                 unsigned int sampleIndex,
-                                 const char*  pCounterName,
-                                 gpa_float64  counterValue,
-                                 CompareType  compareType,
-                                 gpa_float64  compareVal);
+    /// @brief Compare retrieved counter value to an expected value.
+    ///
+    /// @param [in] frame_number The frame number containing the counter being compared.
+    /// @param [in] sample_index The sample index of the counter being compared.
+    /// @param [in] counter_name The name of the counter being compared.
+    /// @param [in] counter_value The retrieved counter value.
+    /// @param [in] compare_type The type of compare to perform.
+    /// @param [in] compare_value The expected counter value (subject to the compare type).
+    ///
+    /// @return True if the counter value compares successfully, false otherwise.
+    bool GpaCounterValueCompare(unsigned int frame_number,
+                                unsigned int sample_index,
+                                const char*  counter_name,
+                                GpaFloat64   counter_value,
+                                CompareType  compare_type,
+                                GpaFloat64   compare_value);
 
-    /// Validate a specified counter in a specified sample
-    /// \param frameNumber the frame number containing the counter being compared
-    /// \param sampleIndex the index of the sample containing the counter
-    /// \param pCounterName the name of the counter to validate
-    /// \param counterValue the value of the counter to validate
-    /// \param counterUsageType the usage type of the counter being compared
-    /// \return true if the counter value validates successfully, false otherwise
-    bool GPA_ValidateData(unsigned int   frameNumber,
-                          unsigned int   sampleIndex,
-                          const char*    pCounterName,
-                          gpa_float64    counterValue,
-                          GPA_Usage_Type counterUsageType);
+    /// @brief  Validate a specified counter in a specified sample.
+    ///
+    /// @param [in] frame_number The frame number containing the counter being compared.
+    /// @param [in] sample_index The index of the sample containing the counter.
+    /// @param [in] counter_name The name of the counter to validate.
+    /// @param [in] counter_value The value of the counter to validate.
+    /// @param [in] counter_usage_type The usage type of the counter being compared.
+    ///
+    /// @return True if the counter value validates successfully, false otherwise.
+    bool GpaValidateData(unsigned int frame_number,
+                         unsigned int sample_index,
+                         const char*  counter_name,
+                         GpaFloat64   counter_value,
+                         GpaUsageType counter_usage_type);
 
-    /// Populates the session result
-    /// \return true upon successful operation
-    bool GPA_PopulateSessionResult();
+    /// @brief Populates the session result.
+    ///
+    /// @return True upon successful operation.
+    bool GpaPopulateSessionResult();
 
-    /// Logs the GPA messages
-    /// \param loggingType the type of GPA log message
-    /// \param logMessage the GPA log message
-    /// \return true upon successful operation
-    bool GPA_Log(GPA_Logging_Type loggingType, const char* logMessage);
+    /// @brief Logs the GPA messages.
+    ///
+    /// @param [in] logging_type The type of GPA log message.
+    /// @param [in] log_message The GPA log message.
+    ///
+    /// @return True upon successful operation.
+    bool GpaLog(GpaLoggingType logging_type, const char* log_message);
 #pragma endregion
 };
 
-#endif  // _CUBE_SAMPLE_H_
+#endif  // GPU_PERF_API_EXAMPLES_DX12_DX12_COLOR_CUBE_CUBE_SAMPLE_

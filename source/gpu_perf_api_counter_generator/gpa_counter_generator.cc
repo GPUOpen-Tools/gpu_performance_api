@@ -1,38 +1,42 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GPUPerfAPI Counter Generator function
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GPUPerfAPI Counter Generator function.
 //==============================================================================
+
+#include "gpu_perf_api_counter_generator/gpa_counter_generator.h"
 
 #include <cctype>
 
-#include "gpa_counter_generator.h"
-#include "logging.h"
 #include "ADLUtil.h"
 #include "DeviceInfoUtils.h"
-#include "gpa_hw_info.h"
-#include "gpa_counter_generator_base.h"
-#include "gpa_counter_generator_scheduler_manager.h"
 
-std::vector<std::string> GPA_HardwareCounters::hardware_block_string_;  ///< static map of internal and counter interface hardware block
+#include "gpu_perf_api_common/gpa_hw_info.h"
+#include "gpu_perf_api_common/logging.h"
 
-/// BlockMap for updating ASIC block data on initialization
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_scheduler_manager.h"
+
+std::vector<std::string> GpaHardwareCounters::kHardwareBlockString;  ///< Static map of internal and counter interface hardware block.
+
+/// @brief BlockMap for updating ASIC block data on initialization.
 class BlockMap
 {
 public:
-    /// Add a block to the map
-    /// \param counter_group counter group to add to map
-    void AddBlock(GPA_CounterGroupDesc* counter_group)
+    /// @brief Add a block to the map.
+    ///
+    /// @param [in] counter_group Counter group to add to the map.
+    void AddBlock(GpaCounterGroupDesc* counter_group)
     {
-        std::string block(counter_group->m_pName);
+        std::string block(counter_group->name);
 
         for (char* p = (char*)block.data() + block.length() - 1; (p >= block.data()) && (std::isdigit(*p)); --p)
         {
             block.resize(block.length() - 1);
         }
 
-        std::string index = counter_group->m_pName + block.length();
+        std::string index = counter_group->name + block.length();
 
         uint32_t block_index = std::atoi(index.c_str());
 
@@ -42,10 +46,10 @@ public:
         }
         else
         {
-            // Handle the case where the block ends in a number, e.g.: ATCL2
+            // Handle the case where the block ends in a number, e.g.: ATCL2.
             if (blocks_.find(block) == blocks_.end())
             {
-                blocks_[counter_group->m_pName].push_back(counter_group);
+                blocks_[counter_group->name].push_back(counter_group);
             }
             else
             {
@@ -54,24 +58,26 @@ public:
         }
     }
 
-    /// Get block list by name
-    /// \param block name of the block to retrieve
-    /// \return vector of blocks
-    std::vector<GPA_CounterGroupDesc*> GetBlockList(const std::string& block)
+    /// @brief Get block list by name.
+    ///
+    /// @param [in] block Name of the block to retrieve.
+    ///
+    /// @return Vector of blocks.
+    std::vector<GpaCounterGroupDesc*> GetBlockList(const std::string& block)
     {
         auto iter = blocks_.find(block);
         if (blocks_.end() == iter)
         {
-            return std::vector<GPA_CounterGroupDesc*>();
+            return std::vector<GpaCounterGroupDesc*>();
         }
 
         return iter->second;
     }
 
-    std::map<std::string, std::vector<GPA_CounterGroupDesc*>> blocks_;  /// map of ASIC blocks by name
+    std::map<std::string, std::vector<GpaCounterGroupDesc*>> blocks_;  ///< Map of ASIC blocks by name.
 };
 
-std::shared_ptr<BlockMap> BuildBlockMap(GPA_CounterGroupDesc* counter_group_list, uint32_t max_count)
+std::shared_ptr<BlockMap> BuildBlockMap(GpaCounterGroupDesc* counter_group_list, uint32_t max_count)
 {
     std::shared_ptr<BlockMap> block_map = std::make_shared<BlockMap>();
 
@@ -90,7 +96,7 @@ void UpdateMaxDiscreteBlockEvents(BlockMap* block_map, const char* block_name, u
     {
         if (0 == max_discrete_events)
         {
-            // If the block is not found, and max events are zero, it's not an error
+            // If the block is not found, and max events are zero, it's not an error.
         }
         else
         {
@@ -101,7 +107,7 @@ void UpdateMaxDiscreteBlockEvents(BlockMap* block_map, const char* block_name, u
     {
         for (auto entry : block)
         {
-            entry->m_maxActiveDiscreteCounters = max_discrete_events;
+            entry->max_active_discrete_counters = max_discrete_events;
         }
     }
 }
@@ -113,7 +119,7 @@ void UpdateMaxSpmBlockEvents(BlockMap* block_map, const char* block_name, uint32
     {
         if (0 == max_spm_events)
         {
-            // If the block is not found, and max events are zero, it's not an error
+            // If the block is not found, and max events are zero, it's not an error.
         }
         else
         {
@@ -124,99 +130,99 @@ void UpdateMaxSpmBlockEvents(BlockMap* block_map, const char* block_name, uint32
     {
         for (auto entry : block)
         {
-            entry->m_maxActiveSpmCounters = max_spm_events;
+            entry->max_active_spm_counters = max_spm_events;
         }
     }
 }
 
-GPA_Status GenerateCounters(GPA_API_Type           desiredAPI,
-                            gpa_uint32             vendorId,
-                            gpa_uint32             deviceId,
-                            gpa_uint32             revisionId,
-                            GPA_OpenContextFlags   flags,
-                            gpa_uint8              generateAsicSpecificCounters,
-                            IGPACounterAccessor**  ppCounterAccessorOut,
-                            IGPACounterScheduler** ppCounterSchedulerOut)
+GpaStatus GenerateCounters(GpaApiType             desired_api,
+                           GpaUInt32              vendor_id,
+                           GpaUInt32              device_id,
+                           GpaUInt32              revision_id,
+                           GpaOpenContextFlags    flags,
+                           GpaUInt8               generate_asic_specific_counters,
+                           IGpaCounterAccessor**  counter_accessor_out,
+                           IGpaCounterScheduler** counter_scheduler_out)
 {
-    if (nullptr == ppCounterAccessorOut)
+    if (nullptr == counter_accessor_out)
     {
-        GPA_LogError("Parameter 'ppCounterAccessorOut' is NULL.");
-        return GPA_STATUS_ERROR_NULL_POINTER;
+        GPA_LOG_ERROR("Parameter 'counter_accessor_out' is NULL.");
+        return kGpaStatusErrorNullPointer;
     }
 
-    // get hardware generation from device Id
-    GDT_HW_GENERATION desiredGeneration = GDT_HW_GENERATION_NONE;
+    // Get hardware generation from device Id.
+    GDT_HW_GENERATION desired_generation = GDT_HW_GENERATION_NONE;
 
-    GDT_GfxCardInfo cardInfo{};
+    GDT_GfxCardInfo card_info{};
 
-    if (NVIDIA_VENDOR_ID == vendorId)
+    if (kNvidiaVendorId == vendor_id)
     {
-        desiredGeneration = GDT_HW_GENERATION_NVIDIA;
+        desired_generation = GDT_HW_GENERATION_NVIDIA;
     }
-    else if (INTEL_VENDOR_ID == vendorId)
+    else if (kIntelVendorId == vendor_id)
     {
-        desiredGeneration = GDT_HW_GENERATION_INTEL;
+        desired_generation = GDT_HW_GENERATION_INTEL;
     }
-    else if (AMD_VENDOR_ID == vendorId)
+    else if (kAmdVendorId == vendor_id)
     {
-        if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(deviceId, revisionId, cardInfo))
+        if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(device_id, revision_id, card_info))
         {
-            desiredGeneration = cardInfo.m_generation;
+            desired_generation = card_info.m_generation;
 
-            if ((GPA_API_DIRECTX_12 == desiredAPI || (GPA_API_VULKAN == desiredAPI)) && GDT_HW_GENERATION_VOLCANICISLAND > desiredGeneration)
+            if ((kGpaApiDirectx12 == desired_api || (kGpaApiVulkan == desired_api)) && GDT_HW_GENERATION_VOLCANICISLAND > desired_generation)
             {
-                return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+                return kGpaStatusErrorHardwareNotSupported;
             }
         }
     }
 
-    if (desiredGeneration == GDT_HW_GENERATION_NONE)
+    if (desired_generation == GDT_HW_GENERATION_NONE)
     {
-        GPA_LogError("desiredGeneration is GDT_HW_GENERATION_NONE.");
-        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+        GPA_LOG_ERROR("desiredGeneration is GDT_HW_GENERATION_NONE.");
+        return kGpaStatusErrorHardwareNotSupported;
     }
 
-    GPA_Status                status        = GPA_STATUS_OK;
-    GPA_CounterGeneratorBase* pTmpAccessor  = nullptr;
-    IGPACounterScheduler*     pTmpScheduler = nullptr;
+    GpaStatus                status        = kGpaStatusOk;
+    GpaCounterGeneratorBase* tmp_accessor  = nullptr;
+    IGpaCounterScheduler*    tmp_scheduler = nullptr;
 
-    bool retCode = CounterGeneratorSchedulerManager::Instance()->GetCounterGenerator(desiredAPI, desiredGeneration, pTmpAccessor);
+    bool ret_code = CounterGeneratorSchedulerManager::Instance()->GetCounterGenerator(desired_api, desired_generation, tmp_accessor);
 
-    if (!retCode)
+    if (!ret_code)
     {
-        GPA_LogError("Requesting available counters from an unsupported API or hardware generation.");
-        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+        GPA_LOG_ERROR("Requesting available counters from an unsupported API or hardware generation.");
+        return kGpaStatusErrorHardwareNotSupported;
     }
 
-    bool allowPublic          = (flags & GPA_OPENCONTEXT_HIDE_PUBLIC_COUNTERS_BIT) == 0;
-    bool allowSoftware        = (flags & GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT) == 0;
-    bool allowHardwareExposed = (flags & GPA_OPENCONTEXT_ENABLE_HARDWARE_COUNTERS_BIT) == GPA_OPENCONTEXT_ENABLE_HARDWARE_COUNTERS_BIT;
-    bool enableHardware       = allowHardwareExposed;
+    bool allow_public           = (flags & kGpaOpenContextHidePublicCountersBit) == 0;
+    bool allow_software         = (flags & kGpaOpenContextHideSoftwareCountersBit) == 0;
+    bool allow_hardware_exposed = (flags & kGpaOpenContextEnableHardwareCountersBit) == kGpaOpenContextEnableHardwareCountersBit;
+    bool enable_hardware        = allow_hardware_exposed;
 
 #ifdef AMDT_INTERNAL
-    bool allowAllHardware = (flags & GPA_OPENCONTEXT_HIDE_HARDWARE_COUNTERS_BIT) == 0;
-    enableHardware        = allowAllHardware;
+    bool allow_all_hardware = (flags & kGpaOpenContextHideHardwareCountersBit) == 0;
+    enable_hardware         = allow_all_hardware;
 #endif
 
-    pTmpAccessor->SetAllowedCounters(allowPublic, enableHardware, allowSoftware);
-    status = pTmpAccessor->GenerateCounters(desiredGeneration, cardInfo.m_asicType, generateAsicSpecificCounters);
+    tmp_accessor->SetAllowedCounters(allow_public, enable_hardware, allow_software);
+    status = tmp_accessor->GenerateCounters(desired_generation, card_info.m_asicType, generate_asic_specific_counters);
 
-    if (status == GPA_STATUS_OK)
+    if (status == kGpaStatusOk)
     {
-        *ppCounterAccessorOut = pTmpAccessor;
+        *counter_accessor_out = tmp_accessor;
 
-        if (nullptr != ppCounterSchedulerOut)
+        if (nullptr != counter_scheduler_out)
         {
-            retCode = CounterGeneratorSchedulerManager::Instance()->GetCounterScheduler(desiredAPI, desiredGeneration, pTmpScheduler);
+            ret_code = CounterGeneratorSchedulerManager::Instance()->GetCounterScheduler(desired_api, desired_generation, tmp_scheduler);
 
-            if (!retCode)
+            if (!ret_code)
             {
-                GPA_LogError("Requesting available counters from an unsupported API or hardware generation.");
-                return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+                GPA_LOG_ERROR("Requesting available counters from an unsupported API or hardware generation.");
+                return kGpaStatusErrorHardwareNotSupported;
             }
 
-            *ppCounterSchedulerOut = pTmpScheduler;
-            pTmpScheduler->SetCounterAccessor(pTmpAccessor, vendorId, deviceId, revisionId);
+            *counter_scheduler_out = tmp_scheduler;
+            tmp_scheduler->SetCounterAccessor(tmp_accessor, vendor_id, device_id, revision_id);
         }
     }
 

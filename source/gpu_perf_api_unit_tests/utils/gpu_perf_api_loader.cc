@@ -1,64 +1,64 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  class to load the GPA at run-time
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  class to load the GPA at run-time
 //==============================================================================
 
-#include "gpu_perf_api_loader.h"
+#include "gpu_perf_api_unit_tests/utils/gpu_perf_api_loader.h"
 
-GPUPerfAPILoader::GPUPerfAPILoader()
+GpuPerfApiLoader::GpuPerfApiLoader()
 {
 #ifdef _WIN32
-    m_hMod = nullptr;
+    h_module_ = nullptr;
 #else
-    pHandle = nullptr;
+    handle_ = nullptr;
 #endif
 
-    // set all GPA public function pointers to zero
+// Set all GPA public function pointers to zero.
 #define GPA_FUNCTION_PREFIX(f) f = nullptr;
-#include "GPAFunctions.h"
+#include "gpu_performance_api/gpu_perf_api_functions.h"
 #undef GPA_FUNCTION_PREFIX
 }
 
-GPUPerfAPILoader::~GPUPerfAPILoader()
+GpuPerfApiLoader::~GpuPerfApiLoader()
 {
     Unload();
 }
 
-void GPUPerfAPILoader::Unload()
+void GpuPerfApiLoader::Unload()
 {
 #ifdef _WIN32
 
-    if (m_hMod)
+    if (h_module_)
     {
-        FreeLibrary(m_hMod);
-        m_hMod = nullptr;
+        FreeLibrary(h_module_);
+        h_module_ = nullptr;
     }
 
 #else
 
-    if (nullptr != pHandle)
+    if (nullptr != handle_)
     {
-        dlclose(pHandle);
-        pHandle = nullptr;
+        dlclose(handle_);
+        handle_ = nullptr;
     }
 
 #endif
 }
 
-bool GPUPerfAPILoader::Loaded()
+bool GpuPerfApiLoader::Loaded()
 {
 #ifdef _WIN32
 
-    if (m_hMod)
+    if (h_module_)
     {
         return true;
     }
 
 #else
 
-    if (nullptr != pHandle)
+    if (nullptr != handle_)
     {
         return true;
     }
@@ -68,29 +68,29 @@ bool GPUPerfAPILoader::Loaded()
 }
 
 #ifdef _WIN32
-bool GPUPerfAPILoader::Load(const char* pDllPath, GPA_API_Type api, const char** ppErrorMessage)
+bool GpuPerfApiLoader::Load(const char* dll_path, GpaApiType api, const char** error_message)
 {
-    std::string dllFullPath = GetGPADllName(std::string(pDllPath), api);
+    std::string dll_full_path = GetGPADllName(std::string(dll_path), api);
 
-    m_hMod = LoadLibraryA(dllFullPath.c_str());
+    h_module_ = LoadLibraryA(dll_full_path.c_str());
 
-    if (nullptr == m_hMod)
+    if (nullptr == h_module_)
     {
-        *ppErrorMessage = "LoadLibrary failed, dll not found.\n";
+        *error_message = "LoadLibrary failed, dll not found.\n";
         return false;
     }
 
     // Execute GetProcAddress on every public function. If fail assert and return error
-#define GPA_FUNCTION_PREFIX(func)                                                           \
-    func = (func##PtrType)GetProcAddress(m_hMod, #func);                                    \
-    assert(nullptr != func);                                                                \
-    if (nullptr == func)                                                                    \
-    {                                                                                       \
-        *ppErrorMessage = #func " not located in the dll. Incorrect or out of date dll.\n"; \
-        Unload();                                                                           \
-        return false;                                                                       \
+#define GPA_FUNCTION_PREFIX(func)                                                          \
+    func = (func##PtrType)GetProcAddress(h_module_, #func);                                \
+    assert(nullptr != func);                                                               \
+    if (nullptr == func)                                                                   \
+    {                                                                                      \
+        *error_message = #func " not located in the dll. Incorrect or out of date dll.\n"; \
+        Unload();                                                                          \
+        return false;                                                                      \
     }
-#include "GPAFunctions.h"
+#include "gpu_performance_api/gpu_perf_api_functions.h"
 
 #undef GPA_FUNCTION_PREFIX
 
@@ -98,29 +98,29 @@ bool GPUPerfAPILoader::Load(const char* pDllPath, GPA_API_Type api, const char**
 }
 #else
 
-bool GPUPerfAPILoader::Load(const char* pDllPath, GPA_API_Type api, const char** ppErrorMessage)
+bool GpuPerfApiLoader::Load(const char* dll_path, GpaApiType api, const char** error_message)
 {
-    std::string dllFullPath = GetGPADllName(std::string(pDllPath), api);
+    std::string dll_full_path = GetGPADllName(std::string(dll_path), api);
 
-    pHandle = dlopen(dllFullPath.c_str(), RTLD_LAZY);
+    handle_ = dlopen(dll_full_path.c_str(), RTLD_LAZY);
 
-    if (nullptr == pHandle)
+    if (nullptr == handle_)
     {
-        *ppErrorMessage = dlerror();  //"dlopen failed, shared library not found.\n";
+        *error_message = dlerror();  //"dlopen failed, shared library not found.\n";
         return false;
     }
 
     // Execute GetProcAddress on every public function. If fail assert and return error
-#define GPA_FUNCTION_PREFIX(func)                                                                                 \
-    func = (func##PtrType)dlsym(pHandle, #func);                                                                  \
-    assert(nullptr != func);                                                                                      \
-    if (nullptr == func)                                                                                          \
-    {                                                                                                             \
-        *ppErrorMessage = #func " not located in the shared library. Incorrect or out of date shared library.\n"; \
-        Unload();                                                                                                 \
-        return false;                                                                                             \
+#define GPA_FUNCTION_PREFIX(func)                                                                                \
+    func = (func##PtrType)dlsym(handle_, #func);                                                                 \
+    assert(nullptr != func);                                                                                     \
+    if (nullptr == func)                                                                                         \
+    {                                                                                                            \
+        *error_message = #func " not located in the shared library. Incorrect or out of date shared library.\n"; \
+        Unload();                                                                                                \
+        return false;                                                                                            \
     }
-#include "GPAFunctions.h"
+#include "gpu_performance_api/gpu_perf_api_functions.h"
 
 #undef GPA_FUNCTION_PREFIX
 
@@ -149,41 +149,41 @@ bool GPUPerfAPILoader::Load(const char* pDllPath, GPA_API_Type api, const char**
 #define LIB_DEBUG_SUFFIX ""
 #endif
 
-std::string GPUPerfAPILoader::GetGPADllName(const std::string& dllPath, GPA_API_Type api)
+std::string GpuPerfApiLoader::GetGPADllName(const std::string& dll_path, GpaApiType api)
 {
-    std::string dllFullPath = dllPath;
-    dllFullPath.append(LIB_PREFIX);
+    std::string dll_full_path = dll_path;
+    dll_full_path.append(LIB_PREFIX);
 
     switch (api)
     {
-    case GPA_API_DIRECTX_11:
-        dllFullPath.append("GPUPerfAPIDX11");
+    case kGpaApiDirectx11:
+        dll_full_path.append("GPUPerfAPIDX11");
         break;
 
-    case GPA_API_DIRECTX_12:
-        dllFullPath.append("GPUPerfAPIDX12");
+    case kGpaApiDirectx12:
+        dll_full_path.append("GPUPerfAPIDX12");
         break;
 
-    case GPA_API_OPENGL:
-        dllFullPath.append("GPUPerfAPIGL");
+    case kGpaApiOpengl:
+        dll_full_path.append("GPUPerfAPIGL");
         break;
 
-    case GPA_API_OPENCL:
-        dllFullPath.append("GPUPerfAPICL");
+    case kGpaApiOpencl:
+        dll_full_path.append("GPUPerfAPICL");
         break;
 
-    case GPA_API_VULKAN:
-        dllFullPath.append("GPUPerfAPIVK");
+    case kGpaApiVulkan:
+        dll_full_path.append("GPUPerfAPIVK");
         break;
 
     default:
         assert("unknown API type");
     }
 
-    dllFullPath.append(AMDT_PLATFORM_SUFFIX);
-    dllFullPath.append(LIB_DEBUG_SUFFIX);
-    dllFullPath.append(AMDT_BUILD_SUFFIX);
-    dllFullPath.append(LIB_SUFFIX);
+    dll_full_path.append(AMDT_PLATFORM_SUFFIX);
+    dll_full_path.append(LIB_DEBUG_SUFFIX);
+    dll_full_path.append(AMDT_BUILD_SUFFIX);
+    dll_full_path.append(LIB_SUFFIX);
 
-    return dllFullPath;
+    return dll_full_path;
 }

@@ -1,55 +1,57 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Class for DX11 counter generation for AMD HW
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Class for DX11 counter generation for AMD HW.
 //==============================================================================
 
-#ifndef _GPA_COUNTER_GENERATOR_DX11_H_
-#define _GPA_COUNTER_GENERATOR_DX11_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_DX11_GPA_COUNTER_GENERATOR_DX11_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_DX11_GPA_COUNTER_GENERATOR_DX11_H_
 
-#include "gpa_counter_generator_dx11_base.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_dx11_base.h"
 
-/// Class for DX11 counter generation for AMD HW
-class GPA_CounterGeneratorDX11 : public GPA_CounterGeneratorDX11Base
+/// @brief Class for DX11 counter generation for AMD HW.
+class GpaCounterGeneratorDx11 : public GpaCounterGeneratorDx11Base
 {
 public:
-    /// Constructor
-    GPA_CounterGeneratorDX11();
+    /// @brief Constructor.
+    GpaCounterGeneratorDx11();
 
 protected:
-    /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
-    GPA_Status GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
-                                      GDT_HW_ASIC_TYPE     asicType,
-                                      gpa_uint8            generateAsicSpecificCounters,
-                                      GPA_DerivedCounters* pPublicCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
+    GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
+                                     GDT_HW_ASIC_TYPE    asic_type,
+                                     GpaUInt8            generate_asic_specific_counters,
+                                     GpaDerivedCounters* public_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
-    GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                        GDT_HW_ASIC_TYPE      asicType,
-                                        gpa_uint8             generateAsicSpecificCounters,
-                                        GPA_HardwareCounters* pHardwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
+    GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
+                                       GDT_HW_ASIC_TYPE     asic_type,
+                                       GpaUInt8             generate_asic_specific_counters,
+                                       GpaHardwareCounters* hardware_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareExposedCounters
-    GPA_Status GenerateHardwareExposedCounters(GDT_HW_GENERATION     desiredGeneration,
-                                               GDT_HW_ASIC_TYPE      asicType,
-                                               gpa_uint8             generateAsicSpecificCounters,
-                                               GPA_HardwareCounters* pHardwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateHardwareExposedCounters()
+    GpaStatus GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
+                                              GDT_HW_ASIC_TYPE     asic_type,
+                                              GpaUInt8             generate_asic_specific_counters,
+                                              GpaHardwareCounters* hardware_counters) override;
 
 #ifdef AMDT_INTERNAL
-    /// \copydoc GPA_CounterGeneratorBase::GenerateInternalDerivedCounters
-    GPA_Status GenerateInternalDerivedCounters(GDT_HW_GENERATION    desiredGeneration,
-                                               GDT_HW_ASIC_TYPE     asicType,
-                                               gpa_uint8            generateAsicSpecificCounters,
-                                               GPA_DerivedCounters* pPublicCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateInternalDerivedCounters()
+    GpaStatus GenerateInternalDerivedCounters(GDT_HW_GENERATION   desired_generation,
+                                              GDT_HW_ASIC_TYPE    asic_type,
+                                              GpaUInt8            generate_asic_specific_counters,
+                                              GpaDerivedCounters* public_counters) override;
 #endif
 
 private:
-    /// Generates internal counters
-    /// \param pHardwareCounters the hardware counters to generate
-    /// \param generation the generation for which counters need to be generated
-    /// \return true on success
-    static bool GenerateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GDT_HW_GENERATION generation);
+    /// @brief Generates internal counters.
+    ///
+    /// @param [in] hardware_counters The hardware counters to generate.
+    /// @param [in] generation The generation for which counters need to be generated.
+    ///
+    /// @return True on success.
+    static bool GenerateInternalCounters(GpaHardwareCounters* hardware_counters, GDT_HW_GENERATION generation);
 };
 
-#endif  //_GPA_COUNTER_GENERATOR_DX11_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_DX11_GPA_COUNTER_GENERATOR_DX11_H_

@@ -1,20 +1,20 @@
 //==============================================================================
-// Copyright (c) 2010-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief Public Counter Definitions for GL GFX9 _gfx906
+// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Public Counter Definitions for GL GFX9_GFX906.
 //==============================================================================
 
-#include "gpa_counter.h"
-#include "public_counter_definitions_gl_gfx9_gfx906.h"
+#include "gpu_perf_api_counter_generator/gpa_counter.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_gl_gfx9_gfx906.h"
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#include "gpa_hw_counter_gfx9_gfx906.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx9_gfx906.h"
 
 namespace gl_gfx9_gfx906
 {
-bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c)
+bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaDerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers
@@ -27,431 +27,431 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
     counter_gfx9_gfx906::OverrideBlockInstanceCounters(asic_type);
 
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3279);
-        internalCounters.push_back(3283);
-        internalCounters.push_back(3235);
-        internalCounters.push_back(3247);
-        internalCounters.push_back(3236);
-        internalCounters.push_back(3248);
-        internalCounters.push_back(1799);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3279);
+        internal_counters.push_back(3283);
+        internal_counters.push_back(3235);
+        internal_counters.push_back(3247);
+        internal_counters.push_back(3236);
+        internal_counters.push_back(3248);
+        internal_counters.push_back(1799);
 
-        c.UpdateAsicSpecificDerivedCounter("PrimitiveAssemblyBusy", internalCounters, "0,1,-,2,3,+,4,+,5,(2),*,+,SU_CLOCKS_PRIM,*,-,NUM_PRIM_PIPES,/,(0),max,6,/,(100),*,(100),min");
+        c.UpdateAsicSpecificDerivedCounter("PrimitiveAssemblyBusy", internal_counters, "0,1,-,2,3,+,4,+,5,(2),*,+,SU_CLOCKS_PRIM,*,-,NUM_PRIM_PIPES,/,(0),max,6,/,(100),*,(100),min");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3279);
-        internalCounters.push_back(3283);
-        internalCounters.push_back(3235);
-        internalCounters.push_back(3247);
-        internalCounters.push_back(3236);
-        internalCounters.push_back(3248);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3279);
+        internal_counters.push_back(3283);
+        internal_counters.push_back(3235);
+        internal_counters.push_back(3247);
+        internal_counters.push_back(3236);
+        internal_counters.push_back(3248);
 
-        c.UpdateAsicSpecificDerivedCounter("PrimitiveAssemblyBusyCycles", internalCounters, "0,1,-,2,3,+,4,+,5,(2),*,+,SU_CLOCKS_PRIM,*,-,NUM_PRIM_PIPES,/,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("PrimitiveAssemblyBusyCycles", internal_counters, "0,1,-,2,3,+,4,+,5,(2),*,+,SU_CLOCKS_PRIM,*,-,NUM_PRIM_PIPES,/,(0),max");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3182);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3182);
 
-        c.UpdateAsicSpecificDerivedCounter("PrimitivesIn", internalCounters, "0");
+        c.UpdateAsicSpecificDerivedCounter("PrimitivesIn", internal_counters, "0");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3188);
-        internalCounters.push_back(3228);
-        internalCounters.push_back(3229);
-        internalCounters.push_back(3230);
-        internalCounters.push_back(3231);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3188);
+        internal_counters.push_back(3228);
+        internal_counters.push_back(3229);
+        internal_counters.push_back(3230);
+        internal_counters.push_back(3231);
 
-        c.UpdateAsicSpecificDerivedCounter("CulledPrims", internalCounters, "0,1,+,2,+,3,+,4,+");
+        c.UpdateAsicSpecificDerivedCounter("CulledPrims", internal_counters, "0,1,+,2,+,3,+,4,+");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3195);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3195);
 
-        c.UpdateAsicSpecificDerivedCounter("ClippedPrims", internalCounters, "0");
+        c.UpdateAsicSpecificDerivedCounter("ClippedPrims", internal_counters, "0");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3283);
-        internalCounters.push_back(1799);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3283);
+        internal_counters.push_back(1799);
 
-        c.UpdateAsicSpecificDerivedCounter("PAStalledOnRasterizer", internalCounters, "0,NUM_PRIM_PIPES,/,1,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("PAStalledOnRasterizer", internal_counters, "0,NUM_PRIM_PIPES,/,1,/,(100),*");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3283);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3283);
 
-        c.UpdateAsicSpecificDerivedCounter("PAStalledOnRasterizerCycles", internalCounters, "0,NUM_PRIM_PIPES,/");
+        c.UpdateAsicSpecificDerivedCounter("PAStalledOnRasterizerCycles", internal_counters, "0,NUM_PRIM_PIPES,/");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(9420);
-        internalCounters.push_back(9702);
-        internalCounters.push_back(9984);
-        internalCounters.push_back(10266);
-        internalCounters.push_back(10548);
-        internalCounters.push_back(10830);
-        internalCounters.push_back(11112);
-        internalCounters.push_back(11394);
-        internalCounters.push_back(11676);
-        internalCounters.push_back(11958);
-        internalCounters.push_back(12240);
-        internalCounters.push_back(12522);
-        internalCounters.push_back(12804);
-        internalCounters.push_back(13086);
-        internalCounters.push_back(13368);
-        internalCounters.push_back(13650);
-        internalCounters.push_back(1799);
-        internalCounters.push_back(4060);
-        internalCounters.push_back(4066);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(9420);
+        internal_counters.push_back(9702);
+        internal_counters.push_back(9984);
+        internal_counters.push_back(10266);
+        internal_counters.push_back(10548);
+        internal_counters.push_back(10830);
+        internal_counters.push_back(11112);
+        internal_counters.push_back(11394);
+        internal_counters.push_back(11676);
+        internal_counters.push_back(11958);
+        internal_counters.push_back(12240);
+        internal_counters.push_back(12522);
+        internal_counters.push_back(12804);
+        internal_counters.push_back(13086);
+        internal_counters.push_back(13368);
+        internal_counters.push_back(13650);
+        internal_counters.push_back(1799);
+        internal_counters.push_back(4060);
+        internal_counters.push_back(4066);
 
-        c.UpdateAsicSpecificDerivedCounter("CSWriteUnitStalled", internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*,17,18,+,ifnotzero");
+        c.UpdateAsicSpecificDerivedCounter("CSWriteUnitStalled", internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*,17,18,+,ifnotzero");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(9420);
-        internalCounters.push_back(9702);
-        internalCounters.push_back(9984);
-        internalCounters.push_back(10266);
-        internalCounters.push_back(10548);
-        internalCounters.push_back(10830);
-        internalCounters.push_back(11112);
-        internalCounters.push_back(11394);
-        internalCounters.push_back(11676);
-        internalCounters.push_back(11958);
-        internalCounters.push_back(12240);
-        internalCounters.push_back(12522);
-        internalCounters.push_back(12804);
-        internalCounters.push_back(13086);
-        internalCounters.push_back(13368);
-        internalCounters.push_back(13650);
-        internalCounters.push_back(4060);
-        internalCounters.push_back(4066);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(9420);
+        internal_counters.push_back(9702);
+        internal_counters.push_back(9984);
+        internal_counters.push_back(10266);
+        internal_counters.push_back(10548);
+        internal_counters.push_back(10830);
+        internal_counters.push_back(11112);
+        internal_counters.push_back(11394);
+        internal_counters.push_back(11676);
+        internal_counters.push_back(11958);
+        internal_counters.push_back(12240);
+        internal_counters.push_back(12522);
+        internal_counters.push_back(12804);
+        internal_counters.push_back(13086);
+        internal_counters.push_back(13368);
+        internal_counters.push_back(13650);
+        internal_counters.push_back(4060);
+        internal_counters.push_back(4066);
 
-        c.UpdateAsicSpecificDerivedCounter("CSWriteUnitStalledCycles", internalCounters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,17,+,ifnotzero");
+        c.UpdateAsicSpecificDerivedCounter("CSWriteUnitStalledCycles", internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,17,+,ifnotzero");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3684);
-        internalCounters.push_back(3685);
-        internalCounters.push_back(3686);
-        internalCounters.push_back(3687);
-        internalCounters.push_back(3760);
-        internalCounters.push_back(3761);
-        internalCounters.push_back(3762);
-        internalCounters.push_back(3763);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3684);
+        internal_counters.push_back(3685);
+        internal_counters.push_back(3686);
+        internal_counters.push_back(3687);
+        internal_counters.push_back(3760);
+        internal_counters.push_back(3761);
+        internal_counters.push_back(3762);
+        internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulled", internalCounters, "0,1,+,2,+,3,+,4,5,+,6,+,7,+,-,(0),max,0,1,+,2,+,3,+,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulled", internal_counters, "0,1,+,2,+,3,+,4,5,+,6,+,7,+,-,(0),max,0,1,+,2,+,3,+,/,(100),*");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3684);
-        internalCounters.push_back(3685);
-        internalCounters.push_back(3686);
-        internalCounters.push_back(3687);
-        internalCounters.push_back(3760);
-        internalCounters.push_back(3761);
-        internalCounters.push_back(3762);
-        internalCounters.push_back(3763);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3684);
+        internal_counters.push_back(3685);
+        internal_counters.push_back(3686);
+        internal_counters.push_back(3687);
+        internal_counters.push_back(3760);
+        internal_counters.push_back(3761);
+        internal_counters.push_back(3762);
+        internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulledCount", internalCounters, "0,1,+,2,+,3,+,4,5,+,6,+,7,+,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulledCount", internal_counters, "0,1,+,2,+,3,+,4,5,+,6,+,7,+,-,(0),max");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3760);
-        internalCounters.push_back(3761);
-        internalCounters.push_back(3762);
-        internalCounters.push_back(3763);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3760);
+        internal_counters.push_back(3761);
+        internal_counters.push_back(3762);
+        internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZQuadsAcceptedCount", internalCounters, "0,1,+,2,+,3,+");
+        c.UpdateAsicSpecificDerivedCounter("HiZQuadsAcceptedCount", internal_counters, "0,1,+,2,+,3,+");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3684);
-        internalCounters.push_back(3685);
-        internalCounters.push_back(3686);
-        internalCounters.push_back(3687);
-        internalCounters.push_back(3784);
-        internalCounters.push_back(3760);
-        internalCounters.push_back(3761);
-        internalCounters.push_back(3762);
-        internalCounters.push_back(3763);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3684);
+        internal_counters.push_back(3685);
+        internal_counters.push_back(3686);
+        internal_counters.push_back(3687);
+        internal_counters.push_back(3784);
+        internal_counters.push_back(3760);
+        internal_counters.push_back(3761);
+        internal_counters.push_back(3762);
+        internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulled", internalCounters, "5,6,+,7,+,8,+,4,-,(0),max,0,1,+,2,+,3,+,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulled", internal_counters, "5,6,+,7,+,8,+,4,-,(0),max,0,1,+,2,+,3,+,/,(100),*");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3684);
-        internalCounters.push_back(3685);
-        internalCounters.push_back(3686);
-        internalCounters.push_back(3687);
-        internalCounters.push_back(3784);
-        internalCounters.push_back(3760);
-        internalCounters.push_back(3761);
-        internalCounters.push_back(3762);
-        internalCounters.push_back(3763);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3684);
+        internal_counters.push_back(3685);
+        internal_counters.push_back(3686);
+        internal_counters.push_back(3687);
+        internal_counters.push_back(3784);
+        internal_counters.push_back(3760);
+        internal_counters.push_back(3761);
+        internal_counters.push_back(3762);
+        internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulledCount", internalCounters, "0,1,+,2,+,3,+,4,-,5,-,6,-,7,-,8,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulledCount", internal_counters, "0,1,+,2,+,3,+,4,-,5,-,6,-,7,-,8,-,(0),max");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3784);
-        internalCounters.push_back(3760);
-        internalCounters.push_back(3761);
-        internalCounters.push_back(3762);
-        internalCounters.push_back(3763);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3784);
+        internal_counters.push_back(3760);
+        internal_counters.push_back(3761);
+        internal_counters.push_back(3762);
+        internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsSurvivingCount", internalCounters, "1,2,+,3,+,4,+,0,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsSurvivingCount", internal_counters, "1,2,+,3,+,4,+,0,-,(0),max");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3784);
-        internalCounters.push_back(3684);
-        internalCounters.push_back(3685);
-        internalCounters.push_back(3686);
-        internalCounters.push_back(3687);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3784);
+        internal_counters.push_back(3684);
+        internal_counters.push_back(3685);
+        internal_counters.push_back(3686);
+        internal_counters.push_back(3687);
 
-        c.UpdateAsicSpecificDerivedCounter("PostZQuads", internalCounters, "0,1,2,+,3,+,4,+,/,(100),*,(100),min");
+        c.UpdateAsicSpecificDerivedCounter("PostZQuads", internal_counters, "0,1,2,+,3,+,4,+,/,(100),*,(100),min");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(3784);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3784);
 
-        c.UpdateAsicSpecificDerivedCounter("PostZQuadCount", internalCounters, "0");
+        c.UpdateAsicSpecificDerivedCounter("PostZQuadCount", internal_counters, "0");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(9428);
-        internalCounters.push_back(9710);
-        internalCounters.push_back(9992);
-        internalCounters.push_back(10274);
-        internalCounters.push_back(10556);
-        internalCounters.push_back(10838);
-        internalCounters.push_back(11120);
-        internalCounters.push_back(11402);
-        internalCounters.push_back(11684);
-        internalCounters.push_back(11966);
-        internalCounters.push_back(12248);
-        internalCounters.push_back(12530);
-        internalCounters.push_back(12812);
-        internalCounters.push_back(13094);
-        internalCounters.push_back(13376);
-        internalCounters.push_back(13658);
-        internalCounters.push_back(9429);
-        internalCounters.push_back(9711);
-        internalCounters.push_back(9993);
-        internalCounters.push_back(10275);
-        internalCounters.push_back(10557);
-        internalCounters.push_back(10839);
-        internalCounters.push_back(11121);
-        internalCounters.push_back(11403);
-        internalCounters.push_back(11685);
-        internalCounters.push_back(11967);
-        internalCounters.push_back(12249);
-        internalCounters.push_back(12531);
-        internalCounters.push_back(12813);
-        internalCounters.push_back(13095);
-        internalCounters.push_back(13377);
-        internalCounters.push_back(13659);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(9428);
+        internal_counters.push_back(9710);
+        internal_counters.push_back(9992);
+        internal_counters.push_back(10274);
+        internal_counters.push_back(10556);
+        internal_counters.push_back(10838);
+        internal_counters.push_back(11120);
+        internal_counters.push_back(11402);
+        internal_counters.push_back(11684);
+        internal_counters.push_back(11966);
+        internal_counters.push_back(12248);
+        internal_counters.push_back(12530);
+        internal_counters.push_back(12812);
+        internal_counters.push_back(13094);
+        internal_counters.push_back(13376);
+        internal_counters.push_back(13658);
+        internal_counters.push_back(9429);
+        internal_counters.push_back(9711);
+        internal_counters.push_back(9993);
+        internal_counters.push_back(10275);
+        internal_counters.push_back(10557);
+        internal_counters.push_back(10839);
+        internal_counters.push_back(11121);
+        internal_counters.push_back(11403);
+        internal_counters.push_back(11685);
+        internal_counters.push_back(11967);
+        internal_counters.push_back(12249);
+        internal_counters.push_back(12531);
+        internal_counters.push_back(12813);
+        internal_counters.push_back(13095);
+        internal_counters.push_back(13377);
+        internal_counters.push_back(13659);
 
-        c.UpdateAsicSpecificDerivedCounter("FetchSize", internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(64),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(32),*,+");
+        c.UpdateAsicSpecificDerivedCounter("FetchSize", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(64),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(32),*,+");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(9416);
-        internalCounters.push_back(9698);
-        internalCounters.push_back(9980);
-        internalCounters.push_back(10262);
-        internalCounters.push_back(10544);
-        internalCounters.push_back(10826);
-        internalCounters.push_back(11108);
-        internalCounters.push_back(11390);
-        internalCounters.push_back(11672);
-        internalCounters.push_back(11954);
-        internalCounters.push_back(12236);
-        internalCounters.push_back(12518);
-        internalCounters.push_back(12800);
-        internalCounters.push_back(13082);
-        internalCounters.push_back(13364);
-        internalCounters.push_back(13646);
-        internalCounters.push_back(9417);
-        internalCounters.push_back(9699);
-        internalCounters.push_back(9981);
-        internalCounters.push_back(10263);
-        internalCounters.push_back(10545);
-        internalCounters.push_back(10827);
-        internalCounters.push_back(11109);
-        internalCounters.push_back(11391);
-        internalCounters.push_back(11673);
-        internalCounters.push_back(11955);
-        internalCounters.push_back(12237);
-        internalCounters.push_back(12519);
-        internalCounters.push_back(12801);
-        internalCounters.push_back(13083);
-        internalCounters.push_back(13365);
-        internalCounters.push_back(13647);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(9416);
+        internal_counters.push_back(9698);
+        internal_counters.push_back(9980);
+        internal_counters.push_back(10262);
+        internal_counters.push_back(10544);
+        internal_counters.push_back(10826);
+        internal_counters.push_back(11108);
+        internal_counters.push_back(11390);
+        internal_counters.push_back(11672);
+        internal_counters.push_back(11954);
+        internal_counters.push_back(12236);
+        internal_counters.push_back(12518);
+        internal_counters.push_back(12800);
+        internal_counters.push_back(13082);
+        internal_counters.push_back(13364);
+        internal_counters.push_back(13646);
+        internal_counters.push_back(9417);
+        internal_counters.push_back(9699);
+        internal_counters.push_back(9981);
+        internal_counters.push_back(10263);
+        internal_counters.push_back(10545);
+        internal_counters.push_back(10827);
+        internal_counters.push_back(11109);
+        internal_counters.push_back(11391);
+        internal_counters.push_back(11673);
+        internal_counters.push_back(11955);
+        internal_counters.push_back(12237);
+        internal_counters.push_back(12519);
+        internal_counters.push_back(12801);
+        internal_counters.push_back(13083);
+        internal_counters.push_back(13365);
+        internal_counters.push_back(13647);
 
-        c.UpdateAsicSpecificDerivedCounter("WriteSize", internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(64),*,+");
+        c.UpdateAsicSpecificDerivedCounter("WriteSize", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(32),*,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,(64),*,+");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(9407);
-        internalCounters.push_back(9689);
-        internalCounters.push_back(9971);
-        internalCounters.push_back(10253);
-        internalCounters.push_back(10535);
-        internalCounters.push_back(10817);
-        internalCounters.push_back(11099);
-        internalCounters.push_back(11381);
-        internalCounters.push_back(11663);
-        internalCounters.push_back(11945);
-        internalCounters.push_back(12227);
-        internalCounters.push_back(12509);
-        internalCounters.push_back(12791);
-        internalCounters.push_back(13073);
-        internalCounters.push_back(13355);
-        internalCounters.push_back(13637);
-        internalCounters.push_back(9409);
-        internalCounters.push_back(9691);
-        internalCounters.push_back(9973);
-        internalCounters.push_back(10255);
-        internalCounters.push_back(10537);
-        internalCounters.push_back(10819);
-        internalCounters.push_back(11101);
-        internalCounters.push_back(11383);
-        internalCounters.push_back(11665);
-        internalCounters.push_back(11947);
-        internalCounters.push_back(12229);
-        internalCounters.push_back(12511);
-        internalCounters.push_back(12793);
-        internalCounters.push_back(13075);
-        internalCounters.push_back(13357);
-        internalCounters.push_back(13639);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(9407);
+        internal_counters.push_back(9689);
+        internal_counters.push_back(9971);
+        internal_counters.push_back(10253);
+        internal_counters.push_back(10535);
+        internal_counters.push_back(10817);
+        internal_counters.push_back(11099);
+        internal_counters.push_back(11381);
+        internal_counters.push_back(11663);
+        internal_counters.push_back(11945);
+        internal_counters.push_back(12227);
+        internal_counters.push_back(12509);
+        internal_counters.push_back(12791);
+        internal_counters.push_back(13073);
+        internal_counters.push_back(13355);
+        internal_counters.push_back(13637);
+        internal_counters.push_back(9409);
+        internal_counters.push_back(9691);
+        internal_counters.push_back(9973);
+        internal_counters.push_back(10255);
+        internal_counters.push_back(10537);
+        internal_counters.push_back(10819);
+        internal_counters.push_back(11101);
+        internal_counters.push_back(11383);
+        internal_counters.push_back(11665);
+        internal_counters.push_back(11947);
+        internal_counters.push_back(12229);
+        internal_counters.push_back(12511);
+        internal_counters.push_back(12793);
+        internal_counters.push_back(13075);
+        internal_counters.push_back(13357);
+        internal_counters.push_back(13639);
 
-        c.UpdateAsicSpecificDerivedCounter("L2CacheHit", internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,+,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("L2CacheHit", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,+,/,(100),*");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(9407);
-        internalCounters.push_back(9689);
-        internalCounters.push_back(9971);
-        internalCounters.push_back(10253);
-        internalCounters.push_back(10535);
-        internalCounters.push_back(10817);
-        internalCounters.push_back(11099);
-        internalCounters.push_back(11381);
-        internalCounters.push_back(11663);
-        internalCounters.push_back(11945);
-        internalCounters.push_back(12227);
-        internalCounters.push_back(12509);
-        internalCounters.push_back(12791);
-        internalCounters.push_back(13073);
-        internalCounters.push_back(13355);
-        internalCounters.push_back(13637);
-        internalCounters.push_back(9409);
-        internalCounters.push_back(9691);
-        internalCounters.push_back(9973);
-        internalCounters.push_back(10255);
-        internalCounters.push_back(10537);
-        internalCounters.push_back(10819);
-        internalCounters.push_back(11101);
-        internalCounters.push_back(11383);
-        internalCounters.push_back(11665);
-        internalCounters.push_back(11947);
-        internalCounters.push_back(12229);
-        internalCounters.push_back(12511);
-        internalCounters.push_back(12793);
-        internalCounters.push_back(13075);
-        internalCounters.push_back(13357);
-        internalCounters.push_back(13639);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(9407);
+        internal_counters.push_back(9689);
+        internal_counters.push_back(9971);
+        internal_counters.push_back(10253);
+        internal_counters.push_back(10535);
+        internal_counters.push_back(10817);
+        internal_counters.push_back(11099);
+        internal_counters.push_back(11381);
+        internal_counters.push_back(11663);
+        internal_counters.push_back(11945);
+        internal_counters.push_back(12227);
+        internal_counters.push_back(12509);
+        internal_counters.push_back(12791);
+        internal_counters.push_back(13073);
+        internal_counters.push_back(13355);
+        internal_counters.push_back(13637);
+        internal_counters.push_back(9409);
+        internal_counters.push_back(9691);
+        internal_counters.push_back(9973);
+        internal_counters.push_back(10255);
+        internal_counters.push_back(10537);
+        internal_counters.push_back(10819);
+        internal_counters.push_back(11101);
+        internal_counters.push_back(11383);
+        internal_counters.push_back(11665);
+        internal_counters.push_back(11947);
+        internal_counters.push_back(12229);
+        internal_counters.push_back(12511);
+        internal_counters.push_back(12793);
+        internal_counters.push_back(13075);
+        internal_counters.push_back(13357);
+        internal_counters.push_back(13639);
 
-        c.UpdateAsicSpecificDerivedCounter("L2CacheMiss", internalCounters, "16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,+,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("L2CacheMiss", internal_counters, "16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,+,/,(100),*");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(9407);
-        internalCounters.push_back(9689);
-        internalCounters.push_back(9971);
-        internalCounters.push_back(10253);
-        internalCounters.push_back(10535);
-        internalCounters.push_back(10817);
-        internalCounters.push_back(11099);
-        internalCounters.push_back(11381);
-        internalCounters.push_back(11663);
-        internalCounters.push_back(11945);
-        internalCounters.push_back(12227);
-        internalCounters.push_back(12509);
-        internalCounters.push_back(12791);
-        internalCounters.push_back(13073);
-        internalCounters.push_back(13355);
-        internalCounters.push_back(13637);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(9407);
+        internal_counters.push_back(9689);
+        internal_counters.push_back(9971);
+        internal_counters.push_back(10253);
+        internal_counters.push_back(10535);
+        internal_counters.push_back(10817);
+        internal_counters.push_back(11099);
+        internal_counters.push_back(11381);
+        internal_counters.push_back(11663);
+        internal_counters.push_back(11945);
+        internal_counters.push_back(12227);
+        internal_counters.push_back(12509);
+        internal_counters.push_back(12791);
+        internal_counters.push_back(13073);
+        internal_counters.push_back(13355);
+        internal_counters.push_back(13637);
 
-        c.UpdateAsicSpecificDerivedCounter("L2CacheHitCount", internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16");
+        c.UpdateAsicSpecificDerivedCounter("L2CacheHitCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(9409);
-        internalCounters.push_back(9691);
-        internalCounters.push_back(9973);
-        internalCounters.push_back(10255);
-        internalCounters.push_back(10537);
-        internalCounters.push_back(10819);
-        internalCounters.push_back(11101);
-        internalCounters.push_back(11383);
-        internalCounters.push_back(11665);
-        internalCounters.push_back(11947);
-        internalCounters.push_back(12229);
-        internalCounters.push_back(12511);
-        internalCounters.push_back(12793);
-        internalCounters.push_back(13075);
-        internalCounters.push_back(13357);
-        internalCounters.push_back(13639);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(9409);
+        internal_counters.push_back(9691);
+        internal_counters.push_back(9973);
+        internal_counters.push_back(10255);
+        internal_counters.push_back(10537);
+        internal_counters.push_back(10819);
+        internal_counters.push_back(11101);
+        internal_counters.push_back(11383);
+        internal_counters.push_back(11665);
+        internal_counters.push_back(11947);
+        internal_counters.push_back(12229);
+        internal_counters.push_back(12511);
+        internal_counters.push_back(12793);
+        internal_counters.push_back(13075);
+        internal_counters.push_back(13357);
+        internal_counters.push_back(13639);
 
-        c.UpdateAsicSpecificDerivedCounter("L2CacheMissCount", internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16");
+        c.UpdateAsicSpecificDerivedCounter("L2CacheMissCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(9420);
-        internalCounters.push_back(9702);
-        internalCounters.push_back(9984);
-        internalCounters.push_back(10266);
-        internalCounters.push_back(10548);
-        internalCounters.push_back(10830);
-        internalCounters.push_back(11112);
-        internalCounters.push_back(11394);
-        internalCounters.push_back(11676);
-        internalCounters.push_back(11958);
-        internalCounters.push_back(12240);
-        internalCounters.push_back(12522);
-        internalCounters.push_back(12804);
-        internalCounters.push_back(13086);
-        internalCounters.push_back(13368);
-        internalCounters.push_back(13650);
-        internalCounters.push_back(1799);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(9420);
+        internal_counters.push_back(9702);
+        internal_counters.push_back(9984);
+        internal_counters.push_back(10266);
+        internal_counters.push_back(10548);
+        internal_counters.push_back(10830);
+        internal_counters.push_back(11112);
+        internal_counters.push_back(11394);
+        internal_counters.push_back(11676);
+        internal_counters.push_back(11958);
+        internal_counters.push_back(12240);
+        internal_counters.push_back(12522);
+        internal_counters.push_back(12804);
+        internal_counters.push_back(13086);
+        internal_counters.push_back(13368);
+        internal_counters.push_back(13650);
+        internal_counters.push_back(1799);
 
-        c.UpdateAsicSpecificDerivedCounter("WriteUnitStalled", internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("WriteUnitStalled", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(9420);
-        internalCounters.push_back(9702);
-        internalCounters.push_back(9984);
-        internalCounters.push_back(10266);
-        internalCounters.push_back(10548);
-        internalCounters.push_back(10830);
-        internalCounters.push_back(11112);
-        internalCounters.push_back(11394);
-        internalCounters.push_back(11676);
-        internalCounters.push_back(11958);
-        internalCounters.push_back(12240);
-        internalCounters.push_back(12522);
-        internalCounters.push_back(12804);
-        internalCounters.push_back(13086);
-        internalCounters.push_back(13368);
-        internalCounters.push_back(13650);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(9420);
+        internal_counters.push_back(9702);
+        internal_counters.push_back(9984);
+        internal_counters.push_back(10266);
+        internal_counters.push_back(10548);
+        internal_counters.push_back(10830);
+        internal_counters.push_back(11112);
+        internal_counters.push_back(11394);
+        internal_counters.push_back(11676);
+        internal_counters.push_back(11958);
+        internal_counters.push_back(12240);
+        internal_counters.push_back(12522);
+        internal_counters.push_back(12804);
+        internal_counters.push_back(13086);
+        internal_counters.push_back(13368);
+        internal_counters.push_back(13650);
 
-        c.UpdateAsicSpecificDerivedCounter("WriteUnitStalledCycles", internalCounters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16");
+        c.UpdateAsicSpecificDerivedCounter("WriteUnitStalledCycles", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16");
     }
     return true;
 }

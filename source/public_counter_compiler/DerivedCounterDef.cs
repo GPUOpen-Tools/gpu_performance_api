@@ -1,6 +1,6 @@
 // =====================================================================
 // <copyright file="PublicCounterDef.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2018 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2020 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -278,7 +278,7 @@ namespace PublicCounterCompiler
         /// <summary>
         /// The list of internal counters.
         /// </summary>
-        private List<HardwareCounterDef> counters = new List<HardwareCounterDef>();
+        private List<HardwareCounterDef> _counters = new List<HardwareCounterDef>();
 
         /// <summary>
         /// Gets or sets the name of the counter.
@@ -364,7 +364,7 @@ namespace PublicCounterCompiler
         /// <param name="counterIndex">The index of the internal counter to add.</param>
         public void AddCounter(string counterName, int counterIndex)
         {
-            this.counters.Add(new HardwareCounterDef(counterName, counterIndex));
+            this._counters.Add(new HardwareCounterDef(counterName, counterIndex));
         }
 
         /// <summary>
@@ -374,7 +374,7 @@ namespace PublicCounterCompiler
         /// <returns>The 'global' index of the internal counter.</returns>
         public HardwareCounterDef GetCounter(int index)
         {
-            return this.counters[index];
+            return this._counters[index];
         }
 
         /// <summary>
@@ -383,7 +383,7 @@ namespace PublicCounterCompiler
         /// <returns>The number of counters used.</returns>
         public int GetCounterCount()
         {
-            return this.counters.Count;
+            return this._counters.Count;
         }
 
         /// <summary>
@@ -391,7 +391,7 @@ namespace PublicCounterCompiler
         /// </summary>
         public void ClearCounters()
         {
-            this.counters.Clear();
+            this._counters.Clear();
         }
 
         /// <summary>
@@ -401,7 +401,7 @@ namespace PublicCounterCompiler
         /// <returns>True if the index is in the </returns>
         public bool CounterDefined(int counterIndex)
         {
-            return this.counters.Contains(new HardwareCounterDef(string.Empty, counterIndex));
+            return this._counters.Contains(new HardwareCounterDef(string.Empty, counterIndex));
         }
 
         /// <summary>
@@ -410,7 +410,7 @@ namespace PublicCounterCompiler
         /// <returns>List of internal counters.</returns>
         public List<HardwareCounterDef> GetCounters()
         {
-            return this.counters;
+            return this._counters;
         }
 
         /// <summary>

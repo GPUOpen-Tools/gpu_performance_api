@@ -11,20 +11,21 @@ set(ProjectName ${GPA_PROJECT_NAME})
 include (${GPA_CMAKE_MODULES_DIR}/common.cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/properties/assembly_info.cs
+set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/properties/AssemblyInfo.cs
             ${CMAKE_CURRENT_SOURCE_DIR}/app.config
             ${CMAKE_CURRENT_SOURCE_DIR}/app.manifest
-            ${CMAKE_CURRENT_SOURCE_DIR}/derived_counter_def.cs
-            ${CMAKE_CURRENT_SOURCE_DIR}/form1.cs
-            ${CMAKE_CURRENT_SOURCE_DIR}/form1.designer.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/DerivedCounterDef.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/Form1.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/Form1.Designer.cs
             ${CMAKE_CURRENT_SOURCE_DIR}/form1.resx
-            ${CMAKE_CURRENT_SOURCE_DIR}/internal_counter_def.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/InternalCounterDef.cs
             ${CMAKE_CURRENT_SOURCE_DIR}/packages.config
-            ${CMAKE_CURRENT_SOURCE_DIR}/program.cs
-            ${CMAKE_CURRENT_SOURCE_DIR}/counter_compiler.cs
-            ${CMAKE_CURRENT_SOURCE_DIR}/file_name_and_path.cs
-            ${CMAKE_CURRENT_SOURCE_DIR}/cmake_generator.cs
-            ${CMAKE_CURRENT_SOURCE_DIR}/counter_def_cmake_gen.cs)
+            ${CMAKE_CURRENT_SOURCE_DIR}/Program.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/CounterCompiler.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/FileNameAndPath.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/GpaUtility.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/CMakeGenerator.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/CounterDefCMakeGen.cs)
 
 add_executable(${GPA_PROJECT_NAME} WIN32 ${SOURCES})
 target_compile_options(${GPA_PROJECT_NAME} PRIVATE "/langversion:6")

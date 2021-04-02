@@ -1,281 +1,282 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief Common GPA Implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Common GPA Implementor.
 //==============================================================================
+
+#include "gpu_perf_api_common/gpa_implementor.h"
+
+#if defined(WIN32)
+#include "gpu_perf_api_common/adapter.h"
+#endif
 
 #include <ADLUtil.h>
 
-#include "gpa_implementor.h"
-#include "gpa_unique_object.h"
-#include "logging.h"
-#include "gpa_context_counter_mediator.h"
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
+#include "gpu_perf_api_common/gpa_unique_object.h"
+#include "gpu_perf_api_common/logging.h"
 
-#if defined(WIN32)
-#include "adapter.h"
-#endif
-
-GPAImplementor::GPAImplementor()
-    : m_isInitialized(false)
-    , m_initFlags(GPA_INITIALIZE_DEFAULT_BIT)
+GpaImplementor::GpaImplementor()
+    : is_initialized_(false)
+    , init_flags_(kGpaInitializeDefaultBit)
 {
 }
 
-GPA_Status GPAImplementor::Initialize(GPA_InitializeFlags flags)
+GpaStatus GpaImplementor::Initialize(GpaInitializeFlags flags)
 {
-    m_initFlags = flags;
+    init_flags_ = flags;
 
-    GPA_Status gpaStatus = GPA_STATUS_ERROR_GPA_ALREADY_INITIALIZED;
+    GpaStatus gpa_status = kGpaStatusErrorGpaAlreadyInitialized;
 
-    if (GPA_INITIALIZE_DEFAULT_BIT != flags && GPA_INITIALIZE_SIMULTANEOUS_QUEUES_ENABLE_BIT != flags)
+    if (kGpaInitializeDefaultBit != flags && GPA_INITIALIZE_SIMULTANEOUS_QUEUES_ENABLE_BIT != flags)
     {
-        GPA_LogError("Invalid flags passed to GPA_Initialize.");
-        gpaStatus = GPA_STATUS_ERROR_INVALID_PARAMETER;
+        GPA_LOG_ERROR("Invalid flags passed to GPA_Initialize.");
+        gpa_status = kGpaStatusErrorInvalidParameter;
     }
     else
     {
-        if (!m_isInitialized)
+        if (!is_initialized_)
         {
-            m_isInitialized                  = true;
-            GPAContextCounterMediator* pTemp = GPAContextCounterMediator::Instance();
+            is_initialized_                 = true;
+            GpaContextCounterMediator* temp = GpaContextCounterMediator::Instance();
 
-            if (nullptr == pTemp)
+            if (nullptr == temp)
             {
-                gpaStatus = GPA_STATUS_ERROR_FAILED;
+                gpa_status = kGpaStatusErrorFailed;
             }
             else
             {
-                gpaStatus = GPA_STATUS_OK;
+                gpa_status = kGpaStatusOk;
             }
         }
     }
 
-    return gpaStatus;
+    return gpa_status;
 }
 
-GPA_Status GPAImplementor::Destroy()
+GpaStatus GpaImplementor::Destroy()
 {
-    GPA_Status gpaStatus = GPA_STATUS_ERROR_GPA_NOT_INITIALIZED;
+    GpaStatus gpa_status = kGpaStatusErrorGpaNotInitialized;
 
-    if (m_isInitialized)
+    if (is_initialized_)
     {
-        m_isInitialized = false;
-        GPAContextCounterMediator::DeleteInstance();
-        gpaStatus = GPA_STATUS_OK;
+        is_initialized_ = false;
+        GpaContextCounterMediator::DeleteInstance();
+        gpa_status = kGpaStatusOk;
     }
 
-    return gpaStatus;
+    return gpa_status;
 }
 
-GPA_Status GPAImplementor::OpenContext(void* pContext, GPA_OpenContextFlags flags, GPA_ContextId* pContextId)
+GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, GpaContextId* gpa_context_id)
 {
-    // validate that only a single clock mode is specified
-    unsigned int numClockModes = 0;
+    // Validate that only a single clock mode is specified.
+    unsigned int num_clock_modes = 0;
 
-    if (GPA_OPENCONTEXT_CLOCK_MODE_NONE_BIT & flags)
+    if (kGpaOpenContextClockModeNoneBit & flags)
     {
-        numClockModes++;
+        num_clock_modes++;
     }
 
-    if (GPA_OPENCONTEXT_CLOCK_MODE_PEAK_BIT & flags)
+    if (kGpaOpenContextClockModePeakBit & flags)
     {
-        numClockModes++;
+        num_clock_modes++;
     }
 
-    if (GPA_OPENCONTEXT_CLOCK_MODE_MIN_MEMORY_BIT & flags)
+    if (kGpaOpenContextClockModeMinMemoryBit & flags)
     {
-        numClockModes++;
+        num_clock_modes++;
     }
 
-    if (GPA_OPENCONTEXT_CLOCK_MODE_MIN_ENGINE_BIT & flags)
+    if (kGpaOpenContextClockModeMinEngineBit & flags)
     {
-        numClockModes++;
+        num_clock_modes++;
     }
 
-    if (1 < numClockModes)
+    if (1 < num_clock_modes)
     {
-        GPA_LogError("More than one clock mode specified.");
-        return GPA_STATUS_ERROR_INVALID_PARAMETER;
+        GPA_LOG_ERROR("More than one clock mode specified.");
+        return kGpaStatusErrorInvalidParameter;
     }
 
-    GPA_Status gpaStatus = GPA_STATUS_OK;
+    GpaStatus gpa_status = kGpaStatusOk;
 
-    std::lock_guard<std::mutex> lock(m_deviceGpaContextMapMutex);
+    std::lock_guard<std::mutex> lock(device_gpa_context_map_mutex_);
 
-    if (!DoesContextInfoExist(pContext))
+    if (!DoesContextInfoExist(context))
     {
-        GPA_HWInfo hwInfo;
+        GpaHwInfo hw_info;
 
-        if (GPA_STATUS_OK == IsDeviceSupported(pContext, &hwInfo))
+        if (kGpaStatusOk == IsDeviceSupported(context, &hw_info))
         {
-            IGPAContext* pNewGPAContext = nullptr;
-            pNewGPAContext              = OpenAPIContext(pContext, hwInfo, flags);
+            IGpaContext* new_gpa_context = nullptr;
+            new_gpa_context              = OpenApiContext(context, hw_info, flags);
 
-            if (nullptr != pNewGPAContext)
+            if (nullptr != new_gpa_context)
             {
-                *pContextId = reinterpret_cast<GPA_ContextId>(GPAUniqueObjectManager::Instance()->CreateObject(pNewGPAContext));
-                m_appContextInfoGpaContextMap.insert(GPADeviceIdentifierGPAContextPair(GetDeviceIdentifierFromContextInfo(pContext), pNewGPAContext));
+                *gpa_context_id = reinterpret_cast<GpaContextId>(GpaUniqueObjectManager::Instance()->CreateObject(new_gpa_context));
+                app_context_info_gpa_context_map_.insert(GpaDeviceIdentifierGpaContextPair(GetDeviceIdentifierFromContextInfo(context), new_gpa_context));
             }
             else
             {
-                GPA_LogError("Failed to open API-specific GPA Context.");
-                gpaStatus = GPA_STATUS_ERROR_FAILED;
+                GPA_LOG_ERROR("Failed to open API-specific GPA Context.");
+                gpa_status = kGpaStatusErrorFailed;
             }
         }
         else
         {
-            GPA_LogError("Device not supported.");
-            gpaStatus = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+            GPA_LOG_ERROR("Device not supported.");
+            gpa_status = kGpaStatusErrorHardwareNotSupported;
         }
     }
     else
     {
-        GPA_LogError("Context is already open.");
-        gpaStatus = GPA_STATUS_ERROR_CONTEXT_ALREADY_OPEN;
+        GPA_LOG_ERROR("Context is already open.");
+        gpa_status = kGpaStatusErrorContextAlreadyOpen;
     }
 
-    return gpaStatus;
+    return gpa_status;
 }
 
-GPA_Status GPAImplementor::CloseContext(GPA_ContextId contextId)
+GpaStatus GpaImplementor::CloseContext(GpaContextId gpa_context_id)
 {
-    GPA_Status gpaStatus = GPA_STATUS_OK;
+    GpaStatus gpa_status = kGpaStatusOk;
 
-    if (GPAObjectType::GPA_OBJECT_TYPE_CONTEXT == contextId->ObjectType() && contextId->Object()->GetAPIType() == GetAPIType())
+    if (GpaObjectType::kGpaObjectTypeContext == gpa_context_id->ObjectType() && gpa_context_id->Object()->GetApiType() == GetApiType())
     {
-        std::lock_guard<std::mutex> lock(m_deviceGpaContextMapMutex);
+        std::lock_guard<std::mutex> lock(device_gpa_context_map_mutex_);
 
-        IGPAContext* pContext = contextId->Object();
+        IGpaContext* gpa_context = gpa_context_id->Object();
 
-        // find the context
-        bool                                       isFound   = false;
-        GPADeviceIdentifierGPAContextMap::iterator foundIter = m_appContextInfoGpaContextMap.end();
+        // Find the context.
+        bool                                       is_found   = false;
+        GpaDeviceIdentifierGpaContextMap::iterator found_iter = app_context_info_gpa_context_map_.end();
 
-        for (auto iter = m_appContextInfoGpaContextMap.begin(); !isFound && iter != m_appContextInfoGpaContextMap.end(); ++iter)
+        for (auto iter = app_context_info_gpa_context_map_.begin(); !is_found && iter != app_context_info_gpa_context_map_.end(); ++iter)
         {
-            if (iter->second == pContext)
+            if (iter->second == gpa_context)
             {
-                isFound   = true;
-                foundIter = iter;
+                is_found   = true;
+                found_iter = iter;
             }
         }
 
-        if (isFound)
+        if (is_found)
         {
-            if (CloseAPIContext(foundIter->first, pContext))
+            if (CloseApiContext(found_iter->first, gpa_context))
             {
-                m_appContextInfoGpaContextMap.erase(foundIter);
-                GPAUniqueObjectManager::Instance()->DeleteObject(contextId);
+                app_context_info_gpa_context_map_.erase(found_iter);
+                GpaUniqueObjectManager::Instance()->DeleteObject(gpa_context_id);
             }
             else
             {
-                GPA_LogDebugError("Unable to close the API-level GPA context.");
-                gpaStatus = GPA_STATUS_ERROR_FAILED;
+                GPA_LOG_DEBUG_ERROR("Unable to close the API-level GPA context.");
+                gpa_status = kGpaStatusErrorFailed;
             }
         }
         else
         {
-            GPA_LogError("Unable to close the GPAContext: context not found.");
-            gpaStatus = GPA_STATUS_ERROR_INVALID_PARAMETER;
+            GPA_LOG_ERROR("Unable to close the GPAContext: context not found.");
+            gpa_status = kGpaStatusErrorInvalidParameter;
         }
     }
     else
     {
-        GPA_LogError("Invalid context supplied.");
-        gpaStatus = GPA_STATUS_ERROR_INVALID_PARAMETER;
+        GPA_LOG_ERROR("Invalid context supplied.");
+        gpa_status = kGpaStatusErrorInvalidParameter;
     }
 
-    return gpaStatus;
+    return gpa_status;
 }
 
-GPAObjectType GPAImplementor::ObjectType() const
+GpaObjectType GpaImplementor::ObjectType() const
 {
-    return GPAObjectType::GPA_OBJECT_TYPE_IMPLEMENTATION;
+    return GpaObjectType::kGpaObjectTypeImplementation;
 }
 
-bool GPAImplementor::DoesContextExist(GPA_ContextId contextId) const
+bool GpaImplementor::DoesContextExist(GpaContextId gpa_context_id) const
 {
-    bool contextFound = false;
+    bool context_found = false;
 
-    if (nullptr != contextId)
+    if (nullptr != gpa_context_id)
     {
-        contextFound = GPAUniqueObjectManager::Instance()->DoesExist(contextId);
+        context_found = GpaUniqueObjectManager::Instance()->DoesExist(gpa_context_id);
 
-        if (contextFound && GPAObjectType::GPA_OBJECT_TYPE_CONTEXT == contextId->ObjectType() && GetAPIType() == contextId->Object()->GetAPIType())
+        if (context_found && GpaObjectType::kGpaObjectTypeContext == gpa_context_id->ObjectType() && GetApiType() == gpa_context_id->Object()->GetApiType())
         {
-            contextFound = true;
+            context_found = true;
         }
     }
 
-    return contextFound;
+    return context_found;
 }
 
-bool GPAImplementor::DoesSessionExist(GPA_SessionId sessionId) const
+bool GpaImplementor::DoesSessionExist(GpaSessionId gpa_session_id) const
 {
-    bool sessionFound = false;
+    bool session_found = false;
 
-    if (nullptr != sessionId)
+    if (nullptr != gpa_session_id)
     {
-        sessionFound = GPAUniqueObjectManager::Instance()->DoesExist(sessionId);
+        session_found = GpaUniqueObjectManager::Instance()->DoesExist(gpa_session_id);
 
-        if (sessionFound && GPAObjectType::GPA_OBJECT_TYPE_SESSION == sessionId->ObjectType())
+        if (session_found && GpaObjectType::kGpaObjectTypeSession == gpa_session_id->ObjectType())
         {
-            sessionFound = true;
+            session_found = true;
         }
     }
 
-    return sessionFound;
+    return session_found;
 }
 
-bool GPAImplementor::DoesCommandListExist(GPA_CommandListId commandListId) const
+bool GpaImplementor::DoesCommandListExist(GpaCommandListId command_list_id) const
 {
-    bool commandListFound = false;
+    bool command_list_found = false;
 
-    if (nullptr != commandListId)
+    if (nullptr != command_list_id)
     {
-        commandListFound = GPAUniqueObjectManager::Instance()->DoesExist(commandListId);
+        command_list_found = GpaUniqueObjectManager::Instance()->DoesExist(command_list_id);
 
-        if (commandListFound && GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST == commandListId->ObjectType())
+        if (command_list_found && GpaObjectType::kGpaObjectTypeCommandList == command_list_id->ObjectType())
         {
-            commandListFound = true;
+            command_list_found = true;
         }
     }
 
-    return commandListFound;
+    return command_list_found;
 }
 
-GPA_InitializeFlags GPAImplementor::GetInitializeFlags() const
+GpaInitializeFlags GpaImplementor::GetInitializeFlags() const
 {
-    return m_initFlags;
+    return init_flags_;
 }
 
-bool GPAImplementor::IsCommandListRequired() const
+bool GpaImplementor::IsCommandListRequired() const
 {
     return false;
 }
 
-bool GPAImplementor::IsContinueSampleOnCommandListSupported() const
+bool GpaImplementor::IsContinueSampleOnCommandListSupported() const
 {
     return false;
 }
 
-bool GPAImplementor::IsCopySecondarySampleSupported() const
+bool GpaImplementor::IsCopySecondarySampleSupported() const
 {
     return false;
 }
 
-bool GPAImplementor::DoesContextInfoExist(GPAContextInfoPtr pContextInfo) const
+bool GpaImplementor::DoesContextInfoExist(GpaContextInfoPtr context_info) const
 {
-    return m_appContextInfoGpaContextMap.find(GetDeviceIdentifierFromContextInfo(pContextInfo)) != m_appContextInfoGpaContextMap.cend();
+    return app_context_info_gpa_context_map_.find(GetDeviceIdentifierFromContextInfo(context_info)) != app_context_info_gpa_context_map_.cend();
 }
 
-bool GPAImplementor::IsDeviceGenerationSupported(const GPA_HWInfo& hwInfo) const
+bool GpaImplementor::IsDeviceGenerationSupported(const GpaHwInfo& hw_info) const
 {
-    GDT_HW_GENERATION deviceGeneration = GDT_HW_GENERATION_NONE;
-    if (hwInfo.GetHWGeneration(deviceGeneration))
+    GDT_HW_GENERATION device_generation = GDT_HW_GENERATION_NONE;
+    if (hw_info.GetHwGeneration(device_generation))
     {
-        if (deviceGeneration >= GDT_HW_GENERATION_VOLCANICISLAND)
+        if (device_generation >= GDT_HW_GENERATION_VOLCANICISLAND)
         {
             return true;
         }
@@ -284,53 +285,53 @@ bool GPAImplementor::IsDeviceGenerationSupported(const GPA_HWInfo& hwInfo) const
     return false;
 }
 
-GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA_HWInfo* pHwInfo) const
+GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaHwInfo* hw_info) const
 {
-    bool         foundMatchingHWInfo = false;
-    AsicInfoList asicInfoList;
-    GPA_HWInfo   apiHwInfo;
+    bool         found_matching_hw_info = false;
+    AsicInfoList asic_info_list;
+    GpaHwInfo    api_hw_info;
 
-    if (!GetHwInfoFromAPI(pContextInfo, apiHwInfo))
+    if (!GetHwInfoFromApi(context_info, api_hw_info))
     {
-        GPA_LogError("Unable to get hardware information from the API.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_ERROR("Unable to get hardware information from the API.");
+        return kGpaStatusErrorFailed;
     }
 
-    if (apiHwInfo.IsAMD())
+    if (api_hw_info.IsAmd())
     {
-        AMDTADLUtils::Instance()->GetAsicInfoList(asicInfoList);
-        GPA_HWInfo asicHwInfo;
+        AMDTADLUtils::Instance()->GetAsicInfoList(asic_info_list);
+        GpaHwInfo asic_hw_info;
 
-        // make sure there are available asics for AMD card.
+        // Make sure there are available asics for AMD card.
         // In case there is no AMD driver, we output a message.
-        if (asicInfoList.empty())
+        if (asic_info_list.empty())
         {
-            GPA_LogMessage("Cannot get asicInfoList from ADL.");
+            GPA_LOG_MESSAGE("Cannot get asicInfoList from ADL.");
         }
 
-        for (auto asicInfo : asicInfoList)
+        for (auto asic_info : asic_info_list)
         {
-            asicHwInfo.SetVendorID(asicInfo.vendorID);
-            asicHwInfo.SetDeviceName(asicInfo.adapterName.c_str());
-            asicHwInfo.SetDeviceID(asicInfo.deviceID);
-            asicHwInfo.SetRevisionID(asicInfo.revID);
-            asicHwInfo.SetGpuIndex(asicInfo.gpuIndex);
-            asicHwInfo.UpdateDeviceInfoBasedOnDeviceID();
+            asic_hw_info.SetVendorId(asic_info.vendorID);
+            asic_hw_info.SetDeviceName(asic_info.adapterName.c_str());
+            asic_hw_info.SetDeviceId(asic_info.deviceID);
+            asic_hw_info.SetRevisionId(asic_info.revID);
+            asic_hw_info.SetGpuIndex(asic_info.gpuIndex);
+            asic_hw_info.UpdateDeviceInfoBasedOnDeviceId();
 
-            if (CompareHwInfo(apiHwInfo, asicHwInfo))
+            if (CompareHwInfo(api_hw_info, asic_hw_info))
             {
-                gpa_uint32 apiRevId = 0;
+                GpaUInt32 api_rev_id = 0;
 
-                // make sure revision id is set correctly based on the actual hardware
-                if (apiHwInfo.GetRevisionID(apiRevId) && REVISION_ID_ANY == apiRevId)
+                // Make sure revision id is set correctly based on the actual hardware.
+                if (api_hw_info.GetRevisionId(api_rev_id) && REVISION_ID_ANY == api_rev_id)
                 {
-                    apiHwInfo.SetRevisionID(asicInfo.revID);
+                    api_hw_info.SetRevisionId(asic_info.revID);
                 }
 
-                apiHwInfo.UpdateDeviceInfoBasedOnDeviceID();
+                api_hw_info.UpdateDeviceInfoBasedOnDeviceId();
 
-                // this device matches what the application is running on, so break from the loop.
-                foundMatchingHWInfo = true;
+                // This device matches what the application is running on, so break from the loop.
+                found_matching_hw_info = true;
                 break;
             }
         }
@@ -338,94 +339,94 @@ GPA_Status GPAImplementor::IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA
 
 #if defined(WIN32)
 
-    if (!foundMatchingHWInfo)  // ADL will not be available on a clean system that has never had the AMD driver installed
+    if (!found_matching_hw_info)  // ADL will not be available on a clean system that has never had the AMD driver installed.
     {
         Adapter adapter;
-        asicInfoList.clear();
+        asic_info_list.clear();
 
-        if (adapter.getAsicInfoList(asicInfoList))
+        if (adapter.GetAsicInfoList(asic_info_list))
         {
-            for (auto asicInfo : asicInfoList)
+            for (auto asic_info : asic_info_list)
             {
-                GPA_HWInfo asicHwInfo;
-                asicHwInfo.SetVendorID(asicInfo.vendorID);
-                asicHwInfo.SetDeviceName(asicInfo.adapterName.c_str());
-                asicHwInfo.SetDeviceID(asicInfo.deviceID);
-                asicHwInfo.SetRevisionID(asicInfo.revID);
+                GpaHwInfo asic_hw_info;
+                asic_hw_info.SetVendorId(asic_info.vendorID);
+                asic_hw_info.SetDeviceName(asic_info.adapterName.c_str());
+                asic_hw_info.SetDeviceId(asic_info.deviceID);
+                asic_hw_info.SetRevisionId(asic_info.revID);
 
-                if (NVIDIA_VENDOR_ID == asicInfo.vendorID)
+                if (kNvidiaVendorId == asic_info.vendorID)
                 {
-                    asicHwInfo.SetHWGeneration(GDT_HW_GENERATION_NVIDIA);
+                    asic_hw_info.SetHwGeneration(GDT_HW_GENERATION_NVIDIA);
                 }
-                else if (INTEL_VENDOR_ID == asicInfo.vendorID)
+                else if (kIntelVendorId == asic_info.vendorID)
                 {
-                    asicHwInfo.SetHWGeneration(GDT_HW_GENERATION_INTEL);
+                    asic_hw_info.SetHwGeneration(GDT_HW_GENERATION_INTEL);
                 }
                 else
                 {
-                    // this call makes sure the hw generation is set correctly
-                    asicHwInfo.UpdateDeviceInfoBasedOnDeviceID();
+                    // This call makes sure the hw generation is set correctly.
+                    asic_hw_info.UpdateDeviceInfoBasedOnDeviceId();
                 }
 
-                if (CompareHwInfo(apiHwInfo, asicHwInfo))
+                if (CompareHwInfo(api_hw_info, asic_hw_info))
                 {
-                    gpa_uint32 apiRevId = 0;
+                    GpaUInt32 api_rev_id = 0;
 
-                    // make sure revision id is set correctly based on the actual hardware
-                    if (apiHwInfo.GetRevisionID(apiRevId) && REVISION_ID_ANY == apiRevId)
+                    // Make sure revision id is set correctly based on the actual hardware.
+                    if (api_hw_info.GetRevisionId(api_rev_id) && REVISION_ID_ANY == api_rev_id)
                     {
-                        apiHwInfo.SetRevisionID(asicInfo.revID);
+                        api_hw_info.SetRevisionId(asic_info.revID);
                     }
 
-                    apiHwInfo.UpdateDeviceInfoBasedOnDeviceID();
+                    api_hw_info.UpdateDeviceInfoBasedOnDeviceId();
 
-                    // this device matches what the application is running on, so break from the loop.
-                    foundMatchingHWInfo = true;
+                    // This device matches what the application is running on, so break from the loop.
+                    found_matching_hw_info = true;
                     break;
                 }
             }
         }
         else
         {
-            GPA_LogMessage("Unable to get asic info from the Adapter.");
+            GPA_LOG_MESSAGE("Unable to get asic info from the Adapter.");
         }
     }
 
 #endif  // WIN32
 
-    if (!foundMatchingHWInfo)
+    if (!found_matching_hw_info)
     {
         // This code path is for systems where ADL is not available. ADL is not available on ROCm systems as well as on amdgpu systems.
         // API specific hardware information mostly gets basic information (namely just needs to get VendorID and DeviceID), so we need to update
         // the device info with additional information that we store per-deviceID.
-        bool deviceInfoOk = apiHwInfo.UpdateDeviceInfoBasedOnDeviceID();
+        bool device_info_ok = api_hw_info.UpdateDeviceInfoBasedOnDeviceId();
 
-        if (!deviceInfoOk)
+        if (!device_info_ok)
         {
-            // If this fails, then the hardware must not be supported because we don't know enough about it
-            GPA_LogError("Cannot update device information.");
-            return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+            // If this fails, then the hardware must not be supported because we don't know enough about it.
+            GPA_LOG_ERROR("Cannot update device information.");
+            return kGpaStatusErrorHardwareNotSupported;
         }
     }
 
-    // Check we support the device generation
-    if (!IsDeviceGenerationSupported(apiHwInfo))
+    // Check we support the device generation.
+    if (!IsDeviceGenerationSupported(api_hw_info))
     {
-        return GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+        return kGpaStatusErrorHardwareNotSupported;
     }
 
     // Give the API-specific implementation a chance to verify that the hardware is supported.
-    GPA_Status status = VerifyAPIHwSupport(pContextInfo, apiHwInfo) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+    GpaStatus status = VerifyApiHwSupport(context_info, api_hw_info) ? kGpaStatusOk : kGpaStatusErrorFailed;
 
-    if (GPA_STATUS_OK == status)
+    if (kGpaStatusOk == status)
     {
-        *pHwInfo = apiHwInfo;
+        *hw_info = api_hw_info;
     }
 
     return status;
 }
 
-bool GPAImplementor::CompareHwInfo(const GPA_HWInfo& first, const GPA_HWInfo& second) const
+bool GpaImplementor::CompareHwInfo(const GpaHwInfo& first, const GpaHwInfo& second) const
 {
     return first == second;
 }

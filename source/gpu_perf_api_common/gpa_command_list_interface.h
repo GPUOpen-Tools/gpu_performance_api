@@ -1,81 +1,97 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief Interface for GPA Command List Object
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Interface for GPA Command List Object.
 //==============================================================================
 
-#ifndef _I_GPA_COMMAND_LIST_H_
-#define _I_GPA_COMMAND_LIST_H_
+#ifndef GPU_PERF_API_COMMON_GPA_COMMAND_LIST_INTERFACE_H_
+#define GPU_PERF_API_COMMON_GPA_COMMAND_LIST_INTERFACE_H_
 
-#include "gpu_perf_api_types.h"
-#include "gpa_interface_trait_interface.h"
-#include "gpa_pass.h"
+#include "gpu_performance_api/gpu_perf_api_types.h"
 
-class IGPASession;  // forward declaration
+#include "gpu_perf_api_common/gpa_interface_trait_interface.h"
+#include "gpu_perf_api_common/gpa_session_interface.h"
+#include "gpu_perf_api_common/gpa_pass.h"
 
-/// Interface for GPA Command List
-class IGPACommandList : public IGPAInterfaceTrait
+/// @brief Interface for GPA Command List.
+class IGpaCommandList : public IGpaInterfaceTrait
 {
 public:
-    /// Virtual Destructor
-    virtual ~IGPACommandList() = default;
+    /// @brief Virtual Destructor.
+    virtual ~IGpaCommandList() = default;
 
-    /// Gets the session object on which this CommandList was started.
-    /// \return The session object on which this CommandList was started.
-    virtual IGPASession* GetParentSession() const = 0;
+    /// @brief Gets the session object on which this CommandList was started.
+    ///
+    /// @return The session object on which this CommandList was started.
+    virtual IGpaSession* GetParentSession() const = 0;
 
-    /// Changes the state of command list to sample recording state
-    /// \return true if successful otherwise false
+    /// @brief Changes the state of command list to sample recording state.
+    ///
+    /// @return True if successful otherwise false.
     virtual bool Begin() = 0;
 
-    /// Changes the state of command list from sample recording state to closed state
-    /// \return true if successful otherwise false
+    /// @brief Changes the state of command list from sample recording state to closed state.
+    ///
+    /// @return True if successful otherwise false.
     virtual bool End() = 0;
 
-    /// Checks whether the command list is running or not
-    /// \return true if command list is started but not yet ended otherwise false
+    /// @brief Checks whether the command list is running or not.
+    ///
+    /// @return True if command list is started but not yet ended otherwise false.
     virtual bool IsCommandListRunning() const = 0;
 
-    /// Returns the associated index of the pass
-    /// \return index of the pass
-    virtual GPAPass* GetPass() const = 0;
+    /// @brief Returns the associated index of the pass.
+    ///
+    /// @return Index of the pass.
+    virtual GpaPass* GetPass() const = 0;
 
-    /// Returns the number of samples created on the command list
-    /// \return number of samples
-    virtual gpa_uint32 GetSampleCount() const = 0;
+    /// @brief Returns the number of samples created on the command list.
+    ///
+    /// @return Number of samples.
+    virtual GpaUInt32 GetSampleCount() const = 0;
 
-    /// Begins the sample on the command list
-    /// \param[in] clientSampleIndex index of the sample
-    /// \param[in] pSample The sample to start
-    /// \return true if sample was successfully begun, false otherwise
-    virtual bool BeginSample(ClientSampleId clientSampleIndex, GPASample* pSample) = 0;
+    /// @brief Begins the sample on the command list.
+    ///
+    /// @param [in] client_sample_index Index of the sample.
+    /// @param [in] sample The sample to start.
+    ///
+    /// @return True if sample was successfully begun, false otherwise.
+    virtual bool BeginSample(ClientSampleId client_sample_index, GpaSample* sample) = 0;
 
-    /// Gets the current open sample
-    /// \return the current open sample or nullptr if no sample is open
-    virtual GPASample* GetLastSample() const = 0;
+    /// @brief Gets the current open sample.
+    ///
+    /// @return The current open sample or nullptr if no sample is open.
+    virtual GpaSample* GetLastSample() const = 0;
 
-    /// Returns the sample with given client sample id if it exists otherwise nullptr
-    /// \param[in] clientSampleId client sample id
-    /// \return sample id if found, otherwise nullptr
-    virtual GPASample* GetSample(ClientSampleId clientSampleId) const = 0;
+    /// @brief Returns the sample with given client sample id if it exists otherwise nullptr.
+    ///
+    /// @param [in] client_sample_id Client sample id.
+    ///
+    /// @return Sample id if found, otherwise nullptr.
+    virtual GpaSample* GetSample(ClientSampleId client_sample_id) const = 0;
 
-    /// Closes the most recent sample
-    /// \param[in] closingByClient flag indicating if the sample is being closed by the client rather than by GPA itself. Default is true.
-    /// \return true if most recent sample was closed, false otherwise
-    virtual bool CloseLastSample(bool closingByClient = true) = 0;
+    /// @brief Closes the most recent sample.
+    ///
+    /// @param [in] closing_by_client Flag indicating if the sample is being closed by the client rather than by GPA itself. Default is true.
+    ///
+    /// @return True if most recent sample was closed, false otherwise.
+    virtual bool CloseLastSample(bool closing_by_client = true) = 0;
 
-    /// Checks whether the last sample has been closed or not
-    /// \return true if last sample has been closed otherwise false
+    /// @brief Checks whether the last sample has been closed or not.
+    ///
+    /// @return True if last sample has been closed otherwise false.
     virtual bool IsLastSampleClosed() const = 0;
 
-    /// Checks whether the command list has finished executing and ready for returning the data
-    /// \return true if command list is finished executing otherwise false
+    /// @brief Checks whether the command list has finished executing and ready for returning the data.
+    ///
+    /// @return True if command list is finished executing otherwise false.
     virtual bool IsResultReady() const = 0;
 
-    /// Returns the cmd type of the command list
-    /// \return cmd type of the command list
-    virtual GPA_Command_List_Type GetCmdType() const = 0;
+    /// @brief Returns the cmd type of the command list.
+    ///
+    /// @return Cmd type of the command list.
+    virtual GpaCommandListType GetCmdType() const = 0;
 };
 
-#endif  // _I_GPA_COMMAND_LIST_H_
+#endif  // GPU_PERF_API_COMMON_GPA_COMMAND_LIST_INTERFACE_H_

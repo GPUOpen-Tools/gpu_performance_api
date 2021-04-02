@@ -1,147 +1,165 @@
 //==============================================================================
-// Copyright (c) 2006-2019 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Utility routines for retrieving ASIC information
+// Copyright (c) 2006-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Utility routines for retrieving ASIC information
 //==============================================================================
 
-#ifndef _ASIC_INFO_H_
-#define _ASIC_INFO_H_
+#ifndef GPU_PERF_API_GL_ASIC_INFO_H_
+#define GPU_PERF_API_GL_ASIC_INFO_H_
+
+#include "limits.h"
 
 #include <map>
-#include <TSingleton.h>
+
+#include "TSingleton.h"
 #include "DeviceInfo.h"
 
-namespace oglUtils
+namespace ogl_utils
 {
-    /// ASIC type enum
+    /// @brief ASIC type enumeration.
     typedef enum
     {
-        ASIC_Gfx6,    ///< GFX6 Family
-        ASIC_Gfx7,    ///< GFX7 Family
-        ASIC_Gfx8,    ///< GFX8 Family
-        ASIC_Gfx9,    ///< GFX9 Family
-        ASIC_Gfx10,   ///< GFX10 Family
-        ASIC_Gfx103,  ///< GFX103 Family
-        ASIC_UNKNOWN  ///< unknown asic family
-    } ASICType;
+        kAsicGfx6,    ///< GFX6 Family.
+        kAsicGfx7,    ///< GFX7 Family.
+        kAsicGfx8,    ///< GFX8 Family.
+        kAsicGfx9,    ///< GFX9 Family.
+        kAsicGfx10,   ///< GFX10 Family.
+        kAsicGfx103,  ///< GFX103 Family.
+        kAsicUnknown  ///< Unknown ASIC Family.
+    } AsicType;
 
-    /// !!! From /stg/ugl/drivers/ugl/src/gl/gs/include/atiasics.h !!!
-    ///   NOTE: THIS MUST BE UPDATED FOR NEW ASICS
-    /// Asic identifier enum
-    typedef enum AsicIDEnum
+    /// @brief ASIC identifier enumeration.
+    ///
+    /// From /stg/ugl/drivers/ugl/src/gl/gs/include/atiasics.h
+    /// NOTE: THIS MUST BE UPDATED FOR NEW ASICs
+    typedef enum AsicIdEnum
     {
-        ASIC_ID_TAHITI_P,                 ///< ATIASICID for TAHITI (GFX6)
-        ASIC_ID_PITCAIRN_PM,              ///< ATIASICID for PITCAIRN (GFX6)
-        ASIC_ID_CAPEVERDE_M,              ///< ATIASICID for CAPEVERDE (GFX6)
-        ASIC_ID_OLAND_M,                  ///< ATIASICID for OLAND (GFX6)
-        ASIC_ID_HAINAN_M,                 ///< ATIASICID for HAINAN (GFX6)
-        ASIC_ID_BONAIRE_M,                ///< ATIASICID for BONAIRE (GFX7)
-        ASIC_ID_SPECTRE,                  ///< ATIASICID for KAVERI (GFX7 Fusion KV1)
-        ASIC_ID_SPOOKY,                   ///< ATIASICID for KAVERI (GFX7 Fusion KV2)
-        ASIC_ID_KALINDI,                  ///< ATIASICID for KABINI (GFX7 Fusion KB)
-        ASIC_ID_HAWAII_P,                 ///< ATIASICID for HAWAII (GFX7)
-        ASIC_ID_ICELAND_M,                ///< ATIASICID for ICELAND (GFX8)
-        ASIC_ID_TONGA_P,                  ///< ATIASICID for TONGA (GFX8)
-        ASIC_ID_GODAVARI,                 ///< ATIASICID for MULLINS (GFX8 Fusion (Mullins))
-        ASIC_ID_CARRIZO,                  ///< ATIASICID for Carrizo (GFX8 Fusion)
-        ASIC_ID_NOLAN,                    ///< ATIASICID for Nolan (GFX8.1 APU)
-        ASIC_ID_STONEY,                   ///< ATIASICID for Stoney (GFX8.1 APU, almost the same as Nolan)
-        ASIC_ID_AMUR,                     ///< ATIASICID for Amur (GFX8.1 APU)
-        ASIC_ID_FIJI_P,                   ///< ATIASICID for Fiji (GFX8)
-        ASIC_ID_ELLESMERE,                ///< ATIASICID for Ellesmere (GFX8)
-        ASIC_ID_BAFFIN,                   ///< ATIASICID for Baffin (GFX8)
-        ASIC_ID_LEXA,                     ///< ATIASICID for Lexa (GFX8)
-        ASIC_ID_VEGAM,                    ///< ATIASICID for VegaM (GFX8)
-        ASIC_ID_GFX900,                   ///< ATIASICID for GFX900
-        ASIC_ID_GFX902,                   ///< ATIASICID for GFX902 (APU)
-        ASIC_ID_PLACEHOLDER,              ///< ATIASICID for placeholder APU
-        ASIC_ID_PLACEHOLDER1,             ///< ATIASICID for placeholder GFX9
-        ASIC_ID_GFX906,                   ///< ATIASICID for GFX906
-        ASIC_ID_PLACEHOLDER2,             ///< ATIASICID for placeholder APU
-        ASIC_ID_PLACEHOLDER3,             ///< ATIASICID for placeholder APU
-        ASIC_ID_GFX1010,                  ///< ATIASICID for GFX1010
-        ASIC_ID_GFX1010LITE,              ///< ATIASICID for GFX1010Lite
-        ASIC_ID_PLACEHOLDER4,             ///< ATIASICID for placeholder GFX10
-        ASIC_ID_PLACEHOLDER5,             ///< ATIASICID for placeholder GFX10
-        ASIC_ID_GFX1012,                  ///< ATIASICID for GFX1012
-        ASIC_ID_GFX1030,                  ///< ATIASICID for GFX10.3
-        ASIC_ID_GFX1030LITE,              ///< ATIASICID for GFX10.3 Lite
-        ASIC_ID_PLACEHOLDER6,             ///< ATIASICID for placeholder GFX10.3
-        ASIC_ID_PLACEHOLDER7,             ///< ATIASICID for placeholder GFX10.3
-        ASIC_ID_PLACEHOLDER8,             ///< ATIASICID for placeholder GFX10.3
-        ASIC_ID_PLACEHOLDER9,             ///< ATIASICID for placeholder GFX10.3
-        ASIC_ID_PLACEHOLDER10,            ///< ATIASICID for placeholder GFX10.3
-        ASIC_ID_UNKNOWN,                  ///< Unknown Asic
-        AsicId_First = ASIC_ID_TAHITI_P,  ///< First place holder
-        AsicId_LAST  = ASIC_ID_UNKNOWN    ///< Last place holder
-    } AsicID;
+        kAsicIdTahitiP,                 ///< ATI ASIC Id for TAHITI (GFX6).
+        kAsicIdPitcairnPm,              ///< ATI ASIC Id for PITCAIRN (GFX6).
+        kAsicIdCapeverdeM,              ///< ATI ASIC Id for CAPEVERDE (GFX6).
+        kAsicIdOlandM,                  ///< ATI ASIC Id for OLAND (GFX6).
+        kAsicIdHainanM,                 ///< ATI ASIC Id for HAINAN (GFX6).
+        kAsicIdBonaireM,                ///< ATI ASIC Id for BONAIRE (GFX7).
+        kAsicIdSpectre,                 ///< ATI ASIC Id for Spectre (GFX7 Fusion KV1).
+        kAsicIdSpooky,                  ///< ATI ASIC Id for Spooky (GFX7 Fusion KV2).
+        kAsicIdKalindi,                 ///< ATI ASIC Id for Kalindi (GFX7 Fusion KB).
+        kAsicIdHawaiiP,                 ///< ATI ASIC Id for HAWAII (GFX7).
+        kAsicIdIcelandM,                ///< ATI ASIC Id for ICELAND (GFX8).
+        kAsicIdTongaP,                  ///< ATI ASIC Id for TONGA (GFX8).
+        kAsicIdGodavari,                ///< ATI ASIC Id for MULLINS (GFX8 Fusion (Mullins)).
+        kAsicIdCarrizo,                 ///< ATI ASIC Id for Carrizo (GFX8 Fusion).
+        kAsicIdNolan,                   ///< ATI ASIC Id for Nolan (GFX8.1 APU).
+        kAsicIdStoney,                  ///< ATI ASIC Id for Stoney (GFX8.1 APU, almost the same as Nolan).
+        kAsicIdAmur,                    ///< ATI ASIC Id for Amur (GFX8.1 APU).
+        kAsicIdFijiP,                   ///< ATI ASIC Id for Fiji (GFX8).
+        kAsicIdEllesmere,               ///< ATI ASIC Id for Ellesmere (GFX8).
+        kAsicIdBaffin,                  ///< ATI ASIC Id for Baffin (GFX8).
+        kAsicIdLexa,                    ///< ATI ASIC Id for Lexa (GFX8).
+        kAsicIdVegaM,                   ///< ATI ASIC Id for VegaM (GFX8).
+        kAsicIdGfx900,                  ///< ATI ASIC Id for GFX900.
+        kAsicIdGfx902,                  ///< ATI ASIC Id for GFX902 (APU).
+        kAsicIdPlaceholder,             ///< ATI ASIC Id for placeholder APU.
+        kAsicIdPlaceholder1,            ///< ATI ASIC Id for placeholder GFX9.
+        kAsicIdGfx906,                  ///< ATI ASIC Id for GFX906.
+        kAsicIdPlaceholder2,            ///< ATI ASIC Id for placeholder APU.
+        kAsicIdPlaceholder3,            ///< ATI ASIC Id for placeholder APU.
+        kAsicIdGfx1010,                 ///< ATI ASIC Id for GFX1010.
+        kAsicIdGfx1010Lite,             ///< ATI ASIC Id for GFX1010Lite.
+        kAsicIdPlaceholder4,            ///< ATI ASIC Id for placeholder GFX10.
+        kAsicIdPlaceholder5,            ///< ATI ASIC Id for placeholder GFX10.
+        kAsicIdGfx1012,                 ///< ATI ASIC Id for GFX1012.
+        kAsicIdGfx1030,                 ///< ATI ASIC Id for GFX10.3.
+        kAsicIdGfx1030Lite,             ///< ATI ASIC Id for GFX10.3 Lite.
+        kAsicIdPlaceholder6,            ///< ATI ASIC Id for placeholder GFX10.3.
+        kAsicIdPlaceholder7,            ///< ATI ASIC Id for placeholder GFX10.3.
+        kAsicIdPlaceholder8,            ///< ATI ASIC Id for placeholder GFX10.3.
+        kAsicIdPlaceholder9,            ///< ATI ASIC Id for placeholder GFX10.3
+        kAsicIdPlaceholder10,           ///< ATI ASIC Id for placeholder GFX10.3.
+        kAsicIdUnknown,                 ///< Unknown ASIC
+        kAsicIdFirst = kAsicIdTahitiP,  ///< First place holder.
+        kAsicIdLast  = kAsicIdUnknown   ///< Last place holder.
+    } AsicId;
 
-    /// Asic Id specific information
+    /// @brief ASIC Id specific information
     typedef struct _AsicIdInfo
     {
-        ASICType         asic_type;          ///< asic hardware generation
-        GDT_HW_ASIC_TYPE gdt_asic_type;      ///< GDT hardware asic type
-        uint32_t         default_device_id;  ///< default device id
-        bool             is_apu;             ///< flag indicating the asic is APU or not
+        AsicType         asic_type;          ///< ASIC hardware generation.
+        GDT_HW_ASIC_TYPE gdt_asic_type;      ///< GDT hardware ASIC type.
+        uint32_t         default_device_id;  ///< default device id.
+        bool             is_apu;             ///< Flag indicating the ASIC is APU or not.
     } AsicIdInfo;
 
-    /// Asic-specific information
+    /// @brief ASIC specific information.
     typedef struct _ASICInfo
     {
-        static const unsigned int s_UNASSIGNED_ASIC_INFO = static_cast<unsigned int>(-1);  ///< value indicating that ASICInfo member is unassigned
+        static const unsigned int unassigned_asic_info = static_cast<unsigned int>(-1);  ///< value indicating that ASICInfo member is unassigned
 
-        int          m_driverVersion = INT_MAX;                 ///< The driver version extracted from GL_VERSION
-        ASICType     m_asicType      = ASIC_UNKNOWN;            ///< The Asic family
-        AsicID       m_asicID        = ASIC_ID_UNKNOWN;         ///< The specific Asic ID
-        unsigned int m_deviceId      = s_UNASSIGNED_ASIC_INFO;  ///< The PCIE device id
-        unsigned int m_deviceRev     = s_UNASSIGNED_ASIC_INFO;  ///< The PCIE revision id
-        unsigned int m_numSIMD       = s_UNASSIGNED_ASIC_INFO;  ///< The number of SIMD units
-        unsigned int m_numSE         = s_UNASSIGNED_ASIC_INFO;  ///< The number of shader engines
-        unsigned int m_numSA         = s_UNASSIGNED_ASIC_INFO;  ///< The number of shader arrays
-        unsigned int m_numCU         = s_UNASSIGNED_ASIC_INFO;  ///< The number of compute units
-        unsigned int m_numRB         = s_UNASSIGNED_ASIC_INFO;  ///< The number of render backends (CB / DB)
-        unsigned int m_numSPI        = s_UNASSIGNED_ASIC_INFO;  ///< The number of shader processor interpolators
-    } ASICInfo;
+        int          driver_version = INT_MAX;               ///< The driver version extracted from GL_VERSION.
+        AsicType     asic_type      = kAsicUnknown;          ///< The ASIC family.
+        AsicId       asic_id        = kAsicIdUnknown;        ///< The specific ASIC ID.
+        unsigned int device_id      = unassigned_asic_info;  ///< The PCIE device id.
+        unsigned int device_rev     = unassigned_asic_info;  ///< The PCIE revision id.
+        unsigned int num_simd       = unassigned_asic_info;  ///< The number of SIMD units.
+        unsigned int num_se         = unassigned_asic_info;  ///< The number of shader engines.
+        unsigned int num_sa         = unassigned_asic_info;  ///< The number of shader arrays.
+        unsigned int num_cu         = unassigned_asic_info;  ///< The number of compute units.
+        unsigned int num_rb         = unassigned_asic_info;  ///< The number of render back-ends (CB / DB).
+        unsigned int num_spi        = unassigned_asic_info;  ///< The number of shader processor interpolators.
+    } AsicInfo;
 
     class AsicInfoManager : public TSingleton<AsicInfoManager>
     {
         friend class TSingleton<AsicInfoManager>;
 
     public:
+        /// @brief Get the ASIC info from the driver using GPIN counter.
+        ///
+        /// @param [out] asic_info AsicInfo struct populated by GPIN group.
+        ///
+        /// @return Success status on querying GPIN counters.
+        /// @retval True on success.
+        /// @retval False on failure.
+        bool GetAsicInfoFromDriver(AsicInfo& asic_info);
 
-        ///Destructor
-        ~AsicInfoManager();
-
-        /// Get the asic info from the driver using GPIN counter
-        /// \param[out] asicInfo AsicInfo struct populated by GPIN group
-        /// \return false if unable to query GPIN counters, true otherwise
-        bool GetAsicInfoFromDriver(ASICInfo& asicInfo);
-
-        /// Returns the fallback Asic info based on asic id
-        /// \param[in] asic_id asic id
-        /// \param[out] gdt_hw_asic_type gdt hardware asic type based on asic id
-        /// \param[out] default_device_id device id based on asic id
-        /// \return true if the ASIC information could be identified, false if not.
-        bool GetFallbackAsicInfo(const AsicID& asic_id, GDT_HW_ASIC_TYPE& gdt_hw_asic_type, uint32_t& default_device_id);
+        /// @brief Returns the fall-back ASIC info based on ASIC id.
+        ///
+        /// @param [in] asic_id ASIC id.
+        /// @param [out] gdt_hw_asic_type GDT hardware ASIC type based on ASIC id.
+        /// @param [out] default_device_id Device id based on ASIC id.
+        ///
+        /// @return Success status on identifying ASIC information.
+        /// @retval True on success.
+        /// @retval False on failure.
+        bool GetFallbackAsicInfo(const AsicId& asic_id, GDT_HW_ASIC_TYPE& gdt_hw_asic_type, uint32_t& default_device_id);
 
     private:
-
-        /// Constructor
+        /// @brief Constructor.
         AsicInfoManager();
 
-        /// Initializes the asic info
+        /// @brief Destructor.
+        ~AsicInfoManager();
+
+        /// @brief Initializes the ASIC info.
         void InitializeAsicInfo();
 
-        /// Get the corresponding ASIC type for the specified ASIC ID
-        /// \param asic_id the ASIC ID whose type is needed
-        /// \return the ASIC type of the specified ASIC ID
-        ASICType GetASICTypeFromAsicID(AsicID asic_id);
+        /// @brief Singleton; don't allow copies.
+        AsicInfoManager(const AsicInfoManager&) = delete;
 
-        std::map<AsicID, AsicIdInfo> asic_id_info_map_;          ///< map containing info of driver defined asic Ids
-        bool                         is_asic_info_initialized_;  ///< flag indicating asic info is initialized or not
+        /// @brief Singleton; don't allow assignment.
+        void operator=(const AsicInfoManager&) = delete;
+
+        /// @brief Get the corresponding ASIC type for the specified ASIC ID.
+        ///
+        /// @param asic_id The ASIC ID whose type is needed.
+        ///
+        /// @return The ASIC type of the specified ASIC ID.
+        AsicType GetAsicTypeFromAsicId(AsicId asic_id);
+
+        std::map<AsicId, AsicIdInfo> asic_id_info_map_;          ///< Map containing info of driver defined ASIC Ids.
+        bool                         is_asic_info_initialized_;  ///< Flag indicating ASIC info is initialized or not.
     };
 
-}  // namespace oglUtils
+}  // namespace ogl_utils
 
-#endif  // _ASIC_INFO_H_
+#endif  // GPU_PERF_API_GL_ASIC_INFO_H_

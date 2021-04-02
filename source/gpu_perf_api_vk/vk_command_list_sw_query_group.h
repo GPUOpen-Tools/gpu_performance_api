@@ -1,19 +1,21 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Class to manage the resources used for VK SW queries
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Class to manage the resources used for VK SW queries
 //==============================================================================
 
-#ifndef _VK_COMMAND_LIST_SW_QUERY_GROUP_H_
-#define _VK_COMMAND_LIST_SW_QUERY_GROUP_H_
+#ifndef GPU_PERF_API_VK_VK_COMMAND_LIST_SW_QUERY_GROUP_H_
+#define GPU_PERF_API_VK_VK_COMMAND_LIST_SW_QUERY_GROUP_H_
 
 #include <map>
 
-#include "gpu_perf_api_types.h"
-#include "vk_software_counters_results.h"
+#include "gpu_performance_api/gpu_perf_api_types.h"
 
-/// Class to manage the resources used for Vk SW queries.
+#include "gpu_perf_api_vk/vk_software_counters_results.h"
+
+/// @brief Class to manage the resources used for Vk SW queries.
+///
 /// In Vulkan, a VkQueryPool can contain a bunch of queries all of the same type.
 /// This class will manage a group of VkQueryPools, one pool for each type of query
 /// that is available.
@@ -24,105 +26,108 @@
 class VkCommandListSWQueryGroup
 {
 public:
-    /// Construct a VkCommandListSWQueryGroup instance
+    /// @brief Construct a VkCommandListSWQueryGroup instance.
     VkCommandListSWQueryGroup();
 
-    /// Move constructor
+    /// @brief Move constructor.
     ///
-    /// \param[in] other The command list moved
+    /// @param [in] other The command list moved.
     VkCommandListSWQueryGroup(VkCommandListSWQueryGroup&& other);
 
-    /// Destroy this VkCommandListSWQueryGroup
+    /// @brief Destroy this VkCommandListSWQueryGroup.
     ~VkCommandListSWQueryGroup();
 
-    /// Move operator
+    /// @brief Move operator.
     ///
-    /// \return Reference to this VkCommandListSWQueryGroup
-    /// \param[in] other The command list moved
+    /// @param [in] other The command list moved.
+    ///
+    /// @return Reference to this VkCommandListSWQueryGroup.
     VkCommandListSWQueryGroup& operator=(VkCommandListSWQueryGroup&& other);
 
-    /// Initialize the VkCommandListSWQueryGroup instance resources
+    /// @brief Initialize the VkCommandListSWQueryGroup instance resources.
     ///
-    /// \return True if initialization succeeded, false if it failed
-    /// \param physicalDevice The physical device that the device is from
-    /// \param device The device queries are executed on
-    /// \param commandList The command list the queries are excuted on
-    /// \param groupSize The number of queries/results in this group
-    bool Initialize(VkPhysicalDevice physicalDevice, VkDevice device, VkCommandBuffer commandList, size_t groupSize);
+    /// @param [in] physical_device The physical device that the device is from.
+    /// @param [in] device The device queries are executed on.
+    /// @param [in] command_list The command list the queries are excuted on.
+    /// @param [in] group_size The number of queries/results in this group.
+    ///
+    /// @return True if initialization succeeded, false if it failed.
+    bool Initialize(VkPhysicalDevice physical_device, VkDevice device, VkCommandBuffer command_list, size_t group_size);
 
-    /// Cleanup the VkCommandListSwQueries instance resources
+    /// @brief Cleanup the VkCommandListSwQueries instance resources.
     void Cleanup();
 
-    /// Get the active sample count for this group
+    /// @brief Get the active sample count for this group.
     ///
-    /// \return the number of active samples in this group
-    gpa_uint32 GetSampleCount() const;
+    /// @return The number of active samples in this group.
+    GpaUInt32 GetSampleCount() const;
 
-    /// Begin SW sample
-    ///
-    /// Increments the sample count for this group
+    /// @brief Increments the sample count for this group.
     void BeginSwSample();
 
-    /// End SW sample
+    /// @brief Signals the end of sample event and copies the results into the results buffer.
     ///
-    /// Signals the end of sample event and copies the results into the results buffer
-    /// \see GetSwSampleResults
-    /// \param[in] swSampleIndex The SW sample Index within this group
-    void EndSwSample(const gpa_uint32 swSampleIndex);
+    /// @see GetSwSampleResults
+    ///
+    /// @param [in] sw_sample_index The SW sample Index within this group.
+    void EndSwSample(const GpaUInt32 sw_sample_index);
 
-    /// Release the given SW sample.
+    /// @brief Clears the results buffer for this sample, and decrements the sample count for this group.
     ///
-    /// Clears the results buffer for this sample, and decrements the sample count for this group
-    /// \param[in] swSampleIndex The SW sample Index within this group
-    void ReleaseSwSample(const gpa_uint32 swSampleIndex);
+    /// @param [in] sw_sample_index The SW sample Index within this group.
+    void ReleaseSwSample(const GpaUInt32 swSampleIndex);
 
-    /// Begin single SW query sampling
+    /// @brief Begin single SW query sampling.
     ///
-    /// \return True if sampling started, false if not
-    /// \param[in] swSampleIndex The SW sample Index within this group
-    /// \param[in] queryType The query type
-    void BeginSwQuery(const gpa_uint32 swSampleIndex, const GPA_VK_SW_QUERY_TYPE queryType);
+    /// @param [in] sw_sample_index The SW sample Index within this group.
+    /// @param [in] query_type The query type.
+    ///
+    /// @return True if sampling started, false if not.
+    void BeginSwQuery(const GpaUInt32 sw_sample_index, const GpaVkSwQueryType query_type);
 
-    /// End single SW query sampling
+    /// @brief End single SW query sampling.
     ///
-    /// \param[in] swSampleIndex The SW sample Index within this group
-    /// \param[in] queryType The query type
-    void EndSwQuery(const gpa_uint32 swSampleIndex, const GPA_VK_SW_QUERY_TYPE queryType);
+    /// @param [in] sw_sample_index The SW sample Index within this group.
+    /// @param [in] query_type The query type.
+    void EndSwQuery(const GpaUInt32 sw_sample_index, const GpaVkSwQueryType query_type);
 
-    /// Get SW sample results
+    /// @brief Get SW sample results.
     ///
-    /// \return True if results are avilable, false if results are not available
-    /// \param[in] swSampleIndex The SW sample Index within this group
-    /// \param[out] queryResults The SW countes results
-    bool GetSwSampleResults(const gpa_uint32 swSampleIndex, GpaVkSoftwareQueryResults& queryResults);
+    /// @param [in] sw_sample_index The SW sample Index within this group.
+    /// @param [out] query_results The SW countes results.
+    ///
+    /// @return True if results are avilable, false if results are not available.
+    bool GetSwSampleResults(const GpaUInt32 sw_sample_index, GpaVkSoftwareQueryResults& query_results);
 
 private:
-    /// Copy constructor - private override to prevent usage
+    /// @brief Copy constructor - private override to prevent usage.
     VkCommandListSWQueryGroup(const VkCommandListSWQueryGroup&) = delete;
 
-    /// Copy operator - private override to prevent usage
-    /// \return reference to object
+    /// @brief Copy operator - private override to prevent usage.
+    ///
+    /// @return reference to object.
     VkCommandListSWQueryGroup& operator=(const VkCommandListSWQueryGroup&) = delete;
 
-    /// Create SW queries of the given type
+    /// @brief Create SW queries of the given type.
     ///
-    /// \return True if query pool creation succeeded, false if it failed
-    /// \param device The device the pool is created on
-    /// \param queryType The SW query type of the pool
-    bool CreateSwQueryPool(VkDevice device, const GPA_VK_SW_QUERY_TYPE queryType);
+    /// @param [in] device The device the pool is created on.
+    /// @param [in] query_type The SW query type of the pool.
+    ///
+    /// @return True if query pool creation succeeded, false if it failed.
+    bool CreateSwQueryPool(VkDevice device, const GpaVkSwQueryType query_type);
 
-    /// Associates the query types to a VkQueryType
-    static const VkQueryType ms_queryTypes[GPA_VK_QUERY_TYPE_COUNT];
+    /// Associates the query types to a VkQueryType.
+    static const VkQueryType kQueryTypes[kGpaVkQueryTypeCount];
 
     /// Indicates which query types are enabled by the user for each sample.
-    std::map<gpa_uint32, bool[GPA_VK_QUERY_TYPE_COUNT]> m_activeSampleQueries;
+    std::map<GpaUInt32, bool[kGpaVkQueryTypeCount]> active_sample_queries_;
 
-    size_t                     m_maxSamples;                           ///< The max number of samples that this group can hold
-    gpa_uint32                 m_activeSampleCount;                    ///< The number of active samples in this group
-    VkDevice                   m_device;                               ///< The device these queries are created on
-    VkCommandBuffer            m_commandBuffer;                        ///< The command list that queries and counters are inserted to
-    GpaVkSoftwareQueryResults* m_pQueriesResults;                      ///< SW queries results
-    VkQueryPool                m_queryPools[GPA_VK_QUERY_TYPE_COUNT];  ///< A QueryPool for each query type
+    size_t                     max_samples_;                        ///< The max number of samples that this group can hold.
+    GpaUInt32                  active_sample_count_;                ///< The number of active samples in this group.
+    VkDevice                   device_;                             ///< The device these queries are created on.
+    VkCommandBuffer            command_buffer_;                     ///< The command list that queries and counters are inserted to.
+    GpaVkSoftwareQueryResults* queries_results_;                    ///< SW queries results.
+    VkQueryPool                query_pools_[kGpaVkQueryTypeCount];  ///< A QueryPool for each query type.
 };
 
-#endif  // _VK_COMMAND_LIST_SW_QUERY_GROUP_H_
+#endif  // GPU_PERF_API_VK_VK_COMMAND_LIST_SW_QUERY_GROUP_H_

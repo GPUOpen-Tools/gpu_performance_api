@@ -1,15 +1,15 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_IsSessionComplete
-@@@@@@@@@@@@@@@@@@@@@
+GpaIsSessionComplete
+@@@@@@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_IsSessionComplete(
-        GPA_SessionId sessionId);
+    GpaStatus GpaIsSessionComplete(
+        GpaSessionId session_id);
 
 Description
 %%%%%%%%%%%
@@ -18,7 +18,7 @@ Checks if results for all samples within a session are available. After a
 sampling session results may be available immediately or take a certain amount
 of time to become available. This function allows you to determine when the
 results of a session can be read. The function does not block, permitting
-periodic polling. To block until a sample is ready use GPA_GetSampleResult
+periodic polling. To block until a sample is ready use GpaGetSampleResult
 instead. Execution of all command lists (DirectX 12) or command buffers
 (Vulkan) must be complete before results will be available.
 
@@ -29,7 +29,7 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``sessionId``", "Unique identifier of a previously-created session."
+    "``session_id``", "Unique identifier of a previously-created session."
 
 Return value
 %%%%%%%%%%%%
@@ -38,10 +38,10 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The session is complete and results are ready."
-    "GPA_STATUS_RESULT_NOT_READY", "The session is not yet ready."
-    "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``sessionId`` parameter is NULL."
-    "GPA_STATUS_ERROR_SESSION_NOT_FOUND", "The supplied ``sessionId`` parameter was not recognized as a previously-created session identifier."
-    "GPA_STATUS_ERROR_SESSION_NOT_STARTED", "The session has not been started."
-    "GPA_STATUS_ERROR_SESSION_NOT_ENDED", "The session has not been ended. A session must have been ended with GPA_EndSession prior to retrieving results."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The session is complete and results are ready."
+    "kGpaStatusErrorResultNotReady", "The session is not yet ready."
+    "kGpaStatusErrorNullPointer", "The supplied ``session_id`` parameter is NULL."
+    "kGpaStatusErrorSessionNotFound", "The supplied ``session_id`` parameter was not recognized as a previously-created session identifier."
+    "kGpaStatusErrorSessionNotStarted", "The session has not been started."
+    "kGpaStatusErrorSessionNotEnded", "The session has not been ended. A session must have been ended with GpaEndSession prior to retrieving results."
+    "kGpaStatusErrorException", "Exception occurred."

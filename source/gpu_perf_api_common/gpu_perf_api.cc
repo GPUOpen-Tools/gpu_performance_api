@@ -1,982 +1,969 @@
 //==============================================================================
-// Copyright (c) 2010-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief This file contains the main entrypoints into GPA
+// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief This file contains the main entry points into GPA.
 //==============================================================================
 
-/// macro to mark a function for exporting
+/// Macro to mark a function for exporting.
 #ifdef _LINUX
-#define GPALIB_DECL extern "C" __attribute__ ((visibility ("default")))
+#define GPA_LIB_DECL extern "C" __attribute__((visibility("default")))
 #else
-#define GPALIB_DECL extern "C" __declspec(dllexport)
+#define GPA_LIB_DECL extern "C" __declspec(dllexport)
 #endif
 
-// std
+#include "gpu_performance_api/gpu_perf_api.h"
+
 #include <mutex>
 #include <sstream>
 
-// local
-#include "gpu_perf_api.h"
-#include "logging.h"
-#include "gpa_profiler.h"
-#include "gpa_implementor_interface.h"
-#include "gpa_unique_object.h"
-#include "gpa_command_list_interface.h"
-#include "gpa_context_interface.h"
-#include "gpa_session_interface.h"
-#include "gpa_version.h"
-#include "gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_command_list_interface.h"
+#include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_context_interface.h"
+#include "gpu_perf_api_common/gpa_implementor_interface.h"
+#include "gpu_perf_api_common/gpa_profiler.h"
+#include "gpu_perf_api_common/gpa_session_interface.h"
+#include "gpu_perf_api_common/gpa_unique_object.h"
+#include "gpu_perf_api_common/gpa_version.h"
+#include "gpu_perf_api_common/logging.h"
 
-extern IGPAImplementor* s_pGpaImp;  ///< GPA implementor instance
+extern IGpaImplementor* gpa_imp;  ///< GPA implementor instance.
 
-/// Macro to check for a null parameter
-#define CHECK_NULL_PARAM(parameterName)                               \
-    if (!parameterName)                                               \
-    {                                                                 \
-        GPA_LogDebugError("Parameter '" #parameterName "' is NULL."); \
-        return GPA_STATUS_ERROR_NULL_POINTER;                         \
+/// Macro to check for a null parameter.
+#define CHECK_NULL_PARAM(parameter_name)                                 \
+    if (!parameter_name)                                                 \
+    {                                                                    \
+        GPA_LOG_DEBUG_ERROR("Parameter '" #parameter_name "' is NULL."); \
+        return kGpaStatusErrorNullPointer;                               \
     }
 
-/// Macro to check for out of range counter index
-#define CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, contextId)                                                    \
-    gpa_uint32 numCounters;                                                                                   \
-    GPA_Status numCountersStatus = contextId->GetNumCounters(&numCounters);                                   \
-    if (GPA_STATUS_OK != numCountersStatus)                                                                   \
-    {                                                                                                         \
-        return numCountersStatus;                                                                             \
-    }                                                                                                         \
-    if (index >= numCounters)                                                                                 \
-    {                                                                                                         \
-        std::stringstream message;                                                                            \
-        message << "Parameter '" #index "' is " << #index << " but must be less than " << numCounters << "."; \
-        GPA_LogError(message.str().c_str());                                                                  \
-        return GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;                                                           \
+/// Macro to check for out of range counter index.
+#define CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, gpa_context_id)                                                \
+    GpaUInt32 num_counters;                                                                                    \
+    GpaStatus num_counter_status = gpa_context_id->GetNumCounters(&num_counters);                              \
+    if (kGpaStatusOk != num_counter_status)                                                                    \
+    {                                                                                                          \
+        return num_counter_status;                                                                             \
+    }                                                                                                          \
+    if (index >= num_counters)                                                                                 \
+    {                                                                                                          \
+        std::stringstream message;                                                                             \
+        message << "Parameter '" #index "' is " << #index << " but must be less than " << num_counters << "."; \
+        GPA_LOG_ERROR(message.str().c_str());                                                                  \
+        return kGpaStatusErrorIndexOutOfRange;                                                                 \
     }
 
-/// Macro to check if a context is open
-#define CHECK_CONTEXT_IS_OPEN(context)                    \
-    if (!context->IsOpen())                               \
-    {                                                     \
-        GPA_LogError("Context has not been not opened."); \
-        return GPA_STATUS_ERROR_CONTEXT_NOT_OPEN;         \
+/// Macro to check if a context is open.
+#define CHECK_CONTEXT_IS_OPEN(context)                     \
+    if (!context->IsOpen())                                \
+    {                                                      \
+        GPA_LOG_ERROR("Context has not been not opened."); \
+        return kGpaStatusErrorContextNotOpen;              \
     }
 
-/// Macro to check if a context exists and is open
-#define CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId) \
-    if (!contextId)                                    \
-    {                                                  \
-        GPA_LogError("Context object is null.");       \
-        return GPA_STATUS_ERROR_NULL_POINTER;          \
-    }                                                  \
-    if (!s_pGpaImp->DoesContextExist(contextId))       \
-    {                                                  \
-        GPA_LogError("Unknown context object.");       \
-        return GPA_STATUS_ERROR_CONTEXT_NOT_FOUND;     \
-    }                                                  \
-    CHECK_CONTEXT_IS_OPEN(contextId->Object())
+/// Macro to check if a context exists and is open.
+#define CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id) \
+    if (!gpa_context_id)                                        \
+    {                                                           \
+        GPA_LOG_ERROR("Context object is null.");               \
+        return kGpaStatusErrorNullPointer;                      \
+    }                                                           \
+    if (!gpa_imp->DoesContextExist(gpa_context_id))             \
+    {                                                           \
+        GPA_LOG_ERROR("Unknown context object.");               \
+        return kGpaStatusErrorContextNotFound;                  \
+    }                                                           \
+    CHECK_CONTEXT_IS_OPEN(gpa_context_id->Object())
 
-/// Macro to check if a session exists
-#define CHECK_SESSION_ID_EXISTS(sessionId)         \
-    if (!sessionId)                                \
-    {                                              \
-        GPA_LogError("Session object is null.");   \
-        return GPA_STATUS_ERROR_NULL_POINTER;      \
-    }                                              \
-    if (!s_pGpaImp->DoesSessionExist(sessionId))   \
-    {                                              \
-        GPA_LogError("Unknown session object.");   \
-        return GPA_STATUS_ERROR_SESSION_NOT_FOUND; \
+/// Macro to check if a session exists.
+#define CHECK_SESSION_ID_EXISTS(session_id)       \
+    if (!session_id)                              \
+    {                                             \
+        GPA_LOG_ERROR("Session object is null."); \
+        return kGpaStatusErrorNullPointer;        \
+    }                                             \
+    if (!gpa_imp->DoesSessionExist(session_id))   \
+    {                                             \
+        GPA_LOG_ERROR("Unknown session object."); \
+        return kGpaStatusErrorSessionNotFound;    \
     }
 
-/// Macro to check if a command list exists
-#define CHECK_COMMANDLIST_ID_EXISTS(commandListId)       \
-    if (!commandListId)                                  \
+/// Macro to check if a command list exists.
+#define CHECK_COMMAND_LIST_ID_EXISTS(command_list_id)    \
+    if (!command_list_id)                                \
     {                                                    \
-        GPA_LogError("Command list object is null.");    \
-        return GPA_STATUS_ERROR_NULL_POINTER;            \
+        GPA_LOG_ERROR("Command list object is null.");   \
+        return kGpaStatusErrorNullPointer;               \
     }                                                    \
-    if (!s_pGpaImp->DoesCommandListExist(commandListId)) \
+    if (!gpa_imp->DoesCommandListExist(command_list_id)) \
     {                                                    \
-        GPA_LogError("Unknown command list object.");    \
-        return GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND;  \
+        GPA_LOG_ERROR("Unknown command list object.");   \
+        return kGpaStatusErrorCommandListNotFound;       \
     }
 
-/// Macro to check if a session is still running
-#define CHECK_SESSION_RUNNING(sessionId)                                                               \
-    if ((*sessionId)->IsSessionRunning())                                                              \
-    {                                                                                                  \
-        GPA_LogError("Session is still running. End the session before querying sample information."); \
-        return GPA_STATUS_ERROR_SESSION_NOT_ENDED;                                                     \
+/// Macro to check if a session is still running.
+#define CHECK_SESSION_RUNNING(session_id)                                                               \
+    if ((*session_id)->IsSessionRunning())                                                              \
+    {                                                                                                   \
+        GPA_LOG_ERROR("Session is still running. End the session before querying sample information."); \
+        return kGpaStatusErrorSessionNotEnded;                                                          \
     }
 
-/// Macro to check if a session is running while enabling/disabling counters
-#define CHECK_SESSION_RUNNING_FOR_COUNTERS(sessionId)                          \
-    if ((*sessionId)->IsSessionRunning())                                      \
-    {                                                                          \
-        GPA_LogError("Counter state cannot change while session is running."); \
-        return GPA_STATUS_ERROR_CANNOT_CHANGE_COUNTERS_WHEN_SAMPLING;          \
+/// Macro to check if a session is running while enabling/disabling counters.
+#define CHECK_SESSION_RUNNING_FOR_COUNTERS(session_id)                          \
+    if ((*session_id)->IsSessionRunning())                                      \
+    {                                                                           \
+        GPA_LOG_ERROR("Counter state cannot change while session is running."); \
+        return kGpaStatusErrorCannotChangeCountersWhenSampling;                 \
     }
 
 #define MAKE_PARAM_STRING(X) #X << " : " << X << " "
 
-/// Validate that sample id exists in a pass
-/// \param[in] pPass The pass
-/// \param[in] sampleId The sample id
-/// \return GPA_STATUS_OK if the sample id exists in the pass, otherwise an error code
-GPA_Status CheckSampleIdExistsInPass(GPAPass* pPass, gpa_uint32 sampleId)
+/// Validate that sample id exists in a pass.
+///
+/// @param [in] pass The pass.
+/// @param [in] sample_id The sample id.
+///
+/// @retval kGpaStatusOk if the sample id exists in the pass.
+/// @retval kGpaStatusErrorFailed The supplied pass was null.
+/// @retval kGpaStatusErrorSampleNotFound The sample could not be found.
+GpaStatus CheckSampleIdExistsInPass(GpaPass* pass, GpaUInt32 sample_id)
 {
-    if (!pPass)
+    if (nullptr == pass)
     {
-        GPA_LogError("Invalid pass.");
-        return GPA_STATUS_ERROR_FAILED;
+        GPA_LOG_ERROR("Invalid pass.");
+        return kGpaStatusErrorFailed;
     }
 
-    if (!pPass->DoesSampleExist(sampleId))
+    if (!pass->DoesSampleExist(sample_id))
     {
-        GPA_LogError("Sample not found in pass.");
-        return GPA_STATUS_ERROR_SAMPLE_NOT_FOUND;
+        GPA_LOG_ERROR("Sample not found in pass.");
+        return kGpaStatusErrorSampleNotFound;
     }
 
-    return GPA_STATUS_OK;
+    return kGpaStatusOk;
 }
 
-/// Validate that sample id exists in a session
-/// \param[in] sessionId The session id
-/// \param[in] sampleId The sample id
-/// \return GPA_STATUS_OK if the sample id exists in the pass, otherwise an error code
-GPA_Status CheckSampleIdExistsInSession(GPA_SessionId sessionId, gpa_uint32 sampleId)
+/// @brief Validate that sample id exists in a session.
+///
+/// @param [in] session_id The session id.
+/// @param [in] sample_id The sample id.
+///
+/// @retval kGpaStatusOk if the sample id exists in the pass.
+/// @retval kGpaStatusErrorSampleNotFound The sample could not be found.
+GpaStatus CheckSampleIdExistsInSession(GpaSessionId session_id, GpaUInt32 sample_id)
 {
-    if (!(*sessionId)->DoesSampleExist(sampleId))
+    if (!(*session_id)->DoesSampleExist(sample_id))
     {
-        GPA_LogError("Sample not found in session.");
-        return GPA_STATUS_ERROR_SAMPLE_NOT_FOUND;
+        GPA_LOG_ERROR("Sample not found in session.");
+        return kGpaStatusErrorSampleNotFound;
     }
 
-    return GPA_STATUS_OK;
+    return kGpaStatusOk;
 }
 
-/// Macro to check the session sample type
-#define CHECK_SESSION_SAMPLE_TYPE(sampleType, additionalsampleType)                   \
-    GPA_Session_Sample_Type sessionSampleType = (*sessionId)->GetSampleType();        \
-    if (sampleType != sessionSampleType && additionalsampleType != sessionSampleType) \
-    {                                                                                 \
-        GPA_LogError("Session does not support the correct sample type.");            \
-        return GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES;                            \
+/// Macro to check the session sample type.
+#define CHECK_SESSION_SAMPLE_TYPE(sample_type, additional_sample_type)                       \
+    GPA_Session_Sample_Type session_sample_type = (*sessionId)->GetSampleType();             \
+    if (sample_type != session_sample_type && additional_sample_type != session_sample_type) \
+    {                                                                                        \
+        GPA_LOG_ERROR("Session does not support the correct sample type.");                  \
+        return kGpaStatusErrorIncompatibleSampleTypes;                                       \
     }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetVersion(gpa_uint32* pMajorVersion, gpa_uint32* pMinorVersion, gpa_uint32* pBuild, gpa_uint32* pUpdateVersion)
+GPA_LIB_DECL GpaStatus GpaGetVersion(GpaUInt32* major_version, GpaUInt32* minor_version, GpaUInt32* build, GpaUInt32* update_version)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetVersion);
-        TRACE_FUNCTION(GPA_GetVersion);
+        PROFILE_FUNCTION(GpaGetVersion);
+        TRACE_FUNCTION(GpaGetVersion);
 
-        CHECK_NULL_PARAM(pMajorVersion);
-        CHECK_NULL_PARAM(pMinorVersion);
-        CHECK_NULL_PARAM(pBuild);
-        CHECK_NULL_PARAM(pUpdateVersion);
+        CHECK_NULL_PARAM(major_version);
+        CHECK_NULL_PARAM(minor_version);
+        CHECK_NULL_PARAM(build);
+        CHECK_NULL_PARAM(update_version);
 
-        *pMajorVersion  = GPA_MAJOR_VERSION;
-        *pMinorVersion  = GPA_MINOR_VERSION;
-        *pBuild         = GPA_BUILD_NUMBER;
-        *pUpdateVersion = GPA_UPDATE_VERSION;
+        *major_version  = GPA_MAJOR_VERSION;
+        *minor_version  = GPA_MINOR_VERSION;
+        *build          = GPA_BUILD_NUMBER;
+        *update_version = GPA_UPDATE_VERSION;
 
-        GPA_INTERNAL_LOG(GPA_GetVersion,
-                         MAKE_PARAM_STRING(*pMajorVersion)
-                             << MAKE_PARAM_STRING(*pMinorVersion) << MAKE_PARAM_STRING(*pBuild) << MAKE_PARAM_STRING(*pUpdateVersion));
+        GPA_INTERNAL_LOG(GpaGetVersion,
+                         MAKE_PARAM_STRING(*major_version)
+                             << MAKE_PARAM_STRING(*minor_version) << MAKE_PARAM_STRING(*build) << MAKE_PARAM_STRING(*update_version));
 
-        return GPA_STATUS_OK;
+        return kGpaStatusOk;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetFuncTable(void* pGPAFuncTable)
+GPA_LIB_DECL GpaStatus GpaGetFuncTable(void* gpa_func_table)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetFuncTable);
-        TRACE_FUNCTION(GPA_GetFuncTable);
+        PROFILE_FUNCTION(GpaGetFuncTable);
+        TRACE_FUNCTION(GpaGetFuncTable);
 
-        CHECK_NULL_PARAM(pGPAFuncTable);
+        CHECK_NULL_PARAM(gpa_func_table);
 
-        GPAFunctionTable* pFuncTable = reinterpret_cast<GPAFunctionTable*>(pGPAFuncTable);
+        GpaFunctionTable* function_table = reinterpret_cast<GpaFunctionTable*>(gpa_func_table);
 
-        bool       correctMajorVersion    = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER == pFuncTable->m_majorVer;
-        gpa_uint32 clientSuppliedMinorVer = pFuncTable->m_minorVer;
+        bool      correct_major_version     = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER == function_table->major_version;
+        GpaUInt32 client_supplied_minor_ver = function_table->minor_version;
 
-        pFuncTable->m_majorVer = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER;
-        pFuncTable->m_minorVer = GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER;
+        function_table->major_version = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER;
+        function_table->minor_version = GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER;
 
-        if (!correctMajorVersion)
+        if (!correct_major_version)
         {
-            // NOTE: in most cases a client won't have registered a logging callback yet
-            GPA_LogError("Client major version mismatch.");
-            return GPA_STATUS_ERROR_LIB_LOAD_MAJOR_VERSION_MISMATCH;
+            // NOTE: In most cases a client won't have registered a logging callback yet.
+            GPA_LOG_ERROR("Client major version mismatch.");
+            return kGpaStatusErrorLibLoadMajorVersionMismatch;
         }
 
-        if (clientSuppliedMinorVer > GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER)
+        if (client_supplied_minor_ver > GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER)
         {
-            // NOTE: in most cases a client won't have registered a logging callback yet
-            GPA_LogError("Client minor version mismatch.");
-            return GPA_STATUS_ERROR_LIB_LOAD_MINOR_VERSION_MISMATCH;
+            // NOTE: In most cases a client won't have registered a logging callback yet.
+            GPA_LOG_ERROR("Client minor version mismatch.");
+            return kGpaStatusErrorLibLoadMinorVersionMismatch;
         }
 
-        GPAFunctionTable gpaFuncTable;
-#define GPA_FUNCTION_PREFIX(func) gpaFuncTable.func = func;
-#include "GPAFunctions.h"
+        GpaFunctionTable gpa_function_table;
+#define GPA_FUNCTION_PREFIX(func) gpa_function_table.func = func;
+#include "gpu_performance_api/gpu_perf_api_functions.h"
 #undef GPA_FUNCTION_PREFIX
 
-        // if the client-supplied table is smaller than GPA's table,
+        // If the client-supplied table is smaller than GPA's table,
         // this will only copy a subset of the table, ignoring the
-        // functions at the end of the table
-        memcpy(pFuncTable, &gpaFuncTable, clientSuppliedMinorVer);
+        // functions at the end of the table.
+        memcpy(function_table, &gpa_function_table, client_supplied_minor_ver);
 
-        GPA_INTERNAL_LOG(GPA_GetFuncTable, MAKE_PARAM_STRING(pGPAFuncTable));
+        GPA_INTERNAL_LOG(GpaGetFuncTable, MAKE_PARAM_STRING(gpa_func_table));
 
-        return GPA_STATUS_OK;
+        return kGpaStatusOk;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_RegisterLoggingCallback(GPA_Logging_Type loggingType, GPA_LoggingCallbackPtrType pCallbackFuncPtr)
+GPA_LIB_DECL GpaStatus GpaRegisterLoggingCallback(GpaLoggingType logging_type, GpaLoggingCallbackPtrType callback_func_ptr)
 {
     try
     {
-        if (!pCallbackFuncPtr && loggingType != GPA_LOGGING_NONE)
+        if (nullptr == callback_func_ptr && logging_type != kGpaLoggingNone)
         {
-            GPA_LogDebugError("Parameter 'pCallbackFuncPtr' is NULL.");
-            return GPA_STATUS_ERROR_NULL_POINTER;
+            GPA_LOG_DEBUG_ERROR("Parameter 'callback_func_ptr' is NULL.");
+            return kGpaStatusErrorNullPointer;
         }
 
-        g_loggerSingleton.SetLoggingCallback(loggingType, pCallbackFuncPtr);
+        GpaLogger::Instance()->SetLoggingCallback(logging_type, callback_func_ptr);
 
-        GPA_Log(GPA_LOGGING_MESSAGE, "Logging callback registered successfully.");
-        return GPA_STATUS_OK;
+        GPA_LOG(kGpaLoggingMessage, "Logging callback registered successfully.");
+        return kGpaStatusOk;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_Initialize(GPA_InitializeFlags flags)
+GPA_LIB_DECL GpaStatus GpaInitialize(GpaInitializeFlags gpa_initialize_flags)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_Initialize);
-        TRACE_FUNCTION(GPA_Initialize);
+        PROFILE_FUNCTION(GpaInitialize);
+        TRACE_FUNCTION(GpaInitialize);
 
-        GPA_Status retStatus = s_pGpaImp->Initialize(flags);
+        GpaStatus ret_status = gpa_imp->Initialize(gpa_initialize_flags);
 
-        GPA_INTERNAL_LOG(GPA_Initialize, MAKE_PARAM_STRING(flags) << MAKE_PARAM_STRING(retStatus))
+        GPA_INTERNAL_LOG(GpaInitialize, MAKE_PARAM_STRING(gpa_initialize_flags) << MAKE_PARAM_STRING(ret_status))
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_Destroy()
+GPA_LIB_DECL GpaStatus GpaDestroy()
 {
     try
     {
-        PROFILE_FUNCTION(GPA_Destroy);
-        TRACE_FUNCTION(GPA_Destroy);
+        PROFILE_FUNCTION(GpaDestroy);
+        TRACE_FUNCTION(GpaDestroy);
 
-        GPA_Status retStatus = s_pGpaImp->Destroy();
-        GPA_INTERNAL_LOG(GPA_Destroy, MAKE_PARAM_STRING(retStatus));
+        GpaStatus ret_status = gpa_imp->Destroy();
+        GPA_INTERNAL_LOG(GpaDestroy, MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_OpenContext(void* pContext, GPA_OpenContextFlags flags, GPA_ContextId* pContextId)
+GPA_LIB_DECL GpaStatus GpaOpenContext(void* api_context, GpaOpenContextFlags gpa_open_context_flags, GpaContextId* gpa_context_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_OpenContext);
-        TRACE_FUNCTION(GPA_OpenContext);
+        PROFILE_FUNCTION(GpaOpenContext);
+        TRACE_FUNCTION(GpaOpenContext);
 
-        if (!pContext)
+        if (nullptr == api_context)
         {
-            GPA_LogError("Parameter 'pContext' is NULL.");
-            return GPA_STATUS_ERROR_NULL_POINTER;
+            GPA_LOG_ERROR("Parameter 'api_context' is NULL.");
+            return kGpaStatusErrorNullPointer;
         }
 
-        // For GPA 3.0 - disable Software counters
-        flags |= GPA_OPENCONTEXT_HIDE_SOFTWARE_COUNTERS_BIT;
-
-        GPA_Status retStatus = s_pGpaImp->OpenContext(pContext, flags, pContextId);
-
-        GPA_INTERNAL_LOG(GPA_OpenContext,
-                         MAKE_PARAM_STRING(pContext) << MAKE_PARAM_STRING(flags) << MAKE_PARAM_STRING(*pContextId) << MAKE_PARAM_STRING(retStatus));
-
-        return retStatus;
-    }
-    catch (...)
-    {
-        return GPA_STATUS_ERROR_EXCEPTION;
-    }
-}
-
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_CloseContext(GPA_ContextId contextId)
-{
-    try
-    {
-        PROFILE_FUNCTION(GPA_CloseContext);
-        TRACE_FUNCTION(GPA_CloseContext);
-
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
-
-        if ((*contextId)->GetAPIType() != s_pGpaImp->GetAPIType())
+        if (nullptr == gpa_context_id)
         {
-            GPA_LogError("The context's API type does not match GPA's API type.");
-            return GPA_STATUS_ERROR_INVALID_PARAMETER;
+            GPA_LOG_ERROR("Parameter 'gpa_context_id' is NULL.");
+            return kGpaStatusErrorNullPointer;
         }
 
-        GPA_Status retStatus = s_pGpaImp->CloseContext(contextId);
-        GPA_INTERNAL_LOG(GPA_CloseContext, MAKE_PARAM_STRING(contextId) << MAKE_PARAM_STRING(retStatus));
+        // For GPA 3.0 - disable Software counters.
+        gpa_open_context_flags |= kGpaOpenContextHideSoftwareCountersBit;
 
-        return retStatus;
+        GpaStatus ret_status = gpa_imp->OpenContext(api_context, gpa_open_context_flags, gpa_context_id);
+
+        GPA_INTERNAL_LOG(GpaOpenContext,
+                         MAKE_PARAM_STRING(api_context)
+                             << MAKE_PARAM_STRING(gpa_open_context_flags) << MAKE_PARAM_STRING(*gpa_context_id) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSupportedSampleTypes(GPA_ContextId contextId, GPA_ContextSampleTypeFlags* pSampleTypes)
+GPA_LIB_DECL GpaStatus GpaCloseContext(GpaContextId gpa_context_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetSupportedSampleTypes);
-        TRACE_FUNCTION(GPA_GetSupportedSampleTypes);
+        PROFILE_FUNCTION(GpaCloseContext);
+        TRACE_FUNCTION(GpaCloseContext);
 
-        CHECK_NULL_PARAM(pSampleTypes);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
 
-        return (*contextId)->GetSupportedSampleTypes(pSampleTypes);
-    }
-    catch (...)
-    {
-        return GPA_STATUS_ERROR_EXCEPTION;
-    }
-}
-
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetDeviceAndRevisionId(GPA_ContextId contextId, gpa_uint32* pDeviceId, gpa_uint32* pRevisionId)
-{
-    try
-    {
-        PROFILE_FUNCTION(GPA_GetDeviceAndRevisionId);
-        TRACE_FUNCTION(GPA_GetDeviceAndRevisionId);
-
-        CHECK_NULL_PARAM(pDeviceId);
-        CHECK_NULL_PARAM(pRevisionId);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
-
-        const GPA_HWInfo* hwInfo = (*contextId)->GetHwInfo();
-
-        GPA_Status retStatus = GPA_STATUS_ERROR_FAILED;
-
-        if (nullptr != hwInfo && hwInfo->GetDeviceID(*pDeviceId) && hwInfo->GetRevisionID(*pRevisionId))
+        if ((*gpa_context_id)->GetApiType() != gpa_imp->GetApiType())
         {
-            retStatus = GPA_STATUS_OK;
+            GPA_LOG_ERROR("The context's API type does not match GPA's API type.");
+            return kGpaStatusErrorInvalidParameter;
         }
 
-        GPA_INTERNAL_LOG(GPA_GetDeviceAndRevisionId,
-                         MAKE_PARAM_STRING(contextId) << MAKE_PARAM_STRING(*pDeviceId) << MAKE_PARAM_STRING(*pRevisionId) << MAKE_PARAM_STRING(retStatus));
+        GpaStatus ret_status = gpa_imp->CloseContext(gpa_context_id);
+        GPA_INTERNAL_LOG(GpaCloseContext, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetDeviceName(GPA_ContextId contextId, const char** ppDeviceName)
+GPA_LIB_DECL GpaStatus GpaGetSupportedSampleTypes(GpaContextId gpa_context_id, GpaContextSampleTypeFlags* sample_types)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetDeviceName);
-        TRACE_FUNCTION(GPA_GetDeviceName);
+        PROFILE_FUNCTION(GpaGetSupportedSampleTypes);
+        TRACE_FUNCTION(GpaGetSupportedSampleTypes);
 
-        CHECK_NULL_PARAM(ppDeviceName);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+        CHECK_NULL_PARAM(sample_types);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
 
-        const GPA_HWInfo* hwInfo    = (*contextId)->GetHwInfo();
-        GPA_Status        retStatus = GPA_STATUS_ERROR_FAILED;
+        return (*gpa_context_id)->GetSupportedSampleTypes(sample_types);
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
 
-        if (nullptr != hwInfo && hwInfo->GetDeviceName(*ppDeviceName))
+GPA_LIB_DECL GpaStatus GpaGetDeviceAndRevisionId(GpaContextId gpa_context_id, GpaUInt32* device_id, GpaUInt32* revision_id)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaGetDeviceAndRevisionId);
+        TRACE_FUNCTION(GpaGetDeviceAndRevisionId);
+
+        CHECK_NULL_PARAM(device_id);
+        CHECK_NULL_PARAM(revision_id);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
+
+        const GpaHwInfo* hw_info = (*gpa_context_id)->GetHwInfo();
+
+        GpaStatus ret_status = kGpaStatusErrorFailed;
+
+        if (nullptr != hw_info && hw_info->GetDeviceId(*device_id) && hw_info->GetRevisionId(*revision_id))
         {
-            retStatus = GPA_STATUS_OK;
+            ret_status = kGpaStatusOk;
         }
 
-        GPA_INTERNAL_LOG(GPA_GetDeviceAndRevisionId, MAKE_PARAM_STRING(contextId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaGetDeviceAndRevisionId,
+                         MAKE_PARAM_STRING(gpa_context_id)
+                             << MAKE_PARAM_STRING(*device_id) << MAKE_PARAM_STRING(*revision_id) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetNumCounters(GPA_ContextId contextId, gpa_uint32* pCount)
+GPA_LIB_DECL GpaStatus GpaGetDeviceName(GpaContextId gpa_context_id, const char** device_name)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetNumCounters);
-        TRACE_FUNCTION(GPA_GetNumCounters);
+        PROFILE_FUNCTION(GpaGetDeviceName);
+        TRACE_FUNCTION(GpaGetDeviceName);
 
-        CHECK_NULL_PARAM(pCount);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+        CHECK_NULL_PARAM(device_name);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
 
-        GPA_Status retStatus = (*contextId)->GetNumCounters(pCount);
+        const GpaHwInfo* hw_info    = (*gpa_context_id)->GetHwInfo();
+        GpaStatus        ret_status = kGpaStatusErrorFailed;
 
-        GPA_INTERNAL_LOG(GPA_GetNumCounters, MAKE_PARAM_STRING(contextId) << MAKE_PARAM_STRING(*pCount) << MAKE_PARAM_STRING(retStatus));
+        if (nullptr != hw_info && hw_info->GetDeviceName(*device_name))
+        {
+            ret_status = kGpaStatusOk;
+        }
 
-        return retStatus;
+        GPA_INTERNAL_LOG(GpaGetDeviceAndRevisionId, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterName(GPA_ContextId contextId, gpa_uint32 index, const char** ppName)
+GPA_LIB_DECL GpaStatus GpaGetNumCounters(GpaContextId gpa_context_id, GpaUInt32* number_of_counters)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetCounterName);
-        TRACE_FUNCTION(GPA_GetCounterName);
+        PROFILE_FUNCTION(GpaGetNumCounters);
+        TRACE_FUNCTION(GpaGetNumCounters);
 
-        CHECK_NULL_PARAM(ppName);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
-        CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+        CHECK_NULL_PARAM(number_of_counters);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
 
-        return (*contextId)->GetCounterName(index, ppName);
+        GpaStatus ret_status = (*gpa_context_id)->GetNumCounters(number_of_counters);
+
+        GPA_INTERNAL_LOG(GpaGetNumCounters, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(*number_of_counters) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterIndex(GPA_ContextId contextId, const char* pCounterName, gpa_uint32* pIndex)
+GPA_LIB_DECL GpaStatus GpaGetCounterName(GpaContextId gpa_context_id, GpaUInt32 counter_index, const char** counter_name)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetCounterIndex);
-        TRACE_FUNCTION(GPA_GetCounterIndex);
+        PROFILE_FUNCTION(GpaGetCounterName);
+        TRACE_FUNCTION(GpaGetCounterName);
 
-        CHECK_NULL_PARAM(pCounterName);
-        CHECK_NULL_PARAM(pIndex);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+        CHECK_NULL_PARAM(counter_name);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
+        CHECK_COUNTER_INDEX_OUT_OF_RANGE(counter_index, (*gpa_context_id));
 
-        bool counterFound = (GPA_STATUS_OK == (*contextId)->GetCounterIndex(pCounterName, pIndex));
+        return (*gpa_context_id)->GetCounterName(counter_index, counter_name);
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
 
-        if (!counterFound)
+GPA_LIB_DECL GpaStatus GpaGetCounterIndex(GpaContextId gpa_context_id, const char* counter_name, GpaUInt32* counter_index)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaGetCounterIndex);
+        TRACE_FUNCTION(GpaGetCounterIndex);
+
+        CHECK_NULL_PARAM(counter_name);
+        CHECK_NULL_PARAM(counter_index);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
+
+        bool counter_found = (kGpaStatusOk == (*gpa_context_id)->GetCounterIndex(counter_name, counter_index));
+
+        if (!counter_found)
         {
             std::string message = "Specified counter '";
-            message += pCounterName;
+            message += counter_name;
             message += "' was not found. Please check spelling or availability.";
-            GPA_LogError(message.c_str());
-            return GPA_STATUS_ERROR_COUNTER_NOT_FOUND;
+            GPA_LOG_ERROR(message.c_str());
+            return kGpaStatusErrorCounterNotFound;
         }
 
-        return GPA_STATUS_OK;
+        return kGpaStatusOk;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterGroup(GPA_ContextId contextId, gpa_uint32 index, const char** ppGroup)
+GPA_LIB_DECL GpaStatus GpaGetCounterGroup(GpaContextId gpa_context_id, GpaUInt32 counter_index, const char** counter_group)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetCounterGroup);
-        TRACE_FUNCTION(GPA_GetCounterGroup);
+        PROFILE_FUNCTION(GpaGetCounterGroup);
+        TRACE_FUNCTION(GpaGetCounterGroup);
 
-        CHECK_NULL_PARAM(ppGroup);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
-        CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+        CHECK_NULL_PARAM(counter_group);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
+        CHECK_COUNTER_INDEX_OUT_OF_RANGE(counter_index, (*gpa_context_id));
 
-        return (*contextId)->GetCounterGroup(index, ppGroup);
+        return (*gpa_context_id)->GetCounterGroup(counter_index, counter_group);
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterDescription(GPA_ContextId contextId, gpa_uint32 index, const char** ppDescription)
+GPA_LIB_DECL GpaStatus GpaGetCounterDescription(GpaContextId gpa_context_id, GpaUInt32 counter_index, const char** counter_description)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetCounterDescription);
-        TRACE_FUNCTION(GPA_GetCounterDescription);
+        PROFILE_FUNCTION(GpaGetCounterDescription);
+        TRACE_FUNCTION(GpaGetCounterDescription);
 
-        CHECK_NULL_PARAM(ppDescription);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
-        CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+        CHECK_NULL_PARAM(counter_description);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
+        CHECK_COUNTER_INDEX_OUT_OF_RANGE(counter_index, (*gpa_context_id));
 
-        return (*contextId)->GetCounterDescription(index, ppDescription);
+        return (*gpa_context_id)->GetCounterDescription(counter_index, counter_description);
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterDataType(GPA_ContextId contextId, gpa_uint32 index, GPA_Data_Type* pCounterDataType)
+GPA_LIB_DECL GpaStatus GpaGetCounterDataType(GpaContextId gpa_context_id, GpaUInt32 counter_index, GpaDataType* counter_data_type)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetCounterDataType);
-        TRACE_FUNCTION(GPA_GetCounterDataType);
+        PROFILE_FUNCTION(GpaGetCounterDataType);
+        TRACE_FUNCTION(GpaGetCounterDataType);
 
-        CHECK_NULL_PARAM(pCounterDataType);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
-        CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+        CHECK_NULL_PARAM(counter_data_type);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
+        CHECK_COUNTER_INDEX_OUT_OF_RANGE(counter_index, (*gpa_context_id));
 
-        return (*contextId)->GetCounterDataType(index, pCounterDataType);
+        return (*gpa_context_id)->GetCounterDataType(counter_index, counter_data_type);
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterUsageType(GPA_ContextId contextId, gpa_uint32 index, GPA_Usage_Type* pCounterUsageType)
+GPA_LIB_DECL GpaStatus GpaGetCounterUsageType(GpaContextId gpa_context_id, GpaUInt32 counter_index, GpaUsageType* counter_usage_type)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetCounterUsageType);
-        TRACE_FUNCTION(GPA_GetCounterUsageType);
+        PROFILE_FUNCTION(GpaGetCounterUsageType);
+        TRACE_FUNCTION(GpaGetCounterUsageType);
 
-        CHECK_NULL_PARAM(pCounterUsageType);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
-        CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+        CHECK_NULL_PARAM(counter_usage_type);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
+        CHECK_COUNTER_INDEX_OUT_OF_RANGE(counter_index, (*gpa_context_id));
 
-        return (*contextId)->GetCounterUsageType(index, pCounterUsageType);
+        return (*gpa_context_id)->GetCounterUsageType(counter_index, counter_usage_type);
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterUuid(GPA_ContextId contextId, gpa_uint32 index, GPA_UUID* pCounterUuid)
+GPA_LIB_DECL GpaStatus GpaGetCounterUuid(GpaContextId gpa_context_id, GpaUInt32 counter_index, GpaUuid* counter_uuid)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetCounterUuid);
-        TRACE_FUNCTION(GPA_GetCounterUuid);
+        PROFILE_FUNCTION(GpaGetCounterUuid);
+        TRACE_FUNCTION(GpaGetCounterUuid);
 
-        CHECK_NULL_PARAM(pCounterUuid);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
-        CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+        CHECK_NULL_PARAM(counter_uuid);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
+        CHECK_COUNTER_INDEX_OUT_OF_RANGE(counter_index, (*gpa_context_id));
 
-        return (*contextId)->GetCounterUuid(index, pCounterUuid);
+        return (*gpa_context_id)->GetCounterUuid(counter_index, counter_uuid);
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetCounterSampleType(GPA_ContextId contextId, gpa_uint32 index, GPA_Counter_Sample_Type* pCounterSampleType)
+GPA_LIB_DECL GpaStatus GpaGetCounterSampleType(GpaContextId gpa_context_id, GpaUInt32 counter_index, GpaCounterSampleType* counter_sample_type)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetCounterSampleType);
-        TRACE_FUNCTION(GPA_GetCounterSampleType);
+        PROFILE_FUNCTION(GpaGetCounterSampleType);
+        TRACE_FUNCTION(GpaGetCounterSampleType);
 
-        CHECK_NULL_PARAM(pCounterSampleType);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
-        CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*contextId));
+        CHECK_NULL_PARAM(counter_sample_type);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
+        CHECK_COUNTER_INDEX_OUT_OF_RANGE(counter_index, (*gpa_context_id));
 
-        return (*contextId)->GetCounterSampleType(index, pCounterSampleType);
+        return (*gpa_context_id)->GetCounterSampleType(counter_index, counter_sample_type);
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-/// array of strings representing GPA_Data_Type
-static const char* g_counterDataTypeString[] = {GPA_ENUM_STRING_VAL(GPA_DATA_TYPE_FLOAT64, "gpa_float64"),
-                                                GPA_ENUM_STRING_VAL(GPA_DATA_TYPE_UINT64, "gpa_uint64")};
+/// Array of strings representing GpaDataType.
+static const char* kCounterDataTypeString[] = {GPA_ENUM_STRING_VAL(kGpaDataTypeFloat64, "gpa_float64"), GPA_ENUM_STRING_VAL(kGpaDataTypeUint64, "gpa_uint64")};
 
-static const size_t g_counterDataStringSize = sizeof(g_counterDataTypeString) / sizeof(const char*);
+/// Number of entries in the data type string array.
+static const size_t kCounterDataStringSize = sizeof(kCounterDataTypeString) / sizeof(const char*);
 
-static_assert(g_counterDataStringSize == GPA_DATA_TYPE__LAST, "GPA Counter Data Type string array missing entries");
+static_assert(kCounterDataStringSize == kGpaDataTypeLast, "GPA Counter Data Type string array missing entries");
 
-GPALIB_DECL GPA_Status GPA_GetDataTypeAsStr(GPA_Data_Type counterDataType, const char** ppTypeStr)
+GPA_LIB_DECL GpaStatus GpaGetDataTypeAsStr(GpaDataType counter_data_type, const char** type_as_str)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetDataTypeAsStr);
-        TRACE_FUNCTION(GPA_GetDataTypeAsStr);
+        PROFILE_FUNCTION(GpaGetDataTypeAsStr);
+        TRACE_FUNCTION(GpaGetDataTypeAsStr);
 
-        CHECK_NULL_PARAM(ppTypeStr);
+        CHECK_NULL_PARAM(type_as_str);
 
-        if (GPA_DATA_TYPE__LAST > counterDataType)
+        if (kGpaDataTypeLast > counter_data_type)
         {
-            *ppTypeStr = g_counterDataTypeString[counterDataType];
-            return GPA_STATUS_OK;
+            *type_as_str = kCounterDataTypeString[counter_data_type];
+            return kGpaStatusOk;
         }
 
-        GPA_LogError("Unable to get string for data type: invalid data type specified.");
-        return GPA_STATUS_ERROR_INVALID_PARAMETER;
+        GPA_LOG_ERROR("Unable to get string for data type: invalid data type specified.");
+        return kGpaStatusErrorInvalidParameter;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-/// array of strings representing GPA_Usage_Type
-static const char* g_usageTypeString[] = {GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_RATIO, "ratio"),
-                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_PERCENTAGE, "percentage"),
-                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_CYCLES, "cycles"),
-                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_MILLISECONDS, "milliseconds"),
-                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_BYTES, "bytes"),
-                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_ITEMS, "items"),
-                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_KILOBYTES, "kilobytes"),
-                                          GPA_ENUM_STRING_VAL(GPA_USAGE_TYPE_NANOSECONDS, "nanoseconds")};
+/// Array of strings representing GpaUsageType.
+static const char* kUsageTypeString[] = {GPA_ENUM_STRING_VAL(kGpaUsageTypeRatio, "ratio"),
+                                         GPA_ENUM_STRING_VAL(kGpaUsageTypePercentage, "percentage"),
+                                         GPA_ENUM_STRING_VAL(kGpaUsageTypeCycles, "cycles"),
+                                         GPA_ENUM_STRING_VAL(kGpaUsageTypeMilliseconds, "milliseconds"),
+                                         GPA_ENUM_STRING_VAL(kGpaUsageTypeBytes, "bytes"),
+                                         GPA_ENUM_STRING_VAL(kGpaUsageTypeItems, "items"),
+                                         GPA_ENUM_STRING_VAL(kGpaUsageTypeKilobytes, "kilobytes"),
+                                         GPA_ENUM_STRING_VAL(kGpaUsageTypeNanoseconds, "nanoseconds")};
 
-static const size_t g_usageTypeStringSize = sizeof(g_usageTypeString) / sizeof(const char*);
+/// Number of entries in the usage type array.
+static const size_t kUsageTypeStringSize = sizeof(kUsageTypeString) / sizeof(const char*);
 
-static_assert(g_usageTypeStringSize == GPA_USAGE_TYPE__LAST, "GPA Usage Type string array missing entries");
+static_assert(kUsageTypeStringSize == kGpaUsageTypeLast, "GPA Usage Type string array missing entries");
 
-GPALIB_DECL GPA_Status GPA_GetUsageTypeAsStr(GPA_Usage_Type counterUsageType, const char** ppUsageTypeStr)
+GPA_LIB_DECL GpaStatus GpaGetUsageTypeAsStr(GpaUsageType counter_usage_type, const char** usage_type_as_str)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetUsageTypeAsStr);
-        TRACE_FUNCTION(GPA_GetUsageTypeAsStr);
+        PROFILE_FUNCTION(GpaGetUsageTypeAsStr);
+        TRACE_FUNCTION(GpaGetUsageTypeAsStr);
 
-        CHECK_NULL_PARAM(ppUsageTypeStr);
+        CHECK_NULL_PARAM(usage_type_as_str);
 
-        if (GPA_USAGE_TYPE__LAST > counterUsageType)
+        if (kGpaUsageTypeLast > counter_usage_type)
         {
-            *ppUsageTypeStr = g_usageTypeString[counterUsageType];
-            return GPA_STATUS_OK;
+            *usage_type_as_str = kUsageTypeString[counter_usage_type];
+            return kGpaStatusOk;
         }
 
-        GPA_LogError("Unable to get string for usage type: invalid usage type specified.");
-        return GPA_STATUS_ERROR_INVALID_PARAMETER;
+        GPA_LOG_ERROR("Unable to get string for usage type: invalid usage type specified.");
+        return kGpaStatusErrorInvalidParameter;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_CreateSession(GPA_ContextId contextId, GPA_Session_Sample_Type sampleType, GPA_SessionId* pSessionId)
+GPA_LIB_DECL GpaStatus GpaCreateSession(GpaContextId gpa_context_id, GpaSessionSampleType gpa_session_sample_type, GpaSessionId* gpa_session_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_CreateSession);
-        TRACE_FUNCTION(GPA_CreateSession);
+        PROFILE_FUNCTION(GpaCreateSession);
+        TRACE_FUNCTION(GpaCreateSession);
 
-        CHECK_NULL_PARAM(pSessionId);
-        CHECK_CONTEXT_ID_EXISTS_AND_IS_OPEN(contextId);
+        CHECK_NULL_PARAM(gpa_session_id);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
 
-        if (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT < sampleType)
+        if (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT < gpa_session_sample_type)
         {
-            GPA_LogError("Invalid sample type specified.");
-            return GPA_STATUS_ERROR_INVALID_PARAMETER;
+            GPA_LOG_ERROR("Invalid sample type specified.");
+            return kGpaStatusErrorInvalidParameter;
         }
 
-        GPA_ContextSampleTypeFlags contextSampleTypes;
+        GpaContextSampleTypeFlags context_sample_types;
 
-        GPA_Status localStatus = (*contextId)->GetSupportedSampleTypes(&contextSampleTypes);
+        GpaStatus local_status = (*gpa_context_id)->GetSupportedSampleTypes(&context_sample_types);
 
-        if (GPA_STATUS_OK != localStatus)
+        if (kGpaStatusOk != local_status)
         {
-            GPA_LogError("Unable to get supported sample types from context.");
-            return localStatus;
+            GPA_LOG_ERROR("Unable to get supported sample types from context.");
+            return local_status;
         }
 
-        // next check that the set of sample types specified is compatible with context's set of supported sample types
-        if ((GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER == sampleType &&
-             (GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER != (GPA_CONTEXT_SAMPLE_TYPE_DISCRETE_COUNTER & contextSampleTypes))) ||
-            (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER == sampleType &&
-             (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER != (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER & contextSampleTypes))) ||
-            (GPA_SESSION_SAMPLE_TYPE_SQTT == sampleType && (GPA_CONTEXT_SAMPLE_TYPE_SQTT != (GPA_CONTEXT_SAMPLE_TYPE_SQTT & contextSampleTypes))) ||
-            (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT == sampleType &&
+        // Next check that the set of sample types specified is compatible with context's set of supported sample types.
+        if ((kGpaSessionSampleTypeDiscreteCounter == gpa_session_sample_type &&
+             (kGpaContextSampleTypeDiscreteCounter != (kGpaContextSampleTypeDiscreteCounter & context_sample_types))) ||
+            (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER == gpa_session_sample_type &&
+             (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER != (GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER & context_sample_types))) ||
+            (GPA_SESSION_SAMPLE_TYPE_SQTT == gpa_session_sample_type &&
+             (GPA_CONTEXT_SAMPLE_TYPE_SQTT != (GPA_CONTEXT_SAMPLE_TYPE_SQTT & context_sample_types))) ||
+            (GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT == gpa_session_sample_type &&
              ((GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT) !=
-              ((GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT) & contextSampleTypes))))
+              ((GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER | GPA_CONTEXT_SAMPLE_TYPE_SQTT) & context_sample_types))))
         {
-            GPA_LogError("Unable to create session: sampleTypes incompatible with context's sampleTypes.");
-            return GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES;
+            GPA_LOG_ERROR("Unable to create session: sampleTypes incompatible with context's sampleTypes.");
+            return kGpaStatusErrorIncompatibleSampleTypes;
         }
 
-        *pSessionId          = (*contextId)->CreateSession(sampleType);
-        GPA_Status retStatus = (nullptr != (*pSessionId)) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+        *gpa_session_id      = (*gpa_context_id)->CreateSession(gpa_session_sample_type);
+        GpaStatus ret_status = (nullptr != (*gpa_session_id)) ? kGpaStatusOk : kGpaStatusErrorFailed;
 
-        GPA_INTERNAL_LOG(GPA_CreateSession,
-                         MAKE_PARAM_STRING(contextId) << MAKE_PARAM_STRING(sampleType) << MAKE_PARAM_STRING(*pSessionId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaCreateSession,
+                         MAKE_PARAM_STRING(gpa_context_id)
+                             << MAKE_PARAM_STRING(gpa_session_sample_type) << MAKE_PARAM_STRING(*gpa_session_id) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
+
+GPA_LIB_DECL GpaStatus GpaDeleteSession(GpaSessionId gpa_session_id)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaDeleteSession);
+        TRACE_FUNCTION(GpaDeleteSession);
+
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+
+        IGpaContext* gpa_context = (*gpa_session_id)->GetParentContext();
+        GpaStatus    ret_status  = gpa_context->DeleteSession(gpa_session_id) ? kGpaStatusOk : kGpaStatusErrorFailed;
+
+        GPA_INTERNAL_LOG(GpaDeleteSession, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
+
+GPA_LIB_DECL GpaStatus GpaBeginSession(GpaSessionId gpa_session_id)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaBeginSession);
+        TRACE_FUNCTION(GpaBeginSession);
+
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        IGpaSession* gpa_session = gpa_session_id->Object();
+        IGpaContext* gpa_context = gpa_session->GetParentContext();
+        CHECK_CONTEXT_IS_OPEN(gpa_context);
+
+        GpaStatus retStatus = gpa_context->BeginSession(gpa_session);
+
+        GPA_INTERNAL_LOG(GpaBeginSession, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_DeleteSession(GPA_SessionId sessionId)
+GPA_LIB_DECL GpaStatus GpaEndSession(GpaSessionId gpa_session_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_DeleteSession);
-        TRACE_FUNCTION(GPA_DeleteSession);
+        PROFILE_FUNCTION(GpaEndSession);
+        TRACE_FUNCTION(GpaEndSession);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
 
-        IGPAContext* pContextId = (*sessionId)->GetParentContext();
-        GPA_Status   retStatus  = pContextId->DeleteSession(sessionId) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+        IGpaSession* gpa_session = gpa_session_id->Object();
+        IGpaContext* gpa_context = gpa_session->GetParentContext();
 
-        GPA_INTERNAL_LOG(GPA_DeleteSession, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
+        GpaStatus ret_status = gpa_context->EndSession(gpa_session);
 
-        return retStatus;
+        GPA_INTERNAL_LOG(GpaEndSession, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_BeginSession(GPA_SessionId sessionId)
+GPA_LIB_DECL GpaStatus GpaEnableCounter(GpaSessionId gpa_session_id, GpaUInt32 counter_index)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_BeginSession);
-        TRACE_FUNCTION(GPA_BeginSession);
+        PROFILE_FUNCTION(GpaEnableCounter);
+        TRACE_FUNCTION(GpaEnableCounter);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        IGPASession* pGpaSession = sessionId->Object();
-        IGPAContext* pContext    = pGpaSession->GetParentContext();
-        CHECK_CONTEXT_IS_OPEN(pContext);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_SESSION_RUNNING_FOR_COUNTERS(gpa_session_id);
+        CHECK_COUNTER_INDEX_OUT_OF_RANGE(counter_index, (*gpa_session_id)->GetParentContext());
 
-        GPA_Status retStatus = pContext->BeginSession(pGpaSession);
+        GpaStatus ret_status = (*gpa_session_id)->EnableCounter(counter_index);
 
-        GPA_INTERNAL_LOG(GPA_BeginSession, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaEnableCounter, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EndSession(GPA_SessionId sessionId)
+GPA_LIB_DECL GpaStatus GpaDisableCounter(GpaSessionId gpa_session_id, GpaUInt32 counter_index)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_EndSession);
-        TRACE_FUNCTION(GPA_EndSession);
+        PROFILE_FUNCTION(GpaDisableCounter);
+        TRACE_FUNCTION(GpaDisableCounter);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_SESSION_RUNNING_FOR_COUNTERS(gpa_session_id);
+        CHECK_COUNTER_INDEX_OUT_OF_RANGE(counter_index, (*gpa_session_id)->GetParentContext());
 
-        IGPASession* pGpaSession = sessionId->Object();
-        IGPAContext* pContext    = pGpaSession->GetParentContext();
+        GpaStatus ret_status = (*gpa_session_id)->DisableCounter(counter_index);
 
-        GPA_Status retStatus = pContext->EndSession(pGpaSession);
+        GPA_INTERNAL_LOG(GpaDisableCounter, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(counter_index) << MAKE_PARAM_STRING(ret_status));
 
-        GPA_INTERNAL_LOG(GPA_EndSession, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
-
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EnableCounter(GPA_SessionId sessionId, gpa_uint32 index)
+GPA_LIB_DECL GpaStatus GpaEnableCounterByName(GpaSessionId gpa_session_id, const char* counter_name)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_EnableCounter);
-        TRACE_FUNCTION(GPA_EnableCounter);
+        PROFILE_FUNCTION(GpaEnableCounterByName);
+        TRACE_FUNCTION(GpaEnableCounterByName);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_SESSION_RUNNING_FOR_COUNTERS(sessionId);
-        CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*sessionId)->GetParentContext());
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_SESSION_RUNNING_FOR_COUNTERS(gpa_session_id);
+        CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
 
-        GPA_Status retStatus = (*sessionId)->EnableCounter(index);
+        GpaUInt32 index;
+        GpaStatus status = (*gpa_session_id)->GetParentContext()->GetCounterIndex(counter_name, &index);
 
-        GPA_INTERNAL_LOG(GPA_EnableCounter, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
-
-        return retStatus;
-    }
-    catch (...)
-    {
-        return GPA_STATUS_ERROR_EXCEPTION;
-    }
-}
-
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_DisableCounter(GPA_SessionId sessionId, gpa_uint32 index)
-{
-    try
-    {
-        PROFILE_FUNCTION(GPA_DisableCounter);
-        TRACE_FUNCTION(GPA_DisableCounter);
-
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_SESSION_RUNNING_FOR_COUNTERS(sessionId);
-        CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, (*sessionId)->GetParentContext());
-
-        GPA_Status retStatus = (*sessionId)->DisableCounter(index);
-
-        GPA_INTERNAL_LOG(GPA_DisableCounter, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(index) << MAKE_PARAM_STRING(retStatus));
-
-        return retStatus;
-    }
-    catch (...)
-    {
-        return GPA_STATUS_ERROR_EXCEPTION;
-    }
-}
-
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EnableCounterByName(GPA_SessionId sessionId, const char* pCounterName)
-{
-    try
-    {
-        PROFILE_FUNCTION(GPA_EnableCounterByName);
-        TRACE_FUNCTION(GPA_EnableCounterByName);
-
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_SESSION_RUNNING_FOR_COUNTERS(sessionId);
-        CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
-
-        gpa_uint32 index;
-        GPA_Status status = (*sessionId)->GetParentContext()->GetCounterIndex(pCounterName, &index);
-
-        if (GPA_STATUS_OK != status)
+        if (kGpaStatusOk != status)
         {
             std::string message = "Specified counter '";
-            message += pCounterName;
+            message += counter_name;
             message += "' was not found. Please check spelling or availability.";
-            GPA_LogError(message.c_str());
-            return GPA_STATUS_ERROR_COUNTER_NOT_FOUND;
+            GPA_LOG_ERROR(message.c_str());
+            return kGpaStatusErrorCounterNotFound;
         }
 
-        return GPA_EnableCounter(sessionId, index);
+        return GpaEnableCounter(gpa_session_id, index);
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_DisableCounterByName(GPA_SessionId sessionId, const char* pCounterName)
+GPA_LIB_DECL GpaStatus GpaDisableCounterByName(GpaSessionId gpa_session_id, const char* counter_name)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_DisableCounterByName);
-        TRACE_FUNCTION(GPA_DisableCounterByName);
+        PROFILE_FUNCTION(GpaDisableCounterByName);
+        TRACE_FUNCTION(GpaDisableCounterByName);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_SESSION_RUNNING_FOR_COUNTERS(sessionId);
-        CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_SESSION_RUNNING_FOR_COUNTERS(gpa_session_id);
+        CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
 
-        gpa_uint32 index;
-        GPA_Status status = (*sessionId)->GetParentContext()->GetCounterIndex(pCounterName, &index);
+        GpaUInt32 index;
+        GpaStatus status = (*gpa_session_id)->GetParentContext()->GetCounterIndex(counter_name, &index);
 
-        if (GPA_STATUS_OK != status)
+        if (kGpaStatusOk != status)
         {
             std::string message = "Specified counter '";
-            message += pCounterName;
+            message += counter_name;
             message += "' was not found. Please check spelling or availability.";
-            GPA_LogError(message.c_str());
-            return GPA_STATUS_ERROR_COUNTER_NOT_FOUND;
+            GPA_LOG_ERROR(message.c_str());
+            return kGpaStatusErrorCounterNotFound;
         }
 
-        return GPA_DisableCounter(sessionId, index);
+        return GpaDisableCounter(gpa_session_id, index);
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EnableAllCounters(GPA_SessionId sessionId)
+GPA_LIB_DECL GpaStatus GpaEnableAllCounters(GpaSessionId gpa_session_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_EnableAllCounters);
-        TRACE_FUNCTION(GPA_EnableAllCounters);
+        PROFILE_FUNCTION(GpaEnableAllCounters);
+        TRACE_FUNCTION(GpaEnableAllCounters);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_SESSION_RUNNING_FOR_COUNTERS(sessionId);
-        CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_SESSION_RUNNING_FOR_COUNTERS(gpa_session_id);
+        CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
 
-        GPA_Status retStatus = (*sessionId)->DisableAllCounters();
+        GpaStatus ret_status = (*gpa_session_id)->DisableAllCounters();
 
-        if (GPA_STATUS_OK == retStatus)
+        if (kGpaStatusOk == ret_status)
         {
-            gpa_uint32 count;
-            retStatus = (*sessionId)->GetParentContext()->GetNumCounters(&count);
+            GpaUInt32 count;
+            ret_status = (*gpa_session_id)->GetParentContext()->GetNumCounters(&count);
 
-            if (GPA_STATUS_OK == retStatus)
+            if (kGpaStatusOk == ret_status)
             {
-                for (gpa_uint32 counterIter = 0; counterIter < count; counterIter++)
+                for (GpaUInt32 counter_iter = 0; counter_iter < count; counter_iter++)
                 {
-                    retStatus = (*sessionId)->EnableCounter(counterIter);
+                    ret_status = (*gpa_session_id)->EnableCounter(counter_iter);
 
-                    if (GPA_STATUS_OK != retStatus)
+                    if (kGpaStatusOk != ret_status)
                     {
                         break;
                     }
@@ -984,679 +971,665 @@ GPALIB_DECL GPA_Status GPA_EnableAllCounters(GPA_SessionId sessionId)
             }
         }
 
-        GPA_INTERNAL_LOG(GPA_EnableAllCounters, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaEnableAllCounters, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_DisableAllCounters(GPA_SessionId sessionId)
+GPA_LIB_DECL GpaStatus GpaDisableAllCounters(GpaSessionId gpa_session_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_DisableAllCounters);
-        TRACE_FUNCTION(GPA_DisableAllCounters);
+        PROFILE_FUNCTION(GpaDisableAllCounters);
+        TRACE_FUNCTION(GpaDisableAllCounters);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_SESSION_RUNNING_FOR_COUNTERS(sessionId);
-        CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_SESSION_RUNNING_FOR_COUNTERS(gpa_session_id);
+        CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
 
-        GPA_Status retStatus = (*sessionId)->DisableAllCounters();
+        GpaStatus ret_status = (*gpa_session_id)->DisableAllCounters();
 
-        GPA_INTERNAL_LOG(GPA_DisableAllCounters, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaDisableAllCounters, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetPassCount(GPA_SessionId sessionId, gpa_uint32* pNumPasses)
+GPA_LIB_DECL GpaStatus GpaGetPassCount(GpaSessionId gpa_session_id, GpaUInt32* number_of_passes)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetPassCount);
-        TRACE_FUNCTION(GPA_GetPassCount);
+        PROFILE_FUNCTION(GpaGetPassCount);
+        TRACE_FUNCTION(GpaGetPassCount);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_NULL_PARAM(pNumPasses);
-        CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
-        GPA_Status retStatus = (*sessionId)->GetNumRequiredPasses(pNumPasses);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_NULL_PARAM(number_of_passes);
+        CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
+        GpaStatus ret_status = (*gpa_session_id)->GetNumRequiredPasses(number_of_passes);
 
-        GPA_INTERNAL_LOG(GPA_GetPassCount, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(*pNumPasses) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaGetPassCount, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(*number_of_passes) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetNumEnabledCounters(GPA_SessionId sessionId, gpa_uint32* pCount)
+GPA_LIB_DECL GpaStatus GpaGetNumEnabledCounters(GpaSessionId gpa_session_id, GpaUInt32* enabled_counter_count)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetNumEnabledCounters);
-        TRACE_FUNCTION(GPA_GetNumEnabledCounters);
+        PROFILE_FUNCTION(GpaGetNumEnabledCounters);
+        TRACE_FUNCTION(GpaGetNumEnabledCounters);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_NULL_PARAM(pCount);
-        CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
-        GPA_Status retStatus = (*sessionId)->GetNumEnabledCounters(pCount);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_NULL_PARAM(enabled_counter_count);
+        CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
+        GpaStatus ret_status = (*gpa_session_id)->GetNumEnabledCounters(enabled_counter_count);
 
-        GPA_INTERNAL_LOG(GPA_GetNumEnabledCounters, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(*pCount) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaGetNumEnabledCounters,
+                         MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(*enabled_counter_count) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetEnabledIndex(GPA_SessionId sessionId, gpa_uint32 enabledNumber, gpa_uint32* pEnabledCounterIndex)
+GPA_LIB_DECL GpaStatus GpaGetEnabledIndex(GpaSessionId gpa_session_id, GpaUInt32 enabled_number, GpaUInt32* enabled_counter_index)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetEnabledIndex);
-        TRACE_FUNCTION(GPA_GetEnabledIndex);
+        PROFILE_FUNCTION(GpaGetEnabledIndex);
+        TRACE_FUNCTION(GpaGetEnabledIndex);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_NULL_PARAM(pEnabledCounterIndex);
-        CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
-        return (*sessionId)->GetEnabledIndex(enabledNumber, pEnabledCounterIndex);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_NULL_PARAM(enabled_counter_index);
+        CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
+        return (*gpa_session_id)->GetEnabledIndex(enabled_number, enabled_counter_index);
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_IsCounterEnabled(GPA_SessionId sessionId, gpa_uint32 counterIndex)
+GPA_LIB_DECL GpaStatus GpaIsCounterEnabled(GpaSessionId gpa_session_id, GpaUInt32 counter_index)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_IsCounterEnabled);
-        TRACE_FUNCTION(GPA_IsCounterEnabled);
+        PROFILE_FUNCTION(GpaIsCounterEnabled);
+        TRACE_FUNCTION(GpaIsCounterEnabled);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_CONTEXT_IS_OPEN((*sessionId)->GetParentContext());
-        return (*sessionId)->IsCounterEnabled(counterIndex);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_CONTEXT_IS_OPEN((*gpa_session_id)->GetParentContext());
+        return (*gpa_session_id)->IsCounterEnabled(counter_index);
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_BeginCommandList(GPA_SessionId         sessionId,
-                                            gpa_uint32            passIndex,
-                                            void*                 pCommandList,
-                                            GPA_Command_List_Type commandListType,
-                                            GPA_CommandListId*    pCommandListId)
+GPA_LIB_DECL GpaStatus GpaBeginCommandList(GpaSessionId       gpa_session_id,
+                                           GpaUInt32          pass_index,
+                                           void*              command_list,
+                                           GpaCommandListType command_list_type,
+                                           GpaCommandListId*  gpa_command_list_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_BeginCommandList);
-        TRACE_FUNCTION(GPA_BeginCommandList);
+        PROFILE_FUNCTION(GpaBeginCommandList);
+        TRACE_FUNCTION(GpaBeginCommandList);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
 
-        if (GPASessionState::GPA_SESSION_STATE_NOT_STARTED == (*sessionId)->GetState())
+        if (GpaSessionState::kGpaSessionStateNotStarted == (*gpa_session_id)->GetState())
         {
-            GPA_LogError("Session has not been started.");
-            return GPA_STATUS_ERROR_SESSION_NOT_STARTED;
+            GPA_LOG_ERROR("Session has not been started.");
+            return kGpaStatusErrorSessionNotStarted;
         }
 
-        if (GPA_COMMAND_LIST__LAST <= commandListType)
+        if (kGpaCommandListLast <= command_list_type)
         {
-            GPA_LogError("Invalid value for 'commandListType' parameter.");
-            return GPA_STATUS_ERROR_INVALID_PARAMETER;
+            GPA_LOG_ERROR("Invalid value for 'command_list_type' parameter.");
+            return kGpaStatusErrorInvalidParameter;
         }
 
-        bool commandListRequired = s_pGpaImp->IsCommandListRequired();
+        bool command_list_required = gpa_imp->IsCommandListRequired();
 
-        if (commandListRequired)
+        if (command_list_required)
         {
-            if (!pCommandList)
+            if (!command_list)
             {
-                GPA_LogError("Command list cannot be NULL.");
-                return GPA_STATUS_ERROR_NULL_POINTER;
+                GPA_LOG_ERROR("Command list cannot be NULL.");
+                return kGpaStatusErrorNullPointer;
             }
 
-            if (GPA_COMMAND_LIST_NONE == commandListType)
+            if (kGpaCommandListNone == command_list_type)
             {
-                GPA_LogError("NULL command list is not supported.");
-                return GPA_STATUS_ERROR_INVALID_PARAMETER;
+                GPA_LOG_ERROR("NULL command list is not supported.");
+                return kGpaStatusErrorInvalidParameter;
             }
         }
         else
         {
-            if (pCommandList || (GPA_COMMAND_LIST_NONE != commandListType))
+            if (command_list || (kGpaCommandListNone != command_list_type))
             {
-                GPA_LogError("'pCommandList' must be NULL and 'commandListType' must be GPA_COMMAND_LIST_NONE.");
-                return GPA_STATUS_ERROR_INVALID_PARAMETER;
+                GPA_LOG_ERROR("'command_list' must be NULL and 'command_list_type' must be kGpaCommandListNone.");
+                return kGpaStatusErrorInvalidParameter;
             }
         }
 
-        CHECK_NULL_PARAM(pCommandListId);
+        CHECK_NULL_PARAM(gpa_command_list_id);
 
-        if (s_pGpaImp->DoesCommandListExist(*pCommandListId))
+        if (gpa_imp->DoesCommandListExist(*gpa_command_list_id))
         {
-            GPA_LogError("Command List already created.");
-            return GPA_STATUS_ERROR_COMMAND_LIST_ALREADY_STARTED;
+            GPA_LOG_ERROR("Command List already created.");
+            return kGpaStatusErrorCommandListAlreadyStarted;
         }
 
-        *pCommandListId = (*sessionId)->CreateCommandList(passIndex, pCommandList, commandListType);
+        *gpa_command_list_id = (*gpa_session_id)->CreateCommandList(pass_index, command_list, command_list_type);
 
         bool status = false;
 
-        if (nullptr != *pCommandListId)
+        if (nullptr != *gpa_command_list_id)
         {
-            status = (*(*pCommandListId))->Begin();
+            status = (*(*gpa_command_list_id))->Begin();
 
             if (status)
             {
-                (*sessionId)->GetParentContext()->SetInvalidateAndFlushL2Cache(true);
+                (*gpa_session_id)->GetParentContext()->SetInvalidateAndFlushL2Cache(true);
             }
             else
             {
-                GPA_LogError("Unable to begin the command list.");
+                GPA_LOG_ERROR("Unable to begin the command list.");
             }
         }
         else
         {
-            GPA_LogError("Unable to create the command list.");
+            GPA_LOG_ERROR("Unable to create the command list.");
         }
 
-        GPA_Status retStatus = status ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+        GpaStatus ret_status = status ? kGpaStatusOk : kGpaStatusErrorFailed;
 
-        GPA_INTERNAL_LOG(GPA_BeginCommandList,
-                         MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(passIndex) << MAKE_PARAM_STRING(pCommandList) << MAKE_PARAM_STRING(commandListType)
-                                                      << MAKE_PARAM_STRING(*pCommandListId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaBeginCommandList,
+                         MAKE_PARAM_STRING(gpa_session_id)
+                             << MAKE_PARAM_STRING(pass_index) << MAKE_PARAM_STRING(command_list) << MAKE_PARAM_STRING(command_list_type)
+                             << MAKE_PARAM_STRING(*gpa_command_list_id) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EndCommandList(GPA_CommandListId commandListId)
+GPA_LIB_DECL GpaStatus GpaEndCommandList(GpaCommandListId gpa_command_list_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_EndCommandList);
-        TRACE_FUNCTION(GPA_EndCommandList);
+        PROFILE_FUNCTION(GpaEndCommandList);
+        TRACE_FUNCTION(GpaEndCommandList);
 
-        CHECK_COMMANDLIST_ID_EXISTS(commandListId);
+        CHECK_COMMAND_LIST_ID_EXISTS(gpa_command_list_id);
 
-        if (!(*commandListId)->IsCommandListRunning())
+        if (!(*gpa_command_list_id)->IsCommandListRunning())
         {
-            GPA_LogError("Command list has already been ended.");
-            return GPA_STATUS_ERROR_COMMAND_LIST_ALREADY_ENDED;
+            GPA_LOG_ERROR("Command list has already been ended.");
+            return kGpaStatusErrorCommandListAlreadyEnded;
         }
 
-        GPA_Status retStatus = (*commandListId)->End() ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+        GpaStatus ret_status = (*gpa_command_list_id)->End() ? kGpaStatusOk : kGpaStatusErrorFailed;
 
-        GPA_INTERNAL_LOG(GPA_EndCommandList, MAKE_PARAM_STRING(commandListId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaEndCommandList, MAKE_PARAM_STRING(gpa_command_list_id) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_BeginSample(gpa_uint32 sampleId, GPA_CommandListId commandListId)
+GPA_LIB_DECL GpaStatus GpaBeginSample(GpaUInt32 sample_id, GpaCommandListId gpa_command_list_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_BeginSample);
-        TRACE_FUNCTION(GPA_BeginSample);
+        PROFILE_FUNCTION(GpaBeginSample);
+        TRACE_FUNCTION(GpaBeginSample);
 
-        CHECK_COMMANDLIST_ID_EXISTS(commandListId);
+        CHECK_COMMAND_LIST_ID_EXISTS(gpa_command_list_id);
 
-        GPA_Status retStatus = GPA_STATUS_OK;
+        GpaStatus ret_status = kGpaStatusOk;
 
-        // Only begin the sample if the current pass index is valid
-        gpa_uint32 numRequiredPasses = 0;
-        retStatus                    = (*commandListId)->GetParentSession()->GetNumRequiredPasses(&numRequiredPasses);
+        // Only begin the sample if the current pass index is valid.
+        GpaUInt32 num_required_passes = 0;
+        ret_status                    = (*gpa_command_list_id)->GetParentSession()->GetNumRequiredPasses(&num_required_passes);
 
-        if (GPA_STATUS_OK == retStatus)
+        if (kGpaStatusOk == ret_status)
         {
-            if ((*commandListId)->GetPass()->GetIndex() < numRequiredPasses)
+            if ((*gpa_command_list_id)->GetPass()->GetIndex() < num_required_passes)
             {
-                retStatus = ((*commandListId)->GetParentSession()->BeginSample(sampleId, commandListId)) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+                ret_status = ((*gpa_command_list_id)->GetParentSession()->BeginSample(sample_id, gpa_command_list_id)) ? kGpaStatusOk : kGpaStatusErrorFailed;
             }
             else
             {
-                GPA_LogError("Invalid pass index.");
-                retStatus = GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;
+                GPA_LOG_ERROR("Invalid pass index.");
+                ret_status = kGpaStatusErrorIndexOutOfRange;
             }
         }
 
-        GPA_INTERNAL_LOG(GPA_BeginSample, MAKE_PARAM_STRING(sampleId) << MAKE_PARAM_STRING(commandListId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaBeginSample, MAKE_PARAM_STRING(sample_id) << MAKE_PARAM_STRING(gpa_command_list_id) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_EndSample(GPA_CommandListId commandListId)
+GPA_LIB_DECL GpaStatus GpaEndSample(GpaCommandListId gpa_command_list_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_EndSample);
-        TRACE_FUNCTION(GPA_EndSample);
+        PROFILE_FUNCTION(GpaEndSample);
+        TRACE_FUNCTION(GpaEndSample);
 
-        CHECK_COMMANDLIST_ID_EXISTS(commandListId);
+        CHECK_COMMAND_LIST_ID_EXISTS(gpa_command_list_id);
 
-        GPA_Status retStatus = GPA_STATUS_OK;
+        GpaStatus ret_status = kGpaStatusOk;
 
-        // Only end the sample if the current pass index is valid
-        gpa_uint32 numRequiredPasses = 0;
-        retStatus                    = (*commandListId)->GetParentSession()->GetNumRequiredPasses(&numRequiredPasses);
+        // Only end the sample if the current pass index is valid.
+        GpaUInt32 num_required_passes = 0;
+        ret_status                    = (*gpa_command_list_id)->GetParentSession()->GetNumRequiredPasses(&num_required_passes);
 
-        if (GPA_STATUS_OK == retStatus)
+        if (kGpaStatusOk == ret_status)
         {
-            if ((*commandListId)->GetPass()->GetIndex() < numRequiredPasses)
+            if ((*gpa_command_list_id)->GetPass()->GetIndex() < num_required_passes)
             {
-                retStatus = ((*commandListId)->GetParentSession()->EndSample(commandListId)) ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+                ret_status = ((*gpa_command_list_id)->GetParentSession()->EndSample(gpa_command_list_id)) ? kGpaStatusOk : kGpaStatusErrorFailed;
             }
             else
             {
-                GPA_LogError("Invalid pass index.");
-                retStatus = GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE;
+                GPA_LOG_ERROR("Invalid pass index.");
+                ret_status = kGpaStatusErrorIndexOutOfRange;
             }
         }
 
-        GPA_INTERNAL_LOG(GPA_EndSample, MAKE_PARAM_STRING(commandListId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaEndSample, MAKE_PARAM_STRING(gpa_command_list_id) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA_CommandListId primaryCommandListId)
+GPA_LIB_DECL GpaStatus GpaContinueSampleOnCommandList(GpaUInt32 source_sample_id, GpaCommandListId primary_gpa_command_list_id)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_ContinueSampleOnCommandList);
-        TRACE_FUNCTION(GPA_ContinueSampleOnCommandList);
+        PROFILE_FUNCTION(GpaContinueSampleOnCommandList);
+        TRACE_FUNCTION(GpaContinueSampleOnCommandList);
 
-        if (!s_pGpaImp->IsContinueSampleOnCommandListSupported())
+        if (!gpa_imp->IsContinueSampleOnCommandListSupported())
         {
-            GPA_LogError("This feature is not supported.");
-            return GPA_STATUS_ERROR_API_NOT_SUPPORTED;
+            GPA_LOG_ERROR("This feature is not supported.");
+            return kGpaStatusErrorApiNotSupported;
         }
 
-        GPA_Status retStatus = GPA_STATUS_OK;
-        CHECK_COMMANDLIST_ID_EXISTS(primaryCommandListId);
+        GpaStatus ret_status = kGpaStatusOk;
+        CHECK_COMMAND_LIST_ID_EXISTS(primary_gpa_command_list_id);
 
-        if ((retStatus = CheckSampleIdExistsInPass((*primaryCommandListId)->GetPass(), srcSampleId)) != GPA_STATUS_OK)
+        if ((ret_status = CheckSampleIdExistsInPass((*primary_gpa_command_list_id)->GetPass(), source_sample_id)) != kGpaStatusOk)
         {
-            return retStatus;
+            return ret_status;
         }
 
-        retStatus = ((*primaryCommandListId)->GetParentSession()->ContinueSampleOnCommandList(srcSampleId, primaryCommandListId));
+        ret_status = ((*primary_gpa_command_list_id)->GetParentSession()->ContinueSampleOnCommandList(source_sample_id, primary_gpa_command_list_id));
 
-        GPA_INTERNAL_LOG(GPA_ContinueSampleOnCommandList,
-                         MAKE_PARAM_STRING(srcSampleId) << MAKE_PARAM_STRING(primaryCommandListId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaContinueSampleOnCommandList,
+                         MAKE_PARAM_STRING(source_sample_id) << MAKE_PARAM_STRING(primary_gpa_command_list_id) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_CopySecondarySamples(GPA_CommandListId secondaryCommandListId,
-                                                GPA_CommandListId primaryCommandListId,
-                                                gpa_uint32        numSamples,
-                                                gpa_uint32*       pNewSampleIds)
+GPA_LIB_DECL GpaStatus GpaCopySecondarySamples(GpaCommandListId secondary_gpa_command_list_id,
+                                               GpaCommandListId primary_gpa_command_list_id,
+                                               GpaUInt32        number_of_samples,
+                                               GpaUInt32*       new_sample_ids)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_CopySecondarySamples);
-        TRACE_FUNCTION(GPA_CopySecondarySamples);
+        PROFILE_FUNCTION(GpaCopySecondarySamples);
+        TRACE_FUNCTION(GpaCopySecondarySamples);
 
-        if (!s_pGpaImp->IsCopySecondarySampleSupported())
+        if (!gpa_imp->IsCopySecondarySampleSupported())
         {
-            GPA_LogError("This feature is not supported.");
-            return GPA_STATUS_ERROR_API_NOT_SUPPORTED;
+            GPA_LOG_ERROR("This feature is not supported.");
+            return kGpaStatusErrorApiNotSupported;
         }
 
-        CHECK_COMMANDLIST_ID_EXISTS(secondaryCommandListId);
-        CHECK_COMMANDLIST_ID_EXISTS(primaryCommandListId);
+        CHECK_COMMAND_LIST_ID_EXISTS(secondary_gpa_command_list_id);
+        CHECK_COMMAND_LIST_ID_EXISTS(primary_gpa_command_list_id);
 
-        GPA_Status retStatus =
-            ((*primaryCommandListId)->GetParentSession()->CopySecondarySamples(secondaryCommandListId, primaryCommandListId, numSamples, pNewSampleIds));
+        GpaStatus ret_status = ((*primary_gpa_command_list_id)
+                                    ->GetParentSession()
+                                    ->CopySecondarySamples(secondary_gpa_command_list_id, primary_gpa_command_list_id, number_of_samples, new_sample_ids));
 
-        GPA_INTERNAL_LOG(GPA_CopySecondarySamples,
-                         MAKE_PARAM_STRING(secondaryCommandListId) << MAKE_PARAM_STRING(primaryCommandListId) << MAKE_PARAM_STRING(numSamples)
-                                                                   << MAKE_PARAM_STRING(*pNewSampleIds) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaCopySecondarySamples,
+                         MAKE_PARAM_STRING(secondary_gpa_command_list_id)
+                             << MAKE_PARAM_STRING(primary_gpa_command_list_id) << MAKE_PARAM_STRING(number_of_samples) << MAKE_PARAM_STRING(*new_sample_ids)
+                             << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSampleCount(GPA_SessionId sessionId, gpa_uint32* pSampleCount)
+GPA_LIB_DECL GpaStatus GpaGetSampleCount(GpaSessionId gpa_session_id, GpaUInt32* sample_count)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetSampleCount);
-        TRACE_FUNCTION(GPA_GetSampleCount);
+        PROFILE_FUNCTION(GpaGetSampleCount);
+        TRACE_FUNCTION(GpaGetSampleCount);
 
-        CHECK_NULL_PARAM(pSampleCount);
+        CHECK_NULL_PARAM(sample_count);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+        CHECK_SESSION_RUNNING(gpa_session_id);
+
+        *sample_count = (*gpa_session_id)->GetSampleCount();
+
+        GPA_INTERNAL_LOG(GpaGetSampleCount, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(*sample_count));
+
+        return kGpaStatusOk;
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
+
+GPA_LIB_DECL GpaStatus GpaGetSampleId(GpaSessionId sessionId, GpaUInt32 index, GpaUInt32* sample_id)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaGetSampleId);
+        TRACE_FUNCTION(GpaGetSampleId);
+
+        CHECK_NULL_PARAM(sample_id);
         CHECK_SESSION_ID_EXISTS(sessionId);
         CHECK_SESSION_RUNNING(sessionId);
 
-        *pSampleCount = (*sessionId)->GetSampleCount();
-
-        GPA_INTERNAL_LOG(GPA_GetSampleCount, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(*pSampleCount));
-
-        return GPA_STATUS_OK;
-    }
-    catch (...)
-    {
-        return GPA_STATUS_ERROR_EXCEPTION;
-    }
-}
-
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSampleId(GPA_SessionId sessionId, gpa_uint32 index, gpa_uint32* pSampleId)
-{
-    try
-    {
-        PROFILE_FUNCTION(GPA_GetSampleId);
-        TRACE_FUNCTION(GPA_GetSampleId);
-
-        CHECK_NULL_PARAM(pSampleId);
-        CHECK_SESSION_ID_EXISTS(sessionId);
-        CHECK_SESSION_RUNNING(sessionId);
-
-        GPA_Status retStatus = GPA_STATUS_ERROR_SAMPLE_NOT_FOUND;
-        gpa_uint32 sampleId  = 0u;
-        bool       found     = (*sessionId)->GetSampleIdByIndex(index, sampleId);
+        GpaStatus ret_status    = kGpaStatusErrorSampleNotFound;
+        GpaUInt32 ret_sample_id = 0u;
+        bool      found         = (*sessionId)->GetSampleIdByIndex(index, ret_sample_id);
 
         if (found)
         {
-            *pSampleId = sampleId;
-            retStatus  = GPA_STATUS_OK;
+            *sample_id = ret_sample_id;
+            ret_status = kGpaStatusOk;
         }
 
-        GPA_INTERNAL_LOG(GPA_GetSampleId,
-                         MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(index) << MAKE_PARAM_STRING(*pSampleId) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaGetSampleId,
+                         MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(index) << MAKE_PARAM_STRING(*sample_id) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
+
+GPA_LIB_DECL GpaStatus GpaIsSessionComplete(GpaSessionId gpa_session_id)
+{
+    try
+    {
+        GpaStatus retStatus = kGpaStatusResultNotReady;
+
+        PROFILE_FUNCTION(GpaIsSessionComplete);
+        TRACE_FUNCTION(GpaIsSessionComplete);
+
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
+
+        if (GpaSessionState::kGpaSessionStateNotStarted == (*gpa_session_id)->GetState())
+        {
+            GPA_LOG_ERROR("Session has not been started.");
+            return kGpaStatusErrorSessionNotStarted;
+        }
+
+        CHECK_SESSION_RUNNING(gpa_session_id);
+
+        (*gpa_session_id)->UpdateResults();
+
+        if ((*gpa_session_id)->IsResultReady())
+        {
+            retStatus = kGpaStatusOk;
+        }
+
+        GPA_INTERNAL_LOG(GpaIsSessionComplete, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(retStatus));
 
         return retStatus;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_IsSessionComplete(GPA_SessionId sessionId)
+GPA_LIB_DECL GpaStatus GpaIsPassComplete(GpaSessionId gpa_session_id, GpaUInt32 pass_index)
 {
     try
     {
-        GPA_Status retStatus = GPA_STATUS_RESULT_NOT_READY;
+        PROFILE_FUNCTION(GpaIsPassComplete);
+        TRACE_FUNCTION(GpaIsPassComplete);
 
-        PROFILE_FUNCTION(GPA_IsSessionComplete);
-        TRACE_FUNCTION(GPA_IsSessionComplete);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
 
-        CHECK_SESSION_ID_EXISTS(sessionId);
+        GpaStatus ret_status = kGpaStatusResultNotReady;
 
-        if (GPASessionState::GPA_SESSION_STATE_NOT_STARTED == (*sessionId)->GetState())
+        if (GpaSessionState::kGpaSessionStateNotStarted == (*gpa_session_id)->GetState())
         {
-            GPA_LogError("Session has not been started.");
-            return GPA_STATUS_ERROR_SESSION_NOT_STARTED;
+            GPA_LOG_ERROR("Session has not been started.");
+            return kGpaStatusErrorSessionNotStarted;
         }
 
-        CHECK_SESSION_RUNNING(sessionId);
+        ret_status = (*gpa_session_id)->IsPassComplete(pass_index);
 
-        (*sessionId)->UpdateResults();
-
-        if ((*sessionId)->IsResultReady())
+        if (kGpaStatusOk == ret_status)
         {
-            retStatus = GPA_STATUS_OK;
-        }
-
-        GPA_INTERNAL_LOG(GPA_IsSessionComplete, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(retStatus));
-
-        return retStatus;
-    }
-    catch (...)
-    {
-        return GPA_STATUS_ERROR_EXCEPTION;
-    }
-}
-
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_IsPassComplete(GPA_SessionId sessionId, gpa_uint32 passIndex)
-{
-    try
-    {
-        PROFILE_FUNCTION(GPA_IsPassComplete);
-        TRACE_FUNCTION(GPA_IsPassComplete);
-
-        CHECK_SESSION_ID_EXISTS(sessionId);
-
-        GPA_Status retStatus = GPA_STATUS_RESULT_NOT_READY;
-
-        if (GPASessionState::GPA_SESSION_STATE_NOT_STARTED == (*sessionId)->GetState())
-        {
-            GPA_LogError("Session has not been started.");
-            return GPA_STATUS_ERROR_SESSION_NOT_STARTED;
-        }
-
-        retStatus = (*sessionId)->IsPassComplete(passIndex);
-
-        if (GPA_STATUS_OK == retStatus)
-        {
-            if ((*sessionId)->UpdateResults(passIndex))
+            if ((*gpa_session_id)->UpdateResults(pass_index))
             {
-                retStatus = GPA_STATUS_OK;
+                ret_status = kGpaStatusOk;
             }
             else
             {
-                retStatus = GPA_STATUS_RESULT_NOT_READY;
+                ret_status = kGpaStatusResultNotReady;
             }
         }
 
-        GPA_INTERNAL_LOG(GPA_IsSessionComplete, MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(passIndex) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaIsSessionComplete, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(pass_index) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSampleResultSize(GPA_SessionId sessionId, gpa_uint32 sampleId, size_t* pSampleResultSizeInBytes)
+GPA_LIB_DECL GpaStatus GpaGetSampleResultSize(GpaSessionId gpa_session_id, GpaUInt32 sample_id, size_t* sample_result_size_in_bytes)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetSampleResultSize);
-        TRACE_FUNCTION(GPA_GetSampleResultSize);
+        PROFILE_FUNCTION(GpaGetSampleResultSize);
+        TRACE_FUNCTION(GpaGetSampleResultSize);
 
-        GPA_Status retStatus = GPA_STATUS_OK;
+        GpaStatus ret_status = kGpaStatusOk;
 
-        CHECK_NULL_PARAM(pSampleResultSizeInBytes);
-        CHECK_SESSION_ID_EXISTS(sessionId);
+        CHECK_NULL_PARAM(sample_result_size_in_bytes);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
 
-        if ((retStatus = CheckSampleIdExistsInSession(sessionId, sampleId)) != GPA_STATUS_OK)
+        if ((ret_status = CheckSampleIdExistsInSession(gpa_session_id, sample_id)) != kGpaStatusOk)
         {
-            return retStatus;
+            return ret_status;
         }
 
-        CHECK_SESSION_RUNNING(sessionId);
+        CHECK_SESSION_RUNNING(gpa_session_id);
 
-        *pSampleResultSizeInBytes = (*sessionId)->GetSampleResultSizeInBytes(sampleId);
+        *sample_result_size_in_bytes = (*gpa_session_id)->GetSampleResultSizeInBytes(sample_id);
 
-        GPA_INTERNAL_LOG(
-            GPA_GetSampleResultSize,
-            MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(sampleId) << MAKE_PARAM_STRING(*pSampleResultSizeInBytes) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GPA_GetSampleResultSize,
+                         MAKE_PARAM_STRING(gpa_session_id)
+                             << MAKE_PARAM_STRING(sample_id) << MAKE_PARAM_STRING(*sample_result_size_in_bytes) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-GPALIB_DECL GPA_Status GPA_GetSampleResult(GPA_SessionId sessionId, gpa_uint32 sampleId, size_t sampleResultSizeInBytes, void* pCounterSampleResults)
+GPA_LIB_DECL GpaStatus GpaGetSampleResult(GpaSessionId gpa_session_id, GpaUInt32 sample_id, size_t sample_result_size_in_bytes, void* counter_sample_results)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetSampleResult);
-        TRACE_FUNCTION(GPA_GetSampleResult);
+        PROFILE_FUNCTION(GpaGetSampleResult);
+        TRACE_FUNCTION(GpaGetSampleResult);
 
-        GPA_Status retStatus = GPA_STATUS_OK;
+        GpaStatus ret_status = kGpaStatusOk;
 
-        CHECK_NULL_PARAM(pCounterSampleResults);
-        CHECK_SESSION_ID_EXISTS(sessionId);
+        CHECK_NULL_PARAM(counter_sample_results);
+        CHECK_SESSION_ID_EXISTS(gpa_session_id);
 
-        if ((retStatus = CheckSampleIdExistsInSession(sessionId, sampleId)) != GPA_STATUS_OK)
+        if ((ret_status = CheckSampleIdExistsInSession(gpa_session_id, sample_id)) != kGpaStatusOk)
         {
-            return retStatus;
+            return ret_status;
         }
 
-        CHECK_SESSION_RUNNING(sessionId);
+        CHECK_SESSION_RUNNING(gpa_session_id);
 
-        retStatus = (*sessionId)->GetSampleResult(sampleId, sampleResultSizeInBytes, pCounterSampleResults);
+        ret_status = (*gpa_session_id)->GetSampleResult(sample_id, sample_result_size_in_bytes, counter_sample_results);
 
-        GPA_INTERNAL_LOG(GPA_GetSampleResult,
-                         MAKE_PARAM_STRING(sessionId) << MAKE_PARAM_STRING(sampleId) << MAKE_PARAM_STRING(sampleResultSizeInBytes)
-                                                      << MAKE_PARAM_STRING(pCounterSampleResults) << MAKE_PARAM_STRING(retStatus));
+        GPA_INTERNAL_LOG(GpaGetSampleResult,
+                         MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(sample_id) << MAKE_PARAM_STRING(sample_result_size_in_bytes)
+                                                           << MAKE_PARAM_STRING(counter_sample_results) << MAKE_PARAM_STRING(ret_status));
 
-        return retStatus;
+        return ret_status;
     }
     catch (...)
     {
-        return GPA_STATUS_ERROR_EXCEPTION;
+        return kGpaStatusErrorException;
     }
 }
 
-//-----------------------------------------------------------------------------
-/// array of strings representing GPA_Status status strings
-static const char* g_statusString[] = {GPA_ENUM_STRING_VAL(GPA_STATUS_OK, "GPA Status: Ok."),
-                                       GPA_ENUM_STRING_VAL(GPA_STATUS_RESULT_NOT_READY, "GPA Status: Counter Results Not Ready.")};
+/// Array of strings representing GPA_Status status strings.
+static const char* kStatusString[] = {GPA_ENUM_STRING_VAL(kGpaStatusOk, "GPA Status: Ok."),
+                                      GPA_ENUM_STRING_VAL(kGpaStatusResultNotReady, "GPA Status: Counter Results Not Ready.")};
 
-/// size of g_statusString array
-static size_t g_statusStringSize = sizeof(g_statusString) / sizeof(const char*);
+/// Size of kStatusString array.
+static size_t kStatusStringSize = sizeof(kStatusString) / sizeof(const char*);
 
-/// array of strings representing GPA_Status error strings
-static const char* g_errorString[] = {
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_NULL_POINTER, "GPA Error: Null Pointer."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_CONTEXT_NOT_OPEN, "GPA Error: Context Not Open."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_CONTEXT_ALREADY_OPEN, "GPA Error: Coontext Already Opened."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE, "GPA Error: Index Out Of Range."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_COUNTER_NOT_FOUND, "GPA Error: Counter Not Found."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_ALREADY_ENABLED, "GPA Error: Already Enabled."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_NO_COUNTERS_ENABLED, "GPA Error: No Counters Enabled."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_NOT_ENABLED, "GPA Error: Not Enabled."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_COMMAND_LIST_ALREADY_ENDED, "GPA Error: Command List Already Ended."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_COMMAND_LIST_ALREADY_STARTED, "GPA Error: Command List Already Started."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_COMMAND_LIST_NOT_ENDED, "GPA Error: Command List Is Not Ended."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_NOT_ENOUGH_PASSES, "GPA Error: Not Enough Passes."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SAMPLE_NOT_STARTED, "GPA Error: Sample Not Started."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SAMPLE_ALREADY_STARTED, "GPA Error: Sample Already Started."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SAMPLE_NOT_ENDED, "GPA Error: Sample Not Ended."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_CANNOT_CHANGE_COUNTERS_WHEN_SAMPLING, "GPA Error: Cannot Change Counters When Sampling."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SESSION_NOT_FOUND, "GPA Error: Session Not Found."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SAMPLE_NOT_FOUND, "GPA Error: Sample Not Found."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, "GPA Error: Context Not Found."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, "GPA Error: Command List Not Found."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_READING_SAMPLE_RESULT, "GPA Error: Reading Sample Result."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_VARIABLE_NUMBER_OF_SAMPLES_IN_PASSES, "GPA Error: Variable Number Of Samples In Passes."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_FAILED, "GPA Error: Failed."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED, "GPA Error: Hardware Not Supported."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED, "GPA Error: Driver Not Supported."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_API_NOT_SUPPORTED, "GPA Error: API Not Supported."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_INVALID_PARAMETER, "GPA Error: Incorrect Parameter."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_LIB_LOAD_FAILED, "GPA Error: Loading The Library Failed."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_LIB_LOAD_MAJOR_VERSION_MISMATCH, "GPA Error: Major Version Mismatch Between The Loader And The GPUPerfAPI Library."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_LIB_LOAD_MINOR_VERSION_MISMATCH, "GPA Error: Minor Version Mismatch Between The Loader And The GPUPerfAPI Library."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_GPA_NOT_INITIALIZED, "GPA Error: GPA Has Not Been Initialized."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_GPA_ALREADY_INITIALIZED, "GPA Error: GPA Has Already Been Initialized."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SAMPLE_IN_SECONDARY_COMMAND_LIST, "GPA Error: Sample In Secondary Command List."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_INCOMPATIBLE_SAMPLE_TYPES, "GPA Error: Incompatible Sample Types."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SESSION_ALREADY_STARTED, "GPA Error: Session Already Started."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SESSION_NOT_STARTED, "GPA Error: Session Not Started."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_SESSION_NOT_ENDED, "GPA Error: Session Not Ended."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_INVALID_DATATYPE, "GPA Error: Invalid Counter Datatype."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_INVALID_COUNTER_EQUATION, "GPA Error: Invalid Counter Equation."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_TIMEOUT, "GPA Error: Attempt to Retrieve Data Failed due to Timeout."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_LIB_ALREADY_LOADED, "GPA Error: Library Is Already Loaded."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE, "GPA Error: Other Session Is Active."),
-    GPA_ENUM_STRING_VAL(GPA_STATUS_ERROR_EXCEPTION, "GPA Error: Exception Occurred.")};
+/// Array of strings representing GPA_Status error strings.
+static const char* kErrorString[] = {
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorNullPointer, "GPA Error: Null Pointer."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorContextNotOpen, "GPA Error: Context Not Open."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorContextAlreadyOpen, "GPA Error: Coontext Already Opened."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorIndexOutOfRange, "GPA Error: Index Out Of Range."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorCounterNotFound, "GPA Error: Counter Not Found."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorAlreadyEnabled, "GPA Error: Already Enabled."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorNoCountersEnabled, "GPA Error: No Counters Enabled."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorNotEnabled, "GPA Error: Not Enabled."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorCommandListAlreadyEnded, "GPA Error: Command List Already Ended."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorCommandListAlreadyStarted, "GPA Error: Command List Already Started."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorCommandListNotEnded, "GPA Error: Command List Is Not Ended."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorNotEnoughPasses, "GPA Error: Not Enough Passes."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorSampleNotStarted, "GPA Error: Sample Not Started."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorSampleAlreadyStarted, "GPA Error: Sample Already Started."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorSampleNotEnded, "GPA Error: Sample Not Ended."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorCannotChangeCountersWhenSampling, "GPA Error: Cannot Change Counters When Sampling."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorSessionNotFound, "GPA Error: Session Not Found."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorSampleNotFound, "GPA Error: Sample Not Found."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorContextNotFound, "GPA Error: Context Not Found."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorCommandListNotFound, "GPA Error: Command List Not Found."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorReadingSampleResult, "GPA Error: Reading Sample Result."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorVariableNumberOfSamplesInPasses, "GPA Error: Variable Number Of Samples In Passes."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorFailed, "GPA Error: Failed."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorHardwareNotSupported, "GPA Error: Hardware Not Supported."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorDriverNotSupported, "GPA Error: Driver Not Supported."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorApiNotSupported, "GPA Error: API Not Supported."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorInvalidParameter, "GPA Error: Incorrect Parameter."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorLibLoadFailed, "GPA Error: Loading The Library Failed."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorLibLoadMajorVersionMismatch, "GPA Error: Major Version Mismatch Between The Loader And The GPUPerfAPI Library."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorLibLoadMinorVersionMismatch, "GPA Error: Minor Version Mismatch Between The Loader And The GPUPerfAPI Library."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorGpaNotInitialized, "GPA Error: GPA Has Not Been Initialized."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorGpaAlreadyInitialized, "GPA Error: GPA Has Already Been Initialized."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorSampleInSecondaryCommandList, "GPA Error: Sample In Secondary Command List."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorIncompatibleSampleTypes, "GPA Error: Incompatible Sample Types."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorSessionAlreadyStarted, "GPA Error: Session Already Started."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorSessionNotStarted, "GPA Error: Session Not Started."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorSessionNotEnded, "GPA Error: Session Not Ended."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorInvalidDataType, "GPA Error: Invalid Counter Datatype."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorInvalidCounterEquation, "GPA Error: Invalid Counter Equation."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorTimeout, "GPA Error: Attempt to Retrieve Data Failed due to Timeout."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorLibAlreadyLoaded, "GPA Error: Library Is Already Loaded."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorOtherSessionActive, "GPA Error: Other Session Is Active."),
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorException, "GPA Error: Exception Occurred.")};
 
-/// size of g_errorString array
-static size_t g_errorStringSize = sizeof(g_errorString) / sizeof(const char*);
+/// Size of kErrorString array.
+static size_t kErrorStringSize = sizeof(kErrorString) / sizeof(const char*);
 
-GPALIB_DECL const char* GPA_GetStatusAsStr(GPA_Status status)
+GPA_LIB_DECL const char* GpaGetStatusAsStr(GpaStatus gpa_status_as_str)
 {
     try
     {
-        PROFILE_FUNCTION(GPA_GetStatusAsStr);
-        TRACE_FUNCTION(GPA_GetStatusAsStr);
+        PROFILE_FUNCTION(GpaGetStatusAsStr);
+        TRACE_FUNCTION(GpaGetStatusAsStr);
 
-        if (status >= 0)
+        if (gpa_status_as_str >= 0)
         {
-            size_t statusIndex = status;
+            size_t status_index = gpa_status_as_str;
 
-            if (statusIndex < g_statusStringSize)
+            if (status_index < kStatusStringSize)
             {
-                return g_statusString[statusIndex];
+                return kStatusString[status_index];
             }
 
             return "GPA Status: Unknown Status.";
         }
 
-        size_t statusIndex = (-status) - 1;
+        size_t status_index = (-gpa_status_as_str) - 1;
 
-        if (statusIndex < g_errorStringSize)
+        if (status_index < kErrorStringSize)
         {
-            return g_errorString[statusIndex];
+            return kErrorString[status_index];
         }
 
         return "GPA Error: Unknown Error.";
@@ -1666,3 +1639,5 @@ GPALIB_DECL const char* GPA_GetStatusAsStr(GPA_Status status)
         return "GPA Error: Unknown Exception.";
     }
 }
+
+#include "gpu_perf_api_deprecated.inc"

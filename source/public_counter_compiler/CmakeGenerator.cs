@@ -1,6 +1,6 @@
 ﻿// =====================================================================
 // <copyright file="CMakeGenerator.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2019 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -14,7 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 
-namespace GPATools
+namespace GpaTools
 {
     class CMakeGenerator
     {
@@ -24,7 +24,7 @@ namespace GPATools
         public static ProcessFilesDelegate ProcessFile = null;
         public static InitDelegate Init = null;
         public static CMakeWriterDelegate CMakeWriter = null;
-        private static readonly List<string> DirList = new List<string>();
+        private static readonly List<string> _dirList = new List<string>();
 
         /// <summary>
         /// Adds the directory
@@ -32,7 +32,7 @@ namespace GPATools
         /// <param name="dir">directory name</param>
         public static void AddDirectory(string dir)
         {
-            DirList.Add(dir);
+            _dirList.Add(dir);
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace GPATools
         public static void GenerateCMakeFiles()
         {
             Init?.Invoke();
-            foreach (var dir in DirList)
+            foreach (var dir in _dirList)
             {
                 ProcessDir(dir);
             }

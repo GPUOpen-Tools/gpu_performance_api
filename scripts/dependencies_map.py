@@ -1,3 +1,4 @@
+# Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 # dependencies_map.py
 #
 #    Map of GitHub project names to clone target paths, relative to the GPUPerfAPI
@@ -26,7 +27,7 @@ gitMapping = {
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
 downloadWin = {
-    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/gpu_performance_api/releases/download/v3.6/GPUPerfAPI-3.6.0.119.zip" , "default", "3_6", "../Common/Lib/AMD/GPUPerfAPI"]
+    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/gpu_performance_api/releases/download/v3.7/GPUPerfAPI-3.7.0.283.zip" , "default", "3_7", "../Common/Lib/AMD/GPUPerfAPI"]
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root

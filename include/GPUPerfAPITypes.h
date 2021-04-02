@@ -1,8 +1,10 @@
 //==============================================================================
-// Copyright (c) 2020 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2020-2021 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  Proxy header
+/// \brief  Deprecated header; use gpu_performance_api/gpu_perf_api_types.h
 //==============================================================================
+
+#pragma message("Warning: You are including a deprecated header. Please use gpu_performance_api/gpu_perf_api_types.h")
 
 #include "gpu_perf_api_types.h"

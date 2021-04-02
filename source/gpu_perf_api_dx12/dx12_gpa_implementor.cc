@@ -1,120 +1,123 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  DX12 GPA Implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  DX12 GPA Implementation
 //==============================================================================
+
+#include "gpu_perf_api_dx12/dx12_gpa_implementor.h"
 
 #include <locale>
 #include <codecvt>
 
-#include "dx12_gpa_implementor.h"
-#include "dx12_utils.h"
 #include "DeviceInfoUtils.h"
-#include "gpa_counter_generator_dx12.h"
-#include "gpa_counter_generator_dx12_non_amd.h"
-#include "gpa_counter_scheduler_dx12.h"
 
-IGPAImplementor*                      s_pGpaImp = DX12GPAImplementor::Instance();
-static GPA_CounterGeneratorDX12       s_generatorDX12;        ///< static instance of DX12 generator
-static GPA_CounterGeneratorDX12NonAMD s_generatorDX12NonAMD;  ///< static instance of DX12 non-AMD generator
-static GPA_CounterSchedulerDX12       s_schedulerDX12;        ///< static instance of DX12 scheduler
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12_non_amd.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_scheduler_dx12.h"
 
-DX12GPAImplementor::~DX12GPAImplementor()
+#include "gpu_perf_api_dx12/dx12_utils.h"
+
+IGpaImplementor*                     gpa_imp = Dx12GpaImplementor::Instance();
+static GpaCounterGeneratorDx12       counter_generator_dx12;          ///< Static instance of DX12 generator.
+static GpaCounterGeneratorDx12NonAmd counter_generator_dx12_non_amd;  ///< Static instance of DX12 non-AMD generator.
+static GpaCounterSchedulerDx12       counter_scheduler_dx12;          ///< Static instance of DX12 scheduler.
+
+Dx12GpaImplementor::~Dx12GpaImplementor()
 {
-    DX12GPAImplementor::Destroy();
+    Dx12GpaImplementor::Destroy();
 }
 
-GPA_API_Type DX12GPAImplementor::GetAPIType() const
+GpaApiType Dx12GpaImplementor::GetApiType() const
 {
-    return GPA_API_DIRECTX_12;
+    return kGpaApiDirectx12;
 }
 
-bool DX12GPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const
+bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const
 {
     bool success = false;
 
-    IUnknown*     pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
-    ID3D12Device* pD3D12Device;
+    IUnknown*     unknown_ptr = static_cast<IUnknown*>(context_info);
+    ID3D12Device* d3d12_device;
 
-    if (DX12Utils::GetD3D12Device(pUnknownPtr, &pD3D12Device) && DX12Utils::IsFeatureLevelSupported(pD3D12Device))
+    if (dx12_utils::GetD3D12Device(unknown_ptr, &d3d12_device) && dx12_utils::IsFeatureLevelSupported(d3d12_device))
     {
-        DXGI_ADAPTER_DESC adapterDesc;
-        GPA_Status        result = DX12Utils::DX12GetAdapterDesc(pD3D12Device, adapterDesc);
+        DXGI_ADAPTER_DESC adapter_desc;
+        GpaStatus         result = dx12_utils::Dx12GetAdapterDesc(d3d12_device, adapter_desc);
 
-        if (GPA_STATUS_OK == result)
+        if (kGpaStatusOk == result)
         {
             // For now it is assumed that DX12 MGPU support is exposed to the app
             // and the app always opens the device on the correct GPU.
             // In case where MGPU support hides the GPU from the app, then
             // we will need to use DX12 MGPU extension (and possibly ADL util)
             // to get the correct HW info
-            hwInfo.SetVendorID(adapterDesc.VendorId);
-            hwInfo.SetDeviceID(adapterDesc.DeviceId);
-            hwInfo.SetRevisionID(adapterDesc.Revision);
-            std::wstring adapterNameW(adapterDesc.Description);
+            hw_info.SetVendorId(adapter_desc.VendorId);
+            hw_info.SetDeviceId(adapter_desc.DeviceId);
+            hw_info.SetRevisionId(adapter_desc.Revision);
+            std::wstring adapter_name_wide_string(adapter_desc.Description);
 
-            std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wideToUtf8Converter;
+            std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
 
-            std::string adapterName = wideToUtf8Converter.to_bytes(adapterNameW);
+            std::string adapter_name = wide_to_utf8_converter.to_bytes(adapter_name_wide_string);
 
-            hwInfo.SetDeviceName(adapterName.c_str());
-            GDT_HW_GENERATION hwGen = GDT_HW_GENERATION_NONE;
+            hw_info.SetDeviceName(adapter_name.c_str());
+            GDT_HW_GENERATION hw_gen = GDT_HW_GENERATION_NONE;
 
-            if (NVIDIA_VENDOR_ID == adapterDesc.VendorId)
+            if (kNvidiaVendorId == adapter_desc.VendorId)
             {
-                hwGen = GDT_HW_GENERATION_NVIDIA;
+                hw_gen = GDT_HW_GENERATION_NVIDIA;
             }
-            else if (INTEL_VENDOR_ID == adapterDesc.VendorId)
+            else if (kIntelVendorId == adapter_desc.VendorId)
             {
-                hwGen = GDT_HW_GENERATION_INTEL;
+                hw_gen = GDT_HW_GENERATION_INTEL;
             }
-            else if (AMD_VENDOR_ID == adapterDesc.VendorId)
+            else if (kAmdVendorId == adapter_desc.VendorId)
             {
-                GDT_GfxCardInfo cardInfo;
+                GDT_GfxCardInfo card_info;
 
-                if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(adapterDesc.DeviceId, adapterDesc.Revision, cardInfo))
+                if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(adapter_desc.DeviceId, adapter_desc.Revision, card_info))
                 {
-                    hwGen = cardInfo.m_generation;
+                    hw_gen = card_info.m_generation;
 
-                    // GPA DX12 requires GFX8 or above (but also works on Hawaii)
-                    if (GDT_HW_GENERATION_VOLCANICISLAND > hwGen && GDT_HAWAII != cardInfo.m_asicType)
+                    // GPA DX12 requires GFX8 or above (but also works on Hawaii).
+                    if (GDT_HW_GENERATION_VOLCANICISLAND > hw_gen && GDT_HAWAII != card_info.m_asicType)
                     {
-                        GPA_LogError("Hardware not supported.");
+                        GPA_LOG_ERROR("Hardware not supported.");
                     }
                     else
                     {
-                        UINT64 deviceFrequency = 0ull;
-                        if (!DX12Utils::GetTimestampFrequency(pD3D12Device, deviceFrequency))
+                        UINT64 device_frequency = 0ull;
+                        if (!dx12_utils::GetTimestampFrequency(d3d12_device, device_frequency))
                         {
-                            GPA_LogError("GetTimestampFrequency Failed");
+                            GPA_LOG_ERROR("GetTimestampFrequency Failed");
                         }
                         else
                         {
-                            hwInfo.SetTimeStampFrequency(deviceFrequency);
+                            hw_info.SetTimeStampFrequency(device_frequency);
                             success = true;
                         }
                     }
                 }
             }
 
-            hwInfo.SetHWGeneration(hwGen);
+            hw_info.SetHwGeneration(hw_gen);
         }
     }
 
     return success;
 }
 
-bool DX12GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const
+bool Dx12GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const
 {
-    UNREFERENCED_PARAMETER(hwInfo);
+    UNREFERENCED_PARAMETER(hw_info);
 
     bool success = false;
 
-    IUnknown*     pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
-    ID3D12Device* pD3D12Device;
+    IUnknown*     unknown_ptr = static_cast<IUnknown*>(context_info);
+    ID3D12Device* d3d12_device;
 
-    if (DX12Utils::GetD3D12Device(pUnknownPtr, &pD3D12Device) && DX12Utils::IsFeatureLevelSupported(pD3D12Device))
+    if (dx12_utils::GetD3D12Device(unknown_ptr, &d3d12_device) && dx12_utils::IsFeatureLevelSupported(d3d12_device))
     {
         success = true;
     }
@@ -122,92 +125,91 @@ bool DX12GPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo
     return success;
 }
 
-GPA_Status DX12GPAImplementor::Destroy()
+GpaStatus Dx12GpaImplementor::Destroy()
 {
     DeleteContexts();
-    return GPAImplementor::Destroy();
+    return GpaImplementor::Destroy();
 }
 
-bool DX12GPAImplementor::IsCommandListRequired() const
+bool Dx12GpaImplementor::IsCommandListRequired() const
 {
     return true;
 }
 
-bool DX12GPAImplementor::IsContinueSampleOnCommandListSupported() const
+bool Dx12GpaImplementor::IsContinueSampleOnCommandListSupported() const
 {
     return true;
 }
 
-bool DX12GPAImplementor::IsCopySecondarySampleSupported() const
+bool Dx12GpaImplementor::IsCopySecondarySampleSupported() const
 {
     return true;
 }
 
-IGPAContext* DX12GPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
+IGpaContext* Dx12GpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags)
 {
-    IUnknown*     pUnknownPtr = static_cast<IUnknown*>(pContextInfo);
-    ID3D12Device* pD3D12Device;
-    IGPAContext*  pRetGpaContext = nullptr;
+    IUnknown*     unknown_ptr = static_cast<IUnknown*>(context_info);
+    ID3D12Device* d3d12_device;
+    IGpaContext*  ret_gpa_context = nullptr;
 
-    if (DX12Utils::GetD3D12Device(pUnknownPtr, &pD3D12Device) && DX12Utils::IsFeatureLevelSupported(pD3D12Device))
+    if (dx12_utils::GetD3D12Device(unknown_ptr, &d3d12_device) && dx12_utils::IsFeatureLevelSupported(d3d12_device))
     {
-        DX12GPAContext* pDX12GpaContext = new (std::nothrow) DX12GPAContext(pD3D12Device, hwInfo, flags);
+        Dx12GpaContext* dx12_gpa_context = new (std::nothrow) Dx12GpaContext(d3d12_device, hw_info, flags);
 
-        if (nullptr != pDX12GpaContext)
+        if (nullptr != dx12_gpa_context)
         {
-            if (pDX12GpaContext->Initialize())
+            if (dx12_gpa_context->Initialize())
             {
-                pRetGpaContext = pDX12GpaContext;
+                ret_gpa_context = dx12_gpa_context;
             }
             else
             {
-                delete pDX12GpaContext;
-                GPA_LogError("Unable to open a context.");
+                delete dx12_gpa_context;
+                GPA_LOG_ERROR("Unable to open a context.");
             }
         }
     }
     else
     {
-        GPA_LogError("Hardware Not Supported.");
+        GPA_LOG_ERROR("Hardware Not Supported.");
     }
 
-    return pRetGpaContext;
+    return ret_gpa_context;
 }
 
-bool DX12GPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pContext)
+bool Dx12GpaImplementor::CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context)
 {
-    assert(pDeviceIdentifier);
-    assert(pContext);
+    assert(device_identifier);
+    assert(context);
 
-    UNREFERENCED_PARAMETER(pDeviceIdentifier);
-    UNREFERENCED_PARAMETER(pContext);
+    UNREFERENCED_PARAMETER(device_identifier);
+    UNREFERENCED_PARAMETER(context);
 
-    if (nullptr != pContext)
+    if (nullptr != context)
     {
-        DX12GPAContext* pDx12GpaContext = reinterpret_cast<DX12GPAContext*>(pContext);
-        /*
-         * Deleting the context resources at this point is causing
-         * some issue in driver as some of the resources are still in use on factory object
-         * We will defer the release of driver extension resources at time of destroying the GPA
-         */
-        pDx12GpaContext->SetStableClocks(false);
-        m_dx12GpaContextList.push_back(pDx12GpaContext);
+        Dx12GpaContext* dx12_gpa_context = reinterpret_cast<Dx12GpaContext*>(context);
+
+        // Deleting the context resources at this point is causing
+        // some issue in driver as some of the resources are still in use on factory object
+        // We will defer the release of driver extension resources at time of destroying the GPA
+        dx12_gpa_context->SetStableClocks(false);
+        dx12_gpa_context_list_.push_back(dx12_gpa_context);
     }
 
     return true;
 }
 
-GPADeviceIdentifier DX12GPAImplementor::GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const
+GpaDeviceIdentifier Dx12GpaImplementor::GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const
 {
-    return static_cast<IUnknown*>(pContextInfo);
+    return static_cast<IUnknown*>(context_info);
 }
 
-void DX12GPAImplementor::DeleteContexts()
+void Dx12GpaImplementor::DeleteContexts()
 {
-    for (DX12GPAContext* pTempContext : m_dx12GpaContextList)
+    for (Dx12GpaContext* temp_context : dx12_gpa_context_list_)
     {
-        delete pTempContext;
+        delete temp_context;
     }
 
-    m_dx12GpaContextList.clear();
+    dx12_gpa_context_list_.clear();
 }

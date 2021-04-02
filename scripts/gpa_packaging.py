@@ -144,18 +144,27 @@ class GpaPackage:
                                                                 current_target_binary_abs_path,
                                                                 current_target_path_in_archive)
 
-            ## add GPA headers
+            ## Add GPA headers
+            for header_path in self._public_header_files:
+                header_source_abs_path = os.path.normpath(os.path.join(self._gpa_root_dir, "include", "gpu_performance_api", header_path))
+                header_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, "Include", "gpu_performance_api", header_path))
+                GpaUtils.WriteFileToArchive(gpa_archive_handle, header_source_abs_path,
+                                                                header_in_archive)
+
+            ## add old GPA headers (deprecated)
+            for header_path in self._old_includes:
+                header_source_abs_path = os.path.normpath(os.path.join(self._gpa_root_dir, "include", header_path))
+                header_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, "Include", header_path))
+                GpaUtils.WriteFileToArchive(gpa_archive_handle, header_source_abs_path,
+                                                                header_in_archive)
+
+            ## add new headers that are still in the old location (deprecated)
             for header_path in self._public_header_files:
                 header_source_abs_path = os.path.normpath(os.path.join(self._gpa_root_dir, "include", header_path))
                 header_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, "Include", header_path))
                 GpaUtils.WriteFileToArchive(gpa_archive_handle, header_source_abs_path,
                                                                 header_in_archive)
 
-            for header_path in self._old_includes:
-                header_source_abs_path = os.path.normpath(os.path.join(self._gpa_root_dir, "include", header_path))
-                header_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, "Include", header_path))
-                GpaUtils.WriteFileToArchive(gpa_archive_handle, header_source_abs_path,
-                                                                header_in_archive)
 
             for other_file in self._other_files:
                 other_file_abs_path = os.path.normpath(os.path.join(self._gpa_root_dir, other_file))
@@ -224,13 +233,13 @@ class GpaPackage:
                     "GPAInterfaceLoader.h"]
 
     _public_header_files=["gpu_perf_api.h",
-                         "gpu_perf_api_function_types.h",
-                         "gpu_perf_api_functions.h",
-                         "gpu_perf_api_interface_loader.h",
-                         "gpu_perf_api_stub.h",
-                         "gpu_perf_api_types.h",
-                         "gpu_perf_api_vk.h",
-                         "gpu_perf_api_counters.h"]
+                          "gpu_perf_api_function_types.h",
+                          "gpu_perf_api_functions.h",
+                          "gpu_perf_api_interface_loader.h",
+                          "gpu_perf_api_stub.h",
+                          "gpu_perf_api_types.h",
+                          "gpu_perf_api_vk.h",
+                          "gpu_perf_api_counters.h"]
 
     _gpa_binaries=["GPUPerfAPICounters"]
 

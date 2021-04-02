@@ -1,70 +1,72 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief DX11 GPA Implementation declarations
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief DX11 GPA Implementation declarations
 //==============================================================================
 
-#ifndef _DX11_GPA_IMPLEMENTOR_H_
-#define _DX11_GPA_IMPLEMENTOR_H_
+#ifndef GPU_PERF_API_DX11_DX11_GPA_IMPLEMENTOR_H_
+#define GPU_PERF_API_DX11_DX11_GPA_IMPLEMENTOR_H_
 
-#include "dx11_include.h"
-
-// Common
 #include "TSingleton.h"
 
-// GPA Common
-#include "gpa_implementor.h"
+#include "gpu_perf_api_common/gpa_implementor.h"
 
-/// Class for DX11 GPA Implementation
-class DX11GPAImplementor : public GPAImplementor, public TSingleton<DX11GPAImplementor>
+#include "gpu_perf_api_dx11/dx11_include.h"
+
+/// @brief Class for DX11 GPA Implementation.
+class Dx11GpaImplementor : public GpaImplementor, public TSingleton<Dx11GpaImplementor>
 {
-    friend class TSingleton<DX11GPAImplementor>;  ///< friend declaration to allow access to the constructor
+    friend class TSingleton<Dx11GpaImplementor>;  ///< Friend declaration to allow access to the constructor.
 
 public:
-    /// Destructor
-    ~DX11GPAImplementor() = default;
+    /// @brief Destructor.
+    ~Dx11GpaImplementor() = default;
 
-    /// \copydoc IGPAInterfaceTrait::GetAPIType()
-    GPA_API_Type GetAPIType() const override final;
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    GpaApiType GetApiType() const override final;
 
-    /// \copydoc GPAImplementor::GetHwInfoFromAPI
-    bool GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const override final;
+    /// @copydoc GpaImplementor::GetHwInfoFromApi()
+    bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const override final;
 
-    /// \copydoc GPAImplementor::VerifyAPIHwSupport
-    bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const override final;
+    /// @copydoc GpaImplementor::VerifyApiHwSupport()
+    bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const override final;
 
-    /// Returns the AMD extension function pointer
-    /// \return DirectX 11 AMD extension function pointer
+    /// @brief Returns the AMD extension function pointer.
+    //
+    /// @return DirectX 11 AMD extension function pointer.
     PFNAmdDxExtCreate11 GetAmdExtFuncPointer() const;
 
 private:
-    /// Returns the AMD hardware info for the given device and monitor
-    /// \param[in] pD3D11Device DirectX 11 device pointer
-    /// \param[in] hMonitor monitor instance
-    /// \param[in] primaryVendorId vendor id
-    /// \param[in] primaryDeviceId device id
-    /// \param[out] hwInfo hardware info
-    /// \return true upon successful operation otherwise false
-    bool GetAmdHwInfo(ID3D11Device* pD3D11Device, HMONITOR hMonitor, const int& primaryVendorId, const int& primaryDeviceId, GPA_HWInfo& hwInfo) const;
+    /// @brief Returns the AMD hardware info for the given device and monitor.
+    ///
+    /// @param [in] d3d11_device DirectX 11 device pointer.
+    /// @param [in] h_monitor monitor Instance.
+    /// @param [in] primary_vendor_id Vendor id.
+    /// @param [in] primary_device_id Device id.
+    /// @param [out] hw_info Hardware info.
+    ///
+    /// @return True upon successful operation otherwise false.
+    bool GetAmdHwInfo(ID3D11Device* d3d11_device, HMONITOR h_monitor, const int& primary_vendor_id, const int& primary_device_id, GpaHwInfo& hw_info) const;
 
-    /// Constructor
-    DX11GPAImplementor();
+    /// @brief Constructor.
+    Dx11GpaImplementor();
 
-    /// Initializes the AMD extension function pointer
-    /// \return true upon successful initialization otherwise false
+    /// @brief Initializes the AMD extension function pointer.
+    ///
+    /// @return True upon successful initialization otherwise false.
     bool InitializeAmdExtFunction() const;
 
-    /// \copydoc GPAImplementor::OpenAPIContext
-    IGPAContext* OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags) override final;
+    /// @copydoc GpaImplementor::OpenApiContext(GpaContextInfoPtr, GpaHwInfo&, GpaOpenContextFlags)
+    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
 
-    /// \copydoc GPAImplementor::CloseAPIContext
-    bool CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pContext) override final;
+    /// @copydoc GpaImplementor::CloseApiContext(GpaDeviceIdentifier, IGpaContext*)
+    bool CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context) override final;
 
-    /// \copydoc GPAImplementor::GetDeviceIdentifierFromContextInfo()
-    GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const override final;
+    /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
+    GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
 
-    mutable PFNAmdDxExtCreate11 m_amdDxExtCreate11FuncPtr;  ///< AMD DirectX 11 extension Function pointer
+    mutable PFNAmdDxExtCreate11 amd_dx_ext_create11_func_ptr_;  ///< AMD DirectX 11 extension Function pointer.
 };
 
-#endif  // _DX11_GPA_IMPLEMENTOR_H_
+#endif  // GPU_PERF_API_DX11_DX11_GPA_IMPLEMENTOR_H_

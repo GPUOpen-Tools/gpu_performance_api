@@ -1,18 +1,18 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Declares Vk Entrypoints
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Declares Vk Entrypoints
 //==============================================================================
 
-#include "vk_entry_points.h"
-#include "gpa_common_defs.h"
+#include "gpu_perf_api_vk/vk_entry_points.h"
+
+#include "gpu_perf_api_common/gpa_common_defs.h"
 
 #ifdef _LINUX
 #include <dlfcn.h>
 #endif
 
-// Instance entrypoints
 PFN_vkGetPhysicalDeviceProperties            _vkGetPhysicalDeviceProperties            = nullptr;
 PFN_vkGetPhysicalDeviceQueueFamilyProperties _vkGetPhysicalDeviceQueueFamilyProperties = nullptr;
 PFN_vkGetPhysicalDeviceMemoryProperties      _vkGetPhysicalDeviceMemoryProperties      = nullptr;
@@ -21,7 +21,6 @@ PFN_vkGetBufferMemoryRequirements            _vkGetBufferMemoryRequirements     
 PFN_vkGetPhysicalDeviceProperties2KHR        _vkGetPhysicalDeviceProperties2KHR        = nullptr;
 PFN_vkGetPhysicalDeviceFeatures2KHR          _vkGetPhysicalDeviceFeatures2KHR          = nullptr;
 
-// Device entrypoints
 PFN_vkGetDeviceQueue          _vkGetDeviceQueue          = nullptr;
 PFN_vkCreateQueryPool         _vkCreateQueryPool         = nullptr;
 PFN_vkDestroyQueryPool        _vkDestroyQueryPool        = nullptr;
@@ -42,7 +41,6 @@ PFN_vkGetQueryPoolResults     _vkGetQueryPoolResults     = nullptr;
 PFN_vkCmdCopyBuffer           _vkCmdCopyBuffer           = nullptr;
 PFN_vkDeviceWaitIdle          _vkDeviceWaitIdle          = nullptr;
 
-// vk_amd_gpa_interface device extension
 PFN_vkCreateGpaSessionAMD         _vkCreateGpaSessionAMD         = nullptr;
 PFN_vkDestroyGpaSessionAMD        _vkDestroyGpaSessionAMD        = nullptr;
 PFN_vkSetGpaDeviceClockModeAMD    _vkSetGpaDeviceClockModeAMD    = nullptr;
@@ -55,51 +53,51 @@ PFN_vkGetGpaSessionResultsAMD     _vkGetGpaSessionResultsAMD     = nullptr;
 PFN_vkResetGpaSessionAMD          _vkResetGpaSessionAMD          = nullptr;
 PFN_vkCmdCopyGpaSessionResultsAMD _vkCmdCopyGpaSessionResultsAMD = nullptr;
 
-bool VkUtils::s_isEntryPointsInitialized = false;
+bool vk_utils::are_entry_points_initialized = false;
 
-bool VkUtils::Initialize_Vk_Entrypoints(VkInstance instance, VkDevice device)
+bool vk_utils::InitializeVkEntryPoints(VkInstance instance, VkDevice device)
 {
-    if (!s_isEntryPointsInitialized)
+    if (!are_entry_points_initialized)
     {
 #ifdef _WIN32
-        HMODULE vulkanModule = ::GetModuleHandleW(L"Vulkan-1.dll");
+        HMODULE vulkan_module = ::GetModuleHandleW(L"Vulkan-1.dll");
 #else
-        void* vulkanModule = dlopen("libvulkan.so", RTLD_NOLOAD);
+        void* vulkan_module = dlopen("libvulkan.so", RTLD_NOLOAD);
 
-        if (nullptr == vulkanModule)
+        if (nullptr == vulkan_module)
         {
-            vulkanModule = dlopen("libvulkan.so", RTLD_NOW);
+            vulkan_module = dlopen("libvulkan.so", RTLD_NOW);
         }
 
-        if (nullptr == vulkanModule)
+        if (nullptr == vulkan_module)
         {
-            vulkanModule = dlopen("libvulkan.so.1", RTLD_NOLOAD);
+            vulkan_module = dlopen("libvulkan.so.1", RTLD_NOLOAD);
         }
 
-        if (nullptr == vulkanModule)
+        if (nullptr == vulkan_module)
         {
-            vulkanModule = dlopen("libvulkan.so.1", RTLD_NOW);
+            vulkan_module = dlopen("libvulkan.so.1", RTLD_NOW);
         }
 
 #endif
 
-        if (nullptr == vulkanModule)
+        if (nullptr == vulkan_module)
         {
-            GPA_LogError("Failed to get handle to Vulkan Loader.");
+            GPA_LOG_ERROR("Failed to get handle to Vulkan Loader.");
             return false;
         }
 
 #ifdef _WIN32
-        PFN_vkGetInstanceProcAddr _vkGetInstanceProcAddr = reinterpret_cast<PFN_vkGetInstanceProcAddr>(GetProcAddress(vulkanModule, "vkGetInstanceProcAddr"));
+        PFN_vkGetInstanceProcAddr _vkGetInstanceProcAddr = reinterpret_cast<PFN_vkGetInstanceProcAddr>(GetProcAddress(vulkan_module, "vkGetInstanceProcAddr"));
 #else
-        PFN_vkGetInstanceProcAddr _vkGetInstanceProcAddr = reinterpret_cast<PFN_vkGetInstanceProcAddr>(dlsym(vulkanModule, "vkGetInstanceProcAddr"));
+        PFN_vkGetInstanceProcAddr _vkGetInstanceProcAddr = reinterpret_cast<PFN_vkGetInstanceProcAddr>(dlsym(vulkan_module, "vkGetInstanceProcAddr"));
 #endif
 
-        bool bResult = (nullptr != _vkGetInstanceProcAddr);
+        bool result = (nullptr != _vkGetInstanceProcAddr);
 
-        if (bResult)
+        if (result)
         {
-            // Get instance entrypoints that should always be available from Vulkan
+            // Get instance entrypoints that should always be available from Vulkan.
             VK_GET_INSTANCE_PROC_ADDR(vkGetPhysicalDeviceProperties);
             VK_GET_INSTANCE_PROC_ADDR(vkGetPhysicalDeviceQueueFamilyProperties);
             VK_GET_INSTANCE_PROC_ADDR(vkGetPhysicalDeviceMemoryProperties);
@@ -107,30 +105,30 @@ bool VkUtils::Initialize_Vk_Entrypoints(VkInstance instance, VkDevice device)
             VK_GET_INSTANCE_PROC_ADDR(vkGetBufferMemoryRequirements);
         }
 
-        if (bResult)
+        if (result)
         {
             // Get entrypoints that will only be available if the 'VK_KHR_get_physical_device_properties2' extension is enabled.
             VK_GET_INSTANCE_PROC_ADDR(vkGetPhysicalDeviceProperties2KHR);
             VK_GET_INSTANCE_PROC_ADDR(vkGetPhysicalDeviceFeatures2KHR);
 
-            if (!bResult)
+            if (!result)
             {
-                GPA_LogError("Required VK Extension 'VK_KHR_get_physical_device_properties2' is not enabled.");
+                GPA_LOG_ERROR("Required VK Extension 'VK_KHR_get_physical_device_properties2' is not enabled.");
                 return false;
             }
         }
 
 #ifdef _WIN32
-        PFN_vkGetDeviceProcAddr _vkGetDeviceProcAddr = reinterpret_cast<PFN_vkGetDeviceProcAddr>(GetProcAddress(vulkanModule, "vkGetDeviceProcAddr"));
+        PFN_vkGetDeviceProcAddr _vkGetDeviceProcAddr = reinterpret_cast<PFN_vkGetDeviceProcAddr>(GetProcAddress(vulkan_module, "vkGetDeviceProcAddr"));
 #else
-        PFN_vkGetDeviceProcAddr   _vkGetDeviceProcAddr   = reinterpret_cast<PFN_vkGetDeviceProcAddr>(dlsym(vulkanModule, "vkGetDeviceProcAddr"));
+        PFN_vkGetDeviceProcAddr   _vkGetDeviceProcAddr   = reinterpret_cast<PFN_vkGetDeviceProcAddr>(dlsym(vulkan_module, "vkGetDeviceProcAddr"));
 #endif
 
-        bResult &= (nullptr != _vkGetDeviceProcAddr);
+        result &= (nullptr != _vkGetDeviceProcAddr);
 
-        if (bResult)
+        if (result)
         {
-            // Get device entrypoints that should always be available from Vulkan
+            // Get device entrypoints that should always be available from Vulkan.
             VK_GET_DEVICE_PROC_ADDR(vkGetDeviceQueue);
             VK_GET_DEVICE_PROC_ADDR(vkCreateQueryPool);
             VK_GET_DEVICE_PROC_ADDR(vkDestroyQueryPool);
@@ -152,7 +150,7 @@ bool VkUtils::Initialize_Vk_Entrypoints(VkInstance instance, VkDevice device)
             VK_GET_DEVICE_PROC_ADDR(vkDeviceWaitIdle);
         }
 
-        if (bResult)
+        if (result)
         {
             // Get entrypoints that will only be available if the 'VK_AMD_gpa_interface' extension is enabled.
             VK_GET_DEVICE_PROC_ADDR(vkCreateGpaSessionAMD);
@@ -167,15 +165,15 @@ bool VkUtils::Initialize_Vk_Entrypoints(VkInstance instance, VkDevice device)
             VK_GET_DEVICE_PROC_ADDR(vkResetGpaSessionAMD);
             VK_GET_DEVICE_PROC_ADDR(vkCmdCopyGpaSessionResultsAMD);
 
-            if (!bResult)
+            if (!result)
             {
-                GPA_LogError("Required VK Extension 'VK_AMD_gpa_interface' is not enabled.");
+                GPA_LOG_ERROR("Required VK Extension 'VK_AMD_gpa_interface' is not enabled.");
                 return false;
             }
 
-            s_isEntryPointsInitialized = true;
+            are_entry_points_initialized = true;
         }
     }
 
-    return s_isEntryPointsInitialized;
+    return are_entry_points_initialized;
 }

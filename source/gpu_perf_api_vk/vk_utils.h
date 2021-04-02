@@ -1,50 +1,62 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Vulkan utility functions declaration
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Vulkan utility functions declaration
 //==============================================================================
 
-#ifndef _VK_UTILS_H_
-#define _VK_UTILS_H_
+#ifndef GPU_PERF_API_VK_VK_UTILS_H_
+#define GPU_PERF_API_VK_VK_UTILS_H_
 
-#include "vk_includes.h"
-#include "gpu_perf_api_types.h"
+#include "gpu_performance_api/gpu_perf_api_types.h"
 
-namespace VkUtils
+#include "gpu_perf_api_vk/vk_includes.h"
+
+namespace vk_utils
 {
-    /// Obtains the GpaFeaturesAMD data from the physical device
-    /// \param[in] vkPhysicalDevice Vulkan physical device
-    /// \param[out] pGpaFeaturesAMD The physical device's profiling features
-    /// \return true if the features were queried; false otherwise
-    bool GetPhysicalDeviceGpaFeaturesAMD(VkPhysicalDevice vkPhysicalDevice, VkPhysicalDeviceGpaFeaturesAMD* pGpaFeaturesAMD);
+    /// @brief Obtains the GpaFeaturesAMD data from the physical device.
+    ///
+    /// @param [in] vk_physical_device Vulkan physical device.
+    /// @param [out] gpa_features_amd The physical device's profiling features.
+    ///
+    /// @return True if the features were queried; false otherwise.
+    bool GetPhysicalDeviceGpaFeaturesAMD(VkPhysicalDevice vk_physical_device, VkPhysicalDeviceGpaFeaturesAMD* gpa_features_amd);
 
-    /// Obtains the GpaPropertiesAMD data from the physical device
-    /// \param[in] vkPhysicalDevice Vulkan physical device
-    /// \param[out] pGpaPropertiesAMD The physical device's profiling properties
-    /// \return true if the properties were queried; false otherwise
-    bool GetPhysicalDeviceGpaPropertiesAMD(VkPhysicalDevice vkPhysicalDevice, VkPhysicalDeviceGpaPropertiesAMD* pGpaPropertiesAMD);
+    /// @brief Obtains the GpaPropertiesAMD data from the physical device.
+    ///
+    /// @param [in] vk_physical_device Vulkan physical device.
+    /// @param [out] gpa_properties_amd The physical device's profiling properties.
+    ///
+    /// @return True if the properties were queried; false otherwise.
+    bool GetPhysicalDeviceGpaPropertiesAMD(VkPhysicalDevice vk_physical_device, VkPhysicalDeviceGpaPropertiesAMD* gpa_properties_amd);
 
-    /// Release memory that was allocated by GetPhysicalDeviceGpaPropertiesAMD()
-    /// \param pGpaPropertiesAMD Pointer to the struct that contains the acquired properties.
-    void ReleasePhysicalDeviceGpaPropertiesAMD(VkPhysicalDeviceGpaPropertiesAMD* pGpaPropertiesAMD);
+    /// @brief Release memory that was allocated by GetPhysicalDeviceGpaPropertiesAMD().
+    ///
+    /// @param [in] gpa_properties_amd Pointer to the struct that contains the acquired properties.
+    void ReleasePhysicalDeviceGpaPropertiesAMD(VkPhysicalDeviceGpaPropertiesAMD* gpa_properties_amd);
 
 #ifdef _DEBUG
-    // For debugging only: Prints out information about the QueueFamilyTimestamps bits
-    void DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vkPhysicalDevice);
+    /// @brief For debugging only: Prints out information about the QueueFamilyTimestamps bits.
+    ///
+    /// @param [in] vk_physical_device The physical device to which the queue family belongs.
+    void DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vk_physical_device);
 #endif  //_DEBUG
 
-    /// Checks whether the device is supported for profiling or not
-    /// \param[in] vkPhysicalDevice Vulkan physical device
-    /// \return true if device is supported otherwise false;
-    bool IsDeviceSupportedForProfiling(VkPhysicalDevice vkPhysicalDevice);
+    /// @brief Checks whether the device is supported for profiling or not.
+    ///
+    /// @param [in] vk_physical_device Vulkan physical device.
+    ///
+    /// @return True if device is supported otherwise false.
+    bool IsDeviceSupportedForProfiling(VkPhysicalDevice vk_physical_device);
 
-    /// Gets the time stamp frequencey of Vulkan device to convert cycles to milliseconds.
-    /// \param[in] vkPhysicalDevice device pointer
-    /// \param[out] timestampFrequency The timestamp frequencey
-    /// \return true if timestamp frequencey access succeeded, otherwise false
-    bool GetTimestampFrequency(VkPhysicalDevice vkPhysicalDevice, gpa_uint64& timestampFrequency);
+    /// @brief Gets the time stamp frequency of Vulkan device to convert cycles to milliseconds.
+    ///
+    /// @param [in] vk_physical_device Device pointer.
+    /// @param [out] timestamp_frequency The timestamp frequency.
+    ///
+    /// @return True if timestamp frequency access succeeded, otherwise false.
+    bool GetTimestampFrequency(VkPhysicalDevice vk_physical_device, GpaUInt64& timestamp_frequency);
 
-}  // namespace VkUtils
+}  // namespace vk_utils
 
-#endif  // _VK_UTILS_H_
+#endif  // GPU_PERF_API_VK_VK_UTILS_H_

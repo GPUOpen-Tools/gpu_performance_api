@@ -1,4 +1,4 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 .. GPU Performance API Usage
 
 .. highlight:: c++
@@ -37,8 +37,8 @@ for each API
 
 To use the GPUPerfAPI library:
 
-* Include the header file GPUPerfAPI.h. For Vulkan, include GPUPerfAPI-VK.h.
-* Declare a variable of type GPA_GetFuncTablePtrType
+* Include the header file gpu_performance_api/gpu_perf_api.h. For Vulkan, include gpu_performance_api/gpu_perf_api_vk.h.
+* Declare a variable of type GpaGetFuncTablePtrType
 * Load the GPUPerfAPI library
 
   * On Windows, use ``LoadLibrary`` on the GPUPerfAPI DLL for your chosen API (see
@@ -46,14 +46,14 @@ To use the GPUPerfAPI library:
   * On Linux, use ``dlopen`` on the GPUPerfAPI shared library for your chosen API
     (see above table)
 
-* Get the address of the ``GPA_GetFuncTable`` function
+* Get the address of the ``GpaGetFuncTable`` function
 
   * On Windows, use ``GetProcAddres``
   * On Linux, use ``dlsym``
 
-* Call GPA_GetFuncTable to get a table of function pointers for each API.
+* Call GpaGetFuncTable to get a table of function pointers for each API.
 
-All of the above can be simplified using the GPAInterfaceLoader.h C++ header
+All of the above can be simplified using the gpu_perf_api_interface_loader.h C++ header
 file. This header file simplifies the loading and initialization of the GPA
 entrypoints. The following code shows how to use this header file to load and
 initialize the DirectX 12 version of GPA:
@@ -62,27 +62,27 @@ initialize the DirectX 12 version of GPA:
 
 .. code-block:: c++
 
-    #include "GPAInterfaceLoader.h"
+    #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
-    GPAApiManager* GPAApiManager::m_pGpaApiManager = nullptr;
+    GpaApiManager* GpaApiManager::gpa_api_manager_ = nullptr;
 
-    GPAFunctionTable* pGpaFunctionTable = nullptr;
+    GpaFunctionTable* gpa_function_table = nullptr;
 
-    bool InitializeGPA()
+    bool InitializeGpa()
     {
-        bool retVal = false;
+        bool ret_val = false;
 
-        if (GPA_STATUS_OK == GPAApiManager::Instance()->LoadApi(GPA_API_DIRECTX_12))
+        if (kGpaStatusOk == GpaApiManager::Instance()->LoadApi(kGpaApiDirectx12))
         {
-            pGpaFunctionTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_DIRECTX_12);
+            gpa_function_table = GpaApiManager::Instance()->GetFunctionTable(kGpaApiDirectx12);
 
-            if (nullptr != pGpaFunctionTable)
+            if (nullptr != gpa_function_table)
             {
-                retVal = GPA_STATUS_OK == pGpaFunctionTable->GPA_Initialize(GPA_INITIALIZE_DEFAULT_BIT);
+                ret_val = kGpaStatusOk == gpa_function_table->GpaInitialize(kGpaInitializeDefaultBit);
             }
         }
 
-        return retVal;
+        return ret_val;
     }
 
 Registering a Logging Callback
@@ -100,9 +100,9 @@ following signature:
 
 .. code-block:: c++
 
-    void MyLoggingFunction(GPA_Logging_Type messageType, const char* message)
+    void MyLoggingFunction(GpaLoggingType message_type, const char* message)
 
-The function is registered using the GPA_RegisterLoggingCallback entrypoint.
+The function is registered using the GpaRegisterLoggingCallback entrypoint.
 
 The function registered will receive callbacks for message types registered.
 The message type is passed into the logging function so that different message
@@ -130,17 +130,17 @@ The following methods can be used to initialize and destroy GPUPerfAPI:
     :header: "GPA Initialization/Destruction Method", "Brief Description"
     :widths: 45, 55
 
-    "GPA_Initialize", "Initializes the driver so that counters are exposed."
-    "GPA_Destroy", "Undoes any initialization to ensure proper behavior in applications that are not being profiled."
+    "GpaInitialize", "Initializes the driver so that counters are exposed."
+    "GpaDestroy", "Undoes any initialization to ensure proper behavior in applications that are not being profiled."
 
 An example of the code used to initialize a GPUPerfAPI instance can be seen
-above in :ref:`the GPAInterfaceLoader sample code <gpa_load_and_init_sample>`
+above in :ref:`the GpaInterfaceLoader sample code <gpa_load_and_init_sample>`
 
 Opening and Closing a Context
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 After initializing a GPUPerfAPI instance and after the necessary API-specific
-construct has been created, a context can be opened using the GPA_OpenContext
+construct has been created, a context can be opened using the GpaOpenContext
 function. Once a context is open, you can query the available performance
 counters and create and begin a session. After you are done using GPUPerfAPI,
 you should close the context.
@@ -151,19 +151,19 @@ The following methods can be used to open and close contexts:
     :header: "Context Handling Method", "Brief Description"
     :widths: 45, 55
 
-    "GPA_OpenContext", "Opens the counters in the specified context for reading."
-    "GPA_CloseContext", "Closes the counters in the specified context."
+    "GpaOpenContext", "Opens the counters in the specified context for reading."
+    "GpaCloseContext", "Closes the counters in the specified context."
 
-When calling GPA_OpenContext, the type of the supplied ``pContext`` is
+When calling GpaOpenContext, the type of the supplied ``context`` is
 different depending on which API is being used. See the table below for the
-required type which should be passed to GPA_OpenContext:
+required type which should be passed to GpaOpenContext:
 
 .. csv-table::
-    :header: "API", "GPA_OpenContext ``pContext`` Parameter Type"
+    :header: "API", "GpaOpenContext ``context`` Parameter Type"
     :widths: 45, 55
 
-    "Vulkan", "| ``GPA_vkContextOpenInfo*``
-    | (defined in GPUPerfAPI-Vk.h)"
+    "Vulkan", "| ``GpaVkContextOpenInfo*``
+    | (defined in gpu_perf_api_vk.h)"
     "DirectX 12", "| ``ID3D12Device*``"
     "DirectX 11", "| ``ID3D11Device*``"
     "OpenGL", "| Windows: ``HGLRC``
@@ -173,7 +173,7 @@ required type which should be passed to GPA_OpenContext:
 Querying a Context and Counters
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-After creating a context, you can use the returned GPA_ContextId to query
+After creating a context, you can use the returned GpaContextId to query
 information about the context and the performance counters exposed by the
 context.
 
@@ -183,9 +183,9 @@ The following methods can be used to query information about the context:
     :header: "Context Query Method", "Brief Description"
     :widths: 45, 55
 
-    "GPA_GetSupportedSampleTypes", "Gets a mask of the sample types supported by the specified context."
-    "GPA_GetDeviceAndRevisionId", "Gets the GPU device and revision id associated with the specified context."
-    "GPA_GetDeviceName", "Gets the device name of the GPU associated with the specified context."
+    "GpaGetSupportedSampleTypes", "Gets a mask of the sample types supported by the specified context."
+    "GpaGetDeviceAndRevisionId", "Gets the GPU device and revision id associated with the specified context."
+    "GpaGetDeviceName", "Gets the device name of the GPU associated with the specified context."
 
 The following methods can be used to query information about performance counters:
 
@@ -193,17 +193,17 @@ The following methods can be used to query information about performance counter
     :header: "Counter Query Method", "Brief Description"
     :widths: 45, 55
 
-    "GPA_GetNumCounters", "Gets the number of counters available."
-    "GPA_GetCounterName", "Gets the name of the specified counter."
-    "GPA_GetCounterIndex", "Gets index of a counter given its name (case insensitive)."
-    "GPA_GetCounterGroup", "Gets the group of the specified counter."
-    "GPA_GetCounterDescription", "Gets the description of the specified counter."
-    "GPA_GetCounterDataType", "Gets the data type of the specified counter."
-    "GPA_GetCounterUsageType", "Gets the usage type of the specified counter."
-    "GPA_GetCounterUuid", "Gets the UUID of the specified counter."
-    "GPA_GetCounterSampleType", "Gets the supported sample type of the specified counter."
-    "GPA_GetDataTypeAsStr", "Gets a string with the name of the specified counter data type."
-    "GPA_GetUsageTypeAsStr", "Gets a string with the name of the specified counter usage type."
+    "GpaGetNumCounters", "Gets the number of counters available."
+    "GpaGetCounterName", "Gets the name of the specified counter."
+    "GpaGetCounterIndex", "Gets index of a counter given its name (case insensitive)."
+    "GpaGetCounterGroup", "Gets the group of the specified counter."
+    "GpaGetCounterDescription", "Gets the description of the specified counter."
+    "GpaGetCounterDataType", "Gets the data type of the specified counter."
+    "GpaGetCounterUsageType", "Gets the usage type of the specified counter."
+    "GpaGetCounterUuid", "Gets the UUID of the specified counter."
+    "GpaGetCounterSampleType", "Gets the supported sample type of the specified counter."
+    "GpaGetDataTypeAsStr", "Gets a string with the name of the specified counter data type."
+    "GpaGetUsageTypeAsStr", "Gets a string with the name of the specified counter usage type."
 
 Creating and Using a Session
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -217,17 +217,17 @@ The following methods can be used to manage sessions:
     :header: "Session Handling Method", "Brief Description"
     :widths: 45, 55
 
-    "GPA_CreateSession", "Creates a session."
-    "GPA_DeleteSession", "Deletes a session object."
-    "GPA_BeginSession", "Begins sampling with the currently enabled set of counters."
-    "GPA_EndSession", "Ends sampling with the currently enabled set of counters."
+    "GpaCreateSession", "Creates a session."
+    "GpaDeleteSession", "Deletes a session object."
+    "GpaBeginSession", "Begins sampling with the currently enabled set of counters."
+    "GpaEndSession", "Ends sampling with the currently enabled set of counters."
 
 Enabling Counters on a Session
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 After creating a session but before sampling on that session, counters should
-be enabled. This must be done after GPA_CreateSession is called, but before
-GPA_BeginSession is called.
+be enabled. This must be done after GpaCreateSession is called, but before
+GpaBeginSession is called.
 
 The following methods can be used to enable/disable counters on a session:
 
@@ -235,12 +235,12 @@ The following methods can be used to enable/disable counters on a session:
     :header: "Counter Enable/Disable Method", "Brief Description"
     :widths: 45, 55
 
-    "GPA_EnableCounter", "Enables a specified counter."
-    "GPA_DisableCounter", "Disables a specified counter."
-    "GPA_EnableCounterByName", "Enables a specified counter using the counter name (case insensitive)."
-    "GPA_DisableCounterByName", "Disables a specified counter using the counter name (case insensitive)."
-    "GPA_EnableAllCounters", "Enables all counters."
-    "GPA_DisableAllCounters", "Disables all counters."
+    "GpaEnableCounter", "Enables a specified counter."
+    "GpaDisableCounter", "Disables a specified counter."
+    "GpaEnableCounterByName", "Enables a specified counter using the counter name (case insensitive)."
+    "GpaDisableCounterByName", "Disables a specified counter using the counter name (case insensitive)."
+    "GpaEnableAllCounters", "Enables all counters."
+    "GpaDisableAllCounters", "Disables all counters."
 
 Querying Enabled Counters and Counter Scheduling
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -256,10 +256,10 @@ scheduling on a session:
     :header: "Counter Scheduling Query Method", "Brief Description"
     :widths: 45, 55
 
-    "GPA_GetPassCount", "Gets the number of passes required for the currently enabled set of counters."
-    "GPA_GetNumEnabledCounters", "Gets the number of enabled counters."
-    "GPA_GetEnabledIndex", "Gets the counter index for an enabled counter."
-    "GPA_IsCounterEnabled", "Checks whether or not a counter is enabled."
+    "GpaGetPassCount", "Gets the number of passes required for the currently enabled set of counters."
+    "GpaGetNumEnabledCounters", "Gets the number of enabled counters."
+    "GpaGetEnabledIndex", "Gets the counter index for an enabled counter."
+    "GpaIsCounterEnabled", "Checks whether or not a counter is enabled."
 
 Creating and Managing Samples
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -278,13 +278,13 @@ The following methods can be used to create and manage samples on a session:
     :header: "Sample Handling Method", "Brief Description"
     :widths: 45, 55
 
-    "GPA_BeginCommandList", "Begins command list for sampling."
-    "GPA_EndCommandList", "Ends command list for sampling."
-    "GPA_BeginSample", "Begins a sample in a command list."
-    "GPA_EndSample", "Ends a sample in a command list."
-    "GPA_ContinueSampleOnCommandList", "Continues a primary command list sample on another primary command list."
-    "GPA_CopySecondarySamples", "Copies a set of samples from a secondary command list back to the primary command list that executed the secondary command list."
-    "GPA_GetSampleCount", "Returns the number of samples created for the specified session."
+    "GpaBeginCommandList", "Begins command list for sampling."
+    "GpaEndCommandList", "Ends command list for sampling."
+    "GpaBeginSample", "Begins a sample in a command list."
+    "GpaEndSample", "Ends a sample in a command list."
+    "GpaContinueSampleOnCommandList", "Continues a primary command list sample on another primary command list."
+    "GpaCopySecondarySamples", "Copies a set of samples from a secondary command list back to the primary command list that executed the secondary command list."
+    "GpaGetSampleCount", "Returns the number of samples created for the specified session."
 
 Querying Results
 @@@@@@@@@@@@@@@@
@@ -301,15 +301,15 @@ the results for samples:
     :header: "Results Querying Method", "Brief Description"
     :widths: 45, 55
 
-    "GPA_IsPassComplete", "Checks whether or not a pass has finished."
-    "GPA_IsSessionComplete", "Checks if results for all samples within a session are available."
-    "GPA_GetSampleResultSize", "Gets the result size for a given sample."
-    "GPA_GetSampleResult", "Gets the result data for a given sample."
+    "GpaIsPassComplete", "Checks whether or not a pass has finished."
+    "GpaIsSessionComplete", "Checks if results for all samples within a session are available."
+    "GpaGetSampleResultSize", "Gets the result size for a given sample."
+    "GpaGetSampleResult", "Gets the result data for a given sample."
 
 Displaying Status/Error
 @@@@@@@@@@@@@@@@@@@@@@@
 
-All GPUPerfAPI functions return a GPA_Status code to indicate success or
+All GPUPerfAPI functions return a GpaStatus code to indicate success or
 failure. A simple string representation of the status or error codes can be
 retrieved using the following method:
 
@@ -317,7 +317,7 @@ retrieved using the following method:
     :header: "Status/Error Helper Method", "Brief Description"
     :widths: 45, 55
 
-    "GPA_GetStatusAsStr", "Gets a string representation of a GPA_Status value."
+    "GpaGetStatusAsStr", "Gets a string representation of a GpaStatus value."
 
 Multi-pass Counter Collection
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -327,7 +327,7 @@ require more than one pass. After enabling counters, you can query the number
 of passes required. If the number of passes is greater than one, you will need
 to execute an identical GPU workload once for each pass. For DirectX 12 and
 Vulkan, this typically means recording the same command list or command buffer
-more than once, calling GPA_BeginCommandList on each command list for each
+more than once, calling GpaBeginCommandList on each command list for each
 pass, and beginning and ending samples for the same workloads within the
 command lists. For other graphics and compute APIs, this means making the same
 draw calls or dispatching the same kernels in the same sequence multiple times.
@@ -344,7 +344,7 @@ In order to enable counter collection in the Vulkan driver, several Vulkan
 extensions are required. The application being profiled with GPUPerfAPI will
 need to request those extensions as part of the Vulkan instance and device
 initialization. GPUPerfAPI simplifies this by defining three macros in the
-GPUPerfAPI-Vk.h header file: ``AMD_GPA_REQUIRED_INSTANCE_EXTENSION_NAME_LIST``
+gpu_performance_api/gpu_perf_api_vk.h header file: ``AMD_GPA_REQUIRED_INSTANCE_EXTENSION_NAME_LIST``
 for the required instance extensions,
 ``AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST`` for the required device
 extensions and ``AMD_GPA_OPTIONAL_DEVICE_EXTENSION_NAME_LIST`` for optional,
@@ -354,7 +354,7 @@ but recommended, device extensions. The extensions defined in
 function. Similarly, the extensions defined in
 ``AMD_GPA_REQUIRED_DEVICE_EXTENSION_NAME_LIST`` and
 ``AMD_GPA_OPTIONAL_DEVICE_EXTENSION_NAME_LIST`` should be included in the
-``VkDeviceCreateInfo`` structure that is passed to ``vkCreateDevice`` function.
+``VkDeviceCreateInfo`` structure that is passed to ``VkCreateDevice`` function.
 
 .. _specific_usage_bundles:
 
@@ -364,13 +364,13 @@ Specific Usage Note for Bundles (DirectX 12) and Secondary Command Buffers (Vulk
 While samples within a Bundle or Secondary Command Buffer (both referred to
 here as "secondary command lists") are supported by GPUPerfAPI, they require
 special handling. Both the primary and secondary command list must be started
-using GPA_BeginCommandList. Samples can be created on both types of command
+using GpaBeginCommandList. Samples can be created on both types of command
 lists; however, the samples on the secondary command list must be copied back
-to the primary command list. This is done using the GPA_CopySecondarySamples
+to the primary command list. This is done using the GpaCopySecondarySamples
 function. Once samples are copied back to the primary command list, results
 will be available after the primary command list has been executed. Bundles or
 secondary command buffers must be re-recorded for each counter pass. This also
-means that extra GPA_CommandListId instances must be created (one per pass for
+means that extra GpaCommandListId instances must be created (one per pass for
 each bundle or secondary command buffer) in order to support copying the
 results from the bundles or secondary command buffers after execution.
 
@@ -384,11 +384,11 @@ list and ending it on another. For this to work properly, the command lists
 must be executed in the correct order by the application -- the command list
 which ends the sample must be executed after the command list which begins the
 sample. Both the command list where the sample starts and the command list
-where the sample ends must be started using GPA_BeginCommandList. After the
-sample has been started on the first command list using GPA_BeginSample, it can
+where the sample ends must be started using GpaBeginCommandList. After the
+sample has been started on the first command list using GpaBeginSample, it can
 be continued on another command list by calling
-GPA_ContinueSampleOnCommandList. After it has been continued, the sample can be
-ended using GPA_EndSample and specifying the second command list.
+GpaContinueSampleOnCommandList. After it has been continued, the sample can be
+ended using GpaEndSample and specifying the second command list.
 
 Deploying GPUPerfAPI
 @@@@@@@@@@@@@@@@@@@@

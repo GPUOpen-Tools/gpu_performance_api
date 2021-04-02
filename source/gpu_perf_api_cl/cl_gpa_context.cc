@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GPA CL Context Implementation
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GPA CL Context Implementation
 //==============================================================================
 
 #include "cl_gpa_context.h"
@@ -12,111 +12,111 @@
 #include "cl_perf_counter_amd_extension.h"
 #include "cl_rt_module_loader.h"
 
-CLGPAContext::CLGPAContext(cl_command_queue& clCommandQueue, GPA_HWInfo& hwInfo, GPA_OpenContextFlags contextFlags)
-    : GPAContext(hwInfo, contextFlags)
-    , m_clCommandQueue(clCommandQueue)
-    , m_clDeviceId(nullptr)
-    , m_clockMode(CL_DEVICE_CLOCK_MODE_DEFAULT_AMD)
-    , m_clDriverVersion(0)
+ClGpaContext::ClGpaContext(cl_command_queue& cl_command_queue, GpaHwInfo& hw_info, GpaOpenContextFlags context_flags)
+    : GpaContext(hw_info, context_flags)
+    , cl_command_queue_(cl_command_queue)
+    , cl_device_id_(nullptr)
+    , clock_mode_(CL_DEVICE_CLOCK_MODE_DEFAULT_AMD)
+    , cl_driver_version_(0)
 {
 }
 
-CLGPAContext::~CLGPAContext()
+ClGpaContext::~ClGpaContext()
 {
-    GPA_Status setStableClocksStatus = SetStableClocks(false);
+    GpaStatus set_stable_clocks_status = SetStableClocks(false);
 
-    if (GPA_STATUS_OK != setStableClocksStatus)
+    if (kGpaStatusOk != set_stable_clocks_status)
     {
-        GPA_LogError("Driver was unable to set stable clocks back to default.");
+        GPA_LOG_ERROR("Driver was unable to set stable clocks back to default.");
 #ifdef __linux__
-        GPA_LogMessage("In Linux, make sure to run your application with root privileges.");
+        GPA_LOG_MESSAGE("In Linux, make sure to run your application with root privileges.");
 #endif  //__linux__
     }
 }
 
-GPA_SessionId CLGPAContext::CreateSession(GPA_Session_Sample_Type sampleType)
+GpaSessionId ClGpaContext::CreateSession(GpaSessionSampleType sample_type)
 {
-    GPA_SessionId pRetSessionId = nullptr;
+    GpaSessionId ret_session_id = nullptr;
 
-    CLGPASession* pNewGpaCLGpaSession = new (std::nothrow) CLGPASession(this, sampleType);
+    ClGpaSession* new_gpa_cl_gpa_session = new (std::nothrow) ClGpaSession(this, sample_type);
 
-    if (nullptr == pNewGpaCLGpaSession)
+    if (nullptr == new_gpa_cl_gpa_session)
     {
-        GPA_LogError("Unable to allocate memory for the session.");
+        GPA_LOG_ERROR("Unable to allocate memory for the session.");
     }
     else
     {
-        AddGpaSession(pNewGpaCLGpaSession);
+        AddGpaSession(new_gpa_cl_gpa_session);
 
-        if (nullptr != pNewGpaCLGpaSession)
+        if (nullptr != new_gpa_cl_gpa_session)
         {
-            pRetSessionId = reinterpret_cast<GPA_SessionId>(GPAUniqueObjectManager::Instance()->CreateObject(pNewGpaCLGpaSession));
+            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance()->CreateObject(new_gpa_cl_gpa_session));
         }
     }
 
-    return pRetSessionId;
+    return ret_session_id;
 }
 
-bool CLGPAContext::DeleteSession(GPA_SessionId sessionId)
+bool ClGpaContext::DeleteSession(GpaSessionId session_id)
 {
-    bool isDeleted = false;
+    bool is_deleted = false;
 
-    CLGPASession* pCLSession = reinterpret_cast<CLGPASession*>(sessionId->Object());
+    ClGpaSession* cl_gpa_session = reinterpret_cast<ClGpaSession*>(session_id->Object());
 
-    if (nullptr != pCLSession)
+    if (nullptr != cl_gpa_session)
     {
-        RemoveGpaSession(pCLSession);
-        GPAUniqueObjectManager::Instance()->DeleteObject(pCLSession);
-        delete pCLSession;
-        isDeleted = true;
+        RemoveGpaSession(cl_gpa_session);
+        GpaUniqueObjectManager::Instance()->DeleteObject(cl_gpa_session);
+        delete cl_gpa_session;
+        is_deleted = true;
     }
 
-    return isDeleted;
+    return is_deleted;
 }
 
-gpa_uint32 CLGPAContext::GetMaxGPASessions() const
+GpaUInt32 ClGpaContext::GetMaxGpaSessions() const
 {
     // maximum latency is 4 for dx10-capable cards
     return 4;
 }
 
-GPA_API_Type CLGPAContext::GetAPIType() const
+GpaApiType ClGpaContext::GetApiType() const
 {
-    return GPA_API_OPENCL;
+    return kGpaApiOpencl;
 }
 
-bool CLGPAContext::Initialize(cl_device_id& clDeviceId)
+bool ClGpaContext::Initialize(cl_device_id& cl_device_id_param)
 {
-    m_clDeviceId = clDeviceId;
+    cl_device_id_ = cl_device_id_param;
 
-    OpenCLModule* pOclModule = OCLRTModuleLoader::Instance()->GetAPIRTModule();
+    OpenCLModule* ocl_module = ClRuntimeModuleLoader::Instance()->GetApiRuntimeModule();
 
-    if (nullptr == pOclModule)
+    if (nullptr == ocl_module)
     {
-        GPA_LogError("OpenCL runtime module is NULL.");
+        GPA_LOG_ERROR("OpenCL runtime module is NULL.");
     }
     else
     {
-        static const gpa_uint32 MAX_STR = 256;
-        char driverVersion[MAX_STR];
+        static const GpaUInt32 kMaxStr = 256;
+        char                   driver_version[kMaxStr];
 
-        if (CL_SUCCESS != pOclModule->GetDeviceInfo(m_clDeviceId, CL_DRIVER_VERSION, MAX_STR, driverVersion, nullptr))
+        if (CL_SUCCESS != ocl_module->GetDeviceInfo(cl_device_id_, CL_DRIVER_VERSION, kMaxStr, driver_version, nullptr))
         {
-            GPA_LogError("Unable to get driver version.");
+            GPA_LOG_ERROR("Unable to get driver version.");
         }
         else
         {
-            m_clDriverVersion = ExtractDriverVersion(driverVersion);
+            cl_driver_version_ = ExtractDriverVersion(driver_version);
         }
     }
 
-    GPA_Status setStableClocksStatus = SetStableClocks(true);
+    GpaStatus set_stable_clocks_status = SetStableClocks(true);
 
-    if (GPA_STATUS_OK != setStableClocksStatus)
+    if (kGpaStatusOk != set_stable_clocks_status)
     {
-        GPA_LogError("Driver was unable to set stable clocks for profiling.");
+        GPA_LOG_ERROR("Driver was unable to set stable clocks for profiling.");
 #ifdef __linux__
-        GPA_LogMessage("In Linux, make sure to run your application with root privileges.");
+        GPA_LOG_MESSAGE("In Linux, make sure to run your application with root privileges.");
 #endif  //__linux__
     }
 
@@ -130,23 +130,23 @@ bool CLGPAContext::Initialize(cl_device_id& clDeviceId)
     return success;
 }
 
-const cl_device_id& CLGPAContext::GetCLDeviceId() const
+const cl_device_id& ClGpaContext::GetClDeviceId() const
 {
-    return m_clDeviceId;
+    return cl_device_id_;
 }
 
-const cl_command_queue& CLGPAContext::GetCLCommandQueue() const
+const cl_command_queue& ClGpaContext::GetClCommandQueue() const
 {
-    return m_clCommandQueue;
+    return cl_command_queue_;
 }
 
-GPA_Status CLGPAContext::SetStableClocks(bool useProfilingClocks)
+GpaStatus ClGpaContext::SetStableClocks(bool use_profiling_clocks)
 {
-    GPA_Status result = GPA_STATUS_OK;
+    GpaStatus result = kGpaStatusOk;
 
-    if (nullptr == my_clSetDeviceClockModeAMD)
+    if (nullptr == my_cl_set_device_clock_mode_amd)
     {
-        GPA_LogMessage("clSetDeviceClockModeAMD extension is not available.");
+        GPA_LOG_MESSAGE("clSetDeviceClockModeAMD extension is not available.");
 
         // TODO: return an error once we no longer need to support pre-19.10 drivers
         // result = GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
@@ -155,29 +155,29 @@ GPA_Status CLGPAContext::SetStableClocks(bool useProfilingClocks)
     {
         cl_set_device_clock_mode_input_amd clockMode = {};
 
-        if (useProfilingClocks)
+        if (use_profiling_clocks)
         {
             DeviceClockMode deviceClockMode = GetDeviceClockMode();
 
             switch (deviceClockMode)
             {
-            case DeviceClockMode::Default:
+            case DeviceClockMode::kDefault:
                 clockMode.clock_mode = CL_DEVICE_CLOCK_MODE_DEFAULT_AMD;
                 break;
 
-            case DeviceClockMode::Profiling:
+            case DeviceClockMode::kProfiling:
                 clockMode.clock_mode = CL_DEVICE_CLOCK_MODE_PROFILING_AMD;
                 break;
 
-            case DeviceClockMode::MinimumMemory:
+            case DeviceClockMode::kMinimumMemory:
                 clockMode.clock_mode = CL_DEVICE_CLOCK_MODE_MINIMUMMEMORY_AMD;
                 break;
 
-            case DeviceClockMode::MinimumEngine:
+            case DeviceClockMode::kMinimumEngine:
                 clockMode.clock_mode = CL_DEVICE_CLOCK_MODE_MINIMUMENGINE_AMD;
                 break;
 
-            case DeviceClockMode::Peak:
+            case DeviceClockMode::kPeak:
                 clockMode.clock_mode = CL_DEVICE_CLOCK_MODE_PEAK_AMD;
                 break;
 
@@ -188,11 +188,11 @@ GPA_Status CLGPAContext::SetStableClocks(bool useProfilingClocks)
             }
         }
 
-        if (clockMode.clock_mode != m_clockMode)
+        if (clockMode.clock_mode != clock_mode_)
         {
-            m_clockMode   = clockMode.clock_mode;
-            cl_int status = my_clSetDeviceClockModeAMD(m_clDeviceId, clockMode, nullptr);
-            result        = (CL_SUCCESS == status) ? GPA_STATUS_OK : GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+            clock_mode_   = clockMode.clock_mode;
+            cl_int status = my_cl_set_device_clock_mode_amd(cl_device_id_, clockMode, nullptr);
+            result        = (CL_SUCCESS == status) ? kGpaStatusOk : kGpaStatusErrorDriverNotSupported;
 
             if (CL_SUCCESS != status)
             {
@@ -200,18 +200,20 @@ GPA_Status CLGPAContext::SetStableClocks(bool useProfilingClocks)
                 // make sure the driver is new enough to support setting stable clocks
                 // on Linux with pre-gfx9 devices, setting the clock mode fails with current drivers
                 // in this case, simply act as if the call was successful by returning success
-                const GPA_HWInfo* pHwInfo = GetHwInfo();
-                GDT_HW_GENERATION gen = GDT_HW_GENERATION_NONE;
-                static const int s_CL_DRIVER_VER_WITH_LINUX_STABLE_CLOCK_SUPPORT = 2904;  // CL driver version where stable clocks are working on Linux for pre-GFX9 devices
+                const GPA_HWInfo* kHwInfo = GetHwInfo();
+                GDT_HW_GENERATION gen     = GDT_HW_GENERATION_NONE;
 
-                if ((s_CL_DRIVER_VER_WITH_LINUX_STABLE_CLOCK_SUPPORT > m_clDriverVersion) && pHwInfo->GetHWGeneration(gen) && GDT_HW_GENERATION_GFX9 > gen)
+                // CL driver version where stable clocks are working on Linux for pre-GFX9 devices
+                static const int s_CL_DRIVER_VER_WITH_LINUX_STABLE_CLOCK_SUPPORT = 2904;
+
+                if ((s_CL_DRIVER_VER_WITH_LINUX_STABLE_CLOCK_SUPPORT > cl_driver_version_) && kHwInfo->GetHWGeneration(gen) && GDT_HW_GENERATION_GFX9 > gen)
                 {
-                    result = GPA_STATUS_OK;
+                    result = kGpaStatusOk;
                 }
                 else
 #endif
                 {
-                    GPA_LogError("Failed to set ClockMode for profiling.");
+                    GPA_LOG_ERROR("Failed to set ClockMode for profiling.");
                 }
             }
         }
@@ -220,23 +222,23 @@ GPA_Status CLGPAContext::SetStableClocks(bool useProfilingClocks)
     return result;
 }
 
-int CLGPAContext::ExtractDriverVersion(const char* pVersion) const
+int ClGpaContext::ExtractDriverVersion(const char* version_str) const
 {
     int version = 0;
 
-    if (nullptr != pVersion)
+    if (nullptr != version_str)
     {
-        std::string strVer(pVersion);
+        std::string str_ver(version_str);
 
         // the build number ends at the first dot
-        size_t endBuild = strVer.find_first_of('.');
+        size_t end_build = str_ver.find_first_of('.');
 
         // truncate the input at the first dot
-        strVer = strVer.substr(0, endBuild);
+        str_ver = str_ver.substr(0, end_build);
 
-        std::istringstream iss(strVer);
+        std::istringstream iss(str_ver);
 
-        // parse the version number
+        // parse the version_str number
         iss >> version;
 
         if (iss.fail())

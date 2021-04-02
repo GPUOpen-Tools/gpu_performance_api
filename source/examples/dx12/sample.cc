@@ -1,37 +1,53 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Sample implementation
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Sample implementation.
 //==============================================================================
 
+#include "examples/dx12/sample.h"
+
 #include <Windows.h>
-#include <string>
+
+#include <iostream>
 #include <sstream>
+#include <string>
 
-#include "sample.h"
+extern const unsigned int kWindowWidth;
+extern const unsigned int kWindowHeight;
+extern const std::wstring kWindowClassName;
 
-extern unsigned int g_windowWidth;
-extern unsigned int g_windowHeight;
-extern std::wstring g_windowClassName;
-extern HWND         g_windowHandle;
+extern HWND window_handle;
 
 extern LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam);
 
-extern bool g_anyGPAErrorsLogged;  ///< flag indicating if any GPA errors have been logged
+extern bool any_errors_logged;  ///< Flag indicating if any GPA errors have been logged.
 
 CommandLineArgs args;
 
-/// Parse Command line arguments
+/// @brief Print command line usage information.
+void Usage()
+{
+    std::cout << "D3D12ColorCube [--nogpa] [--numberofframes #] [--verify] [--confirmsuccess] [--counterfile <file>] [--profilebundle]" << std::endl << std::endl;
+    std::cout << "  --nogpa: Do not use GPUPerfAPI to collect performance counters" << std::endl;
+    std::cout << "  --numberofframes #: Renders the specified number of frames before exiting; if used with --verify then # must be a multiple of the number of passes needed" << std::endl;
+    std::cout << "  --verify: Application will verify a few counter values (experimental)" << std::endl;
+    std::cout << "  --confirmsuccess: Implies --verify and confirms successful counter values in addition to errors" << std::endl;
+    std::cout << "  --includehwcounters: Public hardware counters will be enabled in non-internal builds" << std::endl;
+    std::cout << "  --counterfile <file>: File containing the list of counters to profile" << std::endl;
+    std::cout << "  --profilebundles: Include the bundled samples in the profile (experimental)" << std::endl;
+}
+
+/// Parse Command line arguments.
 bool ParseCommandLine(const int argc, const char* argv[])
 {
     bool success = true;
 
     for (int i = 1; i < argc; i++)
     {
-        std::string thisArg(argv[i]);
+        std::string this_arg(argv[i]);
 
-        if (0 == thisArg.compare("--numberofframes"))
+        if (0 == this_arg.compare("--numberofframes"))
         {
             i++;
 
@@ -39,7 +55,7 @@ bool ParseCommandLine(const int argc, const char* argv[])
             {
                 std::istringstream iss(argv[i]);
 
-                iss >> args.m_numberOfFrames;
+                iss >> args.num_frames;
 
                 if (iss.fail())
                 {
@@ -51,23 +67,27 @@ bool ParseCommandLine(const int argc, const char* argv[])
                 success = false;
             }
         }
-        else if (0 == thisArg.compare("--profilebundles"))
+        else if (0 == this_arg.compare("--profilebundles"))
         {
-            args.m_profileBundles = true;
+            args.profile_bundles = true;
         }
-        else if (0 == thisArg.compare("--verify"))
+        else if (0 == this_arg.compare("--verify"))
         {
-            args.m_verifyCounters = true;
+            args.verify_counters = true;
         }
-        else if (0 == thisArg.compare("--nogpa"))
+        else if (0 == this_arg.compare("--confirmsuccess"))
         {
-            args.m_useGPA = false;
+            args.confirm_success = true;
         }
-        else if (0 == thisArg.compare("--includehwcounters"))
+        else if (0 == this_arg.compare("--nogpa"))
         {
-            args.m_includeHwCounters = true;
+            args.use_gpa = false;
         }
-        else if (0 == thisArg.compare("--counterfile"))
+        else if (0 == this_arg.compare("--includehwcounters"))
+        {
+            args.include_hw_counters = true;
+        }
+        else if (0 == this_arg.compare("--counterfile"))
         {
             i++;
 
@@ -110,48 +130,47 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _I
         return -1;
     }
 
-    // Create app local window class and register it to system
-    WNDCLASSEX cubeAppWindowClass = {sizeof(WNDCLASSEX),
-                                     CS_HREDRAW | CS_VREDRAW,
-                                     SampleWindowProc,
-                                     0,
-                                     0,
-                                     hInstance,
-                                     NULL,  // default icon
-                                     LoadCursor(nullptr, IDC_IBEAM),
-                                     NULL,  // no brush
-                                     NULL,  // no menu
-                                     g_windowClassName.c_str(),
-                                     NULL};
+    // Create app local window class and register it to system.
+    WNDCLASSEX cube_app_window_class = {sizeof(WNDCLASSEX),
+                                        CS_HREDRAW | CS_VREDRAW,
+                                        SampleWindowProc,
+                                        0,
+                                        0,
+                                        hInstance,
+                                        NULL,  // Default icon.
+                                        LoadCursor(nullptr, IDC_IBEAM),
+                                        NULL,  // No brush.
+                                        NULL,  // No menu.
+                                        kWindowClassName.c_str(),
+                                        NULL};
 
-    ATOM windowRegisterSuccess = RegisterClassEx(&cubeAppWindowClass);
+    ATOM windowRegisterSuccess = RegisterClassEx(&cube_app_window_class);
 
     if (windowRegisterSuccess == 0)
     {
-        // Failed to register window
+        // Failed to register window.
         return -1;
     }
 
-    g_windowHandle = CreateWindow(g_windowClassName.c_str(),
-                                  g_windowClassName.c_str(),
-                                  WS_OVERLAPPED | WS_SYSMENU,
-                                  CW_USEDEFAULT,
-                                  CW_USEDEFAULT,
-                                  g_windowWidth,
-                                  g_windowHeight,
-                                  nullptr,
-                                  nullptr,
-                                  hInstance,
-                                  nullptr);
+    window_handle = CreateWindow(kWindowClassName.c_str(),
+                                 kWindowClassName.c_str(),
+                                 WS_OVERLAPPED | WS_SYSMENU,
+                                 CW_USEDEFAULT,
+                                 CW_USEDEFAULT,
+                                 kWindowWidth,
+                                 kWindowHeight,
+                                 nullptr,
+                                 nullptr,
+                                 hInstance,
+                                 nullptr);
 
-    if (g_windowHandle == nullptr)
+    if (window_handle == nullptr)
     {
-        // Failed to create window
+        // Failed to create window.
         return -1;
     }
 
-    ShowWindow(g_windowHandle, cmdShow);
-
+    ShowWindow(window_handle, cmdShow);
 
     // Main sample loop.
     MSG msg = {};
@@ -166,8 +185,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _I
         }
     }
 
-    DestroyWindow(g_windowHandle);
-    UnregisterClass(g_windowClassName.c_str(), hInstance);
+    DestroyWindow(window_handle);
+    UnregisterClass(kWindowClassName.c_str(), hInstance);
 
-    return g_anyGPAErrorsLogged ? -1 : 0;
+    return any_errors_logged ? -1 : 0;
 }

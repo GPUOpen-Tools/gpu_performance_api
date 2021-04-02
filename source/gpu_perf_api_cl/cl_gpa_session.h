@@ -1,8 +1,8 @@
 //==============================================================================
 // Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief CL GPA Session declaration
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief CL GPA Session declaration
 //==============================================================================
 
 #ifndef _CL_GPA_SESSION_H_
@@ -12,22 +12,22 @@
 #include "gpa_session.h"
 
 /// Class for CL GPA Session
-class CLGPASession : public GPASession
+class ClGpaSession : public GpaSession
 {
 public:
     /// Constructor
-    /// \param[in] pParentContext The context Id on which this session is created
-    /// \param[in] sampleType The sample type that will be created on this session
-    CLGPASession(IGPAContext* pParentContext, GPA_Session_Sample_Type sampleType);
+    /// @param [in] parent_context The context Id on which this session is created
+    /// @param [in] sample_type The sample type that will be created on this session
+    ClGpaSession(IGpaContext* parent_context, GpaSessionSampleType sample_type);
 
     /// Destructor
-    ~CLGPASession() = default;
+    ~ClGpaSession() = default;
 
-    /// \copydoc IGPAInterfaceTrait::GetAPIType()
-    GPA_API_Type GetAPIType() const override;
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    GpaApiType GetApiType() const override;
 
 private:
-    /// \copydoc GPASession::CreateAPIPass()
-    GPAPass* CreateAPIPass(PassIndex passIndex) override;
+    /// @copydoc GpaSession::CreateApiPass()
+    GpaPass* CreateApiPass(PassIndex pass_index) override;
 };
 #endif  // _CL_GPA_SESSION_H_

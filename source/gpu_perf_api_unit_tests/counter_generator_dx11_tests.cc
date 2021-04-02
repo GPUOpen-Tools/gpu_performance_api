@@ -1,76 +1,79 @@
 //==============================================================================
-// Copyright (c) 2012-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Unit Tests for DX11 Counter Generator
+// Copyright (c) 2012-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Unit Tests for Dx11 Counter Generator.
 //==============================================================================
 
-#include "counter_generator_tests.h"
-#include "gpu_perf_api_types.h"
-#include "gpa_counter.h"
+#include "gpu_performance_api/gpu_perf_api_types.h"
 
-#include "counters/public_derived_counters_dx11_gfx8.h"
-#include "counters/public_derived_counters_dx11_gfx9.h"
-#include "counters/public_derived_counters_dx11_gfx10.h"
-#include "counters/public_derived_counters_dx11_gfx103.h"
+#include "gpu_perf_api_counter_generator/gpa_counter.h"
+
+#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_dx11_gfx8.h"
+#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_dx11_gfx9.h"
+#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_dx11_gfx10.h"
+#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_dx11_gfx103.h"
 
 #ifdef AMDT_INTERNAL
-#include "gpa_hw_counter_dx11_gfx8.h"
-#include "gpa_hw_counter_dx11_gfx9.h"
-#include "gpa_hw_counter_dx11_gfx10.h"
-#include "gpa_hw_counter_dx11_gfx103.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_dx11_gfx8.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_dx11_gfx9.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_dx11_gfx10.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_dx11_gfx103.h"
 #endif
 
-static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<const char*>& counterNames)
+#include "gpu_perf_api_unit_tests/counter_generator_tests.h"
+#include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
+
+static void GetExpectedCountersForGeneration(GpaHwGeneration gen, std::vector<const char*>& counter_names)
 {
-    counterNames.clear();
+    counter_names.clear();
 
-    const GPACounterDesc* pPublicCounters    = nullptr;
-    size_t                publicCounterCount = 0;
+    const GpaCounterDesc* kPublicCounters      = nullptr;
+    size_t                public_counter_count = 0;
 
-    GPA_CounterGroupDesc*     pHardwareGroups    = nullptr;
-    GPA_HardwareCounterDesc** ppHardwareCounters = nullptr;
-    unsigned int              hwGroupCount       = 0;
+    GpaCounterGroupDesc*     hardware_groups   = nullptr;
+    GpaHardwareCounterDesc** hardware_counters = nullptr;
+    unsigned int             group_count       = 0;
 
     switch (gen)
     {
-    case GPA_HW_GENERATION_GFX8:
-        pPublicCounters    = DX11GFX8_PUBLIC_COUNTERS;
-        publicCounterCount = DX11GFX8_PUBLIC_COUNTER_COUNT;
+    case kGpaHwGenerationGfx8:
+        kPublicCounters      = kDx11Gfx8PublicCounters;
+        public_counter_count = kDx11Gfx8PublicCounterCount;
 #ifdef AMDT_INTERNAL
-        pHardwareGroups    = counter_dx11_gfx8::hw_dx11_groups_gfx8;
-        hwGroupCount       = counter_dx11_gfx8::hw_dx11_group_count_gfx8;
-        ppHardwareCounters = counter_dx11_gfx8::dx11_counter_group_array_gfx8;
+        hardware_groups   = counter_dx11_gfx8::kHwDx11GroupsGfx8;
+        group_count       = counter_dx11_gfx8::kHwDx11GroupCountGfx8;
+        hardware_counters = counter_dx11_gfx8::kDx11CounterGroupArrayGfx8;
 #endif
         break;
 
-    case GPA_HW_GENERATION_GFX9:
-        pPublicCounters    = DX11GFX9_PUBLIC_COUNTERS;
-        publicCounterCount = DX11GFX9_PUBLIC_COUNTER_COUNT;
+    case kGpaHwGenerationGfx9:
+        kPublicCounters      = kDx11Gfx9PublicCounters;
+        public_counter_count = kDx11Gfx9PublicCounterCount;
 #ifdef AMDT_INTERNAL
-        pHardwareGroups    = counter_dx11_gfx9::hw_dx11_groups_gfx9;
-        hwGroupCount       = counter_dx11_gfx9::hw_dx11_group_count_gfx9;
-        ppHardwareCounters = counter_dx11_gfx9::dx11_counter_group_array_gfx9;
+        hardware_groups   = counter_dx11_gfx9::kHwDx11GroupsGfx9;
+        group_count       = counter_dx11_gfx9::kHwDx11GroupCountGfx9;
+        hardware_counters = counter_dx11_gfx9::kDx11CounterGroupArrayGfx9;
 #endif
         break;
 
-    case GPA_HW_GENERATION_GFX10:
-        pPublicCounters    = DX11GFX10_PUBLIC_COUNTERS;
-        publicCounterCount = DX11GFX10_PUBLIC_COUNTER_COUNT;
+    case kGpaHwGenerationGfx10:
+        kPublicCounters      = kDx11Gfx10PublicCounters;
+        public_counter_count = kDx11Gfx10PublicCounterCount;
 #ifdef AMDT_INTERNAL
-        pHardwareGroups    = counter_dx11_gfx10::hw_dx11_groups_gfx10;
-        hwGroupCount       = counter_dx11_gfx10::hw_dx11_group_count_gfx10;
-        ppHardwareCounters = counter_dx11_gfx10::dx11_counter_group_array_gfx10;
+        hardware_groups   = counter_dx11_gfx10::kHwDx11GroupsGfx10;
+        group_count       = counter_dx11_gfx10::kHwDx11GroupCountGfx10;
+        hardware_counters = counter_dx11_gfx10::kDx11CounterGroupArrayGfx10;
 #endif
         break;
 
-    case GPA_HW_GENERATION_GFX103:
-        pPublicCounters    = DX11GFX103_PUBLIC_COUNTERS;
-        publicCounterCount = DX11GFX103_PUBLIC_COUNTER_COUNT;
+    case kGpaHwGenerationGfx103:
+        kPublicCounters      = kDx11Gfx103PublicCounters;
+        public_counter_count = kDx11Gfx103PublicCounterCount;
 #ifdef AMDT_INTERNAL
-        pHardwareGroups    = counter_dx11_gfx103::hw_dx11_groups_gfx103;
-        hwGroupCount       = counter_dx11_gfx103::hw_dx11_group_count_gfx103;
-        ppHardwareCounters = counter_dx11_gfx103::dx11_counter_group_array_gfx103;
+        hardware_groups   = counter_dx11_gfx103::kHwDx11GroupsGfx103;
+        group_count       = counter_dx11_gfx103::kHwDx11GroupCountGfx103;
+        hardware_counters = counter_dx11_gfx103::kDx11CounterGroupArrayGfx103;
 #endif
         break;
 
@@ -78,65 +81,65 @@ static void GetExpectedCountersForGeneration(GPA_Hw_Generation gen, std::vector<
         break;
     }
 
-    for (size_t i = 0; i < publicCounterCount; i++)
+    for (size_t i = 0; i < public_counter_count; i++)
     {
-        counterNames.push_back(pPublicCounters[i].m_pName);
+        counter_names.push_back(kPublicCounters[i].name);
     }
 
     // Optionally, get internal derived counters
-    const GPACounterDesc* pInternalDerivedCounters    = nullptr;
-    size_t                internalDerivedCounterCount = 0;
+    const GpaCounterDesc* kInternalDerivedCounters       = nullptr;
+    size_t                internal_derived_counter_count = 0;
 
 #ifdef AMDT_INTERNAL
-    GPA_GetInternalDerivedCounters(GPA_API_DIRECTX_11, gen, &pInternalDerivedCounters, &internalDerivedCounterCount);
+    GpaGetInternalDerivedCounters(kGpaApiDirectx11, gen, &kInternalDerivedCounters, &internal_derived_counter_count);
 #endif
 
-    for (size_t i = 0; i < internalDerivedCounterCount; i++)
+    for (size_t i = 0; i < internal_derived_counter_count; i++)
     {
-        counterNames.push_back(pInternalDerivedCounters[i].m_pName);
+        counter_names.push_back(kInternalDerivedCounters[i].name);
     }
 
-    for (unsigned int i = 0; i < hwGroupCount; i++)
+    for (unsigned int i = 0; i < group_count; i++)
     {
-        for (unsigned int j = 0; j < pHardwareGroups[i].m_numCounters; j++)
+        for (unsigned int j = 0; j < hardware_groups[i].num_counters; j++)
         {
-            counterNames.push_back(ppHardwareCounters[i][j].m_pName);
+            counter_names.push_back(hardware_counters[i][j].name);
         }
     }
 }
 
-static std::vector<GPACounterDesc> GetExpectedPublicCounters(GPA_Hw_Generation gen)
+static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration gen)
 {
-    const GPACounterDesc* public_counters      = nullptr;
+    const GpaCounterDesc* public_counters      = nullptr;
     size_t                public_counter_count = 0;
 
     switch (gen)
     {
-    case GPA_HW_GENERATION_GFX8:
-        public_counters      = DX11GFX8_PUBLIC_COUNTERS;
-        public_counter_count = DX11GFX8_PUBLIC_COUNTER_COUNT;
+    case kGpaHwGenerationGfx8:
+        public_counters      = kDx11Gfx8PublicCounters;
+        public_counter_count = kDx11Gfx8PublicCounterCount;
         break;
 
-    case GPA_HW_GENERATION_GFX9:
-        public_counters      = DX11GFX9_PUBLIC_COUNTERS;
-        public_counter_count = DX11GFX9_PUBLIC_COUNTER_COUNT;
+    case kGpaHwGenerationGfx9:
+        public_counters      = kDx11Gfx9PublicCounters;
+        public_counter_count = kDx11Gfx9PublicCounterCount;
         break;
 
-    case GPA_HW_GENERATION_GFX10:
-        public_counters      = DX11GFX10_PUBLIC_COUNTERS;
-        public_counter_count = DX11GFX10_PUBLIC_COUNTER_COUNT;
+    case kGpaHwGenerationGfx10:
+        public_counters      = kDx11Gfx10PublicCounters;
+        public_counter_count = kDx11Gfx10PublicCounterCount;
         break;
 
-    case GPA_HW_GENERATION_GFX103:
-        public_counters      = DX11GFX103_PUBLIC_COUNTERS;
-        public_counter_count = DX11GFX103_PUBLIC_COUNTER_COUNT;
+    case kGpaHwGenerationGfx103:
+        public_counters      = kDx11Gfx103PublicCounters;
+        public_counter_count = kDx11Gfx103PublicCounterCount;
         break;
 
     default:
         break;
     }
 
-    std::vector<GPACounterDesc> public_counter_list;
+    std::vector<GpaCounterDesc> public_counter_list;
     public_counter_list.reserve(public_counter_count);
     for (size_t i = 0; i < public_counter_count; i++)
     {
@@ -146,66 +149,66 @@ static std::vector<GPACounterDesc> GetExpectedPublicCounters(GPA_Hw_Generation g
     return public_counter_list;
 }
 
-// Test the DX11 derived counter blocks
-TEST(CounterDLLTests, DX11DerivedCounterBlocks)
+// Test the Dx11 derived counter blocks
+TEST(CounterDllTests, Dx11DerivedCounterBlocks)
 {
-    VerifyDerivedCounterCount(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX8, FALSE, GetExpectedPublicCounters(GPA_HW_GENERATION_GFX8));
-    VerifyDerivedCounterCount(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX9, FALSE, GetExpectedPublicCounters(GPA_HW_GENERATION_GFX9));
-    VerifyDerivedCounterCount(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX10, FALSE, GetExpectedPublicCounters(GPA_HW_GENERATION_GFX10));
-    VerifyDerivedCounterCount(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX103, FALSE, GetExpectedPublicCounters(GPA_HW_GENERATION_GFX103));
+    VerifyDerivedCounterCount(kGpaApiDirectx11, kGpaHwGenerationGfx8, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx8));
+    VerifyDerivedCounterCount(kGpaApiDirectx11, kGpaHwGenerationGfx9, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx9));
+    VerifyDerivedCounterCount(kGpaApiDirectx11, kGpaHwGenerationGfx10, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx10));
+    VerifyDerivedCounterCount(kGpaApiDirectx11, kGpaHwGenerationGfx103, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx103));
 }
 
-// Test the DX11 counter names on all supported hardware
-TEST(CounterDLLTests, DX11CounterNames)
+// Test the Dx11 counter names on all supported hardware
+TEST(CounterDllTests, Dx11CounterNames)
 {
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, gDevIdUnknown, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdUnknown, FALSE);
 
-    std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdVI, FALSE, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdGfx9, FALSE, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX10, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdGfx10, FALSE, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX103, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, gDevIdGfx10_3, FALSE, counterNames);
+    std::vector<const char*> counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kDevIdVI, FALSE, counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx9, FALSE, counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx10, FALSE, counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx10_3, FALSE, counter_names);
 }
 
-// Test the DX11 counter names on all generations
-TEST(CounterDLLTests, DX11CounterNamesByGeneration)
+// Test the Dx11 counter names on all generations
+TEST(CounterDllTests, Dx11CounterNamesByGeneration)
 {
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, GPA_HW_GENERATION_NONE, FALSE);
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, GPA_HW_GENERATION_NVIDIA, FALSE);
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, GPA_HW_GENERATION_INTEL, FALSE);
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX6, FALSE);
-    VerifyHardwareNotSupported(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX7, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationNone, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationNvidia, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationIntel, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationGfx6, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationGfx7, FALSE);
 
-    std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX8, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX8, FALSE, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX9, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX9, FALSE, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX10, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX10, FALSE, counterNames);
-    GetExpectedCountersForGeneration(GPA_HW_GENERATION_GFX103, counterNames);
-    VerifyCounterNames(GPA_API_DIRECTX_11, GPA_HW_GENERATION_GFX103, FALSE, counterNames);
+    std::vector<const char*> counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kGpaHwGenerationGfx8, FALSE, counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kGpaHwGenerationGfx9, FALSE, counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kGpaHwGenerationGfx10, FALSE, counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kGpaHwGenerationGfx103, FALSE, counter_names);
 }
 
-TEST(CounterDLLTests, Dx11CounterLibTest)
+TEST(CounterDllTests, Dx11CounterLibTest)
 {
-    VerifyCounterLibInterface(GPA_API_DIRECTX_11, gDevIdVI, REVISION_ID_ANY, false);
-    VerifyCounterLibInterface(GPA_API_DIRECTX_11, gDevIdGfx9, REVISION_ID_ANY, false);
-    VerifyCounterLibInterface(GPA_API_DIRECTX_11, gDevIdGfx10, REVISION_ID_ANY, false);
-    VerifyCounterLibInterface(GPA_API_DIRECTX_11, gDevIdGfx10_3, REVISION_ID_ANY, false);
-    VerifyCounterByPassCounterLibEntry(GPA_API_DIRECTX_11, gDevIdGfx9, REVISION_ID_ANY, false);
-    VerifyCounterByPassCounterLibEntry(GPA_API_DIRECTX_11, gDevIdGfx10, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdVI, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx9, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx10, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx10_3, REVISION_ID_ANY, false);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx9, REVISION_ID_ANY, false);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx10, REVISION_ID_ANY, false);
 }
 
-TEST(CounterDLLTests, DX11CounterFormulaTest)
+TEST(CounterDllTests, Dx11CounterFormulaTest)
 {
-    std::vector<const char*> counterNames;
-    VerifyCounterFormula(GetExpectedPublicCounters(GPA_HW_GENERATION_GFX8));
-    VerifyCounterFormula(GetExpectedPublicCounters(GPA_HW_GENERATION_GFX9));
-    VerifyCounterFormula(GetExpectedPublicCounters(GPA_HW_GENERATION_GFX10));
-    VerifyCounterFormula(GetExpectedPublicCounters(GPA_HW_GENERATION_GFX103));
+    std::vector<const char*> counter_names;
+    VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx8));
+    VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx9));
+    VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx10));
+    VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx103));
 }

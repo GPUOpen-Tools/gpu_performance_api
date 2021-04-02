@@ -1,101 +1,107 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  VkCommandListSwQueries declaration
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  VkCommandListSwQueries declaration
 //==============================================================================
 
-#ifndef _VK_COMMAND_LIST_SW_QUERIES_H_
-#define _VK_COMMAND_LIST_SW_QUERIES_H_
+#ifndef GPU_PERF_API_VK_VK_COMMAND_LIST_SW_QUERIES_H_
+#define GPU_PERF_API_VK_VK_COMMAND_LIST_SW_QUERIES_H_
 
 #include <vector>
 
-#include "vk_command_list_sw_query_group.h"
+#include "gpu_perf_api_vk/vk_command_list_sw_query_group.h"
 
-/// Container for SW queries and resources executed on a command buffer.
+/// @brief Container for SW queries and resources executed on a command buffer.
+///
 /// This class keeps a queryGroup (a set of all query types) for each sample,
 /// since there can be multiple query types for a single GPA-level sample.
 class VkCommandListSwQueries
 {
 public:
-    /// Construct a VkCommandListSwQueries instance
+    /// @brief Construct a VkCommandListSwQueries instance.
     VkCommandListSwQueries();
 
-    /// Move constructor
+    /// @brief Move constructor.
     ///
-    /// \param[in] other The command list moved
+    /// @param [in] other The command list moved.
     VkCommandListSwQueries(VkCommandListSwQueries&& other);
 
-    /// Destroy this VkCommandListSwQueries
+    /// @brief Destroy this VkCommandListSwQueries.
     ~VkCommandListSwQueries();
 
-    /// Move operator
+    /// @brief Move operator.
     ///
-    /// \return Reference to this VkCommandListSwQueries
-    /// \param[in] other The command list moved
+    /// @param [in] other The command list moved.
+    ///
+    /// @return Reference to this VkCommandListSwQueries.
     VkCommandListSwQueries& operator=(VkCommandListSwQueries&& other);
 
-    /// Initialize the VkCommandListSwQueries instance resources
+    /// @brief Initialize the VkCommandListSwQueries instance resources.
     ///
-    /// \return True if initialization succeeded, false if it failed
-    /// \param physicalDevice The physical device that the device is from
-    /// \param device The device queries are executed on
-    /// \param commandBuffer The command list the queries are excuted on
-    bool Initialize(VkPhysicalDevice physicalDevice, VkDevice device, VkCommandBuffer commandBuffer);
+    /// @param [in] physical_device The physical device that the device is from.
+    /// @param [in] device The device Queries are executed on.
+    /// @param [in] command_buffer The Command list the queries are executed on.
+    ///
+    /// @return True if initialization succeeded, false if it failed.
+    bool Initialize(VkPhysicalDevice physical_device, VkDevice device, VkCommandBuffer command_buffer);
 
-    /// Begin SW sample
+    /// @brief Acquire a sample ID.
     ///
-    /// Acquire a sample ID
-    /// \return True if sampling started, false if not
-    /// \param[out] swSampleId The SW sample ID - unique to the context
-    bool BeginSwSample(gpa_uint32& swSampleId);
+    /// @param [out] sw_sample_id The SW sample ID - unique to the context.
+    ///
+    /// @return True if sampling started, false if not.
+    bool BeginSwSample(GpaUInt32& sw_sample_id);
 
-    /// End SW sample
+    /// @brief Signal the end of sample event.
     ///
-    /// Signal the end of sample event
-    /// \see GetSwSampleResults
-    /// \param[in] swSampleId The SW sample ID
-    void EndSwSample(const gpa_uint32 swSampleId);
+    /// @see GetSwSampleResults
+    ///
+    /// @param [in] sw_sample_id The SW sample ID.
+    void EndSwSample(const GpaUInt32 sw_sample_id);
 
-    /// Release the given SW sample.
+    /// @brief Release the given SW sample.
     ///
-    /// \param[in] swSampleId The SW sample ID
-    void ReleaseSwSample(const gpa_uint32 swSampleId);
+    /// @param [in] sw_sample_id The SW sample ID.
+    void ReleaseSwSample(const GpaUInt32 sw_sample_id);
 
-    /// Begin single SW query sampling
+    /// @brief Begin single SW query sampling.
     ///
-    /// \return True if sampling started, false if not
-    /// \param[in] swSampleId The SW sample ID
-    /// \param[in] queryType The query type
-    void BeginSwQuery(const gpa_uint32 swSampleId, const GPA_VK_SW_QUERY_TYPE queryType);
+    /// @param [in] sw_sample_id The SW sample ID.
+    /// @param [in] query_type The query type.
+    ///
+    /// @return True if sampling started, false if not.
+    void BeginSwQuery(const GpaUInt32 sw_sample_id, const GpaVkSwQueryType query_type);
 
-    /// End single SW query sampling
+    /// @brief End single SW query sampling.
     ///
-    /// \param[in] swSampleId The SW sample ID
-    /// \param[in] queryType The query type
-    void EndSwQuery(const gpa_uint32 swSampleId, const GPA_VK_SW_QUERY_TYPE queryType);
+    /// @param [in] sw_sample_id The SW sample ID.
+    /// @param [in] query_type The query type.
+    void EndSwQuery(const GpaUInt32 sw_sample_id, const GpaVkSwQueryType query_type);
 
-    /// Get SW sample results
+    /// @brief Get SW sample results.
     ///
-    /// \return True if results are available, false if results are not available
-    /// \param[in] swSampleId The SW sample ID
-    /// \param[out] queryResults The SW countes results
-    bool GetSwSampleResults(const gpa_uint32 swSampleId, GpaVkSoftwareQueryResults& queryResults);
+    /// @param [in] sw_sample_id The SW sample ID.
+    /// @param [out] query_results The SW countes results.
+    ///
+    /// @return True if results are available, false if results are not available.
+    bool GetSwSampleResults(const GpaUInt32 sw_sample_id, GpaVkSoftwareQueryResults& query_results);
 
 private:
-    /// Copy constructor - private override to prevent usage
+    /// @brief Copy constructor - private override to prevent usage.
     VkCommandListSwQueries(const VkCommandListSwQueries&) = delete;
 
-    /// Copy operator - private override to prevent usage
-    /// \return reference to object
+    /// @brief Copy operator - private override to prevent usage.
+    ///
+    /// @return reference to object.
     VkCommandListSwQueries& operator=(const VkCommandListSwQueries&) = delete;
 
-    static const size_t ms_resultGroupSize = 256;  ///< The number of results to store in a group (additional samples will require an additional group)
+    static const size_t kResultGroupSize = 256;  ///< The number of results to store in a group (additional samples will require an additional group).
 
-    VkPhysicalDevice          m_physicalDevice;  ///< The physical device that the device is from
-    VkCommandBuffer           m_commandBuffer;   ///< The command buffer queries and counters are inserted to
-    VkDevice                  m_device;          ///< The device which created the command buffer
-    VkCommandListSWQueryGroup m_queryGroup;      ///< The query group for this command buffer
+    VkPhysicalDevice          physical_device_;  ///< The physical device that the device is from.
+    VkCommandBuffer           command_buffer_;   ///< The command buffer queries and counters are inserted to.
+    VkDevice                  device_;           ///< The device which created the command buffer.
+    VkCommandListSWQueryGroup query_group_;      ///< The query group for this command buffer.
 };
 
-#endif  // _VK_COMMAND_LIST_SW_QUERIES_H_
+#endif  // GPU_PERF_API_VK_VK_COMMAND_LIST_SW_QUERIES_H_

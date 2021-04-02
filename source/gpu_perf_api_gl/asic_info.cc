@@ -1,77 +1,78 @@
 //==============================================================================
-// Copyright (c) 2006-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Utility routines for retrieving ASIC information
+// Copyright (c) 2006-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Utility routines for retrieving ASIC information
 //==============================================================================
 
-#ifdef _WIN32
-#include <windows.h>
-#endif
-
 #include <assert.h>
-#include <string>
 #include <sstream>
+#include <string>
 
 #ifdef _LINUX
 #include <string.h>
 #include <stdlib.h>
 #endif
 
-#include <ADLUtil.h>
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
-#include "logging.h"
-#include "gl_entry_points.h"
+#include "ADLUtil.h"
 #include "asic_info.h"
 #include "DeviceInfo.h"
 
-#define ASIC_GROUP "GPIN"      ///< Driver-defined ASIC info group
-#define ASIC_TYPE_INDEX     0  ///< Driver-defined counter index for asic type
-#define ASIC_NUM_SIMD_INDEX 1  ///< Driver-defined counter index for number of SIMDs
-#define ASIC_NUM_RB_INDEX   2  ///< Driver-defined counter index for number of RBs
-#define ASIC_NUM_SPI_INDEX  3  ///< Driver-defined counter index for number of SPIs
-#define ASIC_NUM_SE_INDEX   4  ///< Driver-defined counter index for number of SEs
-#define ASIC_NUM_SA_INDEX   5  ///< Driver-defined counter index for number of SAs
-#define ASIC_NUM_CU_INDEX   6  ///< Driver-defined counter index for number of CUs
-#define ASIC_DEV_ID_INDEX   7  ///< Driver-defined counter index for device id
-#define ASIC_DEV_REV_INDEX  8  ///< Driver-defined counter index for revision id
+#include "gpu_perf_api_common/logging.h"
 
-namespace oglUtils
+#include "gpu_perf_api_counter_generator/gl_entry_points.h"
+
+#define ASIC_GROUP "GPIN"                       ///< Driver-defined ASIC info group.
+constexpr unsigned char kAsicTypeIndex    = 0;  ///< Driver-defined counter index for ASIC type.
+constexpr unsigned char kAsicNumSimdIndex = 1;  ///< Driver-defined counter index for number of SIMDs.
+constexpr unsigned char kAsicNumRbIndex   = 2;  ///< Driver-defined counter index for number of RBs.
+constexpr unsigned char kAsicNumSpiIndex  = 3;  ///< Driver-defined counter index for number of SPIs.
+constexpr unsigned char kAsicNumSeIndex   = 4;  ///< Driver-defined counter index for number of SEs.
+constexpr unsigned char kAsicNumSaIndex   = 5;  ///< Driver-defined counter index for number of SAs.
+constexpr unsigned char kAsicNumCuIndex   = 6;  ///< Driver-defined counter index for number of CUs.
+constexpr unsigned char kAsicDevIdIndex   = 7;  ///< Driver-defined counter index for device id.
+constexpr unsigned char kAsicDevRevIndex  = 8;  ///< Driver-defined counter index for revision id.
+
+namespace ogl_utils
 {
-    /// Get the group ID for ASICInfo group
-    /// \return -1 if group not found, group ID otherwise
-    GLint GetASICInfoGroupID()
+    /// @brief Get the group ID for ASICInfo group.
+    /// @return -1 if group not found, group ID otherwise.
+    GLint GetAsicInfoGroupId()
     {
-        GLint nNumGroups = 0;
+        GLint num_groups = 0;
 
-        // Get the number of performance counter groups
-        _oglGetPerfMonitorGroupsAMD(&nNumGroups, 0, nullptr);
+        // Get the number of performance counter groups.
+        ogl_get_perf_monitor_groups_amd(&num_groups, 0, nullptr);
 
-        if (nNumGroups > 0)
+        if (num_groups > 0)
         {
-            GLuint* pPerfGroups = new (std::nothrow) GLuint[nNumGroups];
+            GLuint* performance_counter_groups = new (std::nothrow) GLuint[num_groups];
 
-            if (nullptr != pPerfGroups)
+            if (nullptr != performance_counter_groups)
             {
-                // Get the group Ids
-                _oglGetPerfMonitorGroupsAMD(nullptr, nNumGroups, pPerfGroups);
+                // Get the group Ids.
+                ogl_get_perf_monitor_groups_amd(nullptr, num_groups, performance_counter_groups);
 
-                for (int i = 0; i < nNumGroups; i++)
+                for (int i = 0; i < num_groups; i++)
                 {
-                    char groupStr[256];
+                    char group_string[256];
 
-                    // Get the group name
-                    _oglGetPerfMonitorGroupStringAMD(pPerfGroups[i], 255, nullptr, groupStr);
+                    // Get the group name.
+                    ogl_get_perf_monitor_group_string_amd(performance_counter_groups[i], 255, nullptr, group_string);
 
-                    if (!strcmp(groupStr, ASIC_GROUP))
+                    if (!strcmp(group_string, ASIC_GROUP))
                     {
-                        GLint nGroupID = pPerfGroups[i];
-                        delete[] pPerfGroups;
-                        return nGroupID;
+                        GLint group_id = performance_counter_groups[i];
+                        delete[] performance_counter_groups;
+                        return group_id;
                     }
                 }
 
-                delete[] pPerfGroups;
+                delete[] performance_counter_groups;
             }
         }
 
@@ -80,35 +81,37 @@ namespace oglUtils
 
 #ifndef GLES
 
-    /// Parses a version number like this: "4.2.12325 Compatibility Profile Context 13.100.0.0"
+    /// @brief Parses a version number like this: "4.2.12325 Compatibility Profile Context 13.100.0.0".
     /// to extract the "12325" portion.
-    /// \param pVersion the version string to extract the number from
-    /// \return 0 on failure, the build version number on success
-    int ExtractDriverVersionNumber(const GLubyte* pVersion)
+    ///
+    /// @param version_gl_string The version string to extract the number from.
+    ///
+    /// @return 0 on failure, the build version number on success
+    int ExtractDriverVersionNumber(const GLubyte* version_gl_string)
     {
-        //initialize to INT_MAX to simulate most recent driver
+        // Initialize to INT_MAX to simulate most recent driver.
         int version = INT_MAX;
 
-        if (nullptr != pVersion)
+        if (nullptr != version_gl_string)
         {
-            const char* pcszVer = reinterpret_cast<const char*>(pVersion);
+            const char* version_c_string = reinterpret_cast<const char*>(version_gl_string);
 
-            std::string strVer(pcszVer);
+            std::string version_string(version_c_string);
 
-            // the build number ends at the first space
-            size_t endBuild = strVer.find_first_of(' ');
+            // The build number ends at the first space.
+            size_t end_build = version_string.find_first_of(' ');
 
-            // truncate the input at the first space
-            strVer = strVer.substr(0, endBuild);
+            // Truncate the input at the first space.
+            version_string = version_string.substr(0, end_build);
 
-            // the build number starts after the last decimal point
-            size_t startBuild = strVer.find_last_of('.') + 1;
+            // The build number starts after the last decimal point.
+            size_t start_build = version_string.find_last_of('.') + 1;
 
-            // parse the version number
-            std::istringstream iss(strVer.substr(startBuild, endBuild - startBuild));
+            // Parse the version number.
+            std::istringstream iss(version_string.substr(start_build, end_build - start_build));
             iss >> version;
 
-            // couldn't extract version -- return INT_MAX to simulate most recent driver
+            // Couldn't extract version -- return INT_MAX to simulate most recent driver.
             if (iss.fail())
             {
                 version = INT_MAX;
@@ -122,218 +125,216 @@ namespace oglUtils
 
     void AsicInfoManager::InitializeAsicInfo()
     {
-        /*
-         * This static assert will help to find error when we update the AsicIdEnum for new hardware.
-         * Upon failure, we need to add suitable entry for public device and update the static assert for update count.
-         */
-        static_assert(AsicId_LAST == 41, "AsicIdEnum has changed, add suitable entry for asic info.");
+        // This static assert will help to find error when we update the AsicIdEnum for new hardware.
+        // Upon failure, we need to add suitable entry for public device and update the static assert for update count.
+        static_assert(kAsicIdLast == 41, "AsicIdEnum has changed, add suitable entry for asic info.");
 
         if (!is_asic_info_initialized_)
         {
-            for (uint32_t asic_id_iter = AsicId_First; asic_id_iter != AsicId_LAST; ++asic_id_iter)
+            for (uint32_t asic_id_iter = kAsicIdFirst; asic_id_iter != kAsicIdLast; ++asic_id_iter)
             {
                 AsicIdInfo asic_id_info = {};
                 asic_id_info.is_apu     = false;
 
                 switch (asic_id_iter)
                 {
-                case ASIC_ID_TAHITI_P:
-                    asic_id_info.asic_type = ASIC_Gfx6;
-                    asic_id_info.gdt_asic_type = GDT_TAHITI_PRO;
+                case kAsicIdTahitiP:
+                    asic_id_info.asic_type         = kAsicGfx6;
+                    asic_id_info.gdt_asic_type     = GDT_TAHITI_PRO;
                     asic_id_info.default_device_id = 0x679A;
                     break;
 
-                case ASIC_ID_PITCAIRN_PM:
-                    asic_id_info.asic_type         = ASIC_Gfx6;
+                case kAsicIdPitcairnPm:
+                    asic_id_info.asic_type         = kAsicGfx6;
                     asic_id_info.gdt_asic_type     = GDT_PITCAIRN_PRO;
                     asic_id_info.default_device_id = 0x6819;
                     break;
 
-                case ASIC_ID_CAPEVERDE_M:
-                    asic_id_info.asic_type         = ASIC_Gfx6;
+                case kAsicIdCapeverdeM:
+                    asic_id_info.asic_type         = kAsicGfx6;
                     asic_id_info.gdt_asic_type     = GDT_CAPEVERDE_PRO;
                     asic_id_info.default_device_id = 0x6822;
                     break;
 
-                case ASIC_ID_OLAND_M:
-                    asic_id_info.asic_type         = ASIC_Gfx6;
+                case kAsicIdOlandM:
+                    asic_id_info.asic_type         = kAsicGfx6;
                     asic_id_info.gdt_asic_type     = GDT_OLAND;
                     asic_id_info.default_device_id = 0x6610;
                     break;
 
-                case ASIC_ID_HAINAN_M:
-                    asic_id_info.asic_type         = ASIC_Gfx6;
+                case kAsicIdHainanM:
+                    asic_id_info.asic_type         = kAsicGfx6;
                     asic_id_info.gdt_asic_type     = GDT_HAINAN;
                     asic_id_info.default_device_id = 0x6660;
                     break;
 
-                case ASIC_ID_BONAIRE_M:
-                    asic_id_info.asic_type         = ASIC_Gfx7;
+                case kAsicIdBonaireM:
+                    asic_id_info.asic_type         = kAsicGfx7;
                     asic_id_info.gdt_asic_type     = GDT_BONAIRE;
                     asic_id_info.default_device_id = 0x665C;
                     break;
 
-                case ASIC_ID_HAWAII_P:
-                    asic_id_info.asic_type         = ASIC_Gfx7;
+                case kAsicIdHawaiiP:
+                    asic_id_info.asic_type         = kAsicGfx7;
                     asic_id_info.gdt_asic_type     = GDT_HAWAII;
                     asic_id_info.default_device_id = 0x67B0;
                     break;
 
-                case ASIC_ID_KALINDI:
-                    asic_id_info.asic_type         = ASIC_Gfx7;
+                case kAsicIdKalindi:
+                    asic_id_info.asic_type         = kAsicGfx7;
                     asic_id_info.gdt_asic_type     = GDT_KALINDI;
                     asic_id_info.default_device_id = 0x9830;
                     asic_id_info.is_apu            = true;
                     break;
 
-                case ASIC_ID_GODAVARI:
-                    asic_id_info.asic_type         = ASIC_Gfx7;
+                case kAsicIdGodavari:
+                    asic_id_info.asic_type         = kAsicGfx7;
                     asic_id_info.gdt_asic_type     = GDT_KALINDI;
                     asic_id_info.default_device_id = 0x9855;
                     asic_id_info.is_apu            = true;
                     break;
 
-                case ASIC_ID_SPECTRE:
-                    asic_id_info.asic_type         = ASIC_Gfx7;
+                case kAsicIdSpectre:
+                    asic_id_info.asic_type         = kAsicGfx7;
                     asic_id_info.gdt_asic_type     = GDT_SPECTRE;
                     asic_id_info.default_device_id = 0x130C;
                     asic_id_info.is_apu            = true;
                     break;
 
-                case ASIC_ID_SPOOKY:
-                    asic_id_info.asic_type         = ASIC_Gfx7;
+                case kAsicIdSpooky:
+                    asic_id_info.asic_type         = kAsicGfx7;
                     asic_id_info.gdt_asic_type     = GDT_SPOOKY;
                     asic_id_info.default_device_id = 0x130B;
                     asic_id_info.is_apu            = true;
                     break;
 
-                case ASIC_ID_ICELAND_M:
-                    asic_id_info.asic_type         = ASIC_Gfx8;
+                case kAsicIdIcelandM:
+                    asic_id_info.asic_type         = kAsicGfx8;
                     asic_id_info.gdt_asic_type     = GDT_ICELAND;
                     asic_id_info.default_device_id = 0x6900;
                     break;
 
-                case ASIC_ID_TONGA_P:
-                    asic_id_info.asic_type         = ASIC_Gfx8;
+                case kAsicIdTongaP:
+                    asic_id_info.asic_type         = kAsicGfx8;
                     asic_id_info.gdt_asic_type     = GDT_TONGA;
                     asic_id_info.default_device_id = 0x6920;
                     break;
 
-                case ASIC_ID_FIJI_P:
-                    asic_id_info.asic_type         = ASIC_Gfx8;
+                case kAsicIdFijiP:
+                    asic_id_info.asic_type         = kAsicGfx8;
                     asic_id_info.gdt_asic_type     = GDT_FIJI;
                     asic_id_info.default_device_id = 0x7300;
                     break;
 
-                case ASIC_ID_ELLESMERE:
-                    asic_id_info.asic_type         = ASIC_Gfx8;
+                case kAsicIdEllesmere:
+                    asic_id_info.asic_type         = kAsicGfx8;
                     asic_id_info.gdt_asic_type     = GDT_ELLESMERE;
                     asic_id_info.default_device_id = 0x67DF;
                     break;
 
-                case ASIC_ID_BAFFIN:
-                    asic_id_info.asic_type         = ASIC_Gfx8;
+                case kAsicIdBaffin:
+                    asic_id_info.asic_type         = kAsicGfx8;
                     asic_id_info.gdt_asic_type     = GDT_BAFFIN;
                     asic_id_info.default_device_id = 0x67FF;
                     break;
 
-                 case ASIC_ID_LEXA:
-                    asic_id_info.asic_type         = ASIC_Gfx8;
+                case kAsicIdLexa:
+                    asic_id_info.asic_type         = kAsicGfx8;
                     asic_id_info.gdt_asic_type     = GDT_GFX8_0_4;
                     asic_id_info.default_device_id = 0x699F;
                     break;
 
-                case ASIC_ID_VEGAM:
-                     asic_id_info.asic_type         = ASIC_Gfx8;
-                     asic_id_info.gdt_asic_type     = GDT_VEGAM1;
-                     asic_id_info.default_device_id = 0x694C;
-                     break;
+                case kAsicIdVegaM:
+                    asic_id_info.asic_type         = kAsicGfx8;
+                    asic_id_info.gdt_asic_type     = GDT_VEGAM1;
+                    asic_id_info.default_device_id = 0x694C;
+                    break;
 
-                case ASIC_ID_CARRIZO:
-                    asic_id_info.asic_type         = ASIC_Gfx8;
+                case kAsicIdCarrizo:
+                    asic_id_info.asic_type         = kAsicGfx8;
                     asic_id_info.gdt_asic_type     = GDT_CARRIZO;
                     asic_id_info.default_device_id = 0x9874;
                     asic_id_info.is_apu            = true;
                     break;
 
-                case ASIC_ID_STONEY:
-                    asic_id_info.asic_type         = ASIC_Gfx8;
+                case kAsicIdStoney:
+                    asic_id_info.asic_type         = kAsicGfx8;
                     asic_id_info.gdt_asic_type     = GDT_STONEY;
                     asic_id_info.default_device_id = 0x98E4;
                     asic_id_info.is_apu            = true;
                     break;
 
-                case ASIC_ID_GFX900:
-                    asic_id_info.asic_type         = ASIC_Gfx9;
+                case kAsicIdGfx900:
+                    asic_id_info.asic_type         = kAsicGfx9;
                     asic_id_info.gdt_asic_type     = GDT_GFX9_0_0;
                     asic_id_info.default_device_id = 0x687F;
                     break;
 
-                case ASIC_ID_GFX902:
-                    asic_id_info.asic_type         = ASIC_Gfx9;
+                case kAsicIdGfx902:
+                    asic_id_info.asic_type         = kAsicGfx9;
                     asic_id_info.gdt_asic_type     = GDT_GFX9_0_2;
                     asic_id_info.default_device_id = 0x15DD;
                     asic_id_info.is_apu            = true;
                     break;
 
-                case ASIC_ID_PLACEHOLDER:
-                    asic_id_info.asic_type = ASIC_Gfx9;
+                case kAsicIdPlaceholder:
+                    asic_id_info.asic_type = kAsicGfx9;
                     asic_id_info.is_apu    = true;
                     break;
 
-                case ASIC_ID_PLACEHOLDER1:
-                    asic_id_info.asic_type = ASIC_Gfx9;
+                case kAsicIdPlaceholder1:
+                    asic_id_info.asic_type = kAsicGfx9;
                     break;
 
-                case ASIC_ID_GFX906:
-                    asic_id_info.asic_type         = ASIC_Gfx9;
+                case kAsicIdGfx906:
+                    asic_id_info.asic_type         = kAsicGfx9;
                     asic_id_info.gdt_asic_type     = GDT_GFX9_0_6;
                     asic_id_info.default_device_id = 0x66A3;
                     break;
 
-                case ASIC_ID_PLACEHOLDER2:
-                    asic_id_info.asic_type = ASIC_Gfx9;
+                case kAsicIdPlaceholder2:
+                    asic_id_info.asic_type = kAsicGfx9;
                     asic_id_info.is_apu    = true;
                     break;
 
-                case ASIC_ID_PLACEHOLDER3:
-                    asic_id_info.asic_type = ASIC_Gfx9;
+                case kAsicIdPlaceholder3:
+                    asic_id_info.asic_type = kAsicGfx9;
                     asic_id_info.is_apu    = true;
                     break;
 
-                case ASIC_ID_GFX1010:
-                case ASIC_ID_GFX1010LITE:
-                    asic_id_info.asic_type         = ASIC_Gfx10;
+                case kAsicIdGfx1010:
+                case kAsicIdGfx1010Lite:
+                    asic_id_info.asic_type         = kAsicGfx10;
                     asic_id_info.gdt_asic_type     = GDT_GFX10_1_0;
                     asic_id_info.default_device_id = 0x7310;
                     break;
 
-                case ASIC_ID_PLACEHOLDER4:
-                    asic_id_info.asic_type = ASIC_Gfx10;
+                case kAsicIdPlaceholder4:
+                    asic_id_info.asic_type = kAsicGfx10;
                     break;
 
-                case ASIC_ID_PLACEHOLDER5:
-                    asic_id_info.asic_type = ASIC_Gfx10;
+                case kAsicIdPlaceholder5:
+                    asic_id_info.asic_type = kAsicGfx10;
                     break;
 
-                case ASIC_ID_GFX1012:
-                    asic_id_info.asic_type         = ASIC_Gfx10;
+                case kAsicIdGfx1012:
+                    asic_id_info.asic_type         = kAsicGfx10;
                     asic_id_info.gdt_asic_type     = GDT_GFX10_1_0;
                     asic_id_info.default_device_id = 0x7340;
                     break;
 
-                case ASIC_ID_GFX1030:
-                    asic_id_info.asic_type         = ASIC_Gfx103;
+                case kAsicIdGfx1030:
+                    asic_id_info.asic_type         = kAsicGfx103;
                     asic_id_info.gdt_asic_type     = GDT_GFX10_3_0;
                     asic_id_info.default_device_id = 0x731F;
                     break;
 
-                case ASIC_ID_PLACEHOLDER6:
-                case ASIC_ID_PLACEHOLDER7:
-                case ASIC_ID_PLACEHOLDER8:
-                case ASIC_ID_PLACEHOLDER9:
-                case ASIC_ID_PLACEHOLDER10:
-                    asic_id_info.asic_type = ASIC_Gfx103;
+                case kAsicIdPlaceholder6:
+                case kAsicIdPlaceholder7:
+                case kAsicIdPlaceholder8:
+                case kAsicIdPlaceholder9:
+                case kAsicIdPlaceholder10:
+                    asic_id_info.asic_type     = kAsicGfx103;
                     asic_id_info.gdt_asic_type = GDT_GFX10_3_0;
                     break;
 
@@ -341,17 +342,17 @@ namespace oglUtils
                     continue;
                 }
 
-                asic_id_info_map_.insert(std::pair<AsicIDEnum, AsicIdInfo>(static_cast<AsicIDEnum>(asic_id_iter), asic_id_info));
+                asic_id_info_map_.insert(std::pair<AsicIdEnum, AsicIdInfo>(static_cast<AsicIdEnum>(asic_id_iter), asic_id_info));
             }
 
             is_asic_info_initialized_ = true;
         }
     }
 
-    ASICType AsicInfoManager::GetASICTypeFromAsicID(AsicID asic_id)
+    AsicType AsicInfoManager::GetAsicTypeFromAsicId(AsicId asic_id)
     {
         static const char* kAsicTypeStr[] = {"Gfx6", "Gfx7", "Gfx8", "Gfx9", "Gfx10", "Unknown"};
-        ASICType retVal = ASIC_UNKNOWN;
+        AsicType           ret_val        = kAsicUnknown;
 
         if (!is_asic_info_initialized_)
         {
@@ -362,33 +363,33 @@ namespace oglUtils
 
         if (asic_type_iter != asic_id_info_map_.end())
         {
-            retVal = asic_type_iter->second.asic_type;
+            ret_val = asic_type_iter->second.asic_type;
 
             std::stringstream ss;
             if (asic_type_iter->second.is_apu)
             {
-                ss << "Recognized an APU with " << kAsicTypeStr[retVal] << " graphics.";
+                ss << "Recognized an APU with " << kAsicTypeStr[ret_val] << " graphics.";
             }
             else
             {
-                ss << "Recognized a " << kAsicTypeStr[retVal] << " card.";
+                ss << "Recognized a " << kAsicTypeStr[ret_val] << " card.";
             }
 
-            GPA_LogMessage(ss.str().c_str());
+            GPA_LOG_MESSAGE(ss.str().c_str());
         }
         else
         {
-            std::stringstream errorMessage;
-            errorMessage << "Unrecognized asic type: " << asic_id << ".";
-            GPA_LogError(errorMessage.str().c_str());
-            assert(0);  // Unknown ASIC Type, need to update enums list from UGL driver
-            retVal = ASIC_UNKNOWN;
+            std::stringstream error_message;
+            error_message << "Unrecognized asic type: " << asic_id << ".";
+            GPA_LOG_ERROR(error_message.str().c_str());
+            assert(0);  // Unknown ASIC Type, need to update enums list from UGL driver.
+            ret_val = kAsicUnknown;
         }
 
-        return retVal;
+        return ret_val;
     }
 
-    bool AsicInfoManager::GetFallbackAsicInfo(const AsicID& asic_id, GDT_HW_ASIC_TYPE& gdt_hw_asic_type, uint32_t& default_device_id)
+    bool AsicInfoManager::GetFallbackAsicInfo(const AsicId& asic_id, GDT_HW_ASIC_TYPE& gdt_hw_asic_type, uint32_t& default_device_id)
     {
         if (!is_asic_info_initialized_)
         {
@@ -399,19 +400,20 @@ namespace oglUtils
 
         if (asic_type_iter != asic_id_info_map_.end())
         {
-            gdt_hw_asic_type = asic_type_iter->second.gdt_asic_type;
+            gdt_hw_asic_type  = asic_type_iter->second.gdt_asic_type;
             default_device_id = asic_type_iter->second.default_device_id;
             return true;
         }
 
-        std::stringstream errorMessage;
-        errorMessage << "Unrecognized asic type: " << asic_id << ".";
-        GPA_LogError(errorMessage.str().c_str());
-        assert(0);  // Unknown ASIC Type, need to update enums list from UGL driver
+        std::stringstream error_message;
+        error_message << "Unrecognized asic type: " << asic_id << ".";
+        GPA_LOG_ERROR(error_message.str().c_str());
+        assert(0);  // Unknown ASIC Type, need to update enums list from UGL driver.
         return false;
     }
 
-    AsicInfoManager::AsicInfoManager() : is_asic_info_initialized_(false)
+    AsicInfoManager::AsicInfoManager()
+        : is_asic_info_initialized_(false)
     {
     }
 
@@ -421,175 +423,175 @@ namespace oglUtils
         is_asic_info_initialized_ = false;
     }
 
-    bool AsicInfoManager::GetAsicInfoFromDriver(ASICInfo& asicInfo)
+    bool AsicInfoManager::GetAsicInfoFromDriver(AsicInfo& asic_info)
     {
-        if (nullptr == _oglGetPerfMonitorCountersAMD || nullptr == _oglGetPerfMonitorGroupStringAMD || nullptr == _oglGetPerfMonitorCounterInfoAMD ||
-            nullptr == _oglGetPerfMonitorCounterStringAMD || nullptr == _oglGenPerfMonitorsAMD || nullptr == _oglDeletePerfMonitorsAMD ||
-            nullptr == _oglSelectPerfMonitorCountersAMD || nullptr == _oglBeginPerfMonitorAMD || nullptr == _oglEndPerfMonitorAMD ||
-            nullptr == _oglGetPerfMonitorCounterDataAMD)
+        if (nullptr == ogl_get_perf_monitor_counters_amd || nullptr == ogl_get_perf_monitor_group_string_amd ||
+            nullptr == ogl_get_perf_monitor_counter_info_amd || nullptr == ogl_get_perf_monitor_counter_string_amd || nullptr == ogl_gen_perf_monitors_amd ||
+            nullptr == ogl_delete_perf_monitors_amd || nullptr == ogl_select_perf_monitor_counters_amd || nullptr == ogl_begin_perf_monitor_amd ||
+            nullptr == ogl_end_perf_monitor_amd || nullptr == ogl_get_perf_monitor_counter_data_amd)
         {
-            // No AMD_performance_monitor support, means no ASIC info
-            GPA_LogError("One or more of the GL_AMD_performance_monitor functions were not found.");
+            // No AMD_performance_monitor support, means no ASIC info.
+            GPA_LOG_ERROR("One or more of the GL_AMD_performance_monitor functions were not found.");
             return false;
         }
 
-        GLint numCounters = 0;
-        bool  bResult     = false;
+        GLint num_counters = 0;
+        bool  result       = false;
 
 #ifndef GLES
-        const GLubyte* pVersion  = _oglGetString(GL_VERSION);
-        asicInfo.m_driverVersion = ExtractDriverVersionNumber(pVersion);
+        const GLubyte* version_gl_string = ogl_get_string(GL_VERSION);
+        asic_info.driver_version         = ExtractDriverVersionNumber(version_gl_string);
 #else
-        asicInfo.m_driverVersion = INT_MAX;
+        asic_info.driver_version = INT_MAX;
 #endif
 
-        if (asicInfo.m_driverVersion < s_GL_DRIVER_VER_WITH_ONLY_GCN_SUPPORT)
+        if (asic_info.driver_version < kGlDriverVerWithOnlyGcnSupport)
         {
-            // pre-GCN devices were removed from the driver starting with version 13452.
-            // if the driver version is earlier than that we will return an error.
-            GPA_LogError("OpenGL driver version is too old. Please update your driver.");
+            // Pre-GCN devices were removed from the driver starting with version 13452.
+            // If the driver version is earlier than that we will return an error.
+            GPA_LOG_ERROR("OpenGL driver version is too old. Please update your driver.");
             return false;
         }
 
-        GLint group = GetASICInfoGroupID();
+        GLint group = GetAsicInfoGroupId();
 
         if (-1 == group)
         {
-            GPA_LogError("Unable to find the GPIN group.");
+            GPA_LOG_ERROR("Unable to find the GPIN group.");
             return false;
         }
 
-        // Start by getting the list of counters in the group
-        _oglGetPerfMonitorCountersAMD(group, &numCounters, nullptr, 0, nullptr);
+        // Start by getting the list of counters in the group.
+        ogl_get_perf_monitor_counters_amd(group, &num_counters, nullptr, 0, nullptr);
 
-        GLuint* pCounterList = new (std::nothrow) GLuint[numCounters];
+        GLuint* counter_list = new (std::nothrow) GLuint[num_counters];
 
-        if (nullptr != pCounterList)
+        if (nullptr != counter_list)
         {
-            // Get the list of counters in the group
-            _oglGetPerfMonitorCountersAMD(group, nullptr, nullptr, numCounters, pCounterList);
+            // Get the list of counters in the group.
+            ogl_get_perf_monitor_counters_amd(group, nullptr, nullptr, num_counters, counter_list);
 
-            GLuint monitor    = 0;
-            GLuint resultSize = 0;
+            GLuint monitor     = 0;
+            GLuint result_size = 0;
 
-            // Create a monitor for all GPIN counters
-            _oglGenPerfMonitorsAMD(1, &monitor);
+            // Create a monitor for all GPIN counters.
+            ogl_gen_perf_monitors_amd(1, &monitor);
 
-            // Enable all GPIN counters
-            for (int i = 0; i < numCounters; i++)
+            // Enable all GPIN counters.
+            for (int i = 0; i < num_counters; i++)
             {
-                _oglSelectPerfMonitorCountersAMD(monitor, GL_TRUE, group, 1, &pCounterList[i]);
+                ogl_select_perf_monitor_counters_amd(monitor, GL_TRUE, group, 1, &counter_list[i]);
             }
 
-            // begin / end the monitor so that the data is obtained
-            _oglBeginPerfMonitorAMD(monitor);
-            _oglEndPerfMonitorAMD(monitor);
+            // Begin / end the monitor so that the data is obtained.
+            ogl_begin_perf_monitor_amd(monitor);
+            ogl_end_perf_monitor_amd(monitor);
 
-            // Get the counter result size
-            _oglGetPerfMonitorCounterDataAMD(monitor, GL_PERFMON_RESULT_SIZE_AMD, sizeof(resultSize), &resultSize, nullptr);
+            // Get the counter result size.
+            ogl_get_perf_monitor_counter_data_amd(monitor, GL_PERFMON_RESULT_SIZE_AMD, sizeof(result_size), &result_size, nullptr);
 
-            // Result should be 3 GLuint per counter
-            GLint expectedResultSize = (3 * sizeof(GLuint)) * numCounters;
-            assert(static_cast<GLint>(resultSize) == expectedResultSize);
+            // Result should be 3 GLUint per counter.
+            GLint expected_result_size = (3 * sizeof(GLuint)) * num_counters;
+            assert(static_cast<GLint>(result_size) == expected_result_size);
 
-            if (static_cast<GLint>(resultSize) == expectedResultSize)
+            if (static_cast<GLint>(result_size) == expected_result_size)
             {
-                GLubyte* pCounterData = new (std::nothrow) GLubyte[resultSize];
+                GLubyte* counter_data = new (std::nothrow) GLubyte[result_size];
 
-                if (nullptr != pCounterData)
+                if (nullptr != counter_data)
                 {
-                    // Get the counter results
-                    _oglGetPerfMonitorCounterDataAMD(monitor, GL_PERFMON_RESULT_AMD, resultSize, reinterpret_cast<GLuint*>(pCounterData), nullptr);
+                    // Get the counter results.
+                    ogl_get_perf_monitor_counter_data_amd(monitor, GL_PERFMON_RESULT_AMD, result_size, reinterpret_cast<GLuint*>(counter_data), nullptr);
 
-                    for (int i = 0; i < numCounters; i++)
+                    for (int i = 0; i < num_counters; i++)
                     {
-                        // index into the result array for each counter -- the result is the third GLuint out of the three
-                        unsigned int value = (reinterpret_cast<GLuint*>(pCounterData))[(i * 3) + 2];
+                        // Index into the result array for each counter -- the result is the third GLuint out of the three.
+                        unsigned int value = (reinterpret_cast<GLuint*>(counter_data))[(i * 3) + 2];
 
                         switch (i)
                         {
-                        case ASIC_TYPE_INDEX:
-                            asicInfo.m_asicID   = static_cast<AsicID>(value);
-                            asicInfo.m_asicType = GetASICTypeFromAsicID(asicInfo.m_asicID);
+                        case kAsicTypeIndex:
+                            asic_info.asic_id   = static_cast<AsicId>(value);
+                            asic_info.asic_type = GetAsicTypeFromAsicId(asic_info.asic_id);
                             break;
 
-                        case ASIC_NUM_SIMD_INDEX:
-                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                        case kAsicNumSimdIndex:
+                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
-                                asicInfo.m_numSIMD = value;
+                                asic_info.num_simd = value;
                             }
                             break;
 
-                        case ASIC_NUM_RB_INDEX:
-                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                        case kAsicNumRbIndex:
+                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
-                                asicInfo.m_numRB = value;
+                                asic_info.num_rb = value;
                             }
                             break;
 
-                        case ASIC_NUM_SPI_INDEX:
-                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                        case kAsicNumSpiIndex:
+                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
-                                asicInfo.m_numSPI = value;
+                                asic_info.num_spi = value;
                             }
                             break;
 
-                        case ASIC_NUM_SE_INDEX:
-                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                        case kAsicNumSeIndex:
+                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
-                                asicInfo.m_numSE = value;
+                                asic_info.num_se = value;
                             }
                             break;
 
-                        case ASIC_NUM_SA_INDEX:
-                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                        case kAsicNumSaIndex:
+                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
-                                asicInfo.m_numSA = value;
+                                asic_info.num_sa = value;
                             }
                             break;
 
-                        case ASIC_NUM_CU_INDEX:
-                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                        case kAsicNumCuIndex:
+                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
-                                asicInfo.m_numCU = value;
+                                asic_info.num_cu = value;
                             }
                             break;
 
-                        case ASIC_DEV_ID_INDEX:
-                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                        case kAsicDevIdIndex:
+                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
-                                asicInfo.m_deviceId = value;
+                                asic_info.device_id = value;
                             }
                             break;
 
-                        case ASIC_DEV_REV_INDEX:
-                            if (s_GL_DRIVER_VER_WITH_GPIN_COUNTERS <= asicInfo.m_driverVersion)
+                        case kAsicDevRevIndex:
+                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
-                                asicInfo.m_deviceRev = value;
+                                asic_info.device_rev = value;
                             }
                             break;
                         }
 
-                        _oglSelectPerfMonitorCountersAMD(monitor, GL_FALSE, group, 1, &pCounterList[i]);
+                        ogl_select_perf_monitor_counters_amd(monitor, GL_FALSE, group, 1, &counter_list[i]);
                     }
 
-                    bResult = true;
-                    delete[] pCounterData;
+                    result = true;
+                    delete[] counter_data;
                 }
             }
 
-            _oglDeletePerfMonitorsAMD(1, &monitor);
-            delete[] pCounterList;
+            ogl_delete_perf_monitors_amd(1, &monitor);
+            delete[] counter_list;
         }
 
-        if (bResult)
+        if (result)
         {
             std::stringstream message;
-            message << "ASIC ID returned from driver is: " << asicInfo.m_asicID << " and GL_VERSION is: " << asicInfo.m_driverVersion << ".";
-            GPA_LogMessage(message.str().c_str());
+            message << "ASIC ID returned from driver is: " << asic_info.asic_id << " and GL_VERSION is: " << asic_info.driver_version << ".";
+            GPA_LOG_MESSAGE(message.str().c_str());
         }
 
-        return bResult;
+        return result;
     }
 
-}  // namespace oglUtils
+}  // namespace ogl_utils

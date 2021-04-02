@@ -1,174 +1,174 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief PublicCounterDefinitions for VKGFX8 for testing
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief PublicCounterDefinitions for VK GFX8 for testing.
 //==============================================================================
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#ifndef _GPA_TESTS_COUNTERS_PUBLIC_VKGFX8_
-#define _GPA_TESTS_COUNTERS_PUBLIC_VKGFX8_
+#ifndef GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_VK_GFX8
+#define GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_VK_GFX8
 
-#include "gpa_counter_desc.h"
+#include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
 /// Macros for VKGfx8 Public counter index
-#define GPUTimePublicVKGfx8 0
-#define ExecutionDurationPublicVKGfx8 1
-#define ExecutionStartPublicVKGfx8 2
-#define ExecutionEndPublicVKGfx8 3
-#define GPUBusyPublicVKGfx8 4
-#define GPUBusyCyclesPublicVKGfx8 5
-#define TessellatorBusyPublicVKGfx8 6
-#define TessellatorBusyCyclesPublicVKGfx8 7
-#define VSBusyPublicVKGfx8 8
-#define VSBusyCyclesPublicVKGfx8 9
-#define VSTimePublicVKGfx8 10
-#define HSBusyPublicVKGfx8 11
-#define HSBusyCyclesPublicVKGfx8 12
-#define HSTimePublicVKGfx8 13
-#define DSBusyPublicVKGfx8 14
-#define DSBusyCyclesPublicVKGfx8 15
-#define DSTimePublicVKGfx8 16
-#define GSBusyPublicVKGfx8 17
-#define GSBusyCyclesPublicVKGfx8 18
-#define GSTimePublicVKGfx8 19
-#define PSBusyPublicVKGfx8 20
-#define PSBusyCyclesPublicVKGfx8 21
-#define PSTimePublicVKGfx8 22
-#define CSBusyPublicVKGfx8 23
-#define CSBusyCyclesPublicVKGfx8 24
-#define CSTimePublicVKGfx8 25
-#define VSVerticesInPublicVKGfx8 26
-#define VSVALUInstCountPublicVKGfx8 27
-#define VSSALUInstCountPublicVKGfx8 28
-#define VSVALUBusyPublicVKGfx8 29
-#define VSVALUBusyCyclesPublicVKGfx8 30
-#define VSSALUBusyPublicVKGfx8 31
-#define VSSALUBusyCyclesPublicVKGfx8 32
-#define HSPatchesPublicVKGfx8 33
-#define HSVALUInstCountPublicVKGfx8 34
-#define HSSALUInstCountPublicVKGfx8 35
-#define HSVALUBusyPublicVKGfx8 36
-#define HSVALUBusyCyclesPublicVKGfx8 37
-#define HSSALUBusyPublicVKGfx8 38
-#define HSSALUBusyCyclesPublicVKGfx8 39
-#define DSVerticesInPublicVKGfx8 40
-#define DSVALUInstCountPublicVKGfx8 41
-#define DSSALUInstCountPublicVKGfx8 42
-#define DSVALUBusyPublicVKGfx8 43
-#define DSVALUBusyCyclesPublicVKGfx8 44
-#define DSSALUBusyPublicVKGfx8 45
-#define DSSALUBusyCyclesPublicVKGfx8 46
-#define GSPrimsInPublicVKGfx8 47
-#define GSVerticesOutPublicVKGfx8 48
-#define GSVALUInstCountPublicVKGfx8 49
-#define GSSALUInstCountPublicVKGfx8 50
-#define GSVALUBusyPublicVKGfx8 51
-#define GSVALUBusyCyclesPublicVKGfx8 52
-#define GSSALUBusyPublicVKGfx8 53
-#define GSSALUBusyCyclesPublicVKGfx8 54
-#define PrimitiveAssemblyBusyPublicVKGfx8 55
-#define PrimitiveAssemblyBusyCyclesPublicVKGfx8 56
-#define PrimitivesInPublicVKGfx8 57
-#define CulledPrimsPublicVKGfx8 58
-#define ClippedPrimsPublicVKGfx8 59
-#define PAStalledOnRasterizerPublicVKGfx8 60
-#define PAStalledOnRasterizerCyclesPublicVKGfx8 61
-#define PSPixelsOutPublicVKGfx8 62
-#define PSExportStallsPublicVKGfx8 63
-#define PSExportStallsCyclesPublicVKGfx8 64
-#define PSVALUInstCountPublicVKGfx8 65
-#define PSSALUInstCountPublicVKGfx8 66
-#define PSVALUBusyPublicVKGfx8 67
-#define PSVALUBusyCyclesPublicVKGfx8 68
-#define PSSALUBusyPublicVKGfx8 69
-#define PSSALUBusyCyclesPublicVKGfx8 70
-#define CSThreadGroupsPublicVKGfx8 71
-#define CSWavefrontsPublicVKGfx8 72
-#define CSThreadsPublicVKGfx8 73
-#define CSVALUInstsPublicVKGfx8 74
-#define CSVALUUtilizationPublicVKGfx8 75
-#define CSSALUInstsPublicVKGfx8 76
-#define CSVFetchInstsPublicVKGfx8 77
-#define CSSFetchInstsPublicVKGfx8 78
-#define CSVWriteInstsPublicVKGfx8 79
-#define CSFlatVMemInstsPublicVKGfx8 80
-#define CSVALUBusyPublicVKGfx8 81
-#define CSVALUBusyCyclesPublicVKGfx8 82
-#define CSSALUBusyPublicVKGfx8 83
-#define CSSALUBusyCyclesPublicVKGfx8 84
-#define CSMemUnitBusyPublicVKGfx8 85
-#define CSMemUnitBusyCyclesPublicVKGfx8 86
-#define CSMemUnitStalledPublicVKGfx8 87
-#define CSMemUnitStalledCyclesPublicVKGfx8 88
-#define CSWriteUnitStalledPublicVKGfx8 89
-#define CSWriteUnitStalledCyclesPublicVKGfx8 90
-#define CSGDSInstsPublicVKGfx8 91
-#define CSLDSInstsPublicVKGfx8 92
-#define CSFlatLDSInstsPublicVKGfx8 93
-#define CSALUStalledByLDSPublicVKGfx8 94
-#define CSALUStalledByLDSCyclesPublicVKGfx8 95
-#define CSLDSBankConflictPublicVKGfx8 96
-#define CSLDSBankConflictCyclesPublicVKGfx8 97
-#define TexUnitBusyPublicVKGfx8 98
-#define TexUnitBusyCyclesPublicVKGfx8 99
-#define TexTriFilteringPctPublicVKGfx8 100
-#define TexTriFilteringCountPublicVKGfx8 101
-#define NoTexTriFilteringCountPublicVKGfx8 102
-#define TexVolFilteringPctPublicVKGfx8 103
-#define TexVolFilteringCountPublicVKGfx8 104
-#define NoTexVolFilteringCountPublicVKGfx8 105
-#define TexAveAnisotropyPublicVKGfx8 106
-#define DepthStencilTestBusyPublicVKGfx8 107
-#define DepthStencilTestBusyCountPublicVKGfx8 108
-#define HiZTilesAcceptedPublicVKGfx8 109
-#define HiZTilesAcceptedCountPublicVKGfx8 110
-#define HiZTilesRejectedCountPublicVKGfx8 111
-#define PreZTilesDetailCulledPublicVKGfx8 112
-#define PreZTilesDetailCulledCountPublicVKGfx8 113
-#define PreZTilesDetailSurvivingCountPublicVKGfx8 114
-#define HiZQuadsCulledPublicVKGfx8 115
-#define HiZQuadsCulledCountPublicVKGfx8 116
-#define HiZQuadsAcceptedCountPublicVKGfx8 117
-#define PreZQuadsCulledPublicVKGfx8 118
-#define PreZQuadsCulledCountPublicVKGfx8 119
-#define PreZQuadsSurvivingCountPublicVKGfx8 120
-#define PostZQuadsPublicVKGfx8 121
-#define PostZQuadCountPublicVKGfx8 122
-#define PreZSamplesPassingPublicVKGfx8 123
-#define PreZSamplesFailingSPublicVKGfx8 124
-#define PreZSamplesFailingZPublicVKGfx8 125
-#define PostZSamplesPassingPublicVKGfx8 126
-#define PostZSamplesFailingSPublicVKGfx8 127
-#define PostZSamplesFailingZPublicVKGfx8 128
-#define ZUnitStalledPublicVKGfx8 129
-#define ZUnitStalledCyclesPublicVKGfx8 130
-#define DBMemReadPublicVKGfx8 131
-#define DBMemWrittenPublicVKGfx8 132
-#define CBMemReadPublicVKGfx8 133
-#define CBColorAndMaskReadPublicVKGfx8 134
-#define CBMemWrittenPublicVKGfx8 135
-#define CBColorAndMaskWrittenPublicVKGfx8 136
-#define CBSlowPixelPctPublicVKGfx8 137
-#define CBSlowPixelCountPublicVKGfx8 138
-#define FetchSizePublicVKGfx8 139
-#define WriteSizePublicVKGfx8 140
-#define CacheHitPublicVKGfx8 141
-#define CacheMissPublicVKGfx8 142
-#define CacheHitCountPublicVKGfx8 143
-#define CacheMissCountPublicVKGfx8 144
-#define MemUnitBusyPublicVKGfx8 145
-#define MemUnitBusyCyclesPublicVKGfx8 146
-#define MemUnitStalledPublicVKGfx8 147
-#define MemUnitStalledCyclesPublicVKGfx8 148
-#define WriteUnitStalledPublicVKGfx8 149
-#define WriteUnitStalledCyclesPublicVKGfx8 150
+#define GPUTIME_PUBLIC_VK_GFX8 0
+#define EXECUTIONDURATION_PUBLIC_VK_GFX8 1
+#define EXECUTIONSTART_PUBLIC_VK_GFX8 2
+#define EXECUTIONEND_PUBLIC_VK_GFX8 3
+#define GPUBUSY_PUBLIC_VK_GFX8 4
+#define GPUBUSYCYCLES_PUBLIC_VK_GFX8 5
+#define TESSELLATORBUSY_PUBLIC_VK_GFX8 6
+#define TESSELLATORBUSYCYCLES_PUBLIC_VK_GFX8 7
+#define VSBUSY_PUBLIC_VK_GFX8 8
+#define VSBUSYCYCLES_PUBLIC_VK_GFX8 9
+#define VSTIME_PUBLIC_VK_GFX8 10
+#define HSBUSY_PUBLIC_VK_GFX8 11
+#define HSBUSYCYCLES_PUBLIC_VK_GFX8 12
+#define HSTIME_PUBLIC_VK_GFX8 13
+#define DSBUSY_PUBLIC_VK_GFX8 14
+#define DSBUSYCYCLES_PUBLIC_VK_GFX8 15
+#define DSTIME_PUBLIC_VK_GFX8 16
+#define GSBUSY_PUBLIC_VK_GFX8 17
+#define GSBUSYCYCLES_PUBLIC_VK_GFX8 18
+#define GSTIME_PUBLIC_VK_GFX8 19
+#define PSBUSY_PUBLIC_VK_GFX8 20
+#define PSBUSYCYCLES_PUBLIC_VK_GFX8 21
+#define PSTIME_PUBLIC_VK_GFX8 22
+#define CSBUSY_PUBLIC_VK_GFX8 23
+#define CSBUSYCYCLES_PUBLIC_VK_GFX8 24
+#define CSTIME_PUBLIC_VK_GFX8 25
+#define VSVERTICESIN_PUBLIC_VK_GFX8 26
+#define VSVALUINSTCOUNT_PUBLIC_VK_GFX8 27
+#define VSSALUINSTCOUNT_PUBLIC_VK_GFX8 28
+#define VSVALUBUSY_PUBLIC_VK_GFX8 29
+#define VSVALUBUSYCYCLES_PUBLIC_VK_GFX8 30
+#define VSSALUBUSY_PUBLIC_VK_GFX8 31
+#define VSSALUBUSYCYCLES_PUBLIC_VK_GFX8 32
+#define HSPATCHES_PUBLIC_VK_GFX8 33
+#define HSVALUINSTCOUNT_PUBLIC_VK_GFX8 34
+#define HSSALUINSTCOUNT_PUBLIC_VK_GFX8 35
+#define HSVALUBUSY_PUBLIC_VK_GFX8 36
+#define HSVALUBUSYCYCLES_PUBLIC_VK_GFX8 37
+#define HSSALUBUSY_PUBLIC_VK_GFX8 38
+#define HSSALUBUSYCYCLES_PUBLIC_VK_GFX8 39
+#define DSVERTICESIN_PUBLIC_VK_GFX8 40
+#define DSVALUINSTCOUNT_PUBLIC_VK_GFX8 41
+#define DSSALUINSTCOUNT_PUBLIC_VK_GFX8 42
+#define DSVALUBUSY_PUBLIC_VK_GFX8 43
+#define DSVALUBUSYCYCLES_PUBLIC_VK_GFX8 44
+#define DSSALUBUSY_PUBLIC_VK_GFX8 45
+#define DSSALUBUSYCYCLES_PUBLIC_VK_GFX8 46
+#define GSPRIMSIN_PUBLIC_VK_GFX8 47
+#define GSVERTICESOUT_PUBLIC_VK_GFX8 48
+#define GSVALUINSTCOUNT_PUBLIC_VK_GFX8 49
+#define GSSALUINSTCOUNT_PUBLIC_VK_GFX8 50
+#define GSVALUBUSY_PUBLIC_VK_GFX8 51
+#define GSVALUBUSYCYCLES_PUBLIC_VK_GFX8 52
+#define GSSALUBUSY_PUBLIC_VK_GFX8 53
+#define GSSALUBUSYCYCLES_PUBLIC_VK_GFX8 54
+#define PRIMITIVEASSEMBLYBUSY_PUBLIC_VK_GFX8 55
+#define PRIMITIVEASSEMBLYBUSYCYCLES_PUBLIC_VK_GFX8 56
+#define PRIMITIVESIN_PUBLIC_VK_GFX8 57
+#define CULLEDPRIMS_PUBLIC_VK_GFX8 58
+#define CLIPPEDPRIMS_PUBLIC_VK_GFX8 59
+#define PASTALLEDONRASTERIZER_PUBLIC_VK_GFX8 60
+#define PASTALLEDONRASTERIZERCYCLES_PUBLIC_VK_GFX8 61
+#define PSPIXELSOUT_PUBLIC_VK_GFX8 62
+#define PSEXPORTSTALLS_PUBLIC_VK_GFX8 63
+#define PSEXPORTSTALLSCYCLES_PUBLIC_VK_GFX8 64
+#define PSVALUINSTCOUNT_PUBLIC_VK_GFX8 65
+#define PSSALUINSTCOUNT_PUBLIC_VK_GFX8 66
+#define PSVALUBUSY_PUBLIC_VK_GFX8 67
+#define PSVALUBUSYCYCLES_PUBLIC_VK_GFX8 68
+#define PSSALUBUSY_PUBLIC_VK_GFX8 69
+#define PSSALUBUSYCYCLES_PUBLIC_VK_GFX8 70
+#define CSTHREADGROUPS_PUBLIC_VK_GFX8 71
+#define CSWAVEFRONTS_PUBLIC_VK_GFX8 72
+#define CSTHREADS_PUBLIC_VK_GFX8 73
+#define CSVALUINSTS_PUBLIC_VK_GFX8 74
+#define CSVALUUTILIZATION_PUBLIC_VK_GFX8 75
+#define CSSALUINSTS_PUBLIC_VK_GFX8 76
+#define CSVFETCHINSTS_PUBLIC_VK_GFX8 77
+#define CSSFETCHINSTS_PUBLIC_VK_GFX8 78
+#define CSVWRITEINSTS_PUBLIC_VK_GFX8 79
+#define CSFLATVMEMINSTS_PUBLIC_VK_GFX8 80
+#define CSVALUBUSY_PUBLIC_VK_GFX8 81
+#define CSVALUBUSYCYCLES_PUBLIC_VK_GFX8 82
+#define CSSALUBUSY_PUBLIC_VK_GFX8 83
+#define CSSALUBUSYCYCLES_PUBLIC_VK_GFX8 84
+#define CSMEMUNITBUSY_PUBLIC_VK_GFX8 85
+#define CSMEMUNITBUSYCYCLES_PUBLIC_VK_GFX8 86
+#define CSMEMUNITSTALLED_PUBLIC_VK_GFX8 87
+#define CSMEMUNITSTALLEDCYCLES_PUBLIC_VK_GFX8 88
+#define CSWRITEUNITSTALLED_PUBLIC_VK_GFX8 89
+#define CSWRITEUNITSTALLEDCYCLES_PUBLIC_VK_GFX8 90
+#define CSGDSINSTS_PUBLIC_VK_GFX8 91
+#define CSLDSINSTS_PUBLIC_VK_GFX8 92
+#define CSFLATLDSINSTS_PUBLIC_VK_GFX8 93
+#define CSALUSTALLEDBYLDS_PUBLIC_VK_GFX8 94
+#define CSALUSTALLEDBYLDSCYCLES_PUBLIC_VK_GFX8 95
+#define CSLDSBANKCONFLICT_PUBLIC_VK_GFX8 96
+#define CSLDSBANKCONFLICTCYCLES_PUBLIC_VK_GFX8 97
+#define TEXUNITBUSY_PUBLIC_VK_GFX8 98
+#define TEXUNITBUSYCYCLES_PUBLIC_VK_GFX8 99
+#define TEXTRIFILTERINGPCT_PUBLIC_VK_GFX8 100
+#define TEXTRIFILTERINGCOUNT_PUBLIC_VK_GFX8 101
+#define NOTEXTRIFILTERINGCOUNT_PUBLIC_VK_GFX8 102
+#define TEXVOLFILTERINGPCT_PUBLIC_VK_GFX8 103
+#define TEXVOLFILTERINGCOUNT_PUBLIC_VK_GFX8 104
+#define NOTEXVOLFILTERINGCOUNT_PUBLIC_VK_GFX8 105
+#define TEXAVEANISOTROPY_PUBLIC_VK_GFX8 106
+#define DEPTHSTENCILTESTBUSY_PUBLIC_VK_GFX8 107
+#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_VK_GFX8 108
+#define HIZTILESACCEPTED_PUBLIC_VK_GFX8 109
+#define HIZTILESACCEPTEDCOUNT_PUBLIC_VK_GFX8 110
+#define HIZTILESREJECTEDCOUNT_PUBLIC_VK_GFX8 111
+#define PREZTILESDETAILCULLED_PUBLIC_VK_GFX8 112
+#define PREZTILESDETAILCULLEDCOUNT_PUBLIC_VK_GFX8 113
+#define PREZTILESDETAILSURVIVINGCOUNT_PUBLIC_VK_GFX8 114
+#define HIZQUADSCULLED_PUBLIC_VK_GFX8 115
+#define HIZQUADSCULLEDCOUNT_PUBLIC_VK_GFX8 116
+#define HIZQUADSACCEPTEDCOUNT_PUBLIC_VK_GFX8 117
+#define PREZQUADSCULLED_PUBLIC_VK_GFX8 118
+#define PREZQUADSCULLEDCOUNT_PUBLIC_VK_GFX8 119
+#define PREZQUADSSURVIVINGCOUNT_PUBLIC_VK_GFX8 120
+#define POSTZQUADS_PUBLIC_VK_GFX8 121
+#define POSTZQUADCOUNT_PUBLIC_VK_GFX8 122
+#define PREZSAMPLESPASSING_PUBLIC_VK_GFX8 123
+#define PREZSAMPLESFAILINGS_PUBLIC_VK_GFX8 124
+#define PREZSAMPLESFAILINGZ_PUBLIC_VK_GFX8 125
+#define POSTZSAMPLESPASSING_PUBLIC_VK_GFX8 126
+#define POSTZSAMPLESFAILINGS_PUBLIC_VK_GFX8 127
+#define POSTZSAMPLESFAILINGZ_PUBLIC_VK_GFX8 128
+#define ZUNITSTALLED_PUBLIC_VK_GFX8 129
+#define ZUNITSTALLEDCYCLES_PUBLIC_VK_GFX8 130
+#define DBMEMREAD_PUBLIC_VK_GFX8 131
+#define DBMEMWRITTEN_PUBLIC_VK_GFX8 132
+#define CBMEMREAD_PUBLIC_VK_GFX8 133
+#define CBCOLORANDMASKREAD_PUBLIC_VK_GFX8 134
+#define CBMEMWRITTEN_PUBLIC_VK_GFX8 135
+#define CBCOLORANDMASKWRITTEN_PUBLIC_VK_GFX8 136
+#define CBSLOWPIXELPCT_PUBLIC_VK_GFX8 137
+#define CBSLOWPIXELCOUNT_PUBLIC_VK_GFX8 138
+#define FETCHSIZE_PUBLIC_VK_GFX8 139
+#define WRITESIZE_PUBLIC_VK_GFX8 140
+#define CACHEHIT_PUBLIC_VK_GFX8 141
+#define CACHEMISS_PUBLIC_VK_GFX8 142
+#define CACHEHITCOUNT_PUBLIC_VK_GFX8 143
+#define CACHEMISSCOUNT_PUBLIC_VK_GFX8 144
+#define MEMUNITBUSY_PUBLIC_VK_GFX8 145
+#define MEMUNITBUSYCYCLES_PUBLIC_VK_GFX8 146
+#define MEMUNITSTALLED_PUBLIC_VK_GFX8 147
+#define MEMUNITSTALLEDCYCLES_PUBLIC_VK_GFX8 148
+#define WRITEUNITSTALLED_PUBLIC_VK_GFX8 149
+#define WRITEUNITSTALLEDCYCLES_PUBLIC_VK_GFX8 150
 
-/// Number of public counters for VKGfx8
-const size_t VKGFX8_PUBLIC_COUNTER_COUNT = 151;
+/// Number of public counters for VK GFX8 
+const size_t kVkGfx8PublicCounterCount = 151;
 
-/// Array of public counters for VKGfx8
-extern const GPACounterDesc VKGFX8_PUBLIC_COUNTERS[VKGFX8_PUBLIC_COUNTER_COUNT];
+/// Array of public counters for VK GFX8 
+extern const GpaCounterDesc kVkGfx8PublicCounters[kVkGfx8PublicCounterCount];
 
-#endif  // _GPA_TESTS_COUNTERS_PUBLIC_VKGFX8_
+#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_VK_GFX8

@@ -1,8 +1,8 @@
 //==============================================================================
 // Copyright (c) 2019 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GL Functions
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GL Functions
 //==============================================================================
 
 #ifndef X

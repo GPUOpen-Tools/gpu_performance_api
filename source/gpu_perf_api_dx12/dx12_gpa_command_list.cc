@@ -1,141 +1,144 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief DX12 GPA Command List Implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief DX12 GPA Command List Implementation
 //==============================================================================
 
-#include "gpa_common_defs.h"
-#include "dx12_gpa_command_list.h"
-#include "dx12_utils.h"
-#include "dx12_gpa_session.h"
-#include "dx12_gpa_context.h"
-#include "logging.h"
-#include "dx12_gpa_pass.h"
+#include "gpu_perf_api_dx12/dx12_gpa_command_list.h"
+
 #include "ADLUtil.h"
 
-static const UINT32 S_INVALID_SAMPLE_INDEX = static_cast<UINT32>(-1);  ///< Invalid sample index
+#include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_common/logging.h"
 
-DX12GPACommandList::DX12GPACommandList(DX12GPASession*       pDX12GpaSession,
-                                       GPAPass*              pDX12GpaPass,
-                                       void*                 pCmd,
-                                       CommandListId         commandListId,
-                                       GPA_Command_List_Type cmdType)
-    : GPACommandList(pDX12GpaSession, pDX12GpaPass, commandListId, cmdType)
-    , m_usePre1850Config(false)
+#include "gpu_perf_api_dx12/dx12_gpa_context.h"
+#include "gpu_perf_api_dx12/dx12_gpa_pass.h"
+#include "gpu_perf_api_dx12/dx12_gpa_session.h"
+#include "gpu_perf_api_dx12/dx12_utils.h"
+
+static const UINT32 kSInvalidSampleIndex = static_cast<UINT32>(-1);  ///< Invalid sample index.
+
+Dx12GpaCommandList::Dx12GpaCommandList(Dx12GpaSession*    dx12_gpa_session,
+                                       GpaPass*           dx12_gpa_pass,
+                                       void*              cmd,
+                                       CommandListId      command_list_id,
+                                       GpaCommandListType cmd_type)
+    : GpaCommandList(dx12_gpa_session, dx12_gpa_pass, command_list_id, cmd_type)
+    , use_pre1850_config_(false)
 {
-    m_pCmdList            = reinterpret_cast<ID3D12GraphicsCommandList*>(pCmd);
-    unsigned int refCount = m_pCmdList->AddRef();
+    cmd_list_             = reinterpret_cast<ID3D12GraphicsCommandList*>(cmd);
+    unsigned int refCount = cmd_list_->AddRef();
     UNREFERENCED_PARAMETER(refCount);
-    m_pAmdExtSession            = nullptr;
-    m_isCommandListOpenInDriver = false;
-    m_isNonGPAResourceReleased  = false;
+    amd_ext_session_                = nullptr;
+    is_command_list_open_in_driver_ = false;
+    is_non_gpa_resource_released_   = false;
 
-    // Hardware counters are requested from the client even though it is not available in the driver
-    m_hasAnyHardwareCounters = pDX12GpaPass->GetEnabledCounterCount() > 0;
+    // Hardware counters are requested from the client even though it is not available in the driver.
+    has_any_hardware_counters_ = dx12_gpa_pass->GetEnabledCounterCount() > 0;
 
-    // BeginSample configuration struct can change based on driver versions
-    uint32_t majorVer    = 0;
-    uint32_t minorVer    = 0;
-    uint32_t subMinorVer = 0;
-    AMDTADLUtils::Instance()->GetDriverVersion(majorVer, minorVer, subMinorVer);
+    // BeginSample configuration struct can change based on driver versions.
+    uint32_t major_ver     = 0;
+    uint32_t minor_ver     = 0;
+    uint32_t sub_minor_ver = 0;
+    AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
 
-    // If the driver is unsigned, or the version is >= 18.50 use the default configuration
-    if (!(majorVer || minorVer || subMinorVer) || (majorVer > 18) || (majorVer == 18 && minorVer >= 50))
+    // If the driver is unsigned, or the version is >= 18.50 use the default configuration.
+    if (!(major_ver || minor_ver || sub_minor_ver) || (major_ver > 18) || (major_ver == 18 && minor_ver >= 50))
     {
-        m_usePre1850Config = false;
+        use_pre1850_config_ = false;
     }
     else
     {
-        m_usePre1850Config = true;
+        use_pre1850_config_ = true;
     }
 }
 
-DX12GPACommandList::~DX12GPACommandList()
+Dx12GpaCommandList::~Dx12GpaCommandList()
 {
     ReleaseNonGPAResources();
 }
 
-bool DX12GPACommandList::BeginCommandListRequest()
+bool Dx12GpaCommandList::BeginCommandListRequest()
 {
-    std::lock_guard<std::mutex> lock(m_dx12CmdListMutex);
+    std::lock_guard<std::mutex> lock(dx12_cmd_list_mutex_);
     bool                        success = false;
 
-    if (!m_isCommandListOpenInDriver)
+    if (!is_command_list_open_in_driver_)
     {
-        if (nullptr == m_pAmdExtSession)
+        if (nullptr == amd_ext_session_)
         {
-            DX12GPASession* pDx12GpaSession = reinterpret_cast<DX12GPASession*>(GetParentSession());
-            m_pAmdExtSession                = pDx12GpaSession->GetAmdExtInterface()->CreateGpaSession();
-            m_pAmdExtSession->AddRef();  // Holding a reference is not required here, but we are doing so in order to work around an issue in older drivers
+            Dx12GpaSession* dx12_gpa_session = reinterpret_cast<Dx12GpaSession*>(GetParentSession());
+            amd_ext_session_                 = dx12_gpa_session->GetAmdExtInterface()->CreateGpaSession();
+            amd_ext_session_->AddRef();  // Holding a reference is not required here, but we are doing so in order to work around an issue in older drivers.
         }
 
-        HRESULT extensionOpResult = m_pAmdExtSession->Begin(m_pCmdList);
-        success                   = S_OK == extensionOpResult;
+        HRESULT extension_op_result = amd_ext_session_->Begin(cmd_list_);
+        success                     = S_OK == extension_op_result;
 
         if (!success)
         {
-            GPA_LogError("The driver extension is unable to begin the command list.");
+            GPA_LOG_ERROR("The driver extension is unable to begin the command list.");
         }
         else
         {
-            m_isCommandListOpenInDriver = true;
+            is_command_list_open_in_driver_ = true;
         }
     }
     else
     {
-        GPA_LogError("The command list has already been started.");
+        GPA_LOG_ERROR("The command list has already been started.");
     }
 
     return success;
 }
 
-bool DX12GPACommandList::EndCommandListRequest()
+bool Dx12GpaCommandList::EndCommandListRequest()
 {
-    std::lock_guard<std::mutex> lock(m_dx12CmdListMutex);
+    std::lock_guard<std::mutex> lock(dx12_cmd_list_mutex_);
     bool                        success = false;
 
-    if (m_isCommandListOpenInDriver)
+    if (is_command_list_open_in_driver_)
     {
-        HRESULT status = m_pAmdExtSession->End(m_pCmdList);
+        HRESULT status = amd_ext_session_->End(cmd_list_);
 
         if (S_OK == status)
         {
-            success                     = true;
-            m_isCommandListOpenInDriver = false;
+            success                         = true;
+            is_command_list_open_in_driver_ = false;
         }
         else
         {
-            GPA_LogError(
+            GPA_LOG_ERROR(
                 "The driver extension is unable to end the command list. This can occur if GPA_EndCommandList is called after the command list has been "
                 "closed.");
         }
     }
     else
     {
-        GPA_LogError("The command list has not been started.");
+        GPA_LOG_ERROR("The command list has not been started.");
     }
 
     return success;
 }
 
-bool DX12GPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample)
+bool Dx12GpaCommandList::BeginSampleRequest(ClientSampleId client_sample_id, GpaSample* gpa_sample)
 {
     bool success = false;
 
-    DriverSampleId   driverSampleId = 0;
-    GPACounterSource counterSource  = GetPass()->GetCounterSource();
+    DriverSampleId   driver_sample_id = 0;
+    GpaCounterSource counter_source   = GetPass()->GetCounterSource();
 
-    if (GPACounterSource::HARDWARE == counterSource)
+    if (GpaCounterSource::kHardware == counter_source)
     {
-        if (OpenHwSample(clientSampleId, &driverSampleId))
+        if (OpenHwSample(client_sample_id, &driver_sample_id))
         {
             success = true;
         }
     }
-    else if (GPACounterSource::SOFTWARE == counterSource)
+    else if (GpaCounterSource::kSoftware == counter_source)
     {
-        if (OpenSwSample(clientSampleId, &driverSampleId))
+        if (OpenSwSample(client_sample_id, &driver_sample_id))
         {
             success = true;
         }
@@ -143,25 +146,25 @@ bool DX12GPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASa
 
     if (success)
     {
-        pGpaSample->SetDriverSampleId(driverSampleId);
+        gpa_sample->SetDriverSampleId(driver_sample_id);
     }
     else
     {
-        GPA_LogError("Unable to begin sample in command list.");
+        GPA_LOG_ERROR("Unable to begin sample in command list.");
     }
 
     return success;
 }
 
-bool DX12GPACommandList::CloseLastSampleRequest()
+bool Dx12GpaCommandList::CloseLastSampleRequest()
 {
-    GPACounterSource counterSource = GetPass()->GetCounterSource();
+    GpaCounterSource counter_source = GetPass()->GetCounterSource();
 
-    if (GPACounterSource::HARDWARE == counterSource)
+    if (GpaCounterSource::kHardware == counter_source)
     {
         CloseHwSample();
     }
-    else if (GPACounterSource::SOFTWARE == counterSource)
+    else if (GpaCounterSource::kSoftware == counter_source)
     {
         CloseSwSample();
     }
@@ -169,118 +172,118 @@ bool DX12GPACommandList::CloseLastSampleRequest()
     return true;
 }
 
-bool DX12GPACommandList::IsResultReady() const
+bool Dx12GpaCommandList::IsResultReady() const
 {
-    bool isResultReady = true;
+    bool is_result_ready = true;
 
-    isResultReady = m_pAmdExtSession->IsReady();
+    is_result_ready = amd_ext_session_->IsReady();
 
-    for (auto bundleIter = m_secondarySampleAmdExtSessionMap.cbegin(); bundleIter != m_secondarySampleAmdExtSessionMap.cend(); ++bundleIter)
+    for (auto bundleIter = secondary_sample_amd_ext_session_map_.cbegin(); bundleIter != secondary_sample_amd_ext_session_map_.cend(); ++bundleIter)
     {
-        isResultReady &= bundleIter->first->IsReady();
+        is_result_ready &= bundleIter->first->IsReady();
     }
 
-    return isResultReady;
+    return is_result_ready;
 }
 
-GPA_API_Type DX12GPACommandList::GetAPIType() const
+GpaApiType Dx12GpaCommandList::GetApiType() const
 {
-    return GPA_API_DIRECTX_12;
+    return kGpaApiDirectx12;
 }
 
-ID3D12GraphicsCommandList* DX12GPACommandList::GetCmdList() const
+ID3D12GraphicsCommandList* Dx12GpaCommandList::GetCmdList() const
 {
-    return m_pCmdList;
+    return cmd_list_;
 }
 
-bool DX12GPACommandList::CopyBundleSamples(std::vector<ClientSampleId>  clientSampleIds,
-                                           SecondaryDx12Cmd*            pDx12SecondaryCmd,
-                                           std::vector<ClientSampleId>& originalClientSampleIds)
+bool Dx12GpaCommandList::CopyBundleSamples(std::vector<ClientSampleId>  client_sample_ids,
+                                           SecondaryDx12Cmd*            dx12_secondary_cmd,
+                                           std::vector<ClientSampleId>& original_client_sample_ids)
 {
     bool success = false;
 
-    if (GPA_COMMAND_LIST_PRIMARY == GetCmdType() &&
-        nullptr ==
-            GetBundleResultAmdExtSession(clientSampleIds.at(
-                0)))  ///TODO: This should always return nullptr because you've already confirmed that the new clientSampleIds are unique. Therefore this code could be removed.
+    if (kGpaCommandListPrimary == GetCmdType() && nullptr == GetBundleResultAmdExtSession(client_sample_ids.at(0)))
     {
-        DX12GPASession*    pDx12GpaSession       = reinterpret_cast<DX12GPASession*>(GetParentSession());
-        IAmdExtGpaSession* pCopyAmdExtGpaSession = pDx12GpaSession->GetAmdExtInterface()->CopyGpaSession(pDx12SecondaryCmd->GetAmdExtSession());
+        Dx12GpaSession*    dx12_gpa_session         = reinterpret_cast<Dx12GpaSession*>(GetParentSession());
+        IAmdExtGpaSession* copy_amd_ext_gpa_session = dx12_gpa_session->GetAmdExtInterface()->CopyGpaSession(dx12_secondary_cmd->GetAmdExtSession());
 
-        pCopyAmdExtGpaSession->CopyResults(m_pCmdList);
-        BundleSamplesOnPrimaryCmd bundleSamplesOnPrimaryCmd(clientSampleIds.begin(), clientSampleIds.end());
-        m_secondarySampleAmdExtSessionMap.insert(BundleResultAmdExtSessionBundleSamplesOnPrimaryCmdPair(pCopyAmdExtGpaSession, bundleSamplesOnPrimaryCmd));
-        pCopyAmdExtGpaSession->AddRef();  // Holding a reference is not required here, but we are doing so in order to work around an issue in older drivers
+        copy_amd_ext_gpa_session->CopyResults(cmd_list_);
+        BundleSamplesOnPrimaryCmd bundle_samples_on_primary_cmd(client_sample_ids.begin(), client_sample_ids.end());
 
-        auto insertOriginalClientSampleId = [&](ClientSampleIdGpaSamplePair clientSampleIdGpaSamplePair) -> bool {
-            originalClientSampleIds.push_back(clientSampleIdGpaSamplePair.first);
+        // Holding a reference is not required here, but we are doing so in order to work around an issue in older drivers.
+        secondary_sample_amd_ext_session_map_.insert(
+            BundleResultAmdExtSessionBundleSamplesOnPrimaryCmdPair(copy_amd_ext_gpa_session, bundle_samples_on_primary_cmd));
+        copy_amd_ext_gpa_session->AddRef();
+
+        auto insert_original_client_sample_id = [&](ClientSampleIdGpaSamplePair client_sample_id_gpa_sample_pair) -> bool {
+            original_client_sample_ids.push_back(client_sample_id_gpa_sample_pair.first);
             return true;
         };
 
-        pDx12SecondaryCmd->IterateSampleUnorderedMap(insertOriginalClientSampleId);
+        dx12_secondary_cmd->IterateSampleUnorderedMap(insert_original_client_sample_id);
 
         success = true;
     }
     else
     {
-        GPA_LogError("Unable to copy bundle samples. Copying is only supported on primary command lists for samples that do not already exist.");
+        GPA_LOG_ERROR("Unable to copy bundle samples. Copying is only supported on primary command lists for samples that do not already exist.");
     }
 
     return success;
 }
 
-IAmdExtGpaSession* DX12GPACommandList::GetAmdExtSession() const
+IAmdExtGpaSession* Dx12GpaCommandList::GetAmdExtSession() const
 {
-    return m_pAmdExtSession;
+    return amd_ext_session_;
 }
 
-IAmdExtGpaSession* DX12GPACommandList::GetBundleResultAmdExtSession(ClientSampleId clientSampleId) const
+IAmdExtGpaSession* Dx12GpaCommandList::GetBundleResultAmdExtSession(ClientSampleId client_sample_id) const
 {
-    bool               sampleFound             = false;
-    IAmdExtGpaSession* pBundleResultExtSession = nullptr;
+    bool               sample_found              = false;
+    IAmdExtGpaSession* bundle_result_ext_session = nullptr;
 
-    for (auto iter = m_secondarySampleAmdExtSessionMap.cbegin(); iter != m_secondarySampleAmdExtSessionMap.cend() && !sampleFound; ++iter)
+    for (auto iter = secondary_sample_amd_ext_session_map_.cbegin(); iter != secondary_sample_amd_ext_session_map_.cend() && !sample_found; ++iter)
     {
-        if (iter->second.find(clientSampleId) != iter->second.end())
+        if (iter->second.find(client_sample_id) != iter->second.end())
         {
-            // Search the client sample id in each set
-            pBundleResultExtSession = iter->first;
-            sampleFound             = true;
+            // Search the client sample id in each set.
+            bundle_result_ext_session = iter->first;
+            sample_found              = true;
         }
     }
 
-    return pBundleResultExtSession;
+    return bundle_result_ext_session;
 }
 
-bool DX12GPACommandList::OpenHwSample(ClientSampleId clientSampleId, DriverSampleId* pDriverSampleId) const
+bool Dx12GpaCommandList::OpenHwSample(ClientSampleId client_sample_id, DriverSampleId* driver_sample_id) const
 {
-    UNREFERENCED_PARAMETER(clientSampleId);
+    UNREFERENCED_PARAMETER(client_sample_id);
     bool success = false;
 
-    if (nullptr != pDriverSampleId)
+    if (nullptr != driver_sample_id)
     {
-        if (m_isCommandListOpenInDriver)
+        if (is_command_list_open_in_driver_)
         {
             success = true;
 
-            if (m_hasAnyHardwareCounters)
+            if (has_any_hardware_counters_)
             {
-                // If the driver is unsigned, or the version is >= 18.50 use the default configuration
-                if (m_usePre1850Config)
+                // If the driver is unsigned, or the version is >= 18.50 use the default configuration.
+                if (use_pre1850_config_)
                 {
-                    auto olderConfig = reinterpret_cast<DX12GPAPass*>(GetPass())->GetPre1850DriverExtSampleConfig();
+                    auto older_config = reinterpret_cast<Dx12GpaPass*>(GetPass())->GetPre1850DriverExtSampleConfig();
 
-                    *pDriverSampleId = m_pAmdExtSession->BeginSample(m_pCmdList, *(AmdExtGpaSampleConfig*)(&olderConfig));
+                    *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, *(AmdExtGpaSampleConfig*)(&older_config));
                 }
                 else
                 {
-                    *pDriverSampleId = m_pAmdExtSession->BeginSample(m_pCmdList, reinterpret_cast<DX12GPAPass*>(GetPass())->GetDriverExtSampleConfig());
+                    *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, reinterpret_cast<Dx12GpaPass*>(GetPass())->GetDriverExtSampleConfig());
                 }
 
-                if (*pDriverSampleId == S_INVALID_SAMPLE_INDEX)
+                if (*driver_sample_id == kSInvalidSampleIndex)
                 {
                     success = false;
-                    GPA_LogError("Unable to begin request due to invalid sample index.");
+                    GPA_LOG_ERROR("Unable to begin request due to invalid sample index.");
                 }
                 else
                 {
@@ -293,15 +296,15 @@ bool DX12GPACommandList::OpenHwSample(ClientSampleId clientSampleId, DriverSampl
     return success;
 }
 
-bool DX12GPACommandList::CloseHwSample() const
+bool Dx12GpaCommandList::CloseHwSample() const
 {
     bool success = false;
 
-    if (m_isCommandListOpenInDriver && nullptr != GetLastSample())
+    if (is_command_list_open_in_driver_ && nullptr != GetLastSample())
     {
-        if (m_hasAnyHardwareCounters)
+        if (has_any_hardware_counters_)
         {
-            m_pAmdExtSession->EndSample(m_pCmdList, GetLastSample()->GetDriverSampleId());
+            amd_ext_session_->EndSample(cmd_list_, GetLastSample()->GetDriverSampleId());
         }
 
         success = true;
@@ -310,45 +313,40 @@ bool DX12GPACommandList::CloseHwSample() const
     return success;
 }
 
-bool DX12GPACommandList::OpenSwSample(ClientSampleId clientSampleId, DriverSampleId* pDriverSampleId) const
+bool Dx12GpaCommandList::OpenSwSample(ClientSampleId client_sample_id, DriverSampleId* driver_sample_id) const
 {
-    // TODO: Come back when we are implementing software counters
     GPA_STUB_FUNCTION;
-    UNREFERENCED_PARAMETER(clientSampleId);
-    UNREFERENCED_PARAMETER(pDriverSampleId);
+    UNREFERENCED_PARAMETER(client_sample_id);
+    UNREFERENCED_PARAMETER(driver_sample_id);
     return true;
 }
 
-bool DX12GPACommandList::CloseSwSample()
+bool Dx12GpaCommandList::CloseSwSample()
 {
-    // TODO: Come back when we are implementing software counters
     GPA_STUB_FUNCTION;
     return true;
 }
 
-void DX12GPACommandList::ReleaseNonGPAResources()
+void Dx12GpaCommandList::ReleaseNonGPAResources()
 {
-    if (!m_isNonGPAResourceReleased)
+    if (!is_non_gpa_resource_released_)
     {
-        unsigned int refCount = m_pCmdList->Release();
-        UNREFERENCED_PARAMETER(refCount);
-        m_pCmdList                 = nullptr;
-        m_isNonGPAResourceReleased = true;
+        unsigned int ref_count = cmd_list_->Release();
+        UNREFERENCED_PARAMETER(ref_count);
+        cmd_list_                     = nullptr;
+        is_non_gpa_resource_released_ = true;
 
-        /*
-         * We won't rely on Release() to delete extension session objects because of an issue in older drivers,
-         * rather we will use DestroyGpaSession to delete the session object
-         */
+        // We won't rely on Release() to delete extension session objects because of an issue in older drivers,
+        // rather we will use DestroyGpaSession to delete the session object.
+        Dx12GpaSession* dx12_gpa_session = reinterpret_cast<Dx12GpaSession*>(GetParentSession());
+        dx12_gpa_session->GetAmdExtInterface()->DestroyGpaSession(amd_ext_session_);
+        amd_ext_session_ = nullptr;
 
-        DX12GPASession* pDx12GpaSession = reinterpret_cast<DX12GPASession*>(GetParentSession());
-        pDx12GpaSession->GetAmdExtInterface()->DestroyGpaSession(m_pAmdExtSession);
-        m_pAmdExtSession = nullptr;
-
-        for (auto iter = m_secondarySampleAmdExtSessionMap.begin(); iter != m_secondarySampleAmdExtSessionMap.end(); ++iter)
+        for (auto iter = secondary_sample_amd_ext_session_map_.begin(); iter != secondary_sample_amd_ext_session_map_.end(); ++iter)
         {
-            pDx12GpaSession->GetAmdExtInterface()->DestroyGpaSession(iter->first);
+            dx12_gpa_session->GetAmdExtInterface()->DestroyGpaSession(iter->first);
         }
 
-        m_secondarySampleAmdExtSessionMap.clear();
+        secondary_sample_amd_ext_session_map_.clear();
     }
 }

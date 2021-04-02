@@ -1,102 +1,102 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Internal class to support profiling GPA calls themselves
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Internal class to support profiling GPA calls themselves.
 //==============================================================================
 
 //#define ENABLE_PROFILING
 #ifdef ENABLE_PROFILING
 
-#include "gpa_profiler.h"
+#include "gpu_perf_api_common/gpa_profiler.h"
 
-#include "assert.h"
+#include <assert.h>
 
 #include <iostream>
 #include <fstream>
 
 using namespace std;
 
-static DWORD getCPUFreq()
+static DWORD GetCpuFreq()
 {
-    DWORD BufSize = sizeof(DWORD);
-    DWORD dwMHz;
-    HKEY  hKey;
+    DWORD buf_size = sizeof(DWORD);
+    DWORD freq_mhz;
+    HKEY  key_handle;
 
-    // open the key where the proc speed is hidden:
-    long lError = RegOpenKeyExA(HKEY_LOCAL_MACHINE, "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0", 0, KEY_READ, &hKey);
+    // Open the key where the proc speed is hidden.
+    long l_error = RegOpenKeyExA(HKEY_LOCAL_MACHINE, "HARDWARE\\DESCRIPTION\\System\\CentralProcessor\\0", 0, KEY_READ, &key_handle);
 
-    assert(lError == ERROR_SUCCESS);
-    UNREFERENCED_PARAMETER(lError);
+    assert(l_error == ERROR_SUCCESS);
+    UNREFERENCED_PARAMETER(l_error);
 
-    // query the key;
-    RegQueryValueExA(hKey, "~MHz", nullptr, nullptr, (LPBYTE)&dwMHz, &BufSize);
+    // Query the key.
+    RegQueryValueExA(key_handle, "~MHz", nullptr, nullptr, (LPBYTE)&freq_mhz, &buf_size);
 
-    RegCloseKey(hKey);
+    RegCloseKey(key_handle);
 
-    return dwMHz;
+    return freq_mhz;
 }
 
-static __int64 GetRDTSCTicksPerSecond()
+static __int64 GetRdtscTicksPerSecond()
 {
-    // use this to control how much time is spent measuring the high freq clock.
+    // Use this to control how much time is spent measuring the high freq clock.
     // Measure for 1 / scaling seconds.
     // Higher numbers mean less time spent measuring but larger potential error range.
     const __int64 scaling = 4;
 
-    // variables for the clock-cycles:
-    __int64 cyclesStart = 0, cyclesStop = 0;
+    // Variables for the clock-cycles.
+    __int64 cycles_start = 0, cycles_stop = 0;
 
-    // variables for the High-Res Preformance Counter:
-    unsigned __int64 nCtr = 0, nFreq = 0, nCtrStop = 0;
+    // Variables for the High-Res Performance Counter.
+    unsigned __int64 ctr_start = 0, freq = 0, ctr_stop = 0;
 
-    // retrieve performance-counter frequency per second:
-    if (!QueryPerformanceFrequency((LARGE_INTEGER*)&nFreq))
+    // Retrieve performance-counter frequency per second.
+    if (!QueryPerformanceFrequency((LARGE_INTEGER*)&freq))
     {
         return 0;
     }
 
-    // retrieve the current value of the performance counter:
-    QueryPerformanceCounter((LARGE_INTEGER*)&nCtrStop);
+    // Retrieve the current value of the performance counter.
+    QueryPerformanceCounter((LARGE_INTEGER*)&ctr_stop);
 
-    // add the frequency to the counter-value:
-    nCtrStop += nFreq / scaling;
+    // Add the frequency to the counter-value.
+    ctr_stop += freq / scaling;
 
-    cyclesStart = __rdtsc();
+    cycles_start = __rdtsc();
 
     do
     {
-        // retrieve the value of the performance counter
-        // until 1 sec has gone by:
-        QueryPerformanceCounter((LARGE_INTEGER*)&nCtr);
-    } while (nCtr < nCtrStop);
+        // Retrieve the value of the performance counter
+        // until 1 sec has gone by.
+        QueryPerformanceCounter((LARGE_INTEGER*)&ctr_start);
+    } while (ctr_start < ctr_stop);
 
-    cyclesStop = __rdtsc();
+    cycles_stop = __rdtsc();
 
-    return (cyclesStop - cyclesStart) * scaling;
+    return (cycles_stop - cycles_start) * scaling;
 }
 
-// Constructor uses init to determine tick rate on this computer
 Profiler::Profiler()
 {
-    m_RDTSCTicksPerSecond = 0;
+    // Constructor uses init to determine tick rate on this computer.
+    rdtsc_ticks_per_second_ = 0;
     Init();
 }
 
-// determine tick rate on this computer
-// also SetThreadAffinityMask to ensure accurate timings since running on same core always
 bool Profiler::Init()
 {
+    // Determine tick rate on this computer.
+    // Also SetThreadAffinityMask to ensure accurate timings since running on same core always.
     Reset();
 
     SetThreadAffinityMask(GetCurrentThread(), 1);
 
-    m_RDTSCTicksPerSecond = GetRDTSCTicksPerSecond();
-    DWORD freq            = getCPUFreq();
+    rdtsc_ticks_per_second_ = GetRdtscTicksPerSecond();
+    DWORD freq              = GetCpuFreq();
 
-    DWORD freqCompare = DWORD(m_RDTSCTicksPerSecond / 1000000);
+    DWORD freq_compare = DWORD(rdtsc_ticks_per_second_ / 1000000);
 
-    if (freqCompare != freq)
+    if (freq_compare != freq)
     {
         return false;
     }
@@ -106,158 +106,157 @@ bool Profiler::Init()
 
 void Profiler::Reset()
 {
-    m_startedTimestamps.clear();
-    m_totalTimeBelowParent.clear();
-    m_functionMap.clear();
+    started_timestamps_.clear();
+    total_time_below_parent_.clear();
+    function_map_.clear();
 
-    m_totalTime    = 0;
-    m_timingErrors = 0;
-    m_active       = false;
+    total_time_    = 0;
+    timing_errors_ = 0;
+    is_active_     = false;
 }
 
 void Profiler::Start()
 {
     Reset();
-    m_active    = true;
-    m_startTime = __rdtsc();
+    is_active_  = true;
+    start_time_ = __rdtsc();
 }
 
 void Profiler::Stop()
 {
-    m_stopTime = __rdtsc();
-    m_active   = false;
+    stop_time_ = __rdtsc();
+    is_active_ = false;
 }
 
-bool Profiler::EnterFunction(const char* pFunctionName)
+bool Profiler::EnterFunction(const char* function_name)
 {
-    UNREFERENCED_PARAMETER(pFunctionName);
+    UNREFERENCED_PARAMETER(function_name);
 
-    __int64 startTimestamp = __rdtsc();
+    __int64 start_timestamp = __rdtsc();
 
-    // ignore any profiling calls when not active
+    // Ignore any profiling calls when not active.
     if (!Active())
     {
         return true;
     }
 
-    // add enter timestamp to stack
-    m_startedTimestamps.push_back(startTimestamp);
-    // start time below total at 0
-    m_totalTimeBelowParent.push_back(0);
+    // Add enter timestamp to stack.
+    started_timestamps_.push_back(start_timestamp);
+    // Start time below total at 0.
+    total_time_below_parent_.push_back(0);
 
     return true;
 }
 
-bool Profiler::LeaveFunction(const char* pFunctionName)
+bool Profiler::LeaveFunction(const char* function_name)
 {
-    __int64 endTimestamp = __rdtsc();
+    __int64 end_timestamp = __rdtsc();
 
-    // ignore any profiling calls when not active
+    // Ignore any profiling calls when not active.
     if (!Active())
     {
         return true;
     }
 
-    // ensure that enter function was called prior to this leave
-    assert(m_startedTimestamps.size() > 0);
+    // Ensure that enter function was called prior to this leave.
+    assert(started_timestamps_.size() > 0);
 
-    if (m_startedTimestamps.size() == 0)
+    if (started_timestamps_.size() == 0)
     {
         return false;
     }
 
-    // pop the start time for the function
-    __int64 startTimestamp = m_startedTimestamps.back();
-    m_startedTimestamps.pop_back();
+    // Pop the start time for the function.
+    __int64 start_timestamp = started_timestamps_.back();
+    started_timestamps_.pop_back();
 
-    // look up the function info for this function
-    FunctionInfo& fi = m_functionMap[std::string(pFunctionName)];
+    // Look up the function info for this function.
+    FunctionInfo& fi = function_map_[std::string(function_name)];
 
-    // inc call count
+    // Increment call count
     fi.calls++;
 
-    // compute delta between entering and leaving the function
-    __int64 deltaForThisInvocation = endTimestamp - startTimestamp;
+    // Compute delta between entering and leaving the function.
+    __int64 delta_for_this_invocation = end_timestamp - start_timestamp;
 
-    if (deltaForThisInvocation < 0)
+    if (delta_for_this_invocation < 0)
     {
-        // problem timing
-        deltaForThisInvocation = 0;
-        m_timingErrors++;
-        //try and fix
+        // There is a problem with timing.
+        delta_for_this_invocation = 0;
+        timing_errors_++;
+        // Try and fix.
         SetThreadAffinityMask(GetCurrentThread(), 1);
     }
 
-    // inc total time spent in profiled code
-    fi.totalTime += deltaForThisInvocation;
+    // Increment total time spent in profiled code.
+    fi.total_time_ += delta_for_this_invocation;
 
-    // retrieve the time below total, which will have been updated by any functions below this one
-    fi.timeBelow += m_totalTimeBelowParent.back();
-    m_totalTimeBelowParent.pop_back();
+    // Retrieve the time below total, which will have been updated by any functions below this one.
+    fi.time_below_ += total_time_below_parent_.back();
+    total_time_below_parent_.pop_back();
 
-    // now contribute to parent of this function if there was one
-    if (m_totalTimeBelowParent.size() > 0)
+    // Now contribute to parent of this function if there was one.
+    if (total_time_below_parent_.size() > 0)
     {
-        // we are below a parent function, so add the time of this function to the time below total
-        m_totalTimeBelowParent[m_totalTimeBelowParent.size() - 1] += deltaForThisInvocation;
+        // We are below a parent function, so add the time of this function to the time below total.
+        total_time_below_parent_[total_time_below_parent_.size() - 1] += delta_for_this_invocation;
     }
     else
     {
-        // we are now evaluating a top level function call, add it's total time to the total time for profiling
-        m_totalTime += deltaForThisInvocation;
+        // We are now evaluating a top level function call, add it's total time to the total time for profiling.
+        total_time_ += delta_for_this_invocation;
     }
 
     return true;
 }
 
-FunctionInfo& Profiler::GetFunctionInfo(const char* pFunctionName)
+FunctionInfo& Profiler::GetFunctionInfo(const char* function_name)
 {
-    FunctionInfo& fi = m_functionMap[std::string(pFunctionName)];
+    FunctionInfo& fi = function_map_[std::string(function_name)];
     return fi;
 }
 
-void Profiler::outputTime(std::stringstream& ss, __int64 time)
+void Profiler::OutputTime(std::stringstream& ss, __int64 time) const
 {
-    double t = (double)time / (double)m_RDTSCTicksPerSecond;
+    double t = (double)time / (double)rdtsc_ticks_per_second_;
     ss << t;
     ss << "(";
     ss << time;
     ss << ")";
 }
 
-// create a string containing a report of all profiling
+// Create a string containing a report of all profiling.
 std::string Profiler::GenerateReport()
 {
-    // if profiling, stop
+    // If profiling, stop.
     if (Active())
     {
         Stop();
     }
 
-    //   std::string str;
     std::stringstream str;
     str << "Time profiling = ";
-    outputTime(str, m_stopTime - m_startTime);
+    OutputTime(str, stop_time_ - start_time_);
     str << std::endl;
 
     str << "Total time in functions = ";
-    outputTime(str, m_totalTime);
+    OutputTime(str, total_time_);
     str << std::endl;
 
     str << "% time in functions = ";
-    double pctOfTotal = (double)m_totalTime * 100.0 / (double)(m_stopTime - m_startTime);
-    str << pctOfTotal;
+    double percent_of_total = (double)total_time_ * 100.0 / (double)(stop_time_ - start_time_);
+    str << percent_of_total;
     str << std::endl;
 
     str << "Timing errors = ";
-    str << m_timingErrors;
+    str << timing_errors_;
     str << std::endl;
     str << std::endl;
 
     str << "Function, # of calls, in % of total time, total % of total time, total time, time per call, total time in, time in per call";
     str << std::endl;
 
-    for (std::map<std::string, FunctionInfo>::const_iterator it = m_functionMap.begin(); it != m_functionMap.end(); it++)
+    for (std::map<std::string, FunctionInfo>::const_iterator it = function_map_.begin(); it != function_map_.end(); it++)
     {
         //      str << "Function ";
 #if 0
@@ -265,11 +264,11 @@ std::string Profiler::GenerateReport()
         str << ":[";
         str << it->second.calls;
         str << "] tot: ";
-        outputTime(str, it->second.totalTime);
+        outputTime(str, it->second.total_time_);
         str << ", in: ";
-        outputTime(str, it->second.totalTime - it->second.timeBelow);
+        outputTime(str, it->second.total_time_ - it->second.time_below_);
         str << ", %: ";
-        double pct = ((double)(it->second.totalTime - it->second.timeBelow) / (double)m_totalTime) * 100.0;
+        double pct = ((double)(it->second.total_time_ - it->second.time_below_) / (double)total_time_) * 100.0;
         str << pct;
         str << endl;
 #endif
@@ -277,19 +276,19 @@ std::string Profiler::GenerateReport()
         str << ", ";
         str << it->second.calls;
         str << ", ";
-        double pct = ((double)(it->second.totalTime - it->second.timeBelow) / (double)m_totalTime) * 100.0;
+        double pct = ((double)(it->second.total_time_ - it->second.time_below_) / (double)total_time_) * 100.0;
         str << pct;
         str << ", ";
-        double pctTotal = ((double)it->second.totalTime / (double)m_totalTime) * 100.0;
-        str << pctTotal;
+        double percent_total = ((double)it->second.total_time_ / (double)total_time_) * 100.0;
+        str << percent_total;
         str << ", ";
-        outputTime(str, it->second.totalTime);
+        OutputTime(str, it->second.total_time_);
         str << ", ";
-        outputTime(str, it->second.totalTime / it->second.calls);
+        OutputTime(str, it->second.total_time_ / it->second.calls);
         str << ", ";
-        outputTime(str, it->second.totalTime - it->second.timeBelow);
+        OutputTime(str, it->second.total_time_ - it->second.time_below_);
         str << ", ";
-        outputTime(str, (it->second.totalTime - it->second.timeBelow) / it->second.calls);
+        OutputTime(str, (it->second.total_time_ - it->second.time_below_) / it->second.calls);
         str << ", ";
         str << endl;
     }
@@ -297,11 +296,11 @@ std::string Profiler::GenerateReport()
     return str.str();
 }
 
-// generate a profiling report and write it to disk using the specified filename.
-void Profiler::WriteReport(std::string filename)
+// Generate a profiling report and write it to disk using the specified file_name.
+void Profiler::WriteReport(std::string file_name)
 {
     string   s = GenerateReport();
-    ofstream file(filename.c_str(), ios::out);
+    ofstream file(file_name.c_str(), ios::out);
 
     if (file.is_open())
     {
@@ -310,7 +309,7 @@ void Profiler::WriteReport(std::string filename)
     }
 }
 
-Profiler gProfilerSingleton;
+Profiler profiler_singleton;
 
 #else
 // !ENABLE_PROFILING

@@ -1,24 +1,24 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_GetStatusAsStr
-@@@@@@@@@@@@@@@@@@
+GpaGetStatusAsStr
+@@@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    const char* GPA_GetStatusAsStr(
-        GPA_Status status);
+    const char* GpaGetStatusAsStr(
+        GpaStatus status);
 
 Description
 %%%%%%%%%%%
 
 Gets a string representation of the specified GPA status value. Provides a
-simple method to convert a GPA_Status value into a string which can be used to
+simple method to convert a GpaStatus value into a string which can be used to
 display log messages. When an error is returned from a GPA function, GPA will
 also output more information about the error to a logging function if one has
-been registered using GPA_RegisterLoggingCallback.
+been registered using GpaRegisterLoggingCallback.
 
 Parameters
 %%%%%%%%%%

@@ -1,133 +1,135 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  DX11 utility function implementation
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  DX11 utility function implementation
 //==============================================================================
 
-#include "dx11_utils.h"
-#include "dxx_ext_utils.h"
-#include "gpa_common_defs.h"
+#include "gpu_perf_api_dx11/dx11_utils.h"
 
-bool DX11Utils::GetD3D11Device(IUnknown* pInterfacePointer, ID3D11Device** ppD3D11Device)
+#include "gpu_perf_api_common/gpa_common_defs.h"
+
+#include "gpu_perf_api_dx11/dxx_ext_utils.h"
+
+bool dx11_utils::GetD3D11Device(IUnknown* interface_pointer, ID3D11Device** d3d11_device)
 {
-    *ppD3D11Device = nullptr;
-    bool success   = false;
+    *d3d11_device = nullptr;
+    bool success  = false;
 
-    // Check to see if it's an ID3D11Device
-    HRESULT hr = pInterfacePointer->QueryInterface(__uuidof(ID3D11Device), reinterpret_cast<void**>(ppD3D11Device));
+    // Check to see if it's an ID3D11Device.
+    HRESULT hr = interface_pointer->QueryInterface(__uuidof(ID3D11Device), reinterpret_cast<void**>(d3d11_device));
 
     if (hr == E_NOINTERFACE)
     {
-        // It's not an ID3D11device, so see if it is an ID3D11DeviceChild-derived interface
-        ID3D11DeviceChild* pDeviceChild = nullptr;
-        hr                              = pInterfacePointer->QueryInterface(__uuidof(ID3D11DeviceChild), reinterpret_cast<void**>(&pDeviceChild));
+        // It's not an ID3D11device, so see if it is an ID3D11DeviceChild-derived interface.
+        ID3D11DeviceChild* device_child = nullptr;
+        hr                              = interface_pointer->QueryInterface(__uuidof(ID3D11DeviceChild), reinterpret_cast<void**>(&device_child));
 
         if (SUCCEEDED(hr))
         {
-            // Note: GetDevice increments a ref on out parameter
-            pDeviceChild->GetDevice(ppD3D11Device);
-            (*ppD3D11Device)->Release();
-            pDeviceChild->Release();
+            // Note: GetDevice increments a ref on out parameter.
+            device_child->GetDevice(d3d11_device);
+            (*d3d11_device)->Release();
+            device_child->Release();
         }
     }
 
     if (SUCCEEDED(hr))
     {
         success = true;
-        (*ppD3D11Device)->Release();
+        (*d3d11_device)->Release();
     }
 
     return success;
 }
 
-bool DX11Utils::IsFeatureLevelSupported(ID3D11Device* pD3D11Device)
+bool dx11_utils::IsFeatureLevelSupported(ID3D11Device* d3d11_device)
 {
-    bool isSupported = true;
+    bool is_supported = true;
 
-    // Get the current feature level in use by the application
-    D3D_FEATURE_LEVEL level = pD3D11Device->GetFeatureLevel();
+    // Get the current feature level in use by the application.
+    D3D_FEATURE_LEVEL level = d3d11_device->GetFeatureLevel();
 
-    // DX9 feature level is not supported
+    // DX9 feature level is not supported.
     if (level == D3D_FEATURE_LEVEL_9_1 || level == D3D_FEATURE_LEVEL_9_2 || level == D3D_FEATURE_LEVEL_9_3)
     {
-        GPA_LogError("GPUPerfAPI does not support D3D_FEATURE_LEVEL_9_1, _9_2, and _9_3.");
-        isSupported = false;
+        GPA_LOG_ERROR("GPUPerfAPI does not support D3D_FEATURE_LEVEL_9_1, _9_2, and _9_3.");
+        is_supported = false;
     }
 
-    return isSupported;
+    return is_supported;
 }
 
-bool DX11Utils::GetTimestampFrequency(ID3D11Device* pD3D11Device, UINT64& timestampFrequency)
+bool dx11_utils::GetTimestampFrequency(ID3D11Device* d3d11_device, UINT64& timestamp_frequency)
 {
     bool success = false;
 
-    if (nullptr != pD3D11Device)
+    if (nullptr != d3d11_device)
     {
-        ID3D11Query*     timeStampDisjointQuery = nullptr;
-        D3D11_QUERY_DESC timeStampDesc;
-        timeStampDesc.Query     = D3D11_QUERY_TIMESTAMP_DISJOINT;
-        timeStampDesc.MiscFlags = 0;
+        ID3D11Query*     time_stamp_disjoint_query = nullptr;
+        D3D11_QUERY_DESC time_stamp_desc;
+        time_stamp_desc.Query     = D3D11_QUERY_TIMESTAMP_DISJOINT;
+        time_stamp_desc.MiscFlags = 0;
 
         HRESULT hr = E_FAIL;
-        hr         = pD3D11Device->CreateQuery(&timeStampDesc, &timeStampDisjointQuery);
+        hr         = d3d11_device->CreateQuery(&time_stamp_desc, &time_stamp_disjoint_query);
 
 #ifdef _DEBUG
-        D3D_SET_OBJECT_NAME_A(timeStampDisjointQuery, "GPA_TimestampFrequencyQuery");
+        D3D_SET_OBJECT_NAME_A(time_stamp_disjoint_query, "GPA_TimestampFrequencyQuery");
 #endif
 
         if (SUCCEEDED(hr))
         {
-            // get immediate context
-            ID3D11DeviceContext* pD3DContext = nullptr;
-            pD3D11Device->GetImmediateContext(&pD3DContext);
+            // Get immediate context.
+            ID3D11DeviceContext* d3d_context = nullptr;
+            d3d11_device->GetImmediateContext(&d3d_context);
 
-            if (nullptr != pD3DContext)
+            if (nullptr != d3d_context)
             {
-                //Submit the query
-                pD3DContext->Begin(timeStampDisjointQuery);
-                pD3DContext->End(timeStampDisjointQuery);
+                // Submit the query.
+                d3d_context->Begin(time_stamp_disjoint_query);
+                d3d_context->End(time_stamp_disjoint_query);
 
-                // need to loop on checking the values, it may not be immediately available.
-                HRESULT dataReady = S_OK;
+                // Need to loop on checking the values, it may not be immediately available.
+                HRESULT data_ready = S_OK;
 
                 do
                 {
-                    dataReady = pD3DContext->GetData(timeStampDisjointQuery, nullptr, 0, 0);
+                    data_ready = d3d_context->GetData(time_stamp_disjoint_query, nullptr, 0, 0);
 
-                    if (FAILED(dataReady))
+                    if (FAILED(data_ready))
                     {
-                        GPA_LogError("Call to ID3D11DeviceContext::GetData failed.");
+                        GPA_LOG_ERROR("Call to ID3D11DeviceContext::GetData failed.");
                         return false;
                     }
 
-                } while (S_FALSE == dataReady);  // S_OK == data ready; S_FALSE == data not ready
+                } while (S_FALSE == data_ready);  // S_OK == data ready; S_FALSE == data not ready.
 
-                D3D11_QUERY_DATA_TIMESTAMP_DISJOINT timeStampDisjoint;
-                assert(timeStampDisjointQuery->GetDataSize() == sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT));
+                D3D11_QUERY_DATA_TIMESTAMP_DISJOINT time_stamp_disjoint;
+                assert(time_stamp_disjoint_query->GetDataSize() == sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT));
 
-                hr                 = pD3DContext->GetData(timeStampDisjointQuery, &timeStampDisjoint, sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT), 0);
-                timestampFrequency = timeStampDisjoint.Frequency;
+                hr                  = d3d_context->GetData(time_stamp_disjoint_query, &time_stamp_disjoint, sizeof(D3D11_QUERY_DATA_TIMESTAMP_DISJOINT), 0);
+                timestamp_frequency = time_stamp_disjoint.Frequency;
                 assert(SUCCEEDED(hr));
                 success = true;
 
-                pD3DContext->Release();
-                timeStampDisjointQuery->Release();
-                timeStampDisjointQuery = nullptr;
+                d3d_context->Release();
+                time_stamp_disjoint_query->Release();
+                time_stamp_disjoint_query = nullptr;
             }
             else
             {
-                GPA_LogError("GetTimestampFrequency Immediate Context is NULL.");
+                GPA_LOG_ERROR("GetTimestampFrequency Immediate Context is NULL.");
             }
         }
         else
         {
-            GPA_LogError("GetTimestampFrequency Call to ID3D11Device::CreateQuery failed.");
+            GPA_LOG_ERROR("GetTimestampFrequency Call to ID3D11Device::CreateQuery failed.");
         }
     }
     else
     {
-        GPA_LogError("GetTimestampFrequency DX11 Device is NULL.");
+        GPA_LOG_ERROR("GetTimestampFrequency DX11 Device is NULL.");
     }
 
     return success;

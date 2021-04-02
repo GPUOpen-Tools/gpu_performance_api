@@ -1,6 +1,6 @@
 // =====================================================================
 // <copyright file="InternalCounterDef.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2017 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2020 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -25,10 +25,10 @@ namespace PublicCounterCompiler
         /// </summary>
         public InternalCounterDef(int index, string name, string datatype, bool asicSpecific)
         {
-            Index = index;
-            Name = name;
-            Datatype = datatype;
-            IsAsicSpecific = asicSpecific;
+            this.index = index;
+            this.name = name;
+            this.datatype = datatype;
+            isAsicSpecific = asicSpecific;
         }
 
         /// <summary>
@@ -36,38 +36,38 @@ namespace PublicCounterCompiler
         /// </summary>
         public InternalCounterDef(InternalCounterDef other)
         {
-            Index = other.Index;
-            Name = other.Name;
-            Datatype = other.Datatype;
-            IsAsicSpecific = other.IsAsicSpecific;
+            index = other.index;
+            name = other.name;
+            datatype = other.datatype;
+            isAsicSpecific = other.isAsicSpecific;
         }
 
         /// <summary>
         /// Index of the internal counter.
         /// </summary>
-        public int Index { get; }
+        public int index { get; }
 
         /// <summary>
         /// Gets the name of the internal counter.
         /// </summary>
-        public string Name { get; }
+        public string name { get; }
 
         /// <summary>
         /// Gets the type of the internal counter.
         /// </summary>
-        public string Datatype { get; }
+        public string datatype { get; }
 
         /// <summary>
         /// Flag that indicates whether the internal counter is ASIC specific
         /// </summary>
-        public bool IsAsicSpecific { get; }
+        public bool isAsicSpecific { get; }
 
         /// <summary>
         /// ToString() representation of the internal counter.
         /// </summary>
         override public string ToString()
         {
-            return Name;
+            return name;
         }
 
         /// <summary>
@@ -75,7 +75,7 @@ namespace PublicCounterCompiler
         /// </summary>
         public bool Equals(InternalCounterDef other)
         {
-            return Name == other.Name;
+            return name == other.name;
         }
     }
 }

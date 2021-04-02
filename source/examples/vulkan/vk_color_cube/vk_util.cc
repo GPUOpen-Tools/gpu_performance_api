@@ -1,11 +1,11 @@
 //==============================================================================
-// Copyright (c) 2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Utility functions to handle vulkan loading, and initializing vulkan entry points
+// Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Utility functions to handle vulkan loading, and initializing vulkan entry points.
 //==============================================================================
 
-#include "vk_util.h"
+#include "examples/vulkan/vk_color_cube/vk_util.h"
 
 #ifdef _LINUX
 #include <dlfcn.h>
@@ -22,11 +22,11 @@ VK_PLATFORM_INSTANCE_FUNC(DEFINE_VK_FUNC)
 VK_DEVICE_FUNC(DEFINE_VK_FUNC)
 #undef DEFINE_VK_FUNC
 
-bool AMDVulkanDemoVkUtils::kIsEntryPointsInitialized = false;
+bool AMDVulkanDemoVkUtils::are_vk_entry_points_initialized = false;
 
 bool AMDVulkanDemoVkUtils::InitVulkanModule()
 {
-    if (!kIsEntryPointsInitialized)
+    if (!are_vk_entry_points_initialized)
     {
 #ifdef _WIN32
         HMODULE vulkan_module = ::GetModuleHandleW(L"vulkan-1.dll");
@@ -62,18 +62,18 @@ bool AMDVulkanDemoVkUtils::InitVulkanModule()
 
         bool success = true;
 
-#define LOAD_VULKAN_FUNC_PTR(X)                                         \
-    _##X = reinterpret_cast<PFN_##X>(LOAD_SYMBOL(vulkan_module, #X));   \
-        if (nullptr == _##X)                                            \
-        {                                                               \
-            success &= false;                                           \
-        }                                                               \
+#define LOAD_VULKAN_FUNC_PTR(X)                                       \
+    _##X = reinterpret_cast<PFN_##X>(LOAD_SYMBOL(vulkan_module, #X)); \
+    if (nullptr == _##X)                                              \
+    {                                                                 \
+        success &= false;                                             \
+    }
 
         VK_MODULE_FUNC(LOAD_VULKAN_FUNC_PTR);
 #undef LOAD_VULKAN_FUNC_PTR
 
-        kIsEntryPointsInitialized = success;
-        return kIsEntryPointsInitialized;
+        are_vk_entry_points_initialized = success;
+        return are_vk_entry_points_initialized;
     }
 
     return true;
@@ -108,11 +108,11 @@ bool AMDVulkanDemoVkUtils::InitDeviceFunctions(VkDevice vk_device)
     {
         bool success = true;
 
-#define LOAD_VULKAN_DEVICE_PTR(X)                                           \
-    _##X = reinterpret_cast<PFN_##X>(_vkGetDeviceProcAddr(vk_device, #X));  \
-    if (nullptr == _##X)                                                    \
-    {                                                                       \
-        success &= false;                                                   \
+#define LOAD_VULKAN_DEVICE_PTR(X)                                          \
+    _##X = reinterpret_cast<PFN_##X>(_vkGetDeviceProcAddr(vk_device, #X)); \
+    if (nullptr == _##X)                                                   \
+    {                                                                      \
+        success &= false;                                                  \
     }
 
         VK_DEVICE_FUNC(LOAD_VULKAN_DEVICE_PTR);

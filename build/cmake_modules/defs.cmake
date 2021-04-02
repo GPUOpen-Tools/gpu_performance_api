@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1)
 
 ## Define the GPA version
 set(GPA_MAJOR_VERSION 3)
-set(GPA_MINOR_VERSION 7)
+set(GPA_MINOR_VERSION 8)
 set(GPA_UPDATE_VERSION 0)
 
 if(NOT DEFINED GPA_BUILD_NUMBER)
@@ -24,6 +24,7 @@ set(COMMON_DIR_LIB                                          "${COMMON_DIR}/Lib")
 set(COMMON_DIR_SRC                                          "${COMMON_DIR}/Src")
 set(GPA_PUBLIC_HEADER_REL_PATH                              "include")
 set(GPA_PUBLIC_HEADER                                       "${GPA_ROOT}/${GPA_PUBLIC_HEADER_REL_PATH}")
+set(GPA_SRC                                                 "${GPA_ROOT}/source")
 set(GPA_SRC_COMMON_REL_PATH                                 "source/gpu_perf_api_common")
 set(GPA_SRC_COMMON                                          "${GPA_ROOT}/${GPA_SRC_COMMON_REL_PATH}")
 set(GPA_SRC_COUNTER_GENERATOR_REL_PATH                      "source/gpu_perf_api_counter_generator")

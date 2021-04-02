@@ -1,85 +1,94 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Class for DX12 counter generation
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Class for DX12 counter generation.
 //==============================================================================
 
-#ifndef _GPA_COUNTER_GENERATOR_DX12_H_
-#define _GPA_COUNTER_GENERATOR_DX12_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_DX12_GPA_COUNTER_GENERATOR_DX12_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_DX12_GPA_COUNTER_GENERATOR_DX12_H_
 
-#include "gpa_counter_generator_dx12_base.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12_base.h"
 
-/// The DX12-specific counter generator
-class GPA_CounterGeneratorDX12 : public GPA_CounterGeneratorDX12Base
+/// @brief The DX12-specific counter generator.
+class GpaCounterGeneratorDx12 : public GpaCounterGeneratorDx12Base
 {
 public:
-    /// Constructor
-    GPA_CounterGeneratorDX12();
+    /// @brief Constructor.
+    GpaCounterGeneratorDx12();
 
-    /// Destructor
-    virtual ~GPA_CounterGeneratorDX12() = default;
+    /// @brief Virtual destructor.
+    virtual ~GpaCounterGeneratorDx12() = default;
 
-    /// Copy constructor - private override to prevent usage
-    GPA_CounterGeneratorDX12(const GPA_CounterGeneratorDX12Base&) = delete;
+    /// @brief Copy constructor - private override to prevent usage.
+    GpaCounterGeneratorDx12(const GpaCounterGeneratorDx12Base&) = delete;
 
-    /// Move constructor - private override to prevent usage
-    GPA_CounterGeneratorDX12(GPA_CounterGeneratorDX12Base&&) = delete;
+    /// @brief Move constructor - private override to prevent usage.
+    GpaCounterGeneratorDx12(GpaCounterGeneratorDx12Base&&) = delete;
 
-    /// Copy operator - private override to prevent usage
-    /// \return reference to object
-    GPA_CounterGeneratorDX12& operator=(const GPA_CounterGeneratorDX12&) = delete;
+    /// @brief Copy operator - private override to prevent usage.
+    ///
+    /// @return Reference to object.
+    GpaCounterGeneratorDx12& operator=(const GpaCounterGeneratorDx12&) = delete;
 
-    /// Move operator - private override to prevent usage
-    /// \return reference to object
-    GPA_CounterGeneratorDX12& operator=(GPA_CounterGeneratorDX12&&) = delete;
+    /// @brief Move operator - private override to prevent usage.
+    ///
+    /// @return Reference to object.
+    GpaCounterGeneratorDx12& operator=(GpaCounterGeneratorDx12&&) = delete;
 
 protected:
-    /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
-    virtual GPA_Status GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
-                                              GDT_HW_ASIC_TYPE     asicType,
-                                              gpa_uint8            generateAsicSpecificCounters,
-                                              GPA_DerivedCounters* pPublicCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
+    virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
+                                             GDT_HW_ASIC_TYPE    asic_type,
+                                             GpaUInt8            generate_asic_specific_counters,
+                                             GpaDerivedCounters* public_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
-    virtual GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                GDT_HW_ASIC_TYPE      asicType,
-                                                gpa_uint8             generateAsicSpecificCounters,
-                                                GPA_HardwareCounters* pHardwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
+    virtual GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
+                                               GDT_HW_ASIC_TYPE     asic_type,
+                                               GpaUInt8             generate_asic_specific_counters,
+                                               GpaHardwareCounters* hardware_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareExposedCounters
-    GPA_Status GenerateHardwareExposedCounters(GDT_HW_GENERATION     desiredGeneration,
-                                               GDT_HW_ASIC_TYPE      asicType,
-                                               gpa_uint8             generateAsicSpecificCounters,
-                                               GPA_HardwareCounters* pHardwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateHardwareExposedCounters()
+    GpaStatus GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
+                                              GDT_HW_ASIC_TYPE     asic_type,
+                                              GpaUInt8             generate_asic_specific_counters,
+                                              GpaHardwareCounters* hardware_counters) override;
 
 #ifdef AMDT_INTERNAL
-    /// \copydoc GPA_CounterGeneratorBase::GenerateInternalDerivedCounters
-    GPA_Status GenerateInternalDerivedCounters(GDT_HW_GENERATION    desiredGeneration,
-                                               GDT_HW_ASIC_TYPE     asicType,
-                                               gpa_uint8            generateAsicSpecificCounters,
-                                               GPA_DerivedCounters* pPublicCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateInternalDerivedCounters()
+    GpaStatus GenerateInternalDerivedCounters(GDT_HW_GENERATION   desired_generation,
+                                              GDT_HW_ASIC_TYPE    asic_type,
+                                              GpaUInt8            generate_asic_specific_counters,
+                                              GpaDerivedCounters* public_counters) override;
 #endif
 
 private:
-    /// Helper function to indicates whether the specified HW generation represents an AMD GPU
-    /// \param generation the hw generation to check
-    /// \return true if the specified HW generation represents an AMD GPU
-    static bool IsAMDGPU(GDT_HW_GENERATION generation);
+    /// @brief Helper function to indicates whether the specified HW generation represents an AMD GPU.
+    ///
+    /// @param [in] generation The hw generation to check.
+    ///
+    /// @return True if the specified HW generation represents an AMD GPU.
+    static bool IsAmdGpu(GDT_HW_GENERATION generation);
 
-    /// Logic inside this function is based on the AmdExtGpuBlock enum in AmdExtGpaInterface in DXCP driver.
+    /// @brief Logic inside this function is based on the AmdExtGpuBlock enum in AmdExtGpaInterface in DXCP driver.
+    ///
     /// The driver gives each block an ID, but ignores the instance. GPA treats each instance as a different
     /// block, so we need to translate.
-    /// \param generation the generation whose block id needs to be calculated
-    /// \param pGroup the group for which the block id needs to be calculated
-    /// \return the block id according to the driver
-    static UINT CalculateBlockIdDX12(GDT_HW_GENERATION generation, const GPA_CounterGroupDesc* pGroup);
+    ///
+    /// @param [in] generation The generation whose block id needs to be calculated.
+    /// @param [in] group The group for which the block id needs to be calculated.
+    ///
+    /// @return The block id according to the driver.
+    static GpaUInt32 CalculateBlockIdDx12(GDT_HW_GENERATION generation, const GpaCounterGroupDesc* group);
 
-    /// Generates internal counters
-    /// \param pHardwareCounters the hardware counters to generate
-    /// \param generation the generation for which counters need to be generated
-    /// \return true on success
-    static bool GenerateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GDT_HW_GENERATION generation);
+    /// @brief Generates internal counters.
+    ///
+    /// @param [in] hardware_counters The hardware counters to generate.
+    /// @param [in] generation The generation for which counters need to be generated.
+    ///
+    /// @return True on success.
+    static bool GenerateInternalCounters(GpaHardwareCounters* hardware_counters, GDT_HW_GENERATION generation);
 };
 
-#endif  // _GPA_COUNTER_GENERATOR_DX12_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_DX12_GPA_COUNTER_GENERATOR_DX12_H_

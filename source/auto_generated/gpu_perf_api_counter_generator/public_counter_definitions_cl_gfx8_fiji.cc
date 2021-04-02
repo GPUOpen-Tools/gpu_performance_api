@@ -1,20 +1,20 @@
 //==============================================================================
-// Copyright (c) 2010-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief Public Counter Definitions for CL GFX8 _fiji
+// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Public Counter Definitions for CL GFX8_FIJI.
 //==============================================================================
 
-#include "gpa_counter.h"
-#include "public_counter_definitions_cl_gfx8_fiji.h"
+#include "gpu_perf_api_counter_generator/gpa_counter.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_cl_gfx8_fiji.h"
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#include "gpa_hw_counter_gfx8_fiji.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx8_fiji.h"
 
 namespace cl_gfx8_fiji
 {
-bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c)
+bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaDerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers

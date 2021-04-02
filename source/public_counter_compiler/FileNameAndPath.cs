@@ -1,6 +1,6 @@
 ﻿// =====================================================================
 // <copyright file="FileNameAndPaths.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -15,7 +15,7 @@ using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
 
-namespace GPATools
+namespace GpaTools
 {
     enum Api
     {
@@ -37,36 +37,36 @@ namespace GPATools
 
     class Gpa
     {
-        public const string GpaStr = "GPA\\";
-        public const string AutoGenPublicCounterInputDir = GpaStr + "source\\auto_generated\\public_counter_compiler_input_files\\";
-        public const string AutoGenCounterGeneratorOutDir = GpaStr + "source\\auto_generated\\gpu_perf_api_counter_generator\\";
-        public const string PublicStr = "Public";
-        public const string InternalStr = "Internal";
-        public const string public_file_prefix = "public_";
-        public const string internal_file_prefix = "internal_";
-        public const string CounterFileNamePrefix = "counter_names_";
-        public const string CounterListOutDir = "counter_list_files\\";
-        public const string AutoGenTestOutDir = GpaStr + "source\\auto_generated\\gpu_perf_api_unit_tests\\counters\\";
-        public const string GpaDocSourceDir = GpaStr + "docs\\sphinx\\source\\";
-        public const string CounterDefDir = GpaStr + "source\\public_counter_compiler_input_files\\";
-        public const string CounterDefinitionsStr = "counter_definitions_";
-        public const string DerivedCounterOutFileName = "derived_counters_";
-        public const string GPACounterHeaderFileStr = "gpa_counter.h";
+        public const string gpaStr = "GPA\\";
+        public const string autoGenPublicCounterInputDir = gpaStr + "source\\auto_generated\\public_counter_compiler_input_files\\";
+        public const string autoGenCounterGeneratorOutDir = gpaStr + "source\\auto_generated\\gpu_perf_api_counter_generator\\";
+        public const string publicStr = "Public";
+        public const string internalStr = "Internal";
+        public const string publicFilePrefix = "public_";
+        public const string internalFilePrefix = "internal_";
+        public const string counterFileNamePrefix = "counter_names_";
+        public const string counterListOutDir = "counter_list_files\\";
+        public const string autoGenTestOutDir = gpaStr + "source\\auto_generated\\gpu_perf_api_unit_tests\\counters\\";
+        public const string gpaDocSourceDir = gpaStr + "docs\\sphinx\\source\\";
+        public const string counterDefDir = gpaStr + "source\\public_counter_compiler_input_files\\";
+        public const string counterDefinitionsStr = "counter_definitions_";
+        public const string derivedCounterOutFileName = "derived_counters_";
+        public const string gpaCounterHeaderFileStr = "gpu_perf_api_counter_generator/gpa_counter.h";
         public const string gpaHwCounterFilenamePrefix = "gpa_hw_counter_";
-        public const string HardwareExposedCounterFileSuffix = "gpa_hw_exposed_counters_";
-        public const string counter_name_list_file_prefix = "counter_name_list_";
+        public const string hardwareExposedCounterFileSuffix = "gpa_hw_exposed_counters_";
+        public const string counterNameListFilePrefix = "counter_name_list_";
         public const string DX12 = "dx12";
         public const string DX11 = "dx11";
         public const string GL = "gl";
         public const string CL = "cl";
         public const string VK = "vk";
-        public const string gfx8_str = "gfx8";
-        public const string gfx9_str = "gfx9";
-        public const string gfx10_str = "gfx10";
-        public const string gfx103_str = "gfx103";
-        public static Dictionary<GfxGeneration, string> GfxGenAsStr = new Dictionary<GfxGeneration, string>();
-        public static Dictionary<Api, string> ApiAsStr = new Dictionary<Api, string>();
-        public static Dictionary<GfxGeneration, string> GfxGenerationDisplayName = new Dictionary<GfxGeneration, string>();
+        public const string gfx8Str = "gfx8";
+        public const string gfx9Str = "gfx9";
+        public const string gfx10Str = "gfx10";
+        public const string gfx103Str = "gfx103";
+        public static Dictionary<GfxGeneration, string> gfxGenAsStr = new Dictionary<GfxGeneration, string>();
+        public static Dictionary<Api, string> apiAsStr = new Dictionary<Api, string>();
+        public static Dictionary<GfxGeneration, string> gfxGenerationDisplayName = new Dictionary<GfxGeneration, string>();
 
         public static string ToCamelCase(string word)
         {
@@ -148,69 +148,69 @@ namespace GPATools
         {
             string gpaPath = GetGpuPerfApiPath();
 
-            string pathName = gpaPath + AutoGenPublicCounterInputDir;
+            string pathName = gpaPath + autoGenPublicCounterInputDir;
             if (!Directory.Exists(pathName))
             {
                 Directory.CreateDirectory(pathName);
             }
 
-            pathName = gpaPath + AutoGenCounterGeneratorOutDir;
+            pathName = gpaPath + autoGenCounterGeneratorOutDir;
             if (!Directory.Exists(pathName))
             {
                 Directory.CreateDirectory(pathName);
             }
 
-            pathName = gpaPath + AutoGenTestOutDir;
+            pathName = gpaPath + autoGenTestOutDir;
             if (!Directory.Exists(pathName))
             {
                 Directory.CreateDirectory(pathName);
             }
 
-            GfxGenAsStr.Add(GfxGeneration.Gfx103, gfx103_str);
-            GfxGenAsStr.Add(GfxGeneration.Gfx10, gfx10_str);
-            GfxGenAsStr.Add(GfxGeneration.Gfx9, gfx9_str);
-            GfxGenAsStr.Add(GfxGeneration.Gfx8, gfx8_str);
+            gfxGenAsStr.Add(GfxGeneration.Gfx103, gfx103Str);
+            gfxGenAsStr.Add(GfxGeneration.Gfx10, gfx10Str);
+            gfxGenAsStr.Add(GfxGeneration.Gfx9, gfx9Str);
+            gfxGenAsStr.Add(GfxGeneration.Gfx8, gfx8Str);
 
-            GfxGenerationDisplayName.Add(GfxGeneration.Gfx103, "RDNA2");
-            GfxGenerationDisplayName.Add(GfxGeneration.Gfx10, "RDNA");
-            GfxGenerationDisplayName.Add(GfxGeneration.Gfx9, "Vega");
-            GfxGenerationDisplayName.Add(GfxGeneration.Gfx8, "Graphics IP v8");
+            gfxGenerationDisplayName.Add(GfxGeneration.Gfx103, "RDNA2");
+            gfxGenerationDisplayName.Add(GfxGeneration.Gfx10, "RDNA");
+            gfxGenerationDisplayName.Add(GfxGeneration.Gfx9, "Vega");
+            gfxGenerationDisplayName.Add(GfxGeneration.Gfx8, "Graphics IP v8");
 
-            ApiAsStr.Add(Api.DX11, DX11);
-            ApiAsStr.Add(Api.DX12, DX12);
-            ApiAsStr.Add(Api.VK, VK);
-            ApiAsStr.Add(Api.GL, GL);
-            ApiAsStr.Add(Api.CL, CL);
+            apiAsStr.Add(Api.DX11, DX11);
+            apiAsStr.Add(Api.DX12, DX12);
+            apiAsStr.Add(Api.VK, VK);
+            apiAsStr.Add(Api.GL, GL);
+            apiAsStr.Add(Api.CL, CL);
         }
 
         /// <summary>
         /// Returns the API string from the file name
         /// </summary>
-        /// <param name="filename">name of the file</param>
+        /// <param name="fileName">name of the file</param>
         /// <returns>api string</returns>
-        public static string GetApiFromFileName(string filename)
+        public static string GetApiFromFileName(string fileName)
         {
-            if (filename.Contains(DX12))
+            if (fileName.Contains(DX12))
             {
                 return DX12;
             }
 
-            if (filename.Contains(DX11))
+            if (fileName.Contains(DX11))
             {
                 return DX11;
             }
 
-            if (filename.Contains(VK))
+            if (fileName.Contains(VK))
             {
                 return VK;
             }
 
-            if (filename.Contains(GL))
+            if (fileName.Contains(GL))
             {
                 return GL;
             }
 
-            if (filename.Contains(CL))
+            if (fileName.Contains(CL))
             {
                 return CL;
             }

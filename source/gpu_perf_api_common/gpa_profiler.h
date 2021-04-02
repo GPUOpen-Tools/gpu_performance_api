@@ -1,12 +1,12 @@
 //==============================================================================
-// Copyright (c) 2016-2018 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Internal class to support profiling GPA calls themselves
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Internal class to support profiling GPA calls themselves.
 //==============================================================================
 
-#ifndef _GPA_PROFILER_H_
-#define _GPA_PROFILER_H_
+#ifndef GPU_PERF_API_COMMON_GPA_PROFILER_H_
+#define GPU_PERF_API_COMMON_GPA_PROFILER_H_
 
 // To use, add this header and the GPAProfiler.cpp file to your project. Use the PROFILER_FUNCTION() macro
 // giving the name of the function as a parameter at the very beginning of each function to include in profiling.
@@ -25,13 +25,13 @@
 // Timing errors = 0
 
 // Function  # of calls  in % of total time  total % of total time   total time  time per call   total time in   time in per call
-// GPA_BeginPass    9   0.628688    0.628688     0.00315014(8484159)     0.000350016(942684)     0.00315014(8484159)     0.000350016(942684)
-// GPA_BeginSample  1647    0.440372    0.440372     0.00220656(5942836)     1.33964e-006(3608)  0.00220656(5942836)     1.33964e-006(3608)
+// GpaBeginPass    9   0.628688    0.628688     0.00315014(8484159)     0.000350016(942684)     0.00315014(8484159)     0.000350016(942684)
+// GpaBeginSample  1647    0.440372    0.440372     0.00220656(5942836)     1.33964e-006(3608)  0.00220656(5942836)     1.33964e-006(3608)
 // GPA_BeginSession 1   5.65964 5.68611  0.0284912(76734166)     0.0284912(76734166)     0.0283585(76376984)     0.0283585(76376984)
 
 // Description of output:
 
-// all numbers not in brackets are in seconds
+// All numbers not in brackets are in seconds.
 
 // Function: name of function profiled
 // # of calls: number of times the function was called
@@ -45,49 +45,48 @@
 // time in per call: average time spent within this function per call, not including time spent in profiled functions called by it.
 
 //#define ENABLE_PROFILING
-#include <mutex>
-
 #ifdef ENABLE_PROFILING
 
-#include "windows.h"
+#include <windows.h>
 
-#include <vector>
 #include <map>
-#include <string>
+#include <mutex>
 #include <sstream>
+#include <string>
+#include <vector>
 
-// these macros refer to a singleton profiling object defined in GPAProfiler.cpp
+// These macros refer to a singleton profiling object defined in GPAProfiler.cpp
 
-/// macro to use a scope-bound object to profile a function
-#define PROFILE_FUNCTION(func) ScopeProfile _tempScopeProfileObject(#func)
+/// Macro to use a scope-bound object to profile a function.
+#define PROFILE_FUNCTION(func) ScopeProfile temp_scope_profile_object(#func)
 
-/// macro to begin profiling a section
-#define BEGIN_PROFILE_SECTION(func) (gProfilerSingleton.EnterFunction(#func))
+/// Macro to begin profiling a section.
+#define BEGIN_PROFILE_SECTION(func) (profiler_singleton.EnterFunction(#func))
 
-/// macro to end profiling a section
-#define END_PROFILE_SECTION(func) (gProfilerSingleton.LeaveFunction(#func))
+/// Macro to end profiling a section.
+#define END_PROFILE_SECTION(func) (profiler_singleton.LeaveFunction(#func))
 
-/// macro to start profiling
-#define START_PROFILING() (gProfilerSingleton.Start())
+/// Macro to start profiling.
+#define START_PROFILING() (profiler_singleton.Start())
 
-/// macro to stop profiling
-#define STOP_PROFILING() (gProfilerSingleton.Stop())
+/// Macro to stop profiling.
+#define STOP_PROFILING() (profiler_singleton.Stop())
 
-/// macro to check if profiling is active
-#define IS_PROFILING() (gProfilerSingleton.Active())
+/// Macro to check if profiling is active.
+#define IS_PROFILING() (profiler_singleton.Active())
 
-/// macro to generate a profile report
-#define GENERATE_PROFILE_REPORT() (gProfilerSingleton.GenerateReport())
+/// Macro to generate a profile report.
+#define GENERATE_PROFILE_REPORT() (profiler_singleton.GenerateReport())
 
-/// macro to write a profile report
-#define WRITE_PROFILE_REPORT(filename) (gProfilerSingleton.WriteReport(filename))
+/// Macro to write a profile report.
+#define WRITE_PROFILE_REPORT(file_name) (profiler_singleton.WriteReport(file_name))
 
 class FunctionInfo
 {
 public:
     unsigned int calls;
-    __int64      totalTime;
-    __int64      timeBelow;
+    __int64      total_time_;
+    __int64      time_below_;
 };
 
 class Profiler
@@ -101,85 +100,85 @@ public:
     void Stop();
     void Reset();
 
-    bool Active()
+    bool Active() const
     {
-        return m_active;
+        return is_active_;
     }
 
-    bool EnterFunction(const char* pFunctionName);
-    bool LeaveFunction(const char* pFunctionName);
+    bool EnterFunction(const char* function_name);
+    bool LeaveFunction(const char* function_name);
 
-    FunctionInfo& GetFunctionInfo(const char* pFunctionName);
+    FunctionInfo& GetFunctionInfo(const char* function_name);
 
     std::string GenerateReport();
-    void        WriteReport(std::string filename);
+    void        WriteReport(std::string file_name);
 
 protected:
-    void outputTime(std::stringstream& ss, __int64 time);
+    void OutputTime(std::stringstream& ss, __int64 time) const;
 
-    __int64              m_RDTSCTicksPerSecond;
-    std::vector<__int64> m_startedTimestamps;
-    std::vector<__int64> m_totalTimeBelowParent;
+    __int64              rdtsc_ticks_per_second_;
+    std::vector<__int64> started_timestamps_;
+    std::vector<__int64> total_time_below_parent_;
 
-    std::map<std::string, FunctionInfo> m_functionMap;
+    std::map<std::string, FunctionInfo> function_map_;
 
-    __int64      m_totalTime;
-    unsigned int m_timingErrors;
+    __int64      total_time_;
+    unsigned int timing_errors_;
 
-    bool    m_active;
-    __int64 m_startTime;
-    __int64 m_stopTime;
+    bool    is_active_;
+    __int64 start_time_;
+    __int64 stop_time_;
 };
 
-extern Profiler gProfilerSingleton;
+extern Profiler profiler_singleton;
 
 class ScopeProfile
 {
 public:
-    ScopeProfile(const char* pFunctionName)
+    ScopeProfile(const char* function_name)
     {
-        m_mutex.lock();
-        m_pFunctionName = pFunctionName;
-        gProfilerSingleton.EnterFunction(pFunctionName);
-        m_mutex.unlock();
+        gpa_profiler_mutex_.lock();
+        function_name_ = function_name;
+        profiler_singleton.EnterFunction(function_name);
+        gpa_profiler_mutex_.unlock();
     }
 
     ~ScopeProfile()
     {
-        gProfilerSingleton.LeaveFunction(m_pFunctionName);
+        profiler_singleton.LeaveFunction(function_name_);
     }
 
 protected:
-    const char* m_pFunctionName;
-    std::mutex  m_mutex;
+    const char* function_name_;
+    std::mutex  gpa_profiler_mutex_;
 };
 
 #else
 
-/// macro to use a scope-bound object to profile a function
+/// Macro to use a scope-bound object to profile a function.
 #define PROFILE_FUNCTION(func)
 
-/// macro to begin profiling a section
+/// Macro to begin profiling a section.
 #define BEGIN_PROFILE_SECTION(func)
 
-/// macro to end profiling a section
+/// Macro to end profiling a section.
 #define END_PROFILE_SECTION(func)
 
-/// macro to start profiling
+/// Macro to start profiling.
 #define START_PROFILING()
 
-/// macro to stop profiling
+/// Macro to stop profiling.
 #define STOP_PROFILING()
 
-/// macro to check if profiling is active
+/// Macro to check if profiling is active.
 #define IS_PROFILING() (false)
 
-/// macro to generate a profile report
+/// Macro to generate a profile report.
 #define GENERATE_PROFILE_REPORT()
 
-/// macro to write a profile report
-#define WRITE_PROFILE_REPORT(filename)
+/// Macro to write a profile report.
+#define WRITE_PROFILE_REPORT(file_name)
 
 #endif
 
-#endif  // _GPA_PROFILER_H_
+#endif  // GPU_PERF_API_COMMON_GPA_PROFILER_H_

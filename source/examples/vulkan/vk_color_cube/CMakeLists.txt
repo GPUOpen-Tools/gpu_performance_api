@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../../../")
@@ -8,10 +8,11 @@ set(ProjectName ${GPA_PROJECT_NAME})
 
 include (${GPA_CMAKE_MODULES_DIR}/common.cmake)
 include(${GPA_CMAKE_MODULES_DIR}/gpa_vulkan.cmake)
+include (${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_PUBLIC_HEADER}
-                    ${GPA_SRC_COMMON})
+                    ${GPA_SRC})
 
 if(ANDROID)
     include_directories(${ANDROID_INCLUDE_DIRECTORIES})
@@ -22,7 +23,7 @@ if(ANDROID)
     add_compile_options(-Wno-missing-braces)
 endif()
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_INCLUDE_CURRENT_DIR OFF)
 set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/vk_color_cube.cc
             ${CMAKE_CURRENT_SOURCE_DIR}/vk_color_cube.h
             ${CMAKE_CURRENT_SOURCE_DIR}/gpa_helper.h

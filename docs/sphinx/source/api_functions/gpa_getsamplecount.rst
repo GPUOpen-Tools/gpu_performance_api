@@ -1,23 +1,23 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_GetSampleCount
-@@@@@@@@@@@@@@@@@@
+GpaGetSampleCount
+@@@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_GetSampleCount(
-        GPA_SessionId sessionId,
-        gpa_uint32* pSampleCount);
+    GpaStatus GpaGetSampleCount(
+        GpaSessionId session_id,
+        GpaUInt32* sample_count);
 
 Description
 %%%%%%%%%%%
 
 Gets the number of samples created for the specified session. This is useful if
 samples are conditionally created and a count is not kept. The session must have
-been ended by GPA_EndSession before calling this function.
+been ended by GpaEndSession before calling this function.
 
 Parameters
 %%%%%%%%%%
@@ -26,8 +26,8 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``sessionId``", "Unique identifier of a previously-created session."
-    "``pSampleCount``", "The value which will hold the number of samples contained within the session upon successful execution."
+    "``session_id``", "Unique identifier of a previously-created session."
+    "``sample_count``", "The value which will hold the number of samples contained within the session upon successful execution."
 
 Return value
 %%%%%%%%%%%%
@@ -36,10 +36,10 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The sample count was successfully retrieved."
-    "GPA_STATUS_ERROR_NULL_POINTER", "| The supplied ``sessionId`` parameter is NULL.
-    | The supplied ``pSampleCount`` parameter is NULL."
-    "GPA_STATUS_ERROR_SESSION_NOT_FOUND", "The supplied ``sessionId`` parameter was not recognized as a previously-created session identifier."
-    "GPA_STATUS_ERROR_SESSION_NOT_ENDED", "The session has not been ended. A session must have been ended with GPA_EndSession prior to querying the number of samples."
-    "GPA_STATUS_ERROR_FAILED", "| The sample count could not be retrieved."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The sample count was successfully retrieved."
+    "kGpaStatusErrorNullPointer", "| The supplied ``session_id`` parameter is NULL.
+    | The supplied ``sample_count`` parameter is NULL."
+    "kGpaStatusErrorSessionNotFound", "The supplied ``session_id`` parameter was not recognized as a previously-created session identifier."
+    "kGpaStatusErrorSessionNotEnded", "The session has not been ended. A session must have been ended with GpaEndSession prior to querying the number of samples."
+    "kGpaStatusErrorFailed", "| The sample count could not be retrieved."
+    "kGpaStatusErrorException", "Exception occurred."

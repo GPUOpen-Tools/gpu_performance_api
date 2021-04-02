@@ -1,16 +1,19 @@
 //==============================================================================
-// Copyright (c) 2010-2020 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  This file defines function types to make it easier to dynamically load
-///         different GPUPerfAPI DLLs into an application that supports multiple APIs.
-///         Applications which statically link to GPUPerfAPI do not need to include
-///         this file.
+/// \brief  Deprecated header; use gpu_performance_api/gpu_perf_api_function_types.h
 //==============================================================================
 
-#ifndef _GPUPERFAPI_FUNCTION_TYPES_H_
-#define _GPUPERFAPI_FUNCTION_TYPES_H_
+#ifndef GPU_PERF_API_FUNCTION_TYPES_H_
+#define GPU_PERF_API_FUNCTION_TYPES_H_
 
+#pragma message("Warning: You are including a deprecated header. Please use gpu_performance_api/gpu_perf_api_function_types.h")
+
+// New header
+#include "gpu_performance_api/gpu_perf_api_function_types.h"
+
+// Deprecated header
 #include "gpu_perf_api_types.h"
 
 // GPA API Version
@@ -109,4 +112,4 @@ typedef GPA_Status (*GPA_GetSampleResultPtrType)(GPA_SessionId, gpa_uint32, size
 // Status / Error Query
 typedef const char* (*GPA_GetStatusAsStrPtrType)(GPA_Status);  ///< Typedef for a function pointer for GPA_GetStatusAsStr
 
-#endif  // _GPUPERFAPI_FUNCTION_TYPES_H_
+#endif  // GPU_PERF_API_FUNCTION_TYPES_H_

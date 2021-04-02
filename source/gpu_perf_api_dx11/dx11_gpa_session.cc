@@ -1,40 +1,40 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief DX11 GPA Session Implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief DX11 GPA Session Implementation
 //==============================================================================
 
-#include "dx11_gpa_session.h"
-#include "dx11_gpa_pass.h"
+#include "gpu_perf_api_dx11/dx11_gpa_session.h"
+#include "gpu_perf_api_dx11/dx11_gpa_pass.h"
 
-DX11GPASession::DX11GPASession(IGPAContext* pParentContext, GPA_Session_Sample_Type sampleType)
-    : GPASession(pParentContext, sampleType)
+Dx11GpaSession::Dx11GpaSession(IGpaContext* parent_context, GpaSessionSampleType sample_type)
+    : GpaSession(parent_context, sample_type)
 {
 }
 
-GPA_API_Type DX11GPASession::GetAPIType() const
+GpaApiType Dx11GpaSession::GetApiType() const
 {
-    return GPA_API_DIRECTX_11;
+    return kGpaApiDirectx11;
 }
 
-GPAPass* DX11GPASession::CreateAPIPass(PassIndex passIndex)
+GpaPass* Dx11GpaSession::CreateApiPass(PassIndex pass_index)
 {
-    GPAPass* pRetPass = nullptr;
+    GpaPass* ret_pass = nullptr;
 
-    CounterList*     pPassCounters = GetCountersForPass(passIndex);
-    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
+    CounterList*     pass_counters  = GetCountersForPass(pass_index);
+    GpaCounterSource counter_source = GetParentContext()->GetCounterSource((*pass_counters)[0]);
 
-    DX11GPAPass* pDx11Pass = new (std::nothrow) DX11GPAPass(this, passIndex, counterSource, pPassCounters);
+    Dx11GpaPass* dx11_pass = new (std::nothrow) Dx11GpaPass(this, pass_index, counter_source, pass_counters);
 
-    if (nullptr == pDx11Pass)
+    if (nullptr == dx11_pass)
     {
-        GPA_LogError("Unable to allocate memory for the pass.");
+        GPA_LOG_ERROR("Unable to allocate memory for the pass.");
     }
     else
     {
-        pRetPass = pDx11Pass;
+        ret_pass = dx11_pass;
     }
 
-    return pRetPass;
+    return ret_pass;
 }

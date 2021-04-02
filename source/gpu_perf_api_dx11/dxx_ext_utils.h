@@ -1,21 +1,25 @@
 //==============================================================================
-// Copyright (c) 2014-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  DXX Utility functions
+// Copyright (c) 2014-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  DXX Utility functions
 //==============================================================================
 
-#ifndef _GPUPERFAPI_DXXEXTUTILS_H_
-#define _GPUPERFAPI_DXXEXTUTILS_H_
+#ifndef GPU_PERF_API_DX11_DXX_EXT_UTILS_H_
+#define GPU_PERF_API_DX11_DXX_EXT_UTILS_H_
 
-#include "dx11_include.h"
+#include "gpu_perf_api_dx11/dx11_include.h"
 
-namespace DxxExtUtils
+namespace dxx_ext_utils
 {
-    /// Test if MGPU performance extension is supported
-    /// \param[in] pDxxExt DXX extension
-    /// \return True if MGPU performance extension is supported, false if not
-    bool IsMgpuPerfExtSupported(IAmdDxExt* pDxxExt);
-}  // namespace DxxExtUtils
+    /// @brief Test if multi GPU performance extension is supported.
+    ///
+    /// @param [in] dxx_ext DXX extension.
+    ///
+    /// @return Boolean value indicating if multi GPU performance extension is supported.
+    /// @retval True if Multi-GPU performance extension is supported.
+    /// @retval False otherwise.
+    bool IsMultiGpuPerfExtSupported(IAmdDxExt* dxx_ext);
+}  // namespace dxx_ext_utils
 
-#endif  // _GPUPERFAPI_DXXEXTUTILS_H_
+#endif  // GPU_PERF_API_DX11_DXX_EXT_UTILS_H_

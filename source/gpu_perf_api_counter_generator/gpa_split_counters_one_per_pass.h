@@ -1,227 +1,239 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Counter splitter that puts one hardware counter per pass -- not used
-///         in production, but can be useful for testing
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Counter splitter that puts one hardware counter per pass -- not used
+///         in production, but can be useful for testing.
 //==============================================================================
 
-#ifndef GPA_SPLIT_COUNTERS_ONE_PER_PASS_H_
-#define GPA_SPLIT_COUNTERS_ONE_PER_PASS_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTERS_ONE_PER_PASS_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTERS_ONE_PER_PASS_H_
 
 #include <vector>
 
-#include "gpa_split_counters_interfaces.h"
-#include "gpa_counter.h"
+#include "gpu_perf_api_counter_generator/gpa_counter.h"
+#include "gpu_perf_api_counter_generator/gpa_split_counters_interfaces.h"
 
-/// Splits counters such that each public counter is in its own pass (or multiple passes as needed).
+/// @brief Splits counters such that each public counter is in its own pass (or multiple passes as needed).
+///
 /// In internal builds, the additional internal counters will also each go into their own pass.
-class GPASplitCountersOnePerPass : public IGPASplitCounters
+class GpaSplitCountersOnePerPass : public IGpaSplitCounters
 {
 public:
-    /// Initializes a new instance of the GPASplitCountersOnePerPass class
-    /// \param timestampBlockIds Set of timestamp block id's
-    /// \param timeCounterIndices Set of timestamp counter indices
-    /// \param maxSQCounters The maximum number of counters that can be simultaneously enabled on the SQ block
-    /// \param numSQBlocks The number of SQ counter blocks.
-    /// \param pSQCounterBlockInfo The list of SQ counter groups.
-    /// \param numIsolatedFromSqGroups The number of counter groups that must be isolated from SQ counter groups
-    /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
-    GPASplitCountersOnePerPass(const std::set<unsigned int>& timestampBlockIds,
-                               const std::set<unsigned int>& timeCounterIndices,
-                               unsigned int                  maxSQCounters,
-                               unsigned int                  numSQBlocks,
-                               GPA_SQCounterGroupDesc*       pSQCounterBlockInfo,
-                               unsigned int                  numIsolatedFromSqGroups,
-                               const unsigned int*           pIsolatedFromSqGroups)
-        : IGPASplitCounters(timestampBlockIds,
-                            timeCounterIndices,
-                            maxSQCounters,
-                            numSQBlocks,
-                            pSQCounterBlockInfo,
-                            numIsolatedFromSqGroups,
-                            pIsolatedFromSqGroups){};
+    /// @brief Initializes a new instance of the GPASplitCountersOnePerPass class.
+    ///
+    /// @param [in] timestamp_block_ids Set of timestamp block id's.
+    /// @param [in] time_counter_indices Set of timestamp counter indices.
+    /// @param [in] max_sq_counters The maximum number of counters that can be simultaneously enabled on the SQ block.
+    /// @param [in] num_sq_blocks The number of SQ counter blocks.
+    /// @param [in] sq_counter_block_info The list of SQ counter groups.
+    /// @param [in] num_isolated_from_sq_groups The number of counter groups that must be isolated from SQ counter groups.
+    /// @param [in] isolated_from_sq_groups The list of counter groups that must be isolated from SQ counter groups.
+    GpaSplitCountersOnePerPass(const std::set<unsigned int>& timestamp_block_ids,
+                               const std::set<unsigned int>& time_counter_indices,
+                               unsigned int                  max_sq_counters,
+                               unsigned int                  num_sq_blocks,
+                               GpaSqCounterGroupDesc*        sq_counter_block_info,
+                               unsigned int                  num_isolated_from_sq_groups,
+                               const unsigned int*           isolated_from_sq_groups)
+        : IGpaSplitCounters(timestamp_block_ids,
+                            time_counter_indices,
+                            max_sq_counters,
+                            num_sq_blocks,
+                            sq_counter_block_info,
+                            num_isolated_from_sq_groups,
+                            isolated_from_sq_groups){};
 
-    /// Destructor
-    virtual ~GPASplitCountersOnePerPass(){};
+    /// @brief Virtual destructor.
+    virtual ~GpaSplitCountersOnePerPass(){};
 
-    //--------------------------------------------------------------------------
-    // puts each public counter into its own pass (or set of passes) and each hardware counter into its own pass if not already scheduled
-    std::list<GPACounterPass> SplitCounters(const std::vector<const GPA_DerivedCounter*>& publicCountersToSplit,
-                                            const std::vector<GPAHardwareCounterIndices>  internalCountersToSchedule,
-                                            const std::vector<GPASoftwareCounterIndices>  softwareCountersToSchedule,
-                                            IGPACounterGroupAccessor*                     accessor,
-                                            const std::vector<unsigned int>&              maxCountersPerGroup,
-                                            unsigned int&                                 numScheduledCounters)
+    /// @brief Puts each public counter into its own pass (or set of passes) and each hardware counter into its own pass if not already scheduled.
+    ///
+    /// @param [in] public_counters_to_split The set of public counters that need to be split into passes.
+    /// @param [in] internal_counters_to_schedule Additional internal counters that need to be scheduled (used by internal builds).
+    /// @param [in] software_counters_to_schedule Additional software counters that need to be scheduled.
+    /// @param [in] counter_group_accessor A class to access the internal counters.
+    /// @param [in] max_counters_per_group The maximum number of counters that can be enabled in a single pass on each HW block or SW group.
+    /// @param [out] num_scheduled_counters Indicates the total number of internal counters that were assigned to a pass.
+    ///
+    /// @return The list of passes that the counters are separated into.
+    std::list<GpaCounterPass> SplitCounters(const std::vector<const GpaDerivedCounterInfoClass*>& public_counters_to_split,
+                                            const std::vector<GpaHardwareCounterIndices>  internal_counters_to_schedule,
+                                            const std::vector<GpaSoftwareCounterIndices>  software_counters_to_schedule,
+                                            IGpaCounterGroupAccessor*                     accessor,
+                                            const std::vector<unsigned int>&              max_counters_per_group,
+                                            unsigned int&                                 num_scheduled_counters) override
     {
-        UNREFERENCED_PARAMETER(softwareCountersToSchedule);
-        // this will be the return value
-        std::list<GPACounterPass> passPartitions;
+        UNREFERENCED_PARAMETER(software_counters_to_schedule);
+        // This will be the return value.
+        std::list<GpaCounterPass> pass_partitions;
 
-        // make sure there are counters to schedule
-        if (publicCountersToSplit.size() == 0 && internalCountersToSchedule.size() == 0)
+        // Make sure there are counters to schedule.
+        if (public_counters_to_split.size() == 0 && internal_counters_to_schedule.size() == 0)
         {
-            return passPartitions;
+            return pass_partitions;
         }
 
-        // temporary variable to hold the number of counters assigned to each block during each of the passes.
-        std::list<PerPassData> numUsedCountersPerPassPerBlock;
+        // Temporary variable to hold the number of counters assigned to each block during each of the passes.
+        std::list<PerPassData> num_used_counters_per_pass_per_block;
 
-        // add initial pass partition and used counters per block
-        AddNewPassInfo(1, &passPartitions, &numUsedCountersPerPassPerBlock);
+        // Add initial pass partition and used counters per block.
+        AddNewPassInfo(1, &pass_partitions, &num_used_counters_per_pass_per_block);
 
-        unsigned int                        passIndex        = 0;
-        std::list<PerPassData>::iterator    countersUsedIter = numUsedCountersPerPassPerBlock.begin();
-        std::list<GPACounterPass>::iterator counterPassIter  = passPartitions.begin();
+        unsigned int                        pass_index        = 0;
+        std::list<PerPassData>::iterator    counters_used_iter = num_used_counters_per_pass_per_block.begin();
+        std::list<GpaCounterPass>::iterator counter_pass_iter  = pass_partitions.begin();
 
-        // iterate through each public counter
-        for (std::vector<const GPA_DerivedCounter*>::const_iterator publicIter = publicCountersToSplit.begin(); publicIter != publicCountersToSplit.end();
-             ++publicIter)
+        // Iterate through each public counter.
+        for (std::vector<const GpaDerivedCounterInfoClass*>::const_iterator public_iter = public_counters_to_split.begin();
+             public_iter != public_counters_to_split.end();
+             ++public_iter)
         {
-            unsigned int initialPassForThisPubCounter = passIndex;
-            unsigned int currentPassForThisIntCounter = passIndex;
+            unsigned int initial_pass_for_this_pub_counter = pass_index;
+            unsigned int current_pass_for_this_int_counter = pass_index;
 
-            // iterate through the internal counters and put them into the appropriate pass
-            for (std::vector<gpa_uint32>::const_iterator counterIter = (*publicIter)->m_internalCountersRequired.begin();
-                 counterIter != (*publicIter)->m_internalCountersRequired.end();
-                 ++counterIter)
+            // Iterate through the internal counters and put them into the appropriate pass.
+            for (std::vector<GpaUInt32>::const_iterator counter_iter = (*public_iter)->internal_counters_required_.begin();
+                 counter_iter != (*public_iter)->internal_counters_required_.end();
+                 ++counter_iter)
             {
-                // each internal counter should try to go into the first pass of this public counter
-                // reset iterators...
-                for (unsigned int i = currentPassForThisIntCounter; i > initialPassForThisPubCounter; --i)
+                // Each internal counter should try to go into the first pass of this public counter.
+                // Reset iterators...
+                for (unsigned int i = current_pass_for_this_int_counter; i > initial_pass_for_this_pub_counter; --i)
                 {
-                    --countersUsedIter;
-                    --counterPassIter;
+                    --counters_used_iter;
+                    --counter_pass_iter;
                 }
 
-                // .. and reset current pass for this internal counter
-                currentPassForThisIntCounter = initialPassForThisPubCounter;
+                // ... and reset current pass for this internal counter.
+                current_pass_for_this_int_counter = initial_pass_for_this_pub_counter;
 
-                bool doneAllocatingCounter = false;
+                bool done_allocating_counter = false;
 
-                while (doneAllocatingCounter == false)
+                while (done_allocating_counter == false)
                 {
-                    accessor->SetCounterIndex(*counterIter);
-                    unsigned int groupIndex = accessor->GroupIndex();
+                    accessor->SetCounterIndex(*counter_iter);
+                    unsigned int group_index = accessor->GroupIndex();
 
-                    size_t countersSize = counterPassIter->m_counters.size();
+                    size_t counters_size = counter_pass_iter->pass_counter_list.size();
 
-                    // try to add the counter to the current pass
-                    if (countersSize == 0 ||
-                        (CheckForTimestampCounters(accessor, *counterPassIter) && CanCounterBeAdded(accessor, *countersUsedIter, maxCountersPerGroup) &&
-                         CheckForSQCounters(accessor, *countersUsedIter, m_maxSQCounters) && CheckCountersAreCompatible(accessor, *countersUsedIter) &&
-                         countersSize < 300))
+                    // Try to add the counter to the current pass.
+                    if (counters_size == 0 ||
+                        (CheckForTimestampCounters(accessor, *counter_pass_iter) && CanCounterBeAdded(accessor, *counters_used_iter, max_counters_per_group) &&
+                         CheckForSQCounters(accessor, *counters_used_iter, max_sq_counters_) && CheckCountersAreCompatible(accessor, *counters_used_iter) &&
+                         counters_size < 300))
                     {
-                        counterPassIter->m_counters.push_back(*counterIter);
-                        countersUsedIter->m_numUsedCountersPerBlock[groupIndex].push_back(accessor->CounterIndex());
-                        numScheduledCounters += 1;
-                        doneAllocatingCounter = true;
+                        counter_pass_iter->pass_counter_list.push_back(*counter_iter);
+                        counters_used_iter->num_used_counters_per_block[group_index].push_back(accessor->CounterIndex());
+                        num_scheduled_counters += 1;
+                        done_allocating_counter = true;
 
-                        // record where to get the result from
+                        // Record where to get the result from.
                         AddCounterResultLocation(
-                            (*publicIter)->m_index, *counterIter, currentPassForThisIntCounter, (unsigned int)counterPassIter->m_counters.size() - 1);
+                            (*public_iter)->counter_index_, *counter_iter, current_pass_for_this_int_counter, (unsigned int)counter_pass_iter->pass_counter_list.size() - 1);
                     }
                     else
                     {
-                        // the counters needs to go into the next pass. Increment the pass index and let the loop happen again
-                        ++currentPassForThisIntCounter;
+                        // The counters needs to go into the next pass. Increment the pass index and let the loop happen again.
+                        ++current_pass_for_this_int_counter;
 
-                        if (currentPassForThisIntCounter > passIndex)
+                        if (current_pass_for_this_int_counter > pass_index)
                         {
-                            ++passIndex;
+                            ++pass_index;
 
-                            AddNewPassInfo(passIndex + 1, &passPartitions, &numUsedCountersPerPassPerBlock);
+                            AddNewPassInfo(pass_index + 1, &pass_partitions, &num_used_counters_per_pass_per_block);
                         }
 
-                        ++countersUsedIter;
-                        ++counterPassIter;
+                        ++counters_used_iter;
+                        ++counter_pass_iter;
                     }
-                }  // end while loop to find a suitable pass for the current counter
-            }      // end for loop over each of the internal counters
+                }
+            }
 
-            if (publicIter != publicCountersToSplit.end() - 1)
+            if (public_iter != public_counters_to_split.end() - 1)
             {
-                // next counter will be in another pass
-                ++passIndex;
+                // Next counter will be in another pass.
+                ++pass_index;
 
-                GPACounterPass counterPass;
-                passPartitions.push_back(counterPass);
+                GpaCounterPass counter_pass;
+                pass_partitions.push_back(counter_pass);
 
-                PerPassData newPass;
-                numUsedCountersPerPassPerBlock.push_back(newPass);
+                PerPassData new_pass;
+                num_used_counters_per_pass_per_block.push_back(new_pass);
 
-                // point to the last item in this case so the next public counter can start at the pass just added
-                countersUsedIter = numUsedCountersPerPassPerBlock.end();
-                --countersUsedIter;
-                counterPassIter = passPartitions.end();
-                --counterPassIter;
+                // Point to the last item in this case so the next public counter can start at the pass just added.
+                counters_used_iter = num_used_counters_per_pass_per_block.end();
+                --counters_used_iter;
+                counter_pass_iter = pass_partitions.end();
+                --counter_pass_iter;
             }
         }
 
-        InsertInternalCounters(passPartitions, internalCountersToSchedule, accessor, numUsedCountersPerPassPerBlock, numScheduledCounters);
+        InsertInternalCounters(pass_partitions, internal_counters_to_schedule, accessor, num_used_counters_per_pass_per_block, num_scheduled_counters);
 
-        return passPartitions;
+        return pass_partitions;
     };
 
 private:
-    /// Inserts each internal counter into a separate pass
-    /// \param[in,out] passPartitions The pass partitions that are generated
-    /// \param internalCounters The internal counters that need to be scheduled
-    /// \param pAccessor A interface that accesses the internal counters
-    /// \param numUsedCountersPerPassPerBlock A list of passes, each consisting of the number of counters scheduled on each block
-    /// \param[in,out] numScheduledCounters The total number of internal counters that were scheduled
-    void InsertInternalCounters(std::list<GPACounterPass>&                   passPartitions,
-                                const std::vector<GPAHardwareCounterIndices> internalCounters,
-                                IGPACounterGroupAccessor*                    pAccessor,
-                                std::list<PerPassData>                       numUsedCountersPerPassPerBlock,
-                                unsigned int&                                numScheduledCounters)
+    /// @brief Inserts each internal counter into a separate pass.
+    ///
+    /// @param [in,out] pass_partitions The pass partitions that are generated.
+    /// @param [in] internal_counters The internal counters that need to be scheduled.
+    /// @param [in] counter_accessor A interface that accesses the internal counters.
+    /// @param [in] num_used_counters_per_pass_per_block A list of passes, each consisting of the number of counters scheduled on each block.
+    /// @param [in,out] num_scheduled_counters The total number of internal counters that were scheduled.
+    void InsertInternalCounters(std::list<GpaCounterPass>&                   pass_partitions,
+                                const std::vector<GpaHardwareCounterIndices> internal_counters,
+                                IGpaCounterGroupAccessor*                    counter_accessor,
+                                std::list<PerPassData>                       num_used_counters_per_pass_per_block,
+                                unsigned int&                                num_scheduled_counters)
     {
-        if (internalCounters.size() == 0)
+        if (internal_counters.size() == 0)
         {
             return;
         }
 
-        // if there are no passes, then the first pass added below will be empty.
+        // If there are no passes, then the first pass added below will be empty.
         // In this case, we have to special handle things further down.
-        bool firstPassEmpty = (numScheduledCounters == 0);
+        bool first_pass_empty = (num_scheduled_counters == 0);
 
-        // make sure there is room for the first pass
-        AddNewPassInfo(1, &passPartitions, &numUsedCountersPerPassPerBlock);
+        // Make sure there is room for the first pass.
+        AddNewPassInfo(1, &pass_partitions, &num_used_counters_per_pass_per_block);
 
-        std::list<GPACounterPass>::iterator currentPassIter         = passPartitions.end();
-        std::list<PerPassData>::iterator    currentUsedCountersIter = numUsedCountersPerPassPerBlock.end();
-        unsigned int                        passIndex               = (unsigned int)passPartitions.size();
+        std::list<GpaCounterPass>::iterator current_pass_iter         = pass_partitions.end();
+        std::list<PerPassData>::iterator    current_used_counters_iter = num_used_counters_per_pass_per_block.end();
+        unsigned int                        pass_index               = (unsigned int)pass_partitions.size();
 
-        // back up the iterators so that they point to the last pass.
-        --currentPassIter;
-        --currentUsedCountersIter;
+        // Back up the iterators so that they point to the last pass.
+        --current_pass_iter;
+        --current_used_counters_iter;
 
-        // schedule each of the internal counters in its own pass, unless it is already scheduled from one of the public counters
-        for (std::vector<GPAHardwareCounterIndices>::const_iterator internalCounterIter = internalCounters.begin();
-             internalCounterIter != internalCounters.end();
-             ++internalCounterIter)
+        // Schedule each of the internal counters in its own pass, unless it is already scheduled from one of the public counters.
+        for (std::vector<GpaHardwareCounterIndices>::const_iterator internal_counter_iter = internal_counters.begin();
+             internal_counter_iter != internal_counters.end();
+             ++internal_counter_iter)
         {
-            // if the counter is already scheduled in any pass, there is no reason to add it again.
-            bool       counterAlreadyScheduled = false;
-            gpa_uint16 searchPassIndex         = 0;
+            // If the counter is already scheduled in any pass, there is no reason to add it again.
+            bool       counter_already_scheduled = false;
+            GpaUInt16 search_pass_index         = 0;
 
-            for (std::list<GPACounterPass>::iterator tmpPassIter = passPartitions.begin(); tmpPassIter != passPartitions.end(); ++tmpPassIter)
+            for (std::list<GpaCounterPass>::iterator tmp_pass_iter = pass_partitions.begin(); tmp_pass_iter != pass_partitions.end(); ++tmp_pass_iter)
             {
-                int existingOffset = VectorContains<unsigned int>(tmpPassIter->m_counters, internalCounterIter->m_hardwareIndex);
+                int existing_offset = VectorContains<unsigned int>(tmp_pass_iter->pass_counter_list, internal_counter_iter->hardware_index);
 
-                if (existingOffset >= 0)
+                if (existing_offset >= 0)
                 {
-                    counterAlreadyScheduled = true;
+                    counter_already_scheduled = true;
 
-                    // record where to get the result from
-                    AddCounterResultLocation(internalCounterIter->m_publicIndex, internalCounterIter->m_hardwareIndex, searchPassIndex, existingOffset);
+                    // Record where to get the result from.
+                    AddCounterResultLocation(internal_counter_iter->public_index, internal_counter_iter->hardware_index, search_pass_index, existing_offset);
                     break;
                 }
 
-                searchPassIndex++;
+                search_pass_index++;
             }
 
-            if (counterAlreadyScheduled)
+            if (counter_already_scheduled)
             {
                 // Don't need to schedule this counter,
                 // continue on to the next internal counter that needs to be scheduled.
@@ -229,33 +241,33 @@ private:
             }
 
             // The counter needs to be scheduled.
-            // if the first pass is not empty, then skip over the addition of another pass for this current counter.
-            if (firstPassEmpty == false)
+            // If the first pass is not empty, then skip over the addition of another pass for this current counter.
+            if (first_pass_empty == false)
             {
-                // make sure there is enough space for the next pass
-                ++passIndex;
-                AddNewPassInfo(passIndex, &passPartitions, &numUsedCountersPerPassPerBlock);
-                ++currentPassIter;
-                ++currentUsedCountersIter;
+                // Make sure there is enough space for the next pass.
+                ++pass_index;
+                AddNewPassInfo(pass_index, &pass_partitions, &num_used_counters_per_pass_per_block);
+                ++current_pass_iter;
+                ++current_used_counters_iter;
             }
             else
             {
-                // the first counter is about to be scheduled in the pass, so
-                // the pass will no longer be empty
-                firstPassEmpty = false;
+                // The first counter is about to be scheduled in the pass, so
+                // the pass will no longer be empty.
+                first_pass_empty = false;
             }
 
-            // the counter can be scheduled here.
-            currentPassIter->m_counters.push_back(internalCounterIter->m_hardwareIndex);
+            // The counter can be scheduled here.
+            current_pass_iter->pass_counter_list.push_back(internal_counter_iter->hardware_index);
 
-            currentUsedCountersIter->m_numUsedCountersPerBlock[pAccessor->GroupIndex()].push_back(pAccessor->CounterIndex());
-            numScheduledCounters += 1;
+            current_used_counters_iter->num_used_counters_per_block[counter_accessor->GroupIndex()].push_back(counter_accessor->CounterIndex());
+            num_scheduled_counters += 1;
 
-            // record where the result will be located
-            unsigned int offset = (unsigned int)currentPassIter->m_counters.size() - 1;
-            AddCounterResultLocation(internalCounterIter->m_publicIndex, internalCounterIter->m_hardwareIndex, passIndex, offset);
+            // Record where the result will be located.
+            unsigned int offset = (unsigned int)current_pass_iter->pass_counter_list.size() - 1;
+            AddCounterResultLocation(internal_counter_iter->public_index, internal_counter_iter->hardware_index, pass_index, offset);
         }
     }
 };
 
-#endif
+#endif // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTERS_ONE_PER_PASS_H_

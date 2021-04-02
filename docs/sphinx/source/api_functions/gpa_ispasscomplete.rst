@@ -1,16 +1,16 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_IsPassComplete
-@@@@@@@@@@@@@@@@@@
+GpaIsPassComplete
+@@@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_IsPassComplete(
-        GPA_SessionId sessionId,
-        gpa_uint32 passIndex);
+    GpaStatus GpaIsPassComplete(
+        GpaSessionId session_id,
+        GpaUInt32 pass_index);
 
 Description
 %%%%%%%%%%%
@@ -20,7 +20,7 @@ may be available immediately or take a certain amount of time to become
 available. This function allows you to determine when the pass has finished and
 associated resources are no longer needed in the application. The function does
 not block, permitting periodic polling. The application must not free its
-resources until this function returns GPA_STATUS_OK.
+resources until this function returns kGpaStatusOk.
 
 Parameters
 %%%%%%%%%%
@@ -29,8 +29,8 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``sessionId``", "Unique identifier of a previously-created session."
-    "``passIndex``", "Zero-based index of the pass to check."
+    "``session_id``", "Unique identifier of a previously-created session."
+    "``pass_index``", "Zero-based index of the pass to check."
 
 Return value
 %%%%%%%%%%%%
@@ -39,9 +39,9 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The pass is complete and results are ready."
-    "GPA_STATUS_RESULT_NOT_READY", "The pass is not yet ready."
-    "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``sessionId`` parameter is NULL."
-    "GPA_STATUS_ERROR_SESSION_NOT_FOUND", "The supplied ``sessionId`` parameter was not recognized as a previously-created session identifier."
-    "GPA_STATUS_ERROR_SESSION_NOT_STARTED", "The session has not been started."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The pass is complete and results are ready."
+    "kGpaStatusErrorResultNotReady", "The pass is not yet ready."
+    "kGpaStatusErrorNullPointer", "The supplied ``session_id`` parameter is NULL."
+    "kGpaStatusErrorSessionNotFound", "The supplied ``session_id`` parameter was not recognized as a previously-created session identifier."
+    "kGpaStatusErrorSessionNotStarted", "The session has not been started."
+    "kGpaStatusErrorException", "Exception occurred."

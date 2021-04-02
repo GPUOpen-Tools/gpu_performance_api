@@ -1,6 +1,6 @@
 ﻿// =====================================================================
 // <copyright file="CounterDefCMakeGen.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2019 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -16,24 +16,24 @@ using System.IO;
 using ApiDictionary = System.Collections.Generic.Dictionary<string, System.Collections.Generic.List<string>>;
 using FileList = System.Collections.Generic.List<string>;
 
-namespace GPATools
+namespace GpaTools
 {
     class CounterDefCMakeGenerator
     {
         /// <summary>
         /// Derived counter names dictionary
         /// </summary>
-        public static ApiDictionary DerivedCounters = new ApiDictionary();
+        public static ApiDictionary derivedCounters = new ApiDictionary();
 
         /// <summary>
         /// counter definitions dictionary
         /// </summary>
-        public static ApiDictionary CounterDefs = new ApiDictionary();
+        public static ApiDictionary counterDefs = new ApiDictionary();
 
         /// <summary>
         /// Flag indicating the internal counter compiler or not
         /// </summary>
-        public static bool IsInternal = false;
+        public static bool isInternal = false;
 
         /// <summary>
         /// Initializes the memory for the file lists
@@ -41,18 +41,18 @@ namespace GPATools
         public static void Init()
         {
             // PublicCounterDefs - GPA
-            CounterDefs.Add(Gpa.DX12, new FileList());
-            CounterDefs.Add(Gpa.DX11, new FileList());
-            CounterDefs.Add(Gpa.VK, new FileList());
-            CounterDefs.Add(Gpa.GL, new FileList());
-            CounterDefs.Add(Gpa.CL, new FileList());
+            counterDefs.Add(Gpa.DX12, new FileList());
+            counterDefs.Add(Gpa.DX11, new FileList());
+            counterDefs.Add(Gpa.VK, new FileList());
+            counterDefs.Add(Gpa.GL, new FileList());
+            counterDefs.Add(Gpa.CL, new FileList());
 
             // PublicDerivedCounters - GPA
-            DerivedCounters.Add(Gpa.DX12, new FileList());
-            DerivedCounters.Add(Gpa.DX11, new FileList());
-            DerivedCounters.Add(Gpa.VK, new FileList());
-            DerivedCounters.Add(Gpa.GL, new FileList());
-            DerivedCounters.Add(Gpa.CL, new FileList());
+            derivedCounters.Add(Gpa.DX12, new FileList());
+            derivedCounters.Add(Gpa.DX11, new FileList());
+            derivedCounters.Add(Gpa.VK, new FileList());
+            derivedCounters.Add(Gpa.GL, new FileList());
+            derivedCounters.Add(Gpa.CL, new FileList());
         }
 
         /// <summary>
@@ -65,26 +65,26 @@ namespace GPATools
 
             // PublicCounterDefs*
             {
-                int indexOf = file.IndexOf((IsInternal ? Gpa.internal_file_prefix : Gpa.public_file_prefix) + Gpa.CounterDefinitionsStr, StringComparison.Ordinal);
+                int indexOf = file.IndexOf((isInternal ? Gpa.internalFilePrefix : Gpa.publicFilePrefix) + Gpa.counterDefinitionsStr, StringComparison.Ordinal);
                 if (indexOf != -1)
                 {
                     string api = Gpa.GetApiFromFileName(file);
                     if (null != api)
                     {
-                        CounterDefs[api].Add(fileName);
+                        counterDefs[api].Add(fileName);
                     }
                 }
             }
 
             // DerivedCounterDefs*
             {
-                int indexOf = file.IndexOf((IsInternal ? Gpa.internal_file_prefix : Gpa.public_file_prefix) + Gpa.DerivedCounterOutFileName, StringComparison.Ordinal);
+                int indexOf = file.IndexOf((isInternal ? Gpa.internalFilePrefix : Gpa.publicFilePrefix) + Gpa.derivedCounterOutFileName, StringComparison.Ordinal);
                 if (indexOf != -1)
                 {
                     string api = Gpa.GetApiFromFileName(file);
                     if (null != api)
                     {
-                        DerivedCounters[api].Add(fileName);
+                        derivedCounters[api].Add(fileName);
                     }
                 }
             }
@@ -95,25 +95,24 @@ namespace GPATools
         /// </summary>
         public static void CMakeWriter()
         {
-            string TypePrefix = (IsInternal ? Gpa.InternalStr : Gpa.PublicStr);
-            foreach (var api in CounterDefs)
+            string TypePrefix = (isInternal ? Gpa.internalStr : Gpa.publicStr);
+            foreach (var api in counterDefs)
             {
-                bool init = false;
+                bool Init = false;
                 TextWriter CMakeWriter = null;
                 string headerFiles = "set(" + TypePrefix.ToUpper() + "_COUNTER_DEF_HEADERS_" + api.Key.ToUpper();
                 string sourceFiles = "set(" + TypePrefix.ToUpper() + "_COUNTER_DEF_SRC_" + api.Key.ToUpper();
                 bool foundHeader = false;
                 foreach (var fileName in api.Value)
                 {
-                    if (!init)
+                    if (!Init)
                     {
-                        init = true;
+                        Init = true;
                         string CMakeFileName = Gpa.GetDirectoryFromFilePath(fileName) + "\\" +
                                                TypePrefix.ToLower() + "_" +
-                                               Gpa.CounterDefinitionsStr + api.Key + ".cmake";
+                                               Gpa.counterDefinitionsStr + api.Key + ".cmake";
                         CMakeWriter = new StreamWriter(CMakeFileName);
-                        CMakeWriter.WriteLine(
-                            "## Copyright (c) {0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Today.Year);
+                        CMakeWriter.WriteLine("## Copyright (c) {0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Today.Year);
                         CMakeWriter.WriteLine("cmake_minimum_required(VERSION 3.5.1)");
                         CMakeWriter.WriteLine();
                         CMakeWriter.WriteLine("set(CMAKE_INCLUDE_CURRENT_DIR ON)");
@@ -150,24 +149,23 @@ namespace GPATools
             }
 
             // DerivedCounterDefs
-            foreach (var api in DerivedCounters)
+            foreach (var api in derivedCounters)
             {
-                bool init = false;
+                bool Init = false;
                 TextWriter CMakeWriter = null;
                 string headerFiles = "set(" + TypePrefix.ToUpper() + "_DERIVED_COUNTERS_API_HEADERS_" + api.Key.ToUpper();
                 string sourceFiles = "set(" + TypePrefix.ToUpper() + "_DERIVED_COUNTERS_API_SRC_" + api.Key.ToUpper();
                 bool foundHeader = false;
                 foreach (var fileName in api.Value)
                 {
-                    if (!init)
+                    if (!Init)
                     {
-                        init = true;
+                        Init = true;
                         string CMakeFileName = Gpa.GetDirectoryFromFilePath(fileName) + "\\" +
                                                TypePrefix.ToLower() + "_" +
-                                               Gpa.DerivedCounterOutFileName + api.Key + ".cmake";
+                                               Gpa.derivedCounterOutFileName + api.Key + ".cmake";
                         CMakeWriter = new StreamWriter(CMakeFileName);
-                        CMakeWriter.WriteLine(
-                            "## Copyright (c) {0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Today.Year);
+                        CMakeWriter.WriteLine("## Copyright (c) {0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Today.Year);
                         CMakeWriter.WriteLine("cmake_minimum_required(VERSION 3.5.1)");
                         CMakeWriter.WriteLine();
                         CMakeWriter.WriteLine("set(CMAKE_INCLUDE_CURRENT_DIR ON)");

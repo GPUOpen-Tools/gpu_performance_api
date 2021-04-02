@@ -1,122 +1,123 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  DX12 GPA Sample implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  DX12 GPA Sample implementation
 //==============================================================================
 
-#include "dx12_gpa_sample.h"
-#include "dx12_gpa_command_list.h"
-#include "gpa_hardware_counters.h"
-#include "gpa_context_counter_mediator.h"
+#include "gpu_perf_api_dx12/dx12_gpa_sample.h"
 
-DX12GPASample::DX12GPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
-    : GPASample(pPass, pCmdList, sampleType, sampleId)
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
+
+#include "gpu_perf_api_dx12/dx12_gpa_command_list.h"
+
+Dx12GpaSample::Dx12GpaSample(GpaPass* pass, IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
+    : GpaSample(pass, cmd_list, sample_type, sample_id)
 {
 }
 
-bool DX12GPASample::UpdateResults()
+bool Dx12GpaSample::UpdateResults()
 {
-    if (GPASampleState::RESULTS_COLLECTED == GetGpaSampleState())
+    if (GpaSampleState::kResultsCollected == GetGpaSampleState())
     {
         return true;
     }
 
-    bool isUpdated = false;
+    bool is_updated = false;
 
     if (IsSecondary())
     {
         MarkAsCompleted();
-        isUpdated = true;
+        is_updated = true;
     }
 
-    if (GPASampleState::PENDING_RESULTS == GetGpaSampleState() && !IsSecondary())
+    if (GpaSampleState::kPendingResults == GetGpaSampleState() && !IsSecondary())
     {
-        isUpdated = (nullptr != PopulateSampleResult());
+        is_updated = (nullptr != PopulateSampleResult());
     }
 
-    return isUpdated;
+    return is_updated;
 }
 
-bool DX12GPASample::BeginRequest()
+bool Dx12GpaSample::BeginRequest()
 {
-    // TODO: Come back when we are implementing software counters, see if we need this
     return true;
 }
 
-bool DX12GPASample::EndRequest()
+bool Dx12GpaSample::EndRequest()
 {
-    // TODO: Come back when we are implementing software counters, see if we need this
     return true;
 }
 
-void DX12GPASample::ReleaseCounters()
+void Dx12GpaSample::ReleaseCounters()
 {
     GPA_STUB_FUNCTION;
 }
 
-GPASampleResult* DX12GPASample::PopulateSampleResult()
+GpaSampleResult* Dx12GpaSample::PopulateSampleResult()
 {
-    size_t sampleDataBytes = 0u;
+    size_t sample_data_bytes = 0u;
 
-    // Validate result space
-    sampleDataBytes = GetSampleResultLocation()->GetBufferBytes();
+    // Validate result space.
+    sample_data_bytes = GetSampleResultLocation()->GetBufferBytes();
 
-    if (0 != sampleDataBytes)
+    if (0 != sample_data_bytes)
     {
         if (nullptr != GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer())
         {
-            gpa_uint64* pResultBuffer = nullptr;
-            gpa_uint64  timingData[2] = {};
+            GpaUInt64* result_buffer  = nullptr;
+            GpaUInt64  timing_data[2] = {};
 
             if (GetPass()->IsTimingPass())
             {
-                pResultBuffer   = timingData;
-                sampleDataBytes = sizeof(timingData);
+                result_buffer     = timing_data;
+                sample_data_bytes = sizeof(timing_data);
             }
             else
             {
-                pResultBuffer = GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer();
+                result_buffer = GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer();
             }
 
-            if (CopyResult(sampleDataBytes, pResultBuffer))
+            if (CopyResult(sample_data_bytes, result_buffer))
             {
                 if (GetPass()->IsTimingPass())
                 {
-                    const GPA_HardwareCounters* pHardwareCounters = GetPass()->GetSessionContextCounterAccessor()->GetHardwareCounters();
+                    const GpaHardwareCounters* hardware_counters = GetPass()->GetSessionContextCounterAccessor()->GetHardwareCounters();
 
                     for (CounterCount i = 0; i < GetPass()->GetEnabledCounterCount(); ++i)
                     {
-                        CounterIndex counterIndex;
-                        GetPass()->GetCounterByIndexInPass(i, &counterIndex);
+                        CounterIndex counter_index;
+                        GetPass()->GetCounterByIndexInPass(i, &counter_index);
 
-                        if (counterIndex == pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex)
+                        if (counter_index == hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_)
                         {
-                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[1] - timingData[0];
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1] - timing_data[0];
                         }
-                        else if (counterIndex == pHardwareCounters->m_gpuTimeBottomToBottomStartCounterIndex)
+                        else if (counter_index == hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_)
                         {
-                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[0];
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[0];
                         }
-                        else if (counterIndex == pHardwareCounters->m_gpuTimeBottomToBottomEndCounterIndex)
+                        else if (counter_index == hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_)
                         {
-                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[1];
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1];
                         }
-                        else if (counterIndex == pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex)
+                        else if (counter_index == hardware_counters->gpu_time_top_to_bottom_duration_counter_index_)
                         {
-                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[1] - timingData[0];
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1] - timing_data[0];
                         }
-                        else if (counterIndex == pHardwareCounters->m_gpuTimeTopToBottomStartCounterIndex)
+                        else if (counter_index == hardware_counters->gpu_time_top_to_bottom_start_counter_index_)
                         {
-                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[0];
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[0];
                         }
-                        else if (counterIndex == pHardwareCounters->m_gpuTimeTopToBottomEndCounterIndex)
+                        else if (counter_index == hardware_counters->gpu_time_top_to_bottom_end_counter_index_)
                         {
-                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timingData[1];
+                            GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = timing_data[1];
                         }
                         else
                         {
-                            GPA_LogError("Unknown timing counter.");
+                            GPA_LOG_ERROR("Unknown timing counter.");
                             GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = 0;
                         }
                     }
@@ -124,12 +125,12 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
 
                 if (IsSampleContinuing())
                 {
-                    GPASampleResult* pSampleResult = reinterpret_cast<DX12GPASample*>(GetContinuingSample())->PopulateSampleResult();
+                    GpaSampleResult* sample_result = reinterpret_cast<Dx12GpaSample*>(GetContinuingSample())->PopulateSampleResult();
 
-                    for (size_t counterIter = 0; counterIter < GetPass()->GetEnabledCounterCount(); counterIter++)
+                    for (size_t counter_iter = 0; counter_iter < GetPass()->GetEnabledCounterCount(); counter_iter++)
                     {
-                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[counterIter] +=
-                            pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIter];
+                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[counter_iter] +=
+                            sample_result->GetAsCounterSampleResult()->GetResultBuffer()[counter_iter];
                     }
                 }
 
@@ -137,81 +138,81 @@ GPASampleResult* DX12GPASample::PopulateSampleResult()
             }
             else
             {
-                GPA_LogError("Unable to get the result from the driver.");
+                GPA_LOG_ERROR("Unable to get the result from the driver.");
             }
         }
         else
         {
-            GPA_LogError("Incorrect space allocated for sample result.");
+            GPA_LOG_ERROR("Incorrect space allocated for sample result.");
         }
     }
 
     return GetSampleResultLocation();
 }
 
-bool DX12GPASample::CopyResult(size_t sampleDataSize, void* pResultBuffer) const
+bool Dx12GpaSample::CopyResult(size_t sample_data_size, void* result_buffer) const
 {
-    bool isDataReady                 = false;
-    bool isAnyHardwareCounterEnabled = GetPass()->GetEnabledCounterCount() > 0;
+    bool is_data_ready                   = false;
+    bool is_any_hardware_counter_enabled = GetPass()->GetEnabledCounterCount() > 0;
 
-    if (nullptr != pResultBuffer)
+    if (nullptr != result_buffer)
     {
-        if (isAnyHardwareCounterEnabled)
+        if (is_any_hardware_counter_enabled)
         {
-            DX12GPACommandList* pDX12GpaCmdList = reinterpret_cast<DX12GPACommandList*>(GetCmdList());
+            Dx12GpaCommandList* dx12_gpa_cmd_list = reinterpret_cast<Dx12GpaCommandList*>(GetCmdList());
 
-            IAmdExtGpaSession* pResultSession = nullptr;
+            IAmdExtGpaSession* result_session = nullptr;
 
             if (IsCopied())
             {
-                pResultSession = pDX12GpaCmdList->GetBundleResultAmdExtSession(GetClientSampleId());
+                result_session = dx12_gpa_cmd_list->GetBundleResultAmdExtSession(GetClientSampleId());
             }
             else
             {
-                pResultSession = pDX12GpaCmdList->GetAmdExtSession();
+                result_session = dx12_gpa_cmd_list->GetAmdExtSession();
             }
 
-            if (nullptr == pResultSession)
+            if (nullptr == result_session)
             {
-                GPA_LogError("Invalid profiling session encountered while copying results.");
+                GPA_LOG_ERROR("Invalid profiling session encountered while copying results.");
             }
             else
             {
-                if (pResultSession->IsReady())
+                if (result_session->IsReady())
                 {
-                    size_t  sampleDataSizeInDriver = 0u;
-                    HRESULT driverResult           = pResultSession->GetResults(GetDriverSampleId(), &sampleDataSizeInDriver, nullptr);
-                    assert(SUCCEEDED(driverResult));
-                    assert(sampleDataSize == sampleDataSizeInDriver);
+                    size_t  sample_data_size_in_driver = 0u;
+                    HRESULT driver_result              = result_session->GetResults(GetDriverSampleId(), &sample_data_size_in_driver, nullptr);
+                    assert(SUCCEEDED(driver_result));
+                    assert(sample_data_size == sample_data_size_in_driver);
 
-                    if (SUCCEEDED(driverResult) && sampleDataSize == sampleDataSizeInDriver)
+                    if (SUCCEEDED(driver_result) && sample_data_size == sample_data_size_in_driver)
                     {
-                        driverResult = pResultSession->GetResults(GetDriverSampleId(), &sampleDataSizeInDriver, pResultBuffer);
-                        assert(SUCCEEDED(driverResult));
+                        driver_result = result_session->GetResults(GetDriverSampleId(), &sample_data_size_in_driver, result_buffer);
+                        assert(SUCCEEDED(driver_result));
 
-                        if (SUCCEEDED(driverResult))
+                        if (SUCCEEDED(driver_result))
                         {
-                            isDataReady = true;
+                            is_data_ready = true;
                         }
                         else
                         {
-                            GPA_LogError("Error occurred while getting sample results from driver.");
+                            GPA_LOG_ERROR("Error occurred while getting sample results from driver.");
                         }
                     }
                     else
                     {
-                        GPA_LogError("Error occurred while getting sample result size from driver.");
+                        GPA_LOG_ERROR("Error occurred while getting sample result size from driver.");
                     }
                 }
             }
         }
         else
         {
-            // there is no hardware counter enabled in the driver, put zeros in all result location
-            memset(pResultBuffer, 0, sampleDataSize);
-            isDataReady = true;
+            // There is no hardware counter enabled in the driver, put zeros in all result location.
+            memset(result_buffer, 0, sample_data_size);
+            is_data_ready = true;
         }
     }
 
-    return isDataReady;
+    return is_data_ready;
 }

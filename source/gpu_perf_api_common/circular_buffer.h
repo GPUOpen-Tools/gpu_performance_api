@@ -1,126 +1,133 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  A circular buffer that can store objects of a templated type.
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  A circular buffer that can store objects of a templated type.
 //==============================================================================
 
-#ifndef _GPA_CIRCULAR_BUFFER_H_
-#define _GPA_CIRCULAR_BUFFER_H_
+#ifndef GPU_PERF_API_COMMON_CIRCULAR_BUFFER_H_
+#define GPU_PERF_API_COMMON_CIRCULAR_BUFFER_H_
 
 #include <assert.h>
 #ifdef _LINUX
 #include <cstddef>
 #endif
 
-/// A circular buffer that can store objects of a templated type.
+/// @brief A circular buffer that can store objects of a templated type.
 template <class T>
 class CircularBuffer
 {
 public:
-    /// Initializes a new instance of the CircularBuffer<T> class
+    /// @brief Initializes a new instance of the CircularBuffer<T> class.
     CircularBuffer()
     {
-        m_pArray = nullptr;
-        initialize();
+        array_ = nullptr;
+        Initialize();
     }
 
-    /// Deletes the underlying array
+    /// @brief Deletes the underlying array.
     ~CircularBuffer()
     {
-        delete[] m_pArray;
+        delete[] array_;
     }
 
-    /// Constructor which initializes its members from another circulat buffer.
-    /// \param obj The circular buffer to copy
+    /// @brief Constructor which initializes its members from another circular buffer.
+    ///
+    /// @param [in] obj The circular buffer to copy.
     CircularBuffer(const CircularBuffer<T>& obj)
     {
-        if (obj.getSize() == 0)
+        if (obj.GetSize() == 0)
         {
-            m_pArray = nullptr;
+            array_ = nullptr;
         }
         else
         {
-            m_pArray = new (std::nothrow) T[obj.getSize()];
+            array_ = new (std::nothrow) T[obj.GetSize()];
 
-            if (nullptr != m_pArray)
+            if (nullptr != array_)
             {
-                for (int i = 0; i < static_cast<int>(obj.getSize()); i++)
+                for (int i = 0; i < static_cast<int>(obj.GetSize()); i++)
                 {
-                    m_pArray[i] = obj.get(i);
+                    array_[i] = obj.get(i);
                 }
             }
         }
 
-        m_headIndex = obj.getHeadIndex();
-        m_tailIndex = obj.getTailIndex();
-        m_size      = obj.getSize();   // maximum number of elements in the buffer at any one time
-        m_count     = obj.getCount();  // current number of elements in the buffer
+        head_index_ = obj.GetHeadIndex();
+        tail_index_ = obj.GetTailIndex();
+        size_       = obj.GetSize();   // Maximum number of elements in the buffer at any one time.
+        count_      = obj.GetCount();  // Current number of elements in the buffer.
     }
 
-    /// Equal operator
-    /// \param obj The source circular buffer
-    /// \return this object is updated based on the values of the source buffer
+    /// @brief Equal operator.
+    ///
+    /// @param [in] obj The source circular buffer.
+    ///
+    /// @return This object is updated based on the values of the source buffer.
     CircularBuffer<T>& operator=(const CircularBuffer<T>& obj)
     {
-        // assignment means data copy of array
-        delete[] m_pArray;
-        m_pArray = new (std::nothrow) T[obj.getSize()];
+        // Assignment means data copy of array.
+        delete[] array_;
+        array_ = new (std::nothrow) T[obj.GetSize()];
 
-        if (nullptr != m_pArray)
+        if (nullptr != array_)
         {
-            for (int i = 0; i < static_cast<int>(obj.getSize()); i++)
+            for (int i = 0; i < static_cast<int>(obj.GetSize()); i++)
             {
-                m_pArray[i] = obj.get(i);
+                array_[i] = obj.get(i);
             }
         }
 
         return (*this);
     }
 
-    /// Clears the circular buffer
-    void clear()
+    /// @brief Clears the circular buffer.
+    void Clear()
     {
-        delete[] m_pArray;
-        m_pArray = nullptr;
-        initialize();
+        delete[] array_;
+        array_ = nullptr;
+        Initialize();
     }
 
-    /// initializes the buffer
-    void initialize()
+    /// @brief Initializes the buffer.
+    void Initialize()
     {
-        m_headIndex = 0;
-        m_tailIndex = 0;
-        m_size      = 0;
-        m_count     = 0;
+        head_index_ = 0;
+        tail_index_ = 0;
+        size_       = 0;
+        count_      = 0;
     }
 
-    /// Sets the size of the circular buffer.
+    /// @brief Sets the size of the circular buffer.
+    ///
     /// Needs to be called before using the buffer.
-    /// \param size the number of objects this circular buffer should be capable of holding.
-    /// \return true if the size could be set, false otherwise
-    bool setSize(unsigned int size)
+    ///
+    /// @param [in] size The number of objects this circular buffer should be capable of holding.
+    ///
+    /// @return True if the size could be set, false otherwise.
+    bool SetSize(unsigned int size)
     {
-        bool retVal = false;
-        initialize();
-        delete[] m_pArray;
+        bool ret_val = false;
+        Initialize();
+        delete[] array_;
 
-        m_pArray = new (std::nothrow) T[size];
+        array_ = new (std::nothrow) T[size];
 
-        if (nullptr != m_pArray)
+        if (nullptr != array_)
         {
-            retVal = true;
-            m_size = size;
+            ret_val = true;
+            size_   = size;
         }
 
-        return retVal;
+        return ret_val;
     }
 
-    /// Indicates whether or not this buffer has been initialized
-    /// \return True if the buffer was initialized; false otherwise.
-    inline bool initialized() const
+    /// @brief Indicates whether or not this buffer has been Initialized.
+    ///
+    /// @return True if the buffer was Initialized; false otherwise.
+    inline bool Initialized() const
     {
-        if (nullptr != m_pArray)
+        if (nullptr != array_)
         {
             return true;
         }
@@ -128,59 +135,66 @@ public:
         return false;
     }
 
-    /// allows direct access to next item ( avoids copying )
-    /// addLockedItem should be called once it's filled in
-    /// \param[out] success flag indicating if function is sucessfully returning the next item
-    /// \return the next item
-    T& lockNext(bool& success)
+    /// @brief Allows direct access to next item ( avoids copying ).
+    ///
+    /// AddLockedItem should be called once it's filled in.
+    ///
+    /// @param [out] success Flag indicating if function is successfully returning the next item.
+    ///
+    /// @return The next item.
+    T& LockNext(bool& success)
     {
         success = true;
 
-        assert(initialized());
+        assert(Initialized());
 
-        if (full())
+        if (Full())
         {
-            // full so remove one
-            success = erase();
+            // Full, so remove one.
+            success = Erase();
         }
 
-        return m_pArray[m_tailIndex];
+        return array_[tail_index_];
     }
 
-    /// Add a new item to the front (tail) of the buffer.
-    /// \return True if the item can be added; false if the buffer has no size.
-    bool addLockedItem()
+    /// @brief Add a new item to the front (tail) of the buffer.
+    ///
+    /// @return True if the item can be added; false if the buffer has no size.
+    bool AddLockedItem()
     {
-        // add to tail then increment
-        if (m_size == 0)
+        // Add to tail then increment.
+        if (size_ == 0)
         {
             return false;
         }
 
-        circularIncrement(m_tailIndex);
-        m_count++;
+        CircularIncrement(tail_index_);
+        count_++;
         return true;
     }
 
-    /// Gets the number of items in the circular buffer.
-    /// \return the number of items currently in the buffer.
-    unsigned int getCount() const
+    /// @brief Gets the number of items in the circular buffer.
+    ///
+    /// @return The number of items currently in the buffer.
+    unsigned int GetCount() const
     {
-        return m_count;
+        return count_;
     }
 
-    /// Gets the size of the circular buffer.
-    /// \return the maximum number of items this circular buffer can hold.
-    unsigned int getSize() const
+    /// @brief Gets the size of the circular buffer.
+    ///
+    /// @return The maximum number of items this circular buffer can hold.
+    unsigned int GetSize() const
     {
-        return m_size;
+        return size_;
     }
 
-    /// Indicates whether or not the buffer is full.
-    /// \return True if the buffer is full; false if it is not.
-    bool full() const
+    /// @brief Indicates whether or not the buffer is full.
+    ///
+    /// @return True if the buffer is full; false if it is not.
+    bool Full() const
     {
-        if (m_count == m_size && m_size != 0)
+        if (count_ == size_ && size_ != 0)
         {
             return true;
         }
@@ -190,11 +204,12 @@ public:
         }
     }
 
-    /// Indicates whether or not the circular buffer is empty.
-    /// \return True if the buffer is empty; false if it has at least one element in it.
-    bool empty() const
+    /// @brief Indicates whether or not the circular buffer is empty.
+    ///
+    /// @return True if the buffer is empty; false if it has at least one element in it.
+    bool Empty() const
     {
-        if (m_count == 0)
+        if (count_ == 0)
         {
             return true;
         }
@@ -204,137 +219,157 @@ public:
         }
     }
 
-    /// Adds an item to the tail of the circular buffer.
+    /// @brief Adds an item to the tail of the circular buffer.
+    ///
     /// If the buffer is full, the item at the head will be removed,
     /// then the item will be added to the tail.
-    /// \param item The object to add to the circular buffer.
-    /// \return True if the item could be added; false if the buffer is not initialized.
-    bool add(T& item)
+    ///
+    /// @param [in] item The object to add to the circular buffer.
+    ///
+    /// @return True if the item could be added; false if the buffer is not Initialized.
+    bool Add(T& item)
     {
-        // add to tail then increment
-        if (!initialized())
+        // Add to tail then increment.
+        if (!Initialized())
         {
             return false;
         }
 
-        if (full())
+        if (Full())
         {
-            // need to remove from head first
-            erase();
+            // Need to remove from head first.
+            Erase();
         }
 
-        m_pArray[m_tailIndex] = item;
-        circularIncrement(m_tailIndex);
-        m_count++;
+        array_[tail_index_] = item;
+        CircularIncrement(tail_index_);
+        count_++;
+        return true;
     }
 
-    /// Gets a reference to the item at the head of the buffer.
+    /// @brief Gets a reference to the item at the head of the buffer.
+    ///
     /// The item is not removed.
-    /// \return a reference to the item at the head of the buffer.
-    T& getHead()
+    ///
+    /// @return A reference to the item at the head of the buffer.
+    T& GetHead()
     {
-        assert(initialized());
+        assert(Initialized());
 
-        return m_pArray[m_headIndex];
+        return array_[head_index_];
     }
 
-    /// Removes the item from the head of the buffer and passes back a reference to the item.
-    /// \param item [out] A reference to the item at the head of the buffer.
-    /// \return True if an item could be returned; false if the buffer is empty.
-    bool remove(T& item)
+    /// @brief Removes the item from the head of the buffer and passes back a reference to the item.
+    ///
+    /// @param [out] item A reference to the item at the head of the buffer.
+    ///
+    /// @return True if an item could be returned; false if the buffer is empty.
+    bool Remove(T& item)
     {
-        assert(initialized());
+        assert(Initialized());
 
-        if (empty())
+        if (Empty())
         {
-            // buffer empty
+            // Buffer empty.
             return false;
         }
 
-        // return head item
-        item = m_pArray[m_headIndex];
-        circularIncrement(m_headIndex);
-        m_count--;
+        // Return head item.
+        item = array_[head_index_];
+        CircularIncrement(head_index_);
+        count_--;
 
         return true;
     }
 
-    /// Removes the item from the head of the buffer.
-    /// \return True if an item was removed from the head of the buffer; false if the buffer was empty.
-    bool erase()
+    /// @brief Removes the item from the head of the buffer.
+    ///
+    /// @return True if an item was removed from the head of the buffer; false if the buffer was empty.
+    bool Erase()
     {
-        assert(initialized());
+        assert(Initialized());
 
-        if (empty())
+        if (Empty())
         {
-            // buffer empty
+            // Buffer empty.
             return false;
         }
 
-        // inc head, dec count
-        circularIncrement(m_headIndex);
-        m_count--;
+        // Increment head, decrement count.
+        CircularIncrement(head_index_);
+        count_--;
 
         return true;
     }
 
-    /// Gets the item at a specified index of the buffer.
-    /// \param index An index into the buffer. Must be smaller than the buffer's size.
-    /// \return The item at the specified index of the buffer.
-    T& get(unsigned int index) const
+    /// @brief Gets the item at a specified index of the buffer.
+    ///
+    /// @param [in] index An index into the buffer. Must be smaller than the buffer's size.
+    ///
+    /// @return The item at the specified index of the buffer.
+    T& Get(unsigned int index) const
     {
-        assert(index < m_size);
-        return m_pArray[index];
+        assert(index < size_);
+        return array_[index];
     }
 
-    /// Gets the most recently added item from the buffer.
-    /// \return A reference to the item most recently added to the buffer.
-    T& getLastAdded()
+    /// @brief Gets the most recently added item from the buffer.
+    ///
+    /// @return A reference to the item most recently added to the buffer.
+    T& GetLastAdded()
     {
-        unsigned int indexOfLastAdded = m_tailIndex;
-        circularDecrement(indexOfLastAdded);
-        return m_pArray[indexOfLastAdded];
+        unsigned int index_of_last_added = tail_index_;
+        CircularDecrement(index_of_last_added);
+        return array_[index_of_last_added];
     }
 
-    /// Gets the item at an index in the circular buffer, relative to the head index.
-    /// zero is the oldest element in the array, up to count-1
-    /// \param index the index of the item to get.
-    /// \return A reference to the item at head + index in the buffer.
-    T& getRelative(unsigned int index)
+    /// @brief Gets the item at an index in the circular buffer, relative to the head index.
+    ///
+    /// Zero is the oldest element in the array, up to count-1.
+    ///
+    /// @param [in] index The index of the item to get.
+    ///
+    /// @return A reference to the item at head + index in the buffer.
+    T& GetRelative(unsigned int index)
     {
-        unsigned int adjustedIndex = ((index % m_size) + m_headIndex) % m_size;
-        return m_pArray[adjustedIndex];
+        unsigned int adjusted_index = ((index % size_) + head_index_) % size_;
+        return array_[adjusted_index];
     }
 
-    /// Calculates an adjusted index relative to the head index.
-    /// zero is the oldest element in the array, up to count-1
-    /// \param index The offset from the head index that needs to be adjusted.
-    /// \return An adjusted index based on the head index and size of the buffer.
-    unsigned int getRelativeIndex(unsigned int index)
+    /// @brief Calculates an adjusted index relative to the head index.
+    ///
+    /// Zero is the oldest element in the array, up to count-1.
+    ///
+    /// @param [in] index The offset from the head index that needs to be adjusted.
+    ///
+    /// @return An adjusted index based on the head index and size of the buffer.
+    unsigned int GetRelativeIndex(unsigned int index)
     {
-        unsigned int adjustedIndex = ((index % m_size) + m_headIndex) % m_size;
-        return adjustedIndex;
+        unsigned int adjusted_index = ((index % size_) + head_index_) % size_;
+        return adjusted_index;
     }
 
-    /// Increments an index, ensuring that it stays within the size of the circular buffer.
-    /// \param index The index to increment
-    void circularIncrement(unsigned int& index)
+    /// @brief Increments an index, ensuring that it stays within the size of the circular buffer.
+    ///
+    /// @param [in] index The index to increment.
+    void CircularIncrement(unsigned int& index)
     {
         index++;
 
-        if (index == m_size)
+        if (index == size_)
         {
             index = 0;
         }
     }
 
-    /// Decrements an index, ensuring that it stays within the size of the circular buffer.
-    /// \param index The index to decrement
-    void circularDecrement(unsigned int& index)
+    /// @brief Decrements an index, ensuring that it stays within the size of the circular buffer.
+    ///
+    /// @param [in] index The index to decrement.
+    void CircularDecrement(unsigned int& index)
     {
         if (index == 0)
         {
-            index = m_size - 1;
+            index = size_ - 1;
         }
         else
         {
@@ -343,25 +378,27 @@ public:
     }
 
 protected:
-    /// Gets the head index of the circular buffer
-    /// \return the index of the head of the buffer.
-    unsigned int getHeadIndex() const
+    /// @brief Gets the head index of the circular buffer.
+    ///
+    /// @return The index of the head of the buffer.
+    unsigned int GetHeadIndex() const
     {
-        return m_headIndex;
+        return head_index_;
     }
 
-    /// Gets the tail index of the circular buffer
-    /// \return the index of the tail of the buffer.
-    unsigned int getTailIndex() const
+    /// @brief Gets the tail index of the circular buffer.
+    ///
+    /// @return The index of the tail of the buffer.
+    unsigned int GetTailIndex() const
     {
-        return m_tailIndex;
+        return tail_index_;
     }
 
-    T*           m_pArray;     ///< underlying array of this circular buffer
-    unsigned int m_headIndex;  ///< index of the head
-    unsigned int m_tailIndex;  ///< index of the tail (insertion index)
-    unsigned int m_size;       ///< maximum number of elements in the buffer at any one time
-    unsigned int m_count;      ///< current number of elements in the buffer
+    T*           array_;       ///< Underlying array of this circular buffer.
+    unsigned int head_index_;  ///< Index of the head.
+    unsigned int tail_index_;  ///< Index of the tail (insertion index).
+    unsigned int size_;        ///< Maximum number of elements in the buffer at any one time.
+    unsigned int count_;       ///< Current number of elements in the buffer.
 };
 
-#endif  //_GPA_CIRCULAR_BUFFER_H_
+#endif  // GPU_PERF_API_COMMON_CIRCULAR_BUFFER_H_

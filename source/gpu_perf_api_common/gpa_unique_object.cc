@@ -1,247 +1,246 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GPA Opaque object implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GPA Opaque object implementation.
 //==============================================================================
 
-#include "gpa_unique_object.h"
+#include "gpu_perf_api_common/gpa_unique_object.h"
 
-// static initialization
-GPAUniqueObjectManager* GPAUniqueObjectManager::ms_pGpaUniqueObjectManger = nullptr;
+GpaUniqueObjectManager* GpaUniqueObjectManager::kGpaUniqueObjectManger = nullptr;
 
-GPAUniqueObject::GPAUniqueObject()
-    : m_pInterface(nullptr)
+GpaUniqueObject::GpaUniqueObject()
+    : interface_pointer(nullptr)
 {
 }
 
-GPAUniqueObject::~GPAUniqueObject()
+GpaUniqueObject::~GpaUniqueObject()
 {
-    m_pInterface = nullptr;
+    interface_pointer = nullptr;
 }
 
-GPAObjectType GPAUniqueObject::ObjectType() const
+GpaObjectType GpaUniqueObject::ObjectType() const
 {
-    return GPAObjectType::GPA_OBJECT_TYPE_UNDEFINED;
+    return GpaObjectType::kGpaObjectTypeUndefined;
 }
 
-IGPAInterfaceTrait* GPAUniqueObject::Interface() const
+IGpaInterfaceTrait* GpaUniqueObject::Interface() const
 {
-    return m_pInterface;
+    return interface_pointer;
 }
 
-_GPA_ContextId::_GPA_ContextId(IGPAInterfaceTrait* pContextId)
+_GpaContextId::_GpaContextId(IGpaInterfaceTrait* gpa_context_id)
 {
-    m_pInterface = pContextId;
+    interface_pointer = gpa_context_id;
 }
 
-IGPAContext* _GPA_ContextId::operator->() const
+IGpaContext* _GpaContextId::operator->() const
 {
-    return reinterpret_cast<IGPAContext*>(m_pInterface);
+    return reinterpret_cast<IGpaContext*>(interface_pointer);
 }
 
-IGPAContext* _GPA_ContextId::Object() const
+IGpaContext* _GpaContextId::Object() const
 {
-    return reinterpret_cast<IGPAContext*>(m_pInterface);
+    return reinterpret_cast<IGpaContext*>(interface_pointer);
 }
 
-GPAObjectType _GPA_ContextId::ObjectType() const
+GpaObjectType _GpaContextId::ObjectType() const
 {
-    return GPAObjectType::GPA_OBJECT_TYPE_CONTEXT;
+    return GpaObjectType::kGpaObjectTypeContext;
 }
 
-_GPA_SessionId::_GPA_SessionId(IGPAInterfaceTrait* pSessionId)
+_GpaSessionId::_GpaSessionId(IGpaInterfaceTrait* gpa_session_id)
 {
-    m_pInterface = pSessionId;
+    interface_pointer = gpa_session_id;
 }
 
-IGPASession* _GPA_SessionId::operator->() const
+IGpaSession* _GpaSessionId::operator->() const
 {
-    return reinterpret_cast<IGPASession*>(m_pInterface);
+    return reinterpret_cast<IGpaSession*>(interface_pointer);
 }
 
-IGPASession* _GPA_SessionId::Object() const
+IGpaSession* _GpaSessionId::Object() const
 {
-    return reinterpret_cast<IGPASession*>(m_pInterface);
+    return reinterpret_cast<IGpaSession*>(interface_pointer);
 }
 
-GPAObjectType _GPA_SessionId::ObjectType() const
+GpaObjectType _GpaSessionId::ObjectType() const
 {
-    return GPAObjectType::GPA_OBJECT_TYPE_SESSION;
+    return GpaObjectType::kGpaObjectTypeSession;
 }
 
-_GPA_CommandListId::_GPA_CommandListId(IGPAInterfaceTrait* pCommandListId)
+_GpaCommandListId::_GpaCommandListId(IGpaInterfaceTrait* gpa_command_list_id)
 {
-    m_pInterface = pCommandListId;
+    interface_pointer = gpa_command_list_id;
 }
 
-IGPACommandList* _GPA_CommandListId::operator->() const
+IGpaCommandList* _GpaCommandListId::operator->() const
 {
-    return reinterpret_cast<IGPACommandList*>(m_pInterface);
+    return reinterpret_cast<IGpaCommandList*>(interface_pointer);
 }
 
-IGPACommandList* _GPA_CommandListId::Object() const
+IGpaCommandList* _GpaCommandListId::Object() const
 {
-    return reinterpret_cast<IGPACommandList*>(m_pInterface);
+    return reinterpret_cast<IGpaCommandList*>(interface_pointer);
 }
 
-GPAObjectType _GPA_CommandListId::ObjectType() const
+GpaObjectType _GpaCommandListId::ObjectType() const
 {
-    return GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST;
+    return GpaObjectType::kGpaObjectTypeCommandList;
 }
 
-GPAUniqueObjectManager* GPAUniqueObjectManager::Instance()
+GpaUniqueObjectManager* GpaUniqueObjectManager::Instance()
 {
-    if (nullptr == ms_pGpaUniqueObjectManger)
+    if (nullptr == kGpaUniqueObjectManger)
     {
-        ms_pGpaUniqueObjectManger = new (std::nothrow) GPAUniqueObjectManager();
+        kGpaUniqueObjectManger = new (std::nothrow) GpaUniqueObjectManager();
     }
 
-    return ms_pGpaUniqueObjectManger;
+    return kGpaUniqueObjectManger;
 }
 
-GPA_THREAD_SAFE_FUNCTION GPAUniqueObject* GPAUniqueObjectManager::CreateObject(IGPAInterfaceTrait* pInterfaceTrait)
+GPA_THREAD_SAFE_FUNCTION GpaUniqueObject* GpaUniqueObjectManager::CreateObject(IGpaInterfaceTrait* gpa_interface_trait)
 {
-    GPAUniqueObject* pRetUniqueObject = nullptr;
+    GpaUniqueObject* ret_unique_object = nullptr;
 
-    std::lock_guard<std::mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(mutex_);
 
-    if (!DoesExist_NotThreadSafe(pInterfaceTrait))
+    if (!DoesExistNotThreadSafe(gpa_interface_trait))
     {
-        switch (pInterfaceTrait->ObjectType())
+        switch (gpa_interface_trait->ObjectType())
         {
-        case GPAObjectType::GPA_OBJECT_TYPE_CONTEXT:
-            pRetUniqueObject = new (std::nothrow) _GPA_ContextId(pInterfaceTrait);
+        case GpaObjectType::kGpaObjectTypeContext:
+            ret_unique_object = new (std::nothrow) _GpaContextId(gpa_interface_trait);
             break;
 
-        case GPAObjectType::GPA_OBJECT_TYPE_SESSION:
-            pRetUniqueObject = new (std::nothrow) _GPA_SessionId(pInterfaceTrait);
+        case GpaObjectType::kGpaObjectTypeSession:
+            ret_unique_object = new (std::nothrow) _GpaSessionId(gpa_interface_trait);
             break;
 
-        case GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST:
-            pRetUniqueObject = new (std::nothrow) _GPA_CommandListId(pInterfaceTrait);
+        case GpaObjectType::kGpaObjectTypeCommandList:
+            ret_unique_object = new (std::nothrow) _GpaCommandListId(gpa_interface_trait);
             break;
 
         default:
-            pRetUniqueObject = nullptr;
+            ret_unique_object = nullptr;
         }
 
-        if (nullptr != pRetUniqueObject)
+        if (nullptr != ret_unique_object)
         {
-            m_gpaUniqueObjectList.push_back(pRetUniqueObject);
+            gpa_unique_object_list_.push_back(ret_unique_object);
         }
     }
 
-    return pRetUniqueObject;
+    return ret_unique_object;
 }
 
-GPA_THREAD_SAFE_FUNCTION void GPAUniqueObjectManager::DeleteObject(GPAUniqueObject* pUniqueObject)
+GPA_THREAD_SAFE_FUNCTION void GpaUniqueObjectManager::DeleteObject(GpaUniqueObject* unique_object)
 {
     unsigned int index;
 
-    // lock to protect the m_gpaUniqueObjectList
-    std::lock_guard<std::mutex> lock(m_mutex);
+    // Lock to protect the gpa_unique_object_list_.
+    std::lock_guard<std::mutex> lock(mutex_);
 
-    if (DoesExist_NotThreadSafe(pUniqueObject, &index))
+    if (DoesExistNotThreadSafe(unique_object, &index))
     {
-        delete pUniqueObject;
-        m_gpaUniqueObjectList.erase(m_gpaUniqueObjectList.begin() + index);
-        pUniqueObject = nullptr;
+        delete unique_object;
+        gpa_unique_object_list_.erase(gpa_unique_object_list_.begin() + index);
+        unique_object = nullptr;
     }
 }
 
-GPA_THREAD_SAFE_FUNCTION void GPAUniqueObjectManager::DeleteObject(const IGPAInterfaceTrait* pInterfaceTrait)
+GPA_THREAD_SAFE_FUNCTION void GpaUniqueObjectManager::DeleteObject(const IGpaInterfaceTrait* gpa_interface_trait)
 {
     unsigned int index;
 
-    // lock to protect the m_gpaUniqueObjectList
-    std::lock_guard<std::mutex> lock(m_mutex);
+    // Lock to protect the gpa_unique_object_list_.
+    std::lock_guard<std::mutex> lock(mutex_);
 
-    if (DoesExist_NotThreadSafe(pInterfaceTrait, &index))
+    if (DoesExistNotThreadSafe(gpa_interface_trait, &index))
     {
-        GPAUniqueObject* pTemp = *(m_gpaUniqueObjectList.begin() + index);
-        delete pTemp;
-        m_gpaUniqueObjectList.erase(m_gpaUniqueObjectList.begin() + index);
+        GpaUniqueObject* temp = *(gpa_unique_object_list_.begin() + index);
+        delete temp;
+        gpa_unique_object_list_.erase(gpa_unique_object_list_.begin() + index);
     }
 }
 
-GPA_THREAD_SAFE_FUNCTION bool GPAUniqueObjectManager::DoesExist(const IGPAInterfaceTrait* pInterfaceTrait, unsigned int* pIndex) const
+GPA_THREAD_SAFE_FUNCTION bool GpaUniqueObjectManager::DoesExist(const IGpaInterfaceTrait* gpa_interface_trait, unsigned int* index) const
 {
-    bool objectFound = false;
+    bool object_found = false;
 
-    // lock to protect the m_gpaUniqueObjectList
-    std::lock_guard<std::mutex> lock(m_mutex);
+    // Lock to protect the gpa_unique_object_list_.
+    std::lock_guard<std::mutex> lock(mutex_);
 
-    objectFound = DoesExist_NotThreadSafe(pInterfaceTrait, pIndex);
+    object_found = DoesExistNotThreadSafe(gpa_interface_trait, index);
 
-    return objectFound;
+    return object_found;
 }
 
-bool GPAUniqueObjectManager::DoesExist_NotThreadSafe(const IGPAInterfaceTrait* pInterfaceTrait, unsigned int* pIndex) const
+bool GpaUniqueObjectManager::DoesExistNotThreadSafe(const IGpaInterfaceTrait* gpa_interface_trait, unsigned int* index) const
 {
-    bool         objectFound = false;
-    unsigned int localIndex  = 0u;
+    bool         object_found = false;
+    unsigned int local_index  = 0u;
 
-    if (!m_gpaUniqueObjectList.empty())
+    if (!gpa_unique_object_list_.empty())
     {
-        for (std::vector<GPAUniqueObject*>::const_iterator it = m_gpaUniqueObjectList.cbegin(); it != m_gpaUniqueObjectList.cend(); ++it)
+        for (std::vector<GpaUniqueObject*>::const_iterator it = gpa_unique_object_list_.cbegin(); it != gpa_unique_object_list_.cend(); ++it)
         {
-            if ((*it)->Interface() == pInterfaceTrait && (*it)->ObjectType() == pInterfaceTrait->ObjectType())
+            if ((*it)->Interface() == gpa_interface_trait && (*it)->ObjectType() == gpa_interface_trait->ObjectType())
             {
-                objectFound = true;
+                object_found = true;
                 break;
             }
 
-            localIndex++;
+            local_index++;
         }
     }
 
-    if (objectFound && nullptr != pIndex)
+    if (object_found && nullptr != index)
     {
-        *pIndex = static_cast<unsigned int>(localIndex);
+        *index = static_cast<unsigned int>(local_index);
     }
 
-    return objectFound;
+    return object_found;
 }
 
-GPA_THREAD_SAFE_FUNCTION bool GPAUniqueObjectManager::DoesExist(const GPAUniqueObject* pUniqueObject, unsigned int* pIndex) const
+GPA_THREAD_SAFE_FUNCTION bool GpaUniqueObjectManager::DoesExist(const GpaUniqueObject* unique_object, unsigned int* index) const
 {
-    bool objectFound = false;
+    bool object_found = false;
 
-    std::lock_guard<std::mutex> lock(m_mutex);
+    std::lock_guard<std::mutex> lock(mutex_);
 
-    objectFound = DoesExist_NotThreadSafe(pUniqueObject, pIndex);
-    return objectFound;
+    object_found = DoesExistNotThreadSafe(unique_object, index);
+    return object_found;
 }
 
-bool GPAUniqueObjectManager::DoesExist_NotThreadSafe(const GPAUniqueObject* pUniqueObject, unsigned int* pIndex) const
+bool GpaUniqueObjectManager::DoesExistNotThreadSafe(const GpaUniqueObject* unique_object, unsigned int* index) const
 {
-    bool         objectFound = false;
-    unsigned int localIndex  = 0u;
+    bool         object_found = false;
+    unsigned int local_index  = 0u;
 
-    if (!m_gpaUniqueObjectList.empty())
+    if (!gpa_unique_object_list_.empty())
     {
-        for (std::vector<GPAUniqueObject*>::const_iterator it = m_gpaUniqueObjectList.begin(); it != m_gpaUniqueObjectList.end() && !objectFound; ++it)
+        for (std::vector<GpaUniqueObject*>::const_iterator it = gpa_unique_object_list_.begin(); it != gpa_unique_object_list_.end() && !object_found; ++it)
         {
-            if (*it == pUniqueObject)
+            if (*it == unique_object)
             {
-                objectFound = true;
+                object_found = true;
                 break;
             }
 
-            localIndex++;
+            local_index++;
         }
     }
 
-    if (objectFound && nullptr != pIndex)
+    if (object_found && nullptr != index)
     {
-        *pIndex = static_cast<unsigned int>(localIndex);
+        *index = static_cast<unsigned int>(local_index);
     }
 
-    return objectFound;
+    return object_found;
 }
 
-GPAUniqueObjectManager::~GPAUniqueObjectManager()
+GpaUniqueObjectManager::~GpaUniqueObjectManager()
 {
-    delete ms_pGpaUniqueObjectManger;
+    delete kGpaUniqueObjectManger;
 }

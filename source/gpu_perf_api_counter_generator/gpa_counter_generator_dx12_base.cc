@@ -1,204 +1,204 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief Common DX12 counter generation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Common DX12 counter generation.
 //==============================================================================
 
 #include <d3d12.h>
 
-#include "gpa_counter_generator_dx12_base.h"
-#include "gpa_counter_generator_scheduler_manager.h"
-#include "gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12_base.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_scheduler_manager.h"
 
-const GPA_SoftwareCounterDesc GPA_CounterGeneratorDX12Base::s_dx12SWCounters[] = {
+const GpaSoftwareCounterDesc GpaCounterGeneratorDx12Base::kDx12SoftwareCounters[] = {
     {
-        // D3D12_QUERY_TYPE_TIMESTAMP
+        // D3D12_QUERY_TYPE_TIMESTAMP.
         D3D12_QUERY_TYPE_TIMESTAMP,
         "D3DGPUTime",
         "D3D12",
         "Time spent in GPU",
-        GPA_DATA_TYPE_FLOAT64,
+        kGpaDataTypeFloat64,
     },
     {
-        // D3D12_QUERY_TYPE_TIMESTAMP
+        // D3D12_QUERY_TYPE_TIMESTAMP.
         D3D12_QUERY_TYPE_TIMESTAMP,
         "PreBottomTimestamp",
         "D3D12",
         "Bottom of the pipeline GPU timestamp",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_TIMESTAMP
+        // D3D12_QUERY_TYPE_TIMESTAMP.
         D3D12_QUERY_TYPE_TIMESTAMP,
         "PostBottomTimestamp",
         "D3D12",
         "Bottom of the pipeline GPU timestamp",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_OCCLUSION
+        // D3D12_QUERY_TYPE_OCCLUSION.
         D3D12_QUERY_TYPE_OCCLUSION,
         "Occlusion",
         "D3D12",
         "Get the number of samples that passed the depth and stencil tests.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_BINARY_OCCLUSION
+        // D3D12_QUERY_TYPE_BINARY_OCCLUSION.
         D3D12_QUERY_TYPE_BINARY_OCCLUSION,
         "BinaryOcclusion",
         "D3D12",
         "True/false if any samples passed depth and stencil tests.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS IAVertices
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS IAVertices.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "IAVertices",
         "D3D12",
         "Number of vertices read by input assembler.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS IAPrimitives
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS IAPrimitives.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "IAPrimitives",
         "D3D12",
         "Number of primitives read by the input assembler.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS VSInvocations
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS VSInvocations.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "VSInvocations",
         "D3D12",
         "Number of times a vertex shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS GSPrimitives
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS GSPrimitives.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "GSInvocations",
         "D3D12",
         "Number of times a geometry shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS GSPrimitives
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS GSPrimitives.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "GSPrimitives",
         "D3D12",
         "Number of primitives output by a geometry shader.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS CInvocations
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS CInvocations.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "CInvocations",
         "D3D12",
         "Number of primitives that were sent to the rasterizer.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS CPrimitives
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS CPrimitives.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "CPrimitives",
         "D3D12",
         "Number of primitives that were rendered.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS PSInvocations
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS PSInvocations.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "PSInvocations",
         "D3D12",
         "Number of times a pixel shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS HSInvocations
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS HSInvocations.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "HSInvocations",
         "D3D12",
         "Number of times a hull shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS DSInvocations
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS DSInvocations.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "DSInvocations",
         "D3D12",
         "Number of times a domain shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS CSInvocations
+        // D3D12_QUERY_TYPE_PIPELINE_STATISTICS CSInvocations.
         D3D12_QUERY_TYPE_PIPELINE_STATISTICS,
         "CSInvocations",
         "D3D12",
         "Number of times a compute shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
 };
 
-const size_t GPA_CounterGeneratorDX12Base::s_dx12SWCountersCount = (sizeof(s_dx12SWCounters) / sizeof(GPA_SoftwareCounterDesc));
+const size_t GpaCounterGeneratorDx12Base::kDx12SoftwareCountersCount = (sizeof(kDx12SoftwareCounters) / sizeof(GpaSoftwareCounterDesc));
 
-bool GPA_CounterGeneratorDX12Base::GetSwCounterDesc(const gpa_uint32 swCounterIndex, GPA_SoftwareCounterDesc& swCounterDesc)
+bool GpaCounterGeneratorDx12Base::GetSwCounterDesc(const GpaUInt32 sw_counter_index, GpaSoftwareCounterDesc& sw_counter_desc)
 {
-    if (swCounterIndex < s_dx12SWCountersCount)
+    if (sw_counter_index < kDx12SoftwareCountersCount)
     {
-        swCounterDesc = s_dx12SWCounters[swCounterIndex];
+        sw_counter_desc = kDx12SoftwareCounters[sw_counter_index];
     }
 
-    return swCounterIndex < s_dx12SWCountersCount;
+    return sw_counter_index < kDx12SoftwareCountersCount;
 }
 
-GPA_Status GPA_CounterGeneratorDX12Base::GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
-                                                                GDT_HW_ASIC_TYPE     asicType,
-                                                                gpa_uint8            generateAsicSpecificCounters,
-                                                                GPA_DerivedCounters* pPublicCounters)
+GpaStatus GpaCounterGeneratorDx12Base::GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
+                                                              GDT_HW_ASIC_TYPE    asic_type,
+                                                              GpaUInt8            generate_asic_specific_counters,
+                                                              GpaDerivedCounters* public_counters)
 {
-    UNREFERENCED_PARAMETER(desiredGeneration);
-    UNREFERENCED_PARAMETER(asicType);
-    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
-    UNREFERENCED_PARAMETER(pPublicCounters);
-    return GPA_STATUS_OK;
+    UNREFERENCED_PARAMETER(desired_generation);
+    UNREFERENCED_PARAMETER(asic_type);
+    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
+    UNREFERENCED_PARAMETER(public_counters);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPA_CounterGeneratorDX12Base::GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                                  GDT_HW_ASIC_TYPE      asicType,
-                                                                  gpa_uint8             generateAsicSpecificCounters,
-                                                                  GPA_HardwareCounters* pHardwareCounters)
+GpaStatus GpaCounterGeneratorDx12Base::GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
+                                                                GDT_HW_ASIC_TYPE     asic_type,
+                                                                GpaUInt8             generate_asic_specific_counters,
+                                                                GpaHardwareCounters* hardware_counters)
 {
-    UNREFERENCED_PARAMETER(desiredGeneration);
-    UNREFERENCED_PARAMETER(asicType);
-    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
-    UNREFERENCED_PARAMETER(pHardwareCounters);
-    return GPA_STATUS_OK;
+    UNREFERENCED_PARAMETER(desired_generation);
+    UNREFERENCED_PARAMETER(asic_type);
+    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
+    UNREFERENCED_PARAMETER(hardware_counters);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPA_CounterGeneratorDX12Base::GenerateSoftwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                                  GDT_HW_ASIC_TYPE      asicType,
-                                                                  gpa_uint8             generateAsicSpecificCounters,
-                                                                  GPA_SoftwareCounters* pSoftwareCounters)
+GpaStatus GpaCounterGeneratorDx12Base::GenerateSoftwareCounters(GDT_HW_GENERATION    desired_generation,
+                                                                GDT_HW_ASIC_TYPE     asic_type,
+                                                                GpaUInt8             generate_asic_specific_counters,
+                                                                GpaSoftwareCounters* software_counters)
 {
-    UNREFERENCED_PARAMETER(asicType);
-    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+    UNREFERENCED_PARAMETER(asic_type);
+    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
 
-    if (nullptr == pSoftwareCounters)
+    if (nullptr == software_counters)
     {
-        return GPA_STATUS_ERROR_NULL_POINTER;
+        return kGpaStatusErrorNullPointer;
     }
 
-    GPA_Status status = GPA_STATUS_OK;
+    GpaStatus status = kGpaStatusOk;
 
-    if (pSoftwareCounters->m_countersGenerated)
+    if (software_counters->counters_generated_)
     {
         return status;
     }
 
-    switch (desiredGeneration)
+    switch (desired_generation)
     {
     case GDT_HW_GENERATION_SOUTHERNISLAND:
     case GDT_HW_GENERATION_SEAISLAND:
@@ -211,97 +211,99 @@ GPA_Status GPA_CounterGeneratorDX12Base::GenerateSoftwareCounters(GDT_HW_GENERAT
         break;
 
     default:
-        status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+        status = kGpaStatusErrorHardwareNotSupported;
         break;
     }
 
-    if (GPA_STATUS_OK == status)
+    if (kGpaStatusOk == status)
     {
         status = GenerateDX12SoftwareCounters();
 
-        if (GPA_STATUS_OK == status)
+        if (kGpaStatusOk == status)
         {
-            const size_t            dx12SwCounterCount    = SwCounterManager::Instance()->GetNumSwCounters();
-            const SwCounterDescVec* pDX12SoftwareCounters = SwCounterManager::Instance()->GetSwCounters();
-            pSoftwareCounters->m_counters.resize(dx12SwCounterCount);
+            const size_t            dx12_sw_counter_count  = SwCounterManager::Instance()->GetNumSwCounters();
+            const SwCounterDescVec* dx12_software_counters = SwCounterManager::Instance()->GetSwCounters();
+            software_counters->software_counter_list_.resize(dx12_sw_counter_count);
 
-            for (size_t ci = 0; dx12SwCounterCount > ci; ++ci)
+            for (size_t ci = 0; dx12_sw_counter_count > ci; ++ci)
             {
-                (pSoftwareCounters->m_counters)[ci].m_groupIndex       = 0;
-                (pSoftwareCounters->m_counters)[ci].m_groupIdDriver    = static_cast<gpa_uint32>(ci);
-                (pSoftwareCounters->m_counters)[ci].m_counterIdDriver  = static_cast<gpa_uint32>((*pDX12SoftwareCounters)[ci].m_counterIndexInGroup);
-                (pSoftwareCounters->m_counters)[ci].m_pSoftwareCounter = const_cast<GPA_SoftwareCounterDesc*>(&((*pDX12SoftwareCounters)[ci]));
+                (software_counters->software_counter_list_)[ci].group_index     = 0;
+                (software_counters->software_counter_list_)[ci].group_id_driver = static_cast<GpaUInt32>(ci);
+                (software_counters->software_counter_list_)[ci].counter_id_driver =
+                    static_cast<GpaUInt32>((*dx12_software_counters)[ci].counter_index_in_group);
+                (software_counters->software_counter_list_)[ci].software_counter_desc = const_cast<GpaSoftwareCounterDesc*>(&((*dx12_software_counters)[ci]));
             }
         }
     }
 
-    pSoftwareCounters->m_countersGenerated = true;
+    software_counters->counters_generated_ = true;
 
     return status;
 }
 
-void GPA_CounterGeneratorDX12Base::ComputeSWCounterValue(gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const
+void GpaCounterGeneratorDx12Base::ComputeSwCounterValue(GpaUInt32 counter_index, GpaUInt64 value, void* result, const GpaHwInfo* hw_info) const
 {
-    const SwCounterDescVec* pSwCounters = SwCounterManager::Instance()->GetSwCounters();
+    const SwCounterDescVec* sw_counters = SwCounterManager::Instance()->GetSwCounters();
 
-    if (counterIndex < static_cast<gpa_uint32>(pSwCounters->size()))
+    if (counter_index < static_cast<GpaUInt32>(sw_counters->size()))
     {
-        const std::string d3dGPUTime    = "D3DGPUTime";
-        const std::string preTimeStamp  = "PreBottomTimestamp";
-        const std::string postTimeStamp = "PostBottomTimestamp";
-        const std::string counterName   = pSwCounters->at(counterIndex).m_name;
+        const std::string kD3dGpuTime    = "D3DGPUTime";
+        const std::string kPreTimeStamp  = "PreBottomTimestamp";
+        const std::string kPostTimeStamp = "PostBottomTimestamp";
+        const std::string counter_name   = sw_counters->at(counter_index).name;
 
-        if (counterName == d3dGPUTime)
+        if (counter_name == kD3dGpuTime)
         {
-            gpa_uint64 freq = 1u;
-            GPA_ASSERT(pHwInfo->GetTimeStampFrequency(freq));
-            gpa_float64* pBuf = static_cast<gpa_float64*>(pResult);
-            *pBuf             = static_cast<gpa_float64>(value) / static_cast<gpa_float64>(freq) * 1000.0;
+            GpaUInt64 freq = 1u;
+            GPA_ASSERT(hw_info->GetTimeStampFrequency(freq));
+            GpaFloat64* pBuf = static_cast<GpaFloat64*>(result);
+            *pBuf            = static_cast<GpaFloat64>(value) / static_cast<GpaFloat64>(freq) * 1000.0;
         }
-        else if (counterName == preTimeStamp || counterName == postTimeStamp)
+        else if (counter_name == kPreTimeStamp || counter_name == kPostTimeStamp)
         {
-            gpa_uint64 freq = 1u;
-            GPA_ASSERT(pHwInfo->GetTimeStampFrequency(freq));
-            gpa_float64* pBuf = static_cast<gpa_float64*>(pResult);
-            *pBuf             = static_cast<gpa_float64>(value * 1000.0) / freq;
+            GpaUInt64 freq = 1u;
+            GPA_ASSERT(hw_info->GetTimeStampFrequency(freq));
+            GpaFloat64* buf = static_cast<GpaFloat64*>(result);
+            *buf            = static_cast<GpaFloat64>(value * 1000.0) / freq;
         }
-        else  // other SW DX counters
+        else
         {
-            GPA_Data_Type type = (*pSwCounters)[counterIndex].m_type;
+            // Other SW DX counters.
+            GpaDataType type = (*sw_counters)[counter_index].type;
 
-            if (GPA_DATA_TYPE_UINT64 == type)
+            if (kGpaDataTypeUint64 == type)
             {
-                gpa_uint64* pBuf = static_cast<gpa_uint64*>(pResult);
-                *pBuf            = static_cast<gpa_uint64>(value);
+                GpaUInt64* buf = static_cast<GpaUInt64*>(result);
+                *buf           = static_cast<GpaUInt64>(value);
             }
-            else if (GPA_DATA_TYPE_FLOAT64 == type)
+            else if (kGpaDataTypeFloat64 == type)
             {
-                memcpy(pResult, &value, sizeof(gpa_float64));
+                memcpy(result, &value, sizeof(GpaFloat64));
             }
             else
             {
-                GPA_LogError("Unexpected software counter type.");
+                GPA_LOG_ERROR("Unexpected software counter type.");
             }
         }
     }
 }
 
-GPA_Status GPA_CounterGeneratorDX12Base::GenerateDX12SoftwareCounters() const
+GpaStatus GpaCounterGeneratorDx12Base::GenerateDX12SoftwareCounters() const
 {
-    GPA_Status result = GPA_STATUS_OK;
+    GpaStatus result = kGpaStatusOk;
 
-    SwCounterManager::Instance()->SetNumAmdCounters(GetNumAMDCounters());
+    SwCounterManager::Instance()->SetNumAmdCounters(GetNumAmdCounters());
 
     if (!SwCounterManager::Instance()->SwCountersGenerated())
     {
-        for (size_t ci = 0; s_dx12SWCountersCount > ci; ++ci)
+        for (size_t ci = 0; kDx12SoftwareCountersCount > ci; ++ci)
         {
-            SwCounterManager::Instance()->AddSwCounter(s_dx12SWCounters[ci]);
+            SwCounterManager::Instance()->AddSwCounter(kDx12SoftwareCounters[ci]);
         }
 
         if (0 == SwCounterManager::Instance()->GetNumSwCounters())
         {
-            result = GPA_STATUS_ERROR_FAILED;
+            result = kGpaStatusErrorFailed;
         }
 
         SwCounterManager::Instance()->SetSwCountersGenerated(true);

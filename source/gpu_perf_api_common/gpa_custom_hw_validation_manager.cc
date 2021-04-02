@@ -1,29 +1,29 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  A class for handling custom hw validation
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  A class for handling custom hw validation.
 //==============================================================================
 
-#include "gpa_custom_hw_validation_manager.h"
+#include "gpu_perf_api_common/gpa_custom_hw_validation_manager.h"
 
-void GPACustomHwValidationManager::RegisterCustomHardwareValidator(CustomHWValidationFuncPtr hwValidationFunc, void* pUserData)
+void GpaCustomHwValidationManager::RegisterCustomHardwareValidator(CustomHWValidationFuncPtr hw_validation_func, void* user_data)
 {
-    if (nullptr != hwValidationFunc)
+    if (nullptr != hw_validation_func)
     {
-        CustomValidationFuncPair validationPair(hwValidationFunc, pUserData);
-        m_validationFunctionList.push_back(validationPair);
+        CustomValidationFuncPair validation_pair(hw_validation_func, user_data);
+        validation_function_list_.push_back(validation_pair);
     }
 }
 
-GPA_Status GPACustomHwValidationManager::ValidateHW(void* pContext, GPA_HWInfo* pHwInfo)
+GpaStatus GpaCustomHwValidationManager::ValidateHW(void* context, GpaHwInfo* hw_info)
 {
-    GPA_Status retVal = GPA_STATUS_OK;
+    GpaStatus ret_val = kGpaStatusOk;
 
-    for (auto it = m_validationFunctionList.begin(); it != m_validationFunctionList.end() && GPA_STATUS_OK == retVal; ++it)
+    for (auto it = validation_function_list_.begin(); it != validation_function_list_.end() && kGpaStatusOk == ret_val; ++it)
     {
-        retVal = (it->first)(pContext, pHwInfo, it->second);
+        ret_val = (it->first)(context, hw_info, it->second);
     }
 
-    return retVal;
+    return ret_val;
 }

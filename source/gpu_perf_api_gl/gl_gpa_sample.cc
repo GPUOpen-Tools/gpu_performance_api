@@ -1,91 +1,93 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GL GPA Sample Implementation
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GL GPA Sample Implementation
 //==============================================================================
+
+#include "gpu_perf_api_gl/gl_gpa_sample.h"
 
 #include <chrono>
 #include <thread>
-#include "gl_gpa_sample.h"
-#include "gl_entry_points.h"
 
-GLGPASample::GLGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
-    : GPASample(pPass, pCmdList, sampleType, sampleId)
-    , m_pGlGpaPass(reinterpret_cast<GLGPAPass*>(pPass))
+#include "gpu_perf_api_counter_generator/gl_entry_points.h"
+
+GlGpaSample::GlGpaSample(GpaPass* pass, IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
+    : GpaSample(pass, cmd_list, sample_type, sample_id)
+    , gl_gpa_pass_(reinterpret_cast<GlGpaPass*>(pass))
 {
-    if (m_pGlGpaPass->IsTimingPass())
+    if (gl_gpa_pass_->IsTimingPass())
     {
-        CreateGPUTimeQuery();
+        CreateGpuTimeQuery();
     }
 }
 
-GLGPASample::~GLGPASample()
+GlGpaSample::~GlGpaSample()
 {
-    if (m_pGlGpaPass->IsTimingPass())
+    if (gl_gpa_pass_->IsTimingPass())
     {
-        DeleteGPUTimeQueries();
+        DeleteGpuTimeQueries();
     }
 }
 
-bool GLGPASample::UpdateResults()
+bool GlGpaSample::UpdateResults()
 {
-    bool isDataCollected = IsResultCollected();
+    bool is_data_collected = IsResultCollected();
 
-    if (!isDataCollected)
+    if (!is_data_collected)
     {
-        const uint32_t timeout   = 10000;  // ms
-        auto           startTime = std::chrono::high_resolution_clock::now();
+        const uint32_t timeout    = 10000;  // ms
+        auto           start_time = std::chrono::high_resolution_clock::now();
 
         do
         {
-            isDataCollected = CopyResults();
+            is_data_collected = CopyResults();
 
-            if (!isDataCollected)
+            if (!is_data_collected)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(0));
 
-                auto                                      endTime     = std::chrono::high_resolution_clock::now();
-                std::chrono::duration<double, std::milli> elapsedTime = endTime - startTime;
+                auto                                      end_time     = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double, std::milli> elapsed_time = end_time - start_time;
 
-                if (elapsedTime.count() > timeout)
+                if (elapsed_time.count() > timeout)
                 {
-                    GPA_LogError("Failed to collect counter data due to elapsed timeout.");
+                    GPA_LOG_ERROR("Failed to collect counter data due to elapsed timeout.");
                     break;
                 }
             }
-        } while (!isDataCollected);
+        } while (!is_data_collected);
 
-        if (isDataCollected)
+        if (is_data_collected)
         {
             MarkAsCompleted();
         }
     }
 
-    return isDataCollected;
+    return is_data_collected;
 }
 
-bool GLGPASample::BeginRequest()
+bool GlGpaSample::BeginRequest()
 {
     bool success = false;
 
-    if (m_pGlGpaPass->IsTimingPass())
+    if (gl_gpa_pass_->IsTimingPass())
     {
-        // handle timing pass
-        oglUtils::_oglQueryCounter(m_sampleDataBuffer.m_gpuTimeQuery[0], GL_TIMESTAMP);
+        // Handle timing pass.
+        ogl_utils::ogl_query_counter(sample_data_buffer_.gpu_time_query[0], GL_TIMESTAMP);
 
-        if (!oglUtils::CheckForGLError("Unable to begin the GL timing query."))
+        if (!ogl_utils::CheckForGlError("Unable to begin the GL timing query."))
         {
             success = true;
         }
     }
     else
     {
-        if (m_pGlGpaPass->GetPerfMonitor(m_sampleDataBuffer.m_glPerfMonitorId))
+        if (gl_gpa_pass_->GetPerfMonitor(sample_data_buffer_.gl_perf_monitor_id))
         {
-            oglUtils::_oglBeginPerfMonitorAMD(m_sampleDataBuffer.m_glPerfMonitorId);
+            ogl_utils::ogl_begin_perf_monitor_amd(sample_data_buffer_.gl_perf_monitor_id);
 
-            if (!oglUtils::CheckForGLError("Unable to begin the GL perf monitor."))
+            if (!ogl_utils::CheckForGlError("Unable to begin the GL perf monitor."))
             {
                 success = true;
             }
@@ -95,16 +97,16 @@ bool GLGPASample::BeginRequest()
     return success;
 }
 
-bool GLGPASample::EndRequest()
+bool GlGpaSample::EndRequest()
 {
     bool success = false;
 
-    if (m_pGlGpaPass->IsTimingPass())
+    if (gl_gpa_pass_->IsTimingPass())
     {
-        // handle timing pass
-        oglUtils::_oglQueryCounter(m_sampleDataBuffer.m_gpuTimeQuery[1], GL_TIMESTAMP);
+        // Handle timing pass.
+        ogl_utils::ogl_query_counter(sample_data_buffer_.gpu_time_query[1], GL_TIMESTAMP);
 
-        if (!oglUtils::CheckForGLError("Unable to begin the GL timing query."))
+        if (!ogl_utils::CheckForGlError("Unable to begin the GL timing query."))
         {
             success = true;
         }
@@ -115,136 +117,134 @@ bool GLGPASample::EndRequest()
         // The effects of the first glFlush() is extremely noticeable with the GLFiveQuarterQuads test and the PostZSamplesPassing counter.
         // The effects of the second glFlush() are noticeable with last draw call of the GLFiveQuarterQuads test and the PreZSamplesPassing counter.
         // The effects of the second glFlush() are also noticeable with last draw call of the GLFiveQuarterQuads test and the CBMemWritten counter.
-        oglUtils::_oglFlush();
+        ogl_utils::ogl_flush();
 
-        oglUtils::_oglEndPerfMonitorAMD(m_sampleDataBuffer.m_glPerfMonitorId);
+        ogl_utils::ogl_end_perf_monitor_amd(sample_data_buffer_.gl_perf_monitor_id);
 
-        if (!oglUtils::CheckForGLError("Unable to end the GL perf monitor."))
+        if (!ogl_utils::CheckForGlError("Unable to end the GL perf monitor."))
         {
             success = true;
         }
 
-        oglUtils::_oglFlush();
+        ogl_utils::ogl_flush();
     }
 
     return success;
 }
 
-void GLGPASample::ReleaseCounters()
+void GlGpaSample::ReleaseCounters()
 {
     GPA_STUB_FUNCTION;
 }
 
-bool GLGPASample::CopyResults()
+bool GlGpaSample::CopyResults()
 {
     bool success = false;
 
-    GPASampleResult* pSampleResult = GetSampleResultLocation();
+    GpaSampleResult* sample_result = GetSampleResultLocation();
 
-    if (m_pGlGpaPass->IsTimingPass())
+    if (gl_gpa_pass_->IsTimingPass())
     {
-        // get the results
-        GLuint64EXT gpuTimeResults[2];
-        gpuTimeResults[0] = 0ull;
-        gpuTimeResults[1] = 0ull;
-        oglUtils::_oglGetQueryObjectui64vEXT(m_sampleDataBuffer.m_gpuTimeQuery[0], GL_QUERY_RESULT, &gpuTimeResults[0]);
+        // Get the results.
+        GLuint64EXT gpu_time_results[2];
+        gpu_time_results[0] = 0ull;
+        gpu_time_results[1] = 0ull;
+        ogl_utils::ogl_get_query_object_ui_64_v_ext(sample_data_buffer_.gpu_time_query[0], GL_QUERY_RESULT, &gpu_time_results[0]);
 
-        if (!oglUtils::CheckForGLError("Unable to get first timing data."))
+        if (!ogl_utils::CheckForGlError("Unable to get first timing data."))
         {
-            oglUtils::_oglGetQueryObjectui64vEXT(m_sampleDataBuffer.m_gpuTimeQuery[1], GL_QUERY_RESULT, &gpuTimeResults[1]);
+            ogl_utils::ogl_get_query_object_ui_64_v_ext(sample_data_buffer_.gpu_time_query[1], GL_QUERY_RESULT, &gpu_time_results[1]);
 
-            if (!oglUtils::CheckForGLError("Unable to get second timing data."))
+            if (!ogl_utils::CheckForGlError("Unable to get second timing data."))
             {
-                gpa_uint64 timingDifference = gpuTimeResults[1] - gpuTimeResults[0];
-                memcpy(pSampleResult->GetAsCounterSampleResult()->GetResultBuffer(), &timingDifference, sizeof(gpa_uint64));
+                GpaUInt64 timing_difference = gpu_time_results[1] - gpu_time_results[0];
+                memcpy(sample_result->GetAsCounterSampleResult()->GetResultBuffer(), &timing_difference, sizeof(GpaUInt64));
                 success = true;
             }
         }
     }
     else
     {
-        GLuint          resultsAvailable = GL_FALSE;
-        GLPerfMonitorId perfMonitorId    = m_sampleDataBuffer.m_glPerfMonitorId;
-        oglUtils::_oglGetPerfMonitorCounterDataAMD(perfMonitorId, GL_PERFMON_RESULT_AVAILABLE_AMD, sizeof(GLuint), &resultsAvailable, nullptr);
+        GLuint          results_available = GL_FALSE;
+        GlPerfMonitorId perf_monitor_id   = sample_data_buffer_.gl_perf_monitor_id;
+        ogl_utils::ogl_get_perf_monitor_counter_data_amd(perf_monitor_id, GL_PERFMON_RESULT_AVAILABLE_AMD, sizeof(GLuint), &results_available, nullptr);
 
-        if (!oglUtils::CheckForGLError("Unable to get the data."))
+        if (!ogl_utils::CheckForGlError("Unable to get the data."))
         {
-            if (GL_TRUE == resultsAvailable)
+            if (GL_TRUE == results_available)
             {
-                CounterCount counterCount = m_pGlGpaPass->GetEnabledCounterCount();
+                CounterCount counter_count = gl_gpa_pass_->GetEnabledCounterCount();
 
-                // get size of the results array
-                GLuint resultSize = 0;
-                oglUtils::_oglGetPerfMonitorCounterDataAMD(perfMonitorId, GL_PERFMON_RESULT_SIZE_AMD, sizeof(GLint), &resultSize, nullptr);
+                // Get size of the results array.
+                GLuint result_size = 0;
+                ogl_utils::ogl_get_perf_monitor_counter_data_amd(perf_monitor_id, GL_PERFMON_RESULT_SIZE_AMD, sizeof(GLint), &result_size, nullptr);
 
-                if (!oglUtils::CheckForGLError("Unable to get the counter data size."))
+                if (!ogl_utils::CheckForGlError("Unable to get the counter data size."))
                 {
-                    // obtain the actual results
-                    GLuint* pCounterData = reinterpret_cast<GLuint*>(malloc(resultSize));
-                    assert(nullptr != pCounterData);
+                    // Obtain the actual results.
+                    GLuint* counter_data = reinterpret_cast<GLuint*>(malloc(result_size));
+                    assert(nullptr != counter_data);
 
-                    GLsizei bytesWritten = 0;
-                    oglUtils::_oglGetPerfMonitorCounterDataAMD(perfMonitorId, GL_PERFMON_RESULT_AMD, resultSize, pCounterData, &bytesWritten);
+                    GLsizei bytes_written = 0;
+                    ogl_utils::ogl_get_perf_monitor_counter_data_amd(perf_monitor_id, GL_PERFMON_RESULT_AMD, result_size, counter_data, &bytes_written);
 
-                    if (!oglUtils::CheckForGLError("Unable to get the counter data."))
+                    if (!ogl_utils::CheckForGlError("Unable to get the counter data."))
                     {
-                        // the returned data is structured like this:
+                        // The returned data is structured like this:
                         // -----------------------------------------------------
                         // |  BlockID  |  CounterID  |  result data |  BlockID ...
                         // -----------------------------------------------------
-                        // so it may not be in the same order it was specified
+                        // So, it may not be in the same order it was specified.
 
-                        // cycle through all the counters and store the data
-                        GLsizei wordIndex = 0;
+                        // Cycle through all the counters and store the data.
+                        GLsizei word_index = 0;
 
-                        for (CounterCount counterCountIter = 0; counterCountIter < counterCount; counterCountIter++)
+                        for (CounterCount counter_count_iter = 0; counter_count_iter < counter_count; counter_count_iter++)
                         {
                             // GL may return the data in a different order than expected.
-                            // find the correct counter to assign the data to.
-                            GLuint       groupID               = pCounterData[wordIndex++];
-                            GLuint       counterID             = pCounterData[wordIndex++];
-                            GLuint*      pData                 = &pCounterData[wordIndex];
-                            unsigned int curCounterResultIndex = 0u;
+                            // Find the correct counter to assign the data to.
+                            GLuint       group_id                 = counter_data[word_index++];
+                            GLuint       counter_id               = counter_data[word_index++];
+                            GLuint*      data                     = &counter_data[word_index];
+                            unsigned int cur_counter_result_index = 0u;
 
-                            const GLCounter* pGlCounter = m_pGlGpaPass->GetGLCounter(groupID, counterID, curCounterResultIndex);
+                            const GlCounter* gl_counter = gl_gpa_pass_->GetGLCounter(group_id, counter_id, cur_counter_result_index);
 
-                            if (nullptr != pGlCounter)
+                            if (nullptr != gl_counter)
                             {
-                                GLuint* pDest = reinterpret_cast<GLuint*>(&pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[curCounterResultIndex]);
-                                pDest[0]      = 0;
-                                pDest[1]      = 0;
+                                GLuint* dest =
+                                    reinterpret_cast<GLuint*>(&sample_result->GetAsCounterSampleResult()->GetResultBuffer()[cur_counter_result_index]);
+                                dest[0] = 0;
+                                dest[1] = 0;
 
-                                // TODO: Revisit this
-                                // None of the enabled counter data type turn out to be other than GL_UNSIGNED_INT,
-                                // Letting this as it was in previous implementation
-                                if (pGlCounter->m_counterType == GL_UNSIGNED_INT64_AMD)
+                                if (gl_counter->counter_type == GL_UNSIGNED_INT64_AMD)
                                 {
-                                    wordIndex += 2;
-                                    memcpy(pDest, pData, sizeof(GLuint) * 2);
+                                    word_index += 2;
+                                    memcpy(dest, data, sizeof(GLuint) * 2);
                                     success = true;
                                 }
-                                else if (pGlCounter->m_counterType == GL_FLOAT)
+                                else if (gl_counter->counter_type == GL_FLOAT)
                                 {
-                                    wordIndex += 1;
-                                    memcpy(pDest, pData, sizeof(GLfloat));
+                                    word_index += 1;
+                                    memcpy(dest, data, sizeof(GLfloat));
                                     success = true;
                                 }
-                                else if (pGlCounter->m_counterType == GL_UNSIGNED_INT)
+                                else if (gl_counter->counter_type == GL_UNSIGNED_INT)
                                 {
-                                    wordIndex += 1;
-                                    memcpy(pDest, pData, sizeof(GLuint));
+                                    word_index += 1;
+                                    memcpy(dest, data, sizeof(GLuint));
                                     success = true;
                                 }
-                                else if (pGlCounter->m_counterType == GL_PERCENTAGE_AMD)
+                                else if (gl_counter->counter_type == GL_PERCENTAGE_AMD)
                                 {
-                                    wordIndex += 1;
-                                    memcpy(pDest, pData, sizeof(GLfloat));
+                                    word_index += 1;
+                                    memcpy(dest, data, sizeof(GLfloat));
                                     success = true;
                                 }
-                                else if (pGlCounter->m_counterType == GL_INT)
+                                else if (gl_counter->counter_type == GL_INT)
                                 {
-                                    wordIndex += 1;
-                                    memcpy(pDest, pData, sizeof(GLint));
+                                    word_index += 1;
+                                    memcpy(dest, data, sizeof(GLint));
                                     success = true;
                                 }
                                 else
@@ -255,7 +255,7 @@ bool GLGPASample::CopyResults()
                         }
                     }
 
-                    free(pCounterData);
+                    free(counter_data);
                 }
             }
         }
@@ -264,14 +264,14 @@ bool GLGPASample::CopyResults()
     return success;
 }
 
-bool GLGPASample::CreateGPUTimeQuery()
+bool GlGpaSample::CreateGpuTimeQuery()
 {
-    // create the timer query
-    oglUtils::_oglGenQueries(2, m_sampleDataBuffer.m_gpuTimeQuery);
-    return !oglUtils::CheckForGLError("Unable to create GPU time queries.");
+    // Create the timer query.
+    ogl_utils::ogl_gen_queries(2, sample_data_buffer_.gpu_time_query);
+    return !ogl_utils::CheckForGlError("Unable to create GPU time queries.");
 }
 
-bool GLGPASample::DeleteGPUTimeQueries()
+bool GlGpaSample::DeleteGpuTimeQueries()
 {
     bool success = false;
 
@@ -279,20 +279,20 @@ bool GLGPASample::DeleteGPUTimeQueries()
     // should be ignored. What is happening though is that deleting a query with name 0 is
     // marking name 0 as free so it can be used again. Subsequent calls to GenQueries will
     // return a name id of 0, which should never happen.
-    if (m_sampleDataBuffer.m_gpuTimeQuery[0] != 0)
+    if (sample_data_buffer_.gpu_time_query[0] != 0)
     {
-        oglUtils::_oglDeleteQueries(1, &m_sampleDataBuffer.m_gpuTimeQuery[0]);
-        success = !oglUtils::CheckForGLError("Unable to delete the first GPU time query.");
+        ogl_utils::ogl_delete_queries(1, &sample_data_buffer_.gpu_time_query[0]);
+        success = !ogl_utils::CheckForGlError("Unable to delete the first GPU time query.");
     }
 
-    if (success && m_sampleDataBuffer.m_gpuTimeQuery[1] != 0)
+    if (success && sample_data_buffer_.gpu_time_query[1] != 0)
     {
-        oglUtils::_oglDeleteQueries(1, &m_sampleDataBuffer.m_gpuTimeQuery[1]);
-        success = !oglUtils::CheckForGLError("Unable to delete the second GPU time query.");
+        ogl_utils::ogl_delete_queries(1, &sample_data_buffer_.gpu_time_query[1]);
+        success = !ogl_utils::CheckForGlError("Unable to delete the second GPU time query.");
     }
 
-    m_sampleDataBuffer.m_gpuTimeQuery[0] = 0;
-    m_sampleDataBuffer.m_gpuTimeQuery[1] = 0;
+    sample_data_buffer_.gpu_time_query[0] = 0;
+    sample_data_buffer_.gpu_time_query[1] = 0;
 
     return success;
 }

@@ -1,12 +1,12 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Vulkan Color Cube Sample
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Vulkan Color Cube Sample.
 //==============================================================================
 
-#ifndef _VK_COLOR_CUBE_H_
-#define _VK_COLOR_CUBE_H_
+#ifndef GPU_PERF_API_EXAMPLES_VULKAN_VK_COLOR_CUBE_VK_COLOR_CUBE_H_
+#define GPU_PERF_API_EXAMPLES_VULKAN_VK_COLOR_CUBE_VK_COLOR_CUBE_H_
 
 #ifdef ANDROID
 #define VK_USE_PLATFORM_ANDROID_KHR
@@ -26,15 +26,12 @@
 #endif  // __linux__
 #endif
 
-// Headers needed on all platforms
 #include <algorithm>
 #include <fstream>
 #include <map>
 #include <vector>
-#include <vulkan/vulkan.h>
 
-#include "gpu_perf_api_interface_loader.h"
-#include "gpa_helper.h"
+#include <vulkan/vulkan.h>
 
 #if defined(VK_USE_PLATFORM_XCB_KHR) || defined(VK_USE_PLATFORM_XLIB_KHR)
 #include <X11/Xutil.h>
@@ -43,440 +40,406 @@
 #include <unistd.h>
 #endif
 
-/// \brief Stores all the data needed for this demo.
+#include "gpu_performance_api/gpu_perf_api_interface_loader.h"
+
+#include "examples/vulkan/vk_color_cube/gpa_helper.h"
+
+/// @brief Stores all the data needed for this demo.
+///
 /// Assists with available and enabled extensions, but not much other functionality. The reason for this
 /// is so that the majority of Vulkan related functionality flows as a linear progression rather than being
 /// split up into multiple smaller functions.
 class AMDVulkanDemo
 {
 public:
-
-    /// returns the static instance of AMDVulkanDemo
+    /// @brief Returns the static instance of AMDVulkanDemo.
     static AMDVulkanDemo* Instance();
 
-    /// Destructor
+    /// @brief Destructor.
     ~AMDVulkanDemo();
 
-    /// Indicates whether or not the app should exit.
-    /// \return true if the app should exit; false otherwise;
+    /// @brief Indicates whether or not the app should exit.
+    ///
+    /// @return True if the app should exit; false otherwise;
     bool Exit() const;
 
-    /// Sets whether or not the demo should exit at the next appropriate opportunity.
-    /// \param bExit True to indicate that the demo should exit at the next appropriate opportunity;
-    ///              False will clear the exit flag, but this may not prevent the demo from exiting if the exit process has already started.
-    void Exit(bool bExit);
+    /// @brief Sets whether or not the demo should exit at the next appropriate opportunity.
+    ///
+    /// @param [in] exit True to indicate that the demo should exit at the next appropriate opportunity;
+    ///             False will clear the exit flag, but this may not prevent the demo from exiting if the exit process has already started.
+    void Exit(bool exit);
 
-    /// Sets whether or not to print GPA Counter names & description on GPA initialization.
-    /// \param bPrint True to print counter info; false to prevent it from printing.
-    void SetPrintGPACounterInfo(bool bPrint);
+    /// @brief Sets whether or not to print GPA Counter names & description on GPA initialization.
+    ///
+    /// @param [in] print True to print counter info; false to prevent it from printing.
+    void SetPrintGpaCounterInfo(bool print);
 
-    /// Sets whether or not to print debug output.
-    /// \param bPrint True to print debug output; false to prevent debug output from being printed.
-    void SetPrintDebugOutput(bool bPrint);
+    /// @brief Sets whether or not to print debug output.
+    ///
+    /// @param [in] print True to print debug output; false to prevent debug output from being printed.
+    void SetPrintDebugOutput(bool print);
 
-    /// Sets whether or not to exit after collecting counter values.
-    /// \param bExitAfterProfile True to exit the application after counter values have been collected; false to continue running until the user closes the application.
-    void SetExitAfterProfile(bool bExitAfterProfile);
+    /// @brief Sets whether or not to exit after collecting counter values.
+    ///
+    /// @param [in] exit_after_profile True to exit the application after counter values have been collected; false to continue running until the user closes the application.
+    void SetExitAfterProfile(bool exit_after_profile);
 
-    /// Sets whether or not to verify counter values.
-    /// \param bVerifyCounters True to perform some basic validation of counter values -- application will return a non-zero exit code if counter verification fails
-    void SetVerifyCounters(bool bVerifyCounters);
+    /// @brief Sets whether or not to verify counter values.
+    ///
+    /// @param [in] verify_counters True to perform some basic validation of counter values -- application will return a non-zero exit code if counter verification fails
+    void SetVerifyCounters(bool verify_counters);
 
-    /// Sets whether or not to include hardware counters in non-internal builds.
-    /// \param bIncludeHwCounters True to include hardware counters in the set of enabled counters in non-internal builds
-    void SetIncludeHwCounters(bool bIncludeHwCounters);
+    /// @brief Sets whether or not to verify counter values and confirm successful results.
+    ///
+    /// @param [in] confirm_success True to perform some basic validation of counter values -- application will return a non-zero exit code if counter verification fails
+    void SetConfirmSuccess(bool confirm_success);
 
-    /// Sets a counter file name
-    /// \param counter_file_name input counter file
+    /// @brief Sets whether or not to include hardware counters in non-internal builds.
+    ///
+    /// @param [in] include_hw_counters True to include hardware counters in the set of enabled counters in non-internal builds
+    void SetIncludeHwCounters(bool include_hw_counters);
+
+    /// @brief Sets a counter file name
+    ///
+    /// @param [in] counter_file_name Input counter file
     void SetCounterFromFile(std::string counter_file_name)
     {
         counter_file_name_ = counter_file_name;
     }
 
-    /// Indicates that the Demo has been fully initialized.
-    /// \return True if initialization has completed; false otherwise.
+    /// @brief Indicates that the Demo has been fully initialized.
+    ///
+    /// @return True if initialization has completed; false otherwise.
     bool Initialized() const;
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-    /// Registers a new window class and creates a window from that class.
-    /// \param demoWindowProcessor Callback function to process windowing messages.
-    /// \return Handle to the created window, or nullptr on error;
-    HWND CreateWindowWin32(WNDPROC demoWindowProcessor);
+    /// @brief Registers a new window class and creates a window from that class.
+    ///
+    /// @param [in] demo_window_procedure Callback function to process windowing messages.
+    ///
+    /// @return Handle to the created window, or nullptr on error;
+    HWND CreateWindowWin32(WNDPROC demo_window_procedure);
 
-    /// Initialize a window on Win32 platforms.
-    /// \param hInstance The application instance handle.
-    /// \param windowMessageProcessor The function that will process window messages.
-    /// \param nCmdShow Indicates how the window will be shown.
-    /// \return A Handle to the created window, or nullptr if the instance was already set or the window was already created, or there was an error creating the window.
-    HWND InitializeWindowWin32(HINSTANCE hInstance, WNDPROC windowMessageProcessor, int nCmdShow);
+    /// @brief Initialize a window on Win32 platforms.
+    ///
+    /// @param [in] instance_handle The application instance handle.
+    /// @param [in] demo_window_message_procedure The function that will process window messages.
+    /// @param [in] cmd_show Indicates how the window will be shown.
+    ///
+    /// @return A Handle to the created window, or nullptr if the instance was already set or the window was already created, or there was an error creating the window.
+    HWND InitializeWindowWin32(HINSTANCE instance_handle, WNDPROC demo_window_message_procedure, int cmd_show);
 
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
 
-    /// Registers a new window class and creates a window from that class.
-    /// \return Handle to the created window, or nullptr on error;
-    xcb_connection_t* InitializeWindowXCB();
+    /// @brief Registers a new window class and creates a window from that class.
+    ///
+    /// @return Handle to the created window, or nullptr on error;
+    xcb_connection_t* InitializeWindowXcb();
 
 #endif  // VK_USE_PLATFORM_XCB_KHR
 
-    /// Loads a shader from the specified filename and creates a vkShaderModule for it.
-    /// \param filename The relative or absolute path to a filename of the SPIR-V shader to load.
-    /// \return A valid VkShaderModule if the shader could be loaded, or VK_NULL_HANDLE on error.
-    VkShaderModule LoadShader(const char* filename);
+    /// @brief Loads a shader from the specified file_name and creates a VkShaderModule for it.
+    ///
+    /// @param [in] file_name The relative or absolute path to a file_name of the SPIR-V shader to load.
+    ///
+    /// @return A valid VkShaderModule if the shader could be loaded, or VK_NULL_HANDLE on error.
+    VkShaderModule LoadShader(const char* file_name);
 
-    /// Load & Initialize GPA
-    /// \return True if GPA could be loaded and initialized; false on error.
-    bool InitializeGPA();
+    /// @brief Load & Initialize GPA
+    ///
+    /// @return True if GPA could be loaded and initialized; false on error.
+    bool InitializeGpa();
 
-    /// General initialization that just about every Vulkan application would need to do.
-    /// \return false if an error occurs, otherwise true.
+    /// @brief General initialization that just about every Vulkan application would need to do.
+    ///
+    /// @return False if an error occurs, otherwise true.
     bool InitializeVulkan();
 
-    /// Draws the scene in a method that can be called on any platform.
+    /// @brief Draws the scene in a method that can be called on any platform.
     void DrawScene();
 
-    /// General vulkan object destruction.
+    /// @brief General vulkan object destruction.
     void Destroy();
 
-    /// Short name that will be used as the application name.
-    const std::string m_cShortName = "AMD VkColorCube";
-
-    /// Longer name that will be displayed in the window title bar.
-    const std::wstring m_cLongName = L"The AMD Vulkan Color Cube Sample";
-
-    /// Default window width.
-    const uint32_t m_cDefaultWindowWidth = 900;
+    const std::string  kShortName          = "AMD VkColorCube";                    ///< Short name that will be used as the application name.
+    const std::wstring kLongName           = L"The AMD Vulkan Color Cube Sample";  ///< Longer name displayed in the title bar.
+    const uint32_t     kDefaultWindowWidth = 900;                                  ///< Default window width.
 
     /// Default window height.
-    const uint32_t m_cDefaultWindowHeight = 300;
+    const uint32_t kDefaultWindowHeight = 300;
 
 #ifdef ANDROID
-    inline void SetWindow(ANativeWindow* pNativeWindow)
+    inline void SetWindow(ANativeWindow* native_window)
     {
-        m_pAnativeWindow = pNativeWindow;
+        native_window_ = native_window;
     }
 
-    inline void SetNativeActivity(ANativeActivity* pNativeActivity)
+    inline void SetNativeActivity(ANativeActivity* native_activity)
     {
-        m_pNativeActivity = pNativeActivity;
+        native_activity_ = native_activity;
     }
 #endif
 
 private:
-
-    /// Constructor
+    /// @brief Constructor
     AMDVulkanDemo();
 
-    /// Caches an extension name that should have been returned by vkEnumerateInstanceExtensionProperties.
-    /// \param pExtensionName A name to add to the list of supported instance extensions.
-    void AddSupportedInstanceExtension(const char* pExtensionName);
+    /// @brief Caches an extension name that should have been returned by vkEnumerateInstanceExtensionProperties.
+    ///
+    /// @param [in] extension_name A name to add to the list of supported instance extensions.
+    void AddSupportedInstanceExtension(const char* extension_name);
 
-    /// Checks to see if the supplied extension is in the supported instance extension list.
-    /// \param pExtensionName The name of the extension to seek.
-    /// \return True if the extension is supported; false otherwise.
-    bool IsInstanceExtensionSupported(const char* pExtensionName);
+    /// @brief Checks to see if the supplied extension is in the supported instance extension list.
+    ///
+    /// @param [in] extension_name The name of the extension to seek.
+    ///
+    /// @return True if the extension is supported; false otherwise.
+    bool IsInstanceExtensionSupported(const char* extension_name);
 
-    /// Caches an extension name that should have been returned by vkEnumerateDeviceExtensionProperties.
-    /// \param pExtensionName A name to add to the list of supported device extensions.
-    void AddSupportedDeviceExtension(const char* pExtensionName);
+    /// @brief Caches an extension name that should have been returned by vkEnumerateDeviceExtensionProperties.
+    ///
+    /// @param [in] extension_name A name to add to the list of supported device extensions.
+    void AddSupportedDeviceExtension(const char* extension_name);
 
-    /// Checks to see if the supplied extension is in the supported device extension list.
-    /// \param pExtensionName The name of the extension to seek.
-    /// \return True if the extension is supported; false otherwise.
-    bool IsDeviceExtensionSupported(const char* pExtensionName);
+    /// @brief Checks to see if the supplied extension is in the supported device extension list.
+    ///
+    /// @param [in] extension_name The name of the extension to seek.
+    ///
+    /// @return True if the extension is supported; false otherwise.
+    bool IsDeviceExtensionSupported(const char* extension_name);
 
-    /// List of instance extension names that are required by this demo.
-    std::vector<const char*> m_requiredInstanceExtensions;
-
-    /// List of device extension names that are required by this demo.
-    std::vector<const char*> m_requiredDeviceExtensions;
-
-    /// List of device extension names that are optional for this demo.
-    std::vector<const char*> m_optionalDeviceExtensions;
+    std::vector<const char*> required_instance_extensions_;  ///< List of instance extension names that are required by this demo.
+    std::vector<const char*> required_device_extensions_;    ///< List of device extension names that are required by this demo.
+    std::vector<const char*> optional_device_extensions_;    ///< List of device extension names that are optional for this demo.
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
-    /// Application windowing instance
-    HINSTANCE m_hInstance;
-
-    /// Window handle
-    HWND m_hWindow;
+    HINSTANCE hInstance_;  ///< Application windowing instance.
+    HWND      hWindow_;    ///< Window handle.
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
-    Display*          m_pDisplay;
-    xcb_connection_t* m_pXcbConnection;
-    xcb_screen_t*     m_pXcbScreen;
-    xcb_window_t      m_xcbWindow;
+    Display*          display_;
+    xcb_connection_t* xcb_conntection_;
+    xcb_screen_t*     xcb_screen_;
+    xcb_window_t      xcb_window_;
 
 public:
-    xcb_intern_atom_reply_t* m_xcbAtomWmDeleteWindow;
+    xcb_intern_atom_reply_t* xcb_atom_delete_window_;
 
 private:
 #endif
 
-    /// The instance of the Vulkan API.
-    VkInstance m_vkInstance;
+    VkInstance                       vk_instance_;                        ///< The instance of the Vulkan API.
+    const uint32_t                   default_physical_device_index_ = 0;  ///< The default index of the physical device (ie: GPU) to use when running this demo.
+    VkPhysicalDevice                 default_physical_device_;            ///< The selected physical device that will execute this demo.
+    VkPhysicalDeviceProperties       physical_device_properties_;         ///< Properties of the selected physical device.
+    VkPhysicalDeviceFeatures         phsyical_device_features_;           ///< Available features of the selected physical device.
+    VkPhysicalDeviceMemoryProperties physical_device_memory_properties_;  ///< Properties of the selected physical device.
+    VkDevice                         vk_device_;                          ///< The logical device that will be used to render.
+    VkQueue                          vk_queue_;                           ///< The queue on which rendering commands will be scheduled.
+    uint32_t                         queue_index_;                        ///< The index within the queue family from which the vkQueue was obtained.
+    VkSurfaceKHR                     vk_surface_;                         ///< The display surface that the demo will render to.
+    VkSurfaceFormatKHR               vk_surface_format_;                  ///< The selected format of the presentation surface.
+    uint32_t                         queue_family_index_graphics_;        ///< Index of the queue family that supports graphics.
+    uint32_t                         queue_family_index_present_;         ///< Index of the queue family that supports present
+    VkPresentModeKHR                 vk_present_mode_;                    ///< The mode Vulkan WSI will use to present the swapchain images.
+    VkSurfaceCapabilitiesKHR         vk_surface_capabilities_;            ///< Capabilities of the display surface.
+    VkSwapchainKHR                   vk_swap_chain_;                      ///< The swapchain that will be used to present.
+    VkExtent2D                       swap_chain_image_extent_;            ///< Swapchain image Extents (resolution)
 
-    /// The default index of the physical device (ie: GPU) to use when running this demo.
-    const uint32_t m_cDefaultPhysicalDeviceIndex = 0;
-
-    /// The selected physical device that will execute this demo.
-    VkPhysicalDevice m_vkPhysicalDevice;
-
-    /// Properties of the selected physical device.
-    VkPhysicalDeviceProperties m_vkPhysicalDeviceProperties;
-
-    /// Available features of the selected physical device.
-    VkPhysicalDeviceFeatures m_vkPhysicalDeviceFeatures;
-
-    /// Properties of the selected physical device.
-    VkPhysicalDeviceMemoryProperties m_vkPhysicalDeviceMemoryProperties;
-
-    /// The logical device that will be used to render.
-    VkDevice m_vkDevice;
-
-    /// The queue on which rendering commands will be scheduled.
-    VkQueue m_vkQueue;
-
-    /// The index within the queue family from which the vkQueue was obtained.
-    uint32_t m_queueIndex;
-
-    /// The display surface that the demo will render to.
-    VkSurfaceKHR m_vkSurface;
-
-    /// The selected format of the presentation surface.
-    VkSurfaceFormatKHR m_vkSurfaceFormat;
-
-    /// Index of the queue family that supports graphics.
-    /// Will be the same as m_queueFamilyIndexPresent.
-    uint32_t m_queueFamilyIndexGraphics;
-
-    /// Index of the queue family that supports present.
-    /// Will be the same as m_queueFamilyIndexGraphics.
-    uint32_t m_queueFamilyIndexPresent;
-
-    /// The mode Vulkan WSI will use to present the swapchain images.
-    VkPresentModeKHR m_vkPresentMode;
-
-    /// Capabilities of the display surface.
-    VkSurfaceCapabilitiesKHR m_vkSurfaceCapabilities;
-
-    /// The swapchain that will be used to present.
-    VkSwapchainKHR m_vkSwapchain;
-
-    /// Swapchain image Extents (resolution)
-    VkExtent2D m_swapchainImageExtent;
-
-    /// These objects are unique to each swapchain image.
+    /// @brief These objects are unique to each swapchain image.
+    ///
     /// Use the same index for each of these vectors to access corresponding objects.
     struct PerSwapchainImageResources
     {
-        /// Handles to the swapchain images.
-        std::vector<VkImage> swapchainImages;
+        std::vector<VkImage>       swap_chain_images;       ///< Handles to the swapchain images.
+        std::vector<VkImageView>   swap_chain_image_views;  ///< Views into the swapchain images.
+        std::vector<VkFramebuffer> vk_frame_buffers;        ///< Frame buffers - one for each swapchain image.
+    } per_swap_chain_image_resources_;
 
-        /// Views into the swapchain images.
-        std::vector<VkImageView> swapchainImageViews;
-
-        /// Frame buffers - one for each swapchain image.
-        std::vector<VkFramebuffer> vkFramebuffers;
-    } m_perSwapchainImageResources;
-
-    /// Container for pre-built resources that are needed to render a single frame,
+    /// @brief Container for pre-built resources that are needed to render a single frame,
     /// but are also different for each frame. Namely, these command buffers are uniquely
-    /// associated with different frame buffers
+    /// associated with different frame buffers.
     struct PrebuiltPerFrameResources
     {
-        /// Container for objects related to drawing the cube.
+        /// @brief Container for objects related to drawing the cube.
         struct Cube
         {
             /// The command buffer that will draw the cube.
-            VkCommandBuffer commandBuffer;
+            VkCommandBuffer command_buffer;
 
             /// The GPA CommandList that will include the sample that draws the cube.
-            GPA_CommandListId gpaCommandListId;
+            GpaCommandListId gpa_command_list_id;
 
             /// Sample Id that the application (not GPA) assigns to the cube.
-            /// The cube will have this same sampleId in all passes.
-            const gpa_uint32 gpaSampleId = 0;
-        } cube;
+            /// The cube will have this same sample_id in all passes.
+            const GpaUInt32 gpa_sample_id = 0;
+        } cube_;
 
-        /// Container for objects related to drawing the wireframe.
+        /// @brief Container for objects related to drawing the wireframe.
         struct Wireframe
         {
-            /// The command buffer that will draw the wireframe
-            VkCommandBuffer commandBuffer;
+            /// The command buffer that will draw the wireframe.
+            VkCommandBuffer command_buffer;
 
             /// The GPA CommandList that will include the sample that draws the cube.
-            GPA_CommandListId gpaCommandListId;
+            GpaCommandListId gpa_command_list_id;
 
             /// Sample Id that the application (not GPA) assigns to the wireframe.
-            /// The wireframe will have this same sampleId in all passes.
-            const gpa_uint32 gpaSampleId = 1;
-        } wireframe;
+            /// The wireframe will have this same sample_id in all passes.
+            const GpaUInt32 gpa_sample_id = 1;
+        } wire_frame_;
 
-        /// Container for objects related to drawing the cube and wireframe in two
-        /// different command buffers, and a single GPA Sample that starts in the first
+        /// @brief Container for objects related to drawing the cube and wireframe.
+        ///
+        /// Draws them in two different command buffers, with a single GPA Sample that starts in the first
         /// command buffer and continues into the second.
         struct CubeAndWireframe
         {
             /// The command buffer that will draw the cube.
-            VkCommandBuffer commandBufferCube;
+            VkCommandBuffer command_buffer_cube;
 
             /// The command buffer that will draw the wireframe.
-            VkCommandBuffer commandBufferWireframe;
+            VkCommandBuffer command_buffer_wire_frame;
 
             /// The GPA CommandListId that will draw the cube and start the GPA Sample.
-            GPA_CommandListId gpaCommandListIdCube;
+            GpaCommandListId gpa_command_list_id_cube;
 
             /// The GPA CommandList that will draws the wireframe and will end the GPA Sample.
-            GPA_CommandListId gpaCommandListIdWireframe;
+            GpaCommandListId gpa_command_list_id_wire_frame;
 
             /// Sample Id that the application (not GPA) assigns to the cube wireframe.
-            /// The combined cube + wireframe sample will have this same sampleId in all passes.
-            const gpa_uint32 gpaSampleId = 2;
-        } cubeAndWireframe;
+            /// The combined cube + wireframe sample will have this same sample_id in all passes.
+            const GpaUInt32 gpa_sample_id = 2;
+        } cube_and_wire_frame_;
     };
 
     /// Vector of pre-built per-frame resources.
     /// There will be one entry per swapchain image in this vector,
     /// as each one is pre-built to output to a specific swapchain image.
     /// When building these resources, GPA calls SHOULD NOT be inserted.
-    std::vector<PrebuiltPerFrameResources> m_prebuiltPerFrameResources;
+    std::vector<PrebuiltPerFrameResources> prebuilt_frame_resources_;
 
     /// Vector of pre-built per-frame resources.
     /// There will be one entry per swapchain image in this vector,
     /// as each one is pre-built to output to a specific swapchain image.
     /// When building these resources, GPA calls SHOULD be inserted.
-    std::vector<PrebuiltPerFrameResources> m_prebuiltPerFrameResourcesWithGPA;
+    std::vector<PrebuiltPerFrameResources> prebuilt_per_frame_resources_with_gpa_;
 
     /// The render pass that will be used first and will clear the screen.
-    VkRenderPass m_vkRenderPassInitial;
+    VkRenderPass vk_render_pass_initial_;
 
     /// The render pass that is used for all mid-frame draws which leaves
     /// the render target in a COLOR_ATTACHMENT_OPTIMAL layout.
-    VkRenderPass m_vkRenderPassMid;
+    VkRenderPass vk_render_pass_mid_;
 
     /// The render pass that is used for the final draws which puts the
     /// render target in a PRESENT_SRC layout. This could have also been
     /// done by using a pipeline barrier.
-    VkRenderPass m_vkRenderPassFinal;
+    VkRenderPass vk_render_pass_final_;
 
     /// The pipeline layout.
-    VkPipelineLayout m_vkPipelineLayout;
+    VkPipelineLayout vk_pipeline_layout_;
 
     /// The graphics pipeline object.
-    VkPipeline m_vkPipeline;
+    VkPipeline vk_pipeline_;
 
     /// The graphics pipeline object to draw wireframes.
-    VkPipeline m_vkPipelineWireframe;
+    VkPipeline vk_pipeline_wire_frame_;
 
     /// The command pool which will contain the necessary command buffers.
-    VkCommandPool m_vkCommandPool;
+    VkCommandPool vk_command_pool_;
 
     /// Vertex shader module.
-    VkShaderModule m_vertexShaderModule;
+    VkShaderModule vertex_shader_module_;
 
     /// Fragment shader module.
-    VkShaderModule m_fragmentShaderModule;
+    VkShaderModule fragment_shader_module_;
 
     /// Fragment shader module for drawing wireframe.
-    VkShaderModule m_fragmentShaderWireframeModule;
+    VkShaderModule fragment_shader_wire_frame_module_;
 
     /// Semaphore to indicate when a swapchain image has been acquired.
-    VkSemaphore m_vkSemaphoreAcquiredSwapchainImage;
+    VkSemaphore vk_semaphore_acquired_swapchain_image_;
 
     /// Semaphore to indicate when the rendering has completed.
-    VkSemaphore m_vkSemaphoreFinishedRendering;
+    VkSemaphore vk_sempahore_fineshed_rendering_;
 
     /// Tracks the existence (or enabled state) of the debug report callback.
-    VkDebugReportCallbackEXT m_vkDebugReportCallback;
+    VkDebugReportCallbackEXT vk_debug_report_callback_;
 
     /// GPA Context.
-    GPA_ContextId m_GPAContextId;
+    GpaContextId gpa_context_id_;
 
     /// GPA session.
-    GPA_SessionId m_GPASessionId;
+    GpaSessionId gpa_session_id_;
 
     /// Number of required GPA passes based on the set of enabled counters.
-    uint32_t m_requiredPassCount;
+    uint32_t required_pass_count_;
 
     /// Number of frames that have been rendered.
-    uint32_t m_frameCount;
+    uint32_t num_frames_rendered_;
 
     /// Flag to indicate whether or not to print debug output.
-    bool m_bPrintDebugOutput;
+    bool print_debug_output_;
 
-    /// Flag to indicate whether or not to print GPA counter names & descriptions.
-    /// when GPA is initialized.
-    bool m_bPrintGPACounterInfo;
+    /// Flag to indicate whether or not to print GPA counter names & descriptions when GPA is initialized.
+    bool print_gpa_counter_info_;
 
     /// Flag to indicate whether or not to exit after counters are collected.
-    bool m_bExitAfterProfile;
+    bool exit_after_profile_;
 
     /// Flag to indicate whether or not to verify some counter values.
-    bool m_bVerifyCounters;
+    bool verify_counters_;
+
+    /// Flag to indicate whether or not to verify some counter values and confirm successful results.
+    bool confirm_success_;
 
     /// Flag to indicate whether or not to include hardware counters in non-internal builds
-    bool m_bIncludeHwCounters;
+    bool include_hw_counters_;
 
     /// Flag to indicate that the demo has been successfully initialized.
-    bool m_bInitialized;
+    bool initialized_;
 
-    /// Counter file name
+    /// Counter file name.
     std::string counter_file_name_;
 
     /// Flag to indicate that the demo should exit.
-    bool m_bExit;
+    bool exit_;
 
     /// Stores the list of available instance extensions as exposed by the Vulkan implementation.
-    std::map<const std::string, bool> m_supportedInstanceExtensions;
+    std::map<const std::string, bool> supported_instance_extensions_;
 
     /// Stores the list of available device extensions as exposed by the Vulkan implementation.
-    std::map<const std::string, bool> m_supportedDeviceExtensions;
+    std::map<const std::string, bool> supported_device_extensions_;
 
-    /// Builds command buffers that will not be reset and rebuilt between frames.
-    /// \param pPrebuiltResources Pointer to the set of resources that need to be built.
-    /// \param framebuffer The framebuffer that is connected to specific swapchain images
-    /// that should be rendered into by these command buffers.
-    /// \param enableGPA Indicates whether GPA profiling should be enabled in these command buffers or not.
-    /// \param gpaPassIndex If GPA is enabled for these command buffers, this indicates which profile pass is being built; ignored if enableGPA is false.
-    void PreBuildCommandBuffers(PrebuiltPerFrameResources* pPrebuiltResources, VkFramebuffer framebuffer, bool enableGPA, uint32_t gpaPassIndex);
+    /// @brief Builds command buffers that will not be reset and rebuilt between frames.
+    ///
+    /// @param [out] prebuilt_resources Pointer to the set of resources that need to be built.
+    /// @param [in] frame_buffer The frame_buffer that is connected to specific swapchain images that should be rendered into by these command buffers.
+    /// @param [in] enable_gpa Indicates whether GPA profiling should be enabled in these command buffers or not.
+    /// @param [in] gpa_pass_index If GPA is enabled for these command buffers, this indicates which profile pass is being built; ignored if enable_gpa is false.
+    void PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_resources, VkFramebuffer frame_buffer, bool enable_gpa, uint32_t gpa_pass_index);
 
-    /// GPA helper
-    GPAHelper m_GpuPerfApiHelper;
+    /// GPA helper.
+    GpaHelper gpu_perf_api_helper_;
 
 #ifdef ANDROID
-    /// Android Native window
-    ANativeWindow* m_pAnativeWindow;
-
-    /// Android Native activity
-    ANativeActivity* m_pNativeActivity;
+    ANativeWindow*   native_window_;    ///< Android Native window.
+    ANativeActivity* native_activity_;  ///< Android Native activity.
 #endif
-
-    /// static instance of the app
-    static AMDVulkanDemo* ms_pAmdVulkanDemo;
+    static AMDVulkanDemo* amd_vulkan_demo_;  ///< Static instance of the app.
 };
 
-/// Struct to hold values of command line arguments.
+/// @brief Struct to hold values of command line arguments.
 struct CommandLineArgs
 {
-    /// Flag indicating whether GPA should be used to collect performance counter values.
-    bool m_bUseGPA = true;
-
-    /// Flag indicating whether verbose debug output should be displayed.
-    bool m_bPrintDebugOutput = false;
-
-    /// Flag indicating whether available counter information should be displayed.
-    bool m_bPrintGPACounterInfo = false;
-
-    /// Flag indicating whether the application should automatically exit after collecting performance counters.
-    bool m_bExitAfterProfile = false;
-
-    /// Flag indicating whether the application should verify some counter values.
-    bool m_bVerifyCounters = false;
-
-    /// Flag indicating whether or not hardware counters should be enabled in non-internal builds
-    bool m_bIncludeHwCounters = false;
-
-    /// Counter file name
-    std::string counter_file_name;
+    bool        use_gpa                = true;   ///< Flag indicating whether GPA should be used to collect performance counter values.
+    bool        print_debug_output     = false;  ///< Flag indicating whether verbose debug output should be displayed.
+    bool        print_gpa_counter_info = false;  ///< Flag indicating whether available counter information should be displayed.
+    bool        exit_after_profile     = false;  ///< Flag indicating whether the application should automatically exit after collecting performance counters.
+    bool        verify_counters        = false;  ///< Flag indicating whether the application should verify some counter values.
+    bool        confirm_success        = false;  ///< Flag indicating whether the application should verify some counter values and confirm successful results.
+    bool        include_hw_counters    = false;  ///< Flag indicating whether or not hardware counters should be enabled in non-internal builds.
+    std::string counter_file_name;               ///< Counter file name.
 };
 
-#endif  // _VK_COLOR_CUBE_H_
+#endif  // GPU_PERF_API_EXAMPLES_VULKAN_VK_COLOR_CUBE_VK_COLOR_CUBE_H_

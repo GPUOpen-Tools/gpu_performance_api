@@ -1,38 +1,41 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  A class for handling custom hw validation
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  A class for handling custom hw validation.
 //==============================================================================
 
-#ifndef _GPA_CUSTOM_HW_VALIDATOR_H_
-#define _GPA_CUSTOM_HW_VALIDATOR_H_
+#ifndef GPU_PERF_API_COMMON_GPA_CUSTOM_HW_VALIDATION_MANAGER_H_
+#define GPU_PERF_API_COMMON_GPA_CUSTOM_HW_VALIDATION_MANAGER_H_
 
 #include <TSingleton.h>
 
-#include "gpa_hw_info.h"
+#include "gpu_perf_api_common/gpa_hw_info.h"
 
-/// Class to manage custom hw validation
-class GPACustomHwValidationManager : public TSingleton<GPACustomHwValidationManager>
+/// @brief Class to manage custom hw validation.
+class GpaCustomHwValidationManager : public TSingleton<GpaCustomHwValidationManager>
 {
 public:
-    /// Typedef for the function pointer type used to validate hardware
-    typedef GPA_Status (*CustomHWValidationFuncPtr)(void*, GPA_HWInfo*, void*);
+    /// @brief Typedef for the function pointer type used to validate hardware.
+    typedef GpaStatus (*CustomHWValidationFuncPtr)(void*, GpaHwInfo*, void*);
 
-    /// Registers a function that is used to validate hardware
-    /// \param hwValidationFunc the function to call to validate hardware
-    /// \param pUserData the user data to pass to the validation function
-    void RegisterCustomHardwareValidator(CustomHWValidationFuncPtr hwValidationFunc, void* pUserData);
+    /// @brief Registers a function that is used to validate hardware.
+    ///
+    /// @param [in] hw_validation_func The function to call to validate hardware.
+    /// @param [in] user_data The user data to pass to the validation function.
+    void RegisterCustomHardwareValidator(CustomHWValidationFuncPtr hw_validation_func, void* user_data);
 
-    /// Validates the specified hardware by calling all validators
-    /// \param pContext the GPA Context
-    /// \param pHwInfo the hardware info to validate
-    /// \return GPA_STATUS_OK if all validators validate this hardware
-    GPA_Status ValidateHW(void* pContext, GPA_HWInfo* pHwInfo);
+    /// @brief Validates the specified hardware by calling all validators.
+    ///
+    /// @param [in] context The GPA Context.
+    /// @param [in] hw_info The hardware info to validate.
+    ///
+    /// @return kGpaStatusOk if all validators validate this hardware.
+    GpaStatus ValidateHW(void* context, GpaHwInfo* hw_info);
 
 private:
-    typedef std::pair<CustomHWValidationFuncPtr, void*> CustomValidationFuncPair;  ///< typedef used to store validator/userdata pair
-    std::vector<CustomValidationFuncPair>               m_validationFunctionList;  ///< list of validation functions
+    typedef std::pair<CustomHWValidationFuncPtr, void*> CustomValidationFuncPair;   ///< Typedef used to store validator/user data pair.
+    std::vector<CustomValidationFuncPair>               validation_function_list_;  ///< List of validation functions.
 };
 
-#endif  // _GPA_CUSTOM_HW_VALIDATOR_H_
+#endif  // GPU_PERF_API_COMMON_GPA_CUSTOM_HW_VALIDATION_MANAGER_H_

@@ -1,174 +1,174 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief PublicCounterDefinitions for DX12GFX8 for testing
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief PublicCounterDefinitions for DX12 GFX8 for testing.
 //==============================================================================
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#ifndef _GPA_TESTS_COUNTERS_PUBLIC_DX12GFX8_
-#define _GPA_TESTS_COUNTERS_PUBLIC_DX12GFX8_
+#ifndef GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX12_GFX8
+#define GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX12_GFX8
 
-#include "gpa_counter_desc.h"
+#include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
 /// Macros for DX12Gfx8 Public counter index
-#define GPUTimePublicDX12Gfx8 0
-#define ExecutionDurationPublicDX12Gfx8 1
-#define ExecutionStartPublicDX12Gfx8 2
-#define ExecutionEndPublicDX12Gfx8 3
-#define GPUBusyPublicDX12Gfx8 4
-#define GPUBusyCyclesPublicDX12Gfx8 5
-#define TessellatorBusyPublicDX12Gfx8 6
-#define TessellatorBusyCyclesPublicDX12Gfx8 7
-#define VSBusyPublicDX12Gfx8 8
-#define VSBusyCyclesPublicDX12Gfx8 9
-#define VSTimePublicDX12Gfx8 10
-#define HSBusyPublicDX12Gfx8 11
-#define HSBusyCyclesPublicDX12Gfx8 12
-#define HSTimePublicDX12Gfx8 13
-#define DSBusyPublicDX12Gfx8 14
-#define DSBusyCyclesPublicDX12Gfx8 15
-#define DSTimePublicDX12Gfx8 16
-#define GSBusyPublicDX12Gfx8 17
-#define GSBusyCyclesPublicDX12Gfx8 18
-#define GSTimePublicDX12Gfx8 19
-#define PSBusyPublicDX12Gfx8 20
-#define PSBusyCyclesPublicDX12Gfx8 21
-#define PSTimePublicDX12Gfx8 22
-#define CSBusyPublicDX12Gfx8 23
-#define CSBusyCyclesPublicDX12Gfx8 24
-#define CSTimePublicDX12Gfx8 25
-#define VSVerticesInPublicDX12Gfx8 26
-#define VSVALUInstCountPublicDX12Gfx8 27
-#define VSSALUInstCountPublicDX12Gfx8 28
-#define VSVALUBusyPublicDX12Gfx8 29
-#define VSVALUBusyCyclesPublicDX12Gfx8 30
-#define VSSALUBusyPublicDX12Gfx8 31
-#define VSSALUBusyCyclesPublicDX12Gfx8 32
-#define HSPatchesPublicDX12Gfx8 33
-#define HSVALUInstCountPublicDX12Gfx8 34
-#define HSSALUInstCountPublicDX12Gfx8 35
-#define HSVALUBusyPublicDX12Gfx8 36
-#define HSVALUBusyCyclesPublicDX12Gfx8 37
-#define HSSALUBusyPublicDX12Gfx8 38
-#define HSSALUBusyCyclesPublicDX12Gfx8 39
-#define DSVerticesInPublicDX12Gfx8 40
-#define DSVALUInstCountPublicDX12Gfx8 41
-#define DSSALUInstCountPublicDX12Gfx8 42
-#define DSVALUBusyPublicDX12Gfx8 43
-#define DSVALUBusyCyclesPublicDX12Gfx8 44
-#define DSSALUBusyPublicDX12Gfx8 45
-#define DSSALUBusyCyclesPublicDX12Gfx8 46
-#define GSPrimsInPublicDX12Gfx8 47
-#define GSVerticesOutPublicDX12Gfx8 48
-#define GSVALUInstCountPublicDX12Gfx8 49
-#define GSSALUInstCountPublicDX12Gfx8 50
-#define GSVALUBusyPublicDX12Gfx8 51
-#define GSVALUBusyCyclesPublicDX12Gfx8 52
-#define GSSALUBusyPublicDX12Gfx8 53
-#define GSSALUBusyCyclesPublicDX12Gfx8 54
-#define PrimitiveAssemblyBusyPublicDX12Gfx8 55
-#define PrimitiveAssemblyBusyCyclesPublicDX12Gfx8 56
-#define PrimitivesInPublicDX12Gfx8 57
-#define CulledPrimsPublicDX12Gfx8 58
-#define ClippedPrimsPublicDX12Gfx8 59
-#define PAStalledOnRasterizerPublicDX12Gfx8 60
-#define PAStalledOnRasterizerCyclesPublicDX12Gfx8 61
-#define PSPixelsOutPublicDX12Gfx8 62
-#define PSExportStallsPublicDX12Gfx8 63
-#define PSExportStallsCyclesPublicDX12Gfx8 64
-#define PSVALUInstCountPublicDX12Gfx8 65
-#define PSSALUInstCountPublicDX12Gfx8 66
-#define PSVALUBusyPublicDX12Gfx8 67
-#define PSVALUBusyCyclesPublicDX12Gfx8 68
-#define PSSALUBusyPublicDX12Gfx8 69
-#define PSSALUBusyCyclesPublicDX12Gfx8 70
-#define CSThreadGroupsPublicDX12Gfx8 71
-#define CSWavefrontsPublicDX12Gfx8 72
-#define CSThreadsPublicDX12Gfx8 73
-#define CSVALUInstsPublicDX12Gfx8 74
-#define CSVALUUtilizationPublicDX12Gfx8 75
-#define CSSALUInstsPublicDX12Gfx8 76
-#define CSVFetchInstsPublicDX12Gfx8 77
-#define CSSFetchInstsPublicDX12Gfx8 78
-#define CSVWriteInstsPublicDX12Gfx8 79
-#define CSFlatVMemInstsPublicDX12Gfx8 80
-#define CSVALUBusyPublicDX12Gfx8 81
-#define CSVALUBusyCyclesPublicDX12Gfx8 82
-#define CSSALUBusyPublicDX12Gfx8 83
-#define CSSALUBusyCyclesPublicDX12Gfx8 84
-#define CSMemUnitBusyPublicDX12Gfx8 85
-#define CSMemUnitBusyCyclesPublicDX12Gfx8 86
-#define CSMemUnitStalledPublicDX12Gfx8 87
-#define CSMemUnitStalledCyclesPublicDX12Gfx8 88
-#define CSWriteUnitStalledPublicDX12Gfx8 89
-#define CSWriteUnitStalledCyclesPublicDX12Gfx8 90
-#define CSGDSInstsPublicDX12Gfx8 91
-#define CSLDSInstsPublicDX12Gfx8 92
-#define CSFlatLDSInstsPublicDX12Gfx8 93
-#define CSALUStalledByLDSPublicDX12Gfx8 94
-#define CSALUStalledByLDSCyclesPublicDX12Gfx8 95
-#define CSLDSBankConflictPublicDX12Gfx8 96
-#define CSLDSBankConflictCyclesPublicDX12Gfx8 97
-#define TexUnitBusyPublicDX12Gfx8 98
-#define TexUnitBusyCyclesPublicDX12Gfx8 99
-#define TexTriFilteringPctPublicDX12Gfx8 100
-#define TexTriFilteringCountPublicDX12Gfx8 101
-#define NoTexTriFilteringCountPublicDX12Gfx8 102
-#define TexVolFilteringPctPublicDX12Gfx8 103
-#define TexVolFilteringCountPublicDX12Gfx8 104
-#define NoTexVolFilteringCountPublicDX12Gfx8 105
-#define TexAveAnisotropyPublicDX12Gfx8 106
-#define DepthStencilTestBusyPublicDX12Gfx8 107
-#define DepthStencilTestBusyCountPublicDX12Gfx8 108
-#define HiZTilesAcceptedPublicDX12Gfx8 109
-#define HiZTilesAcceptedCountPublicDX12Gfx8 110
-#define HiZTilesRejectedCountPublicDX12Gfx8 111
-#define PreZTilesDetailCulledPublicDX12Gfx8 112
-#define PreZTilesDetailCulledCountPublicDX12Gfx8 113
-#define PreZTilesDetailSurvivingCountPublicDX12Gfx8 114
-#define HiZQuadsCulledPublicDX12Gfx8 115
-#define HiZQuadsCulledCountPublicDX12Gfx8 116
-#define HiZQuadsAcceptedCountPublicDX12Gfx8 117
-#define PreZQuadsCulledPublicDX12Gfx8 118
-#define PreZQuadsCulledCountPublicDX12Gfx8 119
-#define PreZQuadsSurvivingCountPublicDX12Gfx8 120
-#define PostZQuadsPublicDX12Gfx8 121
-#define PostZQuadCountPublicDX12Gfx8 122
-#define PreZSamplesPassingPublicDX12Gfx8 123
-#define PreZSamplesFailingSPublicDX12Gfx8 124
-#define PreZSamplesFailingZPublicDX12Gfx8 125
-#define PostZSamplesPassingPublicDX12Gfx8 126
-#define PostZSamplesFailingSPublicDX12Gfx8 127
-#define PostZSamplesFailingZPublicDX12Gfx8 128
-#define ZUnitStalledPublicDX12Gfx8 129
-#define ZUnitStalledCyclesPublicDX12Gfx8 130
-#define DBMemReadPublicDX12Gfx8 131
-#define DBMemWrittenPublicDX12Gfx8 132
-#define CBMemReadPublicDX12Gfx8 133
-#define CBColorAndMaskReadPublicDX12Gfx8 134
-#define CBMemWrittenPublicDX12Gfx8 135
-#define CBColorAndMaskWrittenPublicDX12Gfx8 136
-#define CBSlowPixelPctPublicDX12Gfx8 137
-#define CBSlowPixelCountPublicDX12Gfx8 138
-#define FetchSizePublicDX12Gfx8 139
-#define WriteSizePublicDX12Gfx8 140
-#define CacheHitPublicDX12Gfx8 141
-#define CacheMissPublicDX12Gfx8 142
-#define CacheHitCountPublicDX12Gfx8 143
-#define CacheMissCountPublicDX12Gfx8 144
-#define MemUnitBusyPublicDX12Gfx8 145
-#define MemUnitBusyCyclesPublicDX12Gfx8 146
-#define MemUnitStalledPublicDX12Gfx8 147
-#define MemUnitStalledCyclesPublicDX12Gfx8 148
-#define WriteUnitStalledPublicDX12Gfx8 149
-#define WriteUnitStalledCyclesPublicDX12Gfx8 150
+#define GPUTIME_PUBLIC_DX12_GFX8 0
+#define EXECUTIONDURATION_PUBLIC_DX12_GFX8 1
+#define EXECUTIONSTART_PUBLIC_DX12_GFX8 2
+#define EXECUTIONEND_PUBLIC_DX12_GFX8 3
+#define GPUBUSY_PUBLIC_DX12_GFX8 4
+#define GPUBUSYCYCLES_PUBLIC_DX12_GFX8 5
+#define TESSELLATORBUSY_PUBLIC_DX12_GFX8 6
+#define TESSELLATORBUSYCYCLES_PUBLIC_DX12_GFX8 7
+#define VSBUSY_PUBLIC_DX12_GFX8 8
+#define VSBUSYCYCLES_PUBLIC_DX12_GFX8 9
+#define VSTIME_PUBLIC_DX12_GFX8 10
+#define HSBUSY_PUBLIC_DX12_GFX8 11
+#define HSBUSYCYCLES_PUBLIC_DX12_GFX8 12
+#define HSTIME_PUBLIC_DX12_GFX8 13
+#define DSBUSY_PUBLIC_DX12_GFX8 14
+#define DSBUSYCYCLES_PUBLIC_DX12_GFX8 15
+#define DSTIME_PUBLIC_DX12_GFX8 16
+#define GSBUSY_PUBLIC_DX12_GFX8 17
+#define GSBUSYCYCLES_PUBLIC_DX12_GFX8 18
+#define GSTIME_PUBLIC_DX12_GFX8 19
+#define PSBUSY_PUBLIC_DX12_GFX8 20
+#define PSBUSYCYCLES_PUBLIC_DX12_GFX8 21
+#define PSTIME_PUBLIC_DX12_GFX8 22
+#define CSBUSY_PUBLIC_DX12_GFX8 23
+#define CSBUSYCYCLES_PUBLIC_DX12_GFX8 24
+#define CSTIME_PUBLIC_DX12_GFX8 25
+#define VSVERTICESIN_PUBLIC_DX12_GFX8 26
+#define VSVALUINSTCOUNT_PUBLIC_DX12_GFX8 27
+#define VSSALUINSTCOUNT_PUBLIC_DX12_GFX8 28
+#define VSVALUBUSY_PUBLIC_DX12_GFX8 29
+#define VSVALUBUSYCYCLES_PUBLIC_DX12_GFX8 30
+#define VSSALUBUSY_PUBLIC_DX12_GFX8 31
+#define VSSALUBUSYCYCLES_PUBLIC_DX12_GFX8 32
+#define HSPATCHES_PUBLIC_DX12_GFX8 33
+#define HSVALUINSTCOUNT_PUBLIC_DX12_GFX8 34
+#define HSSALUINSTCOUNT_PUBLIC_DX12_GFX8 35
+#define HSVALUBUSY_PUBLIC_DX12_GFX8 36
+#define HSVALUBUSYCYCLES_PUBLIC_DX12_GFX8 37
+#define HSSALUBUSY_PUBLIC_DX12_GFX8 38
+#define HSSALUBUSYCYCLES_PUBLIC_DX12_GFX8 39
+#define DSVERTICESIN_PUBLIC_DX12_GFX8 40
+#define DSVALUINSTCOUNT_PUBLIC_DX12_GFX8 41
+#define DSSALUINSTCOUNT_PUBLIC_DX12_GFX8 42
+#define DSVALUBUSY_PUBLIC_DX12_GFX8 43
+#define DSVALUBUSYCYCLES_PUBLIC_DX12_GFX8 44
+#define DSSALUBUSY_PUBLIC_DX12_GFX8 45
+#define DSSALUBUSYCYCLES_PUBLIC_DX12_GFX8 46
+#define GSPRIMSIN_PUBLIC_DX12_GFX8 47
+#define GSVERTICESOUT_PUBLIC_DX12_GFX8 48
+#define GSVALUINSTCOUNT_PUBLIC_DX12_GFX8 49
+#define GSSALUINSTCOUNT_PUBLIC_DX12_GFX8 50
+#define GSVALUBUSY_PUBLIC_DX12_GFX8 51
+#define GSVALUBUSYCYCLES_PUBLIC_DX12_GFX8 52
+#define GSSALUBUSY_PUBLIC_DX12_GFX8 53
+#define GSSALUBUSYCYCLES_PUBLIC_DX12_GFX8 54
+#define PRIMITIVEASSEMBLYBUSY_PUBLIC_DX12_GFX8 55
+#define PRIMITIVEASSEMBLYBUSYCYCLES_PUBLIC_DX12_GFX8 56
+#define PRIMITIVESIN_PUBLIC_DX12_GFX8 57
+#define CULLEDPRIMS_PUBLIC_DX12_GFX8 58
+#define CLIPPEDPRIMS_PUBLIC_DX12_GFX8 59
+#define PASTALLEDONRASTERIZER_PUBLIC_DX12_GFX8 60
+#define PASTALLEDONRASTERIZERCYCLES_PUBLIC_DX12_GFX8 61
+#define PSPIXELSOUT_PUBLIC_DX12_GFX8 62
+#define PSEXPORTSTALLS_PUBLIC_DX12_GFX8 63
+#define PSEXPORTSTALLSCYCLES_PUBLIC_DX12_GFX8 64
+#define PSVALUINSTCOUNT_PUBLIC_DX12_GFX8 65
+#define PSSALUINSTCOUNT_PUBLIC_DX12_GFX8 66
+#define PSVALUBUSY_PUBLIC_DX12_GFX8 67
+#define PSVALUBUSYCYCLES_PUBLIC_DX12_GFX8 68
+#define PSSALUBUSY_PUBLIC_DX12_GFX8 69
+#define PSSALUBUSYCYCLES_PUBLIC_DX12_GFX8 70
+#define CSTHREADGROUPS_PUBLIC_DX12_GFX8 71
+#define CSWAVEFRONTS_PUBLIC_DX12_GFX8 72
+#define CSTHREADS_PUBLIC_DX12_GFX8 73
+#define CSVALUINSTS_PUBLIC_DX12_GFX8 74
+#define CSVALUUTILIZATION_PUBLIC_DX12_GFX8 75
+#define CSSALUINSTS_PUBLIC_DX12_GFX8 76
+#define CSVFETCHINSTS_PUBLIC_DX12_GFX8 77
+#define CSSFETCHINSTS_PUBLIC_DX12_GFX8 78
+#define CSVWRITEINSTS_PUBLIC_DX12_GFX8 79
+#define CSFLATVMEMINSTS_PUBLIC_DX12_GFX8 80
+#define CSVALUBUSY_PUBLIC_DX12_GFX8 81
+#define CSVALUBUSYCYCLES_PUBLIC_DX12_GFX8 82
+#define CSSALUBUSY_PUBLIC_DX12_GFX8 83
+#define CSSALUBUSYCYCLES_PUBLIC_DX12_GFX8 84
+#define CSMEMUNITBUSY_PUBLIC_DX12_GFX8 85
+#define CSMEMUNITBUSYCYCLES_PUBLIC_DX12_GFX8 86
+#define CSMEMUNITSTALLED_PUBLIC_DX12_GFX8 87
+#define CSMEMUNITSTALLEDCYCLES_PUBLIC_DX12_GFX8 88
+#define CSWRITEUNITSTALLED_PUBLIC_DX12_GFX8 89
+#define CSWRITEUNITSTALLEDCYCLES_PUBLIC_DX12_GFX8 90
+#define CSGDSINSTS_PUBLIC_DX12_GFX8 91
+#define CSLDSINSTS_PUBLIC_DX12_GFX8 92
+#define CSFLATLDSINSTS_PUBLIC_DX12_GFX8 93
+#define CSALUSTALLEDBYLDS_PUBLIC_DX12_GFX8 94
+#define CSALUSTALLEDBYLDSCYCLES_PUBLIC_DX12_GFX8 95
+#define CSLDSBANKCONFLICT_PUBLIC_DX12_GFX8 96
+#define CSLDSBANKCONFLICTCYCLES_PUBLIC_DX12_GFX8 97
+#define TEXUNITBUSY_PUBLIC_DX12_GFX8 98
+#define TEXUNITBUSYCYCLES_PUBLIC_DX12_GFX8 99
+#define TEXTRIFILTERINGPCT_PUBLIC_DX12_GFX8 100
+#define TEXTRIFILTERINGCOUNT_PUBLIC_DX12_GFX8 101
+#define NOTEXTRIFILTERINGCOUNT_PUBLIC_DX12_GFX8 102
+#define TEXVOLFILTERINGPCT_PUBLIC_DX12_GFX8 103
+#define TEXVOLFILTERINGCOUNT_PUBLIC_DX12_GFX8 104
+#define NOTEXVOLFILTERINGCOUNT_PUBLIC_DX12_GFX8 105
+#define TEXAVEANISOTROPY_PUBLIC_DX12_GFX8 106
+#define DEPTHSTENCILTESTBUSY_PUBLIC_DX12_GFX8 107
+#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_DX12_GFX8 108
+#define HIZTILESACCEPTED_PUBLIC_DX12_GFX8 109
+#define HIZTILESACCEPTEDCOUNT_PUBLIC_DX12_GFX8 110
+#define HIZTILESREJECTEDCOUNT_PUBLIC_DX12_GFX8 111
+#define PREZTILESDETAILCULLED_PUBLIC_DX12_GFX8 112
+#define PREZTILESDETAILCULLEDCOUNT_PUBLIC_DX12_GFX8 113
+#define PREZTILESDETAILSURVIVINGCOUNT_PUBLIC_DX12_GFX8 114
+#define HIZQUADSCULLED_PUBLIC_DX12_GFX8 115
+#define HIZQUADSCULLEDCOUNT_PUBLIC_DX12_GFX8 116
+#define HIZQUADSACCEPTEDCOUNT_PUBLIC_DX12_GFX8 117
+#define PREZQUADSCULLED_PUBLIC_DX12_GFX8 118
+#define PREZQUADSCULLEDCOUNT_PUBLIC_DX12_GFX8 119
+#define PREZQUADSSURVIVINGCOUNT_PUBLIC_DX12_GFX8 120
+#define POSTZQUADS_PUBLIC_DX12_GFX8 121
+#define POSTZQUADCOUNT_PUBLIC_DX12_GFX8 122
+#define PREZSAMPLESPASSING_PUBLIC_DX12_GFX8 123
+#define PREZSAMPLESFAILINGS_PUBLIC_DX12_GFX8 124
+#define PREZSAMPLESFAILINGZ_PUBLIC_DX12_GFX8 125
+#define POSTZSAMPLESPASSING_PUBLIC_DX12_GFX8 126
+#define POSTZSAMPLESFAILINGS_PUBLIC_DX12_GFX8 127
+#define POSTZSAMPLESFAILINGZ_PUBLIC_DX12_GFX8 128
+#define ZUNITSTALLED_PUBLIC_DX12_GFX8 129
+#define ZUNITSTALLEDCYCLES_PUBLIC_DX12_GFX8 130
+#define DBMEMREAD_PUBLIC_DX12_GFX8 131
+#define DBMEMWRITTEN_PUBLIC_DX12_GFX8 132
+#define CBMEMREAD_PUBLIC_DX12_GFX8 133
+#define CBCOLORANDMASKREAD_PUBLIC_DX12_GFX8 134
+#define CBMEMWRITTEN_PUBLIC_DX12_GFX8 135
+#define CBCOLORANDMASKWRITTEN_PUBLIC_DX12_GFX8 136
+#define CBSLOWPIXELPCT_PUBLIC_DX12_GFX8 137
+#define CBSLOWPIXELCOUNT_PUBLIC_DX12_GFX8 138
+#define FETCHSIZE_PUBLIC_DX12_GFX8 139
+#define WRITESIZE_PUBLIC_DX12_GFX8 140
+#define CACHEHIT_PUBLIC_DX12_GFX8 141
+#define CACHEMISS_PUBLIC_DX12_GFX8 142
+#define CACHEHITCOUNT_PUBLIC_DX12_GFX8 143
+#define CACHEMISSCOUNT_PUBLIC_DX12_GFX8 144
+#define MEMUNITBUSY_PUBLIC_DX12_GFX8 145
+#define MEMUNITBUSYCYCLES_PUBLIC_DX12_GFX8 146
+#define MEMUNITSTALLED_PUBLIC_DX12_GFX8 147
+#define MEMUNITSTALLEDCYCLES_PUBLIC_DX12_GFX8 148
+#define WRITEUNITSTALLED_PUBLIC_DX12_GFX8 149
+#define WRITEUNITSTALLEDCYCLES_PUBLIC_DX12_GFX8 150
 
-/// Number of public counters for DX12Gfx8
-const size_t DX12GFX8_PUBLIC_COUNTER_COUNT = 151;
+/// Number of public counters for DX12 GFX8 
+const size_t kDx12Gfx8PublicCounterCount = 151;
 
-/// Array of public counters for DX12Gfx8
-extern const GPACounterDesc DX12GFX8_PUBLIC_COUNTERS[DX12GFX8_PUBLIC_COUNTER_COUNT];
+/// Array of public counters for DX12 GFX8 
+extern const GpaCounterDesc kDx12Gfx8PublicCounters[kDx12Gfx8PublicCounterCount];
 
-#endif  // _GPA_TESTS_COUNTERS_PUBLIC_DX12GFX8_
+#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX12_GFX8

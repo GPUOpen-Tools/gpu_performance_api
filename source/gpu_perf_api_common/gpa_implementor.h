@@ -1,129 +1,145 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Common GPA Implementation declarations
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Common GPA Implementation declarations
 //==============================================================================
 
-#ifndef _GPA_IMPLEMENTOR_H_
-#define _GPA_IMPLEMENTOR_H_
+#ifndef GPU_PERF_API_COMMON_GPA_IMPLEMENTOR_H_
+#define GPU_PERF_API_COMMON_GPA_IMPLEMENTOR_H_
 
-// std
 #include <mutex>
 
-// GPA Common
-#include "gpa_implementor_interface.h"
-#include "gpa_context_interface.h"
+#include "gpu_perf_api_common/gpa_context_interface.h"
+#include "gpu_perf_api_common/gpa_implementor_interface.h"
 
-using GPAContextInfoPtr                 = void*;                                         ///< type alias for context info pointer
-using GPADeviceIdentifier               = void*;                                         ///< type alias for API-specific device identifier
-using GPADeviceIdentifierGPAContextPair = std::pair<GPADeviceIdentifier, IGPAContext*>;  ///< type alias for application and GPA context pair
-using GPADeviceIdentifierGPAContextMap  = std::map<GPADeviceIdentifier, IGPAContext*>;   ///< type alias for application and GPA context map
+using GpaContextInfoPtr                 = void*;                                         ///< Type alias for context info pointer.
+using GpaDeviceIdentifier               = void*;                                         ///< Type alias for API-specific device identifier.
+using GpaDeviceIdentifierGpaContextPair = std::pair<GpaDeviceIdentifier, IGpaContext*>;  ///< Type alias for application and GPA context pair.
+using GpaDeviceIdentifierGpaContextMap  = std::map<GpaDeviceIdentifier, IGpaContext*>;   ///< Type alias for application and GPA context map.
 
-/// Class for common GPA Implementation
-class GPAImplementor : public IGPAImplementor
+/// @brief Class for common GPA Implementation.
+class GpaImplementor : public IGpaImplementor
 {
 public:
-    /// Constructor
-    GPAImplementor();
+    /// @brief Constructor.
+    GpaImplementor();
 
-    /// Destructor
-    virtual ~GPAImplementor() = default;
+    /// @brief Virtual Destructor.
+    virtual ~GpaImplementor() = default;
 
-    /// \copydoc IGPAImplementor::Initialize()
-    GPA_Status Initialize(GPA_InitializeFlags flags) override;
+    /// @copydoc IGpaImplementor::Initialize()
+    GpaStatus Initialize(GpaInitializeFlags flags) override;
 
-    /// \copydoc IGPAImplementor::Destroy()
-    GPA_Status Destroy() override;
+    /// @copydoc IGpaImplementor::Destroy()
+    GpaStatus Destroy() override;
 
-    /// \copydoc IGPAImplementor::OpenContext()
-    GPA_Status OpenContext(void* pContext, GPA_OpenContextFlags flags, GPA_ContextId* pContextId) override;
+    /// @copydoc IGpaImplementor::OpenContext()
+    GpaStatus OpenContext(void* context, GpaOpenContextFlags flags, GpaContextId* gpa_context_id) override;
 
-    /// \copydoc IGPAImplementor::CloseContext()
-    GPA_Status CloseContext(GPA_ContextId contextId) override;
+    /// @copydoc IGpaImplementor::CloseContext()
+    GpaStatus CloseContext(GpaContextId gpa_context_id) override;
 
-    /// \copydoc IGPAImplementor::ObjectType()
-    GPAObjectType ObjectType() const override;
+    /// @copydoc IGpaImplementor::ObjectType()
+    GpaObjectType ObjectType() const override;
 
-    /// \copydoc IGPAImplementor::DoesContextExist()
-    bool DoesContextExist(GPA_ContextId contextId) const override;
+    /// @copydoc IGpaImplementor::DoesContextExist()
+    bool DoesContextExist(GpaContextId gpa_context_id) const override;
 
-    /// \copydoc IGPAImplementor::DoesSessionExist()
-    bool DoesSessionExist(GPA_SessionId sessionId) const override;
+    /// @copydoc IGpaImplementor::DoesSessionExist()
+    bool DoesSessionExist(GpaSessionId gpa_session_id) const override;
 
-    /// \copydoc IGPAImplementor::DoesCommandListExist()
-    bool DoesCommandListExist(GPA_CommandListId commandListId) const override;
+    /// @copydoc IGpaImplementor::DoesCommandListExist()
+    bool DoesCommandListExist(GpaCommandListId command_list_id) const override;
 
-    /// \copydoc IGPAImplementor::GetInitializeFlags()
-    GPA_InitializeFlags GetInitializeFlags() const override;
+    /// @copydoc IGpaImplementor::GetInitializeFlags()
+    GpaInitializeFlags GetInitializeFlags() const override;
 
-    /// \copydoc IGPAImplementor::IsCommandListRequired()
+    /// @copydoc IGpaImplementor::IsCommandListRequired()
     bool IsCommandListRequired() const override;
 
-    /// \copydoc IGPAImplementor::IsContinueSampleOnCommandListSupported()
+    /// @copydoc IGpaImplementor::IsContinueSampleOnCommandListSupported()
     bool IsContinueSampleOnCommandListSupported() const override;
 
-    /// \copydoc IGPAImplementor::IsCopySecondarySampleSupported()
+    /// @copydoc IGpaImplementor::IsCopySecondarySampleSupported()
     bool IsCopySecondarySampleSupported() const override;
 
 protected:
-    /// Checks whether the device is supported
-    /// \param[in] pContextInfo context info pointer
-    /// \param[out] pHwInfo hardware information if device is supported
-    /// \return GPA_STATUS_OK if operation is successful
-    GPA_Status IsDeviceSupported(GPAContextInfoPtr pContextInfo, GPA_HWInfo* pHwInfo) const;
+    /// @brief Checks whether the device is supported.
+    ///
+    /// @param [in] context_info Context info pointer.
+    /// @param [out] hw_info Hardware information if device is supported.
+    ///
+    /// @return kGpaStatusOk if operation is successful.
+    GpaStatus IsDeviceSupported(GpaContextInfoPtr context_info, GpaHwInfo* hw_info) const;
 
-    /// Gets the API level hardware info
-    /// \param[in] pContextInfo context info pointer
-    /// \param[out] hwInfo hardware info
-    /// \return true if operation is successful otherwise false
-    virtual bool GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const = 0;
+    /// @brief Gets the API level hardware info.
+    ///
+    /// @param [in] context_info Context info pointer.
+    /// @param [out] hw_info Hardware info.
+    ///
+    /// @return True if operation is successful otherwise false.
+    virtual bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const = 0;
 
-    /// Compares two hardware info objects
-    /// \param[in] first first hardware info
-    /// \param[in] second second hardware info
-    /// \return true if the hardware info objects are identical, otherwise false
-    virtual bool CompareHwInfo(const GPA_HWInfo& first, const GPA_HWInfo& second) const;
+    /// @brief Compares two hardware info objects.
+    ///
+    /// @param [in] first First hardware info.
+    /// @param [in] second Second hardware info.
+    ///
+    /// @return True if the hardware info objects are identical, otherwise false.
+    virtual bool CompareHwInfo(const GpaHwInfo& first, const GpaHwInfo& second) const;
 
-    /// Verifies the API level hardware support
-    /// \param[in] pContextInfo context info object pointer
-    /// \param[in] hwInfo hardware info
-    /// \return true if API supports the hardware otherwise false
-    virtual bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const = 0;
+    /// @brief Verifies the API level hardware support.
+    ///
+    /// @param [in] context_info Context info object pointer.
+    /// @param [in] hw_info Hardware info.
+    ///
+    /// @return True if API supports the hardware otherwise false.
+    virtual bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const = 0;
 
-    /// Checks whether the context info exists or not
-    /// \param[in] pContextInfo context info pointer
-    /// \return true if context exist otherwise false
-    bool DoesContextInfoExist(GPAContextInfoPtr pContextInfo) const;
+    /// @brief Checks whether the context info exists or not.
+    ///
+    /// @param [in] context_info Context info pointer.
+    ///
+    /// @return True if context exist otherwise false.
+    bool DoesContextInfoExist(GpaContextInfoPtr context_info) const;
 
 private:
-    /// Performs the API-specific tasks needed to open a context
-    /// \param[in] pContextInfo context info pointer
-    /// \param[in] hwInfo hardware info
-    /// \param[in] flags context flags
-    /// \return IGPAContext pointer if operation is successful otherwise nullptr
-    virtual IGPAContext* OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags) = 0;
+    /// @brief Performs the API-specific tasks needed to open a context.
+    ///
+    /// @param [in] context_info Context info pointer.
+    /// @param [out] hw_info Hardware info.
+    /// @param [in] flags Context flags.
+    ///
+    /// @return IGpaContext pointer if operation is successful otherwise nullptr.
+    virtual IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags) = 0;
 
-    /// Performs the API-specific tasks needed to close the context and release the relevant resources
-    /// \param[in] pDeviceIdentifier API-Specific device identifier
-    /// \param[in] pContext context object pointer
-    /// \return true if closing of the context was successful otherwise false
-    virtual bool CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pContext) = 0;
+    /// @brief Performs the API-specific tasks needed to close the context and release the relevant resources.
+    ///
+    /// @param [in] device_identifier API-Specific device identifier.
+    /// @param [in] gpa_context Context object pointer.
+    ///
+    /// @return True if closing of the context was successful otherwise false.
+    virtual bool CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* gpa_context) = 0;
 
-    /// Returns the API specific device identifier
-    /// \param[in] pContextInfo pointer to context info
-    /// \return device identifier for the passed context info
-    virtual GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const = 0;
+    /// @brief Returns the API specific device identifier.
+    ///
+    /// @param [in] context_info Pointer to context info.
+    ///
+    /// @return Device identifier for the passed context info.
+    virtual GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const = 0;
 
-    /// Returns whether the device generation is supported or not
-    /// \param[in] hwInfo hardware information
-    /// \return true if device generation is supported otherwise false
-    bool IsDeviceGenerationSupported(const GPA_HWInfo& hwInfo) const;
+    /// @brief Returns whether the device generation is supported or not.
+    ///
+    /// @param [in] hw_info Hardware information.
+    ///
+    /// @return True if device generation is supported otherwise false.
+    bool IsDeviceGenerationSupported(const GpaHwInfo& hw_info) const;
 
-    mutable std::mutex               m_deviceGpaContextMapMutex;     ///< mutex for context manager
-    GPADeviceIdentifierGPAContextMap m_appContextInfoGpaContextMap;  ///< map of application context info and GPA context
-    bool                             m_isInitialized;                ///< flag indicating if GPA has been initialized or not
-    GPA_InitializeFlags              m_initFlags;                    ///< flags specified when initializing GPA
+    mutable std::mutex               device_gpa_context_map_mutex_;      ///< Mutex for context manager.
+    GpaDeviceIdentifierGpaContextMap app_context_info_gpa_context_map_;  ///< Map of application context info and GPA context.
+    bool                             is_initialized_;                    ///< Flag indicating if GPA has been initialized or not.
+    GpaInitializeFlags               init_flags_;                        ///< Flags specified when initializing GPA.
 };
 
-#endif  // _GPA_IMPLEMENTOR_H_
+#endif  // GPU_PERF_API_COMMON_GPA_IMPLEMENTOR_H_

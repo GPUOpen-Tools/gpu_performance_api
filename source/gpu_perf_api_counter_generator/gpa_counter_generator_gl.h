@@ -1,81 +1,85 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Class for GL counter generation
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Class for GL counter generation.
 //==============================================================================
 
-#ifndef _GPA_COUNTER_GENERATOR_GL_H_
-#define _GPA_COUNTER_GENERATOR_GL_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_GL_GPA_COUNTER_GENERATOR_GL_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_GL_GPA_COUNTER_GENERATOR_GL_H_
 
-#include "gpa_counter_generator_base.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
 
-/// The OpenGL-specific counter generator
-class GPA_CounterGeneratorGL : public GPA_CounterGeneratorBase
+/// @brief The OpenGL-specific counter generator.
+class GpaCounterGeneratorGl : public GpaCounterGeneratorBase
 {
 public:
-    /// Constructor
-    GPA_CounterGeneratorGL();
+    /// @brief Constructor.
+    GpaCounterGeneratorGl();
 
-    //Destructor
-    virtual ~GPA_CounterGeneratorGL();
+    /// @brief Virtual destructor.
+    virtual ~GpaCounterGeneratorGl();
 
 protected:
-    /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
-    GPA_Status GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
-                                      GDT_HW_ASIC_TYPE     asicType,
-                                      gpa_uint8            generateAsicSpecificCounters,
-                                      GPA_DerivedCounters* pPublicCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
+    GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
+                                     GDT_HW_ASIC_TYPE    asic_type,
+                                     GpaUInt8            generate_asic_specific_counters,
+                                     GpaDerivedCounters* public_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
-    GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                        GDT_HW_ASIC_TYPE      asicType,
-                                        gpa_uint8             generateAsicSpecificCounters,
-                                        GPA_HardwareCounters* pHardwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
+    GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
+                                       GDT_HW_ASIC_TYPE     asic_type,
+                                       GpaUInt8             generate_asic_specific_counters,
+                                       GpaHardwareCounters* hardware_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateSoftwareCounters
-    GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                        GDT_HW_ASIC_TYPE      asicType,
-                                        gpa_uint8             generateAsicSpecificCounters,
-                                        GPA_SoftwareCounters* pSoftwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateSoftwareCounters()
+    GpaStatus GenerateSoftwareCounters(GDT_HW_GENERATION    desired_generation,
+                                       GDT_HW_ASIC_TYPE     asic_type,
+                                       GpaUInt8             generate_asic_specific_counters,
+                                       GpaSoftwareCounters* software_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareExposedCounters
-    GPA_Status GenerateHardwareExposedCounters(GDT_HW_GENERATION     desiredGeneration,
-                                               GDT_HW_ASIC_TYPE      asicType,
-                                               gpa_uint8             generateAsicSpecificCounters,
-                                               GPA_HardwareCounters* pHardwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateHardwareExposedCounters()
+    GpaStatus GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
+                                              GDT_HW_ASIC_TYPE     asic_type,
+                                              GpaUInt8             generate_asic_specific_counters,
+                                              GpaHardwareCounters* hardware_counters) override;
 
 #ifdef AMDT_INTERNAL
-    /// \copydoc GPA_CounterGeneratorBase::GenerateInternalDerivedCounters
-    GPA_Status GenerateInternalDerivedCounters(GDT_HW_GENERATION    desiredGeneration,
-                                               GDT_HW_ASIC_TYPE     asicType,
-                                               gpa_uint8            generateAsicSpecificCounters,
-                                               GPA_DerivedCounters* pPublicCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateInternalDerivedCounters()
+    GpaStatus GenerateInternalDerivedCounters(GDT_HW_GENERATION   desired_generation,
+                                              GDT_HW_ASIC_TYPE    asic_type,
+                                              GpaUInt8            generate_asic_specific_counters,
+                                              GpaDerivedCounters* public_counters) override;
 #endif
 
 private:
-    /// Helper function to generate the driver-supplied counters
-    /// \param pHardwareCounters the list of hardware counters to augment with the driver-supplied counters
-    /// \return true on success, false on failure
-    bool GenerateDriverSuppliedInternalCounters(GPA_HardwareCounters* pHardwareCounters);
+    /// @brief Helper function to generate the driver-supplied counters.
+    ///
+    /// @param [in] hardware_counters The list of hardware counters to augment with the driver-supplied counters.
+    ///
+    /// @return True on success, false on failure.
+    bool GenerateDriverSuppliedInternalCounters(GpaHardwareCounters* hardware_counters);
 
-    /// Helper function to generate the internal counters
-    /// \param pHardwareCounters the list of hardware counters to augment with the driver-supplied counters
-    /// \param generation the hardware generation whose internal counters are needed
-    /// \return true on success, false on failure
-    GPA_Status GenerateInternalCounters(GPA_HardwareCounters* pHardwareCounters, GDT_HW_GENERATION generation);
+    /// @brief Helper function to generate the internal counters.
+    ///
+    /// @param [in] hardware_counters The list of hardware counters to augment with the driver-supplied counters.
+    /// @param [in] generation the hardware generation whose internal counters are needed.
+    ///
+    /// @return True on success, false on failure.
+    GpaStatus GenerateInternalCounters(GpaHardwareCounters* hardware_counters, GDT_HW_GENERATION generation);
 
-    /// Helper function to cleanup and release memory
+    /// @brief Helper function to cleanup and release memory.
     void Cleanup();
 
-    GPA_CounterGroupDesc*                   m_pDriverSuppliedGroups;     ///< driver-supplied counter groups
-    unsigned int                            m_driverSuppliedGroupCount;  ///< number of driver-supplied counter groups
-    std::vector<GPA_HardwareCounterDescExt> m_driverSuppliedCounters;    ///< list of driver-supplied counters
+    GpaCounterGroupDesc*                   driver_supplied_groups_;        ///< Driver-supplied counter groups.
+    unsigned int                           driver_supplied_groups_count_;  ///< Number of driver-supplied counter groups.
+    std::vector<GpaHardwareCounterDescExt> driver_supplied_counters_;      ///< List of driver-supplied counters.
 
-    // the following vectors are used to track and free allocated memory
-    std::vector<GPA_CounterGroupDesc*>    m_counterGroupDescs;     ///< allocated GPA_CounterGroupDescs
-    std::vector<GPA_HardwareCounterDesc*> m_hardwareCounterDescs;  ///< allocated GPA_HardwareCounterDescs
-    std::vector<char*>                    m_counterBuffers;        ///< allocated driver supplied counter buffers
+    // The following vectors are used to track and free allocated memory.
+    std::vector<GpaCounterGroupDesc*>    counter_group_descs_;     ///< Allocated GpaCounterGroupDescs.
+    std::vector<GpaHardwareCounterDesc*> hardware_counter_descs_;  ///< Allocated GpaHardwareCounterDescs.
+    std::vector<char*>                   counter_buffers_;         ///< Allocated driver supplied counter buffers.
 };
 
-#endif  //_GPA_COUNTER_GENERATOR_GL_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_GL_GPA_COUNTER_GENERATOR_GL_H_

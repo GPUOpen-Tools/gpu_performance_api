@@ -1,115 +1,130 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Maintains a set of software counters
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Maintains a set of software counters.
 //==============================================================================
 
-#ifndef _GPA_SOFTWARE_COUNTERS_H_
-#define _GPA_SOFTWARE_COUNTERS_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SOFTWARE_COUNTERS_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SOFTWARE_COUNTERS_H_
 
 #include <sstream>
 
-#include "gpa_counter.h"
-#include "logging.h"
-#include "gpa_sw_counter_manager.h"
+#include "gpu_perf_api_common/logging.h"
 
+#include "gpu_perf_api_counter_generator/gpa_counter.h"
+#include "gpu_perf_api_counter_generator/gpa_sw_counter_manager.h"
 
-/// Struct to describe a software counter
-struct GPA_SoftwareCounterDescExt
+/// @brief Struct to describe a software counter.
+struct GpaSoftwareCounterDescExt
 {
-    gpa_uint32               m_groupIndex;        ///< index of group containing this counter
-    gpa_uint32               m_groupIdDriver;     ///< group ID according to the driver
-    gpa_uint32               m_counterIdDriver;   ///< counter ID according to the driver
-    GPA_SoftwareCounterDesc* m_pSoftwareCounter;  ///< the internal counter
+    GpaUInt32               group_index;            ///< Index of group containing this counter.
+    GpaUInt32               group_id_driver;        ///< Group ID according to the driver.
+    GpaUInt32               counter_id_driver;      ///< Counter ID according to the driver.
+    GpaSoftwareCounterDesc* software_counter_desc;  ///< The internal counter.
 };
 
-/// Maintains a set of software counters
-class GPA_SoftwareCounters
+/// @brief Maintains a set of software counters.
+class GpaSoftwareCounters
 {
 public:
-    /// Initializes an instance of the GPA_SoftwareCounters class.
-    GPA_SoftwareCounters()
+    /// @brief Initializes an instance of the GPA_SoftwareCounters class.
+    GpaSoftwareCounters()
     {
         Clear();
     }
 
-    /// Destructor
-    virtual ~GPA_SoftwareCounters()
+    /// @brief Virtual destructor.
+    virtual ~GpaSoftwareCounters()
     {
     }
 
-    /// Clears all counter data
+    /// @brief Clears all counter data.
     void Clear()
     {
-        m_counters.clear();
-        m_ppCounterGroupArray = nullptr;
-        m_pGroups             = nullptr;
-        m_groupCount          = 0;
-        m_countersGenerated   = false;
+        software_counter_list_.clear();
+        counter_group_array_ = nullptr;
+        counter_group_desc_  = nullptr;
+        group_count_         = 0;
+        counters_generated_  = false;
     }
 
-    /// Obtains the number of software counters
-    /// \return the number of software counters
-    gpa_uint32 GetNumCounters() const
+    /// @brief Obtains the number of software counters.
+    ///
+    /// @return The number of software counters.
+    GpaUInt32 GetNumCounters() const
     {
-        return static_cast<gpa_uint32>(m_counters.size());
+        return static_cast<GpaUInt32>(software_counter_list_.size());
     }
 
-    /// Gets the name of the specified counter
-    /// \param index the index of the counter whose name is needed
-    /// \return the name of the specified counter
-    const char* GetCounterName(gpa_uint32 index) const
+    /// @brief Gets the name of the specified counter.
+    ///
+    /// @param [in] index The index of the counter whose name is needed.
+    ///
+    /// @return The name of the specified counter.
+    const char* GetCounterName(GpaUInt32 index) const
     {
-        return m_counters[index].m_pSoftwareCounter->m_name;
+        return software_counter_list_[index].software_counter_desc->name;
     }
 
-    /// Gets the group name of the specified counter
-    /// \param index the index of the counter whose group is needed
-    /// \return the group name of the specified counter
-    const char* GetCounterGroup(gpa_uint32 index) const
+    /// @brief Gets the group name of the specified counter.
+    ///
+    /// @param [in] index The index of the counter whose group is needed.
+    ///
+    /// @return The group name of the specified counter.
+    const char* GetCounterGroup(GpaUInt32 index) const
     {
-        return m_counters[index].m_pSoftwareCounter->m_group;
+        return software_counter_list_[index].software_counter_desc->group;
     }
 
-    /// Gets the description of the specified counter
-    /// \param index the index of the counter whose description is needed
-    /// \return the description of the specified counter
-    const char* GetCounterDescription(gpa_uint32 index) const
+    /// @brief Gets the description of the specified counter.
+    ///
+    /// @param [in] index The index of the counter whose description is needed.
+    ///
+    /// @return The description of the specified counter.
+    const char* GetCounterDescription(GpaUInt32 index) const
     {
-        return m_counters[index].m_pSoftwareCounter->m_description;
+        return software_counter_list_[index].software_counter_desc->description;
     }
 
-    /// Gets a counter's UUID
-    /// \param index the index of the requested counter
-    /// \return the counter's UUID
-    GPA_UUID GetCounterUuid(gpa_uint32 index) const
+    /// @brief Gets a counter's UUID.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The counter's UUID.
+    GpaUuid GetCounterUuid(GpaUInt32 index) const
     {
         return ::GetCounterUuid(GetCounterName(index), GetCounterDescription(index));
     }
 
-    /// Gets a counter's supported sample type
-    /// \param index the index of the requested counter
-    /// \return the counter's supported sample type
-    GPA_Counter_Sample_Type GetCounterSampleType(gpa_uint32 index) const
+    /// @brief Gets a counter's supported sample type.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The counter's supported sample type.
+    GpaCounterSampleType GetCounterSampleType(GpaUInt32 index) const
     {
         UNREFERENCED_PARAMETER(index);
-        return GPA_COUNTER_SAMPLE_TYPE_DISCRETE;  // all software counters are discrete counters
+
+        // All software counters are discrete counters.
+        return kGpaCounterSampleTypeDiscrete;
     }
 
-    /// Gets the type of the specified counter
-    /// \param index the index of the counter whose type is needed
-    /// \return the type of the specified counter
-    GPA_Data_Type GetCounterType(gpa_uint32 index) const
+    /// @brief Gets the type of the specified counter.
+    ///
+    /// @param [in] index The index of the counter whose type is needed.
+    ///
+    /// @return The type of the specified counter.
+    GpaDataType GetCounterType(GpaUInt32 index) const
     {
-        return m_counters[index].m_pSoftwareCounter->m_type;
+        return software_counter_list_[index].software_counter_desc->type;
     }
 
-    GPA_SoftwareCounterDesc**               m_ppCounterGroupArray;  ///< List of counter groups as defined by the list of counters in each group.
-    GPA_CounterGroupDesc*                   m_pGroups;              ///< List of internal counter groups
-    bool                                    m_countersGenerated;    ///< Indicates that the counters have been generated
-    std::vector<GPA_SoftwareCounterDescExt> m_counters;             ///< The list of software counters
-    unsigned int                            m_groupCount;           ///< The number of internal counter groups
+    GpaSoftwareCounterDesc**               counter_group_array_;    ///< List of counter groups as defined by the list of counters in each group.
+    GpaCounterGroupDesc*                   counter_group_desc_;     ///< List of internal counter groups.
+    bool                                   counters_generated_;     ///< Indicates that the counters have been generated.
+    std::vector<GpaSoftwareCounterDescExt> software_counter_list_;  ///< The list of software counters.
+    unsigned int                           group_count_;            ///< The number of internal counter groups.
 };
 
-#endif  //_GPA_SOFTWARE_COUNTERS_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SOFTWARE_COUNTERS_H_

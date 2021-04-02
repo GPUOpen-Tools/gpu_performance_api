@@ -1,73 +1,79 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Class for VK Base counter generation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Class for VK Base counter generation.
 //==============================================================================
 
-#ifndef _GPA_COUNTER_GENERATOR_VK_BASE_H_
-#define _GPA_COUNTER_GENERATOR_VK_BASE_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_VK_GPA_COUNTER_GENERATOR_VK_BASE_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_VK_GPA_COUNTER_GENERATOR_VK_BASE_H_
 
-#include "gpa_counter_generator_base.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
 
-/// The VK-specific counter generator
-class GPA_CounterGeneratorVKBase : public GPA_CounterGeneratorBase
+/// @brief The VK-specific counter generator.
+class GpaCounterGeneratorVkBase : public GpaCounterGeneratorBase
 {
 public:
-    /// Get the SW counter description for the given SW counter index
-    /// \return The SW counter description
-    /// \param[in] swCounterIndex The SW counter index
-    /// \param[out] swCounterDesc Software counter description
-    static bool GetSwCounterDesc(const gpa_uint32 swCounterIndex, GPA_SoftwareCounterDesc& swCounterDesc);
+    /// @brief Get the SW counter description for the given SW counter index.
+    ///
+    /// \param [in] sw_counter_index The SW counter index.
+    /// \param [out] sw_counter_desc Software counter description.
+    ///
+    /// \return The SW counter description.
+    static bool GetSwCounterDesc(const GpaUInt32 sw_counter_index, GpaSoftwareCounterDesc& sw_counter_desc);
 
-    /// Constructor
-    GPA_CounterGeneratorVKBase() = default;
+    /// @brief Constructor.
+    GpaCounterGeneratorVkBase() = default;
 
-    /// Destructor
-    virtual ~GPA_CounterGeneratorVKBase() = default;
+    /// @brief Virtual destructor.
+    virtual ~GpaCounterGeneratorVkBase() = default;
 
 protected:
-    /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
-    virtual GPA_Status GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
-                                              GDT_HW_ASIC_TYPE     asicType,
-                                              gpa_uint8            generateAsicSpecificCounters,
-                                              GPA_DerivedCounters* pPublicCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
+    virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
+                                             GDT_HW_ASIC_TYPE    asic_type,
+                                             GpaUInt8            generate_asic_specific_counters,
+                                             GpaDerivedCounters* public_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
-    virtual GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                GDT_HW_ASIC_TYPE      asicType,
-                                                gpa_uint8             generateAsicSpecificCounters,
-                                                GPA_HardwareCounters* pHardwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
+    virtual GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
+                                               GDT_HW_ASIC_TYPE     asic_type,
+                                               GpaUInt8             generate_asic_specific_counters,
+                                               GpaHardwareCounters* hardware_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateSoftwareCounters
-    virtual GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                GDT_HW_ASIC_TYPE      asicType,
-                                                gpa_uint8             generateAsicSpecificCounters,
-                                                GPA_SoftwareCounters* pSoftwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateSoftwareCounters()
+    virtual GpaStatus GenerateSoftwareCounters(GDT_HW_GENERATION    desired_generation,
+                                               GDT_HW_ASIC_TYPE     asic_type,
+                                               GpaUInt8             generate_asic_specific_counters,
+                                               GpaSoftwareCounters* software_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::ComputeSWCounterValue
-    virtual void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const override;
+    /// @copydoc GpaCounterGeneratorBase::ComputeSwCounterValue()
+    virtual void ComputeSwCounterValue(GpaUInt32 sw_counter_index, GpaUInt64 value, void* result, const GpaHwInfo* hw_info) const override;
 
 private:
-    static const GPA_SoftwareCounterDesc s_VKSWCounters[];     ///< VK SW counters list
-    static const size_t                  s_VKSWCountersCount;  ///< VK SW counter list size
-    /// Copy constructor - private override to prevent usage
-    GPA_CounterGeneratorVKBase(const GPA_CounterGeneratorVKBase&) = delete;
+    static const GpaSoftwareCounterDesc kVkSoftwareCounters[];     ///< VK SW counters list.
+    static const size_t                 kVkSoftwareCountersCount;  ///< VK SW counter list size.
 
-    /// Move constructor - private override to prevent usage
-    GPA_CounterGeneratorVKBase(GPA_CounterGeneratorVKBase&&) = delete;
+    /// @brief Copy constructor - private override to prevent usage.
+    GpaCounterGeneratorVkBase(const GpaCounterGeneratorVkBase&) = delete;
 
-    /// Copy operator - private override to prevent usage
-    /// \return reference to object
-    GPA_CounterGeneratorVKBase& operator=(const GPA_CounterGeneratorVKBase&) = delete;
+    /// @brief Move constructor - private override to prevent usage.
+    GpaCounterGeneratorVkBase(GpaCounterGeneratorVkBase&&) = delete;
 
-    /// Move operator - private override to prevent usage
-    /// \return reference to object
-    GPA_CounterGeneratorVKBase& operator=(GPA_CounterGeneratorVKBase&&) = delete;
+    /// @brief Copy operator - private override to prevent usage.
+    ///
+    /// @return Reference to object.
+    GpaCounterGeneratorVkBase& operator=(const GpaCounterGeneratorVkBase&) = delete;
 
-    /// Generate VK API software counters
-    /// \return GPA_STATUS_OK if generating counters succeeded, false if it failed
-    GPA_Status GenerateVKSoftwareCounters();
+    /// @brief Move operator - private override to prevent usage.
+    ///
+    /// @return Reference to object.
+    GpaCounterGeneratorVkBase& operator=(GpaCounterGeneratorVkBase&&) = delete;
+
+    /// @brief Generate VK API software counters.
+    ///
+    /// @return kGpaStatusOk if generating counters succeeded, false if it failed.
+    GpaStatus GenerateVKSoftwareCounters();
 };
 
-#endif  // _GPA_COUNTER_GENERATOR_VK_BASE_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_VK_GPA_COUNTER_GENERATOR_VK_BASE_H_

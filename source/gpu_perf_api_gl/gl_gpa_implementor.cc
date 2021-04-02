@@ -1,279 +1,279 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GL GPA Implementation
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GL GPA Implementation
 //==============================================================================
+
+#include "gpu_perf_api_gl/gl_gpa_implementor.h"
 
 #include <assert.h>
 
-#include <DeviceInfoUtils.h>
-#include "gl_entry_points.h"
-#include "asic_info.h"
-#include "gl_gpa_implementor.h"
-#include "gl_gpa_context.h"
+#include "DeviceInfoUtils.h"
 
-#include "gpa_counter_generator_gl.h"
-#include "gpa_counter_scheduler_gl.h"
+#include "gpu_perf_api_counter_generator/gl_entry_points.h"
 
-IGPAImplementor* s_pGpaImp = GLGPAImplementor::Instance();
-static GPA_CounterGeneratorGL s_generatorGL;  ///< static instance of GL generator
-static GPA_CounterSchedulerGL s_schedulerGL;  ///< static instance of GL scheduler
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_gl.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_scheduler_gl.h"
 
-GPA_API_Type GLGPAImplementor::GetAPIType() const
+#include "gpu_perf_api_gl/asic_info.h"
+#include "gpu_perf_api_gl/gl_gpa_context.h"
+
+IGpaImplementor*             gpa_imp = GlGpaImplementor::Instance();
+static GpaCounterGeneratorGl counter_generator_gl;  ///< Static instance of GL generator.
+static GpaCounterSchedulerGl counter_scheduler_gl;  ///< Static instance of GL scheduler.
+
+GpaApiType GlGpaImplementor::GetApiType() const
 {
-    return GPA_API_OPENGL;
+    return kGpaApiOpengl;
 }
 
-bool GLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const
+bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const
 {
-    UNREFERENCED_PARAMETER(pContextInfo);
+    UNREFERENCED_PARAMETER(context_info);
 
-    // get the entry points
-    m_isGlEntryPointsInitialized = oglUtils::InitializeGLFunctions();
+    // Get the entry points.
+    is_gl_entry_points_initialized_ = ogl_utils::InitializeGlFunctions();
 
-    if (!m_isGlEntryPointsInitialized)
+    if (!is_gl_entry_points_initialized_)
     {
-        GPA_LogError("Unable to initialize essential GL functions.");
-        return m_isGlEntryPointsInitialized;
+        GPA_LOG_ERROR("Unable to initialize essential GL functions.");
+        return is_gl_entry_points_initialized_;
     }
 
-    const GLubyte* pRenderer = oglUtils::_oglGetString(GL_RENDERER);
+    const GLubyte* renderer = ogl_utils::ogl_get_string(GL_RENDERER);
 
-    if (nullptr == pRenderer)
+    if (nullptr == renderer)
     {
-        GPA_LogError("Unable to get GL_RENDERER string.");
+        GPA_LOG_ERROR("Unable to get GL_RENDERER string.");
         return false;
     }
 
-    hwInfo.SetDeviceName(reinterpret_cast<const char*>(pRenderer));
+    hw_info.SetDeviceName(reinterpret_cast<const char*>(renderer));
 
-    // Handle non-AMD GPU vendors
-    const GLubyte* pVendor     = oglUtils::_oglGetString(GL_VENDOR);
-    bool           isAmdVendor = false;
+    // Handle non-AMD GPU vendors.
+    const GLubyte* vendor        = ogl_utils::ogl_get_string(GL_VENDOR);
+    bool           is_amd_vendor = false;
 
-    if (nullptr == pVendor)
+    if (nullptr == vendor)
     {
-        GPA_LogError("Unable to get GL_VENDOR string.");
+        GPA_LOG_ERROR("Unable to get GL_VENDOR string.");
         return false;
     }
 
-    if (nullptr != strstr(reinterpret_cast<const char*>(pVendor), oglUtils::s_pATIRenderer) ||
-        nullptr != strstr(reinterpret_cast<const char*>(pVendor), oglUtils::s_pAMDRenderer))
+    if (nullptr != strstr(reinterpret_cast<const char*>(vendor), ogl_utils::kAtiRendererString) ||
+        nullptr != strstr(reinterpret_cast<const char*>(vendor), ogl_utils::kAmdRendererString))
     {
-        isAmdVendor = true;
+        is_amd_vendor = true;
     }
-    else if (nullptr != strstr(reinterpret_cast<const char*>(pVendor), oglUtils::s_pNVIDIARenderer))
+    else if (nullptr != strstr(reinterpret_cast<const char*>(vendor), ogl_utils::kNvidiaRendererString))
     {
-        //TODO: investigate supporting GPUTime for these vendors
         return false;
     }
-    else if (nullptr != strstr(reinterpret_cast<const char*>(pVendor), oglUtils::s_pIntelRenderer))
+    else if (nullptr != strstr(reinterpret_cast<const char*>(vendor), ogl_utils::kIntelRendererString))
     {
-        //TODO: investigate supporting GPUTime for these vendors
         return false;
     }
 
-    // in addition to checking the vendor string to make sure it is ATI / AMD,
+    // In addition to checking the vendor string to make sure it is ATI / AMD,
     // also check the Renderer string - sometimes the GL driver needs to override
     // the vendor string to make apps behave differently, so using the renderer
     // offers a fallback solution.
-    if (isAmdVendor || nullptr != strstr(reinterpret_cast<const char*>(pRenderer), oglUtils::s_pATIRenderer) ||
-        nullptr != strstr(reinterpret_cast<const char*>(pRenderer), oglUtils::s_pAMDRenderer) ||
-        nullptr != strstr(reinterpret_cast<const char*>(pRenderer), oglUtils::s_pRadeonRenderer))
+    if (is_amd_vendor || nullptr != strstr(reinterpret_cast<const char*>(renderer), ogl_utils::kAtiRendererString) ||
+        nullptr != strstr(reinterpret_cast<const char*>(renderer), ogl_utils::kAmdRendererString) ||
+        nullptr != strstr(reinterpret_cast<const char*>(renderer), ogl_utils::kRadeonRendererString))
     {
-        hwInfo.SetVendorID(AMD_VENDOR_ID);
+        hw_info.SetVendorId(kAmdVendorId);
 
-        bool isDeviceIdKnown = false;
+        bool is_device_id_known = false;
 
-        if (nullptr != oglUtils::_oglXQueryCurrentRendererIntegerMESA)
+        if (nullptr != ogl_utils::ogl_x_query_current_renderer_integer_mesa)
         {
-            // first try to get the device id from the glXQueryCurrentRendererIntegerMESA extension
-            unsigned int driverDeviceId;
-            oglUtils::_oglXQueryCurrentRendererIntegerMESA(GLX_RENDERER_DEVICE_ID_MESA, &driverDeviceId);
+            // First try to get the device id from the glXQueryCurrentRendererIntegerMESA extension.
+            unsigned int driver_device_id;
+            ogl_utils::ogl_x_query_current_renderer_integer_mesa(GLX_RENDERER_DEVICE_ID_MESA, &driver_device_id);
 
-            // check to make sure the device id returned is found in the device info table
-            GDT_HW_GENERATION hwGeneration;
-            isDeviceIdKnown = AMDTDeviceInfoUtils::Instance()->GetHardwareGeneration(driverDeviceId, hwGeneration);
+            // Check to make sure the device id returned is found in the device info table.
+            GDT_HW_GENERATION hw_generation;
+            is_device_id_known = AMDTDeviceInfoUtils::Instance()->GetHardwareGeneration(driver_device_id, hw_generation);
 
-            if (isDeviceIdKnown)
+            if (is_device_id_known)
             {
-                hwInfo.SetDeviceID(driverDeviceId);
+                hw_info.SetDeviceId(driver_device_id);
 
-                if (!hwInfo.UpdateRevisionIdBasedOnDeviceIDAndName())
+                if (!hw_info.UpdateRevisionIdBasedOnDeviceIdAndName())
                 {
-                    // We didn't find a revision Id, set it to REVISION_ID_ANY
-                    hwInfo.SetRevisionID(REVISION_ID_ANY);
+                    // We didn't find a revision Id, set it to REVISION_ID_ANY.
+                    hw_info.SetRevisionId(REVISION_ID_ANY);
                 }
             }
         }
 
-        // if we were unable to use the glXQueryCurrentRendererIntegerMESA extension,
-        // then fall back to the GPIN counters exposed by the driver
-        if (!isDeviceIdKnown)
+        // If we were unable to use the glXQueryCurrentRendererIntegerMESA extension,
+        // then fall back to the GPIN counters exposed by the driver.
+        if (!is_device_id_known)
         {
-            oglUtils::ASICInfo asicInfo;
+            ogl_utils::AsicInfo asic_info;
 
-            if (!oglUtils::AsicInfoManager::Instance()->GetAsicInfoFromDriver(asicInfo))
+            if (!ogl_utils::AsicInfoManager::Instance()->GetAsicInfoFromDriver(asic_info))
             {
-                GPA_LogError("Unable to obtain asic information.");
+                GPA_LOG_ERROR("Unable to obtain asic information.");
                 return false;
             }
 
-            m_glDriverVersion = asicInfo.m_driverVersion;
+            gl_driver_version_ = asic_info.driver_version;
 
-            bool isHwInfoValid = false;
+            bool is_hw_info_valid = false;
 
-            if (oglUtils::ASICInfo::s_UNASSIGNED_ASIC_INFO != asicInfo.m_deviceId)
+            if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.device_id)
             {
-                hwInfo.SetDeviceID(asicInfo.m_deviceId);
+                hw_info.SetDeviceId(asic_info.device_id);
 
-                if (oglUtils::ASICInfo::s_UNASSIGNED_ASIC_INFO != asicInfo.m_deviceRev)
+                if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.device_rev)
                 {
-                    GDT_GfxCardInfo cardInfo = {};
+                    GDT_GfxCardInfo card_info = {};
 
-                    if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(asicInfo.m_deviceId, asicInfo.m_deviceRev, cardInfo))
+                    if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(asic_info.device_id, asic_info.device_rev, card_info))
                     {
-                        isHwInfoValid = true;
-                        hwInfo.SetRevisionID(asicInfo.m_deviceRev);
+                        is_hw_info_valid = true;
+                        hw_info.SetRevisionId(asic_info.device_rev);
                     }
                 }
 
-                if (!isHwInfoValid)
+                if (!is_hw_info_valid)
                 {
-                    isHwInfoValid = hwInfo.UpdateRevisionIdBasedOnDeviceIDAndName();
+                    is_hw_info_valid = hw_info.UpdateRevisionIdBasedOnDeviceIdAndName();
                 }
             }
 
-            if (!isHwInfoValid)
+            if (!is_hw_info_valid)
             {
-                // this is now a fallback path when using drivers where the
+                // This is now a fall-back path when using drivers where the
                 // additional GPIN counters are not supported. This if block
                 // can be removed once we no longer need to support drivers older
-                // than 19.30
+                // than 19.30.
                 GDT_HW_ASIC_TYPE asic_type = GDT_ASIC_TYPE_NONE;
                 uint32_t         device_id;
 
-                if (oglUtils::AsicInfoManager::Instance()->GetFallbackAsicInfo(asicInfo.m_asicID, asic_type, device_id))
+                if (ogl_utils::AsicInfoManager::Instance()->GetFallbackAsicInfo(asic_info.asic_id, asic_type, device_id))
                 {
-                    hwInfo.SetDeviceID(static_cast<gpa_uint32>(device_id));
+                    hw_info.SetDeviceId(static_cast<GpaUInt32>(device_id));
                 }
                 else
                 {
-                    GPA_LogError("Unsupported asic ID.");
+                    GPA_LOG_ERROR("Unsupported asic ID.");
                     return false;
                 }
 
-                if (!hwInfo.UpdateDeviceInfoBasedOnASICTypeAndName(asic_type))
+                if (!hw_info.UpdateDeviceInfoBasedOnAsicTypeAndName(asic_type))
                 {
-                    // We didn't find a revision Id, set it to REVISION_ID_ANY
-                    hwInfo.SetRevisionID(REVISION_ID_ANY);
+                    // We didn't find a revision Id, set it to REVISION_ID_ANY.
+                    hw_info.SetRevisionId(REVISION_ID_ANY);
                 }
             }
 
-            if (oglUtils::ASICInfo::s_UNASSIGNED_ASIC_INFO != asicInfo.m_numSE)
+            if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_se)
             {
-                hwInfo.SetNumberShaderEngines(static_cast<size_t>(asicInfo.m_numSE));
+                hw_info.SetNumberShaderEngines(static_cast<size_t>(asic_info.num_se));
             }
 
-            if (oglUtils::ASICInfo::s_UNASSIGNED_ASIC_INFO != asicInfo.m_numSA)
+            if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_sa)
             {
-                hwInfo.SetNumberShaderArrays(static_cast<size_t>(asicInfo.m_numSA));
+                hw_info.SetNumberShaderArrays(static_cast<size_t>(asic_info.num_sa));
             }
 
-            if (oglUtils::ASICInfo::s_UNASSIGNED_ASIC_INFO != asicInfo.m_numCU)
+            if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_cu)
             {
-                hwInfo.SetNumberCUs(static_cast<size_t>(asicInfo.m_numCU));
+                hw_info.SetNumberCus(static_cast<size_t>(asic_info.num_cu));
             }
 
-            if (oglUtils::ASICInfo::s_UNASSIGNED_ASIC_INFO != asicInfo.m_numSIMD)
+            if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_simd)
             {
-                hwInfo.SetNumberSIMDs(static_cast<size_t>(asicInfo.m_numSIMD));
+                hw_info.SetNumberSimds(static_cast<size_t>(asic_info.num_simd));
             }
         }
 
-        // GPUTime information is returned in nanoseconds, so set the frequency to convert it into seconds
-        hwInfo.SetTimeStampFrequency(1000000000);
+        // GPUTime information is returned in nanoseconds, so set the frequency to convert it into seconds.
+        hw_info.SetTimeStampFrequency(1000000000);
 
         return true;
     }
 
-    GPA_LogError("A non-AMD graphics card was identified.");
+    GPA_LOG_ERROR("A non-AMD graphics card was identified.");
     return false;
 }
 
-// TODO: this implementation doesn't do much -- is it needed?
-bool GLGPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const
+bool GlGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const
 {
-    UNREFERENCED_PARAMETER(pContextInfo);
+    UNREFERENCED_PARAMETER(context_info);
 
-    bool isSupported = false;
+    bool is_supported = false;
 
     GDT_HW_GENERATION generation = GDT_HW_GENERATION_NONE;
 
-    if (!hwInfo.GetHWGeneration(generation))
+    if (!hw_info.GetHwGeneration(generation))
     {
-        GPA_LogError("Unable to get hardware generation.");
+        GPA_LOG_ERROR("Unable to get hardware generation.");
     }
     else
     {
-        isSupported = true;
+        is_supported = true;
     }
 
-    return isSupported;
+    return is_supported;
 }
 
-GLGPAImplementor::GLGPAImplementor()
-    : m_isGlEntryPointsInitialized(false),
-      m_glDriverVersion(INT_MAX)
+GlGpaImplementor::GlGpaImplementor()
+    : is_gl_entry_points_initialized_(false)
+    , gl_driver_version_(INT_MAX)
 {
 }
 
-IGPAContext* GLGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
+IGpaContext* GlGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags)
 {
-    UNREFERENCED_PARAMETER(pContextInfo);
-    GLGPAContext* pRetGpaContext = nullptr;
+    UNREFERENCED_PARAMETER(context_info);
+    GlGpaContext* ret_gpa_context = nullptr;
 
-    GLContextPtr glContext = static_cast<GLContextPtr>(pContextInfo);
+    GlContextPtr gl_context = static_cast<GlContextPtr>(context_info);
 
-    GLGPAContext* pGLGpaContext = new (std::nothrow) GLGPAContext(glContext, hwInfo, flags, m_glDriverVersion);
+    GlGpaContext* gl_gpa_context = new (std::nothrow) GlGpaContext(gl_context, hw_info, flags, gl_driver_version_);
 
-    if (nullptr == pGLGpaContext)
+    if (nullptr == gl_gpa_context)
     {
-        GPA_LogError("Unable to allocate memory for the context.");
+        GPA_LOG_ERROR("Unable to allocate memory for the context.");
     }
     else
     {
-        if (pGLGpaContext->Initialize())
+        if (gl_gpa_context->Initialize())
         {
-            pRetGpaContext = pGLGpaContext;
+            ret_gpa_context = gl_gpa_context;
         }
         else
         {
-            delete pGLGpaContext;
-            GPA_LogError("Unable to open a context.");
+            delete gl_gpa_context;
+            GPA_LOG_ERROR("Unable to open a context.");
         }
     }
 
-    return pRetGpaContext;
+    return ret_gpa_context;
 }
 
-bool GLGPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pContext)
+bool GlGpaImplementor::CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context)
 {
-    assert(nullptr != pDeviceIdentifier);
-    assert(nullptr != pContext);
+    assert(nullptr != device_identifier);
+    assert(nullptr != context);
 
-    UNREFERENCED_PARAMETER(pDeviceIdentifier);
+    UNREFERENCED_PARAMETER(device_identifier);
 
-    if (nullptr != pContext)
+    if (nullptr != context)
     {
-        delete reinterpret_cast<GLGPAContext*>(pContext);
+        delete reinterpret_cast<GlGpaContext*>(context);
     }
 
-    return (nullptr != pContext) && (nullptr != pDeviceIdentifier);
+    return (nullptr != context) && (nullptr != device_identifier);
 }
 
-GPADeviceIdentifier GLGPAImplementor::GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const
+GpaDeviceIdentifier GlGpaImplementor::GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const
 {
-    return pContextInfo;
+    return context_info;
 }

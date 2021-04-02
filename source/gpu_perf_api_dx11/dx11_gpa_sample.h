@@ -1,65 +1,71 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  DX11 GPA Sample Header
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  DX11 GPA Sample Header
 //==============================================================================
 
-#ifndef _DX11_GPA_SAMPLE_H_
-#define _DX11_GPA_SAMPLE_H_
+#ifndef GPU_PERF_API_DX11_DX11_GPA_SAMPLE_H_
+#define GPU_PERF_API_DX11_DX11_GPA_SAMPLE_H_
 
-#include "gpa_sample.h"
-#include "dx11_gpa_context.h"
+#include "gpu_perf_api_common/gpa_sample.h"
 
-/// Class for DX11 Specific sample
-class DX11GPASample : public GPASample
+#include "gpu_perf_api_dx11/dx11_gpa_context.h"
+
+/// @brief Class for DX11 Specific sample.
+class Dx11GpaSample : public GpaSample
 {
 public:
-    /// Constructor
-    /// \param[in] pPass GPA Pass object
-    /// \param[in] pCmdList gpa command list
-    /// \param[in] sampleType gpa sample type
-    /// \param[in] sampleId user-supplied sample id
-    DX11GPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId);
+    /// @brief Constructor.
+    /// @param [in] pass GPA Pass object.
+    /// @param [in] cmd_list GPA command list.
+    /// @param [in] sample_type GPA sample type.
+    /// @param [in] sample_id User supplied sample id.
+    Dx11GpaSample(GpaPass* pass, IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id);
 
-    /// Delete default constructor
-    DX11GPASample() = delete;
+    /// @brief Delete default constructor.
+    Dx11GpaSample() = delete;
 
-    /// Destructor
-    ~DX11GPASample();
+    /// @brief Destructor.
+    ~Dx11GpaSample();
 
-    /// \copydoc GPASample::UpdateResults
+    /// @copydoc GpaSample::UpdateResults()
     bool UpdateResults() override final;
 
-    /// \copydoc GPASample::BeginRequest
+    /// @copydoc GpaSample::BeginRequest()
     bool BeginRequest() override final;
 
-    /// \copydoc GPASample::EndRequest
+    /// @copydoc GpaSample::EndRequest()
     bool EndRequest() override final;
 
-    /// \copydoc GPASample::ReleaseCounters
+    /// @copydoc GpaSample::ReleaseCounters()
     void ReleaseCounters() override final;
 
 private:
-    /// Creates the sample experiment
-    /// \return true upon successful operation otherwise false
+    /// @brief Creates the sample experiment.
+    ///
+    /// @return True upon successful operation otherwise false.
     bool CreateSampleExperiment();
 
-    /// Creates the counters and add it to the experiment
-    /// \return true upon successful operation otherwise false
+    /// @brief Creates the counters and add it to the experiment.
+    ///
+    /// @return true upon successful operation otherwise false.
     bool CreateAndAddCounterToExperiment();
 
-    /// Populates the result of the sample from the driver
-    /// \return true upon successful operation otherwise false
+    /// @brief Populates the result of the sample from the driver.
+    ///
+    /// @return True upon successful operation otherwise false
     bool PopulateResult();
 
-    /// Release the non-GPA resources of the sample
+    /// @brief Release the non-GPA resources of the sample.
     void ReleaseSampleResources();
 
-    IAmdDxExtPerfExperiment* m_pExperiment;  ///< The experiment related to this sample
-    IAmdDxExtPerfCounter**   m_ppCounters;   ///< The collection of active perf counters
-    ID3D11Counter*
-        m_pGPUTimeCounter;  ///< Timestamp queries are treated as much like regular counters as possible to minimize code impact, and maximize shared code. Special case processing added where required.
+    IAmdDxExtPerfExperiment* amd_dx_ext_perf_experiment_;  ///< The experiment related to this sample.
+    IAmdDxExtPerfCounter**   amd_dx_ext_perf_counters_;    ///< The collection of active performance counters.
+
+    /// Time-stamp queries are treated as much like regular counters as possible to minimize code impact, and maximize shared code.
+    /// Special case processing added where required.
+    ID3D11Counter* gpu_time_counter_;
 };
 
-#endif  // _DX11_GPA_SAMPLE_H_
+#endif  // GPU_PERF_API_DX11_DX11_GPA_SAMPLE_H_

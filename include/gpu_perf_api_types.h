@@ -1,25 +1,24 @@
 //==============================================================================
-// Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2020-2021 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief  Defines the data types and enumerations used by GPUPerfAPI.
-///         This file does not need to be directly included by an application
-///         that uses GPUPerfAPI.
+/// \brief  Deprecated header; use gpu_performance_api/gpu_perf_api_types.h
 //==============================================================================
 
-#ifndef _GPUPERFAPI_TYPES_H_
-#define _GPUPERFAPI_TYPES_H_
+#ifndef GPU_PERF_API_TYPES_H_
+#define GPU_PERF_API_TYPES_H_
+
+#pragma message("Warning: You are including a deprecated header. Please use gpu_performance_api/gpu_perf_api_types.h")
 
 #include <limits.h>
+
+#include "gpu_performance_api/gpu_perf_api_types.h"
 
 // Platform specific definitions
 #ifdef _WIN32
 #include <Windows.h>
-typedef HMODULE LibHandle;  ///< typedef for HMODULE for loading the library on windows
-typedef GUID    GPA_UUID;   ///< typedef for Windows GUID definition
+typedef GUID GPA_UUID;  ///< typedef for Windows GUID definition
 #else
-typedef void* LibHandle;  ///< typedef for void* for loading the library on linux
-
 /// Structure for holding UUID
 typedef struct GPA_UUID
 {
@@ -62,45 +61,11 @@ typedef unsigned int   gpa_uint32;   ///< GPA specific type for 32-bit unsigned 
 #ifdef _WIN32
 typedef unsigned __int64 gpa_uint64;  ///< GPA specific type for 64-bit unsigned integer
 #else                                 // _WIN32
-#ifndef GPALIB_DECL
-#ifdef __cplusplus
-#define GPALIB_DECL extern "C"
-#else
-#define GPALIB_DECL
-#endif  // _cplusplus
-#endif
 
 typedef unsigned int       UINT;        ///< GPA specific type to define UINT on Linux
 typedef unsigned long long gpa_uint64;  ///< GPA specific type for 64-bit unsigned integer
 
-#ifndef UNREFERENCED_PARAMETER
-#define UNREFERENCED_PARAMETER(x) (void)(x)
 #endif
-
-#define _strcmpi(a, b) strcasecmp(a, b)
-#define _stricmp(a, b) strcasecmp(a, b)
-
-// for now, just use non secure version for Linux
-#define strcpy_s(dst, ndst, src) strcpy(dst, src)
-#define strcat_s(dst, ndst, src) strcat(dst, src)
-#define strtok_s(a, b, c) strtok(a, b)
-#define strnlen_s(a, b) strlen(a)
-#define strncpy_s(a, b, c, d) strncpy(a, c, d)
-
-#define wcscat_s(dest, destSize, src) wcscat(dest, src)
-#define wcscpy_s(dest, destSize, src) wcscpy(dest, src)
-#define wcsncpy_s(dest, destSize, src, count) wcsncpy(dest, src, count)
-#define wcsnlen_s(str, strLength) wcsnlen(str, strLength)
-
-#ifndef TRUE
-#define TRUE 1
-#endif
-
-#ifndef FALSE
-#define FALSE 0
-#endif
-
-#endif  // __linux__
 
 // Limit definitions
 
@@ -111,16 +76,16 @@ typedef unsigned long long gpa_uint64;  ///< GPA specific type for 64-bit unsign
 #define GPA_UINT64_MAX ULLONG_MAX
 
 /// Macro to define opaque pointer types
-#define GPA_DEFINE_OBJECT(ObjectType) typedef struct _GPA_##ObjectType* GPA_##ObjectType;
+#define GPA_DEFINE_OBJECT_DEPRECATED(ObjectType) typedef struct _Gpa##ObjectType* GPA_##ObjectType;
 
 /// Context ID opaque pointer type
-GPA_DEFINE_OBJECT(ContextId)
+GPA_DEFINE_OBJECT_DEPRECATED(ContextId)
 
 /// Session ID opaque pointer type
-GPA_DEFINE_OBJECT(SessionId)
+GPA_DEFINE_OBJECT_DEPRECATED(SessionId)
 
 /// Command List ID opaque pointer type
-GPA_DEFINE_OBJECT(CommandListId)
+GPA_DEFINE_OBJECT_DEPRECATED(CommandListId)
 
 /// Macro for null command list
 #define GPA_NULL_COMMAND_LIST NULL
@@ -319,4 +284,4 @@ typedef enum
     GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER,  ///< Discrete counters sample type -- discrete counters provide a single value per workload measured
 } GPA_Session_Sample_Type;
 
-#endif  // _GPUPERFAPI_TYPES_H_
+#endif  // GPU_PERF_API_TYPES_H_

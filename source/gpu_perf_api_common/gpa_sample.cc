@@ -1,60 +1,60 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GPA Sample Implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GPA Sample Implementation.
 //==============================================================================
 
-#include "gpa_sample.h"
-#include "gpa_pass.h"
-#include "gpa_command_list_interface.h"
+#include "gpu_perf_api_common/gpa_sample.h"
 
-GPASample::GPASample(GPAPass* pPass, IGPACommandList* pGpaCmdList, GpaSampleType sampleType, ClientSampleId clientSampleId)
-    : m_pPass(pPass)
-    , m_pGpaCmdList(pGpaCmdList)
-    , m_gpaSampleType(sampleType)
-    , m_clientSampleId(clientSampleId)
-    , m_driverSampleId(0)
-    , m_gpaSampleState(GPASampleState::INITIALIZED)
-    , m_pSampleResult(nullptr)
-    , m_pContinuingSample(nullptr)
-    , m_isOpened(false)
-    , m_isClosedByClient(false)
-    , m_isContinuedByClient(false)
-    , m_isCopiedSample(false)
+#include "gpu_perf_api_common/gpa_command_list_interface.h"
+#include "gpu_perf_api_common/gpa_context_interface.h"
+#include "gpu_perf_api_common/gpa_pass.h"
+
+GpaSample::GpaSample(GpaPass* gpa_pass, IGpaCommandList* gpa_cmd_list, GpaSampleType sample_type, ClientSampleId client_sample_id)
+    : gpa_pass_(gpa_pass)
+    , gpa_cmd_list_(gpa_cmd_list)
+    , gpa_sample_type_(sample_type)
+    , client_sample_id_(client_sample_id)
+    , driver_sample_id_(0)
+    , gpa_sample_state_(GpaSampleState::kInitialized)
+    , sample_result_(nullptr)
+    , continuing_sample_(nullptr)
+    , is_opened_(false)
+    , is_closed_by_client_(false)
+    , is_continued_by_client_(false)
+    , is_copied_sample_(false)
 {
-    m_isSecondary = (GPA_COMMAND_LIST_SECONDARY == pGpaCmdList->GetCmdType());
+    is_secondary_ = (kGpaCommandListSecondary == gpa_cmd_list->GetCmdType());
 
     // First, only allocate result space for primary samples.
     // If a secondary sample gets copied, then it will also get space allocated for the results.
-    if (!m_isSecondary)
+    if (!is_secondary_)
     {
         AllocateSampleResultSpace();
     }
 }
 
-GPA_THREAD_SAFE_FUNCTION bool GPASample::Begin()
+GPA_THREAD_SAFE_FUNCTION bool GpaSample::Begin()
 {
     bool result = false;
 
-    std::lock_guard<std::mutex> lockSample(m_sampleMutex);
+    std::lock_guard<std::mutex> lock_sample(sample_mutex_);
     result = BeginRequest();
 
     if (result)
     {
-        m_gpaSampleState = GPASampleState::STARTED;
-        m_isOpened       = true;
+        gpa_sample_state_ = GpaSampleState::kStarted;
+        is_opened_        = true;
     }
 
     return result;
 }
 
-/// Ends a counter sample.
-/// \return True on success; false on error.
-bool GPASample::End()
+bool GpaSample::End()
 {
-    // make sure this request is valid before trying to end it.
-    if (m_gpaSampleState != GPASampleState::STARTED)
+    // Make sure this request is valid before trying to end it.
+    if (gpa_sample_state_ != GpaSampleState::kStarted)
     {
         return false;
     }
@@ -63,229 +63,230 @@ bool GPASample::End()
 
     if (result)
     {
-        m_gpaSampleState = GPASampleState::PENDING_RESULTS;
+        gpa_sample_state_ = GpaSampleState::kPendingResults;
     }
 
     return result;
 }
 
-bool GPASample::GetResult(CounterIndex counterIndexInSample, gpa_uint64* pResult) const
+bool GpaSample::GetResult(CounterIndex counter_index_in_sample, GpaUInt64* counter_result) const
 {
-    bool hasResult = false;
+    bool has_result = false;
 
     if (!IsSecondary() || IsCopied())
     {
-        if (nullptr != pResult && IsResultCollected())
+        if (nullptr != counter_result && IsResultCollected())
         {
-            if (nullptr != m_pSampleResult && counterIndexInSample < m_pSampleResult->GetAsCounterSampleResult()->GetNumCounters() &&
-                nullptr != m_pSampleResult->GetAsCounterSampleResult()->GetResultBuffer())
+            if (nullptr != sample_result_ && counter_index_in_sample < sample_result_->GetAsCounterSampleResult()->GetNumCounters() &&
+                nullptr != sample_result_->GetAsCounterSampleResult()->GetResultBuffer())
             {
-                hasResult = true;
-                *pResult  = m_pSampleResult->GetAsCounterSampleResult()->GetResultBuffer()[counterIndexInSample];
+                has_result      = true;
+                *counter_result = sample_result_->GetAsCounterSampleResult()->GetResultBuffer()[counter_index_in_sample];
             }
             else
             {
-                GPA_LogError("Counter Index out of range.");
+                GPA_LOG_ERROR("Counter Index out of range.");
             }
         }
         else
         {
-            GPA_LogError("Either the sample is not completed or the result buffer is invalid.");
+            GPA_LOG_ERROR("Either the sample is not completed or the result buffer is invalid.");
         }
     }
 
-    return hasResult;
+    return has_result;
 }
 
-void GPASample::SetDriverSampleId(const DriverSampleId& driverSampleId)
+void GpaSample::SetDriverSampleId(const DriverSampleId& driver_sample_id)
 {
-    m_driverSampleId = driverSampleId;
+    driver_sample_id_ = driver_sample_id;
 }
 
-DriverSampleId GPASample::GetDriverSampleId() const
+DriverSampleId GpaSample::GetDriverSampleId() const
 {
-    return m_driverSampleId;
+    return driver_sample_id_;
 }
 
-ClientSampleId GPASample::GetClientSampleId() const
+ClientSampleId GpaSample::GetClientSampleId() const
 {
-    return m_clientSampleId;
+    return client_sample_id_;
 }
 
-void GPASample::AllocateSampleResultSpace()
+void GpaSample::AllocateSampleResultSpace()
 {
-    if (nullptr == m_pSampleResult)
+    if (nullptr == sample_result_)
     {
-        m_pSampleResult = new (std::nothrow) GPACounterSampleResult(m_pPass->GetEnabledCounterCount());
+        sample_result_ = new (std::nothrow) GpaCounterSampleResult(gpa_pass_->GetEnabledCounterCount());
     }
 }
 
-bool GPASample::IsSecondary() const
+bool GpaSample::IsSecondary() const
 {
-    return m_isSecondary;
+    return is_secondary_;
 }
 
-GpaSampleType GPASample::GetGpaSampleType() const
+GpaSampleType GpaSample::GetGpaSampleType() const
 {
-    return m_gpaSampleType;
+    return gpa_sample_type_;
 }
 
-GPASampleState GPASample::GetGpaSampleState() const
+GpaSampleState GpaSample::GetGpaSampleState() const
 {
-    return m_gpaSampleState;
+    return gpa_sample_state_;
 }
 
-GPASampleResult* GPASample::GetSampleResultLocation() const
+GpaSampleResult* GpaSample::GetSampleResultLocation() const
 {
-    return m_pSampleResult;
+    return sample_result_;
 }
 
-GPASample* GPASample::GetContinuingSample() const
+GpaSample* GpaSample::GetContinuingSample() const
 {
-    return m_pContinuingSample;
+    return continuing_sample_;
 }
 
-GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsClosedByClient()
+GPA_THREAD_SAFE_FUNCTION bool GpaSample::SetAsClosedByClient()
 {
     bool                        success = false;
-    std::lock_guard<std::mutex> lockSample(m_sampleMutex);
+    std::lock_guard<std::mutex> lock_sample(sample_mutex_);
 
-    if (!m_isContinuedByClient)
+    if (!is_continued_by_client_)
     {
-        m_isClosedByClient = true;
-        success            = true;
+        is_closed_by_client_ = true;
+        success              = true;
     }
     else
     {
-        GPA_LogError("Sample has already been continued by client.");
+        GPA_LOG_ERROR("Sample has already been continued by client.");
     }
 
     return success;
 }
 
-bool GPASample::SetAsCopied()
+bool GpaSample::SetAsCopied()
 {
     bool                        success = false;
-    std::lock_guard<std::mutex> lockSample(m_sampleMutex);
-    m_gpaSampleState = GPASampleState::PENDING_RESULTS;
+    std::lock_guard<std::mutex> lock_sample(sample_mutex_);
+    gpa_sample_state_ = GpaSampleState::kPendingResults;
 
-    if (!m_isCopiedSample)
+    if (!is_copied_sample_)
     {
-        m_isCopiedSample = true;
+        is_copied_sample_ = true;
         AllocateSampleResultSpace();
         success = true;
     }
     else
     {
-        GPA_LogError("Sample has already been copied by client.");
+        GPA_LOG_ERROR("Sample has already been copied by client.");
     }
 
     return success;
 }
 
-bool GPASample::IsCopied() const
+bool GpaSample::IsCopied() const
 {
-    return m_isCopiedSample;
+    return is_copied_sample_;
 }
 
-bool GPASample::IsClosedByClient() const
+bool GpaSample::IsClosedByClient() const
 {
-    return m_isClosedByClient;
+    return is_closed_by_client_;
 }
 
-bool GPASample::IsContinuedByClient() const
+bool GpaSample::IsContinuedByClient() const
 {
-    return m_isContinuedByClient;
+    return is_continued_by_client_;
 }
 
-GPA_THREAD_SAFE_FUNCTION bool GPASample::SetAsContinuedByClient()
+GPA_THREAD_SAFE_FUNCTION bool GpaSample::SetAsContinuedByClient()
 {
-    std::lock_guard<std::mutex> lockSample(m_sampleMutex);
+    std::lock_guard<std::mutex> lock_sample(sample_mutex_);
     bool                        success = false;
 
-    if (!m_isClosedByClient)
+    if (!is_closed_by_client_)
     {
-        m_isContinuedByClient = true;
-        success               = true;
+        is_continued_by_client_ = true;
+        success                 = true;
     }
     else
     {
-        GPA_LogError("Sample has already been closed by client.");
+        GPA_LOG_ERROR("Sample has already been closed by client.");
     }
 
     return success;
 }
 
-bool GPASample::IsSampleValid() const
+bool GpaSample::IsSampleValid() const
 {
-    // A sample is only valid if it is opened and either it is continued/copied on another command list or closed on the same command list on which it was created
-    bool valid = (m_isOpened && ((m_isClosedByClient && !m_isContinuedByClient) || (!m_isClosedByClient && m_isContinuedByClient))) || m_isCopiedSample;
+    // A sample is only valid if it is opened and either it is continued/copied on another command list or closed on the same command list on which it was created.
+    bool valid =
+        (is_opened_ && ((is_closed_by_client_ && !is_continued_by_client_) || (!is_closed_by_client_ && is_continued_by_client_))) || is_copied_sample_;
     return valid;
 }
 
-bool GPASample::IsClosed() const
+bool GpaSample::IsClosed() const
 {
-    return m_isClosedByClient || m_isContinuedByClient;
+    return is_closed_by_client_ || is_continued_by_client_;
 }
 
-void GPASample::MarkAsCompleted()
+void GpaSample::MarkAsCompleted()
 {
-    m_gpaSampleState = GPASampleState::RESULTS_COLLECTED;
+    gpa_sample_state_ = GpaSampleState::kResultsCollected;
 }
 
-bool GPASample::IsSampleContinuing() const
+bool GpaSample::IsSampleContinuing() const
 {
-    return nullptr != m_pContinuingSample;
+    return nullptr != continuing_sample_;
 }
 
-IGPACommandList* GPASample::GetCmdList() const
+IGpaCommandList* GpaSample::GetCmdList() const
 {
-    return m_pGpaCmdList;
+    return gpa_cmd_list_;
 }
 
-bool GPASample::LinkContinuingSample(GPASample* pContinuingSample)
+bool GpaSample::LinkContinuingSample(GpaSample* continuing_sample)
 {
-    std::lock_guard<std::recursive_mutex> lock(m_continueSampleMutex);
+    std::lock_guard<std::recursive_mutex> lock(continue_sample_mutex_);
 
-    if (nullptr == pContinuingSample)
+    if (nullptr == continuing_sample)
     {
         return false;
     }
 
     bool success = true;
 
-    if (nullptr != m_pContinuingSample)
+    if (nullptr != continuing_sample_)
     {
-        success &= m_pContinuingSample->LinkContinuingSample(pContinuingSample);
+        success &= continuing_sample_->LinkContinuingSample(continuing_sample);
     }
     else
     {
-        // Check whether the continuing sample is on different command list or not
-        if (pContinuingSample->m_pGpaCmdList == m_pGpaCmdList)
+        // Check whether the continuing sample is on different command list or not.
+        if (continuing_sample->gpa_cmd_list_ == gpa_cmd_list_)
         {
             success = false;
         }
         else
         {
-            m_pContinuingSample = pContinuingSample;
-            success             = true;
+            continuing_sample_ = continuing_sample;
+            success            = true;
         }
     }
 
     return success;
 }
 
-GPAPass* GPASample::GetPass() const
+GpaPass* GpaSample::GetPass() const
 {
-    return m_pPass;
+    return gpa_pass_;
 }
 
-GPASample::~GPASample()
+GpaSample::~GpaSample()
 {
-    if (nullptr != m_pContinuingSample)
+    if (nullptr != continuing_sample_)
     {
-        delete m_pContinuingSample;
+        delete continuing_sample_;
     }
 
-    delete m_pSampleResult;
+    delete sample_result_;
 }

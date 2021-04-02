@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../../../")
@@ -7,11 +7,13 @@ set(GPA_PROJECT_NAME D3D12ColorCube)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include (${GPA_CMAKE_MODULES_DIR}/common.cmake)
+include (${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 
-include_directories(${GPA_PUBLIC_HEADER}
-                    ${GPA_SRC_COMMON})
+include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
+                    ${GPA_PUBLIC_HEADER}
+                    ${GPA_SRC})
 
-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_INCLUDE_CURRENT_DIR OFF)
 set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/cube_sample.cc
             ${CMAKE_CURRENT_SOURCE_DIR}/cube_sample.h
             ${CMAKE_CURRENT_SOURCE_DIR}/../sample.cc

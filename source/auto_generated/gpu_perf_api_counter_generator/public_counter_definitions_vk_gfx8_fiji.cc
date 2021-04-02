@@ -1,20 +1,20 @@
 //==============================================================================
-// Copyright (c) 2010-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief Public Counter Definitions for VK GFX8 _fiji
+// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Public Counter Definitions for VK GFX8_FIJI.
 //==============================================================================
 
-#include "gpa_counter.h"
-#include "public_counter_definitions_vk_gfx8_fiji.h"
+#include "gpu_perf_api_counter_generator/gpa_counter.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_vk_gfx8_fiji.h"
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#include "gpa_hw_counter_gfx8_fiji.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx8_fiji.h"
 
 namespace vk_gfx8_fiji
 {
-bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c)
+bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaDerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers
@@ -27,88 +27,88 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
     counter_gfx8_fiji::OverrideBlockInstanceCounters(asic_type);
 
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(191);
-        internalCounters.push_back(338);
-        internalCounters.push_back(485);
-        internalCounters.push_back(632);
-        internalCounters.push_back(49743);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(191);
+        internal_counters.push_back(338);
+        internal_counters.push_back(485);
+        internal_counters.push_back(632);
+        internal_counters.push_back(49743);
 
-        c.UpdateAsicSpecificDerivedCounter("TessellatorBusy", internalCounters, "0,1,max,2,max,3,max,4,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("TessellatorBusy", internal_counters, "0,1,max,2,max,3,max,4,/,(100),*");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(191);
-        internalCounters.push_back(338);
-        internalCounters.push_back(485);
-        internalCounters.push_back(632);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(191);
+        internal_counters.push_back(338);
+        internal_counters.push_back(485);
+        internal_counters.push_back(632);
 
-        c.UpdateAsicSpecificDerivedCounter("TessellatorBusyCycles", internalCounters, "0,1,max,2,max,3,max");
+        c.UpdateAsicSpecificDerivedCounter("TessellatorBusyCycles", internal_counters, "0,1,max,2,max,3,max");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(87);
-        internalCounters.push_back(234);
-        internalCounters.push_back(381);
-        internalCounters.push_back(528);
-        internalCounters.push_back(68);
-        internalCounters.push_back(215);
-        internalCounters.push_back(362);
-        internalCounters.push_back(509);
-        internalCounters.push_back(163);
-        internalCounters.push_back(310);
-        internalCounters.push_back(457);
-        internalCounters.push_back(604);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(87);
+        internal_counters.push_back(234);
+        internal_counters.push_back(381);
+        internal_counters.push_back(528);
+        internal_counters.push_back(68);
+        internal_counters.push_back(215);
+        internal_counters.push_back(362);
+        internal_counters.push_back(509);
+        internal_counters.push_back(163);
+        internal_counters.push_back(310);
+        internal_counters.push_back(457);
+        internal_counters.push_back(604);
 
-        c.UpdateAsicSpecificDerivedCounter("VSVerticesIn", internalCounters, "0,1,2,3,sum4,4,5,6,7,sum4,4,5,6,7,sum4,ifnotzero,8,9,10,11,sum4,8,9,10,11,sum4,ifnotzero");
+        c.UpdateAsicSpecificDerivedCounter("VSVerticesIn", internal_counters, "0,1,2,3,sum4,4,5,6,7,sum4,4,5,6,7,sum4,ifnotzero,8,9,10,11,sum4,8,9,10,11,sum4,ifnotzero");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(172);
-        internalCounters.push_back(319);
-        internalCounters.push_back(466);
-        internalCounters.push_back(613);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(172);
+        internal_counters.push_back(319);
+        internal_counters.push_back(466);
+        internal_counters.push_back(613);
 
-        c.UpdateAsicSpecificDerivedCounter("HSPatches", internalCounters, "0,1,2,3,sum4");
+        c.UpdateAsicSpecificDerivedCounter("HSPatches", internal_counters, "0,1,2,3,sum4");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(87);
-        internalCounters.push_back(234);
-        internalCounters.push_back(381);
-        internalCounters.push_back(528);
-        internalCounters.push_back(68);
-        internalCounters.push_back(215);
-        internalCounters.push_back(362);
-        internalCounters.push_back(509);
-        internalCounters.push_back(163);
-        internalCounters.push_back(310);
-        internalCounters.push_back(457);
-        internalCounters.push_back(604);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(87);
+        internal_counters.push_back(234);
+        internal_counters.push_back(381);
+        internal_counters.push_back(528);
+        internal_counters.push_back(68);
+        internal_counters.push_back(215);
+        internal_counters.push_back(362);
+        internal_counters.push_back(509);
+        internal_counters.push_back(163);
+        internal_counters.push_back(310);
+        internal_counters.push_back(457);
+        internal_counters.push_back(604);
 
-        c.UpdateAsicSpecificDerivedCounter("DSVerticesIn", internalCounters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,4,5,6,7,sum4,ifnotzero,8,9,10,11,sum4,ifnotzero");
+        c.UpdateAsicSpecificDerivedCounter("DSVerticesIn", internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,4,5,6,7,sum4,ifnotzero,8,9,10,11,sum4,ifnotzero");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(76);
-        internalCounters.push_back(223);
-        internalCounters.push_back(370);
-        internalCounters.push_back(517);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(76);
+        internal_counters.push_back(223);
+        internal_counters.push_back(370);
+        internal_counters.push_back(517);
 
-        c.UpdateAsicSpecificDerivedCounter("GSPrimsIn", internalCounters, "0,1,2,3,sum4");
+        c.UpdateAsicSpecificDerivedCounter("GSPrimsIn", internal_counters, "0,1,2,3,sum4");
     }
     {
-        vector<gpa_uint32> internalCounters;
-        internalCounters.push_back(87);
-        internalCounters.push_back(234);
-        internalCounters.push_back(381);
-        internalCounters.push_back(528);
-        internalCounters.push_back(68);
-        internalCounters.push_back(215);
-        internalCounters.push_back(362);
-        internalCounters.push_back(509);
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(87);
+        internal_counters.push_back(234);
+        internal_counters.push_back(381);
+        internal_counters.push_back(528);
+        internal_counters.push_back(68);
+        internal_counters.push_back(215);
+        internal_counters.push_back(362);
+        internal_counters.push_back(509);
 
-        c.UpdateAsicSpecificDerivedCounter("GSVerticesOut", internalCounters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,ifnotzero");
+        c.UpdateAsicSpecificDerivedCounter("GSVerticesOut", internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,ifnotzero");
     }
     return true;
 }

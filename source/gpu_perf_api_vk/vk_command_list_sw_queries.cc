@@ -1,27 +1,27 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  VkCommandListSwQueries declaration
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  VkCommandListSwQueries declaration
 //==============================================================================
+#include "gpu_perf_api_vk/vk_command_list_sw_queries.h"
 
-#include "logging.h"
-#include "vk_command_list_sw_queries.h"
+#include "gpu_perf_api_common/logging.h"
 
 VkCommandListSwQueries::VkCommandListSwQueries()
-    : m_physicalDevice(VK_NULL_HANDLE)
-    , m_commandBuffer(VK_NULL_HANDLE)
-    , m_device(VK_NULL_HANDLE)
+    : physical_device_(VK_NULL_HANDLE)
+    , command_buffer_(VK_NULL_HANDLE)
+    , device_(VK_NULL_HANDLE)
 {
 }
 
 VkCommandListSwQueries::VkCommandListSwQueries(VkCommandListSwQueries&& other)
 {
-    m_commandBuffer  = other.m_commandBuffer;
-    m_physicalDevice = other.m_physicalDevice;
-    m_device         = other.m_device;
+    command_buffer_  = other.command_buffer_;
+    physical_device_ = other.physical_device_;
+    device_          = other.device_;
 
-    m_queryGroup = std::move(other.m_queryGroup);
+    query_group_ = std::move(other.query_group_);
 }
 
 VkCommandListSwQueries::~VkCommandListSwQueries()
@@ -30,67 +30,67 @@ VkCommandListSwQueries::~VkCommandListSwQueries()
 
 VkCommandListSwQueries& VkCommandListSwQueries::operator=(VkCommandListSwQueries&& other)
 {
-    m_commandBuffer = other.m_commandBuffer;
+    command_buffer_ = other.command_buffer_;
 
-    m_device = other.m_device;
+    device_ = other.device_;
 
-    m_queryGroup = std::move(other.m_queryGroup);
+    query_group_ = std::move(other.query_group_);
 
     return (*this);
 }
 
-bool VkCommandListSwQueries::Initialize(VkPhysicalDevice physicalDevice, VkDevice device, VkCommandBuffer commandBuffer)
+bool VkCommandListSwQueries::Initialize(VkPhysicalDevice pysical_device, VkDevice device, VkCommandBuffer command_buffer)
 {
-    m_physicalDevice = physicalDevice;
-    m_device         = device;
-    m_commandBuffer  = commandBuffer;
+    physical_device_ = pysical_device;
+    device_          = device;
+    command_buffer_  = command_buffer;
 
-    bool created = m_queryGroup.Initialize(m_physicalDevice, m_device, m_commandBuffer, ms_resultGroupSize);
+    bool created = query_group_.Initialize(physical_device_, device_, command_buffer_, kResultGroupSize);
     return created;
 }
 
-bool VkCommandListSwQueries::BeginSwSample(gpa_uint32& swSampleId)
+bool VkCommandListSwQueries::BeginSwSample(GpaUInt32& sample_id)
 {
-    bool retVal = true;
+    bool ret_val = true;
 
-    swSampleId = m_queryGroup.GetSampleCount();
+    sample_id = query_group_.GetSampleCount();
 
-    m_queryGroup.BeginSwSample();
+    query_group_.BeginSwSample();
 
-    return retVal;
+    return ret_val;
 }
 
-void VkCommandListSwQueries::EndSwSample(const gpa_uint32 swSampleId)
+void VkCommandListSwQueries::EndSwSample(const GpaUInt32 sample_id)
 {
-    const gpa_uint32 sampleIndex = swSampleId % ms_resultGroupSize;
+    const GpaUInt32 sample_index = sample_id % kResultGroupSize;
 
-    m_queryGroup.EndSwSample(sampleIndex);
+    query_group_.EndSwSample(sample_index);
 }
 
-void VkCommandListSwQueries::ReleaseSwSample(const gpa_uint32 swSampleId)
+void VkCommandListSwQueries::ReleaseSwSample(const GpaUInt32 sample_id)
 {
-    const gpa_uint32 sampleIndex = swSampleId % ms_resultGroupSize;
+    const GpaUInt32 sample_index = sample_id % kResultGroupSize;
 
-    m_queryGroup.ReleaseSwSample(sampleIndex);
+    query_group_.ReleaseSwSample(sample_index);
 }
 
-void VkCommandListSwQueries::BeginSwQuery(const gpa_uint32 swSampleId, const GPA_VK_SW_QUERY_TYPE queryType)
+void VkCommandListSwQueries::BeginSwQuery(const GpaUInt32 sample_id, const GpaVkSwQueryType query_type)
 {
-    const gpa_uint32 sampleIndex = swSampleId % ms_resultGroupSize;
+    const GpaUInt32 sample_index = sample_id % kResultGroupSize;
 
-    m_queryGroup.BeginSwQuery(sampleIndex, queryType);
+    query_group_.BeginSwQuery(sample_index, query_type);
 }
 
-void VkCommandListSwQueries::EndSwQuery(const gpa_uint32 swSampleId, const GPA_VK_SW_QUERY_TYPE queryType)
+void VkCommandListSwQueries::EndSwQuery(const GpaUInt32 sample_id, const GpaVkSwQueryType query_type)
 {
-    const gpa_uint32 sampleIndex = swSampleId % ms_resultGroupSize;
+    const GpaUInt32 sample_index = sample_id % kResultGroupSize;
 
-    m_queryGroup.EndSwQuery(sampleIndex, queryType);
+    query_group_.EndSwQuery(sample_index, query_type);
 }
 
-bool VkCommandListSwQueries::GetSwSampleResults(const gpa_uint32 swSampleId, GpaVkSoftwareQueryResults& queryResults)
+bool VkCommandListSwQueries::GetSwSampleResults(const GpaUInt32 sample_id, GpaVkSoftwareQueryResults& query_restuls)
 {
-    const gpa_uint32 sampleIndex = swSampleId % ms_resultGroupSize;
+    const GpaUInt32 sample_index = sample_id % kResultGroupSize;
 
-    return m_queryGroup.GetSwSampleResults(sampleIndex, queryResults);
+    return query_group_.GetSwSampleResults(sample_index, query_restuls);
 }

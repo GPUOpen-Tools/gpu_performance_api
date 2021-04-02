@@ -1,145 +1,153 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Base Class for counter scheduling
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Base Class for counter scheduling.
 //==============================================================================
 
-#ifndef _GPA_COUNTER_SCHEDULER_BASE_H_
-#define _GPA_COUNTER_SCHEDULER_BASE_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_SCHEDULER_BASE_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_SCHEDULER_BASE_H_
 
-#include "gpa_counter_scheduler_interface.h"
-#include "gpa_split_counter_factory.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_scheduler_interface.h"
+#include "gpu_perf_api_counter_generator/gpa_split_counter_factory.h"
 
-/// Base Class for counter scheduling
-class GPA_CounterSchedulerBase : public IGPACounterScheduler
+/// @brief Base Class for counter scheduling.
+class GpaCounterSchedulerBase : public IGpaCounterScheduler
 {
 public:
-    /// Constructor
-    GPA_CounterSchedulerBase();
+    /// @brief Constructor.
+    GpaCounterSchedulerBase();
 
-    /// Destructor
-    ~GPA_CounterSchedulerBase() = default;
+    /// @brief Destructor.
+    ~GpaCounterSchedulerBase() = default;
 
-    /// \copydoc IGPACounterScheduler::Reset()
+    /// @copydoc IGpaCounterScheduler::Reset()
     void Reset() override;
 
-    /// \copydoc IGPACounterScheduler::SetCounterAccessor()
-    GPA_Status SetCounterAccessor(IGPACounterAccessor* pCounterAccessor, gpa_uint32 vendorId, gpa_uint32 deviceId, gpa_uint32 revisionId) override;
+    /// @copydoc IGpaCounterScheduler::SetCounterAccessor()
+    GpaStatus SetCounterAccessor(IGpaCounterAccessor* counter_accessor, GpaUInt32 vendor_id, GpaUInt32 device_id, GpaUInt32 revision_id) override;
 
-    /// \copydoc IGPACounterScheduler::GetNumEnabledCounters()
-    gpa_uint32 GetNumEnabledCounters() const override;
+    /// @copydoc IGpaCounterScheduler::GetNumEnabledCounters()
+    GpaUInt32 GetNumEnabledCounters() const override;
 
-    /// \copydoc IGPACounterScheduler::EnableCounter()
-    GPA_Status EnableCounter(gpa_uint32 index) override;
+    /// @copydoc IGpaCounterScheduler::EnableCounter()
+    GpaStatus EnableCounter(GpaUInt32 index) override;
 
-    /// \copydoc IGPACounterScheduler::DisableCounter()
-    GPA_Status DisableCounter(gpa_uint32 index) override;
+    /// @copydoc IGpaCounterScheduler::DisableCounter()
+    GpaStatus DisableCounter(GpaUInt32 index) override;
 
-    /// \copydoc IGPACounterScheduler::DisableAllCounters()
+    /// @copydoc IGpaCounterScheduler::DisableAllCounters()
     void DisableAllCounters() override;
 
-    /// \copydoc IGPACounterScheduler::GetEnabledIndex()
-    GPA_Status GetEnabledIndex(gpa_uint32 enabledIndex, gpa_uint32* pCounterAtIndex) const override;
+    /// @copydoc IGpaCounterScheduler::GetEnabledIndex()
+    GpaStatus GetEnabledIndex(GpaUInt32 enabled_index, GpaUInt32* counter_at_index) const override;
 
-    /// \copydoc IGPACounterScheduler::IsCounterEnabled()
-    GPA_Status IsCounterEnabled(gpa_uint32 counterIndex) const override;
+    /// @copydoc IGpaCounterScheduler::IsCounterEnabled()
+    GpaStatus IsCounterEnabled(GpaUInt32 counter_index) const override;
 
-    /// \copydoc IGPACounterScheduler::GetNumRequiredPasses()
-    GPA_Status GetNumRequiredPasses(gpa_uint32* pNumRequiredPassesOut) override;
+    /// @copydoc IGpaCounterScheduler::GetNumRequiredPasses()
+    GpaStatus GetNumRequiredPasses(GpaUInt32* num_required_passes_out) override;
 
-    /// \copydoc IGPACounterScheduler::GetCounterSelectionChanged()
+    /// @copydoc IGpaCounterScheduler::GetCounterSelectionChanged()
     bool GetCounterSelectionChanged() const override;
 
-    /// \copydoc IGPACounterScheduler::BeginProfile()
-    GPA_Status BeginProfile() override;
+    /// @copydoc IGpaCounterScheduler::BeginProfile()
+    GpaStatus BeginProfile() override;
 
-    /// \copydoc IGPACounterScheduler::BeginPass()
+    /// @copydoc IGpaCounterScheduler::BeginPass()
     void BeginPass() override;
 
-    /// \copydoc IGPACounterScheduler::GetCountersForPass()
-    std::vector<unsigned int>* GetCountersForPass(gpa_uint32 passIndex) override;
+    /// @copydoc IGpaCounterScheduler::GetCountersForPass()
+    std::vector<unsigned int>* GetCountersForPass(GpaUInt32 pass_index) override;
 
-    /// \copydoc IGPACounterScheduler::EndPass()
+    /// @copydoc IGpaCounterScheduler::EndPass()
     void EndPass() override;
 
-    /// \copydoc IGPACounterScheduler::EndProfile()
-    GPA_Status EndProfile() override;
+    /// @copydoc IGpaCounterScheduler::EndProfile()
+    GpaStatus EndProfile() override;
 
-    /// \copydoc IGPACounterScheduler::GetCounterResultLocations()
-    CounterResultLocationMap* GetCounterResultLocations(unsigned int publicCounterIndex) override;
+    /// @copydoc IGpaCounterScheduler::GetCounterResultLocations()
+    CounterResultLocationMap* GetCounterResultLocations(unsigned int public_counter_index) override;
 
-    /// \copydoc IGPACounterScheduler::SetDrawCallCounts()
-    void SetDrawCallCounts(int iCounts) override;
+    /// @copydoc IGpaCounterScheduler::SetDrawCallCounts()
+    void SetDrawCallCounts(int internal_counts) override;
 
 protected:
-    /// Gets the preferred counter splitting algorithm
-    /// \return the preferred counter splitting algorithm
-    virtual GPACounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const = 0;
+    /// @brief Gets the preferred counter splitting algorithm.
+    ///
+    /// @return the preferred counter splitting algorithm.
+    virtual GpaCounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const = 0;
 
-    /// Helper function to disable a counter
-    /// \param index the index of the counter to disable
-    /// \return GPA_STATUS_OK on success
-    virtual GPA_Status DoDisableCounter(gpa_uint32 index);
+    /// @brief Helper function to disable a counter.
+    ///
+    /// @param [in] index The index of the counter to disable.
+    ///
+    /// @return kGpaStatusOk on success.
+    virtual GpaStatus DoDisableCounter(GpaUInt32 index);
 
-    /// Helper function to get the number of software counters
-    /// \return the number of software counters
-    virtual gpa_uint32 DoGetNumSoftwareCounters() const;
+    /// @brief Helper function to get the number of software counters.
+    ///
+    /// @return The number of software counters.
+    virtual GpaUInt32 DoGetNumSoftwareCounters() const;
 
-    /// Helper function called when beginning a profile
-    /// \return GPA_STATUS_OK on success
-    virtual GPA_Status DoBeginProfile();
+    /// @brief Helper function called when beginning a profile.
+    ///
+    /// @return kGpaStatusOk on success.
+    virtual GpaStatus DoBeginProfile();
 
-    /// Helper function called when ending a profile
-    /// \return GPA_STATUS_OK on success
-    virtual GPA_Status DoEndProfile();
+    /// @brief Helper function called when ending a profile.
+    ///
+    /// @return kGpaStatusOk on success.
+    virtual GpaStatus DoEndProfile();
 
-    /// Helper function called when beginning a pass
+    /// @brief Helper function called when beginning a pass.
     virtual void DoBeginPass();
 
-    /// Helper function called when ending a pass
+    /// @brief Helper function called when ending a pass.
     virtual void DoEndPass();
 
-    /// Helper function called when setting draw call counts
-    /// \param iCount draw call count per frame
-    virtual void DoSetDrawCallCounts(int iCount);
+    /// @brief Helper function called when setting draw call counts.
+    ///
+    /// @param [in] internal_count Draw call count per frame.
+    virtual void DoSetDrawCallCounts(int internal_count);
 
-    /// A map between a public counter index and the set of hardware counters that compose the public counter.
+    /// @brief A map between a public counter index and the set of hardware counters that compose the public counter.
+    ///
     /// For each hardware counter, there is a map from the hardware counter to the counter result location (pass and offset) for that specific counter.
     /// Multiple public counters may be enabled which require the same hardware counter, but the hardware counter may be profiled in multiple passes so
     /// that the public counters will be consistent. This complex set of maps allows us to find the correct pass and offset for the instance of a
     /// hardware counter that is required for a specific public counter.
-    std::map<DerivedCounterIndex, CounterResultLocationMap> m_counterResultLocationMap;
+    std::map<DerivedCounterIndex, CounterResultLocationMap> counter_result_location_map_;
 
-    /// The counter accessor used by the scheduler
-    IGPACounterAccessor* m_pCounterAccessor;
+    /// The counter accessor used by the scheduler.
+    IGpaCounterAccessor* counter_accessor_;
 
-    /// The vendor id used by the scheduler
-    gpa_uint32 m_vendorId;
+    /// The vendor id used by the scheduler.
+    GpaUInt32 vendor_id_;
 
-    /// The device id used by the scheduler
-    gpa_uint32 m_deviceId;
+    /// The device id used by the scheduler.
+    GpaUInt32 device_id_;
 
-    /// The revision id used by the scheduler
-    gpa_uint32 m_revisionId;
+    /// The revision id used by the scheduler.
+    GpaUInt32 revision_id_;
 
-    /// This must be maintained in parallel with m_enabledPublicCounterBits - both are views of the list of active counters
-    /// m_enabledPublicIndices as a list of indices, m_enabledPublicCounterBits as a random access bool array.
-    std::vector<gpa_uint32> m_enabledPublicIndices;
+    /// This must be maintained in parallel with enabled_public_counter_bits_ - both are views of the list of active counters
+    /// enabled_public_indices_ as a list of indices, enabled_public_counter_bits_ as a random access bool array.
+    std::vector<GpaUInt32> enabled_public_indices_;
 
-    /// This must be maintained in parallel with m_enabledPublicIndices - both are views of the list of active counters
-    /// m_enabledPublicCounterBits was added for performance reasons.
-    std::vector<bool> m_enabledPublicCounterBits;
+    /// This must be maintained in parallel with enabled_public_indices_ - both are views of the list of active counters
+    /// enabled_public_counter_bits_ was added for performance reasons.
+    std::vector<bool> enabled_public_counter_bits_;
 
     /// Records whether or not the counter selection changed since GPA_BeginSampling was last called.
-    bool m_counterSelectionChanged;
+    bool counter_selection_changed_;
 
     /// List of passes, which are identified by a list of counter indices which are in that pass.
     /// Populated when GetNumRequiredPasses is called.
-    GPACounterPassList m_passPartitions;
+    GpaCounterPassList pass_partitions_;
 
     /// As the profile is happening, this tracks the current pass.
-    unsigned int m_passIndex;
+    unsigned int pass_index_;
 };
 
-#endif  //_GPA_COUNTER_GENERATOR_BASE_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_SCHEDULER_BASE_H_

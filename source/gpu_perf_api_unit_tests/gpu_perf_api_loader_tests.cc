@@ -1,23 +1,25 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Unit tests for GPUPerfAPILoader
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Unit tests for GpuPerfApiLoader.
 //==============================================================================
 
-#include <gtest/gtest.h>
 #include <map>
-#include "utils/gpu_perf_api_loader.h"
 
-class GPUPerfAPILoaderTest : public ::testing::TestWithParam<GPA_API_Type>
+#include <gtest/gtest.h>
+
+#include "gpu_perf_api_unit_tests/utils/gpu_perf_api_loader.h"
+
+class GpuPerfApiLoaderTest : public ::testing::TestWithParam<GpaApiType>
 {
 public:
-    GPUPerfAPILoaderTest()
-        : ::testing::TestWithParam<GPA_API_Type>()
+    GpuPerfApiLoaderTest()
+        : ::testing::TestWithParam<GpaApiType>()
     {
     }
 
-    ~GPUPerfAPILoaderTest()
+    ~GpuPerfApiLoaderTest()
     {
     }
 
@@ -31,49 +33,44 @@ public:
     void Run();
 
 private:
-    std::map<GPA_API_Type, const char*> m_apiName;
+    std::map<GpaApiType, const char*> api_name_;
 };
 
-void GPUPerfAPILoaderTest::SetUp()
+void GpuPerfApiLoaderTest::SetUp()
 {
-    m_apiName[GPA_API_DIRECTX_11] = "DX11";
-    m_apiName[GPA_API_DIRECTX_12] = "DX12";
-    m_apiName[GPA_API_OPENGL]     = "OpenGL";
-    m_apiName[GPA_API_OPENCL]     = "OpenCL";
-    m_apiName[GPA_API_VULKAN]     = "Vulkan";
-    m_apiName[GPA_API_NO_SUPPORT] = "ApiNotSupported";
+    api_name_[kGpaApiDirectx11] = "DX11";
+    api_name_[kGpaApiDirectx12] = "DX12";
+    api_name_[kGpaApiOpengl]    = "OpenGL";
+    api_name_[kGpaApiOpencl]    = "OpenCL";
+    api_name_[kGpaApiVulkan]    = "Vulkan";
+    api_name_[kGpaApiNoSupport] = "ApiNotSupported";
 }
 
-void GPUPerfAPILoaderTest::TearDown()
+void GpuPerfApiLoaderTest::TearDown()
 {
 }
 
-void GPUPerfAPILoaderTest::Run()
+void GpuPerfApiLoaderTest::Run()
 {
-    GPA_API_Type Api = GetParam();
-    ASSERT_NE(0u, m_apiName.count(Api)) << "API name out of range.";
-    const char* pApiName = m_apiName.find(Api)->second;
+    GpaApiType api = GetParam();
+    ASSERT_NE(0u, api_name_.count(api)) << "API name out of range.";
+    const char* api_name = api_name_.find(api)->second;
 
-    GPUPerfAPILoader gpaLoader;
-    const char*      dllPath      = "";
-    const char*      errorMessage = "";
+    GpuPerfApiLoader gpa_loader;
+    const char*      dll_path      = "";
+    const char*      error_message = "";
 
-    EXPECT_TRUE(gpaLoader.Load(dllPath, Api, &errorMessage))
-        << "GPA loading with the legacy method failed for " << pApiName << ". Error message: " << errorMessage;
+    EXPECT_TRUE(gpa_loader.Load(dll_path, api, &error_message))
+        << "GPA loading with the legacy method failed for " << api_name << ". Error message: " << error_message;
 }
 
-TEST_P(GPUPerfAPILoaderTest, Api)
+TEST_P(GpuPerfApiLoaderTest, api)
 {
     Run();
 }
 
 #ifdef _WIN32
-INSTANTIATE_TEST_CASE_P(WindowsAPI,
-                        GPUPerfAPILoaderTest,
-                        ::testing::Values(GPA_API_DIRECTX_11, GPA_API_DIRECTX_12, GPA_API_VULKAN, GPA_API_OPENCL, GPA_API_OPENGL));
+INSTANTIATE_TEST_CASE_P(WindowsAPI, GpuPerfApiLoaderTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpencl, kGpaApiOpengl));
 #else
-INSTANTIATE_TEST_CASE_P(LinuxAPI,
-                        GPUPerfAPILoaderTest,
-                        ::testing::Values(GPA_API_VULKAN,
-                                          GPA_API_OPENGL));
+INSTANTIATE_TEST_CASE_P(LinuxAPI, GpuPerfApiLoaderTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
 #endif

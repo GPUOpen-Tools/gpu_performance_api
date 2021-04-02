@@ -1,81 +1,81 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Class to manage the D3D11 Query-based software counters
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Class to manage the D3D11 Query-based software counters.
 //==============================================================================
 
-#include "gpa_sw_counter_manager.h"
+#include "gpu_perf_api_counter_generator/gpa_sw_counter_manager.h"
 
 SwCounterManager::SwCounterManager()
-    : m_amdCounters(0)
-    , m_swGPUTimeCounter(0)
-    , m_swGPUTimeEnabled(false)
-    , m_swCountersGenerated(false)
+    : amd_counters_(0)
+    , sw_gpu_time_counter_(0)
+    , sw_gpu_time_enabled_(false)
+    , sw_counters_generated_(false)
 {
-    m_swCounters.clear();
-    m_enabledSwCounters.clear();
+    sw_counters_.clear();
+    enabled_sw_counters_.clear();
 }
 
 SwCounterManager::~SwCounterManager()
 {
-    m_swCounters.clear();
-    m_enabledSwCounters.clear();
+    sw_counters_.clear();
+    enabled_sw_counters_.clear();
 
-    m_swCountersGenerated = false;
+    sw_counters_generated_ = false;
 }
 
-void SwCounterManager::AddSwCounter(const GPA_SoftwareCounterDesc& counterDesc)
+void SwCounterManager::AddSwCounter(const GpaSoftwareCounterDesc& counter_desc)
 {
-    m_swCounters.push_back(counterDesc);
+    sw_counters_.push_back(counter_desc);
 }
 
-void SwCounterManager::EnableSwCounter(gpa_uint32 index)
+void SwCounterManager::EnableSwCounter(GpaUInt32 index)
 {
-    m_enabledSwCounters.insert(index);
+    enabled_sw_counters_.insert(index);
 }
 
-void SwCounterManager::DisableSwCounter(gpa_uint32 index)
+void SwCounterManager::DisableSwCounter(GpaUInt32 index)
 {
-    m_enabledSwCounters.erase(index);
+    enabled_sw_counters_.erase(index);
 }
 
-void SwCounterManager::AddSwCounterMap(const gpa_uint32 pubIndex, const gpa_uint32 swIndex)
+void SwCounterManager::AddSwCounterMap(const GpaUInt32 pub_index, const GpaUInt32 sw_index)
 {
-    m_swCounterIndexMap[swIndex] = pubIndex;
+    sw_counter_index_map_[sw_index] = pub_index;
 }
 
 void SwCounterManager::ClearSwCounterMap()
 {
-    m_swCounterIndexMap.clear();
+    sw_counter_index_map_.clear();
 }
 
-void SwCounterManager::SetSwGPUTimeCounterIndex(const gpa_uint32 pubIndex)
+void SwCounterManager::SetSwGpuTimeCounterIndex(const GpaUInt32 pub_index)
 {
-    m_swGPUTimeCounter = pubIndex;
+    sw_gpu_time_counter_ = pub_index;
 }
 
-void SwCounterManager::SetSwGPUTimeCounterEnabled(const bool enabled)
+void SwCounterManager::SetSwGpuTimeCounterEnabled(const bool enabled)
 {
-    m_swGPUTimeEnabled = enabled;
+    sw_gpu_time_enabled_ = enabled;
 }
 
-bool SwCounterManager::SwGPUTimeCounterEnabled() const
+bool SwCounterManager::SwGpuTimeCounterEnabled() const
 {
-    return m_swGPUTimeEnabled;
+    return sw_gpu_time_enabled_;
 }
 
-gpa_uint32 SwCounterManager::GetSwGPUTimeCounterIndex() const
+GpaUInt32 SwCounterManager::GetSwGpuTimeCounterIndex() const
 {
-    return m_swGPUTimeCounter;
+    return sw_gpu_time_counter_;
 }
 
-gpa_uint32 SwCounterManager::GetSwCounterPubIndex(const gpa_uint32 swIndex) const
+GpaUInt32 SwCounterManager::GetSwCounterPubIndex(const GpaUInt32 sw_index) const
 {
-    gpa_uint32 pubIndex = 0;
-    auto       search   = m_swCounterIndexMap.find(swIndex);
+    GpaUInt32 pubIndex = 0;
+    auto       search   = sw_counter_index_map_.find(sw_index);
 
-    if (search != m_swCounterIndexMap.end())
+    if (search != sw_counter_index_map_.end())
     {
         pubIndex = search->second;
     }
@@ -83,47 +83,47 @@ gpa_uint32 SwCounterManager::GetSwCounterPubIndex(const gpa_uint32 swIndex) cons
     return pubIndex;
 }
 
-void SwCounterManager::SetNumAmdCounters(const gpa_uint32 counters)
+void SwCounterManager::SetNumAmdCounters(const GpaUInt32 counters)
 {
-    m_amdCounters = counters;
+    amd_counters_ = counters;
 }
 
-gpa_uint32 SwCounterManager::GetNumAmdCounters() const
+GpaUInt32 SwCounterManager::GetNumAmdCounters() const
 {
-    return m_amdCounters;
+    return amd_counters_;
 }
 
 bool SwCounterManager::SwCountersGenerated() const
 {
-    return m_swCountersGenerated;
+    return sw_counters_generated_;
 }
 
 bool SwCounterManager::SwCounterEnabled() const
 {
-    return (m_enabledSwCounters.empty() == false);
+    return (enabled_sw_counters_.empty() == false);
 }
 
 void SwCounterManager::ClearEnabledSwCounters()
 {
-    m_enabledSwCounters.clear();
+    enabled_sw_counters_.clear();
 }
 
 const SwCounterDescVec* SwCounterManager::GetSwCounters() const
 {
-    return &m_swCounters;
+    return &sw_counters_;
 }
 
-gpa_uint32 SwCounterManager::GetNumSwCounters() const
+GpaUInt32 SwCounterManager::GetNumSwCounters() const
 {
-    return static_cast<gpa_uint32>(m_swCounters.size());
+    return static_cast<GpaUInt32>(sw_counters_.size());
 }
 
 const EnabledSwCounterSet* SwCounterManager::GetEnabledSwCounters() const
 {
-    return &m_enabledSwCounters;
+    return &enabled_sw_counters_;
 }
 
 void SwCounterManager::SetSwCountersGenerated(const bool set)
 {
-    m_swCountersGenerated = set;
+    sw_counters_generated_ = set;
 }

@@ -1,160 +1,168 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief PublicCounterDefinitions for VKGFX103 for testing
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief PublicCounterDefinitions for VK GFX103 for testing.
 //==============================================================================
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#ifndef _GPA_TESTS_COUNTERS_PUBLIC_VKGFX103_
-#define _GPA_TESTS_COUNTERS_PUBLIC_VKGFX103_
+#ifndef GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_VK_GFX103
+#define GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_VK_GFX103
 
-#include "gpa_counter_desc.h"
+#include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
 /// Macros for VKGfx103 Public counter index
-#define GPUTimePublicVKGfx103 0
-#define ExecutionDurationPublicVKGfx103 1
-#define ExecutionStartPublicVKGfx103 2
-#define ExecutionEndPublicVKGfx103 3
-#define GPUBusyPublicVKGfx103 4
-#define GPUBusyCyclesPublicVKGfx103 5
-#define VSBusyPublicVKGfx103 6
-#define VSBusyCyclesPublicVKGfx103 7
-#define VSTimePublicVKGfx103 8
-#define HSBusyPublicVKGfx103 9
-#define HSBusyCyclesPublicVKGfx103 10
-#define HSTimePublicVKGfx103 11
-#define DSBusyPublicVKGfx103 12
-#define DSBusyCyclesPublicVKGfx103 13
-#define DSTimePublicVKGfx103 14
-#define PSBusyPublicVKGfx103 15
-#define PSBusyCyclesPublicVKGfx103 16
-#define PSTimePublicVKGfx103 17
-#define CSBusyPublicVKGfx103 18
-#define CSBusyCyclesPublicVKGfx103 19
-#define CSTimePublicVKGfx103 20
-#define VSVerticesInPublicVKGfx103 21
-#define VSVALUInstCountPublicVKGfx103 22
-#define VSSALUInstCountPublicVKGfx103 23
-#define VSVALUBusyPublicVKGfx103 24
-#define VSVALUBusyCyclesPublicVKGfx103 25
-#define VSSALUBusyPublicVKGfx103 26
-#define VSSALUBusyCyclesPublicVKGfx103 27
-#define HSPatchesPublicVKGfx103 28
-#define HSVALUInstCountPublicVKGfx103 29
-#define HSSALUInstCountPublicVKGfx103 30
-#define HSVALUBusyPublicVKGfx103 31
-#define HSVALUBusyCyclesPublicVKGfx103 32
-#define HSSALUBusyPublicVKGfx103 33
-#define HSSALUBusyCyclesPublicVKGfx103 34
-#define DSVerticesInPublicVKGfx103 35
-#define DSVALUInstCountPublicVKGfx103 36
-#define DSSALUInstCountPublicVKGfx103 37
-#define PrimitiveAssemblyBusyPublicVKGfx103 38
-#define PrimitiveAssemblyBusyCyclesPublicVKGfx103 39
-#define PrimitivesInPublicVKGfx103 40
-#define CulledPrimsPublicVKGfx103 41
-#define ClippedPrimsPublicVKGfx103 42
-#define PAStalledOnRasterizerPublicVKGfx103 43
-#define PAStalledOnRasterizerCyclesPublicVKGfx103 44
-#define PSPixelsOutPublicVKGfx103 45
-#define PSExportStallsPublicVKGfx103 46
-#define PSExportStallsCyclesPublicVKGfx103 47
-#define PSVALUInstCountPublicVKGfx103 48
-#define PSSALUInstCountPublicVKGfx103 49
-#define PSVALUBusyPublicVKGfx103 50
-#define PSVALUBusyCyclesPublicVKGfx103 51
-#define PSSALUBusyPublicVKGfx103 52
-#define PSSALUBusyCyclesPublicVKGfx103 53
-#define CSThreadGroupsPublicVKGfx103 54
-#define CSWavefrontsPublicVKGfx103 55
-#define CSThreadsPublicVKGfx103 56
-#define CSVALUInstsPublicVKGfx103 57
-#define CSVALUUtilizationPublicVKGfx103 58
-#define CSSALUInstsPublicVKGfx103 59
-#define CSVFetchInstsPublicVKGfx103 60
-#define CSSFetchInstsPublicVKGfx103 61
-#define CSVWriteInstsPublicVKGfx103 62
-#define CSVALUBusyPublicVKGfx103 63
-#define CSVALUBusyCyclesPublicVKGfx103 64
-#define CSSALUBusyPublicVKGfx103 65
-#define CSSALUBusyCyclesPublicVKGfx103 66
-#define CSMemUnitBusyPublicVKGfx103 67
-#define CSMemUnitBusyCyclesPublicVKGfx103 68
-#define CSMemUnitStalledPublicVKGfx103 69
-#define CSMemUnitStalledCyclesPublicVKGfx103 70
-#define CSWriteUnitStalledPublicVKGfx103 71
-#define CSWriteUnitStalledCyclesPublicVKGfx103 72
-#define CSGDSInstsPublicVKGfx103 73
-#define CSLDSInstsPublicVKGfx103 74
-#define CSALUStalledByLDSPublicVKGfx103 75
-#define CSALUStalledByLDSCyclesPublicVKGfx103 76
-#define CSLDSBankConflictPublicVKGfx103 77
-#define CSLDSBankConflictCyclesPublicVKGfx103 78
-#define TexUnitBusyPublicVKGfx103 79
-#define TexUnitBusyCyclesPublicVKGfx103 80
-#define TexAveAnisotropyPublicVKGfx103 81
-#define DepthStencilTestBusyPublicVKGfx103 82
-#define DepthStencilTestBusyCountPublicVKGfx103 83
-#define HiZTilesAcceptedPublicVKGfx103 84
-#define HiZTilesAcceptedCountPublicVKGfx103 85
-#define HiZTilesRejectedCountPublicVKGfx103 86
-#define PreZTilesDetailCulledPublicVKGfx103 87
-#define PreZTilesDetailCulledCountPublicVKGfx103 88
-#define PreZTilesDetailSurvivingCountPublicVKGfx103 89
-#define HiZQuadsCulledPublicVKGfx103 90
-#define HiZQuadsCulledCountPublicVKGfx103 91
-#define HiZQuadsAcceptedCountPublicVKGfx103 92
-#define PreZQuadsCulledPublicVKGfx103 93
-#define PreZQuadsCulledCountPublicVKGfx103 94
-#define PreZQuadsSurvivingCountPublicVKGfx103 95
-#define PostZQuadsPublicVKGfx103 96
-#define PostZQuadCountPublicVKGfx103 97
-#define PreZSamplesPassingPublicVKGfx103 98
-#define PreZSamplesFailingSPublicVKGfx103 99
-#define PreZSamplesFailingZPublicVKGfx103 100
-#define PostZSamplesPassingPublicVKGfx103 101
-#define PostZSamplesFailingSPublicVKGfx103 102
-#define PostZSamplesFailingZPublicVKGfx103 103
-#define ZUnitStalledPublicVKGfx103 104
-#define ZUnitStalledCyclesPublicVKGfx103 105
-#define DBMemReadPublicVKGfx103 106
-#define DBMemWrittenPublicVKGfx103 107
-#define CBMemReadPublicVKGfx103 108
-#define CBColorAndMaskReadPublicVKGfx103 109
-#define CBMemWrittenPublicVKGfx103 110
-#define CBColorAndMaskWrittenPublicVKGfx103 111
-#define CBSlowPixelPctPublicVKGfx103 112
-#define CBSlowPixelCountPublicVKGfx103 113
-#define L0CacheHitPublicVKGfx103 114
-#define L0CacheRequestCountPublicVKGfx103 115
-#define L0CacheHitCountPublicVKGfx103 116
-#define L0CacheMissCountPublicVKGfx103 117
-#define L1CacheHitPublicVKGfx103 118
-#define L1CacheRequestCountPublicVKGfx103 119
-#define L1CacheHitCountPublicVKGfx103 120
-#define L1CacheMissCountPublicVKGfx103 121
-#define L2CacheHitPublicVKGfx103 122
-#define L2CacheMissPublicVKGfx103 123
-#define L2CacheRequestCountPublicVKGfx103 124
-#define L2CacheHitCountPublicVKGfx103 125
-#define L2CacheMissCountPublicVKGfx103 126
-#define FetchSizePublicVKGfx103 127
-#define WriteSizePublicVKGfx103 128
-#define MemUnitBusyPublicVKGfx103 129
-#define MemUnitBusyCyclesPublicVKGfx103 130
-#define MemUnitStalledPublicVKGfx103 131
-#define MemUnitStalledCyclesPublicVKGfx103 132
-#define WriteUnitStalledPublicVKGfx103 133
-#define WriteUnitStalledCyclesPublicVKGfx103 134
-#define LocalVidMemBytesPublicVKGfx103 135
-#define PcieBytesPublicVKGfx103 136
+#define GPUTIME_PUBLIC_VK_GFX103 0
+#define EXECUTIONDURATION_PUBLIC_VK_GFX103 1
+#define EXECUTIONSTART_PUBLIC_VK_GFX103 2
+#define EXECUTIONEND_PUBLIC_VK_GFX103 3
+#define GPUBUSY_PUBLIC_VK_GFX103 4
+#define GPUBUSYCYCLES_PUBLIC_VK_GFX103 5
+#define VSBUSY_PUBLIC_VK_GFX103 6
+#define VSBUSYCYCLES_PUBLIC_VK_GFX103 7
+#define VSTIME_PUBLIC_VK_GFX103 8
+#define HSBUSY_PUBLIC_VK_GFX103 9
+#define HSBUSYCYCLES_PUBLIC_VK_GFX103 10
+#define HSTIME_PUBLIC_VK_GFX103 11
+#define DSBUSY_PUBLIC_VK_GFX103 12
+#define DSBUSYCYCLES_PUBLIC_VK_GFX103 13
+#define DSTIME_PUBLIC_VK_GFX103 14
+#define PSBUSY_PUBLIC_VK_GFX103 15
+#define PSBUSYCYCLES_PUBLIC_VK_GFX103 16
+#define PSTIME_PUBLIC_VK_GFX103 17
+#define CSBUSY_PUBLIC_VK_GFX103 18
+#define CSBUSYCYCLES_PUBLIC_VK_GFX103 19
+#define CSTIME_PUBLIC_VK_GFX103 20
+#define VSVERTICESIN_PUBLIC_VK_GFX103 21
+#define VSVALUINSTCOUNT_PUBLIC_VK_GFX103 22
+#define VSSALUINSTCOUNT_PUBLIC_VK_GFX103 23
+#define VSVALUBUSY_PUBLIC_VK_GFX103 24
+#define VSVALUBUSYCYCLES_PUBLIC_VK_GFX103 25
+#define VSSALUBUSY_PUBLIC_VK_GFX103 26
+#define VSSALUBUSYCYCLES_PUBLIC_VK_GFX103 27
+#define HSPATCHES_PUBLIC_VK_GFX103 28
+#define HSVALUINSTCOUNT_PUBLIC_VK_GFX103 29
+#define HSSALUINSTCOUNT_PUBLIC_VK_GFX103 30
+#define HSVALUBUSY_PUBLIC_VK_GFX103 31
+#define HSVALUBUSYCYCLES_PUBLIC_VK_GFX103 32
+#define HSSALUBUSY_PUBLIC_VK_GFX103 33
+#define HSSALUBUSYCYCLES_PUBLIC_VK_GFX103 34
+#define DSVERTICESIN_PUBLIC_VK_GFX103 35
+#define DSVALUINSTCOUNT_PUBLIC_VK_GFX103 36
+#define DSSALUINSTCOUNT_PUBLIC_VK_GFX103 37
+#define PRIMITIVEASSEMBLYBUSY_PUBLIC_VK_GFX103 38
+#define PRIMITIVEASSEMBLYBUSYCYCLES_PUBLIC_VK_GFX103 39
+#define PRIMITIVESIN_PUBLIC_VK_GFX103 40
+#define CULLEDPRIMS_PUBLIC_VK_GFX103 41
+#define CLIPPEDPRIMS_PUBLIC_VK_GFX103 42
+#define PASTALLEDONRASTERIZER_PUBLIC_VK_GFX103 43
+#define PASTALLEDONRASTERIZERCYCLES_PUBLIC_VK_GFX103 44
+#define PSPIXELSOUT_PUBLIC_VK_GFX103 45
+#define PSEXPORTSTALLS_PUBLIC_VK_GFX103 46
+#define PSEXPORTSTALLSCYCLES_PUBLIC_VK_GFX103 47
+#define PSVALUINSTCOUNT_PUBLIC_VK_GFX103 48
+#define PSSALUINSTCOUNT_PUBLIC_VK_GFX103 49
+#define PSVALUBUSY_PUBLIC_VK_GFX103 50
+#define PSVALUBUSYCYCLES_PUBLIC_VK_GFX103 51
+#define PSSALUBUSY_PUBLIC_VK_GFX103 52
+#define PSSALUBUSYCYCLES_PUBLIC_VK_GFX103 53
+#define CSTHREADGROUPS_PUBLIC_VK_GFX103 54
+#define CSWAVEFRONTS_PUBLIC_VK_GFX103 55
+#define CSTHREADS_PUBLIC_VK_GFX103 56
+#define CSVALUINSTS_PUBLIC_VK_GFX103 57
+#define CSVALUUTILIZATION_PUBLIC_VK_GFX103 58
+#define CSSALUINSTS_PUBLIC_VK_GFX103 59
+#define CSVFETCHINSTS_PUBLIC_VK_GFX103 60
+#define CSSFETCHINSTS_PUBLIC_VK_GFX103 61
+#define CSVWRITEINSTS_PUBLIC_VK_GFX103 62
+#define CSVALUBUSY_PUBLIC_VK_GFX103 63
+#define CSVALUBUSYCYCLES_PUBLIC_VK_GFX103 64
+#define CSSALUBUSY_PUBLIC_VK_GFX103 65
+#define CSSALUBUSYCYCLES_PUBLIC_VK_GFX103 66
+#define CSMEMUNITBUSY_PUBLIC_VK_GFX103 67
+#define CSMEMUNITBUSYCYCLES_PUBLIC_VK_GFX103 68
+#define CSMEMUNITSTALLED_PUBLIC_VK_GFX103 69
+#define CSMEMUNITSTALLEDCYCLES_PUBLIC_VK_GFX103 70
+#define CSWRITEUNITSTALLED_PUBLIC_VK_GFX103 71
+#define CSWRITEUNITSTALLEDCYCLES_PUBLIC_VK_GFX103 72
+#define CSGDSINSTS_PUBLIC_VK_GFX103 73
+#define CSLDSINSTS_PUBLIC_VK_GFX103 74
+#define CSALUSTALLEDBYLDS_PUBLIC_VK_GFX103 75
+#define CSALUSTALLEDBYLDSCYCLES_PUBLIC_VK_GFX103 76
+#define CSLDSBANKCONFLICT_PUBLIC_VK_GFX103 77
+#define CSLDSBANKCONFLICTCYCLES_PUBLIC_VK_GFX103 78
+#define TEXUNITBUSY_PUBLIC_VK_GFX103 79
+#define TEXUNITBUSYCYCLES_PUBLIC_VK_GFX103 80
+#define TEXAVEANISOTROPY_PUBLIC_VK_GFX103 81
+#define DEPTHSTENCILTESTBUSY_PUBLIC_VK_GFX103 82
+#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_VK_GFX103 83
+#define HIZTILESACCEPTED_PUBLIC_VK_GFX103 84
+#define HIZTILESACCEPTEDCOUNT_PUBLIC_VK_GFX103 85
+#define HIZTILESREJECTEDCOUNT_PUBLIC_VK_GFX103 86
+#define PREZTILESDETAILCULLED_PUBLIC_VK_GFX103 87
+#define PREZTILESDETAILCULLEDCOUNT_PUBLIC_VK_GFX103 88
+#define PREZTILESDETAILSURVIVINGCOUNT_PUBLIC_VK_GFX103 89
+#define HIZQUADSCULLED_PUBLIC_VK_GFX103 90
+#define HIZQUADSCULLEDCOUNT_PUBLIC_VK_GFX103 91
+#define HIZQUADSACCEPTEDCOUNT_PUBLIC_VK_GFX103 92
+#define PREZQUADSCULLED_PUBLIC_VK_GFX103 93
+#define PREZQUADSCULLEDCOUNT_PUBLIC_VK_GFX103 94
+#define PREZQUADSSURVIVINGCOUNT_PUBLIC_VK_GFX103 95
+#define POSTZQUADS_PUBLIC_VK_GFX103 96
+#define POSTZQUADCOUNT_PUBLIC_VK_GFX103 97
+#define PREZSAMPLESPASSING_PUBLIC_VK_GFX103 98
+#define PREZSAMPLESFAILINGS_PUBLIC_VK_GFX103 99
+#define PREZSAMPLESFAILINGZ_PUBLIC_VK_GFX103 100
+#define POSTZSAMPLESPASSING_PUBLIC_VK_GFX103 101
+#define POSTZSAMPLESFAILINGS_PUBLIC_VK_GFX103 102
+#define POSTZSAMPLESFAILINGZ_PUBLIC_VK_GFX103 103
+#define ZUNITSTALLED_PUBLIC_VK_GFX103 104
+#define ZUNITSTALLEDCYCLES_PUBLIC_VK_GFX103 105
+#define DBMEMREAD_PUBLIC_VK_GFX103 106
+#define DBMEMWRITTEN_PUBLIC_VK_GFX103 107
+#define CBMEMREAD_PUBLIC_VK_GFX103 108
+#define CBCOLORANDMASKREAD_PUBLIC_VK_GFX103 109
+#define CBMEMWRITTEN_PUBLIC_VK_GFX103 110
+#define CBCOLORANDMASKWRITTEN_PUBLIC_VK_GFX103 111
+#define CBSLOWPIXELPCT_PUBLIC_VK_GFX103 112
+#define CBSLOWPIXELCOUNT_PUBLIC_VK_GFX103 113
+#define L0CACHEHIT_PUBLIC_VK_GFX103 114
+#define L0CACHEREQUESTCOUNT_PUBLIC_VK_GFX103 115
+#define L0CACHEHITCOUNT_PUBLIC_VK_GFX103 116
+#define L0CACHEMISSCOUNT_PUBLIC_VK_GFX103 117
+#define SCALARCACHEHIT_PUBLIC_VK_GFX103 118
+#define SCALARCACHEREQUESTCOUNT_PUBLIC_VK_GFX103 119
+#define SCALARCACHEHITCOUNT_PUBLIC_VK_GFX103 120
+#define SCALARCACHEMISSCOUNT_PUBLIC_VK_GFX103 121
+#define INSTCACHEHIT_PUBLIC_VK_GFX103 122
+#define INSTCACHEREQUESTCOUNT_PUBLIC_VK_GFX103 123
+#define INSTCACHEHITCOUNT_PUBLIC_VK_GFX103 124
+#define INSTCACHEMISSCOUNT_PUBLIC_VK_GFX103 125
+#define L1CACHEHIT_PUBLIC_VK_GFX103 126
+#define L1CACHEREQUESTCOUNT_PUBLIC_VK_GFX103 127
+#define L1CACHEHITCOUNT_PUBLIC_VK_GFX103 128
+#define L1CACHEMISSCOUNT_PUBLIC_VK_GFX103 129
+#define L2CACHEHIT_PUBLIC_VK_GFX103 130
+#define L2CACHEMISS_PUBLIC_VK_GFX103 131
+#define L2CACHEREQUESTCOUNT_PUBLIC_VK_GFX103 132
+#define L2CACHEHITCOUNT_PUBLIC_VK_GFX103 133
+#define L2CACHEMISSCOUNT_PUBLIC_VK_GFX103 134
+#define FETCHSIZE_PUBLIC_VK_GFX103 135
+#define WRITESIZE_PUBLIC_VK_GFX103 136
+#define MEMUNITBUSY_PUBLIC_VK_GFX103 137
+#define MEMUNITBUSYCYCLES_PUBLIC_VK_GFX103 138
+#define MEMUNITSTALLED_PUBLIC_VK_GFX103 139
+#define MEMUNITSTALLEDCYCLES_PUBLIC_VK_GFX103 140
+#define WRITEUNITSTALLED_PUBLIC_VK_GFX103 141
+#define WRITEUNITSTALLEDCYCLES_PUBLIC_VK_GFX103 142
+#define LOCALVIDMEMBYTES_PUBLIC_VK_GFX103 143
+#define PCIEBYTES_PUBLIC_VK_GFX103 144
 
-/// Number of public counters for VKGfx103
-const size_t VKGFX103_PUBLIC_COUNTER_COUNT = 137;
+/// Number of public counters for VK GFX103 
+const size_t kVkGfx103PublicCounterCount = 145;
 
-/// Array of public counters for VKGfx103
-extern const GPACounterDesc VKGFX103_PUBLIC_COUNTERS[VKGFX103_PUBLIC_COUNTER_COUNT];
+/// Array of public counters for VK GFX103 
+extern const GpaCounterDesc kVkGfx103PublicCounters[kVkGfx103PublicCounterCount];
 
-#endif  // _GPA_TESTS_COUNTERS_PUBLIC_VKGFX103_
+#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_VK_GFX103

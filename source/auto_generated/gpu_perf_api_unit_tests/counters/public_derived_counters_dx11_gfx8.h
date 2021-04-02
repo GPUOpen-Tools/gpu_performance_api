@@ -1,171 +1,171 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief PublicCounterDefinitions for DX11GFX8 for testing
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief PublicCounterDefinitions for DX11 GFX8 for testing.
 //==============================================================================
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#ifndef _GPA_TESTS_COUNTERS_PUBLIC_DX11GFX8_
-#define _GPA_TESTS_COUNTERS_PUBLIC_DX11GFX8_
+#ifndef GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX11_GFX8
+#define GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX11_GFX8
 
-#include "gpa_counter_desc.h"
+#include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
 /// Macros for DX11Gfx8 Public counter index
-#define GPUTimePublicDX11Gfx8 0
-#define GPUBusyPublicDX11Gfx8 1
-#define GPUBusyCyclesPublicDX11Gfx8 2
-#define TessellatorBusyPublicDX11Gfx8 3
-#define TessellatorBusyCyclesPublicDX11Gfx8 4
-#define VSBusyPublicDX11Gfx8 5
-#define VSBusyCyclesPublicDX11Gfx8 6
-#define VSTimePublicDX11Gfx8 7
-#define HSBusyPublicDX11Gfx8 8
-#define HSBusyCyclesPublicDX11Gfx8 9
-#define HSTimePublicDX11Gfx8 10
-#define DSBusyPublicDX11Gfx8 11
-#define DSBusyCyclesPublicDX11Gfx8 12
-#define DSTimePublicDX11Gfx8 13
-#define GSBusyPublicDX11Gfx8 14
-#define GSBusyCyclesPublicDX11Gfx8 15
-#define GSTimePublicDX11Gfx8 16
-#define PSBusyPublicDX11Gfx8 17
-#define PSBusyCyclesPublicDX11Gfx8 18
-#define PSTimePublicDX11Gfx8 19
-#define CSBusyPublicDX11Gfx8 20
-#define CSBusyCyclesPublicDX11Gfx8 21
-#define CSTimePublicDX11Gfx8 22
-#define VSVerticesInPublicDX11Gfx8 23
-#define VSVALUInstCountPublicDX11Gfx8 24
-#define VSSALUInstCountPublicDX11Gfx8 25
-#define VSVALUBusyPublicDX11Gfx8 26
-#define VSVALUBusyCyclesPublicDX11Gfx8 27
-#define VSSALUBusyPublicDX11Gfx8 28
-#define VSSALUBusyCyclesPublicDX11Gfx8 29
-#define HSPatchesPublicDX11Gfx8 30
-#define HSVALUInstCountPublicDX11Gfx8 31
-#define HSSALUInstCountPublicDX11Gfx8 32
-#define HSVALUBusyPublicDX11Gfx8 33
-#define HSVALUBusyCyclesPublicDX11Gfx8 34
-#define HSSALUBusyPublicDX11Gfx8 35
-#define HSSALUBusyCyclesPublicDX11Gfx8 36
-#define DSVerticesInPublicDX11Gfx8 37
-#define DSVALUInstCountPublicDX11Gfx8 38
-#define DSSALUInstCountPublicDX11Gfx8 39
-#define DSVALUBusyPublicDX11Gfx8 40
-#define DSVALUBusyCyclesPublicDX11Gfx8 41
-#define DSSALUBusyPublicDX11Gfx8 42
-#define DSSALUBusyCyclesPublicDX11Gfx8 43
-#define GSPrimsInPublicDX11Gfx8 44
-#define GSVerticesOutPublicDX11Gfx8 45
-#define GSVALUInstCountPublicDX11Gfx8 46
-#define GSSALUInstCountPublicDX11Gfx8 47
-#define GSVALUBusyPublicDX11Gfx8 48
-#define GSVALUBusyCyclesPublicDX11Gfx8 49
-#define GSSALUBusyPublicDX11Gfx8 50
-#define GSSALUBusyCyclesPublicDX11Gfx8 51
-#define PrimitiveAssemblyBusyPublicDX11Gfx8 52
-#define PrimitiveAssemblyBusyCyclesPublicDX11Gfx8 53
-#define PrimitivesInPublicDX11Gfx8 54
-#define CulledPrimsPublicDX11Gfx8 55
-#define ClippedPrimsPublicDX11Gfx8 56
-#define PAStalledOnRasterizerPublicDX11Gfx8 57
-#define PAStalledOnRasterizerCyclesPublicDX11Gfx8 58
-#define PSPixelsOutPublicDX11Gfx8 59
-#define PSExportStallsPublicDX11Gfx8 60
-#define PSExportStallsCyclesPublicDX11Gfx8 61
-#define PSVALUInstCountPublicDX11Gfx8 62
-#define PSSALUInstCountPublicDX11Gfx8 63
-#define PSVALUBusyPublicDX11Gfx8 64
-#define PSVALUBusyCyclesPublicDX11Gfx8 65
-#define PSSALUBusyPublicDX11Gfx8 66
-#define PSSALUBusyCyclesPublicDX11Gfx8 67
-#define CSThreadGroupsPublicDX11Gfx8 68
-#define CSWavefrontsPublicDX11Gfx8 69
-#define CSThreadsPublicDX11Gfx8 70
-#define CSVALUInstsPublicDX11Gfx8 71
-#define CSVALUUtilizationPublicDX11Gfx8 72
-#define CSSALUInstsPublicDX11Gfx8 73
-#define CSVFetchInstsPublicDX11Gfx8 74
-#define CSSFetchInstsPublicDX11Gfx8 75
-#define CSVWriteInstsPublicDX11Gfx8 76
-#define CSFlatVMemInstsPublicDX11Gfx8 77
-#define CSVALUBusyPublicDX11Gfx8 78
-#define CSVALUBusyCyclesPublicDX11Gfx8 79
-#define CSSALUBusyPublicDX11Gfx8 80
-#define CSSALUBusyCyclesPublicDX11Gfx8 81
-#define CSMemUnitBusyPublicDX11Gfx8 82
-#define CSMemUnitBusyCyclesPublicDX11Gfx8 83
-#define CSMemUnitStalledPublicDX11Gfx8 84
-#define CSMemUnitStalledCyclesPublicDX11Gfx8 85
-#define CSWriteUnitStalledPublicDX11Gfx8 86
-#define CSWriteUnitStalledCyclesPublicDX11Gfx8 87
-#define CSGDSInstsPublicDX11Gfx8 88
-#define CSLDSInstsPublicDX11Gfx8 89
-#define CSFlatLDSInstsPublicDX11Gfx8 90
-#define CSALUStalledByLDSPublicDX11Gfx8 91
-#define CSALUStalledByLDSCyclesPublicDX11Gfx8 92
-#define CSLDSBankConflictPublicDX11Gfx8 93
-#define CSLDSBankConflictCyclesPublicDX11Gfx8 94
-#define TexUnitBusyPublicDX11Gfx8 95
-#define TexUnitBusyCyclesPublicDX11Gfx8 96
-#define TexTriFilteringPctPublicDX11Gfx8 97
-#define TexTriFilteringCountPublicDX11Gfx8 98
-#define NoTexTriFilteringCountPublicDX11Gfx8 99
-#define TexVolFilteringPctPublicDX11Gfx8 100
-#define TexVolFilteringCountPublicDX11Gfx8 101
-#define NoTexVolFilteringCountPublicDX11Gfx8 102
-#define TexAveAnisotropyPublicDX11Gfx8 103
-#define DepthStencilTestBusyPublicDX11Gfx8 104
-#define DepthStencilTestBusyCountPublicDX11Gfx8 105
-#define HiZTilesAcceptedPublicDX11Gfx8 106
-#define HiZTilesAcceptedCountPublicDX11Gfx8 107
-#define HiZTilesRejectedCountPublicDX11Gfx8 108
-#define PreZTilesDetailCulledPublicDX11Gfx8 109
-#define PreZTilesDetailCulledCountPublicDX11Gfx8 110
-#define PreZTilesDetailSurvivingCountPublicDX11Gfx8 111
-#define HiZQuadsCulledPublicDX11Gfx8 112
-#define HiZQuadsCulledCountPublicDX11Gfx8 113
-#define HiZQuadsAcceptedCountPublicDX11Gfx8 114
-#define PreZQuadsCulledPublicDX11Gfx8 115
-#define PreZQuadsCulledCountPublicDX11Gfx8 116
-#define PreZQuadsSurvivingCountPublicDX11Gfx8 117
-#define PostZQuadsPublicDX11Gfx8 118
-#define PostZQuadCountPublicDX11Gfx8 119
-#define PreZSamplesPassingPublicDX11Gfx8 120
-#define PreZSamplesFailingSPublicDX11Gfx8 121
-#define PreZSamplesFailingZPublicDX11Gfx8 122
-#define PostZSamplesPassingPublicDX11Gfx8 123
-#define PostZSamplesFailingSPublicDX11Gfx8 124
-#define PostZSamplesFailingZPublicDX11Gfx8 125
-#define ZUnitStalledPublicDX11Gfx8 126
-#define ZUnitStalledCyclesPublicDX11Gfx8 127
-#define DBMemReadPublicDX11Gfx8 128
-#define DBMemWrittenPublicDX11Gfx8 129
-#define CBMemReadPublicDX11Gfx8 130
-#define CBColorAndMaskReadPublicDX11Gfx8 131
-#define CBMemWrittenPublicDX11Gfx8 132
-#define CBColorAndMaskWrittenPublicDX11Gfx8 133
-#define CBSlowPixelPctPublicDX11Gfx8 134
-#define CBSlowPixelCountPublicDX11Gfx8 135
-#define FetchSizePublicDX11Gfx8 136
-#define WriteSizePublicDX11Gfx8 137
-#define CacheHitPublicDX11Gfx8 138
-#define CacheMissPublicDX11Gfx8 139
-#define CacheHitCountPublicDX11Gfx8 140
-#define CacheMissCountPublicDX11Gfx8 141
-#define MemUnitBusyPublicDX11Gfx8 142
-#define MemUnitBusyCyclesPublicDX11Gfx8 143
-#define MemUnitStalledPublicDX11Gfx8 144
-#define MemUnitStalledCyclesPublicDX11Gfx8 145
-#define WriteUnitStalledPublicDX11Gfx8 146
-#define WriteUnitStalledCyclesPublicDX11Gfx8 147
+#define GPUTIME_PUBLIC_DX11_GFX8 0
+#define GPUBUSY_PUBLIC_DX11_GFX8 1
+#define GPUBUSYCYCLES_PUBLIC_DX11_GFX8 2
+#define TESSELLATORBUSY_PUBLIC_DX11_GFX8 3
+#define TESSELLATORBUSYCYCLES_PUBLIC_DX11_GFX8 4
+#define VSBUSY_PUBLIC_DX11_GFX8 5
+#define VSBUSYCYCLES_PUBLIC_DX11_GFX8 6
+#define VSTIME_PUBLIC_DX11_GFX8 7
+#define HSBUSY_PUBLIC_DX11_GFX8 8
+#define HSBUSYCYCLES_PUBLIC_DX11_GFX8 9
+#define HSTIME_PUBLIC_DX11_GFX8 10
+#define DSBUSY_PUBLIC_DX11_GFX8 11
+#define DSBUSYCYCLES_PUBLIC_DX11_GFX8 12
+#define DSTIME_PUBLIC_DX11_GFX8 13
+#define GSBUSY_PUBLIC_DX11_GFX8 14
+#define GSBUSYCYCLES_PUBLIC_DX11_GFX8 15
+#define GSTIME_PUBLIC_DX11_GFX8 16
+#define PSBUSY_PUBLIC_DX11_GFX8 17
+#define PSBUSYCYCLES_PUBLIC_DX11_GFX8 18
+#define PSTIME_PUBLIC_DX11_GFX8 19
+#define CSBUSY_PUBLIC_DX11_GFX8 20
+#define CSBUSYCYCLES_PUBLIC_DX11_GFX8 21
+#define CSTIME_PUBLIC_DX11_GFX8 22
+#define VSVERTICESIN_PUBLIC_DX11_GFX8 23
+#define VSVALUINSTCOUNT_PUBLIC_DX11_GFX8 24
+#define VSSALUINSTCOUNT_PUBLIC_DX11_GFX8 25
+#define VSVALUBUSY_PUBLIC_DX11_GFX8 26
+#define VSVALUBUSYCYCLES_PUBLIC_DX11_GFX8 27
+#define VSSALUBUSY_PUBLIC_DX11_GFX8 28
+#define VSSALUBUSYCYCLES_PUBLIC_DX11_GFX8 29
+#define HSPATCHES_PUBLIC_DX11_GFX8 30
+#define HSVALUINSTCOUNT_PUBLIC_DX11_GFX8 31
+#define HSSALUINSTCOUNT_PUBLIC_DX11_GFX8 32
+#define HSVALUBUSY_PUBLIC_DX11_GFX8 33
+#define HSVALUBUSYCYCLES_PUBLIC_DX11_GFX8 34
+#define HSSALUBUSY_PUBLIC_DX11_GFX8 35
+#define HSSALUBUSYCYCLES_PUBLIC_DX11_GFX8 36
+#define DSVERTICESIN_PUBLIC_DX11_GFX8 37
+#define DSVALUINSTCOUNT_PUBLIC_DX11_GFX8 38
+#define DSSALUINSTCOUNT_PUBLIC_DX11_GFX8 39
+#define DSVALUBUSY_PUBLIC_DX11_GFX8 40
+#define DSVALUBUSYCYCLES_PUBLIC_DX11_GFX8 41
+#define DSSALUBUSY_PUBLIC_DX11_GFX8 42
+#define DSSALUBUSYCYCLES_PUBLIC_DX11_GFX8 43
+#define GSPRIMSIN_PUBLIC_DX11_GFX8 44
+#define GSVERTICESOUT_PUBLIC_DX11_GFX8 45
+#define GSVALUINSTCOUNT_PUBLIC_DX11_GFX8 46
+#define GSSALUINSTCOUNT_PUBLIC_DX11_GFX8 47
+#define GSVALUBUSY_PUBLIC_DX11_GFX8 48
+#define GSVALUBUSYCYCLES_PUBLIC_DX11_GFX8 49
+#define GSSALUBUSY_PUBLIC_DX11_GFX8 50
+#define GSSALUBUSYCYCLES_PUBLIC_DX11_GFX8 51
+#define PRIMITIVEASSEMBLYBUSY_PUBLIC_DX11_GFX8 52
+#define PRIMITIVEASSEMBLYBUSYCYCLES_PUBLIC_DX11_GFX8 53
+#define PRIMITIVESIN_PUBLIC_DX11_GFX8 54
+#define CULLEDPRIMS_PUBLIC_DX11_GFX8 55
+#define CLIPPEDPRIMS_PUBLIC_DX11_GFX8 56
+#define PASTALLEDONRASTERIZER_PUBLIC_DX11_GFX8 57
+#define PASTALLEDONRASTERIZERCYCLES_PUBLIC_DX11_GFX8 58
+#define PSPIXELSOUT_PUBLIC_DX11_GFX8 59
+#define PSEXPORTSTALLS_PUBLIC_DX11_GFX8 60
+#define PSEXPORTSTALLSCYCLES_PUBLIC_DX11_GFX8 61
+#define PSVALUINSTCOUNT_PUBLIC_DX11_GFX8 62
+#define PSSALUINSTCOUNT_PUBLIC_DX11_GFX8 63
+#define PSVALUBUSY_PUBLIC_DX11_GFX8 64
+#define PSVALUBUSYCYCLES_PUBLIC_DX11_GFX8 65
+#define PSSALUBUSY_PUBLIC_DX11_GFX8 66
+#define PSSALUBUSYCYCLES_PUBLIC_DX11_GFX8 67
+#define CSTHREADGROUPS_PUBLIC_DX11_GFX8 68
+#define CSWAVEFRONTS_PUBLIC_DX11_GFX8 69
+#define CSTHREADS_PUBLIC_DX11_GFX8 70
+#define CSVALUINSTS_PUBLIC_DX11_GFX8 71
+#define CSVALUUTILIZATION_PUBLIC_DX11_GFX8 72
+#define CSSALUINSTS_PUBLIC_DX11_GFX8 73
+#define CSVFETCHINSTS_PUBLIC_DX11_GFX8 74
+#define CSSFETCHINSTS_PUBLIC_DX11_GFX8 75
+#define CSVWRITEINSTS_PUBLIC_DX11_GFX8 76
+#define CSFLATVMEMINSTS_PUBLIC_DX11_GFX8 77
+#define CSVALUBUSY_PUBLIC_DX11_GFX8 78
+#define CSVALUBUSYCYCLES_PUBLIC_DX11_GFX8 79
+#define CSSALUBUSY_PUBLIC_DX11_GFX8 80
+#define CSSALUBUSYCYCLES_PUBLIC_DX11_GFX8 81
+#define CSMEMUNITBUSY_PUBLIC_DX11_GFX8 82
+#define CSMEMUNITBUSYCYCLES_PUBLIC_DX11_GFX8 83
+#define CSMEMUNITSTALLED_PUBLIC_DX11_GFX8 84
+#define CSMEMUNITSTALLEDCYCLES_PUBLIC_DX11_GFX8 85
+#define CSWRITEUNITSTALLED_PUBLIC_DX11_GFX8 86
+#define CSWRITEUNITSTALLEDCYCLES_PUBLIC_DX11_GFX8 87
+#define CSGDSINSTS_PUBLIC_DX11_GFX8 88
+#define CSLDSINSTS_PUBLIC_DX11_GFX8 89
+#define CSFLATLDSINSTS_PUBLIC_DX11_GFX8 90
+#define CSALUSTALLEDBYLDS_PUBLIC_DX11_GFX8 91
+#define CSALUSTALLEDBYLDSCYCLES_PUBLIC_DX11_GFX8 92
+#define CSLDSBANKCONFLICT_PUBLIC_DX11_GFX8 93
+#define CSLDSBANKCONFLICTCYCLES_PUBLIC_DX11_GFX8 94
+#define TEXUNITBUSY_PUBLIC_DX11_GFX8 95
+#define TEXUNITBUSYCYCLES_PUBLIC_DX11_GFX8 96
+#define TEXTRIFILTERINGPCT_PUBLIC_DX11_GFX8 97
+#define TEXTRIFILTERINGCOUNT_PUBLIC_DX11_GFX8 98
+#define NOTEXTRIFILTERINGCOUNT_PUBLIC_DX11_GFX8 99
+#define TEXVOLFILTERINGPCT_PUBLIC_DX11_GFX8 100
+#define TEXVOLFILTERINGCOUNT_PUBLIC_DX11_GFX8 101
+#define NOTEXVOLFILTERINGCOUNT_PUBLIC_DX11_GFX8 102
+#define TEXAVEANISOTROPY_PUBLIC_DX11_GFX8 103
+#define DEPTHSTENCILTESTBUSY_PUBLIC_DX11_GFX8 104
+#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_DX11_GFX8 105
+#define HIZTILESACCEPTED_PUBLIC_DX11_GFX8 106
+#define HIZTILESACCEPTEDCOUNT_PUBLIC_DX11_GFX8 107
+#define HIZTILESREJECTEDCOUNT_PUBLIC_DX11_GFX8 108
+#define PREZTILESDETAILCULLED_PUBLIC_DX11_GFX8 109
+#define PREZTILESDETAILCULLEDCOUNT_PUBLIC_DX11_GFX8 110
+#define PREZTILESDETAILSURVIVINGCOUNT_PUBLIC_DX11_GFX8 111
+#define HIZQUADSCULLED_PUBLIC_DX11_GFX8 112
+#define HIZQUADSCULLEDCOUNT_PUBLIC_DX11_GFX8 113
+#define HIZQUADSACCEPTEDCOUNT_PUBLIC_DX11_GFX8 114
+#define PREZQUADSCULLED_PUBLIC_DX11_GFX8 115
+#define PREZQUADSCULLEDCOUNT_PUBLIC_DX11_GFX8 116
+#define PREZQUADSSURVIVINGCOUNT_PUBLIC_DX11_GFX8 117
+#define POSTZQUADS_PUBLIC_DX11_GFX8 118
+#define POSTZQUADCOUNT_PUBLIC_DX11_GFX8 119
+#define PREZSAMPLESPASSING_PUBLIC_DX11_GFX8 120
+#define PREZSAMPLESFAILINGS_PUBLIC_DX11_GFX8 121
+#define PREZSAMPLESFAILINGZ_PUBLIC_DX11_GFX8 122
+#define POSTZSAMPLESPASSING_PUBLIC_DX11_GFX8 123
+#define POSTZSAMPLESFAILINGS_PUBLIC_DX11_GFX8 124
+#define POSTZSAMPLESFAILINGZ_PUBLIC_DX11_GFX8 125
+#define ZUNITSTALLED_PUBLIC_DX11_GFX8 126
+#define ZUNITSTALLEDCYCLES_PUBLIC_DX11_GFX8 127
+#define DBMEMREAD_PUBLIC_DX11_GFX8 128
+#define DBMEMWRITTEN_PUBLIC_DX11_GFX8 129
+#define CBMEMREAD_PUBLIC_DX11_GFX8 130
+#define CBCOLORANDMASKREAD_PUBLIC_DX11_GFX8 131
+#define CBMEMWRITTEN_PUBLIC_DX11_GFX8 132
+#define CBCOLORANDMASKWRITTEN_PUBLIC_DX11_GFX8 133
+#define CBSLOWPIXELPCT_PUBLIC_DX11_GFX8 134
+#define CBSLOWPIXELCOUNT_PUBLIC_DX11_GFX8 135
+#define FETCHSIZE_PUBLIC_DX11_GFX8 136
+#define WRITESIZE_PUBLIC_DX11_GFX8 137
+#define CACHEHIT_PUBLIC_DX11_GFX8 138
+#define CACHEMISS_PUBLIC_DX11_GFX8 139
+#define CACHEHITCOUNT_PUBLIC_DX11_GFX8 140
+#define CACHEMISSCOUNT_PUBLIC_DX11_GFX8 141
+#define MEMUNITBUSY_PUBLIC_DX11_GFX8 142
+#define MEMUNITBUSYCYCLES_PUBLIC_DX11_GFX8 143
+#define MEMUNITSTALLED_PUBLIC_DX11_GFX8 144
+#define MEMUNITSTALLEDCYCLES_PUBLIC_DX11_GFX8 145
+#define WRITEUNITSTALLED_PUBLIC_DX11_GFX8 146
+#define WRITEUNITSTALLEDCYCLES_PUBLIC_DX11_GFX8 147
 
-/// Number of public counters for DX11Gfx8
-const size_t DX11GFX8_PUBLIC_COUNTER_COUNT = 148;
+/// Number of public counters for DX11 GFX8 
+const size_t kDx11Gfx8PublicCounterCount = 148;
 
-/// Array of public counters for DX11Gfx8
-extern const GPACounterDesc DX11GFX8_PUBLIC_COUNTERS[DX11GFX8_PUBLIC_COUNTER_COUNT];
+/// Array of public counters for DX11 GFX8 
+extern const GpaCounterDesc kDx11Gfx8PublicCounters[kDx11Gfx8PublicCounterCount];
 
-#endif  // _GPA_TESTS_COUNTERS_PUBLIC_DX11GFX8_
+#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX11_GFX8

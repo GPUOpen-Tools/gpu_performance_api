@@ -1,45 +1,49 @@
 //==============================================================================
-// Copyright (c) 2008-2019 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  This is the main include file for Adapter.cpp to enumerate adapters
+// Copyright (c) 2008-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  This is the main include file for Adapter.cpp to enumerate adapters.
 //==============================================================================
 
-#ifndef _GPA_COMMON_ADAPTER_H_
-#define _GPA_COMMON_ADAPTER_H_
+#ifndef GPU_PERF_API_COMMON_ADAPTER_H_
+#define GPU_PERF_API_COMMON_ADAPTER_H_
 
 #include <vector>
 #include <dxgi.h>
 
 #include "ADLUtil.h"
 
-/// Enumerate adapters in the system.
+/// @brief Enumerate adapters in the system.
 class Adapter
 {
 public:
-    /// default constructor
+    /// @brief Default constructor.
     Adapter() = default;
 
-    /// destructor
+    /// @brief Destructor.
     ~Adapter() = default;
 
-    /// Get ASIC information for all GPUs in the system
-    /// \param[out] asicInfoList the ADLUtil_ASICInfo vector
-    /// \return True if ASIC info list was retrieved successfully, false if not
-    bool getAsicInfoList(AsicInfoList& asicInfoList) const;
+    /// @brief Get ASIC information for all GPUs in the system.
+    ///
+    /// @param [out] asic_info_list The ADLUtil_ASICInfo vector.
+    ///
+    /// @return True if ASIC info list was retrieved successfully, false if not.
+    bool GetAsicInfoList(AsicInfoList& asic_info_list) const;
 
 private:
-    /// copy constructor
+    /// @brief Copy constructor.
     Adapter(const Adapter&) = default;
 
-    /// copy assignment operator
-    /// \return item being assigned
+    /// @brief Copy assignment operator.
+    ///
+    /// @return Item being assigned.
     Adapter& operator=(const Adapter&) = default;
 
-    /// Convert DXGI adapter description to ADL ASIC information
-    /// \param[in] dxgiAdapterDesc DXGI adapter description
-    /// \param[out] asicInfo ADL ASIC information
-    static void dxgiAdapterDescToAsicInfo(const DXGI_ADAPTER_DESC& dxgiAdapterDesc, ADLUtil_ASICInfo& asicInfo);
+    /// @brief Convert DXGI adapter description to ADL ASIC information.
+    ///
+    /// @param [in] dxgi_adapter_desc DXGI adapter description.
+    /// @param [out] asic_info ADL ASIC information.
+    static void DxgiAdapterDescToAsicInfo(const DXGI_ADAPTER_DESC& dxgi_adapter_desc, ADLUtil_ASICInfo& asic_info);
 };
 
-#endif  // _GPA_COMMON_ADAPTER_H_
+#endif  // GPU_PERF_API_COMMON_ADAPTER_H_

@@ -1,95 +1,97 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief DX12 GPA Session implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief DX12 GPA Session implementation
 //==============================================================================
 
 #include "dx12_gpa_session.h"
-#include "dx12_gpa_command_list.h"
-#include "gpa_common_defs.h"
-#include "gpa_unique_object.h"
-#include "dx12_utils.h"
-#include "dx12_gpa_context.h"
-#include "dx12_gpa_pass.h"
-#include "gpa_sample.h"
 
-DX12GPASession::DX12GPASession(DX12GPAContext* pDX12GpaContext, GPA_Session_Sample_Type sampleType, IAmdExtGpaInterface* pAmdExtGpaSession)
-    : GPASession(pDX12GpaContext, sampleType)
+#include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_sample.h"
+#include "gpu_perf_api_common/gpa_unique_object.h"
+
+#include "gpu_perf_api_dx12/dx12_gpa_command_list.h"
+#include "gpu_perf_api_dx12/dx12_gpa_context.h"
+#include "gpu_perf_api_dx12/dx12_gpa_pass.h"
+#include "gpu_perf_api_dx12/dx12_utils.h"
+
+Dx12GpaSession::Dx12GpaSession(Dx12GpaContext* dx12_gpa_context, GpaSessionSampleType sample_type, IAmdExtGpaInterface* amd_ext_gpa_session)
+    : GpaSession(dx12_gpa_context, sample_type)
 {
-    m_pAmdExtGpaInterface = pAmdExtGpaSession;
-    m_pAmdExtGpaInterface->AddRef();
+    amd_ext_gpa_interface_ = amd_ext_gpa_session;
+    amd_ext_gpa_interface_->AddRef();
 }
 
-DX12GPASession::~DX12GPASession()
+Dx12GpaSession::~Dx12GpaSession()
 {
-    if (nullptr != m_pAmdExtGpaInterface)
+    if (nullptr != amd_ext_gpa_interface_)
     {
-        m_pAmdExtGpaInterface->Release();
+        amd_ext_gpa_interface_->Release();
     }
 }
 
-GPA_Status DX12GPASession::ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA_CommandListId primaryCommandListId)
+GpaStatus Dx12GpaSession::ContinueSampleOnCommandList(GpaUInt32 src_sample_id, GpaCommandListId primary_command_list_id)
 {
     bool succeed = false;
 
-    if (primaryCommandListId->Object()->GetAPIType() == GPA_API_DIRECTX_12 && primaryCommandListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST)
+    if (primary_command_list_id->Object()->GetApiType() == kGpaApiDirectx12 &&
+        primary_command_list_id->ObjectType() == GpaObjectType::kGpaObjectTypeCommandList)
     {
-        DX12GPACommandList* pDx12Cmd     = reinterpret_cast<DX12GPACommandList*>(primaryCommandListId->Object());
-        DX12GPAPass*        pDx12GpaPass = reinterpret_cast<DX12GPAPass*>(pDx12Cmd->GetPass());
+        Dx12GpaCommandList* dx12_cmd      = reinterpret_cast<Dx12GpaCommandList*>(primary_command_list_id->Object());
+        Dx12GpaPass*        dx12_gpa_pass = reinterpret_cast<Dx12GpaPass*>(dx12_cmd->GetPass());
 
-        if (nullptr != pDx12GpaPass)
+        if (nullptr != dx12_gpa_pass)
         {
-            // Continue the sample
-            if (pDx12GpaPass->ContinueSample(srcSampleId, pDx12Cmd))
+            // Continue the sample.
+            if (dx12_gpa_pass->ContinueSample(src_sample_id, dx12_cmd))
             {
                 succeed = true;
             }
             else
             {
-                GPA_LogError("Unable to continue sample.");
+                GPA_LOG_ERROR("Unable to continue sample.");
             }
         }
         else
         {
-            GPA_LogError("Pass doesn't exist.");
+            GPA_LOG_ERROR("Pass doesn't exist.");
         }
     }
     else
     {
-        GPA_LogError("Invalid Parameter.");
+        GPA_LOG_ERROR("Invalid Parameter.");
     }
 
-    return succeed ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+    return succeed ? kGpaStatusOk : kGpaStatusErrorFailed;
 }
 
-GPA_Status DX12GPASession::CopySecondarySamples(GPA_CommandListId secondaryCmdListId,
-                                                GPA_CommandListId primaryCmdListId,
-                                                gpa_uint32        numSamples,
-                                                gpa_uint32*       pNewSampleIds)
+GpaStatus Dx12GpaSession::CopySecondarySamples(GpaCommandListId secondary_cmd_list_id,
+                                               GpaCommandListId primary_cmd_list_id,
+                                               GpaUInt32        num_samples,
+                                               GpaUInt32*       new_sample_ids)
 {
     bool succeed = false;
 
-    if (secondaryCmdListId->Object()->GetAPIType() == GPA_API_DIRECTX_12 && secondaryCmdListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST &&
-        primaryCmdListId->Object()->GetAPIType() == GPA_API_DIRECTX_12 && primaryCmdListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST)
+    if (secondary_cmd_list_id->Object()->GetApiType() == kGpaApiDirectx12 && secondary_cmd_list_id->ObjectType() == GpaObjectType::kGpaObjectTypeCommandList &&
+        primary_cmd_list_id->Object()->GetApiType() == kGpaApiDirectx12 && primary_cmd_list_id->ObjectType() == GpaObjectType::kGpaObjectTypeCommandList)
     {
-        DX12GPACommandList* pDx12PrimaryCmd     = reinterpret_cast<DX12GPACommandList*>(primaryCmdListId->Object());
-        DX12GPACommandList* pDx12SecondaryCmd   = reinterpret_cast<DX12GPACommandList*>(secondaryCmdListId->Object());
-        DX12GPAPass*        pDx12PrimaryCmdPass = reinterpret_cast<DX12GPAPass*>(pDx12PrimaryCmd->GetPass());
+        Dx12GpaCommandList* dx12_primary_cmd      = reinterpret_cast<Dx12GpaCommandList*>(primary_cmd_list_id->Object());
+        Dx12GpaCommandList* dx12_secondary_cmd    = reinterpret_cast<Dx12GpaCommandList*>(secondary_cmd_list_id->Object());
+        Dx12GpaPass*        dx12_primary_cmd_pass = reinterpret_cast<Dx12GpaPass*>(dx12_primary_cmd->GetPass());
 
-        if (nullptr != pDx12PrimaryCmdPass)
+        if (nullptr != dx12_primary_cmd_pass)
         {
-            // TODO: We'll need to be able to support SOFTWARE counters in secondary passes as well.
-            if (GPACounterSource::HARDWARE == pDx12PrimaryCmdPass->GetCounterSource())
+            if (GpaCounterSource::kHardware == dx12_primary_cmd_pass->GetCounterSource())
             {
-                std::vector<ClientSampleId> sampleIndices;
+                std::vector<ClientSampleId> sample_indices;
 
-                for (size_t sampleIdIter = 0; sampleIdIter < numSamples; sampleIdIter++)
+                for (size_t sample_id_iter = 0; sample_id_iter < num_samples; sample_id_iter++)
                 {
-                    sampleIndices.push_back(pNewSampleIds[sampleIdIter]);
+                    sample_indices.push_back(new_sample_ids[sample_id_iter]);
                 }
 
-                if (pDx12PrimaryCmdPass->CopySecondarySamples(sampleIndices, pDx12PrimaryCmd, pDx12SecondaryCmd))
+                if (dx12_primary_cmd_pass->CopySecondarySamples(sample_indices, dx12_primary_cmd, dx12_secondary_cmd))
                 {
                     succeed = true;
                 }
@@ -98,34 +100,34 @@ GPA_Status DX12GPASession::CopySecondarySamples(GPA_CommandListId secondaryCmdLi
     }
     else
     {
-        GPA_LogError("Invalid Parameter.");
+        GPA_LOG_ERROR("Invalid Parameter.");
     }
 
-    return succeed ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+    return succeed ? kGpaStatusOk : kGpaStatusErrorFailed;
 }
 
-GPA_API_Type DX12GPASession::GetAPIType() const
+GpaApiType Dx12GpaSession::GetApiType() const
 {
-    return GPA_API_DIRECTX_12;
+    return kGpaApiDirectx12;
 }
 
-IAmdExtGpaInterface* DX12GPASession::GetAmdExtInterface() const
+IAmdExtGpaInterface* Dx12GpaSession::GetAmdExtInterface() const
 {
-    return m_pAmdExtGpaInterface;
+    return amd_ext_gpa_interface_;
 }
 
-GPAPass* DX12GPASession::CreateAPIPass(PassIndex passIndex)
+GpaPass* Dx12GpaSession::CreateApiPass(PassIndex pass_index)
 {
-    GPAPass* pRetPass = nullptr;
+    GpaPass* ret_pass = nullptr;
 
-    CounterList*     pPassCounters = GetCountersForPass(passIndex);
-    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
-    DX12GPAPass*     pDx12Pass     = new (std::nothrow) DX12GPAPass(this, passIndex, counterSource, pPassCounters);
+    CounterList*     pass_counters  = GetCountersForPass(pass_index);
+    GpaCounterSource counter_source = GetParentContext()->GetCounterSource((*pass_counters)[0]);
+    Dx12GpaPass*     dx12_pass      = new (std::nothrow) Dx12GpaPass(this, pass_index, counter_source, pass_counters);
 
-    if (nullptr != pDx12Pass)
+    if (nullptr != dx12_pass)
     {
-        pRetPass = pDx12Pass;
+        ret_pass = dx12_pass;
     }
 
-    return pRetPass;
+    return ret_pass;
 }
