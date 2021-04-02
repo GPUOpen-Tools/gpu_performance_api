@@ -8,7 +8,7 @@ Syntax
 
 .. code-block:: c++
 
-    GPA_Status GpaEnableCounterByName(
+    GpaStatus GpaEnableCounterByName(
         GpaSessionId session_id,
         const char* counter_name);
 

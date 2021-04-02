@@ -8,7 +8,7 @@ Syntax
 
 .. code-block:: c++
 
-    GPA_Status GpaOpenContext(
+    GpaStatus GpaOpenContext(
         void* context,
         GpaOpenContextFlags flags,
         GpaContextId* context_id);

@@ -9,7 +9,7 @@ Syntax
 .. code-block:: c++
 
     GpaStatus GpaBeginSample(
-        gpa_uint32 sample_id,
+        GpaUInt32 sample_id,
         GpaCommandListId command_list_id);
 
 Description

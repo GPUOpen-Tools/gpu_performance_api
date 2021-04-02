@@ -11,8 +11,8 @@ Syntax
     GpaStatus GpaCopySecondarySamples(
         GpaCommandListId secondary_command_list_id,
         GpaCommandListId primary_command_list_id,
-        gpa_uint32 num_samples,
-        gpa_uint32* new_sample_ids);
+        GpaUInt32 num_samples,
+        GpaUInt32* new_sample_ids);
 
 Description
 %%%%%%%%%%%

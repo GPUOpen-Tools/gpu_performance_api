@@ -10,7 +10,7 @@ Syntax
 
     GpaStatus GpaBeginCommandList(
         GpaSessionId session_id,
-        gpa_uint32 pass_index,
+        GpaUInt32 pass_index,
         void* command_list,
         GpaCommandListType command_list_type,
         GpaCommandListId* command_list_id)
