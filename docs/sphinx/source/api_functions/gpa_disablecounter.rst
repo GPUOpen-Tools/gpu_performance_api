@@ -10,7 +10,7 @@ Syntax
 
     GpaStatus GpaDisableCounter(
         GpaSessionId session_id,
-        gpa_uint32 index);
+        GpaUInt32 index);
 
 Description
 %%%%%%%%%%%

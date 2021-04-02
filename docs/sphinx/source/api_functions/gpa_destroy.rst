@@ -8,7 +8,7 @@ Syntax
 
 .. code-block:: c++
 
-    GPA_Status GpaDestroy();
+    GpaStatus GpaDestroy();
 
 Description
 %%%%%%%%%%%
