@@ -5,7 +5,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(HW_COUNTER_HEADERS
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx10.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103.h
-${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103_gfx1031.h
+${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103_gfx1031_gfx1032.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_baffin.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_carrizo.h
@@ -21,7 +21,7 @@ ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_placeholder4.h)
 set(HW_COUNTER_SRC
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx10.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103.cc
-${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103_gfx1031.cc
+${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103_gfx1031_gfx1032.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_baffin.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_carrizo.cc

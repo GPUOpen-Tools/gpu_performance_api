@@ -113,7 +113,7 @@ public:
     ///
     /// @param [in] context_id A valid Context ID.
     /// @param [in] session_id A valid Session ID.
-    /// @param [in] profile_set The profile set being printed.
+    /// @param [in] profile_set The index of the profile set being validated.
     /// @param [in] sample_id A valid Sample ID.
     /// @param [in] output_to_console Flag indicating to show on console or not.
     /// @param [in] verify_counters Flag indicating to verify the counters or not.

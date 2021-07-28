@@ -6,7 +6,7 @@ set(PUBLIC_COUNTER_DEF_HEADERS_VK
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx10.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx103.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx103_asics.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx103_gfx1031.h
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx103_gfx1031_gfx1032.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx10_asics.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx8.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx8_asics.h
@@ -25,7 +25,7 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx9_placeholder4.h)
 set(PUBLIC_COUNTER_DEF_SRC_VK
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx10.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx103.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx103_gfx1031.cc
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx103_gfx1031_gfx1032.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx8.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx8_baffin.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_vk_gfx8_carrizo.cc

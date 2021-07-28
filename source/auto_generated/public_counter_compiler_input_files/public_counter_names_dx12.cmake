@@ -5,7 +5,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PUBLIC_COUNTER_NAMES_DX12
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx10.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx103.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx103_gfx1031.txt
+${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx103_gfx1031_gfx1032.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx8.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx8_baffin.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx8_carrizo.txt

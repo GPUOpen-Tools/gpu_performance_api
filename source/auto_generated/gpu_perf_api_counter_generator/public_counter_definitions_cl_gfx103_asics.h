@@ -14,7 +14,7 @@
 
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_cl_gfx103.h"
 
-#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_cl_gfx103_gfx1031.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_cl_gfx103_gfx1031_gfx1032.h"
 
 namespace cl_gfx103_asics
 {
@@ -30,7 +30,7 @@ namespace cl_gfx103_asics
         // Override max block events first so we could chain these if we want
         counter_cl_gfx103::OverrideMaxBlockEvents(asic_type);
 
-        if (cl_gfx103_gfx1031::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
+        if (cl_gfx103_gfx1031_gfx1032::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
         {
             return;
         }

@@ -2138,7 +2138,7 @@ bool CubeSample::GpaContinueSample(unsigned int src_sample_id, GpaCommandListId 
     return success;
 }
 
-bool CubeSample::GpaCounterValueCompare(unsigned int frame_number,
+bool CubeSample::GpaCounterValueCompare(unsigned int profile_set,
                                         unsigned int sample_index,
                                         const char*  counter_name,
                                         GpaFloat64   counter_value,
@@ -2151,7 +2151,7 @@ bool CubeSample::GpaCounterValueCompare(unsigned int frame_number,
     std::stringstream success_string;
     std::stringstream compare_string;
 
-    output_string << "Profile " << frame_number << ", sample " << sample_index << ": ";
+    output_string << "Profile " << profile_set << ", sample " << sample_index << ": ";
 
     error_string << "Incorrect value for counter " << counter_name << ". Value is " << counter_value << ". Expected counter to be ";
     success_string << "Counter " << counter_name << " is correct. Value " << counter_value << " is ";

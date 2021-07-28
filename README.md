@@ -31,19 +31,13 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-* Version 3.8 (04/01/21)
-  * Add support for additional GPUs and APUs, including AMD Radeon™ RX 6700 series GPUs.
-  * Code has been updated to adhere to Google C++ Style Guide.
-    * New public headers have been added.
-    * Old headers are deprecated and will emit compile-time message.
-    * Projects loading GPA will need to be recompiled, but no code changes are required unless moving to the new headers.
-  * Improvements made to sample applications.
-  * Updated documentation for new codestyle (and https://github.com/GPUOpen-Tools/gpu_performance_api/issues/56)
-  * Support for the --internal flag to has been removed from the build script.
+* Version 3.9 (07/27/21)
+  * Add support for additional GPUs and APUs.
+  * Improvements made to the sample applications.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
-* Windows: Radeon Software Adrenaline 2020 Edition 20.11.2 or later (Driver Packaging Version 20.45 or later).
+* Windows: Radeon Software Adrenalin 2020 Edition 20.11.2 or later (Driver Packaging Version 20.45 or later).
 * Linux: Radeon Software for Linux Revision 20.45 or later.
 * Radeon GPUs or APUs based on Graphics IP version 6 and 7 are no longer supported by GPUPerfAPI. Please use an older version ([3.3](https://github.com/GPUOpen-Tools/gpu_performance_api/releases/tag/v3.3)) with older hardware.
 * Windows 7, 8.1, and 10.
@@ -90,8 +84,8 @@ This version allows you to access the raw hardware counters by simply specifying
 ### Ubuntu 20.04 LTS Vulkan ICD Issue
 On Ubuntu 20.04 LTS, Vulkan ICD may not be set to use AMD Vulkan ICD. In this case, it needs to be explicitly set to use AMD Vulkan ICD before using the GPA. It can be done by setting the ```VK_ICD_FILENAMES``` environment variable to ```/etc/vulkan/icd.d/amd_icd64.json```.
 
-### OpenGL Fetchsize Counter on Radeon RX 6000
-FetchSize counter will show an error when enabled on Radeon RX 6000 Series GPU using OpenGL.
+### OpenGL FetchSize Counter on Radeon RX 6000 Series GPUs
+FetchSize counter will show an error when enabled on Radeon RX 6000 Series GPUs using OpenGL.
 
 ### Adjusting Linux Clock Mode
 Adjusting the GPU clock mode on Linux is accomplished by writing to: ```/sys/class/drm/card\<N\>/device/power_dpm_force_performance_level```, where \<N\> is the index of the card in question.
@@ -103,12 +97,16 @@ By default this file is only modifiable by root, so the application being profil
 * Setting the GPU clock mode is not working correctly for <b>Radeon 5700 Series GPUs</b>, potentially leading to some inconsistencies in counter values from one run to the next.
 
 ### DirectX11 Performance Counter Accuracy For Select Counters and GPUs
-The following performance counter values may not be accurate for DirectX 11 applications running on a Radeon 5700, and 6000 Series GPU.
+The following performance counter values may not be accurate for DirectX 11 applications running on a Radeon 5700, and 6000 Series GPUs:
 * VALUInstCount, SALUInstCount, VALUBusy, SALUBusy for all shader stages: These values should be representative of performance, but may not be 100% accurate.
 * Most of the ComputeShader counters (all except the MemUnit and WriteUnit counters): These values should be representative of performance, but may not be 100% accurate.
 
-### OpenGL Performance Counter Accuracy For Radeon 7500
-The following performance counter values may not be accurate for OpenGL applications running on a Radeon 5700 Series GPU.
+### OpenCL Performance Counter Accuracy For Radeon 6000 Series GPUs
+The following performance counter values may not be accurate for OpenCL applications running on Radeon 6000 Series GPUs:
+* Wavefronts, VALUInsts, SALUInsts, SALUBusy, VALUUtilization: These values should be representative of performance, but may not be 100% accurate.
+
+### OpenGL Performance Counter Accuracy For Radeon 5700 Series GPUs
+The following performance counter values may not be accurate for OpenGL applications running on a Radeon 5700 Series GPUs:
 * Most of the ComputeShader counters (all except the MemUnit and WriteUnit counters): These values should be representative of performance, but may not be 100% accurate.
 
 ### Variability in Deterministic Counters For Select GPUs
@@ -119,7 +117,6 @@ Performance counters which should be deterministic are showing variability on Ra
 Profiling bundles in DirectX12 and Vulkan is not working properly. It is recommended to remove those GPA Samples from your application, or move the calls out of the bundle for profiling.
 
 ## Style and Format Change
-
 The source code of this product is being reformatted to follow the Google C++ Style Guide https://google.github.io/styleguide/cppguide.html.
 In the interim you may encounter a mix of both an older C++ coding style, as well as the newer Google C++ Style.
 Please refer to the _clang-format file in the root directory of the product for additional style information.

@@ -1,6 +1,10 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.9 (07/27/21)
+  * Add support for additional GPUs and APUs.
+  * Improvements made to the sample applications.
+
 ## Version 3.8 (04/01/21)
   * Add support for additional GPUs and APUs, including AMD Radeon™ RX 6700 series GPUs.
   * Code has been updated to adhere to Google C++ Style Guide.

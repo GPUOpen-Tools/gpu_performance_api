@@ -28,7 +28,7 @@ CommandLineArgs args;
 /// @brief Print command line usage information.
 void Usage()
 {
-    std::cout << "D3D12ColorCube [--nogpa] [--numberofframes #] [--verify] [--confirmsuccess] [--counterfile <file>] [--profilebundle]" << std::endl << std::endl;
+    std::cout << "D3D12ColorCube [--nogpa] [--numberofframes #] [--verify] [--confirmsuccess] [--counterfile <file>] [--profilebundle] [--includehwcounters]" << std::endl << std::endl;
     std::cout << "  --nogpa: Do not use GPUPerfAPI to collect performance counters" << std::endl;
     std::cout << "  --numberofframes #: Renders the specified number of frames before exiting; if used with --verify then # must be a multiple of the number of passes needed" << std::endl;
     std::cout << "  --verify: Application will verify a few counter values (experimental)" << std::endl;
@@ -127,6 +127,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _I
 
     if (!ParseCommandLine(__argc, const_cast<const char**>(__argv)))
     {
+        Usage();
         return -1;
     }
 

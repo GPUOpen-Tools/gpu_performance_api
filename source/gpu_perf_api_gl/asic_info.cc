@@ -351,8 +351,10 @@ namespace ogl_utils
 
     AsicType AsicInfoManager::GetAsicTypeFromAsicId(AsicId asic_id)
     {
-        static const char* kAsicTypeStr[] = {"Gfx6", "Gfx7", "Gfx8", "Gfx9", "Gfx10", "Unknown"};
+        static const char* kAsicTypeStr[] = {"Gfx6", "Gfx7", "Gfx8", "Gfx9", "Gfx10", "Gfx103", "Unknown"};
         AsicType           ret_val        = kAsicUnknown;
+
+        static_assert(sizeof(kAsicTypeStr)/sizeof(char*) == (kAsicUnknown + 1), "AsicTypeStr does not have enough entries.");
 
         if (!is_asic_info_initialized_)
         {

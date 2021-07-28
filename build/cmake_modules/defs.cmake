@@ -1,9 +1,9 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 ## Define the GPA version
 set(GPA_MAJOR_VERSION 3)
-set(GPA_MINOR_VERSION 8)
+set(GPA_MINOR_VERSION 9)
 set(GPA_UPDATE_VERSION 0)
 
 if(NOT DEFINED GPA_BUILD_NUMBER)

@@ -283,7 +283,7 @@ private:
     unsigned int              frame_counter_ = 0;                            ///< Frame counter.
 
     /// Flag to indicate whether or not to verify some counter values and confirm successful results.
-    bool confirm_success_;
+    bool confirm_success_ = false;
 };
 
 #endif  // GPU_PERF_API_EXAMPLES_OPENGL_GL_TRIANGLE_GPA_HELPER_H_

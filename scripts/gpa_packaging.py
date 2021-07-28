@@ -195,6 +195,7 @@ class GpaPackage:
             if android == True:
                 _android_device_connect_script_file = os.path.normpath(os.path.join(self._gpa_root_dir, "scripts", self._android_device_connect_script))
                 _android_device_connect_script_file_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, self._android_device_connect_script))
+
                 GpaUtils.WriteFileToArchive(gpa_archive_handle, _android_device_connect_script_file,
                                                                 _android_device_connect_script_file_in_archive)
 
@@ -257,7 +258,7 @@ class GpaPackage:
                  "LICENSE"]
 
     _version_file="source/gpu_perf_api_common/gpa_version.h"
-    _android_device_connect_script = "enable_set_device_clock_android.sh"
+    _android_device_connect_script = "enable_set_device_clock_android.py"
     _major_version=0
     _minor_version=0
     _update_version=0

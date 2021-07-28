@@ -434,7 +434,7 @@ public:
 
     /// @brief Compare retrieved counter value to an expected value.
     ///
-    /// @param [in] frame_number The frame number containing the counter being compared.
+    /// @param [in] profile_set The index of the profile set being validated.
     /// @param [in] sample_index The sample index of the counter being compared.
     /// @param [in] counter_name The name of the counter being compared.
     /// @param [in] counter_value The retrieved counter value.
@@ -442,7 +442,7 @@ public:
     /// @param [in] compare_value The expected counter value (subject to the compare type).
     ///
     /// @return True if the counter value compares successfully, false otherwise.
-    bool GpaCounterValueCompare(unsigned int frame_number,
+    bool GpaCounterValueCompare(unsigned int profile_set,
                                 unsigned int sample_index,
                                 const char*  counter_name,
                                 GpaFloat64   counter_value,
