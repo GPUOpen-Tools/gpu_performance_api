@@ -64,9 +64,10 @@ initialize the DirectX 12 version of GPA:
 
     #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
+    #ifdef __cplusplus
     GpaApiManager* GpaApiManager::gpa_api_manager_ = nullptr;
-
-    GpaFunctionTable* gpa_function_table = nullptr;
+    #endif
+    GpaFuncTableInfo* gpa_function_table_info = nullptr;
 
     bool InitializeGpa()
     {
@@ -74,11 +75,11 @@ initialize the DirectX 12 version of GPA:
 
         if (kGpaStatusOk == GpaApiManager::Instance()->LoadApi(kGpaApiDirectx12))
         {
-            gpa_function_table = GpaApiManager::Instance()->GetFunctionTable(kGpaApiDirectx12);
+            gpa_function_table_info = GpaApiManager::Instance()->GetFunctionTable(kGpaApiDirectx12);
 
             if (nullptr != gpa_function_table)
             {
-                ret_val = kGpaStatusOk == gpa_function_table->GpaInitialize(kGpaInitializeDefaultBit);
+                ret_val = kGpaStatusOk == gpa_function_table_info->GpaInitialize(kGpaInitializeDefaultBit);
             }
         }
 
