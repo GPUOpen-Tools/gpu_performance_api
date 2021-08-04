@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -13,6 +13,7 @@ include(${CMAKE_COMMON_SRC_GLOBAL_ADL_UTIL})
 include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
 include(${CMAKE_COMMON_LIB_GLOBAL_EXT_OPENGL})
+
 if(WIN32)
     include(${CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK})
 endif()
@@ -22,6 +23,7 @@ INCLUDE_ADDITIONAL_MODULE()
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_PUBLIC_HEADER}
+                    ${GPA_SRC}
                     ${GPA_SRC_COMMON}
                     ${GPA_SRC_COUNTER_GENERATOR})
 

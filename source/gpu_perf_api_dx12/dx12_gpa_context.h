@@ -1,90 +1,95 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GPA DX12 Context declarations
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GPA DX12 Context declarations
 //==============================================================================
 
-#ifndef _DX12_GPA_CONTEXT_H_
-#define _DX12_GPA_CONTEXT_H_
+#ifndef GPU_PERF_API_DX12_DX12_GPA_CONTEXT_H_
+#define GPU_PERF_API_DX12_DX12_GPA_CONTEXT_H_
 
-// std
 #include <mutex>
 
-// AMD Ext
 #pragma warning(push)
 #pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
 #pragma warning(pop)
 #include <AmdExtD3D.h>
 
-// GPA Common
-#include "gpa_context.h"
-#include "gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_context.h"
 
-class DX12GPASession;  // forward declaration
+class Dx12GpaSession;  // Forward declaration.
 
-/// Class for DX12 GPA Context
-class GPA_THREAD_SAFE_OBJECT DX12GPAContext : public GPAContext
+/// @brief Class for DX12 GPA Context.
+class GPA_THREAD_SAFE_OBJECT Dx12GpaContext : public GpaContext
 {
 public:
-    /// Constructor
-    /// \param[in] pD3D12Device ID3D12Device pointer
-    /// \param[in] hwInfo hardware info
-    /// \param[in] flags context flags
-    DX12GPAContext(ID3D12Device* pD3D12Device, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags);
+    /// @brief Constructor.
+    ///
+    /// @param [in] d3d12_device ID3D12Device pointer.
+    /// @param [in] hw_info Hardware info.
+    /// @param [in] flags Context flags.
+    Dx12GpaContext(ID3D12Device* d3d12_device, GpaHwInfo& hw_info, GpaOpenContextFlags flags);
 
-    /// Destructor
-    virtual ~DX12GPAContext();
+    /// @brief Destructor.
+    virtual ~Dx12GpaContext();
 
-    /// \copydoc IGPAContext::CreateSession()
-    GPA_SessionId CreateSession(GPA_Session_Sample_Type sampleType) override;
+    /// @copydoc IGpaContext::CreateSession()
+    GpaSessionId CreateSession(GpaSessionSampleType sample_type) override;
 
-    /// \copydoc IGPAContext::DeleteSession()
-    bool DeleteSession(GPA_SessionId sessionId) override;
+    /// @copydoc IGpaContext::DeleteSession()
+    bool DeleteSession(GpaSessionId session_id) override;
 
-    /// \copydoc IGPAContext::GetMaxGPASessions()
-    gpa_uint32 GetMaxGPASessions() const override;
+    /// @copydoc IGpaContext::GetMaxGpaSessions()
+    GpaUInt32 GetMaxGpaSessions() const override;
 
-    /// \copydoc IGPAInterfaceTrait::GetAPIType()
-    GPA_API_Type GetAPIType() const override;
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    GpaApiType GetApiType() const override;
 
-    /// Opens the Context
-    /// \return true if successful otherwise false
+    /// @brief Opens the Context.
+    ///
+    /// @return True if successful otherwise false.
     bool Initialize();
 
-    /// Get the number of instances of the specified block
-    /// \param[in] block the block whose number of instances is needed
-    /// \return the number of instances of the specific block. Could be zero if block does not exist
-    gpa_uint32 GetInstanceCount(AmdExtGpuBlock block) const;
+    /// @brief Get the number of instances of the specified block.
+    ///
+    /// @param [in] block The block whose number of instances is needed.
+    ///
+    /// @return The number of instances of the specific block. Could be zero if block does not exist.
+    GpaUInt32 GetInstanceCount(AmdExtGpuBlock block) const;
 
-    /// Get the max event id of the specified block
-    /// \param[in] block the block whose max event id is needed
-    /// \return the max event id of the specified block. Could be zero if block does not exist
-    gpa_uint32 GetMaxEventIdCount(AmdExtGpuBlock block) const;
+    /// @brief Get the max event id of the specified block.
+    ///
+    /// @param [in] block The block whose max event id is needed.
+    ///
+    /// @return The max event id of the specified block. Could be zero if block does not exist.
+    GpaUInt32 GetMaxEventIdCount(AmdExtGpuBlock block) const;
 
-    /// Returns the ID3D12Device pointer
-    /// \return ID3D12Device pointer
+    /// @brief Obtain the ID3D12Device pointer.
+    ///
+    /// @return ID3D12Device pointer.
     ID3D12Device* GetD3D12Device() const;
 
-    /// \copydoc IGPAContext::SetStableClocks()
-    GPA_Status SetStableClocks(bool useProfilingClocks) override;
+    /// @copydoc IGpaContext::SetStableClocks()
+    GpaStatus SetStableClocks(bool use_profiling_clocks) override;
 
 private:
-    /// Initializes the AMD Driver extension objects for the context
-    /// \return true upon successful initialization otherwise false
+    /// @brief Initializes the AMD Driver extension objects for the context.
+    ///
+    /// @return True upon successful initialization otherwise false.
     bool InitializeAMDExtension();
 
-    /// Destroys all the allocated resources for the context
+    /// @brief Destroys all the allocated resources for the context.
     void CleanUp();
 
-    mutable std::mutex             m_dx12GpaContextMutex;      ///< Mutex for DX12 GPA Context
-    ID3D12Device*                  m_pD3D12Device;             ///< D3D12Device pointer
-    IAmdExtD3DFactory*             m_pAmdExtD3DFactoryObject;  ///< Driver extension object
-    IAmdExtGpaInterface*           m_pGpaInterface;            ///< The GPA Interface from the driver
-    IAmdExtGpaInterface2*          m_pGpaInterface2;           ///< The GPA Interface2 from the driver
-    AmdExtPerfExperimentProperties m_amdDeviceProps;           ///< Device properties reported by the driver
-    AmdExtDeviceClockMode          m_clockMode;                ///< GPU Clock mode
+    mutable std::mutex             dx12_gpa_context_mutex_;      ///< Mutex for DX12 GPA Context.
+    ID3D12Device*                  d3d12_device_;                ///< D3D12Device pointer.
+    IAmdExtD3DFactory*             amd_ext_d3d_factory_object_;  ///< Driver extension object.
+    IAmdExtGpaInterface*           gpa_interface_;               ///< The GPA Interface from the driver.
+    IAmdExtGpaInterface2*          gpa_interface2_;              ///< The GPA Interface2 from the driver.
+    AmdExtPerfExperimentProperties amd_device_props_;            ///< Device properties reported by the driver.
+    AmdExtDeviceClockMode          clock_mode_;                  ///< GPU Clock mode.
 };
 
-#endif  // _DX12_GPA_CONTEXT_H_
+#endif  // GPU_PERF_API_DX12_DX12_GPA_CONTEXT_H_

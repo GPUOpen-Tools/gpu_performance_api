@@ -1,251 +1,284 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Manages a set of derived counters
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Manages a set of derived counters.
 //==============================================================================
 
-#ifndef _GPA_DERIVED_COUNTERS_H_
-#define _GPA_DERIVED_COUNTERS_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_DERIVED_COUNTER_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_DERIVED_COUNTER_H_
+
+#include <assert.h>
 
 #include <vector>
-#include "assert.h"
-#include "gpa_hw_info.h"
-#include "gpu_perf_api_counters.h"
 
-class IGPACounterAccessor;
+#include "gpu_performance_api/gpu_perf_api_counters.h"
+#include "gpu_perf_api_common/gpa_hw_info.h"
+
+class IGpaCounterAccessor;
 using std::vector;
 
-/// Information about a derived counter that is exposed through the interface
-class GPA_DerivedCounter
+/// @brief Information about a derived counter that is exposed through the interface.
+class GpaDerivedCounterInfoClass
 {
 public:
-    /// constructor taking a compute expression string
-    /// \param index the index of the derived counter
-    /// \param pName the name of the derived counter
-    /// \param pGroup the group of the derived counter
-    /// \param pDescription the description of the derived counter
-    /// \param dataType the data type of the derived counter
-    /// \param usageType the usage type of the derived counter
-    /// \param internalCountersRequired the list of hardware counters required by the derived counter
-    /// \param pComputeExpression the formula used to compute the derived counter
-    /// \param pUuid UUID string that uniquely and consistently identifies the derived counter
-    GPA_DerivedCounter(unsigned int        index,
-                       const char*         pName,
-                       const char*         pGroup,
-                       const char*         pDescription,
-                       GPA_Data_Type       dataType,
-                       GPA_Usage_Type      usageType,
-                       vector<gpa_uint32>& internalCountersRequired,
-                       const char*         pComputeExpression,
-                       const char*         pUuid);
+    /// @brief Constructor taking a compute expression string.
+    ///
+    /// @param [in] index The index of the derived counter.
+    /// @param [in] counter_name The name of the derived counter.
+    /// @param [in] counter_group The group of the derived counter.
+    /// @param [in] counter_description The description of the derived counter.
+    /// @param [in] data_type The data type of the derived counter.
+    /// @param [in] usage_type The usage type of the derived counter.
+    /// @param [in] internal_counters_required The list of hardware counters required by the derived counter.
+    /// @param [in] compute_expression The formula used to compute the derived counter.
+    /// @param [in] uuid UUID string that uniquely and consistently identifies the derived counter.
+    GpaDerivedCounterInfoClass(unsigned int       index,
+                               const char*        counter_name,
+                               const char*        counter_group,
+                               const char*        counter_description,
+                               GpaDataType        data_type,
+                               GpaUsageType       usage_type,
+                               vector<GpaUInt32>& internal_counters_required,
+                               const char*        compute_expression,
+                               const char*        uuid);
 
-    /// Default Constructor.
-    /// temporary addition of a default constructor to allow vector to build and execute.
-    GPA_DerivedCounter();
+    /// @brief Default Constructor.
+    ///
+    /// Temporary addition of a default constructor to allow vector to build and execute.
+    GpaDerivedCounterInfoClass();
 
-    /// Destructor
-    ~GPA_DerivedCounter();
+    /// @brief Destructor.
+    ~GpaDerivedCounterInfoClass();
 
-    /// Returns the derived counter info
-    /// \param[in] gpa_counter_accessor hardware counter accessor
-    /// \return pointer to derived counter info
-    GpaDerivedCounterInfo* GetDerivedCounterHardwareInfo(const IGPACounterAccessor* gpa_counter_accessor);
+    /// @brief Returns the derived counter info.
+    ///
+    /// @param [in] gpa_counter_accessor Hardware counter accessor.
+    ///
+    /// @return Pointer to derived counter info.
+    GpaCounterInfo* GetCounterInfo(const IGpaCounterAccessor* gpa_counter_accessor);
 
-    unsigned int       m_index;                     ///< index of this counter
-    const char*        m_pName;                     ///< The name of the counter
-    const char*        m_pGroup;                    ///< A group to which the counter is related
-    const char*        m_pDescription;              ///< A description of what the counter means.
-    GPA_Data_Type      m_dataType;                  ///< Data type
-    GPA_Usage_Type     m_usageType;                 ///< How the counter should be interpreted (percentage, ratio, bytes, etc)
-    vector<gpa_uint32> m_internalCountersRequired;  ///< List of internal counters that are needed to calculate this derived counter
-    const char*        m_pComputeExpression;        ///< A string expression that shows how to calculate this counter.
-    GPA_UUID           m_uuid = {};                 ///< UUID that uniquely and consistently identifies a counter.
+    unsigned int      counter_index_;               ///< Index of this counter.
+    const char*       counter_name_;                ///< The name of the counter.
+    const char*       counter_group_;               ///< A group to which the counter is related.
+    const char*       counter_description_;         ///< A description of what the counter means.
+    GpaDataType       data_type_;                   ///< Data type.
+    GpaUsageType      usage_type_;                  ///< How the counter should be interpreted (percentage, ratio, bytes, etc).
+    vector<GpaUInt32> internal_counters_required_;  ///< List of internal counters that are needed to calculate this derived counter.
+    const char*       compute_expression_;          ///< A string expression that shows how to calculate this counter.
+    GpaUuid           uuid_ = {};                   ///< UUID that uniquely and consistently identifies a counter.
 
 private:
-    /// Initializes the derived counter info
-    /// \param[in] gpa_counter_accessor hardware counter accessor
-    /// \return true upon success otherwise false
-    bool InitializeDerivedCounterHardwareInfo(const IGPACounterAccessor* gpa_counter_accessor);
+    /// @brief Initializes the derived counter info.
+    ///
+    /// @param [in] gpa_counter_accessor Hardware counter accessor.
+    ///
+    /// @return True upon success otherwise false.
+    bool InitializeDerivedCounterHardwareInfo(const IGpaCounterAccessor* gpa_counter_accessor);
 
-    GpaDerivedCounterInfo*    derived_counter_hardware_info_;  ///< derived counter info for the counter
-    bool                      derived_counter_info_init_;      ///< flag indicating derive counter is initialized
-    std::vector<GpaHwCounter> hw_counter_info_list_;           ///< list of gpa hardware counter
+    GpaCounterInfo*           counter_info_;               ///< Derived counter info for the counter.
+    bool                      derived_counter_info_init_;  ///< Flag indicating derive counter is initialized.
+    std::vector<GpaHwCounter> hw_counter_info_list_;       ///< List of gpa hardware counter.
 };
 
-/// The set of available derived counters
-class GPA_DerivedCounters
+/// @brief The set of available derived counters.
+class GpaDerivedCounters
 {
 public:
-    /// Initializes an instance of the GPA_DerivedCounters class.
-    GPA_DerivedCounters()
-        : m_countersGenerated(false)
+    /// @brief Initializes an instance of the GpaDerivedCounters class.
+    GpaDerivedCounters()
+        : counters_generated_(false)
     {
     }
 
-    /// Destructor
-    virtual ~GPA_DerivedCounters() = default;
+    /// @brief Virtual destructor.
+    virtual ~GpaDerivedCounters() = default;
 
-    /// Obtains the number of derived counters
-    /// \return the number of derived counters
-    virtual gpa_uint32 GetNumCounters() const;
+    /// @brief Obtains the number of derived counters.
+    ///
+    /// @return The number of derived counters.
+    virtual GpaUInt32 GetNumCounters() const;
 
-    /// Gets a counter's name
-    /// \param index the index of the requested counter
-    /// \return the counter's name
-    virtual const char* GetCounterName(gpa_uint32 index) const
+    /// @brief Gets a counter's name.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The counter's name.
+    virtual const char* GetCounterName(GpaUInt32 index) const
     {
-        assert(index < m_counters.size());
-        return m_counters[index].m_pName;
+        assert(index < derived_counter_list_.size());
+        return derived_counter_list_[index].counter_name_;
     }
 
-    /// Gets a counter's group name
-    /// \param index the index of the requested counter
-    /// \return the counter's group name
-    virtual const char* GetCounterGroup(gpa_uint32 index) const
+    /// @brief Gets a counter's group name.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The counter's group name.
+    virtual const char* GetCounterGroup(GpaUInt32 index) const
     {
-        assert(index < m_counters.size());
-        return m_counters[index].m_pGroup;
+        assert(index < derived_counter_list_.size());
+        return derived_counter_list_[index].counter_group_;
     }
 
-    /// Gets a counter's description
-    /// \param index the index of the requested counter
-    /// \return the counter's description
-    virtual const char* GetCounterDescription(gpa_uint32 index) const
+    /// @brief Gets a counter's description.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The counter's description.
+    virtual const char* GetCounterDescription(GpaUInt32 index) const
     {
-        assert(index < m_counters.size());
-        return m_counters[index].m_pDescription;
+        assert(index < derived_counter_list_.size());
+        return derived_counter_list_[index].counter_description_;
     }
 
-    /// Gets a counter's usage type
-    /// \param index the index of the requested counter
-    /// \return the counter's usage type
-    virtual GPA_Usage_Type GetCounterUsageType(gpa_uint32 index) const
+    /// @brief Gets a counter's usage type.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The counter's usage type.
+    virtual GpaUsageType GetCounterUsageType(GpaUInt32 index) const
     {
-        assert(index < m_counters.size());
-        return m_counters[index].m_usageType;
+        assert(index < derived_counter_list_.size());
+        return derived_counter_list_[index].usage_type_;
     }
 
-    /// Gets a counter's data type
-    /// \param index the index of the requested counter
-    /// \return the counter's data type
-    virtual GPA_Data_Type GetCounterDataType(gpa_uint32 index) const
+    /// @brief Gets a counter's data type.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The counter's data type.
+    virtual GpaDataType GetCounterDataType(GpaUInt32 index) const
     {
-        assert(index < m_counters.size());
-        return m_counters[index].m_dataType;
+        assert(index < derived_counter_list_.size());
+        return derived_counter_list_[index].data_type_;
     }
 
-    /// Gets a counter's UUID
-    /// \param index the index of the requested counter
-    /// \return the counter's UUID
-    virtual GPA_UUID GetCounterUuid(gpa_uint32 index) const
+    /// @brief Gets a counter's UUID.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The counter's UUID.
+    virtual GpaUuid GetCounterUuid(GpaUInt32 index) const
     {
-        assert(index < m_counters.size());
-        return m_counters[index].m_uuid;
+        assert(index < derived_counter_list_.size());
+        return derived_counter_list_[index].uuid_;
     }
 
-    /// Gets a counter's supported sample type
-    /// \param index the index of the requested counter
-    /// \return the counter's supported sample types (a combination of GPA_Counter_Sample_Bits)
-    virtual GPA_Counter_Sample_Type GetCounterSampleType(gpa_uint32 index) const
+    /// @brief Gets a counter's supported sample type.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The counter's supported sample types (a combination of GpaCounterSampleBits).
+    virtual GpaCounterSampleType GetCounterSampleType(GpaUInt32 index) const
     {
-        assert(index < m_counters.size());
+        assert(index < derived_counter_list_.size());
 
         // TODO: Hardcoding to discrete-only counters for now.
         //       Uncomment the below line and remove the following two lines when we have a mechanism
         //       for public counters to specify which sample types they support.
 
-        //return m_counters[index].m_supportedSampleTypes;
+        //return pass_counter_list[index].supported_sample_types_;
         UNREFERENCED_PARAMETER(index);
-        return GPA_COUNTER_SAMPLE_TYPE_DISCRETE;
+        return kGpaCounterSampleTypeDiscrete;
     }
 
-    /// Defines a public counter based on an expression
-    /// \param pName the name of the counter
-    /// \param pGroup the group that the counter is related to
-    /// \param pDescription the description of the counter
-    /// \param dataType the data type of the counter
-    /// \param usageType the usage type of the counter
-    /// \param internalCountersRequired the list of required internal counters
-    /// \param pComputeExpression the compute expression of the counter
-    /// \param pUuid UUID string that uniquely and consistently identifies the counter
-    virtual void DefineDerivedCounter(const char*         pName,
-                                      const char*         pGroup,
-                                      const char*         pDescription,
-                                      GPA_Data_Type       dataType,
-                                      GPA_Usage_Type      usageType,
-                                      vector<gpa_uint32>& internalCountersRequired,
-                                      const char*         pComputeExpression,
-                                      const char*         pUuid);
+    /// @brief Defines a public counter based on an expression.
+    ///
+    /// @param [in] counter_name The name of the counter.
+    /// @param [in] counter_group The group that the counter is related to.
+    /// @param [in] counter_description The description of the counter.
+    /// @param [in] data_type The data type of the counter.
+    /// @param [in] usage_type The usage type of the counter.
+    /// @param [in] internal_counters_required The list of required internal counters.
+    /// @param [in] compute_expression The compute expression of the counter.
+    /// @param [in] uuid UUID string that uniquely and consistently identifies the counter.
+    virtual void DefineDerivedCounter(const char*        counter_name,
+                                      const char*        counter_group,
+                                      const char*        counter_description,
+                                      GpaDataType        data_type,
+                                      GpaUsageType       usage_type,
+                                      vector<GpaUInt32>& internal_counters_required,
+                                      const char*        compute_expression,
+                                      const char*        uuid);
 
-    /// Updates an existing derived counter based on ASIC-specific registers.
-    /// \param pName the name of the counter
-    /// \param internalCountersRequired the list of required internal counters
-    /// \param pComputeExpression the compute expression of the counter
-    virtual void UpdateAsicSpecificDerivedCounter(const char* pName, vector<gpa_uint32>& internalCountersRequired, const char* pComputeExpression);
+    /// @brief Updates an existing derived counter based on ASIC-specific registers.
+    ///
+    /// @param [in] counter_name The name of the counter.
+    /// @param [in] internal_counters_required The list of required internal counters.
+    /// @param [in] compute_expression The compute expression of the counter.
+    virtual void UpdateAsicSpecificDerivedCounter(const char* counter_name, vector<GpaUInt32>& internal_counters_required, const char* compute_expression);
 
-    /// Adds a derived counter to the set of available counters
-    /// \param derivedCounter the derived counter to add
-    virtual void AddDerivedCounter(GPA_DerivedCounter& derivedCounter)
+    /// @brief Adds a derived counter to the set of available counters.
+    ///
+    /// @param [in] derived_counter the derived counter to add.
+    virtual void AddDerivedCounter(GpaDerivedCounterInfoClass& derived_counter)
     {
-        m_counters.push_back(derivedCounter);
+        derived_counter_list_.push_back(derived_counter);
     }
 
-    /// Get the counter at the specified index
-    /// \param index the index of the requested counter
-    /// \return the counter at the specified index
-    virtual const GPA_DerivedCounter* GetCounter(gpa_uint32 index) const
+    /// @brief Get the counter at the specified index.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The counter at the specified index.
+    virtual const GpaDerivedCounterInfoClass* GetCounter(GpaUInt32 index) const
     {
-        assert(index < m_counters.size());
-        return &m_counters[index];
+        assert(index < derived_counter_list_.size());
+        return &derived_counter_list_[index];
     }
 
-    /// Clears the list of available counters
+    /// @brief Clears the list of available counters.
     virtual void Clear();
 
-    /// Gets the list of internal counters that are required for a derived counter
-    /// \param index the index of the requested counter
-    /// \return the list of internal counters
-    virtual const vector<gpa_uint32>& GetInternalCountersRequired(gpa_uint32 index) const
+    /// @brief Gets the list of internal counters that are required for a derived counter.
+    ///
+    /// @param [in] index The index of the requested counter.
+    ///
+    /// @return The list of internal counters.
+    virtual const vector<GpaUInt32>& GetInternalCountersRequired(GpaUInt32 index) const
     {
-        assert(index < m_counters.size());
-        return m_counters[index].m_internalCountersRequired;
+        assert(index < derived_counter_list_.size());
+        return derived_counter_list_[index].internal_counters_required_;
     }
 
-    /// Computes a counter's result
-    /// \param counterIndex the index of the counter
-    /// \param results the counter results buffer
-    /// \param internalCounterTypes the list of internal counter types
-    /// \param pResult the result of the computation
-    /// \param pHwInfo the hardware info for the current hardware
-    /// \return GPA_STATUS_OK on success, otherwise an error code
-    virtual GPA_Status ComputeCounterValue(gpa_uint32                       counterIndex,
-                                           const vector<const gpa_uint64*>& results,
-                                           vector<GPA_Data_Type>&           internalCounterTypes,
-                                           void*                            pResult,
-                                           const GPA_HWInfo*                pHwInfo) const;
+    /// @brief Computes a counter's result.
+    ///
+    /// @param [in] counter_index The index of the counter.
+    /// @param [in] results The counter results buffer.
+    /// @param [in] internal_counter_types The list of internal counter types.
+    /// @param [in] result The result of the computation.
+    /// @param [in] hw_info The hardware info for the current hardware.
+    ///
+    /// @return kGpaStatusOk on success, otherwise an error code.
+    virtual GpaStatus ComputeCounterValue(GpaUInt32                       counter_index,
+                                          const vector<const GpaUInt64*>& results,
+                                          vector<GpaDataType>&            internal_counter_types,
+                                          void*                           result,
+                                          const GpaHwInfo*                hw_info) const;
 
-    bool m_countersGenerated;  ///< indicates that the derived counters have been generated
+    bool counters_generated_;  ///< Indicates that the derived counters have been generated.
 
 protected:
-    vector<GPA_DerivedCounter> m_counters;  ///< The set of available derived counters
+    vector<GpaDerivedCounterInfoClass> derived_counter_list_;  ///< The set of available derived counters.
 };
 
 #ifdef AMDT_INTERNAL
 
-struct GPACounterDesc;
-/// Entry point to get internal derived counters
-/// \param apiType the API whose counters are needed
-/// \param desiredGeneration the generation whose counters are needed
-/// \param ppInternalDerivedCounters[out] pointer to array of internal derived counters
-/// \param pInternalDerivedCounterCount[out] pointer to count of internal derived counters
-/// \return internalDerivedCounterCount
-GPA_Status GPA_GetInternalDerivedCounters(GPA_API_Type           apiType,
-                                          GPA_Hw_Generation      desiredGeneration,
-                                          const GPACounterDesc** ppInternalDerivedCounters,
-                                          size_t*                pInternalDerivedCounterCount);
+struct GpaCounterDesc;
+/// @brief Entry point to get internal derived counters.
+///
+/// @param [in] api_type The API whose counters are needed.
+/// @param [in] desired_generation The generation whose counters are needed.
+/// @param [out] internal_derived_counters[out] Pointer to array of internal derived counters.
+/// @param [out] internal_derived_counter_count Pointer to count of internal derived counters.
+///
+/// @return internal_derived_counter_count.
+GpaStatus GpaGetInternalDerivedCounters(GpaApiType             api_type,
+                                        GpaHwGeneration        desired_generation,
+                                        const GpaCounterDesc** internal_derived_counters,
+                                        size_t*                internal_derived_counter_count);
 
 #endif  // AMDT_INTERNAL
 
-
-#endif  // _GPA_DERIVED_COUNTERS_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_DERIVED_COUNTER_H_

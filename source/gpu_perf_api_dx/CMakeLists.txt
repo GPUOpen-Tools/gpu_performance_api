@@ -7,9 +7,12 @@ set(GPA_PROJECT_NAME GPUPerfAPIDX)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
+include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-include_directories(${GPA_PUBLIC_HEADER}
+include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
+                    ${GPA_PUBLIC_HEADER}
+                    ${GPA_SRC}
                     ${GPA_SRC_COMMON})
 
 set(HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/dx_utils.h)

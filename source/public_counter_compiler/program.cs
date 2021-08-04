@@ -43,20 +43,20 @@ namespace PublicCounterCompiler
                 return;
             }
 
-            string gpaPath = GPATools.Gpa.GetGpuPerfApiPath();
+            string gpaPath = GpaTools.Gpa.GetGpuPerfApiPath();
 
             // Derived counter definition input
             var counterCompiler = new CounterCompiler();
 
             CounterCompiler.DerivedCounterFileInput counterPath = new CounterCompiler.DerivedCounterFileInput
             {
-                rootFilename = GPATools.Gpa.public_file_prefix,
-                compiler_type_str = GPATools.Gpa.PublicStr,
-                compilerInputPath = gpaPath + GPATools.Gpa.CounterDefDir,
-                autoGenCompilerInputFilePath = gpaPath + GPATools.Gpa.AutoGenPublicCounterInputDir,
-                outputDirectory = gpaPath + GPATools.Gpa.AutoGenCounterGeneratorOutDir,
-                counterListOutputDirectory = gpaPath + GPATools.Gpa.CounterListOutDir,
-                testOutputDirectory = gpaPath + GPATools.Gpa.AutoGenTestOutDir
+                rootFilename = GpaTools.Gpa.publicFilePrefix,
+                compiler_type_str = GpaTools.Gpa.publicStr,
+                compilerInputPath = gpaPath + GpaTools.Gpa.counterDefDir,
+                autoGenCompilerInputFilePath = gpaPath + GpaTools.Gpa.autoGenPublicCounterInputDir,
+                outputDirectory = gpaPath + GpaTools.Gpa.autoGenCounterGeneratorOutDir,
+                counterListOutputDirectory = gpaPath + GpaTools.Gpa.counterListOutDir,
+                testOutputDirectory = gpaPath + GpaTools.Gpa.autoGenTestOutDir
             };
 
             counterCompiler.derivedCounterFileInput = counterPath;
@@ -68,11 +68,11 @@ namespace PublicCounterCompiler
             {
                 counterCompiler.isConsoleApp = false;
                 Application.Run(form);
-                GPATools.CMakeGenerator.Init = GPATools.CounterDefCMakeGenerator.Init;
-                GPATools.CMakeGenerator.ProcessFile = GPATools.CounterDefCMakeGenerator.ProcessFiles;
-                GPATools.CMakeGenerator.CMakeWriter = GPATools.CounterDefCMakeGenerator.CMakeWriter;
-                GPATools.CMakeGenerator.AddDirectory(GPATools.Gpa.GetGpuPerfApiPath() + "GPA\\source\\auto_generated");
-                GPATools.CMakeGenerator.GenerateCMakeFiles();
+                GpaTools.CMakeGenerator.Init = GpaTools.CounterDefCMakeGenerator.Init;
+                GpaTools.CMakeGenerator.ProcessFile = GpaTools.CounterDefCMakeGenerator.ProcessFiles;
+                GpaTools.CMakeGenerator.CMakeWriter = GpaTools.CounterDefCMakeGenerator.CMakeWriter;
+                GpaTools.CMakeGenerator.AddDirectory(GpaTools.Gpa.GetGpuPerfApiPath() + "GPA\\source\\auto_generated");
+                GpaTools.CMakeGenerator.GenerateCMakeFiles();
                 return;
             }
 
@@ -116,15 +116,16 @@ namespace PublicCounterCompiler
             if (args.Length == 2)
             {
                 counterCompiler.isConsoleApp = false;
+                counterCompiler.isConsoleApp = false;
 
                 form.apiName.Text = args[0];
                 form.GPUFamily.Text = args[1];
                 Application.Run(form);
-                GPATools.CMakeGenerator.Init = GPATools.CounterDefCMakeGenerator.Init;
-                GPATools.CMakeGenerator.ProcessFile = GPATools.CounterDefCMakeGenerator.ProcessFiles;
-                GPATools.CMakeGenerator.CMakeWriter = GPATools.CounterDefCMakeGenerator.CMakeWriter;
-                GPATools.CMakeGenerator.AddDirectory(GPATools.Gpa.GetGpuPerfApiPath() + "GPA\\source\\auto_generated");
-                GPATools.CMakeGenerator.GenerateCMakeFiles();
+                GpaTools.CMakeGenerator.Init = GpaTools.CounterDefCMakeGenerator.Init;
+                GpaTools.CMakeGenerator.ProcessFile = GpaTools.CounterDefCMakeGenerator.ProcessFiles;
+                GpaTools.CMakeGenerator.CMakeWriter = GpaTools.CounterDefCMakeGenerator.CMakeWriter;
+                GpaTools.CMakeGenerator.AddDirectory(GpaTools.Gpa.GetGpuPerfApiPath() + "GPA\\source\\auto_generated");
+                GpaTools.CMakeGenerator.GenerateCMakeFiles();
             }
             else if (args.Length == 7)
             {

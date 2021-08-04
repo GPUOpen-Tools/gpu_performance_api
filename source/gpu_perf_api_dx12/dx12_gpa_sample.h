@@ -1,48 +1,52 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  DX12 GPA Sample Header
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  DX12 GPA Sample Header
 //==============================================================================
 
-#ifndef _DX12_GPA_SAMPLE_H_
-#define _DX12_GPA_SAMPLE_H_
+#ifndef GPU_PERF_API_DX12_DX12_GPA_SAMPLE_H_
+#define GPU_PERF_API_DX12_DX12_GPA_SAMPLE_H_
 
-#include "gpa_sample.h"
+#include "gpu_perf_api_common/gpa_sample.h"
 
-/// Class for DX12 Specific sample
-class DX12GPASample : public GPASample
+/// @brief Class for DX12 Specific sample.
+class Dx12GpaSample : public GpaSample
 {
 public:
-    /// Constructor
-    /// \param[in] pPass GPA Pass object
-    /// \param[in] pCmdList gpa command list
-    /// \param[in] sampleType gpa sample type
-    /// \param[in] sampleId user-supplied sample id
-    DX12GPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId);
+    /// @brief Constructor.
+    ///
+    /// @param [in] pass GPA Pass object.
+    /// @param [in] cmd_list GPA command list.
+    /// @param [in] sample_type GPA sample type.
+    /// @param [in] sample_id User supplied sample id.
+    Dx12GpaSample(GpaPass* pass, IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id);
 
-    /// \copydoc GPASample::UpdateResults
+    /// @copydoc GpaSample::UpdateResults()
     bool UpdateResults() override final;
 
-    /// \copydoc GPASample::BeginRequest
+    /// @copydoc GpaSample::BeginRequest()
     bool BeginRequest() override final;
 
-    /// \copydoc GPASample::EndRequest
+    /// @copydoc GpaSample::EndRequest()
     bool EndRequest() override final;
 
-    /// \copydoc GPASample::ReleaseCounters
+    /// @copydoc GpaSample::ReleaseCounters()
     void ReleaseCounters() override final;
 
 private:
-    /// Populates the sample result
-    /// \return result of the sample
-    GPASampleResult* PopulateSampleResult();
+    /// @brief Populates the sample result.
+    ///
+    /// @return The result of the sample.
+    GpaSampleResult* PopulateSampleResult();
 
-    /// Returns the result from the driver
-    /// \param[in] sampleDataSize size of result for the sample in bytes
-    /// \param[in, out] pResultBuffer pointer to the buffer where result will be copied
-    /// \return true if copying of data was successful otherwise false
-    bool CopyResult(size_t sampleDataSize, void* pResultBuffer) const;
+    /// @brief Returns the result from the driver.
+    ///
+    /// @param [in] sample_data_size Size of result for the sample in bytes.
+    /// @param [in, out] result_buffer Pointer to the buffer where result will be copied.
+    ///
+    /// @return True if copying of data was successful otherwise false.
+    bool CopyResult(size_t sample_data_size, void* result_buffer) const;
 };
 
-#endif  // _DX12_GPA_SAMPLE_H_
+#endif  // GPU_PERF_API_DX12_DX12_GPA_SAMPLE_H_

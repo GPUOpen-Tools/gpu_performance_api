@@ -1,13 +1,12 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
 /// \brief  GL include files and common util functions
 //==============================================================================
 
-#ifndef _GL_INCLUDE_H_
-#define _GL_INCLUDE_H_
-
+#ifndef GPA_COUNTER_GENERATOR_GL_INCLUDE_H_
+#define GPA_COUNTER_GENERATOR_GL_INCLUDE_H_
 
 #ifndef GLES
 
@@ -45,11 +44,11 @@ typedef unsigned __int64 uint64_t;
 #endif
 
 #ifndef GL_STACK_OVERFLOW
-#define GL_STACK_OVERFLOW                 0x0503
+#define GL_STACK_OVERFLOW 0x0503
 #endif
 
 #ifndef GL_STACK_UNDERFLOW
-#define GL_STACK_UNDERFLOW                0x0504
+#define GL_STACK_UNDERFLOW 0x0504
 #endif
 
 #endif
@@ -57,19 +56,19 @@ typedef unsigned __int64 uint64_t;
 #include <string>
 #include <cassert>
 
-#include "logging.h"
+#include "gpu_perf_api_common/logging.h"
 
-namespace oglUtils
+namespace ogl_utils
 {
-    extern const int s_GL_DRIVER_VER_WITH_ONLY_GCN_SUPPORT;             ///< GL driver version where pre-GCN hardware was dropped
-    extern const int s_GL_DRIVER_VER_WITH_LINUX_STABLE_CLOCK_SUPPORT;   ///< GL driver version where stable clocks are working on Linux
-    extern const int s_GL_DRIVER_VER_WITH_GPIN_COUNTERS;                ///< GL driver version where GPIN counters have been validated
+    extern const int kGlDriverVerWithOnlyGcnSupport;           ///< GL driver version where pre-GCN hardware was dropped
+    extern const int kGlDriverVerWithLinuxStableClockSupport;  ///< GL driver version where stable clocks are working on Linux
+    extern const int kGlDriverVerWithGpinCounters;             ///< GL driver version where GPIN counters have been validated
 
     /// checks for OpenGL errors, logs the specified message if there is an error, and return true / false to indicate an error.
     /// This can be used anywhere, but should only be used in conditionals where the return value is needed; otherwise, use the
-    /// \param onErrorMessage the error message to put in the log
+    /// \param error_message the error message to put in the log
     /// \return true if there is an error; false if there is no error
-    extern bool CheckForGLError(const std::string& onErrorMessage);
-}  // namespace oglUtils
+    extern bool CheckForGlError(const std::string& error_message);
+}  // namespace ogl_utils
 
-#endif  // _GL_INCLUDE_H_
+#endif  // GPA_COUNTER_GENERATOR_GL_INCLUDE_H_

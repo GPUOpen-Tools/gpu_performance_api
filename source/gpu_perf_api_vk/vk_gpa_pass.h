@@ -1,68 +1,76 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Vulkan GPA Pass Object Header
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Vulkan GPA Pass Object Header
 //==============================================================================
 
-#ifndef _VK_GPA_PASS_H_
-#define _VK_GPA_PASS_H_
+#ifndef GPU_PERF_API_VK_VK_GPA_PASS_H_
+#define GPU_PERF_API_VK_VK_GPA_PASS_H_
 
-#include "gpa_pass.h"
-#include "vk_includes.h"
+#include "gpu_perf_api_common/gpa_pass.h"
 
-// forward declaration
-class VkGPACommandList;
+#include "gpu_perf_api_vk/vk_includes.h"
 
-/// Vulkan-specific GPA Pass
-class VkGPAPass : public GPAPass
+class VkGpaCommandList;
+
+/// @brief Vulkan-specific GPA Pass.
+class VkGpaPass : public GpaPass
 {
 public:
-    /// Constructor
-    /// \param[in] pGpaSession GPA session object pointer
-    /// \param[in] passIndex pass index
-    /// \param[in] counterSource counter source
-    /// \param[in] pPassCounters counter list for the pass
-    VkGPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters);
+    /// @brief Constructor.
+    ///
+    /// @param [in] gpa_session GPA session object pointer.
+    /// @param [in] pass_index Pass index.
+    /// @param [in] counter_source Counter source.
+    /// @param [in] pass_counters Counter list for the pass.
+    VkGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSource counter_source, CounterList* pass_counters);
 
-    /// Delete default constructor
-    VkGPAPass() = delete;
+    /// @brief Delete default constructor.
+    VkGpaPass() = delete;
 
-    /// Destructor
-    virtual ~VkGPAPass() = default;
+    /// @brief Destructor.
+    virtual ~VkGpaPass() = default;
 
-    /// \copydoc GPAPass::CreateAPISpecificSample()
-    GPASample* CreateAPISpecificSample(IGPACommandList* pCmdList, GpaSampleType sampleType, unsigned int sampleId) override final;
+    /// @copydoc GpaPass::CreateApiSpecificSample(IGpaCommandList*, GpaSampleType, unsigned int)
+    GpaSample* CreateApiSpecificSample(IGpaCommandList* command_list, GpaSampleType sample_type, unsigned int sample_id) override final;
 
-    /// \copydoc GPAPass::CreateAPISpecificCommandList
-    IGPACommandList* CreateAPISpecificCommandList(void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType) override final;
+    /// @copydoc GpaPass::CreateApiSpecificCommandList(void*, CommandListId, GpaCommandListType)
+    IGpaCommandList* CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType command_type) override final;
 
-    /// \copydoc GPAPass::EndSample
-    bool EndSample(IGPACommandList* pCmdList) override final;
+    /// @copydoc GpaPass::EndSample(IGpaCommandList*)
+    bool EndSample(IGpaCommandList* command_list) override final;
 
-    /// Copies samples from secondary command buffer to primary command buffer
-    /// \param[in] pSecondaryVkGPACmdList the secondary command buffer from which to copy samples
-    /// \param[in] pPrimaryVkGPACmdList the primary command buffer to which to copy samples
-    /// \param[in] numSamples the number of samples to copy
-    /// \param[out] pNewSampleIds the array of sample ids
-    /// \return true is the copy operation is successful
-    bool CopySecondarySamples(VkGPACommandList* pSecondaryVkGPACmdList,
-                              VkGPACommandList* pPrimaryVkGPACmdList,
-                              gpa_uint32        numSamples,
-                              gpa_uint32*       pNewSampleIds);
+    /// @brief Copies samples from secondary command buffer to primary command buffer.
+    ///
+    /// @param [in] secondary_vk_gpa_command_list The secondary command buffer from which to copy samples.
+    /// @param [in] primary_vk_gpa_command_list The primary command buffer to which to copy samples.
+    /// @param [in] num_samples The number of samples to copy.
+    /// @param [out] new_sample_ids The array of sample ids.
+    ///
+    /// @return True is the copy operation is successful.
+    bool CopySecondarySamples(VkGpaCommandList* secondary_vk_gpa_command_list,
+                              VkGpaCommandList* primary_vk_gpa_command_list,
+                              GpaUInt32         num_samples,
+                              GpaUInt32*        new_sample_ids);
 
-    /// Accessor to the VkGpaSampleBeginInfoAMD struct that should be used for all samples created in this pass.
-    /// \return Const pointer to the VkGpaSampleBeginInfoAMD struct which enables counters for this pass.
+    /// @brief Accessor to the VkGpaSampleBeginInfoAMD struct that should be used for all samples created in this pass.
+    ///
+    /// @return Const pointer to the VkGpaSampleBeginInfoAMD struct which enables counters for this pass.
     const VkGpaSampleBeginInfoAMD* GetVkSampleBeginInfo() const;
 
 private:
-    /// Initializes the sample config for the pass if pass counter source is hardware
+    /// @brief Initializes the sample config for the pass if pass counter source is hardware.
     void InitializeSampleConfig();
 
-    VkGpaSampleBeginInfoAMD
-                                     m_sampleBeginInfoAMD;  ///< AMD Extension struct to specify the counters in each sample. This will be the same for each sample within this pass.
-    bool                             m_isSampleBeginInfoInitialized;  ///< Indicates that the m_sampleBeginInfoAMD struct has been initialized.
-    std::vector<VkGpaPerfCounterAMD> m_counterIds;  ///< Stores the enabled counter Ids so that the each sample within the pass can reference them.
+    /// AMD Extension struct to specify the counters in each sample. This will be the same for each sample within this pass.
+    VkGpaSampleBeginInfoAMD sample_begin_info_amd_;
+
+    /// Indicates that the sample_begin_info_amd_ struct has been initialized.
+    bool is_sample_begin_info_initialized_;
+
+    /// Stores the enabled counter Ids so that the each sample within the pass can reference them.
+    std::vector<VkGpaPerfCounterAMD> counter_ids_;
 };
 
-#endif  //_VK_GPA_PASS_H_
+#endif  // GPU_PERF_API_VK_VK_GPA_PASS_H_

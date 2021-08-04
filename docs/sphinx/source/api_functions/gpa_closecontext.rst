@@ -1,22 +1,22 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_CloseContext
-@@@@@@@@@@@@@@@@
+GpaCloseContext
+@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_CloseContext(
-        GPA_ContextId contextId);
+    GpaStatus GpaCloseContext(
+        GpaContextId context_id);
 
 Description
 %%%%%%%%%%%
 
 Closes the specified context, which ends access to GPU performance counters.
 After closing a context, GPA functions should not be called again until the
-counters are reopened with GPA_OpenContext.
+counters are reopened with GpaOpenContext.
 
 Parameters
 %%%%%%%%%%
@@ -25,7 +25,7 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``contextId``", "Unique identifier of a previously-opened context."
+    "``context_id``", "Unique identifier of a previously-opened context."
 
 Return value
 %%%%%%%%%%%%
@@ -34,10 +34,10 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The context was successfully closed."
-    "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``contextId`` parameter is NULL."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_FOUND", "The supplied ``contextId`` parameter was not recognized as a previously-opened context identifier."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied context is not currently open."
-    "GPA_STATUS_ERROR_INVALID_PARAMETER", "The API type of the supplied context does not match GPA's API type."
-    "GPA_STATUS_ERROR_FAILED", "The context could not be closed."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The context was successfully closed."
+    "kGpaStatusErrorNullPointer", "The supplied ``context_id`` parameter is NULL."
+    "kGpaStatusErrorContextNotFound", "The supplied ``context_id`` parameter was not recognized as a previously-opened context identifier."
+    "kGpaStatusErrorContextNotOpen", "The supplied context is not currently open."
+    "kGpaStatusErrorInvalidParameter", "The API type of the supplied context does not match GPA's API type."
+    "kGpaStatusErrorFailed", "The context could not be closed."
+    "kGpaStatusErrorException", "Exception occurred."

@@ -1,35 +1,35 @@
-.. Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_OpenContext
-@@@@@@@@@@@@@@@
+GpaOpenContext
+@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_OpenContext(
-        void* pContext,
-        GPA_OpenContextFlags flags,
-        GPA_ContextId* pContextId);
+    GpaStatus GpaOpenContext(
+        void* context,
+        GpaOpenContextFlags flags,
+        GpaContextId* context_id);
 
 Description
 %%%%%%%%%%%
 
 Opens the specified context, which provides access to GPU performance counters.
-This function must be called after GPA_Initialize and before any other GPUPerfAPI
+This function must be called after GpaInitialize and before any other GPUPerfAPI
 functions.
 
-The type of the supplied ``pContext`` is different depending on which API is
+The type of the supplied ``context`` is different depending on which API is
 being used. See the table below for the required type which should be passed to
-GPA_OpenContext:
+GpaOpenContext:
 
 .. csv-table::
-    :header: "API", "GPA_OpenContext ``pContext`` Parameter Type"
+    :header: "API", "GpaOpenContext ``context`` Parameter Type"
     :widths: 45, 55
 
-    "Vulkan", "| ``GPA_vkContextOpenInfo*``
-    | (defined in GPUPerfAPI-Vk.h)"
+    "Vulkan", "| ``GpaVkContextOpenInfo*``
+    | (defined in gpu_perf_api_vk.h)"
     "DirectX 12", "| ``ID3D12Device*``"
     "DirectX 11", "| ``ID3D11Device*``"
     "OpenGL", "| Windows: ``HGLRC``
@@ -43,9 +43,9 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``pContext``", "The context to open counters for. The specific type for this parameter depends on which API GPUPerfAPI is being used with. Refer to the table above for the specific type to be used."
-    "``flags``", "Flags used to initialize the context. This should be a combination of GPA_OpenContext_Bits."
-    "``pContextId``", "On successful execution of this function, this parameter will be set to a GPA-generated unique context identifier. This value can subsequently passed to any GPA function taking a GPA_ContextId as an input parameter."
+    "``context``", "The context to open counters for. The specific type for this parameter depends on which API GPUPerfAPI is being used with. Refer to the table above for the specific type to be used."
+    "``flags``", "Flags used to initialize the context. This should be a combination of GpaOpenContext."
+    "``context_id``", "On successful execution of this function, this parameter will be set to a GPA-generated unique context identifier. This value can subsequently passed to any GPA function taking a GpaContextId as an input parameter."
 
 Return value
 %%%%%%%%%%%%
@@ -54,14 +54,14 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The context was successfully opened."
-    "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``pContext`` parameter is NULL."
-    "GPA_STATUS_ERROR_INVALID_PARAMETER", "The ``flags`` parameter has an invalid value."
-    "GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED", "The current GPU hardware is not supported."
-    "GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED", "The currently-installed GPU driver is not supported."
-    "GPA_STATUS_ERROR_CONTEXT_ALREADY_OPEN", "The supplied context has already been opened."
-    "GPA_STATUS_ERROR_FAILED", "The context could not be opened."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The context was successfully opened."
+    "kGpaStatusErrorNullPointer", "The supplied ``pContext`` parameter is NULL."
+    "kGpaStatusErrorInvalidParameter", "The ``flags`` parameter has an invalid value."
+    "kGpaStatusErrorHardwareNotSupported", "The current GPU hardware is not supported."
+    "kGpaStatusErrorDriverNotSupported", "The currently-installed GPU driver is not supported."
+    "kGpaStatusErrorContextAlreadyOpen", "The supplied context has already been opened."
+    "kGpaStatusErrorFailed", "The context could not be opened."
+    "kGpaStatusErrorException", "Exception occurred."
 
 A Note about GPU Clock Modes
 &&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -76,7 +76,7 @@ to ensure consistent results between different runs of the application.
 However, the observed performance of the application (especially using the
 GPUTime counter) may be lower than expected or lower than the application can
 achieve during normal operation. Using the ``flags`` parameter when calling
-GPA_OpenContext, you can alter the GPU clock frequencies used while profiling.
+GpaOpenContext, you can alter the GPU clock frequencies used while profiling.
 The table below explains the stable clock modes that can be specified via the
 ``flags`` parameter.
 
@@ -84,12 +84,12 @@ The table below explains the stable clock modes that can be specified via the
     :header: "Clock mode", "Description"
     :widths: 35, 65
 
-    "| ``GPA_OPENCONTEXT_DEFAULT_BIT``
-    | (or any combination of GPA_OpenContext_Bits which doesn't include any of the ``GPA_OPENCONTEXT_CLOCK_MODE_`` bits)", "Clocks are set to stable frequencies which are known to be power and thermal sustainable. The ratio between the engine and memory clock frequencies will be kept the same as much as possible."
-    "``GPA_OPENCONTEXT_CLOCK_MODE_NONE_BIT``", "Clock frequencies are not altered and may vary widely during profiling based on GPU usage and other factors."
-    "``GPA_OPENCONTEXT_CLOCK_MODE_PEAK_BIT``", "Clocks are set to peak frequencies. In most cases this is safe to do for short periods of time while profiling. However, the GPU clock frequencies could still be reduced from peak level under power and thermal constraints."
-    "``GPA_OPENCONTEXT_CLOCK_MODE_MIN_MEMORY_BIT``", "The memory clock frequency is set to the minimum level, whiles the engine clock is set to a power and thermal sustainable level."
-    "``GPA_OPENCONTEXT_CLOCK_MODE_MIN_ENGINE_BIT``", "The engine clock frequency is set to the minimum level, whiles the memory clock is set to a power and thermal sustainable level."
+    "| ``kGpaOpenContextDefaultBit``
+    | (or any combination of GpaOpenContextBits which doesn't include any of the ``kGpaOpenContextClockMode*`` bits)", "Clocks are set to stable frequencies which are known to be power and thermal sustainable. The ratio between the engine and memory clock frequencies will be kept the same as much as possible."
+    "``kGpaOpenContextClockModeNoneBit``", "Clock frequencies are not altered and may vary widely during profiling based on GPU usage and other factors."
+    "``kGpaOpenContextClockModePeakBit``", "Clocks are set to peak frequencies. In most cases this is safe to do for short periods of time while profiling. However, the GPU clock frequencies could still be reduced from peak level under power and thermal constraints."
+    "``kGpaOpenContextClockModeMinMemoryBit``", "The memory clock frequency is set to the minimum level, whiles the engine clock is set to a power and thermal sustainable level."
+    "``kGpaOpenContextClockModeMinEngineBit``", "The engine clock frequency is set to the minimum level, whiles the memory clock is set to a power and thermal sustainable level."
 
 A Note about Raw Hardware Counters
 &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -97,5 +97,5 @@ A Note about Raw Hardware Counters
 By default, GPA exposes a set of derived counters that are computed from one or
 more raw hardware counters. GPA can also be configured to expose the raw
 hardware counters directly. In order to do this, the ``flags`` parameter
-specified when calling GPA_OpenContext should include the
-``GPA_OPENCONTEXT_ENABLE_HARDWARE_COUNTERS_BIT`` bit.
+specified when calling GpaOpenContext should include the
+``kGpaOpenContextEnableHardwareCountersBit`` bit.

@@ -1,193 +1,217 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief Base class for counter generation
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Base class for counter generation.
 //==============================================================================
 
-#ifndef _GPA_COUNTER_GENERATOR_BASE_H_
-#define _GPA_COUNTER_GENERATOR_BASE_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_GENERATOR_BASE_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_GENERATOR_BASE_H_
 
 #include <unordered_map>
 
-#include "gpa_hardware_counters.h"
-#include "gpa_software_counters.h"
-#include "gpa_counter_accessor_interface.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_accessor_interface.h"
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+#include "gpu_perf_api_counter_generator/gpa_software_counters.h"
 
-/// Base class for counter generation
-class GPA_CounterGeneratorBase : public IGPACounterAccessor
+/// @brief Base class for counter generation.
+class GpaCounterGeneratorBase : public IGpaCounterAccessor
 {
 public:
-    /// Constructor
-    GPA_CounterGeneratorBase();
+    /// @brief Constructor.
+    GpaCounterGeneratorBase();
 
-    /// Destructor
-    virtual ~GPA_CounterGeneratorBase() = default;
+    /// @brief Virtual destructor.
+    virtual ~GpaCounterGeneratorBase() = default;
 
-    /// \copydoc IGPACounterAccessor::SetAllowedCounters()
-    void SetAllowedCounters(bool bAllowPublicCounters, bool bAllowHardwareCounters, bool bAllowSoftwareCounters) override;
+    /// @copydoc IGpaCounterAccessor::SetAllowedCounters()
+    void SetAllowedCounters(bool allow_public_counters, bool allow_hardware_counters, bool allow_software_counters) override;
 
-    /// \copydoc IGPACounterAccessor::GetNumCounters()
-    gpa_uint32 GetNumCounters() const override;
+    /// @copydoc IGpaCounterAccessor::GetNumCounters()
+    GpaUInt32 GetNumCounters() const override;
 
-    /// \copydoc IGPACounterAccessor::GetCounterName()
-    const char* GetCounterName(gpa_uint32 index) const override;
+    /// @copydoc IGpaCounterAccessor::GetCounterName()
+    const char* GetCounterName(GpaUInt32 index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetCounterGroup()
-    const char* GetCounterGroup(gpa_uint32 index) const override;
+    /// @copydoc IGpaCounterAccessor::GetCounterGroup()
+    const char* GetCounterGroup(GpaUInt32 index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetCounterDescription()
-    const char* GetCounterDescription(gpa_uint32 index) const override;
+    /// @copydoc IGpaCounterAccessor::GetCounterDescription()
+    const char* GetCounterDescription(GpaUInt32 index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetCounterDataType()
-    GPA_Data_Type GetCounterDataType(gpa_uint32 index) const override;
+    /// @copydoc IGpaCounterAccessor::GetCounterDataType()
+    GpaDataType GetCounterDataType(GpaUInt32 index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetCounterUsageType()
-    GPA_Usage_Type GetCounterUsageType(gpa_uint32 index) const override;
+    /// @copydoc IGpaCounterAccessor::GetCounterUsageType()
+    GpaUsageType GetCounterUsageType(GpaUInt32 index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetCounterUuid()
-    GPA_UUID GetCounterUuid(gpa_uint32 index) const override;
+    /// @copydoc IGpaCounterAccessor::GetCounterUuid()
+    GpaUuid GetCounterUuid(GpaUInt32 index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetCounterSampleType()
-    GPA_Counter_Sample_Type GetCounterSampleType(gpa_uint32 index) const override;
+    /// @copydoc IGpaCounterAccessor::GetCounterSampleType()
+    GpaCounterSampleType GetCounterSampleType(GpaUInt32 index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetPublicCounter()
-    const GPA_DerivedCounter* GetPublicCounter(gpa_uint32 index) const override;
+    /// @copydoc IGpaCounterAccessor::GetPublicCounter()
+    const GpaDerivedCounterInfoClass* GetPublicCounter(GpaUInt32 index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetHardwareCounterExt()
-    const GPA_HardwareCounterDescExt* GetHardwareCounterExt(gpa_uint32 index) const override;
+    /// @copydoc IGpaCounterAccessor::GetHardwareCounterExt()
+    const GpaHardwareCounterDescExt* GetHardwareCounterExt(GpaUInt32 index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetNumPublicCounters()
-    gpa_uint32 GetNumPublicCounters() const override;
+    /// @copydoc IGpaCounterAccessor::GetNumPublicCounters()
+    GpaUInt32 GetNumPublicCounters() const override;
 
-    /// \copydoc IGPACounterAccessor::GetInternalCountersRequired()
-    std::vector<gpa_uint32> GetInternalCountersRequired(gpa_uint32 index) const override;
+    /// @copydoc IGpaCounterAccessor::GetInternalCountersRequired()
+    std::vector<GpaUInt32> GetInternalCountersRequired(GpaUInt32 index) const override;
 
-    /// \copydoc IGPACounterAccessor::ComputePublicCounterValue()
-    GPA_Status ComputePublicCounterValue(gpa_uint32                            counterIndex,
-                                         const std::vector<const gpa_uint64*>& results,
-                                         std::vector<GPA_Data_Type>&           internalCounterTypes,
-                                         void*                                 pResult,
-                                         const GPA_HWInfo*                     pHwInfo) const override;
+    /// @copydoc IGpaCounterAccessor::ComputePublicCounterValue()
+    GpaStatus ComputePublicCounterValue(GpaUInt32                            counter_index,
+                                        const std::vector<const GpaUInt64*>& results,
+                                        std::vector<GpaDataType>&            internal_counter_types,
+                                        void*                                result,
+                                        const GpaHwInfo*                     hardware_info) const override;
 
-    /// \copydoc IGPACounterAccessor::GetCounterSourceInfo()
-    GPACounterSourceInfo GetCounterSourceInfo(gpa_uint32 globalIndex) const override;
+    /// @copydoc IGpaCounterAccessor::GetCounterSourceInfo()
+    GpaCounterSourceInfo GetCounterSourceInfo(GpaUInt32 global_index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetCounterIndex()
-    bool GetCounterIndex(const char* pName, gpa_uint32* pIndex) const override;
+    /// @copydoc IGpaCounterAccessor::GetCounterIndex()
+    bool GetCounterIndex(const char* counter_name, GpaUInt32* counter_index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetCounterIndex()
-    bool GetCounterIndex(const GpaHwBlock& gpa_hardware_block,
-                         const gpa_uint32& block_instance,
-                         const gpa_uint32& block_event_id,
+    /// @copydoc IGpaCounterAccessor::GetCounterIndex()
+    bool GetCounterIndex(const GpaHwBlock&    gpa_hardware_block,
+                         const GpaUInt32&     block_instance,
+                         const GpaUInt32&     block_event_id,
                          const GpaShaderMask& gpa_shader_mask,
-                         gpa_uint32*       counter_index) const override;
+                         GpaUInt32*           counter_index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetHardwareCounters()
-    const GPA_HardwareCounters* GetHardwareCounters() const override;
+    /// @copydoc IGpaCounterAccessor::GetPublicInterfaceCounterIndex()
+    bool GetPublicInterfaceCounterIndex(const GpaUInt32& hardware_counter_index, GpaUInt32* public_interface_counter_index) const override;
 
-    /// \copydoc IGPACounterAccessor::GetSoftwareCounters()
-    const GPA_SoftwareCounters* GetSoftwareCounters() const override;
+    /// @copydoc IGpaCounterAccessor::GetHardwareCounters()
+    const GpaHardwareCounters* GetHardwareCounters() const override;
 
-    /// \copydoc IGPACounterAccessor::GetDerivedCounterInfo()
-    GpaDerivedCounterInfo* GetDerivedCounterInfo(const gpa_uint32& derived_counter_index) const override;
+    /// @copydoc IGpaCounterAccessor::GetSoftwareCounters()
+    const GpaSoftwareCounters* GetSoftwareCounters() const override;
 
-    /// Generate the counters for the specified generation
-    /// \param desiredGeneration the generation whose counters are needed
-    /// \param asicType the ASIC type whose counters are needed
-    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
-    /// \return GPA_STATUS_OK on success
-    GPA_Status GenerateCounters(GDT_HW_GENERATION desiredGeneration, GDT_HW_ASIC_TYPE asicType, gpa_uint8 generateAsicSpecificCounters);
+    /// @copydoc IGpaCounterAccessor::GetCounterInfo()
+    GpaCounterInfo* GetCounterInfo(const GpaUInt32& derived_counter_index) const override;
 
-    /// \copydoc IGPACounterAccessor::ComputeSWCounterValue()
-    void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const override;
+    /// @brief Generate the counters for the specified generation.
+    ///
+    /// @param [in] desired_generation The generation whose counters are needed.
+    /// @param [in] asic_type The ASIC type whose counters are needed.
+    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
+    ///
+    /// @return kGpaStatusOk on success.
+    GpaStatus GenerateCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaUInt8 generate_asic_specific_counters);
 
-    /// TODO: does this need to be here in the base class?
-    /// Get the number of supported AMD counters
-    /// \return number of supported AMD counters
-    gpa_uint32 GetNumAMDCounters() const;
+    /// @copydoc IGpaCounterAccessor::ComputeSwCounterValue().
+    void ComputeSwCounterValue(GpaUInt32 software_counter_index, GpaUInt64 value, void* result, const GpaHwInfo* hardware_info) const override;
 
-    /// Generate the public counters for the specified hardware generation
-    /// \param desiredGeneration the generation whose counters are needed
-    /// \param asicType the ASIC whose counters are needed
-    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
-    /// \param[out] pPublicCounters the generated counters
-    /// \return GPA_STATUS_OK on success
-    virtual GPA_Status GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
-                                              GDT_HW_ASIC_TYPE     asicType,
-                                              gpa_uint8            generateAsicSpecificCounters,
-                                              GPA_DerivedCounters* pPublicCounters) = 0;
+    /// @brief Get the number of supported AMD counters.
+    ///
+    /// @return number of supported AMD counters.
+    GpaUInt32 GetNumAmdCounters() const;
 
-    /// Generate the hardware counters for the specified hardware generation
-    /// \param desiredGeneration the generation whose counters are needed
-    /// \param asicType the ASIC whose counters are needed
-    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
-    /// \param[out] pHardwareCounters the generated counters
-    /// \return GPA_STATUS_OK on success
-    virtual GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                GDT_HW_ASIC_TYPE      asicType,
-                                                gpa_uint8             generateAsicSpecificCounters,
-                                                GPA_HardwareCounters* pHardwareCounters) = 0;
+    /// @brief Generate the public counters for the specified hardware generation.
+    ///
+    /// @param [in] desired_generation The generation whose counters are needed.
+    /// @param [in] asic_type The ASIC whose counters are needed.
+    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
+    /// @param [out] public_counters The generated counters.
+    ///
+    /// @return kGpaStatusOk on success.
+    virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
+                                             GDT_HW_ASIC_TYPE    asic_type,
+                                             GpaUInt8            generate_asic_specific_counters,
+                                             GpaDerivedCounters* public_counters) = 0;
 
-    /// Generate the software counters for the specified hardware generation
-    /// \param desiredGeneration the generation whose counters are needed
-    /// \param asicType the ASIC whose counters are needed
-    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
-    /// \param[out] pSoftwareCounters the generated counters
-    /// \return GPA_STATUS_OK on success
-    virtual GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                GDT_HW_ASIC_TYPE      asicType,
-                                                gpa_uint8             generateAsicSpecificCounters,
-                                                GPA_SoftwareCounters* pSoftwareCounters) = 0;
+    /// @brief Generate the hardware counters for the specified hardware generation.
+    ///
+    /// @param [in] desired_generation The generation whose counters are needed.
+    /// @param [in] asic_type The ASIC whose counters are needed.
+    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
+    /// @param [out] hardware_counters The generated counters.
+    ///
+    /// @return kGpaStatusOk on success.
+    virtual GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
+                                               GDT_HW_ASIC_TYPE     asic_type,
+                                               GpaUInt8             generate_asic_specific_counters,
+                                               GpaHardwareCounters* hardware_counters) = 0;
 
-    /// Generate the hardware exposed counters for the specified hardware generation
-    /// \param desiredGeneration the generation whose counters are needed
-    /// \param asicType the ASIC whose counters are needed
-    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
-    /// \param[out] pHardwareCounters the generated counters
-    /// \return GPA_STATUS_OK on success
-    virtual GPA_Status GenerateHardwareExposedCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                       GDT_HW_ASIC_TYPE      asicType,
-                                                       gpa_uint8             generateAsicSpecificCounters,
-                                                       GPA_HardwareCounters* pHardwareCounters);
+    /// @brief Generate the software counters for the specified hardware generation.
+    ///
+    /// @param [in] desired_generation The generation whose counters are needed.
+    /// @param [in] asic_type The ASIC whose counters are needed.
+    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
+    /// @param [out] software_counters The generated counters.
+    ///
+    /// @return kGpaStatusOk on success.
+    virtual GpaStatus GenerateSoftwareCounters(GDT_HW_GENERATION    desired_generation,
+                                               GDT_HW_ASIC_TYPE     asic_type,
+                                               GpaUInt8             generate_asic_specific_counters,
+                                               GpaSoftwareCounters* software_counters) = 0;
 
-    /// Maps the hardware counter and hardware exposed counter
-    /// \param pHardwareCounters the generated counters
-    /// \return true upon success otherwise false
-    virtual bool MapHardwareExposedCounter(GPA_HardwareCounters* pHardwareCounters);
+    /// @brief Generate the hardware exposed counters for the specified hardware generation
+    ///
+    /// @param [in] desired_generation The generation whose counters are needed
+    /// @param [in] asic_type The ASIC whose counters are needed
+    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
+    /// @param [out] hardware_counters The generated counters
+    ///
+    /// @return kGpaStatusOk on success
+    virtual GpaStatus GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
+                                                      GDT_HW_ASIC_TYPE     asic_type,
+                                                      GpaUInt8             generate_asic_specific_counters,
+                                                      GpaHardwareCounters* hardware_counters);
 
-    GPA_DerivedCounters  m_publicCounters;    ///< the generated public counters
-    GPA_HardwareCounters m_hardwareCounters;  ///< the generated hardware counters
-    GPA_SoftwareCounters m_softwareCounters;  ///< the generated software counters
+    /// @brief Maps the hardware counter and hardware exposed counter.
+    ///
+    /// @param [in] hardware_counters The generated counters.
+    ///
+    /// @return true upon success otherwise false.
+    virtual bool MapHardwareExposedCounter(GpaHardwareCounters* hardware_counters);
+
+    GpaDerivedCounters  public_counters_;    ///< The generated public counters.
+    GpaHardwareCounters hardware_counters_;  ///< The generated hardware counters.
+    GpaSoftwareCounters software_counters_;  ///< The generated software counters.
 
 private:
 #ifdef AMDT_INTERNAL
-    /// Allow hardware counters to be given an alternate name when they are enabled using the "block:instance:event:alt_name" syntax
-    /// \param index The index of a counter, must be between 0 and the value returned from GetNumPublicCounters()
-    /// \param pName the alternate counter name to be used for the hardware counter
-    /// \return true upon success otherwise false
-    bool SetCounterName(gpa_uint32 index, const char* pName);
+    /// @brief Allow hardware counters to be given an alternate name when they are enabled using the "block:instance:event:alt_name" syntax.
+    ///
+    /// @param [in] index The index of a counter, must be between 0 and the value returned from GetNumPublicCounters().
+    /// @param [in] counter_name The alternate counter name to be used for the hardware counter.
+    ///
+    /// @return true upon success otherwise false.
+    bool SetCounterName(GpaUInt32 index, const char* counter_name);
 
-    /// Entry point to load internal counters
-    /// \param desiredGeneration the generation whose counters are needed
-    /// \param asicType the ASIC whose counters are needed
-    /// \param generateAsicSpecificCounters Flag that indicates whether the counters should be ASIC specific, if available.
-    /// \param[out] pPublicCounters the generated counters
-    /// \return GPA_STATUS_OK on success
-    virtual GPA_Status GenerateInternalDerivedCounters(GDT_HW_GENERATION    desiredGeneration,
-                                        GDT_HW_ASIC_TYPE     asicType,
-                                        gpa_uint8            generateAsicSpecificCounters,
-                                        GPA_DerivedCounters* pPublicCounters);
+    /// @brief Entry point to load internal counters.
+    ///
+    /// @param [in] desired_generation The generation whose counters are needed.
+    /// @param [in] asic_type The ASIC whose counters are needed.
+    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
+    /// @param [out] public_counters The generated counters.
+    ///
+    /// @return kGpaStatusOk on success.
+    virtual GpaStatus GenerateInternalDerivedCounters(GDT_HW_GENERATION   desired_generation,
+                                                      GDT_HW_ASIC_TYPE    asic_type,
+                                                      GpaUInt8            generate_asic_specific_counters,
+                                                      GpaDerivedCounters* public_counters);
 #endif
 
-    bool m_doAllowPublicCounters;           ///< flag indicating whether or not public counters are allowed
-    bool m_doAllowHardwareCounters;         ///< flag indicating whether or not hardware counters are allowed
-    bool m_doAllowSoftwareCounters;         ///< flag indicating whether or not software counters are allowed
-    bool m_doAllowHardwareExposedCounters;  ///< flag indicating whether or not whitelist counters are allowed
+    bool do_allow_public_counters_;            ///< Flag indicating whether or not public counters are allowed.
+    bool do_allow_hardware_counters_;          ///< Flag indicating whether or not hardware counters are allowed.
+    bool do_allow_software_counters_;          ///< Flag indicating whether or not software counters are allowed.
+    bool do_allow_hardware_exposed_counters_;  ///< Flag indicating whether or not whitelist counters are allowed.
 
-    typedef std::unordered_map<std::string, gpa_uint32> CounterNameIndexMap;  ///< typedef for an unordered_map from counter name to index
-    static const gpa_uint32                             ms_COUNTER_NOT_FOUND = static_cast<gpa_uint32>(-1);  ///< const indicating that a counter was not found
-    mutable CounterNameIndexMap m_counterIndexCache;  ///< cache of counter indexes, so we don't have to look up a counter more than once (it can be expensive)
+    /// Typedef for an unordered_map from counter name to index.
+    typedef std::unordered_map<std::string, GpaUInt32> CounterNameIndexMap;
+
+    /// Const indicating that a counter was not found.
+    static const GpaUInt32 kCounterNotFound = static_cast<GpaUInt32>(-1);
+
+    /// Cache of counter indexes, so we don't have to look up a counter more than once (it can be expensive).
+    mutable CounterNameIndexMap counter_index_cache_;
 };
 
-#endif  //_GPA_COUNTER_GENERATOR_BASE_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_GPA_COUNTER_GENERATOR_BASE_H_

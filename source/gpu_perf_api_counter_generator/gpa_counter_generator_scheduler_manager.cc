@@ -1,80 +1,80 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Class that will get the correct Generator and Scheduler for an API/Generation combination
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Class that will get the correct Generator and Scheduler for an API/Generation combination.
 //==============================================================================
 
-#include "gpa_counter_generator_scheduler_manager.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_scheduler_manager.h"
 
-void CounterGeneratorSchedulerManager::RegisterCounterGenerator(GPA_API_Type              apiType,
-                                                                GDT_HW_GENERATION         generation,
-                                                                GPA_CounterGeneratorBase* pCounterGenerator,
-                                                                bool                      replaceExisting)
+void CounterGeneratorSchedulerManager::RegisterCounterGenerator(GpaApiType               api_type,
+                                                                GDT_HW_GENERATION        generation,
+                                                                GpaCounterGeneratorBase* counter_generator,
+                                                                bool                     replace_existing)
 {
-    GenerationGeneratorMap localMap;
+    GenerationGeneratorMap local_map;
 
-    if (0 < m_counterGeneratorItems.count(apiType))
+    if (0 < counter_generator_items_.count(api_type))
     {
-        localMap = m_counterGeneratorItems[apiType];
+        local_map = counter_generator_items_[api_type];
     }
 
-    if (0 == localMap.count(generation) || replaceExisting)
+    if (0 == local_map.count(generation) || replace_existing)
     {
-        localMap[generation] = pCounterGenerator;
+        local_map[generation] = counter_generator;
     }
 
-    m_counterGeneratorItems[apiType] = localMap;
+    counter_generator_items_[api_type] = local_map;
 }
 
-bool CounterGeneratorSchedulerManager::GetCounterGenerator(GPA_API_Type apiType, GDT_HW_GENERATION generation, GPA_CounterGeneratorBase*& pCounterGeneratorOut)
+bool CounterGeneratorSchedulerManager::GetCounterGenerator(GpaApiType api_type, GDT_HW_GENERATION generation, GpaCounterGeneratorBase*& counter_generator_out)
 {
-    bool retVal = false;
+    bool ret_val = false;
 
-    if (0 < m_counterGeneratorItems.count(apiType))
+    if (0 < counter_generator_items_.count(api_type))
     {
-        if (0 < m_counterGeneratorItems[apiType].count(generation))
+        if (0 < counter_generator_items_[api_type].count(generation))
         {
-            pCounterGeneratorOut = m_counterGeneratorItems[apiType][generation];
-            retVal               = true;
+            counter_generator_out = counter_generator_items_[api_type][generation];
+            ret_val               = true;
         }
     }
 
-    return retVal;
+    return ret_val;
 }
 
-void CounterGeneratorSchedulerManager::RegisterCounterScheduler(GPA_API_Type          apiType,
+void CounterGeneratorSchedulerManager::RegisterCounterScheduler(GpaApiType            api_type,
                                                                 GDT_HW_GENERATION     generation,
-                                                                IGPACounterScheduler* pCounterScheduler,
-                                                                bool                  replaceExisting)
+                                                                IGpaCounterScheduler* counter_scheduler,
+                                                                bool                  replace_existing)
 {
-    GenerationSchedulerMap localMap;
+    GenerationSchedulerMap local_map;
 
-    if (0 < m_counterSchedulerItems.count(apiType))
+    if (0 < counter_scheduler_items_.count(api_type))
     {
-        localMap = m_counterSchedulerItems[apiType];
+        local_map = counter_scheduler_items_[api_type];
     }
 
-    if (0 == localMap.count(generation) || replaceExisting)
+    if (0 == local_map.count(generation) || replace_existing)
     {
-        localMap[generation] = pCounterScheduler;
+        local_map[generation] = counter_scheduler;
     }
 
-    m_counterSchedulerItems[apiType] = localMap;
+    counter_scheduler_items_[api_type] = local_map;
 }
 
-bool CounterGeneratorSchedulerManager::GetCounterScheduler(GPA_API_Type apiType, GDT_HW_GENERATION generation, IGPACounterScheduler*& pCounterSchedulerOut)
+bool CounterGeneratorSchedulerManager::GetCounterScheduler(GpaApiType api_type, GDT_HW_GENERATION generation, IGpaCounterScheduler*& counter_scheduler_out)
 {
-    bool retVal = false;
+    bool ret_val = false;
 
-    if (0 < m_counterSchedulerItems.count(apiType))
+    if (0 < counter_scheduler_items_.count(api_type))
     {
-        if (0 < m_counterSchedulerItems[apiType].count(generation))
+        if (0 < counter_scheduler_items_[api_type].count(generation))
         {
-            pCounterSchedulerOut = m_counterSchedulerItems[apiType][generation];
-            retVal               = true;
+            counter_scheduler_out = counter_scheduler_items_[api_type][generation];
+            ret_val               = true;
         }
     }
 
-    return retVal;
+    return ret_val;
 }

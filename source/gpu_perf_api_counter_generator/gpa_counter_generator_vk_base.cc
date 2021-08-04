@@ -1,199 +1,199 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Class for VK counter generation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Class for VK counter generation.
 //==============================================================================
 
-#include "gpa_counter_generator_vk_base.h"
-#include "gpa_counter_generator_scheduler_manager.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_vk_base.h"
 
-#include "gpa_sw_counter_manager.h"
-#include "gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_scheduler_manager.h"
+#include "gpu_perf_api_counter_generator/gpa_sw_counter_manager.h"
 
-const GPA_SoftwareCounterDesc GPA_CounterGeneratorVKBase::s_VKSWCounters[] = {
+const GpaSoftwareCounterDesc GpaCounterGeneratorVkBase::kVkSoftwareCounters[] = {
     {
-        // GPA_VK_QUERY_TYPE_TIMESTAMP
+        // GPA_VK_QUERY_TYPE_TIMESTAMP.
         2,
         "VKGPUTime",
         "VK",
         "Time spent in GPU",
-        GPA_DATA_TYPE_FLOAT64,
+        kGpaDataTypeFloat64,
     },
     {
-        // GPA_VK_QUERY_TYPE_TIMESTAMP
+        // GPA_VK_QUERY_TYPE_TIMESTAMP.
         2,
         "PreBottomTimestamp",
         "VK",
         "Bottom of the pipeline GPU timestamp",
-        GPA_DATA_TYPE_FLOAT64,
+        kGpaDataTypeFloat64,
     },
     {
-        // GPA_VK_QUERY_TYPE_TIMESTAMP
+        // GPA_VK_QUERY_TYPE_TIMESTAMP.
         2,
         "PostBottomTimestamp",
         "VK",
         "Bottom of the pipeline GPU timestamp",
-        GPA_DATA_TYPE_FLOAT64,
+        kGpaDataTypeFloat64,
     },
     {
-        // GPA_VK_QUERY_TYPE_OCCLUSION (with PRECISE flag)
+        // GPA_VK_QUERY_TYPE_OCCLUSION (with PRECISE flag).
         0,
         "Occlusion",
         "VK",
         "Get the number of samples that passed the depth and stencil tests.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_OCCLUSION_BINARY (Occlusion, but without PRECISE flag)
+        // GPA_VK_QUERY_TYPE_OCCLUSION_BINARY (Occlusion, but without PRECISE flag).
         1,
         "BinaryOcclusion",
         "VK",
         "True/false if any samples passed depth and stencil tests.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS IAVertices
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS IAVertices.
         3,
         "IAVertices",
         "VK",
         "Number of vertices read by input assembler.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS IAPrimitives
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS IAPrimitives.
         3,
         "IAPrimitives",
         "VK",
         "Number of primitives read by the input assembler.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS VSInvocations
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS VSInvocations.
         3,
         "VSInvocations",
         "VK",
         "Number of times a vertex shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS GSInvocations
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS GSInvocations.
         3,
         "GSInvocations",
         "VK",
         "Number of times a geometry shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS GSPrimitives
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS GSPrimitives.
         3,
         "GSPrimitives",
         "VK",
         "Number of primitives output by a geometry shader.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS CInvocations
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS CInvocations.
         3,
         "CInvocations",
         "VK",
         "Number of primitives that were sent to the rasterizer.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS CPrimitives
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS CPrimitives.
         3,
         "CPrimitives",
         "VK",
         "Number of primitives that were rendered.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS PSInvocations
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS PSInvocations.
         3,
         "PSInvocations",
         "VK",
         "Number of times a pixel shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS TCSInvocations
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS TCSInvocations.
         3,
         "TCSInvocations",
         "VK",
         "Number of times a tessellation control shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS TESInvocations
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS TESInvocations.
         3,
         "TESInvocations",
         "VK",
         "Number of times a tessellation evaluation shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
     {
-        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS CSInvocations
+        // GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS CSInvocations.
         3,
         "CSInvocations",
         "VK",
         "Number of times a compute shader was invoked.",
-        GPA_DATA_TYPE_UINT64,
+        kGpaDataTypeUint64,
     },
 };
 
-const size_t GPA_CounterGeneratorVKBase::s_VKSWCountersCount = (sizeof(s_VKSWCounters) / sizeof(GPA_SoftwareCounterDesc));
+const size_t GpaCounterGeneratorVkBase::kVkSoftwareCountersCount = (sizeof(kVkSoftwareCounters) / sizeof(GpaSoftwareCounterDesc));
 
-bool GPA_CounterGeneratorVKBase::GetSwCounterDesc(const gpa_uint32 swCounterIndex, GPA_SoftwareCounterDesc& swCounterDesc)
+bool GpaCounterGeneratorVkBase::GetSwCounterDesc(const GpaUInt32 sw_counter_index, GpaSoftwareCounterDesc& sw_counter_desc)
 {
-    if (swCounterIndex < s_VKSWCountersCount)
+    if (sw_counter_index < kVkSoftwareCountersCount)
     {
-        swCounterDesc = s_VKSWCounters[swCounterIndex];
+        sw_counter_desc = kVkSoftwareCounters[sw_counter_index];
     }
 
-    return swCounterIndex < s_VKSWCountersCount;
+    return sw_counter_index < kVkSoftwareCountersCount;
 }
 
-GPA_Status GPA_CounterGeneratorVKBase::GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
-                                                              GDT_HW_ASIC_TYPE     asicType,
-                                                              gpa_uint8            generateAsicSpecificCounters,
-                                                              GPA_DerivedCounters* pPublicCounters)
+GpaStatus GpaCounterGeneratorVkBase::GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
+                                                            GDT_HW_ASIC_TYPE    asic_type,
+                                                            GpaUInt8            generate_asic_specific_counters,
+                                                            GpaDerivedCounters* public_counters)
 {
-    UNREFERENCED_PARAMETER(desiredGeneration);
-    UNREFERENCED_PARAMETER(asicType);
-    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
-    UNREFERENCED_PARAMETER(pPublicCounters);
-    return GPA_STATUS_OK;
+    UNREFERENCED_PARAMETER(desired_generation);
+    UNREFERENCED_PARAMETER(asic_type);
+    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
+    UNREFERENCED_PARAMETER(public_counters);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPA_CounterGeneratorVKBase::GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                                GDT_HW_ASIC_TYPE      asicType,
-                                                                gpa_uint8             generateAsicSpecificCounters,
-                                                                GPA_HardwareCounters* pHardwareCounters)
+GpaStatus GpaCounterGeneratorVkBase::GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
+                                                              GDT_HW_ASIC_TYPE     asic_type,
+                                                              GpaUInt8             generate_asic_specific_counters,
+                                                              GpaHardwareCounters* hardware_counters)
 {
-    UNREFERENCED_PARAMETER(desiredGeneration);
-    UNREFERENCED_PARAMETER(asicType);
-    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
-    UNREFERENCED_PARAMETER(pHardwareCounters);
-    return GPA_STATUS_OK;
+    UNREFERENCED_PARAMETER(desired_generation);
+    UNREFERENCED_PARAMETER(asic_type);
+    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
+    UNREFERENCED_PARAMETER(hardware_counters);
+    return kGpaStatusOk;
 }
 
-GPA_Status GPA_CounterGeneratorVKBase::GenerateSoftwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                                GDT_HW_ASIC_TYPE      asicType,
-                                                                gpa_uint8             generateAsicSpecificCounters,
-                                                                GPA_SoftwareCounters* pSoftwareCounters)
+GpaStatus GpaCounterGeneratorVkBase::GenerateSoftwareCounters(GDT_HW_GENERATION    desiredGeneration,
+                                                              GDT_HW_ASIC_TYPE     asic_type,
+                                                              GpaUInt8             generate_asic_specific_counters,
+                                                              GpaSoftwareCounters* software_counters)
 {
-    UNREFERENCED_PARAMETER(asicType);
-    UNREFERENCED_PARAMETER(generateAsicSpecificCounters);
+    UNREFERENCED_PARAMETER(asic_type);
+    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
 
-    if (nullptr == pSoftwareCounters)
+    if (nullptr == software_counters)
     {
-        return GPA_STATUS_ERROR_NULL_POINTER;
+        return kGpaStatusErrorNullPointer;
     }
 
-    GPA_Status status = GPA_STATUS_OK;
+    GpaStatus status = kGpaStatusOk;
 
-    if (pSoftwareCounters->m_countersGenerated)
+    if (software_counters->counters_generated_)
     {
         return status;
     }
@@ -205,102 +205,104 @@ GPA_Status GPA_CounterGeneratorVKBase::GenerateSoftwareCounters(GDT_HW_GENERATIO
     case GDT_HW_GENERATION_VOLCANICISLAND:
     case GDT_HW_GENERATION_GFX9:
     case GDT_HW_GENERATION_GFX10:
+    case GDT_HW_GENERATION_GFX103:
     case GDT_HW_GENERATION_INTEL:
     case GDT_HW_GENERATION_NVIDIA:
         break;
 
     default:
-        status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+        status = kGpaStatusErrorHardwareNotSupported;
         break;
     }
 
-    if (GPA_STATUS_OK == status)
+    if (kGpaStatusOk == status)
     {
         status = GenerateVKSoftwareCounters();
 
-        if (GPA_STATUS_OK == status)
+        if (kGpaStatusOk == status)
         {
-            const size_t            VKSwCounterCount    = SwCounterManager::Instance()->GetNumSwCounters();
-            const SwCounterDescVec* pVKSoftwareCounters = SwCounterManager::Instance()->GetSwCounters();
-            pSoftwareCounters->m_counters.resize(VKSwCounterCount);
+            const size_t            vk_sw_counter_count  = SwCounterManager::Instance()->GetNumSwCounters();
+            const SwCounterDescVec* vk_software_counters = SwCounterManager::Instance()->GetSwCounters();
+            software_counters->software_counter_list_.resize(vk_sw_counter_count);
 
-            for (size_t ci = 0; VKSwCounterCount > ci; ++ci)
+            for (size_t ci = 0; vk_sw_counter_count > ci; ++ci)
             {
-                (pSoftwareCounters->m_counters)[ci].m_groupIndex       = 0;
-                (pSoftwareCounters->m_counters)[ci].m_groupIdDriver    = static_cast<gpa_uint32>(ci);
-                (pSoftwareCounters->m_counters)[ci].m_counterIdDriver  = static_cast<gpa_uint32>((*pVKSoftwareCounters)[ci].m_counterIndexInGroup);
-                (pSoftwareCounters->m_counters)[ci].m_pSoftwareCounter = const_cast<GPA_SoftwareCounterDesc*>(&((*pVKSoftwareCounters)[ci]));
+                (software_counters->software_counter_list_)[ci].group_index       = 0;
+                (software_counters->software_counter_list_)[ci].group_id_driver   = static_cast<GpaUInt32>(ci);
+                (software_counters->software_counter_list_)[ci].counter_id_driver = static_cast<GpaUInt32>((*vk_software_counters)[ci].counter_index_in_group);
+                (software_counters->software_counter_list_)[ci].software_counter_desc = const_cast<GpaSoftwareCounterDesc*>(&((*vk_software_counters)[ci]));
             }
         }
     }
 
-    pSoftwareCounters->m_countersGenerated = true;
+    software_counters->counters_generated_ = true;
 
     return status;
 }
 
-void GPA_CounterGeneratorVKBase::ComputeSWCounterValue(gpa_uint32 counterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const
+void GpaCounterGeneratorVkBase::ComputeSwCounterValue(GpaUInt32 counter_index, GpaUInt64 value, void* result, const GpaHwInfo* hw_info) const
 {
-    const SwCounterDescVec* pSwCounters = SwCounterManager::Instance()->GetSwCounters();
+    const SwCounterDescVec* sw_counters = SwCounterManager::Instance()->GetSwCounters();
 
-    if (counterIndex < static_cast<gpa_uint32>(pSwCounters->size()))
+    if (counter_index < static_cast<GpaUInt32>(sw_counters->size()))
     {
-        const std::string VKGPUTime     = "VKGPUTime";
-        const std::string preTimeStamp  = "PreBottomTimestamp";
-        const std::string postTimeStamp = "PostBottomTimestamp";
-        const std::string counterName   = pSwCounters->at(counterIndex).m_name;
+        const std::string kVkGpuTime     = "VKGPUTime";
+        const std::string kPreTimeStamp  = "PreBottomTimestamp";
+        const std::string kPostTimeStamp = "PostBottomTimestamp";
+        const std::string counter_name   = sw_counters->at(counter_index).name;
 
-        if (counterName == VKGPUTime)
+        if (counter_name == kVkGpuTime)
         {
-            gpa_uint64 freq = 1u;
-            GPA_ASSERT(pHwInfo->GetTimeStampFrequency(freq));
-            gpa_float64* pBuf = static_cast<gpa_float64*>(pResult);
-            *pBuf             = static_cast<gpa_float64>(value) / static_cast<gpa_float64>(freq) * 1000.0;
+            GpaUInt64 freq = 1u;
+            GPA_ASSERT(hw_info->GetTimeStampFrequency(freq));
+            GpaFloat64* buf = static_cast<GpaFloat64*>(result);
+            *buf            = static_cast<GpaFloat64>(value) / static_cast<GpaFloat64>(freq) * 1000.0;
         }
-        else if (counterName == preTimeStamp || counterName == postTimeStamp)
+        else if (counter_name == kPreTimeStamp || counter_name == kPostTimeStamp)
         {
-            gpa_uint64 freq = 1u;
-            GPA_ASSERT(pHwInfo->GetTimeStampFrequency(freq));
-            gpa_float64* pBuf = static_cast<gpa_float64*>(pResult);
-            *pBuf             = static_cast<gpa_float64>(value * 1000.0) / freq;
+            GpaUInt64 freq = 1u;
+            GPA_ASSERT(hw_info->GetTimeStampFrequency(freq));
+            GpaFloat64* buf = static_cast<GpaFloat64*>(result);
+            *buf            = static_cast<GpaFloat64>(value * 1000.0) / freq;
         }
-        else  // other SW VK counters
+        else
         {
-            GPA_Data_Type type = (*pSwCounters)[counterIndex].m_type;
+            // Other SW VK counters.
+            GpaDataType type = (*sw_counters)[counter_index].type;
 
-            if (GPA_DATA_TYPE_UINT64 == type)
+            if (kGpaDataTypeUint64 == type)
             {
-                gpa_uint64* pBuf = static_cast<gpa_uint64*>(pResult);
-                *pBuf            = static_cast<gpa_uint64>(value);
+                GpaUInt64* buf = static_cast<GpaUInt64*>(result);
+                *buf           = static_cast<GpaUInt64>(value);
             }
-            else if (GPA_DATA_TYPE_FLOAT64 == type)
+            else if (kGpaDataTypeFloat64 == type)
             {
-                memcpy(pResult, &value, sizeof(gpa_float64));
+                memcpy(result, &value, sizeof(GpaFloat64));
             }
             else
             {
-                GPA_LogError("Unexpected software counter type.");
+                GPA_LOG_ERROR("Unexpected software counter type.");
             }
         }
     }
 }
 
-GPA_Status GPA_CounterGeneratorVKBase::GenerateVKSoftwareCounters()
+GpaStatus GpaCounterGeneratorVkBase::GenerateVKSoftwareCounters()
 {
-    GPA_Status result = GPA_STATUS_OK;
+    GpaStatus result = kGpaStatusOk;
 
-    SwCounterManager::Instance()->SetNumAmdCounters(GetNumAMDCounters());
+    SwCounterManager::Instance()->SetNumAmdCounters(GetNumAmdCounters());
 
     if (!SwCounterManager::Instance()->SwCountersGenerated())
     {
-        for (size_t ci = 0; s_VKSWCountersCount > ci; ++ci)
+        for (size_t ci = 0; kVkSoftwareCountersCount > ci; ++ci)
         {
-            SwCounterManager::Instance()->AddSwCounter(s_VKSWCounters[ci]);
+            SwCounterManager::Instance()->AddSwCounter(kVkSoftwareCounters[ci]);
         }
 
         if (0 == SwCounterManager::Instance()->GetNumSwCounters())
         {
-            result = GPA_STATUS_ERROR_FAILED;
+            result = kGpaStatusErrorFailed;
         }
 
         SwCounterManager::Instance()->SetSwCountersGenerated(true);

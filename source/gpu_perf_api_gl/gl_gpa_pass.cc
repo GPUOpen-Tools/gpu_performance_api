@@ -1,285 +1,289 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GL GPA Pass Object Implementation
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GL GPA Pass Object Implementation
 //==============================================================================
 
-#include "gl_gpa_pass.h"
-#include "gl_gpa_command_list.h"
-#include "gl_gpa_sample.h"
-#include "gpa_hardware_counters.h"
-#include "gpa_context_counter_mediator.h"
+#include "gpu_perf_api_gl/gl_gpa_pass.h"
 
-GLGPAPass::GLGPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters)
-    : GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
+
+#include "gpu_perf_api_gl/gl_gpa_command_list.h"
+#include "gpu_perf_api_gl/gl_gpa_sample.h"
+
+GlGpaPass::GlGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSource counter_source, CounterList* pass_counters)
+    : GpaPass(gpa_session, pass_index, counter_source, pass_counters)
 {
     EnableAllCountersForPass();
 }
 
-GLGPAPass::~GLGPAPass()
+GlGpaPass::~GlGpaPass()
 {
-    for (auto iter = m_glPerfMonitorInfoList.begin(); iter != m_glPerfMonitorInfoList.end(); ++iter)
+    for (auto iter = gl_perf_monitor_info_list_.begin(); iter != gl_perf_monitor_info_list_.end(); ++iter)
     {
         iter->second.Clear(true);
     }
 }
 
-GPASample* GLGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
+GpaSample* GlGpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sampleId)
 {
-    GPASample* pRetSample = nullptr;
+    GpaSample* ret_sample = nullptr;
 
-    GLGPASample* pGLGpaSample = new (std::nothrow) GLGPASample(this, pCmdList, sampleType, sampleId);
+    GlGpaSample* gl_gpa_sample = new (std::nothrow) GlGpaSample(this, cmd_list, sample_type, sampleId);
 
-    if (nullptr == pGLGpaSample)
+    if (nullptr == gl_gpa_sample)
     {
-        GPA_LogError("Unable to allocate memory for the sample.");
+        GPA_LOG_ERROR("Unable to allocate memory for the sample.");
     }
     else
     {
-        pRetSample = pGLGpaSample;
+        ret_sample = gl_gpa_sample;
     }
 
-    return pRetSample;
+    return ret_sample;
 }
 
-bool GLGPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrimaryGpaCmdList)
+bool GlGpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* primary_gpa_cmd_list)
 {
-    // continuing samples not supported for OpenGL
-    UNREFERENCED_PARAMETER(srcSampleId);
-    UNREFERENCED_PARAMETER(pPrimaryGpaCmdList);
+    // Continuing samples not supported for OpenGL.
+    UNREFERENCED_PARAMETER(src_sample_id);
+    UNREFERENCED_PARAMETER(primary_gpa_cmd_list);
     return false;
 }
 
-IGPACommandList* GLGPAPass::CreateAPISpecificCommandList(void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType)
+IGpaCommandList* GlGpaPass::CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type)
 {
-    UNREFERENCED_PARAMETER(pCmd);
-    UNREFERENCED_PARAMETER(cmdType);
+    UNREFERENCED_PARAMETER(cmd);
+    UNREFERENCED_PARAMETER(cmd_type);
 
-    GLGPACommandList* pRetCmdList = new (std::nothrow) GLGPACommandList(GetGpaSession(), this, commandListId);
-    return pRetCmdList;
+    GlGpaCommandList* ret_cmd_list = new (std::nothrow) GlGpaCommandList(GetGpaSession(), this, command_list_id);
+    return ret_cmd_list;
 }
 
-bool GLGPAPass::EndSample(IGPACommandList* pCmdList)
+bool GlGpaPass::EndSample(IGpaCommandList* cmd_list)
 {
-    bool retVal = false;
+    bool ret_val = false;
 
-    if (nullptr != pCmdList)
+    if (nullptr != cmd_list)
     {
-        retVal = pCmdList->CloseLastSample();
+        ret_val = cmd_list->CloseLastSample();
     }
 
-    return retVal;
+    return ret_val;
 }
 
-bool GLGPAPass::GetPerfMonitor(GLPerfMonitorId& glPerfMonitorId)
+bool GlGpaPass::GetPerfMonitor(GlPerfMonitorId& gl_perf_monitor_id)
 {
-    bool success              = false;
-    bool perfMonitorAvailable = false;
+    bool success                = false;
+    bool perf_monitor_available = false;
 
-    GLPerfMonitor glPerfMonitorFound;
+    GlPerfMonitor gl_perf_monitor_found;
 
-    if (!m_glPerfMonitorInfoList.empty())
+    if (!gl_perf_monitor_info_list_.empty())
     {
-        for (auto perfMonitorListConstIter = m_glPerfMonitorInfoList.cbegin(); perfMonitorListConstIter != m_glPerfMonitorInfoList.cend();
-             ++perfMonitorListConstIter)
+        for (auto perf_monitor_list_const_iter = gl_perf_monitor_info_list_.cbegin(); perf_monitor_list_const_iter != gl_perf_monitor_info_list_.cend();
+             ++perf_monitor_list_const_iter)
         {
-            if (perfMonitorListConstIter->second.IsDataCollected())
+            if (perf_monitor_list_const_iter->second.IsDataCollected())
             {
-                perfMonitorAvailable = true;
-                glPerfMonitorFound   = perfMonitorListConstIter->second;
-                success              = true;
+                perf_monitor_available = true;
+                gl_perf_monitor_found  = perf_monitor_list_const_iter->second;
+                success                = true;
                 break;
             }
         }
     }
 
-    if (!perfMonitorAvailable)
+    if (!perf_monitor_available)
     {
-        GLPerfMonitor newPerfMonitor;
+        GlPerfMonitor new_perf_monitor;
 
-        if (newPerfMonitor.Initialize())
+        if (new_perf_monitor.Initialize())
         {
-            GLPerfMonitorId newPerfMonitorId = newPerfMonitor.GetPerfMonitorId();
+            GlPerfMonitorId new_perf_monitor_id = new_perf_monitor.GetPerfMonitorId();
 
-            if (InitializeCounters(newPerfMonitorId))
+            if (InitializeCounters(new_perf_monitor_id))
             {
-                m_glPerfMonitorInfoList.insert(std::pair<GLPerfMonitorId, GLPerfMonitor>(newPerfMonitorId, newPerfMonitor));
-                success            = true;
-                glPerfMonitorFound = newPerfMonitor;
+                gl_perf_monitor_info_list_.insert(std::pair<GlPerfMonitorId, GlPerfMonitor>(new_perf_monitor_id, new_perf_monitor));
+                success               = true;
+                gl_perf_monitor_found = new_perf_monitor;
             }
         }
     }
 
     if (success)
     {
-        glPerfMonitorId = glPerfMonitorFound.GetPerfMonitorId();
-        glPerfMonitorFound.AddRef();
+        gl_perf_monitor_id = gl_perf_monitor_found.GetPerfMonitorId();
+        gl_perf_monitor_found.AddRef();
     }
 
     return success;
 }
 
-void GLGPAPass::MarkDataCollected(const GLPerfMonitorId glPerfMonitorId)
+void GlGpaPass::MarkDataCollected(const GlPerfMonitorId gl_perf_monitor_id)
 {
-    m_glPerfMonitorInfoList.at(glPerfMonitorId).Release();
+    gl_perf_monitor_info_list_.at(gl_perf_monitor_id).Release();
 }
 
-const GLCounter* GLGPAPass::GetGLCounter(const GLuint& counterGroup, const GLuint& counterIndex, unsigned int& indexOfCounterWithinPass) const
+const GlCounter* GlGpaPass::GetGLCounter(const GLuint& counter_group, const GLuint& counter_index, unsigned int& index_of_counter_within_pass) const
 {
-    const GLCounter* pRetGlCounter          = nullptr;
-    unsigned int     counterIndexWithinPass = 0;
-    bool             found                  = false;
+    const GlCounter* ret_gl_counter            = nullptr;
+    unsigned int     counter_index_within_pass = 0;
+    bool             found                     = false;
 
-    for (auto glCounterIter = m_glCounterList.cbegin(); glCounterIter != m_glCounterList.cend(); ++glCounterIter)
+    for (auto gl_counter_iter = gl_counter_list_.cbegin(); gl_counter_iter != gl_counter_list_.cend(); ++gl_counter_iter)
     {
-        if (glCounterIter->m_counterGroup == counterGroup && glCounterIter->m_counterIndex == counterIndex)
+        if (gl_counter_iter->counter_group == counter_group && gl_counter_iter->counter_index == counter_index)
         {
             found = true;
             break;
         }
 
-        counterIndexWithinPass++;
+        counter_index_within_pass++;
     }
 
     if (found)
     {
-        pRetGlCounter            = &(m_glCounterList.data()[counterIndexWithinPass]);
-        indexOfCounterWithinPass = counterIndexWithinPass;
+        ret_gl_counter               = &(gl_counter_list_.data()[counter_index_within_pass]);
+        index_of_counter_within_pass = counter_index_within_pass;
     }
 
-    return pRetGlCounter;
+    return ret_gl_counter;
 }
 
-bool GLGPAPass::InitializeCounters(const GLPerfMonitorId& glPerfMonitorId)
+bool GlGpaPass::InitializeCounters(const GlPerfMonitorId& gl_perf_monitor_id)
 {
-    bool isSuccessful = true;
+    bool is_successful = true;
 
-    auto EnableCounter = [&](const CounterIndex& counterIndex) -> bool {
-        bool isCounterEnabled = false;
-        // need to Enable counters
-        IGPACounterAccessor*              pCounterAccessor  = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
-        const GPA_HardwareCounters*       pHardwareCounters = pCounterAccessor->GetHardwareCounters();
-        const GPA_HardwareCounterDescExt* pCounter          = pCounterAccessor->GetHardwareCounterExt(counterIndex);
+    auto enable_counter = [&](const CounterIndex& counter_index) -> bool {
+        bool is_counter_enabled = false;
 
-        unsigned int uGroupIndex = pCounter->m_groupIndex;
+        // Need to Enable counters.
+        IGpaCounterAccessor*             counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
+        const GpaHardwareCounters*       hardware_counters = counter_accessor->GetHardwareCounters();
+        const GpaHardwareCounterDescExt* counter           = counter_accessor->GetHardwareCounterExt(counter_index);
 
-        GLint nCounters = 0;
+        unsigned int group_index = counter->group_index;
 
-        if (uGroupIndex < pHardwareCounters->m_groupCount)
+        GLint counter_count = 0;
+
+        if (group_index < hardware_counters->group_count_)
         {
-            nCounters = static_cast<GLint>(pHardwareCounters->m_pGroups[uGroupIndex].m_numCounters);
+            counter_count = static_cast<GLint>(hardware_counters->internal_counter_groups_[group_index].num_counters);
         }
         else
         {
-            nCounters = static_cast<GLint>(pHardwareCounters->m_pAdditionalGroups[uGroupIndex - pHardwareCounters->m_groupCount].m_numCounters);
+            counter_count = static_cast<GLint>(hardware_counters->additional_groups_[group_index - hardware_counters->group_count_].num_counters);
         }
 
-        assert(pCounter->m_pHardwareCounter->m_counterIndexInGroup <= static_cast<unsigned int>(nCounters));
+        assert(counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(counter_count));
 
-        // validate Counter result type
-        GLuint resultType = 0;
-        oglUtils::_oglGetPerfMonitorCounterInfoAMD(
-            pCounter->m_groupIdDriver, static_cast<GLuint>(pCounter->m_pHardwareCounter->m_counterIndexInGroup), GL_COUNTER_TYPE_AMD, &resultType);
+        // Validate Counter result type.
+        GLuint result_type = 0;
+        ogl_utils::ogl_get_perf_monitor_counter_info_amd(
+            counter->group_id_driver, static_cast<GLuint>(counter->hardware_counters->counter_index_in_group), GL_COUNTER_TYPE_AMD, &result_type);
 
-        if (!oglUtils::CheckForGLError("glGetPerfMonitorCounterInfoAMD failed to get the counter type."))
+        if (!ogl_utils::CheckForGlError("glGetPerfMonitorCounterInfoAMD failed to get the counter type."))
         {
-            oglUtils::_oglSelectPerfMonitorCountersAMD(
-                glPerfMonitorId, GL_TRUE, pCounter->m_groupIdDriver, 1, reinterpret_cast<GLuint*>(&pCounter->m_pHardwareCounter->m_counterIndexInGroup));
+            ogl_utils::ogl_select_perf_monitor_counters_amd(
+                gl_perf_monitor_id, GL_TRUE, counter->group_id_driver, 1, reinterpret_cast<GLuint*>(&counter->hardware_counters->counter_index_in_group));
 
-            if (!oglUtils::CheckForGLError("Unable to enable counter in GL driver."))
+            if (!ogl_utils::CheckForGlError("Unable to enable counter in GL driver."))
             {
-                isCounterEnabled = true;
+                is_counter_enabled = true;
             }
         }
         else
         {
-            char groupName[256];
-            char counterName[256];
-            memset(groupName, 0, 256);
-            memset(counterName, 0, 256);
-            GLsizei nLength = 0;
+            char group_name[256];
+            char counter_name[256];
+            memset(group_name, 0, 256);
+            memset(counter_name, 0, 256);
+            GLsizei length = 0;
 
-            if (uGroupIndex <= (pHardwareCounters->m_groupCount + pHardwareCounters->m_additionalGroupCount))
+            if (group_index <= (hardware_counters->group_count_ + hardware_counters->additional_group_count_))
             {
-                oglUtils::_oglGetPerfMonitorGroupStringAMD(pCounter->m_groupIdDriver, 256, &nLength, groupName);
+                ogl_utils::ogl_get_perf_monitor_group_string_amd(counter->group_id_driver, 256, &length, group_name);
 
-                if (oglUtils::CheckForGLError("glGetPerfMonitorGroupStringAMD failed to get the group name."))
+                if (ogl_utils::CheckForGlError("glGetPerfMonitorGroupStringAMD failed to get the group name."))
                 {
                     return false;
                 }
             }
 
-            if (pCounter->m_pHardwareCounter->m_counterIndexInGroup <= static_cast<unsigned int>(nCounters))
+            if (counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(counter_count))
             {
-                oglUtils::_oglGetPerfMonitorCounterStringAMD(
-                    pCounter->m_groupIdDriver, static_cast<GLuint>(pCounter->m_pHardwareCounter->m_counterIndexInGroup), 256, &nLength, counterName);
+                ogl_utils::ogl_get_perf_monitor_counter_string_amd(
+                    counter->group_id_driver, static_cast<GLuint>(counter->hardware_counters->counter_index_in_group), 256, &length, counter_name);
 
-                oglUtils::CheckForGLError("glGetPerfMonitorCounterStringAMD failed to get the counter name.");
+                ogl_utils::CheckForGlError("glGetPerfMonitorCounterStringAMD failed to get the counter name.");
             }
         }
 
-        isSuccessful &= isCounterEnabled;
+        is_successful &= is_counter_enabled;
 
-        if (isCounterEnabled)
+        if (is_counter_enabled)
         {
-            GLCounter glCounter;
-            glCounter.m_counterType  = resultType;
-            glCounter.m_counterID    = counterIndex;
-            glCounter.m_counterGroup = pCounter->m_groupIdDriver;
-            glCounter.m_counterIndex = static_cast<GLuint>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
-            m_glCounterList.push_back(glCounter);
+            GlCounter gl_counter;
+            gl_counter.counter_type  = result_type;
+            gl_counter.counter_id    = counter_index;
+            gl_counter.counter_group = counter->group_id_driver;
+            gl_counter.counter_index = static_cast<GLuint>(counter->hardware_counters->counter_index_in_group);
+            gl_counter_list_.push_back(gl_counter);
         }
 
-        return isCounterEnabled;
+        return is_counter_enabled;
     };
 
-    IterateEnabledCounterList(EnableCounter);
+    IterateEnabledCounterList(enable_counter);
 
-    return isSuccessful;
+    return is_successful;
 }
 
-GLGPAPass::GLPerfMonitor::GLPerfMonitor()
-    : m_glPerfMonitorId(0u)
-    , m_refCount(0u)
+GlGpaPass::GlPerfMonitor::GlPerfMonitor()
+    : gl_perf_monitor_id_(0u)
+    , ref_count_(0u)
 {
 }
 
-bool GLGPAPass::GLPerfMonitor::Initialize()
+bool GlGpaPass::GlPerfMonitor::Initialize()
 {
-    // Create perf monitor
-    oglUtils::_oglGenPerfMonitorsAMD(1, &m_glPerfMonitorId);
-    return !oglUtils::CheckForGLError("Unable to create AMD PerfMonitor GL extension.");
+    // Create performance monitor.
+    ogl_utils::ogl_gen_perf_monitors_amd(1, &gl_perf_monitor_id_);
+    return !ogl_utils::CheckForGlError("Unable to create AMD PerfMonitor GL extension.");
 }
 
-GLPerfMonitorId GLGPAPass::GLPerfMonitor::GetPerfMonitorId() const
+GlPerfMonitorId GlGpaPass::GlPerfMonitor::GetPerfMonitorId() const
 {
-    return m_glPerfMonitorId;
+    return gl_perf_monitor_id_;
 }
 
-bool GLGPAPass::GLPerfMonitor::IsDataCollected() const
+bool GlGpaPass::GlPerfMonitor::IsDataCollected() const
 {
-    // Even count will have no pending results
-    return (m_refCount % 2 == 0);
+    // Even count will have no pending results.
+    return (ref_count_ % 2 == 0);
 }
 
-unsigned int GLGPAPass::GLPerfMonitor::AddRef()
+unsigned int GlGpaPass::GlPerfMonitor::AddRef()
 {
-    return ++m_refCount;
+    return ++ref_count_;
 }
 
-unsigned int GLGPAPass::GLPerfMonitor::Release()
+unsigned int GlGpaPass::GlPerfMonitor::Release()
 {
-    return --m_refCount;
+    return --ref_count_;
 }
 
-bool GLGPAPass::GLPerfMonitor::Clear(bool forceClear)
+bool GlGpaPass::GlPerfMonitor::Clear(bool force_clear)
 {
-    if (!forceClear && m_refCount != 0)
+    if (!force_clear && ref_count_ != 0)
     {
         return false;
     }
 
-    oglUtils::_oglDeletePerfMonitorsAMD(1, &m_glPerfMonitorId);
-    return !oglUtils::CheckForGLError("Unable to delete AMD PerfMonitor GL extension.");
+    ogl_utils::ogl_delete_perf_monitors_amd(1, &gl_perf_monitor_id_);
+    return !ogl_utils::CheckForGlError("Unable to delete AMD PerfMonitor GL extension.");
 }

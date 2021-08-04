@@ -1,15 +1,15 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_EndSession
-@@@@@@@@@@@@@@
+GpaEndSession
+@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_EndSession(
-        GPA_SessionId sessionId);
+    GpaStatus GpaEndSession(
+        GpaSessionId session_id);
 
 Description
 %%%%%%%%%%%
@@ -25,7 +25,7 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``sessionId``","Unique identifier of a previously-created session."
+    "``session_id``","Unique identifier of a previously-created session."
 
 Return value
 %%%%%%%%%%%%
@@ -34,12 +34,12 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The session was successfully ended."
-    "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``sessionId`` parameter is NULL."
-    "GPA_STATUS_ERROR_SESSION_NOT_FOUND", "The supplied ``sessionId`` parameter was not recognized as a previously-created session identifier."
-    "GPA_STATUS_ERROR_VARIABLE_NUMBER_OF_SAMPLES_IN_PASSES", "There were an inconsistent number of samples created in each pass of the session."
-    "GPA_STATUS_ERROR_NOT_ENOUGH_PASSES", "There were not enough passes created in the session"
-    "GPA_STATUS_ERROR_SESSION_NOT_STARTED", "The session has not been started."
-    "GPA_STATUS_ERROR_FAILED", "The session could be be ended."
-    "GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE", "Another session is active."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The session was successfully ended."
+    "kGpaStatusErrorNullPointer", "The supplied ``session_id`` parameter is NULL."
+    "kGpaStatusErrorSessionNotFound", "The supplied ``session_id`` parameter was not recognized as a previously-created session identifier."
+    "kGpaStatusErrorVariableNumberOfSamplesInPasses", "There were an inconsistent number of samples created in each pass of the session."
+    "kGpaStatusErrorNotEnoughPasses", "There were not enough passes created in the session"
+    "kGpaStatusErrorSessionNotStarted", "The session has not been started."
+    "kGpaStatusErrorFailed", "The session could be be ended."
+    "kGpaStatusErrorOtherSessionActive", "Another session is active."
+    "kGpaStatusErrorException", "Exception occurred."

@@ -1,108 +1,111 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  VkGPASoftwareSample implementation
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  VkGpaSoftwareSample implementation
 //==============================================================================
 
-#include "vk_gpa_software_sample.h"
-#include "vk_gpa_context.h"
-#include "vk_gpa_command_list.h"
-#include "gpa_hardware_counters.h"
-#include "vk_gpa_pass.h"
-#include "gpa_context_counter_mediator.h"
-#include "gpa_software_counters.h"
+#include "gpu_perf_api_vk/vk_gpa_software_sample.h"
 
-VkGPASoftwareSample::VkGPASoftwareSample(GPAPass* pPass, IGPACommandList* pCmdList, unsigned int sampleId)
-    : VkGPASample(pPass, pCmdList, GpaSampleType::Software, sampleId)
-    , m_pContextState(nullptr)
-    , m_activeCountersList()
-    , m_activeQueries(0)
-    , m_commandList(m_pVkGpaCmdList->GetVkCommandBuffer())
-    , m_swSampleId(ms_unitializedSampleId)
-    , m_pSwQueries(nullptr)
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
+
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+#include "gpu_perf_api_counter_generator/gpa_software_counters.h"
+
+#include "gpu_perf_api_vk/vk_gpa_command_list.h"
+#include "gpu_perf_api_vk/vk_gpa_context.h"
+#include "gpu_perf_api_vk/vk_gpa_pass.h"
+
+VkGpaSoftwareSample::VkGpaSoftwareSample(GpaPass* pass, IGpaCommandList* command_list, unsigned int sample_id)
+    : VkGpaSample(pass, command_list, GpaSampleType::kSoftware, sample_id)
+    , context_state_(nullptr)
+    , active_counter_list_()
+    , active_queries_(0)
+    , command_list_(vk_gpa_command_list_->GetVkCommandBuffer())
+    , sw_sample_id_(kUninitializedSampleId)
+    , sw_queries_(nullptr)
 {
 }
 
-VkGPASoftwareSample::~VkGPASoftwareSample()
+VkGpaSoftwareSample::~VkGpaSoftwareSample()
 {
-    m_pContextState = nullptr;
-    m_activeCountersList.clear();
-    m_activeQueries = 0;
-    m_swSampleId    = ms_unitializedSampleId;
+    context_state_ = nullptr;
+    active_counter_list_.clear();
+    active_queries_ = 0;
+    sw_sample_id_   = kUninitializedSampleId;
 }
 
-void VkGPASoftwareSample::AssignQueries(VkCommandListSwQueries* pSwQueries)
+void VkGpaSoftwareSample::AssignQueries(VkCommandListSwQueries* sw_queries)
 {
-    m_pSwQueries = pSwQueries;
+    sw_queries_ = sw_queries;
 }
 
-bool VkGPASoftwareSample::BeginRequest()
+bool VkGpaSoftwareSample::BeginRequest()
 {
     bool result = true;
 
-    if ((nullptr != m_pContextState) || (nullptr == m_pVkGpaCmdList))
+    if ((nullptr != context_state_) || (nullptr == vk_gpa_command_list_))
     {
         result = false;
     }
     else
     {
-        VkGPAPass* pVkGpaPass     = reinterpret_cast<VkGPAPass*>(GetPass());
-        m_pContextState           = reinterpret_cast<VkGPAContext*>(pVkGpaPass->GetGpaSession()->GetParentContext());
-        const size_t counterCount = pVkGpaPass->GetEnabledCounterCount();
+        VkGpaPass* gpa_pass        = reinterpret_cast<VkGpaPass*>(GetPass());
+        context_state_             = reinterpret_cast<VkGpaContext*>(gpa_pass->GetGpaSession()->GetParentContext());
+        const size_t counter_count = gpa_pass->GetEnabledCounterCount();
 
-        const IGPACounterAccessor*  pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pContextState);
-        const GPA_SoftwareCounters* pSwCounters      = pCounterAccessor->GetSoftwareCounters();
-        const GPA_HardwareCounters* pHwCounters      = pCounterAccessor->GetHardwareCounters();
-        m_activeCountersList.resize(counterCount);
+        const IGpaCounterAccessor* counter_accessory = GpaContextCounterMediator::Instance()->GetCounterAccessor(context_state_);
+        const GpaSoftwareCounters* sw_counters       = counter_accessory->GetSoftwareCounters();
+        const GpaHardwareCounters* hw_counters       = counter_accessory->GetHardwareCounters();
+        active_counter_list_.resize(counter_count);
 
-        gpa_uint32 hardwareCountersCount = pHwCounters->GetNumCounters();
+        GpaUInt32 hw_counters_count = hw_counters->GetNumCounters();
 
-        unsigned int counterIter           = 0u;
-        bool         bCounterInfoCollected = true;
+        unsigned int counter_iter           = 0u;
+        bool         counter_info_collected = true;
 
-        auto PopulateSoftwareCounterInfo = [&](const CounterIndex& counterIndex) -> bool {
-            bool       bIsCounterEnabled              = true;
-            gpa_uint32 swCounterIndex                 = counterIndex;
-            m_activeCountersList[counterIter].m_index = SwCounterManager::Instance()->GetSwCounterPubIndex(swCounterIndex);
+        auto populate_software_counter_info = [&](const CounterIndex& counter_index) -> bool {
+            bool      is_counter_enabled             = true;
+            GpaUInt32 sw_counter_index               = counter_index;
+            active_counter_list_[counter_iter].index = SwCounterManager::Instance()->GetSwCounterPubIndex(sw_counter_index);
 
-            // software counter indices are after the hardware counter
-            gpa_uint32 counterIdDriver                    = pSwCounters->m_counters[swCounterIndex - hardwareCountersCount].m_counterIdDriver;
-            m_activeCountersList[counterIter].m_queryType = static_cast<GPA_VK_SW_QUERY_TYPE>(counterIdDriver);
-            bIsCounterEnabled                             = (counterIdDriver < sizeof(m_activeQueries));
+            // Software counter indices are after the hardware counter.
+            GpaUInt32 counter_id_driver                   = sw_counters->software_counter_list_[sw_counter_index - hw_counters_count].counter_id_driver;
+            active_counter_list_[counter_iter].query_type = static_cast<GpaVkSwQueryType>(counter_id_driver);
+            is_counter_enabled                            = (counter_id_driver < sizeof(active_queries_));
 
-            if (bIsCounterEnabled)
+            if (is_counter_enabled)
             {
-                m_activeQueries |= (0x1 << counterIdDriver);
+                active_queries_ |= (0x1 << counter_id_driver);
             }
 
-            counterIter++;
-            bCounterInfoCollected &= bIsCounterEnabled;
-            return bIsCounterEnabled;
+            counter_iter++;
+            counter_info_collected &= is_counter_enabled;
+            return is_counter_enabled;
         };
 
-        pVkGpaPass->IterateEnabledCounterList(PopulateSoftwareCounterInfo);
-        result = bCounterInfoCollected;
+        gpa_pass->IterateEnabledCounterList(populate_software_counter_info);
+        result = counter_info_collected;
 
         if (result)
         {
-            unsigned int activeQueries = m_activeQueries;
-            bool         beginQuery    = (0 != activeQueries);
-            result                     = m_pSwQueries->BeginSwSample(m_swSampleId);
+            unsigned int active_queries = active_queries_;
+            bool         begin_query    = (0 != active_queries);
+            result                      = sw_queries_->BeginSwSample(sw_sample_id_);
 
             if (result)
             {
-                while (beginQuery)
+                while (begin_query)
                 {
-                    GPA_VK_SW_QUERY_TYPE queryType;
+                    GpaVkSwQueryType query_type;
 #ifdef _WIN32
-                    _BitScanForward(reinterpret_cast<unsigned long*>(&queryType), activeQueries);
+                    _BitScanForward(reinterpret_cast<unsigned long*>(&query_type), active_queries);
 #else
-                    queryType = static_cast<GPA_VK_SW_QUERY_TYPE>(__builtin_clz(activeQueries));  // TODO: verify that this works
+                    query_type = static_cast<GpaVkSwQueryType>(__builtin_clz(active_queries));
 #endif
-                    m_pSwQueries->BeginSwQuery(m_swSampleId, queryType);
-                    activeQueries &= ~(0x1 << static_cast<unsigned int>(queryType));
-                    beginQuery = (0 != activeQueries);
+                    sw_queries_->BeginSwQuery(sw_sample_id_, query_type);
+                    active_queries &= ~(0x1 << static_cast<unsigned int>(query_type));
+                    begin_query = (0 != active_queries);
                 }
             }
         }
@@ -111,62 +114,62 @@ bool VkGPASoftwareSample::BeginRequest()
     return result;
 }
 
-bool VkGPASoftwareSample::EndRequest()
+bool VkGpaSoftwareSample::EndRequest()
 {
     bool result = true;
 
-    if (nullptr == m_pContextState)
+    if (nullptr == context_state_)
     {
         result = false;
     }
     else
     {
-        unsigned int activeQueries = m_activeQueries;
-        bool         endQuery      = (0 != activeQueries);
+        unsigned int active_queries = active_queries_;
+        bool         end_query      = (0 != active_queries);
 
-        while (endQuery)
+        while (end_query)
         {
-            GPA_VK_SW_QUERY_TYPE queryType;
+            GpaVkSwQueryType query_type;
 #ifdef _WIN32
-            _BitScanForward(reinterpret_cast<unsigned long*>(&queryType), activeQueries);
+            _BitScanForward(reinterpret_cast<unsigned long*>(&query_type), active_queries);
 #else
-            queryType = static_cast<GPA_VK_SW_QUERY_TYPE>(__builtin_clz(activeQueries));          //TODO: verify that this works
+            query_type = static_cast<GpaVkSwQueryType>(__builtin_clz(active_queries));
 #endif
-            m_pSwQueries->EndSwQuery(m_swSampleId, queryType);
-            activeQueries &= ~(0x1 << static_cast<unsigned int>(queryType));
-            endQuery = (0 != activeQueries);
+            sw_queries_->EndSwQuery(sw_sample_id_, query_type);
+            active_queries &= ~(0x1 << static_cast<unsigned int>(query_type));
+            end_query = (0 != active_queries);
         }
 
-        m_pSwQueries->EndSwSample(m_swSampleId);
+        sw_queries_->EndSwSample(sw_sample_id_);
     }
 
     return result;
 }
 
-void VkGPASoftwareSample::ReleaseCounters()
+void VkGpaSoftwareSample::ReleaseCounters()
 {
 }
 
-bool VkGPASoftwareSample::GetTimestampQueryCounterResult(const GpaVkSoftwareQueryResults& queryResults,
-                                                         const gpa_uint32                 counterIndex,
-                                                         gpa_uint64&                      counterResult) const
+bool VkGpaSoftwareSample::GetTimestampQueryCounterResult(const GpaVkSoftwareQueryResults& query_results,
+                                                         const GpaUInt32                  counter_index,
+                                                         GpaUInt64&                       counter_result) const
 {
     bool result = true;
 
-    IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pContextState);
-    const char*          pCounterName     = pCounterAccessor->GetCounterName(counterIndex);
+    IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(context_state_);
+    const char*          counter_name     = counter_accessor->GetCounterName(counter_index);
 
-    if (0 == strcmp("VKGPUTime", pCounterName))
+    if (0 == strcmp("VKGPUTime", counter_name))
     {
-        counterResult = (queryResults.timestampEnd - queryResults.timestampBegin);
+        counter_result = (query_results.timestampEnd - query_results.timestampBegin);
     }
-    else if (0 == strcmp("PreBottomTimestamp", pCounterName))
+    else if (0 == strcmp("PreBottomTimestamp", counter_name))
     {
-        counterResult = queryResults.timestampBegin;
+        counter_result = query_results.timestampBegin;
     }
-    else if (0 == strcmp("PostBottomTimestamp", pCounterName))
+    else if (0 == strcmp("PostBottomTimestamp", counter_name))
     {
-        counterResult = queryResults.timestampEnd;
+        counter_result = query_results.timestampEnd;
     }
     else
     {
@@ -176,57 +179,57 @@ bool VkGPASoftwareSample::GetTimestampQueryCounterResult(const GpaVkSoftwareQuer
     return result;
 }
 
-bool VkGPASoftwareSample::GetPipelineQueryCounterResult(const GpaVkSoftwareQueryResults& queryResults,
-                                                        const gpa_uint32                 counterIndex,
-                                                        gpa_uint64&                      counterResult) const
+bool VkGpaSoftwareSample::GetPipelineQueryCounterResult(const GpaVkSoftwareQueryResults& query_results,
+                                                        const GpaUInt32                  counter_index,
+                                                        GpaUInt64&                       counter_result) const
 {
     bool                       result           = true;
-    const IGPACounterAccessor* pCounterAccessor = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pContextState);
-    const char*                pCounterName     = pCounterAccessor->GetCounterName(counterIndex);
+    const IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(context_state_);
+    const char*                counter_name     = counter_accessor->GetCounterName(counter_index);
 
-    if (0 == strcmp("IAVertices", pCounterName))
+    if (0 == strcmp("IAVertices", counter_name))
     {
-        counterResult = queryResults.inputAssemblyVertices;
+        counter_result = query_results.inputAssemblyVertices;
     }
-    else if (0 == strcmp("IAPrimitives", pCounterName))
+    else if (0 == strcmp("IAPrimitives", counter_name))
     {
-        counterResult = queryResults.inputAssemblyPrimitives;
+        counter_result = query_results.inputAssemblyPrimitives;
     }
-    else if (0 == strcmp("VSInvocations", pCounterName))
+    else if (0 == strcmp("VSInvocations", counter_name))
     {
-        counterResult = queryResults.vertexShaderInvocations;
+        counter_result = query_results.vertexShaderInvocations;
     }
-    else if (0 == strcmp("GSInvocations", pCounterName))
+    else if (0 == strcmp("GSInvocations", counter_name))
     {
-        counterResult = queryResults.geometryShaderInvocations;
+        counter_result = query_results.geometryShaderInvocations;
     }
-    else if (0 == strcmp("GSPrimitives", pCounterName))
+    else if (0 == strcmp("GSPrimitives", counter_name))
     {
-        counterResult = queryResults.geometryShaderPrimitives;
+        counter_result = query_results.geometryShaderPrimitives;
     }
-    else if (0 == strcmp("CInvocations", pCounterName))
+    else if (0 == strcmp("CInvocations", counter_name))
     {
-        counterResult = queryResults.clippingInvocations;
+        counter_result = query_results.clippingInvocations;
     }
-    else if (0 == strcmp("CPrimitives", pCounterName))
+    else if (0 == strcmp("CPrimitives", counter_name))
     {
-        counterResult = queryResults.clippingPrimitives;
+        counter_result = query_results.clippingPrimitives;
     }
-    else if (0 == strcmp("PSInvocations", pCounterName))
+    else if (0 == strcmp("PSInvocations", counter_name))
     {
-        counterResult = queryResults.fragmentShaderInvocations;
+        counter_result = query_results.fragmentShaderInvocations;
     }
-    else if (0 == strcmp("TCSInvocations", pCounterName))
+    else if (0 == strcmp("TCSInvocations", counter_name))
     {
-        counterResult = queryResults.tessellationControlShaderPatches;
+        counter_result = query_results.tessellationControlShaderPatches;
     }
-    else if (0 == strcmp("TESInvocations", pCounterName))
+    else if (0 == strcmp("TESInvocations", counter_name))
     {
-        counterResult = queryResults.tessellationEvaluationShaderInvocations;
+        counter_result = query_results.tessellationEvaluationShaderInvocations;
     }
-    else if (0 == strcmp("CSInvocations", pCounterName))
+    else if (0 == strcmp("CSInvocations", counter_name))
     {
-        counterResult = queryResults.computeShaderInvocations;
+        counter_result = query_results.computeShaderInvocations;
     }
     else
     {
@@ -236,71 +239,71 @@ bool VkGPASoftwareSample::GetPipelineQueryCounterResult(const GpaVkSoftwareQuery
     return result;
 }
 
-bool VkGPASoftwareSample::UpdateResults()
+bool VkGpaSoftwareSample::UpdateResults()
 {
-    if (GPASampleState::RESULTS_COLLECTED == GetGpaSampleState())
+    if (GpaSampleState::kResultsCollected == GetGpaSampleState())
     {
         return true;
     }
 
-    bool isUpdated = false;
+    bool is_updated = false;
 
     if (IsSecondary())
     {
         MarkAsCompleted();
-        isUpdated = true;
+        is_updated = true;
     }
 
-    if (GPASampleState::PENDING_RESULTS == GetGpaSampleState() && !IsSecondary())
+    if (GpaSampleState::kPendingResults == GetGpaSampleState() && !IsSecondary())
     {
-        GpaVkSoftwareQueryResults queryResults = {};
-        memset(&queryResults, 0, sizeof(queryResults));
+        GpaVkSoftwareQueryResults query_results = {};
+        memset(&query_results, 0, sizeof(query_results));
 
-        if (nullptr != m_pSwQueries)
+        if (nullptr != sw_queries_)
         {
-            if (m_pSwQueries->GetSwSampleResults(m_swSampleId, queryResults))
+            if (sw_queries_->GetSwSampleResults(sw_sample_id_, query_results))
             {
-                GetSampleResultLocation()->GetAsCounterSampleResult()->SetNumCounters(m_activeCountersList.size());
-                const size_t counterCount = m_activeCountersList.size();
-                isUpdated                 = (counterCount == GetSampleResultLocation()->GetAsCounterSampleResult()->GetNumCounters());
+                GetSampleResultLocation()->GetAsCounterSampleResult()->SetNumCounters(active_counter_list_.size());
+                const size_t counter_count = active_counter_list_.size();
+                is_updated                 = (counter_count == GetSampleResultLocation()->GetAsCounterSampleResult()->GetNumCounters());
 
-                for (size_t ci = 0; isUpdated && (counterCount > ci); ++ci)
+                for (size_t ci = 0; is_updated && (counter_count > ci); ++ci)
                 {
-                    switch (m_activeCountersList[ci].m_queryType)
+                    switch (active_counter_list_[ci].query_type)
                     {
-                    case GPA_VK_QUERY_TYPE_OCCLUSION:
-                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci] = queryResults.occlusion;
+                    case kGpaVkQueryTypeOcclusion:
+                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci] = query_results.occlusion;
                         break;
 
-                    case GPA_VK_QUERY_TYPE_OCCLUSION_BINARY:
-                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci] = queryResults.occlusionBinary;
+                    case kGpaVkQueryTypeOcclusionBinary:
+                        GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci] = query_results.occlusionBinary;
                         break;
 
-                    case GPA_VK_QUERY_TYPE_TIMESTAMP:
-                        isUpdated = GetTimestampQueryCounterResult(
-                            queryResults, m_activeCountersList[ci].m_index, GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci]);
+                    case kGpaVkQueryTypeTimestamp:
+                        is_updated = GetTimestampQueryCounterResult(
+                            query_results, active_counter_list_[ci].index, GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci]);
                         break;
 
-                    case GPA_VK_QUERY_TYPE_PIPELINE_STATISTICS:
-                        isUpdated = GetPipelineQueryCounterResult(
-                            queryResults, m_activeCountersList[ci].m_index, GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci]);
+                    case kGpaVkQueryTypePipelineStatistics:
+                        is_updated = GetPipelineQueryCounterResult(
+                            query_results, active_counter_list_[ci].index, GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[ci]);
                         break;
 
                     default:
-                        isUpdated = false;
+                        is_updated = false;
                         break;
                     }
                 }
 
-                m_pSwQueries->ReleaseSwSample(m_swSampleId);
+                sw_queries_->ReleaseSwSample(sw_sample_id_);
             }
         }
     }
 
-    if (isUpdated)
+    if (is_updated)
     {
         MarkAsCompleted();
     }
 
-    return isUpdated;
+    return is_updated;
 }

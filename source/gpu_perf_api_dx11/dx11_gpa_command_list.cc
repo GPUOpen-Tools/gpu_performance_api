@@ -1,43 +1,43 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief DX11 GPA Command List Implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief DX11 GPA Command List Implementation
 //==============================================================================
 
-#include "dx11_gpa_command_list.h"
+#include "gpu_perf_api_dx11/dx11_gpa_command_list.h"
 
-DX11GPACommandList::DX11GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId)
-    : GPACommandList(pGpaSession, pGpaPass, commandListId)
+Dx11GpaCommandList::Dx11GpaCommandList(IGpaSession* gpa_session, GpaPass* gpa_pass, CommandListId command_list_id)
+    : GpaCommandList(gpa_session, gpa_pass, command_list_id)
 {
 }
 
-GPA_API_Type DX11GPACommandList::GetAPIType() const
+GpaApiType Dx11GpaCommandList::GetApiType() const
 {
-    return GPA_API_DIRECTX_11;
+    return kGpaApiDirectx11;
 }
 
-bool DX11GPACommandList::BeginCommandListRequest()
-{
-    GPA_STUB_FUNCTION;
-    return true;
-}
-
-bool DX11GPACommandList::EndCommandListRequest()
+bool Dx11GpaCommandList::BeginCommandListRequest()
 {
     GPA_STUB_FUNCTION;
     return true;
 }
 
-bool DX11GPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample)
+bool Dx11GpaCommandList::EndCommandListRequest()
 {
     GPA_STUB_FUNCTION;
-    UNREFERENCED_PARAMETER(clientSampleId);
-    UNREFERENCED_PARAMETER(pGpaSample);
     return true;
 }
 
-bool DX11GPACommandList::CloseLastSampleRequest()
+bool Dx11GpaCommandList::BeginSampleRequest(ClientSampleId client_sample_id, GpaSample* gpa_sample)
+{
+    GPA_STUB_FUNCTION;
+    UNREFERENCED_PARAMETER(client_sample_id);
+    UNREFERENCED_PARAMETER(gpa_sample);
+    return true;
+}
+
+bool Dx11GpaCommandList::CloseLastSampleRequest()
 {
     GPA_STUB_FUNCTION;
     return true;

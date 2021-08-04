@@ -22,6 +22,7 @@ INCLUDE_ADDITIONAL_MODULE()
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_PUBLIC_HEADER}
+                    ${GPA_SRC}
                     ${GPA_SRC_COMMON}
                     ${GPA_SRC_COUNTER_GENERATOR})
 

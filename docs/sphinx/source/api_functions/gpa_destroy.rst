@@ -1,14 +1,14 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_Destroy
-@@@@@@@@@@@
+GpaDestroy
+@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_Destroy();
+    GpaStatus GpaDestroy();
 
 Description
 %%%%%%%%%%%
@@ -24,6 +24,6 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "GPA  was destroyed."
-    "GPA_STATUS_ERROR_GPA_NOT_INITIALIZED", "GPA_Initialize was never called."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "GPA was destroyed."
+    "kGpaStatusErrorGpaNotInitialized", "GpaInitialize was never called."
+    "kGpaStatusErrorException", "Exception occurred."

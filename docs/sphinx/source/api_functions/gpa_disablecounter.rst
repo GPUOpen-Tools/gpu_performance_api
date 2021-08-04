@@ -1,16 +1,16 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_DisableCounter
-@@@@@@@@@@@@@@@@@@
+GpaDisableCounter
+@@@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_DisableCounter(
-        GPA_SessionId sessionId,
-        gpa_uint32 index);
+    GpaStatus GpaDisableCounter(
+        GpaSessionId session_id,
+        GpaUInt32 index);
 
 Description
 %%%%%%%%%%%
@@ -26,8 +26,8 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``sessionId``","Unique identifier of a previously-created session."
-    "``index``", "The index of the counter to disable. Must lie between 0 and (GPA_GetNumCounters result - 1)."
+    "``session_id``","Unique identifier of a previously-created session."
+    "``index``", "The index of the counter to disable. Must lie between 0 and (GpaGetNumCounters result - 1)."
 
 Return value
 %%%%%%%%%%%%
@@ -36,11 +36,11 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The counter was successfully disabled."
-    "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``sessionId`` parameter is NULL."
-    "GPA_STATUS_ERROR_SESSION_NOT_FOUND", "The supplied ``sessionId`` parameter was not recognized as a previously-created session identifier."
-    "GPA_STATUS_ERROR_CANNOT_CHANGE_COUNTERS_WHEN_SAMPLING", "The set of enabled counters cannot be changed after GPA_BeginSession is called."
-    GPA_STATUS_ERROR_INDEX_OUT_OF_RANGE", "The specified index is out of range."
-    "GPA_STATUS_ERROR_NOT_ENABLED", "The specified counter is not currently enabled."
-    "GPA_STATUS_ERROR_FAILED", "An error occurred while trying to disable the counter."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The counter was successfully disabled."
+    "kGpaStatusErrorNullPointer", "The supplied ``session_id`` parameter is NULL."
+    "kGpaStatusErrorSessionNotFound", "The supplied ``session_id`` parameter was not recognized as a previously-created session identifier."
+    "kGpaStatusErrorCannotChangeCountersWhenSampling", "The set of enabled counters cannot be changed after GpaBeginSession is called."
+    "kGpaStatusErrorIndexOutOfRange", "The specified index is out of range."
+    "kGpaStatusErrorNotEnabled", "The specified counter is not currently enabled."
+    "kGpaStatusErrorFailed", "An error occurred while trying to disable the counter."
+    "kGpaStatusErrorException", "Exception occurred."

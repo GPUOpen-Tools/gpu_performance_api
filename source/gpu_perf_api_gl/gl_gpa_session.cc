@@ -1,41 +1,43 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GL GPA Session Implementation
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GL GPA Session Implementation
 //==============================================================================
 
-#include "gl_gpa_session.h"
-#include "gl_gpa_pass.h"
-#include "gpa_context_counter_mediator.h"
+#include "gpu_perf_api_gl/gl_gpa_session.h"
 
-GLGPASession::GLGPASession(IGPAContext* pParentContext, GPA_Session_Sample_Type sampleType)
-    : GPASession(pParentContext, sampleType)
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
+
+#include "gpu_perf_api_gl/gl_gpa_pass.h"
+
+GlGpaSession::GlGpaSession(IGpaContext* parent_context, GpaSessionSampleType sample_type)
+    : GpaSession(parent_context, sample_type)
 {
 }
 
-GPA_API_Type GLGPASession::GetAPIType() const
+GpaApiType GlGpaSession::GetApiType() const
 {
-    return GPA_API_OPENGL;
+    return kGpaApiOpengl;
 }
 
-GPAPass* GLGPASession::CreateAPIPass(PassIndex passIndex)
+GpaPass* GlGpaSession::CreateApiPass(PassIndex pass_index)
 {
-    GPAPass* pRetPass = nullptr;
+    GpaPass* ret_pass = nullptr;
 
-    CounterList*     pPassCounters = GetCountersForPass(passIndex);
-    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
+    CounterList*     pass_counters  = GetCountersForPass(pass_index);
+    GpaCounterSource counter_source = GetParentContext()->GetCounterSource((*pass_counters)[0]);
 
-    GLGPAPass* pGlPass = new (std::nothrow) GLGPAPass(this, passIndex, counterSource, pPassCounters);
+    GlGpaPass* gl_pass = new (std::nothrow) GlGpaPass(this, pass_index, counter_source, pass_counters);
 
-    if (nullptr == pGlPass)
+    if (nullptr == gl_pass)
     {
-        GPA_LogError("Unable to allocate memory for the pass.");
+        GPA_LOG_ERROR("Unable to allocate memory for the pass.");
     }
     else
     {
-        pRetPass = pGlPass;
+        ret_pass = gl_pass;
     }
 
-    return pRetPass;
+    return ret_pass;
 }

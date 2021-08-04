@@ -1,4 +1,4 @@
-## Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -17,9 +17,8 @@ if(WIN32)
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
-include_directories(${GPA_SRC_COMMON}
+include_directories(${GPA_SRC}
                     ${GPA_PUBLIC_HEADER}
-                    ${GPA_AUTOGEN_SRC_COUNTER_GENERATOR}
                     ${ADDITIONAL_COUNTER_DIR_INCLUDE})
 
 set(COUNTER_GENERATOR_VS_FILTER CounterGenerators)
@@ -76,7 +75,8 @@ endif()
 set(HARDWARE_COUNTER_SRC ${HARDWARE_COUNTER_SRC} ${HW_COUNTER_SRC})
 
 set(DERIVED_COUNTER_HEADERS
-    gpa_derived_counter.h)
+    gpa_derived_counter.h
+    gpa_derived_counter_evaluator.inc)
 
 set(DERIVED_COUNTER_SRC
     gpa_derived_counter.cc)

@@ -1,56 +1,56 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GL GPA Command List Implementation
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GL GPA Command List Implementation
 //==============================================================================
 
-#include "gl_gpa_command_list.h"
+#include "gpu_perf_api_gl/gl_gpa_command_list.h"
 
-GLGPACommandList::GLGPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId)
-    : GPACommandList(pGpaSession, pGpaPass, commandListId)
-    , m_pPreviousSample(nullptr)
+GlGpaCommandList::GlGpaCommandList(IGpaSession* gpa_session, GpaPass* gpa_pass, CommandListId command_list_id)
+    : GpaCommandList(gpa_session, gpa_pass, command_list_id)
+    , previous_sample_(nullptr)
 {
 }
 
-GPA_API_Type GLGPACommandList::GetAPIType() const
+GpaApiType GlGpaCommandList::GetApiType() const
 {
-    return GPA_API_OPENGL;
+    return kGpaApiOpengl;
 }
 
-bool GLGPACommandList::BeginCommandListRequest()
+bool GlGpaCommandList::BeginCommandListRequest()
 {
     GPA_STUB_FUNCTION;
     return true;
 }
 
-bool GLGPACommandList::EndCommandListRequest()
+bool GlGpaCommandList::EndCommandListRequest()
 {
     GPA_STUB_FUNCTION;
     return true;
 }
 
-bool GLGPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample)
+bool GlGpaCommandList::BeginSampleRequest(ClientSampleId client_sample_id, GpaSample* gpa_sample)
 {
-    UNREFERENCED_PARAMETER(clientSampleId);
+    UNREFERENCED_PARAMETER(client_sample_id);
 
     bool success = true;
 
-    if (!GetPass()->IsTimingPass() && nullptr != m_pPreviousSample)
+    if (!GetPass()->IsTimingPass() && nullptr != previous_sample_)
     {
-        // Last sample already exist - collect its data first before proceeding
-        success &= m_pPreviousSample->UpdateResults();
+        // Last sample already exist - collect its data first before proceeding.
+        success &= previous_sample_->UpdateResults();
     }
 
     if (!GetPass()->IsTimingPass())
     {
-        m_pPreviousSample = reinterpret_cast<GLGPASample*>(pGpaSample);
+        previous_sample_ = reinterpret_cast<GlGpaSample*>(gpa_sample);
     }
 
     return success;
 }
 
-bool GLGPACommandList::CloseLastSampleRequest()
+bool GlGpaCommandList::CloseLastSampleRequest()
 {
     GPA_STUB_FUNCTION;
     return true;

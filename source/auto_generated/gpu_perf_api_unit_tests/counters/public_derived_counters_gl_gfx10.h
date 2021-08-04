@@ -1,158 +1,160 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief PublicCounterDefinitions for GLGFX10 for testing
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief PublicCounterDefinitions for GL GFX10 for testing.
 //==============================================================================
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#ifndef _GPA_TESTS_COUNTERS_PUBLIC_GLGFX10_
-#define _GPA_TESTS_COUNTERS_PUBLIC_GLGFX10_
+#ifndef GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_GL_GFX10
+#define GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_GL_GFX10
 
-#include "gpa_counter_desc.h"
+#include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
 /// Macros for GLGfx10 Public counter index
-#define GPUTimePublicGLGfx10 0
-#define GPUBusyPublicGLGfx10 1
-#define GPUBusyCyclesPublicGLGfx10 2
-#define VSBusyPublicGLGfx10 3
-#define VSBusyCyclesPublicGLGfx10 4
-#define VSTimePublicGLGfx10 5
-#define HSBusyPublicGLGfx10 6
-#define HSBusyCyclesPublicGLGfx10 7
-#define HSTimePublicGLGfx10 8
-#define DSBusyPublicGLGfx10 9
-#define DSBusyCyclesPublicGLGfx10 10
-#define DSTimePublicGLGfx10 11
-#define PSBusyPublicGLGfx10 12
-#define PSBusyCyclesPublicGLGfx10 13
-#define PSTimePublicGLGfx10 14
-#define CSBusyPublicGLGfx10 15
-#define CSBusyCyclesPublicGLGfx10 16
-#define CSTimePublicGLGfx10 17
-#define VSVerticesInPublicGLGfx10 18
-#define VSVALUInstCountPublicGLGfx10 19
-#define VSSALUInstCountPublicGLGfx10 20
-#define VSVALUBusyPublicGLGfx10 21
-#define VSVALUBusyCyclesPublicGLGfx10 22
-#define VSSALUBusyPublicGLGfx10 23
-#define VSSALUBusyCyclesPublicGLGfx10 24
-#define HSPatchesPublicGLGfx10 25
-#define HSVALUInstCountPublicGLGfx10 26
-#define HSSALUInstCountPublicGLGfx10 27
-#define HSVALUBusyPublicGLGfx10 28
-#define HSVALUBusyCyclesPublicGLGfx10 29
-#define HSSALUBusyPublicGLGfx10 30
-#define HSSALUBusyCyclesPublicGLGfx10 31
-#define DSVerticesInPublicGLGfx10 32
-#define DSVALUInstCountPublicGLGfx10 33
-#define DSSALUInstCountPublicGLGfx10 34
-#define PrimitiveAssemblyBusyPublicGLGfx10 35
-#define PrimitiveAssemblyBusyCyclesPublicGLGfx10 36
-#define PrimitivesInPublicGLGfx10 37
-#define CulledPrimsPublicGLGfx10 38
-#define ClippedPrimsPublicGLGfx10 39
-#define PAStalledOnRasterizerPublicGLGfx10 40
-#define PAStalledOnRasterizerCyclesPublicGLGfx10 41
-#define PSPixelsOutPublicGLGfx10 42
-#define PSExportStallsPublicGLGfx10 43
-#define PSExportStallsCyclesPublicGLGfx10 44
-#define PSVALUInstCountPublicGLGfx10 45
-#define PSSALUInstCountPublicGLGfx10 46
-#define PSVALUBusyPublicGLGfx10 47
-#define PSVALUBusyCyclesPublicGLGfx10 48
-#define PSSALUBusyPublicGLGfx10 49
-#define PSSALUBusyCyclesPublicGLGfx10 50
-#define CSThreadGroupsPublicGLGfx10 51
-#define CSWavefrontsPublicGLGfx10 52
-#define CSThreadsPublicGLGfx10 53
-#define CSVALUInstsPublicGLGfx10 54
-#define CSVALUUtilizationPublicGLGfx10 55
-#define CSSALUInstsPublicGLGfx10 56
-#define CSVFetchInstsPublicGLGfx10 57
-#define CSSFetchInstsPublicGLGfx10 58
-#define CSVWriteInstsPublicGLGfx10 59
-#define CSVALUBusyPublicGLGfx10 60
-#define CSVALUBusyCyclesPublicGLGfx10 61
-#define CSSALUBusyPublicGLGfx10 62
-#define CSSALUBusyCyclesPublicGLGfx10 63
-#define CSMemUnitBusyPublicGLGfx10 64
-#define CSMemUnitBusyCyclesPublicGLGfx10 65
-#define CSMemUnitStalledPublicGLGfx10 66
-#define CSMemUnitStalledCyclesPublicGLGfx10 67
-#define CSWriteUnitStalledPublicGLGfx10 68
-#define CSWriteUnitStalledCyclesPublicGLGfx10 69
-#define CSGDSInstsPublicGLGfx10 70
-#define CSLDSInstsPublicGLGfx10 71
-#define CSALUStalledByLDSPublicGLGfx10 72
-#define CSALUStalledByLDSCyclesPublicGLGfx10 73
-#define CSLDSBankConflictPublicGLGfx10 74
-#define CSLDSBankConflictCyclesPublicGLGfx10 75
-#define TexUnitBusyPublicGLGfx10 76
-#define TexUnitBusyCyclesPublicGLGfx10 77
-#define TexTriFilteringPctPublicGLGfx10 78
-#define TexTriFilteringCountPublicGLGfx10 79
-#define NoTexTriFilteringCountPublicGLGfx10 80
-#define TexVolFilteringPctPublicGLGfx10 81
-#define TexVolFilteringCountPublicGLGfx10 82
-#define NoTexVolFilteringCountPublicGLGfx10 83
-#define TexAveAnisotropyPublicGLGfx10 84
-#define DepthStencilTestBusyPublicGLGfx10 85
-#define DepthStencilTestBusyCountPublicGLGfx10 86
-#define HiZTilesAcceptedPublicGLGfx10 87
-#define HiZTilesAcceptedCountPublicGLGfx10 88
-#define HiZTilesRejectedCountPublicGLGfx10 89
-#define PreZTilesDetailCulledPublicGLGfx10 90
-#define PreZTilesDetailCulledCountPublicGLGfx10 91
-#define PreZTilesDetailSurvivingCountPublicGLGfx10 92
-#define HiZQuadsCulledPublicGLGfx10 93
-#define HiZQuadsCulledCountPublicGLGfx10 94
-#define HiZQuadsAcceptedCountPublicGLGfx10 95
-#define PreZQuadsCulledPublicGLGfx10 96
-#define PreZQuadsCulledCountPublicGLGfx10 97
-#define PreZQuadsSurvivingCountPublicGLGfx10 98
-#define PostZQuadsPublicGLGfx10 99
-#define PostZQuadCountPublicGLGfx10 100
-#define PreZSamplesPassingPublicGLGfx10 101
-#define PreZSamplesFailingSPublicGLGfx10 102
-#define PreZSamplesFailingZPublicGLGfx10 103
-#define PostZSamplesPassingPublicGLGfx10 104
-#define PostZSamplesFailingSPublicGLGfx10 105
-#define PostZSamplesFailingZPublicGLGfx10 106
-#define ZUnitStalledPublicGLGfx10 107
-#define ZUnitStalledCyclesPublicGLGfx10 108
-#define DBMemReadPublicGLGfx10 109
-#define DBMemWrittenPublicGLGfx10 110
-#define CBMemReadPublicGLGfx10 111
-#define CBColorAndMaskReadPublicGLGfx10 112
-#define CBMemWrittenPublicGLGfx10 113
-#define CBColorAndMaskWrittenPublicGLGfx10 114
-#define CBSlowPixelPctPublicGLGfx10 115
-#define CBSlowPixelCountPublicGLGfx10 116
-#define L0CacheHitPublicGLGfx10 117
-#define L0CacheHitCountPublicGLGfx10 118
-#define L0CacheMissCountPublicGLGfx10 119
-#define L1CacheHitPublicGLGfx10 120
-#define L1CacheHitCountPublicGLGfx10 121
-#define L1CacheMissCountPublicGLGfx10 122
-#define L2CacheHitPublicGLGfx10 123
-#define L2CacheMissPublicGLGfx10 124
-#define L2CacheHitCountPublicGLGfx10 125
-#define L2CacheMissCountPublicGLGfx10 126
-#define FetchSizePublicGLGfx10 127
-#define WriteSizePublicGLGfx10 128
-#define MemUnitBusyPublicGLGfx10 129
-#define MemUnitBusyCyclesPublicGLGfx10 130
-#define MemUnitStalledPublicGLGfx10 131
-#define MemUnitStalledCyclesPublicGLGfx10 132
-#define WriteUnitStalledPublicGLGfx10 133
-#define WriteUnitStalledCyclesPublicGLGfx10 134
+#define GPUTIME_PUBLIC_GL_GFX10 0
+#define GPUBUSY_PUBLIC_GL_GFX10 1
+#define GPUBUSYCYCLES_PUBLIC_GL_GFX10 2
+#define VSBUSY_PUBLIC_GL_GFX10 3
+#define VSBUSYCYCLES_PUBLIC_GL_GFX10 4
+#define VSTIME_PUBLIC_GL_GFX10 5
+#define HSBUSY_PUBLIC_GL_GFX10 6
+#define HSBUSYCYCLES_PUBLIC_GL_GFX10 7
+#define HSTIME_PUBLIC_GL_GFX10 8
+#define DSBUSY_PUBLIC_GL_GFX10 9
+#define DSBUSYCYCLES_PUBLIC_GL_GFX10 10
+#define DSTIME_PUBLIC_GL_GFX10 11
+#define PSBUSY_PUBLIC_GL_GFX10 12
+#define PSBUSYCYCLES_PUBLIC_GL_GFX10 13
+#define PSTIME_PUBLIC_GL_GFX10 14
+#define CSBUSY_PUBLIC_GL_GFX10 15
+#define CSBUSYCYCLES_PUBLIC_GL_GFX10 16
+#define CSTIME_PUBLIC_GL_GFX10 17
+#define VSVERTICESIN_PUBLIC_GL_GFX10 18
+#define VSVALUINSTCOUNT_PUBLIC_GL_GFX10 19
+#define VSSALUINSTCOUNT_PUBLIC_GL_GFX10 20
+#define VSVALUBUSY_PUBLIC_GL_GFX10 21
+#define VSVALUBUSYCYCLES_PUBLIC_GL_GFX10 22
+#define VSSALUBUSY_PUBLIC_GL_GFX10 23
+#define VSSALUBUSYCYCLES_PUBLIC_GL_GFX10 24
+#define HSPATCHES_PUBLIC_GL_GFX10 25
+#define HSVALUINSTCOUNT_PUBLIC_GL_GFX10 26
+#define HSSALUINSTCOUNT_PUBLIC_GL_GFX10 27
+#define HSVALUBUSY_PUBLIC_GL_GFX10 28
+#define HSVALUBUSYCYCLES_PUBLIC_GL_GFX10 29
+#define HSSALUBUSY_PUBLIC_GL_GFX10 30
+#define HSSALUBUSYCYCLES_PUBLIC_GL_GFX10 31
+#define DSVERTICESIN_PUBLIC_GL_GFX10 32
+#define DSVALUINSTCOUNT_PUBLIC_GL_GFX10 33
+#define DSSALUINSTCOUNT_PUBLIC_GL_GFX10 34
+#define PRIMITIVEASSEMBLYBUSY_PUBLIC_GL_GFX10 35
+#define PRIMITIVEASSEMBLYBUSYCYCLES_PUBLIC_GL_GFX10 36
+#define PRIMITIVESIN_PUBLIC_GL_GFX10 37
+#define CULLEDPRIMS_PUBLIC_GL_GFX10 38
+#define CLIPPEDPRIMS_PUBLIC_GL_GFX10 39
+#define PASTALLEDONRASTERIZER_PUBLIC_GL_GFX10 40
+#define PASTALLEDONRASTERIZERCYCLES_PUBLIC_GL_GFX10 41
+#define PSPIXELSOUT_PUBLIC_GL_GFX10 42
+#define PSEXPORTSTALLS_PUBLIC_GL_GFX10 43
+#define PSEXPORTSTALLSCYCLES_PUBLIC_GL_GFX10 44
+#define PSVALUINSTCOUNT_PUBLIC_GL_GFX10 45
+#define PSSALUINSTCOUNT_PUBLIC_GL_GFX10 46
+#define PSVALUBUSY_PUBLIC_GL_GFX10 47
+#define PSVALUBUSYCYCLES_PUBLIC_GL_GFX10 48
+#define PSSALUBUSY_PUBLIC_GL_GFX10 49
+#define PSSALUBUSYCYCLES_PUBLIC_GL_GFX10 50
+#define CSTHREADGROUPS_PUBLIC_GL_GFX10 51
+#define CSWAVEFRONTS_PUBLIC_GL_GFX10 52
+#define CSTHREADS_PUBLIC_GL_GFX10 53
+#define CSVALUINSTS_PUBLIC_GL_GFX10 54
+#define CSVALUUTILIZATION_PUBLIC_GL_GFX10 55
+#define CSSALUINSTS_PUBLIC_GL_GFX10 56
+#define CSVFETCHINSTS_PUBLIC_GL_GFX10 57
+#define CSSFETCHINSTS_PUBLIC_GL_GFX10 58
+#define CSVWRITEINSTS_PUBLIC_GL_GFX10 59
+#define CSVALUBUSY_PUBLIC_GL_GFX10 60
+#define CSVALUBUSYCYCLES_PUBLIC_GL_GFX10 61
+#define CSSALUBUSY_PUBLIC_GL_GFX10 62
+#define CSSALUBUSYCYCLES_PUBLIC_GL_GFX10 63
+#define CSMEMUNITBUSY_PUBLIC_GL_GFX10 64
+#define CSMEMUNITBUSYCYCLES_PUBLIC_GL_GFX10 65
+#define CSMEMUNITSTALLED_PUBLIC_GL_GFX10 66
+#define CSMEMUNITSTALLEDCYCLES_PUBLIC_GL_GFX10 67
+#define CSWRITEUNITSTALLED_PUBLIC_GL_GFX10 68
+#define CSWRITEUNITSTALLEDCYCLES_PUBLIC_GL_GFX10 69
+#define CSGDSINSTS_PUBLIC_GL_GFX10 70
+#define CSLDSINSTS_PUBLIC_GL_GFX10 71
+#define CSALUSTALLEDBYLDS_PUBLIC_GL_GFX10 72
+#define CSALUSTALLEDBYLDSCYCLES_PUBLIC_GL_GFX10 73
+#define CSLDSBANKCONFLICT_PUBLIC_GL_GFX10 74
+#define CSLDSBANKCONFLICTCYCLES_PUBLIC_GL_GFX10 75
+#define TEXUNITBUSY_PUBLIC_GL_GFX10 76
+#define TEXUNITBUSYCYCLES_PUBLIC_GL_GFX10 77
+#define TEXTRIFILTERINGPCT_PUBLIC_GL_GFX10 78
+#define TEXTRIFILTERINGCOUNT_PUBLIC_GL_GFX10 79
+#define NOTEXTRIFILTERINGCOUNT_PUBLIC_GL_GFX10 80
+#define TEXVOLFILTERINGPCT_PUBLIC_GL_GFX10 81
+#define TEXVOLFILTERINGCOUNT_PUBLIC_GL_GFX10 82
+#define NOTEXVOLFILTERINGCOUNT_PUBLIC_GL_GFX10 83
+#define TEXAVEANISOTROPY_PUBLIC_GL_GFX10 84
+#define DEPTHSTENCILTESTBUSY_PUBLIC_GL_GFX10 85
+#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_GL_GFX10 86
+#define HIZTILESACCEPTED_PUBLIC_GL_GFX10 87
+#define HIZTILESACCEPTEDCOUNT_PUBLIC_GL_GFX10 88
+#define HIZTILESREJECTEDCOUNT_PUBLIC_GL_GFX10 89
+#define PREZTILESDETAILCULLED_PUBLIC_GL_GFX10 90
+#define PREZTILESDETAILCULLEDCOUNT_PUBLIC_GL_GFX10 91
+#define PREZTILESDETAILSURVIVINGCOUNT_PUBLIC_GL_GFX10 92
+#define HIZQUADSCULLED_PUBLIC_GL_GFX10 93
+#define HIZQUADSCULLEDCOUNT_PUBLIC_GL_GFX10 94
+#define HIZQUADSACCEPTEDCOUNT_PUBLIC_GL_GFX10 95
+#define PREZQUADSCULLED_PUBLIC_GL_GFX10 96
+#define PREZQUADSCULLEDCOUNT_PUBLIC_GL_GFX10 97
+#define PREZQUADSSURVIVINGCOUNT_PUBLIC_GL_GFX10 98
+#define POSTZQUADS_PUBLIC_GL_GFX10 99
+#define POSTZQUADCOUNT_PUBLIC_GL_GFX10 100
+#define PREZSAMPLESPASSING_PUBLIC_GL_GFX10 101
+#define PREZSAMPLESFAILINGS_PUBLIC_GL_GFX10 102
+#define PREZSAMPLESFAILINGZ_PUBLIC_GL_GFX10 103
+#define POSTZSAMPLESPASSING_PUBLIC_GL_GFX10 104
+#define POSTZSAMPLESFAILINGS_PUBLIC_GL_GFX10 105
+#define POSTZSAMPLESFAILINGZ_PUBLIC_GL_GFX10 106
+#define ZUNITSTALLED_PUBLIC_GL_GFX10 107
+#define ZUNITSTALLEDCYCLES_PUBLIC_GL_GFX10 108
+#define DBMEMREAD_PUBLIC_GL_GFX10 109
+#define DBMEMWRITTEN_PUBLIC_GL_GFX10 110
+#define CBMEMREAD_PUBLIC_GL_GFX10 111
+#define CBCOLORANDMASKREAD_PUBLIC_GL_GFX10 112
+#define CBMEMWRITTEN_PUBLIC_GL_GFX10 113
+#define CBCOLORANDMASKWRITTEN_PUBLIC_GL_GFX10 114
+#define CBSLOWPIXELPCT_PUBLIC_GL_GFX10 115
+#define CBSLOWPIXELCOUNT_PUBLIC_GL_GFX10 116
+#define L0CACHEHIT_PUBLIC_GL_GFX10 117
+#define L0CACHEREQUESTCOUNT_PUBLIC_GL_GFX10 118
+#define L0CACHEHITCOUNT_PUBLIC_GL_GFX10 119
+#define L0CACHEMISSCOUNT_PUBLIC_GL_GFX10 120
+#define L1CACHEHIT_PUBLIC_GL_GFX10 121
+#define L1CACHEREQUESTCOUNT_PUBLIC_GL_GFX10 122
+#define L1CACHEHITCOUNT_PUBLIC_GL_GFX10 123
+#define L1CACHEMISSCOUNT_PUBLIC_GL_GFX10 124
+#define L2CACHEMISS_PUBLIC_GL_GFX10 125
+#define L2CACHEREQUESTCOUNT_PUBLIC_GL_GFX10 126
+#define L2CACHEHITCOUNT_PUBLIC_GL_GFX10 127
+#define L2CACHEMISSCOUNT_PUBLIC_GL_GFX10 128
+#define FETCHSIZE_PUBLIC_GL_GFX10 129
+#define WRITESIZE_PUBLIC_GL_GFX10 130
+#define MEMUNITBUSY_PUBLIC_GL_GFX10 131
+#define MEMUNITBUSYCYCLES_PUBLIC_GL_GFX10 132
+#define MEMUNITSTALLED_PUBLIC_GL_GFX10 133
+#define MEMUNITSTALLEDCYCLES_PUBLIC_GL_GFX10 134
+#define WRITEUNITSTALLED_PUBLIC_GL_GFX10 135
+#define WRITEUNITSTALLEDCYCLES_PUBLIC_GL_GFX10 136
 
-/// Number of public counters for GLGfx10
-const size_t GLGFX10_PUBLIC_COUNTER_COUNT = 135;
+/// Number of public counters for GL GFX10 
+const size_t kGlGfx10PublicCounterCount = 137;
 
-/// Array of public counters for GLGfx10
-extern const GPACounterDesc GLGFX10_PUBLIC_COUNTERS[GLGFX10_PUBLIC_COUNTER_COUNT];
+/// Array of public counters for GL GFX10 
+extern const GpaCounterDesc kGlGfx10PublicCounters[kGlGfx10PublicCounterCount];
 
-#endif  // _GPA_TESTS_COUNTERS_PUBLIC_GLGFX10_
+#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_GL_GFX10

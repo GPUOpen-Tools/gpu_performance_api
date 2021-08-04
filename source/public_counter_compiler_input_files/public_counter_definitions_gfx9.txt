@@ -2297,7 +2297,7 @@ eqn=0..15,sum16
 name=FetchSize
 desc=#GlobalMemory#The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
 type=gpa_float64
-usage=kilobytes
+usage=bytes
 [GLGfx9]
 [DX11Gfx9]
 [DX12Gfx9]
@@ -2309,7 +2309,7 @@ eqn=0..15,sum16,16..31,sum16,-,(64),*,16..31,sum16,(32),*,+
 name=WriteSize
 desc=#GlobalMemory#The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
 type=gpa_float64
-usage=kilobytes
+usage=bytes
 [GLGfx9]
 [DX11Gfx9]
 [DX12Gfx9]

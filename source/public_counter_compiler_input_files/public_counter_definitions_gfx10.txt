@@ -103,11 +103,11 @@ eqn=0,1,1,ifnotzero,2,2,ifnotzero,3,/,(100),*,(100),min
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_ES_BUSY[0..3]
-SPI*_PERF_LS_BUSY[0..3]
-SPI*_PERF_VS_BUSY[0..3]
+SPI*_PERF_ES_BUSY[0..1]
+SPI*_PERF_LS_BUSY[0..1]
+SPI*_PERF_VS_BUSY[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0,4,4,ifnotzero,8,8,ifnotzero,1,5,5,ifnotzero,9,9,ifnotzero,max,2,6,6,ifnotzero,10,10,ifnotzero,max,3,7,7,ifnotzero,11,11,ifnotzero,max,12,/,(100),*,(100),min
+eqn=0,2,2,ifnotzero,4,4,ifnotzero,1,3,3,ifnotzero,5,5,ifnotzero,max,6,/,(100),*,(100),min
 
 name=VSBusyCycles
 desc=#Timing#Number of GPU cycles that the ShaderUnit has vertex shader work to do.
@@ -121,10 +121,10 @@ eqn=0,1,1,ifnotzero,2,2,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_ES_BUSY[0..3]
-SPI*_PERF_LS_BUSY[0..3]
-SPI*_PERF_VS_BUSY[0..3]
-eqn=0,4,4,ifnotzero,8,8,ifnotzero,1,5,5,ifnotzero,9,9,ifnotzero,max,2,6,6,ifnotzero,10,10,ifnotzero,max,3,7,7,ifnotzero,11,11,ifnotzero,max
+SPI*_PERF_ES_BUSY[0..1]
+SPI*_PERF_LS_BUSY[0..1]
+SPI*_PERF_VS_BUSY[0..1]
+eqn=0,2,2,ifnotzero,4,4,ifnotzero,1,3,3,ifnotzero,5,5,ifnotzero,max
 
 name=VSTime
 desc=#Timing#Time vertex shaders are busy in nanoseconds.
@@ -141,11 +141,11 @@ eqn=1,2,2,ifnotzero,3,3,ifnotzero,4,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,
 [DX12Gfx10]
 [VKGfx10]
 GPUTime_Bottom_To_Bottom_Duration
-SPI*_PERF_ES_BUSY[0..3]
-SPI*_PERF_LS_BUSY[0..3]
-SPI*_PERF_VS_BUSY[0..3]
+SPI*_PERF_ES_BUSY[0..1]
+SPI*_PERF_LS_BUSY[0..1]
+SPI*_PERF_VS_BUSY[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=1,5,5,ifnotzero,9,9,ifnotzero,2,6,6,ifnotzero,10,10,ifnotzero,max,3,7,7,ifnotzero,11,11,ifnotzero,max,4,8,8,ifnotzero,12,12,ifnotzero,max,13,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=1,3,3,ifnotzero,5,5,ifnotzero,2,4,4,ifnotzero,6,6,ifnotzero,max,7,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
 name=HSBusy
 desc=#Timing#The percentage of time the ShaderUnit has hull shader work to do.
@@ -159,10 +159,10 @@ eqn=(0),0,1,ifnotzero,2,/,(100),*,(100),min
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_HS_BUSY[0..3]
-SPI*_PERF_HS_WAVE[0..3]
+SPI*_PERF_HS_BUSY[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,max,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,8,/,(100),*,(100),min
+eqn=(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,4,/,(100),*,(100),min
 
 name=HSBusyCycles
 desc=#Timing#Number of GPU cycles that the ShaderUnit has hull shader work to do.
@@ -175,9 +175,9 @@ eqn=(0),0,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_HS_BUSY[0..3]
-SPI*_PERF_HS_WAVE[0..3]
-eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,max,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max
+SPI*_PERF_HS_BUSY[0..1]
+SPI*_PERF_HS_WAVE[0..1]
+eqn=(0),0,2,ifnotzero,(0),1,3,ifnotzero,max
 
 name=HSTime
 desc=#Timing#Time hull shaders are busy in nanoseconds.
@@ -193,10 +193,10 @@ eqn=(0),1,2,ifnotzero,3,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1
 [DX12Gfx10]
 [VKGfx10]
 GPUTime_Bottom_To_Bottom_Duration
-SPI*_PERF_HS_BUSY[0..3]
-SPI*_PERF_HS_WAVE[0..3]
+SPI*_PERF_HS_BUSY[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=(0),1,3,ifnotzero,(0),2,4,ifnotzero,max,5,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
 name=DSBusy
 desc=#Timing#The percentage of time the ShaderUnit has domain shader work to do.
@@ -212,12 +212,12 @@ eqn=(0),0,1,2,ifnotzero,3,ifnotzero,4,/,(100),*,(100),min
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_VS_BUSY[0..3]
-SPI*_PERF_ES_BUSY[0..3]
-SPI*_PERF_ES_WAVE[0..3]
-SPI*_PERF_LS_WAVE[0..3]
+SPI*_PERF_VS_BUSY[0..1]
+SPI*_PERF_ES_BUSY[0..1]
+SPI*_PERF_ES_WAVE[0..1]
+SPI*_PERF_LS_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,4,8,ifnotzero,12,ifnotzero,(0),1,5,9,ifnotzero,13,ifnotzero,max,(0),2,6,10,ifnotzero,14,ifnotzero,max,(0),3,7,11,ifnotzero,15,ifnotzero,max,16,/,(100),*,(100),min
+eqn=(0),0,2,4,ifnotzero,6,ifnotzero,(0),1,3,5,ifnotzero,7,ifnotzero,max,8,/,(100),*,(100),min
 
 name=DSBusyCycles
 desc=#Timing#Number of GPU cycles that the ShaderUnit has domain shader work to do.
@@ -232,11 +232,11 @@ eqn=(0),0,1,2,ifnotzero,3,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_VS_BUSY[0..3]
-SPI*_PERF_ES_BUSY[0..3]
-SPI*_PERF_ES_WAVE[0..3]
-SPI*_PERF_LS_WAVE[0..3]
-eqn=(0),0,4,8,ifnotzero,12,ifnotzero,(0),1,5,9,ifnotzero,13,ifnotzero,max,(0),2,6,10,ifnotzero,14,ifnotzero,max,(0),3,7,11,ifnotzero,15,ifnotzero,max
+SPI*_PERF_VS_BUSY[0..1]
+SPI*_PERF_ES_BUSY[0..1]
+SPI*_PERF_ES_WAVE[0..1]
+SPI*_PERF_LS_WAVE[0..1]
+eqn=(0),0,2,4,ifnotzero,6,ifnotzero,(0),1,3,5,ifnotzero,7,ifnotzero,max
 
 name=DSTime
 desc=#Timing#Time domain shaders are busy in nanoseconds.
@@ -254,12 +254,12 @@ eqn=(0),1,2,3,ifnotzero,4,ifnotzero,5,/,(1),min,GPUTime_Bottom_To_Bottom_Duratio
 [DX12Gfx10]
 [VKGfx10]
 GPUTime_Bottom_To_Bottom_Duration
-SPI*_PERF_VS_BUSY[0..3]
-SPI*_PERF_ES_BUSY[0..3]
-SPI*_PERF_ES_WAVE[0..3]
-SPI*_PERF_LS_WAVE[0..3]
+SPI*_PERF_VS_BUSY[0..1]
+SPI*_PERF_ES_BUSY[0..1]
+SPI*_PERF_ES_WAVE[0..1]
+SPI*_PERF_LS_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,5,9,ifnotzero,13,ifnotzero,(0),2,6,10,ifnotzero,14,ifnotzero,max,(0),3,7,11,ifnotzero,15,ifnotzero,max,(0),4,8,12,ifnotzero,16,ifnotzero,max,17,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=(0),1,3,5,ifnotzero,7,ifnotzero,(0),2,4,6,ifnotzero,8,ifnotzero,max,9,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
 ;;name=GSBusy
 ;;desc=#Timing#The percentage of time the ShaderUnit has geometry shader work to do.
@@ -330,16 +330,16 @@ eqn=(0),0,1,ifnotzero,(0),2,3,ifnotzero,(0),4,5,ifnotzero,(0),6,7,ifnotzero,max4
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_PS0_BUSY[0..3]
-SPI*_PERF_PS0_WAVE[0..3]
-SPI*_PERF_PS1_BUSY[0..3]
-SPI*_PERF_PS1_WAVE[0..3]
-SPI*_PERF_PS2_BUSY[0..3]
-SPI*_PERF_PS2_WAVE[0..3]
-SPI*_PERF_PS3_BUSY[0..3]
-SPI*_PERF_PS3_WAVE[0..3]
+SPI*_PERF_PS0_BUSY[0..1]
+SPI*_PERF_PS0_WAVE[0..1]
+SPI*_PERF_PS1_BUSY[0..1]
+SPI*_PERF_PS1_WAVE[0..1]
+SPI*_PERF_PS2_BUSY[0..1]
+SPI*_PERF_PS2_WAVE[0..1]
+SPI*_PERF_PS3_BUSY[0..1]
+SPI*_PERF_PS3_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,(0),2,6,ifnotzero,(0),3,7,ifnotzero,max4,(0),8,12,ifnotzero,(0),9,13,ifnotzero,(0),10,14,ifnotzero,(0),11,15,ifnotzero,max4,(0),16,20,ifnotzero,(0),17,21,ifnotzero,(0),18,22,ifnotzero,(0),19,23,ifnotzero,max4,(0),24,28,ifnotzero,(0),25,29,ifnotzero,(0),26,30,ifnotzero,(0),27,31,ifnotzero,max4,max4,32,/,(100),*,(100),min
+eqn=(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,(0),4,6,ifnotzero,(0),5,7,ifnotzero,max,(0),8,10,ifnotzero,(0),9,11,ifnotzero,max,(0),12,14,ifnotzero,(0),13,15,ifnotzero,max,max4,16,/,(100),*,(100),min
 
 name=PSBusyCycles
 desc=#Timing#Number of GPU cycles that the ShaderUnit has pixel shader work to do.
@@ -358,15 +358,15 @@ eqn=(0),0,1,ifnotzero,(0),2,3,ifnotzero,(0),4,5,ifnotzero,(0),6,7,ifnotzero,max4
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_PS0_BUSY[0..3]
-SPI*_PERF_PS0_WAVE[0..3]
-SPI*_PERF_PS1_BUSY[0..3]
-SPI*_PERF_PS1_WAVE[0..3]
-SPI*_PERF_PS2_BUSY[0..3]
-SPI*_PERF_PS2_WAVE[0..3]
-SPI*_PERF_PS3_BUSY[0..3]
-SPI*_PERF_PS3_WAVE[0..3]
-eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,(0),2,6,ifnotzero,(0),3,7,ifnotzero,max4,(0),8,12,ifnotzero,(0),9,13,ifnotzero,(0),10,14,ifnotzero,(0),11,15,ifnotzero,max4,(0),16,20,ifnotzero,(0),17,21,ifnotzero,(0),18,22,ifnotzero,(0),19,23,ifnotzero,max4,(0),24,28,ifnotzero,(0),25,29,ifnotzero,(0),26,30,ifnotzero,(0),27,31,ifnotzero,max4,max4
+SPI*_PERF_PS0_BUSY[0..1]
+SPI*_PERF_PS0_WAVE[0..1]
+SPI*_PERF_PS1_BUSY[0..1]
+SPI*_PERF_PS1_WAVE[0..1]
+SPI*_PERF_PS2_BUSY[0..1]
+SPI*_PERF_PS2_WAVE[0..1]
+SPI*_PERF_PS3_BUSY[0..1]
+SPI*_PERF_PS3_WAVE[0..1]
+eqn=(0),0,2,ifnotzero,(0),1,3,ifnotzero,max,(0),4,6,ifnotzero,(0),5,7,ifnotzero,max,(0),8,10,ifnotzero,(0),9,11,ifnotzero,max,(0),12,14,ifnotzero,(0),13,15,ifnotzero,max,max4
 
 name=PSTime
 desc=#Timing#Time pixel shaders are busy in nanoseconds.
@@ -388,16 +388,16 @@ eqn=(0),1,2,ifnotzero,(0),3,4,ifnotzero,(0),5,6,ifnotzero,(0),7,8,ifnotzero,max4
 [DX12Gfx10]
 [VKGfx10]
 GPUTime_Bottom_To_Bottom_Duration
-SPI*_PERF_PS0_BUSY[0..3]
-SPI*_PERF_PS0_WAVE[0..3]
-SPI*_PERF_PS1_BUSY[0..3]
-SPI*_PERF_PS1_WAVE[0..3]
-SPI*_PERF_PS2_BUSY[0..3]
-SPI*_PERF_PS2_WAVE[0..3]
-SPI*_PERF_PS3_BUSY[0..3]
-SPI*_PERF_PS3_WAVE[0..3]
+SPI*_PERF_PS0_BUSY[0..1]
+SPI*_PERF_PS0_WAVE[0..1]
+SPI*_PERF_PS1_BUSY[0..1]
+SPI*_PERF_PS1_WAVE[0..1]
+SPI*_PERF_PS2_BUSY[0..1]
+SPI*_PERF_PS2_WAVE[0..1]
+SPI*_PERF_PS3_BUSY[0..1]
+SPI*_PERF_PS3_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,5,ifnotzero,(0),2,6,ifnotzero,(0),3,7,ifnotzero,(0),4,8,ifnotzero,max4,(0),9,13,ifnotzero,(0),10,14,ifnotzero,(0),11,15,ifnotzero,(0),12,16,ifnotzero,max4,(0),17,21,ifnotzero,(0),18,22,ifnotzero,(0),19,23,ifnotzero,(0),20,24,ifnotzero,max4,(0),25,29,ifnotzero,(0),26,30,ifnotzero,(0),27,31,ifnotzero,(0),28,32,ifnotzero,max4,max4,33,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=(0),1,3,ifnotzero,(0),2,4,ifnotzero,max,(0),5,7,ifnotzero,(0),6,8,ifnotzero,max,(0),9,11,ifnotzero,(0),10,12,ifnotzero,max,(0),13,15,ifnotzero,(0),14,16,ifnotzero,max,max4,17,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
 name=CSBusy
 desc=#Timing#The percentage of time the ShaderUnit has compute shader work to do.
@@ -413,12 +413,12 @@ eqn=(0),0,1,ifnotzero,(0),2,3,ifnotzero,max,4,/,(100),*,(100),min
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_CSGN_BUSY[0..3]
-SPI*_PERF_CSGN_WAVE[0..3]
-SPI*_PERF_CSN_BUSY[0..3]
-SPI*_PERF_CSN_WAVE[0..3]
+SPI*_PERF_CSGN_BUSY[0..1]
+SPI*_PERF_CSGN_WAVE[0..1]
+SPI*_PERF_CSN_BUSY[0..1]
+SPI*_PERF_CSN_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=SPI*_PERF_CSGN_BUSY,SPI*_PERF_CSGN_WAVE,comparemax4,SPI*_PERF_CSN_BUSY,SPI*_PERF_CSN_WAVE,comparemax4,max,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,(100),min
+eqn=SPI*_PERF_CSGN_BUSY,SPI*_PERF_CSGN_WAVE,comparemax2,SPI*_PERF_CSN_BUSY,SPI*_PERF_CSN_WAVE,comparemax2,max,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,(100),min
 
 name=CSBusyCycles
 desc=#Timing#Number of GPU cycles that the ShaderUnit has compute shader work to do.
@@ -433,11 +433,11 @@ eqn=(0),0,1,ifnotzero,(0),2,3,ifnotzero,max
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_CSGN_BUSY[0..3]
-SPI*_PERF_CSGN_WAVE[0..3]
-SPI*_PERF_CSN_BUSY[0..3]
-SPI*_PERF_CSN_WAVE[0..3]
-eqn=SPI*_PERF_CSGN_BUSY,SPI*_PERF_CSGN_WAVE,comparemax4,SPI*_PERF_CSN_BUSY,SPI*_PERF_CSN_WAVE,comparemax4,max
+SPI*_PERF_CSGN_BUSY[0..1]
+SPI*_PERF_CSGN_WAVE[0..1]
+SPI*_PERF_CSN_BUSY[0..1]
+SPI*_PERF_CSN_WAVE[0..1]
+eqn=SPI*_PERF_CSGN_BUSY,SPI*_PERF_CSGN_WAVE,comparemax2,SPI*_PERF_CSN_BUSY,SPI*_PERF_CSN_WAVE,comparemax2,max
 
 name=CSTime
 desc=#Timing#Time compute shaders are busy in nanoseconds.
@@ -455,12 +455,12 @@ eqn=(0),1,2,ifnotzero,(0),3,4,ifnotzero,max,5,/,(1),min,GPUTime_Bottom_To_Bottom
 [DX12Gfx10]
 [VKGfx10]
 GPUTime_Bottom_To_Bottom_Duration
-SPI*_PERF_CSGN_BUSY[0..3]
-SPI*_PERF_CSGN_WAVE[0..3]
-SPI*_PERF_CSN_BUSY[0..3]
-SPI*_PERF_CSN_WAVE[0..3]
+SPI*_PERF_CSGN_BUSY[0..1]
+SPI*_PERF_CSGN_WAVE[0..1]
+SPI*_PERF_CSN_BUSY[0..1]
+SPI*_PERF_CSN_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=SPI*_PERF_CSGN_BUSY,SPI*_PERF_CSGN_WAVE,comparemax4,SPI*_PERF_CSN_BUSY,SPI*_PERF_CSN_WAVE,comparemax4,max,CPF_PERF_SEL_CPF_STAT_BUSY,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=SPI*_PERF_CSGN_BUSY,SPI*_PERF_CSGN_WAVE,comparemax2,SPI*_PERF_CSN_BUSY,SPI*_PERF_CSN_WAVE,comparemax2,max,CPF_PERF_SEL_CPF_STAT_BUSY,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
 name=VSVerticesIn
 desc=#VertexShader#The number of vertices processed by the VS.
@@ -490,13 +490,13 @@ eqn=(0),0,1,/,1,ifnotzero,2,3,/,3,ifnotzero,4,5,/,5,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_ES*_PERF_SEL_INSTS_VALU[0..3]
-SQ_ES*_PERF_SEL_WAVES[0..3]
-SQ_LS*_PERF_SEL_INSTS_VALU[0..3]
-SQ_LS*_PERF_SEL_WAVES[0..3]
-SQ_VS*_PERF_SEL_INSTS_VALU[0..3]
-SQ_VS*_PERF_SEL_WAVES[0..3]
-eqn=(0),0..3,sum4,4..7,sum4,/,4..7,sum4,ifnotzero,8..11,sum4,12..15,sum4,/,12..15,sum4,ifnotzero,16..19,sum4,20..23,sum4,/,20..23,sum4,ifnotzero
+SQ_ES*_PERF_SEL_INSTS_VALU[0..1]
+SQ_ES*_PERF_SEL_WAVES[0..1]
+SQ_LS*_PERF_SEL_INSTS_VALU[0..1]
+SQ_LS*_PERF_SEL_WAVES[0..1]
+SQ_VS*_PERF_SEL_INSTS_VALU[0..1]
+SQ_VS*_PERF_SEL_WAVES[0..1]
+eqn=(0),0..1,sum2,2..3,sum2,/,2..3,sum2,ifnotzero,4..5,sum2,6..7,sum2,/,6..7,sum2,ifnotzero,8..9,sum2,10..11,sum2,/,10..11,sum2,ifnotzero
 
 name=VSSALUInstCount
 desc=#VertexShader#Average number of scalar ALU instructions executed in the VS. Affected by flow control.
@@ -513,13 +513,13 @@ eqn=(0),0,1,/,1,ifnotzero,2,3,/,3,ifnotzero,4,5,/,5,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_ES*_PERF_SEL_INSTS_SALU[0..3]
-SQ_ES*_PERF_SEL_WAVES[0..3]
-SQ_LS*_PERF_SEL_INSTS_SALU[0..3]
-SQ_LS*_PERF_SEL_WAVES[0..3]
-SQ_VS*_PERF_SEL_INSTS_SALU[0..3]
-SQ_VS*_PERF_SEL_WAVES[0..3]
-eqn=(0),0..3,sum4,4..7,sum4,/,4..7,sum4,ifnotzero,8..11,sum4,12..15,sum4,/,12..15,sum4,ifnotzero,16..19,sum4,20..23,sum4,/,20..23,sum4,ifnotzero
+SQ_ES*_PERF_SEL_INSTS_VALU[0..1]
+SQ_ES*_PERF_SEL_WAVES[0..1]
+SQ_LS*_PERF_SEL_INSTS_VALU[0..1]
+SQ_LS*_PERF_SEL_WAVES[0..1]
+SQ_VS*_PERF_SEL_INSTS_VALU[0..1]
+SQ_VS*_PERF_SEL_WAVES[0..1]
+eqn=(0),0..1,sum2,2..3,sum2,/,2..3,sum2,ifnotzero,4..5,sum2,6..7,sum2,/,6..7,sum2,ifnotzero,8..9,sum2,10..11,sum2,/,10..11,sum2,ifnotzero
 
 name=VSVALUBusy
 desc=#VertexShader#The percentage of GPUTime vector ALU instructions are being processed by the VS.
@@ -534,11 +534,11 @@ eqn=0,1,1,ifnotzero,2,2,ifnotzero,NUM_SIMDS,/,3,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_ES*_PERF_SEL_INST_CYCLES_VALU[0..3]
-SQ_LS*_PERF_SEL_INST_CYCLES_VALU[0..3]
-SQ_VS*_PERF_SEL_INST_CYCLES_VALU[0..3]
+SQ_ES*_PERF_SEL_INST_CYCLES_VALU[0..1]
+SQ_LS*_PERF_SEL_INST_CYCLES_VALU[0..1]
+SQ_VS*_PERF_SEL_INST_CYCLES_VALU[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,4..7,sum4,4..7,sum4,ifnotzero,8..11,sum4,8..11,sum4,ifnotzero,NUM_SIMDS,/,12,/,(100),*
+eqn=0..1,sum2,2..3,sum2,2..3,sum2,ifnotzero,4..5,sum2,4..5,sum2,ifnotzero,NUM_SIMDS,/,6,/,(100),*
 
 name=VSVALUBusyCycles
 desc=#VertexShader#Number of GPU cycles where vector ALU instructions are being processed by the VS.
@@ -552,10 +552,10 @@ eqn=0,1,1,ifnotzero,2,2,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_ES*_PERF_SEL_INST_CYCLES_VALU[0..3]
-SQ_LS*_PERF_SEL_INST_CYCLES_VALU[0..3]
-SQ_VS*_PERF_SEL_INST_CYCLES_VALU[0..3]
-eqn=0..3,sum4,4..7,sum4,4..7,sum4,ifnotzero,8..11,sum4,8..11,sum4,ifnotzero
+SQ_ES*_PERF_SEL_INST_CYCLES_VALU[0..1]
+SQ_LS*_PERF_SEL_INST_CYCLES_VALU[0..1]
+SQ_VS*_PERF_SEL_INST_CYCLES_VALU[0..1]
+eqn=0..1,sum2,2..3,sum2,2..3,sum2,ifnotzero,4..5,sum2,4..5,sum2,ifnotzero
 
 name=VSSALUBusy
 desc=#VertexShader#The percentage of GPUTime scalar ALU instructions are being processed by the VS.
@@ -570,11 +570,11 @@ eqn=0,1,1,ifnotzero,2,2,ifnotzero,NUM_CUS,/,3,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_ES*_PERF_SEL_INSTS_SALU[0..3]
-SQ_LS*_PERF_SEL_INSTS_SALU[0..3]
-SQ_VS*_PERF_SEL_INSTS_SALU[0..3]
+SQ_ES*_PERF_SEL_INSTS_SALU[0..1]
+SQ_LS*_PERF_SEL_INSTS_SALU[0..1]
+SQ_VS*_PERF_SEL_INSTS_SALU[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,4..7,sum4,4..7,sum4,ifnotzero,8..11,sum4,8..11,sum4,ifnotzero,NUM_CUS,/,12,/,(100),*
+eqn=0..1,sum2,2..3,sum2,2..3,sum2,ifnotzero,4..5,sum2,4..5,sum2,ifnotzero,NUM_CUS,/,6,/,(100),*
 
 name=VSSALUBusyCycles
 desc=#VertexShader#Number of GPU cycles where scalar ALU instructions are being processed by the VS.
@@ -588,10 +588,10 @@ eqn=0,1,1,ifnotzero,2,2,ifnotzero,NUM_CUS,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_ES*_PERF_SEL_INSTS_SALU[0..3]
-SQ_LS*_PERF_SEL_INSTS_SALU[0..3]
-SQ_VS*_PERF_SEL_INSTS_SALU[0..3]
-eqn=0..3,sum4,4..7,sum4,4..7,sum4,ifnotzero,8..11,sum4,8..11,sum4,ifnotzero,NUM_CUS,/
+SQ_ES*_PERF_SEL_INSTS_SALU[0..1]
+SQ_LS*_PERF_SEL_INSTS_SALU[0..1]
+SQ_VS*_PERF_SEL_INSTS_SALU[0..1]
+eqn=0..1,sum2,2..3,sum2,2..3,sum2,ifnotzero,4..5,sum2,4..5,sum2,ifnotzero,NUM_CUS,/
 
 name=HSPatches
 desc=#HullShader#The number of patches processed by the HS.
@@ -615,9 +615,9 @@ eqn=0,1,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_HS*_PERF_SEL_INSTS_VALU[0..3]
-SQ_HS*_PERF_SEL_WAVES[0..3]
-eqn=0..3,sum4,4..7,sum4,/
+SQ_HS*_PERF_SEL_INSTS_VALU[0..1]
+SQ_HS*_PERF_SEL_WAVES[0..1]
+eqn=0..1,sum2,2..3,sum2,/
 
 name=HSSALUInstCount
 desc=#HullShader#Average number of scalar ALU instructions executed in the HS. Affected by flow control.
@@ -630,9 +630,9 @@ eqn=0,1,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_HS*_PERF_SEL_INSTS_SALU[0..3]
-SQ_HS*_PERF_SEL_WAVES[0..3]
-eqn=0..3,sum4,4..7,sum4,/
+SQ_HS*_PERF_SEL_INSTS_SALU[0..1]
+SQ_HS*_PERF_SEL_WAVES[0..1]
+eqn=0..1,sum2,2..3,sum2,/
 
 name=HSVALUBusy
 desc=#HullShader#The percentage of GPUTime vector ALU instructions are being processed by the HS.
@@ -645,9 +645,9 @@ eqn=0,NUM_SIMDS,/,1,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_HS*_PERF_SEL_INST_CYCLES_VALU[0..3]
+SQ_HS*_PERF_SEL_INST_CYCLES_VALU[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,NUM_SIMDS,/,4,/,(100),*
+eqn=0..1,sum2,NUM_SIMDS,/,2,/,(100),*
 
 name=HSVALUBusyCycles
 desc=#HullShader#Number of GPU cycles vector where ALU instructions are being processed by the HS.
@@ -659,8 +659,8 @@ eqn=0,NUM_SIMDS,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_HS*_PERF_SEL_INST_CYCLES_VALU[0..3]
-eqn=0..3,sum4,NUM_SIMDS,/
+SQ_HS*_PERF_SEL_INST_CYCLES_VALU[0..1]
+eqn=0..1,sum2,NUM_SIMDS,/
 
 name=HSSALUBusy
 desc=#HullShader#The percentage of GPUTime scalar ALU instructions are being processed by the HS.
@@ -673,9 +673,9 @@ eqn=0,NUM_CUS,/,1,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_HS*_PERF_SEL_INSTS_SALU[0..3]
+SQ_HS*_PERF_SEL_INSTS_SALU[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,NUM_CUS,/,4,/,(100),*
+eqn=0..1,sum2,NUM_CUS,/,2,/,(100),*
 
 name=HSSALUBusyCycles
 desc=#HullShader#Number of GPU cycles where scalar ALU instructions are being processed by the HS.
@@ -687,8 +687,8 @@ eqn=0,NUM_CUS,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_HS*_PERF_SEL_INSTS_SALU[0..3]
-eqn=0..3,sum4,NUM_CUS,/
+SQ_HS*_PERF_SEL_INSTS_SALU[0..1]
+eqn=0..1,sum2,NUM_CUS,/
 
 name=DSVerticesIn
 desc=#DomainShader#The number of vertices processed by the DS.
@@ -718,13 +718,13 @@ eqn=(0),0,1,/,2,3,/,4,ifnotzero,5,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_VS*_PERF_SEL_INSTS_VALU[0..3]
-SQ_VS*_PERF_SEL_WAVES[0..3]
-SQ_ES*_PERF_SEL_INSTS_VALU[0..3]
-SQ_ES*_PERF_SEL_WAVES[0..3]
-SQ_ES*_PERF_SEL_ITEMS[0..3]
-SQ_LS*_PERF_SEL_ITEMS[0..3]
-eqn=(0),0..3,sum4,4..7,sum4,/,8..11,sum4,12..15,sum4,/,16..19,sum4,ifnotzero,20..23,sum4,ifnotzero
+SQ_VS*_PERF_SEL_INSTS_VALU[0..1]
+SQ_VS*_PERF_SEL_WAVES[0..1]
+SQ_ES*_PERF_SEL_INSTS_VALU[0..1]
+SQ_ES*_PERF_SEL_WAVES[0..1]
+SQ_ES*_PERF_SEL_ITEMS[0..1]
+SQ_LS*_PERF_SEL_ITEMS[0..1]
+eqn=(0),0..1,sum2,2..3,sum2,/,4..5,sum2,6..7,sum2,/,8..9,sum2,ifnotzero,10..11,sum2,ifnotzero
 
 name=DSSALUInstCount
 desc=#DomainShader#Average number of scalar ALU instructions executed in the DS. Affected by flow control.
@@ -741,13 +741,13 @@ eqn=(0),0,1,/,2,3,/,4,ifnotzero,5,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_VS*_PERF_SEL_INSTS_SALU[0..3]
-SQ_VS*_PERF_SEL_WAVES[0..3]
-SQ_ES*_PERF_SEL_INSTS_SALU[0..3]
-SQ_ES*_PERF_SEL_WAVES[0..3]
-SQ_ES*_PERF_SEL_ITEMS[0..3]
-SQ_LS*_PERF_SEL_ITEMS[0..3]
-eqn=(0),0..3,sum4,4..7,sum4,/,8..11,sum4,12..15,sum4,/,16..19,sum4,ifnotzero,20..23,sum4,ifnotzero
+SQ_VS*_PERF_SEL_INSTS_SALU[0..1]
+SQ_VS*_PERF_SEL_WAVES[0..1]
+SQ_ES*_PERF_SEL_INSTS_SALU[0..1]
+SQ_ES*_PERF_SEL_WAVES[0..1]
+SQ_ES*_PERF_SEL_ITEMS[0..1]
+SQ_LS*_PERF_SEL_ITEMS[0..1]
+eqn=(0),0..1,sum2,2..3,sum2,/,4..5,sum2,6..7,sum2,/,8..9,sum2,ifnotzero,10..11,sum2,ifnotzero
 
 ;name=DSVALUBusy
 ;desc=#DomainShader#The percentage of GPUTime vector ALU instructions are being processed by the DS.
@@ -1074,11 +1074,11 @@ eqn=0,1,2,3,sum4
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SX*_PERF_SEL_DB0_PIXELS[0..7]
-SX*_PERF_SEL_DB1_PIXELS[0..7]
-SX*_PERF_SEL_DB2_PIXELS[0..7]
-SX*_PERF_SEL_DB3_PIXELS[0..7]
-eqn=0..31,sum32
+SX*_PERF_SEL_DB0_PIXELS[0..3]
+SX*_PERF_SEL_DB1_PIXELS[0..3]
+SX*_PERF_SEL_DB2_PIXELS[0..3]
+SX*_PERF_SEL_DB3_PIXELS[0..3]
+eqn=0..15,sum16
 
 name=PSExportStalls
 desc=#PixelShader#Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.
@@ -1094,12 +1094,12 @@ eqn=0..3,max4,4,/,NUM_SHADER_ENGINES,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SX*_PERF_SEL_DB0_PIXEL_STALL[0..7]
-SX*_PERF_SEL_DB1_PIXEL_STALL[0..7]
-SX*_PERF_SEL_DB2_PIXEL_STALL[0..7]
-SX*_PERF_SEL_DB3_PIXEL_STALL[0..7]
+SX*_PERF_SEL_DB0_PIXEL_STALL[0..3]
+SX*_PERF_SEL_DB1_PIXEL_STALL[0..3]
+SX*_PERF_SEL_DB2_PIXEL_STALL[0..3]
+SX*_PERF_SEL_DB3_PIXEL_STALL[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..31,max32,32,/,(100),*
+eqn=0..15,max16,16,/,(100),*
 
 name=PSExportStallsCycles
 desc=#PixelShader#Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.
@@ -1114,11 +1114,11 @@ eqn=0,1,max,2,max,3,max,NUM_SHADER_ENGINES,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SX*_PERF_SEL_DB0_PIXEL_STALL[0..7]
-SX*_PERF_SEL_DB1_PIXEL_STALL[0..7]
-SX*_PERF_SEL_DB2_PIXEL_STALL[0..7]
-SX*_PERF_SEL_DB3_PIXEL_STALL[0..7]
-eqn=0..31,max32
+SX*_PERF_SEL_DB0_PIXEL_STALL[0..3]
+SX*_PERF_SEL_DB1_PIXEL_STALL[0..3]
+SX*_PERF_SEL_DB2_PIXEL_STALL[0..3]
+SX*_PERF_SEL_DB3_PIXEL_STALL[0..3]
+eqn=0..15,max16
 
 name=PSVALUInstCount
 desc=#PixelShader#Average number of vector ALU instructions executed in the PS. Affected by flow control.
@@ -1131,9 +1131,9 @@ eqn=0,1,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_PS*_PERF_SEL_INSTS_VALU[0..3]
-SQ_PS*_PERF_SEL_WAVES[0..3]
-eqn=0..3,sum4,4..7,sum4,/
+SQ_PS*_PERF_SEL_INSTS_VALU[0..1]
+SQ_PS*_PERF_SEL_WAVES[0..1]
+eqn=0..1,sum2,2..3,sum2,/
 
 name=PSSALUInstCount
 desc=#PixelShader#Average number of scalar ALU instructions executed in the PS. Affected by flow control.
@@ -1146,9 +1146,9 @@ eqn=0,1,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_PS*_PERF_SEL_INSTS_SALU[0..3]
-SQ_PS*_PERF_SEL_WAVES[0..3]
-eqn=0..3,sum4,4..7,sum4,/
+SQ_PS*_PERF_SEL_INSTS_SALU[0..1]
+SQ_PS*_PERF_SEL_WAVES[0..1]
+eqn=0..1,sum2,2..3,sum2,/
 
 name=PSVALUBusy
 desc=#PixelShader#The percentage of GPUTime vector ALU instructions are being processed by the PS.
@@ -1161,9 +1161,9 @@ eqn=0,NUM_SIMDS,/,1,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_PS*_PERF_SEL_INST_CYCLES_VALU[0..3]
+SQ_PS*_PERF_SEL_INST_CYCLES_VALU[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,NUM_SIMDS,/,4,/,(100),*
+eqn=0..1,sum2,NUM_SIMDS,/,2,/,(100),*
 
 name=PSVALUBusyCycles
 desc=#PixelShader#Number of GPU cycles where vector ALU instructions are being processed by the PS.
@@ -1175,8 +1175,8 @@ eqn=0,NUM_SIMDS,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_PS*_PERF_SEL_INST_CYCLES_VALU[0..3]
-eqn=0..3,sum4,NUM_SIMDS,/
+SQ_PS*_PERF_SEL_INST_CYCLES_VALU[0..1]
+eqn=0..1,sum2,NUM_SIMDS,/
 
 name=PSSALUBusy
 desc=#PixelShader#The percentage of GPUTime scalar ALU instructions are being processed by the PS.
@@ -1189,9 +1189,9 @@ eqn=0,NUM_CUS,/,1,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_PS*_PERF_SEL_INSTS_SALU[0..3]
+SQ_PS*_PERF_SEL_INSTS_SALU[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,NUM_CUS,/,4,/,(100),*
+eqn=0..1,sum2,NUM_CUS,/,2,/,(100),*
 
 name=PSSALUBusyCycles
 desc=#PixelShader#Number of GPU cycles where scalar ALU instructions are being processed by the PS.
@@ -1203,8 +1203,8 @@ eqn=0,NUM_CUS,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_PS*_PERF_SEL_INSTS_SALU[0..3]
-eqn=0..3,sum4,NUM_CUS,/
+SQ_PS*_PERF_SEL_INSTS_SALU[0..1]
+eqn=0..1,sum2,NUM_CUS,/
 
 name=CSThreadGroups
 desc=#ComputeShader#Total number of thread groups.
@@ -1217,9 +1217,9 @@ eqn=0,1,+
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=0..7,sum8
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=0..3,sum4
 
 name=CSWavefronts
 desc=#ComputeShader#The total number of wavefronts used for the CS.
@@ -1231,9 +1231,9 @@ eqn=0
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_CSGN_WAVE[0..3]
-SPI*_PERF_CSN_WAVE[0..3]
-eqn=0..7,sum8
+SPI*_PERF_CSGN_WAVE[0..1]
+SPI*_PERF_CSN_WAVE[0..1]
+eqn=0..3,sum4
 
 name=CSThreads
 desc=#ComputeShader#The number of CS threads processed by the hardware.
@@ -1245,10 +1245,10 @@ eqn=0
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-SQ_CS*_PERF_SEL_ITEMS[0..3]
-eqn=(0),SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,SQ_CS*_PERF_SEL_ITEMS,sum4,ifnotzero
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+SQ_CS*_PERF_SEL_ITEMS[0..1]
+eqn=(0),SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,SQ_CS*_PERF_SEL_ITEMS,sum2,ifnotzero
 
 name=CSVALUInsts
 desc=#ComputeShader#The average number of vector ALU instructions executed per work-item (affected by flow control).
@@ -1261,11 +1261,11 @@ eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INSTS_VALU[0..3]
-SQ_CS*_PERF_SEL_WAVES[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),SQ_CS*_PERF_SEL_INSTS_VALU,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_INSTS_VALU[0..1]
+SQ_CS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),SQ_CS*_PERF_SEL_INSTS_VALU,sum2,SQ_CS*_PERF_SEL_WAVES,sum2,/,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSVALUUtilization
 desc=#ComputeShader#The percentage of active vector ALU threads in a wave. A lower number can mean either more thread divergence in a wave or that the work-group size is not a multiple of the wave size. Value range: 0% (bad), 100% (ideal - no thread divergence).
@@ -1279,12 +1279,12 @@ eqn=(0),0,1,(64),(32),2,ifnotzero,*,/,(100),*,1,ifnotzero,(100),min
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_ITEM_CYCLES_VALU[0..3]
-SQ_CS*_PERF_SEL_INST_CYCLES_VALU[0..3]
-SQ_CS*_PERF_SEL_WAVES_32[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),(0),SQ_CS*_PERF_SEL_ITEM_CYCLES_VALU,sum4,SQ_CS*_PERF_SEL_INST_CYCLES_VALU,sum4,(64),(32),SQ_CS*_PERF_SEL_WAVES_32,sum4,ifnotzero,*,/,(100),*,SQ_CS*_PERF_SEL_INST_CYCLES_VALU,sum4,ifnotzero,(100),min,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_ITEM_CYCLES_VALU[0..1]
+SQ_CS*_PERF_SEL_INST_CYCLES_VALU[0..1]
+SQ_CS*_PERF_SEL_WAVES_32[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),(0),SQ_CS*_PERF_SEL_ITEM_CYCLES_VALU,sum2,SQ_CS*_PERF_SEL_INST_CYCLES_VALU,sum2,(64),(32),SQ_CS*_PERF_SEL_WAVES_32,sum2,ifnotzero,*,/,(100),*,SQ_CS*_PERF_SEL_INST_CYCLES_VALU,sum2,ifnotzero,(100),min,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSSALUInsts
 desc=#ComputeShader#The average number of scalar ALU instructions executed per work-item (affected by flow control).
@@ -1297,11 +1297,11 @@ eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INSTS_SALU[0..3]
-SQ_CS*_PERF_SEL_WAVES[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_SALU,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,SQ_CS*_PERF_SEL_WAVES,sum4,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_INSTS_SALU[0..1]
+SQ_CS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_SALU,sum2,SQ_CS*_PERF_SEL_WAVES,sum2,/,SQ_CS*_PERF_SEL_WAVES,sum2,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSVFetchInsts
 desc=#ComputeShader#The average number of vector fetch instructions from the video memory executed per work-item (affected by flow control).
@@ -1314,11 +1314,11 @@ eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INSTS_TEX_LOAD[0..3]
-SQ_CS*_PERF_SEL_WAVES[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_TEX_LOAD,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,SQ_CS*_PERF_SEL_WAVES,sum4,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_INSTS_TEX_LOAD[0..1]
+SQ_CS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_TEX_LOAD,sum2,SQ_CS*_PERF_SEL_WAVES,sum2,/,SQ_CS*_PERF_SEL_WAVES,sum2,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSSFetchInsts
 desc=#ComputeShader#The average number of scalar fetch instructions from the video memory executed per work-item (affected by flow control).
@@ -1331,11 +1331,11 @@ eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INSTS_SMEM[0..3]
-SQ_CS*_PERF_SEL_WAVES[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_SMEM,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,SQ_CS*_PERF_SEL_WAVES,sum4,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_INSTS_SMEM[0..1]
+SQ_CS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_SMEM,sum2,SQ_CS*_PERF_SEL_WAVES,sum2,/,SQ_CS*_PERF_SEL_WAVES,sum2,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSVWriteInsts
 desc=#ComputeShader#The average number of vector write instructions to the video memory executed per work-item (affected by flow control).
@@ -1348,11 +1348,11 @@ eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INSTS_TEX_STORE[0..3]
-SQ_CS*_PERF_SEL_WAVES[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_TEX_STORE,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,SQ_CS*_PERF_SEL_WAVES,sum4,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_INSTS_TEX_STORE[0..1]
+SQ_CS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_TEX_STORE,sum2,SQ_CS*_PERF_SEL_WAVES,sum2,/,SQ_CS*_PERF_SEL_WAVES,sum2,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSVALUBusy
 desc=#ComputeShader#The percentage of GPUTime vector ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).
@@ -1365,11 +1365,11 @@ eqn=0,NUM_SIMDS,/,1,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INST_CYCLES_VALU[0..3]
+SQ_CS*_PERF_SEL_INST_CYCLES_VALU[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),SQ_CS*_PERF_SEL_INST_CYCLES_VALU,sum4,NUM_SIMDS,/,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),SQ_CS*_PERF_SEL_INST_CYCLES_VALU,sum2,NUM_SIMDS,/,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSVALUBusyCycles
 desc=#ComputeShader#Number of GPU cycles where vector ALU instructions are processed.
@@ -1381,10 +1381,10 @@ eqn=0,NUM_SIMDS,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INST_CYCLES_VALU[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..3,sum4,NUM_SIMDS,/,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_INST_CYCLES_VALU[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),0..1,sum2,NUM_SIMDS,/,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSSALUBusy
 desc=#ComputeShader#The percentage of GPUTime scalar ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).
@@ -1397,11 +1397,11 @@ eqn=0,NUM_CUS,/,1,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INSTS_SALU[0..3]
+SQ_CS*_PERF_SEL_INSTS_SALU[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),SQ_CS*_PERF_SEL_INSTS_SALU,sum4,NUM_CUS,/,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),SQ_CS*_PERF_SEL_INSTS_SALU,sum2,NUM_CUS,/,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSSALUBusyCycles
 desc=#ComputeShader#Number of GPU cycles where scalar ALU instructions are processed.
@@ -1413,10 +1413,10 @@ eqn=0,NUM_CUS,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INSTS_SALU[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..3,sum4,NUM_CUS,/,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_INSTS_SALU[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),0..1,sum2,NUM_CUS,/,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSMemUnitBusy
 desc=#ComputeShader#The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).
@@ -1431,11 +1431,11 @@ eqn=(0),TA*_PERF_SEL_TA_BUSY,max16,CPF_PERF_SEL_CPF_STAT_BUSY,/,NUM_SHADER_ARRAY
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_TA_BUSY[0..79]
+TA*_PERF_SEL_TA_BUSY[0..39]
 CPF_PERF_SEL_CPF_STAT_BUSY
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),TA*_PERF_SEL_TA_BUSY,max80,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),TA*_PERF_SEL_TA_BUSY,max40,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSMemUnitBusyCycles
 desc=#ComputeShader#Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account.
@@ -1449,10 +1449,10 @@ eqn=(0),0..15,max16,NUM_SHADER_ARRAYS,/,SPI_PERF_CSGN_NUM_THREADGROUPS,SPI_PERF_
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_TA_BUSY[0..79]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..79,max80,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+TA*_PERF_SEL_TA_BUSY[0..39]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),0..39,max40,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSMemUnitStalled
 desc=#ComputeShader#The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).
@@ -1467,11 +1467,11 @@ eqn=(0),TCP*_PERF_SEL_TCP_TA_REQ_STALL,max16,CPF_PERF_SEL_CPF_STAT_BUSY,/,NUM_SH
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TCP*_PERF_SEL_TCP_TA_REQ_STALL[0..79]
+TCP*_PERF_SEL_TCP_TA_REQ_STALL[0..39]
 CPF_PERF_SEL_CPF_STAT_BUSY
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),TCP*_PERF_SEL_TCP_TA_REQ_STALL,max80,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),TCP*_PERF_SEL_TCP_TA_REQ_STALL,max40,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSMemUnitStalledCycles
 desc=#ComputeShader#Number of GPU cycles the memory unit is stalled. Try reducing the number or size of fetches and writes if possible.
@@ -1485,46 +1485,46 @@ eqn=(0),0..15,max16,NUM_SHADER_ARRAYS,/,SPI_PERF_CSGN_NUM_THREADGROUPS,SPI_PERF_
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TCP*_PERF_SEL_TCP_TA_REQ_STALL[0..79]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..79,max80,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+TCP*_PERF_SEL_TCP_TA_REQ_STALL[0..39]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),0..39,max40,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSWriteUnitStalled
 desc=#ComputeShader#The percentage of GPUTime the write unit is stalled.
 type=gpa_float64
 usage=percentage
 [GLGfx10]
-GL2C*_PERF_SEL_MC_WRREQ_STALL[0..23]
+GL2C*_PERF_SEL_MC_WRREQ_STALL[0..15]
 CPF_PERF_SEL_CPF_STAT_BUSY
 SPI_PERF_CSGN_NUM_THREADGROUPS
 SPI_PERF_CSN_NUM_THREADGROUPS
-eqn=(0),0..23,max24,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI_PERF_CSGN_NUM_THREADGROUPS,SPI_PERF_CSN_NUM_THREADGROUPS,+,ifnotzero
+eqn=(0),0..15,max16,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI_PERF_CSGN_NUM_THREADGROUPS,SPI_PERF_CSN_NUM_THREADGROUPS,+,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-GL2C*_PERF_SEL_MC_WRREQ_STALL[0..23]
+GL2C*_PERF_SEL_MC_WRREQ_STALL[0..15]
 CPF_PERF_SEL_CPF_STAT_BUSY
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..23,max24,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),0..15,max16,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSWriteUnitStalledCycles
 desc=#ComputeShader#Number of GPU cycles the write unit is stalled.
 type=gpa_float64
 usage=cycles
 [GLGfx10]
-GL2C*_PERF_SEL_MC_WRREQ_STALL[0..23]
+GL2C*_PERF_SEL_MC_WRREQ_STALL[0..15]
 SPI_PERF_CSGN_NUM_THREADGROUPS
 SPI_PERF_CSN_NUM_THREADGROUPS
-eqn=(0),0..23,max24,SPI_PERF_CSGN_NUM_THREADGROUPS,SPI_PERF_CSN_NUM_THREADGROUPS,+,ifnotzero
+eqn=(0),0..15,max16,SPI_PERF_CSGN_NUM_THREADGROUPS,SPI_PERF_CSN_NUM_THREADGROUPS,+,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-GL2C*_PERF_SEL_MC_WRREQ_STALL[0..23]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..23,max24,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+GL2C*_PERF_SEL_MC_WRREQ_STALL[0..15]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),0..15,max16,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSGDSInsts
 desc=#ComputeShader#The average number of GDS read or GDS write instructions executed per work item (affected by flow control).
@@ -1537,11 +1537,11 @@ eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INSTS_GDS[0..3]
-SQ_CS*_PERF_SEL_WAVES[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_GDS,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,SQ_CS*_PERF_SEL_WAVES,sum4,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_INSTS_GDS[0..1]
+SQ_CS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_GDS,sum2,SQ_CS*_PERF_SEL_WAVES,sum2,/,SQ_CS*_PERF_SEL_WAVES,sum2,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSLDSInsts
 desc=#ComputeShader#The average number of LDS read/write instructions executed per work-item (affected by flow control).
@@ -1554,11 +1554,11 @@ eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_INSTS_LDS[0..3]
-SQ_CS*_PERF_SEL_WAVES[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_LDS,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,SQ_CS*_PERF_SEL_WAVES,sum4,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_INSTS_LDS[0..1]
+SQ_CS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),(0),SQ_CS*_PERF_SEL_INSTS_LDS,sum2,SQ_CS*_PERF_SEL_WAVES,sum2,/,SQ_CS*_PERF_SEL_WAVES,sum2,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSALUStalledByLDS
 desc=#ComputeShader#The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).
@@ -1572,12 +1572,12 @@ eqn=(0),0,1,/,2,/,NUM_SHADER_ENGINES,/,(100),*,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_WAIT_INST_LDS[0..3]
-SQ_CS*_PERF_SEL_WAVES[0..3]
+SQ_CS*_PERF_SEL_WAIT_INST_LDS[0..1]
+SQ_CS*_PERF_SEL_WAVES[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),(0),SQ_CS*_PERF_SEL_WAIT_INST_LDS,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,CPF_PERF_SEL_CPF_STAT_BUSY,/,NUM_SHADER_ENGINES,/,(100),*,SQ_CS*_PERF_SEL_WAVES,sum4,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),(0),SQ_CS*_PERF_SEL_WAIT_INST_LDS,sum2,SQ_CS*_PERF_SEL_WAVES,sum2,/,CPF_PERF_SEL_CPF_STAT_BUSY,/,NUM_SHADER_ENGINES,/,(100),*,SQ_CS*_PERF_SEL_WAVES,sum2,ifnotzero,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSALUStalledByLDSCycles
 desc=#ComputeShader#Number of GPU cycles the ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible.
@@ -1589,10 +1589,10 @@ eqn=0,NUM_SHADER_ENGINES,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_PERF_SEL_WAIT_INST_LDS[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..3,sum4,NUM_SHADER_ENGINES,/,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_PERF_SEL_WAIT_INST_LDS[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),0..1,sum2,NUM_SHADER_ENGINES,/,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSLDSBankConflict
 desc=#ComputeShader#The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad).
@@ -1605,11 +1605,11 @@ eqn=0,1,/,NUM_SIMDS,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_SQC_PERF_SEL_LDS_BANK_CONFLICT[0..3]
+SQ_CS*_SQC_PERF_SEL_LDS_BANK_CONFLICT[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),SQ_CS*_SQC_PERF_SEL_LDS_BANK_CONFLICT,sum4,CPF_PERF_SEL_CPF_STAT_BUSY,/,NUM_SIMDS,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),SQ_CS*_SQC_PERF_SEL_LDS_BANK_CONFLICT,sum2,CPF_PERF_SEL_CPF_STAT_BUSY,/,NUM_SIMDS,/,(100),*,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=CSLDSBankConflictCycles
 desc=#ComputeShader#Number of GPU cycles the LDS is stalled by bank conflicts. Value range: 0 (optimal) to GPUBusyCycles (bad).
@@ -1621,10 +1621,10 @@ eqn=0,NUM_SIMDS,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-SQ_CS*_SQC_PERF_SEL_LDS_BANK_CONFLICT[0..3]
-SPI*_PERF_CSGN_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..3,sum4,NUM_SIMDS,/,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+SQ_CS*_SQC_PERF_SEL_LDS_BANK_CONFLICT[0..1]
+SPI*_PERF_CSGN_NUM_THREADGROUPS[0..1]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..1]
+eqn=(0),0..1,sum2,NUM_SIMDS,/,SPI*_PERF_CSGN_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum4,ifnotzero
 
 name=TexUnitBusy
 desc=#Timing#The percentage of GPUTime the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.
@@ -1637,9 +1637,9 @@ eqn=0..15,max16,16,/,NUM_SHADER_ARRAYS,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_TA_BUSY[0..79]
+TA*_PERF_SEL_TA_BUSY[0..39]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..79,max80,80,/,(100),*
+eqn=0..39,max40,40,/,(100),*
 
 name=TexUnitBusyCycles
 desc=#Timing#Number of GPU cycles the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.
@@ -1651,8 +1651,8 @@ eqn=0..15,max16,NUM_SHADER_ARRAYS,/
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_TA_BUSY[0..79]
-eqn=0..79,max80
+TA*_PERF_SEL_TA_BUSY[0..39]
+eqn=0..39,max40
 
 name=TexTriFilteringPct
 desc=#TextureUnit#Percentage of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).
@@ -1665,9 +1665,9 @@ eqn=0..15,sum16,16..31,sum16,0..15,sum16,+,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_MIP_2_CYCLE_PIXELS[0..79]
-TA*_PERF_SEL_MIP_1_CYCLE_PIXELS[0..79]
-eqn=0..79,sum80,80..159,sum80,0..79,sum80,+,/,(100),*
+TA*_PERF_SEL_MIP_2_CYCLE_PIXELS[0..39]
+TA*_PERF_SEL_MIP_1_CYCLE_PIXELS[0..39]
+eqn=0..39,sum40,40..79,sum40,0..39,sum40,+,/,(100),*
 
 name=TexTriFilteringCount
 desc=#TextureUnit#Count of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).
@@ -1679,8 +1679,8 @@ eqn=0..15,sum16
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_MIP_2_CYCLE_PIXELS[0..79]
-eqn=0..79,sum80
+TA*_PERF_SEL_MIP_2_CYCLE_PIXELS[0..39]
+eqn=0..39,sum40
 
 name=NoTexTriFilteringCount
 desc=#TextureUnit#Count of pixels that did not receive trilinear filtering.
@@ -1692,8 +1692,8 @@ eqn=0..15,sum16
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_MIP_1_CYCLE_PIXELS[0..79]
-eqn=0..79,sum80
+TA*_PERF_SEL_MIP_1_CYCLE_PIXELS[0..39]
+eqn=0..39,sum40
 
 name=TexVolFilteringPct
 desc=#TextureUnit#Percentage of pixels that received volume filtering.
@@ -1706,9 +1706,9 @@ eqn=0..15,sum16,16..31,sum16,0..15,sum16,+,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_VOL_2_CYCLE_PIXELS[0..79]
-TA*_PERF_SEL_VOL_1_CYCLE_PIXELS[0..79]
-eqn=0..79,sum80,80..159,sum80,0..79,sum80,+,/,(100),*
+TA*_PERF_SEL_VOL_2_CYCLE_PIXELS[0..39]
+TA*_PERF_SEL_VOL_1_CYCLE_PIXELS[0..39]
+eqn=0..39,sum40,40..79,sum40,0..39,sum40,+,/,(100),*
 
 name=TexVolFilteringCount
 desc=#TextureUnit#Count of pixels that received volume filtering.
@@ -1720,8 +1720,8 @@ eqn=0..15,sum16
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_VOL_2_CYCLE_PIXELS[0..79]
-eqn=0..79,sum80
+TA*_PERF_SEL_VOL_2_CYCLE_PIXELS[0..39]
+eqn=0..39,sum40
 
 name=NoTexVolFilteringCount
 desc=#TextureUnit#Count of pixels that did not receive volume filtering.
@@ -1733,8 +1733,8 @@ eqn=0..15,sum16
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_VOL_1_CYCLE_PIXELS[0..79]
-eqn=0..79,sum80
+TA*_PERF_SEL_VOL_1_CYCLE_PIXELS[0..39]
+eqn=0..39,sum40
 
 name=TexAveAnisotropy
 desc=#TextureUnit#The average degree of anisotropy applied. A number between 1 and 16. The anisotropic filtering algorithm only applies samples where they are required (e.g. there will be no extra anisotropic samples if the view vector is perpendicular to the surface) so this can be much lower than the requested anisotropy.
@@ -1754,16 +1754,16 @@ eqn=0..15,sum16,(2),16..31,sum16,*,+,(4),32..47,sum16,*,+,(6),48..63,sum16,*,+,(
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_ANISO_1_CYCLE_QUADS[0..79]
-TA*_PERF_SEL_ANISO_2_CYCLE_QUADS[0..79]
-TA*_PERF_SEL_ANISO_4_CYCLE_QUADS[0..79]
-TA*_PERF_SEL_ANISO_6_CYCLE_QUADS[0..79]
-TA*_PERF_SEL_ANISO_8_CYCLE_QUADS[0..79]
-TA*_PERF_SEL_ANISO_10_CYCLE_QUADS[0..79]
-TA*_PERF_SEL_ANISO_12_CYCLE_QUADS[0..79]
-TA*_PERF_SEL_ANISO_14_CYCLE_QUADS[0..79]
-TA*_PERF_SEL_ANISO_16_CYCLE_QUADS[0..79]
-eqn=0..79,sum80,(2),80..159,sum80,*,+,(4),160..239,sum80,*,+,(6),240..319,sum80,*,+,(8),320..399,sum80,*,+,(10),400..479,sum80,*,+,(12),480..559,sum80,*,+,(14),560..639,sum80,*,+,(16),640..719,sum80,*,+,0..79,sum80,80..159,sum80,+,160..239,sum80,+,240..319,sum80,+,320..399,sum80,+,400..479,sum80,+,480..559,sum80,+,560..639,sum80,+,640..719,sum80,+,/
+TA*_PERF_SEL_ANISO_1_CYCLE_QUADS[0..39]
+TA*_PERF_SEL_ANISO_2_CYCLE_QUADS[0..39]
+TA*_PERF_SEL_ANISO_4_CYCLE_QUADS[0..39]
+TA*_PERF_SEL_ANISO_6_CYCLE_QUADS[0..39]
+TA*_PERF_SEL_ANISO_8_CYCLE_QUADS[0..39]
+TA*_PERF_SEL_ANISO_10_CYCLE_QUADS[0..39]
+TA*_PERF_SEL_ANISO_12_CYCLE_QUADS[0..39]
+TA*_PERF_SEL_ANISO_14_CYCLE_QUADS[0..39]
+TA*_PERF_SEL_ANISO_16_CYCLE_QUADS[0..39]
+eqn=0..39,sum40,(2),40..79,sum40,*,+,(4),80..119,sum40,*,+,(6),120..159,sum40,*,+,(8),160..199,sum40,*,+,(10),200..239,sum40,*,+,(12),240..279,sum40,*,+,(14),280..319,sum40,*,+,(16),320..359,sum40,*,+,0..39,sum40,40..79,sum40,+,80..119,sum40,+,120..159,sum40,+,160..199,sum40,+,200..239,sum40,+,240..279,sum40,+,280..319,sum40,+,320..359,sum40,+,/
 
 name=DepthStencilTestBusy
 desc=#Timing#Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy.
@@ -1892,15 +1892,15 @@ eqn=0..7,sum8,8..15,sum8,-,(0),max,0..7,sum8,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-PA_SC*_QZ0_QUAD_COUNT[0..3]
-PA_SC*_QZ1_QUAD_COUNT[0..3]
-PA_SC*_QZ2_QUAD_COUNT[0..3]
-PA_SC*_QZ3_QUAD_COUNT[0..3]
-PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=0..15,sum16,16..31,sum16,-,(0),max,0..15,sum16,/,(100),*
+PA_SC*_QZ0_QUAD_COUNT[0..7]
+PA_SC*_QZ1_QUAD_COUNT[0..7]
+PA_SC*_QZ2_QUAD_COUNT[0..7]
+PA_SC*_QZ3_QUAD_COUNT[0..7]
+PA_SC*_P0_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P1_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P2_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P3_HIZ_QUAD_COUNT[0..7]
+eqn=0..31,sum32,32..63,sum32,-,(0),max,0..31,sum32,/,(100),*
 
 name=HiZQuadsCulledCount
 desc=#DepthAndStencil#Count of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.
@@ -1919,15 +1919,15 @@ eqn=0..7,sum8,8..15,sum8,-,(0),max
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-PA_SC*_QZ0_QUAD_COUNT[0..3]
-PA_SC*_QZ1_QUAD_COUNT[0..3]
-PA_SC*_QZ2_QUAD_COUNT[0..3]
-PA_SC*_QZ3_QUAD_COUNT[0..3]
-PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=0..15,sum16,16..31,sum16,-,(0),max
+PA_SC*_QZ0_QUAD_COUNT[0..7]
+PA_SC*_QZ1_QUAD_COUNT[0..7]
+PA_SC*_QZ2_QUAD_COUNT[0..7]
+PA_SC*_QZ3_QUAD_COUNT[0..7]
+PA_SC*_P0_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P1_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P2_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P3_HIZ_QUAD_COUNT[0..7]
+eqn=0..31,sum32,32..63,sum32,-,(0),max
 
 name=HiZQuadsAcceptedCount
 desc=#DepthAndStencil#Count of quads that did continue on in the pipeline after HiZ.
@@ -1942,11 +1942,11 @@ eqn=0..7,sum8
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=0..15,sum16
+PA_SC*_P0_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P1_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P2_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P3_HIZ_QUAD_COUNT[0..7]
+eqn=0..31,sum32
 
 name=PreZQuadsCulled
 desc=#DepthAndStencil#Percentage of quads rejected based on the detailZ and earlyZ tests.
@@ -1966,16 +1966,16 @@ eqn=10..17,sum8,8,9,+,-,(0),max,0..7,sum8,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-PA_SC*_QZ0_QUAD_COUNT[0..3]
-PA_SC*_QZ1_QUAD_COUNT[0..3]
-PA_SC*_QZ2_QUAD_COUNT[0..3]
-PA_SC*_QZ3_QUAD_COUNT[0..3]
-PA_SC*_EARLYZ_QUAD_COUNT[0..3]
-PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=20..35,sum16,16..19,sum4,-,(0),max,0..15,sum16,/,(100),*
+PA_SC*_QZ0_QUAD_COUNT[0..7]
+PA_SC*_QZ1_QUAD_COUNT[0..7]
+PA_SC*_QZ2_QUAD_COUNT[0..7]
+PA_SC*_QZ3_QUAD_COUNT[0..7]
+PA_SC*_EARLYZ_QUAD_COUNT[0..7]
+PA_SC*_P0_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P1_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P2_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P3_HIZ_QUAD_COUNT[0..7]
+eqn=40..71,sum32,32..39,sum8,-,(0),max,0..31,sum32,/,(100),*
 
 name=PreZQuadsCulledCount
 desc=#DepthAndStencil#Count of quads rejected based on the detailZ and earlyZ tests.
@@ -1995,16 +1995,16 @@ eqn=0..7,sum8,8,9,+,-,10..17,sum8,-,(0),max
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-PA_SC*_QZ0_QUAD_COUNT[0..3]
-PA_SC*_QZ1_QUAD_COUNT[0..3]
-PA_SC*_QZ2_QUAD_COUNT[0..3]
-PA_SC*_QZ3_QUAD_COUNT[0..3]
-PA_SC*_EARLYZ_QUAD_COUNT[0..3]
-PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=0..15,sum16,16..19,sum4,-,20..35,sum16,-,(0),max
+PA_SC*_QZ0_QUAD_COUNT[0..7]
+PA_SC*_QZ1_QUAD_COUNT[0..7]
+PA_SC*_QZ2_QUAD_COUNT[0..7]
+PA_SC*_QZ3_QUAD_COUNT[0..7]
+PA_SC*_EARLYZ_QUAD_COUNT[0..7]
+PA_SC*_P0_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P1_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P2_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P3_HIZ_QUAD_COUNT[0..7]
+eqn=0..31,sum32,32..39,sum8,-,40..71,sum32,-,(0),max
 
 name=PreZQuadsSurvivingCount
 desc=#DepthAndStencil#Count of quads surviving detailZ and earlyZ tests.
@@ -2020,12 +2020,12 @@ eqn=2..9,sum8,0,1,+,-,(0),max
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-PA_SC*_EARLYZ_QUAD_COUNT[0..3]
-PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=4..19,sum16,0..3,sum4,-,(0),max
+PA_SC*_EARLYZ_QUAD_COUNT[0..7]
+PA_SC*_P0_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P1_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P2_HIZ_QUAD_COUNT[0..7]
+PA_SC*_P3_HIZ_QUAD_COUNT[0..7]
+eqn=8..39,sum32,0..7,sum8,-,(0),max
 
 name=PostZQuads
 desc=#DepthAndStencil#Percentage of quads for which the pixel shader will run and may be postZ tested.
@@ -2041,12 +2041,12 @@ eqn=0,1,+,2..9,sum8,/,(100),*,(100),min
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-PA_SC*_EARLYZ_QUAD_COUNT[0..3]
-PA_SC*_QZ0_QUAD_COUNT[0..3]
-PA_SC*_QZ1_QUAD_COUNT[0..3]
-PA_SC*_QZ2_QUAD_COUNT[0..3]
-PA_SC*_QZ3_QUAD_COUNT[0..3]
-eqn=0..3,sum4,4..19,sum16,/,(100),*
+PA_SC*_EARLYZ_QUAD_COUNT[0..7]
+PA_SC*_QZ0_QUAD_COUNT[0..7]
+PA_SC*_QZ1_QUAD_COUNT[0..7]
+PA_SC*_QZ2_QUAD_COUNT[0..7]
+PA_SC*_QZ3_QUAD_COUNT[0..7]
+eqn=0..7,sum8,8..39,sum32,/,(100),*
 
 name=PostZQuadCount
 desc=#DepthAndStencil#Count of quads for which the pixel shader will run and may be postZ tested.
@@ -2058,8 +2058,8 @@ eqn=0,1,+
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-PA_SC*_EARLYZ_QUAD_COUNT[0..3]
-eqn=0..3,sum4
+PA_SC*_EARLYZ_QUAD_COUNT[0..7]
+eqn=0..7,sum8
 
 name=PreZSamplesPassing
 desc=#DepthAndStencil#Number of samples tested for Z before shading and passed.
@@ -2308,8 +2308,18 @@ eqn=0..3,sum4
 CB*_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT[0..15]
 eqn=0..15,sum16
 
+; Cache counters
+;
+; L0 data (TCP) and L1 (GL1) provide only a requests and misses counter. Scalar and Instruction caches (SQC) and L2 (GL2C) all provide a requests,
+; hits, and misses counter. For L2CacheHit, we are intentionally using similar counters and formulas to those used in L0CacheHit and L1CacheHit.
+; By using the "MISS" counter in all cases, we 1) have a consistent formula between L0, L1 and L2 and 2) the scheduler will ensure all the L2Cache
+; hardware counters are in the same pass (this won't be guaranteed if L2CacheHit uses "HIT" and L2CacheMiss uses "MISS"). For InstCacheHit and
+; ScalarCacheHit, we use HITS, MISSES and MISSES_DUPLICATE, to calculate the number of requests. This is done to ensure that the number of requests
+; always equals the number of hits + misses. There are small variances in the data where sometimes the number of requests is slightly different
+; than the number of hits + misses. This is just "noise", but by using hits + misses, we ensure that the data always adds up.
+
 name=L0CacheHit
-desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the data in L0 cache. Value range: 0% (no hit) to 100% (optimal).
+desc=#MemoryCache#The percentage of read requests that hit the data in the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).
 type=gpa_float64
 usage=percentage
 [GLGfx10]
@@ -2319,12 +2329,25 @@ eqn=(0),(1),16..31,sum16,0..15,sum16,/,-,(100),*,0..15,sum16,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TCP*_PERF_SEL_REQ[0..79]
-TCP*_PERF_SEL_REQ_MISS[0..79]
-eqn=(0),(1),80..159,sum80,0..79,sum80,/,-,(100),*,0..79,sum80,ifnotzero
+TCP*_PERF_SEL_REQ[0..39]
+TCP*_PERF_SEL_REQ_MISS[0..39]
+eqn=(0),(1),40..79,sum40,0..39,sum40,/,-,(100),*,0..39,sum40,ifnotzero
+
+name=L0CacheRequestCount
+desc=#MemoryCache#The number of read requests made to the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.
+type=gpa_float64
+usage=items
+[GLGfx10]
+TCP*_PERF_SEL_REQ[0..15]
+eqn=0..15,sum16
+[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+TCP*_PERF_SEL_REQ[0..39]
+eqn=0..39,sum40
 
 name=L0CacheHitCount
-desc=#GlobalMemory#Count of fetch, write, atomic, and other instructions that hit the data in L0 cache.
+desc=#MemoryCache#The number of read requests which result in a cache hit from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.
 type=gpa_float64
 usage=items
 [GLGfx10]
@@ -2334,12 +2357,12 @@ eqn=0..15,sum16,16..31,sum16,-
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TCP*_PERF_SEL_REQ[0..79]
-TCP*_PERF_SEL_REQ_MISS[0..79]
-eqn=0..79,sum80,80..159,sum80,-
+TCP*_PERF_SEL_REQ[0..39]
+TCP*_PERF_SEL_REQ_MISS[0..39]
+eqn=0..39,sum40,40..79,sum40,-
 
 name=L0CacheMissCount
-desc=#GlobalMemory#Count of fetch, write, atomic, and other instructions that miss the data in L0 cache.
+desc=#MemoryCache#The number of read requests which result in a cache miss from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.
 type=gpa_float64
 usage=items
 [GLGfx10]
@@ -2348,11 +2371,135 @@ eqn=0..15,sum16
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TCP*_PERF_SEL_REQ_MISS[0..79]
-eqn=0..79,sum80
+TCP*_PERF_SEL_REQ_MISS[0..39]
+eqn=0..39,sum40
+
+name=ScalarCacheHit
+desc=#MemoryCache#The percentage of read requests made from executing shader code that hit the data in the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal).
+type=gpa_float64
+usage=percentage
+;[GLGfx10]
+;SQ_SQC_PERF_SEL_DCACHE_HITS
+;SQ_SQC_PERF_SEL_DCACHE_MISSES
+;SQ_SQC_PERF_SEL_DCACHE_MISSES_DUPLICATE
+;eqn=(0),0,0,1,+,2,+,/,(100),*,0,1,+,2,+,ifnotzero
+;[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+SQ*_SQC_PERF_SEL_DCACHE_HITS[0..1]
+SQ*_SQC_PERF_SEL_DCACHE_MISSES[0..1]
+SQ*_SQC_PERF_SEL_DCACHE_MISSES_DUPLICATE[0..1]
+eqn=(0),0..1,sum2,0..5,sum6,/,(100),*,0..5,sum6,ifnotzero
+
+name=ScalarCacheRequestCount
+desc=#MemoryCache#The number of read requests made from executing shader code to the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size.
+type=gpa_float64
+usage=items
+;[GLGfx10]
+;SQ_SQC_PERF_SEL_DCACHE_HITS
+;SQ_SQC_PERF_SEL_DCACHE_MISSES
+;SQ_SQC_PERF_SEL_DCACHE_MISSES_DUPLICATE
+;eqn=0,1,+,2,+
+;[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+SQ*_SQC_PERF_SEL_DCACHE_HITS[0..1]
+SQ*_SQC_PERF_SEL_DCACHE_MISSES[0..1]
+SQ*_SQC_PERF_SEL_DCACHE_MISSES_DUPLICATE[0..1]
+eqn=0..5,sum6
+
+name=ScalarCacheHitCount
+desc=#MemoryCache#The number of read requests made from executing shader code which result in a cache hit from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size.
+type=gpa_float64
+usage=items
+;[GLGfx10]
+;SQ_SQC_PERF_SEL_DCACHE_HITS
+;eqn=0
+;[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+SQ*_SQC_PERF_SEL_DCACHE_HITS[0..1]
+eqn=0..1,sum2
+
+name=ScalarCacheMissCount
+desc=#MemoryCache#The number of read requests made from executing shader code which result in a cache miss from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size.
+type=gpa_float64
+usage=items
+;[GLGfx10]
+;SQ_SQC_PERF_SEL_DCACHE_MISSES
+;SQ_SQC_PERF_SEL_DCACHE_MISSES_DUPLICATE
+;eqn=0,1,+
+;[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+SQ*_SQC_PERF_SEL_DCACHE_MISSES[0..1]
+SQ*_SQC_PERF_SEL_DCACHE_MISSES_DUPLICATE[0..1]
+eqn=0..3,sum4
+
+name=InstCacheHit
+desc=#MemoryCache#The percentage of read requests made that hit the data in the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal).
+type=gpa_float64
+usage=percentage
+;[GLGfx10]
+;SQ_SQC_PERF_SEL_ICACHE_HITS
+;SQ_SQC_PERF_SEL_ICACHE_MISSES
+;SQ_SQC_PERF_SEL_ICACHE_MISSES_DUPLICATE
+;eqn=(0),0,0,1,+,2,+,/,(100),*,0,1,+,2,+,ifnotzero
+;[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+SQ*_SQC_PERF_SEL_ICACHE_HITS[0..1]
+SQ*_SQC_PERF_SEL_ICACHE_MISSES[0..1]
+SQ*_SQC_PERF_SEL_ICACHE_MISSES_DUPLICATE[0..1]
+eqn=(0),0..1,sum2,0..5,sum6,/,(100),*,0..5,sum6,ifnotzero
+
+name=InstCacheRequestCount
+desc=#MemoryCache#The number of read requests made to the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size.
+type=gpa_float64
+usage=items
+;[GLGfx10]
+;SQ_SQC_PERF_SEL_ICACHE_HITS
+;SQ_SQC_PERF_SEL_ICACHE_MISSES
+;SQ_SQC_PERF_SEL_ICACHE_MISSES_DUPLICATE
+;eqn=0,1,+,2,+
+;[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+SQ*_SQC_PERF_SEL_ICACHE_HITS[0..1]
+SQ*_SQC_PERF_SEL_ICACHE_MISSES[0..1]
+SQ*_SQC_PERF_SEL_ICACHE_MISSES_DUPLICATE[0..1]
+eqn=0..5,sum6
+
+name=InstCacheHitCount
+desc=#MemoryCache#The number of read requests which result in a cache hit from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size.
+type=gpa_float64
+usage=items
+;[GLGfx10]
+;SQ_SQC_PERF_SEL_ICACHE_HITS
+;eqn=0
+;[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+SQ*_SQC_PERF_SEL_ICACHE_HITS[0..1]
+eqn=0..1,sum2
+
+name=InstCacheMissCount
+desc=#MemoryCache#The number of read requests which result in a cache miss from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size.
+type=gpa_float64
+usage=items
+;[GLGfx10]
+;SQ_SQC_PERF_SEL_ICACHE_MISSES
+;SQ_SQC_PERF_SEL_ICACHE_MISSES_DUPLICATE
+;eqn=0,1,+
+;[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+SQ*_SQC_PERF_SEL_ICACHE_MISSES[0..1]
+SQ*_SQC_PERF_SEL_ICACHE_MISSES_DUPLICATE[0..1]
+eqn=0..3,sum4
 
 name=L1CacheHit
-desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the data in L1 cache. Writes and atomics always miss this cache. Value range: 0% (no hit) to 100% (optimal).
+desc=#MemoryCache#The percentage of read or write requests that hit the data in the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).
 type=gpa_float64
 usage=percentage
 [GLGfx10]
@@ -2366,8 +2513,21 @@ GL1C*_PERF_SEL_REQ[0..15]
 GL1C*_PERF_SEL_REQ_MISS[0..15]
 eqn=(0),(1),16..31,sum16,0..15,sum16,/,-,(100),*,0..15,sum16,ifnotzero
 
+name=L1CacheRequestCount
+desc=#MemoryCache#The number of read or write requests made to the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.
+type=gpa_float64
+usage=items
+[GLGfx10]
+GL1C_PERF_SEL_REQ
+eqn=0
+[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+GL1C*_PERF_SEL_REQ[0..15]
+eqn=0..15,sum16
+
 name=L1CacheHitCount
-desc=#GlobalMemory#Count of fetch, write, atomic, and other instructions that hit the data in L1 cache. Writes and atomics always miss this cache.
+desc=#MemoryCache#The number of read or write requests which result in a cache hit from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.
 type=gpa_float64
 usage=items
 [GLGfx10]
@@ -2382,7 +2542,7 @@ GL1C*_PERF_SEL_REQ_MISS[0..15]
 eqn=0..15,sum16,16..31,sum16,-
 
 name=L1CacheMissCount
-desc=#GlobalMemory#Count of fetch, write, atomic, and other instructions that miss the data in L1 cache. Writes and atomics always miss this cache.
+desc=#MemoryCache#The number of read or write requests which result in a cache miss from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.
 type=gpa_float64
 usage=items
 [GLGfx10]
@@ -2394,83 +2554,89 @@ eqn=0
 GL1C*_PERF_SEL_REQ_MISS[0..15]
 eqn=0..15,sum16
 
-; Intentionally using similar counters and formulas to those used in L0CacheHit and L1CacheHit. GL2C does provide both both a "HIT" and a
-; "MISS" counter, so we could use those separately in L2CacheHit and L2CacheMiss. But by using the "MISS" counter in both cases, we 1) have
-; a consistent formula between L0, L1 and L2 and 2) the scheduler will ensure all the L2Cache counters are in the same pass (this won't be
-; guaranteed if L2CacheHit uses "HIT" and L2CacheMiss uses "MISS")
-
 name=L2CacheHit
-desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that hit the L2 cache. Value range: 0% (no hit) to 100% (optimal).
+desc=#MemoryCache#The percentage of read or write requests that hit the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).
 type=gpa_float64
 usage=percentage
-[GLGfx10]
+[GLGfx103]
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-GL2C*_PERF_SEL_REQ[0..23]
-GL2C*_PERF_SEL_MISS[0..23]
-eqn=(0),(1),24..47,sum24,0..23,sum24,/,-,(100),*,0..23,sum24,ifnotzero
+GL2C*_PERF_SEL_REQ[0..15]
+GL2C*_PERF_SEL_MISS[0..15]
+eqn=(0),(1),16..31,sum16,0..15,sum16,/,-,(100),*,0..15,sum16,ifnotzero
 
 name=L2CacheMiss
-desc=#GlobalMemory#The percentage of fetch, write, atomic, and other instructions that miss the L2 cache. Value range: 0% (optimal) to 100% (all miss).
+desc=#MemoryCache#The percentage of read or write requests that miss the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (optimal) to 100% (all miss).
 type=gpa_float64
 usage=percentage
 [GLGfx10]
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-GL2C*_PERF_SEL_MISS[0..23]
-GL2C*_PERF_SEL_REQ[0..23]
-eqn=0..23,sum24,24..47,sum24,/,(100),*
+GL2C*_PERF_SEL_MISS[0..15]
+GL2C*_PERF_SEL_REQ[0..15]
+eqn=0..15,sum16,16..31,sum16,/,(100),*
+
+name=L2CacheRequestCount
+desc=#MemoryCache#The number of read or write requests made to the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.
+type=gpa_float64
+usage=items
+[GLGfx10]
+[DX11Gfx10]
+[DX12Gfx10]
+[VKGfx10]
+GL2C*_PERF_SEL_REQ[0..15]
+eqn=0..15,sum16
 
 name=L2CacheHitCount
-desc=#GlobalMemory#Count of fetch, write, atomic, and other instructions that hit the L2 cache.
+desc=#MemoryCache#The number of read or write requests which result in a cache hit from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.
 type=gpa_float64
 usage=items
 [GLGfx10]
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-GL2C*_PERF_SEL_REQ[0..23]
-GL2C*_PERF_SEL_MISS[0..23]
-eqn=0..23,sum24,24..47,sum24,-
+GL2C*_PERF_SEL_REQ[0..15]
+GL2C*_PERF_SEL_MISS[0..15]
+eqn=0..15,sum16,16..31,sum16,-
 
 name=L2CacheMissCount
-desc=#GlobalMemory#Count of fetch, write, atomic, and other instructions that miss the L2 cache.
+desc=#MemoryCache#The number of read or write requests which result in a cache miss from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.
 type=gpa_float64
 usage=items
 [GLGfx10]
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-GL2C*_PERF_SEL_MISS[0..23]
-eqn=0..23,sum24
+GL2C*_PERF_SEL_MISS[0..15]
+eqn=0..15,sum16
 
 name=FetchSize
 desc=#GlobalMemory#The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
 type=gpa_float64
-usage=kilobytes
+usage=bytes
 [GLGfx10]
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-GL2C*_PERF_SEL_EA_RDREQ_32B[0..23]
-GL2C*_PERF_SEL_EA_RDREQ_64B[0..23]
-GL2C*_PERF_SEL_EA_RDREQ_96B[0..23]
-GL2C*_PERF_SEL_EA_RDREQ_128B[0..23]
-eqn=0..23,sum24,(32),*,24..47,sum24,(64),*,48..71,sum24,(96),*,72..95,sum24,(128),*,sum4
+GL2C*_PERF_SEL_EA_RDREQ_32B[0..15]
+GL2C*_PERF_SEL_EA_RDREQ_64B[0..15]
+GL2C*_PERF_SEL_EA_RDREQ_96B[0..15]
+GL2C*_PERF_SEL_EA_RDREQ_128B[0..15]
+eqn=0..15,sum16,(32),*,16..31,sum16,(64),*,32..47,sum16,(96),*,48..63,sum16,(128),*,sum4
 
 name=WriteSize
 desc=#GlobalMemory#The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
 type=gpa_float64
-usage=kilobytes
+usage=bytes
 [GLGfx10]
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-GL2C*_PERF_SEL_MC_WRREQ[0..23]
-GL2C*_PERF_SEL_EA_WRREQ_64B[0..23]
-eqn=0..23,sum24,24..47,sum24,-,(32),*,24..47,sum24,(64),*,+
+GL2C*_PERF_SEL_MC_WRREQ[0..15]
+GL2C*_PERF_SEL_EA_WRREQ_64B[0..15]
+eqn=0..15,sum16,16..31,sum16,-,(32),*,16..31,sum16,(64),*,+
 
 name=MemUnitBusy
 desc=#GlobalMemory#The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).
@@ -2483,9 +2649,9 @@ eqn=0..15,max16,16,/,NUM_SHADER_ARRAYS,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_TA_BUSY[0..79]
+TA*_PERF_SEL_TA_BUSY[0..39]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..79,max80,80,/,(100),*
+eqn=0..39,max40,40,/,(100),*
 
 name=MemUnitBusyCycles
 desc=#GlobalMemory#Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalledCycles). This is measured with all extra fetches and writes and any cache or memory effects taken into account.
@@ -2497,8 +2663,8 @@ eqn=0..15,max16
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TA*_PERF_SEL_TA_BUSY[0..79]
-eqn=0..79,max80
+TA*_PERF_SEL_TA_BUSY[0..39]
+eqn=0..39,max40
 
 name=MemUnitStalled
 desc=#GlobalMemory#The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).
@@ -2511,9 +2677,9 @@ eqn=0..15,max16,16,/,NUM_SHADER_ARRAYS,/,(100),*
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TCP*_PERF_SEL_TCP_TA_REQ_STALL[0..79]
+TCP*_PERF_SEL_TCP_TA_REQ_STALL[0..39]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..79,max80,80,/,(100),*
+eqn=0..39,max40,40,/,(100),*
 
 name=MemUnitStalledCycles
 desc=#GlobalMemory#Number of GPU cycles the memory unit is stalled.
@@ -2525,8 +2691,8 @@ eqn=0..9,max10
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-TCP*_PERF_SEL_TCP_TA_REQ_STALL[0..79]
-eqn=0..79,max80
+TCP*_PERF_SEL_TCP_TA_REQ_STALL[0..39]
+eqn=0..39,max40
 
 name=WriteUnitStalled
 desc=#GlobalMemory#The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).
@@ -2536,9 +2702,9 @@ usage=percentage
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-GL2C*_PERF_SEL_MC_WRREQ_STALL[0..23]
+GL2C*_PERF_SEL_MC_WRREQ_STALL[0..15]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..23,max24,24,/,(100),*
+eqn=0..15,max16,16,/,(100),*
 
 name=WriteUnitStalledCycles
 desc=#GlobalMemory#Number of GPU cycles the Write unit is stalled.
@@ -2548,8 +2714,8 @@ usage=cycles
 [DX11Gfx10]
 [DX12Gfx10]
 [VKGfx10]
-GL2C*_PERF_SEL_MC_WRREQ_STALL[0..23]
-eqn=0..23,max24
+GL2C*_PERF_SEL_MC_WRREQ_STALL[0..15]
+eqn=0..15,max16
 
 name=LocalVidMemBytes
 desc=#GlobalMemory#Number of bytes read from or written to local video memory

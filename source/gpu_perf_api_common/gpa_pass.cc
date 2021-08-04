@@ -1,176 +1,178 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GPA Pass Object Implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GPA Pass Object Implementation.
 //==============================================================================
 
-#include "gpa_pass.h"
-#include "gpa_command_list.h"
-#include "gpa_hardware_counters.h"
-#include "gpa_context_counter_mediator.h"
+#include "gpu_perf_api_common/gpa_pass.h"
 
-GPAPass::GPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters)
-    : m_pGpaSession(pGpaSession)
-    , m_uiPassIndex(passIndex)
-    , m_counterSource(counterSource)
-    , m_isResultCollected(false)
-    , m_isResultReady(false)
-    , m_isTimingPass(false)
-    , m_gpaInternalSampleCounter(0u)
-    , m_commandListCounter(0u)
-    , m_isAllSampleValidInPass(false)
-    , m_isPassComplete(false)
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+
+#include "gpu_perf_api_common/gpa_command_list.h"
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
+
+GpaPass::GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSource counter_source, CounterList* pass_counters)
+    : gpa_session_(gpa_session)
+    , pass_index_(pass_index)
+    , counter_source_(counter_source)
+    , is_result_collected_(false)
+    , is_result_ready_(false)
+    , is_timing_pass_(false)
+    , gpa_internal_sample_counter_(0U)
+    , command_list_counter_(0U)
+    , is_all_sample_valid_in_pass_(false)
+    , is_pass_complete_(false)
 {
-    m_pCounterList = pPassCounters;
+    counter_list_ = pass_counters;
 
-    if (nullptr != m_pCounterList && !m_pCounterList->empty())
+    if (nullptr != counter_list_ && !counter_list_->empty())
     {
-        const GPA_HardwareCounters* pHardwareCounters =
-            GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
+        const GpaHardwareCounters* hardware_counters =
+            GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
 
-        if (pHardwareCounters->IsTimeCounterIndex(m_pCounterList->at(0)))
+        if (hardware_counters->IsTimeCounterIndex(counter_list_->at(0)))
         {
-            m_isTimingPass = true;
+            is_timing_pass_ = true;
         }
     }
 }
 
-GPAPass::~GPAPass()
+GpaPass::~GpaPass()
 {
-    m_gpaCmdListMutex.lock();
+    gpa_cmd_list_mutex_.lock();
 
-    for (auto it = m_gpaCmdList.begin(); it != m_gpaCmdList.end(); ++it)
+    for (auto it = gpa_cmd_lists_.begin(); it != gpa_cmd_lists_.end(); ++it)
     {
         delete (*it);
     }
 
-    m_gpaCmdList.clear();
-    m_gpaCmdListMutex.unlock();
+    gpa_cmd_lists_.clear();
+    gpa_cmd_list_mutex_.unlock();
 
-    std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
+    std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
 
-    for (auto samplePair : m_samplesUnorderedMap)
+    for (auto sample_pair : samples_unordered_map_)
     {
-        GPASample* pSample = samplePair.second;
-        delete pSample;
+        GpaSample* sample = sample_pair.second;
+        delete sample;
     }
 
-    m_samplesUnorderedMap.clear();
+    samples_unordered_map_.clear();
 }
 
-GPACounterSource GPAPass::GetCounterSource() const
+GpaCounterSource GpaPass::GetCounterSource() const
 {
-    return m_counterSource;
+    return counter_source_;
 }
 
-GPASample* GPAPass::GetSampleById(ClientSampleId sampleId) const
+GpaSample* GpaPass::GetSampleById(ClientSampleId sample_id) const
 {
-    std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
+    std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
 
-    return GetSampleById_NotThreadSafe(sampleId);
+    return GetSampleByIdNotThreadSafe(sample_id);
 }
 
-GPASample* GPAPass::GetSampleById_NotThreadSafe(ClientSampleId sampleId) const
+GpaSample* GpaPass::GetSampleByIdNotThreadSafe(ClientSampleId client_sample_id) const
 {
-    GPASample* pRetVal = nullptr;
+    GpaSample* ret_val = nullptr;
 
-    if (m_samplesUnorderedMap.find(sampleId) != m_samplesUnorderedMap.end())
+    if (samples_unordered_map_.find(client_sample_id) != samples_unordered_map_.end())
     {
-        pRetVal = m_samplesUnorderedMap.at(sampleId);
+        ret_val = samples_unordered_map_.at(client_sample_id);
     }
 
-    return pRetVal;
+    return ret_val;
 }
 
-GPASample* GPAPass::CreateAndBeginSample(ClientSampleId clientSampleId, IGPACommandList* pCmdList)
+GpaSample* GpaPass::CreateAndBeginSample(ClientSampleId client_sample_id, IGpaCommandList* gpa_cmd_list)
 {
-    std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
+    std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
 
-    GPASample* pSample = nullptr;
+    GpaSample* sample = nullptr;
 
-    if (!DoesSampleExist_NotThreadSafe(clientSampleId))
+    if (!DoesSampleExistNotThreadSafe(client_sample_id))
     {
-        if (GPACounterSource::HARDWARE == m_counterSource)
+        if (GpaCounterSource::kHardware == counter_source_)
         {
-            pSample = CreateAPISpecificSample(pCmdList, GpaSampleType::Hardware, clientSampleId);
+            sample = CreateApiSpecificSample(gpa_cmd_list, GpaSampleType::kHardware, client_sample_id);
         }
-        else if (GPACounterSource::SOFTWARE == m_counterSource)
+        else if (GpaCounterSource::kSoftware == counter_source_)
         {
-            pSample = CreateAPISpecificSample(pCmdList, GpaSampleType::Software, clientSampleId);
+            sample = CreateApiSpecificSample(gpa_cmd_list, GpaSampleType::kSoftware, client_sample_id);
         }
 
-        if (nullptr != pSample)
+        if (nullptr != sample)
         {
-            if (!pCmdList->BeginSample(clientSampleId, pSample))
+            if (!gpa_cmd_list->BeginSample(client_sample_id, sample))
             {
-                GPA_LogError("Unable to begin sample in pass.");
-                delete pSample;
-                pSample = nullptr;
+                GPA_LOG_ERROR("Unable to begin sample in pass.");
+                delete sample;
+                sample = nullptr;
             }
             else
             {
-                m_samplesUnorderedMap.insert(std::pair<ClientSampleId, GPASample*>(clientSampleId, pSample));
+                samples_unordered_map_.insert(std::pair<ClientSampleId, GpaSample*>(client_sample_id, sample));
             }
         }
         else
         {
-            GPA_LogError("Unable to create sample.");
+            GPA_LOG_ERROR("Unable to create sample.");
         }
     }
     else
     {
-        GPA_LogError("Sample Id already exists.");
+        GPA_LOG_ERROR("Sample Id already exists.");
     }
 
-    return pSample;
+    return sample;
 }
 
-bool GPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrimaryGpaCmdList)
+bool GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* primary_gpa_cmd_list)
 {
-    std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
+    std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
 
-    // 1. Validate that sample already exists in the pass
-    // 2. Create a new sample on the cmd
-    // 3. Link the new GPA Sample to the old GPA Sample
-    // 4. Update the sample map
+    // 1. Validate that sample already exists in the pass.
+    // 2. Create a new sample on the cmd.
+    // 3. Link the new GPA Sample to the old GPA Sample.
+    // 4. Update the sample map.
 
     // In continuing a sample, we need to check only that the srcSampleId exists (it may not be closed at this point)
-    // and primary command list is not same as that of that of the srcSampleId
-    // Rather closing the sample over here, we will let the sample close upon closing the command list
-    // In this way, we need not to synchronize the samples on different command list (in multi-thread application they might be on different thread)
-    // We will mark the parent sample as to be continued by the client
+    // and primary command list is not same as that of that of the src_sample_id.
+    // Rather than closing the sample over here, we will let the sample close upon closing the command list.
+    // In this way, we do not need to synchronize the samples on different command list (in multi-thread application they might be on different thread).
+    // We will mark the parent sample as to be continued by the client.
 
     bool       success       = false;
-    GPASample* pParentSample = GetSampleById_NotThreadSafe(srcSampleId);
+    GpaSample* parent_sample = GetSampleByIdNotThreadSafe(src_sample_id);
 
-    if (nullptr != pParentSample)
+    if (nullptr != parent_sample)
     {
-        IGPACommandList* pParentSampleCmdList = pParentSample->GetCmdList();
+        IGpaCommandList* parent_sample_cmd_list = parent_sample->GetCmdList();
 
-        // Validate that both command list are different and passed command list is not secondary
-        if (nullptr != pParentSampleCmdList && nullptr != pPrimaryGpaCmdList && GPA_COMMAND_LIST_SECONDARY != pPrimaryGpaCmdList->GetCmdType() &&
-            pPrimaryGpaCmdList != pParentSampleCmdList)
+        // Validate that both command list are different and passed command list is not secondary.
+        if (nullptr != parent_sample_cmd_list && nullptr != primary_gpa_cmd_list && kGpaCommandListSecondary != primary_gpa_cmd_list->GetCmdType() &&
+            primary_gpa_cmd_list != parent_sample_cmd_list)
         {
-            if (nullptr != pParentSample && pPrimaryGpaCmdList->IsCommandListRunning() && pPrimaryGpaCmdList->IsLastSampleClosed())
+            if (nullptr != parent_sample && primary_gpa_cmd_list->IsCommandListRunning() && primary_gpa_cmd_list->IsLastSampleClosed())
             {
-                GpaSampleType sampleType = (GPACounterSource::HARDWARE == GetCounterSource()) ? GpaSampleType::Hardware : GpaSampleType::Software;
-                // We don't need to add this sample to the sample map as it will be linked to the parent sample
-                GPASample* pNewSample = CreateAPISpecificSample(pPrimaryGpaCmdList, sampleType, srcSampleId);
+                GpaSampleType sample_type = (GpaCounterSource::kHardware == GetCounterSource()) ? GpaSampleType::kHardware : GpaSampleType::kSoftware;
+                // We don't need to add this sample to the sample map as it will be linked to the parent sample.
+                GpaSample* new_sample = CreateApiSpecificSample(primary_gpa_cmd_list, sample_type, src_sample_id);
 
-                if (nullptr != pNewSample)
+                if (nullptr != new_sample)
                 {
-                    if (!pPrimaryGpaCmdList->BeginSample(srcSampleId, pNewSample))
+                    if (!primary_gpa_cmd_list->BeginSample(src_sample_id, new_sample))
                     {
-                        GPA_LogError("Unable to begin continued sample in pass.");
-                        delete pNewSample;
-                        pNewSample = nullptr;
+                        GPA_LOG_ERROR("Unable to begin continued sample in pass.");
+                        delete new_sample;
+                        new_sample = nullptr;
                     }
                     else
                     {
-                        pParentSample->SetAsContinuedByClient();
-                        // Link the sample to the parent sample
-                        pParentSample->LinkContinuingSample(pNewSample);
+                        parent_sample->SetAsContinuedByClient();
+                        // Link the sample to the parent sample.
+                        parent_sample->LinkContinuingSample(new_sample);
 
                         success = true;
                     }
@@ -178,135 +180,135 @@ bool GPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrima
             }
             else
             {
-                GPA_LogError(
+                GPA_LOG_ERROR(
                     "Unable to continue sample: Either the specified command list has already been closed or the previous sample has not been closed.");
             }
         }
         else
         {
-            GPA_LogError(
+            GPA_LOG_ERROR(
                 "Unable to continue sample: The specified command list must be a secondary command list and it must be different than the parent sample's "
                 "command list.");
         }
     }
     else
     {
-        GPA_LogError("Unable to continue sample: The specified sample id was not found in this pass.");
+        GPA_LOG_ERROR("Unable to continue sample: The specified sample id was not found in this pass.");
     }
 
     return success;
 }
 
-IGPACommandList* GPAPass::CreateCommandList(void* pCmd, GPA_Command_List_Type cmdType)
+IGpaCommandList* GpaPass::CreateCommandList(void* cmd_list, GpaCommandListType cmd_type)
 {
-    IGPACommandList* pRetCmdList = CreateAPISpecificCommandList(pCmd, m_commandListCounter, cmdType);
-    m_commandListCounter++;
+    IGpaCommandList* ret_cmd_list = CreateApiSpecificCommandList(cmd_list, command_list_counter_, cmd_type);
+    command_list_counter_++;
 
-    if (nullptr != pRetCmdList)
+    if (nullptr != ret_cmd_list)
     {
-        AddCommandList(pRetCmdList);
+        AddCommandList(ret_cmd_list);
     }
 
-    return pRetCmdList;
+    return ret_cmd_list;
 }
 
-SampleCount GPAPass::GetSampleCount() const
+SampleCount GpaPass::GetSampleCount() const
 {
-    std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
-    return static_cast<SampleCount>(m_samplesUnorderedMap.size());
+    std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
+    return static_cast<SampleCount>(samples_unordered_map_.size());
 }
 
-bool GPAPass::GetSampleIdByIndex(SampleIndex sampleIndex, ClientSampleId& clientSampleId) const
+bool GpaPass::GetSampleIdByIndex(SampleIndex sample_index, ClientSampleId& client_sample_id) const
 {
-    std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
-    bool                        found = m_clientGpaSamplesMap.find(sampleIndex) != m_clientGpaSamplesMap.end();
+    std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
+    bool                        found = client_gpa_samples_map_.find(sample_index) != client_gpa_samples_map_.end();
 
     if (found)
     {
-        clientSampleId = m_clientGpaSamplesMap.at(sampleIndex);
+        client_sample_id = client_gpa_samples_map_.at(sample_index);
     }
 
     return found;
 }
 
-bool GPAPass::IsAllSampleValidInPass() const
+bool GpaPass::IsAllSampleValidInPass() const
 {
-    if (!m_isAllSampleValidInPass)
+    if (!is_all_sample_valid_in_pass_)
     {
         bool                        success = true;
-        std::lock_guard<std::mutex> lockSamples(m_samplesUnorderedMapMutex);
+        std::lock_guard<std::mutex> lock_samples(samples_unordered_map_mutex_);
 
-        for (auto sampleIter = m_samplesUnorderedMap.cbegin(); sampleIter != m_samplesUnorderedMap.cend(); ++sampleIter)
+        for (auto sample_iter = samples_unordered_map_.cbegin(); sample_iter != samples_unordered_map_.cend(); ++sample_iter)
         {
-            success &= sampleIter->second->IsSampleValid();
+            success &= sample_iter->second->IsSampleValid();
         }
 
         if (success)
         {
-            m_isAllSampleValidInPass = true;
+            is_all_sample_valid_in_pass_ = true;
         }
     }
 
-    return m_isAllSampleValidInPass;
+    return is_all_sample_valid_in_pass_;
 }
 
-CounterCount GPAPass::GetEnabledCounterCount() const
+CounterCount GpaPass::GetEnabledCounterCount() const
 {
-    return static_cast<unsigned int>(m_usedCounterListForPass.size());
+    return static_cast<unsigned int>(used_counter_list_for_pass_.size());
 }
 
-CounterCount GPAPass::GetSkippedCounterCount() const
+CounterCount GpaPass::GetSkippedCounterCount() const
 {
-    return static_cast<unsigned int>(m_skippedCounterList.size());
+    return static_cast<unsigned int>(skipped_counter_list_.size());
 }
 
-PassIndex GPAPass::GetIndex() const
+PassIndex GpaPass::GetIndex() const
 {
-    return m_uiPassIndex;
+    return pass_index_;
 }
 
-bool GPAPass::IsTimingPass() const
+bool GpaPass::IsTimingPass() const
 {
-    return m_isTimingPass;
+    return is_timing_pass_;
 }
 
-bool GPAPass::UpdateResults()
+bool GpaPass::UpdateResults()
 {
-    std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
+    std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
 
-    if (!m_isResultCollected)
+    if (!is_result_collected_)
     {
-        bool tmpAllResultsCollected = true;
+        bool tmp_all_results_collected = true;
 
-        for (auto sampleIter = m_samplesUnorderedMap.begin(); sampleIter != m_samplesUnorderedMap.end(); ++sampleIter)
+        for (auto sampleIter = samples_unordered_map_.begin(); sampleIter != samples_unordered_map_.end(); ++sampleIter)
         {
-            tmpAllResultsCollected &= sampleIter->second->UpdateResults();
+            tmp_all_results_collected &= sampleIter->second->UpdateResults();
         }
 
-        m_isResultCollected = tmpAllResultsCollected;
+        is_result_collected_ = tmp_all_results_collected;
     }
 
-    return m_isResultCollected;
+    return is_result_collected_;
 }
 
-GPA_Status GPAPass::IsComplete() const
+GpaStatus GpaPass::IsComplete() const
 {
-    GPA_Status retStatus = GPA_STATUS_OK;
+    GpaStatus ret_status = kGpaStatusOk;
 
-    std::lock_guard<std::mutex> lockCmdList(m_gpaCmdListMutex);
+    std::lock_guard<std::mutex> lock_cmd_list(gpa_cmd_list_mutex_);
 
-    if (!m_isPassComplete)
+    if (!is_pass_complete_)
     {
         bool completed = true;
 
-        for (auto cmdIter = m_gpaCmdList.cbegin(); cmdIter != m_gpaCmdList.cend() && completed; ++cmdIter)
+        for (auto cmd_iter = gpa_cmd_lists_.cbegin(); cmd_iter != gpa_cmd_lists_.cend() && completed; ++cmd_iter)
         {
-            completed = !(*cmdIter)->IsCommandListRunning();
+            completed = !(*cmd_iter)->IsCommandListRunning();
         }
 
         if (!completed)
         {
-            retStatus = GPA_STATUS_ERROR_COMMAND_LIST_NOT_ENDED;
+            ret_status = kGpaStatusErrorCommandListNotEnded;
         }
         else
         {
@@ -314,94 +316,94 @@ GPA_Status GPAPass::IsComplete() const
 
             if (!completed)
             {
-                retStatus = GPA_STATUS_ERROR_SAMPLE_NOT_ENDED;
+                ret_status = kGpaStatusErrorSampleNotEnded;
             }
             else
             {
-                m_isPassComplete = true;
+                is_pass_complete_ = true;
             }
         }
     }
 
-    return retStatus;
+    return ret_status;
 }
 
-bool GPAPass::IsResultReady() const
+bool GpaPass::IsResultReady() const
 {
-    std::lock_guard<std::mutex> lockCmdList(m_gpaCmdListMutex);
-    bool                        isReady = m_isResultReady;
+    std::lock_guard<std::mutex> lock_cmd_list(gpa_cmd_list_mutex_);
+    bool                        is_ready = is_result_ready_;
 
-    if (!isReady)
+    if (!is_ready)
     {
-        isReady = true;
+        is_ready = true;
 
-        for (auto cmdIter = m_gpaCmdList.cbegin(); cmdIter != m_gpaCmdList.cend() && isReady; ++cmdIter)
+        for (auto cmdIter = gpa_cmd_lists_.cbegin(); cmdIter != gpa_cmd_lists_.cend() && is_ready; ++cmdIter)
         {
-            isReady &= (*cmdIter)->IsResultReady();
+            is_ready &= (*cmdIter)->IsResultReady();
         }
 
-        if (isReady)
+        if (is_ready)
         {
-            m_isResultReady = true;
+            is_result_ready_ = true;
         }
     }
 
-    return isReady;
+    return is_ready;
 }
 
-bool GPAPass::IsResultCollected() const
+bool GpaPass::IsResultCollected() const
 {
-    return m_isResultCollected;
+    return is_result_collected_;
 }
 
-GPA_Status GPAPass::GetResult(ClientSampleId clientSampleId, CounterIndex internalCounterIndex, gpa_uint64* pResultBuffer) const
+GpaStatus GpaPass::GetResult(ClientSampleId client_sample_id, CounterIndex internal_counter_index, GpaUInt64* result_buffer) const
 {
-    *pResultBuffer = 0;
+    *result_buffer = 0;
 
-    std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
+    std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
 
-    GPA_Status                 status     = GPA_STATUS_OK;
-    SamplesMap::const_iterator sampleIter = m_samplesUnorderedMap.find(clientSampleId);
+    GpaStatus                  status      = kGpaStatusOk;
+    SamplesMap::const_iterator sample_iter = samples_unordered_map_.find(client_sample_id);
 
-    if (sampleIter == m_samplesUnorderedMap.cend())
+    if (sample_iter == samples_unordered_map_.cend())
     {
-        GPA_LogError("Invalid SampleId supplied while getting pass results.");
-        status = GPA_STATUS_ERROR_INVALID_PARAMETER;
+        GPA_LOG_ERROR("Invalid SampleId supplied while getting pass results.");
+        status = kGpaStatusErrorInvalidParameter;
     }
     else
     {
-        CounterIndex counterIndexWithinSample;
+        CounterIndex counter_index_within_sample;
 
-        if (GetCounterIndexInPass(internalCounterIndex, &counterIndexWithinSample))
+        if (GetCounterIndexInPass(internal_counter_index, &counter_index_within_sample))
         {
-            if (!sampleIter->second->GetResult(counterIndexWithinSample, pResultBuffer))
+            if (!sample_iter->second->GetResult(counter_index_within_sample, result_buffer))
             {
-                GPA_LogError("Failed to get counter result within pass.");
-                status = GPA_STATUS_ERROR_FAILED;
+                GPA_LOG_ERROR("Failed to get counter result within pass.");
+                status = kGpaStatusErrorFailed;
             }
         }
-        else if (m_skippedCounterList.find(internalCounterIndex) == m_skippedCounterList.end())
+        else if (skipped_counter_list_.find(internal_counter_index) == skipped_counter_list_.end())
         {
-            // we didn't skip the counter, so we wrongly think it was in this pass.
-            GPA_LogError("Failed to find internal counter index within pass counters.");
-            status = GPA_STATUS_ERROR_INVALID_PARAMETER;
+            // We didn't skip the counter, so we wrongly think it was in this pass.
+            GPA_LOG_ERROR("Failed to find internal counter index within pass counters.");
+            status = kGpaStatusErrorInvalidParameter;
         }
     }
 
     return status;
 }
 
-bool GPAPass::DoesSampleExist(ClientSampleId clientSampleId) const
+bool GpaPass::DoesSampleExist(ClientSampleId client_sample_id) const
 {
-    std::lock_guard<std::mutex> lock(m_samplesUnorderedMapMutex);
-    return DoesSampleExist_NotThreadSafe(clientSampleId);
+    std::lock_guard<std::mutex> lock(samples_unordered_map_mutex_);
+    return DoesSampleExistNotThreadSafe(client_sample_id);
 }
 
-bool GPAPass::DoesSampleExist_NotThreadSafe(ClientSampleId clientSampleId) const
+bool GpaPass::DoesSampleExistNotThreadSafe(ClientSampleId client_sample_id) const
 {
     bool exists = false;
 
-    if (m_samplesUnorderedMap.find(clientSampleId) != m_samplesUnorderedMap.end())
+    if (samples_unordered_map_.find(client_sample_id) != samples_unordered_map_.end())
     {
         exists = true;
     }
@@ -409,15 +411,15 @@ bool GPAPass::DoesSampleExist_NotThreadSafe(ClientSampleId clientSampleId) const
     return exists;
 }
 
-bool GPAPass::DoesCommandListExist(IGPACommandList* pGpaCommandList) const
+bool GpaPass::DoesCommandListExist(IGpaCommandList* gpa_cmd_list) const
 {
     bool exists = false;
 
-    std::lock_guard<std::mutex> lock(m_gpaCmdListMutex);
+    std::lock_guard<std::mutex> lock(gpa_cmd_list_mutex_);
 
-    for (auto cIter = m_gpaCmdList.cbegin(); !exists && cIter != m_gpaCmdList.cend(); ++cIter)
+    for (auto const_iter = gpa_cmd_lists_.cbegin(); !exists && const_iter != gpa_cmd_lists_.cend(); ++const_iter)
     {
-        if (*cIter == pGpaCommandList)
+        if (*const_iter == gpa_cmd_list)
         {
             exists = true;
         }
@@ -426,54 +428,54 @@ bool GPAPass::DoesCommandListExist(IGPACommandList* pGpaCommandList) const
     return exists;
 }
 
-const GPACommandLists& GPAPass::GetCmdList() const
+const GpaCommandLists& GpaPass::GetCmdList() const
 {
-    return m_gpaCmdList;
+    return gpa_cmd_lists_;
 }
 
-void GPAPass::EnableCounterForPass(const CounterIndex& counterIndex)
+void GpaPass::EnableCounterForPass(const CounterIndex& counter_index)
 {
-    std::lock_guard<std::mutex> lockPass(m_counterListMutex);
-    m_usedCounterListForPass.push_back(counterIndex);
+    std::lock_guard<std::mutex> lock_pass(counter_list_mutex_);
+    used_counter_list_for_pass_.push_back(counter_index);
 }
 
-void GPAPass::DisableCounterForPass(const CounterIndex& counterIndex)
+void GpaPass::DisableCounterForPass(const CounterIndex& counter_index)
 {
-    std::lock_guard<std::mutex> lockPass(m_counterListMutex);
-    m_skippedCounterList.insert(counterIndex);
+    std::lock_guard<std::mutex> lock_pass(counter_list_mutex_);
+    skipped_counter_list_.insert(counter_index);
 }
 
-void GPAPass::EnableAllCountersForPass()
+void GpaPass::EnableAllCountersForPass()
 {
-    std::lock_guard<std::mutex> lockPass(m_counterListMutex);
-    m_usedCounterListForPass = *m_pCounterList;
-    m_skippedCounterList.clear();
+    std::lock_guard<std::mutex> lock_pass(counter_list_mutex_);
+    used_counter_list_for_pass_ = *counter_list_;
+    skipped_counter_list_.clear();
 }
 
-void GPAPass::DisableAllCountersForPass()
+void GpaPass::DisableAllCountersForPass()
 {
-    std::lock_guard<std::mutex> lockPass(m_counterListMutex);
-    m_skippedCounterList.clear();
-    m_skippedCounterList.insert(m_pCounterList->begin(), m_pCounterList->end());
-    m_usedCounterListForPass.clear();
+    std::lock_guard<std::mutex> lock_pass(counter_list_mutex_);
+    skipped_counter_list_.clear();
+    skipped_counter_list_.insert(counter_list_->begin(), counter_list_->end());
+    used_counter_list_for_pass_.clear();
 }
 
-CounterCount GPAPass::GetNumEnabledCountersForPass() const
+CounterCount GpaPass::GetNumEnabledCountersForPass() const
 {
-    std::lock_guard<std::mutex> lockPass(m_counterListMutex);
-    return static_cast<CounterCount>(m_pCounterList->size() - m_skippedCounterList.size());
+    std::lock_guard<std::mutex> lock_pass(counter_list_mutex_);
+    return static_cast<CounterCount>(counter_list_->size() - skipped_counter_list_.size());
 }
 
-bool GPAPass::GetCounterIndexInPass(CounterIndex internalCounterIndex, CounterIndex* pCounterIndexInPassList) const
+bool GpaPass::GetCounterIndexInPass(CounterIndex internal_counter_index, CounterIndex* counter_indices_in_pass) const
 {
     bool found = false;
-    if (!m_usedCounterListForPass.empty())
+    if (!used_counter_list_for_pass_.empty())
     {
-        CounterList::const_iterator iter = std::find(m_usedCounterListForPass.begin(), m_usedCounterListForPass.end(), internalCounterIndex);
+        CounterList::const_iterator iter = std::find(used_counter_list_for_pass_.begin(), used_counter_list_for_pass_.end(), internal_counter_index);
 
-        if (m_usedCounterListForPass.end() != iter)
+        if (used_counter_list_for_pass_.end() != iter)
         {
-            *pCounterIndexInPassList = static_cast<CounterIndex>(iter - m_usedCounterListForPass.begin());
+            *counter_indices_in_pass = static_cast<CounterIndex>(iter - used_counter_list_for_pass_.begin());
             found                    = true;
         }
     }
@@ -481,122 +483,123 @@ bool GPAPass::GetCounterIndexInPass(CounterIndex internalCounterIndex, CounterIn
     return found;
 }
 
-bool GPAPass::GetCounterByIndexInPass(CounterIndex counterIndexInPass, CounterIndex* pInternalCounterIndex) const
+bool GpaPass::GetCounterByIndexInPass(CounterIndex counter_index_in_pass, CounterIndex* internal_counter_index) const
 {
-    if (!pInternalCounterIndex)
+    if (!internal_counter_index)
     {
         assert(0);
         return false;
     }
-    bool found = counterIndexInPass < m_usedCounterListForPass.size();
 
-    *pInternalCounterIndex = static_cast<CounterIndex>(-1);
+    bool found              = counter_index_in_pass < used_counter_list_for_pass_.size();
+    *internal_counter_index = static_cast<CounterIndex>(-1);
+
     if (found)
     {
-        *pInternalCounterIndex = m_usedCounterListForPass[counterIndexInPass];
+        *internal_counter_index = used_counter_list_for_pass_[counter_index_in_pass];
     }
 
     return found;
 }
 
-bool GPAPass::IsResultsCollectedFromDriver() const
+bool GpaPass::IsResultsCollectedFromDriver() const
 {
-    return m_isResultCollected;
+    return is_result_collected_;
 }
 
-const IGPACounterAccessor* GPAPass::GetSessionContextCounterAccessor() const
+const IGpaCounterAccessor* GpaPass::GetSessionContextCounterAccessor() const
 {
-    return GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
+    return GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
 }
 
-void GPAPass::AddCommandList(IGPACommandList* pGPACommandList)
+void GpaPass::AddCommandList(IGpaCommandList* gpa_command_list)
 {
-    std::lock_guard<std::mutex> lockCmdList(m_gpaCmdListMutex);
-    m_gpaCmdList.push_back(pGPACommandList);
+    std::lock_guard<std::mutex> lock_cmd_list(gpa_cmd_list_mutex_);
+    gpa_cmd_lists_.push_back(gpa_command_list);
 }
 
-void GPAPass::LockCommandListMutex() const
+void GpaPass::LockCommandListMutex() const
 {
-    m_gpaCmdListMutex.lock();
+    gpa_cmd_list_mutex_.lock();
 }
 
-void GPAPass::UnlockCommandListMutex() const
+void GpaPass::UnlockCommandListMutex() const
 {
-    m_gpaCmdListMutex.unlock();
+    gpa_cmd_list_mutex_.unlock();
 }
 
-void GPAPass::AddClientSample(ClientSampleId sampleId, GPASample* pGPASample)
+void GpaPass::AddClientSample(ClientSampleId sample_id, GpaSample* gpa_sample)
 {
-    m_samplesUnorderedMapMutex.lock();
-    m_samplesUnorderedMap.insert(std::pair<ClientSampleId, GPASample*>(sampleId, pGPASample));
-    unsigned int internalSampleId = m_gpaInternalSampleCounter.fetch_add(1);
-    m_clientGpaSamplesMap.insert(std::pair<unsigned int, unsigned int>(internalSampleId, sampleId));
-    m_samplesUnorderedMapMutex.unlock();
+    samples_unordered_map_mutex_.lock();
+    samples_unordered_map_.insert(std::pair<ClientSampleId, GpaSample*>(sample_id, gpa_sample));
+    unsigned int internal_sample_id = gpa_internal_sample_counter_.fetch_add(1);
+    client_gpa_samples_map_.insert(std::pair<unsigned int, unsigned int>(internal_sample_id, sample_id));
+    samples_unordered_map_mutex_.unlock();
 }
 
-void GPAPass::IteratePassCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const
+void GpaPass::IteratePassCounterList(std::function<bool(const CounterIndex& counter_index)> function) const
 {
     bool next = true;
 
-    for (auto it = (*m_pCounterList).cbegin(); it != (*m_pCounterList).cend() && next; ++it)
+    for (auto it = (*counter_list_).cbegin(); it != (*counter_list_).cend() && next; ++it)
     {
         next = function(*it);
     }
 }
 
-void GPAPass::IterateEnabledCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const
+void GpaPass::IterateEnabledCounterList(std::function<bool(const CounterIndex& counter_index)> function) const
 {
     bool next = true;
 
-    for (auto it = m_usedCounterListForPass.cbegin(); it != m_usedCounterListForPass.cend() && next; ++it)
+    for (auto it = used_counter_list_for_pass_.cbegin(); it != used_counter_list_for_pass_.cend() && next; ++it)
     {
         next = function(*it);
     }
 }
 
-void GPAPass::IterateSkippedCounterList(std::function<bool(const CounterIndex& counterIndex)> function) const
+void GpaPass::IterateSkippedCounterList(std::function<bool(const CounterIndex& counter_index)> function) const
 {
     bool next = true;
 
-    for (auto it = m_skippedCounterList.cbegin(); it != m_skippedCounterList.cend() && next; ++it)
+    for (auto it = skipped_counter_list_.cbegin(); it != skipped_counter_list_.cend() && next; ++it)
     {
         next = function(*it);
     }
 }
 
-gpa_uint32 GPAPass::GetBottomToBottomTimingDurationCounterIndex() const
+GpaUInt32 GpaPass::GetBottomToBottomTimingDurationCounterIndex() const
 {
-    const GPA_HardwareCounters* pHardwareCounters =
-        GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
+    const GpaHardwareCounters* hardware_counters =
+        GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
 
-    for (gpa_uint32 i = 0; i < static_cast<gpa_uint32>(m_pCounterList->size()); i++)
+    for (GpaUInt32 i = 0; i < static_cast<GpaUInt32>(counter_list_->size()); i++)
     {
-        if ((*m_pCounterList)[i] == pHardwareCounters->m_gpuTimeBottomToBottomDurationCounterIndex)
+        if ((*counter_list_)[i] == hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_)
         {
             return i;
         }
     }
 
-    return static_cast<gpa_uint32>(-1);
+    return static_cast<GpaUInt32>(-1);
 }
 
-gpa_uint32 GPAPass::GetTopToBottomTimingDurationCounterIndex() const
+GpaUInt32 GpaPass::GetTopToBottomTimingDurationCounterIndex() const
 {
-    const GPA_HardwareCounters* pHardwareCounters =
-        GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
+    const GpaHardwareCounters* hardware_counters =
+        GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
 
-    for (gpa_uint32 i = 0; i < static_cast<gpa_uint32>(m_pCounterList->size()); i++)
+    for (GpaUInt32 i = 0; i < static_cast<GpaUInt32>(counter_list_->size()); i++)
     {
-        if ((*m_pCounterList)[i] == pHardwareCounters->m_gpuTimeTopToBottomDurationCounterIndex)
+        if ((*counter_list_)[i] == hardware_counters->gpu_time_top_to_bottom_duration_counter_index_)
         {
             return i;
         }
     }
 
-    return static_cast<gpa_uint32>(-1);
+    return static_cast<GpaUInt32>(-1);
 }
 
-IGPASession* GPAPass::GetGpaSession() const
+IGpaSession* GpaPass::GetGpaSession() const
 {
-    return m_pGpaSession;
+    return gpa_session_;
 }

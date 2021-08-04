@@ -1,8 +1,8 @@
 //==============================================================================
 // Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief CL GPA Implementation
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief CL GPA Implementation
 //==============================================================================
 
 #include <assert.h>
@@ -21,262 +21,262 @@
 #include "gpa_counter_generator_cl.h"
 #include "gpa_counter_scheduler_cl.h"
 
-IGPAImplementor* s_pGpaImp = CLGPAImplementor::Instance();
-static GPA_CounterGeneratorCL s_generatorCL;  ///< static instance of CL generator
-static GPA_CounterSchedulerCL s_schedulerCL;  ///< static instance of CL scheduler
+IGpaImplementor*             gpa_imp = ClGpaImplementor::Instance();
+static GpaCounterGeneratorCl counter_generator_cl;  ///< static instance of CL generator
+static GpaCounterSchedulerCl counter_scheduler_cl;  ///< static instance of CL scheduler
 
-GPA_API_Type CLGPAImplementor::GetAPIType() const
+GpaApiType ClGpaImplementor::GetApiType() const
 {
-    return GPA_API_OPENCL;
+    return kGpaApiOpencl;
 }
 
-bool CLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const
+bool ClGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const
 {
-    bool isSuccess = true;
+    bool is_success = true;
 
-    OpenCLModule* pOclModule = OCLRTModuleLoader::Instance()->GetAPIRTModule();
+    OpenCLModule* ocl_module = ClRuntimeModuleLoader::Instance()->GetApiRuntimeModule();
 
-    if (nullptr == pOclModule)
+    if (nullptr == ocl_module)
     {
-        GPA_LogError("OpenCL runtime module is NULL.");
-        isSuccess = false;
+        GPA_LOG_ERROR("OpenCL runtime module is NULL.");
+        is_success = false;
     }
     else
     {
-        cl_command_queue cmdQueue = static_cast<cl_command_queue>(pContextInfo);
+        cl_command_queue cmd_queue = static_cast<cl_command_queue>(context_info);
 
         cl_device_id device;
 
         // get device from the command queue
-        if (CL_SUCCESS != pOclModule->GetCommandQueueInfo(cmdQueue, CL_QUEUE_DEVICE, sizeof(cl_device_id), &device, nullptr))
+        if (CL_SUCCESS != ocl_module->GetCommandQueueInfo(cmd_queue, CL_QUEUE_DEVICE, sizeof(cl_device_id), &device, nullptr))
         {
-            GPA_LogError("Unable to get device from command queue.");
-            isSuccess = false;
+            GPA_LOG_ERROR("Unable to get device from command queue.");
+            is_success = false;
         }
         else
         {
-            cl_device_type deviceType;
+            cl_device_type device_type;
 
-            if (CL_SUCCESS != pOclModule->GetDeviceInfo(device, CL_DEVICE_TYPE, sizeof(cl_device_type), &deviceType, nullptr) ||
-                CL_DEVICE_TYPE_GPU != deviceType)
+            if (CL_SUCCESS != ocl_module->GetDeviceInfo(device, CL_DEVICE_TYPE, sizeof(cl_device_type), &device_type, nullptr) ||
+                CL_DEVICE_TYPE_GPU != device_type)
             {
-                GPA_LogError("Unable to get device info or the device is not a GPU device.");
-                isSuccess = false;
+                GPA_LOG_ERROR("Unable to get device info or the device is not a GPU device.");
+                is_success = false;
             }
             else
             {
-                size_t      deviceNameSize = 0;
-                std::string deviceNameStr;
+                size_t      device_name_size = 0;
+                std::string device_name_str;
 
-                bool deviceNameValid = CL_SUCCESS == pOclModule->GetDeviceInfo(device, CL_DEVICE_NAME, 0, nullptr, &deviceNameSize);
+                bool device_name_valid = CL_SUCCESS == ocl_module->GetDeviceInfo(device, CL_DEVICE_NAME, 0, nullptr, &device_name_size);
 
-                if (!deviceNameValid)
+                if (!device_name_valid)
                 {
-                    GPA_LogError("Unable to get device name.");
-                    isSuccess = false;
+                    GPA_LOG_ERROR("Unable to get device name.");
+                    is_success = false;
                 }
                 else
                 {
-                    char* pDeviceName = new char[deviceNameSize];
+                    char* device_name = new char[device_name_size];
 
-                    if (nullptr == pDeviceName)
+                    if (nullptr == device_name)
                     {
-                        GPA_LogError("Unable to allocate memory for the device name.");
+                        GPA_LOG_ERROR("Unable to allocate memory for the device name.");
                         return false;
                     }
 
-                    deviceNameValid = CL_SUCCESS == pOclModule->GetDeviceInfo(device, CL_DEVICE_NAME, deviceNameSize, pDeviceName, &deviceNameSize);
+                    device_name_valid = CL_SUCCESS == ocl_module->GetDeviceInfo(device, CL_DEVICE_NAME, device_name_size, device_name, &device_name_size);
 
-                    if (!deviceNameValid)
+                    if (!device_name_valid)
                     {
-                        GPA_LogError("Unable to get device name.");
-                        isSuccess = false;
+                        GPA_LOG_ERROR("Unable to get device name.");
+                        is_success = false;
                     }
                     else
                     {
-                        deviceNameStr.assign(pDeviceName);
+                        device_name_str.assign(device_name);
                     }
 
-                    delete[] pDeviceName;
+                    delete[] device_name;
 
-                    if (deviceNameValid)
+                    if (device_name_valid)
                     {
                         std::stringstream message;
-                        message << "Device name from Queue: " << deviceNameStr << ".";
-                        GPA_LogDebugMessage(message.str().c_str());
+                        message << "Device name from Queue: " << device_name_str << ".";
+                        GPA_LOG_DEBUG_MESSAGE(message.str().c_str());
 
-                        bool        boardNameValid = CL_SUCCESS == pOclModule->GetDeviceInfo(device, CL_DEVICE_BOARD_NAME_AMD, 0, nullptr, &deviceNameSize);
-                        std::string boardNameStr;
+                        bool        board_name_valid = CL_SUCCESS == ocl_module->GetDeviceInfo(device, CL_DEVICE_BOARD_NAME_AMD, 0, nullptr, &device_name_size);
+                        std::string board_name_str;
 
-                        if (boardNameValid)
+                        if (board_name_valid)
                         {
-                            char* pBoardName = new char[deviceNameSize];
+                            char* board_name = new char[device_name_size];
 
-                            if (nullptr == pBoardName)
+                            if (nullptr == board_name)
                             {
-                                GPA_LogError("Unable to allocate memory for the board name.");
+                                GPA_LOG_ERROR("Unable to allocate memory for the board name.");
                                 return false;
                             }
 
-                            boardNameValid =
-                                CL_SUCCESS == pOclModule->GetDeviceInfo(device, CL_DEVICE_BOARD_NAME_AMD, deviceNameSize, pBoardName, &deviceNameSize);
+                            board_name_valid =
+                                CL_SUCCESS == ocl_module->GetDeviceInfo(device, CL_DEVICE_BOARD_NAME_AMD, device_name_size, board_name, &device_name_size);
 
-                            if (boardNameValid)
+                            if (board_name_valid)
                             {
-                                boardNameStr.assign(pBoardName);
+                                board_name_str.assign(board_name);
                             }
 
-                            delete[] pBoardName;
+                            delete[] board_name;
                         }
 
-                        std::vector<GDT_GfxCardInfo> cardListFromName;
-                        bool cardFoundByName  = AMDTDeviceInfoUtils::Instance()->GetAllCardsWithName(deviceNameStr.c_str(), cardListFromName);
-                        bool cardFound        = false;
-                        bool preciseCardFound = false;
+                        std::vector<GDT_GfxCardInfo> card_list_from_name;
+                        bool card_found_by_name = AMDTDeviceInfoUtils::Instance()->GetAllCardsWithName(device_name_str.c_str(), card_list_from_name);
+                        bool card_found         = false;
+                        bool precise_card_found = false;
 
-                        cl_uint pcieDeviceId  = 0;
-                        bool    isPcieIdValid = false;
+                        cl_uint pcie_device_id   = 0;
+                        bool    is_pcie_id_valid = false;
 
-                        if (CL_SUCCESS == pOclModule->GetDeviceInfo(device, CL_DEVICE_PCIE_ID_AMD, sizeof(cl_uint), &pcieDeviceId, nullptr) &&
-                            0 != pcieDeviceId)
+                        if (CL_SUCCESS == ocl_module->GetDeviceInfo(device, CL_DEVICE_PCIE_ID_AMD, sizeof(cl_uint), &pcie_device_id, nullptr) &&
+                            0 != pcie_device_id)
                         {
                             // the CL_DEVICE_ID_AMD query can return a bogus device id in some drivers
-                            std::vector<GDT_GfxCardInfo> cardListDeviceId;
-                            isPcieIdValid = AMDTDeviceInfoUtils::Instance()->GetAllCardsWithDeviceId(pcieDeviceId, cardListDeviceId);
+                            std::vector<GDT_GfxCardInfo> card_list_device_id;
+                            is_pcie_id_valid = AMDTDeviceInfoUtils::Instance()->GetAllCardsWithDeviceId(pcie_device_id, card_list_device_id);
 
-                            if (isPcieIdValid)
+                            if (is_pcie_id_valid)
                             {
-                                hwInfo.SetDeviceID(pcieDeviceId);
-                                hwInfo.SetRevisionID(REVISION_ID_ANY);
+                                hw_info.SetDeviceId(pcie_device_id);
+                                hw_info.SetRevisionId(REVISION_ID_ANY);
 
-                                for (auto card = cardListDeviceId.begin(); card != cardListDeviceId.end() && !preciseCardFound; ++card)
+                                for (auto card = card_list_device_id.begin(); card != card_list_device_id.end() && !precise_card_found; ++card)
                                 {
-                                    cardFound = true;
+                                    card_found = true;
 
-                                    if (boardNameValid)
+                                    if (board_name_valid)
                                     {
-                                        if ((0 == boardNameStr.compare(card->m_szMarketingName)) && (0 == deviceNameStr.compare(card->m_szCALName)))
+                                        if ((0 == board_name_str.compare(card->m_szMarketingName)) && (0 == device_name_str.compare(card->m_szCALName)))
                                         {
-                                            hwInfo.SetRevisionID(static_cast<gpa_uint32>(card->m_revID));
-                                            preciseCardFound = true;
+                                            hw_info.SetRevisionId(static_cast<GpaUInt32>(card->m_revID));
+                                            precise_card_found = true;
                                         }
                                     }
                                 }
                             }
 
-                            if (!preciseCardFound && cardFoundByName)
+                            if (!precise_card_found && card_found_by_name)
                             {
-                                for (auto card = cardListFromName.begin(); card != cardListFromName.end() && !preciseCardFound; ++card)
+                                for (auto card = card_list_from_name.begin(); card != card_list_from_name.end() && !precise_card_found; ++card)
                                 {
-                                    if (isPcieIdValid && card->m_deviceID != pcieDeviceId)
+                                    if (is_pcie_id_valid && card->m_deviceID != pcie_device_id)
                                     {
                                         // skip cards where the pcie device id is incorrect
                                         continue;
                                     }
 
-                                    hwInfo.SetDeviceID(static_cast<gpa_uint32>(card->m_deviceID));
-                                    hwInfo.SetRevisionID(static_cast<gpa_uint32>(card->m_revID));
-                                    cardFound = true;
+                                    hw_info.SetDeviceId(static_cast<GpaUInt32>(card->m_deviceID));
+                                    hw_info.SetRevisionId(static_cast<GpaUInt32>(card->m_revID));
+                                    card_found = true;
 
-                                    if (boardNameValid)
+                                    if (board_name_valid)
                                     {
-                                        if (0 == boardNameStr.compare(card->m_szMarketingName))
+                                        if (0 == board_name_str.compare(card->m_szMarketingName))
                                         {
-                                            preciseCardFound = true;
+                                            precise_card_found = true;
                                         }
                                     }
                                 }
                             }
 
-                            if (!cardFound)
+                            if (!card_found)
                             {
-                                GPA_LogError("Unable to determine device id.");
-                                isSuccess = false;
+                                GPA_LOG_ERROR("Unable to determine device id.");
+                                is_success = false;
                             }
 
-                            if (!preciseCardFound)
+                            if (!precise_card_found)
                             {
-                                GPA_LogMessage("Unable to determine precise device. Best guess device identified.");
+                                GPA_LOG_MESSAGE("Unable to determine precise device. Best guess device identified.");
                             }
                         }
                         else
                         {
                             // unable to get device id from OCL runtime -- just use  first item in cardListFromName
-                            if (cardFoundByName)
+                            if (card_found_by_name)
                             {
-                                GPA_LogMessage("Unable to determine precise device. Best guess device identified.");
-                                hwInfo.SetDeviceID(static_cast<gpa_uint32>(cardListFromName[0].m_deviceID));
-                                hwInfo.SetRevisionID(static_cast<gpa_uint32>(cardListFromName[0].m_revID));
+                                GPA_LOG_MESSAGE("Unable to determine precise device. Best guess device identified.");
+                                hw_info.SetDeviceId(static_cast<GpaUInt32>(card_list_from_name[0].m_deviceID));
+                                hw_info.SetRevisionId(static_cast<GpaUInt32>(card_list_from_name[0].m_revID));
                             }
                             else
                             {
-                                GPA_LogError("Unable to determine device id.");
-                                isSuccess = false;
+                                GPA_LOG_ERROR("Unable to determine device id.");
+                                is_success = false;
                             }
                         }
                     }
 
-                    if (isSuccess)
+                    if (is_success)
                     {
-                        hwInfo.SetDeviceName(deviceNameStr.c_str());
+                        hw_info.SetDeviceName(device_name_str.c_str());
 
-                        cl_uint vendorID;
+                        cl_uint vendor_id;
 
-                        if (CL_SUCCESS != pOclModule->GetDeviceInfo(device, CL_DEVICE_VENDOR_ID, sizeof(cl_uint), &vendorID, nullptr))
+                        if (CL_SUCCESS != ocl_module->GetDeviceInfo(device, CL_DEVICE_VENDOR_ID, sizeof(cl_uint), &vendor_id, nullptr))
                         {
-                            GPA_LogError("Unable to get Vendor ID.");
-                            isSuccess = false;
+                            GPA_LOG_ERROR("Unable to get Vendor ID.");
+                            is_success = false;
                         }
 
-                        hwInfo.SetVendorID(vendorID);
+                        hw_info.SetVendorId(vendor_id);
 
 #ifdef WIN32
 
-                        if (NVIDIA_VENDOR_ID == vendorID)
+                        if (kNvidiaVendorId == vendor_id)
                         {
-                            hwInfo.SetHWGeneration(GDT_HW_GENERATION_NVIDIA);
+                            hw_info.SetHwGeneration(GDT_HW_GENERATION_NVIDIA);
                         }
-                        else if (INTEL_VENDOR_ID == vendorID)
+                        else if (kIntelVendorId == vendor_id)
                         {
-                            hwInfo.SetHWGeneration(GDT_HW_GENERATION_INTEL);
+                            hw_info.SetHwGeneration(GDT_HW_GENERATION_INTEL);
                         }
                         else
 
 #endif
                         {
-                            hwInfo.UpdateDeviceInfoBasedOnDeviceID();
+                            hw_info.UpdateDeviceInfoBasedOnDeviceId();
                         }
 
-                        cl_uint numComputeUnits = 0;
+                        cl_uint num_compute_units = 0;
 
-                        if (CL_SUCCESS != pOclModule->GetDeviceInfo(device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &numComputeUnits, nullptr))
+                        if (CL_SUCCESS != ocl_module->GetDeviceInfo(device, CL_DEVICE_MAX_COMPUTE_UNITS, sizeof(cl_uint), &num_compute_units, nullptr))
                         {
-                            GPA_LogError("Unable to get number of compute units.");
-                            isSuccess = false;
+                            GPA_LOG_ERROR("Unable to get number of compute units.");
+                            is_success = false;
                         }
                         else
                         {
                             GDT_HW_GENERATION generation;
 
-                            if (hwInfo.GetHWGeneration(generation) && GDT_HW_GENERATION_GFX10 <= generation)
+                            if (hw_info.GetHwGeneration(generation) && GDT_HW_GENERATION_GFX10 <= generation)
                             {
                                 // Starting on GFX10, the OCL runtime reports the number of WGPs rather than number of CUs for the CL_DEVICE_MAX_COMPUTE_UNITS query
-                                numComputeUnits *= 2;
+                                num_compute_units *= 2;
                             }
 
-                            hwInfo.SetNumberCUs(static_cast<size_t>(numComputeUnits));
+                            hw_info.SetNumberCus(static_cast<size_t>(num_compute_units));
 
-                            cl_uint numSIMDsPerComputeUnit = 0;
+                            cl_uint num_simd_per_cu = 0;
 
                             if (CL_SUCCESS !=
-                                pOclModule->GetDeviceInfo(device, CL_DEVICE_SIMD_PER_COMPUTE_UNIT_AMD, sizeof(cl_uint), &numSIMDsPerComputeUnit, nullptr))
+                                ocl_module->GetDeviceInfo(device, CL_DEVICE_SIMD_PER_COMPUTE_UNIT_AMD, sizeof(cl_uint), &num_simd_per_cu, nullptr))
                             {
-                                GPA_LogError("Unable to get number of SIMDS per compute unit.");
-                                isSuccess = false;
+                                GPA_LOG_ERROR("Unable to get number of SIMDS per compute unit.");
+                                is_success = false;
                             }
                             else
                             {
-                                hwInfo.SetNumberSIMDs(static_cast<size_t>(numComputeUnits) * numSIMDsPerComputeUnit);
+                                hw_info.SetNumberSimds(static_cast<size_t>(num_compute_units) * num_simd_per_cu);
                             }
                         }
                     }
@@ -285,119 +285,119 @@ bool CLGPAImplementor::GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GP
         }
     }
 
-    return isSuccess;
+    return is_success;
 }
 
 // TODO: this implementation doesn't do much -- is it needed?
-bool CLGPAImplementor::VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const
+bool ClGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const
 {
-    UNREFERENCED_PARAMETER(pContextInfo);
+    UNREFERENCED_PARAMETER(context_info);
 
-    bool isSupported = false;
+    bool is_supported = false;
 
     GDT_HW_GENERATION generation = GDT_HW_GENERATION_NONE;
 
-    if (hwInfo.GetHWGeneration(generation) == false)
+    if (hw_info.GetHwGeneration(generation) == false)
     {
-        GPA_LogError("Unable to get hardware generation.");
+        GPA_LOG_ERROR("Unable to get hardware generation.");
     }
     else
     {
-        isSupported = true;
+        is_supported = true;
     }
 
-    return isSupported;
+    return is_supported;
 }
 
-IGPAContext* CLGPAImplementor::OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
+IGpaContext* ClGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags)
 {
-    CLGPAContext* pRetGpaContext = nullptr;
+    ClGpaContext* ret_gpa_context = nullptr;
 
-    cl_command_queue clCmdQueue = static_cast<cl_command_queue>(pContextInfo);
+    cl_command_queue cl_cmd_queue = static_cast<cl_command_queue>(context_info);
 
-    CLGPAContext* pCLGpaContext = new (std::nothrow) CLGPAContext(clCmdQueue, hwInfo, flags);
+    ClGpaContext* cl_gpa_context = new (std::nothrow) ClGpaContext(cl_cmd_queue, hw_info, flags);
 
-    if (nullptr == pCLGpaContext)
+    if (nullptr == cl_gpa_context)
     {
-        GPA_LogError("Unable to allocate memory for the context.");
+        GPA_LOG_ERROR("Unable to allocate memory for the context.");
     }
     else
     {
-        OpenCLModule* pOclModule = OCLRTModuleLoader::Instance()->GetAPIRTModule();
+        OpenCLModule* ocl_module = ClRuntimeModuleLoader::Instance()->GetApiRuntimeModule();
 
-        cl_int clStatus = CL_SUCCESS;
+        cl_int cl_status = CL_SUCCESS;
 
-        if (nullptr == pOclModule)
+        if (nullptr == ocl_module)
         {
-            GPA_LogError("OpenCL runtime module is NULL.");
+            GPA_LOG_ERROR("OpenCL runtime module is NULL.");
         }
         else
         {
-            cl_device_id clDeviceId;
+            cl_device_id device_id;
             // get device from the command queue and store it
-            clStatus = pOclModule->GetCommandQueueInfo(clCmdQueue, CL_QUEUE_DEVICE, sizeof(cl_device_id), &clDeviceId, nullptr);
+            cl_status = ocl_module->GetCommandQueueInfo(cl_cmd_queue, CL_QUEUE_DEVICE, sizeof(cl_device_id), &device_id, nullptr);
 
-            if (CL_SUCCESS == clStatus)
+            if (CL_SUCCESS == cl_status)
             {
                 // initialize AMD perf counter's extension
-                if (!m_initPerfCounterAMDExtension)
+                if (!init_perf_counter_amd_extension_)
                 {
                     cl_platform_id platform;
 
-                    clStatus = pOclModule->GetDeviceInfo(clDeviceId, CL_DEVICE_PLATFORM, sizeof(cl_platform_id), &platform, nullptr);
+                    cl_status = ocl_module->GetDeviceInfo(device_id, CL_DEVICE_PLATFORM, sizeof(cl_platform_id), &platform, nullptr);
 
-                    if (CL_SUCCESS != clStatus)
+                    if (CL_SUCCESS != cl_status)
                     {
-                        GPA_LogError("Unable to get platform from device.");
+                        GPA_LOG_ERROR("Unable to get platform from device.");
                     }
-                    else if (!InitPerfCounterAMDExtension(platform))
+                    else if (!InitPerfCounterAmdExtension(platform))
                     {
-                        GPA_LogError("Unable to initialize the PerfCounter AMD Extension.");
+                        GPA_LOG_ERROR("Unable to initialize the PerfCounter AMD Extension.");
                     }
                     else
                     {
-                        m_initPerfCounterAMDExtension = true;
+                        init_perf_counter_amd_extension_ = true;
                     }
                 }
 
-                if (m_initPerfCounterAMDExtension)
+                if (init_perf_counter_amd_extension_)
                 {
-                    if (pCLGpaContext->Initialize(clDeviceId))
+                    if (cl_gpa_context->Initialize(device_id))
                     {
-                        pRetGpaContext = pCLGpaContext;
+                        ret_gpa_context = cl_gpa_context;
                     }
                     else
                     {
-                        delete pCLGpaContext;
-                        GPA_LogError("Unable to open a context.");
+                        delete cl_gpa_context;
+                        GPA_LOG_ERROR("Unable to open a context.");
                     }
                 }
             }
             else
             {
-                GPA_LogError("Unable to query CL device from CL command queue.");
+                GPA_LOG_ERROR("Unable to query CL device from CL command queue.");
             }
         }
     }
 
-    return pRetGpaContext;
+    return ret_gpa_context;
 }
 
-bool CLGPAImplementor::CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pContext)
+bool ClGpaImplementor::CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context)
 {
-    assert(nullptr != pDeviceIdentifier);
-    assert(nullptr != pContext);
+    assert(nullptr != device_identifier);
+    assert(nullptr != context);
 
-    if (nullptr != pContext)
+    if (nullptr != context)
     {
-        delete reinterpret_cast<CLGPAContext*>(pContext);
-        pContext = nullptr;
+        delete reinterpret_cast<ClGpaContext*>(context);
+        context = nullptr;
     }
 
-    return (nullptr == pContext) && (nullptr != pDeviceIdentifier);
+    return (nullptr == context) && (nullptr != device_identifier);
 }
 
-GPADeviceIdentifier CLGPAImplementor::GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const
+GpaDeviceIdentifier ClGpaImplementor::GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const
 {
-    return pContextInfo;
+    return context_info;
 }

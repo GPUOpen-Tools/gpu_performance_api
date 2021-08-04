@@ -1,15 +1,15 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_Initialize
-@@@@@@@@@@@@@@
+GpaInitialize
+@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_Initialize(
-        GPA_InitializeFlags flags);
+    GpaStatus GpaInitialize(
+        GpaInitializeFlags flags);
 
 Description
 %%%%%%%%%%%
@@ -25,7 +25,7 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``flags``", "Flags used to initialize GPA. This should be a combination of GPA_Initialize_Bits."
+    "``flags``", "Flags used to initialize GPA. This should be a combination of GpaInitializeBits."
 
 Return value
 %%%%%%%%%%%%
@@ -34,7 +34,7 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "GPA  was destroyed."
-    "GPA_STATUS_ERROR_GPA_ALREADY_INITIALIZED", "GPA_Initialize was already called."
-    "GPA_STATUS_ERROR_INVALID_PARAMETER", "The ``flags`` parameter has an invalid value."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "GPA was destroyed."
+    "kGpaStatusErrorGpaAlreadyInitialized", "GpaInitialize was already called."
+    "kGpaStatusErrorInvalidParameter", "The ``flags`` parameter has an invalid value."
+    "kGpaStatusErrorException", "Exception occurred."

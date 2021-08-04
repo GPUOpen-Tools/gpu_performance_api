@@ -1,60 +1,60 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief DX12 GPA Session declaration
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief DX12 GPA Session declaration
 //==============================================================================
 
-#ifndef _DX12_GPA_SESSION_H_
-#define _DX12_GPA_SESSION_H_
+#ifndef GPU_PERF_API_DX12_DX12_GPA_SESSION_H_
+#define GPU_PERF_API_DX12_DX12_GPA_SESSION_H_
 
-// AMD DX12 Extension
 #pragma warning(push)
 #pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
 #pragma warning(pop)
 
-// GPA Common
-#include "gpa_session.h"
+#include "gpu_perf_api_common/gpa_session.h"
 
-class DX12GPAContext;  // forward declaration
+class Dx12GpaContext;  // Forward declaration.
 
-/// Class for DX12 GPA Session
-class DX12GPASession : public GPASession
+/// @brief Class for DX12 GPA Session
+class Dx12GpaSession : public GpaSession
 {
 public:
-    /// Constructor
-    /// \param[in] pDX12GpaContext DX12 GPA Context
-    /// \param[in] sampleType The sample type that will be created on this session
-    /// \param[in] pAmdExtGpaSession AMD Extension GpaSession
-    DX12GPASession(DX12GPAContext* pDX12GpaContext, GPA_Session_Sample_Type sampleType, IAmdExtGpaInterface* pAmdExtGpaSession);
+    /// @brief Constructor.
+    ///
+    /// @param [in] dx12_gpa_context DX12 GPA Context.
+    /// @param [in] sample_type The sample type that will be created on this session.
+    /// @param [in] amd_ext_gpa_session AMD Extension GpaSession.
+    Dx12GpaSession(Dx12GpaContext* dx12_gpa_context, GpaSessionSampleType sample_type, IAmdExtGpaInterface* amd_ext_gpa_session);
 
-    /// Delete default constructor
-    DX12GPASession() = delete;
+    /// @brief Delete default constructor.
+    Dx12GpaSession() = delete;
 
-    /// Destructor
-    virtual ~DX12GPASession();
+    /// @brief Destructor.
+    virtual ~Dx12GpaSession();
 
-    /// \copydoc IGPASession::ContinueSampleOnCommandList()
-    GPA_Status ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA_CommandListId primaryCommandListId) override;
+    /// @copydoc IGpaSession::ContinueSampleOnCommandList()
+    GpaStatus ContinueSampleOnCommandList(GpaUInt32 src_sample_id, GpaCommandListId primary_command_list_id) override;
 
-    /// \copydoc IGPASession::CopySecondarySamples()
-    GPA_Status CopySecondarySamples(GPA_CommandListId secondaryCmdListId,
-                                    GPA_CommandListId primaryCmdListId,
-                                    gpa_uint32        numSamples,
-                                    gpa_uint32*       pNewSampleIds) override;
+    /// @copydoc IGpaSession::CopySecondarySamples()
+    GpaStatus CopySecondarySamples(GpaCommandListId secondary_cmd_list_id,
+                                   GpaCommandListId primary_cmd_list_id,
+                                   GpaUInt32        num_samples,
+                                   GpaUInt32*       new_sample_ids) override;
 
-    /// \copydoc IGPAInterfaceTrait::GetAPIType()
-    GPA_API_Type GetAPIType() const override;
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    GpaApiType GetApiType() const override;
 
-    /// Returns the Amd GPA extension interface
-    /// \return amd gpa extension interface
+    /// @brief Returns the AMD GPA extension interface.
+    ///
+    /// @return AMD GPA extension interface.
     IAmdExtGpaInterface* GetAmdExtInterface() const;
 
 private:
-    /// \copydoc GPASession::CreateAPIPass()
-    GPAPass* CreateAPIPass(PassIndex passIndex) override;
+    /// @copydoc GpaSession::CreateApiPass()
+    GpaPass* CreateApiPass(PassIndex pass_index) override;
 
-    IAmdExtGpaInterface* m_pAmdExtGpaInterface;  ///< AMD Extension Interface
+    IAmdExtGpaInterface* amd_ext_gpa_interface_;  ///< AMD Extension Interface.
 };
-#endif  // _DX12_GPA_SESSION_H_
+#endif  // GPU_PERF_API_DX12_DX12_GPA_SESSION_H_

@@ -1,47 +1,47 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief DX11 GPA Command List Declarations
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief DX11 GPA Command List Declarations
 //==============================================================================
 
-#ifndef _DX11_GPA_COMMAND_LIST_H_
-#define _DX11_GPA_COMMAND_LIST_H_
+#ifndef GPU_PERF_API_DX11_DX11_GPA_COMMAND_LIST_H_
+#define GPU_PERF_API_DX11_DX11_GPA_COMMAND_LIST_H_
 
-// GPA Common
-#include "gpa_command_list.h"
+#include "gpu_perf_api_common/gpa_command_list.h"
 
-/// Class for DX11 GPA Command List
-class DX11GPACommandList : public GPACommandList
+/// @brief Class for DX11 GPA Command List.
+class Dx11GpaCommandList : public GpaCommandList
 {
 public:
-    /// Constructor
-    /// \param[in] pGpaSession GPA session pointer
-    /// \param[in] pGpaPass pass object pointer
-    /// \param[in] commandListId command list id
-    DX11GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId);
+    /// @brief Constructor.
+    ///
+    /// @param [in] gpa_session GPA session pointer.
+    /// @param [in] gpa_pass Pass object pointer.
+    /// @param [in] command_list_id Command list id.
+    Dx11GpaCommandList(IGpaSession* gpa_session, GpaPass* gpa_pass, CommandListId command_list_id);
 
-    /// Delete default constructor
-    DX11GPACommandList() = delete;
+    /// @brief Delete default constructor.
+    Dx11GpaCommandList() = delete;
 
-    /// Destructor
-    ~DX11GPACommandList() = default;
+    /// @brief Destructor.
+    ~Dx11GpaCommandList() = default;
 
-    /// \copydoc IGPAInterfaceTrait::GetAPIType()
-    GPA_API_Type GetAPIType() const override;
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    GpaApiType GetApiType() const override;
 
 private:
-    /// \copydoc GPACommandList::BeginCommandListRequest()
+    /// @copydoc GpaCommandList::BeginCommandListRequest()
     bool BeginCommandListRequest() override final;
 
-    /// \copydoc GPACommandList::EndCommandListRequest()
+    /// @copydoc GpaCommandList::EndCommandListRequest()
     bool EndCommandListRequest() override final;
 
-    /// \copydoc GPACommandList::BeginSampleRequest()
-    bool BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample) override final;
+    /// @copydoc GpaCommandList::BeginSampleRequest()
+    bool BeginSampleRequest(ClientSampleId client_sample_id, GpaSample* gpa_sample) override final;
 
-    /// \copydoc GPACommandList::CloseLastSampleRequest()
+    /// @copydoc GpaCommandList::CloseLastSampleRequest()
     bool CloseLastSampleRequest() override final;
 };
 
-#endif  // _DX11_GPA_COMMAND_LIST_H_
+#endif  // GPU_PERF_API_DX11_DX11_GPA_COMMAND_LIST_H_

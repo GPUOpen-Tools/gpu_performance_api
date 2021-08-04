@@ -1,36 +1,36 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief DX11 GPA Session declaration
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief DX11 GPA Session declaration
 //==============================================================================
 
-#ifndef _DX11_GPA_SESSION_H_
-#define _DX11_GPA_SESSION_H_
+#ifndef GPU_PERF_API_DX11_DX11_GPA_SESSION_H_
+#define GPU_PERF_API_DX11_DX11_GPA_SESSION_H_
 
-// GPA Common
-#include "gpa_session.h"
+#include "gpu_perf_api_common/gpa_session.h"
 
-class DX11GPACommandList;  // forward declaration
-class DX11GPAContext;      // forward declaration
+class Dx11GpaCommandList;  // Forward declaration.
+class Dx11GpaContext;      // Forward declaration.
 
-/// Class for DX11 GPA Session
-class DX11GPASession : public GPASession
+/// @brief Class for DX11 GPA Session.
+class Dx11GpaSession : public GpaSession
 {
 public:
-    /// Constructor
-    /// \param[in] pParentContext The context Id on which this session is created
-    /// \param[in] sampleType The sample type that will be created on this session
-    DX11GPASession(IGPAContext* pParentContext, GPA_Session_Sample_Type sampleType);
+    /// @brief Constructor.
+    ///
+    /// @param [in] parent_context The context Id on which this session is created.
+    /// @param [in] sample_type The sample type that will be created on this session.
+    Dx11GpaSession(IGpaContext* parent_context, GpaSessionSampleType sample_type);
 
-    /// Destructor
-    ~DX11GPASession() = default;
+    /// @brief Destructor.
+    ~Dx11GpaSession() = default;
 
-    /// \copydoc IGPAInterfaceTrait::GetAPIType()
-    GPA_API_Type GetAPIType() const override;
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    GpaApiType GetApiType() const override;
 
 private:
-    /// \copydoc GPASession::CreateAPIPass()
-    GPAPass* CreateAPIPass(PassIndex passIndex) override;
+    /// @copydoc GpaSession::CreateApiPass()
+    GpaPass* CreateApiPass(PassIndex pass_index) override;
 };
-#endif  // _DX11_GPA_SESSION_H_
+#endif  // GPU_PERF_API_DX11_DX11_GPA_SESSION_H_

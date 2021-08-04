@@ -1,5 +1,5 @@
-# Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-#! /usr/bin/python
+#!/usr/bin/python
+# Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 # Utility Python Script to generate GPA projects on Windows and Linux
 
 import os
@@ -108,6 +108,7 @@ def define_cmake_arguments():
     script_parser.add_argument("--config", choices=["debug", "release"], help="specify the build config for Makefiles (default: both)")
     script_parser.add_argument("--platform", choices=["x86", "x64"], help="specify the platform for the project has to be generated (default: both)" )
     script_parser.add_argument("--clean", action="store_true", help="delete any directories created by this script")
+    script_parser.add_argument("--build", action="store", help="GPA Build number")
 
     if sys.platform == "win32":
         script_parser.add_argument("--skipdx11", action="store_true", help="skip DX11 from the CMake generated project")
@@ -117,6 +118,7 @@ def define_cmake_arguments():
     script_parser.add_argument("--skipopengl", action="store_true", help="skip OpenGL from the CMake generated project")
     script_parser.add_argument("--skipopencl", action="store_true", help="skip OpenCL from the CMake generated project")
     script_parser.add_argument("--skiptests", action="store_true", help="skip Tests from the CMake generated project")
+    script_parser.add_argument("--skipsamples", action="store_true", help="skip Samples from the CMake generated project")
     script_parser.add_argument("--skipdocs", action="store_true", help="skip Docs from the CMake generated project")
     script_parser.add_argument("--nofetch", action="store_true", help="skip fetching repo dependencies")
     script_parser.add_argument("--cmakecmd", type=str, default="cmake", help="command to use in place of 'cmake'")
@@ -129,8 +131,8 @@ def parse_cmake_arguments(cmake_arguments):
     cmake_additional_args=[""]
 
     if cmake_arguments.verbose == True:
-        CMakeAdditionalArgs.append("-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON")
-        
+        cmake_additional_args.append("-DCMAKE_VERBOSE_MAKEFILE:BOOL=ON")
+
     if sys.platform == "win32":
         if cmake_arguments.skipdx11 == True:
             cmake_additional_args.append("-Dskipdx11=ON")
@@ -161,6 +163,11 @@ def parse_cmake_arguments(cmake_arguments):
         cmake_additional_args.append("-Dskiptests=ON")
     else:
         cmake_additional_args.append("-Dskiptests=OFF")
+
+    if cmake_arguments.skipsamples == True:
+        cmake_additional_args.append("-Dskipsamples=ON")
+    else:
+        cmake_additional_args.append("-Dskipsamples=OFF")
 
     if cmake_arguments.skipdocs == True:
         cmake_additional_args.append("-Dskipdocs=ON")

@@ -1,254 +1,253 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GPA Context Counter Mediator Implementation
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GPA Context Counter Mediator Implementation.
 //==============================================================================
 
-#include "gpa_context_counter_mediator.h"
-#include "gpa_counter_generator.h"
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
 
-GPAContextCounterMediator* GPAContextCounterMediator::ms_pCounterManager = nullptr;
+#include "gpu_perf_api_counter_generator/gpa_counter_generator.h"
 
-GPAContextCounterMediator* GPAContextCounterMediator::Instance()
+GpaContextCounterMediator* GpaContextCounterMediator::kCounterManager = nullptr;
+
+GpaContextCounterMediator* GpaContextCounterMediator::Instance()
 {
-    if (nullptr == ms_pCounterManager)
+    if (nullptr == kCounterManager)
     {
-        ms_pCounterManager = new (std::nothrow) GPAContextCounterMediator();
+        kCounterManager = new (std::nothrow) GpaContextCounterMediator();
     }
 
-    return ms_pCounterManager;
+    return kCounterManager;
 }
 
-void GPAContextCounterMediator::DeleteInstance()
+void GpaContextCounterMediator::DeleteInstance()
 {
-    delete ms_pCounterManager;
-    ms_pCounterManager = nullptr;
+    delete kCounterManager;
+    kCounterManager = nullptr;
 }
 
-GPAContextCounterMediator::~GPAContextCounterMediator()
+GpaContextCounterMediator::~GpaContextCounterMediator()
 {
-    m_contextInfoMap.clear();
+    context_info_map_.clear();
 }
 
-GPA_Status GPAContextCounterMediator::GenerateCounters(const IGPAContext* pGpaContext, GPA_OpenContextFlags flags, gpa_uint8 generateAsicSpecificCounters)
+GpaStatus GpaContextCounterMediator::GenerateCounters(const IGpaContext* gpa_context, GpaOpenContextFlags flags, GpaUInt8 generate_asic_specific_counters)
 {
-    std::lock_guard<std::mutex> lock(m_contextInfoMapMutex);
+    std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
-    if (DoesContextExist(pGpaContext))
+    if (DoesContextExist(gpa_context))
     {
-        return GPA_STATUS_ERROR_CONTEXT_ALREADY_OPEN;
+        return kGpaStatusErrorContextAlreadyOpen;
     }
 
-    GPA_Status            retStatus         = GPA_STATUS_OK;
-    IGPACounterAccessor*  pCounterAccessor  = nullptr;
-    IGPACounterScheduler* pCounterScheduler = nullptr;
-    const GPA_HWInfo*     pHwInfo           = pGpaContext->GetHwInfo();
+    GpaStatus             ret_status        = kGpaStatusOk;
+    IGpaCounterAccessor*  counter_accessor  = nullptr;
+    IGpaCounterScheduler* counter_scheduler = nullptr;
+    const GpaHwInfo*      hw_info           = gpa_context->GetHwInfo();
 
-    if (nullptr == pHwInfo)
+    if (nullptr == hw_info)
     {
-        return GPA_STATUS_ERROR_FAILED;
+        return kGpaStatusErrorFailed;
     }
 
-    gpa_uint32 vendorId;
-    gpa_uint32 deviceId;
-    gpa_uint32 revisionId;
+    GpaUInt32 vendor_id;
+    GpaUInt32 device_id;
+    GpaUInt32 revision_id;
 
-    if (pHwInfo->GetVendorID(vendorId) && pHwInfo->GetDeviceID(deviceId) && pHwInfo->GetRevisionID(revisionId))
+    if (hw_info->GetVendorId(vendor_id) && hw_info->GetDeviceId(device_id) && hw_info->GetRevisionId(revision_id))
     {
-        retStatus = ::GenerateCounters(
-            pGpaContext->GetAPIType(), vendorId, deviceId, revisionId, flags, generateAsicSpecificCounters, &pCounterAccessor, &pCounterScheduler);
+        ret_status = ::GenerateCounters(
+            gpa_context->GetApiType(), vendor_id, device_id, revision_id, flags, generate_asic_specific_counters, &counter_accessor, &counter_scheduler);
 
-        if (GPA_STATUS_OK == retStatus)
+        if (kGpaStatusOk == ret_status)
         {
-            GPAContextStatus contextStatus = {pCounterScheduler, pCounterAccessor};
+            GpaContextStatus contextStatus = {counter_scheduler, counter_accessor};
 
-            if (GPA_STATUS_OK == pCounterScheduler->SetCounterAccessor(pCounterAccessor, vendorId, deviceId, revisionId))
+            if (kGpaStatusOk == counter_scheduler->SetCounterAccessor(counter_accessor, vendor_id, device_id, revision_id))
             {
-                m_contextInfoMap.insert(GpaCtxStatusInfoPair(pGpaContext, contextStatus));
+                context_info_map_.insert(GpaCtxStatusInfoPair(gpa_context, contextStatus));
             }
             else
             {
-                retStatus = GPA_STATUS_ERROR_FAILED;
-                GPA_LogError("Failed to set counter accessor.");
+                ret_status = kGpaStatusErrorFailed;
+                GPA_LOG_ERROR("Failed to set counter accessor.");
             }
         }
     }
     else
     {
-        retStatus = GPA_STATUS_ERROR_FAILED;
+        ret_status = kGpaStatusErrorFailed;
     }
 
-    return retStatus;
+    return ret_status;
 }
 
-bool GPAContextCounterMediator::IsCounterSchedulingSupported(const IGPAContext* pGpaContext) const
+bool GpaContextCounterMediator::IsCounterSchedulingSupported(const IGpaContext* gpa_context) const
 {
-    std::lock_guard<std::mutex> lock(m_contextInfoMapMutex);
+    std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
-    if (!DoesContextExist(pGpaContext))
+    if (!DoesContextExist(gpa_context))
     {
         return false;
     }
 
-    return nullptr != m_contextInfoMap.at(pGpaContext).m_pCounterScheduler && nullptr != m_contextInfoMap.at(pGpaContext).m_pCounterAccessor;
+    return nullptr != context_info_map_.at(gpa_context).counter_scheduler && nullptr != context_info_map_.at(gpa_context).counter_accessor;
 }
 
-IGPACounterAccessor* GPAContextCounterMediator::GetCounterAccessor(const IGPAContext* pGpaContext) const
+IGpaCounterAccessor* GpaContextCounterMediator::GetCounterAccessor(const IGpaContext* gpa_context) const
 {
-    std::lock_guard<std::mutex> lock(m_contextInfoMapMutex);
+    std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
-    if (!DoesContextExist(pGpaContext))
+    if (!DoesContextExist(gpa_context))
     {
         return nullptr;
     }
 
-    return m_contextInfoMap.at(pGpaContext).m_pCounterAccessor;
+    return context_info_map_.at(gpa_context).counter_accessor;
 }
 
-GPA_Status GPAContextCounterMediator::ScheduleCounters(const IGPAContext*             pGpaContext,
-                                                       const IGPASession*             pGpaSession,
-                                                       const std::vector<gpa_uint32>& counterSet)
+GpaStatus GpaContextCounterMediator::ScheduleCounters(const IGpaContext* gpa_context, const IGpaSession* gpa_session, const std::vector<GpaUInt32>& counter_set)
 {
-    std::lock_guard<std::mutex> lock(m_contextInfoMapMutex);
+    std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
-    if (!DoesContextExist(pGpaContext))
+    if (!DoesContextExist(gpa_context))
     {
-        return GPA_STATUS_ERROR_CONTEXT_NOT_OPEN;
+        return kGpaStatusErrorContextNotOpen;
     }
 
-    const IGPASession* pActiveSession = pGpaContext->GetActiveSession();
+    const IGpaSession* active_session = gpa_context->GetActiveSession();
 
-    if (nullptr != pActiveSession && pGpaSession != pActiveSession)
+    if (nullptr != active_session && gpa_session != active_session)
     {
-        return GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE;
+        return kGpaStatusErrorOtherSessionActive;
     }
 
-    IGPACounterScheduler* pCounterScheduler = m_contextInfoMap.at(pGpaContext).m_pCounterScheduler;
+    IGpaCounterScheduler* counter_scheduler = context_info_map_.at(gpa_context).counter_scheduler;
 
-    for (std::vector<gpa_uint32>::const_iterator it = counterSet.cbegin(); it != counterSet.cend(); ++it)
+    for (std::vector<GpaUInt32>::const_iterator it = counter_set.cbegin(); it != counter_set.cend(); ++it)
     {
-        pCounterScheduler->EnableCounter(*it);
+        counter_scheduler->EnableCounter(*it);
     }
 
-    return GPA_STATUS_OK;
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContextCounterMediator::UnscheduleCounters(const IGPAContext*             pGpaContext,
-                                                         const IGPASession*             pGpaSession,
-                                                         const std::vector<gpa_uint32>& counterSet)
+GpaStatus GpaContextCounterMediator::UnscheduleCounters(const IGpaContext*            gpa_context,
+                                                        const IGpaSession*            gpa_session,
+                                                        const std::vector<GpaUInt32>& counter_set)
 {
-    std::lock_guard<std::mutex> lock(m_contextInfoMapMutex);
+    std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
-    if (!DoesContextExist(pGpaContext))
+    if (!DoesContextExist(gpa_context))
     {
-        return GPA_STATUS_ERROR_CONTEXT_NOT_OPEN;
+        return kGpaStatusErrorContextNotOpen;
     }
 
-    const IGPASession* pActiveSession = pGpaContext->GetActiveSession();
+    const IGpaSession* active_session = gpa_context->GetActiveSession();
 
-    if (nullptr != pActiveSession && pGpaSession != pActiveSession)
+    if (nullptr != active_session && gpa_session != active_session)
     {
-        return GPA_STATUS_ERROR_OTHER_SESSION_ACTIVE;
+        return kGpaStatusErrorOtherSessionActive;
     }
 
-    IGPACounterScheduler* pCounterScheduler = m_contextInfoMap.at(pGpaContext).m_pCounterScheduler;
+    IGpaCounterScheduler* counter_scheduler = context_info_map_.at(gpa_context).counter_scheduler;
 
-    for (std::vector<gpa_uint32>::const_iterator it = counterSet.cbegin(); it != counterSet.cend(); ++it)
+    for (std::vector<GpaUInt32>::const_iterator it = counter_set.cbegin(); it != counter_set.cend(); ++it)
     {
-        pCounterScheduler->DisableCounter(*it);
+        counter_scheduler->DisableCounter(*it);
     }
 
-    return GPA_STATUS_OK;
+    return kGpaStatusOk;
 }
 
-GPA_Status GPAContextCounterMediator::GetRequiredPassCount(const IGPAContext*             pGpaContext,
-                                                           const std::vector<gpa_uint32>& counterSet,
-                                                           unsigned int&                  passRequired)
+GpaStatus GpaContextCounterMediator::GetRequiredPassCount(const IGpaContext*            gpa_context,
+                                                          const std::vector<GpaUInt32>& counter_set,
+                                                          unsigned int&                 pass_required)
 {
-    std::lock_guard<std::mutex> lock(m_contextInfoMapMutex);
+    std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
-    if (!DoesContextExist(pGpaContext))
+    if (!DoesContextExist(gpa_context))
     {
-        return GPA_STATUS_ERROR_CONTEXT_NOT_OPEN;
+        return kGpaStatusErrorContextNotOpen;
     }
 
-    IGPACounterScheduler* pCounterScheduler = m_contextInfoMap.at(pGpaContext).m_pCounterScheduler;
+    IGpaCounterScheduler* counter_scheduler = context_info_map_.at(gpa_context).counter_scheduler;
 
-    gpa_uint32 passReq = 0u;
-    pCounterScheduler->DisableAllCounters();
+    GpaUInt32 pass_req = 0u;
+    counter_scheduler->DisableAllCounters();
 
     bool succeed = true;
 
-    for (std::vector<gpa_uint32>::const_iterator it = counterSet.cbegin(); it != counterSet.cend() && succeed; ++it)
+    for (std::vector<GpaUInt32>::const_iterator it = counter_set.cbegin(); it != counter_set.cend() && succeed; ++it)
     {
-        succeed &= GPA_STATUS_OK == pCounterScheduler->EnableCounter(*it);
+        succeed &= kGpaStatusOk == counter_scheduler->EnableCounter(*it);
     }
 
     if (!succeed)
     {
-        return GPA_STATUS_ERROR_FAILED;
+        return kGpaStatusErrorFailed;
     }
 
-    GPA_Status retStatus = pCounterScheduler->GetNumRequiredPasses(&passReq);
+    GpaStatus ret_status = counter_scheduler->GetNumRequiredPasses(&pass_req);
 
-    if (GPA_STATUS_OK == retStatus)
+    if (kGpaStatusOk == ret_status)
     {
-        passRequired = passReq;
+        pass_required = pass_req;
     }
 
-    return retStatus;
+    return ret_status;
 }
 
-CounterResultLocationMap* GPAContextCounterMediator::GetCounterResultLocations(const IGPAContext* pGpaContext, const unsigned int& publicCounterIndex)
+CounterResultLocationMap* GpaContextCounterMediator::GetCounterResultLocations(const IGpaContext* gpa_context, const unsigned int& public_counter_index)
 {
-    std::lock_guard<std::mutex> lock(m_contextInfoMapMutex);
+    std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
-    if (!DoesContextExist(pGpaContext))
+    if (!DoesContextExist(gpa_context))
     {
         return nullptr;
     }
 
-    IGPACounterScheduler* pCounterScheduler = m_contextInfoMap.at(pGpaContext).m_pCounterScheduler;
+    IGpaCounterScheduler* counter_scheduler = context_info_map_.at(gpa_context).counter_scheduler;
 
-    if (nullptr == pCounterScheduler)
+    if (nullptr == counter_scheduler)
     {
         return nullptr;
     }
 
-    return pCounterScheduler->GetCounterResultLocations(publicCounterIndex);
+    return counter_scheduler->GetCounterResultLocations(public_counter_index);
 }
 
-void GPAContextCounterMediator::RemoveContext(IGPAContext* pGpaContext)
+void GpaContextCounterMediator::RemoveContext(IGpaContext* gpa_context)
 {
-    std::lock_guard<std::mutex> lock(m_contextInfoMapMutex);
+    std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
-    if (DoesContextExist(pGpaContext))
+    if (DoesContextExist(gpa_context))
     {
-        m_contextInfoMap.erase(pGpaContext);
+        context_info_map_.erase(gpa_context);
     }
 }
 
-CounterList* GPAContextCounterMediator::GetCounterForPass(IGPAContext* pGpaContext, PassIndex passIndex)
+CounterList* GpaContextCounterMediator::GetCounterForPass(IGpaContext* gpa_context, PassIndex pass_index)
 {
-    std::lock_guard<std::mutex> lock(m_contextInfoMapMutex);
+    std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
-    if (!DoesContextExist(pGpaContext))
-    {
-        return nullptr;
-    }
-
-    IGPACounterScheduler* pCounterScheduler = m_contextInfoMap[pGpaContext].m_pCounterScheduler;
-
-    if (nullptr == pCounterScheduler)
+    if (!DoesContextExist(gpa_context))
     {
         return nullptr;
     }
 
-    return pCounterScheduler->GetCountersForPass(passIndex);
+    IGpaCounterScheduler* counter_scheduler = context_info_map_[gpa_context].counter_scheduler;
+
+    if (nullptr == counter_scheduler)
+    {
+        return nullptr;
+    }
+
+    return counter_scheduler->GetCountersForPass(pass_index);
 }
 
-bool GPAContextCounterMediator::DoesContextExist(const IGPAContext* pGpaContext) const
+bool GpaContextCounterMediator::DoesContextExist(const IGpaContext* gpa_context) const
 {
-    return m_contextInfoMap.find(pGpaContext) != m_contextInfoMap.cend();
+    return context_info_map_.find(gpa_context) != context_info_map_.cend();
 }

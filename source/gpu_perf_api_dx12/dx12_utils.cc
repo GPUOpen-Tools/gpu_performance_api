@@ -1,53 +1,55 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  DX12 utility function implementations
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  DX12 utility function implementations
 //==============================================================================
 
-#include "dx12_utils.h"
+#include "gpu_perf_api_dx12/dx12_utils.h"
+
 #include "d3d12.h"
-#include "logging.h"
 
-GPA_Status DX12Utils::DX12GetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& adapterDesc)
+#include "gpu_perf_api_common/logging.h"
+
+GpaStatus dx12_utils::Dx12GetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& adapter_desc)
 {
-    GPA_Status status = GPA_STATUS_OK;
+    GpaStatus status = kGpaStatusOk;
 
-    if (nullptr == pDevice)
+    if (nullptr == device)
     {
-        GPA_LogError("Parameter 'pDevice' is NULL.");
-        status = GPA_STATUS_ERROR_NULL_POINTER;
+        GPA_LOG_ERROR("Parameter 'device' is NULL.");
+        status = kGpaStatusErrorNullPointer;
     }
     else
     {
-        ID3D12Device* dx12Device  = static_cast<ID3D12Device*>(pDevice);
-        LUID          adapterLuid = dx12Device->GetAdapterLuid();
+        ID3D12Device* dx12_device  = static_cast<ID3D12Device*>(device);
+        LUID          adapter_luid = dx12_device->GetAdapterLuid();
 
-        IDXGIFactory* pDXGIFactory = nullptr;
-        HRESULT       hr           = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDXGIFactory));
+        IDXGIFactory* dxgi_factory = nullptr;
+        HRESULT       hr           = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&dxgi_factory));
 
-        if (FAILED(hr) || (nullptr == pDXGIFactory))
+        if (FAILED(hr) || (nullptr == dxgi_factory))
         {
-            GPA_LogError("Unable to get IDXGIFactory interface from ID3D12Device.");
-            status = GPA_STATUS_ERROR_FAILED;
+            GPA_LOG_ERROR("Unable to get IDXGIFactory interface from ID3D12Device.");
+            status = kGpaStatusErrorFailed;
         }
         else
         {
-            IDXGIAdapter* pAdapter = nullptr;
+            IDXGIAdapter* adapter = nullptr;
 
-            for (UINT index = 0; pDXGIFactory->EnumAdapters(index, &pAdapter) != DXGI_ERROR_NOT_FOUND; ++index)
+            for (UINT index = 0; dxgi_factory->EnumAdapters(index, &adapter) != DXGI_ERROR_NOT_FOUND; ++index)
             {
-                memset(&adapterDesc, 0, sizeof(adapterDesc));
-                hr = pAdapter->GetDesc(&adapterDesc);
+                memset(&adapter_desc, 0, sizeof(adapter_desc));
+                hr = adapter->GetDesc(&adapter_desc);
 
                 if (FAILED(hr))
                 {
-                    GPA_LogError("Could not get adapter description, hardware cannot be supported.");
-                    status = GPA_STATUS_ERROR_FAILED;
+                    GPA_LOG_ERROR("Could not get adapter description, hardware cannot be supported.");
+                    status = kGpaStatusErrorFailed;
                 }
                 else
                 {
-                    if (adapterDesc.AdapterLuid.HighPart == adapterLuid.HighPart && adapterDesc.AdapterLuid.LowPart == adapterLuid.LowPart)
+                    if (adapter_desc.AdapterLuid.HighPart == adapter_luid.HighPart && adapter_desc.AdapterLuid.LowPart == adapter_luid.LowPart)
                     {
                         // We found the matching adapter luid, so we're done.
                         break;
@@ -56,38 +58,38 @@ GPA_Status DX12Utils::DX12GetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& a
             }
         }
 
-        pDXGIFactory->Release();
+        dxgi_factory->Release();
     }
 
     return status;
 }
 
-bool DX12Utils::IsD3D12CommandList(void* pCmd, D3D12_COMMAND_LIST_TYPE* cmdType)
+bool dx12_utils::IsD3D12CommandList(void* cmd, D3D12_COMMAND_LIST_TYPE* cmd_type)
 {
-    IUnknown*                  pUnknown = static_cast<IUnknown*>(pCmd);
-    ID3D12GraphicsCommandList* pD3DCommandList;
-    HRESULT                    hr     = pUnknown->QueryInterface(__uuidof(ID3D12GraphicsCommandList), reinterpret_cast<void**>(&pD3DCommandList));
+    IUnknown*                  unknown = static_cast<IUnknown*>(cmd);
+    ID3D12GraphicsCommandList* d3d_command_list;
+    HRESULT                    hr     = unknown->QueryInterface(__uuidof(ID3D12GraphicsCommandList), reinterpret_cast<void**>(&d3d_command_list));
     bool                       result = SUCCEEDED(hr);
 
-    if (result && nullptr != cmdType)
+    if (result && nullptr != cmd_type)
     {
-        *cmdType = pD3DCommandList->GetType();
-        pD3DCommandList->Release();  // We need to release this as QueryInterface will call AddRef
+        *cmd_type = d3d_command_list->GetType();
+        d3d_command_list->Release();  // We need to release this as QueryInterface will call AddRef.
     }
 
     return result;
 }
 
-bool DX12Utils::IsSameCmdType(const D3D12_COMMAND_LIST_TYPE* pDX12CmdType, const GPA_Command_List_Type* pGpaCmdType)
+bool dx12_utils::IsSameCmdType(const D3D12_COMMAND_LIST_TYPE* dx12_cmd_type, const GpaCommandListType* gpa_cmd_type)
 {
-    if (nullptr != pDX12CmdType && nullptr != pGpaCmdType)
+    if (nullptr != dx12_cmd_type && nullptr != gpa_cmd_type)
     {
-        if (D3D12_COMMAND_LIST_TYPE_BUNDLE == *pDX12CmdType && GPA_COMMAND_LIST_SECONDARY == *pGpaCmdType)
+        if (D3D12_COMMAND_LIST_TYPE_BUNDLE == *dx12_cmd_type && kGpaCommandListSecondary == *gpa_cmd_type)
         {
             return true;
         }
 
-        if (D3D12_COMMAND_LIST_TYPE_BUNDLE != *pDX12CmdType && GPA_COMMAND_LIST_PRIMARY == *pGpaCmdType)
+        if (D3D12_COMMAND_LIST_TYPE_BUNDLE != *dx12_cmd_type && kGpaCommandListPrimary == *gpa_cmd_type)
         {
             return true;
         }
@@ -96,26 +98,26 @@ bool DX12Utils::IsSameCmdType(const D3D12_COMMAND_LIST_TYPE* pDX12CmdType, const
     return false;
 }
 
-bool DX12Utils::GetD3D12Device(IUnknown* pInterfacePointer, ID3D12Device** ppD3D12Device)
+bool dx12_utils::GetD3D12Device(IUnknown* interface_pointer, ID3D12Device** d3d12_device)
 {
-    bool success   = false;
-    *ppD3D12Device = nullptr;
+    bool success  = false;
+    *d3d12_device = nullptr;
 
-    // Check to see if it's an ID3D12Device
-    HRESULT hr = pInterfacePointer->QueryInterface(__uuidof(ID3D12Device), reinterpret_cast<void**>(ppD3D12Device));
+    // Check to see if it's an ID3D12Device.
+    HRESULT hr = interface_pointer->QueryInterface(__uuidof(ID3D12Device), reinterpret_cast<void**>(d3d12_device));
 
     if (hr == E_NOINTERFACE)
     {
-        // It's not an ID3D12device, so see if it is an ID3D12DeviceChild-derived interface (like a ID3D12CommandList)
-        ID3D12DeviceChild* pDeviceChild = nullptr;
+        // It's not an ID3D12device, so see if it is an ID3D12DeviceChild-derived interface (like a ID3D12CommandList).
+        ID3D12DeviceChild* device_child = nullptr;
 
-        hr = pInterfacePointer->QueryInterface(__uuidof(ID3D12DeviceChild), reinterpret_cast<void**>(&pDeviceChild));
+        hr = interface_pointer->QueryInterface(__uuidof(ID3D12DeviceChild), reinterpret_cast<void**>(&device_child));
 
         if (SUCCEEDED(hr))
         {
-            // Note: GetDevice increments a ref on out parameter
-            hr = pDeviceChild->GetDevice(__uuidof(ID3D12Device), reinterpret_cast<void**>(ppD3D12Device));
-            pDeviceChild->Release();
+            // Note: GetDevice increments a ref on out parameter.
+            hr = device_child->GetDevice(__uuidof(ID3D12Device), reinterpret_cast<void**>(d3d12_device));
+            device_child->Release();
         }
     }
 
@@ -123,61 +125,61 @@ bool DX12Utils::GetD3D12Device(IUnknown* pInterfacePointer, ID3D12Device** ppD3D
 
     if (success)
     {
-        (*ppD3D12Device)->Release();
+        (*d3d12_device)->Release();
     }
 
     return success;
 }
 
-bool DX12Utils::IsFeatureLevelSupported(ID3D12Device* pD3D12Device)
+bool dx12_utils::IsFeatureLevelSupported(ID3D12Device* d3d12_device)
 {
-    D3D12_FEATURE_DATA_FEATURE_LEVELS featureLevels            = {};
-    const D3D_FEATURE_LEVEL           requestedFeatureLevels[] = {
+    D3D12_FEATURE_DATA_FEATURE_LEVELS feature_levels             = {};
+    const D3D_FEATURE_LEVEL           requested_feature_levels[] = {
         D3D_FEATURE_LEVEL_11_0,
         D3D_FEATURE_LEVEL_11_1,
         D3D_FEATURE_LEVEL_12_0,
         D3D_FEATURE_LEVEL_12_1,
     };
 
-    featureLevels.NumFeatureLevels        = _countof(requestedFeatureLevels);
-    featureLevels.pFeatureLevelsRequested = requestedFeatureLevels;
+    feature_levels.NumFeatureLevels        = _countof(requested_feature_levels);
+    feature_levels.pFeatureLevelsRequested = requested_feature_levels;
 
-    HRESULT hr = pD3D12Device->CheckFeatureSupport(D3D12_FEATURE_FEATURE_LEVELS, &featureLevels, sizeof(featureLevels));
+    HRESULT hr = d3d12_device->CheckFeatureSupport(D3D12_FEATURE_FEATURE_LEVELS, &feature_levels, sizeof(feature_levels));
 
     return SUCCEEDED(hr);
 }
 
-bool DX12Utils::GetTimestampFrequency(ID3D12Device* pD3D12Device, UINT64& timestampFrequency)
+bool dx12_utils::GetTimestampFrequency(ID3D12Device* d3d12_device, UINT64& timestamp_frequency)
 {
-    bool                     isSucceeded = false;
-    ID3D12CommandQueue*      pQueue      = nullptr;
-    D3D12_COMMAND_QUEUE_DESC queueDesc;
-    ZeroMemory(&queueDesc, sizeof(queueDesc));
-    queueDesc.Type  = D3D12_COMMAND_LIST_TYPE_DIRECT;
-    queueDesc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
-    HRESULT hr      = pD3D12Device->CreateCommandQueue(&queueDesc, __uuidof(ID3D12CommandQueue), reinterpret_cast<PVOID*>(&pQueue));
+    bool                     is_succeeded = false;
+    ID3D12CommandQueue*      queue        = nullptr;
+    D3D12_COMMAND_QUEUE_DESC queue_desc;
+    ZeroMemory(&queue_desc, sizeof(queue_desc));
+    queue_desc.Type  = D3D12_COMMAND_LIST_TYPE_DIRECT;
+    queue_desc.Flags = D3D12_COMMAND_QUEUE_FLAG_NONE;
+    HRESULT hr       = d3d12_device->CreateCommandQueue(&queue_desc, __uuidof(ID3D12CommandQueue), reinterpret_cast<PVOID*>(&queue));
 
-    if (SUCCEEDED(hr) || nullptr != pQueue)
+    if (SUCCEEDED(hr) || nullptr != queue)
     {
         UINT64 frequency = 0;
-        hr               = pQueue->GetTimestampFrequency(&frequency);
+        hr               = queue->GetTimestampFrequency(&frequency);
 
         if (SUCCEEDED(hr))
         {
-            isSucceeded        = true;
-            timestampFrequency = frequency;
+            is_succeeded        = true;
+            timestamp_frequency = frequency;
         }
         else
         {
-            GPA_LogError("Calling GetTimestampFrequency on Direct Command Queue failed");
+            GPA_LOG_ERROR("Calling GetTimestampFrequency on Direct Command Queue failed");
         }
 
-        pQueue->Release();
+        queue->Release();
     }
     else
     {
-        GPA_LogError("GetTimestampFrequency Create Command Queue failed");
+        GPA_LOG_ERROR("GetTimestampFrequency Create Command Queue failed");
     }
 
-    return isSucceeded;
+    return is_succeeded;
 }

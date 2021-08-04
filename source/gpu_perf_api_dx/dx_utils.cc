@@ -1,120 +1,120 @@
 //==============================================================================
 // Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Common DX utility function implementations
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Common DX utility function implementations
 //==============================================================================
 
 #include "dx_utils.h"
 
-GPA_Status DXGetAdapterDesc(IUnknown* pDevice, DXGI_ADAPTER_DESC& adapterDesc)
+GpaStatus DxGetAdapterDesc(IUnknown* device, DXGI_ADAPTER_DESC& adapter_desc)
 {
-    GPA_Status status = GPA_STATUS_OK;
+    GpaStatus status = kGpaStatusOk;
 
-    if (nullptr == pDevice)
+    if (nullptr == device)
     {
-        GPA_LogError("NULL device.");
-        status = GPA_STATUS_ERROR_NULL_POINTER;
+        GPA_LOG_ERROR("NULL device.");
+        status = kGpaStatusErrorNullPointer;
     }
     else
     {
-        IDXGIDevice1* pDXGIDevice = nullptr;
-        HRESULT       hr          = pDevice->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice));
+        IDXGIDevice1* dxgi_device = nullptr;
+        HRESULT       hr          = device->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&dxgi_device));
 
-        if (FAILED(hr) || (nullptr == pDXGIDevice))
+        if (FAILED(hr) || (nullptr == dxgi_device))
         {
-            GPA_LogError("Unable to get IDXGIDevice1 interface from ID3D11Device.");
-            status = GPA_STATUS_ERROR_FAILED;
+            GPA_LOG_ERROR("Unable to get IDXGIDevice1 interface from ID3D11Device.");
+            status = kGpaStatusErrorFailed;
         }
         else
         {
-            IDXGIAdapter* pAdapter = nullptr;
-            hr                     = pDXGIDevice->GetAdapter(&pAdapter);
+            IDXGIAdapter* adapter = nullptr;
+            hr                     = dxgi_device->GetAdapter(&adapter);
 
-            if (FAILED(hr) || (nullptr == pAdapter))
+            if (FAILED(hr) || (nullptr == adapter))
             {
-                GPA_LogError("Unable to get Adapter from IDXGIDevice1.");
-                status = GPA_STATUS_ERROR_FAILED;
+                GPA_LOG_ERROR("Unable to get Adapter from IDXGIDevice1.");
+                status = kGpaStatusErrorFailed;
             }
             else
             {
-                memset(&adapterDesc, 0, sizeof(adapterDesc));
-                hr = pAdapter->GetDesc(&adapterDesc);
+                memset(&adapter_desc, 0, sizeof(adapter_desc));
+                hr = adapter->GetDesc(&adapter_desc);
 
                 if (S_OK != hr)
                 {
-                    GPA_LogError("Could not get adapter description, hardware cannot be supported.");
-                    status = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+                    GPA_LOG_ERROR("Could not get adapter description, hardware cannot be supported.");
+                    status = kGpaStatusErrorHardwareNotSupported;
                 }
 
-                pAdapter->Release();
+                adapter->Release();
             }
 
-            pDXGIDevice->Release();
+            dxgi_device->Release();
         }
     }
 
     return status;
 }
 
-HMONITOR DXGetDeviceMonitor(IUnknown* pDevice)
+HMONITOR DxGetDeviceMonitor(IUnknown* device)
 {
-    HMONITOR hMonitor = nullptr;
+    HMONITOR h_monitor = nullptr;
 
-    if (nullptr == pDevice)
+    if (nullptr == device)
     {
-        GPA_LogError("NULL device.");
+        GPA_LOG_ERROR("NULL device.");
     }
     else
     {
-        IDXGIDevice1* pDXGIDevice = nullptr;
-        HRESULT       hr          = pDevice->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&pDXGIDevice));
+        IDXGIDevice1* dxgi_device = nullptr;
+        HRESULT       hr          = device->QueryInterface(__uuidof(IDXGIDevice1), reinterpret_cast<void**>(&dxgi_device));
 
-        if (FAILED(hr) || (nullptr == pDXGIDevice))
+        if (FAILED(hr) || (nullptr == dxgi_device))
         {
-            GPA_LogError("Unable to get IDXGIDevice1 interface from ID3D11Device.");
+            GPA_LOG_ERROR("Unable to get IDXGIDevice1 interface from ID3D11Device.");
         }
         else
         {
-            IDXGIAdapter* pAdapter = nullptr;
-            hr                     = pDXGIDevice->GetAdapter(&pAdapter);
+            IDXGIAdapter* adapter = nullptr;
+            hr                     = dxgi_device->GetAdapter(&adapter);
 
-            if (FAILED(hr) || (nullptr == pAdapter))
+            if (FAILED(hr) || (nullptr == adapter))
             {
-                GPA_LogError("Unable to get Adapter from IDXGIDevice1.");
+                GPA_LOG_ERROR("Unable to get Adapter from IDXGIDevice1.");
             }
             else
             {
-                IDXGIOutput* pOutput = nullptr;
-                hr                   = pAdapter->EnumOutputs(0, &pOutput);
+                IDXGIOutput* output = nullptr;
+                hr                   = adapter->EnumOutputs(0, &output);
 
                 if (S_OK != hr)
                 {
-                    GPA_LogError("Unable to get Adapter outputs.");
+                    GPA_LOG_ERROR("Unable to get Adapter outputs.");
                 }
                 else
                 {
-                    DXGI_OUTPUT_DESC outputDesc;
-                    hr = pOutput->GetDesc(&outputDesc);
+                    DXGI_OUTPUT_DESC output_desc;
+                    hr = output->GetDesc(&output_desc);
 
                     if (S_OK != hr)
                     {
-                        GPA_LogError("Failed to get output description.");
+                        GPA_LOG_ERROR("Failed to get output description.");
                     }
                     else
                     {
-                        hMonitor = outputDesc.Monitor;
+                        h_monitor = output_desc.Monitor;
                     }
 
-                    pOutput->Release();
+                    output->Release();
                 }
 
-                pAdapter->Release();
+                adapter->Release();
             }
 
-            pDXGIDevice->Release();
+            dxgi_device->Release();
         }
     }
 
-    return hMonitor;
+    return h_monitor;
 }

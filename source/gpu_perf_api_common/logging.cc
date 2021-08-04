@@ -1,260 +1,262 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Logging utility
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Logging utility.
 //==============================================================================
 
-#include "logging.h"
+#include "gpu_perf_api_common/logging.h"
+
 #include <assert.h>
-#include "utility.h"
+
+#include "gpu_perf_api_common/utility.h"
 
 #ifdef _WIN32
 #pragma comment(lib, "Winmm.lib")
 #endif
 
-GPATracer gTracerSingleton;
-GPALogger g_loggerSingleton;
-
-void GPAInternalLogger(GPA_Logging_Type logType, const char* pLogMsg)
+void GpaInternalLogger(GpaLoggingType log_type, const char* log_msg)
 {
-    if (GPA_LOGGING_INTERNAL == logType)
+    if (kGpaLoggingInternal == log_type)
     {
-        if (g_loggerSingleton.m_internalLoggingFileStream.is_open())
+        if (GpaLogger::Instance()->internal_logging_file_stream_.is_open())
         {
-            g_loggerSingleton.m_internalLoggingFileStream << "GPA Internal Logging: " << pLogMsg << std::endl;
+            GpaLogger::Instance()->internal_logging_file_stream_ << "GPA Internal Logging: " << log_msg << std::endl;
         }
     }
 }
 
-GPATracer::GPATracer()
+GpaTracer::GpaTracer()
 {
 #ifdef AMDT_INTERNAL
-    // in internal builds, we want all the tracing to be displayed
-    m_topLevelOnly = false;
+    // In internal builds, we want all the tracing to be displayed.
+    top_level_only_ = false;
 #else
-    // in public builds, the end-user should only see the functions they call
-    m_topLevelOnly = true;
+    // In public builds, the end-user should only see the functions they call.
+    top_level_only_ = true;
 #endif  // AMDT_INTERNAL
 }
 
-void GPATracer::EnterFunction(const char* pFunctionName)
+void GpaTracer::EnterFunction(const char* function_name)
 {
-    std::thread::id currentThreadId;
-    auto            tabCounter = GetTabCounter(&currentThreadId);
+    std::thread::id current_thread_id;
+    auto            tab_counter = GetTabCounter(&current_thread_id);
 
-    if ((!tabCounter->second && m_topLevelOnly) || !m_topLevelOnly)
+    if ((!tab_counter->second && top_level_only_) || !top_level_only_)
     {
         std::stringstream message;
 
-        for (int32_t tempLogTab = 0; tempLogTab < tabCounter->second; tempLogTab++)
+        for (int32_t temp_log_tab = 0; temp_log_tab < tab_counter->second; temp_log_tab++)
         {
             message << "   ";
         }
 
-        message << "Thread " << currentThreadId << " ";
+        message << "Thread " << current_thread_id << " ";
         message << "Enter: ";
-        message << pFunctionName;
+        message << function_name;
         message << ".";
 
 #ifdef AMDT_INTERNAL
-        GPA_LogDebugTrace(message.str().c_str());
+        GPA_LOG_DEBUG_TRACE(message.str().c_str());
 
-        if (tabCounter->second == 0)
+        if (tab_counter->second == 0)
         {
-            // if this is the top level, also pass it to the normal LogTrace
-            GPA_LogTrace(message.str().c_str());
+            // If this is the top level, also pass it to the normal LogTrace.
+            GPA_LOG_TRACE(message.str().c_str());
         }
 
 #else
-        GPA_LogTrace(message.str().c_str());
+        GPA_LOG_TRACE(message.str().c_str());
 #endif  // AMDT_INTERNAL
     }
 
-    ++tabCounter->second;
+    ++tab_counter->second;
 }
 
-void GPATracer::LeaveFunction(const char* pFunctionName)
+void GpaTracer::LeaveFunction(const char* function_name)
 {
-    std::thread::id currentThreadId;
-    auto            tabCounter = GetTabCounter(&currentThreadId);
+    std::thread::id current_thread_id;
+    auto            tab_counter = GetTabCounter(&current_thread_id);
 
-    if (tabCounter->second > 0)
+    if (tab_counter->second > 0)
     {
-        --tabCounter->second;
+        --tab_counter->second;
     }
 
-    if ((!tabCounter->second && m_topLevelOnly) || !m_topLevelOnly)
+    if ((!tab_counter->second && top_level_only_) || !top_level_only_)
     {
         std::stringstream message;
 
-        for (int32_t tempLogTab = 0; tempLogTab < tabCounter->second; tempLogTab++)
+        for (int32_t temp_log_tab = 0; temp_log_tab < tab_counter->second; temp_log_tab++)
         {
             message << "   ";
         }
 
-        message << "Thread " << currentThreadId << " ";
+        message << "Thread " << current_thread_id << " ";
         message << "Leave: ";
-        message << pFunctionName;
+        message << function_name;
         message << ".";
 
 #ifdef AMDT_INTERNAL
-        GPA_LogDebugTrace(message.str().c_str());
+        GPA_LOG_DEBUG_TRACE(message.str().c_str());
 
-        if (tabCounter->second == 0)
+        if (tab_counter->second == 0)
         {
-            // if this is the top level, also pass it to the normal LogTrace
-            GPA_LogTrace(message.str().c_str());
+            // If this is the top level, also pass it to the normal LogTrace.
+            GPA_LOG_TRACE(message.str().c_str());
         }
 
 #else
-        GPA_LogTrace(message.str().c_str());
+        GPA_LOG_TRACE(message.str().c_str());
 #endif  // AMDT_INTERNAL
     }
 }
 
-void GPATracer::OutputFunctionData(const char* pData)
+void GpaTracer::OutputFunctionData(const char* data)
 {
-    std::thread::id currentThreadId;
-    auto            tabCounter = GetTabCounter(&currentThreadId);
+    std::thread::id current_thread_id;
+    auto            tab_counter = GetTabCounter(&current_thread_id);
 
-    if (((tabCounter->second) == 1 && m_topLevelOnly) || !m_topLevelOnly)
+    if (((tab_counter->second) == 1 && top_level_only_) || !top_level_only_)
     {
         std::stringstream message;
 
-        for (int32_t tempLogTab = 0; tempLogTab < tabCounter->second; tempLogTab++)
+        for (int32_t temp_log_tab = 0; temp_log_tab < tab_counter->second; temp_log_tab++)
         {
             message << "   ";
         }
 
-        message << "Thread " << currentThreadId << " ";
-        message << pData;
+        message << "Thread " << current_thread_id << " ";
+        message << data;
         message << ".";
 
 #ifdef AMDT_INTERNAL
-        GPA_LogDebugTrace(message.str().c_str());
+        GPA_LOG_DEBUG_TRACE(message.str().c_str());
 
-        if (tabCounter->second == 0)
+        if (tab_counter->second == 0)
         {
-            // if this is the top level, also pass it to the normal LogTrace
-            GPA_LogTrace(message.str().c_str());
+            // If this is the top level, also pass it to the normal LogTrace.
+            GPA_LOG_TRACE(message.str().c_str());
         }
 
 #else
-        GPA_LogTrace(message.str().c_str());
+        GPA_LOG_TRACE(message.str().c_str());
 #endif  // AMDT_INTERNAL
     }
 }
 
-std::map<std::thread::id, int32_t>::iterator GPATracer::GetTabCounter(std::thread::id* pCurrentThreadId)
+std::map<std::thread::id, int32_t>::iterator GpaTracer::GetTabCounter(std::thread::id* current_thread_id)
 {
-    std::lock_guard<std::mutex> lock(m_tracerMutex);
+    std::lock_guard<std::mutex> lock(tracer_mutex_);
 
-    *pCurrentThreadId = std::this_thread::get_id();
+    *current_thread_id = std::this_thread::get_id();
 
-    std::map<std::thread::id, int32_t>::iterator ret = m_threadTabCountMap.find(*pCurrentThreadId);
+    std::map<std::thread::id, int32_t>::iterator ret = thread_tab_count_map_.find(*current_thread_id);
 
-    if (ret == m_threadTabCountMap.end())
+    if (ret == thread_tab_count_map_.end())
     {
-        m_threadTabCountMap[*pCurrentThreadId] = 0;
-        ret                                    = m_threadTabCountMap.find(*pCurrentThreadId);
+        thread_tab_count_map_[*current_thread_id] = 0;
+        ret                                       = thread_tab_count_map_.find(*current_thread_id);
     }
 
 #ifdef _DEBUG
-    // Validate tab value
-    const int32_t MAX_TAB_COUNT = 1024;
-    assert(ret->second >= 0 && ret->second < MAX_TAB_COUNT);
+    // Validate tab value.
+    const int32_t kMaxTabCount = 1024;
+    assert(ret->second >= 0 && ret->second < kMaxTabCount);
 #endif
 
     return ret;
 }
 
-ScopeTrace::ScopeTrace(const char* pTraceFunction)
+ScopeTrace::ScopeTrace(const char* trace_function)
 {
-    if (g_loggerSingleton.IsTracingEnabled())
+    if (GpaLogger::Instance()->IsTracingEnabled())
     {
-        gTracerSingleton.EnterFunction(pTraceFunction);
-        m_traceFunction = pTraceFunction;
+        GpaTracer::Instance()->EnterFunction(trace_function);
+        trace_function_ = trace_function;
     }
 }
 
 ScopeTrace::~ScopeTrace()
 {
-    if (g_loggerSingleton.IsTracingEnabled())
+    if (GpaLogger::Instance()->IsTracingEnabled())
     {
-        gTracerSingleton.LeaveFunction(m_traceFunction.c_str());
+        GpaTracer::Instance()->LeaveFunction(trace_function_.c_str());
     }
 }
 
-GPALogger::GPALogger()
-    : m_loggingType(GPA_LOGGING_NONE)
-    , m_loggingCallback(nullptr)
-    , m_enableInternalLogging(false)
+GpaLogger::GpaLogger()
+    : logging_type_(kGpaLoggingNone)
+    , logging_callback_(nullptr)
+    , enable_internal_logging_(false)
 {
 #ifdef _WIN32
-    InitializeCriticalSection(&m_hLock);
+    InitializeCriticalSection(&lock_handle);
 #endif
 
 #ifdef _LINUX
-    pthread_mutexattr_t mutexattr;
-    pthread_mutexattr_init(&mutexattr);
-    // Set the mutex as a recursive mutex
-    pthread_mutexattr_settype(&mutexattr, PTHREAD_MUTEX_RECURSIVE_NP);
+    pthread_mutexattr_t mutex_attr;
+    pthread_mutexattr_init(&mutex_attr);
+    // Set the mutex as a recursive mutex.
+#ifdef __APPLE__
+    pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE);
+#else
+    pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE_NP);
+#endif
+    // Create the mutex with the attributes set.
+    pthread_mutex_init(&lock_handle, &mutex_attr);
 
-    // create the mutex with the attributes set
-    pthread_mutex_init(&m_hLock, &mutexattr);
-
-    //After initializing the mutex, the thread attribute can be destroyed
-    pthread_mutexattr_destroy(&mutexattr);
+    // After initializing the mutex, the thread attribute can be destroyed.
+    pthread_mutexattr_destroy(&mutex_attr);
 #endif
 
 #ifdef _DEBUG
-    std::string currentModulePath;
-    GPAUtil::GetCurrentModulePath(currentModulePath);
-    m_internalLogFileName = currentModulePath + "GPA-Internal-Log.txt";
-    std::remove(m_internalLogFileName.c_str());
-    m_internalLoggingFileStream.open(m_internalLogFileName.c_str(), std::ios_base::out | std::ios_base::app);
+    std::string current_module_path;
+    gpa_util::GetCurrentModulePath(current_module_path);
+    internal_log_file_name_ = current_module_path + "GPA-Internal-Log.txt";
+    std::remove(internal_log_file_name_.c_str());
+    internal_logging_file_stream_.open(internal_log_file_name_.c_str(), std::ios_base::out | std::ios_base::app);
 #endif
 }
 
-void GPALogger::SetLoggingCallback(GPA_Logging_Type loggingType, GPA_LoggingCallbackPtrType loggingCallback)
+void GpaLogger::SetLoggingCallback(GpaLoggingType logging_type, GpaLoggingCallbackPtrType logging_callback)
 {
-    if (nullptr == loggingCallback)
+    if (nullptr == logging_callback)
     {
-        m_loggingCallback = nullptr;
-        m_loggingType     = GPA_LOGGING_NONE;
+        logging_callback_ = nullptr;
+        logging_type_     = kGpaLoggingNone;
     }
     else
     {
-        m_loggingCallback = loggingCallback;
-        m_loggingType     = loggingType;
+        logging_callback_ = logging_callback;
+        logging_type_     = logging_type;
     }
 }
 
-void GPALogger::Log(GPA_Logging_Type logType, const char* pMessage)
+void GpaLogger::Log(GpaLoggingType log_type, const char* log_message)
 {
-    EnterCriticalSection(&m_hLock);
+    EnterCriticalSection(&lock_handle);
 
-    // if the supplied message type is among those that the user wants be notified of,
+    // If the supplied message type is among those that the user wants be notified of,
     // then pass the message along.
-    if ((logType & m_loggingType) && nullptr != m_loggingCallback)
+    if ((log_type & logging_type_) && nullptr != logging_callback_)
     {
-        m_loggingCallback(logType, pMessage);
+        logging_callback_(log_type, log_message);
 
-        if (m_enableInternalLogging)
+        if (enable_internal_logging_)
         {
-            m_gpaInternalLogger(logType, pMessage);
+            gpa_internal_logger_(log_type, log_message);
         }
     }
 
-    LeaveCriticalSection(&m_hLock);
+    LeaveCriticalSection(&lock_handle);
 }
 
-GPALogger::~GPALogger()
+GpaLogger::~GpaLogger()
 {
 #ifdef _WIN32
-    DeleteCriticalSection(&m_hLock);
+    DeleteCriticalSection(&lock_handle);
 #else
-    pthread_mutex_destroy(&m_hLock);
+    pthread_mutex_destroy(&lock_handle);
 #endif
 }

@@ -1,128 +1,146 @@
 //==============================================================================
-// Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GPA API Helper class
+// Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GPA API Helper class.
 //==============================================================================
 
-#ifndef _GPA_HELPER_H_
-#define _GPA_HELPER_H_
+#ifndef GPU_PERF_API_EXAMPLES_VULKAN_VK_COLOR_CUBE_GPA_HELPER_H_
+#define GPU_PERF_API_EXAMPLES_VULKAN_VK_COLOR_CUBE_GPA_HELPER_H_
 
-#include <sstream>
 #include <fstream>
-#include <vector>
 #include <iostream>
+#include <sstream>
+#include <vector>
 
-#include "gpu_perf_api_interface_loader.h"
+#include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
-/// Class that demonstrates one approach to loading GPA into an application.
+/// @brief Class that demonstrates one approach to loading GPA into an application.
+///
 /// It can query the addresses of all GPA entry points, and has utility functions to demonstrate
 /// how to access information about the available counters, as well as how to query the profile
 /// result for a given sample Id.
-class GPAHelper
+class GpaHelper
 {
 public:
-    /// Constructor
-    GPAHelper();
+    /// @brief Constructor.
+    GpaHelper();
 
-    /// Destructor
-    ~GPAHelper();
+    /// @brief Destructor.
+    ~GpaHelper();
 
-    /// Indicates whether or not the GPA library is loaded.
+    /// @brief Indicates whether or not the GPA library is loaded.
     bool IsLoaded() const;
 
-    /// Loads the necessary GPA library.
-    /// \return True if the library loaded successfully; false otherwise.
+    /// @brief Loads the necessary GPA library.
+    ///
+    /// @return True if the library loaded successfully; false otherwise.
     bool Load();
 
-    /// Unloads the GPA library.
+    /// @brief Unloads the GPA library.
     void Unload();
 
-    /// Print the available counters from the specified context.
-    /// \param contextId A valid GPA Context ID.
-    void PrintGPACounterInfo(GPA_ContextId contextId) const;
+    /// @brief Print the available counters from the specified context.
+    ///
+    /// @param [in] context_id A valid GPA Context ID.
+    void PrintGPACounterInfo(GpaContextId context_id) const;
 
-    /// Gets the path of the running executable
-    /// \return the path of the running executable
+    /// @brief Gets the path of the running executable
+    ///
+    /// @return The path of the running executable
     static std::string GetExecutablePath();
 
-    /// Gets the name of the CSV file in which to output profile results.
-    /// \return the name of the CSV file in which to output profile results.
+    /// @brief Gets the name of the CSV file in which to output profile results.
+    ///
+    /// @return The name of the CSV file in which to output profile results.
     std::string GetCSVFileName() const;
 
-    /// Gets the name of the GPA log file.
-    /// \return the name of the GPA log file
+    /// @brief Gets the name of the GPA log file.
+    ///
+    /// @return The name of the GPA log file
     static std::string GetGPALogFileName();
 
-    /// Opens the CSV file to output profile results.
-    /// \return True if the csv file was successfully opened; false otherwise.
+    /// @brief Opens the CSV file to output profile results.
+    ///
+    /// @return True if the csv file was successfully opened; false otherwise.
     bool OpenCSVFile();
 
-    /// Closes the CSV File so that it gets saved to disk.
+    /// @brief Closes the CSV File so that it gets saved to disk.
     void CloseCSVFile();
 
-    /// Callback function for any error messages that GPA produces.
-    /// \param type The type of logging message.
-    /// \param msg The message.
-    static void gpaLoggingCallback(GPA_Logging_Type type, const char* msg);
+    /// @brief Callback function for any error messages that GPA produces.
+    ///
+    /// @param [in] type The type of logging message.
+    /// @param [in] msg The message.
+    static void gpaLoggingCallback(GpaLoggingType type, const char* msg);
 
-    /// Enum to define type of counter validation to perform
+    /// @brief Enum to define type of counter validation to perform
     typedef enum
     {
-        COMPARE_TYPE_EQUAL,                     ///< Counter value must be equal to a specified value
-        COMPARE_TYPE_GREATER_THAN,              ///< Counter value must be greater than a specified value
-        COMPARE_TYPE_GREATER_THAN_OR_EQUAL_TO,  ///< Counter value must be greater than or equal to a specified value
-        COMPARE_TYPE_LESS_THAN,                 ///< Counter value must be less than a specified value
-        COMPARE_TYPE_LESS_THAN_OR_EQUAL_TO,     ///< Counter value must be less than or equal to a specified value
+        kCompareTypeEqual,                 ///< Counter value must be equal to a specified value.
+        kCompareTypeGreaterThan,           ///< Counter value must be greater than a specified value.
+        kCompareTypeGreaterThanOrEqualTo,  ///< Counter value must be greater than or equal to a specified value.
+        kCompareTypeLessThan,              ///< Counter value must be less than a specified value.
+        kCompareTypeLessThanOrEqualTo,     ///< Counter value must be less than or equal to a specified value.
     } CompareType;
 
-    /// Compare retrieved counter value to an expected value
-    /// \param sampleIndex the sample index of the counter being compared
-    /// \param pCounterName the name of the counter being compared
-    /// \param counterValue the retrieved counter value
-    /// \param compareType the type of compare to perform
-    /// \param compareVal the expected counter value (subject to the compare type)
-    /// \return true if the counter value compares successfully, false otherwise
-    bool CounterValueCompare(unsigned int sampleIndex, const char* pCounterName, gpa_float64 counterValue, CompareType compareType, gpa_float64 compareVal);
+    /// @brief Compare retrieved counter value to an expected value.
+    ///
+    /// @param [in] profile_set The index of the profile set being validated.
+    /// @param [in] sample_index The sample index of the counter being compared.
+    /// @param [in] counter_name The name of the counter being compared.
+    /// @param [in] counter_value The retrieved counter value.
+    /// @param [in] compare_type The type of compare to perform.
+    /// @param [in] compare_value The expected counter value (subject to the compare type).
+    /// @param [in] confirm_success Flag indicating whether or not to confirm successful counter verifications.
+    ///
+    /// @return True if the Counter value compares successfully, false otherwise.
+    bool CounterValueCompare(unsigned int profile_set, unsigned int sample_index, const char* counter_name, GpaFloat64 counter_value, CompareType compare_type, GpaFloat64 compare_value, bool confirm_success);
 
-    /// Validate a specified counter in a specified sample
-    /// \param sampleIndex the index of the sample containing the counter
-    /// \param pCounterName the name of the counter to validate
-    /// \param counterValue the value of the counter to validate
-    /// \param counterUsageType the usage type of the counter being compared
-    /// \return true if the counter value validates successfully, false otherwise
-    bool ValidateData(unsigned int sampleIndex, const char* pCounterName, gpa_float64 counterValue, GPA_Usage_Type counterUsageType);
+    /// @brief Validate a specified counter in a specified sample.
+    ///
+    /// @param [in] profile_set The index of the profile set being validated.
+    /// @param [in] sample_index The index of the sample containing the counter.
+    /// @param [in] counter_name The name of the counter to validate.
+    /// @param [in] counter_value The value of the counter to validate.
+    /// @param [in] counter_usage_type The usage type of the counter being compared.
+    /// @param [in] confirm_success Flag indicating whether or not to confirm successful counter verifications.
+    ///
+    /// @return True if the counter value validates successfully, false otherwise.
+    bool ValidateData(unsigned int profile_set, unsigned int sample_index, const char* counter_name, GpaFloat64 counter_value, GpaUsageType counter_usage_type, bool confirm_success);
 
-    /// Print counter results from a specific sample.
-    /// If the CSV file is open, then the results will be written the CSV file too.
-    /// \param contextId A valid Context ID.
-    /// \param sessionId A valid Session ID.
-    /// \param sampleId A valid Sample ID.
-    /// \param outputToConsole flag indicating to show on console or not
-    /// \param verifyCounters flag indicating to verify the counters or not
-    void PrintGPASampleResults(GPA_ContextId contextId, GPA_SessionId sessionId, gpa_uint32 sampleId, bool outputToConsole, bool verifyCounters);
+    /// @brief Print counter results from a specific sample. If the CSV file is open, results will be written there too.
+    ///
+    /// @param [in] context_id A valid Context ID.
+    /// @param [in] session_id A valid Session ID.
+    /// @param [in] profile_set The index of the profile set being validated.
+    /// @param [in] sample_id A valid Sample ID.
+    /// @param [in] output_to_console Flag indicating to show on console or not.
+    /// @param [in] verify_counters Flag indicating to verify the counters or not.
+    /// @param [in] confirm_success Flag indicating whether or not to confirm successful counter verifications.
+    void PrintGpaSampleResults(GpaContextId context_id, GpaSessionId session_id, unsigned int profile_set, GpaUInt32 sample_id, bool output_to_console, bool verify_counters, bool confirm_success);
 
-    /// GPA function table pointer
-    GPAFunctionTable* m_pGpaFuncTable;
+    /// GPA function table pointer.
+    GpaFunctionTable* gpa_function_table_;
 
     /// The name of the csv file that will be written.
-    std::string m_csvFileName = "VkColorCube_counterData.csv";
+    std::string csv_file_name_ = "VkColorCube_counterData.csv";
 
     /// The name of the GPA Log file that will be written.
-    static std::string ms_gpaLogFileName;
+    static std::string gpa_log_file_name;
 
-    /// GPA log file stream
-    static std::fstream ms_gpaLogFileStream;
+    /// GPA log file stream.
+    static std::fstream gpa_log_file_stream;
 
-    // Flag indicating if any errors were output via GPA's logging mechanism
-    static bool ms_anyGPAErrorsLogged;
+    /// Flag indicating if any errors were output via GPA's logging mechanism.
+    static bool gpa_any_errors_logged;
 
 private:
     /// The file stream for writing the csv file.
-    std::fstream m_csvFile;
+    std::fstream csv_file_;
 
     /// Flag to indicate if the header has been written in the csv file.
-    bool m_bHeaderWritten;
+    bool is_header_written_;
 };
 
-#endif  // _GPUPERFAPI_HELPER_H_
+#endif  // GPU_PERF_API_EXAMPLES_VULKAN_VK_COLOR_CUBE_GPA_HELPER_H_

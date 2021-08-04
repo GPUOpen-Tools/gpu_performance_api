@@ -1,29 +1,31 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Defines entry points in GPUPerfAPIDXGetAMDDeviceInfo dll
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Defines entry points in GPUPerfAPIDXGetAMDDeviceInfo dll.
 //==============================================================================
 
-#ifndef _DX_GET_AMD_DEVICE_INFO_H_
-#define _DX_GET_AMD_DEVICE_INFO_H_
+#ifndef GPU_PERF_API_COMMON_DX_GET_AMD_DEVICE_INFO_H_
+#define GPU_PERF_API_COMMON_DX_GET_AMD_DEVICE_INFO_H_
 
-#ifndef GPALIB_DECL
-/// macro for exporting an API function
+#ifndef GPA_LIB_DECL
+/// Macro for exporting an API function.
 #ifdef __cplusplus
-#define GPALIB_DECL extern "C" __declspec(dllimport)
+#define GPA_LIB_DECL extern "C" __declspec(dllimport)
 #else
-#define GPALIB_DECL __declspec(dllimport)
+#define GPA_LIB_DECL __declspec(dllimport)
 #endif
 #endif
 
 #include <windows.h>
 
-/// Get the vendor id and device id of the GPU associated with the monitor
-/// \param[in] hMonitor the monitor whose device is needed
-/// \param[out] vendorId the vendor id of the device associated with hMonitor
-/// \param[out] deviceId the vendor id of the device associated with hMonitor
-/// \return bool if an AMD device is associated with hMonitor
-GPALIB_DECL bool DXGetAMDDeviceInfo(HMONITOR hMonitor, int& vendorId, int& deviceId);
+/// @brief Get the vendor id and device id of the GPU associated with the monitor.
+///
+/// @param [in] monitor_handle The monitor whose device is needed.
+/// @param [out] vendor_id The vendor id of the device associated with monitor_handle.
+/// @param [out] device_id The device id of the device associated with monitor_handle.
+///
+/// @return True if an AMD device is associated with the monitor_handle.
+GPA_LIB_DECL bool DxGetAmdDeviceInfo(HMONITOR monitor_handle, int& vendor_id, int& device_id);
 
-#endif  // _DX_GET_AMD_DEVICE_INFO_H_
+#endif  // GPU_PERF_API_COMMON_DX_GET_AMD_DEVICE_INFO_H_

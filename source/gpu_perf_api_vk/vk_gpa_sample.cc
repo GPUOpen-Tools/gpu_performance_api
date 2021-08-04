@@ -1,15 +1,16 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Vk Sample implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Vk Sample implementation
 //==============================================================================
 
-#include "vk_gpa_sample.h"
-#include "vk_gpa_command_list.h"
+#include "gpu_perf_api_vk/vk_gpa_sample.h"
 
-VkGPASample::VkGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, unsigned int sampleId)
-    : GPASample(pPass, pCmdList, sampleType, sampleId)
+#include "gpu_perf_api_vk/vk_gpa_command_list.h"
+
+VkGpaSample::VkGpaSample(GpaPass* pass, IGpaCommandList* command_list, GpaSampleType sample_type, unsigned int sample_id)
+    : GpaSample(pass, command_list, sample_type, sample_id)
 {
-    m_pVkGpaCmdList = static_cast<VkGPACommandList*>(pCmdList);
+    vk_gpa_command_list_ = static_cast<VkGpaCommandList*>(command_list);
 }

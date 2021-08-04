@@ -1,8 +1,9 @@
-#! /usr/bin/python
+#! /usr/bin/python3
+# Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 #
 # Simple script to update a set of common directories that are needed as dependencies of the GPUPerfAPI
 # Usage:
-#   UpdateCommon.py [latest]
+#   fetch_dependencies.py [latest]
 #
 # If "latest" is specified, the latest commit will be checked out.
 # Otherwise, the repos will be updated to the commit specified in the "gitMapping" table.
@@ -44,7 +45,7 @@ scriptRoot = os.path.dirname(os.path.realpath(__file__))
 SHELLARG = False
 # The environment variable SHELL is only set for Cygwin or Linux
 SHELLTYPE = os.environ.get('SHELL')
-if ( SHELLTYPE == None ):
+if SHELLTYPE is None:
     # running on windows under default shell
     SHELLARG = True
 
@@ -57,10 +58,9 @@ except OSError:
 
 # specify whether or not to download the Vulkan SDK (default is to download it)
 parser = argparse.ArgumentParser(description='UpdateCommon args')
-parser.add_argument('--skipvulkansdk', action='store_true', default=False, help='Prevents script from checking for the Vulkan SDK')
-parser.add_argument('--downloadvulkansdk', action='store_true', default=False, help='Tells script to install the Vulkan SDK, regardless if one is already installed')
 parser.add_argument('--showrevisions', action='store_true', default=False, help='Show git revisions of HEAD in dependent repo')
 parser.add_argument('--gitserver', help='Git Server')
+parser.add_argument('--usebranch', action='store', help='Branch to use when cloning dependencies instead of the script default branch.')
 
 # to allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file
 scriptRoot = os.path.dirname(os.path.realpath(__file__))
@@ -74,11 +74,8 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
     targetPath = os.path.normpath(tmppath)
 
     reqdCommit = commit
-    # reqdCommit may be "None" - or user may override commit via command line. In this case, use tip of tree
-    if((len(sys.argv) != 1 and sys.argv[1] == "latest") or reqdCommit is None):
-        reqdCommit = "master"
 
-    print("\nChecking out commit: " + reqdCommit + " for " + key)
+    print("\nChecking out commit: %s for %s\n"%(reqdCommit, targetPath))
 
     if os.path.isdir(targetPath):
         # directory exists - get latest from git using pull
@@ -91,21 +88,16 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
             sys.exit(1)
         sys.stdout.flush()
 
-        try:
-            subprocess.check_call(["git", "-C", targetPath, "checkout", reqdCommit], shell=SHELLARG)
-        except subprocess.CalledProcessError as e:
-            print ("'git checkout' failed with returncode: %d\n" % e.returncode)
-            sys.exit(1)
-        sys.stderr.flush()
-        sys.stdout.flush()
+        if reqdCommit is not None:
+            GpaUtils.SwitchToBranchOrRef(targetPath, reqdCommit)
     else:
         # directory doesn't exist - clone from git
-        ghRepoSource = repoRootUrl + key
+        ghRepoSource = repoRootUrl
 
         print("Directory " + targetPath + " does not exist. \n\tUsing 'git clone' to get from " + ghRepoSource)
         sys.stdout.flush()
 
-        if False == GpaUtils.CloneGitRepo(ghRepoSource, reqdCommit, targetPath):
+        if not GpaUtils.CloneGitRepo(ghRepoSource, reqdCommit, targetPath):
             sys.exit(1)
 
         if reqdCommit is not None:
@@ -201,8 +193,8 @@ def HandleGpaDx11GetDeviceInfo(src, dest, fileName, version, copyDest):
         DEST_PATH=scriptRoot
     else:
         DEST_PATH=TEMP_DIR
-        GpaDx11GetDeviceInfoArchiveFileName = fileName
-        GpaDx11GetDeviceInfoArchiveAbsPath = os.path.join(DEST_PATH, GpaDx11GetDeviceInfoArchiveFileName)
+    GpaDx11GetDeviceInfoArchiveFileName = fileName
+    GpaDx11GetDeviceInfoArchiveAbsPath = os.path.join(DEST_PATH, GpaDx11GetDeviceInfoArchiveFileName)
 
     if dest != "default":
         DEST_PATH = dest
@@ -242,7 +234,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if args.showrevisions == True:
+    if args.showrevisions:
         ShowRevisions()
         sys.exit(0)
 
@@ -250,21 +242,17 @@ if __name__ == "__main__":
         git_tools_remote_server = args.gitserver
 
     for key in DependencyMap.gitMapping:
-        UpdateGitHubRepo(git_tools_remote_server, DependencyMap.gitMapping[key][0], DependencyMap.gitMapping[key][1])
+        default_branch = DependencyMap.gitMapping[key][1]
+        if args.usebranch is not None:
+            if key != "googletest":
+                if GpaUtils.VerifyBranch((git_tools_remote_server + key), args.usebranch):
+                    default_branch = args.usebranch
+        UpdateGitHubRepo((git_tools_remote_server + key), DependencyMap.gitMapping[key][0], default_branch)
 
-    if "Linux" == MACHINE_OS:
-        for key in DependencyMap.downloadLinux:
-            keyList = DependencyMap.downloadLinux[key]
-            if key == "Vulkan":
-                FileName = str(keyList[0]).rpartition("/")[2]
-                HandleVulkan(keyList[0], keyList[1], FileName, keyList[2], keyList[3])
-
-    else:
+    if "Windows" == MACHINE_OS:
         for key in DependencyMap.downloadWin:
             keyList = DependencyMap.downloadWin[key]
             FileName = str(keyList[0]).rpartition("/")[2]
-            if key == "Vulkan":
-                HandleVulkan(keyList[0], keyList[1], FileName, keyList[2], keyList[3])
 
             if key == "GPADX11GetDeviceInfo":
                 HandleGpaDx11GetDeviceInfo(keyList[0], keyList[1], FileName, keyList[2], keyList[3])

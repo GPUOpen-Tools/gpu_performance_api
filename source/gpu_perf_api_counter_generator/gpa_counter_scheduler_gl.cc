@@ -1,23 +1,23 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief Class for counter scheduling for GL
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Class for counter scheduling for GL.
 //==============================================================================
 
-#include "gpa_counter_scheduler_gl.h"
-#include "gpa_counter_generator_scheduler_manager.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_scheduler_gl.h"
 
-GPA_CounterSchedulerGL::GPA_CounterSchedulerGL()
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_scheduler_manager.h"
+
+GpaCounterSchedulerGl::GpaCounterSchedulerGl()
 {
-    // TODO: need to make some changes to support GPUTime counter on non-AMD in public build
     for (int gen = GDT_HW_GENERATION_FIRST_AMD; gen < GDT_HW_GENERATION_LAST; gen++)
     {
-        CounterGeneratorSchedulerManager::Instance()->RegisterCounterScheduler(GPA_API_OPENGL, static_cast<GDT_HW_GENERATION>(gen), this);
+        CounterGeneratorSchedulerManager::Instance()->RegisterCounterScheduler(kGpaApiOpengl, static_cast<GDT_HW_GENERATION>(gen), this);
     }
 }
 
-GPACounterSplitterAlgorithm GPA_CounterSchedulerGL::GetPreferredSplittingAlgorithm() const
+GpaCounterSplitterAlgorithm GpaCounterSchedulerGl::GetPreferredSplittingAlgorithm() const
 {
-    return CONSOLIDATED;
+    return kConsolidated;
 }

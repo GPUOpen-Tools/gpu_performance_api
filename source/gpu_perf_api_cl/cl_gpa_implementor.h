@@ -1,8 +1,8 @@
 //==============================================================================
 // Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief CL GPA Implementation declarations
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief CL GPA Implementation declarations
 //==============================================================================
 
 #ifndef _CL_GPA_IMPLEMENTOR_H_
@@ -15,37 +15,39 @@
 #include "gpa_implementor.h"
 
 /// Class for CL GPA Implementation
-class CLGPAImplementor : public GPAImplementor, public TSingleton<CLGPAImplementor>
+class ClGpaImplementor : public GpaImplementor, public TSingleton<ClGpaImplementor>
 {
-    friend class TSingleton<CLGPAImplementor>;  ///< friend declaration to allow access to the constructor
+    friend class TSingleton<ClGpaImplementor>;  ///< friend declaration to allow access to the constructor
 
 public:
     /// Destructor
-    ~CLGPAImplementor() = default;
+    ~ClGpaImplementor() = default;
 
-    /// \copydoc IGPAInterfaceTrait::GetAPIType()
-    GPA_API_Type GetAPIType() const override final;
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    GpaApiType GetApiType() const override final;
 
-    /// \copydoc GPAImplementor::GetHwInfoFromAPI
-    bool GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const override final;
+    /// @copydoc GpaImplementor::GetHwInfoFromApi
+    bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const override final;
 
-    /// \copydoc GPAImplementor::VerifyAPIHwSupport
-    bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const override final;
+    /// @copydoc GpaImplementor::VerifyApiHwSupport
+    bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const override final;
 
 private:
     /// Constructor
-    CLGPAImplementor() = default;
+    ClGpaImplementor()
+        : init_perf_counter_amd_extension_(false)
+    {};
 
-    /// \copydoc GPAImplementor::OpenAPIContext
-    IGPAContext* OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags) override final;
+    /// @copydoc GpaImplementor::OpenApiContext
+    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
 
-    /// \copydoc GPAImplementor::CloseAPIContext
-    bool CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pContext) override final;
+    /// @copydoc GpaImplementor::CloseApiContext
+    bool CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context) override final;
 
-    /// \copydoc GPAImplementor::GetDeviceIdentifierFromContextInfo()
-    GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const override final;
+    /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
+    GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
 
-    bool m_initPerfCounterAMDExtension = false;  ///< flag indicating if the CL extension function pointers have been initialized
+    bool init_perf_counter_amd_extension_;  ///< flag indicating if the CL extension function pointers have been initialized
 };
 
 #endif  // _CL_GPA_IMPLEMENTOR_H_

@@ -1,57 +1,61 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Cube Sample
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Cube Sample.
 //==============================================================================
 
+#include "examples\dx12\dx12_color_cube\cube_sample.h"
+
 #include <Windows.h>
-#include <string>
-#include <vector>
+
+#include <cassert>
 #include <chrono>
-#include <thread>
+#include <codecvt>
 #include <iomanip>
 #include <locale>
-#include <codecvt>
+#include <string>
+#include <thread>
+#include <vector>
+
 #include <D3DCompiler.h>
-#include <cassert>
 
-#include "..\sample.h"
-#include "cube_sample.h"
+#include "examples\dx12\sample.h"
 
-unsigned int      g_windowWidth                   = 800;
-unsigned int      g_windowHeight                  = 800;
-std::wstring      g_windowClassName               = L"D3D12 Cube Sample";
-HWND              g_windowHandle                  = nullptr;
-CubeSample*       CubeSample::ms_pCubeSample      = nullptr;
-GPAApiManager*    GPAApiManager::m_pGpaApiManager = nullptr;
-GPAFuncTableInfo* g_pFuncTableInfo                = nullptr;
+extern const unsigned int kWindowWidth     = 800;
+extern const unsigned int kWindowHeight    = 800;
+extern const std::wstring kWindowClassName = L"D3D12 Cube Sample";
 
-bool g_anyGPAErrorsLogged = false;  ///< flag indicating if any GPA errors have been logged
+HWND              window_handle                   = nullptr;  ///< Window handle.
+CubeSample*       CubeSample::cube_sample         = nullptr;  ///< CubeSample static instance.
+GpaApiManager*    GpaApiManager::gpa_api_manager_ = nullptr;  ///< GPA API Manager.
+GpaFuncTableInfo* gpa_function_table_info         = nullptr;  ///< GPA Function table.
 
-void LogGPA(GPA_Logging_Type loggingType, const char* logMessage)
+bool any_errors_logged = false;  ///< Flag indicating if any GPA errors have been logged.
+
+void LogGPA(GpaLoggingType logging_type, const char* log_message)
 {
-    CubeSample::Instance()->GPA_Log(loggingType, logMessage);
+    CubeSample::Instance()->GpaLog(logging_type, log_message);
 }
 
 #define MAKE_STRING(X) #X
 
 LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
-    static unsigned int paintCount = 0;
+    static unsigned int paint_count = 0;
 
     switch (uMsg)
     {
     case WM_SHOWWINDOW:
     {
-        // Initialize app here
+        // Initialize app here.
         CubeSample::Instance()->Init();
 
-        if (args.m_useGPA)
+        if (args.use_gpa)
         {
-            bool gpaOk = CubeSample::Instance()->GPA_InitializeAndOpenContext();
+            bool gpa_ok = CubeSample::Instance()->GpaInitializeAndOpenContext();
 
-            if (!gpaOk)
+            if (!gpa_ok)
             {
                 PostQuitMessage(-1);
             }
@@ -62,59 +66,60 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
 
     case WM_PAINT:
     {
-        bool sessionCreated = CubeSample::Instance()->GPA_CreateProfilingSession();
-        bool sessionStarted = false;
+        bool session_created = CubeSample::Instance()->GpaCreateProfilingSession();
+        bool session_started = false;
 
-        if (sessionCreated)
+        if (session_created)
         {
-            if (CubeSample::Instance()->GPA_EnableCounters())
+            if (CubeSample::Instance()->GpaEnableCounters())
             {
-                sessionStarted = CubeSample::Instance()->GPA_BeginProfilingSession();
+                session_started = CubeSample::Instance()->GpaBeginProfilingSession();
             }
             else
             {
-                CubeSample::Instance()->GPA_DeleteProfilingSession();
+                CubeSample::Instance()->GpaDeleteProfilingSession();
             }
         }
         do
         {
-            bool passStarted = false;
+            bool pass_started = false;
 
-            if (sessionStarted)
+            if (session_started)
             {
-                passStarted = CubeSample::Instance()->GPA_BeginPass();
+                pass_started = CubeSample::Instance()->GpaBeginPass();
             }
 
-            CubeSample::Instance()->Draw();  // draw the cube
+            // Draw the cube.
+            CubeSample::Instance()->Draw();
 
-            if (passStarted)
+            if (pass_started)
             {
-                CubeSample::Instance()->GPA_EndPass();
+                CubeSample::Instance()->GpaEndPass();
             }
-        } while (CubeSample::Instance()->GPA_NextPassNeeded());
+        } while (CubeSample::Instance()->GpaNextPassNeeded());
 
-        bool sessionEnded = false;
+        bool session_ended = false;
 
-        if (sessionStarted)
+        if (session_started)
         {
-            sessionEnded = CubeSample::Instance()->GPA_EndProfilingSession();
+            session_ended = CubeSample::Instance()->GpaEndProfilingSession();
         }
 
-        if (sessionEnded)
+        if (session_ended)
         {
-            CubeSample::Instance()->GPA_PopulateSessionResult();
+            CubeSample::Instance()->GpaPopulateSessionResult();
 
-            if (sessionCreated)
+            if (session_created)
             {
-                CubeSample::Instance()->GPA_DeleteProfilingSession();
+                CubeSample::Instance()->GpaDeleteProfilingSession();
             }
         }
 
-        paintCount++;
+        paint_count++;
 
-        if (args.m_numberOfFrames > 0 && paintCount >= args.m_numberOfFrames)
+        if (args.num_frames > 0 && paint_count >= args.num_frames)
         {
-            // if the user specified a number of frames, and we've rendered that many frames, then exit
+            // If the user specified a number of frames, and we've rendered that many frames, then exit.
             PostQuitMessage(0);
         }
 
@@ -122,10 +127,10 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
     }
 
     case WM_DESTROY:
-        // Destroy app here
-        if (args.m_useGPA)
+        // Destroy app here.
+        if (args.use_gpa)
         {
-            CubeSample::Instance()->GPA_ReleaseContextAndDestroy();
+            CubeSample::Instance()->GpaReleaseContextAndDestroy();
         }
 
         CubeSample::Instance()->Destroy();
@@ -136,11 +141,11 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
     {
         switch (wParam)
         {
-        case 0x50:  // keyboard P for profiling
+        case 0x50:  // Keyboard P for profiling.
             CubeSample::Instance()->ToggleProfiling();
             break;
 
-        case 0x57:  // keyboard W for wireframe
+        case 0x57:  // Keyboard W for wireframe.
             CubeSample::Instance()->ToggleWireFrame();
             break;
 
@@ -156,64 +161,64 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
 
 CubeSample* CubeSample::Instance()
 {
-    if (nullptr == ms_pCubeSample)
+    if (nullptr == cube_sample)
     {
-        ms_pCubeSample = new (std::nothrow) CubeSample();
+        cube_sample = new (std::nothrow) CubeSample();
     }
 
-    return ms_pCubeSample;
+    return cube_sample;
 }
 
 CubeSample::CubeSample()
-    : m_pd3d12Device(nullptr)
-    , m_pD3D12RootSignature(nullptr)
-    , m_deviceId(0)
-    , m_revisionId(0)
+    : d3d12_device_(nullptr)
+    , d3d12_root_signature_(nullptr)
+    , device_id_(0)
+    , revision_id_(0)
 #ifdef _DEBUG
-    , m_pd3d12DebugInterface(nullptr)
-    , m_pdxgiDebug(nullptr)
+    , d3d12_debug_interface(nullptr)
+    , dxgi_debug_(nullptr)
 #endif
-    , m_pdxgiFactory2(nullptr)
-    , m_pfillDrawPipeline(nullptr)
-    , m_pWireframePipeline(nullptr)
-    , m_pVertexBuffer(nullptr)
-    , m_vertexBufferView()
-    , m_pIndexBuffer(nullptr)
-    , m_indexBufferView()
-    , m_scissorRect()
-    , m_pRTVResource{nullptr, nullptr}
-    , m_fenceEvent(nullptr)
-    , m_pd3d12Fence(nullptr)
-    , m_fenceValue(0u)
-    , m_pdxgiSwapChain3(nullptr)
-    , m_currentBackBufferIndex(0u)
-    , m_pCurrentPipelineState(nullptr)
-    , m_pd3d12DescriptorHeap(nullptr)
-    , m_RTVdescriptorIncrementSize(0u)
-    , m_pd3d12CommandQueue(nullptr)
-    , m_pipelineStateChanged(false)
-    , m_wireframe(false)
-    , m_profilingEnable(true)
-    , m_frameCounter(0u)
-    , m_isHeaderWritten(false)
-    , m_pGpaFunctionTable(nullptr)
-    , m_gpaContextId(nullptr)
-    , m_gpaSessionId(nullptr)
-    , m_passRequired(0u)
-    , m_currentPass(-1)
-    , m_sampleCounter(-1)
+    , dxgi_factory_2_(nullptr)
+    , fill_draw_pipeline_(nullptr)
+    , wire_frame_pipeline_(nullptr)
+    , vertex_buffer_(nullptr)
+    , vertex_buffer_view_()
+    , index_buffer_(nullptr)
+    , index_buffer_view_()
+    , scissor_rect_()
+    , rtv_resource_{nullptr, nullptr}
+    , fence_event_(nullptr)
+    , d3d12_fence_(nullptr)
+    , fence_value_(0u)
+    , dxgi_swap_chain_3_(nullptr)
+    , current_back_buffer_index_(0u)
+    , current_pipeline_state_(nullptr)
+    , d3d12_descriptor_heap_(nullptr)
+    , rtv_view_desc_size(0u)
+    , d3d12_command_queue_(nullptr)
+    , pipeline_state_changed_(false)
+    , wire_frame_(false)
+    , profiling_enable_(true)
+    , frame_counter_(0u)
+    , is_header_written_(false)
+    , gpa_function_table_(nullptr)
+    , gpa_context_id_(nullptr)
+    , gpa_session_id_(nullptr)
+    , num_passes_required_(0u)
+    , current_pass_(-1)
+    , sample_counter_(-1)
 {
 }
 
 void CubeSample::Init()
 {
-    std::vector<char> modulepath(_MAX_PATH);
+    std::vector<char> module_path(_MAX_PATH);
 
-    ::GetModuleFileNameA(0, modulepath.data(), static_cast<DWORD>(modulepath.size()));
+    ::GetModuleFileNameA(0, module_path.data(), static_cast<DWORD>(module_path.size()));
 
-    std::string pathOnly(modulepath.data());
+    std::string path_only(module_path.data());
 
-    m_executablePath = pathOnly.substr(0, pathOnly.find_last_of('\\') + 1);
+    executable_path_ = path_only.substr(0, path_only.find_last_of('\\') + 1);
 
     if (InitializeCommonResource())
     {
@@ -221,101 +226,100 @@ void CubeSample::Init()
 
         if (InitializeViewPortResource())
         {
-            m_scissorRect.left   = 0l;
-            m_scissorRect.top    = 0l;
-            m_scissorRect.right  = 800l;
-            m_scissorRect.bottom = 800l;
+            scissor_rect_.left   = 0l;
+            scissor_rect_.top    = 0l;
+            scissor_rect_.right  = 800l;
+            scissor_rect_.bottom = 800l;
 
-            m_counterFileName = std::string(m_executablePath.begin(), m_executablePath.end()).append("D3D12ColorCube_counterData.csv");
-            m_gpaLogFileName  = std::string(m_executablePath.begin(), m_executablePath.end()).append("D3D12ColorCube_gpaLog.txt");
+            counter_file_name_ = std::string(executable_path_.begin(), executable_path_.end()).append("D3D12ColorCube_counterData.csv");
+            gpa_log_file_name_ = std::string(executable_path_.begin(), executable_path_.end()).append("D3D12ColorCube_gpaLog.txt");
 
-            // wireframe
-            m_wireframe = false;
+            wire_frame_ = false;
         }
     }
 }
 
 bool CubeSample::InitializeCommonResource()
 {
-    HRESULT result           = S_OK;
-    UINT    dxgiFactoryFlags = 0;
+    HRESULT result             = S_OK;
+    UINT    dxgi_factory_flags = 0;
 
-    // Enable Debug layer
+    // Enable Debug layer.
 #ifdef _DEBUG
-    result = D3D12GetDebugInterface(__uuidof(ID3D12Debug), reinterpret_cast<void**>(&m_pd3d12DebugInterface));
+    result = D3D12GetDebugInterface(__uuidof(ID3D12Debug), reinterpret_cast<void**>(&d3d12_debug_interface));
 
     if (FAILED(result))
     {
         return false;
     }
 
-    m_pd3d12DebugInterface->EnableDebugLayer();
-    dxgiFactoryFlags |= DXGI_CREATE_FACTORY_DEBUG;
-    AddIUnknown(m_pd3d12DebugInterface, MAKE_STRING(m_pd3d12DebugInterface));
+    d3d12_debug_interface->EnableDebugLayer();
+    dxgi_factory_flags |= DXGI_CREATE_FACTORY_DEBUG;
+    AddIUnknown(d3d12_debug_interface, MAKE_STRING(d3d12_debug_interface));
 
-    HMODULE dxgiHandle = GetModuleHandle(L"Dxgidebug.dll");
+    HMODULE dxgi_handle = GetModuleHandle(L"Dxgidebug.dll");
 
-    if (nullptr != dxgiHandle)
+    if (nullptr != dxgi_handle)
     {
-        decltype(DXGIGetDebugInterface)* dxgiDebugFunc =
-            reinterpret_cast<decltype(DXGIGetDebugInterface)*>(GetProcAddress(dxgiHandle, "DXGIGetDebugInterface"));
+        decltype(DXGIGetDebugInterface)* dxgi_debug_function =
+            reinterpret_cast<decltype(DXGIGetDebugInterface)*>(GetProcAddress(dxgi_handle, "DXGIGetDebugInterface"));
 
-        if (nullptr != dxgiDebugFunc)
+        if (nullptr != dxgi_debug_function)
         {
-            result = dxgiDebugFunc(__uuidof(IDXGIDebug), reinterpret_cast<void**>(&m_pdxgiDebug));
+            result = dxgi_debug_function(__uuidof(IDXGIDebug), reinterpret_cast<void**>(&dxgi_debug_));
 
             if (SUCCEEDED(result))
             {
-                m_pdxgiDebug->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
-                AddIUnknown(m_pdxgiDebug, MAKE_STRING(m_pdxgiDebug));
+                dxgi_debug_->ReportLiveObjects(DXGI_DEBUG_ALL, DXGI_DEBUG_RLO_ALL);
+                AddIUnknown(dxgi_debug_, MAKE_STRING(dxgi_debug_));
             }
         }
     }
 
 #endif
 
-    result = CreateDXGIFactory2(dxgiFactoryFlags, __uuidof(IDXGIFactory2), reinterpret_cast<void**>(&m_pdxgiFactory2));
+    result = CreateDXGIFactory2(dxgi_factory_flags, __uuidof(IDXGIFactory2), reinterpret_cast<void**>(&dxgi_factory_2_));
 
     if (FAILED(result))
     {
         return false;
     }
 
-    AddIUnknown(m_pdxgiFactory2, MAKE_STRING(m_pdxgiFactory2));
-    unsigned int                adapterCount = 0;
-    std::vector<IDXGIAdapter1*> dxgiAdapters;
-    IDXGIAdapter1*              pdxgiAdapter1 = nullptr;
+    AddIUnknown(dxgi_factory_2_, MAKE_STRING(dxgi_factory_2_));
+    unsigned int                adapter_count = 0;
+    std::vector<IDXGIAdapter1*> dxgi_adapters;
+    IDXGIAdapter1*              dxgi_adapter_1 = nullptr;
 
-    // description flag is only available in type IDXGIAdapter1 and later
-    while (SUCCEEDED(m_pdxgiFactory2->EnumAdapters1(adapterCount, &pdxgiAdapter1)))
+    // Description flag is only available in type IDXGIAdapter1 and later.
+    while (SUCCEEDED(dxgi_factory_2_->EnumAdapters1(adapter_count, &dxgi_adapter_1)))
     {
-        DXGI_ADAPTER_DESC1 adapterDesc1;
-        pdxgiAdapter1->GetDesc1(&adapterDesc1);
+        DXGI_ADAPTER_DESC1 adapter_desc_1;
+        dxgi_adapter_1->GetDesc1(&adapter_desc_1);
 
-        if (!(adapterDesc1.Flags & DXGI_ADAPTER_FLAG_SOFTWARE))
+        if (!(adapter_desc_1.Flags & DXGI_ADAPTER_FLAG_SOFTWARE))
         {
-            dxgiAdapters.push_back(pdxgiAdapter1);
-            AddIUnknown(pdxgiAdapter1, MAKE_STRING(pdxgiAdapter1));
+            dxgi_adapters.push_back(dxgi_adapter_1);
+            AddIUnknown(dxgi_adapter_1, MAKE_STRING(dxgi_adapter_1));
         }
 
-        adapterCount++;
-        pdxgiAdapter1 = nullptr;
+        adapter_count++;
+        dxgi_adapter_1 = nullptr;
     }
 
-    if (!dxgiAdapters.empty())
+    if (!dxgi_adapters.empty())
     {
-        pdxgiAdapter1 = dxgiAdapters.at(0);  // Pick first hardware adapter to create the device
+        dxgi_adapter_1 = dxgi_adapters.at(0);  // Pick first hardware adapter to create the device.
 
-        // Create the device
-        result = D3D12CreateDevice(pdxgiAdapter1, D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), reinterpret_cast<void**>(&m_pd3d12Device));
+        // Create the device.
+        result = D3D12CreateDevice(dxgi_adapter_1, D3D_FEATURE_LEVEL_12_0, __uuidof(ID3D12Device), reinterpret_cast<void**>(&d3d12_device_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        AddIUnknown(m_pd3d12Device, MAKE_STRING(m_pd3d12Device));
-        result = m_pdxgiFactory2->MakeWindowAssociation(g_windowHandle, DXGI_MWA_NO_ALT_ENTER);  // This will ensure Alt-Enter won't work
+        AddIUnknown(d3d12_device_, MAKE_STRING(d3d12_device_));
+        result = dxgi_factory_2_->MakeWindowAssociation(window_handle, DXGI_MWA_NO_ALT_ENTER);  // This will ensure Alt-Enter won't work.
 
         if (FAILED(result))
         {
@@ -323,231 +327,231 @@ bool CubeSample::InitializeCommonResource()
         }
 
         // Unlike older APIs, DX12 swap chains can only be created
-        // on command queue rather than on the device - create a command queue first
-        D3D12_COMMAND_QUEUE_DESC cmdQueueDesc = {};
-        cmdQueueDesc.Type                     = D3D12_COMMAND_LIST_TYPE_DIRECT;
-        cmdQueueDesc.Priority                 = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
-        cmdQueueDesc.Flags                    = D3D12_COMMAND_QUEUE_FLAG_NONE;
-        cmdQueueDesc.NodeMask                 = 0;
+        // on command queue rather than on the device - create a command queue first.
+        D3D12_COMMAND_QUEUE_DESC command_queue_desc = {};
+        command_queue_desc.Type                     = D3D12_COMMAND_LIST_TYPE_DIRECT;
+        command_queue_desc.Priority                 = D3D12_COMMAND_QUEUE_PRIORITY_NORMAL;
+        command_queue_desc.Flags                    = D3D12_COMMAND_QUEUE_FLAG_NONE;
+        command_queue_desc.NodeMask                 = 0;
 
-        result = m_pd3d12Device->CreateCommandQueue(&cmdQueueDesc, __uuidof(ID3D12CommandQueue), reinterpret_cast<void**>(&m_pd3d12CommandQueue));
-
-        if (FAILED(result))
-        {
-            return false;
-        }
-
-        AddIUnknown(m_pd3d12CommandQueue, MAKE_STRING(m_pd3d12CommandQueue));
-
-        // Create swap chain
-        DXGI_SWAP_CHAIN_DESC1 swapChainDesc = {};
-        swapChainDesc.Width                 = g_windowWidth;
-        swapChainDesc.Height                = g_windowHeight;
-        swapChainDesc.Format                = DXGI_FORMAT_R8G8B8A8_UNORM;
-        swapChainDesc.Scaling               = DXGI_SCALING_NONE;
-        swapChainDesc.Stereo                = false;
-        swapChainDesc.SampleDesc.Count      = 1;
-        swapChainDesc.SampleDesc.Quality    = 0;  // Irrelevant
-        swapChainDesc.BufferCount           = ms_frameCount;
-        swapChainDesc.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
-        swapChainDesc.SwapEffect            = DXGI_SWAP_EFFECT_FLIP_DISCARD;
-        swapChainDesc.Flags                 = NULL;
-
-        IDXGISwapChain1* pdxgiSwapChain1 = nullptr;
-        result = m_pdxgiFactory2->CreateSwapChainForHwnd(m_pd3d12CommandQueue, g_windowHandle, &swapChainDesc, nullptr, nullptr, &pdxgiSwapChain1);
+        result = d3d12_device_->CreateCommandQueue(&command_queue_desc, __uuidof(ID3D12CommandQueue), reinterpret_cast<void**>(&d3d12_command_queue_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        result = pdxgiSwapChain1->QueryInterface(__uuidof(IDXGISwapChain3), reinterpret_cast<void**>(&m_pdxgiSwapChain3));
+        AddIUnknown(d3d12_command_queue_, MAKE_STRING(d3d12_command_queue_));
+
+        // Create swap chain.
+        DXGI_SWAP_CHAIN_DESC1 swap_chain_desc = {};
+        swap_chain_desc.Width                 = kWindowWidth;
+        swap_chain_desc.Height                = kWindowHeight;
+        swap_chain_desc.Format                = DXGI_FORMAT_R8G8B8A8_UNORM;
+        swap_chain_desc.Scaling               = DXGI_SCALING_NONE;
+        swap_chain_desc.Stereo                = false;
+        swap_chain_desc.SampleDesc.Count      = 1;
+        swap_chain_desc.SampleDesc.Quality    = 0;  // Irrelevant.
+        swap_chain_desc.BufferCount           = kFrameCount;
+        swap_chain_desc.BufferUsage           = DXGI_USAGE_RENDER_TARGET_OUTPUT;
+        swap_chain_desc.SwapEffect            = DXGI_SWAP_EFFECT_FLIP_DISCARD;
+        swap_chain_desc.Flags                 = NULL;
+
+        IDXGISwapChain1* dxgi_swap_chain_1 = nullptr;
+        result = dxgi_factory_2_->CreateSwapChainForHwnd(d3d12_command_queue_, window_handle, &swap_chain_desc, nullptr, nullptr, &dxgi_swap_chain_1);
 
         if (FAILED(result))
         {
             return false;
         }
 
-        m_pdxgiSwapChain3->Release();
-        AddIUnknown(m_pdxgiSwapChain3, MAKE_STRING(m_pdxgiSwapChain3));
-
-        // Create a descriptor heap for render targets
-        D3D12_DESCRIPTOR_HEAP_DESC rtvDescriptionHeap = {};
-        rtvDescriptionHeap.Type                       = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-        rtvDescriptionHeap.NumDescriptors             = ms_frameCount;  // 2 RTVs for each view port
-        rtvDescriptionHeap.Flags                      = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-        rtvDescriptionHeap.NodeMask                   = 0;
-        result = m_pd3d12Device->CreateDescriptorHeap(&rtvDescriptionHeap, __uuidof(ID3D12DescriptorHeap), reinterpret_cast<void**>(&m_pd3d12DescriptorHeap));
+        result = dxgi_swap_chain_1->QueryInterface(__uuidof(IDXGISwapChain3), reinterpret_cast<void**>(&dxgi_swap_chain_3_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        AddIUnknown(m_pd3d12DescriptorHeap, MAKE_STRING(m_pd3d12DescriptorHeap));
+        dxgi_swap_chain_3_->Release();
+        AddIUnknown(dxgi_swap_chain_3_, MAKE_STRING(dxgi_swap_chain_3_));
 
-        m_RTVdescriptorIncrementSize                    = m_pd3d12Device->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-        D3D12_CPU_DESCRIPTOR_HANDLE cpuDescriptorHandle = m_pd3d12DescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-
-        // Create RTV resources for the swap chain RTV
-        for (unsigned int i = 0; i < ms_frameCount; i++)
-        {
-            // Create the render target view resource in swap chain buffer
-            result = m_pdxgiSwapChain3->GetBuffer(i, __uuidof(ID3D12Resource), reinterpret_cast<void**>(&m_pRTVResource[i]));
-
-            if (FAILED(result))
-            {
-                return false;
-            }
-
-            m_pd3d12Device->CreateRenderTargetView(m_pRTVResource[i], nullptr, cpuDescriptorHandle);
-            cpuDescriptorHandle.ptr = cpuDescriptorHandle.ptr + m_RTVdescriptorIncrementSize;  // offset to next descriptor
-            AddIUnknown(m_pRTVResource[i], MAKE_STRING(m_pRTVResource[i]));
-        }
-
-        result = m_pd3d12Device->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), reinterpret_cast<void**>(&m_pd3d12Fence));
+        // Create a descriptor heap for render targets.
+        D3D12_DESCRIPTOR_HEAP_DESC rtv_description_heap = {};
+        rtv_description_heap.Type                       = D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
+        rtv_description_heap.NumDescriptors             = kFrameCount;  // 2 RTVs for each view port.
+        rtv_description_heap.Flags                      = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
+        rtv_description_heap.NodeMask                   = 0;
+        result = d3d12_device_->CreateDescriptorHeap(&rtv_description_heap, __uuidof(ID3D12DescriptorHeap), reinterpret_cast<void**>(&d3d12_descriptor_heap_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        AddIUnknown(m_pd3d12Fence, MAKE_STRING(m_pd3d12Fence));
-        m_fenceEvent = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+        AddIUnknown(d3d12_descriptor_heap_, MAKE_STRING(d3d12_descriptor_heap_));
 
-        if (nullptr != m_fenceEvent)
+        rtv_view_desc_size                                = d3d12_device_->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+        D3D12_CPU_DESCRIPTOR_HANDLE cpu_descriptor_handle = d3d12_descriptor_heap_->GetCPUDescriptorHandleForHeapStart();
+
+        // Create RTV resources for the swap chain RTV.
+        for (unsigned int i = 0; i < kFrameCount; i++)
         {
-            // Create root signature
-            D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc = {};
-            rootSignatureDesc.NumParameters             = 0;
-            rootSignatureDesc.pParameters               = nullptr;
-            rootSignatureDesc.NumStaticSamplers         = 0;
-            rootSignatureDesc.pStaticSamplers           = nullptr;
-            rootSignatureDesc.Flags                     = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
-
-            ID3DBlob* serializedSignature = nullptr;
-            ID3DBlob* serailizationError  = nullptr;
-
-            result = D3D12SerializeRootSignature(&rootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &serializedSignature, &serailizationError);
+            // Create the render target view resource in swap chain buffer.
+            result = dxgi_swap_chain_3_->GetBuffer(i, __uuidof(ID3D12Resource), reinterpret_cast<void**>(&rtv_resource_[i]));
 
             if (FAILED(result))
             {
                 return false;
             }
 
-            result = m_pd3d12Device->CreateRootSignature(0,
-                                                         serializedSignature->GetBufferPointer(),
-                                                         serializedSignature->GetBufferSize(),
-                                                         __uuidof(ID3D12RootSignature),
-                                                         reinterpret_cast<void**>(&m_pD3D12RootSignature));
+            d3d12_device_->CreateRenderTargetView(rtv_resource_[i], nullptr, cpu_descriptor_handle);
+            cpu_descriptor_handle.ptr = cpu_descriptor_handle.ptr + rtv_view_desc_size;  // Offset to next descriptor.
+            AddIUnknown(rtv_resource_[i], MAKE_STRING(rtv_resource_[i]));
+        }
+
+        result = d3d12_device_->CreateFence(0, D3D12_FENCE_FLAG_NONE, __uuidof(ID3D12Fence), reinterpret_cast<void**>(&d3d12_fence_));
+
+        if (FAILED(result))
+        {
+            return false;
+        }
+
+        AddIUnknown(d3d12_fence_, MAKE_STRING(d3d12_fence_));
+        fence_event_ = CreateEvent(nullptr, FALSE, FALSE, nullptr);
+
+        if (nullptr != fence_event_)
+        {
+            // Create root signature.
+            D3D12_ROOT_SIGNATURE_DESC root_signature_desc = {};
+            root_signature_desc.NumParameters             = 0;
+            root_signature_desc.pParameters               = nullptr;
+            root_signature_desc.NumStaticSamplers         = 0;
+            root_signature_desc.pStaticSamplers           = nullptr;
+            root_signature_desc.Flags                     = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+
+            ID3DBlob* serialized_signature = nullptr;
+            ID3DBlob* serialization_error  = nullptr;
+
+            result = D3D12SerializeRootSignature(&root_signature_desc, D3D_ROOT_SIGNATURE_VERSION_1, &serialized_signature, &serialization_error);
 
             if (FAILED(result))
             {
                 return false;
             }
 
-            AddIUnknown(m_pD3D12RootSignature, MAKE_STRING(m_pD3D12RootSignature));
-            ID3DBlob* vertexShader = nullptr;
-            ID3DBlob* pixelShader  = nullptr;
-            ID3DBlob* error        = nullptr;
-
-            UINT compileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
-
-            std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wideToUtf8Converter;
-
-            std::wstring shaderPath = wideToUtf8Converter.from_bytes(m_executablePath);
-            shaderPath.append(L"shaders.hlsl");
-
-            result = ::D3DCompileFromFile(shaderPath.c_str(), nullptr, nullptr, "VSMain", "vs_5_0", compileFlags, 0, &vertexShader, &error);
+            result = d3d12_device_->CreateRootSignature(0,
+                                                        serialized_signature->GetBufferPointer(),
+                                                        serialized_signature->GetBufferSize(),
+                                                        __uuidof(ID3D12RootSignature),
+                                                        reinterpret_cast<void**>(&d3d12_root_signature_));
 
             if (FAILED(result))
             {
                 return false;
             }
 
-            result = ::D3DCompileFromFile(shaderPath.c_str(), nullptr, nullptr, "PSMain", "ps_5_0", compileFlags, 0, &pixelShader, &error);
+            AddIUnknown(d3d12_root_signature_, MAKE_STRING(d3d12_root_signature_));
+            ID3DBlob* vertex_shader = nullptr;
+            ID3DBlob* pixel_shader  = nullptr;
+            ID3DBlob* error         = nullptr;
+
+            UINT compile_flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+
+            std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
+
+            std::wstring shader_path = wide_to_utf8_converter.from_bytes(executable_path_);
+            shader_path.append(L"shaders.hlsl");
+
+            result = ::D3DCompileFromFile(shader_path.c_str(), nullptr, nullptr, "VSMain", "vs_5_0", compile_flags, 0, &vertex_shader, &error);
 
             if (FAILED(result))
             {
                 return false;
             }
 
-            D3D12_SHADER_BYTECODE vsByteCode = {vertexShader->GetBufferPointer(), vertexShader->GetBufferSize()};
-            D3D12_SHADER_BYTECODE psByteCode = {pixelShader->GetBufferPointer(), pixelShader->GetBufferSize()};
+            result = ::D3DCompileFromFile(shader_path.c_str(), nullptr, nullptr, "PSMain", "ps_5_0", compile_flags, 0, &pixel_shader, &error);
 
-            // Create graphics pipeline using root signature - one for wireframe and another for fill drawing
-            D3D12_GRAPHICS_PIPELINE_STATE_DESC psoDesc = {};
-            psoDesc.pRootSignature                     = m_pD3D12RootSignature;
-            psoDesc.VS                                 = vsByteCode;
-            psoDesc.PS                                 = psByteCode;
-            psoDesc.BlendState                         = {};
-
-            const D3D12_RENDER_TARGET_BLEND_DESC defaultRenderTargetBlendDesc = {FALSE,
-                                                                                 FALSE,
-                                                                                 D3D12_BLEND_ONE,
-                                                                                 D3D12_BLEND_ZERO,
-                                                                                 D3D12_BLEND_OP_ADD,
-                                                                                 D3D12_BLEND_ONE,
-                                                                                 D3D12_BLEND_ZERO,
-                                                                                 D3D12_BLEND_OP_ADD,
-                                                                                 D3D12_LOGIC_OP_NOOP,
-                                                                                 D3D12_COLOR_WRITE_ENABLE_ALL};
-
-            psoDesc.BlendState.AlphaToCoverageEnable  = FALSE;
-            psoDesc.BlendState.IndependentBlendEnable = FALSE;
-
-            for (auto& psoBlendRenderTargetIter : psoDesc.BlendState.RenderTarget)
+            if (FAILED(result))
             {
-                psoBlendRenderTargetIter = defaultRenderTargetBlendDesc;
+                return false;
             }
 
-            psoDesc.RasterizerState.FillMode              = D3D12_FILL_MODE_SOLID;
-            psoDesc.RasterizerState.CullMode              = D3D12_CULL_MODE_BACK;
-            psoDesc.RasterizerState.FrontCounterClockwise = FALSE;
-            psoDesc.RasterizerState.DepthBias             = D3D12_DEFAULT_DEPTH_BIAS;
-            psoDesc.RasterizerState.DepthBiasClamp        = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
-            psoDesc.RasterizerState.SlopeScaledDepthBias  = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
-            psoDesc.RasterizerState.DepthClipEnable       = TRUE;
-            psoDesc.RasterizerState.MultisampleEnable     = FALSE;
-            psoDesc.RasterizerState.AntialiasedLineEnable = FALSE;
-            psoDesc.RasterizerState.ForcedSampleCount     = 0;
-            psoDesc.RasterizerState.ConservativeRaster    = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+            D3D12_SHADER_BYTECODE vertex_shader_data = {vertex_shader->GetBufferPointer(), vertex_shader->GetBufferSize()};
+            D3D12_SHADER_BYTECODE pixel_shader_data  = {pixel_shader->GetBufferPointer(), pixel_shader->GetBufferSize()};
 
-            psoDesc.DepthStencilState                = {};
-            psoDesc.DepthStencilState.DepthEnable    = true;
-            psoDesc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
-            psoDesc.DepthStencilState.DepthFunc      = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-            psoDesc.SampleMask                       = UINT_MAX;
+            // Create graphics pipeline using root signature - one for wireframe and another for fill drawing.
+            D3D12_GRAPHICS_PIPELINE_STATE_DESC pso_obj_desc = {};
+            pso_obj_desc.pRootSignature                     = d3d12_root_signature_;
+            pso_obj_desc.VS                                 = vertex_shader_data;
+            pso_obj_desc.PS                                 = pixel_shader_data;
+            pso_obj_desc.BlendState                         = {};
 
-            D3D12_INPUT_ELEMENT_DESC vertexInputDescription[] = {
+            const D3D12_RENDER_TARGET_BLEND_DESC default_rt_blend_desc = {FALSE,
+                                                                          FALSE,
+                                                                          D3D12_BLEND_ONE,
+                                                                          D3D12_BLEND_ZERO,
+                                                                          D3D12_BLEND_OP_ADD,
+                                                                          D3D12_BLEND_ONE,
+                                                                          D3D12_BLEND_ZERO,
+                                                                          D3D12_BLEND_OP_ADD,
+                                                                          D3D12_LOGIC_OP_NOOP,
+                                                                          D3D12_COLOR_WRITE_ENABLE_ALL};
+
+            pso_obj_desc.BlendState.AlphaToCoverageEnable  = FALSE;
+            pso_obj_desc.BlendState.IndependentBlendEnable = FALSE;
+
+            for (auto& pso_blend_rt_iter : pso_obj_desc.BlendState.RenderTarget)
+            {
+                pso_blend_rt_iter = default_rt_blend_desc;
+            }
+
+            pso_obj_desc.RasterizerState.FillMode              = D3D12_FILL_MODE_SOLID;
+            pso_obj_desc.RasterizerState.CullMode              = D3D12_CULL_MODE_BACK;
+            pso_obj_desc.RasterizerState.FrontCounterClockwise = FALSE;
+            pso_obj_desc.RasterizerState.DepthBias             = D3D12_DEFAULT_DEPTH_BIAS;
+            pso_obj_desc.RasterizerState.DepthBiasClamp        = D3D12_DEFAULT_DEPTH_BIAS_CLAMP;
+            pso_obj_desc.RasterizerState.SlopeScaledDepthBias  = D3D12_DEFAULT_SLOPE_SCALED_DEPTH_BIAS;
+            pso_obj_desc.RasterizerState.DepthClipEnable       = TRUE;
+            pso_obj_desc.RasterizerState.MultisampleEnable     = FALSE;
+            pso_obj_desc.RasterizerState.AntialiasedLineEnable = FALSE;
+            pso_obj_desc.RasterizerState.ForcedSampleCount     = 0;
+            pso_obj_desc.RasterizerState.ConservativeRaster    = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+
+            pso_obj_desc.DepthStencilState                = {};
+            pso_obj_desc.DepthStencilState.DepthEnable    = true;
+            pso_obj_desc.DepthStencilState.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+            pso_obj_desc.DepthStencilState.DepthFunc      = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+            pso_obj_desc.SampleMask                       = UINT_MAX;
+
+            D3D12_INPUT_ELEMENT_DESC vertex_input_desc[] = {
                 {"SCREEN_POSITION", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0},
                 {"VERTEX_COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 16, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0}};
 
-            psoDesc.InputLayout           = {vertexInputDescription, 2};  // passing 2 elements - vertex and color
-            psoDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-            psoDesc.NumRenderTargets      = 1;
-            psoDesc.RTVFormats[0]         = DXGI_FORMAT_R8G8B8A8_UNORM;
-            psoDesc.SampleDesc.Count      = 1;
+            pso_obj_desc.InputLayout           = {vertex_input_desc, 2};  // Passing 2 elements - vertex and color.
+            pso_obj_desc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+            pso_obj_desc.NumRenderTargets      = 1;
+            pso_obj_desc.RTVFormats[0]         = DXGI_FORMAT_R8G8B8A8_UNORM;
+            pso_obj_desc.SampleDesc.Count      = 1;
 
-            result = m_pd3d12Device->CreateGraphicsPipelineState(&psoDesc, __uuidof(ID3D12PipelineState), reinterpret_cast<void**>(&m_pfillDrawPipeline));
-
-            if (FAILED(result))
-            {
-                return false;
-            }
-
-            AddIUnknown(m_pfillDrawPipeline, MAKE_STRING(m_pfillDrawPipeline));
-            m_pCurrentPipelineState = m_pfillDrawPipeline;
-
-            psoDesc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
-            result = m_pd3d12Device->CreateGraphicsPipelineState(&psoDesc, __uuidof(ID3D12PipelineState), reinterpret_cast<void**>(&m_pWireframePipeline));
+            result = d3d12_device_->CreateGraphicsPipelineState(&pso_obj_desc, __uuidof(ID3D12PipelineState), reinterpret_cast<void**>(&fill_draw_pipeline_));
 
             if (FAILED(result))
             {
                 return false;
             }
 
-            AddIUnknown(m_pWireframePipeline, MAKE_STRING(m_pWireframePipeline));
+            AddIUnknown(fill_draw_pipeline_, MAKE_STRING(fill_draw_pipeline_));
+            current_pipeline_state_ = fill_draw_pipeline_;
+
+            pso_obj_desc.RasterizerState.FillMode = D3D12_FILL_MODE_WIREFRAME;
+            result = d3d12_device_->CreateGraphicsPipelineState(&pso_obj_desc, __uuidof(ID3D12PipelineState), reinterpret_cast<void**>(&wire_frame_pipeline_));
+
+            if (FAILED(result))
+            {
+                return false;
+            }
+
+            AddIUnknown(wire_frame_pipeline_, MAKE_STRING(wire_frame_pipeline_));
             return true;
         }
     }
@@ -557,14 +561,14 @@ bool CubeSample::InitializeCommonResource()
 
 bool CubeSample::InitializeViewPortResource()
 {
-    return m_topLeftViewport.Init() && m_topRightViewport.Init() && m_bottomLeftViewport.Init() && m_bottomRightViewport.Init();
+    return top_left_viewport_.Init() && top_right_viewport_.Init() && bottom_left_viewport_.Init() && bottom_right_viewport_.Init();
 }
 
 bool CubeSample::UploadCubeData()
 {
     bool success = false;
 
-    VertexData vertexColorData[] = {
+    VertexData vertex_color_data[] = {
         {{-0.5, 0.5, -0.5, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},   // 0
         {{0.5, 0.5, -0.5, 1.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},    // 1
         {{0.5, -0.5, -0.5, 1.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},   // 2
@@ -575,7 +579,7 @@ bool CubeSample::UploadCubeData()
         {{-0.5, -0.5, 0.5, 1.0f}, {1.0f, 0.0f, 0.0f, 1.0f}}    // 7
     };
 
-    uint32_t indexData[] = {
+    uint32_t index_data[] = {
         0, 1, 3, 3, 1, 2,  // -Z face
         7, 4, 5, 7, 5, 6,  // +Z face
 
@@ -588,55 +592,55 @@ bool CubeSample::UploadCubeData()
 
 #pragma region VertexBuffer
     {
-        D3D12_RESOURCE_DESC vertexDataBufferResourceDesc = {};
-        vertexDataBufferResourceDesc.Dimension           = D3D12_RESOURCE_DIMENSION_BUFFER;
-        vertexDataBufferResourceDesc.Alignment           = 0;
-        vertexDataBufferResourceDesc.Width               = sizeof(vertexColorData);
-        vertexDataBufferResourceDesc.Height = vertexDataBufferResourceDesc.DepthOrArraySize = vertexDataBufferResourceDesc.MipLevels = 1;
-        vertexDataBufferResourceDesc.Format                                                                                          = DXGI_FORMAT_UNKNOWN;
-        vertexDataBufferResourceDesc.SampleDesc.Count                                                                                = 1;
-        vertexDataBufferResourceDesc.SampleDesc.Quality                                                                              = 0;
-        vertexDataBufferResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-        vertexDataBufferResourceDesc.Flags  = D3D12_RESOURCE_FLAG_NONE;
+        D3D12_RESOURCE_DESC vertex_data_buffer_resource_desc = {};
+        vertex_data_buffer_resource_desc.Dimension           = D3D12_RESOURCE_DIMENSION_BUFFER;
+        vertex_data_buffer_resource_desc.Alignment           = 0;
+        vertex_data_buffer_resource_desc.Width               = sizeof(vertex_color_data);
+        vertex_data_buffer_resource_desc.Height = vertex_data_buffer_resource_desc.DepthOrArraySize = vertex_data_buffer_resource_desc.MipLevels = 1;
+        vertex_data_buffer_resource_desc.Format             = DXGI_FORMAT_UNKNOWN;
+        vertex_data_buffer_resource_desc.SampleDesc.Count   = 1;
+        vertex_data_buffer_resource_desc.SampleDesc.Quality = 0;
+        vertex_data_buffer_resource_desc.Layout             = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+        vertex_data_buffer_resource_desc.Flags              = D3D12_RESOURCE_FLAG_NONE;
 
-        D3D12_HEAP_PROPERTIES bufferHeapProp = {};
-        bufferHeapProp.Type                  = D3D12_HEAP_TYPE_UPLOAD;
-        bufferHeapProp.CPUPageProperty       = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-        bufferHeapProp.MemoryPoolPreference  = D3D12_MEMORY_POOL_UNKNOWN;
-        bufferHeapProp.CreationNodeMask      = 1;
-        bufferHeapProp.VisibleNodeMask       = 1;
+        D3D12_HEAP_PROPERTIES buffer_heap_properties = {};
+        buffer_heap_properties.Type                  = D3D12_HEAP_TYPE_UPLOAD;
+        buffer_heap_properties.CPUPageProperty       = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+        buffer_heap_properties.MemoryPoolPreference  = D3D12_MEMORY_POOL_UNKNOWN;
+        buffer_heap_properties.CreationNodeMask      = 1;
+        buffer_heap_properties.VisibleNodeMask       = 1;
 
-        // Create vertex data resource
-        HRESULT result = m_pd3d12Device->CreateCommittedResource(&bufferHeapProp,
-                                                                 D3D12_HEAP_FLAG_NONE,
-                                                                 &vertexDataBufferResourceDesc,
-                                                                 D3D12_RESOURCE_STATE_GENERIC_READ,
-                                                                 nullptr,
-                                                                 __uuidof(ID3D12Resource),
-                                                                 reinterpret_cast<void**>(&m_pVertexBuffer));
+        // Create vertex data resource.
+        HRESULT result = d3d12_device_->CreateCommittedResource(&buffer_heap_properties,
+                                                                D3D12_HEAP_FLAG_NONE,
+                                                                &vertex_data_buffer_resource_desc,
+                                                                D3D12_RESOURCE_STATE_GENERIC_READ,
+                                                                nullptr,
+                                                                __uuidof(ID3D12Resource),
+                                                                reinterpret_cast<void**>(&vertex_buffer_));
 
         if (SUCCEEDED(result))
         {
-            AddIUnknown(m_pVertexBuffer, MAKE_STRING(m_pVertexBuffer));
-            D3D12_RANGE cpuAllowedReadRange = {};
-            cpuAllowedReadRange.Begin       = 0;  // we won't be reading this from CPU after uploading the data
-            cpuAllowedReadRange.End         = 0;  // we won't be reading this from CPU after uploading the data
+            AddIUnknown(vertex_buffer_, MAKE_STRING(vertex_buffer_));
+            D3D12_RANGE cpu_allowed_read_range = {};
+            cpu_allowed_read_range.Begin       = 0;  // We won't be reading this from CPU after uploading the data.
+            cpu_allowed_read_range.End         = 0;  // We won't be reading this from CPU after uploading the data.
 
-            void* pVertexBufferCPULocation = nullptr;
-            // Get the CPU pointer where we will upload the vertex data
-            result = m_pVertexBuffer->Map(0, &cpuAllowedReadRange, &pVertexBufferCPULocation);
+            void* vertex_buffer_cpu_location = nullptr;
+            // Get the CPU pointer where we will upload the vertex data.
+            result = vertex_buffer_->Map(0, &cpu_allowed_read_range, &vertex_buffer_cpu_location);
 
             if (SUCCEEDED(result))
             {
-                // copy the vertex data to the CPU location
-                memcpy(pVertexBufferCPULocation, vertexColorData, sizeof(vertexColorData));
-                D3D12_RANGE* cpuModifiedRange = nullptr;  // nullptr indicates all of the buffer is modified
-                m_pVertexBuffer->Unmap(0, cpuModifiedRange);
+                // Copy the vertex data to the CPU location.
+                memcpy(vertex_buffer_cpu_location, vertex_color_data, sizeof(vertex_color_data));
+                D3D12_RANGE* cpu_modified_range = nullptr;  // nullptr indicates all of the buffer is modified.
+                vertex_buffer_->Unmap(0, cpu_modified_range);
 
-                m_vertexBufferView.BufferLocation = m_pVertexBuffer->GetGPUVirtualAddress();
-                m_vertexBufferView.SizeInBytes    = sizeof(vertexColorData);
-                m_vertexBufferView.StrideInBytes  = sizeof(VertexData);
-                success                           = true;
+                vertex_buffer_view_.BufferLocation = vertex_buffer_->GetGPUVirtualAddress();
+                vertex_buffer_view_.SizeInBytes    = sizeof(vertex_color_data);
+                vertex_buffer_view_.StrideInBytes  = sizeof(VertexData);
+                success                            = true;
             }
         }
     }
@@ -646,55 +650,55 @@ bool CubeSample::UploadCubeData()
 
     if (success)
     {
-        D3D12_RESOURCE_DESC indexDataBufferResourceDesc = {};
-        indexDataBufferResourceDesc.Dimension           = D3D12_RESOURCE_DIMENSION_BUFFER;
-        indexDataBufferResourceDesc.Alignment           = 0;
-        indexDataBufferResourceDesc.Width               = sizeof(indexData);
-        indexDataBufferResourceDesc.Height = indexDataBufferResourceDesc.DepthOrArraySize = indexDataBufferResourceDesc.MipLevels = 1;
-        indexDataBufferResourceDesc.Format                                                                                        = DXGI_FORMAT_UNKNOWN;
-        indexDataBufferResourceDesc.SampleDesc.Count                                                                              = 1;
-        indexDataBufferResourceDesc.SampleDesc.Quality                                                                            = 0;
-        indexDataBufferResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-        indexDataBufferResourceDesc.Flags  = D3D12_RESOURCE_FLAG_NONE;
+        D3D12_RESOURCE_DESC index_data_buffer_resource_desc = {};
+        index_data_buffer_resource_desc.Dimension           = D3D12_RESOURCE_DIMENSION_BUFFER;
+        index_data_buffer_resource_desc.Alignment           = 0;
+        index_data_buffer_resource_desc.Width               = sizeof(index_data);
+        index_data_buffer_resource_desc.Height = index_data_buffer_resource_desc.DepthOrArraySize = index_data_buffer_resource_desc.MipLevels = 1;
+        index_data_buffer_resource_desc.Format             = DXGI_FORMAT_UNKNOWN;
+        index_data_buffer_resource_desc.SampleDesc.Count   = 1;
+        index_data_buffer_resource_desc.SampleDesc.Quality = 0;
+        index_data_buffer_resource_desc.Layout             = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+        index_data_buffer_resource_desc.Flags              = D3D12_RESOURCE_FLAG_NONE;
 
-        D3D12_HEAP_PROPERTIES bufferHeapProp = {};
-        bufferHeapProp.Type                  = D3D12_HEAP_TYPE_UPLOAD;
-        bufferHeapProp.CPUPageProperty       = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-        bufferHeapProp.MemoryPoolPreference  = D3D12_MEMORY_POOL_UNKNOWN;
-        bufferHeapProp.CreationNodeMask      = 1;
-        bufferHeapProp.VisibleNodeMask       = 1;
+        D3D12_HEAP_PROPERTIES buffer_heap_properties = {};
+        buffer_heap_properties.Type                  = D3D12_HEAP_TYPE_UPLOAD;
+        buffer_heap_properties.CPUPageProperty       = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+        buffer_heap_properties.MemoryPoolPreference  = D3D12_MEMORY_POOL_UNKNOWN;
+        buffer_heap_properties.CreationNodeMask      = 1;
+        buffer_heap_properties.VisibleNodeMask       = 1;
 
-        // Create index data resource
-        HRESULT result = m_pd3d12Device->CreateCommittedResource(&bufferHeapProp,
-                                                                 D3D12_HEAP_FLAG_NONE,
-                                                                 &indexDataBufferResourceDesc,
-                                                                 D3D12_RESOURCE_STATE_GENERIC_READ,
-                                                                 nullptr,
-                                                                 __uuidof(ID3D12Resource),
-                                                                 reinterpret_cast<void**>(&m_pIndexBuffer));
+        // Create index buffer resource.
+        HRESULT result = d3d12_device_->CreateCommittedResource(&buffer_heap_properties,
+                                                                D3D12_HEAP_FLAG_NONE,
+                                                                &index_data_buffer_resource_desc,
+                                                                D3D12_RESOURCE_STATE_GENERIC_READ | D3D12_RESOURCE_STATE_INDEX_BUFFER,
+                                                                nullptr,
+                                                                __uuidof(ID3D12Resource),
+                                                                reinterpret_cast<void**>(&index_buffer_));
 
         if (SUCCEEDED(result))
         {
-            AddIUnknown(m_pIndexBuffer, MAKE_STRING(m_pIndexBuffer));
-            D3D12_RANGE cpuAllowedReadRange = {};
-            cpuAllowedReadRange.Begin       = 0;  // we won't be reading this from CPU after uploading the data
-            cpuAllowedReadRange.End         = 0;  // we won't be reading this from CPU after uploading the data
+            AddIUnknown(index_buffer_, MAKE_STRING(index_buffer_));
+            D3D12_RANGE cpu_allowed_read_range = {};
+            cpu_allowed_read_range.Begin       = 0;  // We won't be reading this from CPU after uploading the data.
+            cpu_allowed_read_range.End         = 0;  // We won't be reading this from CPU after uploading the data.
 
-            void* pIndexBufferCPULocation = nullptr;
-            // Get the CPU pointer where we will upload the vertex data
-            result = m_pIndexBuffer->Map(0, &cpuAllowedReadRange, &pIndexBufferCPULocation);
+            void* index_buffer_cpu_location = nullptr;
+            // Get the CPU pointer where we will upload the vertex data.
+            result = index_buffer_->Map(0, &cpu_allowed_read_range, &index_buffer_cpu_location);
 
             if (SUCCEEDED(result))
             {
-                // copy the vertex data to the CPU location
-                memcpy(pIndexBufferCPULocation, indexData, sizeof(indexData));
-                D3D12_RANGE* cpuModifiedRange = nullptr;  // nullptr indicates all of the buffer is modified
-                m_pIndexBuffer->Unmap(0, cpuModifiedRange);
+                // Copy the vertex data to the CPU location.
+                memcpy(index_buffer_cpu_location, index_data, sizeof(index_data));
+                D3D12_RANGE* cpu_modified_range = nullptr;  // nullptr indicates all of the buffer is modified.
+                index_buffer_->Unmap(0, cpu_modified_range);
 
-                m_indexBufferView.BufferLocation = m_pIndexBuffer->GetGPUVirtualAddress();
-                m_indexBufferView.SizeInBytes    = sizeof(indexData);
-                m_indexBufferView.Format         = DXGI_FORMAT_R32_UINT;
-                success                          = true;
+                index_buffer_view_.BufferLocation = index_buffer_->GetGPUVirtualAddress();
+                index_buffer_view_.SizeInBytes    = sizeof(index_data);
+                index_buffer_view_.Format         = DXGI_FORMAT_R32_UINT;
+                success                           = true;
             }
         }
     }
@@ -704,103 +708,103 @@ bool CubeSample::UploadCubeData()
     return success;
 }
 
-void CubeSample::AddIUnknown(IUnknown* pUnknown, const std::string& name)
+void CubeSample::AddIUnknown(IUnknown* unknown, const std::string& name)
 {
-    ID3D12Object* pObject = nullptr;
-    HRESULT       result  = pUnknown->QueryInterface(__uuidof(ID3D12Object), reinterpret_cast<void**>(&pObject));
+    ID3D12Object* object = nullptr;
+    HRESULT       result = unknown->QueryInterface(__uuidof(ID3D12Object), reinterpret_cast<void**>(&object));
 
-    std::wstring widename(name.begin(), name.end());
+    std::wstring wide_name(name.begin(), name.end());
 
     if (SUCCEEDED(result))
     {
-        result = pObject->SetName(widename.c_str());
-        pObject->Release();
+        result = object->SetName(wide_name.c_str());
+        object->Release();
     }
 
-    m_appCreatedIUnknown.push(std::pair<std::wstring, IUnknown*>(widename, pUnknown));
+    app_created_unknown_cache_.push(std::pair<std::wstring, IUnknown*>(wide_name, unknown));
 }
 
-void CubeSample::AddCommandList(ID3D12GraphicsCommandList* pGraphicsCommandList)
+void CubeSample::AddCommandList(ID3D12GraphicsCommandList* graphics_command_list)
 {
-    if (nullptr != pGraphicsCommandList)
+    if (nullptr != graphics_command_list)
     {
-        m_graphicsCommandListVector.push_back(pGraphicsCommandList);
+        graphics_command_queue_.push_back(graphics_command_list);
     }
 }
 
 CubeSample::Viewport::Viewport()
-    : m_viewport()
-    , m_pd3d12CommandList(nullptr)
-    , m_pd3d12DirectCmdListAllocator(nullptr)
-    , m_viewportInitialized(false)
-    , m_viewPortRect()
-    , m_gpaCommandListId(nullptr)
-    , m_sampleId(ms_undefinedSampleId)
+    : viewport_()
+    , d3d_command_list_(nullptr)
+    , d3d12_direct_command_list_allocator_(nullptr)
+    , viewport_initialized_(false)
+    , viewport_rect_()
+    , gpa_command_list_(nullptr)
+    , sample_id_(kUndefinedSampleId)
 {
-    m_viewport.Width    = 400.0f;
-    m_viewport.Height   = 400.0f;
-    m_viewport.MaxDepth = 1.0f;
-    m_viewport.MinDepth = -1.0f;
+    viewport_.Width    = 400.0f;
+    viewport_.Height   = 400.0f;
+    viewport_.MaxDepth = 1.0f;
+    viewport_.MinDepth = -1.0f;
 }
 
 void CubeSample::WaitForGpuToFinish()
 {
-    // wait for the frame to finish
-    m_pd3d12CommandQueue->Signal(m_pd3d12Fence, m_fenceValue);
-    m_pd3d12Fence->SetEventOnCompletion(m_fenceValue, m_fenceEvent);
+    // Wait for the frame to finish.
+    d3d12_command_queue_->Signal(d3d12_fence_, fence_value_);
+    d3d12_fence_->SetEventOnCompletion(fence_value_, fence_event_);
 
-    WaitForSingleObject(m_fenceEvent, INFINITE);
-    m_fenceValue++;
-    m_currentBackBufferIndex = m_pdxgiSwapChain3->GetCurrentBackBufferIndex();
+    WaitForSingleObject(fence_event_, INFINITE);
+    fence_value_++;
+    current_back_buffer_index_ = dxgi_swap_chain_3_->GetCurrentBackBufferIndex();
 }
 
 CubeSample::TopLeftViewport::TopLeftViewport()
     : Viewport()
 {
-    m_viewport.TopLeftX   = 0.0f;
-    m_viewport.TopLeftY   = 0.0f;
-    m_viewportInitialized = true;
+    viewport_.TopLeftX    = 0.0f;
+    viewport_.TopLeftY    = 0.0f;
+    viewport_initialized_ = true;
 
-    m_viewPortRect = {static_cast<long>(m_viewport.TopLeftX),
-                      static_cast<long>(m_viewport.TopLeftY),
-                      static_cast<long>(m_viewport.TopLeftX + m_viewport.Width),
-                      static_cast<long>(m_viewport.TopLeftY + m_viewport.Height)};
+    viewport_rect_ = {static_cast<long>(viewport_.TopLeftX),
+                      static_cast<long>(viewport_.TopLeftY),
+                      static_cast<long>(viewport_.TopLeftX + viewport_.Width),
+                      static_cast<long>(viewport_.TopLeftY + viewport_.Height)};
 }
 
 bool CubeSample::TopLeftViewport::Init()
 {
-    if (m_viewportInitialized)
+    if (viewport_initialized_)
     {
         HRESULT result = S_OK;
 
-        // Create command allocator
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandAllocator(
-            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&m_pd3d12DirectCmdListAllocator));
+        // Create command allocator.
+        result = cube_sample->d3d12_device_->CreateCommandAllocator(
+            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&d3d12_direct_command_list_allocator_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        ms_pCubeSample->AddIUnknown(m_pd3d12DirectCmdListAllocator, MAKE_STRING(TopLeftViewport->m_pd3d12DirectmdListAllocator));
+        cube_sample->AddIUnknown(d3d12_direct_command_list_allocator_, MAKE_STRING(TopLeftViewport->m_pd3d12DirectmdListAllocator));
 
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandList(0,
-                                                                   D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                                   m_pd3d12DirectCmdListAllocator,
-                                                                   ms_pCubeSample->m_pfillDrawPipeline,
-                                                                   __uuidof(ID3D12GraphicsCommandList),
-                                                                   reinterpret_cast<void**>(&m_pd3d12CommandList));
+        result = cube_sample->d3d12_device_->CreateCommandList(0,
+                                                               D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                               d3d12_direct_command_list_allocator_,
+                                                               cube_sample->fill_draw_pipeline_,
+                                                               __uuidof(ID3D12GraphicsCommandList),
+                                                               reinterpret_cast<void**>(&d3d_command_list_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        ms_pCubeSample->m_pCurrentPipelineState = ms_pCubeSample->m_pfillDrawPipeline;
-        m_pd3d12CommandList->Close();
-        ms_pCubeSample->m_currentBackBufferIndex = ms_pCubeSample->m_pdxgiSwapChain3->GetCurrentBackBufferIndex();
-        ms_pCubeSample->AddCommandList(m_pd3d12CommandList);
-        ms_pCubeSample->AddIUnknown(m_pd3d12CommandList, MAKE_STRING(TopLeftViewport->m_pd3d12CommandList));
+        cube_sample->current_pipeline_state_ = cube_sample->fill_draw_pipeline_;
+        d3d_command_list_->Close();
+        cube_sample->current_back_buffer_index_ = cube_sample->dxgi_swap_chain_3_->GetCurrentBackBufferIndex();
+        cube_sample->AddCommandList(d3d_command_list_);
+        cube_sample->AddIUnknown(d3d_command_list_, MAKE_STRING(TopLeftViewport->d3d_command_list_));
         return true;
     }
 
@@ -809,175 +813,176 @@ bool CubeSample::TopLeftViewport::Init()
 
 void CubeSample::TopLeftViewport::Draw()
 {
-    /*
-     * In this view port, we will draw a cube on single primary command list
-     * and record the performance counter with one sample using GPA
-     */
+    // In this view port, we will draw a cube on single primary command list
+    // and record the performance counter with one sample using GPA.
 
-    HRESULT result = m_pd3d12DirectCmdListAllocator->Reset();
+    HRESULT result = d3d12_direct_command_list_allocator_->Reset();
     UNREFERENCED_PARAMETER(result);
-    result = m_pd3d12CommandList->Reset(m_pd3d12DirectCmdListAllocator, ms_pCubeSample->m_pCurrentPipelineState);
+    result = d3d_command_list_->Reset(d3d12_direct_command_list_allocator_, cube_sample->current_pipeline_state_);
 
-    if (ms_pCubeSample->m_pipelineStateChanged)
+    if (cube_sample->pipeline_state_changed_)
     {
-        m_pd3d12CommandList->SetPipelineState(ms_pCubeSample->m_pCurrentPipelineState);
+        d3d_command_list_->SetPipelineState(cube_sample->current_pipeline_state_);
     }
 
-    m_pd3d12CommandList->SetGraphicsRootSignature(ms_pCubeSample->m_pD3D12RootSignature);
-    m_pd3d12CommandList->RSSetViewports(1, &m_viewport);
-    m_pd3d12CommandList->RSSetScissorRects(1, &ms_pCubeSample->m_scissorRect);
+    d3d_command_list_->SetGraphicsRootSignature(cube_sample->d3d12_root_signature_);
+    d3d_command_list_->RSSetViewports(1, &viewport_);
+    d3d_command_list_->RSSetScissorRects(1, &cube_sample->scissor_rect_);
 
-    D3D12_RESOURCE_TRANSITION_BARRIER transitionBarrier = {};
-    transitionBarrier.pResource                         = ms_pCubeSample->m_pRTVResource[ms_pCubeSample->m_currentBackBufferIndex];
-    transitionBarrier.Subresource                       = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-    transitionBarrier.StateBefore                       = D3D12_RESOURCE_STATE_PRESENT;
-    transitionBarrier.StateAfter                        = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    D3D12_RESOURCE_TRANSITION_BARRIER transition_barrier = {};
+    transition_barrier.pResource                         = cube_sample->rtv_resource_[cube_sample->current_back_buffer_index_];
+    transition_barrier.Subresource                       = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    transition_barrier.StateBefore                       = D3D12_RESOURCE_STATE_PRESENT;
+    transition_barrier.StateAfter                        = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-    D3D12_RESOURCE_BARRIER resourceBarrier = {};
-    resourceBarrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    resourceBarrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-    resourceBarrier.Transition             = transitionBarrier;
-    m_pd3d12CommandList->ResourceBarrier(1, &resourceBarrier);
+    D3D12_RESOURCE_BARRIER resource_barrier = {};
+    resource_barrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    resource_barrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    resource_barrier.Transition             = transition_barrier;
+    d3d_command_list_->ResourceBarrier(1, &resource_barrier);
 
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHeap;
-    rtvDescriptorHeap.ptr = ms_pCubeSample->m_pd3d12DescriptorHeap->GetCPUDescriptorHandleForHeapStart().ptr +
-                            ms_pCubeSample->m_currentBackBufferIndex * ms_pCubeSample->m_RTVdescriptorIncrementSize;
-    m_pd3d12CommandList->OMSetRenderTargets(1, &rtvDescriptorHeap, FALSE, nullptr);
+    D3D12_CPU_DESCRIPTOR_HANDLE rtv_desc_heap;
+    rtv_desc_heap.ptr = cube_sample->d3d12_descriptor_heap_->GetCPUDescriptorHandleForHeapStart().ptr +
+                        cube_sample->current_back_buffer_index_ * cube_sample->rtv_view_desc_size;
+    d3d_command_list_->OMSetRenderTargets(1, &rtv_desc_heap, FALSE, nullptr);
 
-    if (ms_pCubeSample->m_currentPass == 0)
+    if (cube_sample->current_pass_ == 0)
     {
-        m_sampleId = ++ms_pCubeSample->m_sampleCounter;
+        sample_id_ = ++cube_sample->sample_counter_;
     }
 
-    m_pd3d12CommandList->ClearRenderTargetView(rtvDescriptorHeap, m_clearColor, 1, &m_viewPortRect);
-    m_pd3d12CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    m_pd3d12CommandList->IASetVertexBuffers(0, 1, &ms_pCubeSample->m_vertexBufferView);
-    m_pd3d12CommandList->IASetIndexBuffer(&ms_pCubeSample->m_indexBufferView);
+    d3d_command_list_->ClearRenderTargetView(rtv_desc_heap, kClearColor, 1, &viewport_rect_);
+    d3d_command_list_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    d3d_command_list_->IASetVertexBuffers(0, 1, &cube_sample->vertex_buffer_view_);
+    d3d_command_list_->IASetIndexBuffer(&cube_sample->index_buffer_view_);
 
 #pragma region GPA_CALL
-    bool commandListStarted =
-        ms_pCubeSample->GPA_BeginCommandListForSampling(m_pd3d12CommandList, m_gpaCommandListId);  // Request GPA to start recording samples on the command list
-    bool sampleStarted = false;
+    // Request GPA to start recording samples on the command list.
+    bool command_list_started = cube_sample->GpaBeginCommandListForSampling(d3d_command_list_, gpa_command_list_);
+    bool sample_started       = false;
 
-    if (commandListStarted)
+    if (command_list_started)
     {
-        sampleStarted = ms_pCubeSample->GPA_BeginSample(m_gpaCommandListId, m_sampleId);  // Start sample on the command list
+        // Start sample on the command list.
+        sample_started = cube_sample->GpaBeginSample(gpa_command_list_, sample_id_);
     }
 #pragma endregion
 
-    m_pd3d12CommandList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+    d3d_command_list_->DrawIndexedInstanced(36, 1, 0, 0, 0);
 
-    transitionBarrier.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    transitionBarrier.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
+    transition_barrier.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    transition_barrier.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
 
 #pragma region GPA_CALL
-    if (sampleStarted)
+    if (sample_started)
     {
-        ms_pCubeSample->GPA_EndSample(m_gpaCommandListId);  // End the sample request
+        // End the sample request.
+        cube_sample->GpaEndSample(gpa_command_list_);
 
-        if (commandListStarted)
+        if (command_list_started)
         {
-            ms_pCubeSample->GPA_EndCommandListForSampling(m_gpaCommandListId);  // End the command list for sample recording before closing the command list
+            // End the command list for sample recording before closing the command list.
+            cube_sample->GpaEndCommandListForSampling(gpa_command_list_);
         }
     }
 #pragma endregion
 
-    // update transition
-    resourceBarrier.Transition = transitionBarrier;
-    m_pd3d12CommandList->ResourceBarrier(1, &resourceBarrier);
-    m_pd3d12CommandList->Close();
+    // Update transition.
+    resource_barrier.Transition = transition_barrier;
+    d3d_command_list_->ResourceBarrier(1, &resource_barrier);
+    d3d_command_list_->Close();
 }
 
 void CubeSample::TopLeftViewport::ResetForNextPass()
 {
-    m_gpaCommandListId = nullptr;
+    gpa_command_list_ = nullptr;
 }
 
-void CubeSample::TopLeftViewport::IterateSamples(std::function<void(const unsigned& sampleIndex)> func) const
+void CubeSample::TopLeftViewport::IterateSamples(std::function<void(const unsigned& sample_index)> func) const
 {
-    if (ms_undefinedSampleId != m_sampleId)
+    if (kUndefinedSampleId != sample_id_)
     {
-        func(m_sampleId);
+        func(sample_id_);
     }
 }
 
 CubeSample::TopRightViewport::TopRightViewport()
     : Viewport()
-    , m_pBundleCommandAllocator(nullptr)
-    , m_pBundleCmdList(nullptr)
-    , m_gpaCmdListForBundle(nullptr)
-    , m_bundleSampleId(0xFFFF)
+    , bundle_command_allocator_(nullptr)
+    , bundle_command_list_(nullptr)
+    , gpa_command_list_for_bundle_(nullptr)
+    , bundle_sample_id_(0xFFFF)
 {
-    m_viewport.TopLeftX   = 400.0f;
-    m_viewport.TopLeftY   = 0.0f;
-    m_viewportInitialized = true;
+    viewport_.TopLeftX    = 400.0f;
+    viewport_.TopLeftY    = 0.0f;
+    viewport_initialized_ = true;
 
-    m_viewPortRect = {static_cast<long>(m_viewport.TopLeftX),
-                      static_cast<long>(m_viewport.TopLeftY),
-                      static_cast<long>(m_viewport.TopLeftX + m_viewport.Width),
-                      static_cast<long>(m_viewport.TopLeftY + m_viewport.Height)};
+    viewport_rect_ = {static_cast<long>(viewport_.TopLeftX),
+                      static_cast<long>(viewport_.TopLeftY),
+                      static_cast<long>(viewport_.TopLeftX + viewport_.Width),
+                      static_cast<long>(viewport_.TopLeftY + viewport_.Height)};
 }
 
 bool CubeSample::TopRightViewport::Init()
 {
-    if (m_viewportInitialized)
+    if (viewport_initialized_)
     {
         HRESULT result = S_OK;
 
-        // Create command allocator
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandAllocator(
-            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&m_pd3d12DirectCmdListAllocator));
+        // Create command allocator.
+        result = cube_sample->d3d12_device_->CreateCommandAllocator(
+            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&d3d12_direct_command_list_allocator_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        ms_pCubeSample->AddIUnknown(m_pd3d12DirectCmdListAllocator, MAKE_STRING(TopRightViewport->m_pd3d12DirectCmdListAllocator));
+        cube_sample->AddIUnknown(d3d12_direct_command_list_allocator_, MAKE_STRING(TopRightViewport->d3d12_direct_command_list_allocator_));
 
-        // Create command allocator for bundles
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandAllocator(
-            D3D12_COMMAND_LIST_TYPE_BUNDLE, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&m_pBundleCommandAllocator));
-
-        if (FAILED(result))
-        {
-            return false;
-        }
-
-        ms_pCubeSample->AddIUnknown(m_pBundleCommandAllocator, MAKE_STRING(TopRightViewport->m_pBundleCommandAllocator));
-
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandList(0,
-                                                                   D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                                   m_pd3d12DirectCmdListAllocator,
-                                                                   ms_pCubeSample->m_pfillDrawPipeline,
-                                                                   __uuidof(ID3D12GraphicsCommandList),
-                                                                   reinterpret_cast<void**>(&m_pd3d12CommandList));
+        // Create command allocator for bundles.
+        result = cube_sample->d3d12_device_->CreateCommandAllocator(
+            D3D12_COMMAND_LIST_TYPE_BUNDLE, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&bundle_command_allocator_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        ms_pCubeSample->AddIUnknown(m_pd3d12CommandList, MAKE_STRING(TopRightViewport->m_pd3d12CommandList));
+        cube_sample->AddIUnknown(bundle_command_allocator_, MAKE_STRING(TopRightViewport->bundle_command_allocator_));
 
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandList(0,
-                                                                   D3D12_COMMAND_LIST_TYPE_BUNDLE,
-                                                                   m_pBundleCommandAllocator,
-                                                                   ms_pCubeSample->m_pfillDrawPipeline,
-                                                                   __uuidof(ID3D12GraphicsCommandList),
-                                                                   reinterpret_cast<void**>(&m_pBundleCmdList));
+        result = cube_sample->d3d12_device_->CreateCommandList(0,
+                                                               D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                               d3d12_direct_command_list_allocator_,
+                                                               cube_sample->fill_draw_pipeline_,
+                                                               __uuidof(ID3D12GraphicsCommandList),
+                                                               reinterpret_cast<void**>(&d3d_command_list_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        ms_pCubeSample->m_pCurrentPipelineState = ms_pCubeSample->m_pfillDrawPipeline;
-        m_pd3d12CommandList->Close();
-        m_pBundleCmdList->Close();
-        ms_pCubeSample->m_currentBackBufferIndex = ms_pCubeSample->m_pdxgiSwapChain3->GetCurrentBackBufferIndex();
-        ms_pCubeSample->AddCommandList(m_pd3d12CommandList);
-        ms_pCubeSample->AddIUnknown(m_pBundleCmdList, MAKE_STRING(TopRightViewport->m_pBundleCmdList));
+        cube_sample->AddIUnknown(d3d_command_list_, MAKE_STRING(TopRightViewport->d3d_command_list_));
+
+        result = cube_sample->d3d12_device_->CreateCommandList(0,
+                                                               D3D12_COMMAND_LIST_TYPE_BUNDLE,
+                                                               bundle_command_allocator_,
+                                                               cube_sample->fill_draw_pipeline_,
+                                                               __uuidof(ID3D12GraphicsCommandList),
+                                                               reinterpret_cast<void**>(&bundle_command_list_));
+
+        if (FAILED(result))
+        {
+            return false;
+        }
+
+        cube_sample->current_pipeline_state_ = cube_sample->fill_draw_pipeline_;
+        d3d_command_list_->Close();
+        bundle_command_list_->Close();
+        cube_sample->current_back_buffer_index_ = cube_sample->dxgi_swap_chain_3_->GetCurrentBackBufferIndex();
+        cube_sample->AddCommandList(d3d_command_list_);
+        cube_sample->AddIUnknown(bundle_command_list_, MAKE_STRING(TopRightViewport->bundle_command_list_));
         return true;
     }
 
@@ -986,218 +991,220 @@ bool CubeSample::TopRightViewport::Init()
 
 void CubeSample::TopRightViewport::Draw()
 {
-    /*
-     * In this view port, we will be recording drawing of a cube on a bundle and execute it using primary command list
-     * Usually, bundle are recorded once and executed multiple times. However in case of multi-pass sampling, GPA must
-     * record the set of counters to enable on each pass, we need to record the bundle command as like a direct command list.
-     *
-     * Performance counter result for the samples on the bundles can't be retrieved directly from GPA in accordance with a fact that
-     * bundle can't be executed without a direct command list. To get the result of the bundle sample, app must copy the sample over
-     * direct command list with new set of sample ids after each execution of the bundle.
-    */
+    // In this view port, we will be recording drawing of a cube on a bundle and execute it using primary command list
+    // Usually, bundle are recorded once and executed multiple times. However in case of multi-pass sampling, GPA must
+    // record the set of counters to enable on each pass, we need to record the bundle command as like a direct command list.
 
-    HRESULT result = m_pd3d12DirectCmdListAllocator->Reset();
+    // Performance counter result for the samples on the bundles can't be retrieved directly from GPA in accordance with a fact that
+    // bundle can't be executed without a direct command list. To get the result of the bundle sample, app must copy the sample over
+    // direct command list with new set of sample ids after each execution of the bundle.
+
+    HRESULT result = d3d12_direct_command_list_allocator_->Reset();
     UNREFERENCED_PARAMETER(result);
-    result = m_pd3d12CommandList->Reset(m_pd3d12DirectCmdListAllocator, ms_pCubeSample->m_pCurrentPipelineState);
+    result = d3d_command_list_->Reset(d3d12_direct_command_list_allocator_, cube_sample->current_pipeline_state_);
 
-    result = m_pBundleCommandAllocator->Reset();
-    result = m_pBundleCmdList->Reset(m_pBundleCommandAllocator, ms_pCubeSample->m_pCurrentPipelineState);
+    result = bundle_command_allocator_->Reset();
+    result = bundle_command_list_->Reset(bundle_command_allocator_, cube_sample->current_pipeline_state_);
 
-    if (ms_pCubeSample->m_pipelineStateChanged)
+    if (cube_sample->pipeline_state_changed_)
     {
-        m_pd3d12CommandList->SetPipelineState(ms_pCubeSample->m_pCurrentPipelineState);
-        m_pBundleCmdList->SetPipelineState(ms_pCubeSample->m_pCurrentPipelineState);
+        d3d_command_list_->SetPipelineState(cube_sample->current_pipeline_state_);
+        bundle_command_list_->SetPipelineState(cube_sample->current_pipeline_state_);
     }
 
-    if (ms_pCubeSample->m_currentPass == 0)
+    if (cube_sample->current_pass_ == 0)
     {
-        if (args.m_profileBundles)
+        if (args.profile_bundles)
         {
-            m_bundleSampleId = ++ms_pCubeSample->m_sampleCounter;  // Bundle sample id - result can't be retrieved using this
-            m_sampleId       = ++ms_pCubeSample->m_sampleCounter;  // Copied sample id
+            bundle_sample_id_ = ++cube_sample->sample_counter_;  // Bundle sample id - result can't be retrieved using this.
+            sample_id_        = ++cube_sample->sample_counter_;  // Copied sample id.
         }
     }
 
 #pragma region GPA_CALL
-    bool bundleCommandListStarted = false;
-    bool sampleStarted            = false;
+    bool bundle_command_list_started = false;
+    bool sample_started              = false;
 
-    if (args.m_profileBundles)
+    if (args.profile_bundles)
     {
-        bundleCommandListStarted =
-            ms_pCubeSample->GPA_BeginCommandListForSampling(m_pBundleCmdList, m_gpaCmdListForBundle);  // Request GPA to start recording samples on the bundle
+        // Request GPA to start recording samples on the bundle.
+        bundle_command_list_started = cube_sample->GpaBeginCommandListForSampling(bundle_command_list_, gpa_command_list_for_bundle_);
 
-        if (bundleCommandListStarted)
+        if (bundle_command_list_started)
         {
-            sampleStarted = ms_pCubeSample->GPA_BeginSample(m_gpaCmdListForBundle, m_bundleSampleId);  // Start sample on the bundle
+            // Start sample on the bundle.
+            sample_started = cube_sample->GpaBeginSample(gpa_command_list_for_bundle_, bundle_sample_id_);
         }
     }
 #pragma endregion
 
-    m_pBundleCmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    m_pBundleCmdList->IASetVertexBuffers(0, 1, &ms_pCubeSample->m_vertexBufferView);
-    m_pBundleCmdList->IASetIndexBuffer(&ms_pCubeSample->m_indexBufferView);
-    m_pBundleCmdList->DrawIndexedInstanced(36, 1, 0, 0, 0);
+    bundle_command_list_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    bundle_command_list_->IASetVertexBuffers(0, 1, &cube_sample->vertex_buffer_view_);
+    bundle_command_list_->IASetIndexBuffer(&cube_sample->index_buffer_view_);
+    bundle_command_list_->DrawIndexedInstanced(36, 1, 0, 0, 0);
 
 #pragma region GPA_CALL
-    if (sampleStarted)
+    if (sample_started)
     {
-        ms_pCubeSample->GPA_EndSample(m_gpaCmdListForBundle);  // End the sample request
+        // End the sample request.
+        cube_sample->GpaEndSample(gpa_command_list_for_bundle_);
 
-        if (bundleCommandListStarted)
+        if (bundle_command_list_started)
         {
-            ms_pCubeSample->GPA_EndCommandListForSampling(m_gpaCmdListForBundle);  // End the bundle for sample recording before closing the command list
+            // End the bundle for sample recording before closing the command list.
+            cube_sample->GpaEndCommandListForSampling(gpa_command_list_for_bundle_);
         }
     }
 #pragma endregion
 
-    m_pBundleCmdList->Close();
+    bundle_command_list_->Close();
 
-    m_pd3d12CommandList->SetGraphicsRootSignature(ms_pCubeSample->m_pD3D12RootSignature);
-    m_pd3d12CommandList->RSSetViewports(1, &m_viewport);
-    m_pd3d12CommandList->RSSetScissorRects(1, &ms_pCubeSample->m_scissorRect);
+    d3d_command_list_->SetGraphicsRootSignature(cube_sample->d3d12_root_signature_);
+    d3d_command_list_->RSSetViewports(1, &viewport_);
+    d3d_command_list_->RSSetScissorRects(1, &cube_sample->scissor_rect_);
 
-    D3D12_RESOURCE_TRANSITION_BARRIER transitionBarrier = {};
-    transitionBarrier.pResource                         = ms_pCubeSample->m_pRTVResource[ms_pCubeSample->m_currentBackBufferIndex];
-    transitionBarrier.Subresource                       = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-    transitionBarrier.StateBefore                       = D3D12_RESOURCE_STATE_PRESENT;
-    transitionBarrier.StateAfter                        = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    D3D12_RESOURCE_TRANSITION_BARRIER transition_barrier = {};
+    transition_barrier.pResource                         = cube_sample->rtv_resource_[cube_sample->current_back_buffer_index_];
+    transition_barrier.Subresource                       = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    transition_barrier.StateBefore                       = D3D12_RESOURCE_STATE_PRESENT;
+    transition_barrier.StateAfter                        = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-    D3D12_RESOURCE_BARRIER resourceBarrier = {};
-    resourceBarrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    resourceBarrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-    resourceBarrier.Transition             = transitionBarrier;
-    m_pd3d12CommandList->ResourceBarrier(1, &resourceBarrier);
+    D3D12_RESOURCE_BARRIER resource_barrier = {};
+    resource_barrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    resource_barrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    resource_barrier.Transition             = transition_barrier;
+    d3d_command_list_->ResourceBarrier(1, &resource_barrier);
 
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHeap;
-    rtvDescriptorHeap.ptr = ms_pCubeSample->m_pd3d12DescriptorHeap->GetCPUDescriptorHandleForHeapStart().ptr +
-                            ms_pCubeSample->m_currentBackBufferIndex * ms_pCubeSample->m_RTVdescriptorIncrementSize;
-    m_pd3d12CommandList->OMSetRenderTargets(1, &rtvDescriptorHeap, FALSE, nullptr);
+    D3D12_CPU_DESCRIPTOR_HANDLE rtv_desc_heap;
+    rtv_desc_heap.ptr = cube_sample->d3d12_descriptor_heap_->GetCPUDescriptorHandleForHeapStart().ptr +
+                        cube_sample->current_back_buffer_index_ * cube_sample->rtv_view_desc_size;
+    d3d_command_list_->OMSetRenderTargets(1, &rtv_desc_heap, FALSE, nullptr);
 
-    m_pd3d12CommandList->ClearRenderTargetView(rtvDescriptorHeap, m_clearColor, 1, &m_viewPortRect);
+    d3d_command_list_->ClearRenderTargetView(rtv_desc_heap, kClearColor, 1, &viewport_rect_);
 
 #pragma region GPA_CALL
-    bool commandListStarted = ms_pCubeSample->GPA_BeginCommandListForSampling(
-        m_pd3d12CommandList, m_gpaCommandListId);  // Request GPA to start recording samples on the direct command list
+    // Request GPA to start recording samples on the direct command list.
+    bool command_list_started = cube_sample->GpaBeginCommandListForSampling(d3d_command_list_, gpa_command_list_);
 #pragma endregion
 
-    m_pd3d12CommandList->ExecuteBundle(m_pBundleCmdList);
+    d3d_command_list_->ExecuteBundle(bundle_command_list_);
 
 #pragma region GPA_CALL
-    if (commandListStarted && bundleCommandListStarted)
+    if (command_list_started && bundle_command_list_started)
     {
-        std::vector<unsigned int> tempVector = {m_sampleId};
-        ms_pCubeSample->GPA_CopyBundleSample(
-            m_gpaCmdListForBundle, m_gpaCommandListId, tempVector);  // Copy the bundle sample to the direct command list after its execution
+        std::vector<unsigned int> tmp_vector = {sample_id_};
+        // Copy the bundle sample to the direct command list after its execution.
+        cube_sample->GpaCopyBundleSample(gpa_command_list_for_bundle_, gpa_command_list_, tmp_vector);
     }
 #pragma endregion
 
-    transitionBarrier.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    transitionBarrier.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
+    transition_barrier.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    transition_barrier.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
 
 #pragma region GPA_CALL
-    if (commandListStarted)
+    if (command_list_started)
     {
-        ms_pCubeSample->GPA_EndCommandListForSampling(m_gpaCommandListId);  // End the direct command list for sample recording before closing it.
+        // End the direct command list for sample recording before closing it.
+        cube_sample->GpaEndCommandListForSampling(gpa_command_list_);
     }
 #pragma endregion
 
-    // update transition
-    resourceBarrier.Transition = transitionBarrier;
-    m_pd3d12CommandList->ResourceBarrier(1, &resourceBarrier);
-    m_pd3d12CommandList->Close();
+    // Update transition.
+    resource_barrier.Transition = transition_barrier;
+    d3d_command_list_->ResourceBarrier(1, &resource_barrier);
+    d3d_command_list_->Close();
 }
 
 void CubeSample::TopRightViewport::ResetForNextPass()
 {
-    m_gpaCmdListForBundle = m_gpaCommandListId = nullptr;
+    gpa_command_list_for_bundle_ = gpa_command_list_ = nullptr;
 }
 
-void CubeSample::TopRightViewport::IterateSamples(std::function<void(const unsigned& sampleIndex)> func) const
+void CubeSample::TopRightViewport::IterateSamples(std::function<void(const unsigned& sample_index)> func) const
 {
-    if (ms_undefinedSampleId != m_sampleId)
+    if (kUndefinedSampleId != sample_id_)
     {
-        func(m_sampleId);
+        func(sample_id_);
     }
 }
 
 CubeSample::BottomLeftViewport::BottomLeftViewport()
     : Viewport()
-    , m_pSecondCmdListAllocator(nullptr)
-    , m_pSecondCmdList(nullptr)
-    , m_gpaCmdListForSecondCmdList(nullptr)
+    , second_command_list_allocator_(nullptr)
+    , second_command_list_(nullptr)
+    , gpa_command_list_for_second_command_list_(nullptr)
 {
-    m_viewport.TopLeftX   = 0.0f;
-    m_viewport.TopLeftY   = 400.0f;
-    m_viewportInitialized = true;
+    viewport_.TopLeftX    = 0.0f;
+    viewport_.TopLeftY    = 400.0f;
+    viewport_initialized_ = true;
 
-    m_viewPortRect = {static_cast<long>(m_viewport.TopLeftX),
-                      static_cast<long>(m_viewport.TopLeftY),
-                      static_cast<long>(m_viewport.TopLeftX + m_viewport.Width),
-                      static_cast<long>(m_viewport.TopLeftY + m_viewport.Height)};
+    viewport_rect_ = {static_cast<long>(viewport_.TopLeftX),
+                      static_cast<long>(viewport_.TopLeftY),
+                      static_cast<long>(viewport_.TopLeftX + viewport_.Width),
+                      static_cast<long>(viewport_.TopLeftY + viewport_.Height)};
 }
 
 bool CubeSample::BottomLeftViewport::Init()
 {
-    if (m_viewportInitialized)
+    if (viewport_initialized_)
     {
         HRESULT result = S_OK;
 
-        // Create command allocator
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandAllocator(
-            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&m_pd3d12DirectCmdListAllocator));
+        // Create command allocator.
+        result = cube_sample->d3d12_device_->CreateCommandAllocator(
+            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&d3d12_direct_command_list_allocator_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        ms_pCubeSample->AddIUnknown(m_pd3d12DirectCmdListAllocator, MAKE_STRING(BottomLeftViewport->m_pd3d12DirectCmdListAllocator));
+        cube_sample->AddIUnknown(d3d12_direct_command_list_allocator_, MAKE_STRING(BottomLeftViewport->d3d12_direct_command_list_allocator_));
 
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandList(0,
-                                                                   D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                                   m_pd3d12DirectCmdListAllocator,
-                                                                   ms_pCubeSample->m_pfillDrawPipeline,
-                                                                   __uuidof(ID3D12GraphicsCommandList),
-                                                                   reinterpret_cast<void**>(&m_pd3d12CommandList));
-
-        if (FAILED(result))
-        {
-            return false;
-        }
-
-        m_pd3d12CommandList->Close();
-        ms_pCubeSample->AddCommandList(m_pd3d12CommandList);
-        ms_pCubeSample->AddIUnknown(m_pd3d12CommandList, MAKE_STRING(BottomLeftViewport->m_pd3d12CommandList));
-
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandAllocator(
-            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&m_pSecondCmdListAllocator));
+        result = cube_sample->d3d12_device_->CreateCommandList(0,
+                                                               D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                               d3d12_direct_command_list_allocator_,
+                                                               cube_sample->fill_draw_pipeline_,
+                                                               __uuidof(ID3D12GraphicsCommandList),
+                                                               reinterpret_cast<void**>(&d3d_command_list_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        ms_pCubeSample->AddIUnknown(m_pSecondCmdListAllocator, MAKE_STRING(BottomLeftViewport->m_pSecondCmdListAllocator));
+        d3d_command_list_->Close();
+        cube_sample->AddCommandList(d3d_command_list_);
+        cube_sample->AddIUnknown(d3d_command_list_, MAKE_STRING(BottomLeftViewport->d3d_command_list_));
 
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandList(0,
-                                                                   D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                                   m_pSecondCmdListAllocator,
-                                                                   ms_pCubeSample->m_pfillDrawPipeline,
-                                                                   __uuidof(ID3D12GraphicsCommandList),
-                                                                   reinterpret_cast<void**>(&m_pSecondCmdList));
+        result = cube_sample->d3d12_device_->CreateCommandAllocator(
+            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&second_command_list_allocator_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        m_pSecondCmdList->Close();
-        ms_pCubeSample->AddCommandList(m_pSecondCmdList);
-        ms_pCubeSample->AddIUnknown(m_pSecondCmdList, MAKE_STRING(BottomLeftViewport->m_pSecondCmdList));
+        cube_sample->AddIUnknown(second_command_list_allocator_, MAKE_STRING(BottomLeftViewport->second_command_list_allocator_));
 
-        ms_pCubeSample->m_pCurrentPipelineState  = ms_pCubeSample->m_pfillDrawPipeline;
-        ms_pCubeSample->m_currentBackBufferIndex = ms_pCubeSample->m_pdxgiSwapChain3->GetCurrentBackBufferIndex();
+        result = cube_sample->d3d12_device_->CreateCommandList(0,
+                                                               D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                               second_command_list_allocator_,
+                                                               cube_sample->fill_draw_pipeline_,
+                                                               __uuidof(ID3D12GraphicsCommandList),
+                                                               reinterpret_cast<void**>(&second_command_list_));
+
+        if (FAILED(result))
+        {
+            return false;
+        }
+
+        second_command_list_->Close();
+        cube_sample->AddCommandList(second_command_list_);
+        cube_sample->AddIUnknown(second_command_list_, MAKE_STRING(BottomLeftViewport->second_command_list_));
+
+        cube_sample->current_pipeline_state_    = cube_sample->fill_draw_pipeline_;
+        cube_sample->current_back_buffer_index_ = cube_sample->dxgi_swap_chain_3_->GetCurrentBackBufferIndex();
 
         return true;
     }
@@ -1207,245 +1214,246 @@ bool CubeSample::BottomLeftViewport::Init()
 
 void CubeSample::BottomLeftViewport::Draw()
 {
-    /*
-    * In this view port, we will be recording drawing of a cube using two direct command list
-    * Each of the command list will draw the half of the triangle, though the GPA sample for
-    * performance counters will span over the command list.
-    */
+    // In this view port, we will be recording drawing of a cube using two direct command list.
+    // Each of the command list will draw half of the triangle, though the GPA sample for
+    // performance counters will span over the command list.
 
-    HRESULT result = m_pd3d12DirectCmdListAllocator->Reset();
+    HRESULT result = d3d12_direct_command_list_allocator_->Reset();
     UNREFERENCED_PARAMETER(result);
-    result = m_pSecondCmdListAllocator->Reset();
-    result = m_pd3d12CommandList->Reset(m_pd3d12DirectCmdListAllocator, ms_pCubeSample->m_pCurrentPipelineState);
-    result = m_pSecondCmdList->Reset(m_pSecondCmdListAllocator, ms_pCubeSample->m_pCurrentPipelineState);
+    result = second_command_list_allocator_->Reset();
+    result = d3d_command_list_->Reset(d3d12_direct_command_list_allocator_, cube_sample->current_pipeline_state_);
+    result = second_command_list_->Reset(second_command_list_allocator_, cube_sample->current_pipeline_state_);
 
-    if (ms_pCubeSample->m_pipelineStateChanged)
+    if (cube_sample->pipeline_state_changed_)
     {
-        m_pd3d12CommandList->SetPipelineState(ms_pCubeSample->m_pCurrentPipelineState);
-        m_pSecondCmdList->SetPipelineState(ms_pCubeSample->m_pCurrentPipelineState);
+        d3d_command_list_->SetPipelineState(cube_sample->current_pipeline_state_);
+        second_command_list_->SetPipelineState(cube_sample->current_pipeline_state_);
     }
 
-    if (ms_pCubeSample->m_currentPass == 0)
+    if (cube_sample->current_pass_ == 0)
     {
-        m_sampleId = ++ms_pCubeSample->m_sampleCounter;
+        sample_id_ = ++cube_sample->sample_counter_;
     }
 
-    m_pd3d12CommandList->SetGraphicsRootSignature(ms_pCubeSample->m_pD3D12RootSignature);
-    m_pd3d12CommandList->RSSetViewports(1, &m_viewport);
-    m_pd3d12CommandList->RSSetScissorRects(1, &ms_pCubeSample->m_scissorRect);
+    d3d_command_list_->SetGraphicsRootSignature(cube_sample->d3d12_root_signature_);
+    d3d_command_list_->RSSetViewports(1, &viewport_);
+    d3d_command_list_->RSSetScissorRects(1, &cube_sample->scissor_rect_);
 
-    m_pSecondCmdList->SetGraphicsRootSignature(ms_pCubeSample->m_pD3D12RootSignature);
-    m_pSecondCmdList->RSSetViewports(1, &m_viewport);
-    m_pSecondCmdList->RSSetScissorRects(1, &ms_pCubeSample->m_scissorRect);
+    second_command_list_->SetGraphicsRootSignature(cube_sample->d3d12_root_signature_);
+    second_command_list_->RSSetViewports(1, &viewport_);
+    second_command_list_->RSSetScissorRects(1, &cube_sample->scissor_rect_);
 
-    D3D12_RESOURCE_TRANSITION_BARRIER transitionBarrier = {};
-    transitionBarrier.pResource                         = ms_pCubeSample->m_pRTVResource[ms_pCubeSample->m_currentBackBufferIndex];
-    transitionBarrier.Subresource                       = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-    transitionBarrier.StateBefore                       = D3D12_RESOURCE_STATE_PRESENT;
-    transitionBarrier.StateAfter                        = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    D3D12_RESOURCE_TRANSITION_BARRIER transition_barrier = {};
+    transition_barrier.pResource                         = cube_sample->rtv_resource_[cube_sample->current_back_buffer_index_];
+    transition_barrier.Subresource                       = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    transition_barrier.StateBefore                       = D3D12_RESOURCE_STATE_PRESENT;
+    transition_barrier.StateAfter                        = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-    D3D12_RESOURCE_BARRIER resourceBarrier = {};
-    resourceBarrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    resourceBarrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-    resourceBarrier.Transition             = transitionBarrier;
-    m_pd3d12CommandList->ResourceBarrier(1, &resourceBarrier);
-    m_pSecondCmdList->ResourceBarrier(1, &resourceBarrier);
+    D3D12_RESOURCE_BARRIER resource_barrier = {};
+    resource_barrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    resource_barrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    resource_barrier.Transition             = transition_barrier;
+    d3d_command_list_->ResourceBarrier(1, &resource_barrier);
+    second_command_list_->ResourceBarrier(1, &resource_barrier);
 
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHeap;
-    rtvDescriptorHeap.ptr = ms_pCubeSample->m_pd3d12DescriptorHeap->GetCPUDescriptorHandleForHeapStart().ptr +
-                            ms_pCubeSample->m_currentBackBufferIndex * ms_pCubeSample->m_RTVdescriptorIncrementSize;
-    m_pd3d12CommandList->OMSetRenderTargets(1, &rtvDescriptorHeap, FALSE, nullptr);
-    m_pSecondCmdList->OMSetRenderTargets(1, &rtvDescriptorHeap, FALSE, nullptr);
+    D3D12_CPU_DESCRIPTOR_HANDLE rtv_desc_heap;
+    rtv_desc_heap.ptr = cube_sample->d3d12_descriptor_heap_->GetCPUDescriptorHandleForHeapStart().ptr +
+                        cube_sample->current_back_buffer_index_ * cube_sample->rtv_view_desc_size;
+    d3d_command_list_->OMSetRenderTargets(1, &rtv_desc_heap, FALSE, nullptr);
+    second_command_list_->OMSetRenderTargets(1, &rtv_desc_heap, FALSE, nullptr);
 
-    m_pd3d12CommandList->ClearRenderTargetView(rtvDescriptorHeap, m_clearColor, 1, &m_viewPortRect);
+    d3d_command_list_->ClearRenderTargetView(rtv_desc_heap, kClearColor, 1, &viewport_rect_);
 
 #pragma region GPA_CALL
-    bool commandListStarted = ms_pCubeSample->GPA_BeginCommandListForSampling(
-        m_pd3d12CommandList, m_gpaCommandListId);  // Request GPA to start recording samples on the first direct command list
-    bool sampleStarted = false;
+    // Request GPA to start recording samples on the first direct command list.
+    bool command_list_started = cube_sample->GpaBeginCommandListForSampling(d3d_command_list_, gpa_command_list_);
+    bool sample_started       = false;
 
-    if (commandListStarted)
+    if (command_list_started)
     {
-        sampleStarted =
-            ms_pCubeSample->GPA_BeginSample(m_gpaCommandListId, m_sampleId);  // Start sample on the first direct command list i.e. m_gpaCommandListId
+        // Start sample on the first direct command list i.e. gpa_command_list_.
+        sample_started = cube_sample->GpaBeginSample(gpa_command_list_, sample_id_);
     }
 #pragma endregion
 
-    m_pd3d12CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    m_pd3d12CommandList->IASetVertexBuffers(0, 1, &ms_pCubeSample->m_vertexBufferView);
-    m_pd3d12CommandList->IASetIndexBuffer(&ms_pCubeSample->m_indexBufferView);
-    m_pd3d12CommandList->DrawIndexedInstanced(18, 1, 0, 0, 0);  // Draw half cube
-
-    m_pSecondCmdList->ClearRenderTargetView(rtvDescriptorHeap, m_clearColor, 1, &m_viewPortRect);
+    // Draw 1st half cube (front, back, and left side; note only the front will not be culled).
+    d3d_command_list_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    d3d_command_list_->IASetVertexBuffers(0, 1, &cube_sample->vertex_buffer_view_);
+    d3d_command_list_->IASetIndexBuffer(&cube_sample->index_buffer_view_);
+    d3d_command_list_->DrawIndexedInstanced(18, 1, 0, 0, 0);
 
 #pragma region GPA_CALL
-    bool secondCommandListStarted = ms_pCubeSample->GPA_BeginCommandListForSampling(
-        m_pSecondCmdList, m_gpaCmdListForSecondCmdList);  // Request GPA to start recording samples on the second direct command list
+    // Request GPA to start recording samples on the second direct command list.
+    bool second_command_list_started = cube_sample->GpaBeginCommandListForSampling(second_command_list_, gpa_command_list_for_second_command_list_);
 
-    if (secondCommandListStarted && sampleStarted)
+    if (second_command_list_started && sample_started)
     {
-        ms_pCubeSample->GPA_ContinueSample(m_sampleId, m_gpaCmdListForSecondCmdList);  // Continue the original sample to the second direct command list
+        // Continue the original sample to the second direct command list.
+        cube_sample->GpaContinueSample(sample_id_, gpa_command_list_for_second_command_list_);
     }
 #pragma endregion
 
-    m_pSecondCmdList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    m_pSecondCmdList->IASetVertexBuffers(0, 1, &ms_pCubeSample->m_vertexBufferView);
-    m_pSecondCmdList->IASetIndexBuffer(&ms_pCubeSample->m_indexBufferView);
-    m_pSecondCmdList->DrawIndexedInstanced(18, 18, 0, 0, 0);  // Draw half cube
+    // Draw 2nd half cube (right side, bttom, and top; note all of these faces get back-face culled).
+    second_command_list_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    second_command_list_->IASetVertexBuffers(0, 1, &cube_sample->vertex_buffer_view_);
+    second_command_list_->IASetIndexBuffer(&cube_sample->index_buffer_view_);
+    second_command_list_->DrawIndexedInstanced(18, 1, 18, 0, 0);
 
-    transitionBarrier.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    transitionBarrier.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
+    transition_barrier.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    transition_barrier.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
 
 #pragma region GPA_CALL
-    if (commandListStarted)
+    if (command_list_started)
     {
-        ms_pCubeSample->GPA_EndCommandListForSampling(m_gpaCommandListId);  // End the first direct command list for sample recording before closing it.
+        // End the first direct command list for sample recording before closing it.
+        cube_sample->GpaEndCommandListForSampling(gpa_command_list_);
     }
 #pragma endregion
 
 #pragma region GPA_CALL
-    if (sampleStarted)
+    if (sample_started)
     {
-        ms_pCubeSample->GPA_EndSample(m_gpaCmdListForSecondCmdList);  // End the continuing sample on the second command list
+        // End the continuing sample on the second command list.
+        cube_sample->GpaEndSample(gpa_command_list_for_second_command_list_);
     }
 
-    if (secondCommandListStarted)
+    if (second_command_list_started)
     {
-        ms_pCubeSample->GPA_EndCommandListForSampling(
-            m_gpaCmdListForSecondCmdList);  // End the second direct command list for sample recording before closing it.
+        // End the second direct command list for sample recording before closing it.
+        cube_sample->GpaEndCommandListForSampling(gpa_command_list_for_second_command_list_);
     }
 #pragma endregion
 
-    // update transition
-    resourceBarrier.Transition = transitionBarrier;
-    m_pd3d12CommandList->ResourceBarrier(1, &resourceBarrier);
-    m_pd3d12CommandList->Close();
+    // Update transition.
+    resource_barrier.Transition = transition_barrier;
+    d3d_command_list_->ResourceBarrier(1, &resource_barrier);
+    d3d_command_list_->Close();
 
-    m_pSecondCmdList->ResourceBarrier(1, &resourceBarrier);
-    m_pSecondCmdList->Close();
+    second_command_list_->ResourceBarrier(1, &resource_barrier);
+    second_command_list_->Close();
 }
 
 void CubeSample::BottomLeftViewport::ResetForNextPass()
 {
-    m_gpaCmdListForSecondCmdList = m_gpaCommandListId = nullptr;
+    gpa_command_list_for_second_command_list_ = gpa_command_list_ = nullptr;
 }
 
-void CubeSample::BottomLeftViewport::IterateSamples(std::function<void(const unsigned& sampleIndex)> func) const
+void CubeSample::BottomLeftViewport::IterateSamples(std::function<void(const unsigned& sample_index)> func) const
 {
-    if (ms_undefinedSampleId != m_sampleId)
+    if (kUndefinedSampleId != sample_id_)
     {
-        func(m_sampleId);
+        func(sample_id_);
     }
 }
 
 CubeSample::BottomRightViewport::BottomRightViewport()
     : Viewport()
-    , m_pSecondCommandListAllocator(nullptr)
-    , m_pBundleCommandListAllocator(nullptr)
-    , m_pBundle(nullptr)
-    , m_gpaCmdListForBundle(nullptr)
-    , m_bundleSampleId(0xFFFF)
-    , m_bundleSampleIdOnPrimaryCmdList(ms_undefinedSampleId)
-    , m_secondCommandList(nullptr)
-    , m_gpaCmdListForSecondCmdList(nullptr)
+    , second_command_list_allocator_(nullptr)
+    , bundle_command_list_allocator_(nullptr)
+    , bundle_(nullptr)
+    , gpa_command_list_for_bundle_(nullptr)
+    , bundle_sample_id_(0xFFFF)
+    , bundle_sample_id_on_primary_command_list_(kUndefinedSampleId)
+    , second_command_list_(nullptr)
+    , gpa_command_list_for_second_command_list_(nullptr)
 {
-    m_viewport.TopLeftX   = 400.0f;
-    m_viewport.TopLeftY   = 400.0f;
-    m_viewportInitialized = true;
+    viewport_.TopLeftX    = 400.0f;
+    viewport_.TopLeftY    = 400.0f;
+    viewport_initialized_ = true;
 
-    m_viewPortRect = {static_cast<long>(m_viewport.TopLeftX),
-                      static_cast<long>(m_viewport.TopLeftY),
-                      static_cast<long>(m_viewport.TopLeftX + m_viewport.Width),
-                      static_cast<long>(m_viewport.TopLeftY + m_viewport.Height)};
+    viewport_rect_ = {static_cast<long>(viewport_.TopLeftX),
+                      static_cast<long>(viewport_.TopLeftY),
+                      static_cast<long>(viewport_.TopLeftX + viewport_.Width),
+                      static_cast<long>(viewport_.TopLeftY + viewport_.Height)};
 }
 
 bool CubeSample::BottomRightViewport::Init()
 {
-    if (m_viewportInitialized)
+    if (viewport_initialized_)
     {
         HRESULT result = S_OK;
 
-        // Create command allocator
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandAllocator(
-            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&m_pd3d12DirectCmdListAllocator));
+        // Create command allocator.
+        result = cube_sample->d3d12_device_->CreateCommandAllocator(
+            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&d3d12_direct_command_list_allocator_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        ms_pCubeSample->AddIUnknown(m_pd3d12DirectCmdListAllocator, MAKE_STRING(BottomRightViewport->m_pd3d12DirectCmdListAllocator));
+        cube_sample->AddIUnknown(d3d12_direct_command_list_allocator_, MAKE_STRING(BottomRightViewport->d3d12_direct_command_list_allocator_));
 
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandList(0,
-                                                                   D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                                   m_pd3d12DirectCmdListAllocator,
-                                                                   ms_pCubeSample->m_pfillDrawPipeline,
-                                                                   __uuidof(ID3D12GraphicsCommandList),
-                                                                   reinterpret_cast<void**>(&m_pd3d12CommandList));
-
-        if (FAILED(result))
-        {
-            return false;
-        }
-
-        m_pd3d12CommandList->Close();
-        ms_pCubeSample->AddCommandList(m_pd3d12CommandList);
-        ms_pCubeSample->AddIUnknown(m_pd3d12CommandList, MAKE_STRING(BottomRightViewport->m_pd3d12CommandList));
-
-        // second command list
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandAllocator(
-            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&m_pSecondCommandListAllocator));
+        result = cube_sample->d3d12_device_->CreateCommandList(0,
+                                                               D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                               d3d12_direct_command_list_allocator_,
+                                                               cube_sample->fill_draw_pipeline_,
+                                                               __uuidof(ID3D12GraphicsCommandList),
+                                                               reinterpret_cast<void**>(&d3d_command_list_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        ms_pCubeSample->AddIUnknown(m_pSecondCommandListAllocator, MAKE_STRING(BottomRightViewport->m_pSecondCommandListAllocator));
+        d3d_command_list_->Close();
+        cube_sample->AddCommandList(d3d_command_list_);
+        cube_sample->AddIUnknown(d3d_command_list_, MAKE_STRING(BottomRightViewport->d3d_command_list_));
 
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandList(0,
-                                                                   D3D12_COMMAND_LIST_TYPE_DIRECT,
-                                                                   m_pSecondCommandListAllocator,
-                                                                   ms_pCubeSample->m_pfillDrawPipeline,
-                                                                   __uuidof(ID3D12GraphicsCommandList),
-                                                                   reinterpret_cast<void**>(&m_secondCommandList));
-
-        if (FAILED(result))
-        {
-            return false;
-        }
-
-        m_secondCommandList->Close();
-        ms_pCubeSample->AddCommandList(m_secondCommandList);
-        ms_pCubeSample->AddIUnknown(m_secondCommandList, MAKE_STRING(BottomRightViewport->m_secondCommandList));
-
-        // create and record bundle
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandAllocator(
-            D3D12_COMMAND_LIST_TYPE_BUNDLE, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&m_pBundleCommandListAllocator));
+        // Second command list.
+        result = cube_sample->d3d12_device_->CreateCommandAllocator(
+            D3D12_COMMAND_LIST_TYPE_DIRECT, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&second_command_list_allocator_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        ms_pCubeSample->AddIUnknown(m_pBundleCommandListAllocator, MAKE_STRING(BottomRightViewport->m_pBundleCommandListAllocator));
+        cube_sample->AddIUnknown(second_command_list_allocator_, MAKE_STRING(BottomRightViewport->second_command_list_allocator_));
 
-        result = ms_pCubeSample->m_pd3d12Device->CreateCommandList(0,
-                                                                   D3D12_COMMAND_LIST_TYPE_BUNDLE,
-                                                                   m_pBundleCommandListAllocator,
-                                                                   ms_pCubeSample->m_pfillDrawPipeline,
-                                                                   __uuidof(ID3D12GraphicsCommandList),
-                                                                   reinterpret_cast<void**>(&m_pBundle));
+        result = cube_sample->d3d12_device_->CreateCommandList(0,
+                                                               D3D12_COMMAND_LIST_TYPE_DIRECT,
+                                                               second_command_list_allocator_,
+                                                               cube_sample->fill_draw_pipeline_,
+                                                               __uuidof(ID3D12GraphicsCommandList),
+                                                               reinterpret_cast<void**>(&second_command_list_));
 
         if (FAILED(result))
         {
             return false;
         }
 
-        m_pBundle->Close();
-        ms_pCubeSample->AddIUnknown(m_pBundle, MAKE_STRING(BottomRightViewport->m_pBundle));
-        ms_pCubeSample->m_currentBackBufferIndex = ms_pCubeSample->m_pdxgiSwapChain3->GetCurrentBackBufferIndex();
-        ms_pCubeSample->m_pCurrentPipelineState  = ms_pCubeSample->m_pfillDrawPipeline;
+        second_command_list_->Close();
+        cube_sample->AddCommandList(second_command_list_);
+        cube_sample->AddIUnknown(second_command_list_, MAKE_STRING(BottomRightViewport->second_command_list_));
+
+        // Create and record bundle.
+        result = cube_sample->d3d12_device_->CreateCommandAllocator(
+            D3D12_COMMAND_LIST_TYPE_BUNDLE, __uuidof(ID3D12CommandAllocator), reinterpret_cast<void**>(&bundle_command_list_allocator_));
+
+        if (FAILED(result))
+        {
+            return false;
+        }
+
+        cube_sample->AddIUnknown(bundle_command_list_allocator_, MAKE_STRING(BottomRightViewport->bundle_command_list_allocator_));
+
+        result = cube_sample->d3d12_device_->CreateCommandList(0,
+                                                               D3D12_COMMAND_LIST_TYPE_BUNDLE,
+                                                               bundle_command_list_allocator_,
+                                                               cube_sample->fill_draw_pipeline_,
+                                                               __uuidof(ID3D12GraphicsCommandList),
+                                                               reinterpret_cast<void**>(&bundle_));
+
+        if (FAILED(result))
+        {
+            return false;
+        }
+
+        bundle_->Close();
+        cube_sample->AddIUnknown(bundle_, MAKE_STRING(BottomRightViewport->bundle_));
+        cube_sample->current_back_buffer_index_ = cube_sample->dxgi_swap_chain_3_->GetCurrentBackBufferIndex();
+        cube_sample->current_pipeline_state_    = cube_sample->fill_draw_pipeline_;
         return true;
     }
 
@@ -1454,344 +1462,368 @@ bool CubeSample::BottomRightViewport::Init()
 
 void CubeSample::BottomRightViewport::Draw()
 {
-    /*
-    * In this view port, we will be recording drawing of a cube with a bundle and two direct command list
-    * each drawing 1/3rd of the cube.
-    */
+    // In this view port, we will be recording drawing of a cube with a bundle and two direct command list,
+    // each drawing 1/3rd of the cube.
 
-    HRESULT result = m_pd3d12DirectCmdListAllocator->Reset();
+    HRESULT result = d3d12_direct_command_list_allocator_->Reset();
     UNREFERENCED_PARAMETER(result);
-    result = m_pSecondCommandListAllocator->Reset();
-    result = m_pBundleCommandListAllocator->Reset();
+    result = second_command_list_allocator_->Reset();
+    result = bundle_command_list_allocator_->Reset();
 
-    result = m_pd3d12CommandList->Reset(m_pd3d12DirectCmdListAllocator, ms_pCubeSample->m_pCurrentPipelineState);
-    result = m_secondCommandList->Reset(m_pSecondCommandListAllocator, ms_pCubeSample->m_pCurrentPipelineState);
-    result = m_pBundle->Reset(m_pBundleCommandListAllocator, ms_pCubeSample->m_pCurrentPipelineState);
+    result = d3d_command_list_->Reset(d3d12_direct_command_list_allocator_, cube_sample->current_pipeline_state_);
+    result = second_command_list_->Reset(second_command_list_allocator_, cube_sample->current_pipeline_state_);
+    result = bundle_->Reset(bundle_command_list_allocator_, cube_sample->current_pipeline_state_);
 
-    if (ms_pCubeSample->m_pipelineStateChanged)
+    if (cube_sample->pipeline_state_changed_)
     {
-        m_pd3d12CommandList->SetPipelineState(ms_pCubeSample->m_pCurrentPipelineState);
-        m_secondCommandList->SetPipelineState(ms_pCubeSample->m_pCurrentPipelineState);
-        m_pBundle->SetPipelineState(ms_pCubeSample->m_pCurrentPipelineState);
+        d3d_command_list_->SetPipelineState(cube_sample->current_pipeline_state_);
+        second_command_list_->SetPipelineState(cube_sample->current_pipeline_state_);
+        bundle_->SetPipelineState(cube_sample->current_pipeline_state_);
     }
 
-    if (ms_pCubeSample->m_currentPass == 0)
+    if (cube_sample->current_pass_ == 0)
     {
-        if (args.m_profileBundles)
+        if (args.profile_bundles)
         {
-            m_bundleSampleId                 = ++ms_pCubeSample->m_sampleCounter;  // Bundle sample
-            m_bundleSampleIdOnPrimaryCmdList = ++ms_pCubeSample->m_sampleCounter;  // Copied sample of the bundle
-            m_sampleId                       = ++ms_pCubeSample->m_sampleCounter;  // This sample will span over two direct command list
+            bundle_sample_id_                         = ++cube_sample->sample_counter_;  // Bundle sample.
+            bundle_sample_id_on_primary_command_list_ = ++cube_sample->sample_counter_;  // Copied sample of the bundle.
+            sample_id_                                = ++cube_sample->sample_counter_;  // This sample will span over two direct command list.
         }
     }
 
 #pragma region GPA_CALL
-    bool bundleCommandListStarted = false;
-    bool sampleStarted            = false;
+    bool bundle_command_list_started = false;
+    bool sample_started              = false;
 
-    if (args.m_profileBundles)
+    if (args.profile_bundles)
     {
-        bundleCommandListStarted =
-            ms_pCubeSample->GPA_BeginCommandListForSampling(m_pBundle, m_gpaCmdListForBundle);  // Request GPA to start recording samples on the bundle
+        // Request GPA to start recording samples on the bundle.
+        bundle_command_list_started = cube_sample->GpaBeginCommandListForSampling(bundle_, gpa_command_list_for_bundle_);
 
-        if (bundleCommandListStarted)
+        if (bundle_command_list_started)
         {
-            sampleStarted = ms_pCubeSample->GPA_BeginSample(m_gpaCmdListForBundle, m_bundleSampleId);  // Start sample on the bundle
+            // Start sample on the bundle.
+            sample_started = cube_sample->GpaBeginSample(gpa_command_list_for_bundle_, bundle_sample_id_);
         }
     }
 #pragma endregion
 
-    m_pBundle->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    m_pBundle->IASetVertexBuffers(0, 1, &ms_pCubeSample->m_vertexBufferView);
-    m_pBundle->IASetIndexBuffer(&ms_pCubeSample->m_indexBufferView);
-    m_pBundle->DrawIndexedInstanced(12, 1, 0, 0, 0);  // Draw 1/3 of the cube
+    // Draw 1/3 of the cube.
+    bundle_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    bundle_->IASetVertexBuffers(0, 1, &cube_sample->vertex_buffer_view_);
+    bundle_->IASetIndexBuffer(&cube_sample->index_buffer_view_);
+    bundle_->DrawIndexedInstanced(12, 1, 0, 0, 0);
 
 #pragma region GPA_CALL
-    if (sampleStarted)
+    if (sample_started)
     {
-        ms_pCubeSample->GPA_EndSample(m_gpaCmdListForBundle);  // End the sample request on the bundle
+        // End the sample request on the bundle.
+        cube_sample->GpaEndSample(gpa_command_list_for_bundle_);
 
-        if (bundleCommandListStarted)
+        if (bundle_command_list_started)
         {
-            ms_pCubeSample->GPA_EndCommandListForSampling(m_gpaCmdListForBundle);  // End the bundle for sample recording before closing it.
+            // End the bundle for sample recording before closing it.
+            cube_sample->GpaEndCommandListForSampling(gpa_command_list_for_bundle_);
         }
     }
 #pragma endregion
 
-    m_pBundle->Close();
+    bundle_->Close();
 
-    m_pd3d12CommandList->SetGraphicsRootSignature(ms_pCubeSample->m_pD3D12RootSignature);
-    m_pd3d12CommandList->RSSetViewports(1, &m_viewport);
-    m_pd3d12CommandList->RSSetScissorRects(1, &ms_pCubeSample->m_scissorRect);
+    d3d_command_list_->SetGraphicsRootSignature(cube_sample->d3d12_root_signature_);
+    d3d_command_list_->RSSetViewports(1, &viewport_);
+    d3d_command_list_->RSSetScissorRects(1, &cube_sample->scissor_rect_);
 
-    m_secondCommandList->SetGraphicsRootSignature(ms_pCubeSample->m_pD3D12RootSignature);
-    m_secondCommandList->RSSetViewports(1, &m_viewport);
-    m_secondCommandList->RSSetScissorRects(1, &ms_pCubeSample->m_scissorRect);
+    second_command_list_->SetGraphicsRootSignature(cube_sample->d3d12_root_signature_);
+    second_command_list_->RSSetViewports(1, &viewport_);
+    second_command_list_->RSSetScissorRects(1, &cube_sample->scissor_rect_);
 
-    D3D12_RESOURCE_TRANSITION_BARRIER transitionBarrier = {};
-    transitionBarrier.pResource                         = ms_pCubeSample->m_pRTVResource[ms_pCubeSample->m_currentBackBufferIndex];
-    transitionBarrier.Subresource                       = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
-    transitionBarrier.StateBefore                       = D3D12_RESOURCE_STATE_PRESENT;
-    transitionBarrier.StateAfter                        = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    D3D12_RESOURCE_TRANSITION_BARRIER transition_barrier = {};
+    transition_barrier.pResource                         = cube_sample->rtv_resource_[cube_sample->current_back_buffer_index_];
+    transition_barrier.Subresource                       = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+    transition_barrier.StateBefore                       = D3D12_RESOURCE_STATE_PRESENT;
+    transition_barrier.StateAfter                        = D3D12_RESOURCE_STATE_RENDER_TARGET;
 
-    D3D12_RESOURCE_BARRIER resourceBarrier = {};
-    resourceBarrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
-    resourceBarrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
-    resourceBarrier.Transition             = transitionBarrier;
+    D3D12_RESOURCE_BARRIER resource_barrier = {};
+    resource_barrier.Type                   = D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+    resource_barrier.Flags                  = D3D12_RESOURCE_BARRIER_FLAG_NONE;
+    resource_barrier.Transition             = transition_barrier;
 
-    m_pd3d12CommandList->ResourceBarrier(1, &resourceBarrier);
-    m_secondCommandList->ResourceBarrier(1, &resourceBarrier);
+    d3d_command_list_->ResourceBarrier(1, &resource_barrier);
+    second_command_list_->ResourceBarrier(1, &resource_barrier);
 
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvDescriptorHeap;
-    rtvDescriptorHeap.ptr = ms_pCubeSample->m_pd3d12DescriptorHeap->GetCPUDescriptorHandleForHeapStart().ptr +
-                            ms_pCubeSample->m_currentBackBufferIndex * ms_pCubeSample->m_RTVdescriptorIncrementSize;
-    m_pd3d12CommandList->OMSetRenderTargets(1, &rtvDescriptorHeap, FALSE, nullptr);
-    m_secondCommandList->OMSetRenderTargets(1, &rtvDescriptorHeap, FALSE, nullptr);
+    D3D12_CPU_DESCRIPTOR_HANDLE rtv_desc_heap;
+    rtv_desc_heap.ptr = cube_sample->d3d12_descriptor_heap_->GetCPUDescriptorHandleForHeapStart().ptr +
+                        cube_sample->current_back_buffer_index_ * cube_sample->rtv_view_desc_size;
+    d3d_command_list_->OMSetRenderTargets(1, &rtv_desc_heap, FALSE, nullptr);
+    second_command_list_->OMSetRenderTargets(1, &rtv_desc_heap, FALSE, nullptr);
 
-    m_pd3d12CommandList->ClearRenderTargetView(rtvDescriptorHeap, m_clearColor, 1, &m_viewPortRect);
+    d3d_command_list_->ClearRenderTargetView(rtv_desc_heap, kClearColor, 1, &viewport_rect_);
 
-    m_pd3d12CommandList->ExecuteBundle(m_pBundle);  // Execute bundle
+    d3d_command_list_->ExecuteBundle(bundle_);
 
-    m_pd3d12CommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    m_pd3d12CommandList->IASetVertexBuffers(0, 1, &ms_pCubeSample->m_vertexBufferView);
-    m_pd3d12CommandList->IASetIndexBuffer(&ms_pCubeSample->m_indexBufferView);
-
-    m_secondCommandList->ClearRenderTargetView(rtvDescriptorHeap, m_clearColor, 1, &m_viewPortRect);
+    d3d_command_list_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    d3d_command_list_->IASetVertexBuffers(0, 1, &cube_sample->vertex_buffer_view_);
+    d3d_command_list_->IASetIndexBuffer(&cube_sample->index_buffer_view_);
 
 #pragma region GPA_CALL
-    bool commandListStarted = ms_pCubeSample->GPA_BeginCommandListForSampling(
-        m_pd3d12CommandList, m_gpaCommandListId);  // Request GPA to start recording samples on the first direct command list
+    // Request GPA to start recording samples on the first direct command list.
+    bool command_list_started = cube_sample->GpaBeginCommandListForSampling(d3d_command_list_, gpa_command_list_);
 
-    bool secondCommandListStarted = ms_pCubeSample->GPA_BeginCommandListForSampling(
-        m_secondCommandList, m_gpaCmdListForSecondCmdList);  // Request GPA to start recording samples on the second direct command list
+    // Request GPA to start recording samples on the second direct command list.
+    bool second_command_list_started = cube_sample->GpaBeginCommandListForSampling(second_command_list_, gpa_command_list_for_second_command_list_);
 #pragma endregion
 
-    m_secondCommandList->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-    m_secondCommandList->IASetVertexBuffers(0, 1, &ms_pCubeSample->m_vertexBufferView);
-    m_secondCommandList->IASetIndexBuffer(&ms_pCubeSample->m_indexBufferView);
+    second_command_list_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+    second_command_list_->IASetVertexBuffers(0, 1, &cube_sample->vertex_buffer_view_);
+    second_command_list_->IASetIndexBuffer(&cube_sample->index_buffer_view_);
 
 #pragma region GPA_CALL
-    if (bundleCommandListStarted && commandListStarted)
+    if (bundle_command_list_started && command_list_started)
     {
-        std::vector<unsigned int> tempVector = {m_bundleSampleIdOnPrimaryCmdList};
-        ms_pCubeSample->GPA_CopyBundleSample(m_gpaCmdListForBundle,
-                                             m_gpaCommandListId,
-                                             tempVector);  // Copy the bundle sample to the direct command list after its execution on first direct command list
+        // Copy the bundle sample to the direct command list after its execution on first direct command list.
+        std::vector<unsigned int> tmp_vector = {bundle_sample_id_on_primary_command_list_};
+        cube_sample->GpaCopyBundleSample(gpa_command_list_for_bundle_, gpa_command_list_, tmp_vector);
     }
 
-    if (commandListStarted)
+    if (command_list_started)
     {
-        sampleStarted =
-            ms_pCubeSample->GPA_BeginSample(m_gpaCommandListId, m_sampleId);  // Start sample on the first direct command list i.e. m_gpaCommandListId
+        // Start sample on the first direct command list i.e. gpa_command_list_.
+        sample_started = cube_sample->GpaBeginSample(gpa_command_list_, sample_id_);
     }
 
-    if (sampleStarted && secondCommandListStarted)
+    if (sample_started && second_command_list_started)
     {
-        ms_pCubeSample->GPA_ContinueSample(m_sampleId, m_gpaCmdListForSecondCmdList);  // Continue the original sample to the second direct command list
-    }
-#pragma endregion
-
-    m_pd3d12CommandList->DrawIndexedInstanced(12, 12, 0, 0, 0);  // Draw 1/3rd of cube
-
-    m_secondCommandList->DrawIndexedInstanced(24, 12, 0, 0, 0);  // Draw 1/3rd of cube
-
-    transitionBarrier.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
-    transitionBarrier.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
-
-#pragma region GPA_CALL
-    if (sampleStarted)
-    {
-        ms_pCubeSample->GPA_EndSample(m_gpaCmdListForSecondCmdList);  // End the continuing sample on the second command list
-    }
-
-    if (secondCommandListStarted)
-    {
-        ms_pCubeSample->GPA_EndCommandListForSampling(
-            m_gpaCmdListForSecondCmdList);  // End the second direct command list for sample recording before closing it.
-    }
-
-    if (commandListStarted)
-    {
-        ms_pCubeSample->GPA_EndCommandListForSampling(m_gpaCommandListId);  // End the first direct command list for sample recording before closing it.
+        // Continue the original sample to the second direct command list.
+        cube_sample->GpaContinueSample(sample_id_, gpa_command_list_for_second_command_list_);
     }
 #pragma endregion
 
-    // update transition
-    resourceBarrier.Transition = transitionBarrier;
-    m_pd3d12CommandList->ResourceBarrier(1, &resourceBarrier);
-    m_pd3d12CommandList->Close();
+    // Draw 1/3rd of cube.
+    d3d_command_list_->DrawIndexedInstanced(12, 1, 12, 0, 0);
 
-    m_secondCommandList->ResourceBarrier(1, &resourceBarrier);
-    m_secondCommandList->Close();
+    // Draw 1/3rd of cube.
+    second_command_list_->DrawIndexedInstanced(12, 1, 24, 0, 0);
+
+    transition_barrier.StateBefore = D3D12_RESOURCE_STATE_RENDER_TARGET;
+    transition_barrier.StateAfter  = D3D12_RESOURCE_STATE_PRESENT;
+
+#pragma region GPA_CALL
+    if (sample_started)
+    {
+        // End the continuing sample on the second command list.
+        cube_sample->GpaEndSample(gpa_command_list_for_second_command_list_);
+    }
+
+    if (second_command_list_started)
+    {
+        // End the second direct command list for sample recording before closing it.
+        cube_sample->GpaEndCommandListForSampling(gpa_command_list_for_second_command_list_);
+    }
+
+    if (command_list_started)
+    {
+        // End the first direct command list for sample recording before closing it.
+        cube_sample->GpaEndCommandListForSampling(gpa_command_list_);
+    }
+#pragma endregion
+
+    // Update transition.
+    resource_barrier.Transition = transition_barrier;
+    d3d_command_list_->ResourceBarrier(1, &resource_barrier);
+    d3d_command_list_->Close();
+
+    second_command_list_->ResourceBarrier(1, &resource_barrier);
+    second_command_list_->Close();
 }
 
 void CubeSample::BottomRightViewport::ResetForNextPass()
 {
-    m_gpaCmdListForSecondCmdList = m_gpaCmdListForBundle = m_gpaCommandListId = nullptr;
+    gpa_command_list_for_second_command_list_ = gpa_command_list_for_bundle_ = gpa_command_list_ = nullptr;
 }
 
-void CubeSample::BottomRightViewport::IterateSamples(std::function<void(const unsigned& sampleIndex)> func) const
+void CubeSample::BottomRightViewport::IterateSamples(std::function<void(const unsigned& sample_index)> func) const
 {
-    if (ms_undefinedSampleId != m_bundleSampleIdOnPrimaryCmdList)
+    if (kUndefinedSampleId != bundle_sample_id_on_primary_command_list_)
     {
-        func(m_bundleSampleIdOnPrimaryCmdList);
+        func(bundle_sample_id_on_primary_command_list_);
     }
 
-    if (ms_undefinedSampleId != m_sampleId)
+    if (kUndefinedSampleId != sample_id_)
     {
-        func(m_sampleId);
+        func(sample_id_);
     }
 }
 
 void CubeSample::Draw()
 {
-    if (m_profilingEnable)
+    if (profiling_enable_)
     {
-        if (m_currentPass <= 0)
+        if (current_pass_ <= 0)
         {
-            ++m_frameCounter;
+            ++frame_counter_;
         }
     }
     else
     {
-        ++m_frameCounter;
+        ++frame_counter_;
     }
 
-    ID3D12PipelineState* pTempPipelineState = ms_pCubeSample->m_pCurrentPipelineState;
+    ID3D12PipelineState* temp_pipeline_state = cube_sample->current_pipeline_state_;
 
-    if (ms_pCubeSample->m_wireframe)
+    if (cube_sample->wire_frame_)
     {
-        ms_pCubeSample->m_pCurrentPipelineState = m_pWireframePipeline;
+        cube_sample->current_pipeline_state_ = wire_frame_pipeline_;
     }
     else
     {
-        m_pCurrentPipelineState = m_pfillDrawPipeline;
+        current_pipeline_state_ = fill_draw_pipeline_;
     }
 
-    if (pTempPipelineState != m_pCurrentPipelineState)
+    if (temp_pipeline_state != current_pipeline_state_)
     {
-        m_pipelineStateChanged = true;
+        pipeline_state_changed_ = true;
     }
 
-    m_topLeftViewport.Draw();
-    m_topRightViewport.Draw();
-    m_bottomLeftViewport.Draw();
-    m_bottomRightViewport.Draw();
+    top_left_viewport_.Draw();
+    top_right_viewport_.Draw();
+    bottom_left_viewport_.Draw();
+    bottom_right_viewport_.Draw();
 
-    // execute command list
-    m_pd3d12CommandQueue->ExecuteCommandLists(static_cast<UINT>(m_graphicsCommandListVector.size()),
-                                              reinterpret_cast<ID3D12CommandList* const*>(m_graphicsCommandListVector.data()));
+    // Execute command list.
+    d3d12_command_queue_->ExecuteCommandLists(static_cast<UINT>(graphics_command_queue_.size()),
+                                              reinterpret_cast<ID3D12CommandList* const*>(graphics_command_queue_.data()));
 
-    // present frame
-    m_pdxgiSwapChain3->Present(1, 0);
+    // Present frame.
+    dxgi_swap_chain_3_->Present(1, 0);
     WaitForGpuToFinish();
 
-    m_pipelineStateChanged = false;
+    pipeline_state_changed_ = false;
 }
 
 void CubeSample::Destroy()
 {
-    while (!m_appCreatedIUnknown.empty())
+    while (!app_created_unknown_cache_.empty())
     {
-        IUnknownNamePair d3d12ObjectNamePair = m_appCreatedIUnknown.top();
-        IUnknown*        pUnknown            = d3d12ObjectNamePair.second;
+        IUnknownNamePair d3d12_obj_name_pair = app_created_unknown_cache_.top();
+        IUnknown*        unknown             = d3d12_obj_name_pair.second;
 
-        if (nullptr != pUnknown)
+        if (nullptr != unknown)
         {
-            ULONG refCount = pUnknown->Release();
-            UNREFERENCED_PARAMETER(refCount);
-            m_appCreatedIUnknown.pop();
+            ULONG ref_count = unknown->Release();
+            UNREFERENCED_PARAMETER(ref_count);
+            app_created_unknown_cache_.pop();
         }
     }
 }
 
 void CubeSample::ToggleProfiling()
 {
-    m_profilingEnable = !m_profilingEnable;
+    profiling_enable_ = !profiling_enable_;
 }
 
 void CubeSample::ToggleWireFrame()
 {
-    m_wireframe = !m_wireframe;
+    wire_frame_ = !wire_frame_;
 }
 
 void CubeSample::ResetGpaPassInfo()
 {
-    m_sampleCounter = -1;
-    m_topLeftViewport.ResetForNextPass();
-    m_topRightViewport.ResetForNextPass();
-    m_bottomLeftViewport.ResetForNextPass();
-    m_bottomRightViewport.ResetForNextPass();
+    sample_counter_ = -1;
+    top_left_viewport_.ResetForNextPass();
+    top_right_viewport_.ResetForNextPass();
+    bottom_left_viewport_.ResetForNextPass();
+    bottom_right_viewport_.ResetForNextPass();
 }
 
 #pragma region GPA_Wrappers
 
-bool CubeSample::GPA_InitializeAndOpenContext()
+bool CubeSample::GpaInitializeAndOpenContext()
 {
     bool success = true;
 
-    m_profilingEnable = args.m_useGPA;
+    profiling_enable_ = args.use_gpa;
 
-    std::remove(m_gpaLogFileName.c_str());
+    std::remove(gpa_log_file_name_.c_str());
 
-    if (m_profilingEnable)
+    if (profiling_enable_)
     {
-        if (nullptr == m_pGpaFunctionTable)
+        if (nullptr == gpa_function_table_)
         {
-            if (GPA_STATUS_OK == GPAApiManager::Instance()->LoadApi(GPA_API_DIRECTX_12))
+            if (kGpaStatusOk == GpaApiManager::Instance()->LoadApi(kGpaApiDirectx12))
             {
-                m_pGpaFunctionTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_DIRECTX_12);
+                gpa_function_table_ = GpaApiManager::Instance()->GetFunctionTable(kGpaApiDirectx12);
             }
             else
             {
-                LogGPA(GPA_LOGGING_ALL, "Unable to load GPA");
+                LogGPA(kGpaLoggingError, "Unable to load GPA");
             }
         }
 
-        if (nullptr != m_pGpaFunctionTable)
+        if (nullptr != gpa_function_table_)
         {
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_Initialize(GPA_INITIALIZE_DEFAULT_BIT);
-            success = success && GPA_STATUS_OK == m_pGpaFunctionTable->GPA_RegisterLoggingCallback(GPA_LOGGING_ERROR, LogGPA);
-
-            GPA_OpenContextFlags openContextFlags = args.m_includeHwCounters ? GPA_OPENCONTEXT_ENABLE_HARDWARE_COUNTERS_BIT : GPA_OPENCONTEXT_DEFAULT_BIT;
-            success = success && GPA_STATUS_OK == m_pGpaFunctionTable->GPA_OpenContext(m_pd3d12Device, openContextFlags, &m_gpaContextId);
-            success = success && GPA_STATUS_OK == m_pGpaFunctionTable->GPA_GetDeviceAndRevisionId(m_gpaContextId, &m_deviceId, &m_revisionId);
-
-            char        tempDeviceName[255]{};
-            const char* pTempDeviceName = tempDeviceName;
-
-            success = success && GPA_STATUS_OK == m_pGpaFunctionTable->GPA_GetDeviceName(m_gpaContextId, &pTempDeviceName);
-            if (success)
+            GpaLoggingType gpa_log_types = kGpaLoggingError;
+            if (args.confirm_success)
             {
-                m_deviceName = pTempDeviceName;
+                // Only log message types if confirm_success_ is enabled, because GPA will log a confirmation message
+                // that the logging callback was registered, and we don't want to output a log if --verify was enabled
+                // but not --confirmsuccess.
+                gpa_log_types = kGpaLoggingErrorAndMessage;
+            }
+            success = kGpaStatusOk == gpa_function_table_->GpaRegisterLoggingCallback(kGpaLoggingError, LogGPA);
+            if (!success)
+            {
+                LogGPA(kGpaLoggingError, "Failed to register GPA logging callback.");
+                return false;
             }
 
-            std::remove(m_counterFileName.c_str());
-            m_counterDataFileStream.open(m_counterFileName.c_str(), std::ios_base::out | std::ios_base::app);
+            success = success && (kGpaStatusOk == gpa_function_table_->GpaInitialize(kGpaInitializeDefaultBit));
+            if (!success)
+            {
+                LogGPA(kGpaLoggingError, "Failed to initialize GPA.");
+                return false;
+            }
+
+            GpaOpenContextFlags open_context_flags = args.include_hw_counters ? kGpaOpenContextEnableHardwareCountersBit : kGpaOpenContextDefaultBit;
+            success = success && kGpaStatusOk == gpa_function_table_->GpaOpenContext(d3d12_device_, open_context_flags, &gpa_context_id_);
+            success = success && kGpaStatusOk == gpa_function_table_->GpaGetDeviceAndRevisionId(gpa_context_id_, &device_id_, &revision_id_);
+
+            char        tmp_device_name[255]{};
+            const char* tmp_device_name_ptr = tmp_device_name;
+
+            success = success && kGpaStatusOk == gpa_function_table_->GpaGetDeviceName(gpa_context_id_, &tmp_device_name_ptr);
+
+            if (success)
+            {
+                device_name_ = tmp_device_name_ptr;
+            }
+
+            std::remove(counter_file_name_.c_str());
+            counter_data_file_stream_.open(counter_file_name_.c_str(), std::ios_base::out | std::ios_base::app);
         }
     }
 
     return success;
 }
 
-bool CubeSample::GPA_ReleaseContextAndDestroy()
+bool CubeSample::GpaReleaseContextAndDestroy()
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable)
+    if (nullptr != gpa_function_table_)
     {
-        if (m_gpaContextId)
+        if (gpa_context_id_)
         {
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_CloseContext(m_gpaContextId);
-            success = success && GPA_STATUS_OK == m_pGpaFunctionTable->GPA_Destroy();
-            GPAApiManager::Instance()->UnloadApi(GPA_API_DIRECTX_12);
+            success = (kGpaStatusOk == gpa_function_table_->GpaCloseContext(gpa_context_id_));
+            success = (success && (kGpaStatusOk == gpa_function_table_->GpaDestroy()));
+            GpaApiManager::Instance()->UnloadApi(kGpaApiDirectx12);
 
-            if (m_gpaLogFileStream.is_open())
+            if (gpa_log_file_stream_.is_open())
             {
-                m_gpaLogFileStream.close();
+                gpa_log_file_stream_.close();
             }
 
-            m_counterDataFileStream.close();
+            counter_data_file_stream_.close();
         }
         else
         {
@@ -1802,21 +1834,50 @@ bool CubeSample::GPA_ReleaseContextAndDestroy()
     return success;
 }
 
-bool CubeSample::GPA_EnableCounters()
+bool CubeSample::GpaEnableCounters()
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        if (nullptr != m_gpaSessionId)
+        if (nullptr != gpa_session_id_)
         {
+            if (args.counter_provided)
+            {
+                std::fstream counter_file_stream;
+                counter_file_stream.open(args.counter_file_name.c_str(), std::ios_base::in);
+                std::vector<std::string> counter_list;
+                char                     temp_counter[256];
+                if (counter_file_stream.is_open())
+                {
+                    while (counter_file_stream.getline(temp_counter, 256))
+                    {
+                        counter_list.push_back(std::string(temp_counter));
+                    }
+
+                    counter_file_stream.close();
+
+                    for (std::vector<std::string>::const_iterator it = counter_list.cbegin(); it != counter_list.cend(); ++it)
+                    {
+                        gpa_function_table_->GpaEnableCounterByName(gpa_session_id_, it->c_str());
+                    }
+                }
+                else
+                {
+                    std::stringstream error;
+                    error << "Unable to open Counter file " << args.counter_file_name.c_str() << " . Not enabling any counters";
+                }
+            }
+            else
+            {
 #ifndef AMDT_INTERNAL
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_EnableAllCounters(m_gpaSessionId);
+                success = (kGpaStatusOk == gpa_function_table_->GpaEnableAllCounters(gpa_session_id_));
 #else
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_EnableCounterByName(m_gpaSessionId, "GPUTime");
-
+                success = (kGpaStatusOk == gpa_function_table_->GpaEnableCounterByName(gpa_session_id_, "GPUTime"));
 #endif
-            success = success && GPA_STATUS_OK == m_pGpaFunctionTable->GPA_GetPassCount(m_gpaSessionId, &m_passRequired);
+            }
+
+            success = success && (kGpaStatusOk == gpa_function_table_->GpaGetPassCount(gpa_session_id_, &num_passes_required_));
         }
         else
         {
@@ -1827,15 +1888,15 @@ bool CubeSample::GPA_EnableCounters()
     return success;
 }
 
-bool CubeSample::GPA_CreateProfilingSession()
+bool CubeSample::GpaCreateProfilingSession()
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        if (nullptr != m_gpaContextId)
+        if (nullptr != gpa_context_id_)
         {
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_CreateSession(m_gpaContextId, GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER, &m_gpaSessionId);
+            success = kGpaStatusOk == gpa_function_table_->GpaCreateSession(gpa_context_id_, kGpaSessionSampleTypeDiscreteCounter, &gpa_session_id_);
         }
         else
         {
@@ -1846,20 +1907,20 @@ bool CubeSample::GPA_CreateProfilingSession()
     return success;
 }
 
-bool CubeSample::GPA_BeginProfilingSession()
+bool CubeSample::GpaBeginProfilingSession()
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        if (nullptr != m_gpaSessionId)
+        if (nullptr != gpa_session_id_)
         {
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_BeginSession(m_gpaSessionId);
+            success = kGpaStatusOk == gpa_function_table_->GpaBeginSession(gpa_session_id_);
 
             if (success)
             {
-                m_sampleCounter = -1;
-                m_currentPass   = -1;
+                sample_counter_ = -1;
+                current_pass_   = -1;
             }
         }
         else
@@ -1871,15 +1932,15 @@ bool CubeSample::GPA_BeginProfilingSession()
     return success;
 }
 
-bool CubeSample::GPA_EndProfilingSession() const
+bool CubeSample::GpaEndProfilingSession() const
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        if (nullptr != m_gpaSessionId)
+        if (nullptr != gpa_session_id_)
         {
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_EndSession(m_gpaSessionId);
+            success = kGpaStatusOk == gpa_function_table_->GpaEndSession(gpa_session_id_);
         }
         else
         {
@@ -1890,45 +1951,45 @@ bool CubeSample::GPA_EndProfilingSession() const
     return success;
 }
 
-bool CubeSample::GPA_BeginPass()
+bool CubeSample::GpaBeginPass()
 {
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        m_currentPass++;
+        current_pass_++;
     }
 
     return true;
 }
 
-bool CubeSample::GPA_EndPass()
+bool CubeSample::GpaEndPass()
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable && nullptr != m_gpaSessionId)
+    if (nullptr != gpa_function_table_ && profiling_enable_ && nullptr != gpa_session_id_)
     {
-        bool           isReady   = false;
-        const uint32_t timeout   = 10000;  // ms
-        auto           startTime = std::chrono::high_resolution_clock::now();
+        bool           is_ready   = false;
+        const uint32_t time_out   = 10000;  // ms
+        auto           start_time = std::chrono::high_resolution_clock::now();
 
         do
         {
-            isReady = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_IsPassComplete(m_gpaSessionId, m_currentPass);
+            is_ready = kGpaStatusOk == gpa_function_table_->GpaIsPassComplete(gpa_session_id_, current_pass_);
 
-            if (!isReady)
+            if (!is_ready)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(0));
 
-                auto                                      endTime     = std::chrono::high_resolution_clock::now();
-                std::chrono::duration<double, std::milli> elapsedTime = endTime - startTime;
+                auto                                      end_time     = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double, std::milli> elapsed_time = end_time - start_time;
 
-                if (elapsedTime.count() > timeout)
+                if (elapsed_time.count() > time_out)
                 {
-                    LogGPA(GPA_LOGGING_ERROR, "GPA_IsPassComplete failed due to elapsed timeout.");
+                    LogGPA(kGpaLoggingError, "GPA_IsPassComplete failed due to elapsed time_out.");
                     success = false;
                     break;
                 }
             }
-        } while (!isReady);
+        } while (!is_ready);
 
         ResetGpaPassInfo();
     }
@@ -1936,26 +1997,26 @@ bool CubeSample::GPA_EndPass()
     return success;
 }
 
-bool CubeSample::GPA_NextPassNeeded() const
+bool CubeSample::GpaNextPassNeeded() const
 {
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        return static_cast<unsigned int>(m_currentPass + 1) < m_passRequired;
+        return static_cast<unsigned int>(current_pass_ + 1) < num_passes_required_;
     }
 
     return false;
 }
 
-bool CubeSample::GPA_DeleteProfilingSession()
+bool CubeSample::GpaDeleteProfilingSession()
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable && nullptr != m_gpaSessionId)
+    if (nullptr != gpa_function_table_ && profiling_enable_ && nullptr != gpa_session_id_)
     {
-        if (nullptr != m_gpaContextId)
+        if (nullptr != gpa_context_id_)
         {
-            success        = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_DeleteSession(m_gpaSessionId);
-            m_gpaSessionId = nullptr;
+            success         = kGpaStatusOk == gpa_function_table_->GpaDeleteSession(gpa_session_id_);
+            gpa_session_id_ = nullptr;
         }
         else
         {
@@ -1966,21 +2027,21 @@ bool CubeSample::GPA_DeleteProfilingSession()
     return success;
 }
 
-bool CubeSample::GPA_BeginCommandListForSampling(ID3D12GraphicsCommandList* pGraphicsCmdList, GPA_CommandListId& gpaCmdId) const
+bool CubeSample::GpaBeginCommandListForSampling(ID3D12GraphicsCommandList* graphics_command_list, GpaCommandListId& gpa_command_list_id) const
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        if (nullptr != m_gpaSessionId)
+        if (nullptr != gpa_session_id_)
         {
-            GPA_Command_List_Type cmdType =
-                pGraphicsCmdList->GetType() == D3D12_COMMAND_LIST_TYPE_DIRECT ? GPA_COMMAND_LIST_PRIMARY : GPA_COMMAND_LIST_SECONDARY;
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_BeginCommandList(m_gpaSessionId, m_currentPass, pGraphicsCmdList, cmdType, &gpaCmdId);
+            GpaCommandListType cmdType = graphics_command_list->GetType() == D3D12_COMMAND_LIST_TYPE_DIRECT ? kGpaCommandListPrimary : kGpaCommandListSecondary;
+            success                    = (kGpaStatusOk ==
+                       gpa_function_table_->GpaBeginCommandList(gpa_session_id_, current_pass_, graphics_command_list, cmdType, &gpa_command_list_id));
 
             if (!success)
             {
-                gpaCmdId = nullptr;
+                gpa_command_list_id = nullptr;
             }
         }
         else
@@ -1992,15 +2053,15 @@ bool CubeSample::GPA_BeginCommandListForSampling(ID3D12GraphicsCommandList* pGra
     return success;
 }
 
-bool CubeSample::GPA_EndCommandListForSampling(GPA_CommandListId& gpaCmdListId) const
+bool CubeSample::GpaEndCommandListForSampling(GpaCommandListId& gpa_command_list_id) const
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        if (nullptr != gpaCmdListId)
+        if (nullptr != gpa_command_list_id)
         {
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_EndCommandList(gpaCmdListId);
+            success = (kGpaStatusOk == gpa_function_table_->GpaEndCommandList(gpa_command_list_id));
         }
         else
         {
@@ -2011,13 +2072,13 @@ bool CubeSample::GPA_EndCommandListForSampling(GPA_CommandListId& gpaCmdListId) 
     return success;
 }
 
-bool CubeSample::GPA_BeginSample(GPA_CommandListId gpaCmdListId, const unsigned int& sampleId) const
+bool CubeSample::GpaBeginSample(GpaCommandListId gpa_command_list_id, const unsigned int& sample_id) const
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_BeginSample(sampleId, gpaCmdListId);
+        success = (kGpaStatusOk == gpa_function_table_->GpaBeginSample(sample_id, gpa_command_list_id));
     }
     else
     {
@@ -2027,13 +2088,13 @@ bool CubeSample::GPA_BeginSample(GPA_CommandListId gpaCmdListId, const unsigned 
     return success;
 }
 
-bool CubeSample::GPA_EndSample(GPA_CommandListId gpaCmdListId) const
+bool CubeSample::GpaEndSample(GpaCommandListId gpa_command_list_id) const
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_EndSample(gpaCmdListId);
+        success = (kGpaStatusOk == gpa_function_table_->GpaEndSample(gpa_command_list_id));
     }
     else
     {
@@ -2043,324 +2104,335 @@ bool CubeSample::GPA_EndSample(GPA_CommandListId gpaCmdListId) const
     return success;
 }
 
-bool CubeSample::GPA_CopyBundleSample(GPA_CommandListId pSecondaryGpaCmdList, GPA_CommandListId pPrimaryGpaCmdList, std::vector<gpa_uint32> sampleIdList) const
+bool CubeSample::GpaCopyBundleSample(GpaCommandListId       secondary_gpa_command_list,
+                                     GpaCommandListId       primary_gpa_command_list,
+                                     std::vector<GpaUInt32> sample_id_list) const
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        if (nullptr != pSecondaryGpaCmdList && nullptr != pPrimaryGpaCmdList)
+        if (nullptr != secondary_gpa_command_list && nullptr != primary_gpa_command_list)
         {
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_CopySecondarySamples(
-                                           pSecondaryGpaCmdList, pPrimaryGpaCmdList, static_cast<gpa_uint32>(sampleIdList.size()), sampleIdList.data());
+            success = (kGpaStatusOk ==
+                       gpa_function_table_->GpaCopySecondarySamples(
+                           secondary_gpa_command_list, primary_gpa_command_list, static_cast<GpaUInt32>(sample_id_list.size()), sample_id_list.data()));
         }
     }
 
     return success;
 }
 
-bool CubeSample::GPA_ContinueSample(unsigned int srcSampleId, GPA_CommandListId gpaCmdId) const
+bool CubeSample::GpaContinueSample(unsigned int src_sample_id, GpaCommandListId gpa_command_list_id) const
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable)
+    if (nullptr != gpa_function_table_ && profiling_enable_)
     {
-        if (nullptr != gpaCmdId)
+        if (nullptr != gpa_command_list_id)
         {
-            success = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_ContinueSampleOnCommandList(srcSampleId, gpaCmdId);
+            success = (kGpaStatusOk == gpa_function_table_->GpaContinueSampleOnCommandList(src_sample_id, gpa_command_list_id));
         }
     }
 
     return success;
 }
 
-bool CubeSample::GPA_CounterValueCompare(unsigned int frameNumber,
-                                         unsigned int sampleIndex,
-                                         const char*  pCounterName,
-                                         gpa_float64  counterValue,
-                                         CompareType  compareType,
-                                         gpa_float64  compareVal)
+bool CubeSample::GpaCounterValueCompare(unsigned int profile_set,
+                                        unsigned int sample_index,
+                                        const char*  counter_name,
+                                        GpaFloat64   counter_value,
+                                        CompareType  compare_type,
+                                        GpaFloat64   compare_value)
 {
-    bool              retVal = false;
-    std::stringstream errorString;
+    bool              return_value = false;
+    std::stringstream output_string;
+    std::stringstream error_string;
+    std::stringstream success_string;
+    std::stringstream compare_string;
 
-    errorString << "Incorrect value for counter " << pCounterName << "(sample " << sampleIndex << " in frame " << frameNumber << "). Counter value is "
-                << counterValue << ". Expected counter to be ";
+    output_string << "Profile " << profile_set << ", sample " << sample_index << ": ";
 
-    switch (compareType)
+    error_string << "Incorrect value for counter " << counter_name << ". Value is " << counter_value << ". Expected counter to be ";
+    success_string << "Counter " << counter_name << " is correct. Value " << counter_value << " is ";
+
+    switch (compare_type)
     {
-    case COMPARE_TYPE_EQUAL:
-        retVal = counterValue == compareVal;
-        errorString << "equal to " << compareVal;
+    case kCompareTypeEqual:
+        return_value = counter_value == compare_value;
+        compare_string << "equal to " << compare_value;
         break;
 
-    case COMPARE_TYPE_GREATER_THAN:
-        retVal = counterValue > compareVal;
-        errorString << "greater than " << compareVal;
+    case kCompareTypeGreaterThan:
+        return_value = counter_value > compare_value;
+        compare_string << "greater than " << compare_value;
         break;
 
-    case COMPARE_TYPE_GREATER_THAN_OR_EQUAL_TO:
-        retVal = counterValue >= compareVal;
-        errorString << "greater than or equal to " << compareVal;
+    case kComapreTypeGreaterThanOrEqualTo:
+        return_value = counter_value >= compare_value;
+        compare_string << "greater than or equal to " << compare_value;
         break;
 
-    case COMPARE_TYPE_LESS_THAN:
-        retVal = counterValue < compareVal;
-        errorString << "less than " << compareVal;
+    case kCompareTypeLessThan:
+        return_value = counter_value < compare_value;
+        compare_string << "less than " << compare_value;
         break;
 
-    case COMPARE_TYPE_LESS_THAN_OR_EQUAL_TO:
-        retVal = counterValue <= compareVal;
-        errorString << "less than or equal to " << compareVal;
+    case kCompareTypeLessThanOrEqualTo:
+        return_value = counter_value <= compare_value;
+        compare_string << "less than or equal to " << compare_value;
         break;
     }
 
-    if (!retVal)
+    if (!return_value)
     {
-        GPA_Log(GPA_LOGGING_ERROR, errorString.str().c_str());
+        output_string << error_string.str() << compare_string.str();
+        GpaLog(kGpaLoggingError, output_string.str().c_str());
+    }
+    else if (args.confirm_success)
+    {
+        output_string << success_string.str() << compare_string.str();
+        GpaLog(kGpaLoggingMessage, output_string.str().c_str());
     }
 
-    return retVal;
+    return return_value;
 }
 
-bool CubeSample::GPA_ValidateData(unsigned int   frameNumber,
-                                  unsigned int   sampleIndex,
-                                  const char*    pCounterName,
-                                  gpa_float64    counterValue,
-                                  GPA_Usage_Type counterUsageType)
+bool CubeSample::GpaValidateData(unsigned int frame_number,
+                                 unsigned int sample_index,
+                                 const char*  counter_name,
+                                 GpaFloat64   counter_value,
+                                 GpaUsageType counter_usage_type)
 {
-    bool retVal = true;
+    bool return_value = true;
 
-    std::string counterName(pCounterName);
+    std::string local_counter_name(counter_name);
 
-    if (GPA_USAGE_TYPE_PERCENTAGE == counterUsageType)
+    if (kGpaUsageTypePercentage == counter_usage_type)
     {
-        retVal = GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN_OR_EQUAL_TO, 0.0f) &&
-                 GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_LESS_THAN_OR_EQUAL_TO, 100.0f);
+        return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kComapreTypeGreaterThanOrEqualTo, 0.0f) &&
+                       GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 100.0f);
     }
 
-    if (retVal)
+    if (return_value)
     {
-        if (0 == counterName.compare("GPUTime"))
+        if (0 == local_counter_name.compare("GPUTime"))
         {
-            retVal = GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f);
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f);
         }
-        else if (0 == counterName.compare("GPUBusy"))
+        else if (0 == local_counter_name.compare("GPUBusy"))
         {
-            retVal = GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f);
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f);
         }
-        /* temporarily disable additional counter validation
-        else if (0 == counterName.compare("VSBusy"))
+        else if (0 == local_counter_name.compare("VSBusy"))
         {
-            retVal = GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f);
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f);
         }
-        else if (0 == counterName.compare("VSTime"))
+        else if (0 == local_counter_name.compare("VSTime"))
         {
-            retVal = GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f);
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f);
         }
-        else if (0 == counterName.compare("PSBusy"))
+        else if (0 == local_counter_name.compare("PSBusy"))
         {
-            retVal = GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f);
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f);
         }
-        else if (0 == counterName.compare("PSTime"))
+        else if (0 == local_counter_name.compare("PSTime"))
         {
-            retVal = GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f);
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f);
         }
-        else if (0 == counterName.compare("VSVerticesIn"))
+        else if (0 == local_counter_name.compare("VSVerticesIn"))
         {
-            gpa_float64 expectedVsVerticesIn = 9;
+            // Sample 0
+            GpaFloat64 expected_vs_vertices_in = 8;
 
-            if (1 == sampleIndex)
+            if (1 == sample_index)
             {
-                expectedVsVerticesIn = 154;
+                expected_vs_vertices_in = 16;
             }
 
-            retVal = GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_EQUAL, expectedVsVerticesIn);
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_vs_vertices_in);
         }
-        else if (0 == counterName.compare("PSPixelsOut"))
+        else if (0 == local_counter_name.compare("PSPixelsOut"))
         {
-            gpa_float64 expectedPsPixelsOut = 200000;
-
-            if (1 == sampleIndex)
-            {
-                expectedPsPixelsOut = 1080000;
-            }
-
-            retVal = GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_EQUAL, expectedPsPixelsOut);
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 40000);
         }
-        else if (0 == counterName.compare("PrimitivesIn"))
+        else if (0 == local_counter_name.compare("PreZSamplesPassing"))
         {
-            gpa_float64 expectedPrimiteivesIn = 12;
-
-            if (1 == sampleIndex)
-            {
-                expectedPrimiteivesIn = 114;
-            }
-
-            retVal = GPA_CounterValueCompare(frameNumber, sampleIndex, pCounterName, counterValue, COMPARE_TYPE_EQUAL, expectedPrimiteivesIn);
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 40000);
         }
-        */
+        else if (0 == local_counter_name.compare("PrimitivesIn"))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 12);
+        }
     }
 
-    return retVal;
+    return return_value;
 }
 
-bool CubeSample::GPA_PopulateSessionResult()
+bool CubeSample::GpaPopulateSessionResult()
 {
     bool success = true;
 
-    if (nullptr != m_pGpaFunctionTable && m_profilingEnable && nullptr != m_gpaSessionId)
+    if (nullptr != gpa_function_table_ && profiling_enable_ && nullptr != gpa_session_id_)
     {
-        bool           isReady   = false;
-        const uint32_t timeout   = 10000;  // ms
-        auto           startTime = std::chrono::high_resolution_clock::now();
+        bool           is_ready   = false;
+        const uint32_t time_out   = 10000;  // ms
+        auto           start_time = std::chrono::high_resolution_clock::now();
 
         do
         {
-            isReady = GPA_STATUS_OK == m_pGpaFunctionTable->GPA_IsSessionComplete(m_gpaSessionId);
+            is_ready = kGpaStatusOk == gpa_function_table_->GpaIsSessionComplete(gpa_session_id_);
 
-            if (!isReady)
+            if (!is_ready)
             {
                 std::this_thread::sleep_for(std::chrono::milliseconds(0));
 
-                auto                                      endTime     = std::chrono::high_resolution_clock::now();
-                std::chrono::duration<double, std::milli> elapsedTime = endTime - startTime;
+                auto                                      end_time     = std::chrono::high_resolution_clock::now();
+                std::chrono::duration<double, std::milli> elapsed_time = end_time - start_time;
 
-                if (elapsedTime.count() > timeout)
+                if (elapsed_time.count() > time_out)
                 {
                     break;
                 }
             }
-        } while (!isReady);
+        } while (!is_ready);
 
-        size_t m_sampleDataSize = 0u;
-        auto   status           = m_pGpaFunctionTable->GPA_GetSampleResultSize(m_gpaSessionId, 0, &m_sampleDataSize);
+        size_t sample_data_size = 0u;
+        auto   status           = gpa_function_table_->GpaGetSampleResultSize(gpa_session_id_, 0, &sample_data_size);
+
         UNREFERENCED_PARAMETER(status);
 
-        void* pSampleResult = malloc(m_sampleDataSize);
-        if (nullptr == pSampleResult)
+        void* sample_result = malloc(sample_data_size);
+        if (nullptr == sample_result)
         {
             return false;
         }
 
-        memset(pSampleResult, 0, m_sampleDataSize / sizeof(int));
+        memset(sample_result, 0, sample_data_size / sizeof(int));
 
-        std::stringstream counterNamesHeader;
+        std::stringstream counter_names_header;
         std::string       viewport;
-        bool              counterNameCollected = false;
-        std::string       wireFrame            = ms_pCubeSample->m_wireframe ? "Yes" : "No";
+        bool              counter_name_collected = false;
+        std::string       wire_frame             = cube_sample->wire_frame_ ? "Yes" : "No";
 
-        auto CollectSampleResult = [&](unsigned int sampleIndex) {
-            m_content << m_frameCounter << "," << wireFrame << "," << viewport << "," << sampleIndex;
-            status                    = m_pGpaFunctionTable->GPA_GetSampleResult(m_gpaSessionId, sampleIndex, m_sampleDataSize, pSampleResult);
-            unsigned int counterIndex = 0;
+        auto collect_sample_result = [&](unsigned int sample_index) {
+            content_ << frame_counter_ << "," << wire_frame << "," << viewport << "," << sample_index;
+            status                     = gpa_function_table_->GpaGetSampleResult(gpa_session_id_, sample_index, sample_data_size, sample_result);
+            unsigned int counter_index = 0;
 
-            gpa_uint32 enabledCount = 0;
-            status                  = m_pGpaFunctionTable->GPA_GetNumEnabledCounters(m_gpaSessionId, &enabledCount);
+            GpaUInt32 enabled_count = 0;
+            status                  = gpa_function_table_->GpaGetNumEnabledCounters(gpa_session_id_, &enabled_count);
 
-            for (gpa_uint32 i = 0; i < enabledCount; i++)
+            for (GpaUInt32 i = 0; i < enabled_count; i++)
             {
-                gpa_uint32 enabledIndex = 0;
-                status                  = m_pGpaFunctionTable->GPA_GetEnabledIndex(m_gpaSessionId, i, &enabledIndex);
+                GpaUInt32 enabled_index = 0;
+                status                  = gpa_function_table_->GpaGetEnabledIndex(gpa_session_id_, i, &enabled_index);
 
-                const char* pCounterName;
-                status = m_pGpaFunctionTable->GPA_GetCounterName(m_gpaContextId, enabledIndex, &pCounterName);
+                const char* counter_name;
+                status = gpa_function_table_->GpaGetCounterName(gpa_context_id_, enabled_index, &counter_name);
 
-                if (!counterNameCollected)
+                if (!counter_name_collected)
                 {
-                    counterNamesHeader << "," << pCounterName;
+                    counter_names_header << "," << counter_name;
                 }
 
-                GPA_Data_Type counterDataType;
-                status = m_pGpaFunctionTable->GPA_GetCounterDataType(m_gpaContextId, enabledIndex, &counterDataType);
+                GpaDataType counter_data_type;
+                status = gpa_function_table_->GpaGetCounterDataType(gpa_context_id_, enabled_index, &counter_data_type);
 
-                GPA_Usage_Type counterUsageType;
-                status = m_pGpaFunctionTable->GPA_GetCounterUsageType(m_gpaContextId, enabledIndex, &counterUsageType);
+                GpaUsageType counter_usage_type;
+                status = gpa_function_table_->GpaGetCounterUsageType(gpa_context_id_, enabled_index, &counter_usage_type);
 
-                if (GPA_DATA_TYPE_FLOAT64 == counterDataType)
+                if (kGpaDataTypeFloat64 == counter_data_type)
                 {
-                    gpa_float64 result = *(reinterpret_cast<gpa_float64*>(pSampleResult) + counterIndex);
+                    GpaFloat64 result = *(reinterpret_cast<GpaFloat64*>(sample_result) + counter_index);
 
-                    m_content << "," << std::fixed << (counterUsageType == GPA_USAGE_TYPE_PERCENTAGE ? std::setprecision(4) : std::setprecision(0)) << result;
+                    content_ << "," << std::fixed << (counter_usage_type == kGpaUsageTypePercentage ? std::setprecision(4) : std::setprecision(0)) << result;
 
-                    if (args.m_verifyCounters)
+                    if (args.verify_counters || args.confirm_success)
                     {
-                        GPA_ValidateData(m_frameCounter, sampleIndex, pCounterName, result, counterUsageType);
+                        GpaValidateData(frame_counter_, sample_index, counter_name, result, counter_usage_type);
                     }
                 }
-                else if (GPA_DATA_TYPE_UINT64 == counterDataType)
+                else if (kGpaDataTypeUint64 == counter_data_type)
                 {
-                    gpa_uint64 result = *(reinterpret_cast<gpa_uint64*>(pSampleResult) + counterIndex);
+                    GpaUInt64 result = *(reinterpret_cast<GpaUInt64*>(sample_result) + counter_index);
 
-                    m_content << "," << result;
+                    content_ << "," << result;
 
-                    if (args.m_verifyCounters)
+                    if (args.verify_counters || args.confirm_success)
                     {
-                        GPA_ValidateData(m_frameCounter, sampleIndex, pCounterName, static_cast<gpa_float64>(result), counterUsageType);
+                        GpaValidateData(frame_counter_, sample_index, counter_name, static_cast<GpaFloat64>(result), counter_usage_type);
                     }
                 }
 
-                counterIndex++;
+                counter_index++;
             }
 
-            m_content << std::endl;
-            counterNameCollected = true;
+            content_ << std::endl;
+            counter_name_collected = true;
         };
 
         viewport = "TopLeft";
-        m_topLeftViewport.IterateSamples(CollectSampleResult);
+        top_left_viewport_.IterateSamples(collect_sample_result);
 
         viewport = "TopRight";
-        m_topRightViewport.IterateSamples(CollectSampleResult);
+        top_right_viewport_.IterateSamples(collect_sample_result);
 
         viewport = "BottomLeft";
-        m_bottomLeftViewport.IterateSamples(CollectSampleResult);
+        bottom_left_viewport_.IterateSamples(collect_sample_result);
 
         viewport = "BottomRight";
-        m_bottomRightViewport.IterateSamples(CollectSampleResult);
+        bottom_right_viewport_.IterateSamples(collect_sample_result);
 
-        if (m_counterDataFileStream.is_open())
+        if (counter_data_file_stream_.is_open())
         {
-            if (!m_isHeaderWritten)
+            if (!is_header_written_)
             {
-                m_header << "Device Id: " << std::hex << m_deviceId << std::endl;
-                m_header << "Revision Id: " << std::hex << m_revisionId << std::endl;
-                m_header << "Device Name: " << m_deviceName.c_str() << std::endl;
-                m_header << "Frame"
-                         << ","
-                         << "Wireframe"
-                         << ","
-                         << "Viewport"
-                         << ","
-                         << "Sample";
-                m_counterDataFileStream << m_header.str() << counterNamesHeader.str() << std::endl;
-                m_isHeaderWritten = true;
+                header_ << "Device Id: " << std::hex << device_id_ << std::endl;
+                header_ << "Revision Id: " << std::hex << revision_id_ << std::endl;
+                header_ << "Device Name: " << device_name_.c_str() << std::endl;
+                header_ << "Frame"
+                        << ","
+                        << "Wireframe"
+                        << ","
+                        << "Viewport"
+                        << ","
+                        << "Sample";
+                counter_data_file_stream_ << header_.str() << counter_names_header.str() << std::endl;
+                is_header_written_ = true;
             }
 
-            m_counterDataFileStream << m_content.str() << std::endl;
-            m_content.str(std::string());
-            m_header.str(std::string());
+            counter_data_file_stream_ << content_.str() << std::endl;
+            content_.str(std::string());
+            header_.str(std::string());
         }
 
-        free(pSampleResult);
+        free(sample_result);
     }
 
     return success;
 }
 
-bool CubeSample::GPA_Log(GPA_Logging_Type loggingType, const char* logMessage)
+bool CubeSample::GpaLog(GpaLoggingType logging_type, const char* log_message)
 {
-    if (GPA_LOGGING_ERROR == loggingType)
+    if (kGpaLoggingError == logging_type)
     {
-        g_anyGPAErrorsLogged = true;
+        any_errors_logged = true;
     }
 
-    if (!m_gpaLogFileStream.is_open())
+    if (!gpa_log_file_stream_.is_open())
     {
-        m_gpaLogFileStream.open(m_gpaLogFileName.c_str(), std::ios_base::out | std::ios_base::app);
+        gpa_log_file_stream_.open(gpa_log_file_name_.c_str(), std::ios_base::out | std::ios_base::app);
     }
 
-    m_gpaLogFileStream << logMessage << std::endl;
+    if (kGpaLoggingError == logging_type)
+    {
+        gpa_log_file_stream_ << "ERROR: " << log_message << std::endl;
+    }
+    else
+    {
+        gpa_log_file_stream_ << log_message << std::endl;
+    }
     return true;
 }
 

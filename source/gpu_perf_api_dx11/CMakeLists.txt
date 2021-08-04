@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -20,6 +20,7 @@ INCLUDE_ADDITIONAL_MODULE()
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_PUBLIC_HEADER}
+                    ${GPA_SRC}
                     ${GPA_SRC_COMMON}
                     ${GPA_SRC_COUNTER_GENERATOR})
 
@@ -66,7 +67,7 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       GPUPerfAPICounterGenerator-DX11)
 
 if(${GPA_ALL_OPEN_SOURCE})
-    set(GPA_DX11_GET_DEVICE_INFO ${COMMON_DIR_LIB}/AMD/GPUPerfAPI/3_5/Bin/${AMDTPlatform}/GPUPerfAPIDXGetAMDDeviceInfo)
+    set(GPA_DX11_GET_DEVICE_INFO ${COMMON_DIR_LIB}/AMD/GPUPerfAPI/3_7/Bin/${AMDTPlatform}/GPUPerfAPIDXGetAMDDeviceInfo)
     add_custom_command(TARGET ${GPA_PROJECT_NAME} POST_BUILD
                        COMMAND ${CMAKE_COMMAND} -E copy ${GPA_DX11_GET_DEVICE_INFO}${AMDTPlatformSuffix}.dll ${GPA_OUTPUT_DIR}/$<CONFIG>/ VERBATIM
                        COMMENT "Copying GPUPerfAPIDXGetDeviceInfo to output folder...")

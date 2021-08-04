@@ -1,9 +1,9 @@
-.. Copyright(c) 2018-2020 Advanced Micro Devices, Inc.All rights reserved.
-.. Compute Performance Counters for Navi
+.. Copyright(c) 2018-2021 Advanced Micro Devices, Inc.All rights reserved.
+.. Compute Performance Counters for RDNA
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-Navi Counters
+RDNA Counters
 +++++++++++++
 
 General Group

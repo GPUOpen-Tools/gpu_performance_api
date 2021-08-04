@@ -1,8 +1,8 @@
 //==============================================================================
 // Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  CL GPA Pass Object Implementation
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  CL GPA Pass Object Implementation
 //==============================================================================
 
 #include <cassert>
@@ -13,97 +13,97 @@
 #include "gpa_hardware_counters.h"
 #include "gpa_context_counter_mediator.h"
 
-CLGPAPass::CLGPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters)
-    : GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
+ClGpaPass::ClGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSource counter_source, CounterList* pass_counters)
+    : GpaPass(gpa_session, pass_index, counter_source, pass_counters)
 {
     EnableAllCountersForPass();
-    InitializeCLCounterInfo();
+    InitializeClCounterInfo();
 }
 
-GPASample* CLGPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
+GpaSample* ClGpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
 {
-    GPASample* pRetSample = nullptr;
+    GpaSample* ret_sample = nullptr;
 
-    CLGPASample* pCLGpaSample = new (std::nothrow) CLGPASample(this, pCmdList, sampleType, sampleId);
+    ClGpaSample* cl_gpa_sample = new (std::nothrow) ClGpaSample(this, cmd_list, sample_type, sample_id);
 
-    if (nullptr == pCLGpaSample)
+    if (nullptr == cl_gpa_sample)
     {
-        GPA_LogError("Unable to allocate memory for the sample.");
+        GPA_LOG_ERROR("Unable to allocate memory for the sample.");
     }
     else
     {
-        pRetSample = pCLGpaSample;
+        ret_sample = cl_gpa_sample;
     }
 
-    return pRetSample;
+    return ret_sample;
 }
 
-bool CLGPAPass::ContinueSample(ClientSampleId srcSampleId, IGPACommandList* pPrimaryGpaCmdList)
+bool ClGpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* primary_gpa_cmd_list)
 {
     // continuing samples not supported for OpenCL
-    UNREFERENCED_PARAMETER(srcSampleId);
-    UNREFERENCED_PARAMETER(pPrimaryGpaCmdList);
+    UNREFERENCED_PARAMETER(src_sample_id);
+    UNREFERENCED_PARAMETER(primary_gpa_cmd_list);
     return false;
 }
 
-IGPACommandList* CLGPAPass::CreateAPISpecificCommandList(void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType)
+IGpaCommandList* ClGpaPass::CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type)
 {
-    UNREFERENCED_PARAMETER(pCmd);
-    UNREFERENCED_PARAMETER(cmdType);
+    UNREFERENCED_PARAMETER(cmd);
+    UNREFERENCED_PARAMETER(cmd_type);
 
-    CLGPACommandList* pRetCmdList = new (std::nothrow) CLGPACommandList(GetGpaSession(), this, commandListId);
+    ClGpaCommandList* ret_cmd_list = new (std::nothrow) ClGpaCommandList(GetGpaSession(), this, command_list_id);
 
-    if (nullptr == pRetCmdList)
+    if (nullptr == ret_cmd_list)
     {
-        GPA_LogError("Unable to allocate memory for the command list.");
+        GPA_LOG_ERROR("Unable to allocate memory for the command list.");
     }
 
-    return pRetCmdList;
+    return ret_cmd_list;
 }
 
-bool CLGPAPass::EndSample(IGPACommandList* pCmdList)
+bool ClGpaPass::EndSample(IGpaCommandList* cmd_list)
 {
-    bool retVal = false;
+    bool ret_val = false;
 
-    if (nullptr != pCmdList)
+    if (nullptr != cmd_list)
     {
-        retVal = pCmdList->CloseLastSample();
+        ret_val = cmd_list->CloseLastSample();
     }
 
-    return retVal;
+    return ret_val;
 }
 
-void CLGPAPass::IterateCLCounterMap(std::function<bool(GroupCountersPair groupCountrsPair)> function) const
+void ClGpaPass::IterateClCounterMap(std::function<bool(GroupCountersPair group_counters_pair)> function) const
 {
     bool next = true;
 
-    for (auto it = m_groupCountersMap.cbegin(); it != m_groupCountersMap.cend() && next; ++it)
+    for (auto it = group_counters_map_.cbegin(); it != group_counters_map_.cend() && next; ++it)
     {
         next = function(*it);
     }
 }
 
-void CLGPAPass::InitializeCLCounterInfo()
+void ClGpaPass::InitializeClCounterInfo()
 {
-    CLGPAContext*               pCLGpaContext     = reinterpret_cast<CLGPAContext*>(GetGpaSession()->GetParentContext());
-    IGPACounterAccessor*        pCounterAccessor  = GPAContextCounterMediator::Instance()->GetCounterAccessor(pCLGpaContext);
-    const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
-    gpa_uint32                  groupCount        = static_cast<gpa_uint32>(pHardwareCounters->m_groupCount);
-    UNREFERENCED_PARAMETER(groupCount);
+    ClGpaContext*              cl_gpa_context    = reinterpret_cast<ClGpaContext*>(GetGpaSession()->GetParentContext());
+    IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(cl_gpa_context);
+    const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
+    GpaUInt32                  group_count       = static_cast<GpaUInt32>(hardware_counters->group_count_);
+    UNREFERENCED_PARAMETER(group_count);
 
-    auto AddCounterToCLCounterInfo = [&](CounterIndex counterIndex) -> bool {
-        const GPA_HardwareCounterDescExt* pCounter = pCounterAccessor->GetHardwareCounterExt(counterIndex);
+    auto add_counter_to_cl_counter_info = [&](CounterIndex counter_index) -> bool {
+        const GpaHardwareCounterDescExt* counter = counter_accessor->GetHardwareCounterExt(counter_index);
 
-        gpa_uint32 groupIndex = pCounter->m_groupIdDriver;
-        assert(groupIndex <= groupCount);
+        GpaUInt32 group_index = counter->group_id_driver;
+        assert(group_index <= group_count);
 
-        gpa_uint64 numCounters = pHardwareCounters->m_pGroups[groupIndex].m_numCounters;
-        UNREFERENCED_PARAMETER(numCounters);
-        assert(pCounter->m_pHardwareCounter->m_counterIndexInGroup <= numCounters);
+        GpaUInt64 num_counters = hardware_counters->internal_counter_groups_[group_index].num_counters;
+        UNREFERENCED_PARAMETER(num_counters);
+        assert(counter->hardware_counters->counter_index_in_group <= num_counters);
 
-        m_groupCountersMap[groupIndex].push_back(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
+        group_counters_map_[group_index].push_back(counter->hardware_counters->counter_index_in_group);
         return true;
     };
 
-    IterateEnabledCounterList(AddCounterToCLCounterInfo);
+    IterateEnabledCounterList(add_counter_to_cl_counter_info);
 }

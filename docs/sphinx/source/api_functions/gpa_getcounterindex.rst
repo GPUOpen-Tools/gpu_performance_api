@@ -1,17 +1,17 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_GetCounterIndex
-@@@@@@@@@@@@@@@@@@@
+GpaGetCounterIndex
+@@@@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_GetCounterIndex(
-        GPA_ContextId contextId,
-        const char* pCounterName,
-        gpa_uint32* pIndex);
+    GpaStatus GpaGetCounterIndex(
+        GpaContextId context_id,
+        const char* counter_name,
+        GpaUInt32* index);
 
 Description
 %%%%%%%%%%%
@@ -25,9 +25,9 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``contextId``", "Unique identifier of a previously-opened context."
-    "``pCounterName``", "The name of the counter whose index is needed."
-    "``pIndex``", "The address which will hold the index upon successful execution."
+    "``context_id``", "Unique identifier of a previously-opened context."
+    "``counter_name``", "The name of the counter whose index is needed."
+    "``index``", "The address which will hold the index upon successful execution."
 
 Return value
 %%%%%%%%%%%%
@@ -36,11 +36,11 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The counter index was successfully retrieved."
-    "GPA_STATUS_ERROR_NULL_POINTER", "| The supplied ``pCounterName`` parameter is NULL.
-    | The supplied ``pIndex`` parameter is NULL.
-    | The supplied ``contextId`` parameter is NULL."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_FOUND", "The supplied ``contextId`` parameter was not recognized as a previously-opened context identifier."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied context is not currently open."
-    "GPA_STATUS_ERROR_COUNTER_NOT_FOUND", "The specified counter could not be found."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The counter index was successfully retrieved."
+    "kGpaStatusErrorNullPointer", "| The supplied ``counter_name`` parameter is NULL.
+    | The supplied ``index`` parameter is NULL.
+    | The supplied ``context_id`` parameter is NULL."
+    "kGpaStatusErrorContextNotFound", "The supplied ``context_id`` parameter was not recognized as a previously-opened context identifier."
+    "kGpaStatusErrorContextNotOpen", "The supplied context is not currently open."
+    "kGpaStatusErrorCounterNotFound", "The specified counter could not be found."
+    "kGpaStatusErrorException", "Exception occurred."

@@ -1,162 +1,172 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GPA Common Context class
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GPA Common Context class.
 //==============================================================================
 
-#ifndef _GPA_CONTEXT_H_
-#define _GPA_CONTEXT_H_
+#ifndef GPU_PERF_API_COMMON_GPA_CONTEXT_H_
+#define GPU_PERF_API_COMMON_GPA_CONTEXT_H_
 
 #include <list>
 #include <mutex>
 #include <functional>
 
-#include "gpa_common_defs.h"
-#include "gpu_perf_api_types.h"
-#include "gpa_context_interface.h"
-#include "gpa_session_interface.h"
+#include "gpu_performance_api/gpu_perf_api_types.h"
 
-using GPASessionList = std::list<IGPASession*>;  ///< type alias for list of IGPASession objects
+#include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_context_interface.h"
+#include "gpu_perf_api_common/gpa_session_interface.h"
 
-/// Abstract GPAContext for common context code
-class GPAContext : public IGPAContext
+/// @brief Type alias for list of IGpaSession objects.
+using GpaSessionList = std::list<IGpaSession*>;
+
+/// @brief Abstract GPAContext for common context code.
+class GpaContext : public IGpaContext
 {
 public:
-    /// Delete default constructor
-    GPAContext() = delete;
+    /// @brief Delete default constructor.
+    GpaContext() = delete;
 
-    /// Destructor
-    virtual ~GPAContext();
+    /// @brief Virtual Destructor.
+    virtual ~GpaContext();
 
-    /// \copydoc IGPAContext::GetSupportedSampleTypes()
-    GPA_Status GetSupportedSampleTypes(GPA_ContextSampleTypeFlags* pSampleTypes) const override;
+    /// @copydoc IGpaContext::GetSupportedSampleTypes()
+    GpaStatus GetSupportedSampleTypes(GpaContextSampleTypeFlags* sample_types) const override;
 
-    /// \copydoc IGPAContext::GetNumCounters()
-    GPA_Status GetNumCounters(gpa_uint32* pCount) const override;
+    /// @copydoc IGpaContext::GetNumCounters()
+    GpaStatus GetNumCounters(GpaUInt32* counter_count) const override;
 
-    /// \copydoc IGPAContext::GetCounterName()
-    GPA_Status GetCounterName(gpa_uint32 index, const char** ppName) const override;
+    /// @copydoc IGpaContext::GetCounterName()
+    GpaStatus GetCounterName(GpaUInt32 index, const char** counter_name) const override;
 
-    /// \copydoc IGPAContext::GetCounterGroup()
-    GPA_Status GetCounterGroup(gpa_uint32 index, const char** ppGroup) const override;
+    /// @copydoc IGpaContext::GetCounterGroup()
+    GpaStatus GetCounterGroup(GpaUInt32 index, const char** counter_group) const override;
 
-    /// \copydoc IGPAContext::GetCounterDescription()
-    GPA_Status GetCounterDescription(gpa_uint32 index, const char** ppDescription) const override;
+    /// @copydoc IGpaContext::GetCounterDescription()
+    GpaStatus GetCounterDescription(GpaUInt32 index, const char** counter_description) const override;
 
-    /// \copydoc IGPAContext::GetCounterDataType()
-    GPA_Status GetCounterDataType(gpa_uint32 index, GPA_Data_Type* pCounterDataType) const override;
+    /// @copydoc IGpaContext::GetCounterDataType()
+    GpaStatus GetCounterDataType(GpaUInt32 index, GpaDataType* counter_data_type) const override;
 
-    /// \copydoc IGPAContext::GetCounterUsageType()
-    GPA_Status GetCounterUsageType(gpa_uint32 index, GPA_Usage_Type* pCounterUsageType) const override;
+    /// @copydoc IGpaContext::GetCounterUsageType()
+    GpaStatus GetCounterUsageType(GpaUInt32 index, GpaUsageType* counter_usage_type) const override;
 
-    /// \copydoc IGPAContext::GetCounterUuid()
-    GPA_Status GetCounterUuid(gpa_uint32 index, GPA_UUID* pCounterUuid) const override;
+    /// @copydoc IGpaContext::GetCounterUuid()
+    GpaStatus GetCounterUuid(GpaUInt32 index, GpaUuid* counter_uuid) const override;
 
-    /// \copydoc IGPAContext::GetCounterSampleType()
-    GPA_Status GetCounterSampleType(gpa_uint32 index, GPA_Counter_Sample_Type* pCounterSampleType) const override;
+    /// @copydoc IGpaContext::GetCounterSampleType()
+    GpaStatus GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType* counter_sample_type) const override;
 
-    /// \copydoc IGPAContext::GetCounterIndex()
-    GPA_Status GetCounterIndex(const char* pCounterName, gpa_uint32* pIndex) const override;
+    /// @copydoc IGpaContext::GetCounterIndex()
+    GpaStatus GetCounterIndex(const char* pCounterName, GpaUInt32* counter_index) const override;
 
-    /// \copydoc IGPAContext::GetCounterSourceLocalIndex()
-    bool GetCounterSourceLocalIndex(gpa_uint32 exposedCounterIndex, GPACounterSource* pSource, gpa_uint32* pSourceLocalIndex) const override;
+    /// @copydoc IGpaContext::GetCounterSourceLocalIndex()
+    bool GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, GpaCounterSource* counter_source, GpaUInt32* source_local_index) const override;
 
-    /// \copydoc IGPAContext::ArePublicCountersExposed()
+    /// @copydoc IGpaContext::ArePublicCountersExposed()
     bool ArePublicCountersExposed() const override;
 
-    /// \copydoc IGPAContext::AreHardwareCountersExposed()
+    /// @copydoc IGpaContext::AreHardwareCountersExposed()
     bool AreHardwareCountersExposed() const override;
 
-    /// \copydoc IGPAContext::AreSoftwareCountersExposed()
+    /// @copydoc IGpaContext::AreSoftwareCountersExposed()
     bool AreSoftwareCountersExposed() const override;
 
-    /// \copydoc IGPAContext::GetCounterSource()
-    GPACounterSource GetCounterSource(gpa_uint32 internalCounterIndex) const override;
+    /// @copydoc IGpaContext::GetCounterSource()
+    GpaCounterSource GetCounterSource(GpaUInt32 internal_counter_index) const override;
 
-    /// \copydoc IGPAContext::SetInvalidateAndFlushL2Cache()
-    void SetInvalidateAndFlushL2Cache(bool shouldInvalidateAndFlushL2Cache) override;
+    /// @copydoc IGpaContext::SetInvalidateAndFlushL2Cache()
+    void SetInvalidateAndFlushL2Cache(bool should_invalidate_and_flush_l2_cache) override;
 
-    /// \copydoc IGPAContext::IsInvalidateAndFlushL2CacheEnabled()
+    /// @copydoc IGpaContext::IsInvalidateAndFlushL2CacheEnabled()
     bool IsInvalidateAndFlushL2CacheEnabled() const override;
 
-    /// \copydoc IGPAContext::GetHwInfo()
-    const GPA_HWInfo* GetHwInfo() const override;
+    /// @copydoc IGpaContext::GetHwInfo()
+    const GpaHwInfo* GetHwInfo() const override;
 
-    /// \copydoc IGPAContext::IsOpen()
+    /// @copydoc IGpaContext::IsOpen()
     bool IsOpen() const override;
 
-    /// \copydoc IGPAContext::GetDeviceClockMode()
+    /// @copydoc IGpaContext::GetDeviceClockMode()
     DeviceClockMode GetDeviceClockMode() const override;
 
-    /// \copydoc IGPAContext::OpenCounters()
+    /// @copydoc IGpaContext::OpenCounters()
     bool OpenCounters() override;
 
-    /// \copydoc IGPAInterfaceTrait::ObjectType()
-    GPAObjectType ObjectType() const override;
+    /// @copydoc IGpaInterfaceTrait::ObjectType()
+    GpaObjectType ObjectType() const override;
 
-    /// \copydoc IGPAContext::DoesSessionExist()
-    bool DoesSessionExist(GPA_SessionId pSessionId) const override;
+    /// @copydoc IGpaContext::DoesSessionExist()
+    bool DoesSessionExist(GpaSessionId gpa_session_id) const override;
 
-    /// \copydoc IGPAContext::GetSessionCount()
-    gpa_uint32 GetSessionCount() const override;
+    /// @copydoc IGpaContext::GetSessionCount()
+    GpaUInt32 GetSessionCount() const override;
 
-    /// \copydoc IGPAContext::BeginSession()
-    GPA_Status BeginSession(IGPASession* pGpaSession) override;
+    /// @copydoc IGpaContext::BeginSession()
+    GpaStatus BeginSession(IGpaSession* gpa_session) override;
 
-    /// \copydoc IGPAContext::EndSession()
-    GPA_Status EndSession(IGPASession* pGpaSession) override;
+    /// @copydoc IGpaContext::EndSession()
+    GpaStatus EndSession(IGpaSession* gpa_session) override;
 
-    /// \copydoc IGPAContext::GetActiveSession()
-    const IGPASession* GetActiveSession() const override;
+    /// @copydoc IGpaContext::GetActiveSession()
+    const IGpaSession* GetActiveSession() const override;
 
 protected:
-    /// constructor
-    /// \param[in] hwInfo the hardware info for the context
-    /// \param[in] flags creation flags for context
-    GPAContext(GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags);
+    /// @brief Protected constructor.
+    ///
+    /// @param [in] hw_info The hardware info for the context.
+    /// @param [in] flags Creation flags for context.
+    GpaContext(GpaHwInfo& hw_info, GpaOpenContextFlags flags);
 
-    /// Marks the context to be opened
-    /// \param[in] open flag indicating context to be marked open or closed
+    /// @brief Marks the context to be opened.
+    ///
+    /// @param [in] open Flag indicating context to be marked open or closed.
     void SetAsOpened(bool open);
 
-    /// Returns whether the device is AMD device or not
-    /// \return true if context device is AMD device otherwise false
-    bool IsAMDDevice() const;
+    /// @brief Returns whether the device is AMD device or not.
+    ///
+    /// @return true if context device is AMD device otherwise false.
+    bool IsAmdDevice() const;
 
-    /// Adds the GPA session to the session list
-    /// \param[in] pGpaSession GPA session object pointer
-    GPA_THREAD_SAFE_FUNCTION void AddGpaSession(IGPASession* pGpaSession);
+    /// @brief Adds the GPA session to the session list.
+    ///
+    /// @param [in] gpa_session GPA session object pointer.
+    GPA_THREAD_SAFE_FUNCTION void AddGpaSession(IGpaSession* gpa_session);
 
-    /// Removes the GPA session from the session list
-    /// \param[in] pGpaSession GPA session object pointer
-    GPA_THREAD_SAFE_FUNCTION void RemoveGpaSession(IGPASession* pGpaSession);
+    /// @brief Removes the GPA session from the session list.
+    ///
+    /// @param [in] gpa_session GPA session object pointer.
+    GPA_THREAD_SAFE_FUNCTION void RemoveGpaSession(IGpaSession* gpa_session);
 
-    /// Iterate over GPA session list for the passed function
-    /// \param[in] function function to be executed for each object in the list - function may return false to terminate iteration
-    GPA_THREAD_SAFE_FUNCTION void IterateGpaSessionList(std::function<bool(IGPASession* pGpaSession)> function) const;
+    /// @brief Iterate over GPA session list for the passed function.
+    ///
+    /// @param [in] function Function to be executed for each object in the list. The function may return false to terminate iteration.
+    GPA_THREAD_SAFE_FUNCTION void IterateGpaSessionList(std::function<bool(IGpaSession* gpa_session)> function) const;
 
-    ///  Clears the list of the GPA session
+    /// @brief Clears the list of the GPA session.
     GPA_THREAD_SAFE_FUNCTION void ClearSessionList();
 
-    /// Returns the index of the GPA session if it exists
-    /// \param[in] pGpaSession GPA session
-    /// \param[out] pIndex index of the the GPA session in the list
-    /// \return true if the index was found, false otherwise
-    bool GetIndex(IGPASession* pGpaSession, unsigned int* pIndex = nullptr) const;
+    /// @brief Returns the index of the GPA session if it exists.
+    ///
+    /// @param [in] gpa_session GPA session.
+    /// @param [out] index Index of the the GPA session in the list.
+    ///
+    /// @return True if the index was found, false otherwise.
+    bool GetIndex(IGpaSession* gpa_session, unsigned int* index = nullptr) const;
 
-    GPA_ContextSampleTypeFlags m_supportedSampleTypes;  ///< the supported sample type
+    GpaContextSampleTypeFlags supported_sample_types_;  ///< The supported sample types.
 
 private:
-    GPA_OpenContextFlags m_contextFlags;                      ///< context flags
-    GPA_HWInfo           m_hwInfo;                            ///< hw info
-    bool                 m_invalidateAndFlushL2CacheEnabled;  ///< flag indicating flush and invalidation of L2 cache is enabled or not
-    bool                 m_isOpen;                            ///< flag indicating context is open or not
-    GPASessionList       m_gpaSessionList;                    ///< list of GPA sessions in the context
-    bool                 m_isAmdDevice;                       ///< flag indicating whether the device is AMD or not
-    mutable std::mutex   m_gpaSessionListMutex;               ///< Mutex for GPA session list
-    IGPASession*         m_pActiveSession;                    ///< gpa session to keep track of active session
-    mutable std::mutex   m_activeSessionMutex;                ///< mutex for active session
+    GpaOpenContextFlags  context_flags_;                          ///< Context flags.
+    GpaHwInfo            hw_info_;                                ///< Hw info.
+    bool                 invalidate_and_flush_l2_cache_enabled_;  ///< Flag indicating flush and invalidation of L2 cache is enabled or not.
+    bool                 is_open_;                                ///< Flag indicating context is open or not.
+    GpaSessionList       gpa_session_list_;                       ///< List of GPA sessions in the context.
+    bool                 is_amd_device_;                          ///< Flag indicating whether the device is AMD or not.
+    mutable std::mutex   gpa_session_list_mutex_;                 ///< Mutex for GPA session list.
+    IGpaSession*         active_session_;                         ///< Gpa session to keep track of active session.
+    mutable std::mutex   active_session_mutex_;                   ///< Mutex for the active session.
 };
 
-#endif  // _GPA_CONTEXT_H_
+#endif  // GPU_PERF_API_COMMON_GPA_CONTEXT_H_

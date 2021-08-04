@@ -1,4 +1,4 @@
-.. Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 .. GPU Performance Counters
 
 .. _gpa_counters:
@@ -13,10 +13,10 @@ generations. Some of the counters may not be available depending on the
 hardware being profiled. To view which GPUs belong to which hardware
 generations, the best reference is the `gs_cardInfo array in the
 common-src-DeviceInfo
-<https://github.com/GPUOpen-Tools/common-src-DeviceInfo/blob/master/DeviceInfoUtils.cpp#L19>`_
+<https://github.com/GPUOpen-Tools/common_src_device_info/blob/master/DeviceInfo.cpp#L10>`_
 repository on GitHub. You can see how the various cards map to hardware
 generations by looking at the `GDT_HW_GENERATION enum
-<https://github.com/GPUOpen-Tools/common-src-DeviceInfo/blob/master/DeviceInfo.h#L59>`_
+<https://github.com/GPUOpen-Tools/common_src_device_info/blob/master/DeviceInfo.h#L67>`_
 
 For Graphics workloads, it is recommended that you initially profile with
 counters from the Timing group to determine whether the profiled calls are
@@ -34,6 +34,7 @@ The following tables show the set of counters exposed for analysis of GPU
 Graphics workloads, as well the family of GPUs and APUs on which each counter
 is available:
 
+.. include:: graphics_counter_tables_gfx103.rst
 .. include:: graphics_counter_tables_gfx10.rst
 .. include:: graphics_counter_tables_gfx9.rst
 .. include:: graphics_counter_tables_gfx8.rst
@@ -45,6 +46,7 @@ The following tables show the set of counters exposed for analysis of GPU
 Compute workloads, as well the family of GPUs and APUs on which each counter
 is available:
 
+.. include:: compute_counter_tables_gfx103.rst
 .. include:: compute_counter_tables_gfx10.rst
 .. include:: compute_counter_tables_gfx9.rst
 .. include:: compute_counter_tables_gfx8.rst

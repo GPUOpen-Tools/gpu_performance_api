@@ -1,33 +1,33 @@
 //==============================================================================
-// Copyright (c) 2010-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief Public Counter Definitions for CL GFX8 _ellesmere
+// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Public Counter Definitions for CL GFX8_ELLESMERE.
 //==============================================================================
 
-#include "gpa_counter.h"
-#include "public_counter_definitions_cl_gfx8_ellesmere.h"
+#include "gpu_perf_api_counter_generator/gpa_counter.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_cl_gfx8_ellesmere.h"
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#include "gpa_hw_counter_gfx8_ellesmere.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx8_ellesmere.h"
 
-namespace clgfx8ellesmere
+namespace cl_gfx8_ellesmere
 {
-bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GPA_DerivedCounters& c)
+bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaDerivedCounters& c)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(c);  // Unreferenced if there are no ASIC specific block instance registers
 
-    if (!countergfx8ellesmere::MatchAsic(asic_type))
+    if (!counter_gfx8_ellesmere::MatchAsic(asic_type))
     {
         return false;
     }
 
-    countergfx8ellesmere::OverrideBlockInstanceCounters(asic_type);
+    counter_gfx8_ellesmere::OverrideBlockInstanceCounters(asic_type);
 
     return true;
 }
 
-}  // namespace clgfx8ellesmere
+}  // namespace cl_gfx8_ellesmere
 

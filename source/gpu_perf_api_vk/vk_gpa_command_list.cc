@@ -1,280 +1,277 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief Vulkan GPA Command List Object Implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Vulkan GPA Command List Object Implementation
 //==============================================================================
 
-#include "vk_gpa_command_list.h"
-#include "vk_gpa_session.h"
-#include "vk_entry_points.h"
-#include "vk_gpa_context.h"
-#include "vk_gpa_software_sample.h"
+#include "gpu_perf_api_vk/vk_gpa_command_list.h"
 
-VkGPACommandList::VkGPACommandList(VkGPASession* pVkGpaSession, GPAPass* pPass, void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType)
-    : GPACommandList(pVkGpaSession, pPass, commandListId, cmdType)
-    , m_vkCmdBuffer(static_cast<VkCommandBuffer>(pCmd))
-    , m_gpaExtSessionAMD(VK_NULL_HANDLE)
-    , m_isCommandListOpenInDriver(false)
+#include "gpu_perf_api_vk/vk_entry_points.h"
+#include "gpu_perf_api_vk/vk_gpa_context.h"
+#include "gpu_perf_api_vk/vk_gpa_session.h"
+#include "gpu_perf_api_vk/vk_gpa_software_sample.h"
+
+VkGpaCommandList::VkGpaCommandList(VkGpaSession* gpa_session, GpaPass* pass, void* command, CommandListId command_list_id, GpaCommandListType command_list_type)
+    : GpaCommandList(gpa_session, pass, command_list_id, command_list_type)
+    , vk_command_buffer_(static_cast<VkCommandBuffer>(command))
+    , gpa_ext_session_command_list_(VK_NULL_HANDLE)
+    , is_command_list_open_in_driver_(false)
 {
-    UNREFERENCED_PARAMETER(commandListId);
+    UNREFERENCED_PARAMETER(command_list_id);
 }
 
-VkGPACommandList::~VkGPACommandList()
+VkGpaCommandList::~VkGpaCommandList()
 {
-    VkGPAContext* pVkContext = reinterpret_cast<VkGPAContext*>(GPACommandList::GetParentSession()->GetParentContext());
-    VkDevice      device     = pVkContext->GetVkDevice();
+    VkGpaContext* vk_context = reinterpret_cast<VkGpaContext*>(GpaCommandList::GetParentSession()->GetParentContext());
+    VkDevice      device     = vk_context->GetVkDevice();
 
-    if (VK_NULL_HANDLE != m_gpaExtSessionAMD)
+    if (VK_NULL_HANDLE != gpa_ext_session_command_list_)
     {
-        _vkDestroyGpaSessionAMD(device, m_gpaExtSessionAMD, nullptr);
+        _vkDestroyGpaSessionAMD(device, gpa_ext_session_command_list_, nullptr);
     }
 
-    m_gpaExtSessionAMD = VK_NULL_HANDLE;
+    gpa_ext_session_command_list_ = VK_NULL_HANDLE;
 
-    for (auto cIter = m_copiedAmdExtSessions.cbegin(); cIter != m_copiedAmdExtSessions.cend(); ++cIter)
+    for (auto extensions_iter = copied_amd_extensions_.cbegin(); extensions_iter != copied_amd_extensions_.cend(); ++extensions_iter)
     {
-        _vkDestroyGpaSessionAMD(device, *cIter, nullptr);
+        _vkDestroyGpaSessionAMD(device, *extensions_iter, nullptr);
     }
 
-    m_copiedAmdExtSessions.clear();
-    m_copiedSampleMap.clear();
+    copied_amd_extensions_.clear();
+    copied_sample_map_.clear();
 }
 
-GPA_API_Type VkGPACommandList::GetAPIType() const
+GpaApiType VkGpaCommandList::GetApiType() const
 {
-    return GPA_API_VULKAN;
+    return kGpaApiVulkan;
 }
 
-void VkGPACommandList::SetAmdExtSession(VkGpaSessionAMD gpaExtSessionAMD)
+void VkGpaCommandList::SetAmdExtSession(VkGpaSessionAMD gpa_ext_session_amd)
 {
-    if (VK_NULL_HANDLE == m_gpaExtSessionAMD)
+    if (VK_NULL_HANDLE == gpa_ext_session_command_list_)
     {
-        m_gpaExtSessionAMD = gpaExtSessionAMD;
+        gpa_ext_session_command_list_ = gpa_ext_session_amd;
     }
 }
 
-VkGpaSessionAMD VkGPACommandList::GetAmdExtSession() const
+VkGpaSessionAMD VkGpaCommandList::GetAmdExtSession() const
 {
-    return m_gpaExtSessionAMD;
+    return gpa_ext_session_command_list_;
 }
 
-bool VkGPACommandList::BeginCommandListRequest()
+bool VkGpaCommandList::BeginCommandListRequest()
 {
     bool began = false;
 
-    if (GPACounterSource::HARDWARE == GetPass()->GetCounterSource())
+    if (GpaCounterSource::kHardware == GetPass()->GetCounterSource())
     {
-        VkGPAContext* pVkContext = reinterpret_cast<VkGPAContext*>(GetParentSession()->GetParentContext());
-        VkDevice      device     = pVkContext->GetVkDevice();
+        VkGpaContext* vk_context = reinterpret_cast<VkGpaContext*>(GetParentSession()->GetParentContext());
+        VkDevice      device     = vk_context->GetVkDevice();
 
-        bool isReadyToBegin = false;
+        bool is_ready_to_begin = false;
 
-        if (VK_NULL_HANDLE != m_gpaExtSessionAMD)
+        if (VK_NULL_HANDLE != gpa_ext_session_command_list_)
         {
-            // I don't think we should get into this situation, but just in case...
-            if (VK_SUCCESS == _vkResetGpaSessionAMD(device, m_gpaExtSessionAMD))
+            if (VK_SUCCESS == _vkResetGpaSessionAMD(device, gpa_ext_session_command_list_))
             {
-                isReadyToBegin = true;
+                is_ready_to_begin = true;
             }
             else
             {
-                GPA_LogError("Unable to reset extension for new command list.");
+                GPA_LOG_ERROR("Unable to reset extension for new command list.");
             }
         }
         else
         {
-            // Create a new extension session
-            VkGpaSessionCreateInfoAMD createInfo = {VK_STRUCTURE_TYPE_GPA_SESSION_CREATE_INFO_AMD, nullptr, VK_NULL_HANDLE};
-            createInfo.secondaryCopySource       = VK_NULL_HANDLE;
+            // Create a new extension session.
+            VkGpaSessionCreateInfoAMD create_info = {VK_STRUCTURE_TYPE_GPA_SESSION_CREATE_INFO_AMD, nullptr, VK_NULL_HANDLE};
+            create_info.secondaryCopySource       = VK_NULL_HANDLE;
 
-            if (VK_SUCCESS == _vkCreateGpaSessionAMD(device, &createInfo, nullptr, &m_gpaExtSessionAMD))
+            if (VK_SUCCESS == _vkCreateGpaSessionAMD(device, &create_info, nullptr, &gpa_ext_session_command_list_))
             {
-                isReadyToBegin = true;
+                is_ready_to_begin = true;
             }
             else
             {
-                GPA_LogError("Failed to create a session on the AMD GPA Extension.");
+                GPA_LOG_ERROR("Failed to create a session on the AMD GPA Extension.");
             }
         }
 
-        if (isReadyToBegin)
+        if (is_ready_to_begin)
         {
-            if (VK_SUCCESS == _vkCmdBeginGpaSessionAMD(m_vkCmdBuffer, m_gpaExtSessionAMD))
+            if (VK_SUCCESS == _vkCmdBeginGpaSessionAMD(vk_command_buffer_, gpa_ext_session_command_list_))
             {
                 began = true;
-                m_vkCommandListMutex.lock();
-                m_isCommandListOpenInDriver = true;
-                m_vkCommandListMutex.unlock();
+                vk_command_list_mutex_.lock();
+                is_command_list_open_in_driver_ = true;
+                vk_command_list_mutex_.unlock();
             }
             else
             {
-                GPA_LogError("Unable to open command list for sampling.");
+                GPA_LOG_ERROR("Unable to open command list for sampling.");
             }
         }
     }
-    else  // Software Sample
+    else  // Software Sample.
     {
-        VkGPAContext* pVkGpaContext = reinterpret_cast<VkGPAContext*>(GetParentSession()->GetParentContext());
-        began                       = m_swQueries.Initialize(pVkGpaContext->GetVkPhysicalDevice(), pVkGpaContext->GetVkDevice(), m_vkCmdBuffer);
+        VkGpaContext* vk_gpa_context = reinterpret_cast<VkGpaContext*>(GetParentSession()->GetParentContext());
+        began                        = sw_queries_.Initialize(vk_gpa_context->GetVkPhysicalDevice(), vk_gpa_context->GetVkDevice(), vk_command_buffer_);
     }
 
     return began;
 }
 
-bool VkGPACommandList::EndCommandListRequest()
+bool VkGpaCommandList::EndCommandListRequest()
 {
-    bool isEnded = false;
+    bool is_ended = false;
 
-    // _IF_ a sample was started, then it was either previously ended, or it was closed above.
+    // If a sample was started, then it was either previously ended, or it was closed above.
     // If the sample state is now ENDED, then we know we must also end the GPA Extension Session.
-    // WORKAROUND: Due to a driver bug, we only want to begin / end the session if it has at least one sample on it.
-    if (GPACounterSource::HARDWARE == GetPass()->GetCounterSource() && m_isCommandListOpenInDriver)
+    // WORKAROUND: We only want to begin / end the session if it has at least one sample on it.
+    if (GpaCounterSource::kHardware == GetPass()->GetCounterSource() && is_command_list_open_in_driver_)
     {
-        if (VK_SUCCESS == _vkCmdEndGpaSessionAMD(m_vkCmdBuffer, m_gpaExtSessionAMD))
+        if (VK_SUCCESS == _vkCmdEndGpaSessionAMD(vk_command_buffer_, gpa_ext_session_command_list_))
         {
-            m_vkCommandListMutex.lock();
-            m_isCommandListOpenInDriver = false;
-            m_vkCommandListMutex.unlock();
-            isEnded = true;
+            vk_command_list_mutex_.lock();
+            is_command_list_open_in_driver_ = false;
+            vk_command_list_mutex_.unlock();
+            is_ended = true;
         }
         else
         {
-            GPA_LogDebugError("AMD extension is unable to end the command list.");
+            GPA_LOG_DEBUG_ERROR("AMD extension is unable to end the command list.");
         }
     }
 
-    return isEnded;
+    return is_ended;
 }
 
-bool VkGPACommandList::BeginSampleRequest(ClientSampleId clientSampleId, GPASample* pGpaSample)
+bool VkGpaCommandList::BeginSampleRequest(ClientSampleId client_sample_id, GpaSample* gpa_sample)
 {
-    UNREFERENCED_PARAMETER(clientSampleId);
-    UNREFERENCED_PARAMETER(pGpaSample);
+    UNREFERENCED_PARAMETER(client_sample_id);
+    UNREFERENCED_PARAMETER(gpa_sample);
 
-    if (GPACounterSource::SOFTWARE == GetPass()->GetCounterSource())
+    if (GpaCounterSource::kSoftware == GetPass()->GetCounterSource())
     {
-        VkGPASoftwareSample* pSwSample = reinterpret_cast<VkGPASoftwareSample*>(pGpaSample);
-        pSwSample->AssignQueries(&m_swQueries);
+        VkGpaSoftwareSample* gpa_software_sample = reinterpret_cast<VkGpaSoftwareSample*>(gpa_sample);
+        gpa_software_sample->AssignQueries(&sw_queries_);
     }
 
     return true;
 }
 
-bool VkGPACommandList::CloseLastSampleRequest()
+bool VkGpaCommandList::CloseLastSampleRequest()
 {
     GPA_STUB_FUNCTION;
     return true;
 }
 
-bool VkGPACommandList::IsResultReady() const
+bool VkGpaCommandList::IsResultReady() const
 {
-    bool isResultReady = false;
+    bool is_result_ready = false;
 
-    VkGPAContext* pVkGPAContext = dynamic_cast<VkGPAContext*>(GetParentSession()->GetParentContext());
+    VkGpaContext* gpa_context = dynamic_cast<VkGpaContext*>(GetParentSession()->GetParentContext());
 
-    if (nullptr == pVkGPAContext)
+    if (nullptr == gpa_context)
     {
-        GPA_LogError("Invalid profiling session encountered when checking for available results.");
+        GPA_LOG_ERROR("Invalid profiling session encountered when checking for available results.");
     }
     else
     {
-        VkResult isReady = _vkGetGpaSessionStatusAMD(pVkGPAContext->GetVkDevice(), m_gpaExtSessionAMD);
-        isResultReady    = VK_SUCCESS == isReady;
+        VkResult is_ready = _vkGetGpaSessionStatusAMD(gpa_context->GetVkDevice(), gpa_ext_session_command_list_);
+        is_result_ready   = VK_SUCCESS == is_ready;
     }
 
-    return isResultReady;
+    return is_result_ready;
 }
 
-VkCommandBuffer VkGPACommandList::GetVkCommandBuffer() const
+VkCommandBuffer VkGpaCommandList::GetVkCommandBuffer() const
 {
-    return m_vkCmdBuffer;
+    return vk_command_buffer_;
 }
 
-bool VkGPACommandList::CopySecondarySamples(VkGPACommandList*            pPrimaryCmdList,
-                                            gpa_uint32                   numSamples,
-                                            gpa_uint32*                  pNewSampleIds,
-                                            std::vector<ClientSampleId>& originalSampleIds)
+bool VkGpaCommandList::CopySecondarySamples(VkGpaCommandList*            primary_command_list,
+                                            GpaUInt32                    num_samples,
+                                            GpaUInt32*                   new_sample_ids,
+                                            std::vector<ClientSampleId>& original_sample_ids)
 {
-    UNREFERENCED_PARAMETER(numSamples);
+    UNREFERENCED_PARAMETER(num_samples);
     bool copied = false;
 
     // For now, we only support copying hardware counters.
-    // TODO: We should probably see if are able to support software counters too.
-    if (GPACounterSource::HARDWARE == GetPass()->GetCounterSource())
+    if (GpaCounterSource::kHardware == GetPass()->GetCounterSource())
     {
-        VkGpaSessionCreateInfoAMD createInfo = {VK_STRUCTURE_TYPE_GPA_SESSION_CREATE_INFO_AMD, nullptr, VK_NULL_HANDLE};
-        createInfo.secondaryCopySource       = m_gpaExtSessionAMD;
+        VkGpaSessionCreateInfoAMD create_info = {VK_STRUCTURE_TYPE_GPA_SESSION_CREATE_INFO_AMD, nullptr, VK_NULL_HANDLE};
+        create_info.secondaryCopySource       = gpa_ext_session_command_list_;
 
-        VkGPAContext* pVkContext = reinterpret_cast<VkGPAContext*>(GetParentSession()->GetParentContext());
-        VkDevice      device     = pVkContext->GetVkDevice();
+        VkGpaContext* vk_context = reinterpret_cast<VkGpaContext*>(GetParentSession()->GetParentContext());
+        VkDevice      device     = vk_context->GetVkDevice();
 
-        VkGpaSessionAMD sessionCopy = VK_NULL_HANDLE;
+        VkGpaSessionAMD session_copy = VK_NULL_HANDLE;
 
-        if (VK_SUCCESS == _vkCreateGpaSessionAMD(device, &createInfo, nullptr, &sessionCopy))
+        if (VK_SUCCESS == _vkCreateGpaSessionAMD(device, &create_info, nullptr, &session_copy))
         {
-            m_vkCommandListMutex.lock();
-            m_copiedAmdExtSessions.push_back(sessionCopy);
+            vk_command_list_mutex_.lock();
+            copied_amd_extensions_.push_back(session_copy);
 
-            unsigned int sampleIndex           = 0;
-            auto         ProcessClientSampleId = [&](ClientSampleIdGpaSamplePair clientSampleIdGpaSamplePair) -> bool {
-                ClientSampleId originalSampleId = clientSampleIdGpaSamplePair.second->GetClientSampleId();
-                originalSampleIds.push_back(originalSampleId);
+            unsigned int sample_index             = 0;
+            auto         process_client_sample_id = [&](ClientSampleIdGpaSamplePair clientSampleIdGpaSamplePair) -> bool {
+                ClientSampleId original_sample_id = clientSampleIdGpaSamplePair.second->GetClientSampleId();
+                original_sample_ids.push_back(original_sample_id);
 
-                CopiedSampleInfo copiedInfo                   = {};
-                copiedInfo.originalSampleId                   = originalSampleId;
-                copiedInfo.copiedAmdExtSession                = sessionCopy;
-                m_copiedSampleMap[pNewSampleIds[sampleIndex]] = copiedInfo;
-                originalSampleId                              = clientSampleIdGpaSamplePair.second->GetClientSampleId();
-                sampleIndex++;
+                CopiedSampleInfo copied_info                     = {};
+                copied_info.original_sample_id                   = original_sample_id;
+                copied_info.copied_amd_ext_session               = session_copy;
+                copied_sample_map_[new_sample_ids[sample_index]] = copied_info;
+                original_sample_id                               = clientSampleIdGpaSamplePair.second->GetClientSampleId();
+                sample_index++;
                 return true;
             };
 
-            IterateSampleUnorderedMap(ProcessClientSampleId);
-            m_vkCommandListMutex.unlock();
+            IterateSampleUnorderedMap(process_client_sample_id);
+            vk_command_list_mutex_.unlock();
 
-            // Schedule the data copy on the primary command buffer
-            _vkCmdCopyGpaSessionResultsAMD(pPrimaryCmdList->GetVkCommandBuffer(), sessionCopy);
+            // Schedule the data copy on the primary command buffer.
+            _vkCmdCopyGpaSessionResultsAMD(primary_command_list->GetVkCommandBuffer(), session_copy);
             copied = true;
         }
     }
-    else  // software counters
+    else  // Software counters.
     {
-        m_vkCommandListMutex.lock();
+        vk_command_list_mutex_.lock();
 
-        unsigned int sampleIndex           = 0;
-        auto         ProcessClientSampleId = [&](ClientSampleIdGpaSamplePair clientSampleIdGpaSamplePair) -> bool {
-            ClientSampleId originalSampleId = clientSampleIdGpaSamplePair.second->GetClientSampleId();
-            originalSampleIds.push_back(originalSampleId);
+        unsigned int sample_index             = 0;
+        auto         process_client_sample_id = [&](ClientSampleIdGpaSamplePair clientSampleIdGpaSamplePair) -> bool {
+            ClientSampleId original_sample_id = clientSampleIdGpaSamplePair.second->GetClientSampleId();
+            original_sample_ids.push_back(original_sample_id);
 
-            // TODO: need to copy the query results back somewhere... not sure where or how yet
-
-            CopiedSampleInfo copiedInfo                   = {};
-            copiedInfo.originalSampleId                   = originalSampleId;
-            copiedInfo.copiedAmdExtSession                = VK_NULL_HANDLE;
-            m_copiedSampleMap[pNewSampleIds[sampleIndex]] = copiedInfo;
-            sampleIndex++;
+            CopiedSampleInfo copied_info                     = {};
+            copied_info.original_sample_id                   = original_sample_id;
+            copied_info.copied_amd_ext_session               = VK_NULL_HANDLE;
+            copied_sample_map_[new_sample_ids[sample_index]] = copied_info;
+            sample_index++;
             return true;
         };
 
-        IterateSampleUnorderedMap(ProcessClientSampleId);
-        m_vkCommandListMutex.unlock();
+        IterateSampleUnorderedMap(process_client_sample_id);
+        vk_command_list_mutex_.unlock();
         copied = false;
     }
 
     return copied;
 }
 
-VkGpaSessionAMD VkGPACommandList::GetCopiedAmdExtSession(ClientSampleId clientSampleId) const
+VkGpaSessionAMD VkGpaCommandList::GetCopiedAmdExtSession(ClientSampleId client_sample_id) const
 {
-    VkGpaSessionAMD copiedExtSession = VK_NULL_HANDLE;
+    VkGpaSessionAMD copied_ext_session = VK_NULL_HANDLE;
 
-    std::map<ClientSampleId, CopiedSampleInfo>::const_iterator cIter = m_copiedSampleMap.find(clientSampleId);
+    std::map<ClientSampleId, CopiedSampleInfo>::const_iterator copied_sample_map_iter = copied_sample_map_.find(client_sample_id);
 
-    if (cIter != m_copiedSampleMap.cend())
+    if (copied_sample_map_iter != copied_sample_map_.cend())
     {
-        copiedExtSession = cIter->second.copiedAmdExtSession;
+        copied_ext_session = copied_sample_map_iter->second.copied_amd_ext_session;
     }
 
-    return copiedExtSession;
+    return copied_ext_session;
 }

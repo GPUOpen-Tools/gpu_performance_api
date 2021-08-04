@@ -1,169 +1,195 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GPA Opaque object definition
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GPA Opaque object definition.
 //==============================================================================
 
-#ifndef _GPA_UNIQUE_OBJECT_H_
-#define _GPA_UNIQUE_OBJECT_H_
+#ifndef GPU_PERF_API_COMMON_GPA_UNIQUE_OBJECT_H_
+#define GPU_PERF_API_COMMON_GPA_UNIQUE_OBJECT_H_
 
-// std
 #include <vector>
 #include <mutex>
 
-// GPA Common
-#include "gpa_interface_trait_interface.h"
-#include "gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_command_list_interface.h"
+#include "gpu_perf_api_common/gpa_common_defs.h"
+#include "gpu_perf_api_common/gpa_context_interface.h"
+#include "gpu_perf_api_common/gpa_interface_trait_interface.h"
+#include "gpu_perf_api_common/gpa_session_interface.h"
 
-class IGPAContext;      // forward declaration
-class IGPASession;      // forward declaration
-class IGPACommandList;  // forward declaration
-
-/// GPAUniqueObject structure
-struct GPAUniqueObject
+/// @brief GpaUniqueObject structure.
+struct GpaUniqueObject
 {
-    /// Gets the type of the object
-    /// \return GPA object type
-    virtual GPAObjectType ObjectType() const;
+    /// @brief Gets the type of the object.
+    ///
+    /// @return GPA object type.
+    virtual GpaObjectType ObjectType() const;
 
-    /// Returns the interface pointer
-    /// \return interface object pointer
-    IGPAInterfaceTrait* Interface() const;
+    /// @brief Returns the interface pointer.
+    ///
+    /// @return interface object pointer.
+    IGpaInterfaceTrait* Interface() const;
 
-    /// Destructor
-    virtual ~GPAUniqueObject();
+    /// @brief Virtual destructor.
+    virtual ~GpaUniqueObject();
 
 protected:
-    /// constructor
-    GPAUniqueObject();
+    /// @brief Constructor.
+    GpaUniqueObject();
 
-    IGPAInterfaceTrait* m_pInterface;  ///< GPA Interface trait pointer
+    IGpaInterfaceTrait* interface_pointer;  ///< GPA Interface trait pointer.
 };
 
-/// Context Id struct
-struct _GPA_ContextId : GPAUniqueObject
+/// @brief Context Id struct.
+struct _GpaContextId : GpaUniqueObject
 {
-    /// Constructor
-    /// \param[in] pContextId IGPAContext object pointer
-    _GPA_ContextId(IGPAInterfaceTrait* pContextId);
+    /// @brief Constructor.
+    ///
+    /// @param [in] gpa_context_id IGpaContext object pointer.
+    _GpaContextId(IGpaInterfaceTrait* gpa_context_id);
 
-    /// Delete default constructor
-    _GPA_ContextId() = delete;
+    /// @brief Delete default constructor.
+    _GpaContextId() = delete;
 
-    /// Overriding -> operator
-    /// \return IGPAContext object pointer
-    IGPAContext* operator->() const;
+    /// @brief Overriding -> operator.
+    ///
+    /// @return IGpaContext object pointer.
+    IGpaContext* operator->() const;
 
-    /// Returns the placeholder interface pointer
-    /// \return IGPAContext object pointer
-    IGPAContext* Object() const;
+    /// @brief Returns the placeholder interface pointer.
+    ///
+    /// @return IGpaContext object pointer.
+    IGpaContext* Object() const;
 
-    /// Returns the type of the object
-    /// \return GPA object type
-    GPAObjectType ObjectType() const override;
+    /// @brief Returns the type of the object.
+    ///
+    /// @return GPA object type.
+    GpaObjectType ObjectType() const override;
 };
 
-/// Session Id struct
-struct _GPA_SessionId : GPAUniqueObject
+/// @brief Session Id struct.
+struct _GpaSessionId : GpaUniqueObject
 {
-    /// Constructor
-    /// \param[in] pSessionId IGPASession object pointer
-    _GPA_SessionId(IGPAInterfaceTrait* pSessionId);
+    /// @brief Constructor.
+    ///
+    /// @param [in] gpa_session_id IGpaSession object pointer.
+    _GpaSessionId(IGpaInterfaceTrait* gpa_session_id);
 
-    /// Delete default constructor
-    _GPA_SessionId() = delete;
+    /// @brief Delete default constructor.
+    _GpaSessionId() = delete;
 
-    /// Overriding -> operator
-    /// \return IGPASession object pointer
-    IGPASession* operator->() const;
+    /// @brief Overriding -> operator.
+    ///
+    /// @return IGpaSession object pointer.
+    IGpaSession* operator->() const;
 
-    /// Returns the placeholder interface pointer
-    /// \return IGPASession object pointer
-    IGPASession* Object() const;
+    /// @brief Returns the placeholder interface pointer.
+    ///
+    /// @return IGpaSession object pointer.
+    IGpaSession* Object() const;
 
-    /// Returns the type of the object
-    /// \return GPA object type
-    GPAObjectType ObjectType() const override;
+    /// @brief Returns the type of the object.
+    ///
+    /// @return GPA object type.
+    GpaObjectType ObjectType() const override;
 };
 
-/// Command List Id struct
-struct _GPA_CommandListId : GPAUniqueObject
+/// @brief Command List Id struct.
+struct _GpaCommandListId : GpaUniqueObject
 {
-    /// Constructor
-    /// \param[in] pCommandListId IGPACommandList object pointer
-    _GPA_CommandListId(IGPAInterfaceTrait* pCommandListId);
+    /// @brief Constructor.
+    ///
+    /// @param [in] gpa_command_list_id IGpaCommandList object pointer.
+    _GpaCommandListId(IGpaInterfaceTrait* gpa_command_list_id);
 
-    /// Delete default constructor
-    _GPA_CommandListId() = delete;
+    /// @brief Delete default constructor.
+    _GpaCommandListId() = delete;
 
-    /// Overriding -> operator
-    /// \return IGPACommandList object pointer
-    IGPACommandList* operator->() const;
+    /// @brief Overriding -> operator.
+    ///
+    /// @return IGpaCommandList object pointer.
+    IGpaCommandList* operator->() const;
 
-    /// Returns the placeholder interface pointer
-    /// \return IGPACommandList object pointer
-    IGPACommandList* Object() const;
+    /// @brief Returns the placeholder interface pointer.
+    ///
+    /// @return IGpaCommandList object pointer.
+    IGpaCommandList* Object() const;
 
-    /// Returns the type of the object
-    /// \return GPA object type
-    GPAObjectType ObjectType() const override;
+    /// @brief Returns the type of the object.
+    ///
+    /// @return GPA object type.
+    GpaObjectType ObjectType() const override;
 };
 
-/// Singleton class to maintain Unique objects
-class GPAUniqueObjectManager
+/// @brief Singleton class to maintain Unique objects.
+class GpaUniqueObjectManager
 {
 public:
-    /// Destructor
-    ~GPAUniqueObjectManager();
+    /// @brief Destructor.
+    ~GpaUniqueObjectManager();
 
-    /// Returns the static instance of the UniqueObject manager
-    /// \return the static instance of the UniqueObject manager
-    static GPAUniqueObjectManager* Instance();
+    /// @brief Returns the static instance of the UniqueObject manager.
+    ///
+    /// @return The static instance of the UniqueObject manager.
+    static GpaUniqueObjectManager* Instance();
 
-    /// Add the newly creatd GPA Unique object
-    /// \param[in] pInterfaceTrait GPA unique object pointer
-    /// \return unique object pointer if created successfully otherwise nullptr
-    GPA_THREAD_SAFE_FUNCTION GPAUniqueObject* CreateObject(IGPAInterfaceTrait* pInterfaceTrait);
+    /// Add the newly created GPA Unique object.
+    ///
+    /// @param [in] gpa_interface_trait GPA unique object pointer.
+    ///
+    /// @return Unique object pointer if created successfully otherwise nullptr.
+    GPA_THREAD_SAFE_FUNCTION GpaUniqueObject* CreateObject(IGpaInterfaceTrait* gpa_interface_trait);
 
-    /// Remove the newly creatd GPA Unique object
-    /// \param[in] pUniqueObject GPA unique object pointer
-    GPA_THREAD_SAFE_FUNCTION void DeleteObject(GPAUniqueObject* pUniqueObject);
+    /// @brief Remove the newly created GPA Unique object.
+    ///
+    /// @param [in] unique_object GPA unique object pointer.
+    GPA_THREAD_SAFE_FUNCTION void DeleteObject(GpaUniqueObject* unique_object);
 
-    /// Remove the newly creatd GPA Unique object
-    /// \param[in] pInterfaceTrait GPA unique object pointer
-    GPA_THREAD_SAFE_FUNCTION void DeleteObject(const IGPAInterfaceTrait* pInterfaceTrait);
+    /// @brief Remove the newly created GPA Unique object.
+    ///
+    /// @param [in] gpa_interface_trait GPA unique object pointer.
+    GPA_THREAD_SAFE_FUNCTION void DeleteObject(const IGpaInterfaceTrait* gpa_interface_trait);
 
-    /// Checks whether the interface exists or not
-    /// \param[in] pInterfaceTrait interface trait
-    /// \param[out] pIndex index at which the object found otherwise 0
-    /// \return true if interface is found otherwise false
-    GPA_THREAD_SAFE_FUNCTION bool DoesExist(const IGPAInterfaceTrait* pInterfaceTrait, unsigned int* pIndex = nullptr) const;
+    /// @brief Checks whether the interface exists or not.
+    ///
+    /// @param [in] gpa_interface_trait Interface trait.
+    /// @param [out] index Index at which the object found otherwise 0.
+    ///
+    /// @return True if interface is found otherwise false.
+    GPA_THREAD_SAFE_FUNCTION bool DoesExist(const IGpaInterfaceTrait* gpa_interface_trait, unsigned int* index = nullptr) const;
 
-    /// Checks whether the object exists or not
-    /// \param[in] pUniqueObject unique object pointer
-    /// \param[out] pIndex index at which the object is found
-    /// \return index at which the object found otherwise -1
-    GPA_THREAD_SAFE_FUNCTION bool DoesExist(const GPAUniqueObject* pUniqueObject, unsigned int* pIndex = nullptr) const;
+    /// @brief Checks whether the object exists or not.
+    ///
+    /// @param [in] unique_object Unique object pointer.
+    /// @param [out] index Index at which the object is found.
+    ///
+    /// @return Index at which the object found otherwise -1.
+    GPA_THREAD_SAFE_FUNCTION bool DoesExist(const GpaUniqueObject* unique_object, unsigned int* index = nullptr) const;
 
 private:
-    /// Checks whether the interface exists or not
-    /// Assumes that the caller has locked m_mutex.
-    /// \param[in] pInterfaceTrait interface trait
-    /// \param[out] pIndex index at which the object found otherwise -1
-    /// \return true if interface is found otherwise false
-    bool DoesExist_NotThreadSafe(const IGPAInterfaceTrait* pInterfaceTrait, unsigned int* pIndex = nullptr) const;
+    /// @brief Checks whether the interface exists or not.
+    ///
+    /// Assumes that the caller has locked mutex_.
+    ///
+    /// @param [in] gpa_interface_trait Interface trait.
+    /// @param [out] index Index at which the object found otherwise -1.
+    ///
+    /// @return True if interface is found otherwise false.
+    bool DoesExistNotThreadSafe(const IGpaInterfaceTrait* gpa_interface_trait, unsigned int* index = nullptr) const;
 
-    /// Checks whether the object exists or not
-    /// Assumes that the caller has locked m_mutex.
-    /// \param[in] pUniqueObject unique object pointer
-    /// \param[out] pIndex index at which the object is found
-    /// \return index at which the object found otherwise -1
-    bool DoesExist_NotThreadSafe(const GPAUniqueObject* pUniqueObject, unsigned int* pIndex = nullptr) const;
+    /// @brief Checks whether the object exists or not.
+    ///
+    /// Assumes that the caller has locked mutex_.
+    ///
+    /// @param [in] unique_object Unique object pointer.
+    /// @param [out] index Index at which the object is found.
+    ///
+    /// @return Index at which the object found otherwise -1.
+    bool DoesExistNotThreadSafe(const GpaUniqueObject* unique_object, unsigned int* index = nullptr) const;
 
-    static GPAUniqueObjectManager* ms_pGpaUniqueObjectManger;  ///< static instance of the GPA object manager
-    std::vector<GPAUniqueObject*>  m_gpaUniqueObjectList;      ///< List of unique object pointers
-    mutable std::mutex             m_mutex;                    ///< Mutex for unique object manager class
+    static GpaUniqueObjectManager* kGpaUniqueObjectManger;   ///< Static instance of the GPA object manager.
+    std::vector<GpaUniqueObject*>  gpa_unique_object_list_;  ///< List of unique object pointers.
+    mutable std::mutex             mutex_;                   ///< Mutex for unique object manager class.
 };
 
-#endif  // _GPA_UNIQUE_OBJECT_H_
+#endif  // GPU_PERF_API_COMMON_GPA_UNIQUE_OBJECT_H_

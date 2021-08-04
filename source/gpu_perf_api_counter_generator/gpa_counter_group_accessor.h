@@ -1,196 +1,198 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Counter group accessor class
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Counter group accessor class.
 //==============================================================================
 
-#ifndef _GPA_COUNTER_GROUP_ACCESSOR_H_
-#define _GPA_COUNTER_GROUP_ACCESSOR_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_GROUP_ACCESSOR_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_GROUP_ACCESSOR_H_
 
 #include "gpa_counter.h"
 #include "gpa_split_counters_interfaces.h"
 
-/// Indexes into an array of internal groups and counters and can access data from the internal counter.
-class GPACounterGroupAccessor : IGPACounterGroupAccessor
+/// @brief Indexes into an array of internal groups and counters and can access data from the internal counter.
+class GpaCounterGroupAccessor : IGpaCounterGroupAccessor
 {
 public:
-    /// Initializes a new instance of the GPACounterGroupAccessor class.
-    /// \param pHardwareGroups the hardware counter groups
-    /// \param hardwareGroupCount the number of hardware counter groups
-    /// \param pHardwareAdditionalGroups the additional hardware counter groups
-    /// \param hardwareAdditionalGroupCount the number of additional hardware counter groups
-    GPACounterGroupAccessor(GPA_CounterGroupDesc* pHardwareGroups,
-                            unsigned int          hardwareGroupCount,
-                            GPA_CounterGroupDesc* pHardwareAdditionalGroups,
-                            unsigned int          hardwareAdditionalGroupCount)
-        : m_pHardwareGroups(pHardwareGroups)
-        , m_hardwareGroupCount(hardwareGroupCount)
-        , m_pHardwareAdditionalGroups(pHardwareAdditionalGroups)
-        , m_hardwareAdditionalGroupCount(hardwareAdditionalGroupCount)
-        , m_groupIndex(0)
-        , m_counterIndex(0)
+    /// @brief Initializes a new instance of the GPACounterGroupAccessor class.
+    ///
+    /// @param [in] hardware_groups The hardware counter groups.
+    /// @param [in] hardware_group_count The number of hardware counter groups.
+    /// @param [in] hardware_additional_groups The additional hardware counter groups.
+    /// @param [in] hardware_additional_group_count The number of additional hardware counter groups.
+    GpaCounterGroupAccessor(GpaCounterGroupDesc* hardware_groups,
+                            unsigned int         hardware_group_count,
+                            GpaCounterGroupDesc* hardware_additional_groups,
+                            unsigned int         hardware_additional_group_count)
+        : hardware_groups_(hardware_groups)
+        , hardware_group_count_(hardware_group_count)
+        , hardware_additional_groups_(hardware_additional_groups)
+        , hardware_additional_group_count_(hardware_additional_group_count)
+        , group_index_(0)
+        , counter_index_(0)
     {
-        m_isHW           = false;
-        m_isAdditionalHW = false;
-        m_isSW           = false;
+        is_hw_            = false;
+        is_additional_hw_ = false;
+        is_sw_            = false;
     }
 
-    /// Destructor
-    virtual ~GPACounterGroupAccessor() = default;
+    /// @brief Destructor.
+    virtual ~GpaCounterGroupAccessor() = default;
 
-    /// \copydoc IGPACounterGroupAccessor::SetCounterIndex()
+    /// @copydoc IGpaCounterGroupAccessor::SetCounterIndex()
     void SetCounterIndex(unsigned int index) override
     {
-        // count the number of counters that belong to groups that do not include the desired index
-        unsigned int prevGroupCounters = 0;
-        unsigned int tmpSum            = 0;
+        // Count the number of counters that belong to groups that do not include the desired index.
+        unsigned int prev_group_counters = 0;
+        unsigned int tmp_sum            = 0;
 
-        m_isHW           = false;
-        m_isAdditionalHW = false;
-        m_isSW           = false;
+        is_hw_            = false;
+        is_additional_hw_ = false;
+        is_sw_            = false;
 
-        unsigned int internalCounters = 0;
+        unsigned int internal_counters = 0;
 
-        for (unsigned int i = 0; i < m_hardwareGroupCount; ++i)
+        for (unsigned int i = 0; i < hardware_group_count_; ++i)
         {
-            internalCounters += static_cast<unsigned int>(m_pHardwareGroups[i].m_numCounters);
+            internal_counters += static_cast<unsigned int>(hardware_groups_[i].num_counters);
         }
 
-        for (unsigned int i = 0; i < m_hardwareGroupCount; ++i)
+        for (unsigned int i = 0; i < hardware_group_count_; ++i)
         {
-            tmpSum = prevGroupCounters + static_cast<unsigned int>(m_pHardwareGroups[i].m_numCounters);
+            tmp_sum = prev_group_counters + static_cast<unsigned int>(hardware_groups_[i].num_counters);
 
-            if (tmpSum > index)
+            if (tmp_sum > index)
             {
-                // this group contains the desired counter index.
-                // this is the right group, and we can calculate the right counter.
-                m_groupIndex   = i;
-                m_counterIndex = index - prevGroupCounters;
+                // This group contains the desired counter index.
+                // This is the right group, and we can calculate the right counter.
+                group_index_   = i;
+                counter_index_ = index - prev_group_counters;
 
-                // This is a HW counter
-                m_isHW = true;
+                // This is a HW counter.
+                is_hw_ = true;
 
-                // break from the loop
+                // Break from the loop.
                 break;
             }
             else
             {
-                // this group does not include the desired counter index.
-                // update the count and let the loop continue.
-                prevGroupCounters = tmpSum;
+                // This group does not include the desired counter index.
+                // Update the count and let the loop continue.
+                prev_group_counters = tmp_sum;
             }
         }
 
-        if (m_isHW == true)
+        if (is_hw_ == true)
         {
             return;
         }
 
-        for (unsigned int i = 0; i < m_hardwareAdditionalGroupCount; ++i)
+        for (unsigned int i = 0; i < hardware_additional_group_count_; ++i)
         {
-            tmpSum = prevGroupCounters + static_cast<unsigned int>(m_pHardwareAdditionalGroups[i].m_numCounters);
+            tmp_sum = prev_group_counters + static_cast<unsigned int>(hardware_additional_groups_[i].num_counters);
 
-            if (tmpSum > index)
+            if (tmp_sum > index)
             {
-                // this group contains the desired counter index.
-                // this is the right group, and we can calculate the right counter.
-                m_groupIndex   = i;
-                m_counterIndex = index - prevGroupCounters;
+                // This group contains the desired counter index.
+                // This is the right group, and we can calculate the right counter.
+                group_index_   = i;
+                counter_index_ = index - prev_group_counters;
 
-                // This is an additional HW counter
-                m_isAdditionalHW = true;
+                // This is an additional HW counter.
+                is_additional_hw_ = true;
 
-                // break from the loop
+                // Break from the loop.
                 break;
             }
             else
             {
-                // this group does not include the desired counter index.
-                // update the count and let the loop continue.
-                prevGroupCounters = tmpSum;
+                // This group does not include the desired counter index.
+                // Update the count and let the loop continue.
+                prev_group_counters = tmp_sum;
             }
         }
 
-        if (m_isAdditionalHW == true)
+        if (is_additional_hw_ == true)
         {
             return;
         }
 
-        m_groupIndex = 0;
-        m_isSW       = true;
+        group_index_ = 0;
+        is_sw_       = true;
 
-        if (index >= internalCounters)
+        if (index >= internal_counters)
         {
-            m_counterIndex = index - internalCounters;
+            counter_index_ = index - internal_counters;
         }
         else
         {
-            m_counterIndex = index;
+            counter_index_ = index;
         }
     }
 
-    /// \copydoc IGPACounterGroupAccessor::GroupIndex()
+    /// @copydoc IGpaCounterGroupAccessor::GroupIndex()
     unsigned int GroupIndex() const override
     {
-        return m_groupIndex;
+        return group_index_;
     }
 
-    /// \copydoc IGPACounterGroupAccessor::CounterIndex()
+    /// @copydoc IGpaCounterGroupAccessor::CounterIndex()
     unsigned int CounterIndex() const override
     {
-        return m_counterIndex;
+        return counter_index_;
     }
 
-    /// \copydoc IGPACounterGroupAccessor::IsHWCounter()
-    bool IsHWCounter() const override
+    /// @copydoc IGpaCounterGroupAccessor::IsHwCounter()
+    bool IsHwCounter() const override
     {
-        return m_isHW;
+        return is_hw_;
     }
 
-    /// \copydoc IGPACounterGroupAccessor::IsSWCounter()
-    bool IsSWCounter() const override
+    /// @copydoc IGpaCounterGroupAccessor::IsSwCounter()
+    bool IsSwCounter() const override
     {
-        return m_isSW;
+        return is_sw_;
     }
 
-    /// \copydoc IGPACounterGroupAccessor::GlobalGroupIndex()
+    /// @copydoc IGpaCounterGroupAccessor::GlobalGroupIndex()
     unsigned int GlobalGroupIndex() const override
     {
-        unsigned int globalGroupIndex = GroupIndex();
+        unsigned int global_group_index = GroupIndex();
 
-        if (m_isAdditionalHW)
+        if (is_additional_hw_)
         {
-            // If this is a software counter then add in the HW group count
-            globalGroupIndex += m_hardwareGroupCount;
+            // If this is a software counter then add in the HW group count.
+            global_group_index += hardware_group_count_;
         }
 
-        if (m_isSW)
+        if (is_sw_)
         {
-            // If this is a software counter then add in the HW group count
-            globalGroupIndex += m_hardwareAdditionalGroupCount;
+            // If this is a software counter then add in the HW group count.
+            global_group_index += hardware_additional_group_count_;
         }
 
-        return globalGroupIndex;
+        return global_group_index;
     }
 
-    /// Get the additional hardware counter bool
-    /// \return True if the counter is an additional hardware counter (one exposed by the driver, but not by GPA)
+    /// @brief Get the additional hardware counter bool.
+    ///
+    /// @return True if the counter is an additional hardware counter (one exposed by the driver, but not by GPA).
     bool IsAdditionalHWCounter() const
     {
-        return m_isAdditionalHW;
+        return is_additional_hw_;
     }
 
 private:
-    GPA_CounterGroupDesc* m_pHardwareGroups;               ///< Points to the array of internal hardware counter groups
-    unsigned int          m_hardwareGroupCount;            ///< stores the number of hardware counter groups in the array.
-    GPA_CounterGroupDesc* m_pHardwareAdditionalGroups;     ///< Points to the array of internal additional hardware counter groups
-    unsigned int          m_hardwareAdditionalGroupCount;  ///< stores the number of additional hardware counter groups in the array.
-    unsigned int          m_groupIndex;                    ///< Stores the group index of the set counter index.
-    unsigned int          m_counterIndex;                  ///< Stores the counter index within the group of the set counter index.
-    bool                  m_isHW;                          ///< flag to record if the counter is hardware or not
-    bool                  m_isAdditionalHW;                ///< flag to record if the counter is an additional HW counter (one exposed by the driver but not by GPA)
-    bool                  m_isSW;                          ///< flag to record if the counter is SW
+    GpaCounterGroupDesc* hardware_groups_;                  ///< Points to the array of internal hardware counter groups.
+    unsigned int         hardware_group_count_;             ///< Stores the number of hardware counter groups in the array.
+    GpaCounterGroupDesc* hardware_additional_groups_;       ///< Points to the array of internal additional hardware counter groups.
+    unsigned int         hardware_additional_group_count_;  ///< Stores the number of additional hardware counter groups in the array.
+    unsigned int         group_index_;                      ///< Stores the group index of the set counter index.
+    unsigned int         counter_index_;                    ///< Stores the counter index within the group of the set counter index.
+    bool                 is_hw_;                            ///< Flag to record if the counter is hardware or not.
+    bool                 is_additional_hw_;  ///< Flag to record if the counter is an additional HW counter (one exposed by the driver but not by GPA).
+    bool                 is_sw_;             ///< Flag to record if the counter is SW.
 };
 
-#endif  // _GPA_COUNTER_GROUP_ACCESSOR_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_GROUP_ACCESSOR_H_

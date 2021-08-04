@@ -1,124 +1,151 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  definitions for GPA counters
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Definitions for GPA counters.
 //==============================================================================
 
-#ifndef _GPA_COUNTER_H_
-#define _GPA_COUNTER_H_
+#ifndef GPA_COUNTER_GENERATOR_COMMON_GPA_COUNTER_H_
+#define GPA_COUNTER_GENERATOR_COMMON_GPA_COUNTER_H_
 
 #include <cstring>
+#include <string>
+#include <memory>
 
-#include "gpu_perf_api_types.h"
+#include "gpu_performance_api/gpu_perf_api_types.h"
 #include "gpa_split_counters_interfaces.h"
 
-
-/// macro to remove counter names from public builds
+/// Macro to remove counter names from public builds.
 #ifdef AMDT_INTERNAL
-#define GPA_HIDE_NAME(_CounterName) (_CounterName)
+#define GPA_HIDE_NAME(counter_name) (counter_name)
 #else
-#define GPA_HIDE_NAME(_CounterName) ""
+#define GPA_HIDE_NAME(counter_name) ""
 #endif
 
-/// Contains the hardware exposed counter information
-struct GPA_CounterGroupExposedCounterDesc
+/// @brief Contains the hardware exposed counter information.
+struct GpaCounterGroupExposedCounterDesc
 {
-    gpa_uint32              m_groupIndex;               ///< index of the exposed counter group
-    gpa_uint32              m_hardwareBlockStartIndex;  ///< start index of the counter in this counter group
-    std::vector<gpa_uint32> m_whiteListCounters;        ///< list of the exposed counters in the group
+    GpaUInt32              group_index;                 ///< Index of the exposed counter group.
+    GpaUInt32              hardware_block_start_index;  ///< Start index of the counter in this counter group.
+    std::vector<GpaUInt32> white_list_counters;         ///< List of the exposed counters in the group.
 };
 
-/// Contains the GPA padded counter information
-struct GPA_PaddedCounterDesc
+/// @brief Contains the GPA padded counter information.
+struct GpaPaddedCounterDesc
 {
-    gpa_uint32              m_groupIndex;               ///< group index
-    gpa_uint32              m_hardwareBlockStartIndex;  ///< start index of the counter in this counter group
-    std::vector<gpa_uint32> m_paddedCounterList;        ///< list of block padded counter
+    GpaUInt32              group_index;                 ///< Group index.
+    GpaUInt32              hardware_block_start_index;  ///< Start index of the counter in this counter group.
+    std::vector<GpaUInt32> padded_counter_list;         ///< List of block padded counter.
 };
 
-/// Contains all information pertaining to a hardware counter
-struct GPA_HardwareCounterDesc
+/// @brief Contains all information pertaining to a hardware counter.
+struct GpaHardwareCounterDesc
 {
-    gpa_uint64    m_counterIndexInGroup;  ///< 0-based index of counter within the group
-    char*         m_pName;                ///< name of the counter
-    char*         m_pGroup;               ///< group containing the counter
-    char*         m_pDescription;         ///< description of the counter
-    GPA_Data_Type m_type;                 ///< data type
-    gpa_uint64    m_min;                  ///< min possible value
-    gpa_uint64    m_max;                  ///< max possible value
+    GpaUInt64   counter_index_in_group;  ///< 0-based index of counter within the group.
+    char*       name;                    ///< Name of the counter.
+    char*       group;                   ///< Group containing the counter.
+    char*       description;             ///< Description of the counter.
+    GpaDataType type;                    ///< Data type.
+    GpaUInt64   min;                     ///< Min possible value.
+    GpaUInt64   max;                     ///< Max possible value.
 };
 
-/// Contains all information pertaining to an internal counter group (aka a hardware block instance).
-struct GPA_CounterGroupDesc
+/// @brief Contains all information pertaining to an internal counter group (aka a hardware block instance).
+struct GpaCounterGroupDesc
 {
-    gpa_uint32 m_groupIndex;                 ///< 0-based index of the group
-    char*      m_pName;                      ///< name of the group
-    gpa_uint32 m_blockInstance;              ///< 0-based index of this block instance
-    gpa_uint32 m_numCounters;                ///< number of counters in the group
-    gpa_uint32 m_maxActiveDiscreteCounters;  ///< max number of discrete counters that can be active in this group in a single pass
-    gpa_uint32 m_maxActiveSpmCounters;       ///< max number of SPM counters that can be active in this group in a single pass
+    GpaUInt32 group_index;                   ///< 0-based index of the group.
+    char*     name;                          ///< Name of the group.
+    GpaUInt32 block_instance;                ///< 0-based index of this block instance.
+    GpaUInt32 num_counters;                  ///< Number of counters in the group.
+    GpaUInt32 max_active_discrete_counters;  ///< Max number of discrete counters that can be active in this group in a single pass.
+    GpaUInt32 max_active_spm_counters;       ///< Max number of SPM counters that can be active in this group in a single pass.
 };
 
-const int maxSoftwareCounterNameLength        = 20;  ///< maximum length for a software counter name
-const int maxSoftwareCounterGroupLength       = 20;  ///< maximum length for a software counter group name
-const int maxSoftwareCounterDescriptionLength = 86;  ///< maximum length for a software counter description
+const int kMaxSoftwareCounterNameLength        = 20;  ///< Maximum length for a software counter name.
+const int kMaxSoftwareCounterGroupLength       = 20;  ///< Maximum length for a software counter group name.
+const int kMaxSoftwareCounterDescriptionLength = 86;  ///< Maximum length for a software counter description.
 
-/// Contains all information pertaining to a software counter
-struct GPA_SoftwareCounterDesc
+/// @brief Contains all information pertaining to a software counter
+struct GpaSoftwareCounterDesc
 {
-    gpa_uint64    m_counterIndexInGroup;                               ///< 0-based index of counter within the group
-    char          m_name[maxSoftwareCounterNameLength];                ///< name of the counter
-    char          m_group[maxSoftwareCounterGroupLength];              ///< group of the counter
-    char          m_description[maxSoftwareCounterDescriptionLength];  ///< description of the counter
-    GPA_Data_Type m_type;                                              ///< data type
+    GpaUInt64   counter_index_in_group;                             ///< 0-based index of counter within the group.
+    char        name[kMaxSoftwareCounterNameLength];                ///< Name of the counter.
+    char        group[kMaxSoftwareCounterGroupLength];              ///< Group of the counter.
+    char        description[kMaxSoftwareCounterDescriptionLength];  ///< Description of the counter.
+    GpaDataType type;                                               ///< Data type.
 };
 
-/// Generates a counter's UUID for hardware and software counters.
+/// @brief Generates a counter's UUID for hardware and software counters.
+///
 /// Public counter UUID generation uses an MD5 hash during the public compiler process.
-/// \param counterName name of the counter
-/// \param counterDescription description of the counter
-/// \return the counter's UUID
-inline GPA_UUID GetCounterUuid(const char* counterName, const char* counterDescription)
+///
+/// @param [in] counter_name Name of the counter.
+/// @param [in] counter_description Description of the counter.
+///
+/// @return The counter's UUID.
+inline GpaUuid GetCounterUuid(const char* counter_name, const char* counter_description)
 {
-    GPA_UUID uuid{};
+    GpaUuid uuid{};
 #ifdef _WIN32
-    *reinterpret_cast<size_t*>(&uuid.Data1) = std::hash<std::string>{}(counterName);
-    *reinterpret_cast<size_t*>(&uuid.Data4) = std::hash<std::string>{}(counterDescription);
+    *reinterpret_cast<size_t*>(&uuid.Data1) = std::hash<std::string>{}(counter_name);
+    *reinterpret_cast<size_t*>(&uuid.Data4) = std::hash<std::string>{}(counter_description);
 #else
-    /*
-    We need 4 32-bit hash to generate UUID
-    */
+    // We need 4 32-bit hash to generate UUID.
     {
-        size_t hash = std::hash<std::string>{}(counterName);
-        memset(&uuid.m_data1, 0, sizeof(uuid.m_data1));
-        memcpy(&uuid.m_data1, &hash, sizeof(uint32_t));
+        size_t hash = std::hash<std::string>{}(counter_name);
+        memset(&uuid.data_1, 0, sizeof(uuid.data_1));
+        memcpy(&uuid.data_1, &hash, sizeof(uint32_t));
     }
 
     {
-        std::string tempString = counterName;
-        tempString.append(counterDescription);
-        size_t hash = std::hash<std::string>{}(tempString);
-        // Assign m_data2 and m_data3
-        memcpy(&uuid.m_data2, &hash, sizeof(uint32_t));
+        std::string temp_string = counter_name;
+        temp_string.append(counter_description);
+        size_t hash = std::hash<std::string>{}(temp_string);
+        // Assign data_2 and data_3.
+        memcpy(&uuid.data_2, &hash, sizeof(uint32_t));
     }
 
     {
-        std::string tempString = counterDescription;
-        tempString.append(counterName);
-        size_t hash = std::hash<std::string>{}(tempString);
-        /// Assign 4 byte data to first 4 byte of m_data4
-        memcpy(&uuid.m_data4, &hash, sizeof(uint32_t));
+        std::string temp_string = counter_description;
+        temp_string.append(counter_name);
+        size_t hash = std::hash<std::string>{}(temp_string);
+        // Assign 4 byte data to first 4 byte of data_4.
+        memcpy(&uuid.data_4, &hash, sizeof(uint32_t));
     }
 
     {
-        size_t hash = std::hash<std::string>{}(counterDescription);
-        /// Assign 4 byte data to last 4 byte of m_data4
-        memcpy(&uuid.m_data4[4], &hash, sizeof(uint32_t));
+        size_t hash = std::hash<std::string>{}(counter_description);
+        // Assign 4 byte data to last 4 byte of data_4.
+        memcpy(&uuid.data_4[4], &hash, sizeof(uint32_t));
     }
 
 #endif
     return uuid;
 }
 
-#endif  //_GPA_INTERNAL_COUNTER_H_
+/// Forward declaration.
+class BlockMap;
+
+/// @brief Builds ASIC block map for updating max discrete and SPM events.
+///
+/// @param [in] counter_group_list List of counters.
+/// @param [in] max_count Count of items in list.
+///
+/// @return shared pointer to BlockMap.
+std::shared_ptr<BlockMap> BuildBlockMap(GpaCounterGroupDesc* counter_group_list, uint32_t max_count);
+
+/// @brief Update max discrete events for a block.
+///
+/// @param [in] block_map The block map.
+/// @param [in] block_name Name of the block to update.
+/// @param [in] max_discrete_events New maximum discrete events value.
+void UpdateMaxDiscreteBlockEvents(BlockMap* block_map, const char* block_name, uint32_t max_discrete_events);
+
+/// @brief Update max SPM events for a block.
+///
+/// @param [in] block_map The block map.
+/// @param [in] block_name Name of the block to update.
+/// @param [in] max_spm_events New maximum SPM events value.
+void UpdateMaxSpmBlockEvents(BlockMap* block_map, const char* block_name, uint32_t max_spm_events);
+
+#endif  // GPA_COUNTER_GENERATOR_COMMON_GPA_COUNTER_H_

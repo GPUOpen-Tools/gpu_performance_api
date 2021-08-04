@@ -1,59 +1,64 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Base class for DX11 counter generation -- add D3D11 Query counters which are supported on all hardware
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief Base class for DX11 counter generation -- add D3D11 Query counters which are supported on all hardware.
 //==============================================================================
 
-#ifndef _GPA_COUNTER_GENERATOR_DX11_BASE_H_
-#define _GPA_COUNTER_GENERATOR_DX11_BASE_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_DX11_GPA_COUNTER_GENERATOR_DX11_BASE_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_DX11_GPA_COUNTER_GENERATOR_DX11_BASE_H_
 
-#include "gpa_counter_generator_base.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
 
-/// Base class for DX11 counter generation -- add D3D11 Query counters which are supported on all hardware
-class GPA_CounterGeneratorDX11Base : public GPA_CounterGeneratorBase
+/// @brief Base class for DX11 counter generation -- add D3D11 Query counters which are supported on all hardware.
+class GpaCounterGeneratorDx11Base : public GpaCounterGeneratorBase
 {
 public:
-    /// Constructor
-    GPA_CounterGeneratorDX11Base();
+    /// @brief Constructor.
+    GpaCounterGeneratorDx11Base();
 
-    /// \copydoc GPA_CounterGeneratorBase::GeneratePublicCounters
-    virtual GPA_Status GeneratePublicCounters(GDT_HW_GENERATION    desiredGeneration,
-                                              GDT_HW_ASIC_TYPE     asicType,
-                                              gpa_uint8            generateAsicSpecificCounters,
-                                              GPA_DerivedCounters* pPublicCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
+    virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
+                                             GDT_HW_ASIC_TYPE    asic_type,
+                                             GpaUInt8            generate_asic_specific_counters,
+                                             GpaDerivedCounters* public_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateHardwareCounters
-    virtual GPA_Status GenerateHardwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                GDT_HW_ASIC_TYPE      asicType,
-                                                gpa_uint8             generateAsicSpecificCounters,
-                                                GPA_HardwareCounters* pHardwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
+    virtual GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
+                                               GDT_HW_ASIC_TYPE     asic_type,
+                                               GpaUInt8             generate_asic_specific_counters,
+                                               GpaHardwareCounters* hardware_counters) override;
 
-    /// \copydoc GPA_CounterGeneratorBase::GenerateSoftwareCounters
-    virtual GPA_Status GenerateSoftwareCounters(GDT_HW_GENERATION     desiredGeneration,
-                                                GDT_HW_ASIC_TYPE      asicType,
-                                                gpa_uint8             generateAsicSpecificCounters,
-                                                GPA_SoftwareCounters* pSoftwareCounters) override;
+    /// @copydoc GpaCounterGeneratorBase::GenerateSoftwareCounters()
+    virtual GpaStatus GenerateSoftwareCounters(GDT_HW_GENERATION    desired_generation,
+                                               GDT_HW_ASIC_TYPE     asic_type,
+                                               GpaUInt8             generate_asic_specific_counters,
+                                               GpaSoftwareCounters* software_counters) override;
 
-    /// \copydoc IGPACounterAccessor::ComputeSWCounterValue()
-    void ComputeSWCounterValue(gpa_uint32 softwareCounterIndex, gpa_uint64 value, void* pResult, const GPA_HWInfo* pHwInfo) const override;
+    /// @copydoc IGpaCounterAccessor::ComputeSwCounterValue()
+    void ComputeSwCounterValue(GpaUInt32 software_counter_index, GpaUInt64 value, void* result, const GpaHwInfo* hw_info) const override;
 
-    /// Get the D3D11_QUERY enum value based on our own software counter index
-    /// \param index Our SW counter index
-    /// \return a D3D11_QUERY enum value
-    gpa_uint32 GetD3D11Enum(gpa_uint32 index) const;
+    /// @brief Get the D3D11_QUERY enum value based on our own software counter index.
+    ///
+    /// @param [in] index Our SW counter index.
+    ///
+    /// @return A D3D11_QUERY enum value.
+    GpaUInt32 GetD3D11Enum(GpaUInt32 index) const;
 
-    /// Add D3D software counters
-    /// \param desiredGeneration of GDT_HW_GENERATION
-    void GenerateD3DSoftwareCounters(GDT_HW_GENERATION desiredGeneration);
+    /// @brief Add D3D software counters.
+    ///
+    /// @param [in] desired_generation The desired GDT_HW_GENERATION.
+    void GenerateD3DSoftwareCounters(GDT_HW_GENERATION desired_generation);
 
-    /// Helper function to indicates whether the specified HW generation represents an AMD GPU
-    /// \param generation the hw generation to check
-    /// \return true if the specified HW generation represents an AMD GPU
-    static bool IsAMDGPU(GDT_HW_GENERATION generation);
+    /// @brief Helper function to indicates whether the specified HW generation represents an AMD GPU.
+    ///
+    /// @param [in] generation The hw generation to check.
+    ///
+    /// @return True if the specified HW generation represents an AMD GPU.
+    static bool IsAmdGpu(GDT_HW_GENERATION generation);
 
 private:
-    GPA_CounterGroupDesc m_d3dCounterGroup = {0, "D3D11", 0, 0, 0};  ///< description for D3D11 counter group
+    GpaCounterGroupDesc d3d_counter_group_ = {0, "D3D11", 0, 0, 0};  ///< Description for D3D11 counter group.
 };
 
-#endif  //_GPA_COUNTER_GENERATOR_DX11_BASE_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_DX11_GPA_COUNTER_GENERATOR_DX11_BASE_H_

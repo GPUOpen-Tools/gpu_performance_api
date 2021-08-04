@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -7,6 +7,7 @@ set(GPA_PROJECT_NAME GPUPerfAPI-Common)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
+include(${GPA_CMAKE_MODULES_DIR}/gpa_vulkan.cmake)
 include(${CMAKE_COMMON_LIB_GLOBAL_AMD_ADL})
 include(${CMAKE_COMMON_SRC_GLOBAL_ADL_UTIL})
 include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
@@ -16,12 +17,13 @@ include(${CMAKE_COMMON_SRC_GLOBAL_DYNAMIC_LIBRARY_MODULE})
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_PUBLIC_HEADER}
-                    ${GPA_SRC_COUNTER_GENERATOR})
+                    ${GPA_SRC})
 
 set(ADDITIONAL_SOURCE
     ${ADL_UTIL_DIR}/ADLUtil.cpp
     ${DYNAMIC_LIBRARY_MODULE}/DynamicLibraryModule.cpp
     ${DEVICE_INFO}/DeviceInfoUtils.cpp
+    ${DEVICE_INFO}/DeviceInfo.cpp
     ${ADDITIONAL_DEVICEINFO_SOURCES})
 
 set(ADDITIONAL_SOURCE_HEADERS
@@ -30,13 +32,30 @@ set(ADDITIONAL_SOURCE_HEADERS
     ${DEVICE_INFO}/DeviceInfo.h
     ${DEVICE_INFO}/DeviceInfoUtils.h)
 
-set(PUBLIC_HEADERS  ${GPA_PUBLIC_HEADER}/gpu_perf_api_functions.h
-                    ${GPA_PUBLIC_HEADER}/gpu_perf_api_interface_loader.h
-                    ${GPA_PUBLIC_HEADER}/gpu_perf_api.h
-                    ${GPA_PUBLIC_HEADER}/gpu_perf_api_function_types.h
-                    ${GPA_PUBLIC_HEADER}/gpu_perf_api_stub.h
-                    ${GPA_PUBLIC_HEADER}/gpu_perf_api_types.h
-                    ${GPA_PUBLIC_HEADER}/gpu_perf_api_vk.h)
+set(PUBLIC_HEADERS  ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api.h
+                    ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_counters.h
+                    ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_functions.h
+                    ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_function_types.h
+                    ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_interface_loader.h
+                    ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_stub.h
+                    ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_types.h
+                    ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_vk.h)
+
+set(DEPRECATED_PUBLIC_HEADERS  ${GPA_PUBLIC_HEADER}/gpu_perf_api.h
+                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_counters.h
+                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_functions.h
+                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_function_types.h
+                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_interface_loader.h
+                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_stub.h
+                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_types.h
+                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_vk.h
+                               ${GPA_PUBLIC_HEADER}/GPAFunctions.h
+                               ${GPA_PUBLIC_HEADER}/GPAInterfaceLoader.h
+                               ${GPA_PUBLIC_HEADER}/GPUPerfAPI.h
+                               ${GPA_PUBLIC_HEADER}/GPUPerfAPIFunctionTypes.h
+                               ${GPA_PUBLIC_HEADER}/GPUPerfAPIStub.h
+                               ${GPA_PUBLIC_HEADER}/GPUPerfAPITypes.h
+                               ${GPA_PUBLIC_HEADER}/GPUPerfAPI-VK.h)
 
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/adapter.h
@@ -78,6 +97,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_session.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_unique_object.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api.cc
+    ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api_deprecated.inc
     ${CMAKE_CURRENT_SOURCE_DIR}/logging.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/utility.cc)
 
@@ -92,14 +112,18 @@ set(SOURCES
     ${HEADER_FILES}
     ${ADDITIONAL_SOURCE}
     ${ADDITIONAL_SOURCE_HEADERS}
-    ${PUBLIC_HEADERS})
+    ${PUBLIC_HEADERS}
+    ${DEPRECATED_PUBLIC_HEADERS})
 
 ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME})
 target_link_libraries(${GPA_PROJECT_NAME}
-                      ${LINK_LIBS})
+                      ${LINK_LIBS}
+                      $<$<PLATFORM_ID:Linux>:pthread>)
 
 ADD_LINKER_FLAGS()
 
 if(WIN32)
     source_group("Public Header Files" FILES ${PUBLIC_HEADERS})
+    source_group("Deprecated Header Files" FILES ${DEPRECATED_PUBLIC_HEADERS})
+    source_group("Source Files" FILES ${SOURCE_FILES})
 endif()

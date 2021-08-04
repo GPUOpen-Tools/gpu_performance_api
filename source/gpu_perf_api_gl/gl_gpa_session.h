@@ -1,33 +1,33 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GL GPA Session declaration
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GL GPA Session declaration
 //==============================================================================
 
-#ifndef _GL_GPA_SESSION_H_
-#define _GL_GPA_SESSION_H_
+#ifndef GPU_PERF_API_GL_GL_GPA_SESSION_H_
+#define GPU_PERF_API_GL_GL_GPA_SESSION_H_
 
-// GPA Common
-#include "gpa_session.h"
+#include "gpu_perf_api_common/gpa_session.h"
 
-/// Class for GL GPA Session
-class GLGPASession : public GPASession
+/// @brief Class for GL GPA Session.
+class GlGpaSession : public GpaSession
 {
 public:
-    /// Constructor
-    /// \param[in] pParentContext The context Id on which this session is created
-    /// \param[in] sampleType The sample type that will be created on this session
-    GLGPASession(IGPAContext* pParentContext, GPA_Session_Sample_Type sampleType);
+    /// @brief Constructor.
+    ///
+    /// @param [in] parent_context The context Id on which this session is created.
+    /// @param [in] sample_type The sample type that will be created on this session.
+    GlGpaSession(IGpaContext* parent_context, GpaSessionSampleType sample_type);
 
-    /// Destructor
-    ~GLGPASession() = default;
+    /// @brief Destructor.
+    ~GlGpaSession() = default;
 
-    /// \copydoc IGPAInterfaceTrait::GetAPIType()
-    GPA_API_Type GetAPIType() const override;
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    GpaApiType GetApiType() const override;
 
 private:
-    /// \copydoc GPASession::CreateAPIPass()
-    GPAPass* CreateAPIPass(PassIndex passIndex) override;
+    /// @copydoc GpaSession::CreateApiPass()
+    GpaPass* CreateApiPass(PassIndex pass_index) override;
 };
-#endif  // _GL_GPA_SESSION_H_
+#endif  // GPU_PERF_API_GL_GL_GPA_SESSION_H_

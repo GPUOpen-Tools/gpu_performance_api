@@ -1,16 +1,16 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_GetPassCount
-@@@@@@@@@@@@@@@@
+GpaGetPassCount
+@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_GetPassCount(
-        GPA_SessionId sessionId,
-        gpa_uint32* pNumPasses);
+    GpaStatus GpaGetPassCount(
+        GpaSessionId session_id,
+        GpaUInt32* num_passes);
 
 Description
 %%%%%%%%%%%
@@ -24,8 +24,8 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``sessionId``", "Unique identifier of a previously-created session."
-    "``pNumPasses``", "The value which will hold the number of required passes upon successful execution."
+    "``session_id``", "Unique identifier of a previously-created session."
+    "``num_passes``", "The value which will hold the number of required passes upon successful execution."
 
 Return value
 %%%%%%%%%%%%
@@ -34,11 +34,11 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The pass count was successfully retrieved."
-    "GPA_STATUS_ERROR_NULL_POINTER", "| The supplied ``sessionId`` parameter is NULL.
-    | The supplied ``pNumPasses`` parameter is NULL."
-    "GPA_STATUS_ERROR_SESSION_NOT_FOUND", "The supplied ``sessionId`` parameter was not recognized as a previously-created session identifier."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied session's parent context is not currently open."
-    "GPA_STATUS_ERROR_FAILED", "The pass count could not be retrieved."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The pass count was successfully retrieved."
+    "kGpaStatusErrorNullPointer", "| The supplied ``session_id`` parameter is NULL.
+    | The supplied ``num_passes`` parameter is NULL."
+    "kGpaStatusErrorSessionNotFound", "The supplied ``session_id`` parameter was not recognized as a previously-created session identifier."
+    "kGpaStatusErrorContextNotOpen", "The supplied session's parent context is not currently open."
+    "kGpaStatusErrorFailed", "The pass count could not be retrieved."
+    "kGpaStatusErrorException", "Exception occurred."
 

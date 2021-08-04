@@ -1,40 +1,40 @@
 //==============================================================================
 // Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief CL GPA Session Implementation
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief CL GPA Session Implementation
 //==============================================================================
 
 #include "cl_gpa_session.h"
 #include "cl_gpa_pass.h"
 
-CLGPASession::CLGPASession(IGPAContext* pParentContext, GPA_Session_Sample_Type sampleType)
-    : GPASession(pParentContext, sampleType)
+ClGpaSession::ClGpaSession(IGpaContext* parent_context, GpaSessionSampleType sample_type)
+    : GpaSession(parent_context, sample_type)
 {
 }
 
-GPA_API_Type CLGPASession::GetAPIType() const
+GpaApiType ClGpaSession::GetApiType() const
 {
-    return GPA_API_OPENCL;
+    return kGpaApiOpencl;
 }
 
-GPAPass* CLGPASession::CreateAPIPass(PassIndex passIndex)
+GpaPass* ClGpaSession::CreateApiPass(PassIndex pass_index)
 {
-    GPAPass* pRetPass = nullptr;
+    GpaPass* ret_pass = nullptr;
 
-    CounterList*     passCounters  = GetCountersForPass(passIndex);
-    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*passCounters)[0]);
+    CounterList*     pass_counters  = GetCountersForPass(pass_index);
+    GpaCounterSource counter_source = GetParentContext()->GetCounterSource((*pass_counters)[0]);
 
-    CLGPAPass* pClPass = new (std::nothrow) CLGPAPass(this, passIndex, counterSource, passCounters);
+    ClGpaPass* cl_pass = new (std::nothrow) ClGpaPass(this, pass_index, counter_source, pass_counters);
 
-    if (nullptr == pClPass)
+    if (nullptr == cl_pass)
     {
-        GPA_LogError("Unable to allocate memory for the pass.");
+        GPA_LOG_ERROR("Unable to allocate memory for the pass.");
     }
     else
     {
-        pRetPass = pClPass;
+        ret_pass = cl_pass;
     }
 
-    return pRetPass;
+    return ret_pass;
 }

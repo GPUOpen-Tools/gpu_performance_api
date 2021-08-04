@@ -1,8 +1,8 @@
 //==============================================================================
 // Copyright (c) 2009-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  A utility function to get the AMD internal performance counters' interface via
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  A utility function to get the AMD internal performance counters' interface via
 ///         clGetExtensionFunctionAddress.
 //==============================================================================
 
@@ -11,88 +11,93 @@
 #include "cl_perf_counter_amd_extension.h"
 #include "cl_rt_module_loader.h"
 
-pfn_clCreatePerfCounterAMD       my_clCreatePerfCounterAMD       = nullptr;
-pfn_clReleasePerfCounterAMD      my_clReleasePerfCounterAMD      = nullptr;
-pfn_clRetainPerfCounterAMD       my_clRetainPerfCounterAMD       = nullptr;
-pfn_clEnqueueBeginPerfCounterAMD my_clEnqueueBeginPerfCounterAMD = nullptr;
-pfn_clEnqueueEndPerfCounterAMD   my_clEnqueueEndPerfCounterAMD   = nullptr;
-pfn_clGetPerfCounterInfoAMD      my_clGetPerfCounterInfoAMD      = nullptr;
-pfn_clSetDeviceClockModeAMD      my_clSetDeviceClockModeAMD      = nullptr;
+PfnClCreatePerfCounterAmd       my_cl_create_perf_counter_amd        = nullptr;
+PfnClReleasePerfCounterAmd      my_cl_release_perf_counter_amd       = nullptr;
+PfnClRetainPerfCounterAmd       my_cl_retain_perf_counter_amd        = nullptr;
+PfnClEnqueueBeginPerfCounterAmd my_cl_enqueue_begin_perf_counter_amd = nullptr;
+PfnClEnqueueEndPerfCounterAmd   my_cl_enqueue_end_perf_counter_amd   = nullptr;
+PfnClGetPerfCounterInfoAmd      my_cl_get_perf_counter_info_amd      = nullptr;
+PfnClSetDeviceClockModeAmd      my_cl_set_device_clock_mode_amd      = nullptr;
 
-bool InitPerfCounterAMDExtension(cl_platform_id platform)
+bool InitPerfCounterAmdExtension(cl_platform_id platform)
 {
-    OpenCLModule* pOclModule = OCLRTModuleLoader::Instance()->GetAPIRTModule();
+    OpenCLModule* cl_module = ClRuntimeModuleLoader::Instance()->GetApiRuntimeModule();
 
-    if (nullptr == pOclModule)
+    if (nullptr == cl_module)
     {
         return false;
     }
 
-    if (nullptr == my_clCreatePerfCounterAMD)
+    if (nullptr == my_cl_create_perf_counter_amd)
     {
-        my_clCreatePerfCounterAMD = (pfn_clCreatePerfCounterAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clCreatePerfCounterAMD");
+        my_cl_create_perf_counter_amd =
+            static_cast<PfnClCreatePerfCounterAmd>(cl_module->GetExtensionFunctionAddressForPlatform(platform, "clCreatePerfCounterAMD"));
 
-        if (nullptr == my_clCreatePerfCounterAMD)
+        if (nullptr == my_cl_create_perf_counter_amd)
         {
             return false;
         }
     }
 
-    if (nullptr == my_clReleasePerfCounterAMD)
+    if (nullptr == my_cl_release_perf_counter_amd)
     {
-        my_clReleasePerfCounterAMD = (pfn_clReleasePerfCounterAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clReleasePerfCounterAMD");
+        my_cl_release_perf_counter_amd =
+            static_cast<PfnClReleasePerfCounterAmd>(cl_module->GetExtensionFunctionAddressForPlatform(platform, "clReleasePerfCounterAMD"));
 
-        if (nullptr == my_clReleasePerfCounterAMD)
+        if (nullptr == my_cl_release_perf_counter_amd)
         {
             return false;
         }
     }
 
-    if (nullptr == my_clRetainPerfCounterAMD)
+    if (nullptr == my_cl_retain_perf_counter_amd)
     {
-        my_clRetainPerfCounterAMD = (pfn_clRetainPerfCounterAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clRetainPerfCounterAMD");
+        my_cl_retain_perf_counter_amd =
+            static_cast<PfnClRetainPerfCounterAmd>(cl_module->GetExtensionFunctionAddressForPlatform(platform, "clRetainPerfCounterAMD"));
 
-        if (nullptr == my_clRetainPerfCounterAMD)
+        if (nullptr == my_cl_retain_perf_counter_amd)
         {
             return false;
         }
     }
 
-    if (nullptr == my_clEnqueueBeginPerfCounterAMD)
+    if (nullptr == my_cl_enqueue_begin_perf_counter_amd)
     {
-        my_clEnqueueBeginPerfCounterAMD =
-            (pfn_clEnqueueBeginPerfCounterAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clEnqueueBeginPerfCounterAMD");
+        my_cl_enqueue_begin_perf_counter_amd =
+            static_cast<PfnClEnqueueBeginPerfCounterAmd>(cl_module->GetExtensionFunctionAddressForPlatform(platform, "clEnqueueBeginPerfCounterAMD"));
 
-        if (nullptr == my_clEnqueueBeginPerfCounterAMD)
+        if (nullptr == my_cl_enqueue_begin_perf_counter_amd)
         {
             return false;
         }
     }
 
-    if (nullptr == my_clEnqueueEndPerfCounterAMD)
+    if (nullptr == my_cl_enqueue_end_perf_counter_amd)
     {
-        my_clEnqueueEndPerfCounterAMD =
-            (pfn_clEnqueueEndPerfCounterAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clEnqueueEndPerfCounterAMD");
+        my_cl_enqueue_end_perf_counter_amd =
+            static_cast<PfnClEnqueueEndPerfCounterAmd>(cl_module->GetExtensionFunctionAddressForPlatform(platform, "clEnqueueEndPerfCounterAMD"));
 
-        if (nullptr == my_clEnqueueEndPerfCounterAMD)
+        if (nullptr == my_cl_enqueue_end_perf_counter_amd)
         {
             return false;
         }
     }
 
-    if (nullptr == my_clGetPerfCounterInfoAMD)
+    if (nullptr == my_cl_get_perf_counter_info_amd)
     {
-        my_clGetPerfCounterInfoAMD = (pfn_clGetPerfCounterInfoAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clGetPerfCounterInfoAMD");
+        my_cl_get_perf_counter_info_amd =
+            static_cast<PfnClGetPerfCounterInfoAmd>(cl_module->GetExtensionFunctionAddressForPlatform(platform, "clGetPerfCounterInfoAMD"));
 
-        if (nullptr == my_clGetPerfCounterInfoAMD)
+        if (nullptr == my_cl_get_perf_counter_info_amd)
         {
             return false;
         }
     }
 
-    if (nullptr == my_clSetDeviceClockModeAMD)
+    if (nullptr == my_cl_set_device_clock_mode_amd)
     {
-        my_clSetDeviceClockModeAMD = (pfn_clSetDeviceClockModeAMD)pOclModule->GetExtensionFunctionAddressForPlatform(platform, "clSetDeviceClockModeAMD");
+        my_cl_set_device_clock_mode_amd =
+            static_cast<PfnClSetDeviceClockModeAmd>(cl_module->GetExtensionFunctionAddressForPlatform(platform, "clSetDeviceClockModeAMD"));
 
         // TODO: return false once we no longer need to support pre-19.10 drivers
         //if (nullptr == my_clSetDeviceClockModeAMD)

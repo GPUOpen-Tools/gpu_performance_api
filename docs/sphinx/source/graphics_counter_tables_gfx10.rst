@@ -1,9 +1,9 @@
-.. Copyright(c) 2018-2020 Advanced Micro Devices, Inc.All rights reserved.
-.. Graphics Performance Counters for Navi
+.. Copyright(c) 2018-2021 Advanced Micro Devices, Inc.All rights reserved.
+.. Graphics Performance Counters for RDNA
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-Navi Counters
+RDNA Counters
 +++++++++++++
 
 Timing Group
@@ -206,6 +206,35 @@ ColorBuffer Group
     "CBSlowPixelPct", "Percentage of pixels written to the color buffer using a half-rate or quarter-rate format."
     "CBSlowPixelCount", "Number of pixels written to the color buffer using a half-rate or quarter-rate format."
 
+MemoryCache Group
+%%%%%%%%%%%%%%%%%
+
+.. csv-table::
+    :header: "Counter Name", "Brief Description"
+    :widths: 15, 80
+
+    "L0CacheHit", "The percentage of read requests that hit the data in the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
+    "L0CacheRequestCount", "The number of read requests made to the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size."
+    "L0CacheHitCount", "The number of read requests which result in a cache hit from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size."
+    "L0CacheMissCount", "The number of read requests which result in a cache miss from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size."
+    "ScalarCacheHit", "The percentage of read requests made from executing shader code that hit the data in the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
+    "ScalarCacheRequestCount", "The number of read requests made from executing shader code to the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size."
+    "ScalarCacheHitCount", "The number of read requests made from executing shader code which result in a cache hit from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size."
+    "ScalarCacheMissCount", "The number of read requests made from executing shader code which result in a cache miss from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size."
+    "InstCacheHit", "The percentage of read requests made that hit the data in the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
+    "InstCacheRequestCount", "The number of read requests made to the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size."
+    "InstCacheHitCount", "The number of read requests which result in a cache hit from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size."
+    "InstCacheMissCount", "The number of read requests which result in a cache miss from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size."
+    "L1CacheHit", "The percentage of read or write requests that hit the data in the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
+    "L1CacheRequestCount", "The number of read or write requests made to the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size."
+    "L1CacheHitCount", "The number of read or write requests which result in a cache hit from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size."
+    "L1CacheMissCount", "The number of read or write requests which result in a cache miss from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size."
+    "L2CacheHit", "The percentage of read or write requests that hit the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal)."
+    "L2CacheMiss", "The percentage of read or write requests that miss the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (optimal) to 100% (all miss)."
+    "L2CacheRequestCount", "The number of read or write requests made to the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size."
+    "L2CacheHitCount", "The number of read or write requests which result in a cache hit from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size."
+    "L2CacheMissCount", "The number of read or write requests which result in a cache miss from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size."
+
 GlobalMemory Group
 %%%%%%%%%%%%%%%%%%
 
@@ -213,16 +242,6 @@ GlobalMemory Group
     :header: "Counter Name", "Brief Description"
     :widths: 15, 80
 
-    "L0CacheHit", "The percentage of fetch, write, atomic, and other instructions that hit the data in L0 cache. Value range: 0% (no hit) to 100% (optimal)."
-    "L0CacheHitCount", "Count of fetch, write, atomic, and other instructions that hit the data in L0 cache."
-    "L0CacheMissCount", "Count of fetch, write, atomic, and other instructions that miss the data in L0 cache."
-    "L1CacheHit", "The percentage of fetch, write, atomic, and other instructions that hit the data in L1 cache. Writes and atomics always miss this cache. Value range: 0% (no hit) to 100% (optimal)."
-    "L1CacheHitCount", "Count of fetch, write, atomic, and other instructions that hit the data in L1 cache. Writes and atomics always miss this cache."
-    "L1CacheMissCount", "Count of fetch, write, atomic, and other instructions that miss the data in L1 cache. Writes and atomics always miss this cache."
-    "L2CacheHit", "The percentage of fetch, write, atomic, and other instructions that hit the L2 cache. Value range: 0% (no hit) to 100% (optimal)."
-    "L2CacheMiss", "The percentage of fetch, write, atomic, and other instructions that miss the L2 cache. Value range: 0% (optimal) to 100% (all miss)."
-    "L2CacheHitCount", "Count of fetch, write, atomic, and other instructions that hit the L2 cache."
-    "L2CacheMissCount", "Count of fetch, write, atomic, and other instructions that miss the L2 cache."
     "FetchSize", "The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account."
     "WriteSize", "The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account."
     "MemUnitBusy", "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound)."

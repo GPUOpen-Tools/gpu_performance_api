@@ -1,68 +1,72 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  DX12 GPA Implementation declarations
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  DX12 GPA Implementation declarations
 //==============================================================================
 
-#ifndef _DX12_GPA_IMPLEMENTOR_H_
-#define _DX12_GPA_IMPLEMENTOR_H_
+#ifndef GPU_PERF_API_DX12_DX12_GPA_IMPLEMENTOR_H_
+#define GPU_PERF_API_DX12_DX12_GPA_IMPLEMENTOR_H_
 
-// Common
 #include "TSingleton.h"
 
-// GPA Common
-#include "gpa_implementor.h"
+#include "gpu_perf_api_common/gpa_implementor.h"
 
-#include "dx12_gpa_context.h"
+#include "gpu_perf_api_dx12/dx12_gpa_context.h"
 
-/// Class for DX12 GPA Implementation
-class DX12GPAImplementor : public GPAImplementor, public TSingleton<DX12GPAImplementor>
+/// @brief Class for DX12 GPA Implementation.
+class Dx12GpaImplementor : public GpaImplementor, public TSingleton<Dx12GpaImplementor>
 {
-    friend class TSingleton<DX12GPAImplementor>;  ///< friend declaration to allow access to the constructor
-
 public:
-    /// Destructor
-    virtual ~DX12GPAImplementor();
+    /// @copydoc IGpaInterfaceTrait::GetApiType()
+    GpaApiType GetApiType() const override;
 
-    /// \copydoc IGPAInterfaceTrait::GetAPIType()
-    GPA_API_Type GetAPIType() const override;
+    /// @copydoc GpaImplementor::GetHwInfoFromApi()
+    bool GetHwInfoFromApi(const GpaContextInfoPtr context_info, GpaHwInfo& hw_info) const override final;
 
-    /// \copydoc GPAImplementor::GetHwInfoFromAPI
-    bool GetHwInfoFromAPI(const GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo) const override final;
+    /// @copydoc GpaImplementor::VerifyApiHwSupport()
+    bool VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const override final;
 
-    /// \copydoc GPAImplementor::VerifyAPIHwSupport
-    bool VerifyAPIHwSupport(const GPAContextInfoPtr pContextInfo, const GPA_HWInfo& hwInfo) const override final;
+    /// @copydoc IGpaImplementor::Destroy()
+    GpaStatus Destroy() override;
 
-    /// \copydoc IGPAImplementor::Destroy()
-    GPA_Status Destroy() override;
-
-    /// \copydoc IGPAImplementor::IsCommandListRequired()
+    /// @copydoc IGpaImplementor::IsCommandListRequired()
     bool IsCommandListRequired() const override;
 
-    /// \copydoc IGPAImplementor::IsContinueSampleOnCommandListSupported()
+    /// @copydoc IGpaImplementor::IsContinueSampleOnCommandListSupported()
     bool IsContinueSampleOnCommandListSupported() const override;
 
-    /// \copydoc IGPAImplementor::IsCopySecondarySampleSupported()
+    /// @copydoc IGpaImplementor::IsCopySecondarySampleSupported()
     bool IsCopySecondarySampleSupported() const override;
 
 private:
-    /// Constructor
-    DX12GPAImplementor() = default;
+    friend class TSingleton<Dx12GpaImplementor>;  ///< Friend declaration to allow access to the constructor.
 
-    /// \copydoc GPAImplementor::OpenAPIContext
-    IGPAContext* OpenAPIContext(GPAContextInfoPtr pContextInfo, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags) override final;
+    /// @brief Constructor.
+    Dx12GpaImplementor() = default;
 
-    /// \copydoc GPAImplementor::CloseAPIContext
-    bool CloseAPIContext(GPADeviceIdentifier pDeviceIdentifier, IGPAContext* pContext) override final;
+    /// @brief Destructor.
+    virtual ~Dx12GpaImplementor();
 
-    /// \copydoc GPAImplementor::GetDeviceIdentifierFromContextInfo()
-    GPADeviceIdentifier GetDeviceIdentifierFromContextInfo(GPAContextInfoPtr pContextInfo) const override final;
+    /// @brief Singleton; Do not allow copies.
+    Dx12GpaImplementor(const Dx12GpaImplementor&) = delete;
 
-    /// Deletes the GPA contexts
+    /// @brief Singleton; Do not allow assignment.
+    void operator=(const Dx12GpaImplementor&) = delete;
+
+    /// @copydoc GpaImplementor::OpenApiContext()
+    IGpaContext* OpenApiContext(GpaContextInfoPtr context_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags) override final;
+
+    /// @copydoc GpaImplementor::CloseApiContext()
+    bool CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context) override final;
+
+    /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
+    GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
+
+    /// @brief Deletes the GPA contexts.
     void DeleteContexts();
 
-    std::vector<DX12GPAContext*> m_dx12GpaContextList;  ///< DX12 GPA context list for housekeeping
+    std::vector<Dx12GpaContext*> dx12_gpa_context_list_;  ///< DX12 GPA context list for housekeeping.
 };
 
-#endif  // _DX12_GPA_IMPLEMENTOR_H_
+#endif  // GPU_PERF_API_DX12_DX12_GPA_IMPLEMENTOR_H_

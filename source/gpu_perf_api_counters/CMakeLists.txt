@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -19,15 +19,16 @@ INCLUDE_ADDITIONAL_MODULE()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
+                    ${GPA_SRC}
                     ${GPA_SRC_COMMON}
                     ${GPA_PUBLIC_HEADER}
                     ${GPA_SRC_COUNTER_GENERATOR})
 
-set(HEADER_FILES ${GPA_PUBLIC_HEADER}/gpu_perf_api_counters.h
-                 ${CMAKE_CURRENT_SOURCE_DIR}/gpa_counter_context.h)
+set(HEADER_FILES ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_counters.h
+                 ${CMAKE_CURRENT_SOURCE_DIR}/gpa_counter_context_handler.h)
 
 set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api_counters.cc
-                 ${CMAKE_CURRENT_SOURCE_DIR}/gpa_counter_context.cc)
+                 ${CMAKE_CURRENT_SOURCE_DIR}/gpa_counter_context_handler.cc)
 
 set(SOURCES
     ${SOURCE_FILES}

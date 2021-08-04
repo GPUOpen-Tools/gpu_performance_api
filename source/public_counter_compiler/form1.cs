@@ -12,6 +12,8 @@
 namespace PublicCounterCompiler
 {
     using System;
+    using System.ComponentModel;
+    using System.Threading;
     using System.Windows.Forms;
     using Microsoft.Win32;
 
@@ -23,56 +25,69 @@ namespace PublicCounterCompiler
         /// <summary>
         /// the singleton instance
         /// </summary>
-        private static Form1 instance = null;
+        private static Form1 _instance = null;
 
         /// <summary>
         /// Registry key root for the utility
         /// </summary>
-        private static string registryKey = "HKEY_CURRENT_USER\\Software\\AMD\\DevTools";
+        private static string _registryKey = "HKEY_CURRENT_USER\\Software\\AMD\\DevTools";
 
         /// <summary>
         /// Previously entered API
         /// </summary>
-        private static string registryApiEntry = "PccApi";
+        private static string _registryApiEntry = "PccApi";
 
         /// <summary>
         /// Previously entered GPU family
         /// </summary>
-        private static string registryGpuFamilyEntry = "PccGpuFamily";
+        private static string _registryGpuFamilyEntry = "PccGpuFamily";
+
+        /// <summary>
+        /// Background worker thread
+        /// </summary>
+        private static BackgroundWorker _backgroundWorker = new BackgroundWorker();
+
+        /// <summary>
+        /// Background worker thread arguments
+        /// </summary>
+        private static BackgroundWorkerArgs _backgroundWorkerArgs;
 
         /// <summary>
         /// Counter compiler instance
         /// </summary>
-        public CounterCompiler counterCompiler;
+        public CounterCompiler _counterCompiler;
 
         /// <summary>
         /// Initializes a new instance of the Form1 class.
         /// </summary>
-        public Form1(CounterCompiler _counterCompiler)
+        public Form1(CounterCompiler counterCompiler)
         {
-            counterCompiler = _counterCompiler;
+            _counterCompiler = counterCompiler;
 
             InitializeComponent();
 
-            apiName.Text = (string)Registry.GetValue(registryKey, registryApiEntry, string.Empty);
+            apiName.Text = (string)Registry.GetValue(_registryKey, _registryApiEntry, string.Empty);
 
-            GPUFamily.Text = (string)Registry.GetValue(registryKey, registryGpuFamilyEntry, string.Empty);
+            GPUFamily.Text = (string)Registry.GetValue(_registryKey, _registryGpuFamilyEntry, string.Empty);
 
             CompileButton.Text = "Compile " + counterCompiler.derivedCounterFileInput.compiler_type_str + " Counters";
+
+            _backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker_CompileCounters);
+            _backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorker_CompileCountersCompleted);
         }
 
         /// <summary>
         /// Accessor to the singleton instance
         /// </summary>
         /// <returns>The instance of the form</returns>
-        public static Form1 Instance(CounterCompiler _counterCompiler)
+        public static Form1 Instance(CounterCompiler counterCompiler)
         {
-            if (instance == null)
+            if (_instance == null)
             {
-                instance = new Form1(_counterCompiler);
+                _instance = new Form1(counterCompiler);
             }
 
-            return instance;
+            return _instance;
         }
 
         /// <summary>
@@ -83,7 +98,7 @@ namespace PublicCounterCompiler
         {
             get
             {
-                return instance.IgnoreInvalidCountersCheckBox.Checked;
+                return _instance.IgnoreInvalidCountersCheckBox.Checked;
             }
         }
 
@@ -93,15 +108,19 @@ namespace PublicCounterCompiler
         /// <param name="message">The message to add to the output window</param>
         public bool DisplayMessageHandler(string message)
         {
-            if (counterCompiler.isConsoleApp)
+            if (_counterCompiler.isConsoleApp)
             {
                 Console.Out.Write(message);
             }
             else
             {
-                richTextBoxOutput.Text += message + "\n";
-                richTextBoxOutput.SelectionStart = richTextBoxOutput.Text.Length;
-                richTextBoxOutput.ScrollToCaret();
+                // Invoke is used as this may be called from the worker thread
+                BeginInvoke((Action)(() =>
+                {
+                    richTextBoxOutput.Text += message + "\n";
+                    richTextBoxOutput.SelectionStart = richTextBoxOutput.Text.Length;
+                    richTextBoxOutput.ScrollToCaret();
+                }));
             }
 
             System.Diagnostics.Debug.Print(message);
@@ -115,15 +134,19 @@ namespace PublicCounterCompiler
         /// <returns>true if any additional error handling occurred, otherwise false.</returns>
         public bool ErrorHandler(string message)
         {
-            if (counterCompiler.isConsoleApp)
+            if (_counterCompiler.isConsoleApp)
             {
                 Console.Out.Write("Error:" + message);
             }
             else
             {
-                richTextBoxOutput.Text += "Error:" + message + "\n";
-                richTextBoxOutput.SelectionStart = richTextBoxOutput.Text.Length;
-                richTextBoxOutput.ScrollToCaret();
+                // Invoke is used as this may be called from the worker thread
+                BeginInvoke((Action)(() =>
+                {
+                    richTextBoxOutput.Text += "Error:" + message + "\n";
+                    richTextBoxOutput.SelectionStart = richTextBoxOutput.Text.Length;
+                    richTextBoxOutput.ScrollToCaret();
+                }));
             }
 
             System.Diagnostics.Debug.Print("Error:" + message);
@@ -143,22 +166,18 @@ namespace PublicCounterCompiler
             string api = apiName.Text.Trim();
             string gpu = GPUFamily.Text.Trim();
 
-            if (string.IsNullOrEmpty(api)||
+            if (string.IsNullOrEmpty(api) ||
                  string.IsNullOrEmpty(gpu))
             {
                 MessageBox.Show("Required data not provided.\nPlease fill in all the fields on the form.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            Registry.SetValue(registryKey, registryApiEntry, api);
+            Registry.SetValue(_registryKey, _registryApiEntry, api);
 
-            Registry.SetValue(registryKey, registryGpuFamilyEntry, gpu);
+            Registry.SetValue(_registryKey, _registryGpuFamilyEntry, gpu);
 
-            // For compatibility with InternalCounterCompiler project
-            if (false == counterCompiler.CompileCounters(api, gpu, DisplayMessageHandler, ErrorHandler))
-            {
-                ErrorHandler("Failed to compile counters");
-            }
+            StartCompileCounters(api, gpu);
         }
 
         /// <summary>
@@ -171,7 +190,7 @@ namespace PublicCounterCompiler
         {
             richTextBoxOutput.Text = "";
 
-            counterCompiler.StartRSTDocumentation();
+            _counterCompiler.StartRSTDocumentation();
 
             if (string.IsNullOrEmpty(batchApiList.Text.Trim())
                 || string.IsNullOrEmpty(batchGpuFamilyList.Text.Trim()))
@@ -187,17 +206,103 @@ namespace PublicCounterCompiler
             {
                 foreach (var gpu in gpus)
                 {
-                    DisplayMessageHandler("\nCompiling API " + api + " for GPU Family " + gpu);
+                    var doneEvent = new AutoResetEvent(false);
 
-                    // For compatibility with InternalCounterCompiler project
-                    if (false == counterCompiler.CompileCounters(api, gpu, DisplayMessageHandler, ErrorHandler))
+                    StartCompileCounters(api, gpu, doneEvent);
+
+                    // Wait with timeout so we can pump the UI update
+                    while (false == doneEvent.WaitOne(100))
                     {
-                        ErrorHandler("Failed to compile counters");
+                        Application.DoEvents();
                     }
                 }
             }
 
-            counterCompiler.DoneRSTDocumentation(DisplayMessageHandler, ErrorHandler);
+            _counterCompiler.DoneRSTDocumentation(DisplayMessageHandler, ErrorHandler);
+        }
+
+        /// <summary>
+        /// Background worker arguments
+        /// </summary>
+        private class BackgroundWorkerArgs
+        {
+            /// <summary>
+            /// Ctor
+            /// </summary>
+            /// <param name="_api">API</param>
+            /// <param name="_gpu">GPU ASIC</param>
+            /// <param name="_doneEvent">Optional done event</param>
+            public BackgroundWorkerArgs(string _api, string _gpu, AutoResetEvent _doneEvent)
+            {
+                api = _api;
+                gpu = _gpu;
+                doneEvent = _doneEvent;
+            }
+
+            /// <summary>
+            /// API
+            /// </summary>
+            public string api;
+
+            /// <summary>
+            /// GPU ASIC
+            /// </summary>
+            public string gpu;
+
+            /// <summary>
+            /// Optional done event
+            /// </summary>
+            public AutoResetEvent doneEvent = null;
+        }
+
+        /// <summary>
+        /// Starts background worker thread to compile counters
+        /// </summary>
+        /// <param name="api">API</param>
+        /// <param name="gpu">GPU</param>
+        /// <param name="autoResetEvent">Optional reset event</param>
+        private void StartCompileCounters(string api, string gpu, AutoResetEvent autoResetEvent = null)
+        {
+            CompileButton.Enabled = false;
+            batchCompile.Enabled = false;
+
+            _backgroundWorkerArgs = new BackgroundWorkerArgs(api, gpu, autoResetEvent);
+
+            // Start the asynchronous operation.
+            _backgroundWorker.RunWorkerAsync(_backgroundWorkerArgs);
+        }
+
+        /// <summary>
+        /// Background worker compile counters
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Work event args</param>
+        private void backgroundWorker_CompileCounters(object sender, DoWorkEventArgs e)
+        {
+            // Get the BackgroundWorker that raised this event.
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            var args = e.Argument as BackgroundWorkerArgs;
+
+            DisplayMessageHandler("\nCompiling API " + args.api + " for GPU Family " + args.gpu);
+
+            _counterCompiler.CompileCounters(args.api, args.gpu, DisplayMessageHandler, ErrorHandler);
+        }
+
+        /// <summary>
+        /// Background worker counter compilation completed
+        /// </summary>
+        /// <param name="sender">Sender object</param>
+        /// <param name="e">Completed work event args</param>
+        private void backgroundWorker_CompileCountersCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            CompileButton.Enabled = true;
+            batchCompile.Enabled = true;
+
+            if (null != _backgroundWorkerArgs.doneEvent)
+            {
+                _backgroundWorkerArgs.doneEvent.Set();
+            }
         }
 
         /// <summary>
@@ -208,9 +313,8 @@ namespace PublicCounterCompiler
         {
             get
             {
-                return instance.checkBoxGenerateCounterDocs.Checked;
+                return _instance.checkBoxGenerateCounterDocs.Checked;
             }
         }
-
     }
 }

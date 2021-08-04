@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2012-2016 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Unit tests for GPUPerfAPI
+// Copyright (c) 2012-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Unit tests for GPUPerfAPI
 //==============================================================================
 
 #include <gtest/gtest.h>

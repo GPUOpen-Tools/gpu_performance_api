@@ -1,16 +1,16 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_GetSupportedSampleTypes
-@@@@@@@@@@@@@@@@@@@@@@@@@@@
+GpaGetSupportedSampleTypes
+@@@@@@@@@@@@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_GetSupportedSampleTypes(
-        GPA_ContextId contextId,
-        GPA_ContextSampleTypeFlags* pSampleTypes);
+    GpaStatus GpaGetSupportedSampleTypes(
+        GpaContextId context_id,
+        GpaContextSampleTypeFlags* sample_types);
 
 Description
 %%%%%%%%%%%
@@ -26,8 +26,8 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``contextId``", "Unique identifier of a previously-opened context."
-    "``pSampleTypes``", "The value that will be set to the the mask of the supported sample types upon successful execution. This will be a combination of GPA_Sample_Bits."
+    "``context_id``", "Unique identifier of a previously-opened context."
+    "``sample_types``", "The value that will be set to the the mask of the supported sample types upon successful execution. This will be a combination of GpaSampleBits."
 
 Return value
 %%%%%%%%%%%%
@@ -36,10 +36,10 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The supported sample types were successfully retrieved."
-    "GPA_STATUS_ERROR_NULL_POINTER", "| The supplied ``pSampleTypes`` parameter is NULL.
-    | The supplied ``contextId`` parameter is NULL."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied context is not currently open."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_FOUND", "The supplied ``contextId`` parameter was not recognized as a previously-opened context identifier."
-    "GPA_STATUS_ERROR_FAILED", "The supported sample types could not be retrieved."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The supported sample types were successfully retrieved."
+    "kGpaStatusErrorNullPointer", "| The supplied ``sample_types`` parameter is NULL.
+    | The supplied ``context_id`` parameter is NULL."
+    "kGpaStatusErrorContextNotOpen", "The supplied context is not currently open."
+    "kGpaStatusErrorContextNotFound", "The supplied ``context_id`` parameter was not recognized as a previously-opened context identifier."
+    "kGpaStatusErrorFailed", "The supported sample types could not be retrieved."
+    "kGpaStatusErrorException", "Exception occurred."

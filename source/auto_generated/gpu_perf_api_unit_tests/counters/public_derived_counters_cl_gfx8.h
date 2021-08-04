@@ -1,43 +1,43 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief PublicCounterDefinitions for CLGFX8 for testing
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief PublicCounterDefinitions for CL GFX8 for testing.
 //==============================================================================
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#ifndef _GPA_TESTS_COUNTERS_PUBLIC_CLGFX8_
-#define _GPA_TESTS_COUNTERS_PUBLIC_CLGFX8_
+#ifndef GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_CL_GFX8
+#define GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_CL_GFX8
 
-#include "gpa_counter_desc.h"
+#include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
 /// Macros for CLGfx8 Public counter index
-#define WavefrontsPublicCLGfx8 0
-#define VALUInstsPublicCLGfx8 1
-#define SALUInstsPublicCLGfx8 2
-#define VFetchInstsPublicCLGfx8 3
-#define SFetchInstsPublicCLGfx8 4
-#define VWriteInstsPublicCLGfx8 5
-#define FlatVMemInstsPublicCLGfx8 6
-#define LDSInstsPublicCLGfx8 7
-#define FlatLDSInstsPublicCLGfx8 8
-#define GDSInstsPublicCLGfx8 9
-#define VALUUtilizationPublicCLGfx8 10
-#define VALUBusyPublicCLGfx8 11
-#define SALUBusyPublicCLGfx8 12
-#define FetchSizePublicCLGfx8 13
-#define WriteSizePublicCLGfx8 14
-#define CacheHitPublicCLGfx8 15
-#define MemUnitBusyPublicCLGfx8 16
-#define MemUnitStalledPublicCLGfx8 17
-#define WriteUnitStalledPublicCLGfx8 18
-#define LDSBankConflictPublicCLGfx8 19
+#define WAVEFRONTS_PUBLIC_CL_GFX8 0
+#define VALUINSTS_PUBLIC_CL_GFX8 1
+#define SALUINSTS_PUBLIC_CL_GFX8 2
+#define VFETCHINSTS_PUBLIC_CL_GFX8 3
+#define SFETCHINSTS_PUBLIC_CL_GFX8 4
+#define VWRITEINSTS_PUBLIC_CL_GFX8 5
+#define FLATVMEMINSTS_PUBLIC_CL_GFX8 6
+#define LDSINSTS_PUBLIC_CL_GFX8 7
+#define FLATLDSINSTS_PUBLIC_CL_GFX8 8
+#define GDSINSTS_PUBLIC_CL_GFX8 9
+#define VALUUTILIZATION_PUBLIC_CL_GFX8 10
+#define VALUBUSY_PUBLIC_CL_GFX8 11
+#define SALUBUSY_PUBLIC_CL_GFX8 12
+#define FETCHSIZE_PUBLIC_CL_GFX8 13
+#define WRITESIZE_PUBLIC_CL_GFX8 14
+#define CACHEHIT_PUBLIC_CL_GFX8 15
+#define MEMUNITBUSY_PUBLIC_CL_GFX8 16
+#define MEMUNITSTALLED_PUBLIC_CL_GFX8 17
+#define WRITEUNITSTALLED_PUBLIC_CL_GFX8 18
+#define LDSBANKCONFLICT_PUBLIC_CL_GFX8 19
 
-/// Number of public counters for CLGfx8
-const size_t CLGFX8_PUBLIC_COUNTER_COUNT = 20;
+/// Number of public counters for CL GFX8 
+const size_t kClGfx8PublicCounterCount = 20;
 
-/// Array of public counters for CLGfx8
-extern const GPACounterDesc CLGFX8_PUBLIC_COUNTERS[CLGFX8_PUBLIC_COUNTER_COUNT];
+/// Array of public counters for CL GFX8 
+extern const GpaCounterDesc kClGfx8PublicCounters[kClGfx8PublicCounterCount];
 
-#endif  // _GPA_TESTS_COUNTERS_PUBLIC_CLGFX8_
+#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_CL_GFX8

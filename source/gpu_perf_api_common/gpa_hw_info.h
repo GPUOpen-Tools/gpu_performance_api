@@ -1,242 +1,302 @@
 //==============================================================================
-// Copyright (c) 2011-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  A class for managing hardware information
+// Copyright (c) 2011-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  A class for managing hardware information.
 //==============================================================================
 
-#ifndef _GPA_HW_INFO_H_
-#define _GPA_HW_INFO_H_
+#ifndef GPU_PERF_API_COMMON_GPA_HW_INFO_H_
+#define GPU_PERF_API_COMMON_GPA_HW_INFO_H_
 
-#include "gpu_perf_api_types.h"
-#include "DeviceInfo.h"
 #include <string>
 #include <vector>
 
-static const int AMD_VENDOR_ID    = 0x1002;  ///< the AMD vendor ID
-static const int NVIDIA_VENDOR_ID = 0x10DE;  ///< the NVidia vendor ID
-static const int INTEL_VENDOR_ID  = 0x8086;  ///< the Intel vendor ID
+#include "DeviceInfo.h"
 
-/// Stores information about the hardware installed in the machine.
-class GPA_HWInfo
+#include "gpu_performance_api/gpu_perf_api_types.h"
+
+static const int kAmdVendorId    = 0x1002;  ///< The AMD vendor ID.
+static const int kNvidiaVendorId = 0x10DE;  ///< The Nvidia vendor ID.
+static const int kIntelVendorId  = 0x8086;  ///< The Intel vendor ID.
+
+/// @brief Stores information about the hardware installed in the machine.
+class GpaHwInfo
 {
 public:
-    /// default constructor
-    GPA_HWInfo();
+    /// @brief Default constructor.
+    GpaHwInfo();
 
-    /// destructor
-    ~GPA_HWInfo() = default;
+    /// @brief Destructor.
+    ~GpaHwInfo() = default;
 
-    /// Sets the revision ID.
-    /// \param id The revision ID of the available device.
-    void SetRevisionID(const gpa_uint32& id);
+    /// @brief Sets the revision ID.
+    ///
+    /// @param id The revision ID of the available device.
+    void SetRevisionId(const GpaUInt32& id);
 
-    /// Sets the device ID.
-    /// \param id The ID of the available device.
-    void SetDeviceID(const gpa_uint32& id);
+    /// @brief Sets the device ID.
+    ///
+    /// @param [in] id The ID of the available device.
+    void SetDeviceId(const GpaUInt32& id);
 
-    /// Sets the vendor ID.
-    /// \param vid The vendor ID of the available device.
-    void SetVendorID(const gpa_uint32& vid);
+    /// @brief Sets the vendor ID.
+    ///
+    /// @param [in] vid The vendor ID of the available device.
+    void SetVendorId(const GpaUInt32& vid);
 
-    /// Sets the hardware generation that the device belongs to.
-    /// \param generation The hardware generation.
-    void SetHWGeneration(const GDT_HW_GENERATION& generation);
+    /// @brief Sets the hardware generation that the device belongs to.
+    ///
+    /// @param [in] generation The hardware generation.
+    void SetHwGeneration(const GDT_HW_GENERATION& generation);
 
     /// Sets the device name
-    /// \param pName A name of the device (ie "ATI Radeon HD 2600 series")
-    void SetDeviceName(const char* pName);
+    ///
+    /// @param [in] device_name A name of the device (ie "ATI Radeon HD 2600 series").
+    void SetDeviceName(const char* device_name);
 
-    /// Set the GPU index of the GPU in the system
-    /// \param gpuIndex The GPU index in the system
-    void SetGpuIndex(const unsigned int& gpuIndex);
+    /// @brief Set the GPU index of the GPU in the system.
+    ///
+    /// @param [in] gpu_index The GPU index in the system.
+    void SetGpuIndex(const unsigned int& gpu_index);
 
-    /// Sets the frequency of the clock that the timestamps are based on.
-    /// \param frequency The timestamp clock frequency.
-    void SetTimeStampFrequency(const gpa_uint64& frequency);
+    /// @brief Sets the frequency of the clock that the timestamps are based on.
+    ///
+    /// @param [in] frequency The timestamp clock frequency.
+    void SetTimeStampFrequency(const GpaUInt64& frequency);
 
-    /// Sets the number of SIMDs
-    /// \param numSIMDs The number of SIMDs
-    void SetNumberSIMDs(const size_t& numSIMDs);
+    /// @brief Sets the number of SIMDs.
+    ///
+    /// @param [in] num_simd The number of SIMDs.
+    void SetNumberSimds(const size_t& num_simd);
 
-    /// Sets the number of compute units
-    /// \param numCUs The number of compute units
-    void SetNumberCUs(const size_t& numCUs);
+    /// @brief Sets the number of compute units.
+    ///
+    /// @param [in] num_cu The number of compute units.
+    void SetNumberCus(const size_t& num_cu);
 
-    /// Sets the number of shader engines
-    /// \param numSEs The number of shader engines
-    void SetNumberShaderEngines(const size_t& numSEs);
+    /// @brief Sets the number of shader engines.
+    ///
+    /// @param [in] num_se The number of shader engines.
+    void SetNumberShaderEngines(const size_t& num_se);
 
-    /// Sets the number of shader arrays
-    /// \param numShaderArrays The number of shader arrays
-    void SetNumberShaderArrays(const size_t& numSAs);
+    /// @brief Sets the number of shader arrays.
+    ///
+    /// @param [in] num_sa The number of shader arrays.
+    void SetNumberShaderArrays(const size_t& num_sa);
 
-    /// Gets the number of shader engines
-    /// \return the number of shader engines
+    /// @brief Sets the SU clock primitives.
+    ///
+    /// @param [in] su_clock_primitives The number of SU clock primitives.
+    void SetSuClocksPrim(const size_t& su_clock_primitives);
+
+    /// @brief Sets the number of primitive pipes.
+    ///
+    /// @param [in] num_primitive_pipes The number of primitive pipes.
+    void SetNumberPrimPipes(const size_t& num_primitive_pipes);
+
+    /// @brief Gets the number of shader engines.
+    ///
+    /// @return The number of shader engines.
     size_t GetNumberShaderEngines() const
     {
-        return m_numShaderEngines;
+        return num_shader_engines_;
     }
 
-    /// Gets the number of shader arrays
-    /// \return the number of shader arrays
+    /// @brief Gets the number of shader arrays.
+    ///
+    /// @return The number of shader arrays.
     size_t GetNumberShaderArrays() const
     {
-        return m_numShaderArrays;
+        return num_shader_arrays_;
     }
 
-    /// Gets the number of SIMDs
-    /// \return the number of SIMDs
-    size_t GetNumberSIMDs() const
+    /// @brief Gets the number of SIMDs.
+    ///
+    /// @return The number of SIMDs.
+    size_t GetNumberSimds() const
     {
-        return m_numSIMDs;
+        return num_simd_;
     }
 
-    /// Gets the number of CUs
-    /// \return the number of CUs
-    size_t GetNumberCUs() const
+    /// @brief Gets the number of Compute Units.
+    ///
+    /// @return The number of Compute Units.
+    size_t GetNumberCus() const
     {
-        return m_numCUs;
+        return num_cu_;
     }
 
-    /// Gets the number of clocks per primitive
-    /// \return the number of clocks per primitive
-    size_t GetSUClocksPrim() const
+    /// @brief Gets the number of clocks per primitive.
+    ///
+    /// @return The number of clocks per primitive.
+    size_t GetSuClocksPrim() const
     {
-        return m_suClockPrim;
+        return su_clock_prim_;
     }
 
-    /// Gets the number of primitive pipes
-    /// \return the number of primitive pipes
+    /// @brief Gets the number of primitive pipes.
+    ///
+    /// @return The number of primitive pipes.
     size_t GetNumberPrimPipes() const
     {
-        return m_numPrimPipes;
+        return num_prim_pipes_;
     }
 
-    /// Gets the revision ID.
-    /// \param id [out] The revision ID.
-    /// \return True if the revision ID is available; false otherwise.
-    bool GetRevisionID(gpa_uint32& id) const;
+    /// @brief Gets the revision ID.
+    ///
+    /// @param [out] id The revision ID.
+    ///
+    /// @return True if the revision ID is available; false otherwise.
+    bool GetRevisionId(GpaUInt32& id) const;
 
-    /// Gets the device ID.
-    /// \param id [out] The device ID.
-    /// \return True if the device ID is available; false otherwise.
-    bool GetDeviceID(gpa_uint32& id) const;
+    /// @brief Gets the device ID.
+    ///
+    /// @param [out] id The device ID.
+    ///
+    /// @return True if the device ID is available; false otherwise.
+    bool GetDeviceId(GpaUInt32& id) const;
 
-    /// Gets the vendor id.
-    /// \param vid [out] The vendor id.
-    /// \return True if the vendor id is available; false otherwise.
-    bool GetVendorID(gpa_uint32& vid) const;
+    /// @brief Gets the vendor id.
+    ///
+    /// @param [out] vid The vendor id.
+    ///
+    /// @return True if the vendor id is available; false otherwise.
+    bool GetVendorId(GpaUInt32& vid) const;
 
-    /// Gets the device name.
-    /// \param pName [out] The device name.
-    /// \return True if the device name is available; false otherwise.
-    bool GetDeviceName(const char*& pName) const;
+    /// @brief Gets the device name.
+    ///
+    /// @param [out] device_name The device name.
+    ///
+    /// @return True if the device name is available; false otherwise.
+    bool GetDeviceName(const char*& device_name) const;
 
-    /// Get the GPU index in the system
-    /// \param[out] gpuIndex The GPU index in the system
-    /// \return True if the gpu index is available, false otherwise
-    bool GetGpuIndex(unsigned int& gpuIndex) const;
+    /// @brief Get the GPU index in the system.
+    ///
+    /// @param [out] gpu_index The GPU index in the system.
+    ///
+    /// @return True if the gpu index is available, false otherwise.
+    bool GetGpuIndex(unsigned int& gpu_index) const;
 
-    /// Gets the hardware generation.
-    /// \param gen [out] The HW generation
-    /// \return True if the HW generation is available; false otherwise.
-    bool GetHWGeneration(GDT_HW_GENERATION& gen) const;
+    /// @brief Gets the hardware generation.
+    ///
+    /// @param [out] gen The HW generation.
+    ///
+    /// @return True if the HW generation is available; false otherwise.
+    bool GetHwGeneration(GDT_HW_GENERATION& gen) const;
 
-    /// Gets the ASIC type.
-    /// \param type [out] The ASIC type.
-    /// \return True if the ASIC type is available; false otherwise.
-    bool GetHWAsicType(GDT_HW_ASIC_TYPE& type) const;
+    /// @brief Gets the ASIC type.
+    ///
+    /// @param [out] type The ASIC type.
+    ///
+    /// @return True if the ASIC type is available; false otherwise.
+    bool GetHwAsicType(GDT_HW_ASIC_TYPE& type) const;
 
-    /// Gets the timestamp clock frequency.
-    /// \param[out] timestampFrequency timestamp frequency
-    /// \return the clock frequency.
-    bool GetTimeStampFrequency(gpa_uint64& timestampFrequency) const
+    /// @brief Gets the timestamp clock frequency.
+    ///
+    /// @param [out] timestamp_frequency timestamp frequency.
+    ///
+    /// @return The clock frequency.
+    bool GetTimeStampFrequency(GpaUInt64& timestamp_frequency) const
     {
-        timestampFrequency = m_timeStampFrequency;
-        return m_timeStampFrequencySet;
+        timestamp_frequency = timestamp_frequency_;
+        return timestamp_frequency_set_;
     }
 
-    /// uses the DeviceId to find the correct DeviceMapping and DeviceInfo.
+    /// @brief Uses the DeviceId to find the correct DeviceMapping and DeviceInfo.
+    ///
     /// Sets devInfo and sets DeviceName and HWGeneration if not previously set.
-    /// \return true if HW should be supported and information is obtained correctly.
-    bool UpdateDeviceInfoBasedOnDeviceID();
+    ///
+    /// @return True if HW should be supported and information is obtained correctly.
+    bool UpdateDeviceInfoBasedOnDeviceId();
 
-    /// uses the device id and name to assign a revision id
-    /// Will assign zero if it cannot find a matching device
-    /// \return true if HW should be supported and information is obtained correctly.
-    bool UpdateRevisionIdBasedOnDeviceIDAndName();
+    /// @brief Uses the device id and name to assign a revision id.
+    ///
+    /// Will assign zero if it cannot find a matching device.
+    ///
+    /// @return true if HW should be supported and information is obtained correctly.
+    bool UpdateRevisionIdBasedOnDeviceIdAndName();
 
-    /// uses the asic type and name to assign a device and revision id
-    /// Will leave device id alone and assign REVISION_ID_ANY if it cannot find a matching device
-    /// \param asicType the asic Type
-    /// \return true if HW should be supported and information is obtained correctly.
-    bool UpdateDeviceInfoBasedOnASICTypeAndName(GDT_HW_ASIC_TYPE asicType);
+    /// @brief Uses the asic type and name to assign a device and revision id.
+    ///
+    /// Will leave device id alone and assign REVISION_ID_ANY if it cannot find a matching device.
+    ///
+    /// @param [in] asic_type The asic Type.
+    ///
+    /// @return True if HW should be supported and information is obtained correctly.
+    bool UpdateDeviceInfoBasedOnAsicTypeAndName(GDT_HW_ASIC_TYPE asic_type);
 
-    /// Check if the current hardware is AMD hardware
-    /// \return true if the current hardware is AMD hardware
-    bool IsAMD() const
+    /// @brief Check if the current hardware is AMD hardware.
+    ///
+    /// @return True if the current hardware is AMD hardware.
+    bool IsAmd() const
     {
-        return m_vendorIdSet && AMD_VENDOR_ID == m_vendorId;
+        return vendor_id_set_ && kAmdVendorId == vendor_id_;
     };
 
-    /// Check if the current hardware is NVidia hardware
-    /// \return true if the current hardware is NVidia hardware
-    bool IsNVidia() const
+    /// @brief Check if the current hardware is Nvidia hardware.
+    ///
+    /// @return True if the current hardware is Nvidia hardware.
+    bool IsNvidia() const
     {
-        return m_vendorIdSet && NVIDIA_VENDOR_ID == m_vendorId;
+        return vendor_id_set_ && kNvidiaVendorId == vendor_id_;
     };
 
-    /// Check if the current hardware is Intel hardware
-    /// \return true if the current hardware is Intel hardware
+    /// @brief Check if the current hardware is Intel hardware.
+    ///
+    /// @return True if the current hardware is Intel hardware.
     bool IsIntel() const
     {
-        return m_vendorIdSet && INTEL_VENDOR_ID == m_vendorId;
+        return vendor_id_set_ && kIntelVendorId == vendor_id_;
     };
 
-    /// check whether the hardware infos are same or not
-    /// \param[in] otherHwInfo hardware info
-    /// \return true if both hardware info are same otherwise false
-    bool operator==(GPA_HWInfo otherHwInfo) const;
+    /// @brief Check whether the hardware infos are same or not.
+    ///
+    /// @param [in] other_hw_info Hardware info.
+    ///
+    /// @return True if both hardware info are same otherwise false.
+    bool operator==(GpaHwInfo other_hw_info) const;
 
 private:
-    gpa_uint32 m_deviceId;     ///< The device ID
-    bool       m_deviceIdSet;  ///< Indicates if the Device ID has been set
+    GpaUInt32 device_id_;      ///< The device ID.
+    bool      device_id_set_;  ///< Indicates if the Device ID has been set.
 
-    gpa_uint32 m_revisionId;     ///< The revision ID
-    bool       m_revisionIdSet;  ///< Indicates if the Revision ID has been set
+    GpaUInt32 revision_id_;      ///< The revision ID.
+    bool      revision_id_set_;  ///< Indicates if the Revision ID has been set.
 
-    gpa_uint32 m_vendorId;     ///< The vendor ID
-    bool       m_vendorIdSet;  ///< Indicates if the vendor ID has been set
+    GpaUInt32 vendor_id_;      ///< The vendor ID.
+    bool      vendor_id_set_;  ///< Indicates if the vendor ID has been set.
 
-    std::string m_deviceName;     ///< the device name
-    bool        m_deviceNameSet;  ///< Indicates if the device name has been set
+    std::string device_name_;      ///< The device name.
+    bool        device_name_set_;  ///< Indicates if the device name has been set.
 
-    unsigned int m_gpuIndex;     ///< Index of the GPU in the system
-    bool         m_gpuIndexSet;  ///< Indicates the GPU index has been set
+    unsigned int gpu_index_;      ///< Index of the GPU in the system.
+    bool         gpu_index_set_;  ///< Indicates the GPU index has been set.
 
-    GDT_HW_GENERATION m_generation;     ///< the hardware generation
-    bool              m_generationSet;  ///< Indicates if the hardware generation has been set
+    GDT_HW_GENERATION generation_;      ///< The hardware generation.
+    bool              generation_set_;  ///< Indicates if the hardware generation has been set.
 
-    gpa_uint64 m_timeStampFrequency;     ///< the frequency of the time stamp clock
-    bool       m_timeStampFrequencySet;  ///< Indicates if the timestamp frequency has been set
+    GpaUInt64 timestamp_frequency_;      ///< The frequency of the time stamp clock.
+    bool      timestamp_frequency_set_;  ///< Indicates if the timestamp frequency has been set.
 
-    size_t m_numSIMDs;     ///< Number of SIMDs
-    bool   m_numSIMDsSet;  ///< Indicates if the number of SIMDs has been set
+    size_t num_simd_;      ///< Number of SIMDs.
+    bool   num_simd_set_;  ///< Indicates if the number of SIMDs has been set.
 
-    size_t m_numCUs;     ///< Number of CUs
-    bool   m_numCUsSet;  ///< Indicates the CUs has been set or not
+    size_t num_cu_;      ///< Number of Compute Units.
+    bool   num_cu_set_;  ///< Indicates if the Compute Untis has been set.
 
-    GDT_HW_ASIC_TYPE m_asicType;  ///< Indicates the ASIC type of this device
+    GDT_HW_ASIC_TYPE asic_type_;  ///< Indicates the ASIC type of this device.
 
-    size_t m_numShaderEngines;     ///< Number of shader engines
-    bool   m_numShaderEnginesSet;  ///< Indicates the shader engines has been set or not
+    size_t num_shader_engines_;      ///< Number of shader engines.
+    bool   num_shader_engines_set_;  ///< Indicates if the shader engines has been set.
 
-    size_t m_numShaderArrays;     ///< Number of shader arrays
-    bool   m_numShaderArraysSet;  ///< Indicates the shader engines has been set or not
+    size_t num_shader_arrays_;      ///< Number of shader arrays.
+    bool   num_shader_arrays_set_;  ///< Indicates if the shader engines has been set.
 
-    size_t m_suClockPrim;  ///< Number of clocks it takes to process a primitive
-    size_t m_numPrimPipes; ///< Number of primitive pipes
+    size_t su_clock_prim_;      ///< Number of clocks it takes to process a primitive.
+    bool   su_clock_prim_set_;  ///< Indicates whether the SU Clock prim is set or not.
+
+    size_t num_prim_pipes_;      ///< Number of primitive pipes.
+    bool   num_prim_pipes_set_;  ///< Indicates whether or not primitive pipes is set.
 };
 
-#endif  //_GPA_HW_INFO_H_
+#endif  // GPU_PERF_API_COMMON_GPA_HW_INFO_H_

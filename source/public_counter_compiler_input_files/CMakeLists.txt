@@ -11,11 +11,13 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(PUBLIC_COUNTER_DEFINITIONS  public_counter_definitions_gfx8.txt
                                 public_counter_definitions_gfx9.txt
-                                public_counter_definitions_gfx10.txt)
+                                public_counter_definitions_gfx10.txt
+                                public_counter_definitions_gfx103.txt)
 
 set(PUBLIC_COUNTER_DEFINITIONS_COMPUTE  public_counter_definitions_compute_gfx8.txt
                                         public_counter_definitions_compute_gfx9.txt
-                                        public_counter_definitions_compute_gfx10.txt)
+                                        public_counter_definitions_compute_gfx10.txt
+                                        public_counter_definitions_compute_gfx103.txt)
 
 set(SOURCES ${PUBLIC_COUNTER_DEFINITIONS}
             ${PUBLIC_COUNTER_DEFINITIONS_COMPUTE})

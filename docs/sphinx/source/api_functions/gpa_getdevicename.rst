@@ -1,16 +1,16 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_GetDeviceName
-@@@@@@@@@@@@@@@@@
+GpaGetDeviceName
+@@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_GetDeviceName(
-        GPA_ContextId contextId,
-        const char** ppDeviceName);
+    GpaStatus GpaGetDeviceName(
+        GpaContextId context_id,
+        const char** device_name);
 
 Description
 %%%%%%%%%%%
@@ -24,8 +24,8 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``contextId``", "Unique identifier of a previously-opened context."
-    "``ppDeviceName``", "The value that will be set to the device name upon successful execution."
+    "``context_id``", "Unique identifier of a previously-opened context."
+    "``device_name``", "The value that will be set to the device name upon successful execution."
 
 Return value
 %%%%%%%%%%%%
@@ -34,10 +34,10 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The device name was successfully retrieved."
-    "GPA_STATUS_ERROR_NULL_POINTER", "| The supplied ``ppDeviceName`` parameter is NULL.
-    | The supplied ``contextId`` parameter is NULL."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied context is not currently open."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_FOUND", "The supplied ``contextId`` parameter was not recognized as a previously-opened context identifier."
-    "GPA_STATUS_ERROR_FAILED", "The device name could not be retrieved."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The device name was successfully retrieved."
+    "kGpaStatusErrorNullPointer", "| The supplied ``device_name`` parameter is NULL.
+    | The supplied ``context_id`` parameter is NULL."
+    "kGpaStatusErrorContextNotOpen", "The supplied context is not currently open."
+    "kGpaStatusErrorContextNotFound", "The supplied ``context_id`` parameter was not recognized as a previously-opened context identifier."
+    "kGpaStatusErrorFailed", "The device name could not be retrieved."
+    "kGpaStatusErrorException", "Exception occurred."

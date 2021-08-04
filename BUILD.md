@@ -11,7 +11,7 @@ GPUPerfAPI no longer uses git submodules to reference dependent repositories. In
 order to clone/update any dependent repositories.
 
 #### Prerequisites
-  * Python, which can be installed from https://www.python.org/. Either Python 2.7 or 3.x should work.
+  * Python 3.x, which can be installed from https://www.python.org/.
   * CMake 3.7.2 or newer
     * For Windows, this can be downloaded from https://cmake.org/download/
     * For Linux, this can be installed using: sudo apt-get install cmake
@@ -32,8 +32,8 @@ present on the system, this script will instead do a "git pull" on those reposit
 this script everytime you pull new changes from GPA repository.
  * NOTE: For GPA 3.3 or newer, if you are updating an existing clone of the GPA repo from a GPA release prior than 3.3, you will first need to delete the Common/Lib/Ext/GoogleTest directory. Starting with GPA 3.3, GPA is now using a fork of the official GoogleTest repo. Failure to remove this directory will lead to git errors when running [pre_build.py](build/pre_build.py) or [fetch_dependencies.py](scripts/fetch_dependencies.py).
  * This script will also download and execute the Vulkan� SDK installer.
-   * On Windows, running the installer may require elevation.  If you've previously installed the required Vulkan version, UpdateCommon will simply copy the files form the default installation location into the correct place into the GPUPerfAPI directory tree.
-   * UpdateCommon is set up to install the version of the Vulkan SDK which was used during development. If you want to use a newer version of the SDK, the following file will need to be updated:
+   * On Windows, running the installer may require elevation.  If you've previously installed the required Vulkan version, fetch_dependencies.py will simply copy the files from the default installation location into the correct place into the GPUPerfAPI directory tree.
+   * fetch_dependencies.py is set up to install the version of the Vulkan SDK which was used during development. If you want to use a newer version of the SDK, the following file will need to be updated:
      * [fetch_dependencies.py](scripts/fetch_dependencies.py)
    * By default the build will expect the Vulkan SDK to be found in a directory pointed to by the `VULKAN_SDK` environment variable. This environment variable is automatically set by the Windows SDK installer, but you may need to set it manually after running the Linux SDK installer. The Linux SDK includes a script called `setup-env.sh` to aid in setting this environment variable:
      * `source ~/VulkanSDK/1.0.68.0/setup-env.sh` (adjust path as necessary)
@@ -44,7 +44,6 @@ this script everytime you pull new changes from GPA repository.
     * `--config=[debug,release]`: Specify the config for which to generate makefiles. Default is both. A specific config can only be specified on Linux. On Windows, both configs are always supported by the generated VS solution and project files.
    * `--platform=[x86,x64]`: Specify the platform for which to generate build files. Default is both.
    * `--clean`: Deletes CMakeBuild directory and regenerates all build files from scratch
-   * `--internal`: Generates build files to build the internal version of GPA
    * `--skipdx11`: Does not generate build files for DX11 version of GPA (Windows only)
    * `--skipdx12`: Does not generate build files for DX12 version of GPA (Windows only)
    * `--skipvulkan`: Does not generate build files for Vulkan version of GPA
@@ -65,12 +64,11 @@ this script everytime you pull new changes from GPA repository.
 ##### Build Instructions
  * Load cmake_bld\x64\GPUPerfAPI.sln into Visual Studio to build the 64-bit version of GPA
  * Load cmake_bld\x86\GPUPerfAPI.sln into Visual Studio to build the 32-bit version of GPA
- * After a successful build, the GPUPerfAPI binaries can be found in `GPA\Output\$(Configuration)` (for example GPA\Output\Release)
+ * After a successful build, the GPUPerfAPI binaries can be found in `gpu_performance_api\output\$(Configuration)` (for example gpu_performance_api\output\release)
 
 #### Additional Information
  * The Windows projects each include a .rc file that embeds the VERSIONINFO resource into the final binary. Internally within AMD, a Jenkins build system will dynamically update
    the build number. The version and build numbers can be manually updated by modifying the [gpa_version.h](source/gpu_perf_api_common/gpa_version.h) file.
- * When building the internal version (using the --internal switch when calling [pre_build.py](build/pre_build.py), each binary filename will have a "-Internal" suffix (for example GPUPerfAPIDX11-x64-Internal.dll)
 
 ## Linux Build Information
 
@@ -83,7 +81,7 @@ this script everytime you pull new changes from GPA repository.
  * Execute "make" in the cmake_bld/x64/release to build the 64-bit release version of GPA
  * Execute "make" in the cmake_bld/x86/debug to build the 32-bit debug version of GPA
  * Execute "make" in the cmake_bld/x86/release to build the 32-bit release version of GPA
- * After a successful build, the GPUPerfAPI binaries can be found in `GPA/Output/$(Configuration)` (for example GPA/Output/release)
+ * After a successful build, the GPUPerfAPI binaries can be found in `gpu_performance_api/output/$(Configuration)` (for example gpu_performance_api/output/release)
  * When building the internal version, each binary filename will also have a "-Internal" suffix (for example libGPUPerfAPIGL-Internal.so)
 
 ## PublicCounterCompiler Tool

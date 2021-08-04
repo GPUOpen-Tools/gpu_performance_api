@@ -1,30 +1,31 @@
 //==============================================================================
-// Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GPA API Helper class Implementation
+// Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GPA API Helper class Implementation
 //==============================================================================
 
-#include <sstream>
-#include <fstream>
-#include <vector>
-#include <iostream>
+#include "examples/vulkan/vk_color_cube/gpa_helper.h"
+
 #include <assert.h>
+
+#include <fstream>
+#include <iostream>
 #include <locale>
+#include <sstream>
+#include <vector>
 
 #ifdef _WIN32
 #include <codecvt>
 #endif
 
-#include "gpa_helper.h"
-
-GPAHelper::GPAHelper()
-    : m_pGpaFuncTable(nullptr)
-    , m_bHeaderWritten(false)
+GpaHelper::GpaHelper()
+    : gpa_function_table_(nullptr)
+    , is_header_written_(false)
 {
 }
 
-GPAHelper::~GPAHelper()
+GpaHelper::~GpaHelper()
 {
     if (IsLoaded())
     {
@@ -32,90 +33,90 @@ GPAHelper::~GPAHelper()
     }
 }
 
-bool GPAHelper::IsLoaded() const
+bool GpaHelper::IsLoaded() const
 {
-    return m_pGpaFuncTable != nullptr;
+    return gpa_function_table_ != nullptr;
 }
 
-bool GPAHelper::Load()
+bool GpaHelper::Load()
 {
     std::remove(GetGPALogFileName().c_str());
 
-    bool success = GPA_STATUS_OK == GPAApiManager::Instance()->LoadApi(GPA_API_VULKAN);
+    bool success = kGpaStatusOk == GpaApiManager::Instance()->LoadApi(kGpaApiVulkan);
 
     if (success)
     {
-        m_pGpaFuncTable = GPAApiManager::Instance()->GetFunctionTable(GPA_API_VULKAN);
+        gpa_function_table_ = GpaApiManager::Instance()->GetFunctionTable(kGpaApiVulkan);
     }
 
     return success;
 }
 
-void GPAHelper::Unload()
+void GpaHelper::Unload()
 {
     if (IsLoaded())
     {
-        GPAApiManager::Instance()->UnloadApi(GPA_API_VULKAN);
+        GpaApiManager::Instance()->UnloadApi(kGpaApiVulkan);
     }
 
-    if (ms_gpaLogFileStream.is_open())
+    if (gpa_log_file_stream.is_open())
     {
-        ms_gpaLogFileStream.close();
+        gpa_log_file_stream.close();
     }
 
-    m_pGpaFuncTable = nullptr;
+    gpa_function_table_ = nullptr;
 }
 
-void GPAHelper::PrintGPACounterInfo(GPA_ContextId contextId) const
+void GpaHelper::PrintGPACounterInfo(GpaContextId context_id) const
 {
-    gpa_uint32  deviceId, revisionId;
-    char        deviceName[255];
-    const char* pDeviceName = deviceName;
+    GpaUInt32   device_id, revision_id;
+    char        device_name[255];
+    const char* device_name_ptr = device_name;
 
-    GPA_Status gpaStatus = m_pGpaFuncTable->GPA_GetDeviceAndRevisionId(contextId, &deviceId, &revisionId);
+    GpaStatus gpa_status = gpa_function_table_->GpaGetDeviceAndRevisionId(context_id, &device_id, &revision_id);
 
-    if (GPA_STATUS_OK != gpaStatus)
+    if (kGpaStatusOk != gpa_status)
     {
         std::cout << "ERROR: Failed to get device and revision id.\n";
         return;
     }
 
-    gpaStatus = m_pGpaFuncTable->GPA_GetDeviceName(contextId, &pDeviceName);
+    gpa_status = gpa_function_table_->GpaGetDeviceName(context_id, &device_name_ptr);
 
-    if (GPA_STATUS_OK != gpaStatus)
+    if (kGpaStatusOk != gpa_status)
     {
         std::cout << "ERROR: Failed to get the device name.\n";
         return;
     }
-    std::string deviceNameString(pDeviceName);
+    std::string device_name_string(device_name_ptr);
 
-    std::cout << "Device Id: " << std::hex << deviceId << std::endl;
-    std::cout << "Revision Id: " << std::hex << revisionId << std::endl;
-    std::cout << "Device Name: " << deviceNameString.c_str() << std::endl;
+    std::cout << "Device Id: " << std::hex << device_id << std::endl;
+    std::cout << "Revision Id: " << std::hex << revision_id << std::endl;
+    std::cout << "Device Name: " << device_name_string.c_str() << std::endl;
 
-    gpa_uint32 numCounters = 0;
-    gpaStatus              = m_pGpaFuncTable->GPA_GetNumCounters(contextId, &numCounters);
+    GpaUInt32 num_counters = 0;
+    gpa_status             = gpa_function_table_->GpaGetNumCounters(context_id, &num_counters);
 
-    if (GPA_STATUS_OK != gpaStatus)
+    if (kGpaStatusOk != gpa_status)
     {
         std::cout << "ERROR: Failed to get the number of available counters." << std::endl;
         return;
     }
 
-    for (gpa_uint32 counterIndex = 0; counterIndex < numCounters; counterIndex++)
+    for (GpaUInt32 counter_index = 0; counter_index < num_counters; counter_index++)
     {
-        const char* pName      = NULL;
-        GPA_Status  nameStatus = m_pGpaFuncTable->GPA_GetCounterName(contextId, counterIndex, &pName);
+        const char* name        = NULL;
+        GpaStatus   name_status = gpa_function_table_->GpaGetCounterName(context_id, counter_index, &name);
 
-        const char* pGroup      = NULL;
-        GPA_Status  groupStatus = m_pGpaFuncTable->GPA_GetCounterGroup(contextId, counterIndex, &pGroup);
+        const char* group        = NULL;
+        GpaStatus   group_status = gpa_function_table_->GpaGetCounterGroup(context_id, counter_index, &group);
 
-        const char* pDescription = NULL;
-        GPA_Status  descStatus   = m_pGpaFuncTable->GPA_GetCounterDescription(contextId, counterIndex, &pDescription);
+        const char* description        = NULL;
+        GpaStatus   description_status = gpa_function_table_->GpaGetCounterDescription(context_id, counter_index, &description);
 
-        if (GPA_STATUS_OK == nameStatus && GPA_STATUS_OK == groupStatus && GPA_STATUS_OK == descStatus)
+        if (kGpaStatusOk == name_status && kGpaStatusOk == group_status && kGpaStatusOk == description_status)
         {
-            std::cout << counterIndex << ": " << pName << " \"" << pGroup << "\" - " << pDescription << std::endl;
+            std::cout << counter_index << ": " << name << " \"" << group << "\" - " << description << std::endl;
         }
         else
         {
@@ -124,419 +125,469 @@ void GPAHelper::PrintGPACounterInfo(GPA_ContextId contextId) const
     }
 }
 
-std::string GPAHelper::GetExecutablePath()
+std::string GpaHelper::GetExecutablePath()
 {
 #ifdef _WIN32
-    wchar_t modulepath[GPA_MAX_PATH];
-    ::GetModuleFileNameW(NULL, modulepath, _countof(modulepath));
+    wchar_t module_path[GPA_MAX_PATH];
+    ::GetModuleFileNameW(NULL, module_path, _countof(module_path));
 
-    std::wstring moduleString(modulepath);
-    size_t       lastSlashPosition = moduleString.find_last_of('\\');
+    std::wstring module_string(module_path);
+    size_t       last_slash_position = module_string.find_last_of('\\');
 
-    std::wstring executablePath = std::wstring(moduleString.begin(), moduleString.begin() + (lastSlashPosition + 1));
+    std::wstring executable_path = std::wstring(module_string.begin(), module_string.begin() + (last_slash_position + 1));
 
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wideToUtf8Converter;
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
 
-    std::string utf8ExecutablePath = wideToUtf8Converter.to_bytes(executablePath);
+    std::string utf8_executable_path = wide_to_utf8_converter.to_bytes(executable_path);
 #else
     int  len;
-    char modulepath[GPA_MAX_PATH];
-    len = readlink("/proc/self/exe", modulepath, GPA_MAX_PATH - 1);
+    char module_path[GPA_MAX_PATH];
+    len = readlink("/proc/self/exe", module_path, GPA_MAX_PATH - 1);
 
     if (len != -1)
     {
-        modulepath[len] = '\0';
+        module_path[len] = '\0';
     }
 
-    std::string moduleString(modulepath);
-    size_t      lastSlashPosition = moduleString.find_last_of('/');
+    std::string module_string(module_path);
+    size_t      last_slash_position = module_string.find_last_of('/');
 
-    std::string executablePath(modulepath);
+    std::string executable_path(module_path);
 
-    if (std::string::npos != lastSlashPosition)
+    if (std::string::npos != last_slash_position)
     {
-        executablePath = std::string(moduleString.begin(), moduleString.begin() + (lastSlashPosition + 1));
+        executable_path = std::string(module_string.begin(), module_string.begin() + (last_slash_position + 1));
     }
 
-    std::string utf8ExecutablePath;
-	utf8ExecutablePath.append(executablePath.begin(), executablePath.end());
+    std::string utf8_executable_path;
+    utf8_executable_path.append(executable_path.begin(), executable_path.end());
 #endif
 
-
-    return utf8ExecutablePath;
+    return utf8_executable_path;
 }
 
-std::string GPAHelper::GetCSVFileName() const
+std::string GpaHelper::GetCSVFileName() const
 {
 #ifdef ANDROID
-    // This path is dedicated to the app
-    std::string tempString("/sdcard/Android/data/com.amd.gpa.vkcolorcube/");
-    tempString.append(m_csvFileName);
-    return tempString;
+    // This path is dedicated to the app.
+    std::string temp_string("/sdcard/Android/data/com.amd.gpa.vkcolorcube/");
+    temp_string.append(csv_file_name_);
+    return temp_string;
 #else
-    return GetExecutablePath().append(m_csvFileName);
+    return GetExecutablePath().append(csv_file_name_);
 #endif
 }
 
-std::string GPAHelper::GetGPALogFileName()
+std::string GpaHelper::GetGPALogFileName()
 {
 #ifdef ANDROID
-    // This path is dedicated to the app
-    std::string tempString("/sdcard/Android/data/com.amd.gpa.vkcolorcube/");
-    tempString.append(ms_gpaLogFileName);
-    return tempString;
+    // This path is dedicated to the app.
+    std::string temp_string("/sdcard/Android/data/com.amd.gpa.vkcolorcube/");
+    temp_string.append(gpa_log_file_name);
+    return temp_string;
 #else
-    return GetExecutablePath().append(ms_gpaLogFileName);
+    return GetExecutablePath().append(gpa_log_file_name);
 #endif
 }
 
-bool GPAHelper::OpenCSVFile()
+bool GpaHelper::OpenCSVFile()
 {
-    m_csvFile.open(GetCSVFileName().c_str(), std::ios_base::out | std::ios_base::app);
-    return m_csvFile.is_open();
+    csv_file_.open(GetCSVFileName().c_str(), std::ios_base::out | std::ios_base::app);
+    return csv_file_.is_open();
 }
 
-void GPAHelper::CloseCSVFile()
+void GpaHelper::CloseCSVFile()
 {
-    m_csvFile.close();
+    csv_file_.close();
 }
 
-void GPAHelper::gpaLoggingCallback(GPA_Logging_Type type, const char* msg)
+void GpaHelper::gpaLoggingCallback(GpaLoggingType type, const char* msg)
 {
-    std::string logMessage;
+    std::string log_message;
 
     switch (type)
     {
-    case GPA_LOGGING_ERROR:
-        logMessage            = "GPA ERROR: ";
-        ms_anyGPAErrorsLogged = true;
+    case kGpaLoggingError:
+        log_message           = "GPA ERROR: ";
+        gpa_any_errors_logged = true;
         break;
 
-    case GPA_LOGGING_TRACE:
-        logMessage = "GPA TRACE: ";
+    case kGpaLoggingTrace:
+        log_message = "GPA TRACE: ";
         break;
 
     default:
-        logMessage = "GPA: ";
+        log_message = "GPA: ";
         break;
     }
 
-    logMessage.append(msg);
+    log_message.append(msg);
 
-    if (!ms_gpaLogFileStream.is_open())
+    if (!gpa_log_file_stream.is_open())
     {
-        ms_gpaLogFileStream.open(GetGPALogFileName().c_str(), std::ios_base::out | std::ios_base::app);
+        gpa_log_file_stream.open(GetGPALogFileName().c_str(), std::ios_base::out | std::ios_base::app);
     }
 
-    ms_gpaLogFileStream << logMessage << std::endl;
+    gpa_log_file_stream << log_message << std::endl;
 }
 
-bool GPAHelper::CounterValueCompare(unsigned int sampleIndex,
-                                    const char*  pCounterName,
-                                    gpa_float64  counterValue,
-                                    CompareType  compareType,
-                                    gpa_float64  compareVal)
+bool GpaHelper::CounterValueCompare(unsigned int profile_set,
+                                    unsigned int sample_index,
+                                    const char*  counter_name,
+                                    GpaFloat64   counter_value,
+                                    CompareType  compare_type,
+                                    GpaFloat64   compare_value,
+                                    bool         confirm_success)
 {
-    bool              retVal = false;
-    std::stringstream errorString;
+    bool              return_value = false;
+    std::stringstream output_string;
+    std::stringstream error_string;
+    std::stringstream success_string;
+    std::stringstream compare_string;
 
-    errorString << "Incorrect value for counter " << pCounterName << "(sample " << sampleIndex << "). Counter value is " << counterValue
-                << ". Expected counter to be ";
+    output_string << "Profile " << profile_set << ", sample " << sample_index << ": ";
 
-    switch (compareType)
+    error_string << "Incorrect value for counter " << counter_name << ". Value is " << counter_value << ". Expected counter to be ";
+    success_string << "Counter " << counter_name << " is correct. Value " << counter_value << " is ";
+
+    switch (compare_type)
     {
-    case COMPARE_TYPE_EQUAL:
-        retVal = counterValue == compareVal;
-        errorString << "equal to " << compareVal;
+    case kCompareTypeEqual:
+        return_value = counter_value == compare_value;
+        compare_string << "equal to " << compare_value;
         break;
 
-    case COMPARE_TYPE_GREATER_THAN:
-        retVal = counterValue > compareVal;
-        errorString << "greater than " << compareVal;
+    case kCompareTypeGreaterThan:
+        return_value = counter_value > compare_value;
+        compare_string << "greater than " << compare_value;
         break;
 
-    case COMPARE_TYPE_GREATER_THAN_OR_EQUAL_TO:
-        retVal = counterValue >= compareVal;
-        errorString << "greater than or equal to " << compareVal;
+    case kCompareTypeGreaterThanOrEqualTo:
+        return_value = counter_value >= compare_value;
+        compare_string << "greater than or equal to " << compare_value;
         break;
 
-    case COMPARE_TYPE_LESS_THAN:
-        retVal = counterValue < compareVal;
-        errorString << "less than " << compareVal;
+    case kCompareTypeLessThan:
+        return_value = counter_value < compare_value;
+        compare_string << "less than " << compare_value;
         break;
 
-    case COMPARE_TYPE_LESS_THAN_OR_EQUAL_TO:
-        retVal = counterValue <= compareVal;
-        errorString << "less than or equal to " << compareVal;
+    case kCompareTypeLessThanOrEqualTo:
+        return_value = counter_value <= compare_value;
+        compare_string << "less than or equal to " << compare_value;
         break;
     }
 
-    if (!retVal)
+    if (!return_value)
     {
-        gpaLoggingCallback(GPA_LOGGING_ERROR, errorString.str().c_str());
+        output_string << error_string.str() << compare_string.str();
+        gpaLoggingCallback(kGpaLoggingError, output_string.str().c_str());
+    }
+    else if (confirm_success)
+    {
+        output_string << success_string.str() << compare_string.str();
+        gpaLoggingCallback(kGpaLoggingMessage, output_string.str().c_str());
     }
 
-    return retVal;
+    return return_value;
 }
 
-bool GPAHelper::ValidateData(unsigned int sampleIndex, const char* pCounterName, gpa_float64 counterValue, GPA_Usage_Type counterUsageType)
+bool GpaHelper::ValidateData(unsigned int profile_set,
+                             unsigned int sample_index,
+                             const char*  counter_name,
+                             GpaFloat64   counter_value,
+                             GpaUsageType counter_usage_type,
+                             bool         confirm_success)
 {
-    bool retVal = true;
+    bool return_value = true;
 
-    std::string counterName(pCounterName);
+    std::string local_counter_name(counter_name);
 
-    if (GPA_USAGE_TYPE_PERCENTAGE == counterUsageType)
+    if (kGpaUsageTypePercentage == counter_usage_type)
     {
-        retVal = CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN_OR_EQUAL_TO, 0.0f) &&
-            CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_LESS_THAN_OR_EQUAL_TO, 100.0f);
+        return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0.0f, confirm_success) &&
+                       CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 100.0f, confirm_success);
     }
 
-    if (retVal)
+    if (return_value)
     {
-        if (0 == counterName.compare("GPUTime"))
+        if (0 == local_counter_name.compare("GPUTime"))
         {
-            retVal = CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
         }
-        else if (0 == counterName.compare("GPUBusy"))
+        else if (0 == local_counter_name.compare("GPUBusy"))
         {
-            retVal = CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f) &
-                CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_LESS_THAN_OR_EQUAL_TO, 100.0f);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success) &&
+                           CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 100.0f, confirm_success);
         }
-        /* temporarily disable additional counter validation
-        else if (0 == counterName.compare("VSBusy"))
+        else if (0 == local_counter_name.compare("VSBusy"))
         {
-            retVal = CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f) &
-                CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_LESS_THAN_OR_EQUAL_TO, 100.0f);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
         }
-        else if (0 == counterName.compare("VSTime"))
+        else if (0 == local_counter_name.compare("VSTime"))
         {
-            retVal = CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
         }
-        else if (0 == counterName.compare("PSBusy"))
+        else if (0 == local_counter_name.compare("PSBusy"))
         {
-            retVal = CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f) &
-                CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_LESS_THAN_OR_EQUAL_TO, 100.0f);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
         }
-        else if (0 == counterName.compare("PSTime"))
+        else if (0 == local_counter_name.compare("PSTime"))
         {
-            retVal = CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN, 0.0f);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
         }
-        else if (0 == counterName.compare("VSVerticesIn"))
+        else if (0 == local_counter_name.compare("VSVerticesIn"))
         {
-            gpa_float64 expectedVsVerticesIn = 36;
+            // Sample 0
+            GpaFloat64 expected_vertex_count = 36;
 
-            if (2 == sampleIndex)
+            if (sample_index == 1)
             {
-                expectedVsVerticesIn = 72;
+                expected_vertex_count = 36;
+            }
+            else if (sample_index == 2)
+            {
+                // In this example, sample 2 vertices = sample 0 vertices + sample 1 vertices.
+                expected_vertex_count = 72;
             }
 
-            retVal = CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_EQUAL, expectedVsVerticesIn);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_vertex_count, confirm_success);
         }
-        else if (0 == counterName.compare("PSPixelsOut"))
+        else if (0 == local_counter_name.compare("PSPixelsOut"))
         {
-            gpa_float64 expectedPsPixelsOut = 11662;
+            // Sample 0
+            GpaFloat64 expected_pixel_count = 11662;
 
-            if (1 == sampleIndex)
+            if (sample_index == 1)
             {
-                expectedPsPixelsOut = 2820;
+                expected_pixel_count = 2820;
             }
-            else if (2 == sampleIndex)
+            else if (sample_index == 2)
             {
-                expectedPsPixelsOut = 14482;
+                // In this example, sample 2 pixels = sample 0 pixels + sample 1 pixels.
+                expected_pixel_count = 14482;
             }
 
-            retVal = CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_GREATER_THAN_OR_EQUAL_TO, expectedPsPixelsOut);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_pixel_count, confirm_success);
         }
-        else if (0 == counterName.compare("PrimitivesIn"))
+        else if (0 == local_counter_name.compare("PreZSamplesPassing"))
         {
-            gpa_float64 expectedPrimiteivesIn = 12;
+            // Sample 0
+            GpaFloat64 expected_passing = 11662;
 
-            if (2 == sampleIndex)
+            if (sample_index == 1)
             {
-                expectedPrimiteivesIn = 24;
+                expected_passing = 2820;
+            }
+            else if (sample_index == 2)
+            {
+                // In this example, sample 2 passing = sample 0 passing + sample 1 passing.
+                expected_passing = 14482;
             }
 
-            retVal = CounterValueCompare(sampleIndex, pCounterName, counterValue, COMPARE_TYPE_EQUAL, expectedPrimiteivesIn);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_passing, confirm_success);
         }
-        */
+        else if (0 == local_counter_name.compare("PrimitivesIn"))
+        {
+            // Sample 0
+            GpaFloat64 expected_primitive_count = 12;
+
+            if (sample_index == 1)
+            {
+                expected_primitive_count = 12;
+            }
+            else if (sample_index == 2)
+            {
+                // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
+                expected_primitive_count = 24;
+            }
+
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_primitive_count, confirm_success);
+        }
     }
 
-    return retVal;
+    return return_value;
 }
 
-void GPAHelper::PrintGPASampleResults(GPA_ContextId contextId, GPA_SessionId sessionId, gpa_uint32 sampleId, bool outputToConsole, bool verifyCounters)
+void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
+                                      GpaSessionId session_id,
+                                      unsigned int profile_set,
+                                      GpaUInt32    sample_id,
+                                      bool         output_to_console,
+                                      bool         verify_counters,
+                                      bool         confirm_success)
 {
-    gpa_uint32  deviceId, revisionId;
-    char        deviceName[255];
-    const char* pDeviceName = deviceName;
+    GpaUInt32   device_id, revision_id;
+    char        device_name[255];
+    const char* device_name_ptr = device_name;
 
-    GPA_Status gpaStatus = m_pGpaFuncTable->GPA_GetDeviceAndRevisionId(contextId, &deviceId, &revisionId);
+    GpaStatus gpa_status = gpa_function_table_->GpaGetDeviceAndRevisionId(context_id, &device_id, &revision_id);
 
-    if (GPA_STATUS_OK != gpaStatus)
+    if (kGpaStatusOk != gpa_status)
     {
         std::cout << "ERROR: Failed to get device and revision id.\n";
         return;
     }
 
-    gpaStatus = m_pGpaFuncTable->GPA_GetDeviceName(contextId, &pDeviceName);
+    gpa_status = gpa_function_table_->GpaGetDeviceName(context_id, &device_name_ptr);
 
-    if (GPA_STATUS_OK != gpaStatus)
+    if (kGpaStatusOk != gpa_status)
     {
         std::cout << "ERROR: Failed to get the device name.\n";
         return;
     }
 
-    std::string deviceNameString(pDeviceName);
+    std::string device_name_string(device_name_ptr);
 
-    if (outputToConsole)
+    if (output_to_console)
     {
         std::cout << "--------------------------------------------------" << std::endl;
-        std::cout << "Device Id: " << std::hex << deviceId << std::endl;
-        std::cout << "Revision Id: " << std::hex << revisionId << std::endl;
-        std::cout << "Device Name: " << deviceNameString.c_str() << std::endl;
+        std::cout << "Device Id: " << std::hex << device_id << std::endl;
+        std::cout << "Revision Id: " << std::hex << revision_id << std::endl;
+        std::cout << "Device Name: " << device_name_string.c_str() << std::endl;
         std::cout << "--------------------------------------------------" << std::endl;
-        std::cout << "Sample ID: " << sampleId << std::endl;
+        std::cout << "Profile " << profile_set << ", Sample ID: " << sample_id << std::endl;
     }
 
-    std::stringstream csvHeader;
+    std::stringstream csv_header;
 
-    csvHeader << "Device Id: " << std::hex << deviceId << std::endl;
-    csvHeader << "Revision Id: " << std::hex << revisionId << std::endl;
-    csvHeader << "Device Name: " << deviceNameString.c_str() << std::endl;
+    csv_header << "Device Id: " << std::hex << device_id << std::endl;
+    csv_header << "Revision Id: " << std::hex << revision_id << std::endl;
+    csv_header << "Device Name: " << device_name_string.c_str() << std::endl;
 
-    size_t sampleResultSizeInBytes = 0;
-    gpaStatus                      = m_pGpaFuncTable->GPA_GetSampleResultSize(sessionId, sampleId, &sampleResultSizeInBytes);
+    size_t sample_result_size_in_bytes = 0;
+    gpa_status                         = gpa_function_table_->GpaGetSampleResultSize(session_id, sample_id, &sample_result_size_in_bytes);
 
-    if (GPA_STATUS_OK != gpaStatus)
+    if (kGpaStatusOk != gpa_status)
     {
         std::cout << "ERROR: Failed to get GPA sample result size." << std::endl;
         return;
     }
 
-    gpa_uint64* pResultsBuffer = (gpa_uint64*)malloc(sampleResultSizeInBytes);
+    GpaUInt64* results_buffer = (GpaUInt64*)malloc(sample_result_size_in_bytes);
 
-    if (pResultsBuffer == nullptr)
+    if (results_buffer == nullptr)
     {
         std::cout << "ERROR: Failed to allocate memory for GPA results." << std::endl;
         return;
     }
 
-    gpaStatus = m_pGpaFuncTable->GPA_GetSampleResult(sessionId, sampleId, sampleResultSizeInBytes, pResultsBuffer);
+    gpa_status = gpa_function_table_->GpaGetSampleResult(session_id, sample_id, sample_result_size_in_bytes, results_buffer);
 
-    if (GPA_STATUS_OK != gpaStatus)
+    if (kGpaStatusOk != gpa_status)
     {
         std::cout << "ERROR: Failed to get GPA sample results." << std::endl;
     }
     else
     {
-        gpa_uint32 enabledCount = 0;
-        gpaStatus               = m_pGpaFuncTable->GPA_GetNumEnabledCounters(sessionId, &enabledCount);
+        GpaUInt32 enabled_count = 0;
+        gpa_status              = gpa_function_table_->GpaGetNumEnabledCounters(session_id, &enabled_count);
 
-        if (GPA_STATUS_OK != gpaStatus)
+        if (kGpaStatusOk != gpa_status)
         {
             std::cout << "ERROR: Failed to get the number of enabled counters from GPA." << std::endl;
         }
         else
         {
-            std::stringstream csvContent;
+            std::stringstream csv_content;
 
-            for (gpa_uint32 i = 0; i < enabledCount; i++)
+            for (GpaUInt32 i = 0; i < enabled_count; i++)
             {
-                gpa_uint32 counterIndex = 0;
-                gpaStatus               = m_pGpaFuncTable->GPA_GetEnabledIndex(sessionId, i, &counterIndex);
+                GpaUInt32 counter_index = 0;
+                gpa_status              = gpa_function_table_->GpaGetEnabledIndex(session_id, i, &counter_index);
 
-                if (GPA_STATUS_OK != gpaStatus)
+                if (kGpaStatusOk != gpa_status)
                 {
-                    std::cout << "ERROR: Failed to get the exposed GPA counter id of the enabled counter at index " << counterIndex << "." << std::endl;
+                    std::cout << "ERROR: Failed to get the exposed GPA counter id of the enabled counter at index " << counter_index << "." << std::endl;
                 }
                 else
                 {
-                    GPA_Data_Type counterType = GPA_DATA_TYPE_UINT64;
-                    gpaStatus                 = m_pGpaFuncTable->GPA_GetCounterDataType(contextId, counterIndex, &counterType);
-                    assert(GPA_STATUS_OK == gpaStatus);
+                    GpaDataType counter_type = kGpaDataTypeUint64;
+                    gpa_status               = gpa_function_table_->GpaGetCounterDataType(context_id, counter_index, &counter_type);
+                    assert(kGpaStatusOk == gpa_status);
 
-                    const char* pCounterName = NULL;
-                    gpaStatus                = m_pGpaFuncTable->GPA_GetCounterName(contextId, counterIndex, &pCounterName);
-                    assert(GPA_STATUS_OK == gpaStatus);
+                    const char* counter_name = NULL;
+                    gpa_status               = gpa_function_table_->GpaGetCounterName(context_id, counter_index, &counter_name);
+                    assert(kGpaStatusOk == gpa_status);
 
-                    GPA_Usage_Type counterUsageType = GPA_USAGE_TYPE__LAST;
-                    gpaStatus = m_pGpaFuncTable->GPA_GetCounterUsageType(contextId, counterIndex, &counterUsageType);
-                    assert(GPA_STATUS_OK == gpaStatus);
+                    GpaUsageType counter_usage_type = kGpaUsageTypeLast;
+                    gpa_status                      = gpa_function_table_->GpaGetCounterUsageType(context_id, counter_index, &counter_usage_type);
+                    assert(kGpaStatusOk == gpa_status);
 
-                    if (outputToConsole)
+                    if (output_to_console)
                     {
-                        printf("Counter %u %s result: ", counterIndex, pCounterName);
+                        printf("Counter %u %s result: ", counter_index, counter_name);
                     }
 
-                    if (m_csvFile.is_open() && !m_bHeaderWritten)
+                    if (csv_file_.is_open() && !is_header_written_)
                     {
-                        csvHeader << pCounterName << ",";
+                        csv_header << counter_name << ",";
                     }
 
-                    if (counterType == GPA_DATA_TYPE_UINT64)
+                    if (counter_type == kGpaDataTypeUint64)
                     {
-                        if (outputToConsole)
+                        if (output_to_console)
                         {
-                            printf("%llu\n", pResultsBuffer[i]);
+                            printf("%llu\n", results_buffer[i]);
                         }
 
-                        if (m_csvFile.is_open())
+                        if (csv_file_.is_open())
                         {
-                            csvContent << pResultsBuffer[i] << ",";
+                            csv_content << results_buffer[i] << ",";
                         }
 
-                        if (verifyCounters)
+                        if (verify_counters)
                         {
-                            ValidateData(sampleId, pCounterName, static_cast<gpa_float64>(pResultsBuffer[i]), counterUsageType);
+                            ValidateData(profile_set, sample_id, counter_name, static_cast<GpaFloat64>(results_buffer[i]), counter_usage_type, confirm_success);
                         }
                     }
-                    else if (counterType == GPA_DATA_TYPE_FLOAT64)
+                    else if (counter_type == kGpaDataTypeFloat64)
                     {
-                        gpa_float64 fResult = ((gpa_float64*)pResultsBuffer)[i];
+                        GpaFloat64 result = ((GpaFloat64*)results_buffer)[i];
 
-                        if (outputToConsole)
+                        if (output_to_console)
                         {
-                            printf("%f\n", fResult);
+                            printf("%f\n", result);
                         }
 
-                        if (m_csvFile.is_open())
+                        if (csv_file_.is_open())
                         {
-                            csvContent << fResult << ",";
+                            csv_content << result << ",";
                         }
 
-                        if (verifyCounters)
+                        if (verify_counters)
                         {
-                            ValidateData(sampleId, pCounterName, fResult, counterUsageType);
+                            ValidateData(profile_set, sample_id, counter_name, result, counter_usage_type, confirm_success);
                         }
                     }
                     else
                     {
-                        if (outputToConsole)
+                        if (output_to_console)
                         {
-                            printf("unhandled type (%d).\n", counterType);
+                            printf("unhandled type (%d).\n", counter_type);
                         }
 
-                        if (m_csvFile.is_open())
+                        if (csv_file_.is_open())
                         {
-                            csvContent << "unhandled type,";
+                            csv_content << "unhandled type,";
                         }
                     }
                 }
             }
 
-            // Output the counter results to the csv file
-            if (m_csvFile.is_open())
+            // Output the counter results to the csv file.
+            if (csv_file_.is_open())
             {
-                if (!m_bHeaderWritten)
+                if (!is_header_written_)
                 {
-                    m_csvFile << csvHeader.str() << std::endl;
-                    m_bHeaderWritten = true;
+                    csv_file_ << csv_header.str() << std::endl;
+                    is_header_written_ = true;
                 }
 
-                m_csvFile << csvContent.str() << std::endl;
+                csv_file_ << csv_content.str() << std::endl;
             }
         }
     }
 
-    free(pResultsBuffer);
+    free(results_buffer);
 }

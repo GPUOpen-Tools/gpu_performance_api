@@ -1,164 +1,164 @@
 //==============================================================================
-// Copyright (c) 2015-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief PublicCounterDefinitions for DX11GFX9 for testing
+// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief PublicCounterDefinitions for DX11 GFX9 for testing.
 //==============================================================================
 
 // *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
 
-#ifndef _GPA_TESTS_COUNTERS_PUBLIC_DX11GFX9_
-#define _GPA_TESTS_COUNTERS_PUBLIC_DX11GFX9_
+#ifndef GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX11_GFX9
+#define GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX11_GFX9
 
-#include "gpa_counter_desc.h"
+#include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
 /// Macros for DX11Gfx9 Public counter index
-#define GPUTimePublicDX11Gfx9 0
-#define GPUBusyPublicDX11Gfx9 1
-#define GPUBusyCyclesPublicDX11Gfx9 2
-#define TessellatorBusyPublicDX11Gfx9 3
-#define TessellatorBusyCyclesPublicDX11Gfx9 4
-#define VSBusyPublicDX11Gfx9 5
-#define VSBusyCyclesPublicDX11Gfx9 6
-#define VSTimePublicDX11Gfx9 7
-#define HSBusyPublicDX11Gfx9 8
-#define HSBusyCyclesPublicDX11Gfx9 9
-#define HSTimePublicDX11Gfx9 10
-#define GSBusyPublicDX11Gfx9 11
-#define GSBusyCyclesPublicDX11Gfx9 12
-#define GSTimePublicDX11Gfx9 13
-#define PSBusyPublicDX11Gfx9 14
-#define PSBusyCyclesPublicDX11Gfx9 15
-#define PSTimePublicDX11Gfx9 16
-#define CSBusyPublicDX11Gfx9 17
-#define CSBusyCyclesPublicDX11Gfx9 18
-#define CSTimePublicDX11Gfx9 19
-#define VSVerticesInPublicDX11Gfx9 20
-#define VSVALUInstCountPublicDX11Gfx9 21
-#define VSSALUInstCountPublicDX11Gfx9 22
-#define VSVALUBusyPublicDX11Gfx9 23
-#define VSVALUBusyCyclesPublicDX11Gfx9 24
-#define VSSALUBusyPublicDX11Gfx9 25
-#define VSSALUBusyCyclesPublicDX11Gfx9 26
-#define HSPatchesPublicDX11Gfx9 27
-#define HSVALUInstCountPublicDX11Gfx9 28
-#define HSSALUInstCountPublicDX11Gfx9 29
-#define HSVALUBusyPublicDX11Gfx9 30
-#define HSVALUBusyCyclesPublicDX11Gfx9 31
-#define HSSALUBusyPublicDX11Gfx9 32
-#define HSSALUBusyCyclesPublicDX11Gfx9 33
-#define GSPrimsInPublicDX11Gfx9 34
-#define GSVerticesOutPublicDX11Gfx9 35
-#define GSVALUInstCountPublicDX11Gfx9 36
-#define GSSALUInstCountPublicDX11Gfx9 37
-#define GSVALUBusyPublicDX11Gfx9 38
-#define GSVALUBusyCyclesPublicDX11Gfx9 39
-#define GSSALUBusyPublicDX11Gfx9 40
-#define GSSALUBusyCyclesPublicDX11Gfx9 41
-#define PrimitiveAssemblyBusyPublicDX11Gfx9 42
-#define PrimitiveAssemblyBusyCyclesPublicDX11Gfx9 43
-#define PrimitivesInPublicDX11Gfx9 44
-#define CulledPrimsPublicDX11Gfx9 45
-#define ClippedPrimsPublicDX11Gfx9 46
-#define PAStalledOnRasterizerPublicDX11Gfx9 47
-#define PAStalledOnRasterizerCyclesPublicDX11Gfx9 48
-#define PSPixelsOutPublicDX11Gfx9 49
-#define PSExportStallsPublicDX11Gfx9 50
-#define PSExportStallsCyclesPublicDX11Gfx9 51
-#define PSVALUInstCountPublicDX11Gfx9 52
-#define PSSALUInstCountPublicDX11Gfx9 53
-#define PSVALUBusyPublicDX11Gfx9 54
-#define PSVALUBusyCyclesPublicDX11Gfx9 55
-#define PSSALUBusyPublicDX11Gfx9 56
-#define PSSALUBusyCyclesPublicDX11Gfx9 57
-#define CSThreadGroupsPublicDX11Gfx9 58
-#define CSWavefrontsPublicDX11Gfx9 59
-#define CSThreadsPublicDX11Gfx9 60
-#define CSVALUInstsPublicDX11Gfx9 61
-#define CSVALUUtilizationPublicDX11Gfx9 62
-#define CSSALUInstsPublicDX11Gfx9 63
-#define CSVFetchInstsPublicDX11Gfx9 64
-#define CSSFetchInstsPublicDX11Gfx9 65
-#define CSVWriteInstsPublicDX11Gfx9 66
-#define CSFlatVMemInstsPublicDX11Gfx9 67
-#define CSVALUBusyPublicDX11Gfx9 68
-#define CSVALUBusyCyclesPublicDX11Gfx9 69
-#define CSSALUBusyPublicDX11Gfx9 70
-#define CSSALUBusyCyclesPublicDX11Gfx9 71
-#define CSMemUnitBusyPublicDX11Gfx9 72
-#define CSMemUnitBusyCyclesPublicDX11Gfx9 73
-#define CSMemUnitStalledPublicDX11Gfx9 74
-#define CSMemUnitStalledCyclesPublicDX11Gfx9 75
-#define CSWriteUnitStalledPublicDX11Gfx9 76
-#define CSWriteUnitStalledCyclesPublicDX11Gfx9 77
-#define CSGDSInstsPublicDX11Gfx9 78
-#define CSLDSInstsPublicDX11Gfx9 79
-#define CSFlatLDSInstsPublicDX11Gfx9 80
-#define CSALUStalledByLDSPublicDX11Gfx9 81
-#define CSALUStalledByLDSCyclesPublicDX11Gfx9 82
-#define CSLDSBankConflictPublicDX11Gfx9 83
-#define CSLDSBankConflictCyclesPublicDX11Gfx9 84
-#define TexUnitBusyPublicDX11Gfx9 85
-#define TexUnitBusyCyclesPublicDX11Gfx9 86
-#define TexTriFilteringPctPublicDX11Gfx9 87
-#define TexTriFilteringCountPublicDX11Gfx9 88
-#define NoTexTriFilteringCountPublicDX11Gfx9 89
-#define TexVolFilteringPctPublicDX11Gfx9 90
-#define TexVolFilteringCountPublicDX11Gfx9 91
-#define NoTexVolFilteringCountPublicDX11Gfx9 92
-#define TexAveAnisotropyPublicDX11Gfx9 93
-#define DepthStencilTestBusyPublicDX11Gfx9 94
-#define DepthStencilTestBusyCountPublicDX11Gfx9 95
-#define HiZTilesAcceptedPublicDX11Gfx9 96
-#define HiZTilesAcceptedCountPublicDX11Gfx9 97
-#define HiZTilesRejectedCountPublicDX11Gfx9 98
-#define PreZTilesDetailCulledPublicDX11Gfx9 99
-#define PreZTilesDetailCulledCountPublicDX11Gfx9 100
-#define PreZTilesDetailSurvivingCountPublicDX11Gfx9 101
-#define HiZQuadsCulledPublicDX11Gfx9 102
-#define HiZQuadsCulledCountPublicDX11Gfx9 103
-#define HiZQuadsAcceptedCountPublicDX11Gfx9 104
-#define PreZQuadsCulledPublicDX11Gfx9 105
-#define PreZQuadsCulledCountPublicDX11Gfx9 106
-#define PreZQuadsSurvivingCountPublicDX11Gfx9 107
-#define PostZQuadsPublicDX11Gfx9 108
-#define PostZQuadCountPublicDX11Gfx9 109
-#define PreZSamplesPassingPublicDX11Gfx9 110
-#define PreZSamplesFailingSPublicDX11Gfx9 111
-#define PreZSamplesFailingZPublicDX11Gfx9 112
-#define PostZSamplesPassingPublicDX11Gfx9 113
-#define PostZSamplesFailingSPublicDX11Gfx9 114
-#define PostZSamplesFailingZPublicDX11Gfx9 115
-#define ZUnitStalledPublicDX11Gfx9 116
-#define ZUnitStalledCyclesPublicDX11Gfx9 117
-#define DBMemReadPublicDX11Gfx9 118
-#define DBMemWrittenPublicDX11Gfx9 119
-#define CBMemReadPublicDX11Gfx9 120
-#define CBColorAndMaskReadPublicDX11Gfx9 121
-#define CBMemWrittenPublicDX11Gfx9 122
-#define CBColorAndMaskWrittenPublicDX11Gfx9 123
-#define CBSlowPixelPctPublicDX11Gfx9 124
-#define CBSlowPixelCountPublicDX11Gfx9 125
-#define FetchSizePublicDX11Gfx9 126
-#define WriteSizePublicDX11Gfx9 127
-#define L1CacheHitPublicDX11Gfx9 128
-#define L1CacheHitCountPublicDX11Gfx9 129
-#define L1CacheMissCountPublicDX11Gfx9 130
-#define L2CacheHitPublicDX11Gfx9 131
-#define L2CacheMissPublicDX11Gfx9 132
-#define L2CacheHitCountPublicDX11Gfx9 133
-#define L2CacheMissCountPublicDX11Gfx9 134
-#define MemUnitBusyPublicDX11Gfx9 135
-#define MemUnitBusyCyclesPublicDX11Gfx9 136
-#define MemUnitStalledPublicDX11Gfx9 137
-#define MemUnitStalledCyclesPublicDX11Gfx9 138
-#define WriteUnitStalledPublicDX11Gfx9 139
-#define WriteUnitStalledCyclesPublicDX11Gfx9 140
+#define GPUTIME_PUBLIC_DX11_GFX9 0
+#define GPUBUSY_PUBLIC_DX11_GFX9 1
+#define GPUBUSYCYCLES_PUBLIC_DX11_GFX9 2
+#define TESSELLATORBUSY_PUBLIC_DX11_GFX9 3
+#define TESSELLATORBUSYCYCLES_PUBLIC_DX11_GFX9 4
+#define VSBUSY_PUBLIC_DX11_GFX9 5
+#define VSBUSYCYCLES_PUBLIC_DX11_GFX9 6
+#define VSTIME_PUBLIC_DX11_GFX9 7
+#define HSBUSY_PUBLIC_DX11_GFX9 8
+#define HSBUSYCYCLES_PUBLIC_DX11_GFX9 9
+#define HSTIME_PUBLIC_DX11_GFX9 10
+#define GSBUSY_PUBLIC_DX11_GFX9 11
+#define GSBUSYCYCLES_PUBLIC_DX11_GFX9 12
+#define GSTIME_PUBLIC_DX11_GFX9 13
+#define PSBUSY_PUBLIC_DX11_GFX9 14
+#define PSBUSYCYCLES_PUBLIC_DX11_GFX9 15
+#define PSTIME_PUBLIC_DX11_GFX9 16
+#define CSBUSY_PUBLIC_DX11_GFX9 17
+#define CSBUSYCYCLES_PUBLIC_DX11_GFX9 18
+#define CSTIME_PUBLIC_DX11_GFX9 19
+#define VSVERTICESIN_PUBLIC_DX11_GFX9 20
+#define VSVALUINSTCOUNT_PUBLIC_DX11_GFX9 21
+#define VSSALUINSTCOUNT_PUBLIC_DX11_GFX9 22
+#define VSVALUBUSY_PUBLIC_DX11_GFX9 23
+#define VSVALUBUSYCYCLES_PUBLIC_DX11_GFX9 24
+#define VSSALUBUSY_PUBLIC_DX11_GFX9 25
+#define VSSALUBUSYCYCLES_PUBLIC_DX11_GFX9 26
+#define HSPATCHES_PUBLIC_DX11_GFX9 27
+#define HSVALUINSTCOUNT_PUBLIC_DX11_GFX9 28
+#define HSSALUINSTCOUNT_PUBLIC_DX11_GFX9 29
+#define HSVALUBUSY_PUBLIC_DX11_GFX9 30
+#define HSVALUBUSYCYCLES_PUBLIC_DX11_GFX9 31
+#define HSSALUBUSY_PUBLIC_DX11_GFX9 32
+#define HSSALUBUSYCYCLES_PUBLIC_DX11_GFX9 33
+#define GSPRIMSIN_PUBLIC_DX11_GFX9 34
+#define GSVERTICESOUT_PUBLIC_DX11_GFX9 35
+#define GSVALUINSTCOUNT_PUBLIC_DX11_GFX9 36
+#define GSSALUINSTCOUNT_PUBLIC_DX11_GFX9 37
+#define GSVALUBUSY_PUBLIC_DX11_GFX9 38
+#define GSVALUBUSYCYCLES_PUBLIC_DX11_GFX9 39
+#define GSSALUBUSY_PUBLIC_DX11_GFX9 40
+#define GSSALUBUSYCYCLES_PUBLIC_DX11_GFX9 41
+#define PRIMITIVEASSEMBLYBUSY_PUBLIC_DX11_GFX9 42
+#define PRIMITIVEASSEMBLYBUSYCYCLES_PUBLIC_DX11_GFX9 43
+#define PRIMITIVESIN_PUBLIC_DX11_GFX9 44
+#define CULLEDPRIMS_PUBLIC_DX11_GFX9 45
+#define CLIPPEDPRIMS_PUBLIC_DX11_GFX9 46
+#define PASTALLEDONRASTERIZER_PUBLIC_DX11_GFX9 47
+#define PASTALLEDONRASTERIZERCYCLES_PUBLIC_DX11_GFX9 48
+#define PSPIXELSOUT_PUBLIC_DX11_GFX9 49
+#define PSEXPORTSTALLS_PUBLIC_DX11_GFX9 50
+#define PSEXPORTSTALLSCYCLES_PUBLIC_DX11_GFX9 51
+#define PSVALUINSTCOUNT_PUBLIC_DX11_GFX9 52
+#define PSSALUINSTCOUNT_PUBLIC_DX11_GFX9 53
+#define PSVALUBUSY_PUBLIC_DX11_GFX9 54
+#define PSVALUBUSYCYCLES_PUBLIC_DX11_GFX9 55
+#define PSSALUBUSY_PUBLIC_DX11_GFX9 56
+#define PSSALUBUSYCYCLES_PUBLIC_DX11_GFX9 57
+#define CSTHREADGROUPS_PUBLIC_DX11_GFX9 58
+#define CSWAVEFRONTS_PUBLIC_DX11_GFX9 59
+#define CSTHREADS_PUBLIC_DX11_GFX9 60
+#define CSVALUINSTS_PUBLIC_DX11_GFX9 61
+#define CSVALUUTILIZATION_PUBLIC_DX11_GFX9 62
+#define CSSALUINSTS_PUBLIC_DX11_GFX9 63
+#define CSVFETCHINSTS_PUBLIC_DX11_GFX9 64
+#define CSSFETCHINSTS_PUBLIC_DX11_GFX9 65
+#define CSVWRITEINSTS_PUBLIC_DX11_GFX9 66
+#define CSFLATVMEMINSTS_PUBLIC_DX11_GFX9 67
+#define CSVALUBUSY_PUBLIC_DX11_GFX9 68
+#define CSVALUBUSYCYCLES_PUBLIC_DX11_GFX9 69
+#define CSSALUBUSY_PUBLIC_DX11_GFX9 70
+#define CSSALUBUSYCYCLES_PUBLIC_DX11_GFX9 71
+#define CSMEMUNITBUSY_PUBLIC_DX11_GFX9 72
+#define CSMEMUNITBUSYCYCLES_PUBLIC_DX11_GFX9 73
+#define CSMEMUNITSTALLED_PUBLIC_DX11_GFX9 74
+#define CSMEMUNITSTALLEDCYCLES_PUBLIC_DX11_GFX9 75
+#define CSWRITEUNITSTALLED_PUBLIC_DX11_GFX9 76
+#define CSWRITEUNITSTALLEDCYCLES_PUBLIC_DX11_GFX9 77
+#define CSGDSINSTS_PUBLIC_DX11_GFX9 78
+#define CSLDSINSTS_PUBLIC_DX11_GFX9 79
+#define CSFLATLDSINSTS_PUBLIC_DX11_GFX9 80
+#define CSALUSTALLEDBYLDS_PUBLIC_DX11_GFX9 81
+#define CSALUSTALLEDBYLDSCYCLES_PUBLIC_DX11_GFX9 82
+#define CSLDSBANKCONFLICT_PUBLIC_DX11_GFX9 83
+#define CSLDSBANKCONFLICTCYCLES_PUBLIC_DX11_GFX9 84
+#define TEXUNITBUSY_PUBLIC_DX11_GFX9 85
+#define TEXUNITBUSYCYCLES_PUBLIC_DX11_GFX9 86
+#define TEXTRIFILTERINGPCT_PUBLIC_DX11_GFX9 87
+#define TEXTRIFILTERINGCOUNT_PUBLIC_DX11_GFX9 88
+#define NOTEXTRIFILTERINGCOUNT_PUBLIC_DX11_GFX9 89
+#define TEXVOLFILTERINGPCT_PUBLIC_DX11_GFX9 90
+#define TEXVOLFILTERINGCOUNT_PUBLIC_DX11_GFX9 91
+#define NOTEXVOLFILTERINGCOUNT_PUBLIC_DX11_GFX9 92
+#define TEXAVEANISOTROPY_PUBLIC_DX11_GFX9 93
+#define DEPTHSTENCILTESTBUSY_PUBLIC_DX11_GFX9 94
+#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_DX11_GFX9 95
+#define HIZTILESACCEPTED_PUBLIC_DX11_GFX9 96
+#define HIZTILESACCEPTEDCOUNT_PUBLIC_DX11_GFX9 97
+#define HIZTILESREJECTEDCOUNT_PUBLIC_DX11_GFX9 98
+#define PREZTILESDETAILCULLED_PUBLIC_DX11_GFX9 99
+#define PREZTILESDETAILCULLEDCOUNT_PUBLIC_DX11_GFX9 100
+#define PREZTILESDETAILSURVIVINGCOUNT_PUBLIC_DX11_GFX9 101
+#define HIZQUADSCULLED_PUBLIC_DX11_GFX9 102
+#define HIZQUADSCULLEDCOUNT_PUBLIC_DX11_GFX9 103
+#define HIZQUADSACCEPTEDCOUNT_PUBLIC_DX11_GFX9 104
+#define PREZQUADSCULLED_PUBLIC_DX11_GFX9 105
+#define PREZQUADSCULLEDCOUNT_PUBLIC_DX11_GFX9 106
+#define PREZQUADSSURVIVINGCOUNT_PUBLIC_DX11_GFX9 107
+#define POSTZQUADS_PUBLIC_DX11_GFX9 108
+#define POSTZQUADCOUNT_PUBLIC_DX11_GFX9 109
+#define PREZSAMPLESPASSING_PUBLIC_DX11_GFX9 110
+#define PREZSAMPLESFAILINGS_PUBLIC_DX11_GFX9 111
+#define PREZSAMPLESFAILINGZ_PUBLIC_DX11_GFX9 112
+#define POSTZSAMPLESPASSING_PUBLIC_DX11_GFX9 113
+#define POSTZSAMPLESFAILINGS_PUBLIC_DX11_GFX9 114
+#define POSTZSAMPLESFAILINGZ_PUBLIC_DX11_GFX9 115
+#define ZUNITSTALLED_PUBLIC_DX11_GFX9 116
+#define ZUNITSTALLEDCYCLES_PUBLIC_DX11_GFX9 117
+#define DBMEMREAD_PUBLIC_DX11_GFX9 118
+#define DBMEMWRITTEN_PUBLIC_DX11_GFX9 119
+#define CBMEMREAD_PUBLIC_DX11_GFX9 120
+#define CBCOLORANDMASKREAD_PUBLIC_DX11_GFX9 121
+#define CBMEMWRITTEN_PUBLIC_DX11_GFX9 122
+#define CBCOLORANDMASKWRITTEN_PUBLIC_DX11_GFX9 123
+#define CBSLOWPIXELPCT_PUBLIC_DX11_GFX9 124
+#define CBSLOWPIXELCOUNT_PUBLIC_DX11_GFX9 125
+#define FETCHSIZE_PUBLIC_DX11_GFX9 126
+#define WRITESIZE_PUBLIC_DX11_GFX9 127
+#define L1CACHEHIT_PUBLIC_DX11_GFX9 128
+#define L1CACHEHITCOUNT_PUBLIC_DX11_GFX9 129
+#define L1CACHEMISSCOUNT_PUBLIC_DX11_GFX9 130
+#define L2CACHEHIT_PUBLIC_DX11_GFX9 131
+#define L2CACHEMISS_PUBLIC_DX11_GFX9 132
+#define L2CACHEHITCOUNT_PUBLIC_DX11_GFX9 133
+#define L2CACHEMISSCOUNT_PUBLIC_DX11_GFX9 134
+#define MEMUNITBUSY_PUBLIC_DX11_GFX9 135
+#define MEMUNITBUSYCYCLES_PUBLIC_DX11_GFX9 136
+#define MEMUNITSTALLED_PUBLIC_DX11_GFX9 137
+#define MEMUNITSTALLEDCYCLES_PUBLIC_DX11_GFX9 138
+#define WRITEUNITSTALLED_PUBLIC_DX11_GFX9 139
+#define WRITEUNITSTALLEDCYCLES_PUBLIC_DX11_GFX9 140
 
-/// Number of public counters for DX11Gfx9
-const size_t DX11GFX9_PUBLIC_COUNTER_COUNT = 141;
+/// Number of public counters for DX11 GFX9 
+const size_t kDx11Gfx9PublicCounterCount = 141;
 
-/// Array of public counters for DX11Gfx9
-extern const GPACounterDesc DX11GFX9_PUBLIC_COUNTERS[DX11GFX9_PUBLIC_COUNTER_COUNT];
+/// Array of public counters for DX11 GFX9 
+extern const GpaCounterDesc kDx11Gfx9PublicCounters[kDx11Gfx9PublicCounterCount];
 
-#endif  // _GPA_TESTS_COUNTERS_PUBLIC_DX11GFX9_
+#endif  // GPA_AUTO_GEN_UNIT_TESTS_COUNTERS_PUBLIC_DX11_GFX9

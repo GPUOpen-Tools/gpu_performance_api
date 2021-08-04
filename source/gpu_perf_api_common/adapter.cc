@@ -1,82 +1,83 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Query adapters' info from GDI32.
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Query adapters' info from GDI32.
 //==============================================================================
+
+#include "gpu_perf_api_common/adapter.h"
 
 #include <cassert>
 #include <sstream>
 
-#include "adapter.h"
-#include "logging.h"
-#include "utility.h"
+#include "gpu_perf_api_common/logging.h"
+#include "gpu_perf_api_common/utility.h"
 
-bool Adapter::getAsicInfoList(AsicInfoList& asicInfoList) const
+bool Adapter::GetAsicInfoList(AsicInfoList& asic_info_list) const
 {
-    IDXGIFactory* pDxgiFactory = nullptr;
-    HRESULT       hr           = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&pDxgiFactory));
-    bool          retVal       = false;
+    IDXGIFactory* dxgi_factory = nullptr;
+    HRESULT       hr           = CreateDXGIFactory(__uuidof(IDXGIFactory), reinterpret_cast<void**>(&dxgi_factory));
+    bool          ret_val      = false;
 
     if (SUCCEEDED(hr))
     {
-        retVal = true;
+        ret_val = true;
         typedef std::vector<DXGI_ADAPTER_DESC> DxgiAdapterDescList;
-        static const size_t                    DxgiAdapterDescListInitalSize = 32;
-        DxgiAdapterDescList                    dxgiAdapterDescList(DxgiAdapterDescListInitalSize);
-        UINT                                   adapterIndex = 0;
+        static const size_t                    kDxgiAdapterDescListInitialSize = 32;
+        DxgiAdapterDescList                    dxgi_adapter_desc_list(kDxgiAdapterDescListInitialSize);
+        UINT                                   adapter_index = 0;
 
         while (SUCCEEDED(hr))
         {
-            IDXGIAdapter* pDxgiAdapter = nullptr;
-            hr                         = pDxgiFactory->EnumAdapters(adapterIndex, &pDxgiAdapter);
+            IDXGIAdapter* dxgi_adapter = nullptr;
+            hr                         = dxgi_factory->EnumAdapters(adapter_index, &dxgi_adapter);
 
             if (SUCCEEDED(hr))
             {
-                hr = pDxgiAdapter->GetDesc(&(dxgiAdapterDescList[adapterIndex]));
+                hr = dxgi_adapter->GetDesc(&(dxgi_adapter_desc_list[adapter_index]));
 #ifdef _DEBUG
                 assert(SUCCEEDED(hr));
-#endif  // _DEBUG
-                pDxgiAdapter->Release();
+#endif
+                dxgi_adapter->Release();
             }
 
-            ++adapterIndex;
+            ++adapter_index;
 
-            if (dxgiAdapterDescList.size() <= adapterIndex)
+            if (dxgi_adapter_desc_list.size() <= adapter_index)
             {
-                dxgiAdapterDescList.resize(2 * dxgiAdapterDescList.size());
+                dxgi_adapter_desc_list.resize(2 * dxgi_adapter_desc_list.size());
             }
         }
 
-        // DXGI_ERROR_NOT_FOUND means enum adapters reached the last adapter
+        // DXGI_ERROR_NOT_FOUND means enum adapters reached the last adapter.
         if (DXGI_ERROR_NOT_FOUND != hr)
         {
-            retVal = false;
+            ret_val = false;
         }
         else
         {
-            const size_t listSize = adapterIndex > 0 ? adapterIndex - 1 : 0;
-            asicInfoList.resize(listSize);
+            const size_t list_size = adapter_index > 0 ? adapter_index - 1 : 0;
+            asic_info_list.resize(list_size);
 
-            for (size_t aii = 0; listSize > aii; ++aii)
+            for (size_t aii = 0; list_size > aii; ++aii)
             {
-                dxgiAdapterDescToAsicInfo(dxgiAdapterDescList[aii], asicInfoList[aii]);
+                DxgiAdapterDescToAsicInfo(dxgi_adapter_desc_list[aii], asic_info_list[aii]);
             }
         }
 
-        pDxgiFactory->Release();
+        dxgi_factory->Release();
     }
 
-    return retVal;
+    return ret_val;
 }
 
-void Adapter::dxgiAdapterDescToAsicInfo(const DXGI_ADAPTER_DESC& dxgiAdapterDesc, ADLUtil_ASICInfo& asicInfo)
+void Adapter::DxgiAdapterDescToAsicInfo(const DXGI_ADAPTER_DESC& dxgi_adapter_desc, ADLUtil_ASICInfo& asic_info)
 {
-    GPAUtil::wcstringToString(dxgiAdapterDesc.Description, asicInfo.adapterName);
-    std::stringstream strStream;
-    strStream << std::hex << dxgiAdapterDesc.DeviceId;
-    asicInfo.deviceIDString = strStream.str();
-    asicInfo.vendorID       = dxgiAdapterDesc.VendorId;
-    asicInfo.deviceID       = dxgiAdapterDesc.DeviceId;
-    asicInfo.revID          = dxgiAdapterDesc.Revision;
+    gpa_util::WideCharArrayToString(dxgi_adapter_desc.Description, asic_info.adapterName);
+    std::stringstream str_stream;
+    str_stream << std::hex << dxgi_adapter_desc.DeviceId;
+    asic_info.deviceIDString = str_stream.str();
+    asic_info.vendorID       = dxgi_adapter_desc.VendorId;
+    asic_info.deviceID       = dxgi_adapter_desc.DeviceId;
+    asic_info.revID          = dxgi_adapter_desc.Revision;
 }

@@ -1,23 +1,23 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_GetUsageTypeAsStr
-@@@@@@@@@@@@@@@@@@@@@
+GpaGetUsageTypeAsStr
+@@@@@@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_GetUsageTypeAsStr(
-        GPA_Usage_Type counterUsageType,
-        const char** ppUsageTypeStr);
+    GpaStatus GpaGetUsageTypeAsStr(
+        GpaUsageType counter_usage_type,
+        const char** usage_type_str);
 
 Description
 %%%%%%%%%%%
 
 Gets a string representation of the specified counter usage type. This could be
 used to display counter units along with their name or value. For example, the
-GPA_USAGE_TYPE_PERCENTAGE ``counterUsageType`` would return "percentage".
+kGpaUsageTypePercentage ``usage_type_str`` would return "percentage".
 
 Parameters
 %%%%%%%%%%
@@ -26,8 +26,8 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``counterUsageType``", "The usage type whose string representation is needed."
-    "``ppUsageTypeStr``", "The address which will hold the string representation upon successful execution."
+    "``counter_usage_type``", "The usage type whose string representation is needed."
+    "``usage_type_str``", "The address which will hold the string representation upon successful execution."
 
 Return value
 %%%%%%%%%%%%
@@ -36,7 +36,7 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The string representation was successfully retrieved."
-    "GPA_STATUS_ERROR_NULL_POINTER", "The supplied ``ppUsageTypeStr`` parameter is NULL."
-    "GPA_STATUS_ERROR_INVALID_PARAMETER", "The ``counterUsageType`` parameter has an invalid value."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The string representation was successfully retrieved."
+    "kGpaStatusErrorNullPointer", "The supplied ``usage_type_str`` parameter is NULL."
+    "kGpaStatusErrorInvalidParameter", "The ``counter_usage_type`` parameter has an invalid value."
+    "kGpaStatusErrorException", "Exception occurred."

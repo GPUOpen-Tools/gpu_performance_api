@@ -1,163 +1,167 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  DX12 GPA Pass Object Implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  DX12 GPA Pass Object Implementation
 //==============================================================================
 
-#include "dx12_gpa_pass.h"
-#include "gpa_counter_generator_dx12_base.h"
-#include "dx12_gpa_context.h"
-#include "dx12_gpa_sample.h"
-#include "dx12_gpa_command_list.h"
-#include "dx12_utils.h"
-#include "gpa_context_counter_mediator.h"
+#include "gpu_perf_api_dx12/dx12_gpa_pass.h"
 
-DX12GPAPass::DX12GPAPass(IGPASession* pGpaSession, PassIndex passIndex, GPACounterSource counterSource, CounterList* pPassCounters)
-    : GPAPass(pGpaSession, passIndex, counterSource, pPassCounters)
-    , m_amdExtsampleConfig()
-    , m_isSampleConfigInitialized(false)
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12_base.h"
+
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
+
+#include "gpu_perf_api_dx12/dx12_gpa_command_list.h"
+#include "gpu_perf_api_dx12/dx12_gpa_context.h"
+#include "gpu_perf_api_dx12/dx12_gpa_sample.h"
+#include "gpu_perf_api_dx12/dx12_utils.h"
+
+Dx12GpaPass::Dx12GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSource counter_source, CounterList* pass_counters)
+    : GpaPass(gpa_session, pass_index, counter_source, pass_counters)
+    , amd_ext_sample_config_()
+    , is_sample_config_initialized_(false)
 {
     InitializeSampleConfig();
 }
 
-GPASample* DX12GPAPass::CreateAPISpecificSample(IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
+GpaSample* Dx12GpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
 {
-    DX12GPASample*      pRetDx12GpaSample = nullptr;
-    DX12GPACommandList* pDx12GpaCmdList   = reinterpret_cast<DX12GPACommandList*>(pCmdList);
+    Dx12GpaSample*      ret_dx12_gpa_sample = nullptr;
+    Dx12GpaCommandList* dx12_gpa_cmd_list   = reinterpret_cast<Dx12GpaCommandList*>(cmd_list);
 
-    // First Check whether the command list is opened and last sample is closed
-    if (nullptr != pDx12GpaCmdList && nullptr == pDx12GpaCmdList->GetSample(sampleId) && pDx12GpaCmdList->IsCommandListRunning() &&
-        pDx12GpaCmdList->IsLastSampleClosed())
+    // First Check whether the command list is opened and last sample is closed.
+    if (nullptr != dx12_gpa_cmd_list && nullptr == dx12_gpa_cmd_list->GetSample(sample_id) && dx12_gpa_cmd_list->IsCommandListRunning() &&
+        dx12_gpa_cmd_list->IsLastSampleClosed())
     {
-        pRetDx12GpaSample = new (std::nothrow) DX12GPASample(this, pCmdList, sampleType, sampleId);
+        ret_dx12_gpa_sample = new (std::nothrow) Dx12GpaSample(this, cmd_list, sample_type, sample_id);
     }
 
-    return pRetDx12GpaSample;
+    return ret_dx12_gpa_sample;
 }
 
-bool DX12GPAPass::UpdateResults()
+bool Dx12GpaPass::UpdateResults()
 {
-    bool isCompleted = false;
+    bool is_completed = false;
 
-    if (GPA_STATUS_OK == IsComplete())
+    if (kGpaStatusOk == IsComplete())
     {
-        isCompleted = GPAPass::UpdateResults();
+        is_completed = GpaPass::UpdateResults();
 
-        if (isCompleted)
+        if (is_completed)
         {
             ResetPass();
         }
     }
 
-    return isCompleted;
+    return is_completed;
 }
 
-IGPACommandList* DX12GPAPass::CreateAPISpecificCommandList(void* pCmd, CommandListId commandListId, GPA_Command_List_Type cmdType)
+IGpaCommandList* Dx12GpaPass::CreateApiSpecificCommandList(void* cmd, CommandListId command_list_id, GpaCommandListType cmd_type)
 {
-    IGPACommandList* pRetCmdList = nullptr;
+    IGpaCommandList* ret_cmd_list = nullptr;
 
-    D3D12_COMMAND_LIST_TYPE commandListType;
+    D3D12_COMMAND_LIST_TYPE command_list_type;
 
-    if (DX12Utils::IsD3D12CommandList(pCmd, &commandListType))
+    if (dx12_utils::IsD3D12CommandList(cmd, &command_list_type))
     {
-        if (commandListType != D3D12_COMMAND_LIST_TYPE_COPY)
+        if (command_list_type != D3D12_COMMAND_LIST_TYPE_COPY)
         {
-            DX12GPACommandList* pDx12GpaCmdList =
-                new (std::nothrow) DX12GPACommandList(reinterpret_cast<DX12GPASession*>(GetGpaSession()), this, pCmd, commandListId, cmdType);
+            Dx12GpaCommandList* dx12_gpa_cmd_list =
+                new (std::nothrow) Dx12GpaCommandList(reinterpret_cast<Dx12GpaSession*>(GetGpaSession()), this, cmd, command_list_id, cmd_type);
 
-            if (nullptr != pDx12GpaCmdList)
+            if (nullptr != dx12_gpa_cmd_list)
             {
-                pRetCmdList = pDx12GpaCmdList;
+                ret_cmd_list = dx12_gpa_cmd_list;
             }
         }
         else
         {
-            GPA_LogError("Copy command lists are not supported.");
+            GPA_LOG_ERROR("Copy command lists are not supported.");
         }
     }
 
-    return pRetCmdList;
+    return ret_cmd_list;
 }
 
-bool DX12GPAPass::EndSample(IGPACommandList* pCmdList)
+bool Dx12GpaPass::EndSample(IGpaCommandList* cmd_list)
 {
     bool success = false;
 
-    if (nullptr != pCmdList && pCmdList->IsCommandListRunning() && !pCmdList->IsLastSampleClosed())
+    if (nullptr != cmd_list && cmd_list->IsCommandListRunning() && !cmd_list->IsLastSampleClosed())
     {
-        GPASample* pGpaSample = pCmdList->GetLastSample();
+        GpaSample* gpa_sample = cmd_list->GetLastSample();
 
-        if (nullptr != pGpaSample && !pGpaSample->IsClosed())
+        if (nullptr != gpa_sample && !gpa_sample->IsClosed())
         {
-            success = pCmdList->CloseLastSample();
+            success = cmd_list->CloseLastSample();
         }
     }
     else
     {
-        GPA_LogError("Either the command list is closed or there is no open sample on the command list.");
+        GPA_LOG_ERROR("Either the command list is closed or there is no open sample on the command list.");
     }
 
     return success;
 }
 
-bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples,
-                                       DX12GPACommandList*         pDx12PrimaryGpaCmdList,
-                                       DX12GPACommandList*         pDx12SecondaryGpaCmdList)
+bool Dx12GpaPass::CopySecondarySamples(std::vector<ClientSampleId> client_samples,
+                                       Dx12GpaCommandList*         dx12_primary_gpa_cmd_list,
+                                       Dx12GpaCommandList*         dx12_secondary_gpa_cmd_list)
 {
     bool success = false;
 
-    // 1. Validate all new sample id are unique
-    // 2. Create new samples for new passed sample id
-    // 3. Update the session <-> CommandList Map
+    // 1. Validate all new sample id are unique.
+    // 2. Create new samples for new passed sample id.
+    // 3. Update the session <-> CommandList Map.
 
-    bool isAllUniqueSampleIds = true;
+    bool is_all_unique_sample_ids = true;
 
-    for (auto iter = clientSamples.cbegin(); iter != clientSamples.cend(); ++iter)
+    for (auto iter = client_samples.cbegin(); iter != client_samples.cend(); ++iter)
     {
-        isAllUniqueSampleIds &= !DoesSampleExist(*iter);
+        is_all_unique_sample_ids &= !DoesSampleExist(*iter);
     }
 
-    if (isAllUniqueSampleIds)
+    if (is_all_unique_sample_ids)
     {
-        if (GPA_COMMAND_LIST_PRIMARY == pDx12PrimaryGpaCmdList->GetCmdType() && GPA_COMMAND_LIST_SECONDARY == pDx12SecondaryGpaCmdList->GetCmdType())
+        if (kGpaCommandListPrimary == dx12_primary_gpa_cmd_list->GetCmdType() && kGpaCommandListSecondary == dx12_secondary_gpa_cmd_list->GetCmdType())
         {
-            if (pDx12PrimaryGpaCmdList->GetPass()->GetIndex() == pDx12SecondaryGpaCmdList->GetPass()->GetIndex())
+            if (dx12_primary_gpa_cmd_list->GetPass()->GetIndex() == dx12_secondary_gpa_cmd_list->GetPass()->GetIndex())
             {
-                // Validate
-                // 1. secondary command list is not open
-                // 2. No pending sample on the secondary command list
-                if (!pDx12SecondaryGpaCmdList->IsCommandListRunning() && pDx12SecondaryGpaCmdList->IsLastSampleClosed())
+                // Validate.
+                // 1. secondary command list is not open.
+                // 2. No pending sample on the secondary command list.
+                if (!dx12_secondary_gpa_cmd_list->IsCommandListRunning() && dx12_secondary_gpa_cmd_list->IsLastSampleClosed())
                 {
-                    // Validate
-                    // 1. primary command list is open
-                    // 2. No pending sample on the primary command list
-                    if (pDx12PrimaryGpaCmdList->IsCommandListRunning() && pDx12PrimaryGpaCmdList->IsLastSampleClosed())
+                    // Validate.
+                    // 1. primary command list is open.
+                    // 2. No pending sample on the primary command list.
+                    if (dx12_primary_gpa_cmd_list->IsCommandListRunning() && dx12_primary_gpa_cmd_list->IsLastSampleClosed())
                     {
-                        // Validate - Number of sample ids must be equal to the created sample on the secondary command list
-                        if (pDx12SecondaryGpaCmdList->GetSampleCount() == clientSamples.size())
+                        // Validate - Number of sample ids must be equal to the created sample on the secondary command list.
+                        if (dx12_secondary_gpa_cmd_list->GetSampleCount() == client_samples.size())
                         {
-                            std::vector<ClientSampleId> originalClientSampleIds;
-                            // Copy the results
+                            std::vector<ClientSampleId> original_client_sample_ids;
+                            // Copy the results.
 
                             unsigned int                index = 0;
-                            std::vector<DX12GPASample*> newSampleList;
+                            std::vector<Dx12GpaSample*> new_sample_list;
 
-                            for (auto iter = clientSamples.begin(); iter != clientSamples.end(); ++iter)
+                            for (auto iter = client_samples.begin(); iter != client_samples.end(); ++iter)
                             {
-                                GpaSampleType sampleType = GetCounterSource() == GPACounterSource::HARDWARE ? GpaSampleType::Hardware : GpaSampleType::Software;
-                                DX12GPASample* pNewSample =
-                                    reinterpret_cast<DX12GPASample*>(CreateAPISpecificSample(pDx12PrimaryGpaCmdList, sampleType, *iter));
+                                GpaSampleType sample_type =
+                                    GetCounterSource() == GpaCounterSource::kHardware ? GpaSampleType::kHardware : GpaSampleType::kSoftware;
+                                Dx12GpaSample* new_sample =
+                                    reinterpret_cast<Dx12GpaSample*>(CreateApiSpecificSample(dx12_primary_gpa_cmd_list, sample_type, *iter));
 
-                                if (nullptr != pNewSample)
+                                if (nullptr != new_sample)
                                 {
-                                    // Add this sample to command list as well to sample list
-                                    AddClientSample(*iter, pNewSample);
-                                    newSampleList.push_back(pNewSample);
+                                    // Add this sample to command list as well to sample list.
+                                    AddClientSample(*iter, new_sample);
+                                    new_sample_list.push_back(new_sample);
                                 }
                                 else
                                 {
-                                    GPA_LogError("Unable to copy secondary samples: Unable to create sample.");
+                                    GPA_LOG_ERROR("Unable to copy secondary samples: Unable to create sample.");
                                 }
 
                                 index++;
@@ -165,20 +169,20 @@ bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples
 
                             success = true;
 
-                            if (pDx12PrimaryGpaCmdList->CopyBundleSamples(clientSamples, pDx12SecondaryGpaCmdList, originalClientSampleIds))
+                            if (dx12_primary_gpa_cmd_list->CopyBundleSamples(client_samples, dx12_secondary_gpa_cmd_list, original_client_sample_ids))
                             {
                                 index = 0;
 
-                                for (auto iter = newSampleList.begin(); iter != newSampleList.end(); ++iter)
+                                for (auto iter = new_sample_list.begin(); iter != new_sample_list.end(); ++iter)
                                 {
-                                    // Driver sample id will be same as that of the original one
-                                    DX12GPASample* pSecondaryCmdSample =
-                                        reinterpret_cast<DX12GPASample*>(pDx12SecondaryGpaCmdList->GetSample(originalClientSampleIds[index]));
+                                    // Driver sample id will be same as that of the original one.
+                                    Dx12GpaSample* secondary_cmd_sample =
+                                        reinterpret_cast<Dx12GpaSample*>(dx12_secondary_gpa_cmd_list->GetSample(original_client_sample_ids[index]));
 
-                                    if (nullptr != pSecondaryCmdSample)
+                                    if (nullptr != secondary_cmd_sample)
                                     {
                                         (*iter)->SetAsCopied();
-                                        (*iter)->SetDriverSampleId(pSecondaryCmdSample->GetDriverSampleId());
+                                        (*iter)->SetDriverSampleId(secondary_cmd_sample->GetDriverSampleId());
                                     }
                                     else
                                     {
@@ -195,223 +199,223 @@ bool DX12GPAPass::CopySecondarySamples(std::vector<ClientSampleId> clientSamples
                         }
                         else
                         {
-                            GPA_LogError("Unable to copy secondary samples: Number of new sample ids is not same as that on secondary command list.");
+                            GPA_LOG_ERROR("Unable to copy secondary samples: Number of new sample ids is not same as that on secondary command list.");
                         }
                     }
                     else
                     {
-                        GPA_LogError("Unable to copy secondary samples: Either primary command list is closed or the last sample is not closed.");
+                        GPA_LOG_ERROR("Unable to copy secondary samples: Either primary command list is closed or the last sample is not closed.");
                     }
                 }
                 else
                 {
-                    GPA_LogError("Unable to copy secondary samples: Either secondary command list is not closed or the last sample is not closed.");
+                    GPA_LOG_ERROR("Unable to copy secondary samples: Either secondary command list is not closed or the last sample is not closed.");
                 }
             }
             else
             {
-                GPA_LogError("Unable to copy secondary samples: Primary and Secondary command list must be from the same pass.");
+                GPA_LOG_ERROR("Unable to copy secondary samples: Primary and Secondary command list must be from the same pass.");
             }
         }
         else
         {
-            GPA_LogError("Unable to copy secondary samples: One primary command list and one secondary command list are required.");
+            GPA_LOG_ERROR("Unable to copy secondary samples: One primary command list and one secondary command list are required.");
         }
     }
     else
     {
-        GPA_LogError("Unable to copy secondary samples: Not all client sample ids are unique.");
+        GPA_LOG_ERROR("Unable to copy secondary samples: Not all client sample ids are unique.");
     }
 
     return success;
 }
 
-DX12GPAPass::~DX12GPAPass()
+Dx12GpaPass::~Dx12GpaPass()
 {
-    if (AmdExtGpaSampleType::Timing != m_amdExtsampleConfig.type)
+    if (AmdExtGpaSampleType::Timing != amd_ext_sample_config_.type)
     {
-        delete[] m_amdExtsampleConfig.perfCounters.pIds;
+        delete[] amd_ext_sample_config_.perfCounters.pIds;
     }
 
     ResetPass();
 }
 
-void DX12GPAPass::InitializeSampleConfig()
+void Dx12GpaPass::InitializeSampleConfig()
 {
-    if (!m_isSampleConfigInitialized && GPACounterSource::HARDWARE == GetCounterSource())
+    if (!is_sample_config_initialized_ && GpaCounterSource::kHardware == GetCounterSource())
     {
-        std::vector<AmdExtPerfCounterId> counterIds;
+        std::vector<AmdExtPerfCounterId> counter_ids;
 
-        IGPACounterAccessor*        pCounterAccessor  = GPAContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
-        const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
+        IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
+        const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
 
-        if (!m_pCounterList->empty())
+        if (!counter_list_->empty())
         {
             if (IsTimingPass())
             {
-                m_amdExtsampleConfig.type                                = AmdExtGpaSampleType::Timing;
-                m_amdExtsampleConfig.flags.u32All                        = 1;
-                m_amdExtsampleConfig.sqShaderMask                        = PerfShaderMaskAll;
-                m_amdExtsampleConfig.perfCounters                        = {};
-                m_amdExtsampleConfig.sqtt                                = {};
+                amd_ext_sample_config_.type         = AmdExtGpaSampleType::Timing;
+                amd_ext_sample_config_.flags.u32All = 1;
+                amd_ext_sample_config_.sqShaderMask = PerfShaderMaskAll;
+                amd_ext_sample_config_.perfCounters = {};
+                amd_ext_sample_config_.sqtt         = {};
 
-                if (pHardwareCounters->IsBottomOfPipeCounterIndex(m_pCounterList->at(0)))
+                if (hardware_counters->IsBottomOfPipeCounterIndex(counter_list_->at(0)))
                 {
-                    m_amdExtsampleConfig.timing.preSample = AmdExtHwPipePoint::HwPipeBottom;
+                    amd_ext_sample_config_.timing.preSample = AmdExtHwPipePoint::HwPipeBottom;
                 }
-                else if (pHardwareCounters->IsTopOfPipeCounterIndex(m_pCounterList->at(0)))
+                else if (hardware_counters->IsTopOfPipeCounterIndex(counter_list_->at(0)))
                 {
-                    m_amdExtsampleConfig.timing.preSample = AmdExtHwPipePoint::HwPipeTop;
+                    amd_ext_sample_config_.timing.preSample = AmdExtHwPipePoint::HwPipeTop;
                 }
 
-                m_amdExtsampleConfig.timing.postSample = AmdExtHwPipePoint::HwPipeBottom;
-                EnableCounterForPass(m_pCounterList->at(0));
+                amd_ext_sample_config_.timing.postSample = AmdExtHwPipePoint::HwPipeBottom;
+                EnableCounterForPass(counter_list_->at(0));
             }
             else
             {
-                AmdExtPerfExperimentShaderFlags maskValue = PerfShaderMaskAll;
+                AmdExtPerfExperimentShaderFlags mask_value = PerfShaderMaskAll;
 
-                m_amdExtsampleConfig.type         = AmdExtGpaSampleType::Cumulative;
-                m_amdExtsampleConfig.flags.u32All = 0;
+                amd_ext_sample_config_.type         = AmdExtGpaSampleType::Cumulative;
+                amd_ext_sample_config_.flags.u32All = 0;
 
-                // add all desired counters
-                for (size_t i = 0; i < m_pCounterList->size(); i++)
+                // Add all desired counters.
+                for (size_t i = 0; i < counter_list_->size(); i++)
                 {
-                    const GPA_HardwareCounterDescExt* pCounter = &pHardwareCounters->m_counters[m_pCounterList->at(i)];
-                    AmdExtGpuBlock                    block    = static_cast<AmdExtGpuBlock>(pCounter->m_groupIdDriver);
-                    UINT32                            instance = static_cast<UINT32>(pHardwareCounters->m_pGroups[pCounter->m_groupIndex].m_blockInstance);
-                    UINT32                            eventId  = static_cast<UINT32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
+                    const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_[counter_list_->at(i)];
+                    AmdExtGpuBlock                   block   = static_cast<AmdExtGpuBlock>(counter->group_id_driver);
+                    UINT32 instance = static_cast<UINT32>(hardware_counters->internal_counter_groups_[counter->group_index].block_instance);
+                    UINT32 event_id = static_cast<UINT32>(counter->hardware_counters->counter_index_in_group);
 
-                    if (reinterpret_cast<DX12GPAContext*>(GetGpaSession()->GetParentContext())->GetInstanceCount(block) <= instance)
+                    if (reinterpret_cast<Dx12GpaContext*>(GetGpaSession()->GetParentContext())->GetInstanceCount(block) <= instance)
                     {
-                        DisableCounterForPass(m_pCounterList->at(i));
+                        DisableCounterForPass(counter_list_->at(i));
                         continue;
                     }
 
-                    if (reinterpret_cast<DX12GPAContext*>(GetGpaSession()->GetParentContext())->GetMaxEventIdCount(block) <= eventId)
+                    if (reinterpret_cast<Dx12GpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventIdCount(block) <= event_id)
                     {
-                        DisableCounterForPass(m_pCounterList->at(i));
+                        DisableCounterForPass(counter_list_->at(i));
                         continue;
                     }
 
-                    // Validate requested counter vs number of actual hardware counters and group index
-                    uint32_t groupIndex = pCounter->m_groupIndex;
+                    // Validate requested counter vs number of actual hardware counters and group index.
+                    uint32_t group_index = counter->group_index;
 
                     uint32_t counters = 0;
 
-                    if (groupIndex < pHardwareCounters->m_groupCount)
+                    if (group_index < hardware_counters->group_count_)
                     {
-                        counters = pHardwareCounters->m_pGroups[groupIndex].m_numCounters;
+                        counters = hardware_counters->internal_counter_groups_[group_index].num_counters;
                     }
                     else
                     {
-                        counters = pHardwareCounters->m_pAdditionalGroups[groupIndex - pHardwareCounters->m_groupCount].m_numCounters;
+                        counters = hardware_counters->additional_groups_[group_index - hardware_counters->group_count_].num_counters;
                     }
 
-                    if (pCounter->m_pHardwareCounter->m_counterIndexInGroup > counters)
+                    if (counter->hardware_counters->counter_index_in_group > counters)
                     {
-                        assert(pCounter->m_pHardwareCounter->m_counterIndexInGroup <= counters);
-                        DisableCounterForPass(m_pCounterList->at(i));
+                        assert(counter->hardware_counters->counter_index_in_group <= counters);
+                        DisableCounterForPass(counter_list_->at(i));
                         continue;
                     }
 
-                    if (groupIndex > (pHardwareCounters->m_groupCount + pHardwareCounters->m_additionalGroupCount))
+                    if (group_index > (hardware_counters->group_count_ + hardware_counters->additional_group_count_))
                     {
-                        assert(groupIndex <= (pHardwareCounters->m_groupCount + pHardwareCounters->m_additionalGroupCount));
-                        DisableCounterForPass(m_pCounterList->at(i));
+                        assert(group_index <= (hardware_counters->group_count_ + hardware_counters->additional_group_count_));
+                        DisableCounterForPass(counter_list_->at(i));
                         continue;
                     }
 
-                    // Add counter to valid vector
-                    AmdExtPerfCounterId thisCounter = {block, instance, eventId};
-                    counterIds.push_back(thisCounter);
+                    // Add counter to valid vector.
+                    AmdExtPerfCounterId this_counter = {block, instance, event_id};
+                    counter_ids.push_back(this_counter);
 
-                    // if dealing with an SQ counter, check if the the stage mask needs to be set
-                    if (pCounter->m_groupIndex >= pHardwareCounters->m_pSQCounterGroups[0].m_groupIndex &&
-                        pCounter->m_groupIndex <= pHardwareCounters->m_pSQCounterGroups[pHardwareCounters->m_sqGroupCount - 1].m_groupIndex)
+                    // If dealing with an SQ counter, check if the the stage mask needs to be set.
+                    if (counter->group_index >= hardware_counters->sq_counter_groups_[0].group_index &&
+                        counter->group_index <= hardware_counters->sq_counter_groups_[hardware_counters->sq_group_count_ - 1].group_index)
                     {
-                        GPA_SQShaderStage stage = SQ_ALL;
+                        GpaSqShaderStage stage = kSqAll;
 
-                        for (unsigned int j = 0; j < pHardwareCounters->m_sqGroupCount - 1; j++)
+                        for (unsigned int j = 0; j < hardware_counters->sq_group_count_ - 1; j++)
                         {
-                            if (pHardwareCounters->m_pSQCounterGroups[j].m_groupIndex == pCounter->m_groupIndex)
+                            if (hardware_counters->sq_counter_groups_[j].group_index == counter->group_index)
                             {
-                                stage = pHardwareCounters->m_pSQCounterGroups[j].m_stage;
+                                stage = hardware_counters->sq_counter_groups_[j].sq_shader_stage;
                                 break;
                             }
                         }
 
-                        if (stage == SQ_ES)
+                        if (kSqEs == stage)
                         {
-                            maskValue = PerfShaderMaskEs;
+                            mask_value = PerfShaderMaskEs;
                         }
-                        else if (stage == SQ_GS)
+                        else if (kSqGs == stage)
                         {
-                            maskValue = PerfShaderMaskGs;
+                            mask_value = PerfShaderMaskGs;
                         }
-                        else if (stage == SQ_VS)
+                        else if (kSqVs == stage)
                         {
-                            maskValue = PerfShaderMaskVs;
+                            mask_value = PerfShaderMaskVs;
                         }
-                        else if (stage == SQ_PS)
+                        else if (kSqPs == stage)
                         {
-                            maskValue = PerfShaderMaskPs;
+                            mask_value = PerfShaderMaskPs;
                         }
-                        else if (stage == SQ_LS)
+                        else if (kSqLs == stage)
                         {
-                            maskValue = PerfShaderMaskLs;
+                            mask_value = PerfShaderMaskLs;
                         }
-                        else if (stage == SQ_HS)
+                        else if (kSqHs == stage)
                         {
-                            maskValue = PerfShaderMaskHs;
+                            mask_value = PerfShaderMaskHs;
                         }
-                        else if (stage == SQ_CS)
+                        else if (kSqCs == stage)
                         {
-                            maskValue = PerfShaderMaskCs;
+                            mask_value = PerfShaderMaskCs;
                         }
                     }
 
-                    EnableCounterForPass(m_pCounterList->at(i));
+                    EnableCounterForPass(counter_list_->at(i));
                 }
 
-                m_amdExtsampleConfig.perfCounters.numCounters = GetNumEnabledCountersForPass();
-                AmdExtPerfCounterId* pAmdExtPerfCounterId     = new (std::nothrow) AmdExtPerfCounterId[m_pCounterList->size()];
+                amd_ext_sample_config_.perfCounters.numCounters = GetNumEnabledCountersForPass();
+                AmdExtPerfCounterId* amd_ext_perf_counter_id    = new (std::nothrow) AmdExtPerfCounterId[counter_list_->size()];
 
-                if (nullptr != pAmdExtPerfCounterId)
+                if (nullptr != amd_ext_perf_counter_id)
                 {
-                    memcpy(pAmdExtPerfCounterId, counterIds.data(), sizeof(AmdExtPerfCounterId) * counterIds.size());
+                    memcpy(amd_ext_perf_counter_id, counter_ids.data(), sizeof(AmdExtPerfCounterId) * counter_ids.size());
                 }
 
-                m_amdExtsampleConfig.perfCounters.pIds                   = pAmdExtPerfCounterId;
-                m_amdExtsampleConfig.perfCounters.spmTraceSampleInterval = 0;
-                m_amdExtsampleConfig.perfCounters.gpuMemoryLimit         = 0;
-                m_amdExtsampleConfig.sqtt                                = {};
-                m_amdExtsampleConfig.timing                              = {};
+                amd_ext_sample_config_.perfCounters.pIds                   = amd_ext_perf_counter_id;
+                amd_ext_sample_config_.perfCounters.spmTraceSampleInterval = 0;
+                amd_ext_sample_config_.perfCounters.gpuMemoryLimit         = 0;
+                amd_ext_sample_config_.sqtt                                = {};
+                amd_ext_sample_config_.timing                              = {};
 
-                // set shader mask
-                m_amdExtsampleConfig.flags.sqShaderMask = 1;
-                m_amdExtsampleConfig.sqShaderMask       = maskValue;
+                // Set shader mask.
+                amd_ext_sample_config_.flags.sqShaderMask = 1;
+                amd_ext_sample_config_.sqShaderMask       = mask_value;
             }
 
-            // Insert L2 cache invalidate and flush around counter sample
+            // Insert L2 cache invalidate and flush around counter sample.
             if (GetGpaSession()->GetParentContext()->IsInvalidateAndFlushL2CacheEnabled())
             {
-                m_amdExtsampleConfig.flags.cacheFlushOnCounterCollection = 1;
+                amd_ext_sample_config_.flags.cacheFlushOnCounterCollection = 1;
             }
 
-            m_isSampleConfigInitialized = true;
+            is_sample_config_initialized_ = true;
         }
     }
 }
 
-void DX12GPAPass::ResetPass() const
+void Dx12GpaPass::ResetPass() const
 {
     LockCommandListMutex();
 
     for (auto it = GetCmdList().begin(); it != GetCmdList().end(); ++it)
     {
-        DX12GPACommandList* pDx12CmdList = reinterpret_cast<DX12GPACommandList*>(*it);
-        pDx12CmdList->ReleaseNonGPAResources();
+        Dx12GpaCommandList* dx12_cmd_list = reinterpret_cast<Dx12GpaCommandList*>(*it);
+        dx12_cmd_list->ReleaseNonGPAResources();
     }
 
     UnlockCommandListMutex();

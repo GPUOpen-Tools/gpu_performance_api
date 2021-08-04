@@ -1,9 +1,11 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2020-2021 Advanced Micro Devices, Inc. All rights reserved.
 /// \author AMD Developer Tools Team
 /// \file
-/// \brief GPA Interface Loader Utility header file
+/// \brief Deprecated header; use gpu_performance_api/gpu_perf_api_interface_loader.h
 //==============================================================================
+
+#pragma message("Warning: You are including a deprecated header. Please use gpu_performance_api/gpu_perf_api_interface_loader.h")
 
 // Note: For usage, copy and paste (and then uncomment) the
 // following four lines into a compilation unit that uses
@@ -23,93 +25,17 @@
 // the "USE_INTERNAL_GPA" preprocessor macro should be defined before
 // including this header file
 
-#ifndef _GPA_INTERFACE_LOADER_H_
-#define _GPA_INTERFACE_LOADER_H_
+#ifndef GPU_PERF_API_INTERFACE_LOADER_H_
+#define GPU_PERF_API_INTERFACE_LOADER_H_
 
-#ifdef _WIN32
-#include <Windows.h>
-#define GPA_MAX_PATH MAX_PATH  ///< Macro for max path length
-#ifdef _WIN64
-#define GPA_IS_64_BIT  ///< Macro specifying 64-bit build
-#else
-#define GPA_IS_32_BIT  ///< Macro specifying 32-bit build
-#endif
-#else
-#include <dlfcn.h>
-#include <unistd.h>
-#define GPA_MAX_PATH 4096  ///< Macro for max path length
-#ifdef __x86_64__
-#define GPA_IS_64_BIT  ///< Macro specifying 64-bit build
-#else
-#define GPA_IS_32_BIT  ///< Macro specifying 32-bit build
-#endif
-#endif
+// New header
+#include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
-#include <wchar.h>
-#include <stdlib.h>
-#include <string.h>
-#ifdef __cplusplus
-#include <string>
-#endif
-
+// Deprecated headers
+#include "gpu_perf_api_types.h"
 #include "gpu_perf_api.h"
 
-#ifdef UNICODE
-typedef wchar_t LocaleChar;  ///< Typedef for ANSI vs. Unicode character
-#ifdef __cplusplus
-typedef std::wstring LocaleString;  ///< Typedef for ANSI vs. Unicode string
-#endif
-
-#define TFORMAT2(x) L##x        ///< Macro for string expansion
-#define TFORMAT(x) TFORMAT2(x)  ///< Macro for string expansion
-
-#define STR_CAT(dest, destSize, src) wcscat_s(dest, destSize, src)                    ///< Macro for safe strcat
-#define STR_COPY(dest, destSize, src) wcscpy_s(dest, destSize, src)                   ///< Macro for safe strcpy
-#define STR_NCOPY(dest, destSize, src, count) wcsncpy_s(dest, destSize, src, count);  ///< Macro for safe strncpy
-#define STR_LEN(str, strLength) wcsnlen_s(str, strLength)                             ///< Macro for safe strnlen
-#define MEM_CPY(dest, src, count) wmemcpy(dest, src, count)
-#define MEM_SET(ptr, wc, num) wmemset(ptr, wc, num)
-
-#else
-typedef char        LocaleChar;    ///< Typedef for ANSI vs. Unicode character
-#ifdef __cplusplus
-typedef std::string LocaleString;  ///< Typedef for ANSI vs. Unicode string
-#endif
-
-#define TFORMAT(x) (x)  ///< Macro for string expansion
-
-#define STR_CAT(dest, destSize, src) strcat_s(dest, destSize, src)                    ///< Macro for safe strcat
-#define STR_COPY(dest, destSize, src) strcpy_s(dest, destSize, src)                   ///< Macro for safe strcpy
-#define STR_NCOPY(dest, destSize, src, count) strncpy_s(dest, destSize, src, count);  ///< Macro for safe strncpy
-#define STR_LEN(str, strLength) strnlen_s(str, strLength)                             ///< Macro for safe strnlen
-#define MEM_CPY(dest, src, count) memcpy(dest, src, count)
-#define MEM_SET(ptr, wc, num) memset(ptr, wc, num)
-#endif
-
-#define GPA_OPENCL_LIB TFORMAT("GPUPerfAPICL")       ///< Macro for base name of GPA OpenCL library
-#define GPA_OPENGL_LIB TFORMAT("GPUPerfAPIGL")       ///< Macro for base name of GPA OpenGL library
-#define GPA_DIRECTX11_LIB TFORMAT("GPUPerfAPIDX11")  ///< Macro for base name of GPA DirectX 11 library
-#define GPA_DIRECTX12_LIB TFORMAT("GPUPerfAPIDX12")  ///< Macro for base name of GPA DirectX 12 library
-#define GPA_VULKAN_LIB TFORMAT("GPUPerfAPIVK")       ///< Macro for base name of GPA Vulkan library
-
-#ifdef _WIN32
-#define GPA_LIB_PREFIX TFORMAT("")           ///< Macro for platform-specific lib file prefix
-#define GPA_LIB_SUFFIX TFORMAT(".dll")       ///< Macro for platform-specific lib file suffix
-#define GPA_X64_ARCH_SUFFIX TFORMAT("-x64")  ///< Macro for 64-bit lib file architecture suffix
-#define GPA_X86_ARCH_SUFFIX TFORMAT("")      ///< Macro for 32-bit lib file architecture suffix
-#else
-#define GPA_LIB_PREFIX TFORMAT("lib")      ///< Macro for platform-specific lib file prefix
-#define GPA_LIB_SUFFIX TFORMAT(".so")      ///< Macro for platform-specific lib file suffix
-#define GPA_X64_ARCH_SUFFIX TFORMAT("")    ///< Macro for 64-bit lib file architecture suffix
-#define GPA_X86_ARCH_SUFFIX TFORMAT("32")  ///< Macro for 32-bit lib file architecture suffix
-#endif
-
-#define GPA_DEBUG_SUFFIX TFORMAT("-d")            ///< Macro for debug suffix
-#define GPA_INTERNAL_SUFFIX TFORMAT("-Internal")  ///< Macro for internal build lib file suffix
-
-#define ARRAY_LENGTH(x) (sizeof(x) / sizeof(x[0]))  ///< Macro to calculate array length
-
-#define GPA_GET_FUNCTION_TABLE_FUNCTION_NAME "GPA_GetFuncTable"  ///< Macro for GPA_GetFuncTable entry point
+#define GPA_GET_FUNCTION_TABLE_FUNCTION_NAME_DEPRECATED "GPA_GetFuncTable"  ///< Macro for GPA_GetFuncTable entry point
 
 /// GPAFunctionTableInfo structure
 typedef struct _GPAFuncTableInfo
@@ -122,70 +48,11 @@ typedef struct _GPAFuncTableInfo
 
 extern GPAFuncTableInfo* g_pFuncTableInfo;  ///< global instance of GPA function table info
 
-/// Replaces the Windows style path separator to Unix style
-/// \param[in] pFilePath file path
-/// \param[out] pLastSeparatorPosition if not null, last separator position in the path string will be returned
-static inline void Win2UnixPathSeparator(LocaleChar* pFilePath, unsigned int* pLastSeparatorPosition)
-{
-    unsigned int counter      = 0;
-    unsigned int lastSlashPos = 0;
-
-    while ('\0' != pFilePath[counter])
-    {
-        if ('\\' == pFilePath[counter])
-        {
-            pFilePath[counter] = '/';
-        }
-
-        if ('/' == pFilePath[counter])
-        {
-            lastSlashPos = counter;
-        }
-
-        ++counter;
-    }
-
-    if (NULL != pLastSeparatorPosition)
-    {
-        *pLastSeparatorPosition = lastSlashPos;
-    }
-}
-
 /// Get the current working directory
 /// \return the current working directory
 static const LocaleChar* GPAIL_GetWorkingDirectoryPath()
 {
-    static LocaleChar workingDirectoryStaticString[GPA_MAX_PATH];
-
-    workingDirectoryStaticString[0] = 0;
-    LocaleChar tempWorkingDirectoryPath[GPA_MAX_PATH] = {0};
-
-#ifdef _WIN32
-    GetModuleFileName(NULL, tempWorkingDirectoryPath, ARRAY_LENGTH(tempWorkingDirectoryPath));
-#else
-    int len;
-    char tempWorkingDirectoryPathInChar[GPA_MAX_PATH] = {0};
-    len = readlink("/proc/self/exe", tempWorkingDirectoryPathInChar, ARRAY_LENGTH(tempWorkingDirectoryPathInChar) - 1);
-
-    if (len != -1)
-    {
-        tempWorkingDirectoryPath[len] = '\0';
-    }
-
-#ifdef UNICODE
-    mbstowcs(tempWorkingDirectoryPath, tempWorkingDirectoryPathInChar, ARRAY_LENGTH(tempWorkingDirectoryPathInChar));
-#else
-    MEM_CPY(tempWorkingDirectoryPath, tempWorkingDirectoryPathInChar, ARRAY_LENGTH(tempWorkingDirectoryPathInChar));
-#endif
-#endif
-
-    unsigned int lastSlashPos = 0;
-
-    Win2UnixPathSeparator(tempWorkingDirectoryPath, &lastSlashPos);
-
-    MEM_SET(workingDirectoryStaticString, 0, ARRAY_LENGTH(workingDirectoryStaticString));
-    STR_NCOPY(workingDirectoryStaticString, ARRAY_LENGTH(workingDirectoryStaticString), tempWorkingDirectoryPath, lastSlashPos);
-    return workingDirectoryStaticString;
+    return GpaInterfaceLoaderGetWorkingDirectoryPath();
 }
 
 /// Gets the library file name for the given API
@@ -193,58 +60,7 @@ static const LocaleChar* GPAIL_GetWorkingDirectoryPath()
 /// \return library file name
 static inline const LocaleChar* GPAIL_GetLibraryFileName(GPA_API_Type pApiType)
 {
-    static LocaleChar filenameStaticString[GPA_MAX_PATH];
-
-    filenameStaticString[0] = 0;
-
-    STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_LIB_PREFIX);
-
-    switch (pApiType)
-    {
-#ifdef _WIN32
-    case GPA_API_DIRECTX_11:
-        STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_DIRECTX11_LIB);
-        break;
-
-    case GPA_API_DIRECTX_12:
-        STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_DIRECTX12_LIB);
-        break;
-#endif
-
-    case GPA_API_OPENGL:
-        STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_OPENGL_LIB);
-        break;
-
-    case GPA_API_OPENCL:
-        STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_OPENCL_LIB);
-        break;
-
-    case GPA_API_VULKAN:
-        STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_VULKAN_LIB);
-        break;
-
-    default:
-        MEM_SET(filenameStaticString, 0, ARRAY_LENGTH(filenameStaticString));
-        return filenameStaticString;
-    }
-
-#ifdef GPA_IS_64_BIT
-    STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_X64_ARCH_SUFFIX);
-#else
-    STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_X86_ARCH_SUFFIX);
-#endif
-
-#ifdef USE_DEBUG_GPA
-    STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_DEBUG_SUFFIX);
-#endif
-
-#ifdef USE_INTERNAL_GPA
-    STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_INTERNAL_SUFFIX);
-#endif
-
-    STR_CAT(filenameStaticString, ARRAY_LENGTH(filenameStaticString), GPA_LIB_SUFFIX);
-
-    return filenameStaticString;
+    return GpaInterfaceLoaderGetLibraryFileName((GpaApiType)pApiType);
 }
 
 /// Get the library full path
@@ -253,44 +69,7 @@ static inline const LocaleChar* GPAIL_GetLibraryFileName(GPA_API_Type pApiType)
 /// \return library with full path
 static inline const LocaleChar* GPAIL_GetLibraryFullPath(GPA_API_Type apiType, const LocaleChar* pLibPath)
 {
-    static LocaleChar libPathStaticString[GPA_MAX_PATH];
-
-    libPathStaticString[0] = 0;
-
-    const LocaleChar* pLibName = GPAIL_GetLibraryFileName(apiType);
-
-    if (STR_LEN(pLibName, GPA_MAX_PATH) > 1)
-    {
-        LocaleChar tempLibFileName[GPA_MAX_PATH]      = {0};
-        LocaleChar tempWorkingDirectory[GPA_MAX_PATH] = {0};
-
-        STR_COPY(tempLibFileName, ARRAY_LENGTH(tempLibFileName), pLibName);
-
-        if (NULL == pLibPath)
-        {
-            const LocaleChar* pWorkingDirectoryPath = GPAIL_GetWorkingDirectoryPath();
-            STR_COPY(tempWorkingDirectory, ARRAY_LENGTH(tempWorkingDirectory), pWorkingDirectoryPath);
-        }
-        else
-        {
-            STR_COPY(tempWorkingDirectory, ARRAY_LENGTH(tempWorkingDirectory), pLibPath);
-            Win2UnixPathSeparator(tempWorkingDirectory, NULL);
-        }
-
-        size_t stringLength = STR_LEN(tempWorkingDirectory, ARRAY_LENGTH(tempWorkingDirectory));
-
-        if (tempWorkingDirectory[stringLength - 1] != '/')
-        {
-            tempWorkingDirectory[stringLength]     = '/';
-            tempWorkingDirectory[stringLength + 1] = '\0';
-        }
-
-        MEM_SET(libPathStaticString, 0, ARRAY_LENGTH(libPathStaticString));
-        STR_COPY(libPathStaticString, ARRAY_LENGTH(libPathStaticString), tempWorkingDirectory);
-        STR_CAT(libPathStaticString, ARRAY_LENGTH(libPathStaticString), tempLibFileName);
-    }
-
-    return libPathStaticString;
+    return GpaInterfaceLoaderGetLibraryFullPath((GpaApiType)apiType, pLibPath);
 }
 
 /// Loads the dll and initialize the function table for the given API
@@ -299,6 +78,10 @@ static inline const LocaleChar* GPAIL_GetLibraryFullPath(GPA_API_Type apiType, c
 /// \return GPA_STATUS_OK upon successful operation
 static inline GPA_Status GPAIL_LoadApi(GPA_API_Type apiType, const LocaleChar* pLibPath)
 {
+    // Dummy calls
+    GPAIL_GetWorkingDirectoryPath();
+    GPAIL_GetLibraryFileName(apiType);
+
 #if DISABLE_GPA
     UNREFERENCED_PARAMETER(apiType);
     UNREFERENCED_PARAMETER(pLibPath);
@@ -366,9 +149,9 @@ static inline GPA_Status GPAIL_LoadApi(GPA_API_Type apiType, const LocaleChar* p
 
 #ifdef UNICODE
             char libFullPathChar[GPA_MAX_PATH];
-            int ret = wcstombs(libFullPathChar, pLibFullPath, GPA_MAX_PATH);
+            int  ret             = wcstombs(libFullPathChar, pLibFullPath, GPA_MAX_PATH);
             libFullPathChar[ret] = '\0';
-            libHandle = dlopen(libFullPathChar, RTLD_LAZY);
+            libHandle            = dlopen(libFullPathChar, RTLD_LAZY);
 #else
             libHandle = dlopen(pLibFullPath, RTLD_LAZY);
 #endif
@@ -379,9 +162,9 @@ static inline GPA_Status GPAIL_LoadApi(GPA_API_Type apiType, const LocaleChar* p
             if (NULL != libHandle)
             {
 #ifdef _WIN32
-                funcTableFn = (GPA_GetFuncTablePtrType)(GetProcAddress(libHandle, GPA_GET_FUNCTION_TABLE_FUNCTION_NAME));
+                funcTableFn = (GPA_GetFuncTablePtrType)(GetProcAddress(libHandle, GPA_GET_FUNCTION_TABLE_FUNCTION_NAME_DEPRECATED));
 #else
-                funcTableFn = (GPA_GetFuncTablePtrType)(dlsym(libHandle, GPA_GET_FUNCTION_TABLE_FUNCTION_NAME));
+                funcTableFn = (GPA_GetFuncTablePtrType)(dlsym(libHandle, GPA_GET_FUNCTION_TABLE_FUNCTION_NAME_DEPRECATED));
 #endif
 
                 if (NULL != funcTableFn)
@@ -689,4 +472,4 @@ private:
 
 #endif  //__cplusplus
 
-#endif
+#endif  // GPU_PERF_API_INTERFACE_LOADER_H_

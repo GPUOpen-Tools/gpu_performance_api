@@ -1,101 +1,104 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GPA GL Context Implementation
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GPA GL Context Implementation
 //==============================================================================
 
-#include "gl_gpa_context.h"
-#include "gpa_unique_object.h"
-#include "gl_gpa_session.h"
-#include "gpa_hardware_counters.h"
-#include "gpa_context_counter_mediator.h"
+#include "gpu_perf_api_gl/gl_gpa_context.h"
 
-GLGPAContext::GLGPAContext(GLContextPtr context, GPA_HWInfo& pHwInfo, GPA_OpenContextFlags contextFlags, int driverVersion)
-    : GPAContext(pHwInfo, contextFlags)
-    , m_glContext(context)
-    , m_clockMode(oglUtils::AMDX_DefaultMode)
-    , m_driverVersion(driverVersion)
+#include "gpu_perf_api_common/gpa_context_counter_mediator.h"
+#include "gpu_perf_api_common/gpa_unique_object.h"
+
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+
+#include "gpu_perf_api_gl/gl_gpa_session.h"
+
+GlGpaContext::GlGpaContext(GlContextPtr context, GpaHwInfo& hw_info, GpaOpenContextFlags context_flags, int driver_version)
+    : GpaContext(hw_info, context_flags)
+    , gl_context_(context)
+    , clock_mode_(ogl_utils::kAmdXDefaultMode)
+    , driver_version_(driver_version)
 {
 }
 
-GLGPAContext::~GLGPAContext()
+GlGpaContext::~GlGpaContext()
 {
-    GPA_Status setStableClocksStatus = SetStableClocks(false);
+    GpaStatus set_stable_clocks_status = SetStableClocks(false);
 
-    if (GPA_STATUS_OK != setStableClocksStatus)
+    if (kGpaStatusOk != set_stable_clocks_status)
     {
-        GPA_LogError("Driver was unable to set stable clocks back to default.");
+        GPA_LOG_ERROR("Driver was unable to set stable clocks back to default.");
 #ifdef __linux__
-        GPA_LogMessage("In Linux, make sure to run your application with root privileges.");
+        GPA_LOG_MESSAGE("In Linux, make sure to run your application with root privileges.");
 #endif  //__linux__
     }
 }
 
-GPA_SessionId GLGPAContext::CreateSession(GPA_Session_Sample_Type sampleType)
+GpaSessionId GlGpaContext::CreateSession(GpaSessionSampleType sample_type)
 {
-    GPA_SessionId pRetSessionId = nullptr;
+    GpaSessionId ret_session_id = nullptr;
 
-    GLGPASession* pNewGpaGLGpaSession = new (std::nothrow) GLGPASession(this, sampleType);
+    GlGpaSession* new_gpa_gl_gpa_session = new (std::nothrow) GlGpaSession(this, sample_type);
 
-    if (nullptr == pNewGpaGLGpaSession)
+    if (nullptr == new_gpa_gl_gpa_session)
     {
-        GPA_LogError("Unable to allocate memory for the session.");
+        GPA_LOG_ERROR("Unable to allocate memory for the session.");
     }
     else
     {
-        AddGpaSession(pNewGpaGLGpaSession);
+        AddGpaSession(new_gpa_gl_gpa_session);
 
-        if (nullptr != pNewGpaGLGpaSession)
+        if (nullptr != new_gpa_gl_gpa_session)
         {
-            pRetSessionId = reinterpret_cast<GPA_SessionId>(GPAUniqueObjectManager::Instance()->CreateObject(pNewGpaGLGpaSession));
+            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance()->CreateObject(new_gpa_gl_gpa_session));
         }
     }
 
-    return pRetSessionId;
+    return ret_session_id;
 }
 
-bool GLGPAContext::DeleteSession(GPA_SessionId sessionId)
+bool GlGpaContext::DeleteSession(GpaSessionId session_id)
 {
-    bool isDeleted = false;
+    bool is_deleted = false;
 
-    GLGPASession* pGLSession = reinterpret_cast<GLGPASession*>(sessionId->Object());
+    GlGpaSession* gl_session = reinterpret_cast<GlGpaSession*>(session_id->Object());
 
-    if (nullptr != pGLSession)
+    if (nullptr != gl_session)
     {
-        RemoveGpaSession(pGLSession);
-        GPAUniqueObjectManager::Instance()->DeleteObject(pGLSession);
-        delete pGLSession;
-        isDeleted = true;
+        RemoveGpaSession(gl_session);
+        GpaUniqueObjectManager::Instance()->DeleteObject(gl_session);
+        delete gl_session;
+        is_deleted = true;
     }
 
-    return isDeleted;
+    return is_deleted;
 }
 
-gpa_uint32 GLGPAContext::GetMaxGPASessions() const
+GpaUInt32 GlGpaContext::GetMaxGpaSessions() const
 {
-    // maximum latency is 4 for dx10-capable cards
+    // Maximum latency is 4 for dx10-capable cards.
     return 4;
 }
 
-GPA_API_Type GLGPAContext::GetAPIType() const
+GpaApiType GlGpaContext::GetApiType() const
 {
-    return GPA_API_OPENGL;
+    return kGpaApiOpengl;
 }
 
-bool GLGPAContext::Initialize()
+bool GlGpaContext::Initialize()
 {
-    GPA_Status setStableClocksStatus = SetStableClocks(true);
+    GpaStatus set_stable_clocks_status = SetStableClocks(true);
 
-    if (GPA_STATUS_OK != setStableClocksStatus)
+    if (kGpaStatusOk != set_stable_clocks_status)
     {
-        GPA_LogError("Driver was unable to set stable clocks for profiling.");
+        GPA_LOG_ERROR("Driver was unable to set stable clocks for profiling.");
 #ifdef __linux__
-        GPA_LogMessage("In Linux, make sure to run your application with root privileges.");
+        GPA_LOG_MESSAGE("In Linux, make sure to run your application with root privileges.");
 #endif  //__linux__
     }
 
-    bool success = OpenCounters() && ValidateAndUpdateGLCounters();
+    bool success = OpenCounters() && ValidateAndUpdateGlCounters();
 
     if (success)
     {
@@ -104,81 +107,78 @@ bool GLGPAContext::Initialize()
 
     return success;
 }
-const GLContextPtr& GLGPAContext::GetGLContext() const
+const GlContextPtr& GlGpaContext::GetGlContext() const
 {
-    return m_glContext;
+    return gl_context_;
 }
 
-GPA_Status GLGPAContext::SetStableClocks(bool useProfilingClocks)
+GpaStatus GlGpaContext::SetStableClocks(bool use_profiling_clocks)
 {
-    GPA_Status result = GPA_STATUS_OK;
+    GpaStatus result = kGpaStatusOk;
 
-    if (nullptr == oglUtils::_oglSetGpaDeviceClockModeAMDX)
+    if (nullptr == ogl_utils::ogl_set_gpa_device_clock_mode_amd_x)
     {
-        GPA_LogMessage("glSetGpaDeviceClockModeAMDX extension is not available.");
-
-        // TODO: return an error once we no longer need to support pre-19.10 drivers
-        // result = GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+        GPA_LOG_MESSAGE("glSetGpaDeviceClockModeAMDX extension is not available.");
     }
     else
     {
-        oglUtils::ClockModeInfo clockMode = {};
+        ogl_utils::ClockModeInfo clock_mode = {};
 
-        if (useProfilingClocks)
+        if (use_profiling_clocks)
         {
             DeviceClockMode deviceClockMode = GetDeviceClockMode();
 
             switch (deviceClockMode)
             {
-            case DeviceClockMode::Default:
-                clockMode.clockmode = oglUtils::AMDX_DefaultMode;
+            case DeviceClockMode::kDefault:
+                clock_mode.clock_mode = ogl_utils::kAmdXDefaultMode;
                 break;
 
-            case DeviceClockMode::Profiling:
-                clockMode.clockmode = oglUtils::AMDX_ProfilingClock;
+            case DeviceClockMode::kProfiling:
+                clock_mode.clock_mode = ogl_utils::kAmdXProfilingClock;
                 break;
 
-            case DeviceClockMode::MinimumMemory:
-                clockMode.clockmode = oglUtils::AMDX_MinimumMemoryClock;
+            case DeviceClockMode::kMinimumMemory:
+                clock_mode.clock_mode = ogl_utils::kAmdXMinimumMemoryClock;
                 break;
 
-            case DeviceClockMode::MinimumEngine:
-                clockMode.clockmode = oglUtils::AMDX_MinimumEngineClock;
+            case DeviceClockMode::kMinimumEngine:
+                clock_mode.clock_mode = ogl_utils::kAmdXMinimumEngineClock;
                 break;
 
-            case DeviceClockMode::Peak:
-                clockMode.clockmode = oglUtils::AMDX_PeakClock;
+            case DeviceClockMode::kPeak:
+                clock_mode.clock_mode = ogl_utils::kAmdXPeakClock;
                 break;
 
             default:
                 assert(0);
-                clockMode.clockmode = oglUtils::AMDX_ProfilingClock;
+                clock_mode.clock_mode = ogl_utils::kAmdXProfilingClock;
                 break;
             }
         }
 
-        if (clockMode.clockmode != m_clockMode)
+        if (clock_mode.clock_mode != clock_mode_)
         {
-            m_clockMode = clockMode.clockmode;
+            clock_mode_ = clock_mode.clock_mode;
 
 #ifdef _LINUX
-            if (oglUtils::s_GL_DRIVER_VER_WITH_LINUX_STABLE_CLOCK_SUPPORT > m_driverVersion)
+            if (ogl_utils::kGlDriverVerWithLinuxStableClockSupport > driver_version_)
             {
-                // on Linux, earlier drivers claimed to support the stable clock extension, but it was broken
+                // On Linux, earlier drivers claimed to support the stable clock extension, but it was broken
                 // due to a driver bug. The driver bug has been fixed starting with the driver version referred
                 // to in s_GL_DRIVER_VER_WITH_LINUX_STABLE_CLOCK_SUPPORT. If using an earlier driver, just return
                 // success without trying to set stable clocks.
-                result = GPA_STATUS_OK;
+                result = kGpaStatusOk;
             }
             else
 #endif
             {
-                unsigned int clockResult = oglUtils::_oglSetGpaDeviceClockModeAMDX(&clockMode);
-                result                   = (oglUtils::GL_SETCLOCK_SUCCESS == clockResult) ? GPA_STATUS_OK : GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+                unsigned int clock_result = ogl_utils::ogl_set_gpa_device_clock_mode_amd_x(&clock_mode);
+                result                    = (ogl_utils::kGlSetClockSuccess == clock_result) ? kGpaStatusOk : kGpaStatusErrorDriverNotSupported;
 
-                if (clockResult != oglUtils::GL_SETCLOCK_SUCCESS)
+                if (clock_result != ogl_utils::kGlSetClockSuccess)
                 {
-                    GPA_LogError("Failed to set ClockMode for profiling.");
+                    GPA_LOG_ERROR("Failed to set ClockMode for profiling.");
                 }
             }
         }
@@ -187,111 +187,110 @@ GPA_Status GLGPAContext::SetStableClocks(bool useProfilingClocks)
     return result;
 }
 
-bool GLGPAContext::ValidateAndUpdateGLCounters() const
+bool GlGpaContext::ValidateAndUpdateGlCounters() const
 {
-    bool              success    = false;
-    GDT_HW_GENERATION generation = GDT_HW_GENERATION_NONE;
-    gpa_uint32        deviceId   = 0;
-    gpa_uint32        revisionId = 0;
-    gpa_uint32        vendorId   = 0;
+    bool              success     = false;
+    GDT_HW_GENERATION generation  = GDT_HW_GENERATION_NONE;
+    GpaUInt32         device_id   = 0;
+    GpaUInt32         revision_id = 0;
+    GpaUInt32         vendor_id   = 0;
 
-    GPA_HWInfo hwInfo = *(GetHwInfo());
+    GpaHwInfo hwInfo = *(GetHwInfo());
 
-    if (!hwInfo.GetHWGeneration(generation) && !hwInfo.GetDeviceID(deviceId) && !hwInfo.GetVendorID(vendorId) && !hwInfo.GetRevisionID(revisionId))
+    if (!hwInfo.GetHwGeneration(generation) && !hwInfo.GetDeviceId(device_id) && !hwInfo.GetVendorId(vendor_id) && !hwInfo.GetRevisionId(revision_id))
     {
-        GPA_LogError("Unable to get necessary hardware info.");
+        GPA_LOG_ERROR("Unable to get necessary hardware info.");
     }
-    else if (hwInfo.IsAMD())
+    else if (hwInfo.IsAmd())
     {
         // Query the GL API to get the hardware counter group names and Ids so that the expected groups can be verified and the group Ids can be updated.
-
         // Get the number of performance counter groups
-        GLint nNumGroups = 0;
-        oglUtils::_oglGetPerfMonitorGroupsAMD(&nNumGroups, 0, nullptr);
+        GLint num_groups = 0;
+        ogl_utils::ogl_get_perf_monitor_groups_amd(&num_groups, 0, nullptr);
 
-        assert(nNumGroups > 0);
+        assert(num_groups > 0);
 
-        if (nNumGroups == 0)
+        if (num_groups == 0)
         {
-            GPA_LogError("No counter groups are exposed by GL_AMD_performance_monitor.");
+            GPA_LOG_ERROR("No counter groups are exposed by GL_AMD_performance_monitor.");
         }
         else
         {
-            // const_cast is the feasible and simple workaround here, as GL is the only API in which we are changing the hardware counter info
-            IGPACounterAccessor*  pCounterAccessor     = GPAContextCounterMediator::Instance()->GetCounterAccessor(this);
-            GPA_HardwareCounters* pHardwareCounters    = const_cast<GPA_HardwareCounters*>(pCounterAccessor->GetHardwareCounters());
-            unsigned int          expectedDriverGroups = pHardwareCounters->m_groupCount + pHardwareCounters->m_additionalGroupCount - 1;
+            // A const_cast is a feasible and simple workaround here, as GL is the only API in which we are changing the hardware counter info.
+            IGpaCounterAccessor* counter_accessor       = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
+            GpaHardwareCounters* hardware_counters      = const_cast<GpaHardwareCounters*>(counter_accessor->GetHardwareCounters());
+            unsigned int         expected_driver_groups = hardware_counters->group_count_ + hardware_counters->additional_group_count_ - 1;
 
-            if (nNumGroups < static_cast<int>(expectedDriverGroups))
+            if (num_groups < static_cast<int>(expected_driver_groups))
             {
                 // We should not proceed if the driver exposes less groups that we expect
                 std::stringstream error;
-                error << "GL_AMD_performance_monitor exposes " << nNumGroups << " counter groups, but GPUPerfAPI requires at least "
-                      << static_cast<int>(expectedDriverGroups) << ".";
-                GPA_LogError(error.str().c_str());
+                error << "GL_AMD_performance_monitor exposes " << num_groups << " counter groups, but GPUPerfAPI requires at least "
+                      << static_cast<int>(expected_driver_groups) << ".";
+                GPA_LOG_ERROR(error.str().c_str());
             }
             else
             {
-                if (nNumGroups > static_cast<int>(expectedDriverGroups))
+                if (num_groups > static_cast<int>(expected_driver_groups))
                 {
-                    // report an error if the driver exposes more groups than we expect, but allow the code to continue.
+                    // Report an error if the driver exposes more groups than we expect, but allow the code to continue.
                     std::stringstream error;
-                    error << "GL_AMD_performance_monitor exposes " << nNumGroups << " counter groups, but GPUPerfAPI expected "
-                          << static_cast<int>(expectedDriverGroups) << ".";
-                    GPA_LogError(error.str().c_str());
+                    error << "GL_AMD_performance_monitor exposes " << num_groups << " counter groups, but GPUPerfAPI expected "
+                          << static_cast<int>(expected_driver_groups) << ".";
+                    GPA_LOG_ERROR(error.str().c_str());
                 }
 
-                // Get the group Ids
-                GLuint* pPerfGroups = new (std::nothrow) GLuint[nNumGroups];
+                // Get the group Ids.
+                GLuint* perf_groups = new (std::nothrow) GLuint[num_groups];
 
-                if (nullptr == pPerfGroups)
+                if (nullptr == perf_groups)
                 {
-                    GPA_LogError("Unable to allocate memory to store the group IDs.");
+                    GPA_LOG_ERROR("Unable to allocate memory to store the group IDs.");
                 }
                 else
                 {
-                    oglUtils::_oglGetPerfMonitorGroupsAMD(nullptr, nNumGroups, pPerfGroups);
+                    ogl_utils::ogl_get_perf_monitor_groups_amd(nullptr, num_groups, perf_groups);
 
-                    // declare this outside the loops
-                    std::vector<GPA_HardwareCounterDescExt>::iterator internalCounterIter = pHardwareCounters->m_counters.begin();
+                    // Declare this outside the loops.
+                    std::vector<GpaHardwareCounterDescExt>::iterator internal_counter_iter = hardware_counters->hardware_counters_.begin();
 
-                    int driverGroupNum = -1;
+                    int driver_group_num = -1;
 
-                    // for each group, get the group name, number of counters, and max counters (and maybe validate them)
-                    for (int g = 0; g < static_cast<int>(pHardwareCounters->m_groupCount); g++)
+                    // For each group, get the group name, number of counters, and max counters (and maybe validate them).
+                    for (int g = 0; g < static_cast<int>(hardware_counters->group_count_); g++)
                     {
-                        driverGroupNum++;
-                        char  strName[64] = {};
-                        GLint nCounters   = 0;
-                        GLint nMaxActive  = 0;
+                        driver_group_num++;
+                        char  str_name[64] = {};
+                        GLint counters     = 0;
+                        GLint max_active   = 0;
 
-                        // Get the group name
-                        if (g < nNumGroups)
+                        // Get the group name.
+                        if (g < num_groups)
                         {
-                            oglUtils::_oglGetPerfMonitorGroupStringAMD(pPerfGroups[driverGroupNum], 64, nullptr, strName);
+                            ogl_utils::ogl_get_perf_monitor_group_string_amd(perf_groups[driver_group_num], 64, nullptr, str_name);
 
-                            // Get the number of counters and max active counters
-                            oglUtils::_oglGetPerfMonitorCountersAMD(pPerfGroups[driverGroupNum], &nCounters, &nMaxActive, 0, nullptr);
+                            // Get the number of counters and max active counters.
+                            ogl_utils::ogl_get_perf_monitor_counters_amd(perf_groups[driver_group_num], &counters, &max_active, 0, nullptr);
 
-                            // validate the values
-                            if (strncmp(pHardwareCounters->m_pGroups[g].m_pName, "GPUTime", 8) == 0)
+                            // Validate the values
+                            if (strncmp(hardware_counters->internal_counter_groups_[g].name, "GPUTime", 8) == 0)
                             {
-                                // ignore the GPUTime group -- it is not explicitly exposed by the driver -- it is handled separately by GPA
-                                // we break here because GPUTime is always the last group exposed by GPA
+                                // Ignore the GPUTime group -- it is not explicitly exposed by the driver -- it is handled separately by GPA.
+                                // We break here because GPUTime is always the last group exposed by GPA.
                                 break;
                             }
 
-                            if (strncmp(pHardwareCounters->m_pGroups[g].m_pName, strName, 64) != 0)
+                            if (strncmp(hardware_counters->internal_counter_groups_[g].name, str_name, 64) != 0)
                             {
                                 std::stringstream error;
 #ifndef GLES
-                                error << "GPUPerfAPI's group name '" << pHardwareCounters->m_pGroups[g].m_pName
-                                      << "' does not match the OpenGL returned name of '" << strName << "'.";
+                                error << "GPUPerfAPI's group name '" << hardware_counters->internal_counter_groups_[g].name
+                                      << "' does not match the OpenGL returned name of '" << str_name << "'.";
 #else
-                                error << "GPUPerfAPI's group name '" << pHardwareCounters->m_pGroups[g].m_pName
-                                      << "' does not match the OpenGL ES returned name of '" << strName << "'.";
+                                error << "GPUPerfAPI's group name '" << hardware_counters->internal_counter_groups_[g].name
+                                      << "' does not match the OpenGL ES returned name of '" << str_name << "'.";
 #endif  // GLES
-                                GPA_LogMessage(error.str().c_str());
+                                GPA_LOG_MESSAGE(error.str().c_str());
                             }
                             else
                             {
@@ -299,30 +298,30 @@ bool GLGPAContext::ValidateAndUpdateGLCounters() const
                                 // There will be no catastrophic errors if the GPA expects less counters than GL exposes, but we may not have the right counters... and may be reporting bad results.
                                 // There could be issues if GPA expects more counters than GL exposes, because we may try to enable a counter that doesn't exist,
                                 // in which case we hope the driver will return a 0 result and nothing catastrophic occurs.
-                                if (pHardwareCounters->m_pGroups[g].m_numCounters != static_cast<unsigned int>(nCounters))
+                                if (hardware_counters->internal_counter_groups_[g].num_counters != static_cast<unsigned int>(counters))
                                 {
                                     std::stringstream error;
-                                    error << "GPUPerfAPI's group '" << pHardwareCounters->m_pGroups[g].m_pName << "' has "
-                                          << pHardwareCounters->m_pGroups[g].m_numCounters << " counters, but OpenGL exposes " << nCounters << ".";
+                                    error << "GPUPerfAPI's group '" << hardware_counters->internal_counter_groups_[g].name << "' has "
+                                          << hardware_counters->internal_counter_groups_[g].num_counters << " counters, but OpenGL exposes " << counters << ".";
 
-                                    // GPA pads few additional counter to some hardware blocks, we need to accommodate that case
-                                    if (pHardwareCounters->m_pGroups[g].m_numCounters < static_cast<unsigned int>(nCounters))
+                                    // GPA pads few additional counter to some hardware blocks, we need to accommodate that case.
+                                    if (hardware_counters->internal_counter_groups_[g].num_counters < static_cast<unsigned int>(counters))
                                     {
-                                        // log as a message, because this isn't so bad
-                                        GPA_LogMessage(error.str().c_str());
+                                        // Log as a message, because this isn't so bad.
+                                        GPA_LOG_MESSAGE(error.str().c_str());
                                     }
                                     else
                                     {
-                                        gpa_uint32 paddedCounters = pHardwareCounters->GetPaddedCounterCount(pHardwareCounters->m_pGroups[g].m_groupIndex);
-                                        if (nCounters + paddedCounters != pHardwareCounters->m_pGroups[g].m_numCounters)
+                                        GpaUInt32 padded_counters =
+                                            hardware_counters->GetPaddedCounterCount(hardware_counters->internal_counter_groups_[g].group_index);
+                                        if (counters + padded_counters != hardware_counters->internal_counter_groups_[g].num_counters)
                                         {
-                                            // On Vega 10 driver exposes 1 extra counter in TCC block
-                                            if (generation == GDT_HW_GENERATION_GFX9 &&
-                                                strncmp(strName, "TCC", 4) == 0 &&
-                                                (nCounters + paddedCounters - 1) != pHardwareCounters->m_pGroups[g].m_numCounters)
+                                            // On Vega 10 driver exposes 1 extra counter in TCC block.
+                                            if (generation == GDT_HW_GENERATION_GFX9 && strncmp(str_name, "TCC", 4) == 0 &&
+                                                (counters + padded_counters - 1) != hardware_counters->internal_counter_groups_[g].num_counters)
                                             {
-                                                // Counter should match with the driver after accounting padded counters
-                                                GPA_LogError(error.str().c_str());
+                                                // Counter should match with the driver after accounting padded counters.
+                                                GPA_LOG_ERROR(error.str().c_str());
                                             }
                                         }
                                     }
@@ -330,25 +329,25 @@ bool GLGPAContext::ValidateAndUpdateGLCounters() const
 
                                 // This assert is good for debugging, but it will fire on most EG cards, because we "expect" SQ to have 8 max counters on cypress (high end), but
                                 // we know that it will actually have less on lower end EG cards, and the driver returns the correct values, so our 8 != what the driver returns.
-                                //assert( pHardwareCounters->Groups[g].maxActiveCounters == (unsigned int)nMaxActive );
+                                // assert( pHardwareCounters->Groups[g].maxActiveCounters == (unsigned int)nMaxActive );
                             }
                         }
 
-                        // update the group Id based on what was returned from the driver
-                        const gpa_uint64 numCountersInGroup = pHardwareCounters->m_pGroups[g].m_numCounters;
+                        // Update the group Id based on what was returned from the driver.
+                        const GpaUInt64 num_counters_in_group = hardware_counters->internal_counter_groups_[g].num_counters;
 
-                        for (unsigned int c = 0; c < numCountersInGroup; c++)
+                        for (unsigned int c = 0; c < num_counters_in_group; c++)
                         {
-                            internalCounterIter->m_groupIdDriver = pPerfGroups[driverGroupNum];
+                            internal_counter_iter->group_id_driver = perf_groups[driver_group_num];
 
-                            if (internalCounterIter != pHardwareCounters->m_counters.end())
+                            if (internal_counter_iter != hardware_counters->hardware_counters_.end())
                             {
-                                ++internalCounterIter;
+                                ++internal_counter_iter;
                             }
                         }
                     }
 
-                    delete[] pPerfGroups;
+                    delete[] perf_groups;
                     success = true;
                 }
             }

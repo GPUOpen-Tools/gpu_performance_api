@@ -1,96 +1,115 @@
 //==============================================================================
-// Copyright (c) 2016-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  A factory which can produce various counter splitting implementations.
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief A factory which can produce various counter splitting implementations.
 //==============================================================================
 
-#ifndef _GPA_SPLIT_COUNTER_FACTORY_H_
-#define _GPA_SPLIT_COUNTER_FACTORY_H_
+#ifndef GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTER_FACTORY_H_
+#define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTER_FACTORY_H_
 
 #include <list>
-#include "logging.h"
-#include "gpa_split_counters_interfaces.h"
-#include "gpa_split_counters_max_per_pass.h"
-#include "gpa_split_counters_one_per_pass.h"
-#include "gpa_split_counters_consolidated.h"
-#include "gpa_hardware_counters.h"
 
-/// Available algorithms for splitting counters into multiple passes
-enum GPACounterSplitterAlgorithm
+#include "gpu_perf_api_common/logging.h"
+
+#include "gpu_perf_api_counter_generator/gpa_split_counters_interfaces.h"
+#include "gpu_perf_api_counter_generator/gpa_split_counters_max_per_pass.h"
+#include "gpu_perf_api_counter_generator/gpa_split_counters_one_per_pass.h"
+#include "gpu_perf_api_counter_generator/gpa_split_counters_consolidated.h"
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+
+/// @brief Available algorithms for splitting counters into multiple passes.
+enum GpaCounterSplitterAlgorithm
 {
-    /// fit as many counters in the first pass as possible, but no more than a fixed number in a single pass
-    MAX_PER_PASS = 0,
+    /// Fit as many counters in the first pass as possible, but no more than a fixed number in a single pass.
+    kMaxPerPass = 0,
 
-    /// each public counter gets its own pass (or as many passes as it needs)
-    ONE_PUBLIC_COUNTER_PER_PASS,
+    /// Each public counter gets its own pass (or as many passes as it needs).
+    kOnePublicCounterPerPass,
 
-    /// public counters that can fit in a single pass will be enabled in the same pass,
+    /// Public counters that can fit in a single pass will be enabled in the same pass,
     /// single-pass counters should not be split into multiple passes,
     /// multi-pass counters should not take more passes than required,
-    /// no more than a fixed number of counters per pass,
-    CONSOLIDATED,
+    /// no more than a fixed number of counters per pass.
+    kConsolidated,
 };
 
-/// A factory which can produce various counter splitting implementations.
-class GPASplitCounterFactory
+/// @brief A factory which can produce various counter splitting implementations.
+class GpaSplitCounterFactory
 {
 public:
-    /// Generates a new counter splitter object which will need to be deleted by the caller.
-    /// \param algorithm The type of algorithm to generate a splitter for.
-    /// \param timestampBlockIds Set of timestamp block id's
-    /// \param timeCounterIndices Set of timestamp counter indices
-    /// \param maxSQCounters The maximum number of simultaneous counters in the SQ block.
-    /// \param numSQGroups The number of SQ counter groups.
-    /// \param pSQCounterBlockInfo The list of SQ counter groups.
-    /// \param numIsolatedFromSqGroups The number of counter groups that must be isolated from SQ counter groups
-    /// \param pIsolatedFromSqGroups The list of counter groups that must be isolated from SQ counter groups
-    /// \return the counter splitter
-    static IGPASplitCounters* GetNewCounterSplitter(GPACounterSplitterAlgorithm   algorithm,
-                                                    const std::set<unsigned int>& timestampBlockIds,
-                                                    const std::set<unsigned int>& timeCounterIndices,
-                                                    unsigned int                  maxSQCounters,
-                                                    unsigned int                  numSQGroups,
-                                                    GPA_SQCounterGroupDesc*       pSQCounterBlockInfo,
-                                                    unsigned int                  numIsolatedFromSqGroups,
-                                                    const unsigned int*           pIsolatedFromSqGroups)
+    /// @brief Generates a new counter splitter object which will need to be deleted by the caller.
+    ///
+    /// @param [in] algorithm The type of algorithm to generate a splitter for.
+    /// @param [in] timestamp_block_ids Set of timestamp block id's.
+    /// @param [in] time_counter_indices Set of timestamp counter indices.
+    /// @param [in] max_sq_counters The maximum number of simultaneous counters in the SQ block.
+    /// @param [in] num_sq_groups The number of SQ counter groups.
+    /// @param [in] sq_counter_block_info The list of SQ counter groups.
+    /// @param [in] num_isolated_from_sq_groups The number of counter groups that must be isolated from SQ counter groups.
+    /// @param [in] isolated_from_sq_groups The list of counter groups that must be isolated from SQ counter groups.
+    ///
+    /// @return The counter splitter.
+    static IGpaSplitCounters* GetNewCounterSplitter(GpaCounterSplitterAlgorithm   algorithm,
+                                                    const std::set<unsigned int>& timestamp_block_ids,
+                                                    const std::set<unsigned int>& time_counter_indices,
+                                                    unsigned int                  max_sq_counters,
+                                                    unsigned int                  num_sq_groups,
+                                                    GpaSqCounterGroupDesc*        sq_counter_block_info,
+                                                    unsigned int                  num_isolated_from_sq_groups,
+                                                    const unsigned int*           isolated_from_sq_groups)
     {
-        IGPASplitCounters* pSplitter = nullptr;
+        IGpaSplitCounters* splitter = nullptr;
 
-        if (MAX_PER_PASS == algorithm)
+        if (kMaxPerPass == algorithm)
         {
-            pSplitter = new (std::nothrow) GPASplitCountersMaxPerPass(
-                timestampBlockIds, timeCounterIndices, maxSQCounters, numSQGroups, pSQCounterBlockInfo, numIsolatedFromSqGroups, pIsolatedFromSqGroups);
+            splitter = new (std::nothrow) GpaSplitCountersMaxPerPass(timestamp_block_ids,
+                                                                      time_counter_indices,
+                                                                      max_sq_counters,
+                                                                      num_sq_groups,
+                                                                      sq_counter_block_info,
+                                                                      num_isolated_from_sq_groups,
+                                                                      isolated_from_sq_groups);
         }
-        else if (ONE_PUBLIC_COUNTER_PER_PASS == algorithm)
+        else if (kOnePublicCounterPerPass == algorithm)
         {
-            pSplitter = new (std::nothrow) GPASplitCountersOnePerPass(
-                timestampBlockIds, timeCounterIndices, maxSQCounters, numSQGroups, pSQCounterBlockInfo, numIsolatedFromSqGroups, pIsolatedFromSqGroups);
+            splitter = new (std::nothrow) GpaSplitCountersOnePerPass(timestamp_block_ids,
+                                                                      time_counter_indices,
+                                                                      max_sq_counters,
+                                                                      num_sq_groups,
+                                                                      sq_counter_block_info,
+                                                                      num_isolated_from_sq_groups,
+                                                                      isolated_from_sq_groups);
         }
-        else if (CONSOLIDATED == algorithm)
+        else if (kConsolidated == algorithm)
         {
-            pSplitter = new (std::nothrow) GPASplitCountersConsolidated(
-                timestampBlockIds, timeCounterIndices, maxSQCounters, numSQGroups, pSQCounterBlockInfo, numIsolatedFromSqGroups, pIsolatedFromSqGroups);
+            splitter = new (std::nothrow) GpaSplitCountersConsolidated(timestamp_block_ids,
+                                                                        time_counter_indices,
+                                                                        max_sq_counters,
+                                                                        num_sq_groups,
+                                                                        sq_counter_block_info,
+                                                                        num_isolated_from_sq_groups,
+                                                                        isolated_from_sq_groups);
         }
         else
         {
             assert(!"Unhandled GPACounterSplitAlgorithm supplied to factory.");
         }
 
-        if (nullptr == pSplitter)
+        if (nullptr == splitter)
         {
-            GPA_LogError("Unable to allocate memory for counter splitter.");
+            GPA_LOG_ERROR("Unable to allocate memory for counter splitter.");
         }
 
-        return pSplitter;
+        return splitter;
     };
 
 private:
-    /// private constructor to enforce use of static factory method
-    GPASplitCounterFactory(void){};
+    /// @brief Private constructor to enforce use of static factory method.
+    GpaSplitCounterFactory(void){};
 
-    /// private virtual destructor
-    virtual ~GPASplitCounterFactory(void){};
+    /// @brief Private virtual destructor.
+    virtual ~GpaSplitCounterFactory(void){};
 };
 
-#endif  //_GPA_SPLIT_COUNTER_FACTORY_H_
+#endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTER_FACTORY_H_

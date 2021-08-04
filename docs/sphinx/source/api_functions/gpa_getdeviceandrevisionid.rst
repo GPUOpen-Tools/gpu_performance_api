@@ -1,17 +1,17 @@
-.. Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
 
-GPA_GetDeviceAndRevisionId
-@@@@@@@@@@@@@@@@@@@@@@@@@@
+GpaGetDeviceAndRevisionId
+@@@@@@@@@@@@@@@@@@@@@@@@@
 
 Syntax
 %%%%%%
 
 .. code-block:: c++
 
-    GPA_Status GPA_GetDeviceAndRevisionId(
-        GPA_ContextId contextId,
-        gpa_uint32* pDeviceId,
-        gpa_uint32* pRevisionId);
+    GpaStatus GpaGetDeviceAndRevisionId(
+        GpaContextId context_id,
+        GpaUInt32* device_id,
+        GpaUInt32* revision_id);
 
 Description
 %%%%%%%%%%%
@@ -25,9 +25,9 @@ Parameters
     :header: "Name", "Description"
     :widths: 35, 65
 
-    "``contextId``", "Unique identifier of a previously-opened context."
-    "``pDeviceId``", "The value that will be set to the device id upon successful execution."
-    "``pRevisionId``", "The value that will be set to the device revision id upon successful execution."
+    "``context_id``", "Unique identifier of a previously-opened context."
+    "``device_id``", "The value that will be set to the device id upon successful execution."
+    "``revision_id``", "The value that will be set to the device revision id upon successful execution."
 
 Return value
 %%%%%%%%%%%%
@@ -36,11 +36,11 @@ Return value
     :header: "Return value", "Description"
     :widths: 35, 65
 
-    "GPA_STATUS_OK", "The device id and revision id were successfully retrieved."
-    "GPA_STATUS_ERROR_NULL_POINTER", "| The supplied ``pDeviceId`` parameter is NULL.
-    | The supplied ``pRevisionId`` parameter is NULL.
-    | The supplied ``contextId`` parameter is NULL."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_OPEN", "The supplied context is not currently open."
-    "GPA_STATUS_ERROR_CONTEXT_NOT_FOUND", "The supplied ``contextId`` parameter was not recognized as a previously-opened context identifier."
-    "GPA_STATUS_ERROR_FAILED", "The device id and revision id could not be retrieved."
-    "GPA_STATUS_ERROR_EXCEPTION", "Exception occurred."
+    "kGpaStatusOk", "The device id and revision id were successfully retrieved."
+    "kGpaStatusErrorNullPointer", "| The supplied ``device_id`` parameter is NULL.
+    | The supplied ``revision_id`` parameter is NULL.
+    | The supplied ``context_id`` parameter is NULL."
+    "kGpaStatusErrorContextNotOpen", "The supplied context is not currently open."
+    "kGpaStatusErrorContextNotFound", "The supplied ``context_id`` parameter was not recognized as a previously-opened context identifier."
+    "kGpaStatusErrorFailed", "The device id and revision id could not be retrieved."
+    "kGpaStatusErrorException", "Exception occurred."

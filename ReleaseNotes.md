@@ -1,6 +1,33 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.9 (07/27/21)
+  * Add support for additional GPUs and APUs.
+  * Improvements made to the sample applications.
+
+## Version 3.8 (04/01/21)
+  * Add support for additional GPUs and APUs, including AMD Radeon™ RX 6700 series GPUs.
+  * Code has been updated to adhere to Google C++ Style Guide.
+    * New public headers have been added.
+    * Old headers are deprecated and will emit a compile-time message if included.
+    * Projects loading GPA will need to be recompiled, but no code changes are required unless moving to the new headers.
+  * Improvements made to all sample applications.
+  * Updated documentation for new codestyle (and https://github.com/GPUOpen-Tools/gpu_performance_api/issues/56).
+  * Support for the --internal flag has been removed from the build script.
+
+## Version 3.7 (11/24/20)
+  * Add support for additional GPUs and APUs, including AMD Radeon™ RX 6000 series GPUs.
+  * New RT counters for DXR workloads on AMD Radeon™ RX 6000 series GPUs.
+    * RayTriTests, and RayBoxTests: These counters collect the number of ray intersections for triangles and boxes, respectively.
+    * TotalRayTests: This counter collects the aggregated number of ray-box and ray-triangle intersection tests.
+    * RayTestsPerWave: This counter collects ray intersection test count at a more granular level – per wave.
+  * New Scalar and Instruction cache counters on AMD Radeon™ RX 5000 series GPUs.
+    * Scalar cache: ScalarCacheHit, ScalarCacheRequestCount, ScalarCacheHitCount, ScalarCacheMissCount
+    * Instruction cache: InstCacheHit, InstCacheRequestCount, InstCacheHitCount, InstCacheMissCount
+  * Update the Vulkan® sample to remove the static link and use the system-specific Vulkan® loader.
+  * Remove OpenCL™ support from Linux.
+  * Remove downloading the Vulkan® SDK by the build script.
+
 ## Version 3.6 (05/15/20)
   * Add support for additional GPUs and APUs, including AMD Ryzen™ 4000 Series APUs.
   * Add two new GFX10 GlobalMemory Counters for graphics using DX12 and Vulkan: LocalVidMemBytes and PcieBytes.
@@ -19,7 +46,7 @@
     * Fixed CMake files to respect supported build flags.
     * Fixed crash when DX12 debug layer was enabled.
     * Fixed an issue with loading of shader in GPA Vulkan sample app.
-    * Fixed an issue in Vulkan build with newer Vulkan SDK with amd_shader_core_properties2 extension
+    * Fixed an issue in Vulkan build with newer Vulkan SDK with amd_shader_core_properties2 extension (https://github.com/GPUOpen-Tools/gpu_performance_api/issues/45)
     * Fixed an issue with crash on unsupported Gfx6 and Gfx7 GPUs.
 
 ## Version 3.4 (7/10/19)
@@ -33,7 +60,7 @@
   * Update counter documentation to contain per-hardware-generation tables.
   * Bugs Fixed:
     * Fixed error handling in GPA_GetEnabledIndex, GPA_EnableCounterByName and GPA_DisbleCounterByName.
-    * Fixed an issue with Vulkan timing counters (https://github.com/GPUOpen-Tools/GPA/issues/40).
+    * Fixed an issue with Vulkan timing counters (https://github.com/GPUOpen-Tools/gpu_performance_api/issues/40).
     * Fixed an issue with SALUBusy counters.
     * Fixed an issue with HiZQuadsCulledCount and HiZQuadsSurvivingCount counters on GFX8 GPUs.
     * Fixed an issue with MemUnitBusy and MemUnitStalled counters on GFX8 GPUs.
@@ -53,7 +80,7 @@
   * Wrapped all GPA entrypoints in try/catch to ensure unhandled exceptions do not escape the GPA library.
   * Add VS2017 project files.
   * Bugs Fixed:
-    * Fixed https://github.com/GPUOpen-Tools/GPA/issues/18.
+    * Fixed https://github.com/GPUOpen-Tools/gpu_performance_api/issues/18.
     * Fixed support for scheduling counters on multiple sessions.
     * OpenGL: Fixed a bug in GPASample cleanup.
 
@@ -150,7 +177,7 @@
  * OpenGL: Improved memory consumption and performance during profiling.
  * OpenGL: Fixed crash in 32-bit Linux version.
  * OpenGL: Fixed CSMemUnitBusy, CSMemUnitStalled, and TexTriFilteringPct counters on Graphics IP v8 family of GPUs.
- * OpenGL: Fixed CSALUStalledByLDS  counter on Graphics IP v7 and v8 families of GPUs.
+ * OpenGL: Fixed CSALUStalledByLDS counter on Graphics IP v7 and v8 families of GPUs.
  * Removed Support for DirectX 10.
 
 ## Version 2.13 (4/17/14, updated 6/20/14)

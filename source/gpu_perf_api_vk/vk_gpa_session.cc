@@ -1,103 +1,106 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief A Vulkan-specific implementation of the GPA Session interface
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief A Vulkan-specific implementation of the GPA Session interface
 //==============================================================================
 
-#include "vk_gpa_session.h"
-#include "gpa_unique_object.h"
-#include "vk_gpa_command_list.h"
-#include "vk_gpa_pass.h"
+#include "gpu_perf_api_vk/vk_gpa_session.h"
 
-VkGPASession::VkGPASession(IGPAContext* parentContextId, GPA_Session_Sample_Type sampleType)
-    : GPASession(parentContextId, sampleType)
+#include "gpu_perf_api_common/gpa_unique_object.h"
+
+#include "gpu_perf_api_vk/vk_gpa_command_list.h"
+#include "gpu_perf_api_vk/vk_gpa_pass.h"
+
+VkGpaSession::VkGpaSession(IGpaContext* parent_context_id, GpaSessionSampleType sample_type)
+    : GpaSession(parent_context_id, sample_type)
 {
 }
 
-GPA_API_Type VkGPASession::GetAPIType() const
+GpaApiType VkGpaSession::GetApiType() const
 {
-    return GPA_API_VULKAN;
+    return kGpaApiVulkan;
 }
 
-GPA_Status VkGPASession::ContinueSampleOnCommandList(gpa_uint32 srcSampleId, GPA_CommandListId primaryCommandListId)
+GpaStatus VkGpaSession::ContinueSampleOnCommandList(GpaUInt32 src_sample_id, GpaCommandListId primary_command_list_id)
 {
     bool succeed = false;
 
-    if (primaryCommandListId->Object()->GetAPIType() == GetAPIType() && primaryCommandListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST)
+    if (primary_command_list_id->Object()->GetApiType() == GetApiType() && primary_command_list_id->ObjectType() == GpaObjectType::kGpaObjectTypeCommandList)
     {
-        VkGPACommandList* pVkGpaCmdList = reinterpret_cast<VkGPACommandList*>(primaryCommandListId->Object());
-        VkGPAPass*        pVkGpaPass    = reinterpret_cast<VkGPAPass*>(pVkGpaCmdList->GetPass());
+        VkGpaCommandList* vk_gpa_command_list = reinterpret_cast<VkGpaCommandList*>(primary_command_list_id->Object());
+        VkGpaPass*        vk_gpa_pass         = reinterpret_cast<VkGpaPass*>(vk_gpa_command_list->GetPass());
 
-        if (nullptr != pVkGpaPass)
+        if (nullptr != vk_gpa_pass)
         {
-            // Continue the sample
-            if (pVkGpaPass->ContinueSample(srcSampleId, pVkGpaCmdList))
+            // Continue the sample.
+            if (vk_gpa_pass->ContinueSample(src_sample_id, vk_gpa_command_list))
             {
                 succeed = true;
             }
             else
             {
-                GPA_LogError("Unable to continue sample.");
+                GPA_LOG_ERROR("Unable to continue sample.");
             }
         }
         else
         {
-            GPA_LogError("Pass doesn't exist.");
+            GPA_LOG_ERROR("Pass doesn't exist.");
         }
     }
     else
     {
-        GPA_LogError("Invalid Parameter.");
+        GPA_LOG_ERROR("Invalid Parameter.");
     }
 
-    return succeed ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+    return succeed ? kGpaStatusOk : kGpaStatusErrorFailed;
 }
 
-GPA_Status VkGPASession::CopySecondarySamples(GPA_CommandListId secondaryCmdListId,
-                                              GPA_CommandListId primaryCmdListId,
-                                              gpa_uint32        numSamples,
-                                              gpa_uint32*       pNewSampleIds)
+GpaStatus VkGpaSession::CopySecondarySamples(GpaCommandListId secondary_command_list_id,
+                                             GpaCommandListId primary_command_list_id,
+                                             GpaUInt32        num_samples,
+                                             GpaUInt32*       new_sample_ids)
 {
-    bool isCopied = false;
+    bool is_copied = false;
 
-    if (secondaryCmdListId->Object()->GetAPIType() == GPA_API_VULKAN && secondaryCmdListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST &&
-        primaryCmdListId->Object()->GetAPIType() == GPA_API_VULKAN && primaryCmdListId->ObjectType() == GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST)
+    if (secondary_command_list_id->Object()->GetApiType() == kGpaApiVulkan &&
+        secondary_command_list_id->ObjectType() == GpaObjectType::kGpaObjectTypeCommandList &&
+        primary_command_list_id->Object()->GetApiType() == kGpaApiVulkan && primary_command_list_id->ObjectType() == GpaObjectType::kGpaObjectTypeCommandList)
     {
-        VkGPACommandList* pVkPrimaryCmd   = reinterpret_cast<VkGPACommandList*>(primaryCmdListId->Object());
-        VkGPACommandList* pVkSecondaryCmd = reinterpret_cast<VkGPACommandList*>(secondaryCmdListId->Object());
+        VkGpaCommandList* vk_priamry_command_list   = reinterpret_cast<VkGpaCommandList*>(primary_command_list_id->Object());
+        VkGpaCommandList* vk_secondary_command_list = reinterpret_cast<VkGpaCommandList*>(secondary_command_list_id->Object());
 
-        VkGPAPass* pVkPass = reinterpret_cast<VkGPAPass*>(pVkPrimaryCmd->GetPass());
+        VkGpaPass* vk_pass = reinterpret_cast<VkGpaPass*>(vk_priamry_command_list->GetPass());
 
-        if (nullptr != pVkPass)
+        if (nullptr != vk_pass)
         {
-            if (pVkPass->CopySecondarySamples(pVkSecondaryCmd, pVkPrimaryCmd, numSamples, pNewSampleIds))
+            if (vk_pass->CopySecondarySamples(vk_secondary_command_list, vk_priamry_command_list, num_samples, new_sample_ids))
             {
-                isCopied = true;
+                is_copied = true;
             }
         }
     }
     else
     {
-        GPA_LogError("Invalid Parameter.");
+        GPA_LOG_ERROR("Invalid Parameter.");
     }
 
-    return isCopied ? GPA_STATUS_OK : GPA_STATUS_ERROR_FAILED;
+    return is_copied ? kGpaStatusOk : kGpaStatusErrorFailed;
 }
 
-GPAPass* VkGPASession::CreateAPIPass(PassIndex passIndex)
+GpaPass* VkGpaSession::CreateApiPass(PassIndex pass_index)
 {
-    GPAPass* pRetPass = nullptr;
+    GpaPass* ret_pass = nullptr;
 
-    CounterList*     pPassCounters = GetCountersForPass(passIndex);
-    GPACounterSource counterSource = GetParentContext()->GetCounterSource((*pPassCounters)[0]);
+    CounterList*     pass_counters  = GetCountersForPass(pass_index);
+    GpaCounterSource counter_source = GetParentContext()->GetCounterSource((*pass_counters)[0]);
 
-    VkGPAPass* pVkGpaPass = new (std::nothrow) VkGPAPass(this, passIndex, counterSource, pPassCounters);
+    VkGpaPass* vk_gpa_pass = new (std::nothrow) VkGpaPass(this, pass_index, counter_source, pass_counters);
 
-    if (nullptr != pVkGpaPass)
+    if (nullptr != vk_gpa_pass)
     {
-        pRetPass = pVkGpaPass;
+        ret_pass = vk_gpa_pass;
     }
 
-    return pRetPass;
+    return ret_pass;
 }

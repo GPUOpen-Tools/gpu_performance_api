@@ -1,211 +1,228 @@
 //==============================================================================
-// Copyright (c) 2019 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  DX11 Triangle Sample header
+// Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief DX11 Triangle Sample header.
 //==============================================================================
 
-#ifndef _D3D11_TRIANGLE_H_
-#define _D3D11_TRIANGLE_H_
+#ifndef GPU_PERF_API_EXAMPLES_DX11_DX11_TRIANGLE_DX11_TRIANGLE_H_
+#define GPU_PERF_API_EXAMPLES_DX11_DX11_TRIANGLE_DX11_TRIANGLE_H_
+
+#include <atomic>
+#include <fstream>
+#include <sstream>
+#include <stack>
+#include <vector>
 
 #include <dxgi1_3.h>
+#include <d3d11.h>
 
 #ifdef _DEBUG
 #include <dxgidebug.h>
 #endif
 
-#include <d3d11.h>
-#include <stack>
-#include <fstream>
-#include <sstream>
-#include <atomic>
-
 //#define DISABLE_GPA 1 - Uncomment to disable GPA
 
-#include "gpu_perf_api_interface_loader.h"
-#include <vector>
+#include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
-/*
- * This sample demonstrates usage of GPA
- * by drawing a triangle.
- */
-
-/// class for D3D11 triangle sample
+/// @brief Class for D3D11 triangle sample.
+///
+/// This sample demonstrates usage of GPA by drawing a triangle.
 class D3D11Triangle
 {
 public:
-    /// Get the static instance of the triangle sample
-    /// \return static instance of the triangle sample
+    /// @brief Get the static instance of the triangle sample.
+    ///
+    /// @return Static instance of the triangle sample.
     static D3D11Triangle* Instance();
 
-    /// Initializes the triangle sample
+    /// @brief Initializes the triangle sample.
     bool Init();
 
-    /// Draw the triangle sample
+    /// @brief Draw the triangle sample.
     void Draw();
 
-    /// Toggles the profiling
+    /// @brief Toggles the profiling.
     void ToggleProfiling();
 
-    /// Destructor
+    /// @brief Destructor.
     ~D3D11Triangle() = default;
 
-    /// De-allocates all the resources
+    /// @brief De-allocates all the resources.
     void Destroy() const;
 
 private:
-    /// struct for vertex data
+    /// @brief Struct for vertex data.
     struct VertexData
     {
-        float m_position[4];  ///< position
-        float m_color[4];     ///< color
+        float position[4];  ///< Position.
+        float color[4];     ///< Color.
     };
 
-    ID3D11Device*            m_pDx11Device;            ///< DX11 Device
-    ID3D11DeviceContext*     m_pDx11ImmediateContext;  ///< DX11 Immediate device context
-    IDXGIFactory1*           m_pdxgiFactory1;          ///< DXGI Factory 2
-    IDXGISwapChain*          m_pdxgiSwapChain;         ///< DXGI Swap chain
-    ID3D11Buffer*            m_pVertexBuffer;          ///< Vertex Buffer
-    ID3D11VertexShader*      m_pVertexShader;          ///< Vertex shader
-    ID3D11PixelShader*       m_pPixelShader;           ///< Pixel shader
-    ID3D11RenderTargetView*  m_pRTV;                   ///< Render target view
-    ID3D11InputLayout*       m_pdx11InputLayout;       ///< IA Input layout
-    ID3D11DepthStencilState* m_pDepthStencilState;     ///< Depth-Stencil state
-    ID3D11RasterizerState*   m_pRasterizerState;       ///< rasterizer state
-    D3D11_VIEWPORT           m_viewPort;               ///< view port
+    ID3D11Device*            dx11_device_;             ///< DX11 Device.
+    ID3D11DeviceContext*     dx11_immediate_context_;  ///< DX11 Immediate device context.
+    IDXGIFactory1*           dxgi_factory_1_;          ///< DXGI Factory 2.
+    IDXGISwapChain*          dxgi_swap_chain_;         ///< DXGI Swap chain.
+    ID3D11Buffer*            vertex_bufffer_;          ///< Vertex Buffer.
+    ID3D11VertexShader*      vertex_shader_;           ///< Vertex shader.
+    ID3D11PixelShader*       pixel_shader_;            ///< Pixel shader.
+    ID3D11RenderTargetView*  render_target_view_;      ///< Render target view.
+    ID3D11InputLayout*       input_layout_;            ///< IA Input layout.
+    ID3D11DepthStencilState* depth_setncil_state_;     ///< Depth-Stencil state.
+    ID3D11RasterizerState*   rasterizer_state_;        ///< Rasterizer state.
+    D3D11_VIEWPORT           view_port_;               ///< Viewport.
 
-    unsigned int      m_frameCounter;     ///< frame counter
-    std::stringstream m_content;          ///< content stream
-    std::stringstream m_header;           ///< header stream
-    bool              m_isHeaderWritten;  ///< flag indicating header is written or not
+    unsigned int      frame_counter_;      ///< Frame counter.
+    std::stringstream content_stream_;     ///< Content stream.
+    std::stringstream header_stream_;      ///< Header stream.
+    bool              is_header_written_;  ///< Flag indicating header is written or not.
 
-    GPAFunctionTable* m_pGpaFunctionTable;  ///< GPA function table
-    GPA_ContextId     m_gpaContextId;       ///< GPA context id
-    GPA_SessionId     m_gpaSessionId;       ///< GPA session id
-    GPA_CommandListId m_gpaCommandListId;   ///< GPA command list
-    gpa_uint32        m_deviceId;           ///< Device Id
-    gpa_uint32        m_revisionId;         ///< Revision Id
-    std::string       m_deviceName;         ///< Device Name
+    GpaFunctionTable* gpa_function_table_;   ///< GPA function table.
+    GpaContextId      gpa_context_id_;       ///< GPA context id.
+    GpaSessionId      gpa_session_id_;       ///< GPA session id.
+    GpaCommandListId  gpa_command_list_id_;  ///< GPA command list.
+    GpaUInt32         device_id_;            ///< Device Id.
+    GpaUInt32         revision_id_;          ///< Revision Id.
+    std::string       device_name_;          ///< Device Name.
 
-    unsigned int     m_passRequired;           ///< number of pass required for the enabled set of counters
-    int              m_currentPass;            ///< current pass
-    int              m_sampleCounter;          ///< sample counter
-    std::vector<int> m_sampleList;             ///< sample list
-    std::string      m_counterFileName;        ///< name of the counter data file
-    std::string      m_gpaLogFileName;         ///< name of the GPA log file
-    std::fstream     m_gpaLogFileStream;       ///< GPA log file stream
-    std::fstream     m_counterDataFileStream;  ///< counter data file stream
-    std::string      m_executablePath;         ///< path of the sample executable
-    bool             m_profilingEnable;        ///< flag indicating profiling is enabled or not
+    unsigned int     num_passes_required_;       ///< Number of passes required for the enabled set of counters.
+    int              current_pass_;              ///< Current pass.
+    int              sample_counter_;            ///< Sample counter.
+    std::vector<int> sample_list_;               ///< Sample list.
+    std::string      counter_file_name_;         ///< Name of the counter data file.
+    std::string      gpa_log_file_name_;         ///< Name of the GPA log file.
+    std::fstream     gpa_log_file_stream_;       ///< GPA log file stream.
+    std::fstream     counter_data_file_stream_;  ///< Counter data file stream.
+    std::string      executable_path_;           ///< Path of the sample executable.
+    bool             is_profiling_enabled_;      ///< Flag indicating profiling is enabled or not.
 
-    /// constructor
+    /// @brief Constructor.
     D3D11Triangle();
 
-    static constexpr unsigned int ms_frameCount    = 2;  ///< frame count
-    static constexpr unsigned int ms_viewPortCount = 4;  ///< number of viewports
-    static D3D11Triangle*         ms_pDx11Triangle;      ///< static instance of the d3d11 triangle sample
+    static constexpr unsigned int kFrameCount    = 2;  ///< Frame count.
+    static constexpr unsigned int kViewportCount = 4;  ///< Number of viewports.
+    static D3D11Triangle*         dx11_triangle_;      ///< Static instance of the d3d11 triangle sample.
 
-    /// Resets the pass resources;
+    /// @brief Resets the pass resources.
     void ResetGpaPassInfo();
 
 public:
 #pragma region GPA_Wrappers
-    /// Initializes GPA and open its context
-    /// \return true upon successful operation
-    bool GPA_InitializeAndOpenContext();
+    /// @brief Initializes GPA and open its context.
+    ///
+    /// @return True upon successful operation.
+    bool GpaInitializeAndOpenContext();
 
-    /// Releases the GPA and closes its context
-    /// \return true upon successful operation
-    bool GPA_ReleaseContextAndDestroy();
+    /// @brief Releases the GPA and closes its context.
+    ///
+    /// @return True upon successful operation.
+    bool GpaReleaseContextAndDestroy();
 
-    /// Enables GPA counters
-    /// \return true upon successful operation
-    bool GPA_EnableCounters();
+    /// @brief Enables GPA counters.
+    ///
+    /// @return True upon successful operation.
+    bool GpaEnableCounters();
 
-    /// Creates the GPA profiling session
-    /// \return true upon successful operation
-    bool GPA_CreateProfilingSession();
+    /// @brief Creates the GPA profiling session.
+    ///
+    /// @return True upon successful operation.
+    bool GpaCreateProfilingSession();
 
-    /// Deletes the GPA profiling session
-    /// \return true upon successful operation
-    bool GPA_DeleteProfilingSession();
+    /// @brief Deletes the GPA profiling session.
+    ///
+    /// @return True upon successful operation.
+    bool GpaDeleteProfilingSession();
 
-    /// Begins the GPA profiling session
-    /// \return true upon successful operation
-    bool GPA_BeginProfilingSession();
+    /// @brief Begins the GPA profiling session.
+    ///
+    /// @return True upon successful operation.
+    bool GpaBeginProfilingSession();
 
-    /// Ends the GPA profiling session
-    /// \return true upon successful operation
-    bool GPA_EndProfilingSession() const;
+    /// @brief Ends the GPA profiling session.
+    ///
+    /// @return True upon successful operation.
+    bool GpaEndProfilingSession() const;
 
-    /// Begins workload for the GPA session pass
-    /// \return true upon successful operation
-    bool GPA_BeginPass();
+    /// @brief Begins workload for the GPA session pass.
+    ///
+    /// @return True upon successful operation.
+    bool GpaBeginPass();
 
-    /// Ends the GPA session pass
-    /// \return true upon successful operation
-    bool GPA_EndPass();
+    /// @brief Ends the GPA session pass.
+    ///
+    /// @return True upon successful operation.
+    bool GpaEndPass();
 
-    /// Resets the information needed for the next pass
-    /// \return true upon successful operation
-    bool GPA_NextPassNeeded() const;
+    /// @brief Resets the information needed for the next pass.
+    ///
+    /// @return True upon successful operation.
+    bool GpaNextPassNeeded() const;
 
-    /// Begins GPA sample
-    /// \return true upon successful operation
-    bool GPA_BeginSample();
+    /// @brief Begins GPA sample.
+    ///
+    /// @return True upon successful operation.
+    bool GpaBeginSample();
 
-    /// Ends a GPA sample
-    /// \return true upon successful operation
-    bool GPA_EndSample();
+    /// @brief Ends a GPA sample.
+    ///
+    /// @return True upon successful operation.
+    bool GpaEndSample();
 
-    /// Enum to define type of counter validation to perform
+    /// @brief Enum to define type of counter validation to perform.
     typedef enum
     {
-        COMPARE_TYPE_EQUAL,                     ///< Counter value must be equal to a specified value
-        COMPARE_TYPE_GREATER_THAN,              ///< Counter value must be greater than a specified value
-        COMPARE_TYPE_GREATER_THAN_OR_EQUAL_TO,  ///< Counter value must be greater than or equal to a specified value
-        COMPARE_TYPE_LESS_THAN,                 ///< Counter value must be less than a specified value
-        COMPARE_TYPE_LESS_THAN_OR_EQUAL_TO,     ///< Counter value must be less than or equal to a specified value
+        kCompareTypeEqual,                 ///< Counter value must be equal to a specified value.
+        kCompareTypeGreaterThan,           ///< Counter value must be greater than a specified value.
+        kCompareTypeGreaterThanOrEqualTo,  ///< Counter value must be greater than or equal to a specified value.
+        kCompareTypeLessThan,              ///< Counter value must be less than a specified value.
+        kCompareTypeLessThanOrEqualTo,     ///< Counter value must be less than or equal to a specified value.
     } CompareType;
 
-    /// Compare retrieved counter value to an expected value
-    /// \param frameNumber the frame number containing the counter being compared
-    /// \param sampleIndex the sample index of the counter being compared
-    /// \param pCounterName the name of the counter being compared
-    /// \param counterValue the retrieved counter value
-    /// \param compareType the type of compare to perform
-    /// \param compareVal the expected counter value (subject to the compare type)
-    /// \return true if the counter value compares successfully, false otherwise
-    bool GPA_CounterValueCompare(unsigned int frameNumber,
-                                 unsigned int sampleIndex,
-                                 const char*  pCounterName,
-                                 gpa_float64  counterValue,
-                                 CompareType  compareType,
-                                 gpa_float64  compareVal);
+    /// @brief Compare retrieved counter value to an expected value.
+    ///
+    /// @param [in] frame_number The frame number containing the counter being compared.
+    /// @param [in] sample_index The sample index of the counter being compared.
+    /// @param [in] counter_name The name of the counter being compared.
+    /// @param [in] counter_value The retrieved counter value.
+    /// @param [in] compare_type The type of compare to perform.
+    /// @param [in] compare_value The expected counter value (subject to the compare type).
+    ///
+    /// @return True if the counter value compares successfully, false otherwise.
+    bool GpaCounterValueCompare(unsigned int frame_number,
+                                unsigned int sample_index,
+                                const char*  counter_name,
+                                GpaFloat64   counter_value,
+                                CompareType  compare_type,
+                                GpaFloat64   compare_value);
 
-    /// Validate a specified counter in a specified sample
-    /// \param frameNumber the frame number containing the counter being compared
-    /// \param sampleIndex the index of the sample containing the counter
-    /// \param pCounterName the name of the counter to validate
-    /// \param counterValue the value of the counter to validate
-    /// \param counterUsageType the usage type of the counter being compared
-    /// \return true if the counter value validates successfully, false otherwise
-    bool GPA_ValidateData(unsigned int   frameNumber,
-                          unsigned int   sampleIndex,
-                          const char*    pCounterName,
-                          gpa_float64    counterValue,
-                          GPA_Usage_Type counterUsageType);
+    /// @brief Validate a specified counter in a specified sample.
+    ///
+    /// @param [in] frame_number The frame number containing the counter being compared.
+    /// @param [in] sample_index The index of the sample containing the counter.
+    /// @param [in] counter_name The name of the counter to validate.
+    /// @param [in] counter_value The value of the counter to validate.
+    /// @param [in] counter_usage_type The usage type of the counter being compared.
+    ///
+    /// @return True if the counter value validates successfully, false otherwise.
+    bool GpaValidateData(unsigned int frame_number,
+                         unsigned int sample_index,
+                         const char*  counter_name,
+                         GpaFloat64   counter_value,
+                         GpaUsageType counter_usage_type);
 
-    /// Populates the session result
-    /// \return true upon successful operation
-    bool GPA_PopulateSessionResult();
+    /// @brief Populates the session result.
+    ///
+    /// @return True upon successful operation.
+    bool GpaPopulateSessionResult();
 
-    /// Logs the GPA messages
-    /// \param loggingType the type of GPA log message
-    /// \param logMessage the GPA log message
-    /// \return true upon successful operation
-    bool GPA_Log(GPA_Logging_Type loggingType, const char* logMessage);
+    /// @brief Logs the GPA messages.
+    ///
+    /// @param [in] logging_type The type of GPA log message.
+    /// @param [in] log_message The GPA log message.
+    ///
+    /// @return True upon successful operation.
+    bool GpaLog(GpaLoggingType logging_type, const char* log_message);
 #pragma endregion
 };
 
-#endif  // _D3D11_TRIANGLE_H_
+#endif  // GPU_PERF_API_EXAMPLES_DX11_DX11_TRIANGLE_DX11_TRIANGLE_H_

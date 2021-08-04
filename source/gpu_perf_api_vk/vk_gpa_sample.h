@@ -1,67 +1,69 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  VkGPASample declaration
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  VkGpaSample declaration
 //==============================================================================
 
-#ifndef _VK_GPA_SAMPLE_H_
-#define _VK_GPA_SAMPLE_H_
+#ifndef GPU_PERF_API_VK_VK_GPA_SAMPLE_H_
+#define GPU_PERF_API_VK_VK_GPA_SAMPLE_H_
 
-#include "gpa_sample.h"
+#include "gpu_perf_api_common/gpa_sample.h"
 
-// Predeclared class
-class VkGPACommandList;
+class VkGpaCommandList;
 
-/// Vulkan-specific GPA Sample
+/// @brief Vulkan-specific GPA Sample.
 ///
-/// An intermediate Vk Sample interface to enable using the proxy design pattern
-class VkGPASample : public GPASample
+/// An intermediate Vk Sample interface to enable using the proxy design pattern.
+class VkGpaSample : public GpaSample
 {
 public:
-    /// Constructor
-    /// \param[in] pPass GPA Pass object
-    /// \param[in] pCmdList gpa command list
-    /// \param[in] sampleType gpa sample type
-    /// \param[in] sampleId user-supplied sample id
-    VkGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, unsigned int sampleId);
+    /// @brief Constructor.
+    ///
+    /// @param [in] pass Gpa Pass object.
+    /// @param [in] cmd_list Gpa command list.
+    /// @param [in] sample_type Gpa sample type.
+    /// @param [in] sample_id User-supplied sample id.
+    VkGpaSample(GpaPass* pass, IGpaCommandList* cmd_list, GpaSampleType sample_type, unsigned int sample_id);
 
-    /// Destroy this Vk counter data request instance
-    virtual ~VkGPASample() = default;
+    /// @brief Destroy this Vk counter data request instance.
+    virtual ~VkGpaSample() = default;
 
-    /// \copydoc GPASample::UpdateResults()
+    /// @copydoc GpaSample::UpdateResults()
     virtual bool UpdateResults() override = 0;
 
 protected:
-    /// \copydoc GPASample::BeginRequest()
+    /// @copydoc GpaSample::BeginRequest()
     virtual bool BeginRequest() override = 0;
 
-    /// \copydoc GPASample::EndRequest()
+    /// @copydoc GpaSample::EndRequest()
     virtual bool EndRequest() override = 0;
 
-    /// \copydoc GPASample::ReleaseCounters()
+    /// @copydoc GpaSample::ReleaseCounters()
     virtual void ReleaseCounters() override = 0;
 
-    /// Vulkan-Specific GPACommandList
-    VkGPACommandList* m_pVkGpaCmdList;
+    /// @brief Vulkan-Specific GPACommandList.
+    VkGpaCommandList* vk_gpa_command_list_;
 
 private:
-    /// Delete default constructor
-    VkGPASample() = delete;
+    /// @brief Delete default constructor.
+    VkGpaSample() = delete;
 
-    /// Copy constructor - private override to disable usage
-    VkGPASample(const VkGPASample&) = delete;
+    /// @brief Copy constructor - private override to disable usage.
+    VkGpaSample(const VkGpaSample&) = delete;
 
-    /// Move constructor - private override to disable usage
-    VkGPASample(VkGPASample&&) = delete;
+    /// @brief Move constructor - private override to disable usage.
+    VkGpaSample(VkGpaSample&&) = delete;
 
-    /// Copy operator - private override to disable usage
-    /// \return reference to object
-    VkGPASample& operator=(const VkGPASample&) = delete;
+    /// @brief Copy operator - private override to disable usage.
+    ///
+    /// @return Reference to object
+    VkGpaSample& operator=(const VkGpaSample&) = delete;
 
-    /// Move operator - private override to disable usage
-    /// \return reference to object
-    VkGPASample& operator=(VkGPASample&&) = delete;
+    /// @brief Move operator - private override to disable usage.
+    ///
+    /// @return Reference to object
+    VkGpaSample& operator=(VkGpaSample&&) = delete;
 };
 
-#endif  // _VK_GPA_SAMPLE_H_
+#endif  // GPU_PERF_API_VK_VK_GPA_SAMPLE_H_

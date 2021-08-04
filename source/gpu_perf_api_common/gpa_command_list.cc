@@ -1,72 +1,72 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief GPA Command List Implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief GPA Command List Implementation.
 //==============================================================================
 
-#include "gpa_command_list.h"
+#include "gpu_perf_api_common/gpa_command_list.h"
 
-GPACommandList::GPACommandList(IGPASession* pGpaSession, GPAPass* pGpaPass, CommandListId commandListId, GPA_Command_List_Type commandListType)
-    : m_pGpaSession(pGpaSession)
-    , m_pGpaPass(pGpaPass)
-    , m_pLastSample(nullptr)
-    , m_commandListState(CommandListState::UNDEFINED)
-    , m_commandListType(commandListType)
-    , m_commandListId(commandListId)
+GpaCommandList::GpaCommandList(IGpaSession* gpa_session, GpaPass* gpa_pass, CommandListId command_list_id, GpaCommandListType command_list_type)
+    : gpa_session_(gpa_session)
+    , gpa_pass_(gpa_pass)
+    , last_sample_(nullptr)
+    , command_list_state_(CommandListState::kUndefined)
+    , command_list_type_(command_list_type)
+    , command_list_id_(command_list_id)
 {
 }
 
-IGPASession* GPACommandList::GetParentSession() const
+IGpaSession* GpaCommandList::GetParentSession() const
 {
-    return m_pGpaSession;
+    return gpa_session_;
 }
 
-bool GPACommandList::Begin()
+bool GpaCommandList::Begin()
 {
     bool success = false;
 
-    if (CommandListState::UNDEFINED == m_commandListState)
+    if (CommandListState::kUndefined == command_list_state_)
     {
-        m_cmdListMutex.lock();
-        m_commandListState = CommandListState::SAMPLE_RECORDING_BEGIN;
-        m_pLastSample      = nullptr;
-        m_cmdListMutex.unlock();
+        cmd_list_mutex_.lock();
+        command_list_state_ = CommandListState::kSampleRecordingBegin;
+        last_sample_        = nullptr;
+        cmd_list_mutex_.unlock();
         success = BeginCommandListRequest();
 
         if (!success)
         {
-            GPA_LogError("Failed to begin the command list.");
+            GPA_LOG_ERROR("Failed to begin the command list.");
         }
     }
     else
     {
-        GPA_LogError("Command list is already running.");
+        GPA_LOG_ERROR("Command list is already running.");
     }
 
     return success;
 }
 
-bool GPACommandList::End()
+bool GpaCommandList::End()
 {
     bool success = false;
 
-    if (CommandListState::UNDEFINED == m_commandListState)
+    if (CommandListState::kUndefined == command_list_state_)
     {
-        GPA_LogError("Command list is not yet opened for sampling.");
+        GPA_LOG_ERROR("Command list is not yet opened for sampling.");
     }
-    else if (CommandListState::SAMPLE_RECORDING_END == m_commandListState)
+    else if (CommandListState::kSampleRecordingEnd == command_list_state_)
     {
-        GPA_LogError("Command List already ended.");
+        GPA_LOG_ERROR("Command List already ended.");
     }
-    else if (CommandListState::SAMPLE_RECORDING_BEGIN == m_commandListState)
+    else if (CommandListState::kSampleRecordingBegin == command_list_state_)
     {
-        // Close any outstanding opened sample
-        if (nullptr != m_pLastSample)
+        // Close any outstanding opened sample.
+        if (nullptr != last_sample_)
         {
             if (!CloseLastSample(false))
             {
-                GPA_LogError("Unable to close the last sample.");
+                GPA_LOG_ERROR("Unable to close the last sample.");
             }
         }
 
@@ -74,72 +74,72 @@ bool GPACommandList::End()
 
         if (!success)
         {
-            GPA_LogError("Unable to end the command list.");
+            GPA_LOG_ERROR("Unable to end the command list.");
         }
         else
         {
-            m_cmdListMutex.lock();
-            m_commandListState = CommandListState::SAMPLE_RECORDING_END;
-            m_cmdListMutex.unlock();
+            cmd_list_mutex_.lock();
+            command_list_state_ = CommandListState::kSampleRecordingEnd;
+            cmd_list_mutex_.unlock();
         }
     }
 
     return success;
 }
 
-bool GPACommandList::IsCommandListRunning() const
+bool GpaCommandList::IsCommandListRunning() const
 {
-    return CommandListState::SAMPLE_RECORDING_BEGIN == m_commandListState;
+    return CommandListState::kSampleRecordingBegin == command_list_state_;
 }
 
-GPAPass* GPACommandList::GetPass() const
+GpaPass* GpaCommandList::GetPass() const
 {
-    return m_pGpaPass;
+    return gpa_pass_;
 }
 
-gpa_uint32 GPACommandList::GetSampleCount() const
+GpaUInt32 GpaCommandList::GetSampleCount() const
 {
-    std::lock_guard<std::mutex> lockCmdList(m_cmdListMutex);
-    return static_cast<gpa_uint32>(m_clientSampleIdGpaSampleUnorderedMap.size());
+    std::lock_guard<std::mutex> lock_cmd_list(cmd_list_mutex_);
+    return static_cast<GpaUInt32>(client_sample_id_to_gpa_sample_id_umap_.size());
 }
 
-bool GPACommandList::BeginSample(ClientSampleId clientSampleIndex, GPASample* pSample)
+bool GpaCommandList::BeginSample(ClientSampleId client_sample_index, GpaSample* sample)
 {
     bool succeeded = false;
 
-    if (CommandListState::SAMPLE_RECORDING_BEGIN != m_commandListState)
+    if (CommandListState::kSampleRecordingBegin != command_list_state_)
     {
-        GPA_LogError("Command list must be in recording state to start/end a sample.");
+        GPA_LOG_ERROR("Command list must be in recording state to start/end a sample.");
     }
-    else if (nullptr != GetSample(clientSampleIndex))
+    else if (nullptr != GetSample(client_sample_index))
     {
-        GPA_LogError("Sample Id already exists.");
+        GPA_LOG_ERROR("Sample Id already exists.");
     }
-    else if (nullptr != m_pLastSample)
+    else if (nullptr != last_sample_)
     {
-        GPA_LogError("Previous sample must be ended before starting a new one.");
+        GPA_LOG_ERROR("Previous sample must be ended before starting a new one.");
     }
     else
     {
-        if (nullptr != pSample)
+        if (nullptr != sample)
         {
-            succeeded = BeginSampleRequest(clientSampleIndex, pSample);
+            succeeded = BeginSampleRequest(client_sample_index, sample);
 
             if (succeeded)
             {
-                succeeded = pSample->Begin();
+                succeeded = sample->Begin();
 
                 if (succeeded)
                 {
-                    m_cmdListMutex.lock();
-                    m_pLastSample = pSample;
-                    m_cmdListMutex.unlock();
-                    AddSample(clientSampleIndex, pSample);
+                    cmd_list_mutex_.lock();
+                    last_sample_ = sample;
+                    cmd_list_mutex_.unlock();
+                    AddSample(client_sample_index, sample);
                 }
             }
             else
             {
-                GPA_LogError("Failed to begin sample on command list.");
+                GPA_LOG_ERROR("Failed to begin sample on command list.");
             }
         }
     }
@@ -147,17 +147,17 @@ bool GPACommandList::BeginSample(ClientSampleId clientSampleIndex, GPASample* pS
     return succeeded;
 }
 
-bool GPACommandList::CloseLastSample(bool closingByClient)
+bool GpaCommandList::CloseLastSample(bool closing_by_client)
 {
     bool succeeded = false;
 
-    if (CommandListState::SAMPLE_RECORDING_BEGIN != m_commandListState)
+    if (CommandListState::kSampleRecordingBegin != command_list_state_)
     {
-        GPA_LogError("Command list must be in recording state to start/end a sample.");
+        GPA_LOG_ERROR("Command list must be in recording state to start/end a sample.");
     }
-    else if (nullptr == m_pLastSample)
+    else if (nullptr == last_sample_)
     {
-        GPA_LogError("Sample must be started before ending one.");
+        GPA_LOG_ERROR("Sample must be started before ending one.");
     }
     else
     {
@@ -165,27 +165,27 @@ bool GPACommandList::CloseLastSample(bool closingByClient)
 
         if (!succeeded)
         {
-            GPA_LogError("Unable to end the sample on command list.");
+            GPA_LOG_ERROR("Unable to end the sample on command list.");
         }
         else
         {
-            succeeded = m_pLastSample->End();
+            succeeded = last_sample_->End();
 
             if (!succeeded)
             {
-                GPA_LogError("Unable to end the sample.");
+                GPA_LOG_ERROR("Unable to end the sample.");
             }
             else
             {
-                m_cmdListMutex.lock();
+                cmd_list_mutex_.lock();
 
-                if (closingByClient)
+                if (closing_by_client)
                 {
-                    succeeded = m_pLastSample->SetAsClosedByClient();
+                    succeeded = last_sample_->SetAsClosedByClient();
                 }
 
-                m_pLastSample = nullptr;
-                m_cmdListMutex.unlock();
+                last_sample_ = nullptr;
+                cmd_list_mutex_.unlock();
             }
         }
     }
@@ -193,64 +193,64 @@ bool GPACommandList::CloseLastSample(bool closingByClient)
     return succeeded;
 }
 
-GPASample* GPACommandList::GetLastSample() const
+GpaSample* GpaCommandList::GetLastSample() const
 {
-    return m_pLastSample;
+    return last_sample_;
 }
 
-GPASample* GPACommandList::GetSample(ClientSampleId clientSampleId) const
+GpaSample* GpaCommandList::GetSample(ClientSampleId client_sample_id) const
 {
-    std::lock_guard<std::mutex> lockCmdList(m_cmdListMutex);
+    std::lock_guard<std::mutex> lock_cmd_list(cmd_list_mutex_);
 
-    GPASample* pRetGpaSample = nullptr;
+    GpaSample* ret_gpa_sample = nullptr;
 
-    ClientSampleIdGpaSampleUnorderedMap::const_iterator iter = m_clientSampleIdGpaSampleUnorderedMap.find(clientSampleId);
+    ClientSampleIdGpaSampleUnorderedMap::const_iterator iter = client_sample_id_to_gpa_sample_id_umap_.find(client_sample_id);
 
-    if (iter != m_clientSampleIdGpaSampleUnorderedMap.end())
+    if (iter != client_sample_id_to_gpa_sample_id_umap_.end())
     {
-        pRetGpaSample = iter->second;
+        ret_gpa_sample = iter->second;
     }
 
-    return pRetGpaSample;
+    return ret_gpa_sample;
 }
 
-bool GPACommandList::IsLastSampleClosed() const
+bool GpaCommandList::IsLastSampleClosed() const
 {
-    return nullptr == m_pLastSample;
+    return nullptr == last_sample_;
 }
 
-bool GPACommandList::IsResultReady() const
+bool GpaCommandList::IsResultReady() const
 {
     return true;
 }
 
-GPA_Command_List_Type GPACommandList::GetCmdType() const
+GpaCommandListType GpaCommandList::GetCmdType() const
 {
-    return m_commandListType;
+    return command_list_type_;
 }
 
-GPAObjectType GPACommandList::ObjectType() const
+GpaObjectType GpaCommandList::ObjectType() const
 {
-    return GPAObjectType::GPA_OBJECT_TYPE_COMMAND_LIST;
+    return GpaObjectType::kGpaObjectTypeCommandList;
 }
 
-CommandListId GPACommandList::GetId() const
+CommandListId GpaCommandList::GetId() const
 {
-    return m_commandListId;
+    return command_list_id_;
 }
 
-void GPACommandList::IterateSampleUnorderedMap(std::function<bool(ClientSampleIdGpaSamplePair)> function) const
+void GpaCommandList::IterateSampleUnorderedMap(std::function<bool(ClientSampleIdGpaSamplePair)> function) const
 {
     bool next = true;
 
-    for (auto it = m_clientSampleIdGpaSampleUnorderedMap.cbegin(); it != m_clientSampleIdGpaSampleUnorderedMap.cend() && next; ++it)
+    for (auto it = client_sample_id_to_gpa_sample_id_umap_.cbegin(); it != client_sample_id_to_gpa_sample_id_umap_.cend() && next; ++it)
     {
         next = function(*it);
     }
 }
 
-void GPACommandList::AddSample(ClientSampleId clientSampleId, GPASample* pGpaSample)
+void GpaCommandList::AddSample(ClientSampleId client_sample_id, GpaSample* gpa_sample)
 {
-    std::lock_guard<std::mutex> lockCmdList(m_cmdListMutex);
-    m_clientSampleIdGpaSampleUnorderedMap.insert(ClientSampleIdGpaSamplePair(clientSampleId, pGpaSample));
+    std::lock_guard<std::mutex> lock_cmd_list(cmd_list_mutex_);
+    client_sample_id_to_gpa_sample_id_umap_.insert(ClientSampleIdGpaSamplePair(client_sample_id, gpa_sample));
 }

@@ -35,7 +35,10 @@ def GetGpaBinaryName(binary_name, is_executable, is_debug, is_32_bit, additional
             platform_suffix = "-x64"
     else:
         if is_executable == False:
-            binary_extension = ".so"
+            if sys.platform == "darwin":
+                binary_extension = ".dylib"
+            else:
+                binary_extension = ".so"
             platform_prefix="lib"
         if is_32_bit == True:
             platform_suffix = "32"
@@ -141,18 +144,27 @@ class GpaPackage:
                                                                 current_target_binary_abs_path,
                                                                 current_target_path_in_archive)
 
-            ## add GPA headers
+            ## Add GPA headers
+            for header_path in self._public_header_files:
+                header_source_abs_path = os.path.normpath(os.path.join(self._gpa_root_dir, "include", "gpu_performance_api", header_path))
+                header_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, "Include", "gpu_performance_api", header_path))
+                GpaUtils.WriteFileToArchive(gpa_archive_handle, header_source_abs_path,
+                                                                header_in_archive)
+
+            ## add old GPA headers (deprecated)
+            for header_path in self._old_includes:
+                header_source_abs_path = os.path.normpath(os.path.join(self._gpa_root_dir, "include", header_path))
+                header_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, "Include", header_path))
+                GpaUtils.WriteFileToArchive(gpa_archive_handle, header_source_abs_path,
+                                                                header_in_archive)
+
+            ## add new headers that are still in the old location (deprecated)
             for header_path in self._public_header_files:
                 header_source_abs_path = os.path.normpath(os.path.join(self._gpa_root_dir, "include", header_path))
                 header_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, "Include", header_path))
                 GpaUtils.WriteFileToArchive(gpa_archive_handle, header_source_abs_path,
                                                                 header_in_archive)
 
-            for header_path in self._old_includes:
-                header_source_abs_path = os.path.normpath(os.path.join(self._gpa_root_dir, "include", header_path))
-                header_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, "Include", header_path))
-                GpaUtils.WriteFileToArchive(gpa_archive_handle, header_source_abs_path,
-                                                                header_in_archive)
 
             for other_file in self._other_files:
                 other_file_abs_path = os.path.normpath(os.path.join(self._gpa_root_dir, other_file))
@@ -183,6 +195,7 @@ class GpaPackage:
             if android == True:
                 _android_device_connect_script_file = os.path.normpath(os.path.join(self._gpa_root_dir, "scripts", self._android_device_connect_script))
                 _android_device_connect_script_file_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, self._android_device_connect_script))
+
                 GpaUtils.WriteFileToArchive(gpa_archive_handle, _android_device_connect_script_file,
                                                                 _android_device_connect_script_file_in_archive)
 
@@ -221,29 +234,31 @@ class GpaPackage:
                     "GPAInterfaceLoader.h"]
 
     _public_header_files=["gpu_perf_api.h",
-                         "gpu_perf_api_function_types.h",
-                         "gpu_perf_api_functions.h",
-                         "gpu_perf_api_interface_loader.h",
-                         "gpu_perf_api_stub.h",
-                         "gpu_perf_api_types.h",
-                         "gpu_perf_api_vk.h",
-                         "gpu_perf_api_counters.h"]
+                          "gpu_perf_api_function_types.h",
+                          "gpu_perf_api_functions.h",
+                          "gpu_perf_api_interface_loader.h",
+                          "gpu_perf_api_stub.h",
+                          "gpu_perf_api_types.h",
+                          "gpu_perf_api_vk.h",
+                          "gpu_perf_api_counters.h"]
 
-    _gpa_binaries=["GPUPerfAPIVK",
-                   "GPUPerfAPIGL",
-                   "GPUPerfAPICL",
-                   "GPUPerfAPICounters"]
+    _gpa_binaries=["GPUPerfAPICounters"]
+
+    if sys.platform == "win32" or sys.platform.startswith("linux"):
+        _gpa_binaries.append("GPUPerfAPIVK")
+        _gpa_binaries.append("GPUPerfAPIGL")
 
     if sys.platform == "win32":
         _gpa_binaries.append("GPUPerfAPIDX11")
         _gpa_binaries.append("GPUPerfAPIDX12")
         _gpa_binaries.append("GPUPerfAPIDXGetAMDDeviceInfo")
+        _gpa_binaries.append("GPUPerfAPICL")
 
     _other_files=["NOTICES.txt",
                  "LICENSE"]
 
     _version_file="source/gpu_perf_api_common/gpa_version.h"
-    _android_device_connect_script = "enable_set_device_clock_android.sh"
+    _android_device_connect_script = "enable_set_device_clock_android.py"
     _major_version=0
     _minor_version=0
     _update_version=0

@@ -1,8 +1,8 @@
 //==============================================================================
 // Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  CL GPA Sample Implementation
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  CL GPA Sample Implementation
 //==============================================================================
 
 #include "cl_gpa_context.h"
@@ -14,67 +14,67 @@
 #include "cl_gpa_pass.h"
 #include "gpa_context_counter_mediator.h"
 
-CLGPASample::CLGPASample(GPAPass* pPass, IGPACommandList* pCmdList, GpaSampleType sampleType, ClientSampleId sampleId)
-    : GPASample(pPass, pCmdList, sampleType, sampleId)
-    , m_pClCounters(nullptr)
-    , m_clEvent(nullptr)
-    , m_dataReadyCount(0)
+ClGpaSample::ClGpaSample(GpaPass* pass, IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
+    : GpaSample(pass, cmd_list, sample_type, sample_id)
+    , cl_counters_(nullptr)
+    , cl_event_(nullptr)
+    , data_ready_count_(0)
 {
-    if (nullptr != pPass)
+    if (nullptr != pass)
     {
-        IGPASession* pGpaSession = pPass->GetGpaSession();
+        IGpaSession* gpa_session = pass->GetGpaSession();
 
-        if (nullptr != pGpaSession)
+        if (nullptr != gpa_session)
         {
-            m_pCLGpaContext = reinterpret_cast<CLGPAContext*>(pGpaSession->GetParentContext());
+            cl_gpa_context_ = reinterpret_cast<ClGpaContext*>(gpa_session->GetParentContext());
         }
     }
 }
 
-CLGPASample::~CLGPASample()
+ClGpaSample::~ClGpaSample()
 {
     ReleaseBlockCounters();
     DeleteCounterBlocks();
-    delete[] m_pClCounters;
+    delete[] cl_counters_;
 }
 
-bool CLGPASample::UpdateResults()
+bool ClGpaSample::UpdateResults()
 {
-    bool isComplete = false;
+    bool is_complete = false;
 
-    CounterCount counterCount = GetPass()->GetEnabledCounterCount();
+    CounterCount counter_count = GetPass()->GetEnabledCounterCount();
 
-    if (nullptr != m_clEvent)
+    if (nullptr != cl_event_)
     {
         // Get the data from opencl interface
-        for (gpa_uint32 i = 0; i < m_clCounterBlocks.size(); ++i)
+        for (GpaUInt32 i = 0; i < cl_counter_blocks_.size(); ++i)
         {
-            m_clCounterBlocks[i]->CollectData(&m_clEvent);
+            cl_counter_blocks_[i]->CollectData(&cl_event_);
         }
 
-        // get and set the result to m_pCounters
-        for (gpa_uint32 i = 0; i < counterCount; ++i)
+        // get and set the result to counters_list_
+        for (GpaUInt32 i = 0; i < counter_count; ++i)
         {
-            if (!m_pClCounters[i].m_isCounterResultReady)
+            if (!cl_counters_[i].is_counter_result_ready)
             {
-                gpa_uint32 groupID   = m_pClCounters[i].m_counterGroup;
-                gpa_uint32 counterID = m_pClCounters[i].m_counterIndex;
+                GpaUInt32 group_id   = cl_counters_[i].counter_group;
+                GpaUInt32 counter_id = cl_counters_[i].counter_index;
 
                 // find the corresponding block with uGroupID
-                gpa_uint32 blockID = 0;
+                GpaUInt32 block_id = 0;
 
-                if (!FindBlockID(blockID, groupID))
+                if (!FindBlockId(block_id, group_id))
                 {
                     // can't find the corresponding block with the group id
                     // something must be wrong in the block initialization/creation
                     return false;
                 }
 
-                if (m_clCounterBlocks[blockID]->IsComplete())
+                if (cl_counter_blocks_[block_id]->IsComplete())
                 {
-                    GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = m_clCounterBlocks[blockID]->GetResult(counterID);
-                    m_pClCounters[i].m_isCounterResultReady                                     = true;
-                    m_dataReadyCount++;
+                    GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer()[i] = cl_counter_blocks_[block_id]->GetResult(counter_id);
+                    cl_counters_[i].is_counter_result_ready                                     = true;
+                    data_ready_count_++;
                 }
             }
         }
@@ -84,129 +84,130 @@ bool CLGPASample::UpdateResults()
         // clEnqueueEndPerfCounterAMD() hasn't been called successfully
     }
 
-    isComplete = m_dataReadyCount == counterCount;
+    is_complete = data_ready_count_ == counter_count;
 
-    if (isComplete)
+    if (is_complete)
     {
         MarkAsCompleted();
     }
 
-    return isComplete;
+    return is_complete;
 }
 
-bool CLGPASample::BeginRequest()
+bool ClGpaSample::BeginRequest()
 {
     bool success = true;
 
-    if (nullptr != m_pCLGpaContext)
+    if (nullptr != cl_gpa_context_)
     {
-        CounterCount counterCount = GetPass()->GetEnabledCounterCount();
+        CounterCount counter_count = GetPass()->GetEnabledCounterCount();
 
-        m_pClCounters = new (std::nothrow) CLCounter[counterCount];
+        cl_counters_ = new (std::nothrow) ClCounter[counter_count];
 
-        if (nullptr == m_pClCounters)
+        if (nullptr == cl_counters_)
         {
-            GPA_LogError("Unable to allocate memory for CL counters.");
+            GPA_LOG_ERROR("Unable to allocate memory for CL counters.");
             return false;
         }
 
-        IGPACounterAccessor*        pCounterAccessor  = GPAContextCounterMediator::Instance()->GetCounterAccessor(m_pCLGpaContext);
-        const GPA_HardwareCounters* pHardwareCounters = pCounterAccessor->GetHardwareCounters();
+        IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(cl_gpa_context_);
+        const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
 
-        bool         populateCounterInfoStatus = true;
-        unsigned int counterGroupSize          = 0u;
+        bool         populate_counter_info_status = true;
+        unsigned int counter_group_size           = 0u;
 
-        auto PopulateCLPerFCounterInfo = [&](GroupCountersPair groupCountersPair) -> bool {
-            bool counterStatus = true;
+        auto populate_cl_perf_counter_info = [&](GroupCountersPair group_counters_pair) -> bool {
+            bool counter_status = true;
 
-            gpa_uint32          maxCountersEnabled = static_cast<gpa_uint32>(pHardwareCounters->m_pGroups[groupCountersPair.first].m_maxActiveDiscreteCounters);
-            clPerfCounterBlock* clBlock            = nullptr;
+            GpaUInt32 max_counters_enabled =
+                static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_[group_counters_pair.first].max_active_discrete_counters);
+            ClPerfCounterBlock* cl_block = nullptr;
 
-            clBlock =
-                new (std::nothrow) clPerfCounterBlock(m_pCLGpaContext->GetCLDeviceId(), groupCountersPair.first, maxCountersEnabled, groupCountersPair.second);
+            cl_block = new (std::nothrow)
+                ClPerfCounterBlock(cl_gpa_context_->GetClDeviceId(), group_counters_pair.first, max_counters_enabled, group_counters_pair.second);
 
-            if (nullptr == clBlock)
+            if (nullptr == cl_block)
             {
-                GPA_LogError("Unable to allocate memory for CL counter blocks.");
-                counterStatus = false;
+                GPA_LOG_ERROR("Unable to allocate memory for CL counter blocks.");
+                counter_status = false;
             }
             else
             {
-                m_clCounterBlocks.push_back(clBlock);
+                cl_counter_blocks_.push_back(cl_block);
 
                 // store the opencl counters into an array so we can use one call of clEnqueueBeginPerfCounterAMD for all of them
-                cl_perfcounter_amd* pClCounters = clBlock->GetCounterArray(0);
+                cl_perfcounter_amd* cl_counters = cl_block->GetCounterArray(0);
 
-                for (gpa_uint32 i = 0; i < clBlock->GetCounterCount(); ++i)
+                for (GpaUInt32 i = 0; i < cl_block->GetCounterCount(); ++i)
                 {
-                    m_clCounterList.push_back(pClCounters[i]);
+                    cl_counter_list_.push_back(cl_counters[i]);
                 }
             }
 
-            populateCounterInfoStatus &= counterStatus;
-            counterGroupSize++;
-            return counterStatus;
+            populate_counter_info_status &= counter_status;
+            counter_group_size++;
+            return counter_status;
         };
 
-        CLGPAPass* pClGpaPass = reinterpret_cast<CLGPAPass*>(GetPass());
+        ClGpaPass* cl_gpa_pass = reinterpret_cast<ClGpaPass*>(GetPass());
 
         // loop through the requested counters and create and enable them
-        pClGpaPass->IterateCLCounterMap(PopulateCLPerFCounterInfo);
+        cl_gpa_pass->IterateClCounterMap(populate_cl_perf_counter_info);
 
-        assert(m_clCounterBlocks.size() == counterGroupSize);
+        assert(cl_counter_blocks_.size() == counter_group_size);
 
-        if (CL_SUCCESS !=
-            my_clEnqueueBeginPerfCounterAMD(m_pCLGpaContext->GetCLCommandQueue(), static_cast<cl_uint>(m_clCounterList.size()), &m_clCounterList[0], 0, 0, 0))
+        if (CL_SUCCESS != my_cl_enqueue_begin_perf_counter_amd(
+                              cl_gpa_context_->GetClCommandQueue(), static_cast<cl_uint>(cl_counter_list_.size()), &cl_counter_list_[0], 0, 0, 0))
         {
             //Reset(selectionID, pCounters);
             return false;
         }
 
-        unsigned int counterCountIter = 0;
+        unsigned int counter_count_iter = 0;
 
-        auto AddClCounterToSample = [&](const CounterIndex& counterIndex) -> bool {
-            const GPA_HardwareCounterDescExt* pCounter = pCounterAccessor->GetHardwareCounterExt(counterIndex);
+        auto add_cl_counter_to_sample = [&](const CounterIndex& counter_index) -> bool {
+            const GpaHardwareCounterDescExt* counter = counter_accessor->GetHardwareCounterExt(counter_index);
 
-            // GPA_LogDebugMessage( "ENABLED COUNTER: %x.", m_pCounters[i] );
-            m_pClCounters[counterCountIter].m_counterID    = counterIndex;
-            m_pClCounters[counterCountIter].m_counterGroup = pCounter->m_groupIdDriver;
-            m_pClCounters[counterCountIter].m_counterIndex = static_cast<gpa_uint32>(pCounter->m_pHardwareCounter->m_counterIndexInGroup);
-            counterCountIter++;
+            // GPA_LOG_DEBUG_MESSAGE( "ENABLED COUNTER: %x.", counters_list_[i] );
+            cl_counters_[counter_count_iter].counter_id    = counter_index;
+            cl_counters_[counter_count_iter].counter_group = counter->group_id_driver;
+            cl_counters_[counter_count_iter].counter_index = static_cast<GpaUInt32>(counter->hardware_counters->counter_index_in_group);
+            counter_count_iter++;
             return true;
         };
 
-        pClGpaPass->IterateEnabledCounterList(AddClCounterToSample);
+        cl_gpa_pass->IterateEnabledCounterList(add_cl_counter_to_sample);
     }
     else
     {
-        GPA_LogError("CL Context is not initialized.");
+        GPA_LOG_ERROR("CL Context is not initialized.");
         success = false;
     }
 
     return success;
 }
 
-bool CLGPASample::EndRequest()
+bool ClGpaSample::EndRequest()
 {
     bool success =
-        (CL_SUCCESS == my_clEnqueueEndPerfCounterAMD(
-                           m_pCLGpaContext->GetCLCommandQueue(), static_cast<cl_uint>(m_clCounterList.size()), &m_clCounterList[0], 0, 0, &m_clEvent));
+        (CL_SUCCESS == my_cl_enqueue_end_perf_counter_amd(
+                           cl_gpa_context_->GetClCommandQueue(), static_cast<cl_uint>(cl_counter_list_.size()), &cl_counter_list_[0], 0, 0, &cl_event_));
 
     return success;
 }
 
-void CLGPASample::ReleaseCounters()
+void ClGpaSample::ReleaseCounters()
 {
     ReleaseBlockCounters();
 }
 
-bool CLGPASample::FindBlockID(gpa_uint32& blockID, gpa_uint32 groupID)
+bool ClGpaSample::FindBlockId(GpaUInt32& block_id, GpaUInt32 group_id)
 {
-    for (gpa_uint32 i = 0; i < m_clCounterBlocks.size(); ++i)
+    for (GpaUInt32 i = 0; i < cl_counter_blocks_.size(); ++i)
     {
-        if (groupID == m_clCounterBlocks[i]->GetBlockID())
+        if (group_id == cl_counter_blocks_[i]->GetBlockID())
         {
-            blockID = i;
+            block_id = i;
             return true;
         }
     }
@@ -214,23 +215,23 @@ bool CLGPASample::FindBlockID(gpa_uint32& blockID, gpa_uint32 groupID)
     return false;
 }
 
-void CLGPASample::DeleteCounterBlocks()
+void ClGpaSample::DeleteCounterBlocks()
 {
-    if (!m_clCounterBlocks.empty())
+    if (!cl_counter_blocks_.empty())
     {
-        for (gpa_uint32 i = 0; i < m_clCounterBlocks.size(); ++i)
+        for (GpaUInt32 i = 0; i < cl_counter_blocks_.size(); ++i)
         {
-            delete m_clCounterBlocks[i];
+            delete cl_counter_blocks_[i];
         }
     }
 
-    m_clCounterBlocks.clear();
+    cl_counter_blocks_.clear();
 }
 
-void CLGPASample::ReleaseBlockCounters()
+void ClGpaSample::ReleaseBlockCounters()
 {
-    for (gpa_uint32 i = 0; i < m_clCounterBlocks.size(); ++i)
+    for (GpaUInt32 i = 0; i < cl_counter_blocks_.size(); ++i)
     {
-        m_clCounterBlocks[i]->ReleaseCounters();
+        cl_counter_blocks_[i]->ReleaseCounters();
     }
 }

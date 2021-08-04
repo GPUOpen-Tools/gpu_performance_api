@@ -1,86 +1,90 @@
 //==============================================================================
-// Copyright (c) 2017-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GPA DX12 Context implementation
+// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GPA DX12 Context implementation
 //==============================================================================
 
-#include "dx12_gpa_context.h"
-#include "gpa_unique_object.h"
-#include "dx12_utils.h"
-#include "DeviceInfoUtils.h"
-#include "dx12_gpa_session.h"
-#include "gpa_hardware_counters.h"
-#include "gpa_counter_generator_base.h"
+#include "gpu_perf_api_dx12/dx12_gpa_context.h"
 
-DX12GPAContext::DX12GPAContext(ID3D12Device* pD3D12Device, GPA_HWInfo& hwInfo, GPA_OpenContextFlags flags)
-    : GPAContext(hwInfo, flags)
+#include "DeviceInfoUtils.h"
+
+#include "gpu_perf_api_common/gpa_unique_object.h"
+
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+
+#include "gpu_perf_api_dx12/dx12_gpa_session.h"
+#include "gpu_perf_api_dx12/dx12_utils.h"
+
+Dx12GpaContext::Dx12GpaContext(ID3D12Device* d3d12_device, GpaHwInfo& hw_info, GpaOpenContextFlags flags)
+    : GpaContext(hw_info, flags)
 {
-    m_pD3D12Device = pD3D12Device;
-    m_pD3D12Device->AddRef();
-    m_amdDeviceProps          = {};
-    m_pAmdExtD3DFactoryObject = nullptr;
-    m_pGpaInterface           = nullptr;
-    m_pGpaInterface2          = nullptr;
-    m_clockMode               = AmdExtDeviceClockMode::Default;
+    d3d12_device_ = d3d12_device;
+    d3d12_device_->AddRef();
+    amd_device_props_           = {};
+    amd_ext_d3d_factory_object_ = nullptr;
+    gpa_interface_              = nullptr;
+    gpa_interface2_             = nullptr;
+    clock_mode_                 = AmdExtDeviceClockMode::Default;
 }
 
-DX12GPAContext::~DX12GPAContext()
+Dx12GpaContext::~Dx12GpaContext()
 {
     CleanUp();
 }
 
-bool DX12GPAContext::Initialize()
+bool Dx12GpaContext::Initialize()
 {
-    bool isSucceeded = false;
+    bool is_succeeded = false;
 
-    std::lock_guard<std::mutex> lockInitialization(m_dx12GpaContextMutex);
+    std::lock_guard<std::mutex> lock_initialization(dx12_gpa_context_mutex_);
 
-    if (nullptr != m_pD3D12Device)
+    if (nullptr != d3d12_device_)
     {
         if (InitializeAMDExtension() && OpenCounters())
         {
-            isSucceeded = true;
+            is_succeeded = true;
         }
     }
 
-    SetAsOpened(isSucceeded);
-    return isSucceeded;
+    SetAsOpened(is_succeeded);
+    return is_succeeded;
 }
 
-GPA_SessionId DX12GPAContext::CreateSession(GPA_Session_Sample_Type sampleType)
+GpaSessionId Dx12GpaContext::CreateSession(GpaSessionSampleType sample_type)
 {
-    GPA_SessionId pRetSessionId = nullptr;
+    GpaSessionId ret_session_id = nullptr;
 
-    if (nullptr != m_pGpaInterface)
+    if (nullptr != gpa_interface_)
     {
-        DX12GPASession* pNewGpaDx12GpaSession = new (std::nothrow) DX12GPASession(this, sampleType, m_pGpaInterface);
+        Dx12GpaSession* new_gpa_dx12_gpa_session = new (std::nothrow) Dx12GpaSession(this, sample_type, gpa_interface_);
 
-        if (nullptr != pNewGpaDx12GpaSession)
+        if (nullptr != new_gpa_dx12_gpa_session)
         {
-            AddGpaSession(pNewGpaDx12GpaSession);
-            pRetSessionId = reinterpret_cast<GPA_SessionId>(GPAUniqueObjectManager::Instance()->CreateObject(pNewGpaDx12GpaSession));
+            AddGpaSession(new_gpa_dx12_gpa_session);
+            ret_session_id = reinterpret_cast<GpaSessionId>(GpaUniqueObjectManager::Instance()->CreateObject(new_gpa_dx12_gpa_session));
         }
     }
 
-    return pRetSessionId;
+    return ret_session_id;
 }
 
-bool DX12GPAContext::DeleteSession(GPA_SessionId sessionId)
+bool Dx12GpaContext::DeleteSession(GpaSessionId session_id)
 {
     bool success = false;
 
-    if (GPAUniqueObjectManager::Instance()->DoesExist(sessionId))
+    if (GpaUniqueObjectManager::Instance()->DoesExist(session_id))
     {
-        DX12GPASession* pDx12Session = reinterpret_cast<DX12GPASession*>(sessionId->Object());
+        Dx12GpaSession* dx12_session = reinterpret_cast<Dx12GpaSession*>(session_id->Object());
 
         unsigned int index;
 
-        if (GetIndex(pDx12Session, &index))
+        if (GetIndex(dx12_session, &index))
         {
-            RemoveGpaSession(pDx12Session);
-            GPAUniqueObjectManager::Instance()->DeleteObject(sessionId);
-            delete pDx12Session;
+            RemoveGpaSession(dx12_session);
+            GpaUniqueObjectManager::Instance()->DeleteObject(session_id);
+            delete dx12_session;
             success = true;
         }
     }
@@ -88,132 +92,132 @@ bool DX12GPAContext::DeleteSession(GPA_SessionId sessionId)
     return success;
 }
 
-gpa_uint32 DX12GPAContext::GetMaxGPASessions() const
+GpaUInt32 Dx12GpaContext::GetMaxGpaSessions() const
 {
-    return GPA_SESSION_NO_LIMIT;
+    return kGpaSessionNoLimit;
 }
 
-GPA_API_Type DX12GPAContext::GetAPIType() const
+GpaApiType Dx12GpaContext::GetApiType() const
 {
-    return GPA_API_DIRECTX_12;
+    return kGpaApiDirectx12;
 }
 
-ID3D12Device* DX12GPAContext::GetD3D12Device() const
+ID3D12Device* Dx12GpaContext::GetD3D12Device() const
 {
-    return m_pD3D12Device;
+    return d3d12_device_;
 }
 
-gpa_uint32 DX12GPAContext::GetInstanceCount(AmdExtGpuBlock block) const
+GpaUInt32 Dx12GpaContext::GetInstanceCount(AmdExtGpuBlock block) const
 {
-    gpa_uint32 instanceCount = 0;
+    GpaUInt32 instance_count = 0;
 
     if (block < AmdExtGpuBlock::Count)
     {
-        instanceCount = static_cast<gpa_uint32>(m_amdDeviceProps.blocks[static_cast<size_t>(block)].instanceCount);
+        instance_count = static_cast<GpaUInt32>(amd_device_props_.blocks[static_cast<size_t>(block)].instanceCount);
     }
 
-    return instanceCount;
+    return instance_count;
 }
 
-gpa_uint32 DX12GPAContext::GetMaxEventIdCount(AmdExtGpuBlock block) const
+GpaUInt32 Dx12GpaContext::GetMaxEventIdCount(AmdExtGpuBlock block) const
 {
-    gpa_uint32 maxEventId = 0;
+    GpaUInt32 max_event_id = 0;
 
     if (block < AmdExtGpuBlock::Count)
     {
-        maxEventId = static_cast<gpa_uint32>(m_amdDeviceProps.blocks[static_cast<size_t>(block)].maxEventId);
+        max_event_id = static_cast<GpaUInt32>(amd_device_props_.blocks[static_cast<size_t>(block)].maxEventId);
     }
 
-    return maxEventId;
+    return max_event_id;
 }
 
-bool DX12GPAContext::InitializeAMDExtension()
+bool Dx12GpaContext::InitializeAMDExtension()
 {
-    GPA_Status result = GPA_STATUS_OK;
+    GpaStatus result = kGpaStatusOk;
 
-    if (nullptr != m_pD3D12Device)
+    if (nullptr != d3d12_device_)
     {
-        if (nullptr == m_pGpaInterface && IsAMDDevice())
+        if (nullptr == gpa_interface_ && IsAmdDevice())
         {
-            result = GPA_STATUS_ERROR_DRIVER_NOT_SUPPORTED;
+            result = kGpaStatusErrorDriverNotSupported;
 
-            HMODULE hDll = nullptr;
+            HMODULE h_dll = nullptr;
 #ifdef X64
-            hDll = ::GetModuleHandleW(L"amdxc64.dll");
+            h_dll = ::GetModuleHandleW(L"amdxc64.dll");
 #else
-            hDll = ::GetModuleHandleW(L"amdxc32.dll");
+            h_dll = ::GetModuleHandleW(L"amdxc32.dll");
 #endif
 
-            if (nullptr == hDll)
+            if (nullptr == h_dll)
             {
-                GPA_LogError("Unable to get driver module handle.");
+                GPA_LOG_ERROR("Unable to get driver module handle.");
             }
             else
             {
-                PFNAmdExtD3DCreateInterface pAmdExtD3dCreateFunc =
-                    reinterpret_cast<PFNAmdExtD3DCreateInterface>(GetProcAddress(hDll, "AmdExtD3DCreateInterface"));
+                PFNAmdExtD3DCreateInterface amd_ext_d3d_create_func =
+                    reinterpret_cast<PFNAmdExtD3DCreateInterface>(GetProcAddress(h_dll, "AmdExtD3DCreateInterface"));
 
-                if (nullptr == pAmdExtD3dCreateFunc)
+                if (nullptr == amd_ext_d3d_create_func)
                 {
-                    GPA_LogError("Unable to get driver extension entry point.");
+                    GPA_LOG_ERROR("Unable to get driver extension entry point.");
                 }
                 else
                 {
-                    HRESULT hr = pAmdExtD3dCreateFunc(m_pD3D12Device, __uuidof(IAmdExtD3DFactory), reinterpret_cast<void**>(&m_pAmdExtD3DFactoryObject));
+                    HRESULT hr = amd_ext_d3d_create_func(d3d12_device_, __uuidof(IAmdExtD3DFactory), reinterpret_cast<void**>(&amd_ext_d3d_factory_object_));
 
                     if (FAILED(hr))
                     {
-                        GPA_LogError("Unable to get driver extension interface.");
+                        GPA_LOG_ERROR("Unable to get driver extension interface.");
                     }
                     else
                     {
-                        hr = m_pAmdExtD3DFactoryObject->CreateInterface(
-                            m_pD3D12Device, __uuidof(IAmdExtGpaInterface2), reinterpret_cast<void**>(&m_pGpaInterface2));
+                        hr = amd_ext_d3d_factory_object_->CreateInterface(
+                            d3d12_device_, __uuidof(IAmdExtGpaInterface2), reinterpret_cast<void**>(&gpa_interface2_));
                         if (FAILED(hr))
                         {
-                            hr = m_pAmdExtD3DFactoryObject->CreateInterface(
-                                m_pD3D12Device, __uuidof(IAmdExtGpaInterface), reinterpret_cast<void**>(&m_pGpaInterface));
+                            hr = amd_ext_d3d_factory_object_->CreateInterface(
+                                d3d12_device_, __uuidof(IAmdExtGpaInterface), reinterpret_cast<void**>(&gpa_interface_));
                         }
                         else
                         {
-                            m_pGpaInterface = m_pGpaInterface2;
+                            gpa_interface_ = gpa_interface2_;
                         }
 
                         if (FAILED(hr))
                         {
-                            GPA_LogError("Unable to get driver GPA extension interface.");
+                            GPA_LOG_ERROR("Unable to get driver GPA extension interface.");
                         }
                         else
                         {
-                            if (nullptr != m_pGpaInterface2)
+                            if (nullptr != gpa_interface2_)
                             {
-                                hr = m_pGpaInterface2->GetPerfExperimentProperties2(&m_amdDeviceProps, AmdExtGpuBlock::Count);
+                                hr = gpa_interface2_->GetPerfExperimentProperties2(&amd_device_props_, AmdExtGpuBlock::Count);
                             }
-                            else if (nullptr != m_pGpaInterface)
+                            else if (nullptr != gpa_interface_)
                             {
-                                hr = m_pGpaInterface->GetPerfExperimentProperties(&m_amdDeviceProps);
+                                hr = gpa_interface_->GetPerfExperimentProperties(&amd_device_props_);
                             }
                             else
                             {
-                                GPA_LogError("No valid GPA interface.");
-                                result = GPA_STATUS_ERROR_FAILED;
+                                GPA_LOG_ERROR("No valid GPA interface.");
+                                result = kGpaStatusErrorFailed;
                             }
 
                             if (FAILED(hr))
                             {
-                                GPA_LogError("Unable to get current hardware perf experiment properties.");
+                                GPA_LOG_ERROR("Unable to get current hardware perf experiment properties.");
                             }
                             else
                             {
-                                if (0 == m_amdDeviceProps.features.counters)
+                                if (0 == amd_device_props_.features.counters)
                                 {
-                                    GPA_LogError("Active GPU hardware does not support performance counters.");
-                                    result = GPA_STATUS_ERROR_HARDWARE_NOT_SUPPORTED;
+                                    GPA_LOG_ERROR("Active GPU hardware does not support performance counters.");
+                                    result = kGpaStatusErrorHardwareNotSupported;
                                 }
                                 else
                                 {
                                     SetStableClocks(true);
-                                    result = GPA_STATUS_OK;
+                                    result = kGpaStatusOk;
                                 }
                             }
                         }
@@ -223,93 +227,93 @@ bool DX12GPAContext::InitializeAMDExtension()
         }
     }
 
-    return result == GPA_STATUS_OK;
+    return result == kGpaStatusOk;
 }
 
-void DX12GPAContext::CleanUp()
+void Dx12GpaContext::CleanUp()
 {
-    std::lock_guard<std::mutex> lockContextResources(m_dx12GpaContextMutex);
+    std::lock_guard<std::mutex> lock_context_resources(dx12_gpa_context_mutex_);
 
-    // Release Device
-    if (nullptr != m_pD3D12Device)
+    // Release Device.
+    if (nullptr != d3d12_device_)
     {
-        m_pD3D12Device->Release();
-        m_pD3D12Device = nullptr;
+        d3d12_device_->Release();
+        d3d12_device_ = nullptr;
     }
 
-    if (nullptr != m_pGpaInterface)
+    if (nullptr != gpa_interface_)
     {
-        IterateGpaSessionList([](IGPASession* pGpaSession) -> bool {
-            delete pGpaSession;
+        IterateGpaSessionList([](IGpaSession* gpa_session) -> bool {
+            delete gpa_session;
             return true;
         });
         ClearSessionList();
 
-        if (nullptr != m_pGpaInterface2)
+        if (nullptr != gpa_interface2_)
         {
-            m_pGpaInterface2->Release();
-            m_pGpaInterface2 = nullptr;
+            gpa_interface2_->Release();
+            gpa_interface2_ = nullptr;
         }
         else
         {
-            m_pGpaInterface->Release();
+            gpa_interface_->Release();
         }
 
-        m_pGpaInterface = nullptr;
+        gpa_interface_ = nullptr;
     }
 
-    // Release AMD D3D Factory
-    if (nullptr != m_pAmdExtD3DFactoryObject)
+    // Release AMD D3D Factory.
+    if (nullptr != amd_ext_d3d_factory_object_)
     {
-        m_pAmdExtD3DFactoryObject->Release();
-        m_pAmdExtD3DFactoryObject = nullptr;
+        amd_ext_d3d_factory_object_->Release();
+        amd_ext_d3d_factory_object_ = nullptr;
     }
 }
 
-GPA_Status DX12GPAContext::SetStableClocks(bool useProfilingClocks)
+GpaStatus Dx12GpaContext::SetStableClocks(bool use_profiling_clocks)
 {
-    if (nullptr != m_pGpaInterface)
+    if (nullptr != gpa_interface_)
     {
-        AmdExtDeviceClockMode amdClockMode = AmdExtDeviceClockMode::Default;
+        AmdExtDeviceClockMode amd_clock_mode = AmdExtDeviceClockMode::Default;
 
-        if (useProfilingClocks)
+        if (use_profiling_clocks)
         {
-            DeviceClockMode deviceClockMode = GetDeviceClockMode();
+            DeviceClockMode device_clock_mode = GetDeviceClockMode();
 
-            switch (deviceClockMode)
+            switch (device_clock_mode)
             {
-            case DeviceClockMode::Default:
-                amdClockMode = AmdExtDeviceClockMode::Default;
+            case DeviceClockMode::kDefault:
+                amd_clock_mode = AmdExtDeviceClockMode::Default;
                 break;
 
-            case DeviceClockMode::MinimumEngine:
-                amdClockMode = AmdExtDeviceClockMode::MinimumEngine;
+            case DeviceClockMode::kMinimumEngine:
+                amd_clock_mode = AmdExtDeviceClockMode::MinimumEngine;
                 break;
 
-            case DeviceClockMode::MinimumMemory:
-                amdClockMode = AmdExtDeviceClockMode::MinimumMemory;
+            case DeviceClockMode::kMinimumMemory:
+                amd_clock_mode = AmdExtDeviceClockMode::MinimumMemory;
                 break;
 
-            case DeviceClockMode::Peak:
-                amdClockMode = AmdExtDeviceClockMode::Peak;
+            case DeviceClockMode::kPeak:
+                amd_clock_mode = AmdExtDeviceClockMode::Peak;
                 break;
 
-            case DeviceClockMode::Profiling:
-                amdClockMode = AmdExtDeviceClockMode::Profiling;
+            case DeviceClockMode::kProfiling:
+                amd_clock_mode = AmdExtDeviceClockMode::Profiling;
                 break;
 
             default:
-                amdClockMode = AmdExtDeviceClockMode::Profiling;
+                amd_clock_mode = AmdExtDeviceClockMode::Profiling;
                 break;
             }
         }
 
-        if (amdClockMode != m_clockMode)
+        if (amd_clock_mode != clock_mode_)
         {
-            m_clockMode = amdClockMode;
-            m_pGpaInterface->SetClockMode(m_clockMode, nullptr);
+            clock_mode_ = amd_clock_mode;
+            gpa_interface_->SetClockMode(clock_mode_, nullptr);
         }
     }
 
-    return GPA_STATUS_OK;
+    return kGpaStatusOk;
 }

@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  Unit tests to validate error handling/reporting from GPA APIs
+// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  Unit tests to validate error handling/reporting from GPA APIs
 ///         These tests are meant to exercise the GPA API without actually
 ///         creating valid contexts or executing any workloads. Additional unit
 ///         testing of the APIs is done with real workloads in the GPA
@@ -11,1300 +11,1265 @@
 
 #include <gtest/gtest.h>
 
-#include "gpu_perf_api.h"
-#include "gpu_perf_api_interface_loader.h"
-#include "gpa_common_defs.h"
+#include "gpu_performance_api/gpu_perf_api.h"
+#include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
-class GPAAPIErrorTest : public ::testing::TestWithParam<GPA_API_Type>
+#include "gpu_perf_api_common/gpa_common_defs.h"
+
+/// @brief GPA API Error Tests.
+class GpaApiErrorTest : public ::testing::TestWithParam<GpaApiType>
 {
 public:
-    GPAAPIErrorTest()
-        : ::testing::TestWithParam<GPA_API_Type>()
+    /// @brief Constructor.
+    GpaApiErrorTest()
+        : ::testing::TestWithParam<GpaApiType>()
     {
     }
 
-    ~GPAAPIErrorTest()
+    /// @brief Destructor.
+    ~GpaApiErrorTest()
     {
     }
 
-    /// Create and set up test resources
+    /// @brief Create and set up test resources.
     static void SetUpTestCase();
 
-    /// Tear down and cleanup test resources
+    /// @brief Tear down and cleanup test resources.
     static void TearDownTestCase();
 
-    /// Create and set up test resources
+    /// @brief Create and set up test resources.
     virtual void SetUp();
 
-    /// Tear down and cleanup test resources
+    /// @brief Tear down and cleanup test resources.
     virtual void TearDown();
 
 protected:
-    static void LogFunction(GPA_Logging_Type loggingType, const char* pLogMessage);
+    /// @brief GPA Logging callback function.
+    ///
+    /// @param [in] logging_type The type of log message being reported.
+    /// @param [in] log_message The log message.
+    static void LogFunction(GpaLoggingType logging_type, const char* log_message);
 
-    const GPAFunctionTable* m_pGpaFuncTable;
-    GPA_API_Type            m_api;
+    /// A GPA function table.
+    const GpaFunctionTable* gpa_function_table_;
+
+    /// An API that is supposed by GPA.
+    GpaApiType api_;
 
 private:
-    static std::map<GPA_API_Type, const char*> ms_apiName;
+    /// Map of the API names.
+    static std::map<GpaApiType, const char*> api_name_map;
 };
 
-std::map<GPA_API_Type, const char*> GPAAPIErrorTest::ms_apiName;
+std::map<GpaApiType, const char*> GpaApiErrorTest::api_name_map;
 
-void GPAAPIErrorTest::SetUpTestCase()
+void GpaApiErrorTest::SetUpTestCase()
 {
-    ms_apiName[GPA_API_DIRECTX_11] = "DX11";
-    ms_apiName[GPA_API_DIRECTX_12] = "DX12";
-    ms_apiName[GPA_API_OPENGL]     = "OpenGL";
-    ms_apiName[GPA_API_OPENCL]     = "OpenCL";
-    ms_apiName[GPA_API_VULKAN]     = "Vulkan";
-    ms_apiName[GPA_API_NO_SUPPORT] = "ApiNotSupported";
+    api_name_map[kGpaApiDirectx11] = "DX11";
+    api_name_map[kGpaApiDirectx12] = "DX12";
+    api_name_map[kGpaApiOpengl]    = "OpenGL";
+    api_name_map[kGpaApiOpencl]    = "OpenCL";
+    api_name_map[kGpaApiVulkan]    = "Vulkan";
+    api_name_map[kGpaApiNoSupport] = "ApiNotSupported";
 }
 
-void GPAAPIErrorTest::TearDownTestCase()
+void GpaApiErrorTest::TearDownTestCase()
 {
-    GPAApiManager::DeleteInstance();
+    GpaApiManager::DeleteInstance();
 }
 
-void GPAAPIErrorTest::SetUp()
+void GpaApiErrorTest::SetUp()
 {
-    m_api = GetParam();
+    api_ = GetParam();
 
-    ASSERT_NE(0u, ms_apiName.count(m_api)) << "API name out of range.";
-    const char* pApiName = ms_apiName.find(m_api)->second;
+    ASSERT_NE(0u, api_name_map.count(api_)) << "API name out of range.";
+    const char* api_name = api_name_map.find(api_)->second;
 
-    EXPECT_EQ(GPA_STATUS_OK, GPAApiManager::Instance()->LoadApi(m_api)) << "GPAApiManager failed to load API: " << pApiName;
-    m_pGpaFuncTable = GPAApiManager::Instance()->GetFunctionTable(GetParam());
-    ASSERT_NE(nullptr, m_pGpaFuncTable);
+    EXPECT_EQ(kGpaStatusOk, GpaApiManager::Instance()->LoadApi(api_)) << "GPAApiManager failed to load API: " << api_name;
+    gpa_function_table_ = GpaApiManager::Instance()->GetFunctionTable(GetParam());
+    ASSERT_NE(nullptr, gpa_function_table_);
 
-    GPA_Status status = m_pGpaFuncTable->GPA_RegisterLoggingCallback(GPA_LOGGING_ALL, LogFunction);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    GpaStatus status = gpa_function_table_->GpaRegisterLoggingCallback(kGpaLoggingAll, LogFunction);
+    EXPECT_EQ(kGpaStatusOk, status);
 }
 
-void GPAAPIErrorTest::TearDown()
+void GpaApiErrorTest::TearDown()
 {
-    GPAApiManager::Instance()->UnloadApi(m_api);
+    GpaApiManager::Instance()->UnloadApi(api_);
 }
 
-void GPAAPIErrorTest::LogFunction(GPA_Logging_Type loggingType, const char* pLogMessage)
+void GpaApiErrorTest::LogFunction(GpaLoggingType logging_type, const char* log_message)
 {
-    UNREFERENCED_PARAMETER(loggingType);
-    ASSERT_NE(nullptr, pLogMessage);
+    UNREFERENCED_PARAMETER(logging_type);
+    ASSERT_NE(nullptr, log_message);
 
-    std::string message(pLogMessage);
+    std::string message(log_message);
     ASSERT_LT(0ul, message.length());
     EXPECT_EQ('.', message[message.length() - 1]);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_RegisterLoggingCallback)
+TEST_P(GpaApiErrorTest, TestGPA_RegisterLoggingCallback)
 {
-    GPA_Status status = m_pGpaFuncTable->GPA_RegisterLoggingCallback(GPA_LOGGING_ERROR, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaStatus status = gpa_function_table_->GpaRegisterLoggingCallback(kGpaLoggingError, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_RegisterLoggingCallback(GPA_LOGGING_NONE, nullptr);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaRegisterLoggingCallback(kGpaLoggingNone, nullptr);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_RegisterLoggingCallback(GPA_LOGGING_ALL, LogFunction);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaRegisterLoggingCallback(kGpaLoggingAll, LogFunction);
+    EXPECT_EQ(kGpaStatusOk, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_InitializeAndDestroy)
+TEST_P(GpaApiErrorTest, TestGPA_InitializeAndDestroy)
 {
-    GPA_Status status = m_pGpaFuncTable->GPA_Destroy();
-    EXPECT_EQ(GPA_STATUS_ERROR_GPA_NOT_INITIALIZED, status);
+    GpaStatus status = gpa_function_table_->GpaDestroy();
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, status);
 
-    status = m_pGpaFuncTable->GPA_Initialize(GPA_INITIALIZE_DEFAULT_BIT);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaInitialize(kGpaInitializeDefaultBit);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_Initialize(GPA_INITIALIZE_DEFAULT_BIT);
-    EXPECT_EQ(GPA_STATUS_ERROR_GPA_ALREADY_INITIALIZED, status);
+    status = gpa_function_table_->GpaInitialize(kGpaInitializeDefaultBit);
+    EXPECT_EQ(kGpaStatusErrorGpaAlreadyInitialized, status);
 
-    status = m_pGpaFuncTable->GPA_Destroy();
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaDestroy();
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_Destroy();
-    EXPECT_EQ(GPA_STATUS_ERROR_GPA_NOT_INITIALIZED, status);
+    status = gpa_function_table_->GpaDestroy();
+    EXPECT_EQ(kGpaStatusErrorGpaNotInitialized, status);
 
-    status = m_pGpaFuncTable->GPA_Initialize(GPA_INITIALIZE_SIMULTANEOUS_QUEUES_ENABLE_BIT);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaInitialize(GPA_INITIALIZE_SIMULTANEOUS_QUEUES_ENABLE_BIT);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_Destroy();
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaDestroy();
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_Initialize(0xBADF00D);
-    EXPECT_EQ(GPA_STATUS_ERROR_INVALID_PARAMETER, status);
+    status = gpa_function_table_->GpaInitialize(0xBADF00D);
+    EXPECT_EQ(kGpaStatusErrorInvalidParameter, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_OpenAndCloseContext)
+TEST_P(GpaApiErrorTest, TestGPA_OpenAndCloseContext)
 {
-    GPA_ContextId badContextId = reinterpret_cast<GPA_ContextId>(0xBADF00D);
+    GpaContextId bad_context_id = reinterpret_cast<GpaContextId>(0xBADF00D);
 
-    GPA_Status status = m_pGpaFuncTable->GPA_Initialize(GPA_INITIALIZE_DEFAULT_BIT);
-    ASSERT_EQ(GPA_STATUS_OK, status);
+    GpaStatus status = gpa_function_table_->GpaInitialize(kGpaInitializeDefaultBit);
+    ASSERT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_CloseContext(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaCloseContext(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    GPA_ContextId contextId;
-    status = m_pGpaFuncTable->GPA_OpenContext(nullptr, GPA_OPENCONTEXT_DEFAULT_BIT, &contextId);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaContextId context_id;
+    status = gpa_function_table_->GpaOpenContext(nullptr, kGpaOpenContextDefaultBit, &context_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CloseContext(badContextId);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaCloseContext(bad_context_id);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_ContextInterrogation)
+TEST_P(GpaApiErrorTest, TestGPA_ContextInterrogation)
 {
-    GPA_ContextId badContextId = reinterpret_cast<GPA_ContextId>(0xBADF00D);
+    GpaContextId bad_context_id = reinterpret_cast<GpaContextId>(0xBADF00D);
 
-    // GPA_GetSupportedSampleTypes
-    GPA_Status status = m_pGpaFuncTable->GPA_GetSupportedSampleTypes(nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaStatus status = gpa_function_table_->GpaGetSupportedSampleTypes(nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    GPA_ContextSampleTypeFlags sampleTypes;
-    status = m_pGpaFuncTable->GPA_GetSupportedSampleTypes(nullptr, &sampleTypes);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaContextSampleTypeFlags sample_types;
+    status = gpa_function_table_->GpaGetSupportedSampleTypes(nullptr, &sample_types);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSupportedSampleTypes(badContextId, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSupportedSampleTypes(bad_context_id, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSupportedSampleTypes(badContextId, &sampleTypes);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetSupportedSampleTypes(bad_context_id, &sample_types);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    // GPA_GetDeviceAndRevisionId
-    status = m_pGpaFuncTable->GPA_GetDeviceAndRevisionId(nullptr, nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDeviceAndRevisionId(nullptr, nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 deviceId   = 0;
-    gpa_uint32 revisionId = 0;
-    status                = m_pGpaFuncTable->GPA_GetDeviceAndRevisionId(nullptr, &deviceId, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 device_id   = 0;
+    GpaUInt32 revision_id = 0;
+    status                = gpa_function_table_->GpaGetDeviceAndRevisionId(nullptr, &device_id, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetDeviceAndRevisionId(nullptr, nullptr, &revisionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDeviceAndRevisionId(nullptr, nullptr, &revision_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetDeviceAndRevisionId(nullptr, &deviceId, &revisionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDeviceAndRevisionId(nullptr, &device_id, &revision_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetDeviceName(nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDeviceName(nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    const char* pDeviceName = nullptr;
-    status                  = m_pGpaFuncTable->GPA_GetDeviceName(nullptr, &pDeviceName);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    const char* device_name = nullptr;
+    status                  = gpa_function_table_->GpaGetDeviceName(nullptr, &device_name);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetDeviceAndRevisionId(badContextId, nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDeviceAndRevisionId(bad_context_id, nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    deviceId   = 0;
-    revisionId = 0;
-    status     = m_pGpaFuncTable->GPA_GetDeviceAndRevisionId(badContextId, &deviceId, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    device_id   = 0;
+    revision_id = 0;
+    status      = gpa_function_table_->GpaGetDeviceAndRevisionId(bad_context_id, &device_id, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetDeviceAndRevisionId(badContextId, nullptr, &revisionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDeviceAndRevisionId(bad_context_id, nullptr, &revision_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetDeviceAndRevisionId(badContextId, &deviceId, &revisionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetDeviceAndRevisionId(bad_context_id, &device_id, &revision_id);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_GetDeviceName(badContextId, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDeviceName(bad_context_id, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    pDeviceName = nullptr;
-    status      = m_pGpaFuncTable->GPA_GetDeviceName(badContextId, &pDeviceName);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    device_name = nullptr;
+    status      = gpa_function_table_->GpaGetDeviceName(bad_context_id, &device_name);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_CounterInterrogation)
+TEST_P(GpaApiErrorTest, TestGPA_CounterInterrogation)
 {
-    GPA_ContextId badContextId = reinterpret_cast<GPA_ContextId>(0xBADF00D);
+    GpaContextId bad_context_id = reinterpret_cast<GpaContextId>(0xBADF00D);
 
-    // GPA_GetNumCounters
-    GPA_Status status = m_pGpaFuncTable->GPA_GetNumCounters(nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaStatus status = gpa_function_table_->GpaGetNumCounters(nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 numCounters;
-    status = m_pGpaFuncTable->GPA_GetNumCounters(nullptr, &numCounters);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 num_counters;
+    status = gpa_function_table_->GpaGetNumCounters(nullptr, &num_counters);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetNumCounters(badContextId, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetNumCounters(bad_context_id, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetNumCounters(badContextId, &numCounters);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetNumCounters(bad_context_id, &num_counters);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    // GPA_GetCounterName
-    status = m_pGpaFuncTable->GPA_GetCounterName(nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterName(nullptr, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    const char* pCounterName = nullptr;
-    status                   = m_pGpaFuncTable->GPA_GetCounterName(nullptr, 0, &pCounterName);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    const char* counter_name = nullptr;
+    status                   = gpa_function_table_->GpaGetCounterName(nullptr, 0, &counter_name);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterName(nullptr, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterName(nullptr, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    pCounterName = nullptr;
-    status       = m_pGpaFuncTable->GPA_GetCounterName(nullptr, static_cast<gpa_uint32>(-1), &pCounterName);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_name = nullptr;
+    status       = gpa_function_table_->GpaGetCounterName(nullptr, static_cast<GpaUInt32>(-1), &counter_name);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterName(badContextId, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterName(bad_context_id, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    pCounterName = nullptr;
-    status       = m_pGpaFuncTable->GPA_GetCounterName(badContextId, 0, &pCounterName);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    counter_name = nullptr;
+    status       = gpa_function_table_->GpaGetCounterName(bad_context_id, 0, &counter_name);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterName(badContextId, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterName(bad_context_id, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    pCounterName = nullptr;
-    status       = m_pGpaFuncTable->GPA_GetCounterName(badContextId, static_cast<gpa_uint32>(-1), &pCounterName);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    counter_name = nullptr;
+    status       = gpa_function_table_->GpaGetCounterName(bad_context_id, static_cast<GpaUInt32>(-1), &counter_name);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    // GPA_GetCounterIndex
-    status = m_pGpaFuncTable->GPA_GetCounterIndex(nullptr, nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterIndex(nullptr, nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 index = 0;
-    status           = m_pGpaFuncTable->GPA_GetCounterIndex(nullptr, nullptr, &index);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 index = 0;
+    status          = gpa_function_table_->GpaGetCounterIndex(nullptr, nullptr, &index);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterIndex(nullptr, "foo", nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterIndex(nullptr, "foo", nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
     index  = 0;
-    status = m_pGpaFuncTable->GPA_GetCounterIndex(nullptr, "GPUTime", &index);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterIndex(nullptr, "GPUTime", &index);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
     index  = 0;
-    status = m_pGpaFuncTable->GPA_GetCounterIndex(nullptr, "Wavefronts", &index);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterIndex(nullptr, "Wavefronts", &index);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterIndex(badContextId, nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
-
-    index  = 0;
-    status = m_pGpaFuncTable->GPA_GetCounterIndex(badContextId, nullptr, &index);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
-
-    status = m_pGpaFuncTable->GPA_GetCounterIndex(badContextId, "foo", nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterIndex(bad_context_id, nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
     index  = 0;
-    status = m_pGpaFuncTable->GPA_GetCounterIndex(badContextId, "GPUTime", &index);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterIndex(bad_context_id, nullptr, &index);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
+
+    status = gpa_function_table_->GpaGetCounterIndex(bad_context_id, "foo", nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
     index  = 0;
-    status = m_pGpaFuncTable->GPA_GetCounterIndex(badContextId, "Wavefronts", &index);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterIndex(bad_context_id, "GPUTime", &index);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    // GPA_GetCounterGroup
-    status = m_pGpaFuncTable->GPA_GetCounterGroup(nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    index  = 0;
+    status = gpa_function_table_->GpaGetCounterIndex(bad_context_id, "Wavefronts", &index);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    const char* pCounterGroup = nullptr;
-    status                    = m_pGpaFuncTable->GPA_GetCounterGroup(nullptr, 0, &pCounterGroup);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterGroup(nullptr, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterGroup(nullptr, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    const char* counter_group = nullptr;
+    status                    = gpa_function_table_->GpaGetCounterGroup(nullptr, 0, &counter_group);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    pCounterGroup = nullptr;
-    status        = m_pGpaFuncTable->GPA_GetCounterGroup(nullptr, static_cast<gpa_uint32>(-1), &pCounterGroup);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterGroup(nullptr, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterGroup(badContextId, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_group = nullptr;
+    status        = gpa_function_table_->GpaGetCounterGroup(nullptr, static_cast<GpaUInt32>(-1), &counter_group);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    pCounterGroup = nullptr;
-    status        = m_pGpaFuncTable->GPA_GetCounterGroup(badContextId, 0, &pCounterGroup);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterGroup(bad_context_id, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterGroup(badContextId, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_group = nullptr;
+    status        = gpa_function_table_->GpaGetCounterGroup(bad_context_id, 0, &counter_group);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    pCounterGroup = nullptr;
-    status        = m_pGpaFuncTable->GPA_GetCounterGroup(badContextId, static_cast<gpa_uint32>(-1), &pCounterGroup);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterGroup(bad_context_id, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    // GPA_GetCounterDescription
-    status = m_pGpaFuncTable->GPA_GetCounterDescription(nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_group = nullptr;
+    status        = gpa_function_table_->GpaGetCounterGroup(bad_context_id, static_cast<GpaUInt32>(-1), &counter_group);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    const char* pCounterDescription = nullptr;
-    status                          = m_pGpaFuncTable->GPA_GetCounterDescription(nullptr, 0, &pCounterDescription);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterDescription(nullptr, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterDescription(nullptr, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    const char* counter_description = nullptr;
+    status                          = gpa_function_table_->GpaGetCounterDescription(nullptr, 0, &counter_description);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    pCounterDescription = nullptr;
-    status              = m_pGpaFuncTable->GPA_GetCounterDescription(nullptr, static_cast<gpa_uint32>(-1), &pCounterDescription);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterDescription(nullptr, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterDescription(badContextId, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_description = nullptr;
+    status              = gpa_function_table_->GpaGetCounterDescription(nullptr, static_cast<GpaUInt32>(-1), &counter_description);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    pCounterDescription = nullptr;
-    status              = m_pGpaFuncTable->GPA_GetCounterDescription(badContextId, 0, &pCounterDescription);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterDescription(bad_context_id, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterDescription(badContextId, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_description = nullptr;
+    status              = gpa_function_table_->GpaGetCounterDescription(bad_context_id, 0, &counter_description);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    pCounterDescription = nullptr;
-    status              = m_pGpaFuncTable->GPA_GetCounterDescription(badContextId, static_cast<gpa_uint32>(-1), &pCounterDescription);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterDescription(bad_context_id, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    // GPA_GetCounterDataType
-    status = m_pGpaFuncTable->GPA_GetCounterDataType(nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_description = nullptr;
+    status              = gpa_function_table_->GpaGetCounterDescription(bad_context_id, static_cast<GpaUInt32>(-1), &counter_description);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    GPA_Data_Type counterDataType = GPA_DATA_TYPE__LAST;
-    status                        = m_pGpaFuncTable->GPA_GetCounterDataType(nullptr, 0, &counterDataType);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterDataType(nullptr, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterDataType(nullptr, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaDataType counter_data_type = kGpaDataTypeLast;
+    status                        = gpa_function_table_->GpaGetCounterDataType(nullptr, 0, &counter_data_type);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    counterDataType = GPA_DATA_TYPE__LAST;
-    status          = m_pGpaFuncTable->GPA_GetCounterDataType(nullptr, static_cast<gpa_uint32>(-1), &counterDataType);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterDataType(nullptr, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterDataType(badContextId, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_data_type = kGpaDataTypeLast;
+    status            = gpa_function_table_->GpaGetCounterDataType(nullptr, static_cast<GpaUInt32>(-1), &counter_data_type);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    counterDataType = GPA_DATA_TYPE__LAST;
-    status          = m_pGpaFuncTable->GPA_GetCounterDataType(badContextId, 0, &counterDataType);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterDataType(bad_context_id, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterDataType(badContextId, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_data_type = kGpaDataTypeLast;
+    status            = gpa_function_table_->GpaGetCounterDataType(bad_context_id, 0, &counter_data_type);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    counterDataType = GPA_DATA_TYPE__LAST;
-    status          = m_pGpaFuncTable->GPA_GetCounterDataType(badContextId, static_cast<gpa_uint32>(-1), &counterDataType);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterDataType(bad_context_id, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    // GPA_GetCounterUsageType
-    status = m_pGpaFuncTable->GPA_GetCounterUsageType(nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_data_type = kGpaDataTypeLast;
+    status            = gpa_function_table_->GpaGetCounterDataType(bad_context_id, static_cast<GpaUInt32>(-1), &counter_data_type);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    GPA_Usage_Type counterUsageType = GPA_USAGE_TYPE__LAST;
-    status                          = m_pGpaFuncTable->GPA_GetCounterUsageType(nullptr, 0, &counterUsageType);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterUsageType(nullptr, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterUsageType(nullptr, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUsageType counter_usage_type = kGpaUsageTypeLast;
+    status                          = gpa_function_table_->GpaGetCounterUsageType(nullptr, 0, &counter_usage_type);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    counterUsageType = GPA_USAGE_TYPE__LAST;
-    status           = m_pGpaFuncTable->GPA_GetCounterUsageType(nullptr, static_cast<gpa_uint32>(-1), &counterUsageType);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterUsageType(nullptr, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterUsageType(badContextId, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_usage_type = kGpaUsageTypeLast;
+    status             = gpa_function_table_->GpaGetCounterUsageType(nullptr, static_cast<GpaUInt32>(-1), &counter_usage_type);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    counterUsageType = GPA_USAGE_TYPE__LAST;
-    status           = m_pGpaFuncTable->GPA_GetCounterUsageType(badContextId, 0, &counterUsageType);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterUsageType(bad_context_id, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterUsageType(badContextId, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_usage_type = kGpaUsageTypeLast;
+    status             = gpa_function_table_->GpaGetCounterUsageType(bad_context_id, 0, &counter_usage_type);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    counterUsageType = GPA_USAGE_TYPE__LAST;
-    status           = m_pGpaFuncTable->GPA_GetCounterUsageType(badContextId, static_cast<gpa_uint32>(-1), &counterUsageType);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterUsageType(bad_context_id, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    // GPA_GetCounterUuid
-    status = m_pGpaFuncTable->GPA_GetCounterUuid(nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_usage_type = kGpaUsageTypeLast;
+    status             = gpa_function_table_->GpaGetCounterUsageType(bad_context_id, static_cast<GpaUInt32>(-1), &counter_usage_type);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    GPA_UUID counterUUID = {};
-    status               = m_pGpaFuncTable->GPA_GetCounterUuid(nullptr, 0, &counterUUID);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterUuid(nullptr, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterUuid(nullptr, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUuid counter_uuid = {};
+    status               = gpa_function_table_->GpaGetCounterUuid(nullptr, 0, &counter_uuid);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    counterUUID = {};
-    status      = m_pGpaFuncTable->GPA_GetCounterUuid(nullptr, static_cast<gpa_uint32>(-1), &counterUUID);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterUuid(nullptr, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterUuid(badContextId, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_uuid = {};
+    status       = gpa_function_table_->GpaGetCounterUuid(nullptr, static_cast<GpaUInt32>(-1), &counter_uuid);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    counterUUID = {};
-    status      = m_pGpaFuncTable->GPA_GetCounterUuid(badContextId, 0, &counterUUID);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterUuid(bad_context_id, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterUuid(badContextId, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_uuid = {};
+    status       = gpa_function_table_->GpaGetCounterUuid(bad_context_id, 0, &counter_uuid);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    counterUUID = {};
-    status      = m_pGpaFuncTable->GPA_GetCounterUuid(badContextId, static_cast<gpa_uint32>(-1), &counterUUID);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterUuid(bad_context_id, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    // GPA_GetCounterSampleTypes
-    status = m_pGpaFuncTable->GPA_GetCounterSampleType(nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    counter_uuid = {};
+    status       = gpa_function_table_->GpaGetCounterUuid(bad_context_id, static_cast<GpaUInt32>(-1), &counter_uuid);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    GPA_Counter_Sample_Type sampleType;
-    status = m_pGpaFuncTable->GPA_GetCounterSampleType(nullptr, 0, &sampleType);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterSampleType(nullptr, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterSampleType(nullptr, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaCounterSampleType sample_type;
+    status = gpa_function_table_->GpaGetCounterSampleType(nullptr, 0, &sample_type);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterSampleType(nullptr, static_cast<gpa_uint32>(-1), &sampleType);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterSampleType(nullptr, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterSampleType(badContextId, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterSampleType(nullptr, static_cast<GpaUInt32>(-1), &sample_type);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterSampleType(badContextId, 0, &sampleType);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterSampleType(bad_context_id, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterSampleType(badContextId, static_cast<gpa_uint32>(-1), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterSampleType(bad_context_id, 0, &sample_type);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_GetCounterSampleType(badContextId, static_cast<gpa_uint32>(-1), &sampleType);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetCounterSampleType(bad_context_id, static_cast<GpaUInt32>(-1), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    // GPA_GetDataTypeAsStr
-    status = m_pGpaFuncTable->GPA_GetDataTypeAsStr(GPA_DATA_TYPE_FLOAT64, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetCounterSampleType(bad_context_id, static_cast<GpaUInt32>(-1), &sample_type);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_GetDataTypeAsStr(GPA_DATA_TYPE_UINT64, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDataTypeAsStr(kGpaDataTypeFloat64, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetDataTypeAsStr(GPA_DATA_TYPE__LAST, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDataTypeAsStr(kGpaDataTypeUint64, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetDataTypeAsStr(static_cast<GPA_Data_Type>(0xFFFF), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDataTypeAsStr(kGpaDataTypeLast, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    const char* pTypeStr = nullptr;
-    status               = m_pGpaFuncTable->GPA_GetDataTypeAsStr(GPA_DATA_TYPE_FLOAT64, &pTypeStr);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaGetDataTypeAsStr(static_cast<GpaDataType>(0xFFFF), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetDataTypeAsStr(GPA_DATA_TYPE_UINT64, &pTypeStr);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    const char* type_string = nullptr;
+    status                  = gpa_function_table_->GpaGetDataTypeAsStr(kGpaDataTypeFloat64, &type_string);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_GetDataTypeAsStr(GPA_DATA_TYPE__LAST, &pTypeStr);
-    EXPECT_EQ(GPA_STATUS_ERROR_INVALID_PARAMETER, status);
+    status = gpa_function_table_->GpaGetDataTypeAsStr(kGpaDataTypeUint64, &type_string);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_GetDataTypeAsStr(static_cast<GPA_Data_Type>(0xFFFF), &pTypeStr);
-    EXPECT_EQ(GPA_STATUS_ERROR_INVALID_PARAMETER, status);
+    status = gpa_function_table_->GpaGetDataTypeAsStr(kGpaDataTypeLast, &type_string);
+    EXPECT_EQ(kGpaStatusErrorInvalidParameter, status);
 
-    // GPA_GetUsageTypeAsStr
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_RATIO, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetDataTypeAsStr(static_cast<GpaDataType>(0xFFFF), &type_string);
+    EXPECT_EQ(kGpaStatusErrorInvalidParameter, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_PERCENTAGE, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeRatio, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_CYCLES, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypePercentage, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_MILLISECONDS, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeCycles, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_BYTES, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeMilliseconds, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_ITEMS, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeBytes, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_KILOBYTES, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeItems, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE__LAST, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeKilobytes, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(static_cast<GPA_Usage_Type>(0xFFFF), nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeLast, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    const char* pUsageStr = nullptr;
-    status                = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_RATIO, &pUsageStr);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(static_cast<GpaUsageType>(0xFFFF), nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_PERCENTAGE, &pUsageStr);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    const char* usage_string = nullptr;
+    status                   = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeRatio, &usage_string);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_CYCLES, &pUsageStr);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypePercentage, &usage_string);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_MILLISECONDS, &pUsageStr);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeCycles, &usage_string);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_BYTES, &pUsageStr);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeMilliseconds, &usage_string);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_ITEMS, &pUsageStr);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeBytes, &usage_string);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE_KILOBYTES, &pUsageStr);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeItems, &usage_string);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(GPA_USAGE_TYPE__LAST, &pUsageStr);
-    EXPECT_EQ(GPA_STATUS_ERROR_INVALID_PARAMETER, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeKilobytes, &usage_string);
+    EXPECT_EQ(kGpaStatusOk, status);
 
-    status = m_pGpaFuncTable->GPA_GetUsageTypeAsStr(static_cast<GPA_Usage_Type>(0xFFFF), &pUsageStr);
-    EXPECT_EQ(GPA_STATUS_ERROR_INVALID_PARAMETER, status);
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(kGpaUsageTypeLast, &usage_string);
+    EXPECT_EQ(kGpaStatusErrorInvalidParameter, status);
+
+    status = gpa_function_table_->GpaGetUsageTypeAsStr(static_cast<GpaUsageType>(0xFFFF), &usage_string);
+    EXPECT_EQ(kGpaStatusErrorInvalidParameter, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_SessionHandling)
+TEST_P(GpaApiErrorTest, TestGPA_SessionHandling)
 {
-    GPA_ContextId badContextId = reinterpret_cast<GPA_ContextId>(0xBADF00D);
+    GpaContextId bad_context_id = reinterpret_cast<GpaContextId>(0xBADF00D);
 
-    // GPA_CreateSession
-    GPA_Status status = m_pGpaFuncTable->GPA_CreateSession(nullptr, GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaStatus status = gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeDiscreteCounter, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    GPA_SessionId sessionId;
-    status = m_pGpaFuncTable->GPA_CreateSession(nullptr, GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER, &sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaSessionId session_id;
+    status = gpa_function_table_->GpaCreateSession(nullptr, kGpaSessionSampleTypeDiscreteCounter, &session_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(nullptr, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaCreateSession(nullptr, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(nullptr, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER, &sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaCreateSession(nullptr, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER, &session_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(nullptr, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaCreateSession(nullptr, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(nullptr, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT, &sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaCreateSession(nullptr, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT, &session_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(nullptr, static_cast<GPA_Session_Sample_Type>(0xFFFFFFFF), &sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaCreateSession(nullptr, static_cast<GpaSessionSampleType>(0xFFFFFFFF), &session_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(badContextId, GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeDiscreteCounter, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(badContextId, GPA_SESSION_SAMPLE_TYPE_DISCRETE_COUNTER, &sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaCreateSession(bad_context_id, kGpaSessionSampleTypeDiscreteCounter, &session_id);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(badContextId, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaCreateSession(bad_context_id, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(badContextId, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER, &sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaCreateSession(bad_context_id, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER, &session_id);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(badContextId, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaCreateSession(bad_context_id, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(badContextId, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT, &sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaCreateSession(bad_context_id, GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT, &session_id);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_CreateSession(badContextId, static_cast<GPA_Session_Sample_Type>(0xFFFFFFFF), &sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_CONTEXT_NOT_FOUND, status);
+    status = gpa_function_table_->GpaCreateSession(bad_context_id, static_cast<GpaSessionSampleType>(0xFFFFFFFF), &session_id);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 
-    // GPA_DeleteSession
-    status = m_pGpaFuncTable->GPA_DeleteSession(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaDeleteSession(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    sessionId = reinterpret_cast<GPA_SessionId>(0xBADF00D);
-    status    = m_pGpaFuncTable->GPA_DeleteSession(sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    session_id = reinterpret_cast<GpaSessionId>(0xBADF00D);
+    status     = gpa_function_table_->GpaDeleteSession(session_id);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_BeginSession
-    status = m_pGpaFuncTable->GPA_BeginSession(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaBeginSession(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_BeginSession(sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaBeginSession(session_id);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_EndSession
-    status = m_pGpaFuncTable->GPA_EndSession(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaEndSession(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_EndSession(sessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaEndSession(session_id);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_CounterScheduling)
+TEST_P(GpaApiErrorTest, TestGPA_CounterScheduling)
 {
-    GPA_SessionId badSessionId = reinterpret_cast<GPA_SessionId>(0xBADF00D);
+    GpaSessionId bad_session_id = reinterpret_cast<GpaSessionId>(0xBADF00D);
 
-    // GPA_EnableCounter
-    GPA_Status status = m_pGpaFuncTable->GPA_EnableCounter(nullptr, 0);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaStatus status = gpa_function_table_->GpaEnableCounter(nullptr, 0);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_EnableCounter(nullptr, 0x7FFFFFFF);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaEnableCounter(nullptr, 0x7FFFFFFF);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_EnableCounter(badSessionId, 0);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaEnableCounter(bad_session_id, 0);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_EnableCounter(badSessionId, 0x7FFFFFFF);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaEnableCounter(bad_session_id, 0x7FFFFFFF);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_DisableCounter
-    status = m_pGpaFuncTable->GPA_DisableCounter(nullptr, 0);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaDisableCounter(nullptr, 0);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_DisableCounter(nullptr, 0x7FFFFFFF);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaDisableCounter(nullptr, 0x7FFFFFFF);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_DisableCounter(badSessionId, 0);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaDisableCounter(bad_session_id, 0);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_DisableCounter(badSessionId, 0x7FFFFFFF);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaDisableCounter(bad_session_id, 0x7FFFFFFF);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_EnableCounterByName
-    status = m_pGpaFuncTable->GPA_EnableCounterByName(nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaEnableCounterByName(nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_EnableCounterByName(nullptr, "noCounter");
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaEnableCounterByName(nullptr, "noCounter");
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_EnableCounterByName(nullptr, "GPUTime");
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaEnableCounterByName(nullptr, "GPUTime");
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_EnableCounterByName(nullptr, "Wavefronts");
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaEnableCounterByName(nullptr, "Wavefronts");
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_EnableCounterByName(badSessionId, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaEnableCounterByName(bad_session_id, nullptr);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_EnableCounterByName(badSessionId, "noCounter");
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaEnableCounterByName(bad_session_id, "noCounter");
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_EnableCounterByName(badSessionId, "GPUTime");
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaEnableCounterByName(bad_session_id, "GPUTime");
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_EnableCounterByName(badSessionId, "Wavefronts");
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaEnableCounterByName(bad_session_id, "Wavefronts");
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_DisableCounterByName
-    status = m_pGpaFuncTable->GPA_DisableCounterByName(nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaDisableCounterByName(nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_DisableCounterByName(nullptr, "noCounter");
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaDisableCounterByName(nullptr, "noCounter");
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_DisableCounterByName(nullptr, "GPUTime");
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaDisableCounterByName(nullptr, "GPUTime");
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_DisableCounterByName(nullptr, "Wavefronts");
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaDisableCounterByName(nullptr, "Wavefronts");
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_DisableCounterByName(badSessionId, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaDisableCounterByName(bad_session_id, nullptr);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_DisableCounterByName(badSessionId, "noCounter");
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaDisableCounterByName(bad_session_id, "noCounter");
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_DisableCounterByName(badSessionId, "GPUTime");
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaDisableCounterByName(bad_session_id, "GPUTime");
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_DisableCounterByName(badSessionId, "Wavefronts");
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaDisableCounterByName(bad_session_id, "Wavefronts");
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_EnableAllCounters
-    status = m_pGpaFuncTable->GPA_EnableAllCounters(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaEnableAllCounters(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_EnableAllCounters(badSessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaEnableAllCounters(bad_session_id);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_DisableAllCounters
-    status = m_pGpaFuncTable->GPA_DisableAllCounters(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaDisableAllCounters(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_DisableAllCounters(badSessionId);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaDisableAllCounters(bad_session_id);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_QueryCounterScheduling)
+TEST_P(GpaApiErrorTest, TestGPA_QueryCounterScheduling)
 {
-    GPA_SessionId badSessionId = reinterpret_cast<GPA_SessionId>(0xBADF00D);
+    GpaSessionId bad_session_id = reinterpret_cast<GpaSessionId>(0xBADF00D);
 
-    // GPA_GetPassCount
-    GPA_Status status = m_pGpaFuncTable->GPA_GetPassCount(nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaStatus status = gpa_function_table_->GpaGetPassCount(nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 passCount = 0;
-    status               = m_pGpaFuncTable->GPA_GetPassCount(nullptr, &passCount);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 pass_count = 0;
+    status               = gpa_function_table_->GpaGetPassCount(nullptr, &pass_count);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetPassCount(badSessionId, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetPassCount(bad_session_id, nullptr);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    passCount = 0;
-    status    = m_pGpaFuncTable->GPA_GetPassCount(badSessionId, &passCount);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    pass_count = 0;
+    status     = gpa_function_table_->GpaGetPassCount(bad_session_id, &pass_count);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_GetNumEnabledCounters
-    status = m_pGpaFuncTable->GPA_GetNumEnabledCounters(nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetNumEnabledCounters(nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 numEnabledCounters = 0;
-    status                        = m_pGpaFuncTable->GPA_GetNumEnabledCounters(nullptr, &numEnabledCounters);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 num_enabled_counters = 0;
+    status                         = gpa_function_table_->GpaGetNumEnabledCounters(nullptr, &num_enabled_counters);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetNumEnabledCounters(badSessionId, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetNumEnabledCounters(bad_session_id, nullptr);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    numEnabledCounters = 0;
-    status             = m_pGpaFuncTable->GPA_GetNumEnabledCounters(badSessionId, &numEnabledCounters);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    num_enabled_counters = 0;
+    status               = gpa_function_table_->GpaGetNumEnabledCounters(bad_session_id, &num_enabled_counters);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_GetEnabledIndex
-    status = m_pGpaFuncTable->GPA_GetEnabledIndex(nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetEnabledIndex(nullptr, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 enabledIndex = 0;
-    status                  = m_pGpaFuncTable->GPA_GetEnabledIndex(nullptr, 0, &enabledIndex);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 enabled_index = 0;
+    status                  = gpa_function_table_->GpaGetEnabledIndex(nullptr, 0, &enabled_index);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetEnabledIndex(nullptr, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetEnabledIndex(nullptr, 0x7FFFFFFF, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    enabledIndex = 0;
-    status       = m_pGpaFuncTable->GPA_GetEnabledIndex(nullptr, 0x7FFFFFFF, &enabledIndex);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    enabled_index = 0;
+    status        = gpa_function_table_->GpaGetEnabledIndex(nullptr, 0x7FFFFFFF, &enabled_index);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetEnabledIndex(badSessionId, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetEnabledIndex(bad_session_id, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    enabledIndex = 0;
-    status       = m_pGpaFuncTable->GPA_GetEnabledIndex(badSessionId, 0, &enabledIndex);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    enabled_index = 0;
+    status        = gpa_function_table_->GpaGetEnabledIndex(bad_session_id, 0, &enabled_index);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_GetEnabledIndex(badSessionId, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetEnabledIndex(bad_session_id, 0x7FFFFFFF, nullptr);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    enabledIndex = 0;
-    status       = m_pGpaFuncTable->GPA_GetEnabledIndex(badSessionId, 0x7FFFFFFF, &enabledIndex);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    enabled_index = 0;
+    status        = gpa_function_table_->GpaGetEnabledIndex(bad_session_id, 0x7FFFFFFF, &enabled_index);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_IsCounterEnabled
-    status = m_pGpaFuncTable->GPA_IsCounterEnabled(nullptr, 0);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaIsCounterEnabled(nullptr, 0);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_IsCounterEnabled(nullptr, 0x7FFFFFFF);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaIsCounterEnabled(nullptr, 0x7FFFFFFF);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_IsCounterEnabled(badSessionId, 0);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaIsCounterEnabled(bad_session_id, 0);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_IsCounterEnabled(badSessionId, 0x7FFFFFFF);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaIsCounterEnabled(bad_session_id, 0x7FFFFFFF);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_SampleHandling)
+TEST_P(GpaApiErrorTest, TestGPA_SampleHandling)
 {
-    GPA_SessionId     badSession      = reinterpret_cast<GPA_SessionId>(0xBADF00D);
-    GPA_CommandListId badCommandList  = reinterpret_cast<GPA_CommandListId>(0xBADF00D);
-    GPA_CommandListId badCommandList2 = reinterpret_cast<GPA_CommandListId>(0xBA4F00D);
+    GpaSessionId     bad_session                = reinterpret_cast<GpaSessionId>(0xBADF00D);
+    GpaCommandListId bad_command_list           = reinterpret_cast<GpaCommandListId>(0xBADF00D);
+    GpaCommandListId bad_secondary_command_list = reinterpret_cast<GpaCommandListId>(0xBA4F00D);
 
-    // GPA_BeginCommandList
-    GPA_Status status = m_pGpaFuncTable->GPA_BeginCommandList(nullptr, 0, nullptr, GPA_COMMAND_LIST_NONE, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaStatus status = gpa_function_table_->GpaBeginCommandList(nullptr, 0, nullptr, kGpaCommandListNone, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_BeginCommandList(nullptr, 0x7FFFFFFF, this, GPA_COMMAND_LIST_NONE, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaBeginCommandList(nullptr, 0x7FFFFFFF, this, kGpaCommandListNone, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_BeginCommandList(nullptr, 0x7FFFFFFF, nullptr, GPA_COMMAND_LIST_PRIMARY, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaBeginCommandList(nullptr, 0x7FFFFFFF, nullptr, kGpaCommandListPrimary, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    GPA_CommandListId commandListId;
-    status = m_pGpaFuncTable->GPA_BeginCommandList(nullptr, 0x7FFFFFFF, this, GPA_COMMAND_LIST_PRIMARY, &commandListId);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaCommandListId command_list_id;
+    status = gpa_function_table_->GpaBeginCommandList(nullptr, 0x7FFFFFFF, this, kGpaCommandListPrimary, &command_list_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_BeginCommandList(badSession, 0x7FFFFFFF, this, GPA_COMMAND_LIST_PRIMARY, &commandListId);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaBeginCommandList(bad_session, 0x7FFFFFFF, this, kGpaCommandListPrimary, &command_list_id);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_BeginCommandList(badSession, 0, nullptr, GPA_COMMAND_LIST_NONE, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaBeginCommandList(bad_session, 0, nullptr, kGpaCommandListNone, nullptr);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_BeginCommandList(badSession, 0x7FFFFFFF, this, GPA_COMMAND_LIST_NONE, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaBeginCommandList(bad_session, 0x7FFFFFFF, this, kGpaCommandListNone, nullptr);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_BeginCommandList(badSession, 0x7FFFFFFF, nullptr, GPA_COMMAND_LIST_PRIMARY, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaBeginCommandList(bad_session, 0x7FFFFFFF, nullptr, kGpaCommandListPrimary, nullptr);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_BeginCommandList(badSession, 0x7FFFFFFF, this, GPA_COMMAND_LIST_PRIMARY, &commandListId);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaBeginCommandList(bad_session, 0x7FFFFFFF, this, kGpaCommandListPrimary, &command_list_id);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_EndCommandList
-    status = m_pGpaFuncTable->GPA_EndCommandList(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaEndCommandList(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_EndCommandList(badCommandList);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    status = gpa_function_table_->GpaEndCommandList(bad_command_list);
+    EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
 
-    // GPA_BeginSample
-    status = m_pGpaFuncTable->GPA_BeginSample(0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaBeginSample(0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_BeginSample(0, badCommandList);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    status = gpa_function_table_->GpaBeginSample(0, bad_command_list);
+    EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
 
-    // GPA_EndSample
-    status = m_pGpaFuncTable->GPA_EndSample(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaEndSample(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_EndSample(badCommandList);
-    EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+    status = gpa_function_table_->GpaEndSample(bad_command_list);
+    EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
 
-    // GPA_ContinueSampleOnCommandList
-    status = m_pGpaFuncTable->GPA_ContinueSampleOnCommandList(0, nullptr);
+    status = gpa_function_table_->GpaContinueSampleOnCommandList(0, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+        EXPECT_EQ(kGpaStatusErrorNullPointer, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_ContinueSampleOnCommandList(0, badCommandList);
+    status = gpa_function_table_->GpaContinueSampleOnCommandList(0, bad_command_list);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_ContinueSampleOnCommandList(0x7FFFFFFF, nullptr);
+    status = gpa_function_table_->GpaContinueSampleOnCommandList(0x7FFFFFFF, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+        EXPECT_EQ(kGpaStatusErrorNullPointer, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_ContinueSampleOnCommandList(0x7FFFFFFF, badCommandList);
+    status = gpa_function_table_->GpaContinueSampleOnCommandList(0x7FFFFFFF, bad_command_list);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    // GPA_CopySecondarySamples
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, nullptr, 0, nullptr);
+    status = gpa_function_table_->GpaCopySecondarySamples(nullptr, nullptr, 0, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+        EXPECT_EQ(kGpaStatusErrorNullPointer, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, nullptr, 0, nullptr);
+    status = gpa_function_table_->GpaCopySecondarySamples(bad_command_list, nullptr, 0, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    GPA_CommandListId commandListId2;
-    status = m_pGpaFuncTable->GPA_BeginCommandList(nullptr, 0x7FFFFFFF, this, GPA_COMMAND_LIST_PRIMARY, &commandListId2);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaCommandListId secondary_command_list_id;
+    status = gpa_function_table_->GpaBeginCommandList(nullptr, 0x7FFFFFFF, this, kGpaCommandListPrimary, &secondary_command_list_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, badCommandList, 0, nullptr);
+    status = gpa_function_table_->GpaCopySecondarySamples(bad_command_list, bad_command_list, 0, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, badCommandList2, 0, nullptr);
+    status = gpa_function_table_->GpaCopySecondarySamples(bad_command_list, bad_secondary_command_list, 0, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, badCommandList2, 0, nullptr);
+    status = gpa_function_table_->GpaCopySecondarySamples(nullptr, bad_secondary_command_list, 0, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+        EXPECT_EQ(kGpaStatusErrorNullPointer, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, nullptr, 0x7FFFFFFF, nullptr);
+    status = gpa_function_table_->GpaCopySecondarySamples(nullptr, nullptr, 0x7FFFFFFF, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+        EXPECT_EQ(kGpaStatusErrorNullPointer, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, nullptr, 0x7FFFFFFF, nullptr);
+    status = gpa_function_table_->GpaCopySecondarySamples(bad_command_list, nullptr, 0x7FFFFFFF, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, badCommandList2, 0x7FFFFFFF, nullptr);
+    status = gpa_function_table_->GpaCopySecondarySamples(bad_command_list, bad_secondary_command_list, 0x7FFFFFFF, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, badCommandList2, 0x7FFFFFFF, nullptr);
+    status = gpa_function_table_->GpaCopySecondarySamples(nullptr, bad_secondary_command_list, 0x7FFFFFFF, nullptr);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+        EXPECT_EQ(kGpaStatusErrorNullPointer, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    gpa_uint32 newSampleIds = 0;
-    status                  = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, nullptr, 0, &newSampleIds);
+    GpaUInt32 new_sample_ids = 0;
+    status                   = gpa_function_table_->GpaCopySecondarySamples(nullptr, nullptr, 0, &new_sample_ids);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+        EXPECT_EQ(kGpaStatusErrorNullPointer, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, nullptr, 0, &newSampleIds);
+    status = gpa_function_table_->GpaCopySecondarySamples(bad_command_list, nullptr, 0, &new_sample_ids);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, badCommandList, 0, &newSampleIds);
+    status = gpa_function_table_->GpaCopySecondarySamples(bad_command_list, bad_command_list, 0, &new_sample_ids);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, badCommandList, 0, &newSampleIds);
+    status = gpa_function_table_->GpaCopySecondarySamples(nullptr, bad_command_list, 0, &new_sample_ids);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+        EXPECT_EQ(kGpaStatusErrorNullPointer, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, nullptr, 1, &newSampleIds);
+    status = gpa_function_table_->GpaCopySecondarySamples(nullptr, nullptr, 1, &new_sample_ids);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+        EXPECT_EQ(kGpaStatusErrorNullPointer, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, nullptr, 1, &newSampleIds);
+    status = gpa_function_table_->GpaCopySecondarySamples(bad_command_list, nullptr, 1, &new_sample_ids);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(badCommandList, badCommandList, 1, &newSampleIds);
+    status = gpa_function_table_->GpaCopySecondarySamples(bad_command_list, bad_command_list, 1, &new_sample_ids);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_COMMAND_LIST_NOT_FOUND, status);
+        EXPECT_EQ(kGpaStatusErrorCommandListNotFound, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    status = m_pGpaFuncTable->GPA_CopySecondarySamples(nullptr, badCommandList, 1, &newSampleIds);
+    status = gpa_function_table_->GpaCopySecondarySamples(nullptr, bad_command_list, 1, &new_sample_ids);
 
-    if (GPA_API_DIRECTX_12 == m_api || GPA_API_VULKAN == m_api)
+    if (kGpaApiDirectx12 == api_ || kGpaApiVulkan == api_)
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+        EXPECT_EQ(kGpaStatusErrorNullPointer, status);
     }
     else
     {
-        EXPECT_EQ(GPA_STATUS_ERROR_API_NOT_SUPPORTED, status);
+        EXPECT_EQ(kGpaStatusErrorApiNotSupported, status);
     }
 
-    // GPA_GetSampleCount
-    status = m_pGpaFuncTable->GPA_GetSampleCount(nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleCount(nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 sampleCount;
-    status = m_pGpaFuncTable->GPA_GetSampleCount(nullptr, &sampleCount);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 sample_count;
+    status = gpa_function_table_->GpaGetSampleCount(nullptr, &sample_count);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleCount(badSession, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleCount(bad_session, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleCount(badSession, &sampleCount);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetSampleCount(bad_session, &sample_count);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_GetSampleId
-    status = m_pGpaFuncTable->GPA_GetSampleId(nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleId(nullptr, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 sampleId;
-    status = m_pGpaFuncTable->GPA_GetSampleId(nullptr, 0, &sampleId);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 sample_id;
+    status = gpa_function_table_->GpaGetSampleId(nullptr, 0, &sample_id);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleId(badSession, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleId(bad_session, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleId(badSession, 0, &sampleId);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetSampleId(bad_session, 0, &sample_id);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_QueryResults)
+TEST_P(GpaApiErrorTest, TestGPA_QueryResults)
 {
-    GPA_SessionId badSession = reinterpret_cast<GPA_SessionId>(0xBADF00D);
+    GpaSessionId bad_session = reinterpret_cast<GpaSessionId>(0xBADF00D);
 
-    // GPA_IsPassComplete
-    GPA_Status status = m_pGpaFuncTable->GPA_IsPassComplete(nullptr, 0);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaStatus status = gpa_function_table_->GpaIsPassComplete(nullptr, 0);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_IsPassComplete(nullptr, 0x7FFFFFFF);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaIsPassComplete(nullptr, 0x7FFFFFFF);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_IsPassComplete(badSession, 0);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaIsPassComplete(bad_session, 0);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_IsPassComplete(badSession, 0x7FFFFFFF);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaIsPassComplete(bad_session, 0x7FFFFFFF);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_IsSessionComplete
-    status = m_pGpaFuncTable->GPA_IsSessionComplete(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaIsSessionComplete(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_IsSessionComplete(badSession);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaIsSessionComplete(bad_session);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_GetSampleResultSize
-    status = m_pGpaFuncTable->GPA_GetSampleResultSize(nullptr, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResultSize(nullptr, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResultSize(nullptr, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResultSize(nullptr, 0x7FFFFFFF, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    size_t resultSize = 0;
-    status            = m_pGpaFuncTable->GPA_GetSampleResultSize(nullptr, 0, &resultSize);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    size_t result_size = 0;
+    status             = gpa_function_table_->GpaGetSampleResultSize(nullptr, 0, &result_size);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResultSize(nullptr, 0x7FFFFFFF, &resultSize);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResultSize(nullptr, 0x7FFFFFFF, &result_size);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResultSize(badSession, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResultSize(bad_session, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResultSize(badSession, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResultSize(bad_session, 0x7FFFFFFF, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResultSize(badSession, 0, &resultSize);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetSampleResultSize(bad_session, 0, &result_size);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResultSize(badSession, 0x7FFFFFFF, &resultSize);
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetSampleResultSize(bad_session, 0x7FFFFFFF, &result_size);
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    // GPA_GetSampleResult
-    status = m_pGpaFuncTable->GPA_GetSampleResult(nullptr, 0, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResult(nullptr, 0, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(nullptr, 0x7FFFFFFF, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResult(nullptr, 0x7FFFFFFF, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(nullptr, 0, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResult(nullptr, 0, 0x7FFFFFFF, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(nullptr, 0, 0, reinterpret_cast<void*>(this));
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResult(nullptr, 0, 0, reinterpret_cast<void*>(this));
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(nullptr, 0x7FFFFFFF, 0, reinterpret_cast<void*>(this));
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResult(nullptr, 0x7FFFFFFF, 0, reinterpret_cast<void*>(this));
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(nullptr, 0, 0x7FFFFFFF, reinterpret_cast<void*>(this));
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResult(nullptr, 0, 0x7FFFFFFF, reinterpret_cast<void*>(this));
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(badSession, 0, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResult(bad_session, 0, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(badSession, 0x7FFFFFFF, 0, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResult(bad_session, 0x7FFFFFFF, 0, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(badSession, 0, 0x7FFFFFFF, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    status = gpa_function_table_->GpaGetSampleResult(bad_session, 0, 0x7FFFFFFF, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(badSession, 0, 0, reinterpret_cast<void*>(this));
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetSampleResult(bad_session, 0, 0, reinterpret_cast<void*>(this));
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(badSession, 0x7FFFFFFF, 0, reinterpret_cast<void*>(this));
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetSampleResult(bad_session, 0x7FFFFFFF, 0, reinterpret_cast<void*>(this));
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 
-    status = m_pGpaFuncTable->GPA_GetSampleResult(badSession, 0, 0x7FFFFFFF, reinterpret_cast<void*>(this));
-    EXPECT_EQ(GPA_STATUS_ERROR_SESSION_NOT_FOUND, status);
+    status = gpa_function_table_->GpaGetSampleResult(bad_session, 0, 0x7FFFFFFF, reinterpret_cast<void*>(this));
+    EXPECT_EQ(kGpaStatusErrorSessionNotFound, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_StatusErrorQuery)
+TEST_P(GpaApiErrorTest, TestGPA_StatusErrorQuery)
 {
-    // GPA_GetStatusAsStr
-    std::string gpaPrefixStr("GPA Status:");
-    std::string statusStr = m_pGpaFuncTable->GPA_GetStatusAsStr(GPA_STATUS_OK);
-    EXPECT_NE(0, statusStr.compare("GPA Status: Unknown Status."));
-    EXPECT_EQ(0, statusStr.compare(0, gpaPrefixStr.length(), gpaPrefixStr));
-    statusStr = m_pGpaFuncTable->GPA_GetStatusAsStr(GPA_STATUS_MAX);
-    EXPECT_NE(0, statusStr.compare("GPA Status: Unknown Status."));
-    EXPECT_EQ(0, statusStr.compare(0, gpaPrefixStr.length(), gpaPrefixStr));
-    statusStr = m_pGpaFuncTable->GPA_GetStatusAsStr(static_cast<GPA_Status>(1024));
-    EXPECT_EQ(0, statusStr.compare("GPA Status: Unknown Status."));
+    std::string gpa_prefix_string("GPA Status:");
+    std::string status_string = gpa_function_table_->GpaGetStatusAsStr(kGpaStatusOk);
+    EXPECT_NE(0, status_string.compare("GPA Status: Unknown Status."));
+    EXPECT_EQ(0, status_string.compare(0, gpa_prefix_string.length(), gpa_prefix_string));
+    status_string = gpa_function_table_->GpaGetStatusAsStr(kGpaStatusMax);
+    EXPECT_NE(0, status_string.compare("GPA Status: Unknown Status."));
+    EXPECT_EQ(0, status_string.compare(0, gpa_prefix_string.length(), gpa_prefix_string));
+    status_string = gpa_function_table_->GpaGetStatusAsStr(static_cast<GpaStatus>(1024));
+    EXPECT_EQ(0, status_string.compare("GPA Status: Unknown Status."));
 
-    gpaPrefixStr = "GPA Error:";
-    statusStr    = m_pGpaFuncTable->GPA_GetStatusAsStr(GPA_STATUS_ERROR_NULL_POINTER);
-    EXPECT_NE(0, statusStr.compare("GPA Error: Unknown Error."));
-    EXPECT_EQ(0, statusStr.compare(0, gpaPrefixStr.length(), gpaPrefixStr));
-    statusStr = m_pGpaFuncTable->GPA_GetStatusAsStr(GPA_STATUS_MIN);
-    EXPECT_NE(0, statusStr.compare("GPA Error: Unknown Error."));
-    EXPECT_EQ(0, statusStr.compare(0, gpaPrefixStr.length(), gpaPrefixStr));
-    statusStr = m_pGpaFuncTable->GPA_GetStatusAsStr(static_cast<GPA_Status>(-1024));
-    EXPECT_EQ(0, statusStr.compare("GPA Error: Unknown Error."));
+    gpa_prefix_string = "GPA Error:";
+    status_string     = gpa_function_table_->GpaGetStatusAsStr(kGpaStatusErrorNullPointer);
+    EXPECT_NE(0, status_string.compare("GPA Error: Unknown Error."));
+    EXPECT_EQ(0, status_string.compare(0, gpa_prefix_string.length(), gpa_prefix_string));
+    status_string = gpa_function_table_->GpaGetStatusAsStr(kGpaStatusMin);
+    EXPECT_NE(0, status_string.compare("GPA Error: Unknown Error."));
+    EXPECT_EQ(0, status_string.compare(0, gpa_prefix_string.length(), gpa_prefix_string));
+    status_string = gpa_function_table_->GpaGetStatusAsStr(static_cast<GpaStatus>(-1024));
+    EXPECT_EQ(0, status_string.compare("GPA Error: Unknown Error."));
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_APIVersion)
+TEST_P(GpaApiErrorTest, TestGPA_APIVersion)
 {
-    // GPA_GetVersion
-    GPA_Status status = m_pGpaFuncTable->GPA_GetVersion(nullptr, nullptr, nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaStatus status = gpa_function_table_->GpaGetVersion(nullptr, nullptr, nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 majorVer = 0;
-    status              = m_pGpaFuncTable->GPA_GetVersion(&majorVer, nullptr, nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 major_version = 0;
+    status                  = gpa_function_table_->GpaGetVersion(&major_version, nullptr, nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 minorVer = 0;
-    status              = m_pGpaFuncTable->GPA_GetVersion(&majorVer, &minorVer, nullptr, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 minor_version = 0;
+    status                  = gpa_function_table_->GpaGetVersion(&major_version, &minor_version, nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 build = 0;
-    status           = m_pGpaFuncTable->GPA_GetVersion(&majorVer, &minorVer, &build, nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaUInt32 build = 0;
+    status          = gpa_function_table_->GpaGetVersion(&major_version, &minor_version, &build, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    gpa_uint32 updateVer = 0;
-    status               = m_pGpaFuncTable->GPA_GetVersion(&majorVer, &minorVer, &build, &updateVer);
-    EXPECT_EQ(GPA_STATUS_OK, status);
+    GpaUInt32 update_version = 0;
+    status                   = gpa_function_table_->GpaGetVersion(&major_version, &minor_version, &build, &update_version);
+    EXPECT_EQ(kGpaStatusOk, status);
 }
 
-TEST_P(GPAAPIErrorTest, TestGPA_GPAFunctionTable)
+TEST_P(GpaApiErrorTest, TestGPA_GPAFunctionTable)
 {
-    // GPA_GetFuncTable
-    GPA_Status status = m_pGpaFuncTable->GPA_GetFuncTable(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaStatus status = gpa_function_table_->GpaGetFuncTable(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    GPAFunctionTable* pFuncTable = nullptr;
-    status                       = m_pGpaFuncTable->GPA_GetFuncTable(nullptr);
-    EXPECT_EQ(GPA_STATUS_ERROR_NULL_POINTER, status);
+    GpaFunctionTable* function_table = nullptr;
+    status                           = gpa_function_table_->GpaGetFuncTable(nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
 
-    pFuncTable = new GPAFunctionTable();
-    status     = m_pGpaFuncTable->GPA_GetFuncTable(reinterpret_cast<void*>(pFuncTable));
-    ASSERT_EQ(GPA_STATUS_OK, status);
-    EXPECT_EQ(pFuncTable->m_majorVer, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER);
-    EXPECT_EQ(pFuncTable->m_minorVer, GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER);
+    function_table = new GpaFunctionTable();
+    status         = gpa_function_table_->GpaGetFuncTable(reinterpret_cast<void*>(function_table));
+    ASSERT_EQ(kGpaStatusOk, status);
+    EXPECT_EQ(function_table->major_version, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER);
+    EXPECT_EQ(function_table->minor_version, GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER);
 
-    pFuncTable->m_majorVer = 1024;
-    pFuncTable->m_minorVer = 0;
-    status                 = m_pGpaFuncTable->GPA_GetFuncTable(reinterpret_cast<void*>(pFuncTable));
-    ASSERT_EQ(GPA_STATUS_ERROR_LIB_LOAD_MAJOR_VERSION_MISMATCH, status);
-    EXPECT_EQ(pFuncTable->m_majorVer, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER);
-    EXPECT_EQ(pFuncTable->m_minorVer, GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER);
+    function_table->major_version = 1024;
+    function_table->minor_version = 0;
+    status                        = gpa_function_table_->GpaGetFuncTable(reinterpret_cast<void*>(function_table));
+    ASSERT_EQ(kGpaStatusErrorLibLoadMajorVersionMismatch, status);
+    EXPECT_EQ(function_table->major_version, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER);
+    EXPECT_EQ(function_table->minor_version, GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER);
 
-    pFuncTable->m_majorVer = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER;
-    pFuncTable->m_minorVer = GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER + 1024;
-    status                 = pFuncTable->GPA_GetFuncTable(reinterpret_cast<void*>(pFuncTable));
-    ASSERT_EQ(GPA_STATUS_ERROR_LIB_LOAD_MINOR_VERSION_MISMATCH, status);
-    EXPECT_EQ(pFuncTable->m_majorVer, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER);
-    EXPECT_EQ(pFuncTable->m_minorVer, GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER);
+    function_table->major_version = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER;
+    function_table->minor_version = GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER + 1024;
+    status                        = function_table->GpaGetFuncTable(reinterpret_cast<void*>(function_table));
+    ASSERT_EQ(kGpaStatusErrorLibLoadMinorVersionMismatch, status);
+    EXPECT_EQ(function_table->major_version, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER);
+    EXPECT_EQ(function_table->minor_version, GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER);
 
-    delete pFuncTable;
-    pFuncTable = new GPAFunctionTable();
-    pFuncTable->m_minorVer -= sizeof(void*);
-    status = m_pGpaFuncTable->GPA_GetFuncTable(reinterpret_cast<void*>(pFuncTable));
-    ASSERT_EQ(GPA_STATUS_OK, status);
-    EXPECT_EQ(m_pGpaFuncTable->m_majorVer, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER);
-    EXPECT_EQ(m_pGpaFuncTable->m_minorVer, GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER);
+    delete function_table;
+    function_table = new GpaFunctionTable();
+    function_table->minor_version -= sizeof(void*);
+    status = gpa_function_table_->GpaGetFuncTable(reinterpret_cast<void*>(function_table));
+    ASSERT_EQ(kGpaStatusOk, status);
+    EXPECT_EQ(gpa_function_table_->major_version, GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER);
+    EXPECT_EQ(gpa_function_table_->minor_version, GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER);
+
     // Note: Whenever GPA function table changes, we need to update this with the last function in the GPA function table
-    EXPECT_EQ(nullptr, pFuncTable->GPA_GetVersion);
+    EXPECT_EQ(nullptr, function_table->GpaGetVersion);
 
-    delete pFuncTable;
+    delete function_table;
 }
 
 #ifdef _WIN32
-INSTANTIATE_TEST_CASE_P(WindowsAPI, GPAAPIErrorTest, ::testing::Values(GPA_API_DIRECTX_11, GPA_API_DIRECTX_12, GPA_API_VULKAN, GPA_API_OPENCL, GPA_API_OPENGL));
+INSTANTIATE_TEST_CASE_P(WindowsAPI, GpaApiErrorTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpencl, kGpaApiOpengl));
 #else
-INSTANTIATE_TEST_CASE_P(LinuxAPI,
-                        GPAAPIErrorTest,
-                        ::testing::Values(GPA_API_VULKAN
-#ifndef X86
-                                          ,GPA_API_OPENCL
-#endif
-                                          ,GPA_API_OPENGL));
+INSTANTIATE_TEST_CASE_P(LinuxAPI, GpaApiErrorTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
 #endif

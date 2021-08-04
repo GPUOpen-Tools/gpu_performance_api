@@ -1,45 +1,48 @@
 //==============================================================================
-// Copyright (c) 2016 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  An abstract class which manages registration/retrieval of DataRequests
+// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  An abstract class which manages registration/retrieval of DataRequests.
 //==============================================================================
 
-#ifndef _GPA_COUNTER_DATA_REQUEST_MANAGER_H_
-#define _GPA_COUNTER_DATA_REQUEST_MANAGER_H_
+#ifndef GPU_PERF_API_COMMON_GPA_COUNTER_DATA_REQUEST_MANAGER_H_
+#define GPU_PERF_API_COMMON_GPA_COUNTER_DATA_REQUEST_MANAGER_H_
 
 #include <map>
 
-#include <DeviceInfo.h>
+#include "DeviceInfo.h"
 
-#include "GPUPerfAPITypes.h"
+#include "gpu_performance_api/gpu_perf_api_types.h"
 
-class GPA_DataRequest;  ///< forward declaration
+class GpaDataRequest;
 
-/// Manager class that will get the correct CounterDataRequest for the given HW generation
+/// @brief Manager class that will get the correct CounterDataRequest for the given HW generation.
 template <typename T>
-class GPACounterDataRequestManager
+class GpaCounterDataRequestManager
 {
 public:
-    typedef T* (*CreateDataRequestFn)(void* pUserData);  ///< Function typedef for creating data requests
+    typedef T* (*CreateDataRequestFn)(void* pUserData);  ///< Function typedef for creating data requests.
 
-    /// Register a counter data request creation function for a specified hardware generation
-    /// \param generation the hardware generation
-    /// \param createFunc the creation function for the specified hardware generation
-    void RegisterCounterDataRequest(GDT_HW_GENERATION generation, CreateDataRequestFn createFunc)
+    /// @brief Register a counter data request creation function for a specified hardware generation.
+    ///
+    /// @param [in] generation The hardware generation.
+    /// @param [in] create_func The creation function for the specified hardware generation.
+    void RegisterCounterDataRequest(GDT_HW_GENERATION generation, CreateDataRequestFn create_func)
     {
-        m_counterDataRequestItems[generation] = createFunc;
+        counter_data_request_items_[generation] = create_func;
     }
 
-    /// Gets the counter data request for the specified hardware generations
-    /// \param generation the hardware generation
-    /// \param pUserData user data to pass to the creation function
-    /// \return the counter data request returned by the creation function
-    T* GetCounterDataRequest(GDT_HW_GENERATION generation, void* pUserData)
+    /// @brief Gets the counter data request for the specified hardware generations.
+    ///
+    /// @param [in] generation The hardware generation.
+    /// @param [in] user_data User data to pass to the creation function.
+    ///
+    /// @return The counter data request returned by the creation function.
+    T* GetCounterDataRequest(GDT_HW_GENERATION generation, void* user_data)
     {
-        if (0 < m_counterDataRequestItems.count(generation))
+        if (0 < counter_data_request_items_.count(generation))
         {
-            return m_counterDataRequestItems[generation](pUserData);
+            return counter_data_request_items_[generation](user_data);
         }
         else
         {
@@ -48,25 +51,26 @@ public:
     }
 
 protected:
-    /// Constructor
-    GPACounterDataRequestManager()
+    /// @brief Constructor.
+    GpaCounterDataRequestManager()
     {
     }
 
-    /// Destructor
-    virtual ~GPACounterDataRequestManager()
+    /// @brief Virtual destructor.
+    virtual ~GpaCounterDataRequestManager()
     {
     }
 
-    /// Gets the default data request (if one is not registered). May allocate memory.
-    /// \return the newly created data request
+    /// @brief Gets the default data request (if one is not registered). May allocate memory.
+    ///
+    /// @return The newly created data request.
     virtual T* GetDefaultDataRequest() = 0;
 
-    /// typedef for the map of generation to creation function
+    /// Typedef for the map of generation to creation function.
     typedef std::map<GDT_HW_GENERATION, CreateDataRequestFn> GenerationDataRequestCreatorMap;
 
-    /// map of generation to creation function
-    GenerationDataRequestCreatorMap m_counterDataRequestItems;
+    /// Map of generation to creation function.
+    GenerationDataRequestCreatorMap counter_data_request_items_;
 };
 
-#endif  // _GPA_COUNTER_DATA_REQUEST_MANAGER_H_
+#endif  // GPU_PERF_API_COMMON_GPA_COUNTER_DATA_REQUEST_MANAGER_H_
