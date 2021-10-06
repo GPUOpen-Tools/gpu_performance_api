@@ -2308,7 +2308,7 @@ bool CubeSample::GpaPopulateSessionResult()
             return false;
         }
 
-        memset(sample_result, 0, sample_data_size / sizeof(int));
+        memset(sample_result, 0, sample_data_size);
 
         std::stringstream counter_names_header;
         std::string       viewport;
