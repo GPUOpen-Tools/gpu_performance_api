@@ -1021,7 +1021,7 @@ bool D3D11Triangle::GpaPopulateSessionResult()
                 return false;
             }
 
-            memset(sample_result, 0, sample_data_size / sizeof(int));
+            memset(sample_result, 0, sample_data_size);
 
             std::stringstream counter_names_header;
             bool              counter_name_collected = false;
