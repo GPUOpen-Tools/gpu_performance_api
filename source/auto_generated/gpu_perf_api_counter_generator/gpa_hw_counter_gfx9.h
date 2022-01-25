@@ -345,6 +345,22 @@ namespace counter_gfx9
     extern GpaHardwareCounterDesc kGcea13CountersGfx9[]; ///< Array of internal counters for Gcea13 block for Gfx9 family
     extern GpaHardwareCounterDesc kGcea14CountersGfx9[]; ///< Array of internal counters for Gcea14 block for Gfx9 family
     extern GpaHardwareCounterDesc kGcea15CountersGfx9[]; ///< Array of internal counters for Gcea15 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea16CountersGfx9[]; ///< Array of internal counters for Gcea16 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea17CountersGfx9[]; ///< Array of internal counters for Gcea17 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea18CountersGfx9[]; ///< Array of internal counters for Gcea18 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea19CountersGfx9[]; ///< Array of internal counters for Gcea19 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea20CountersGfx9[]; ///< Array of internal counters for Gcea20 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea21CountersGfx9[]; ///< Array of internal counters for Gcea21 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea22CountersGfx9[]; ///< Array of internal counters for Gcea22 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea23CountersGfx9[]; ///< Array of internal counters for Gcea23 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea24CountersGfx9[]; ///< Array of internal counters for Gcea24 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea25CountersGfx9[]; ///< Array of internal counters for Gcea25 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea26CountersGfx9[]; ///< Array of internal counters for Gcea26 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea27CountersGfx9[]; ///< Array of internal counters for Gcea27 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea28CountersGfx9[]; ///< Array of internal counters for Gcea28 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea29CountersGfx9[]; ///< Array of internal counters for Gcea29 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea30CountersGfx9[]; ///< Array of internal counters for Gcea30 block for Gfx9 family
+    extern GpaHardwareCounterDesc kGcea31CountersGfx9[]; ///< Array of internal counters for Gcea31 block for Gfx9 family
     extern GpaHardwareCounterDesc kRmi0CountersGfx9[]; ///< Array of internal counters for Rmi0 block for Gfx9 family
     extern GpaHardwareCounterDesc kRmi1CountersGfx9[]; ///< Array of internal counters for Rmi1 block for Gfx9 family
     extern GpaHardwareCounterDesc kRmi2CountersGfx9[]; ///< Array of internal counters for Rmi2 block for Gfx9 family

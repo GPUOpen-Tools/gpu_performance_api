@@ -242,6 +242,22 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceAndRevisionId(GpaContextId gpa_context_id, Gp
 /// @retval kGpaStatusErrorException If an unexpected error has occurred.
 GPA_LIB_DECL GpaStatus GpaGetDeviceName(GpaContextId gpa_context_id, const char** device_name);
 
+/// @brief Gets the GPU hardware generation associated with the specified context.
+///
+/// @ingroup gpa_context_interrogation
+///
+/// @param[in] gpa_context_id Unique identifier of the opened context.
+/// @param[out] hardware_generation The value that will be set to the hardware generation upon successful execution.
+///
+/// @return The GPA result status of the operation.
+/// @retval kGpaStatusOk If the operation is successful.
+/// @retval kGpaStatusErrorNullPointer If any of the parameters are NULL.
+/// @retval kGpaStatusErrorContextNotFound If the supplied context is invalid.
+/// @retval kGpaStatusErrorContextNotOpen If the supplied context has not been opened.
+/// @retval kGpaStatusErrorFailed If an internal error has occurred.
+/// @retval kGpaStatusErrorException If an unexpected error has occurred.
+GPA_LIB_DECL GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHwGeneration* hardware_generation);
+
 /// @defgroup gpa_counter_interrogation GPA Counter Interrogation
 
 /// @brief Gets the number of counters available.
@@ -851,7 +867,7 @@ GPA_LIB_DECL GpaStatus GpaContinueSampleOnCommandList(GpaUInt32 source_sample_id
 ///
 /// @ingroup gpa_sample_handling
 ///
-/// @param [in] secondary_gpa_command_list_id Aecondary command list where the secondary samples were created.
+/// @param [in] secondary_gpa_command_list_id Secondary command list where the secondary samples were created.
 /// @param [in] primary_gpa_command_list_id Primary command list to which the samples results should be copied. This should be the command list that executed the secondary command list.
 /// @param [in] number_of_samples Number of secondary samples.
 /// @param [in] new_sample_ids New sample ids on a primary command list.

@@ -44,19 +44,25 @@
 
 #include "examples/vulkan/vk_color_cube/gpa_helper.h"
 
+#include "examples/common/cmdline_parser.h"
+#include "examples/common/gpa_sample_app.h"
+
 /// @brief Stores all the data needed for this demo.
 ///
 /// Assists with available and enabled extensions, but not much other functionality. The reason for this
 /// is so that the majority of Vulkan related functionality flows as a linear progression rather than being
 /// split up into multiple smaller functions.
-class AMDVulkanDemo
+class AMDVulkanDemo : public gpa_example::GpaSampleApp
 {
 public:
-    /// @brief Returns the static instance of AMDVulkanDemo.
-    static AMDVulkanDemo* Instance();
+    /// @brief Constructor.
+    ///
+    /// @param app_name The name of the application.
+    /// @param cmdline_parser The command line parser to be used by this application.
+    AMDVulkanDemo(const std::string app_name, gpa_example::CmdlineParser& cmdline_parser);
 
     /// @brief Destructor.
-    ~AMDVulkanDemo();
+    ~AMDVulkanDemo() override;
 
     /// @brief Indicates whether or not the app should exit.
     ///
@@ -69,44 +75,6 @@ public:
     ///             False will clear the exit flag, but this may not prevent the demo from exiting if the exit process has already started.
     void Exit(bool exit);
 
-    /// @brief Sets whether or not to print GPA Counter names & description on GPA initialization.
-    ///
-    /// @param [in] print True to print counter info; false to prevent it from printing.
-    void SetPrintGpaCounterInfo(bool print);
-
-    /// @brief Sets whether or not to print debug output.
-    ///
-    /// @param [in] print True to print debug output; false to prevent debug output from being printed.
-    void SetPrintDebugOutput(bool print);
-
-    /// @brief Sets whether or not to exit after collecting counter values.
-    ///
-    /// @param [in] exit_after_profile True to exit the application after counter values have been collected; false to continue running until the user closes the application.
-    void SetExitAfterProfile(bool exit_after_profile);
-
-    /// @brief Sets whether or not to verify counter values.
-    ///
-    /// @param [in] verify_counters True to perform some basic validation of counter values -- application will return a non-zero exit code if counter verification fails
-    void SetVerifyCounters(bool verify_counters);
-
-    /// @brief Sets whether or not to verify counter values and confirm successful results.
-    ///
-    /// @param [in] confirm_success True to perform some basic validation of counter values -- application will return a non-zero exit code if counter verification fails
-    void SetConfirmSuccess(bool confirm_success);
-
-    /// @brief Sets whether or not to include hardware counters in non-internal builds.
-    ///
-    /// @param [in] include_hw_counters True to include hardware counters in the set of enabled counters in non-internal builds
-    void SetIncludeHwCounters(bool include_hw_counters);
-
-    /// @brief Sets a counter file name
-    ///
-    /// @param [in] counter_file_name Input counter file
-    void SetCounterFromFile(std::string counter_file_name)
-    {
-        counter_file_name_ = counter_file_name;
-    }
-
     /// @brief Indicates that the Demo has been fully initialized.
     ///
     /// @return True if initialization has completed; false otherwise.
@@ -116,18 +84,19 @@ public:
     /// @brief Registers a new window class and creates a window from that class.
     ///
     /// @param [in] demo_window_procedure Callback function to process windowing messages.
-    ///
-    /// @return Handle to the created window, or nullptr on error;
-    HWND CreateWindowWin32(WNDPROC demo_window_procedure);
+    void CreateWindowWin32(WNDPROC demo_window_procedure);
 
     /// @brief Initialize a window on Win32 platforms.
     ///
     /// @param [in] instance_handle The application instance handle.
     /// @param [in] demo_window_message_procedure The function that will process window messages.
     /// @param [in] cmd_show Indicates how the window will be shown.
+    void InitializeWindowWin32(HINSTANCE instance_handle, WNDPROC demo_window_message_procedure, int cmd_show);
+
+    /// @brief Retrieve the Win32 window instance used by this application.
     ///
-    /// @return A Handle to the created window, or nullptr if the instance was already set or the window was already created, or there was an error creating the window.
-    HWND InitializeWindowWin32(HINSTANCE instance_handle, WNDPROC demo_window_message_procedure, int cmd_show);
+    /// @return A pointer to the Win32 window, or nullptr if the window has not yet been successfully created.
+    HWND GetWindowWin32() const;
 
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
 
@@ -161,6 +130,11 @@ public:
     /// @brief General vulkan object destruction.
     void Destroy();
 
+    /// @brief Specifies whether or not GPA will be used by this application to profile counters.
+    ///
+    /// @return true if specified on the command line, otherwise false.
+    bool NoGpa();
+
     const std::string  kShortName          = "AMD VkColorCube";                    ///< Short name that will be used as the application name.
     const std::wstring kLongName           = L"The AMD Vulkan Color Cube Sample";  ///< Longer name displayed in the title bar.
     const uint32_t     kDefaultWindowWidth = 900;                                  ///< Default window width.
@@ -181,9 +155,6 @@ public:
 #endif
 
 private:
-    /// @brief Constructor
-    AMDVulkanDemo();
-
     /// @brief Caches an extension name that should have been returned by vkEnumerateInstanceExtensionProperties.
     ///
     /// @param [in] extension_name A name to add to the list of supported instance extensions.
@@ -387,12 +358,6 @@ private:
     /// Flag to indicate whether or not to exit after counters are collected.
     bool exit_after_profile_;
 
-    /// Flag to indicate whether or not to verify some counter values.
-    bool verify_counters_;
-
-    /// Flag to indicate whether or not to verify some counter values and confirm successful results.
-    bool confirm_success_;
-
     /// Flag to indicate whether or not to include hardware counters in non-internal builds
     bool include_hw_counters_;
 
@@ -404,6 +369,9 @@ private:
 
     /// Flag to indicate that the demo should exit.
     bool exit_;
+
+    /// Flag which specifies whether or not GPA will be used by this application to profile counters.
+    bool nogpa_;
 
     /// Stores the list of available instance extensions as exposed by the Vulkan implementation.
     std::map<const std::string, bool> supported_instance_extensions_;
@@ -427,19 +395,6 @@ private:
     ANativeActivity* native_activity_;  ///< Android Native activity.
 #endif
     static AMDVulkanDemo* amd_vulkan_demo_;  ///< Static instance of the app.
-};
-
-/// @brief Struct to hold values of command line arguments.
-struct CommandLineArgs
-{
-    bool        use_gpa                = true;   ///< Flag indicating whether GPA should be used to collect performance counter values.
-    bool        print_debug_output     = false;  ///< Flag indicating whether verbose debug output should be displayed.
-    bool        print_gpa_counter_info = false;  ///< Flag indicating whether available counter information should be displayed.
-    bool        exit_after_profile     = false;  ///< Flag indicating whether the application should automatically exit after collecting performance counters.
-    bool        verify_counters        = false;  ///< Flag indicating whether the application should verify some counter values.
-    bool        confirm_success        = false;  ///< Flag indicating whether the application should verify some counter values and confirm successful results.
-    bool        include_hw_counters    = false;  ///< Flag indicating whether or not hardware counters should be enabled in non-internal builds.
-    std::string counter_file_name;               ///< Counter file name.
 };
 
 #endif  // GPU_PERF_API_EXAMPLES_VULKAN_VK_COLOR_CUBE_VK_COLOR_CUBE_H_

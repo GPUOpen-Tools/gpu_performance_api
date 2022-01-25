@@ -34,7 +34,7 @@ set(SOURCES
     ${SOURCE_FILES}
     ${HEADER_FILES})
 
-ADD_SHARED_LIBRARY_NO_EXPORT(${GPA_PROJECT_NAME})
+ADD_SHARED_LIBRARY_NO_EXPORT(${GPA_PROJECT_NAME} ${SOURCES})
 INCLUDE_WIN_RESOURCE(gpu_perf_api_counters)
 
 if(NOT ${skipvulkan})
@@ -68,6 +68,7 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       GPUPerfAPI-Common
                       ${GPA_COMMON_LINK_ARCHIVE_FLAG}
                       ${LIB_NAMES}
-                      ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG})
+                      ${GPA_COMMON_LINK_NO_ARCHIVE_FLAG}
+                      $<$<PLATFORM_ID:Linux>:X11>)
 
 ADD_LINKER_FLAGS()

@@ -85,14 +85,12 @@ bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
     {
         hw_info.SetVendorId(kAmdVendorId);
 
-        bool is_device_id_known = false;
+        bool         is_device_id_known = false;
+        unsigned int driver_device_id;
 
-        if (nullptr != ogl_utils::ogl_x_query_current_renderer_integer_mesa)
+        // First we attempt to retrieve the device ID from platform extensions.
+        if (GetDeviceIdFromPlatformExt(driver_device_id))
         {
-            // First try to get the device id from the glXQueryCurrentRendererIntegerMESA extension.
-            unsigned int driver_device_id;
-            ogl_utils::ogl_x_query_current_renderer_integer_mesa(GLX_RENDERER_DEVICE_ID_MESA, &driver_device_id);
-
             // Check to make sure the device id returned is found in the device info table.
             GDT_HW_GENERATION hw_generation;
             is_device_id_known = AMDTDeviceInfoUtils::Instance()->GetHardwareGeneration(driver_device_id, hw_generation);
@@ -109,7 +107,7 @@ bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
             }
         }
 
-        // If we were unable to use the glXQueryCurrentRendererIntegerMESA extension,
+        // If we were unable to retrieve the device ID using platform extensions,
         // then fall back to the GPIN counters exposed by the driver.
         if (!is_device_id_known)
         {
@@ -175,11 +173,11 @@ bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
             if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_se)
             {
                 hw_info.SetNumberShaderEngines(static_cast<size_t>(asic_info.num_se));
-            }
 
-            if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_sa)
-            {
-                hw_info.SetNumberShaderArrays(static_cast<size_t>(asic_info.num_sa));
+                if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_sa_per_se)
+                {
+                    hw_info.SetNumberShaderArrays(static_cast<size_t>(asic_info.num_sa_per_se * asic_info.num_se));
+                }
             }
 
             if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_cu)
@@ -276,4 +274,39 @@ bool GlGpaImplementor::CloseApiContext(GpaDeviceIdentifier device_identifier, IG
 GpaDeviceIdentifier GlGpaImplementor::GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const
 {
     return context_info;
+}
+
+bool GlGpaImplementor::GetDeviceIdFromPlatformExt(unsigned int& driver_device_id) const
+{
+    bool device_id_retrieved = false;
+#ifdef _LINUX
+#ifndef GLES
+    if (nullptr != ogl_utils::ogl_x_query_current_renderer_integer_mesa)
+    {
+        if (ogl_utils::ogl_x_query_current_renderer_integer_mesa(GLX_RENDERER_DEVICE_ID_MESA, &driver_device_id))
+        {
+            std::stringstream message;
+            message << "GLX renderer device ID is 0x" << std::hex << driver_device_id << ".";
+            GPA_LOG_MESSAGE(message.str().c_str());
+            device_id_retrieved = true;
+        }
+        else
+        {
+            GPA_LOG_TRACE(
+                "glXQueryCurrentRendererIntegerMESA extension is available, but was unable "
+                "to retrieve the renderer device ID.");
+        }
+    }
+    else
+    {
+        GPA_LOG_TRACE("glXQueryCurrentRendererIntegerMESA extension is unavailable.");
+    }
+#else
+    UNREFERENCED_PARAMETER(driver_device_id);
+#endif
+#else
+    UNREFERENCED_PARAMETER(driver_device_id);
+#endif
+
+    return device_id_retrieved;
 }

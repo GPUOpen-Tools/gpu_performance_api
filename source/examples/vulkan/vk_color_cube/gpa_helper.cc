@@ -19,6 +19,8 @@
 #include <codecvt>
 #endif
 
+#define REVISION_ID_ANY 0xFFFFFFFF
+
 GpaHelper::GpaHelper()
     : gpa_function_table_(nullptr)
     , is_header_written_(false)
@@ -57,6 +59,7 @@ void GpaHelper::Unload()
     if (IsLoaded())
     {
         GpaApiManager::Instance()->UnloadApi(kGpaApiVulkan);
+        GpaApiManager::DeleteInstance();
     }
 
     if (gpa_log_file_stream.is_open())
@@ -90,8 +93,8 @@ void GpaHelper::PrintGPACounterInfo(GpaContextId context_id) const
     }
     std::string device_name_string(device_name_ptr);
 
-    std::cout << "Device Id: " << std::hex << device_id << std::endl;
-    std::cout << "Revision Id: " << std::hex << revision_id << std::endl;
+    std::cout << "Device Id: " << std::showbase << std::hex << device_id << std::endl;
+    std::cout << "Revision Id: " << FormatRevisionId(revision_id) << std::endl;
     std::cout << "Device Name: " << device_name_string.c_str() << std::endl;
 
     GpaUInt32 num_counters = 0;
@@ -210,6 +213,7 @@ void GpaHelper::gpaLoggingCallback(GpaLoggingType type, const char* msg)
     case kGpaLoggingError:
         log_message           = "GPA ERROR: ";
         gpa_any_errors_logged = true;
+        gpa_num_errors_logged += 1;
         break;
 
     case kGpaLoggingTrace:
@@ -324,6 +328,10 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
         {
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
         }
+        else if (0 == local_counter_name.compare("VSBusyCycles"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
+        }
         else if (0 == local_counter_name.compare("VSTime"))
         {
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
@@ -332,11 +340,15 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
         {
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
         }
+        else if (0 == local_counter_name.compare("PSBusyCycles"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
+        }
         else if (0 == local_counter_name.compare("PSTime"))
         {
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
         }
-        else if (0 == local_counter_name.compare("VSVerticesIn"))
+        else if (include_known_issues && 0 == local_counter_name.compare("VSVerticesIn"))
         {
             // Sample 0
             GpaFloat64 expected_vertex_count = 36;
@@ -353,7 +365,7 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
 
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_vertex_count, confirm_success);
         }
-        else if (0 == local_counter_name.compare("PSPixelsOut"))
+        else if (include_known_issues && 0 == local_counter_name.compare("PSPixelsOut"))
         {
             // Sample 0
             GpaFloat64 expected_pixel_count = 11662;
@@ -370,7 +382,7 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
 
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_pixel_count, confirm_success);
         }
-        else if (0 == local_counter_name.compare("PreZSamplesPassing"))
+        else if (include_known_issues && 0 == local_counter_name.compare("PreZSamplesPassing"))
         {
             // Sample 0
             GpaFloat64 expected_passing = 11662;
@@ -387,7 +399,7 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
 
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_passing, confirm_success);
         }
-        else if (0 == local_counter_name.compare("PrimitivesIn"))
+        else if (include_known_issues && 0 == local_counter_name.compare("PrimitivesIn"))
         {
             // Sample 0
             GpaFloat64 expected_primitive_count = 12;
@@ -403,6 +415,24 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
             }
 
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_primitive_count, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("CSTime") || 0 == local_counter_name.compare("CSBusy") || 0 == local_counter_name.compare("CSBusyCycles") ||
+                 0 == local_counter_name.compare("PAStalledOnRasterizerCycles") || 0 == local_counter_name.compare("CSThreadGroups") ||
+                 0 == local_counter_name.compare("CSWavefronts") || 0 == local_counter_name.compare("CSThreads") ||
+                 0 == local_counter_name.compare("CSThreadGroupSize") || 0 == local_counter_name.compare("CSVALUInsts") ||
+                 0 == local_counter_name.compare("CSVALUUtilization") || 0 == local_counter_name.compare("CSSALUInsts") ||
+                 0 == local_counter_name.compare("CSVFetchInsts") || 0 == local_counter_name.compare("CSSFetchInsts") ||
+                 0 == local_counter_name.compare("CSVWriteInsts") || 0 == local_counter_name.compare("CSVALUBusy") ||
+                 0 == local_counter_name.compare("CSVALUBusyCycles") || 0 == local_counter_name.compare("CSSALUBusy") ||
+                 0 == local_counter_name.compare("CSSALUBusyCycles") || 0 == local_counter_name.compare("CSMemUnitBusy") ||
+                 0 == local_counter_name.compare("CSMemUnitBusyCycles") || 0 == local_counter_name.compare("CSMemUnitStalled") ||
+                 0 == local_counter_name.compare("CSMemUnitStalledCycles") || 0 == local_counter_name.compare("CSWriteUnitStalled") ||
+                 0 == local_counter_name.compare("CSWriteUnitStalledCycles") || 0 == local_counter_name.compare("CSGDSInsts") ||
+                 0 == local_counter_name.compare("CSLDSInsts") || 0 == local_counter_name.compare("CSALUStalledByLDS") ||
+                 0 == local_counter_name.compare("CSALUStalledByLDSCycles") || 0 == local_counter_name.compare("CSLDSBankConflict") ||
+                 0 == local_counter_name.compare("CSLDSBankConflictCycles"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, confirm_success);
         }
     }
 
@@ -442,8 +472,8 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
     if (output_to_console)
     {
         std::cout << "--------------------------------------------------" << std::endl;
-        std::cout << "Device Id: " << std::hex << device_id << std::endl;
-        std::cout << "Revision Id: " << std::hex << revision_id << std::endl;
+        std::cout << "Device Id: " << std::showbase << std::hex << device_id << std::endl;
+        std::cout << "Revision Id: " << FormatRevisionId(revision_id) << std::endl;
         std::cout << "Device Name: " << device_name_string.c_str() << std::endl;
         std::cout << "--------------------------------------------------" << std::endl;
         std::cout << "Profile " << profile_set << ", Sample ID: " << sample_id << std::endl;
@@ -451,8 +481,8 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     std::stringstream csv_header;
 
-    csv_header << "Device Id: " << std::hex << device_id << std::endl;
-    csv_header << "Revision Id: " << std::hex << revision_id << std::endl;
+    csv_header << "Device Id: " << std::showbase << std::hex << device_id << std::endl;
+    csv_header << "Revision Id: " << FormatRevisionId(revision_id) << std::endl;
     csv_header << "Device Name: " << device_name_string.c_str() << std::endl;
 
     size_t sample_result_size_in_bytes = 0;
@@ -536,7 +566,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
                             csv_content << results_buffer[i] << ",";
                         }
 
-                        if (verify_counters)
+                        if (verify_counters || confirm_success)
                         {
                             ValidateData(profile_set, sample_id, counter_name, static_cast<GpaFloat64>(results_buffer[i]), counter_usage_type, confirm_success);
                         }
@@ -555,7 +585,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
                             csv_content << result << ",";
                         }
 
-                        if (verify_counters)
+                        if (verify_counters || confirm_success)
                         {
                             ValidateData(profile_set, sample_id, counter_name, result, counter_usage_type, confirm_success);
                         }
@@ -590,4 +620,20 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
     }
 
     free(results_buffer);
+}
+
+std::string GpaHelper::FormatRevisionId(const GpaUInt32 revision_id) const
+{
+    std::stringstream revision_string;
+
+    if (revision_id == REVISION_ID_ANY)
+    {
+        revision_string << "<not applicable for Vulkan>";
+    }
+    else
+    {
+        revision_string << std::showbase << std::hex << revision_id;
+    }
+
+    return revision_string.str();
 }

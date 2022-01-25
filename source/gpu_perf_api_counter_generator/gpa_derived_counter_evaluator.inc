@@ -164,30 +164,29 @@ void AvgN(std::vector<T>& stack, int32_t count)
 template <class T>
 void ScalarSubN(std::vector<T>& stack, int32_t vector_width)
 {
-    T arg = stack.back();
-    stack.pop_back();
-
-    // Get the dividends.
-    std::vector<T> dividends;
-
+    // Get the subtrahends.
+    std::vector<T> subtrahends;
     for (int32_t i = 0; i < vector_width; ++i)
     {
-        dividends.push_back(stack.back());
+        subtrahends.push_back(stack.back());
         stack.pop_back();
     }
 
-    // Divide and push back.
+    T minuend = stack.back();
+    stack.pop_back();
+
+    // Subtract and push back.
     for (int32_t i = vector_width - 1; i >= 0; --i)
     {
-        T value = arg - dividends[i];
+        T difference = minuend - subtrahends[i];
 
-        if (value < 0)
+        if (difference < 0)
         {
             assert(0);
-            value = 0;
+            difference = 0;
         }
 
-        stack.push_back(value);
+        stack.push_back(difference);
     }
 }
 
@@ -405,7 +404,7 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             GPA_ASSERT(hw_info->GetTimeStampFrequency(freq));
             stack.push_back(static_cast<T>(freq));
         }
-        else if (_strcmpi(pch, "max") == 0)
+        else if (_strcmpi(pch, "max") == 0 || _strcmpi(pch, "max2") == 0)
         {
             assert(stack.size() >= 2);
 
@@ -613,7 +612,7 @@ static GpaStatus EvaluateExpression(const char*                      expression,
 
             stack.push_back(max_value);
         }
-        else if (_strcmpi(pch, "min") == 0)
+        else if (_strcmpi(pch, "min") == 0 || _strcmpi(pch, "min2") == 0)
         {
             assert(stack.size() >= 2);
 
@@ -911,6 +910,12 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         {
             const int32_t vector_width = 32;
             assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec32
+            VecDivN(stack, vector_width);
+        }
+        else if (_strcmpi(pch, "vecdiv40") == 0)
+        {
+            const int32_t vector_width = 40;
+            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec40
             VecDivN(stack, vector_width);
         }
         else if (_strcmpi(pch, "vecdiv64") == 0)

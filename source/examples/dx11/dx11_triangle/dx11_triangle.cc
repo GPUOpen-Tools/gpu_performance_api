@@ -32,6 +32,7 @@ GpaApiManager*    GpaApiManager::gpa_api_manager_ = nullptr;
 GpaFuncTableInfo* gpa_function_table_info         = nullptr;
 
 bool any_errors_logged = false;  ///< Flag indicating if any GPA errors have been logged.
+int  num_errors_logged = 0;      ///< Indicates the number of GPA errors that have been logged.
 
 void LogGPA(GpaLoggingType logging_type, const char* log_message)
 {
@@ -44,17 +45,19 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
 {
     static unsigned int paint_count = 0;
 
+    gpa_example::Dx11SampleApp& app = *(reinterpret_cast<gpa_example::Dx11SampleApp*>(GetWindowLongPtr(hwnd, GWLP_USERDATA)));
+
     switch (uMsg)
     {
     case WM_SHOWWINDOW:
     {
         // Initialize app here.
-        if (!D3D11Triangle::Instance()->Init())
+        if (!D3D11Triangle::Instance()->Init(&app))
         {
             exit(-1);
         }
 
-        if (args.use_gpa)
+        if (!app.NoGpa())
         {
             bool gpa_ok = D3D11Triangle::Instance()->GpaInitializeAndOpenContext();
 
@@ -123,7 +126,7 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
 
         paint_count++;
 
-        if (args.num_frames > 0 && paint_count >= args.num_frames)
+        if (app.NumberOfFrames() > 0 && paint_count >= app.NumberOfFrames())
         {
             // If the user specified a number of frames, and we've rendered that many frames, then exit.
             PostQuitMessage(0);
@@ -135,7 +138,7 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
     case WM_DESTROY:
 
         // Destroy app here.
-        if (args.use_gpa)
+        if (!app.NoGpa())
         {
             D3D11Triangle::Instance()->GpaReleaseContextAndDestroy();
         }
@@ -201,8 +204,9 @@ D3D11Triangle::D3D11Triangle()
 {
 }
 
-bool D3D11Triangle::Init()
+bool D3D11Triangle::Init(gpa_example::Dx11SampleApp* app)
 {
+    app_ = app;
     std::vector<char> module_path(_MAX_PATH);
 
     ::GetModuleFileNameA(0, module_path.data(), static_cast<DWORD>(module_path.size()));
@@ -211,8 +215,8 @@ bool D3D11Triangle::Init()
 
     executable_path_ = pathOnly.substr(0, pathOnly.find_last_of('\\') + 1);
 
-    counter_file_name_ = executable_path_ + "DX11Triangle_counterData.csv";
-    gpa_log_file_name_ = executable_path_ + "DX11Triangle_gpaLog.txt";
+    counter_file_name_ = app_->Datafile();
+    gpa_log_file_name_ = app_->Logfile();
 
     // DX11 Initialization.
 
@@ -515,7 +519,7 @@ bool D3D11Triangle::GpaInitializeAndOpenContext()
 {
     bool success = true;
 
-    is_profiling_enabled_ = args.use_gpa;
+    is_profiling_enabled_ = !(app_->NoGpa());
 
     std::remove(gpa_log_file_name_.c_str());
 
@@ -536,7 +540,7 @@ bool D3D11Triangle::GpaInitializeAndOpenContext()
         if (nullptr != gpa_function_table_)
         {
             GpaLoggingType gpa_log_types = kGpaLoggingError;
-            if (args.confirm_success)
+            if (app_->ConfirmSuccess())
             {
                 // Only log message types if confirm_success_ is enabled, because GPA will log a confirmation message
                 // that the logging callback was registered, and we don't want to output a log if --verify was enabled
@@ -557,7 +561,7 @@ bool D3D11Triangle::GpaInitializeAndOpenContext()
                 return false;
             }
 
-            GpaOpenContextFlags open_context_flags = args.include_hardware_counters ? kGpaOpenContextEnableHardwareCountersBit : kGpaOpenContextDefaultBit;
+            GpaOpenContextFlags open_context_flags = app_->IncludeHwCounters() ? kGpaOpenContextEnableHardwareCountersBit : kGpaOpenContextDefaultBit;
             success = success && kGpaStatusOk == gpa_function_table_->GpaOpenContext(dx11_device_, open_context_flags, &gpa_context_id_);
             success = success && kGpaStatusOk == gpa_function_table_->GpaGetDeviceAndRevisionId(gpa_context_id_, &device_id_, &revision_id_);
 
@@ -589,6 +593,7 @@ bool D3D11Triangle::GpaReleaseContextAndDestroy()
             success = kGpaStatusOk == gpa_function_table_->GpaCloseContext(gpa_context_id_);
             success = success && kGpaStatusOk == gpa_function_table_->GpaDestroy();
             GpaApiManager::Instance()->UnloadApi(kGpaApiDirectx11);
+            GpaApiManager::DeleteInstance();
 
             if (gpa_log_file_stream_.is_open())
             {
@@ -614,10 +619,10 @@ bool D3D11Triangle::GpaEnableCounters()
     {
         if (nullptr != gpa_session_id_)
         {
-            if (args.counter_provided)
+            if (!app_->Counterfile().empty())
             {
                 std::fstream counter_file_stream;
-                counter_file_stream.open(args.counter_file_name.c_str(), std::ios_base::in);
+                counter_file_stream.open(app_->Counterfile().c_str(), std::ios_base::in);
                 std::vector<std::string> counter_list;
                 char                     temp_counter[256];
                 if (counter_file_stream.is_open())
@@ -637,7 +642,7 @@ bool D3D11Triangle::GpaEnableCounters()
                 else
                 {
                     std::stringstream error;
-                    error << "Unable to open Counter file " << args.counter_file_name.c_str() << " . Not enabling any counters";
+                    error << "Unable to open Counter file " << app_->Counterfile().c_str() << " . Not enabling any counters";
                 }
             }
             else
@@ -732,7 +737,7 @@ bool D3D11Triangle::GpaBeginPass()
         current_pass_++;
     }
 
-    if (nullptr == gpa_command_list_id_)
+    if (nullptr == gpa_command_list_id_ && nullptr != gpa_function_table_)
     {
         GpaStatus status =
             gpa_function_table_->GpaBeginCommandList(gpa_session_id_, current_pass_, GPA_NULL_COMMAND_LIST, kGpaCommandListNone, &gpa_command_list_id_);
@@ -908,7 +913,7 @@ bool D3D11Triangle::GpaCounterValueCompare(unsigned int frame_number,
         output_string << error_string.str() << compare_string.str();
         GpaLog(kGpaLoggingError, output_string.str().c_str());
     }
-    else if (args.confirm_success)
+    else if (app_->ConfirmSuccess())
     {
         output_string << success_string.str() << compare_string.str();
         GpaLog(kGpaLoggingMessage, output_string.str().c_str());
@@ -967,7 +972,7 @@ bool D3D11Triangle::GpaValidateData(unsigned int frame_number,
         {
             return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 180000);
         }
-        else if (0 == local_counter_name.compare("PreZSamplesPassing"))
+        else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PreZSamplesPassing"))
         {
             return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 180000);
         }
@@ -1021,7 +1026,7 @@ bool D3D11Triangle::GpaPopulateSessionResult()
                 return false;
             }
 
-            memset(sample_result, 0, sample_data_size / sizeof(int));
+            memset(sample_result, 0, sample_data_size);
 
             std::stringstream counter_names_header;
             bool              counter_name_collected = false;
@@ -1063,7 +1068,7 @@ bool D3D11Triangle::GpaPopulateSessionResult()
                         content_stream_ << "," << std::fixed << (counter_usage_type == kGpaUsageTypePercentage ? std::setprecision(4) : std::setprecision(0))
                                         << result;
 
-                        if (args.verify_counters || args.confirm_success)
+                        if (app_->Verify())
                         {
                             GpaValidateData(frame_counter_, sample_index, counter_name, result, counter_usage_type);
                         }
@@ -1074,7 +1079,7 @@ bool D3D11Triangle::GpaPopulateSessionResult()
 
                         content_stream_ << "," << result;
 
-                        if (args.verify_counters || args.confirm_success)
+                        if (app_->Verify())
                         {
                             GpaValidateData(frame_counter_, sample_index, counter_name, static_cast<GpaFloat64>(result), counter_usage_type);
                         }
@@ -1125,6 +1130,7 @@ bool D3D11Triangle::GpaLog(GpaLoggingType logging_type, const char* log_message)
     if (kGpaLoggingError == logging_type)
     {
         any_errors_logged = true;
+        num_errors_logged += 1;
     }
 
     if (!gpa_log_file_stream_.is_open())

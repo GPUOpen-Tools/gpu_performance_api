@@ -223,6 +223,19 @@ TEST_P(GpaApiErrorTest, TestGPA_ContextInterrogation)
     device_name = nullptr;
     status      = gpa_function_table_->GpaGetDeviceName(bad_context_id, &device_name);
     EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
+
+    GpaHwGeneration hw_generation;
+    status = gpa_function_table_->GpaGetDeviceGeneration(nullptr, &hw_generation);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
+
+    status = gpa_function_table_->GpaGetDeviceGeneration(bad_context_id, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
+
+    status = gpa_function_table_->GpaGetDeviceGeneration(nullptr, nullptr);
+    EXPECT_EQ(kGpaStatusErrorNullPointer, status);
+
+    status = gpa_function_table_->GpaGetDeviceGeneration(bad_context_id, &hw_generation);
+    EXPECT_EQ(kGpaStatusErrorContextNotFound, status);
 }
 
 TEST_P(GpaApiErrorTest, TestGPA_CounterInterrogation)
@@ -1263,7 +1276,7 @@ TEST_P(GpaApiErrorTest, TestGPA_GPAFunctionTable)
     EXPECT_EQ(gpa_function_table_->minor_version, GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER);
 
     // Note: Whenever GPA function table changes, we need to update this with the last function in the GPA function table
-    EXPECT_EQ(nullptr, function_table->GpaGetVersion);
+    EXPECT_EQ(nullptr, function_table->GpaGetDeviceGeneration);
 
     delete function_table;
 }

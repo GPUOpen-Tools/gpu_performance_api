@@ -25,6 +25,8 @@ typedef GLXContext GlContext;  ///< Typedef for Linux GL context.
 
 #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
+#include "examples/common/gpa_sample_app.h"
+
 /// @brief Enum for application errors.
 enum AppErrors
 {
@@ -53,10 +55,27 @@ public:
     /// @return Static instance of the GPA Helper.
     static GpaHelper* Instance();
 
-    /// @brief Indicates whether or not to confirm successfully verified counters.
+    /// @brief Provides a method to delete the GpaHelper instance.
+    static void DeleteInstance();
+
+    /// @brief Parse the command lines that were passed to the application.
     ///
-    /// @param confirm_success True to confirm success; false to not confirm them.
-    void SetConfirmSuccess(bool confirm_success);
+    /// This creates a GpaSampleApp to store the command line options.
+    ///
+    /// @param argc The number of arguments provided on the command line.
+    /// @param argv The command line arguments as an array of char* strings.
+    ///
+    /// @retval True The command line arguments were parsed successfully.
+    /// @retval False The command line arguments could not be parsed. The Usage string will be printed to stdout.
+    bool ParseCommandLine(int argc, char* argv[]);
+
+    /// @brief Provide access to the underlying GpaSampleApp that is created as part of ParseCommandLine.
+    ///
+    /// @return The GpaSampleApp if it has been created.
+    const gpa_example::GpaSampleApp* App() const
+    {
+        return app_;
+    }
 
     /// @brief Setups the GPA.
     ///
@@ -148,7 +167,12 @@ public:
     /// @param [in] compare_value The expected counter value (subject to the compare type).
     ///
     /// @return True if the Counter value compares successfully, false otherwise.
-    bool CounterValueCompare(unsigned int profile_set, unsigned int sample_index, const char* counter_name, GpaFloat64 counter_value, CompareType compare_type, GpaFloat64 compare_value);
+    bool CounterValueCompare(unsigned int profile_set,
+                             unsigned int sample_index,
+                             const char*  counter_name,
+                             GpaFloat64   counter_value,
+                             CompareType  compare_type,
+                             GpaFloat64   compare_value);
 
     /// @brief Validate a specified counter in a specified sample.
     ///
@@ -182,11 +206,13 @@ public:
     unsigned int GetCurrentFrameCount() const;
 
     /// @brief Destructor.
-    ~GpaHelper();
+    virtual ~GpaHelper();
 
-    std::fstream gpa_log_file_stream_;                         ///< Log file stream.
-    std::string  gpa_log_file_name_ = "GLTriangleGpaLog.txt";  ///< Log file name.
-    bool         gpa_has_error_occured_;                       ///< Flag indicating if any GPA error occurred.
+    std::fstream gpa_log_file_stream_;  ///< Log file stream.
+    std::string  gpa_log_file_name_;    ///< Log file name.
+    std::string  counter_data_name_;    ///< Counter data file name.
+    bool         has_error_occurred_;   ///< Flag indicating if any GPA error occurred.
+    int          num_errors_occurred_;  ///< Indicates the number of errors that have occurred.
 
 private:
     /// @brief Struct for GPA counter.
@@ -263,27 +289,31 @@ private:
         }
     };
 
-    /// @brief Constructor.
+    /// @brief Private Constructor.
     GpaHelper();
 
-    static GpaHelper*         gpa_helper_;                                   ///< GPA Helper instance.
-    GpaFunctionTable*         gpa_function_table_;                           ///< GPA function table.
-    std::vector<unsigned int> sample_list_;                                  ///< Sample list.
-    GpaContextId              gpa_context_id_;                               ///< GPA context id.
-    GpaSessionId              gpa_session_id_;                               ///< GPA session id.
-    GpaCommandListId          gpa_command_list_id_;                          ///< GPA command list id.
-    unsigned int              num_passes_required_;                          ///< Required pass count.
-    int                       current_pass_index_;                           ///< Current pass.
-    int                       sample_counter_ = -1;                          ///< Sample counter.
-    std::fstream              counter_data_file_stream_;                     ///< Counter data file stream.
-    std::string               counter_file_name_ = "GLTriangleCounter.csv";  ///< Counter file name.
-    bool                      is_header_written_ = false;                    ///< Flag indicating status of header.
-    std::stringstream         header_;                                       ///< Header stream.
-    std::stringstream         content_;                                      ///< Counter data stream.
-    unsigned int              frame_counter_ = 0;                            ///< Frame counter.
+    /// @brief Initialize file streams by deleting existing log files, if any.
+    void InitializeIO();
+
+    static GpaHelper*          gpa_helper_;                 ///< GPA Helper instance.
+    gpa_example::GpaSampleApp* app_;                        ///< Helper functionality provided to all sample apps.
+    GpaFunctionTable*          gpa_function_table_;         ///< GPA function table.
+    GpaHwGeneration            gpa_hw_generation_;          ///< HW generation of the active context.
+    std::vector<unsigned int>  sample_list_;                ///< Sample list.
+    GpaContextId               gpa_context_id_;             ///< GPA context id.
+    GpaSessionId               gpa_session_id_;             ///< GPA session id.
+    GpaCommandListId           gpa_command_list_id_;        ///< GPA command list id.
+    unsigned int               num_passes_required_;        ///< Required pass count.
+    int                        current_pass_index_;         ///< Current pass.
+    int                        sample_counter_ = -1;        ///< Sample counter.
+    std::fstream               counter_data_file_stream_;   ///< Counter data file stream.
+    bool                       is_header_written_ = false;  ///< Flag indicating status of header.
+    std::stringstream          header_;                     ///< Header stream.
+    std::stringstream          content_;                    ///< Counter data stream.
+    unsigned int               frame_counter_ = 0;          ///< Frame counter.
 
     /// Flag to indicate whether or not to verify some counter values and confirm successful results.
-    bool confirm_success_ = false;
+    bool confirm_success_;
 };
 
 #endif  // GPU_PERF_API_EXAMPLES_OPENGL_GL_TRIANGLE_GPA_HELPER_H_

@@ -24,6 +24,10 @@ set(SOURCES ${GPA_SRC_COMMON}/utility.h
             ${GPA_SRC_COMMON}/logging.cc
             ${GPA_SRC_COUNTER_GENERATOR}/gl_entry_points.h
             ${GPA_SRC_COUNTER_GENERATOR}/gl_entry_points.cc
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/cmdline_parser.h
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/cmdline_parser.cc
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/gpa_sample_app.h
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/gpa_sample_app.cc
             ${CMAKE_CURRENT_SOURCE_DIR}/gl_triangle.cc
             ${CMAKE_CURRENT_SOURCE_DIR}/gpa_helper.h
             ${CMAKE_CURRENT_SOURCE_DIR}/gpa_helper.cc)

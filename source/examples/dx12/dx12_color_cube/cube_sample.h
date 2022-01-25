@@ -25,6 +25,8 @@
 //#define DISABLE_GPA 1 // Uncomment to disable GPA.
 #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
+#include "examples/dx12/sample.h"
+
 /// @brief Class for cube sample, demonstraing usage of GPA by drawing a cube.
 class CubeSample
 {
@@ -35,7 +37,10 @@ public:
     static CubeSample* Instance();
 
     /// @brief Initializes the cube sample.
-    void Init();
+    ///
+    /// @param app Pointer to the GPA sample application contesxt.
+    /// @return true if initialization succeeds, false otherwise.
+    void Init(gpa_example::Dx12SampleApp* app);
 
     /// @brief Draw the cube sample.
     void Draw();
@@ -57,6 +62,9 @@ private:
         float color[4];     ///< Color.
     };
 
+    /// @brief Pointer to the GPA sample application context.
+    gpa_example::Dx12SampleApp* app_;
+
     /// @brief Constructor.
     CubeSample();
 
@@ -67,8 +75,9 @@ private:
 
     /// @brief Initializes the view port resources.
     ///
+    /// @param app Pointer the the GPA sample application context.
     /// @return True upon successful execution.
-    bool InitializeViewPortResource();
+    bool InitializeViewPortResource(gpa_example::Dx12SampleApp* app);
 
     /// @brief Uploads the cube data to the GPU.
     bool UploadCubeData();
@@ -147,8 +156,9 @@ private:
 
         /// @brief Initialize the view port.
         ///
+        /// @param app Pointer to the GPA sample application context.
         /// @return True upon successful operation.
-        virtual bool Init() = 0;
+        virtual bool Init(gpa_example::Dx12SampleApp* app) = 0;
 
         /// @brief Draws the view port.
         virtual void Draw() = 0;
@@ -161,6 +171,9 @@ private:
 
         /// @brief Destructor.
         virtual ~Viewport() = default;
+
+    protected:
+        gpa_example::Dx12SampleApp* app_;
     };
 
 #pragma region TopLeftViewport
@@ -176,7 +189,7 @@ private:
         TopLeftViewport();
 
         /// @copydoc Viewport::Init()
-        bool Init() override;
+        bool Init(gpa_example::Dx12SampleApp* app) override;
 
         /// @copydoc Viewport::Draw()
         void Draw() override;
@@ -202,7 +215,7 @@ private:
         TopRightViewport();
 
         /// @copydoc Viewport::Init()
-        bool Init() override;
+        bool Init(gpa_example::Dx12SampleApp* app) override;
 
         /// @copydoc Viewport::Draw()
         void Draw() override;
@@ -234,7 +247,7 @@ private:
         BottomLeftViewport();
 
         /// @copydoc Viewport::Init()
-        bool Init() override;
+        bool Init(gpa_example::Dx12SampleApp* app) override;
 
         /// @copydoc Viewport::Draw()
         void Draw() override;
@@ -265,7 +278,7 @@ private:
         BottomRightViewport();
 
         /// @copydoc Viewport::Init()
-        bool Init() override;
+        bool Init(gpa_example::Dx12SampleApp* app) override;
 
         /// @copydoc Viewport::Draw()
         void Draw() override;
@@ -310,11 +323,12 @@ private:
     GpaUInt32         device_id_;           ///< Device Id.
     GpaUInt32         revision_id_;         ///< Revision Id.
     std::string       device_name_;         ///< Device Name.
+    GpaHwGeneration   device_generation_;   ///< Device Generation.
 
     unsigned int num_passes_required_;       ///< Number of pass required for the enabled set of counters.
     int          current_pass_;              ///< Current pass.
     int          sample_counter_;            ///< Sample counter.
-    std::string  counter_file_name_;         ///< Name of the counter data file.
+    std::string  counter_data_name_;         ///< Name of the counter data file.
     std::string  gpa_log_file_name_;         ///< Name of the GPA log file.
     std::fstream gpa_log_file_stream_;       ///< GPA log file stream.
     std::fstream counter_data_file_stream_;  ///< Counter data file stream.
@@ -427,9 +441,11 @@ public:
     {
         kCompareTypeEqual,                 ///< Counter value must be equal to a specified value.
         kCompareTypeGreaterThan,           ///< Counter value must be greater than a specified value.
-        kComapreTypeGreaterThanOrEqualTo,  ///< Counter value must be greater than or equal to a specified value.
+        kCompareTypeGreaterThanOrEqualTo,  ///< Counter value must be greater than or equal to a specified value.
         kCompareTypeLessThan,              ///< Counter value must be less than a specified value.
         kCompareTypeLessThanOrEqualTo,     ///< Counter value must be less than or equal to a specified value.
+        kCompareTypeEpsilon,               ///< Counter value must be within range of the specified value +/- the epsilon value, inclusive.
+        kCompareTypeRangeInclusive,        ///< Counter value must be within the range of the specified values, inclusive.
     } CompareType;
 
     /// @brief Compare retrieved counter value to an expected value.
@@ -440,6 +456,7 @@ public:
     /// @param [in] counter_value The retrieved counter value.
     /// @param [in] compare_type The type of compare to perform.
     /// @param [in] compare_value The expected counter value (subject to the compare type).
+    /// @param [in] compare_value2 A secondary value that may be used depending on the CompareType that is supplied.
     ///
     /// @return True if the counter value compares successfully, false otherwise.
     bool GpaCounterValueCompare(unsigned int profile_set,
@@ -447,7 +464,8 @@ public:
                                 const char*  counter_name,
                                 GpaFloat64   counter_value,
                                 CompareType  compare_type,
-                                GpaFloat64   compare_value);
+                                GpaFloat64   compare_value,
+                                GpaFloat64   compare_value2 = 0);
 
     /// @brief  Validate a specified counter in a specified sample.
     ///
@@ -463,6 +481,66 @@ public:
                          const char*  counter_name,
                          GpaFloat64   counter_value,
                          GpaUsageType counter_usage_type);
+
+    /// @brief  Validate a specified counter in a specified sample for GFX8 hardware.
+    ///
+    /// @param [in] frame_number The frame number containing the counter being compared.
+    /// @param [in] sample_index The index of the sample containing the counter.
+    /// @param [in] counter_name The name of the counter to validate.
+    /// @param [in] counter_value The value of the counter to validate.
+    /// @param [in] counter_usage_type The usage type of the counter being compared.
+    ///
+    /// @return True if the counter value validates successfully, false otherwise.
+    bool GpaValidateDataGfx8(unsigned int frame_number,
+                             unsigned int sample_index,
+                             const char*  counter_name,
+                             GpaFloat64   counter_value,
+                             GpaUsageType counter_usage_type);
+
+    /// @brief Validate a specified counter in a specified sample against expectations for GFX9 hardware.
+    ///
+    /// @param [in] frame_number The frame number containing the counter being compared.
+    /// @param [in] sample_index The index of the sample containing the counter.
+    /// @param [in] counter_name The name of the counter to validate.
+    /// @param [in] counter_value The value of the counter to validate.
+    /// @param [in] counter_usage_type The usage type of the counter being compared.
+    ///
+    /// @return True if the counter value validates successfully, false otherwise.
+    bool GpaValidateDataGfx9(unsigned int frame_number,
+                             unsigned int sample_index,
+                             const char*  counter_name,
+                             GpaFloat64   counter_value,
+                             GpaUsageType counter_usage_type);
+
+    /// @brief Validate a specified counter in a specified sample against expectations for GFX10 hardware.
+    ///
+    /// @param [in] frame_number The frame number containing the counter being compared.
+    /// @param [in] sample_index The index of the sample containing the counter.
+    /// @param [in] counter_name The name of the counter to validate.
+    /// @param [in] counter_value The value of the counter to validate.
+    /// @param [in] counter_usage_type The usage type of the counter being compared.
+    ///
+    /// @return True if the counter value validates successfully, false otherwise.
+    bool GpaValidateDataGfx10(unsigned int frame_number,
+                              unsigned int sample_index,
+                              const char*  counter_name,
+                              GpaFloat64   counter_value,
+                              GpaUsageType counter_usage_type);
+
+    /// @brief Validate a specified counter in a specified sample against expectations for GFX103 hardware.
+    ///
+    /// @param [in] frame_number The frame number containing the counter being compared.
+    /// @param [in] sample_index The index of the sample containing the counter.
+    /// @param [in] counter_name The name of the counter to validate.
+    /// @param [in] counter_value The value of the counter to validate.
+    /// @param [in] counter_usage_type The usage type of the counter being compared.
+    ///
+    /// @return True if the counter value validates successfully, false otherwise.
+    bool GpaValidateDataGfx103(unsigned int frame_number,
+                               unsigned int sample_index,
+                               const char*  counter_name,
+                               GpaFloat64   counter_value,
+                               GpaUsageType counter_usage_type);
 
     /// @brief Populates the session result.
     ///

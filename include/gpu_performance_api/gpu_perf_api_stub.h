@@ -57,6 +57,11 @@ static inline GpaStatus GpaGetDeviceName(GpaContextId gpa_context_id, const char
     RETURN_GPA_SUCCESS;
 }
 
+static inline GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHwGeneration* hardware_generation)
+{
+    RETURN_GPA_SUCCESS;
+}
+
 static inline GpaStatus GpaGetNumCounters(GpaContextId gpa_context_id, GpaUInt32* number_of_counters)
 {
     RETURN_GPA_SUCCESS;

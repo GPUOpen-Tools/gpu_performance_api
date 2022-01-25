@@ -86,6 +86,9 @@ GPA_FUNCTION_PREFIX(GpaGetSampleId)
 // GPA API Version.
 GPA_FUNCTION_PREFIX(GpaGetVersion)
 
+// Context interrogation; added in 3.10
+GPA_FUNCTION_PREFIX(GpaGetDeviceGeneration)
+
 #ifdef NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX
 #undef GPA_FUNCTION_PREFIX
 #undef NEED_TO_UNDEFINE_GPA_FUNCTION_PREFIX

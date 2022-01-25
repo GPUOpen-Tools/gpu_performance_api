@@ -166,7 +166,7 @@ GpaStatus GlGpaContext::SetStableClocks(bool use_profiling_clocks)
             {
                 // On Linux, earlier drivers claimed to support the stable clock extension, but it was broken
                 // due to a driver bug. The driver bug has been fixed starting with the driver version referred
-                // to in s_GL_DRIVER_VER_WITH_LINUX_STABLE_CLOCK_SUPPORT. If using an earlier driver, just return
+                // to in kGlDriverVerWithLinuxStableClockSupport. If using an earlier driver, just return
                 // success without trying to set stable clocks.
                 result = kGpaStatusOk;
             }

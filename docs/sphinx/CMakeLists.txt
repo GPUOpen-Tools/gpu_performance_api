@@ -15,7 +15,7 @@ file(GLOB DOC_FILES ${DOC_FILES} ${CMAKE_CURRENT_LIST_DIR}/source/api_functions/
 
 set(SOURCES ${DOC_FILES})
 
-ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME})
+ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME} ${SOURCES})
 target_link_libraries(${GPA_PROJECT_NAME}
                       GPUPerfAPI-Common)
 

@@ -53,7 +53,7 @@ if(WIN32)
      add_compile_options(-Wno-write-strings)
  endif()
 
-ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME})
+ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME} ${SOURCES})
 ADD_LINKER_FLAGS()
 target_link_libraries(${GPA_PROJECT_NAME} GPUPerfAPICounterGenerator-Common)
 

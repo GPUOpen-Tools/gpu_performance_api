@@ -124,7 +124,7 @@ public:
     GpaFunctionTable* gpa_function_table_;
 
     /// The name of the csv file that will be written.
-    std::string csv_file_name_ = "VkColorCube_counterData.csv";
+    std::string csv_file_name_ = "VkColorCube_counter_data.csv";
 
     /// The name of the GPA Log file that will be written.
     static std::string gpa_log_file_name;
@@ -135,7 +135,20 @@ public:
     /// Flag indicating if any errors were output via GPA's logging mechanism.
     static bool gpa_any_errors_logged;
 
+    /// Indicates the number of errors that have been logged by GPA.
+    static int gpa_num_errors_logged;
+
+    /// Indicates that known issues should be included in the counter validation.
+    static bool include_known_issues;
+
 private:
+    /// @brief Format the revision ID as a user-friendly string.
+    ///
+    /// @param [in] revision_id The revision ID to format.
+    ///
+    /// @return The formatted revision ID.
+    std::string FormatRevisionId(const GpaUInt32 revision_id) const;
+
     /// The file stream for writing the csv file.
     std::fstream csv_file_;
 

@@ -147,6 +147,11 @@ namespace ogl_utils
     /// @return True upon successful otherwise false.
     bool InitCtxAmdPerfExtFunctions();
 
+    /// @brief Initialize platform-specific OpenGL extensions.
+    ///
+    /// @return True upon success otherwise false.
+    bool InitPlatformExtFunctions();
+
     extern const char* kAmdRendererString;            ///< AMD Renderer string.
     extern const char* kRadeonRendererString;         ///< Radeon Renderer string.
     extern const char* kAtiRendererString;            ///< ATI Renderer string (legacy).
@@ -158,6 +163,6 @@ namespace ogl_utils
     using GLExtension = std::string;                            ///< Alias for GL extension.
     using Supported   = bool;                                   ///< Alias for extension status.
     extern std::map<GLExtension, Supported> gl_extensions_map;  ///< Map of GL extensions and its status.
-}
+}  // namespace ogl_utils
 
 #endif  // GPA_COUNTER_GENERATOR_GL_GL_ENTRY_POINTS_H_

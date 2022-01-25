@@ -303,6 +303,26 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(2327);
+        internal_counters.push_back(2819);
+        internal_counters.push_back(3311);
+        internal_counters.push_back(3803);
+        internal_counters.push_back(2328);
+        internal_counters.push_back(2820);
+        internal_counters.push_back(3312);
+        internal_counters.push_back(3804);
+        internal_counters.push_back(2329);
+        internal_counters.push_back(2821);
+        internal_counters.push_back(3313);
+        internal_counters.push_back(3805);
+        internal_counters.push_back(2330);
+        internal_counters.push_back(2822);
+        internal_counters.push_back(3314);
+        internal_counters.push_back(3806);
+        internal_counters.push_back(2351);
+        internal_counters.push_back(2843);
+        internal_counters.push_back(3335);
+        internal_counters.push_back(3827);
         internal_counters.push_back(2251);
         internal_counters.push_back(2743);
         internal_counters.push_back(3235);
@@ -319,51 +339,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(2746);
         internal_counters.push_back(3238);
         internal_counters.push_back(3730);
-        internal_counters.push_back(2351);
-        internal_counters.push_back(2843);
-        internal_counters.push_back(3335);
-        internal_counters.push_back(3827);
-        internal_counters.push_back(2327);
-        internal_counters.push_back(2819);
-        internal_counters.push_back(3311);
-        internal_counters.push_back(3803);
-        internal_counters.push_back(2328);
-        internal_counters.push_back(2820);
-        internal_counters.push_back(3312);
-        internal_counters.push_back(3804);
-        internal_counters.push_back(2329);
-        internal_counters.push_back(2821);
-        internal_counters.push_back(3313);
-        internal_counters.push_back(3805);
-        internal_counters.push_back(2330);
-        internal_counters.push_back(2822);
-        internal_counters.push_back(3314);
-        internal_counters.push_back(3806);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulled", internal_counters, "20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum16,16,17,18,19,sum4,-,(0),max,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulled", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,sum4,-,(0),max,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum16,/,(100),*");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(2251);
-        internal_counters.push_back(2743);
-        internal_counters.push_back(3235);
-        internal_counters.push_back(3727);
-        internal_counters.push_back(2252);
-        internal_counters.push_back(2744);
-        internal_counters.push_back(3236);
-        internal_counters.push_back(3728);
-        internal_counters.push_back(2253);
-        internal_counters.push_back(2745);
-        internal_counters.push_back(3237);
-        internal_counters.push_back(3729);
-        internal_counters.push_back(2254);
-        internal_counters.push_back(2746);
-        internal_counters.push_back(3238);
-        internal_counters.push_back(3730);
-        internal_counters.push_back(2351);
-        internal_counters.push_back(2843);
-        internal_counters.push_back(3335);
-        internal_counters.push_back(3827);
         internal_counters.push_back(2327);
         internal_counters.push_back(2819);
         internal_counters.push_back(3311);
@@ -380,8 +360,12 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(2822);
         internal_counters.push_back(3314);
         internal_counters.push_back(3806);
+        internal_counters.push_back(2351);
+        internal_counters.push_back(2843);
+        internal_counters.push_back(3335);
+        internal_counters.push_back(3827);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulledCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,sum4,-,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum16,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulledCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,sum4,-,(0),max");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -389,24 +373,8 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(2843);
         internal_counters.push_back(3335);
         internal_counters.push_back(3827);
-        internal_counters.push_back(2327);
-        internal_counters.push_back(2819);
-        internal_counters.push_back(3311);
-        internal_counters.push_back(3803);
-        internal_counters.push_back(2328);
-        internal_counters.push_back(2820);
-        internal_counters.push_back(3312);
-        internal_counters.push_back(3804);
-        internal_counters.push_back(2329);
-        internal_counters.push_back(2821);
-        internal_counters.push_back(3313);
-        internal_counters.push_back(3805);
-        internal_counters.push_back(2330);
-        internal_counters.push_back(2822);
-        internal_counters.push_back(3314);
-        internal_counters.push_back(3806);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsSurvivingCount", internal_counters, "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,sum16,0,1,2,3,sum4,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsSurvivingCount", internal_counters, "0,1,2,3,sum4");
     }
     {
         vector<GpaUInt32> internal_counters;

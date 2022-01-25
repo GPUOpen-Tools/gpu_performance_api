@@ -36,12 +36,15 @@
 
 GpaApiManager*    GpaApiManager::gpa_api_manager_ = nullptr;
 GpaFuncTableInfo* gpa_function_table_info         = nullptr;
-std::string       GpaHelper::gpa_log_file_name    = "VkColorCube_gpaLog.txt";
+std::string       GpaHelper::gpa_log_file_name    = "VkColorCube_gpa_log.txt";
 std::fstream      GpaHelper::gpa_log_file_stream;
 bool              GpaHelper::gpa_any_errors_logged = false;
+int               GpaHelper::gpa_num_errors_logged = 0;
+bool              GpaHelper::include_known_issues = false;
 
-AMDVulkanDemo::AMDVulkanDemo()
-    :
+AMDVulkanDemo::AMDVulkanDemo(const std::string app_name, gpa_example::CmdlineParser& cmdline_parser)
+    : gpa_example::GpaSampleApp(app_name, cmdline_parser)
+    ,
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
     hInstance_(nullptr)
     , hWindow_(nullptr)
@@ -79,11 +82,19 @@ AMDVulkanDemo::AMDVulkanDemo()
     , print_debug_output_(false)
     , print_gpa_counter_info_(false)
     , exit_after_profile_(false)
-    , verify_counters_(false)
-    , confirm_success_(false)
     , initialized_(false)
     , exit_(false)
+    , nogpa_(false)
 {
+    cmdline_parser_.AddArg("--nogpa", &nogpa_, gpa_example::ArgType::ARG_TYPE_BOOL, "Do not use GPUPerfAPI to collect performance counters");
+    cmdline_parser_.AddArg("--exitafterprofile",
+                           &exit_after_profile_,
+                           gpa_example::ArgType::ARG_TYPE_BOOL,
+                           "Application will exit automatically after collecting performance counters");
+    cmdline_parser_.AddArg("--verbose", &print_debug_output_, gpa_example::ArgType::ARG_TYPE_BOOL, "Produce verbose output");
+    cmdline_parser_.AddArg(
+        "--printcounterinfo", &print_gpa_counter_info_, gpa_example::ArgType::ARG_TYPE_BOOL, "Output information about available performance counters");
+
     physical_device_properties_        = {};
     phsyical_device_features_          = {};
     physical_device_memory_properties_ = {};
@@ -116,16 +127,6 @@ AMDVulkanDemo::AMDVulkanDemo()
 
 AMDVulkanDemo* AMDVulkanDemo::amd_vulkan_demo_ = nullptr;
 
-AMDVulkanDemo* AMDVulkanDemo::Instance()
-{
-    if (nullptr == amd_vulkan_demo_)
-    {
-        amd_vulkan_demo_ = new (std::nothrow) AMDVulkanDemo();
-    }
-
-    return amd_vulkan_demo_;
-}
-
 AMDVulkanDemo::~AMDVulkanDemo()
 {
     Destroy();
@@ -141,47 +142,22 @@ void AMDVulkanDemo::Exit(bool exit)
     exit_ = exit;
 }
 
-void AMDVulkanDemo::SetPrintGpaCounterInfo(bool print)
-{
-    print_gpa_counter_info_ = print;
-}
-
-void AMDVulkanDemo::SetPrintDebugOutput(bool print)
-{
-    print_debug_output_ = print;
-}
-
-void AMDVulkanDemo::SetExitAfterProfile(bool exit_after_profile)
-{
-    exit_after_profile_ = exit_after_profile;
-}
-
-void AMDVulkanDemo::SetVerifyCounters(bool verify_counters)
-{
-    verify_counters_ = verify_counters;
-}
-
-void AMDVulkanDemo::SetConfirmSuccess(bool confirm_success)
-{
-    confirm_success_ = confirm_success;
-}
-
-void AMDVulkanDemo::SetIncludeHwCounters(bool include_hw_counters)
-{
-    include_hw_counters_ = include_hw_counters;
-}
-
 bool AMDVulkanDemo::Initialized() const
 {
     return initialized_;
 }
 
 #ifdef VK_USE_PLATFORM_WIN32_KHR
-HWND AMDVulkanDemo::CreateWindowWin32(WNDPROC demo_window_procedure)
+void AMDVulkanDemo::CreateWindowWin32(WNDPROC demo_window_procedure)
 {
-    HWND      window_handle = nullptr;
-    WNDCLASSW window_class;
-    memset(&window_class, 0, sizeof(WNDCLASSW));
+    if (hWindow_ != nullptr)
+    {
+        std::cout << "WARNING: calling CreateWindowWin32 more than once!" << std::endl;
+    }
+
+    WNDCLASSEXW window_class;
+    memset(&window_class, 0, sizeof(WNDCLASSEXW));
+    window_class.cbSize        = sizeof(WNDCLASSEXW);
     window_class.style         = CS_HREDRAW | CS_VREDRAW;
     window_class.hInstance     = hInstance_;
     window_class.lpfnWndProc   = demo_window_procedure;
@@ -189,52 +165,49 @@ HWND AMDVulkanDemo::CreateWindowWin32(WNDPROC demo_window_procedure)
     window_class.hCursor       = LoadCursor(nullptr, IDC_ARROW);
     window_class.hbrBackground = (HBRUSH)GetStockObject(GRAY_BRUSH);
 
-    if (::RegisterClassW(&window_class))
+    if (::RegisterClassExW(&window_class))
     {
-        window_handle = ::CreateWindowExW(0,
-                                          window_class.lpszClassName,
-                                          kLongName.c_str(),
-                                          WS_OVERLAPPED | WS_VISIBLE | WS_SYSMENU,
-                                          CW_USEDEFAULT,
-                                          CW_USEDEFAULT,
-                                          static_cast<int>(kDefaultWindowWidth),
-                                          static_cast<int>(kDefaultWindowHeight),
-                                          nullptr,
-                                          nullptr,
-                                          hInstance_,
-                                          nullptr);
+        hWindow_ = ::CreateWindowExW(0,
+                                     window_class.lpszClassName,
+                                     kLongName.c_str(),
+                                     WS_OVERLAPPED | WS_VISIBLE | WS_SYSMENU,
+                                     CW_USEDEFAULT,
+                                     CW_USEDEFAULT,
+                                     static_cast<int>(kDefaultWindowWidth),
+                                     static_cast<int>(kDefaultWindowHeight),
+                                     nullptr,
+                                     nullptr,
+                                     hInstance_,
+                                     nullptr);
     }
-
-    return window_handle;
 }
 
-HWND AMDVulkanDemo::InitializeWindowWin32(HINSTANCE instance_handle, WNDPROC demo_window_message_procedure, int cmd_show)
+void AMDVulkanDemo::InitializeWindowWin32(HINSTANCE instance_handle, WNDPROC demo_window_message_procedure, int cmd_show)
 {
-    HWND hWindow = nullptr;
-
     if (hInstance_ == nullptr)
     {
         hInstance_ = instance_handle;
 
         if (hWindow_ == nullptr)
         {
-            hWindow_ = CreateWindowWin32(demo_window_message_procedure);
+            CreateWindowWin32(demo_window_message_procedure);
 
             if (hWindow_ != nullptr)
             {
+                SetWindowLongPtrW(hWindow_, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
+
                 if (FALSE == ShowWindow(hWindow_, cmd_show))
                 {
                     hWindow_ = nullptr;
                 }
-                else
-                {
-                    hWindow = hWindow_;
-                }
             }
         }
     }
+}
 
-    return hWindow;
+HWND AMDVulkanDemo::GetWindowWin32() const
+{
+    return hWindow_;
 }
 
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
@@ -387,7 +360,7 @@ bool AMDVulkanDemo::InitializeGpa()
     {
         GpaLoggingType gpa_log_types = kGpaLoggingError;
 
-        if (confirm_success_)
+        if (ConfirmSuccess())
         {
             // Only log message types if confirm_success_ is enabled, because GPA will log a confirmation message
             // that the logging callback was registered, and we don't want to output a log if --verify was enabled
@@ -851,11 +824,11 @@ bool AMDVulkanDemo::InitializeVulkan()
     if (gpu_perf_api_helper_.IsLoaded())
     {
         GpaVkContextOpenInfo gpa_context_open_info = {};
-        gpa_context_open_info.instance              = vk_instance_;
-        gpa_context_open_info.physical_device       = default_physical_device_;
-        gpa_context_open_info.device                = vk_device_;
+        gpa_context_open_info.instance             = vk_instance_;
+        gpa_context_open_info.physical_device      = default_physical_device_;
+        gpa_context_open_info.device               = vk_device_;
 
-        GpaOpenContextFlags open_flags    = include_hw_counters_ ? kGpaOpenContextEnableHardwareCountersBit : kGpaOpenContextDefaultBit;
+        GpaOpenContextFlags open_flags    = IncludeHwCounters() ? kGpaOpenContextEnableHardwareCountersBit : kGpaOpenContextDefaultBit;
         GpaStatus gpa_open_context_status = gpu_perf_api_helper_.gpa_function_table_->GpaOpenContext(&gpa_context_open_info, open_flags, &gpa_context_id_);
         GpaUInt32 device_id, revision_id;
         /*GpaStatus deviceInfoStatus =*/gpu_perf_api_helper_.gpa_function_table_->GpaGetDeviceAndRevisionId(gpa_context_id_, &device_id, &revision_id);
@@ -894,10 +867,10 @@ bool AMDVulkanDemo::InitializeVulkan()
         }
 
         GpaStatus gpa_enable_all_counters_status = kGpaStatusOk;
-        if (!counter_file_name_.empty())
+        if (!Counterfile().empty())
         {
             std::fstream counter_file_stream;
-            counter_file_stream.open(counter_file_name_.c_str(), std::ios_base::in);
+            counter_file_stream.open(Counterfile().c_str(), std::ios_base::in);
             std::vector<std::string> counter_list;
             char                     temp_counter[256];
             if (counter_file_stream.is_open())
@@ -913,6 +886,10 @@ bool AMDVulkanDemo::InitializeVulkan()
                 for (std::vector<std::string>::const_iterator it = counter_list.cbegin(); it != counter_list.cend(); ++it)
                 {
                     GpaStatus gpa_status = gpu_perf_api_helper_.gpa_function_table_->GpaEnableCounterByName(gpa_session_id_, it->c_str());
+                    if (gpa_status != kGpaStatusOk)
+                    {
+                        std::cout << "Failed to enable counter: " << it->c_str() << std::endl;
+                    }
                     success_enable_counter &= gpa_status == kGpaStatusOk;
                 }
 
@@ -924,7 +901,7 @@ bool AMDVulkanDemo::InitializeVulkan()
             else
             {
                 std::stringstream error;
-                error << "Unable to open Counter file " << counter_file_name_.c_str() << " . Not enabling any counters";
+                error << "Unable to open Counter file " << Counterfile().c_str() << " . Not enabling any counters";
             }
         }
         else
@@ -1597,7 +1574,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     VkResult create_command_pool_result = _vkCreateCommandPool(vk_device_, &command_pool_create_info, nullptr, &vk_command_pool_);
 
-    if (create_command_pool_result != VK_NULL_HANDLE)
+    if (create_command_pool_result != VK_SUCCESS)
     {
         std::cout << "ERROR: Failed to create command pool." << std::endl;
         return false;
@@ -1817,9 +1794,9 @@ void AMDVulkanDemo::DrawScene()
             unsigned int profile_set = 0;
 
             // NOTE: we can't loop over these because it is not guaranteed that the sample_ids will be 0-based and monotonically increasing.
-            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, 0, print_debug_output_, verify_counters_, confirm_success_);
-            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, 1, print_debug_output_, verify_counters_, confirm_success_);
-            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, 2, print_debug_output_, verify_counters_, confirm_success_);
+            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, 0, print_debug_output_, Verify(), ConfirmSuccess());
+            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, 1, print_debug_output_, Verify(), ConfirmSuccess());
+            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, 2, print_debug_output_, Verify(), ConfirmSuccess());
 
             // Close the CSV file so that it actually gets saved out.
             gpu_perf_api_helper_.CloseCSVFile();
@@ -2010,6 +1987,11 @@ void AMDVulkanDemo::Destroy()
     }
 
 #endif
+}
+
+bool AMDVulkanDemo::NoGpa()
+{
+    return nogpa_;
 }
 
 void AMDVulkanDemo::AddSupportedInstanceExtension(const char* extension_name)
@@ -2356,86 +2338,6 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_r
     }
 }
 
-/// Print command line usage information.
-void Usage()
-{
-    std::cout << "VkColorCube [--nogpa] [--verbose] [--printcounterinfo] [--exitafterprofile] [--verify] [--confirmsuccess]" << std::endl << std::endl;
-    std::cout << "  --nogpa: Do not use GPUPerfAPI to collect performance counters" << std::endl;
-    std::cout << "  --verbose: Produce verbose output" << std::endl;
-    std::cout << "  --printcounterinfo: Output information about available performance counters" << std::endl;
-    std::cout << "  --exitafterprofile: Application will exit automatically after collecting performance counters" << std::endl;
-    std::cout << "  --verify: Application will verify a few counter values (experimental)" << std::endl;
-    std::cout << "  --confirmsuccess: Implies --verify and confirms successful counter values in addition to errors" << std::endl;
-    std::cout << "  --includehwcounters: Public hardware counters will be enabled in non-internal builds" << std::endl;
-}
-
-/// Parse Command line arguments.
-bool ParseCommandLine(const int argc, const char* argv[], CommandLineArgs& args)
-{
-    bool success = true;
-
-    for (int i = 1; i < argc; i++)
-    {
-        std::string this_arg(argv[i]);
-
-        if (0 == this_arg.compare("--nogpa"))
-        {
-            args.use_gpa = false;
-        }
-        else if (0 == this_arg.compare("--verbose"))
-        {
-            args.print_debug_output = true;
-        }
-        else if (0 == this_arg.compare("--printcounterinfo"))
-        {
-            args.print_gpa_counter_info = true;
-        }
-        else if (0 == this_arg.compare("--exitafterprofile"))
-        {
-            args.exit_after_profile = true;
-        }
-        else if (0 == this_arg.compare("--verify"))
-        {
-            args.verify_counters = true;
-        }
-        else if (0 == this_arg.compare("--confirmsuccess"))
-        {
-            args.confirm_success = true;
-        }
-        else if (0 == this_arg.compare("--includehwcounters"))
-        {
-            args.include_hw_counters = true;
-        }
-        else if (0 == this_arg.compare("--counterfile"))
-        {
-            i++;
-
-            if (i < argc)
-            {
-                std::istringstream iss(argv[i]);
-
-                iss >> args.counter_file_name;
-
-                if (iss.fail())
-                {
-                    success = false;
-                }
-            }
-            else
-            {
-                success = false;
-            }
-        }
-        else
-        {
-            Usage();
-            success = false;
-        }
-    }
-
-    return success;
-}
-
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
 
 /// Window message processing callback.
@@ -2451,13 +2353,15 @@ LRESULT CALLBACK demoWindowMessageProcessorWin32(HWND window_handle, UINT messag
 
     case WM_PAINT:
     {
+        AMDVulkanDemo& app = *(reinterpret_cast<AMDVulkanDemo*>(GetWindowLongPtrW(window_handle, GWLP_USERDATA)));
+
         // Only draw if the demo has been initialized successfully. This may not be the case
         // if there was an error during initialization which would display a message box and
         // cause the window to paint. If this happens, skip drawing and let the default windowing
         // behavior occur.
-        if (AMDVulkanDemo::Instance()->Initialized())
+        if (app.Initialized())
         {
-            AMDVulkanDemo::Instance()->DrawScene();
+            app.DrawScene();
             return 0;
         }
     }
@@ -2476,25 +2380,22 @@ int WINAPI WinMain(_In_ HINSTANCE instance_handle, _In_opt_ HINSTANCE previous_i
     MSG message;
     memset(&message, 0, sizeof(MSG));
 
-    CommandLineArgs args;
+    gpa_example::CmdlineParser parser(__argc, __argv);
 
-    if (!ParseCommandLine(__argc, const_cast<const char**>(__argv), args))
+    AMDVulkanDemo app("VkColorCube", parser);
+
+    if (!app.Initialize())
     {
         return -1;
     }
 
-    AMDVulkanDemo::Instance()->SetPrintGpaCounterInfo(args.print_gpa_counter_info);
-    AMDVulkanDemo::Instance()->SetPrintDebugOutput(args.print_debug_output);
-    AMDVulkanDemo::Instance()->SetExitAfterProfile(args.exit_after_profile);
-    AMDVulkanDemo::Instance()->SetVerifyCounters(args.verify_counters || args.confirm_success);
-    AMDVulkanDemo::Instance()->SetConfirmSuccess(args.confirm_success);
-    AMDVulkanDemo::Instance()->SetIncludeHwCounters(args.include_hw_counters);
-    AMDVulkanDemo::Instance()->SetCounterFromFile(args.counter_file_name);
+    // Include known issues in counter validation.
+    GpaHelper::include_known_issues = app.IncludeKnownIssues();
 
     // First load GPUPerfAPI if needed.
-    if (args.use_gpa)
+    if (!app.NoGpa())
     {
-        if (!AMDVulkanDemo::Instance()->InitializeGpa())
+        if (!app.InitializeGpa())
         {
             return -1;
         }
@@ -2502,23 +2403,23 @@ int WINAPI WinMain(_In_ HINSTANCE instance_handle, _In_opt_ HINSTANCE previous_i
 
     // Create a window for the demo to render into before initializing Vulkan since the window
     // surface is needed as part of the vulkan initialization.
-    HWND window_handle = AMDVulkanDemo::Instance()->InitializeWindowWin32(instance_handle, demoWindowMessageProcessorWin32, cmd_show);
+    app.InitializeWindowWin32(instance_handle, demoWindowMessageProcessorWin32, cmd_show);
 
-    if (window_handle == nullptr)
+    if (app.GetWindowWin32() == nullptr)
     {
         return -1;
     }
 
-    if (AMDVulkanDemo::Instance()->InitializeVulkan())
+    if (app.InitializeVulkan())
     {
         // Main message loop.
-        while (!AMDVulkanDemo::Instance()->Exit())
+        while (!app.Exit())
         {
             PeekMessage(&message, NULL, 0, 0, PM_REMOVE);
 
             if (message.message == WM_QUIT)
             {
-                AMDVulkanDemo::Instance()->Exit(true);
+                app.Exit(true);
             }
             else
             {
@@ -2527,7 +2428,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance_handle, _In_opt_ HINSTANCE previous_i
                 DispatchMessage(&message);
             }
 
-            RedrawWindow(window_handle, NULL, NULL, RDW_INTERNALPAINT);
+            RedrawWindow(app.GetWindowWin32(), NULL, NULL, RDW_INTERNALPAINT);
         }
     }
 
@@ -2535,7 +2436,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance_handle, _In_opt_ HINSTANCE previous_i
 
     if (0 == return_value)
     {
-        return_value = GpaHelper::gpa_any_errors_logged ? -1 : 0;
+        return_value = GpaHelper::gpa_any_errors_logged ? GpaHelper::gpa_num_errors_logged : 0;
     }
 
     return return_value;
@@ -2544,7 +2445,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance_handle, _In_opt_ HINSTANCE previous_i
 #elif defined(VK_USE_PLATFORM_XCB_KHR)
 
 /// Window message processing callback.
-void demoWindowMessageProcessorXcb(xcb_generic_event_t* event)
+void demoWindowMessageProcessorXcb(AMDVulkanDemo& app, xcb_generic_event_t* event)
 {
     uint8_t event_code = event->response_type & ~0x80;
 
@@ -2554,9 +2455,9 @@ void demoWindowMessageProcessorXcb(xcb_generic_event_t* event)
     {
         const xcb_client_message_event_t* client_message = (const xcb_client_message_event_t*)event;
 
-        if (client_message->data.data32[0] == AMDVulkanDemo::Instance()->xcb_atom_delete_window_->atom)
+        if (client_message->data.data32[0] == app.xcb_atom_delete_window_->atom)
         {
-            AMDVulkanDemo::Instance()->Exit(true);
+            app.Exit(true);
         }
     }
 
@@ -2568,7 +2469,7 @@ void demoWindowMessageProcessorXcb(xcb_generic_event_t* event)
 
         if (key_release->detail == 0x9)  // Escape key.
         {
-            AMDVulkanDemo::Instance()->Exit(true);
+            app.Exit(true);
         }
     }
     }
@@ -2579,23 +2480,19 @@ int main(const int argc, const char* argv[])
     UNREFERENCED_PARAMETER(argc);
     UNREFERENCED_PARAMETER(argv);
 
-    CommandLineArgs args;
+    gpa_example::CmdlineParser parser(argc, const_cast<char**>(argv));
 
-    if (!ParseCommandLine(argc, argv, args))
+    AMDVulkanDemo app("VkColorCube", parser);
+
+    if (!app.Initialize())
     {
         return -1;
     }
 
-    AMDVulkanDemo::Instance()->SetPrintGpaCounterInfo(args.print_gpa_counter_info);
-    AMDVulkanDemo::Instance()->SetPrintDebugOutput(args.print_debug_output);
-    AMDVulkanDemo::Instance()->SetExitAfterProfile(args.exit_after_profile);
-    AMDVulkanDemo::Instance()->SetVerifyCounters(args.verify_counters || args.confirm_success);
-    AMDVulkanDemo::Instance()->SetConfirmSuccess(args.confirm_success);
-
     // First load GPUPerfAPI if needed.
-    if (args.use_gpa)
+    if (!app.NoGpa())
     {
-        if (!AMDVulkanDemo::Instance()->InitializeGpa())
+        if (!app.InitializeGpa())
         {
             return -1;
         }
@@ -2603,26 +2500,26 @@ int main(const int argc, const char* argv[])
 
     // Create a window for the demo to render into before initializing Vulkan since the window
     // surface is needed as part of the vulkan initialization.
-    xcb_connection_t* connection = AMDVulkanDemo::Instance()->InitializeWindowXcb();
+    xcb_connection_t* connection = app.InitializeWindowXcb();
 
     if (connection == nullptr)
     {
         return -1;
     }
 
-    if (AMDVulkanDemo::Instance()->InitializeVulkan())
+    if (app.InitializeVulkan())
     {
         xcb_flush(connection);
         xcb_generic_event_t* event;
 
         // Main message loop.
-        while (!AMDVulkanDemo::Instance()->Exit())
+        while (!app.Exit())
         {
             event = xcb_poll_for_event(connection);
 
             while (event)
             {
-                demoWindowMessageProcessorXcb(event);
+                demoWindowMessageProcessorXcb(app, event);
                 free(event);
                 event = xcb_poll_for_event(connection);
             }
@@ -2631,14 +2528,14 @@ int main(const int argc, const char* argv[])
             // if there was an error during initialization which would display a message box and
             // cause the window to paint. If this happens, skip drawing and let the default windowing
             // behavior occur.
-            if (AMDVulkanDemo::Instance()->Initialized())
+            if (app.Initialized())
             {
-                AMDVulkanDemo::Instance()->DrawScene();
+                app.DrawScene();
             }
         }
     }
 
-    return GpaHelper::gpa_any_errors_logged ? -1 : 0;
+    return GpaHelper::gpa_any_errors_logged ? GpaHelper::gpa_num_errors_logged : 0;
 }
 
 #endif

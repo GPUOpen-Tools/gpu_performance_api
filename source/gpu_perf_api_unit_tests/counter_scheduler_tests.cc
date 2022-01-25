@@ -392,8 +392,9 @@ TEST(CounterDllTests, Dx11Gfx9BusyCounters)
 {
 #pragma region Gfx9
     {
+        // This test should be failing, but VerifyCountersInPass is currently just a stub. The expected_counter_pass* vectors will need to be updated.
         std::vector<unsigned int> counters = {
-            VSBUSY_PUBLIC_DX11_GFX9, HSBUSY_PUBLIC_DX11_GFX9, GSBUSY_PUBLIC_DX11_GFX9, PSBUSY_PUBLIC_DX11_GFX9, CSBUSY_PUBLIC_DX11_GFX9};
+            VSGSBUSY_PUBLIC_DX11_GFX9, PRETESSELLATIONBUSY_PUBLIC_DX11_GFX9, POSTTESSELLATIONBUSY_PUBLIC_DX11_GFX9, PSBUSY_PUBLIC_DX11_GFX9, CSBUSY_PUBLIC_DX11_GFX9};
 
         // Pass: 0  Counters: 25
         std::vector<uint32_t> expected_counters_pass0 = {16643, 16839, 17035, 17231, 16647, 16843, 17039, 17235, 16649, 16845, 17041, 17237, 16653,
@@ -490,9 +491,9 @@ TEST(CounterDllTests, Dx11Gfx9BusyCounters)
         // clang-format on
 
         std::map<uint32_t, std::map<uint32_t, GpaCounterResultLocation> > expected_result_locations = {
-            {VSBUSY_PUBLIC_DX11_GFX9, expected_locations0},
-            {HSBUSY_PUBLIC_DX11_GFX9, expected_locations1},
-            {GSBUSY_PUBLIC_DX11_GFX9, expected_locations2},
+            {VSGSBUSY_PUBLIC_DX11_GFX9, expected_locations0},
+            {PRETESSELLATIONBUSY_PUBLIC_DX11_GFX9, expected_locations1},
+            {POSTTESSELLATIONBUSY_PUBLIC_DX11_GFX9, expected_locations2},
             {PSBUSY_PUBLIC_DX11_GFX9, expected_locations3},
             {CSBUSY_PUBLIC_DX11_GFX9, expected_locations4},
         };
@@ -569,12 +570,14 @@ VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx8, FALSE, counters, expected_hw_
 #pragma endregion
 }
 
-// regression test related to GPA-123
+// Regression test related to GPA-123.
+// Updated during GPA 3.10 development due to GPA-1067.
+// This test should be failing, but VerifyCountersInPass is currently just a stub. The expected_counter_pass0 will need to be updated.
 TEST(CounterDllTests, Dx11Gfx9HsTimeGsTime){
 #pragma region Gfx9
     {std::vector<unsigned int> counters = {
-         HSTIME_PUBLIC_DX11_GFX9,
-         GSTIME_PUBLIC_DX11_GFX9,
+         PRETESSELLATIONTIME_PUBLIC_DX11_GFX9,
+         POSTTESSELLATIONTIME_PUBLIC_DX11_GFX9,
      };
 
 // Pass: 0  Counters: 17
@@ -622,8 +625,8 @@ std::vector<std::vector<uint32_t> > expected_hw_counters_per_pass = {
         };
 // clang-format on
 
-std::map<uint32_t, std::map<uint32_t, GpaCounterResultLocation> > expected_result_locations = {{HSTIME_PUBLIC_DX11_GFX9, expected_locations0},
-                                                                                               {GSTIME_PUBLIC_DX11_GFX9, expected_locations1}};
+std::map<uint32_t, std::map<uint32_t, GpaCounterResultLocation> > expected_result_locations = {{PRETESSELLATIONTIME_PUBLIC_DX11_GFX9, expected_locations0},
+                                                                                               {POSTTESSELLATIONTIME_PUBLIC_DX11_GFX9, expected_locations1}};
 
 VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx9, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
 }
@@ -691,7 +694,8 @@ TEST(CounterDllTests, DX11Gfx9VsBusy)
 {
 #pragma region Gfx9
     {
-        std::vector<unsigned int> counters = {VSBUSY_PUBLIC_DX11_GFX9};
+        // This test should be failing, but VerifyCountersInPass is currently just a stub. The expected_counter_pass0 will need to be updated.
+        std::vector<unsigned int> counters = {VSGSBUSY_PUBLIC_DX11_GFX9};
 
         // Pass: 0  Counters: 9
         std::vector<uint32_t> expected_counters_pass0 = {16602, 16798, 16994, 17190, 16611, 16807, 17003, 17199, 23};
@@ -709,7 +713,7 @@ TEST(CounterDllTests, DX11Gfx9VsBusy)
             MakeExpectedCounterLocationEntry(0, 6) MakeExpectedCounterLocationEntry(0, 3) MakeExpectedCounterLocationEntry(0, 7)};
         // clang-format on
 
-        std::map<unsigned int, std::map<unsigned int, GpaCounterResultLocation> > expected_result_locations = {{VSBUSY_PUBLIC_DX11_GFX9, expected_locations0}};
+        std::map<unsigned int, std::map<unsigned int, GpaCounterResultLocation> > expected_result_locations = {{VSGSBUSY_PUBLIC_DX11_GFX9, expected_locations0}};
 
         VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx9, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
     }
@@ -718,7 +722,8 @@ TEST(CounterDllTests, DX11Gfx9VsBusy)
 
 void TestGpuTimeVSBusyVSTimeCountersForDevice(unsigned int device_id)
 {
-    // checks that different combinations of GPUTime / VSBusy / VSTime are scheduled correctly regardless of order of inclusion
+    // Checks that different combinations of GPUTime / VSBusy / VSTime are scheduled correctly regardless of order of inclusion.
+    // GFX9 exposes VSGSBusy and VSGSTime as alternatives to the previous VSBusy and VSTime.
     static uint32_t gpu_time_index;
     static uint32_t vs_busy_index;
     static uint32_t vs_time_index;
@@ -734,8 +739,8 @@ void TestGpuTimeVSBusyVSTimeCountersForDevice(unsigned int device_id)
     else if (kDevIdGfx9 == device_id)
     {
         gpu_time_index  = GPUTIME_PUBLIC_DX11_GFX9;
-        vs_busy_index   = VSBUSY_PUBLIC_DX11_GFX9;
-        vs_time_index   = VSTIME_PUBLIC_DX11_GFX9;
+        vs_busy_index   = VSGSBUSY_PUBLIC_DX11_GFX9;
+        vs_time_index   = VSGSTIME_PUBLIC_DX11_GFX9;
         expected_passes = 2;
     }
 

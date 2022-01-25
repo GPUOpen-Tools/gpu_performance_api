@@ -346,6 +346,22 @@ namespace counter_dx11_gfx9
         kGcea13CountersGfx9,
         kGcea14CountersGfx9,
         kGcea15CountersGfx9,
+        kGcea16CountersGfx9,
+        kGcea17CountersGfx9,
+        kGcea18CountersGfx9,
+        kGcea19CountersGfx9,
+        kGcea20CountersGfx9,
+        kGcea21CountersGfx9,
+        kGcea22CountersGfx9,
+        kGcea23CountersGfx9,
+        kGcea24CountersGfx9,
+        kGcea25CountersGfx9,
+        kGcea26CountersGfx9,
+        kGcea27CountersGfx9,
+        kGcea28CountersGfx9,
+        kGcea29CountersGfx9,
+        kGcea30CountersGfx9,
+        kGcea31CountersGfx9,
         kRmi0CountersGfx9,
         kRmi1CountersGfx9,
         kRmi2CountersGfx9,
@@ -605,6 +621,22 @@ namespace counter_dx11_gfx9
         kGcea13ExposedCountersGfx9,
         kGcea14ExposedCountersGfx9,
         kGcea15ExposedCountersGfx9,
+        kGcea16ExposedCountersGfx9,
+        kGcea17ExposedCountersGfx9,
+        kGcea18ExposedCountersGfx9,
+        kGcea19ExposedCountersGfx9,
+        kGcea20ExposedCountersGfx9,
+        kGcea21ExposedCountersGfx9,
+        kGcea22ExposedCountersGfx9,
+        kGcea23ExposedCountersGfx9,
+        kGcea24ExposedCountersGfx9,
+        kGcea25ExposedCountersGfx9,
+        kGcea26ExposedCountersGfx9,
+        kGcea27ExposedCountersGfx9,
+        kGcea28ExposedCountersGfx9,
+        kGcea29ExposedCountersGfx9,
+        kGcea30ExposedCountersGfx9,
+        kGcea31ExposedCountersGfx9,
         kGputimeExposedCountersGfx9,
     };
 
@@ -936,16 +968,32 @@ namespace counter_dx11_gfx9
         {324, "GCEA13", 13, 83, 2, 0},
         {325, "GCEA14", 14, 83, 2, 0},
         {326, "GCEA15", 15, 83, 2, 0},
-        {327, "RMI0", 0, 257, 4, 0},
-        {328, "RMI1", 1, 257, 4, 0},
-        {329, "RMI2", 2, 257, 4, 0},
-        {330, "RMI3", 3, 257, 4, 0},
-        {331, "RMI4", 4, 257, 4, 0},
-        {332, "RMI5", 5, 257, 4, 0},
-        {333, "RMI6", 6, 257, 4, 0},
-        {334, "RMI7", 7, 257, 4, 0},
-        {335, "GPUTimeStamp", 0, 1, 1, 0},
-        {336, "GPUTime", 0, 6, 2, 0},
+        {327, "GCEA16", 16, 83, 2, 0},
+        {328, "GCEA17", 17, 83, 2, 0},
+        {329, "GCEA18", 18, 83, 2, 0},
+        {330, "GCEA19", 19, 83, 2, 0},
+        {331, "GCEA20", 20, 83, 2, 0},
+        {332, "GCEA21", 21, 83, 2, 0},
+        {333, "GCEA22", 22, 83, 2, 0},
+        {334, "GCEA23", 23, 83, 2, 0},
+        {335, "GCEA24", 24, 83, 2, 0},
+        {336, "GCEA25", 25, 83, 2, 0},
+        {337, "GCEA26", 26, 83, 2, 0},
+        {338, "GCEA27", 27, 83, 2, 0},
+        {339, "GCEA28", 28, 83, 2, 0},
+        {340, "GCEA29", 29, 83, 2, 0},
+        {341, "GCEA30", 30, 83, 2, 0},
+        {342, "GCEA31", 31, 83, 2, 0},
+        {343, "RMI0", 0, 257, 4, 0},
+        {344, "RMI1", 1, 257, 4, 0},
+        {345, "RMI2", 2, 257, 4, 0},
+        {346, "RMI3", 3, 257, 4, 0},
+        {347, "RMI4", 4, 257, 4, 0},
+        {348, "RMI5", 5, 257, 4, 0},
+        {349, "RMI6", 6, 257, 4, 0},
+        {350, "RMI7", 7, 257, 4, 0},
+        {351, "GPUTimeStamp", 0, 1, 1, 0},
+        {352, "GPUTime", 0, 6, 2, 0},
     };
 
     GpaCounterGroupExposedCounterDesc kHwDx11ExposedCountersByGroupGfx9[] = {
@@ -1195,7 +1243,23 @@ namespace counter_dx11_gfx9
         {324, 52892, {55, 57}},
         {325, 52975, {55, 57}},
         {326, 53058, {55, 57}},
-        {336, 55198, {0, 1, 2, 3, 4, 5}},
+        {327, 53141, {55, 57}},
+        {328, 53224, {55, 57}},
+        {329, 53307, {55, 57}},
+        {330, 53390, {55, 57}},
+        {331, 53473, {55, 57}},
+        {332, 53556, {55, 57}},
+        {333, 53639, {55, 57}},
+        {334, 53722, {55, 57}},
+        {335, 53805, {55, 57}},
+        {336, 53888, {55, 57}},
+        {337, 53971, {55, 57}},
+        {338, 54054, {55, 57}},
+        {339, 54137, {55, 57}},
+        {340, 54220, {55, 57}},
+        {341, 54303, {55, 57}},
+        {342, 54386, {55, 57}},
+        {352, 56526, {0, 1, 2, 3, 4, 5}},
     };
 
     GpaPaddedCounterDesc kDx11PaddedCounterByGroupGfx9[] = {
@@ -1256,6 +1320,22 @@ namespace counter_dx11_gfx9
         {324, 52892, {77, 78, 79, 80, 81, 82}},
         {325, 52975, {77, 78, 79, 80, 81, 82}},
         {326, 53058, {77, 78, 79, 80, 81, 82}},
+        {327, 53141, {77, 78, 79, 80, 81, 82}},
+        {328, 53224, {77, 78, 79, 80, 81, 82}},
+        {329, 53307, {77, 78, 79, 80, 81, 82}},
+        {330, 53390, {77, 78, 79, 80, 81, 82}},
+        {331, 53473, {77, 78, 79, 80, 81, 82}},
+        {332, 53556, {77, 78, 79, 80, 81, 82}},
+        {333, 53639, {77, 78, 79, 80, 81, 82}},
+        {334, 53722, {77, 78, 79, 80, 81, 82}},
+        {335, 53805, {77, 78, 79, 80, 81, 82}},
+        {336, 53888, {77, 78, 79, 80, 81, 82}},
+        {337, 53971, {77, 78, 79, 80, 81, 82}},
+        {338, 54054, {77, 78, 79, 80, 81, 82}},
+        {339, 54137, {77, 78, 79, 80, 81, 82}},
+        {340, 54220, {77, 78, 79, 80, 81, 82}},
+        {341, 54303, {77, 78, 79, 80, 81, 82}},
+        {342, 54386, {77, 78, 79, 80, 81, 82}},
     };
 
     GpaSqCounterGroupDesc kHwDx11SqGroupsGfx9[] = {
@@ -1835,6 +1915,22 @@ namespace counter_dx11_gfx9
     PE_BLOCK_EA,
     PE_BLOCK_EA,
     PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
+    PE_BLOCK_EA,
     PE_BLOCK_RMI,
     PE_BLOCK_RMI,
     PE_BLOCK_RMI,
@@ -1847,17 +1943,17 @@ namespace counter_dx11_gfx9
     PE_BLOCK_UNKNOWN,
     };
 
-    const unsigned int kHwDx11GpuTimeBottomToBottomDurationIndexGfx9 = 55198; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Dx11 for Gfx9 family
+    const unsigned int kHwDx11GpuTimeBottomToBottomDurationIndexGfx9 = 56526; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Dx11 for Gfx9 family
     const unsigned int kHwDx11GpuTimeBottomToBottomStartIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for Dx11 for Gfx9 family
     const unsigned int kHwDx11GpuTimeBottomToBottomEndIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for Dx11 for Gfx9 family
-    const unsigned int kHwDx11GpuTimeTopToBottomDurationIndexGfx9 = 55201; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Dx11 for Gfx9 family
+    const unsigned int kHwDx11GpuTimeTopToBottomDurationIndexGfx9 = 56529; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Dx11 for Gfx9 family
     const unsigned int kHwDx11GpuTimeTopToBottomStartIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the top of pipe for Dx11 for Gfx9 family
     const unsigned int kHwDx11GpuTimeTopToBottomEndIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the bottom of pipe for Dx11 for Gfx9 family
-    const std::set<unsigned int> kHwDx11TimestampBlockIdsGfx9 =       {336, 335}; ///< Timestamp block id's for DX11 for gfx9 family
-    const std::set<unsigned int> kHwDx11TimeCounterIndicesGfx9 =      {55198, 55199, 55200, 55201, 55202, 55203, 55197}; ///< Timestamp counter indices for DX11 for gfx9 family
+    const std::set<unsigned int> kHwDx11TimestampBlockIdsGfx9 =       {352, 351}; ///< Timestamp block id's for DX11 for gfx9 family
+    const std::set<unsigned int> kHwDx11TimeCounterIndicesGfx9 =      {56526, 56527, 56528, 56529, 56530, 56531, 56525}; ///< Timestamp counter indices for DX11 for gfx9 family
     const unsigned int           kHwDx11GroupCountGfx9                = sizeof(kHwDx11GroupsGfx9) / sizeof(GpaCounterGroupDesc);
-    const unsigned int           kHwDx11ExposedCountersGroupCountGfx9 = 247;
-    const unsigned int           kDx11PaddedCounterGroupCountGfx9 = 57;
+    const unsigned int           kHwDx11ExposedCountersGroupCountGfx9 = 263;
+    const unsigned int           kDx11PaddedCounterGroupCountGfx9 = 73;
     const unsigned int           kHwDx11SqGroupCountGfx9              = sizeof(kHwDx11SqGroupsGfx9) / sizeof(GpaSqCounterGroupDesc);
     const unsigned int           kHwDx11SqIsolatedGroupCountGfx9      = sizeof(kHwDx11SqIsolatedGroupsGfx9) / sizeof(unsigned int);
 } //  namespace counter_dx11_gfx9

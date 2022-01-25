@@ -99,22 +99,37 @@ namespace ogl_utils
             std::string version_string(version_c_string);
 
             // The build number ends at the first space.
-            size_t end_build = version_string.find_first_of(' ');
+            const size_t end_build = version_string.find_first_of(' ');
 
             // Truncate the input at the first space.
             version_string = version_string.substr(0, end_build);
 
             // The build number starts after the last decimal point.
-            size_t start_build = version_string.find_last_of('.') + 1;
+            const size_t first_pos = version_string.find_first_of('.');
+            const size_t last_pos  = version_string.find_last_of('.');
 
-            // Parse the version number.
-            std::istringstream iss(version_string.substr(start_build, end_build - start_build));
-            iss >> version;
-
-            // Couldn't extract version -- return INT_MAX to simulate most recent driver.
-            if (iss.fail())
+            if (first_pos < last_pos)
             {
-                version = INT_MAX;
+                // The build number starts one character after the decimal.
+                const size_t start_build = last_pos + 1;
+
+                // Parse the version number.
+                std::istringstream iss(version_string.substr(start_build, end_build - start_build));
+                iss >> version;
+
+                // Couldn't extract version -- return INT_MAX to simulate most recent driver.
+                if (iss.fail())
+                {
+                    version = INT_MAX;
+                }
+            }
+
+            if (version == INT_MAX)
+            {
+                std::string message = "Unable to parse driver version from GL_VERSION string: '";
+                message.append((char*)version_gl_string);
+                message.append("', so assuming it is the most recent driver.");
+                GPA_LOG_MESSAGE(message.c_str());
             }
         }
 
@@ -127,7 +142,7 @@ namespace ogl_utils
     {
         // This static assert will help to find error when we update the AsicIdEnum for new hardware.
         // Upon failure, we need to add suitable entry for public device and update the static assert for update count.
-        static_assert(kAsicIdLast == 41, "AsicIdEnum has changed, add suitable entry for asic info.");
+        static_assert(kAsicIdLast == 43, "AsicIdEnum has changed, add suitable entry for asic info.");
 
         if (!is_asic_info_initialized_)
         {
@@ -289,11 +304,13 @@ namespace ogl_utils
                 case kAsicIdGfx906:
                     asic_id_info.asic_type         = kAsicGfx9;
                     asic_id_info.gdt_asic_type     = GDT_GFX9_0_6;
-                    asic_id_info.default_device_id = 0x66A3;
+                    asic_id_info.default_device_id = 0x66AF;
                     break;
 
-                case kAsicIdPlaceholder2:
+                case kAsicIdGfx90C:
                     asic_id_info.asic_type = kAsicGfx9;
+                    asic_id_info.gdt_asic_type = GDT_GFX9_0_C;
+                    asic_id_info.default_device_id = 0x1636;
                     asic_id_info.is_apu    = true;
                     break;
 
@@ -306,34 +323,51 @@ namespace ogl_utils
                 case kAsicIdGfx1010Lite:
                     asic_id_info.asic_type         = kAsicGfx10;
                     asic_id_info.gdt_asic_type     = GDT_GFX10_1_0;
-                    asic_id_info.default_device_id = 0x7310;
+                    asic_id_info.default_device_id = 0x731F;
                     break;
 
-                case kAsicIdPlaceholder4:
+                case kAsicIdGfx1011:
+                case kAsicIdGfx1011Lite:
                     asic_id_info.asic_type = kAsicGfx10;
-                    break;
-
-                case kAsicIdPlaceholder5:
-                    asic_id_info.asic_type = kAsicGfx10;
+                    asic_id_info.gdt_asic_type = GDT_GFX10_1_1;
+                    asic_id_info.default_device_id = 0x7360;
                     break;
 
                 case kAsicIdGfx1012:
                     asic_id_info.asic_type         = kAsicGfx10;
-                    asic_id_info.gdt_asic_type     = GDT_GFX10_1_0;
+                    asic_id_info.gdt_asic_type     = GDT_GFX10_1_2;
                     asic_id_info.default_device_id = 0x7340;
                     break;
 
                 case kAsicIdGfx1030:
+                case kAsicIdGfx1030Lite:
                     asic_id_info.asic_type         = kAsicGfx103;
                     asic_id_info.gdt_asic_type     = GDT_GFX10_3_0;
-                    asic_id_info.default_device_id = 0x731F;
+                    asic_id_info.default_device_id = 0x73BF;
+                    break;
+
+                case kAsicIdGfx1031:
+                    asic_id_info.asic_type = kAsicGfx103;
+                    asic_id_info.gdt_asic_type = GDT_GFX10_3_1;
+                    asic_id_info.default_device_id = 0x73DF;
+                    break;
+
+                case kAsicIdGfx1032:
+                    asic_id_info.asic_type = kAsicGfx103;
+                    asic_id_info.gdt_asic_type = GDT_GFX10_3_2;
+                    asic_id_info.default_device_id = 0x73FF;
+                    break;
+
+                case kAsicIdGfx1034:
+                    asic_id_info.asic_type = kAsicGfx103;
+                    asic_id_info.gdt_asic_type = GDT_GFX10_3_4;
+                    asic_id_info.default_device_id = 0x743F;
                     break;
 
                 case kAsicIdPlaceholder6:
-                case kAsicIdPlaceholder7:
-                case kAsicIdPlaceholder8:
                 case kAsicIdPlaceholder9:
                 case kAsicIdPlaceholder10:
+                case kAsicIdPlaceholder11:
                     asic_id_info.asic_type     = kAsicGfx103;
                     asic_id_info.gdt_asic_type = GDT_GFX10_3_0;
                     break;
@@ -354,7 +388,7 @@ namespace ogl_utils
         static const char* kAsicTypeStr[] = {"Gfx6", "Gfx7", "Gfx8", "Gfx9", "Gfx10", "Gfx103", "Unknown"};
         AsicType           ret_val        = kAsicUnknown;
 
-        static_assert(sizeof(kAsicTypeStr)/sizeof(char*) == (kAsicUnknown + 1), "AsicTypeStr does not have enough entries.");
+        static_assert(sizeof(kAsicTypeStr) / sizeof(char*) == (kAsicUnknown + 1), "AsicTypeStr does not have enough entries.");
 
         if (!is_asic_info_initialized_)
         {
@@ -451,6 +485,11 @@ namespace ogl_utils
         {
             // Pre-GCN devices were removed from the driver starting with version 13452.
             // If the driver version is earlier than that we will return an error.
+#ifndef GLES
+            std::string driver_version_message = "GL_VERSION: ";
+            driver_version_message.append((const char*)version_gl_string);
+            GPA_LOG_ERROR(driver_version_message.c_str());
+#endif
             GPA_LOG_ERROR("OpenGL driver version is too old. Please update your driver.");
             return false;
         }
@@ -508,7 +547,8 @@ namespace ogl_utils
                     for (int i = 0; i < num_counters; i++)
                     {
                         // Index into the result array for each counter -- the result is the third GLuint out of the three.
-                        unsigned int value = (reinterpret_cast<GLuint*>(counter_data))[(i * 3) + 2];
+                        unsigned int      value = (reinterpret_cast<GLuint*>(counter_data))[(i * 3) + 2];
+                        std::stringstream message;
 
                         switch (i)
                         {
@@ -548,7 +588,7 @@ namespace ogl_utils
                         case kAsicNumSaIndex:
                             if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
-                                asic_info.num_sa = value;
+                                asic_info.num_sa_per_se = value;
                             }
                             break;
 
@@ -563,6 +603,9 @@ namespace ogl_utils
                             if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
                                 asic_info.device_id = value;
+
+                                message << "Retrieved ASIC device ID: " << std::hex << std::showbase << value << ".";
+                                GPA_LOG_MESSAGE(message.str().c_str());
                             }
                             break;
 
@@ -570,6 +613,9 @@ namespace ogl_utils
                             if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                             {
                                 asic_info.device_rev = value;
+
+                                message << "Retrieved ASIC device revision: " << std::hex << std::showbase << value << ".";
+                                GPA_LOG_MESSAGE(message.str().c_str());
                             }
                             break;
                         }
@@ -591,6 +637,14 @@ namespace ogl_utils
             std::stringstream message;
             message << "ASIC ID returned from driver is: " << asic_info.asic_id << " and GL_VERSION is: " << asic_info.driver_version << ".";
             GPA_LOG_MESSAGE(message.str().c_str());
+
+            // Given the age of Tahiti ASICs, this particular value is unlikely to be correct.
+            if (asic_info.asic_id == 0)
+            {
+                GPA_LOG_MESSAGE(
+                    "WARNING: Received an ASIC ID of '0' from the OpenGL implementation; if you do not have an AMD Radeon HD 7000 series GPU then this "
+                    "indicates a driver error.");
+            }
         }
 
         return result;

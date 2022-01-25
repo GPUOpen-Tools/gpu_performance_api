@@ -31,9 +31,64 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-* Version 3.9 (07/27/21)
+## Version 3.10 (01/255555/22)
   * Add support for additional GPUs and APUs.
-  * Improvements made to the sample applications.
+  * Redefined derived counters on GCN (Vega), RDNA, and RDNA2 hardware.
+    * New pipeline-based counters to better match hardware behavior.
+    * GCN (Polaris) hardware:
+      * Added: CSThreadGroupSize.
+      * Fixed: CSThreads, CSFlatVMemInsts, HiZTilesAccepted, HiZTilesAcceptedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
+    * GCN (Radeon Vega Series) hardware:
+      * Removed: VSBusy, VSBusyCycles, VSTime, HSBusy, HSBusyCycles, HSTime, DSBusy, DSBusyCycles, DSTime.
+      * Added: VsGsBusy, VsGsBusyCycles, VsGsTime, PreTessellationBusy, PreTessellationBusyCycles, PreTessellationTime, PostTessellationBusy, PostTessellationBusyCycles, PostTessellationTime.
+      * Removed: VertexShader group (VSVerticesIn, VSVALUInstCount, VSSALUInstCount, VSVALUBusy, VSVALUBusyCycles, VSSALUBusy, VSSALUBusyCycles).
+      * Added: VertexGeometry group (VsGsVALUInstCount, VsGsSALUInstCount, VsGsVALUBusy, VsGsVALUBusyCycles, VsGsSALUBusy, VsGsSALUBusyCycles).
+        * Represents combined data from vertex and geometry shaders in a VS-PS or VS-GS-PS pipeline.
+      * Removed: HullShader group (HSPatches, HSVALUInstCount, HSSALUInstCount, HSVALUBusy, HSVALUBusyCycles, HSSALUBusy, HSSALUBusyCycles).
+      * Added: PreTessellation group (PreTessVALUInstCount, PreTessSALUInstCount, PreTessVALUBusy, PreTessVALUBusyCycles, PreTessSALUBusy, PreTessSALUBusyCycles).
+        * Represents combined data from vertex and hull shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
+      * Removed: DomainShader group (DSVerticesIn, DSVALUInstCount, DSSALUInstCount, DSVALUBusy, DSVALUBusyCycles, DSSALUBusy, DSSALUBusyCycles).
+      * Removed: GeometryShader group (GSPrimsIn, GSVerticesOut, GSVALUInstCount, GSSALUInstCount, GSVALUBusy, GSVALUBusyCycles, GSSALUBusy, GSSALUBusyCycles).
+      * Added: PostTessellation group (PostTessVALUInstCount, PostTessSALUInstCount, PostTessVALUBusy, PostTessVALUBusyCycles, PostTessSALUBusy, PostTessSALUBusyCycles).
+        * Represents combined data from domain and geometry shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
+      * Added: CSThreadGroupSize.
+      * Fixed: PSBusy, PSBusyCycles, PSTime, CSBusy, CSBusyCycles, CSTime, CSThreads, CSFlatVMemInsts, HiZTilesAccepted, HiZTilesAcceptedCount, HiZTilesRejectedCount, HiZQuadsCulled, HiZQuadsCulledCount, HiZQuadsAcceptedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
+    * RDNA (Radeon RX 5000 Series) hardware:
+      * Removed: VSBusy, VSBusyCycles, VSTime, HSBusy, HSBusyCycles, HSTime, DSBusy, DSBusyCycles, DSTime.
+      * Added: VsGsBusy, VsGsBusyCycles, VsGsTime, PreTessellationBusy, PreTessellationBusyCycles, PreTessellationTime, PostTessellationBusy, PostTessellationBusyCycles, PostTessellationTime.
+      * Removed: VertexShader group (VSVerticesIn, VSVALUInstCount, VSSALUInstCount, VSVALUBusy, VSVALUBusyCycles, VSSALUBusy, VSSALUBusyCycles).
+      * Added: VertexGeometry group (VsGsVALUInstCount, VsGsSALUInstCount, VsGsVALUBusy, VsGsVALUBusyCycles, VsGsSALUBusy, VsGsSALUBusyCycles).
+        * Represents combined data from vertex and geometry shaders in a VS-PS or VS-GS-PS pipeline.
+      * Removed: HullShader group (HSPatches, HSVALUInstCount, HSSALUInstCount, HSVALUBusy, HSVALUBusyCycles, HSSALUBusy, HSSALUBusyCycles).
+      * Added: PreTessellation group (PreTessVALUInstCount, PreTessSALUInstCount, PreTessVALUBusy, PreTessVALUBusyCycles, PreTessSALUBusy, PreTessSALUBusyCycles).
+        * Represents combined data from vertex and hull shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
+      * Removed: DomainShader group (DSVerticesIn, DSVALUInstCount, DSSALUInstCount, DSVALUBusy, DSVALUBusyCycles, DSSALUBusy, DSSALUBusyCycles).
+      * Removed: GeometryShader group (GSPrimsIn, GSVerticesOut, GSVALUInstCount, GSSALUInstCount, GSVALUBusy, GSVALUBusyCycles, GSSALUBusy, GSSALUBusyCycles).
+      * Added: PostTessellation group (PostTessVALUInstCount, PostTessSALUInstCount, PostTessVALUBusy, PostTessVALUBusyCycles, PostTessSALUBusy, PostTessSALUBusyCycles).
+        * Represents combined data from domain and geometry shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
+      * Removed: PrimitivesIn.
+      * Added: CSThreadGroupSize.
+      * Fixed: PSBusy, PSBusyCycles, PSTime, CSBusy, CSBusyCycles, CSTime, CSThreads, HiZTilesAccepted, HiZTilesAcceptedCount, HiZTilesRejectedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
+    * RDNA2 (Radeon RX 6000 Series) hardware:
+      * Removed: VSBusy, VSBusyCycles, VSTime, HSBusy, HSBusyCycles, HSTime, DSBusy, DSBusyCycles, DSTime.
+      * Removed: VertexShader group, HullShader group, DomainShader group, GeometryShader group.
+      * Removed: PrimitivesIn, PSVALUInstCount, PSSALUInstCount, PSVALUBusy, PSVALUBusyCycles, PSSALUBusy, PSSALUBusyCycles.
+      * Removed: CSVALUInsts, CSVALUUtilization, CSSALUInsts, CSVFetchInsts, CSSFetchInsts, CSVWriteInsts, CSVALUBusy, CSVALUBusyCycles, CSSALUBusy, CSSALUBusyCycles.
+      * Added: CSThreadGroupSize
+      * Fixed: CSThreads, HiZTilesAccepted, HiZTilesAcceptedCount, HiZTilesRejectedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
+  * Integrated clang-tidy and clang-format into cmake build options.
+  * New entrypoint added: GpaGetDeviceGeneration. Binary backwards compatibility is maintained.
+  * OpenGL on Linux: Fixed hardware detection on MESA drivers.
+  * OpenGL: Fixed hardware detection accuracy.
+  * DX11:
+    * Fixed Adrenalin driver version detection.
+    * Fixed setting the number of shader arrays based on client hardware.
+  * Improvements made to the sample applications:
+    * Extensive counter validation in DX12.
+    * Sample apps can now confirm successful validation tests.
+    * Sample apps now support passing in a counter file to specify which counters to enable.
+    * Consolidated parameter parsing logic in sample apps.
+    * In Vulkan and DX12 samples, the return code now indicates the number of errors that were reported.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
@@ -80,7 +135,24 @@ The documentation is hosted publicly at: http://gpuperfapi.readthedocs.io/en/lat
 This release exposes both "Derived" counters and "Raw Hardware" counters. Derived counters are counters that are computed using a set of raw hardware counters.
 This version allows you to access the raw hardware counters by simply specifying a flag when calling GpaOpenContext.
 
+## New Pipeline-Based Counters
+It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 architectures were not being properly accounted for in GPUPerfAPI v3.9, and caused a lot of known issues to be called out in that release. In certain cases, the driver and hardware are able to make optimizations by combining two shader stages together, which prevented GPUPerfAPI from identifying which instructions where executed for which shader type. As a result of these changes, GPUPerfAPI is no longer able to expose instruction counters for each API-level shader, specifically Vertex Shaders, Hull Shaders, Domain Shaders, and Geometry Shaders. Pixel Shaders and Compute Shaders remain unchanged. We are now exposing these instruction counters based on the type of shader pipeline being used. In pipelines that do not use tessellation, the instruction counts for both the Vertex and Geometry Shaders (if used) will be combined in the VertexGeometry group (ie: counters with the "VsGs" prefix). In pipelines that use tessellation, the instruction counts for both the Vertex and Hull Shaders will be combined in the PreTessellation group (ie: counters with the "PreTessellation" or "PreTess" prefix), and instruction counts for the Domain and Geometry Shaders (if used) will be combined in the PostTessellation group (ie: counters with the "PostTessellation" or "PostTess" prefix). The table below may help to better understand the new mapping between the API-level shaders (across the top), and which prefixes to look for in the GPUPerfAPI counters.
+
+| Pipeline       | Vertex  |  Hull   |  Domain  | Geometry | Pixel | Compute |
+|----------------|:-------:|:-------:|:--------:|:--------:|:-----:|:-------:|
+| VS-PS          |  VsGs   |         |          |          |  PS   |         |
+| VS-GS-PS       |  VsGs   |         |          |   VsGs   |  PS   |         |
+| VS-HS-DS-PS    | PreTess | PreTess | PostTess | PostTess |  PS   |         |
+| VS-HS-DS-GS-PS | PreTess | PreTess | PostTess | PostTess |  PS   |         |
+| CS             |         |         |          |          |       |   CS    |
+
 ## Known Issues
+### Counter Validation Errors in D3D12ColorCube Sample App
+Due to the extensive counter validation now being done in the D3D12ColorCube sample application, and some expected variation in nondeterministic counters across a wide range of systems, the sample app may report errors on some systems. Likewise, some counters are marked as known issues and we are investigating the underlying causes of the inconsistent results.
+
+Additionally, the following deterministic performance counter values may not be accurate for the D3D12ColorCube sample application:
+* CulledPrims, PSPixelsOut on Radeon RX 480 hardware.
+
 ### Ubuntu 20.04 LTS Vulkan ICD Issue
 On Ubuntu 20.04 LTS, Vulkan ICD may not be set to use AMD Vulkan ICD. In this case, it needs to be explicitly set to use AMD Vulkan ICD before using the GPA. It can be done by setting the ```VK_ICD_FILENAMES``` environment variable to ```/etc/vulkan/icd.d/amd_icd64.json```.
 
@@ -96,22 +168,9 @@ By default this file is only modifiable by root, so the application being profil
 * You may have to reboot the system for the change to take effect.
 * Setting the GPU clock mode is not working correctly for <b>Radeon 5700 Series GPUs</b>, potentially leading to some inconsistencies in counter values from one run to the next.
 
-### DirectX11 Performance Counter Accuracy For Select Counters and GPUs
-The following performance counter values may not be accurate for DirectX 11 applications running on a Radeon 5700, and 6000 Series GPUs:
-* VALUInstCount, SALUInstCount, VALUBusy, SALUBusy for all shader stages: These values should be representative of performance, but may not be 100% accurate.
-* Most of the ComputeShader counters (all except the MemUnit and WriteUnit counters): These values should be representative of performance, but may not be 100% accurate.
-
 ### OpenCL Performance Counter Accuracy For Radeon 6000 Series GPUs
 The following performance counter values may not be accurate for OpenCL applications running on Radeon 6000 Series GPUs:
 * Wavefronts, VALUInsts, SALUInsts, SALUBusy, VALUUtilization: These values should be representative of performance, but may not be 100% accurate.
-
-### OpenGL Performance Counter Accuracy For Radeon 5700 Series GPUs
-The following performance counter values may not be accurate for OpenGL applications running on a Radeon 5700 Series GPUs:
-* Most of the ComputeShader counters (all except the MemUnit and WriteUnit counters): These values should be representative of performance, but may not be 100% accurate.
-
-### Variability in Deterministic Counters For Select GPUs
-Performance counters which should be deterministic are showing variability on Radeon 5700 and 6000 Series GPUs. The values should be useful for performance analysis, but may not be 100% correct.
-* e.g. VSVerticesIn, PrimitivesIn, PSPixelsOut, PreZSamplesPassing
 
 ### Profiling Bundles
 Profiling bundles in DirectX12 and Vulkan is not working properly. It is recommended to remove those GPA Samples from your application, or move the calls out of the bundle for profiling.

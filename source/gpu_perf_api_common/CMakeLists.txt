@@ -115,7 +115,7 @@ set(SOURCES
     ${PUBLIC_HEADERS}
     ${DEPRECATED_PUBLIC_HEADERS})
 
-ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME})
+ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME} ${SOURCES})
 target_link_libraries(${GPA_PROJECT_NAME}
                       ${LINK_LIBS}
                       $<$<PLATFORM_ID:Linux>:pthread>)

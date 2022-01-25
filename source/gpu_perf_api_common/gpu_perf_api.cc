@@ -38,19 +38,19 @@ extern IGpaImplementor* gpa_imp;  ///< GPA implementor instance.
     }
 
 /// Macro to check for out of range counter index.
-#define CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, gpa_context_id)                                                \
-    GpaUInt32 num_counters;                                                                                    \
-    GpaStatus num_counter_status = gpa_context_id->GetNumCounters(&num_counters);                              \
-    if (kGpaStatusOk != num_counter_status)                                                                    \
-    {                                                                                                          \
-        return num_counter_status;                                                                             \
-    }                                                                                                          \
-    if (index >= num_counters)                                                                                 \
-    {                                                                                                          \
-        std::stringstream message;                                                                             \
-        message << "Parameter '" #index "' is " << #index << " but must be less than " << num_counters << "."; \
-        GPA_LOG_ERROR(message.str().c_str());                                                                  \
-        return kGpaStatusErrorIndexOutOfRange;                                                                 \
+#define CHECK_COUNTER_INDEX_OUT_OF_RANGE(index, gpa_context_id)                                               \
+    GpaUInt32 num_counters;                                                                                   \
+    GpaStatus num_counter_status = gpa_context_id->GetNumCounters(&num_counters);                             \
+    if (kGpaStatusOk != num_counter_status)                                                                   \
+    {                                                                                                         \
+        return num_counter_status;                                                                            \
+    }                                                                                                         \
+    if (index >= num_counters)                                                                                \
+    {                                                                                                         \
+        std::stringstream message;                                                                            \
+        message << "Parameter '" #index "' is " << index << " but must be less than " << num_counters << "."; \
+        GPA_LOG_ERROR(message.str().c_str());                                                                 \
+        return kGpaStatusErrorIndexOutOfRange;                                                                \
     }
 
 /// Macro to check if a context is open.
@@ -439,7 +439,74 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceName(GpaContextId gpa_context_id, const char*
             ret_status = kGpaStatusOk;
         }
 
-        GPA_INTERNAL_LOG(GpaGetDeviceAndRevisionId, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status));
+        GPA_INTERNAL_LOG(GpaGetDeviceName, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status));
+
+        return ret_status;
+    }
+    catch (...)
+    {
+        return kGpaStatusErrorException;
+    }
+}
+
+GPA_LIB_DECL GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHwGeneration* hardware_generation)
+{
+    try
+    {
+        PROFILE_FUNCTION(GpaGetDeviceGeneration);
+        TRACE_FUNCTION(GpaGetDeviceGeneration);
+
+        CHECK_NULL_PARAM(hardware_generation);
+        CHECK_GPA_CONTEXT_IS_EXISTS_AND_IS_OPEN(gpa_context_id);
+
+        const GpaHwInfo*  hw_info    = (*gpa_context_id)->GetHwInfo();
+        GpaStatus         ret_status = kGpaStatusErrorFailed;
+        GDT_HW_GENERATION gdt_hw_generation;
+        if (nullptr != hw_info && hw_info->GetHwGeneration(gdt_hw_generation))
+        {
+            ret_status = kGpaStatusOk;
+
+            switch (gdt_hw_generation)
+            {
+            case GDT_HW_GENERATION_NONE:
+                *hardware_generation = kGpaHwGenerationNone;
+                break;
+            case GDT_HW_GENERATION_NVIDIA:
+                *hardware_generation = kGpaHwGenerationNvidia;
+                break;
+            case GDT_HW_GENERATION_INTEL:
+                *hardware_generation = kGpaHwGenerationIntel;
+                break;
+            case GDT_HW_GENERATION_SOUTHERNISLAND:
+                *hardware_generation = kGpaHwGenerationGfx6;
+                break;
+            case GDT_HW_GENERATION_SEAISLAND:
+                *hardware_generation = kGpaHwGenerationGfx7;
+                break;
+            case GDT_HW_GENERATION_VOLCANICISLAND:
+                *hardware_generation = kGpaHwGenerationGfx8;
+                break;
+            case GDT_HW_GENERATION_GFX9:
+                *hardware_generation = kGpaHwGenerationGfx9;
+                break;
+            case GDT_HW_GENERATION_GFX10:
+                *hardware_generation = kGpaHwGenerationGfx10;
+                break;
+            case GDT_HW_GENERATION_GFX103:
+                *hardware_generation = kGpaHwGenerationGfx103;
+                break;
+            case GDT_HW_GENERATION_LAST:
+                *hardware_generation = kGpaHwGenerationLast;
+                break;
+            default:
+                // In the case that we get an invalid enum value back, signal that an internal error has occurred
+                *hardware_generation = kGpaHwGenerationNone;
+                ret_status           = kGpaStatusErrorFailed;
+                break;
+            }
+        }
+
+        GPA_INTERNAL_LOG(GpaGetDeviceGeneration, MAKE_PARAM_STRING(gpa_context_id) << MAKE_PARAM_STRING(ret_status));
 
         return ret_status;
     }
@@ -844,7 +911,7 @@ GPA_LIB_DECL GpaStatus GpaEnableCounter(GpaSessionId gpa_session_id, GpaUInt32 c
 
         GpaStatus ret_status = (*gpa_session_id)->EnableCounter(counter_index);
 
-        GPA_INTERNAL_LOG(GpaEnableCounter, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(ret_status));
+        GPA_INTERNAL_LOG(GpaEnableCounter, MAKE_PARAM_STRING(gpa_session_id) << MAKE_PARAM_STRING(counter_index) << MAKE_PARAM_STRING(ret_status));
 
         return ret_status;
     }

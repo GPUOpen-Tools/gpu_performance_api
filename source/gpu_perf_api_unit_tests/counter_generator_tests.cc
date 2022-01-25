@@ -308,13 +308,14 @@ void VerifyCounterLibInterface(GpaApiType                         api,
         const GpaCounterInfo* temp_ptr = nullptr;
         gpa_status                     = gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, 8, &temp_ptr);
 
-        if (kGpaApiDirectx11 == api || kGpaApiOpengl == api || kGpaApiDirectx12 == api || kGpaApiVulkan == api)
+        if ((kGpaApiDirectx11 == api || kGpaApiOpengl == api || kGpaApiDirectx12 == api || kGpaApiVulkan == api) &&
+            device_id != kDevIdGfx10_3)
         {
             {
                 // Graphics SQ-derived counters use a shader mask
                 GpaCounterParam counter_param;
                 counter_param.is_derived_counter   = true;
-                counter_param.derived_counter_name = "VSVALUInstCount";
+                counter_param.derived_counter_name = "PSVALUInstCount";
                 GpaUInt32 counter_index            = 0;
                 gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
                 EXPECT_EQ(kGpaStatusOk, gpa_status);
@@ -328,10 +329,11 @@ void VerifyCounterLibInterface(GpaApiType                         api,
                 }
             }
 
+            if (device_id != kDevIdGfx10_3)
             {
                 GpaCounterParam counter_param;
                 counter_param.is_derived_counter   = true;
-                counter_param.derived_counter_name = "VSTime";
+                counter_param.derived_counter_name = "PSTime";
                 GpaUInt32 counter_index            = 0;
                 gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
                 EXPECT_EQ(kGpaStatusOk, gpa_status);

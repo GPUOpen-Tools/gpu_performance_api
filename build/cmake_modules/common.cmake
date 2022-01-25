@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.5.1)
 
 include(${GPA_CMAKE_MODULES_DIR}/defs.cmake)
-include (${GPA_CMAKE_MODULES_DIR}/macros.cmake)
+include (${GPA_CMAKE_MODULES_DIR}/utils.cmake)
 
 # Include global cmake common file
 include(${CMAKE_COMMON_SRC_GLOBAL_CMAKE_MODULE})

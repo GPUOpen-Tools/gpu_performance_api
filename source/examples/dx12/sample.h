@@ -8,38 +8,42 @@
 #ifndef GPU_PERF_API_EXAMPLES_DX12_SAMPLE_H_
 #define GPU_PERF_API_EXAMPLES_DX12_SAMPLE_H_
 
-#include <string>
+#include "examples/common/cmdline_parser.h"
+#include "examples/common/gpa_sample_app.h"
 
-/// @brief Struct to hold values of command line arguments.
-struct CommandLineArgs
+namespace gpa_example
 {
-    /// Flag indicating if GPU should be used to collect performance counters.
-    bool use_gpa = true;
+    /// @brief Sample GPA Application using DirectX 12.
+    class Dx12SampleApp : public GpaSampleApp
+    {
+    public:
+        /// @brief Constructor.
+        ///
+        /// @param app_name The name of the application.
+        /// @param cmdline_parser The command line parser to be used by this application.
+        Dx12SampleApp(const std::string app_name, CmdlineParser& cmdline_parser);
 
-    /// Number of frames to execute -- zero indicates that the app should run until the user closes it.
-    unsigned int num_frames = 0;
+        /// @brief Destructor.
+        ~Dx12SampleApp() override = default;
 
-    /// Flag indicating if the bundles created by the application should be profiled.
-    /// Starting with the Adrenaline 19.1.1 driver, profiling bundles is no longer supported.
-    bool profile_bundles = false;
+        /// @brief Specifies whether or not GPA should be used by this application.
+        ///
+        /// @return true if specified on the command line, false otherwise.
+        bool NoGpa();
 
-    /// Flag indicating if some counter values should be verified (experimental).
-    bool verify_counters = false;
+        /// @brief Specifies whether or no DirectX 12 Bundles features should be profiled.
+        ///
+        /// Starting with the Adrenalin 19.1.1 driver, profiling bundles is no longer supported.
+        /// @return true if specified on the command line, false otherwise.
+        bool ProfileBundle();
 
-    /// Flag indicating whether the application should verify some counter values and confirm successful results.
-    bool confirm_success = false;
+    private:
+        /// @brief Specifies whether or not GPA should be used by this application.
+        bool nogpa_;
 
-    /// Flag indicating whether or not to include hardware counters in non-internal builds.
-    bool include_hw_counters = false;
+        /// @brief Specifies whether or no DirectX 12 Bundles features should be profiled.
+        bool profile_bundle_;
+    };
+}  // namespace gpa_example
 
-    /// Flag indicating whether the counter file is given or not.
-    bool counter_provided = false;
-
-    /// Counter file name.
-    std::string counter_file_name;
-};
-
-/// Command line arguments.
-extern CommandLineArgs args;
-
-#endif GPU_PERF_API_EXAMPLES_DX12_SAMPLE_H_
+#endif // GPU_PERF_API_EXAMPLES_DX12_SAMPLE_H_

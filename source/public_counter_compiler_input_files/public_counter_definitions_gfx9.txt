@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
+;; Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
 ;;
 ;; Counter definitions for DX/VK/GL for Gfx9 (GFX IP v9)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -93,66 +93,72 @@ eqn=0,NUM_PRIM_PIPES,/
 VGT*_PERF_VGT_TE11_BUSY[0..3]
 eqn=0,1,max,2,max,3,max
 
-name=VSBusy
-desc=#Timing#The percentage of time the ShaderUnit has vertex shader work to do.
+name=VsGsBusy
+desc=#Timing#The percentage of time the ShaderUnit has VS or GS work to do in a VS-[GS-]PS pipeline.
 type=gpa_float64
 usage=percentage
 [GLGfx9]
 SPI_PERF_VS_BUSY
-SPI_PERF_VS_WAVE
+SPI_PERF_GS_BUSY
+SPI_PERF_HS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,1,ifnotzero,2,/,(100),*,(100),min
+eqn=0,1,max,NUM_SHADER_ENGINES,/,(0),2,ifnotzero,3,/,(100),*,(100),min
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SPI*_PERF_VS_BUSY[0..3]
-SPI*_PERF_VS_WAVE[0..3]
+SPI*_PERF_GS_BUSY[0..3]
+SPI*_PERF_HS_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,max,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,8,/,(100),*,(100),min
+eqn=0,4,max,(0),8,ifnotzero,1,5,max,(0),9,ifnotzero,max,2,6,max,(0),10,ifnotzero,max,3,7,max,(0),11,ifnotzero,max,12,/,(100),*,(100),min
 
-name=VSBusyCycles
-desc=#Timing#Number of GPU cycles that the ShaderUnit has vertex shader work to do.
+name=VsGsBusyCycles
+desc=#Timing#Number of GPU cycles that the ShaderUnit has VS or GS work to do in a VS-[GS-]PS pipeline.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
 SPI_PERF_VS_BUSY
-SPI_PERF_VS_WAVE
-eqn=(0),0,1,ifnotzero
+SPI_PERF_GS_BUSY
+SPI_PERF_HS_WAVE
+eqn=0,1,max,NUM_SHADER_ENGINES,/,(0),2,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SPI*_PERF_VS_BUSY[0..3]
-SPI*_PERF_VS_WAVE[0..3]
-eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,max,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max
+SPI*_PERF_GS_BUSY[0..3]
+SPI*_PERF_HS_WAVE[0..3]
+eqn=0,4,max,(0),8,ifnotzero,1,5,max,(0),9,ifnotzero,max,2,6,max,(0),10,ifnotzero,max,3,7,max,(0),11,ifnotzero,max
 
-name=VSTime
-desc=#Timing#Time vertex shaders are busy in nanoseconds.
+name=VsGsTime
+desc=#Timing#Time VS or GS are busy in nanoseconds in a VS-[GS-]PS pipeline.
 type=gpa_float64
 usage=nanoseconds
 [GLGfx9]
 GPUTime_Bottom_To_Bottom_Duration
 SPI_PERF_VS_BUSY
-SPI_PERF_VS_WAVE
+SPI_PERF_GS_BUSY
+SPI_PERF_HS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,2,ifnotzero,3,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=1,2,max,NUM_SHADER_ENGINES,/,(0),3,ifnotzero,4,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 GPUTime_Bottom_To_Bottom_Duration
 SPI*_PERF_VS_BUSY[0..3]
-SPI*_PERF_VS_WAVE[0..3]
+SPI*_PERF_GS_BUSY[0..3]
+SPI*_PERF_HS_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=1,5,max,(0),9,ifnotzero,2,6,max,(0),10,ifnotzero,max,3,7,max,(0),11,ifnotzero,max,4,8,max,(0),12,ifnotzero,max,13,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
-name=HSBusy
-desc=#Timing#The percentage of time the ShaderUnit has hull shader work to do.
+name=PreTessellationBusy
+desc=#Timing#The percentage of time the ShaderUnit has VS and HS work to do in a pipeline that uses tessellation.
 type=gpa_float64
 usage=percentage
 [GLGfx9]
 SPI_PERF_HS_BUSY
 SPI_PERF_HS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,1,ifnotzero,2,/,(100),*,(100),min
+eqn=(0),0,NUM_SHADER_ENGINES,/,1,ifnotzero,2,/,(100),*,(100),min
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -161,14 +167,14 @@ SPI*_PERF_HS_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,max,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,8,/,(100),*,(100),min
 
-name=HSBusyCycles
-desc=#Timing#Number of GPU cycles that the ShaderUnit has hull shader work to do.
+name=PreTessellationBusyCycles
+desc=#Timing#Number of GPU cycles that the ShaderUnit has VS and HS work to do in a pipeline that uses tessellation.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
 SPI_PERF_HS_BUSY
 SPI_PERF_HS_WAVE
-eqn=(0),0,1,ifnotzero
+eqn=(0),0,NUM_SHADER_ENGINES,/,1,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -176,8 +182,8 @@ SPI*_PERF_HS_BUSY[0..3]
 SPI*_PERF_HS_WAVE[0..3]
 eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,max,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max
 
-name=HSTime
-desc=#Timing#Time hull shaders are busy in nanoseconds.
+name=PreTessellationTime
+desc=#Timing#Time VS and HS are busy in nanoseconds in a pipeline that uses tessellation.
 type=gpa_float64
 usage=nanoseconds
 [GLGfx9]
@@ -185,7 +191,7 @@ GPUTime_Bottom_To_Bottom_Duration
 SPI_PERF_HS_BUSY
 SPI_PERF_HS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,2,ifnotzero,3,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=(0),1,NUM_SHADER_ENGINES,/,2,ifnotzero,3,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -195,119 +201,62 @@ SPI*_PERF_HS_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
-;name=DSBusy
-;desc=#Timing#The percentage of time the ShaderUnit has domain shader work to do.
-;type=gpa_float64
-;usage=percentage
-;[GLGfx9]
-;SPI_PERF_VS_BUSY
-;SPI_PERF_ES_BUSY
-;SPI_PERF_ES_WAVE
-;SPI_PERF_LS_WAVE
-;CPF_PERF_SEL_CPF_STAT_BUSY
-;eqn=(0),0,1,2,ifnotzero,3,ifnotzero,4,/,(100),*,(100),min
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;SPI*_PERF_VS_BUSY[0..3]
-;SPI*_PERF_ES_BUSY[0..3]
-;SPI*_PERF_ES_WAVE[0..3]
-;SPI*_PERF_LS_WAVE[0..3]
-;CPF_PERF_SEL_CPF_STAT_BUSY
-;eqn=(0),0,4,8,ifnotzero,12,ifnotzero,(0),1,5,9,ifnotzero,13,ifnotzero,max,(0),2,6,10,ifnotzero,14,ifnotzero,max,(0),3,7,11,ifnotzero,15,ifnotzero,max,16,/,(100),*,(100),min
-
-;name=DSBusyCycles
-;desc=#Timing#Number of GPU cycles that the ShaderUnit has domain shader work to do.
-;type=gpa_float64
-;usage=cycles
-;[GLGfx9]
-;SPI_PERF_VS_BUSY
-;SPI_PERF_ES_BUSY
-;SPI_PERF_ES_WAVE
-;SPI_PERF_LS_WAVE
-;eqn=(0),0,1,2,ifnotzero,3,ifnotzero
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;SPI*_PERF_VS_BUSY[0..3]
-;SPI*_PERF_ES_BUSY[0..3]
-;SPI*_PERF_ES_WAVE[0..3]
-;SPI*_PERF_LS_WAVE[0..3]
-;eqn=(0),0,4,8,ifnotzero,12,ifnotzero,(0),1,5,9,ifnotzero,12,ifnotzero,max,(0),2,6,10,ifnotzero,14,ifnotzero,max,(0),3,7,11,ifnotzero,14,ifnotzero,max
-
-;name=DSTime
-;desc=#Timing#Time domain shaders are busy in nanoseconds.
-;type=gpa_float64
-;usage=nanoseconds
-;[GLGfx9]
-;GPUTime_Bottom_To_Bottom_Duration
-;SPI_PERF_VS_BUSY
-;SPI_PERF_ES_BUSY
-;SPI_PERF_ES_WAVE
-;SPI_PERF_LS_WAVE
-;CPF_PERF_SEL_CPF_STAT_BUSY
-;eqn=(0),1,2,3,ifnotzero,4,ifnotzero,5,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;GPUTime_Bottom_To_Bottom_Duration
-;SPI*_PERF_VS_BUSY[0..3]
-;SPI*_PERF_ES_BUSY[0..3]
-;SPI*_PERF_ES_WAVE[0..3]
-;SPI*_PERF_LS_WAVE[0..3]
-;CPF_PERF_SEL_CPF_STAT_BUSY
-;eqn=(0),1,5,9,ifnotzero,17,ifnotzero,(0),2,6,10,ifnotzero,14,ifnotzero,max,(0),3,7,11,ifnotzero,15,ifnotzero,max,(0),4,8,12,ifnotzero,16,ifnotzero,max,17,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
-
-name=GSBusy
-desc=#Timing#The percentage of time the ShaderUnit has geometry shader work to do.
+name=PostTessellationBusy
+desc=#Timing#The percentage of time the ShaderUnit has DS or GS work to do in a pipeline that uses tessellation.
 type=gpa_float64
 usage=percentage
 [GLGfx9]
+SPI_PERF_VS_BUSY
 SPI_PERF_GS_BUSY
-SPI_PERF_GS_WAVE
+SPI_PERF_HS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,1,ifnotzero,2,/,(100),*,(100),min
+eqn=(0),0,1,max,NUM_SHADER_ENGINES,/,2,ifnotzero,3,/,(100),*,(100),min
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
+SPI*_PERF_VS_BUSY[0..3]
 SPI*_PERF_GS_BUSY[0..3]
-SPI*_PERF_GS_WAVE[0..3]
+SPI*_PERF_HS_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,max,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,8,/,(100),*,(100),min
+eqn=(0),0,4,max,8,ifnotzero,(0),1,5,max,9,ifnotzero,max,(0),2,6,max,10,ifnotzero,max,(0),3,7,max,11,ifnotzero,max,12,/,(100),*,(100),min
 
-name=GSBusyCycles
-desc=#Timing#Number of GPU cycles that the ShaderUnit has geometry shader work to do.
+name=PostTessellationBusyCycles
+desc=#Timing#Number of GPU cycles that the ShaderUnit has DS or GS work to do in a pipeline that uses tessellation.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
+SPI_PERF_VS_BUSY
 SPI_PERF_GS_BUSY
-SPI_PERF_GS_WAVE
-eqn=(0),0,1,ifnotzero
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,max,NUM_SHADER_ENGINES,/,2,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
+SPI*_PERF_VS_BUSY[0..3]
 SPI*_PERF_GS_BUSY[0..3]
-SPI*_PERF_GS_WAVE[0..3]
-eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,max,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),0,4,max,8,ifnotzero,(0),1,5,max,9,ifnotzero,max,(0),2,6,max,10,ifnotzero,max,(0),3,7,max,11,ifnotzero,max
 
-name=GSTime
-desc=#Timing#Time geometry shaders are busy in nanoseconds.
+name=PostTessellationTime
+desc=#Timing#Time DS or GS are busy in nanoseconds in a pipeline that uses tessellation.
 type=gpa_float64
 usage=nanoseconds
 [GLGfx9]
 GPUTime_Bottom_To_Bottom_Duration
+SPI_PERF_VS_BUSY
 SPI_PERF_GS_BUSY
-SPI_PERF_GS_WAVE
+SPI_PERF_HS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,2,ifnotzero,3,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=(0),1,2,max,NUM_SHADER_ENGINES,/,3,ifnotzero,4,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 GPUTime_Bottom_To_Bottom_Duration
+SPI*_PERF_VS_BUSY[0..3]
 SPI*_PERF_GS_BUSY[0..3]
-SPI*_PERF_GS_WAVE[0..3]
+SPI*_PERF_HS_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=(0),1,5,max,9,ifnotzero,(0),2,6,max,10,ifnotzero,max,(0),3,7,max,11,ifnotzero,max,(0),4,8,max,12,ifnotzero,max,13,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
 name=PSBusy
 desc=#Timing#The percentage of time the ShaderUnit has pixel shader work to do.
@@ -317,14 +266,14 @@ usage=percentage
 SPI_PERF_PS_BUSY
 SPI_PERF_PS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,1,ifnotzero,2,/,(100),*,(100),min
+eqn=(0),0,NUM_SHADER_ENGINES,/,1,ifnotzero,2,/,(100),*,(100),min
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SPI*_PERF_PS_BUSY[0..3]
 SPI*_PERF_PS_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,max,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,8,/,(100),*
+eqn=(0),0,4,ifnotzero,(0),1,5,ifnotzero,max,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,8,/,(100),*,(100),min
 
 name=PSBusyCycles
 desc=#Timing#Number of GPU cycles that the ShaderUnit has pixel shader work to do.
@@ -333,7 +282,7 @@ usage=cycles
 [GLGfx9]
 SPI_PERF_PS_BUSY
 SPI_PERF_PS_WAVE
-eqn=(0),0,1,ifnotzero
+eqn=(0),0,NUM_SHADER_ENGINES,/,1,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -350,7 +299,7 @@ GPUTime_Bottom_To_Bottom_Duration
 SPI_PERF_PS_BUSY
 SPI_PERF_PS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,2,ifnotzero,3,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=(0),1,NUM_SHADER_ENGINES,/,2,ifnotzero,3,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -358,7 +307,7 @@ GPUTime_Bottom_To_Bottom_Duration
 SPI*_PERF_PS_BUSY[0..3]
 SPI*_PERF_PS_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
 name=CSBusy
 desc=#Timing#The percentage of time the ShaderUnit has compute shader work to do.
@@ -370,7 +319,7 @@ SPI_PERF_CSG_WAVE
 SPI_PERF_CSN_BUSY
 SPI_PERF_CSN_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,1,ifnotzero,(0),2,3,ifnotzero,max,4,/,(100),*,(100),min
+eqn=(0),0,1,ifnotzero,(0),2,3,ifnotzero,max,NUM_SHADER_ENGINES,/,4,/,(100),*,(100),min
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -390,7 +339,7 @@ SPI_PERF_CSG_BUSY
 SPI_PERF_CSG_WAVE
 SPI_PERF_CSN_BUSY
 SPI_PERF_CSN_WAVE
-eqn=(0),0,1,ifnotzero,(0),2,3,ifnotzero,max
+eqn=(0),0,1,ifnotzero,(0),2,3,ifnotzero,max,NUM_SHADER_ENGINES,/
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -411,7 +360,7 @@ SPI_PERF_CSG_WAVE
 SPI_PERF_CSN_BUSY
 SPI_PERF_CSN_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),1,2,ifnotzero,(0),3,4,ifnotzero,max,5,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
+eqn=(0),1,2,ifnotzero,(0),3,4,ifnotzero,max,NUM_SHADER_ENGINES,/,5,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -423,464 +372,335 @@ SPI*_PERF_CSN_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=SPI*_PERF_CSG_BUSY,SPI*_PERF_CSG_WAVE,comparemax4,SPI*_PERF_CSN_BUSY,SPI*_PERF_CSN_WAVE,comparemax4,max,CPF_PERF_SEL_CPF_STAT_BUSY,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
-name=VSVerticesIn
-desc=#VertexShader#The number of vertices processed by the VS.
-type=gpa_float64
-usage=items
-[GLGfx9]
-VGT_PERF_VGT_SPI_VSVERT_SEND
-VGT_PERF_VGT_SPI_ESVERT_VALID
-VGT_PERF_VGT_SPI_LSVERT_VALID
-eqn=0,1,1,ifnotzero,2,2,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-VGT*_PERF_VGT_SPI_VSVERT_SEND[0..3]
-VGT*_PERF_VGT_SPI_ESVERT_VALID[0..3]
-VGT*_PERF_VGT_SPI_LSVERT_VALID[0..3]
-eqn=0..3,sum4,4..7,sum4,4..7,sum4,ifnotzero,8..11,sum4,8..11,sum4,ifnotzero
-
-name=VSVALUInstCount
-desc=#VertexShader#Average number of vector ALU instructions executed in the VS. Affected by flow control.
+name=VsGsVALUInstCount
+desc=#VertexGeometry#Average number of vector ALU instructions executed in the VS and GS in a VS-[GS-]PS pipeline. Affected by flow control.
 type=gpa_float64
 usage=items
 [GLGfx9]
 SQ_VS_PERF_SEL_INSTS_VALU
 SQ_VS_PERF_SEL_WAVES
-eqn=0,1,/
+SQ_GS_PERF_SEL_INSTS_VALU
+SQ_GS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,/,1,ifnotzero,2,3,/,3,ifnotzero,(0),SPI_PERF_HS_WAVE,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_VS*_PERF_SEL_INSTS_VALU[0..3]
 SQ_VS*_PERF_SEL_WAVES[0..3]
-eqn=0..3,sum4,4..7,sum4,/
+SQ_GS*_PERF_SEL_INSTS_VALU[0..3]
+SQ_GS*_PERF_SEL_WAVES[0..3]
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),0..3,sum4,4..7,sum4,/,4..7,sum4,ifnotzero,8..11,sum4,12..15,sum4,/,12..15,sum4,ifnotzero,(0),SPI*_PERF_HS_WAVE,sum4,ifnotzero
 
-name=VSSALUInstCount
-desc=#VertexShader#Average number of scalar ALU instructions executed in the VS. Affected by flow control.
+name=VsGsSALUInstCount
+desc=#VertexGeometry#Average number of scalar ALU instructions executed in the VS and GS in a VS-[GS-]PS pipeline. Affected by flow control.
 type=gpa_float64
 usage=items
 [GLGfx9]
 SQ_VS_PERF_SEL_INSTS_SALU
 SQ_VS_PERF_SEL_WAVES
-eqn=0,1,/
+SQ_GS_PERF_SEL_INSTS_SALU
+SQ_GS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,/,1,ifnotzero,2,3,/,3,ifnotzero,(0),SPI_PERF_HS_WAVE,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_VS*_PERF_SEL_INSTS_SALU[0..3]
 SQ_VS*_PERF_SEL_WAVES[0..3]
-eqn=0..3,sum4,4..7,sum4,/
+SQ_GS*_PERF_SEL_INSTS_SALU[0..3]
+SQ_GS*_PERF_SEL_WAVES[0..3]
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),0..3,sum4,4..7,sum4,/,4..7,sum4,ifnotzero,8..11,sum4,12..15,sum4,/,12..15,sum4,ifnotzero,(0),SPI*_PERF_HS_WAVE,sum4,ifnotzero
 
-name=VSVALUBusy
-desc=#VertexShader#The percentage of GPUTime vector ALU instructions are being processed by the VS.
+name=VsGsVALUBusy
+desc=#VertexGeometry#The percentage of GPUTime vector ALU instructions are being processed by the VS and GS in a VS-[GS-]PS pipeline.
 type=gpa_float64
 usage=percentage
 [GLGfx9]
 SQ_VS_PERF_SEL_ACTIVE_INST_VALU
+SQ_GS_PERF_SEL_ACTIVE_INST_VALU
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0,(4),*,NUM_SIMDS,/,1,/,(100),*
+SPI_PERF_HS_WAVE
+eqn=0,1,+,(0),3,ifnotzero,(4),*,NUM_SIMDS,/,2,/,(100),*
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_VS*_PERF_SEL_ACTIVE_INST_VALU[0..3]
+SQ_GS*_PERF_SEL_ACTIVE_INST_VALU[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,(4),*,NUM_SIMDS,/,4,/,(100),*
+SPI*_PERF_HS_WAVE[0..3]
+eqn=0..3,sum4,4..7,sum4,+,(0),9..12,sum4,ifnotzero,(4),*,NUM_SIMDS,/,8,/,(100),*
 
-name=VSVALUBusyCycles
-desc=#VertexShader#Number of GPU cycles where vector ALU instructions are being processed by the VS.
+name=VsGsVALUBusyCycles
+desc=#VertexGeometry#Number of GPU cycles where vector ALU instructions are being processed by the VS and GS in a VS-[GS-]PS pipeline.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
 SQ_VS_PERF_SEL_ACTIVE_INST_VALU
-eqn=0,(4),*,NUM_SIMDS,/
+SQ_GS_PERF_SEL_ACTIVE_INST_VALU
+SPI_PERF_HS_WAVE
+eqn=0,1,+,(0),2,ifnotzero,(4),*,NUM_SIMDS,/
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_VS*_PERF_SEL_ACTIVE_INST_VALU[0..3]
-eqn=0..3,sum4,(4),*,NUM_SIMDS,/
+SQ_GS*_PERF_SEL_ACTIVE_INST_VALU[0..3]
+SPI*_PERF_HS_WAVE[0..3]
+eqn=0..3,sum4,4..7,sum4,+,(0),8..11,sum4,ifnotzero,(4),*,NUM_SIMDS,/
 
-name=VSSALUBusy
-desc=#VertexShader#The percentage of GPUTime scalar ALU instructions are being processed by the VS.
+name=VsGsSALUBusy
+desc=#VertexGeometry#The percentage of GPUTime scalar ALU instructions are being processed by the VS and GS in a VS-[GS-]PS pipeline.
 type=gpa_float64
 usage=percentage
 [GLGfx9]
 SQ_VS_PERF_SEL_INST_CYCLES_SALU
+SQ_GS_PERF_SEL_INST_CYCLES_SALU
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0,NUM_CUS,/,1,/,(100),*
+SPI_PERF_HS_WAVE
+eqn=0,1,+,(0),3,ifnotzero,(4),*,NUM_CUS,/,2,/,(100),*
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_VS*_PERF_SEL_INST_CYCLES_SALU[0..3]
+SQ_GS*_PERF_SEL_INST_CYCLES_SALU[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,NUM_CUS,/,4,/,(100),*
+SPI*_PERF_HS_WAVE[0..3]
+eqn=0..3,sum4,4..7,sum4,+,(0),9..12,sum4,ifnotzero,(4),*,NUM_CUS,/,8,/,(100),*
 
-name=VSSALUBusyCycles
-desc=#VertexShader#Number of GPU cycles where scalar ALU instructions are being processed by the VS.
+name=VsGsSALUBusyCycles
+desc=#VertexGeometry#Number of GPU cycles where scalar ALU instructions are being processed by the VS and GS in a VS-[GS-]PS pipeline.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
 SQ_VS_PERF_SEL_INST_CYCLES_SALU
-eqn=0,NUM_CUS,/
+SQ_GS_PERF_SEL_INST_CYCLES_SALU
+SPI_PERF_HS_WAVE
+eqn=0,1,+,(0),2,ifnotzero,(4),*,NUM_CUS,/
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_VS*_PERF_SEL_INST_CYCLES_SALU[0..3]
-eqn=0..3,sum4,NUM_CUS,/
+SQ_GS*_PERF_SEL_INST_CYCLES_SALU[0..3]
+SPI*_PERF_HS_WAVE[0..3]
+eqn=0..3,sum4,4..7,sum4,+,(0),8..11,sum4,ifnotzero,(4),*,NUM_CUS,/
 
-name=HSPatches
-desc=#HullShader#The number of patches processed by the HS.
-type=gpa_float64
-usage=items
-[GLGfx9]
-VGT_PERF_VGT_SPI_HSVERT_VALID
-eqn=0
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-VGT*_PERF_VGT_SPI_HSVERT_VALID[0..3]
-eqn=0..3,sum4
+;; PreTessellation means Vertex + Hull Shader from the application.
+;; On GFX9 and later these shaders get compiled together and processed as HS waves.
 
-name=HSVALUInstCount
-desc=#HullShader#Average number of vector ALU instructions executed in the HS. Affected by flow control.
+name=PreTessVALUInstCount
+desc=#PreTessellation#Average number of vector ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control.
 type=gpa_float64
 usage=items
 [GLGfx9]
 SQ_HS_PERF_SEL_INSTS_VALU
 SQ_HS_PERF_SEL_WAVES
-eqn=0,1,/
+eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_HS*_PERF_SEL_INSTS_VALU[0..3]
 SQ_HS*_PERF_SEL_WAVES[0..3]
-eqn=0..3,sum4,4..7,sum4,/
+eqn=(0),0..3,sum4,4..7,sum4,/,4..7,sum4,ifnotzero
 
-name=HSSALUInstCount
-desc=#HullShader#Average number of scalar ALU instructions executed in the HS. Affected by flow control.
+name=PreTessSALUInstCount
+desc=#PreTessellation#Average number of scalar ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control.
 type=gpa_float64
 usage=items
 [GLGfx9]
 SQ_HS_PERF_SEL_INSTS_SALU
 SQ_HS_PERF_SEL_WAVES
-eqn=0,1,/
+eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_HS*_PERF_SEL_INSTS_SALU[0..3]
 SQ_HS*_PERF_SEL_WAVES[0..3]
-eqn=0..3,sum4,4..7,sum4,/
+eqn=(0),0..3,sum4,4..7,sum4,/,4..7,sum4,ifnotzero
 
-name=HSVALUBusy
-desc=#HullShader#The percentage of GPUTime vector ALU instructions are being processed by the HS.
+name=PreTessVALUBusy
+desc=#PreTessellation#The percentage of GPUTime vector ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.
 type=gpa_float64
 usage=percentage
 [GLGfx9]
 SQ_HS_PERF_SEL_ACTIVE_INST_VALU
+SQ_HS_PERF_SEL_WAVES
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0,(4),*,NUM_SIMDS,/,1,/,(100),*
+eqn=(0),0,NUM_SIMDS,/,2,/,(100),*,1,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_HS*_PERF_SEL_ACTIVE_INST_VALU[0..3]
+SQ_HS*_PERF_SEL_WAVES[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,(4),*,NUM_SIMDS,/,4,/,(100),*
+eqn=(0),0..3,sum4,NUM_SIMDS,/,8,/,(100),*,4..7,sum4,ifnotzero
 
-name=HSVALUBusyCycles
-desc=#HullShader#Number of GPU cycles vector where ALU instructions are being processed by the HS.
+name=PreTessVALUBusyCycles
+desc=#PreTessellation#Number of GPU cycles vector where ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
 SQ_HS_PERF_SEL_ACTIVE_INST_VALU
-eqn=0,(4),*,NUM_SIMDS,/
+SQ_HS_PERF_SEL_WAVES
+eqn=(0),0,(4),*,NUM_SIMDS,/,1,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_HS*_PERF_SEL_ACTIVE_INST_VALU[0..3]
-eqn=0..3,sum4,(4),*,NUM_SIMDS,/
+SQ_HS*_PERF_SEL_WAVES[0..3]
+eqn=(0),0..3,sum4,(4),*,NUM_SIMDS,/,4..7,sum4,ifnotzero
 
-name=HSSALUBusy
-desc=#HullShader#The percentage of GPUTime scalar ALU instructions are being processed by the HS.
+name=PreTessSALUBusy
+desc=#PreTessellation#The percentage of GPUTime scalar ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.
 type=gpa_float64
 usage=percentage
 [GLGfx9]
 SQ_HS_PERF_SEL_INST_CYCLES_SALU
+SQ_HS_PERF_SEL_WAVES
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0,NUM_CUS,/,1,/,(100),*
+eqn=(0),0,NUM_CUS,/,2,/,(100),*,1,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_HS*_PERF_SEL_INST_CYCLES_SALU[0..3]
+SQ_HS*_PERF_SEL_WAVES[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,NUM_CUS,/,4,/,(100),*
+eqn=(0),0..3,sum4,NUM_CUS,/,8,/,(100),*,4..7,sum4,ifnotzero
 
-name=HSSALUBusyCycles
-desc=#HullShader#Number of GPU cycles where scalar ALU instructions are being processed by the HS.
+name=PreTessSALUBusyCycles
+desc=#PreTessellation#Number of GPU cycles where scalar ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
 SQ_HS_PERF_SEL_INST_CYCLES_SALU
-eqn=0,NUM_CUS,/
+SQ_HS_PERF_SEL_WAVES
+eqn=(0),0,NUM_CUS,/,1,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_HS*_PERF_SEL_INST_CYCLES_SALU[0..3]
-eqn=0..3,sum4,NUM_CUS,/
+SQ_HS*_PERF_SEL_WAVES[0..3]
+eqn=(0),0..3,sum4,NUM_CUS,/,4..7,sum4,ifnotzero
 
-;name=DSVerticesIn
-;desc=#DomainShader#The number of vertices processed by the DS.
-;type=gpa_float64
-;usage=items
-;[GLGfx9]
-;VGT_PERF_VGT_SPI_VSVERT_SEND
-;VGT_PERF_VGT_SPI_ESVERT_VALID
-;VGT_PERF_VGT_SPI_LSVERT_VALID
-;eqn=(0),0,1,1,ifnotzero,2,ifnotzero
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;VGT*_PERF_VGT_SPI_VSVERT_SEND[0..3]
-;VGT*_PERF_VGT_SPI_ESVERT_VALID[0..3]
-;VGT*_PERF_VGT_SPI_LSVERT_VALID[0..3]
-;eqn=(0),0..3,sum4,4..7,sum4,4..7,sum4,ifnotzero,8..11,sum4,ifnotzero
+;; PostTessellation means Domain + Geometry Shader from the application.
+;; On GFX9 and later NGG: these shaders get compiled together and processed as GS waves.
+;; On GFX9 and later non-NGG: these get executed as either VS waves (DS-only) or compiled together as GS waves.
+;; So below we sum the VS and GS wave counters.
 
-;name=DSVALUInstCount
-;desc=#DomainShader#Average number of vector ALU instructions executed in the DS. Affected by flow control.
-;type=gpa_float64
-;usage=items
-;[GLGfx9]
-;SQ_VS_PERF_SEL_INSTS_VALU
-;SQ_VS_PERF_SEL_WAVES
-;SQ_ES_PERF_SEL_INSTS_VALU
-;SQ_ES_PERF_SEL_WAVES
-;SQ_ES_PERF_SEL_ITEMS
-;SQ_LS_PERF_SEL_ITEMS
-;eqn=(0),0,1,/,2,3,/,4,ifnotzero,5,ifnotzero
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;SQ_VS*_PERF_SEL_INSTS_VALU[0..3]
-;SQ_VS*_PERF_SEL_WAVES[0..3]
-;SQ_ES*_PERF_SEL_INSTS_VALU[0..3]
-;SQ_ES*_PERF_SEL_WAVES[0..3]
-;SQ_ES*_PERF_SEL_ITEMS[0..3]
-;SQ_LS*_PERF_SEL_ITEMS[0..3]
-;eqn=(0),0..3,sum4,4..7,sum4,/,8..11,sum4,12..15,sum4,/,16..19,sum4,ifnotzero,20..23,sum4,ifnotzero
-
-;name=DSSALUInstCount
-;desc=#DomainShader#Average number of scalar ALU instructions executed in the DS. Affected by flow control.
-;type=gpa_float64
-;usage=items
-;[GLGfx9]
-;SQ_VS_PERF_SEL_INSTS_SALU
-;SQ_VS_PERF_SEL_WAVES
-;SQ_ES_PERF_SEL_INSTS_SALU
-;SQ_ES_PERF_SEL_WAVES
-;SQ_ES_PERF_SEL_ITEMS
-;SQ_LS_PERF_SEL_ITEMS
-;eqn=(0),0,1,/,2,3,/,4,ifnotzero,5,ifnotzero
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;SQ_VS*_PERF_SEL_INSTS_SALU[0..3]
-;SQ_VS*_PERF_SEL_WAVES[0..3]
-;SQ_ES*_PERF_SEL_INSTS_SALU[0..3]
-;SQ_ES*_PERF_SEL_WAVES[0..3]
-;SQ_ES*_PERF_SEL_ITEMS[0..3]
-;SQ_LS*_PERF_SEL_ITEMS[0..3]
-;eqn=(0),0..3,sum4,4..7,sum4,/,8..11,sum4,12..15,sum4,/,16..19,sum4,ifnotzero,20..23,sum4,ifnotzero
-
-;name=DSVALUBusy
-;desc=#DomainShader#The percentage of GPUTime vector ALU instructions are being processed by the DS.
-;type=gpa_float64
-;usage=percentage
-;[GLGfx9]
-;SQ_VS_PERF_SEL_INST_CYCLES_VALU
-;SQ_ES_PERF_SEL_INST_CYCLES_VALU
-;CPF_PERF_SEL_CPF_STAT_BUSY
-;SQ_ES_PERF_SEL_ITEMS
-;SQ_LS_PERF_SEL_ITEMS
-;eqn=(0),0,1,3,ifnotzero,4,ifnotzero,(4),*,NUM_SIMDS,/,2,/,(100),*
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;SQ_VS*_PERF_SEL_INST_CYCLES_VALU[0..3]
-;SQ_ES*_PERF_SEL_INST_CYCLES_VALU[0..3]
-;CPF_PERF_SEL_CPF_STAT_BUSY
-;SQ_ES*_PERF_SEL_ITEMS[0..3]
-;SQ_LS*_PERF_SEL_ITEMS[0..3]
-;eqn=(0),0..3,sum4,4..7,sum4,9..12,sum4,ifnotzero,13..16,sum4,ifnotzero,(4),*,NUM_SIMDS,/,8,/,(100),*
-
-;name=DSVALUBusyCycles
-;desc=#DomainShader#Number of GPU cycles where vector ALU instructions are being processed by the DS.
-;type=gpa_float64
-;usage=cycles
-;[GLGfx9]
-;SQ_VS_PERF_SEL_INST_CYCLES_VALU
-;SQ_ES_PERF_SEL_INST_CYCLES_VALU
-;SQ_ES_PERF_SEL_ITEMS
-;SQ_LS_PERF_SEL_ITEMS
-;eqn=(0),0,1,3,ifnotzero,4,ifnotzero,(4),*,NUM_SIMDS,/
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;SQ_VS*_PERF_SEL_INST_CYCLES_VALU[0..3]
-;SQ_ES*_PERF_SEL_INST_CYCLES_VALU[0..3]
-;SQ_ES*_PERF_SEL_ITEMS[0..3]
-;SQ_LS*_PERF_SEL_ITEMS[0..3]
-;eqn=(0),0..3,sum4,4..7,sum4,9..12,sum4,ifnotzero,13..16,sum4,ifnotzero,(4),*,NUM_SIMDS,/
-
-;name=DSSALUBusy
-;desc=#DomainShader#The percentage of GPUTime scalar ALU instructions are being processed by the DS.
-;type=gpa_float64
-;usage=percentage
-;[GLGfx9]
-;SQ_VS_PERF_SEL_INST_CYCLES_SALU
-;SQ_ES_PERF_SEL_INST_CYCLES_SALU
-;CPF_PERF_SEL_CPF_STAT_BUSY
-;SQ_ES_PERF_SEL_ITEMS
-;SQ_LS_PERF_SEL_ITEMS
-;eqn=(0),0,1,3,ifnotzero,4,ifnotzero,NUM_CUS,/,2,/,(100),*
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;SQ_VS*_PERF_SEL_INST_CYCLES_SALU[0..3]
-;SQ_ES*_PERF_SEL_INST_CYCLES_SALU[0..3]
-;CPF_PERF_SEL_CPF_STAT_BUSY
-;SQ_ES*_PERF_SEL_ITEMS[0..3]
-;SQ_LS*_PERF_SEL_ITEMS[0..3]
-;eqn=(0),0..3,sum4,4..7,sum4,9..12,sum4,ifnotzero,13..16,sum4,ifnotzero,NUM_CUS,/,8,/,(100),*
-
-;name=DSSALUBusyCycles
-;desc=#DomainShader#Number of GPU cycles where scalar ALU instructions are being processed by the DS.
-;type=gpa_float64
-;usage=cycles
-;[GLGfx9]
-;SQ_VS_PERF_SEL_INST_CYCLES_SALU
-;SQ_ES_PERF_SEL_INST_CYCLES_SALU
-;SQ_ES_PERF_SEL_ITEMS
-;SQ_LS_PERF_SEL_ITEMS
-;eqn=(0),0,1,3,ifnotzero,4,ifnotzero,NUM_CUS,/
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;SQ_VS*_PERF_SEL_INST_CYCLES_SALU[0..3]
-;SQ_ES*_PERF_SEL_INST_CYCLES_SALU[0..3]
-;SQ_ES*_PERF_SEL_ITEMS[0..3]
-;SQ_LS*_PERF_SEL_ITEMS[0..3]
-;eqn=(0),0..3,sum4,4..7,sum4,9..12,sum4,ifnotzero,13..16,sum4,ifnotzero,NUM_CUS,/
-
-name=GSPrimsIn
-desc=#GeometryShader#The number of primitives passed into the GS.
+name=PostTessVALUInstCount
+desc=#PostTessellation#Average number of vector ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control.
 type=gpa_float64
 usage=items
 [GLGfx9]
-VGT_PERF_VGT_SPI_GSPRIM_VALID
-eqn=0
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-VGT*_PERF_VGT_SPI_GSPRIM_VALID[0..3]
-eqn=0..3,sum4
-
-name=GSVerticesOut
-desc=#GeometryShader#The number of vertices output by the GS.
-type=gpa_float64
-usage=items
-[GLGfx9]
-VGT_PERF_VGT_SPI_VSVERT_SEND
-VGT_PERF_VGT_SPI_ESVERT_VALID
-eqn=(0),0,1,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-VGT*_PERF_VGT_SPI_VSVERT_SEND[0..3]
-VGT*_PERF_VGT_SPI_ESVERT_VALID[0..3]
-eqn=(0),0..3,sum4,4..7,sum4,ifnotzero
-
-name=GSVALUInstCount
-desc=#GeometryShader#Average number of vector ALU instructions executed in the GS. Affected by flow control.
-type=gpa_float64
-usage=items
-[GLGfx9]
+SQ_VS_PERF_SEL_INSTS_VALU
+SQ_VS_PERF_SEL_WAVES
 SQ_GS_PERF_SEL_INSTS_VALU
 SQ_GS_PERF_SEL_WAVES
-eqn=0,1,/
+SPI_PERF_HS_WAVE
+eqn=(0),(0),0,1,/,1,ifnotzero,2,3,/,3,ifnotzero,4,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
+SQ_VS*_PERF_SEL_INSTS_VALU[0..3]
+SQ_VS*_PERF_SEL_WAVES[0..3]
 SQ_GS*_PERF_SEL_INSTS_VALU[0..3]
 SQ_GS*_PERF_SEL_WAVES[0..3]
-eqn=0..3,sum4,4..7,sum4,/
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),(0),0..3,sum4,4..7,sum4,/,4..7,sum4,ifnotzero,8..11,sum4,12..15,sum4,/,12..15,sum4,ifnotzero,16..19,sum4,ifnotzero
 
-name=GSSALUInstCount
-desc=#GeometryShader#Average number of scalar ALU instructions executed in the GS. Affected by flow control.
+name=PostTessSALUInstCount
+desc=#PostTessellation#Average number of scalar ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control.
 type=gpa_float64
 usage=items
 [GLGfx9]
+SQ_VS_PERF_SEL_INSTS_SALU
+SQ_VS_PERF_SEL_WAVES
 SQ_GS_PERF_SEL_INSTS_SALU
 SQ_GS_PERF_SEL_WAVES
-eqn=0,1,/
+SPI_PERF_HS_WAVE
+eqn=(0),(0),0,1,/,1,ifnotzero,2,3,/,3,ifnotzero,4,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
+SQ_VS*_PERF_SEL_INSTS_SALU[0..3]
+SQ_VS*_PERF_SEL_WAVES[0..3]
 SQ_GS*_PERF_SEL_INSTS_SALU[0..3]
 SQ_GS*_PERF_SEL_WAVES[0..3]
-eqn=0..3,sum4,4..7,sum4,/
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),(0),0..3,sum4,4..7,sum4,/,4..7,sum4,ifnotzero,8..11,sum4,12..15,sum4,/,12..15,sum4,ifnotzero,16..19,sum4,ifnotzero
 
-name=GSVALUBusy
-desc=#GeometryShader#The percentage of GPUTime vector ALU instructions are being processed by the GS.
+name=PostTessVALUBusy
+desc=#PostTessellation#The percentage of GPUTime vector ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.
 type=gpa_float64
 usage=percentage
 [GLGfx9]
+SQ_VS_PERF_SEL_ACTIVE_INST_VALU
 SQ_GS_PERF_SEL_ACTIVE_INST_VALU
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0,(4),*,NUM_SIMDS,/,1,/,(100),*
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,+,(4),*,NUM_SIMDS,/,2,/,(100),*,3,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
+SQ_VS*_PERF_SEL_ACTIVE_INST_VALU[0..3]
 SQ_GS*_PERF_SEL_ACTIVE_INST_VALU[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,(4),*,NUM_SIMDS,/,4,/,(100),*
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),0..3,sum4,4..7,sum4,+,(4),*,NUM_SIMDS,/,8,/,(100),*,9..12,sum4,ifnotzero
 
-name=GSVALUBusyCycles
-desc=#GeometryShader#Number of GPU cycles where vector ALU instructions are being processed by the GS.
+name=PostTessVALUBusyCycles
+desc=#PostTessellation#Number of GPU cycles vector where ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
+SQ_VS_PERF_SEL_ACTIVE_INST_VALU
 SQ_GS_PERF_SEL_ACTIVE_INST_VALU
-eqn=0,(4),*,NUM_SIMDS,/
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,+,(4),*,NUM_SIMDS,/,2,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
+SQ_VS*_PERF_SEL_ACTIVE_INST_VALU[0..3]
 SQ_GS*_PERF_SEL_ACTIVE_INST_VALU[0..3]
-eqn=0..3,sum4,(4),*,NUM_SIMDS,/
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),0..3,sum4,4..7,sum4,+,(4),*,NUM_SIMDS,/,8..11,sum4,ifnotzero
 
-name=GSSALUBusy
-desc=#GeometryShader#The percentage of GPUTime scalar ALU instructions are being processed by the GS.
+name=PostTessSALUBusy
+desc=#PostTessellation#The percentage of GPUTime scalar ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.
 type=gpa_float64
 usage=percentage
 [GLGfx9]
+SQ_VS_PERF_SEL_INST_CYCLES_SALU
 SQ_GS_PERF_SEL_INST_CYCLES_SALU
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0,NUM_CUS,/,1,/,(100),*
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,+,(4),*,NUM_CUS,/,2,/,(100),*,3,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
+SQ_VS*_PERF_SEL_INST_CYCLES_SALU[0..3]
 SQ_GS*_PERF_SEL_INST_CYCLES_SALU[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=0..3,sum4,NUM_CUS,/,4,/,(100),*
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),0..3,sum4,4..7,sum4,+,(4),*,NUM_CUS,/,8,/,(100),*,9..12,sum4,ifnotzero
 
-name=GSSALUBusyCycles
-desc=#GeometryShader#Number of GPU cycles where scalar ALU instructions are being processed by the GS.
+name=PostTessSALUBusyCycles
+desc=#PostTessellation#Number of GPU cycles where scalar ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
+SQ_VS_PERF_SEL_INST_CYCLES_SALU
 SQ_GS_PERF_SEL_INST_CYCLES_SALU
-eqn=0,NUM_CUS,/
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,+,(4),*,NUM_CUS,/,2,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
+SQ_VS*_PERF_SEL_INST_CYCLES_SALU[0..3]
 SQ_GS*_PERF_SEL_INST_CYCLES_SALU[0..3]
-eqn=0..3,sum4,NUM_CUS,/
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),0..3,sum4,4..7,sum4,+,(4),*,NUM_CUS,/,8..11,sum4,ifnotzero
 
 name=PrimitiveAssemblyBusy
 desc=#Timing#The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.
@@ -1189,10 +1009,27 @@ eqn=0
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
+SQ_CS*_PERF_SEL_ITEMS[0..3]
 SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
 SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
+eqn=(0),SQ_CS*_PERF_SEL_ITEMS,sum4,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+
+name=CSThreadGroupSize
+desc=#ComputeShader#The number of CS threads within each thread group.
+type=gpa_float64
+usage=items
+[GLGfx9]
+SQ_CS_PERF_SEL_ITEMS
+SPI_PERF_CSG_NUM_THREADGROUPS
+SPI_PERF_CSN_NUM_THREADGROUPS
+eqn=(0),0,1,2,+,/,1,2,+,ifnotzero
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
 SQ_CS*_PERF_SEL_ITEMS[0..3]
-eqn=(0),SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,SQ_CS*_PERF_SEL_ITEMS,sum4,ifnotzero
+SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
+eqn=(0),SQ_CS*_PERF_SEL_ITEMS,sum4,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,/,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
 
 name=CSVALUInsts
 desc=#ComputeShader#The average number of vector ALU instructions executed per work-item (affected by flow control).
@@ -1306,18 +1143,16 @@ type=gpa_float64
 usage=items
 [GLGfx9]
 SQ_CS_PERF_SEL_INSTS_FLAT
-SQ_CS_PERF_SEL_INSTS_FLAT_LDS_ONLY
 SQ_CS_PERF_SEL_WAVES
-eqn=(0),0,1,-,2,/,2,ifnotzero
+eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 SQ_CS*_PERF_SEL_INSTS_FLAT[0..3]
-SQ_CS*_PERF_SEL_INSTS_FLAT_LDS_ONLY[0..3]
 SQ_CS*_PERF_SEL_WAVES[0..3]
 SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
 SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),SQ_CS*_PERF_SEL_INSTS_FLAT,sum4,SQ_CS*_PERF_SEL_INSTS_FLAT_LDS_ONLY,sum4,-,SQ_CS*_PERF_SEL_WAVES,sum4,/,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+eqn=(0),SQ_CS*_PERF_SEL_INSTS_FLAT,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
 
 name=CSVALUBusy
 desc=#ComputeShader#The percentage of GPUTime vector ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).
@@ -1786,16 +1621,31 @@ usage=percentage
 [GLGfx9]
 DB*_PERF_SEL_DB_SC_TILE_CULLED[0..3]
 DB*_PERF_SEL_SC_DB_TILE_TILES[0..3]
-eqn=0..3,sum4,4..7,sum4,/,(100),*
+eqn=4..7,sum4,0..3,sum4,-,(0),max,4..7,sum4,/,(100),*
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 DB*_PERF_SEL_DB_SC_TILE_CULLED[0..15]
 DB*_PERF_SEL_SC_DB_TILE_TILES[0..15]
-eqn=0..15,sum16,16..31,sum16,/,(100),*
+eqn=16..31,sum16,0..15,sum16,-,(0),max,16..31,sum16,/,(100),*
 
 name=HiZTilesAcceptedCount
 desc=#DepthAndStencil#Count of tiles accepted by HiZ and will be rendered to the depth or color buffers.
+type=gpa_float64
+usage=items
+[GLGfx9]
+DB*_PERF_SEL_SC_DB_TILE_TILES[0..3]
+DB*_PERF_SEL_DB_SC_TILE_CULLED[0..3]
+eqn=0..3,sum4,4..7,sum4,-,(0),max
+[DX11Gfx9]
+[DX12Gfx9]
+[VKGfx9]
+DB*_PERF_SEL_SC_DB_TILE_TILES[0..15]
+DB*_PERF_SEL_DB_SC_TILE_CULLED[0..15]
+eqn=0..15,sum16,16..31,sum16,-,(0),max
+
+name=HiZTilesRejectedCount
+desc=#DepthAndStencil#Count of tiles not accepted by HiZ.
 type=gpa_float64
 usage=items
 [GLGfx9]
@@ -1805,19 +1655,6 @@ eqn=0..3,sum4
 [DX12Gfx9]
 [VKGfx9]
 DB*_PERF_SEL_DB_SC_TILE_CULLED[0..15]
-eqn=0..15,sum16
-
-name=HiZTilesRejectedCount
-desc=#DepthAndStencil#Count of tiles not accepted by HiZ.
-type=gpa_float64
-usage=items
-[GLGfx9]
-DB*_PERF_SEL_SC_DB_TILE_TILES[0..3]
-eqn=0..3,sum4
-[DX11Gfx9]
-[DX12Gfx9]
-[VKGfx9]
-DB*_PERF_SEL_SC_DB_TILE_TILES[0..15]
 eqn=0..15,sum16
 
 name=PreZTilesDetailCulled
@@ -1874,7 +1711,7 @@ PA_SC_P0_HIZ_QUAD_COUNT
 PA_SC_P1_HIZ_QUAD_COUNT
 PA_SC_P2_HIZ_QUAD_COUNT
 PA_SC_P3_HIZ_QUAD_COUNT
-eqn=0,1,+,2,+,3,+,4,5,+,6,+,7,+,-,(0),max,0,1,+,2,+,3,+,/,(100),*
+eqn=0..3,sum4,4..7,sum4,-,(0),max,0..3,sum4,/,(100),*
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -1901,7 +1738,7 @@ PA_SC_P0_HIZ_QUAD_COUNT
 PA_SC_P1_HIZ_QUAD_COUNT
 PA_SC_P2_HIZ_QUAD_COUNT
 PA_SC_P3_HIZ_QUAD_COUNT
-eqn=0,1,+,2,+,3,+,4,5,+,6,+,7,+,-,(0),max
+eqn=0..3,sum4,4..7,sum4,-,(0),max
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -1924,7 +1761,7 @@ PA_SC_P0_HIZ_QUAD_COUNT
 PA_SC_P1_HIZ_QUAD_COUNT
 PA_SC_P2_HIZ_QUAD_COUNT
 PA_SC_P3_HIZ_QUAD_COUNT
-eqn=0,1,+,2,+,3,+
+eqn=0..3,sum4
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -1939,58 +1776,50 @@ desc=#DepthAndStencil#Percentage of quads rejected based on the detailZ and earl
 type=gpa_float64
 usage=percentage
 [GLGfx9]
-PA_SC_QZ0_QUAD_COUNT
-PA_SC_QZ1_QUAD_COUNT
-PA_SC_QZ2_QUAD_COUNT
-PA_SC_QZ3_QUAD_COUNT
-PA_SC_EARLYZ_QUAD_COUNT
 PA_SC_P0_HIZ_QUAD_COUNT
 PA_SC_P1_HIZ_QUAD_COUNT
 PA_SC_P2_HIZ_QUAD_COUNT
 PA_SC_P3_HIZ_QUAD_COUNT
-eqn=5,6,+,7,+,8,+,4,-,(0),max,0,1,+,2,+,3,+,/,(100),*
+PA_SC_EARLYZ_QUAD_COUNT
+PA_SC_QZ0_QUAD_COUNT
+PA_SC_QZ1_QUAD_COUNT
+PA_SC_QZ2_QUAD_COUNT
+PA_SC_QZ3_QUAD_COUNT
+eqn=0..3,sum4,4,-,(0),max,5..8,sum4,/,(100),*
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
-PA_SC*_QZ0_QUAD_COUNT[0..3]
-PA_SC*_QZ1_QUAD_COUNT[0..3]
-PA_SC*_QZ2_QUAD_COUNT[0..3]
-PA_SC*_QZ3_QUAD_COUNT[0..3]
-PA_SC*_EARLYZ_QUAD_COUNT[0..3]
 PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=20..35,sum16,16..19,sum4,-,(0),max,0..15,sum16,/,(100),*
+PA_SC*_EARLYZ_QUAD_COUNT[0..3]
+PA_SC*_QZ0_QUAD_COUNT[0..3]
+PA_SC*_QZ1_QUAD_COUNT[0..3]
+PA_SC*_QZ2_QUAD_COUNT[0..3]
+PA_SC*_QZ3_QUAD_COUNT[0..3]
+eqn=0..15,sum16,16..19,sum4,-,(0),max,20..35,sum16,/,(100),*
 
 name=PreZQuadsCulledCount
 desc=#DepthAndStencil#Count of quads rejected based on the detailZ and earlyZ tests.
 type=gpa_float64
 usage=items
 [GLGfx9]
-PA_SC_QZ0_QUAD_COUNT
-PA_SC_QZ1_QUAD_COUNT
-PA_SC_QZ2_QUAD_COUNT
-PA_SC_QZ3_QUAD_COUNT
-PA_SC_EARLYZ_QUAD_COUNT
 PA_SC_P0_HIZ_QUAD_COUNT
 PA_SC_P1_HIZ_QUAD_COUNT
 PA_SC_P2_HIZ_QUAD_COUNT
 PA_SC_P3_HIZ_QUAD_COUNT
-eqn=0,1,+,2,+,3,+,4,-,5,-,6,-,7,-,8,-,(0),max
+PA_SC_EARLYZ_QUAD_COUNT
+eqn=0..3,sum4,4,-,(0),max
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
-PA_SC*_QZ0_QUAD_COUNT[0..3]
-PA_SC*_QZ1_QUAD_COUNT[0..3]
-PA_SC*_QZ2_QUAD_COUNT[0..3]
-PA_SC*_QZ3_QUAD_COUNT[0..3]
-PA_SC*_EARLYZ_QUAD_COUNT[0..3]
 PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=0..15,sum16,16..19,sum4,-,20..35,sum16,-,(0),max
+PA_SC*_EARLYZ_QUAD_COUNT[0..3]
+eqn=0..15,sum16,16..19,sum4,-,(0),max
 
 name=PreZQuadsSurvivingCount
 desc=#DepthAndStencil#Count of quads surviving detailZ and earlyZ tests.
@@ -1998,20 +1827,12 @@ type=gpa_float64
 usage=items
 [GLGfx9]
 PA_SC_EARLYZ_QUAD_COUNT
-PA_SC_P0_HIZ_QUAD_COUNT
-PA_SC_P1_HIZ_QUAD_COUNT
-PA_SC_P2_HIZ_QUAD_COUNT
-PA_SC_P3_HIZ_QUAD_COUNT
-eqn=1,2,+,3,+,4,+,0,-,(0),max
+eqn=0
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
 PA_SC*_EARLYZ_QUAD_COUNT[0..3]
-PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=4..19,sum16,0..3,sum4,-,(0),max
+eqn=0..3,sum4
 
 name=PostZQuads
 desc=#DepthAndStencil#Percentage of quads for which the pixel shader will run and may be postZ tested.
@@ -2023,7 +1844,7 @@ PA_SC_QZ0_QUAD_COUNT
 PA_SC_QZ1_QUAD_COUNT
 PA_SC_QZ2_QUAD_COUNT
 PA_SC_QZ3_QUAD_COUNT
-eqn=0,1,2,+,3,+,4,+,/,(100),*,(100),min
+eqn=0,1..4,sum4,/,(100),*,(100),min
 [DX11Gfx9]
 [DX12Gfx9]
 [VKGfx9]
@@ -2182,25 +2003,6 @@ eqn=0..3,sum4,(32),*,4..7,sum4,(32),*,+
 DB*_PERF_SEL_TILE_WR_SENDS[0..15]
 DB*_PERF_SEL_QUAD_WR_SENDS[0..15]
 eqn=0..15,sum16,(32),*,16..31,sum16,(32),*,+
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; The following are new on R8xx
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;Remove this since mostly it is duplicate of the psPixelsOut and the value is not correct when profiling alone.
-;name=PixelsAtCB
-;desc=#ColorBuffer#Number of pixels drawn into the the color buffer.
-;type=gpa_float64
-;usage=items
-;[GLGfx9]
-;CB0_PERF_SEL_DRAWN_PIXEL
-;CB1_PERF_SEL_DRAWN_PIXEL
-;[DX11Gfx9]
-;[DX12Gfx9]
-;[VKGfx9]
-;CB0_PERF_SEL_DRAWN_PIXEL
-;CB1_PERF_SEL_DRAWN_PIXEL
-;eqn=0,1,+
 
 name=CBMemRead
 desc=#ColorBuffer#Number of bytes read from the color buffer.

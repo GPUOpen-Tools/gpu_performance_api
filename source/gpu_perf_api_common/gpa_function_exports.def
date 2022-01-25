@@ -8,6 +8,7 @@ EXPORTS
     GpaGetSupportedSampleTypes
     GpaGetDeviceAndRevisionId
     GpaGetDeviceName
+    GpaGetDeviceGeneration
     GpaGetNumCounters
     GpaGetCounterName
     GpaGetCounterIndex

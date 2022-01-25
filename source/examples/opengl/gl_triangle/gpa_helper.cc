@@ -15,6 +15,8 @@
 #include <codecvt>
 #endif
 
+#include "examples/common/cmdline_parser.h"
+
 GpaApiManager*    GpaApiManager::gpa_api_manager_ = nullptr;
 GpaHelper*        GpaHelper::gpa_helper_          = nullptr;
 GpaFuncTableInfo* gpa_function_table_info         = nullptr;
@@ -29,6 +31,15 @@ GpaHelper* GpaHelper::Instance()
     return gpa_helper_;
 }
 
+void GpaHelper::DeleteInstance()
+{
+    if (nullptr != gpa_helper_)
+    {
+        delete gpa_helper_;
+        gpa_helper_ = nullptr;
+    }
+}
+
 void GpaLogger(GpaLoggingType log_type, const char* log_msg)
 {
     std::string log_message;
@@ -36,8 +47,9 @@ void GpaLogger(GpaLoggingType log_type, const char* log_msg)
     switch (log_type)
     {
     case kGpaLoggingError:
-        log_message                                   = "GPA ERROR: ";
-        GpaHelper::Instance()->gpa_has_error_occured_ = true;
+        log_message                                = "GPA ERROR: ";
+        GpaHelper::Instance()->has_error_occurred_ = true;
+        GpaHelper::Instance()->num_errors_occurred_ += 1;
         break;
 
     case kGpaLoggingTrace:
@@ -53,18 +65,24 @@ void GpaLogger(GpaLoggingType log_type, const char* log_msg)
     {
         log_message.clear();
         log_message = "GL ERROR: ";
+        GpaHelper::Instance()->has_error_occurred_ = true;
+        GpaHelper::Instance()->num_errors_occurred_ += 1;
     }
 
     if (static_cast<unsigned int>(log_type) == static_cast<unsigned int>(kWinError))
     {
         log_message.clear();
         log_message = "WINDOWS ERROR: ";
+        GpaHelper::Instance()->has_error_occurred_ = true;
+        GpaHelper::Instance()->num_errors_occurred_ += 1;
     }
 
     if (static_cast<unsigned int>(log_type) == static_cast<unsigned int>(kXServerError))
     {
         log_message.clear();
         log_message = "X SERVER ERROR: ";
+        GpaHelper::Instance()->has_error_occurred_ = true;
+        GpaHelper::Instance()->num_errors_occurred_ += 1;
     }
 
     log_message.append(log_msg);
@@ -77,9 +95,24 @@ void GpaLogger(GpaLoggingType log_type, const char* log_msg)
     GpaHelper::Instance()->gpa_log_file_stream_ << log_message << std::endl;
 }
 
-void GpaHelper::SetConfirmSuccess(bool confirm_success)
+bool GpaHelper::ParseCommandLine(int argc, char* argv[])
 {
-    confirm_success_ = confirm_success;
+    gpa_example::CmdlineParser cmdline_parser(argc, argv);
+    app_ = new (std::nothrow) gpa_example::GpaSampleApp("GLTriangle", cmdline_parser);
+
+    if (app_ == nullptr)
+    {
+        return false;
+    }
+
+    if (!app_->Initialize())
+    {
+        return false;
+    }
+
+    InitializeIO();
+
+    return true;
 }
 
 bool GpaHelper::SetupGpa()
@@ -107,65 +140,29 @@ bool GpaHelper::SetupGpa()
         }
     }
 
-#ifdef _WIN32
-    wchar_t module_path[GPA_MAX_PATH];
-    ::GetModuleFileNameW(NULL, module_path, _countof(module_path));
-
-    std::wstring module_string(module_path);
-    size_t       last_slash_position = module_string.find_last_of('\\');
-
-    std::wstring executable_path = std::wstring(module_string.begin(), module_string.begin() + (last_slash_position + 1));
-
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
-
-    std::string utf8_executable_path = wide_to_utf8_converter.to_bytes(executable_path);
-
-#else
-    int  len;
-    char module_path[GPA_MAX_PATH];
-    len = readlink("/proc/self/exe", module_path, GPA_MAX_PATH - 1);
-
-    if (len != -1)
-    {
-        module_path[len] = '\0';
-    }
-
-    std::string module_string(module_path);
-    size_t      last_slash_position = module_string.find_last_of('/');
-
-    std::string executable_path(module_path);
-
-    if (std::string::npos != last_slash_position)
-    {
-        executable_path = std::string(module_string.begin(), module_string.begin() + (last_slash_position + 1));
-    }
-
-    std::string utf8_executable_path;
-    utf8_executable_path.append(executable_path.begin(), executable_path.end());
-#endif
-
-    counter_file_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(counter_file_name_);
-    gpa_log_file_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(gpa_log_file_name_);
-    std::remove(counter_file_name_.c_str());
-    std::remove(gpa_log_file_name_.c_str());
-    counter_data_file_stream_.open(counter_file_name_.c_str(), std::ios_base::out | std::ios_base::app);
-
     return success;
 }
 
 bool GpaHelper::OpenContext(GlContext gl_context, bool include_hw_counters)
 {
     GpaOpenContextFlags open_context_flags = include_hw_counters ? kGpaOpenContextEnableHardwareCountersBit : kGpaOpenContextDefaultBit;
-    bool                success            = kGpaStatusOk == gpa_function_table_->GpaOpenContext(gl_context, open_context_flags, &gpa_context_id_);
-    return success;
+    bool                is_context_opened  = kGpaStatusOk == gpa_function_table_->GpaOpenContext(gl_context, open_context_flags, &gpa_context_id_);
+
+    if (is_context_opened)
+    {
+        // Get the HW generation to aid in counter validation.
+        gpa_function_table_->GpaGetDeviceGeneration(gpa_context_id_, &gpa_hw_generation_);
+    }
+
+    return is_context_opened;
 }
 
 bool GpaHelper::CloseContext()
 {
-    bool success    = true;
-    success         = kGpaStatusOk == gpa_function_table_->GpaCloseContext(gpa_context_id_);
-    gpa_context_id_ = nullptr;
-    return success;
+    bool is_context_closed = kGpaStatusOk == gpa_function_table_->GpaCloseContext(gpa_context_id_);
+    gpa_context_id_        = nullptr;
+    gpa_hw_generation_     = kGpaHwGenerationNone;
+    return is_context_closed;
 }
 
 bool GpaHelper::CreateGpaSession()
@@ -442,11 +439,11 @@ bool GpaHelper::PrintGpaSampleResults(unsigned int profile_set, bool verify_coun
                         {
                             verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 3);
                         }
-                        else if (0 == local_counter_name.compare("PSPixelsOut"))
+                        else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PSPixelsOut"))
                         {
                             verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
                         }
-                        else if (0 == local_counter_name.compare("PreZSamplesPassing"))
+                        else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PreZSamplesPassing"))
                         {
                             verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
                         }
@@ -499,15 +496,69 @@ GpaHelper::~GpaHelper()
     gpa_log_file_stream_.close();
     counter_data_file_stream_.close();
     gpa_function_table_->GpaDestroy();
+
+    if (app_ != nullptr)
+    {
+        delete app_;
+    }
 }
 
 GpaHelper::GpaHelper()
-    : gpa_has_error_occured_(false)
+    : has_error_occurred_(false)
+    , num_errors_occurred_(0)
     , gpa_function_table_(nullptr)
+    , gpa_hw_generation_(kGpaHwGenerationNone)
     , gpa_context_id_(nullptr)
     , gpa_session_id_(nullptr)
     , gpa_command_list_id_(nullptr)
     , num_passes_required_(0u)
     , current_pass_index_(0u)
+    , confirm_success_(false)
 {
+}
+
+void GpaHelper::InitializeIO()
+{
+#ifdef _WIN32
+    wchar_t module_path[GPA_MAX_PATH];
+    ::GetModuleFileNameW(NULL, module_path, _countof(module_path));
+
+    std::wstring module_string(module_path);
+    size_t       last_slash_position = module_string.find_last_of('\\');
+
+    std::wstring executable_path = std::wstring(module_string.begin(), module_string.begin() + (last_slash_position + 1));
+
+    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
+
+    std::string utf8_executable_path = wide_to_utf8_converter.to_bytes(executable_path);
+
+#else
+    int  len;
+    char module_path[GPA_MAX_PATH];
+    len = readlink("/proc/self/exe", module_path, GPA_MAX_PATH - 1);
+
+    if (len != -1)
+    {
+        module_path[len] = '\0';
+    }
+
+    std::string module_string(module_path);
+    size_t      last_slash_position = module_string.find_last_of('/');
+
+    std::string executable_path(module_path);
+
+    if (std::string::npos != last_slash_position)
+    {
+        executable_path = std::string(module_string.begin(), module_string.begin() + (last_slash_position + 1));
+    }
+
+    std::string utf8_executable_path;
+    utf8_executable_path.append(executable_path.begin(), executable_path.end());
+#endif
+
+    counter_data_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Datafile());
+    gpa_log_file_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Logfile());
+    std::remove(counter_data_name_.c_str());
+    std::remove(gpa_log_file_name_.c_str());
+    counter_data_file_stream_.open(counter_data_name_.c_str(), std::ios_base::out | std::ios_base::app);
 }

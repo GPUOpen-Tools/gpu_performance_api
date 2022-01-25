@@ -18,7 +18,14 @@ namespace ogl_utils
     decltype(glGetString)*   ogl_get_string    = nullptr;
     decltype(glGetIntegerv)* ogl_get_integer_v = nullptr;
     decltype(glGetError)*    ogl_get_error     = nullptr;
-    PFNGLGETSTRINGIPROC      ogl_get_string_i  = nullptr;
+
+#ifdef _LINUX
+#ifndef GLES
+    decltype(glXGetClientString)* ogl_x_get_client_string = nullptr;
+#endif
+#endif
+
+    PFNGLGETSTRINGIPROC ogl_get_string_i = nullptr;
 
     PFNGLGETQUERYOBJECTIVPROC       ogl_get_query_objective_iv       = nullptr;
     PFNGLGENQUERIESPROC             ogl_gen_queries                  = nullptr;
@@ -76,6 +83,14 @@ namespace ogl_utils
     const int kGlDriverVerWithLinuxStableClockSupport = 13562;  ///< GL driver version where stable clocks are working on Linux.
     const int kGlDriverVerWithGpinCounters            = 13565;  ///< GL driver version where GPIN counters have been validated.
 
+    void CheckExtension(const char* ext_name)
+    {
+        if ((nullptr != ext_name) && (gl_extensions_map.find(ext_name) != gl_extensions_map.end()))
+        {
+            gl_extensions_map[ext_name] = true;
+        }
+    }
+
     bool CheckForGlError(const std::string& error_message)
     {
         bool   error_found = false;
@@ -103,7 +118,66 @@ namespace ogl_utils
 
         return error_found;
     }
-}
+
+    void QuerySupportedPlatformExtensions()
+    {
+// On Linux we must enumerate the GLX extensions separately, as they will not be included in the list of GL_EXTENSIONS queried by ogl_get_string_i
+#ifdef _LINUX
+#ifndef GLES
+        if (ogl_x_get_client_string == nullptr)
+        {
+            LOAD_LIBRARY_SYMBOL(ogl_x_get_client_string, glXGetClientString);
+            if (ogl_x_get_client_string == nullptr)
+            {
+                GPA_LOG_ERROR("Could not load glXGetClientString; unable to enumerate GLX extensions.");
+                return;
+            }
+        }
+
+        // We open up an additional connection to the X server here to avoid passing around the X server connection used by the app itself.
+        Display* display = XOpenDisplay(nullptr);
+        if (display == nullptr)
+        {
+            GPA_LOG_ERROR("Failed to open connection to the X server; unable to enumerate GLX extensions.");
+            return;
+        }
+
+        const char* ext_string = ogl_x_get_client_string(display, GLX_EXTENSIONS);
+        if (ext_string == nullptr)
+        {
+            GPA_LOG_ERROR("Failed to retrieve extension string; unable to enumerate GLX extensions.");
+            return;
+        }
+
+        const std::string glx_extensions  = ext_string;
+        std::size_t       idx_entry_start = 0;
+
+        // Walk through the extension string, which will be a list of space-separated identifiers
+        do
+        {
+            if (idx_entry_start >= glx_extensions.length())
+            {
+                break;
+            }
+
+            std::size_t idx_entry_end = glx_extensions.find_first_of(' ', idx_entry_start);
+
+            if (idx_entry_end != std::string::npos)
+            {
+                std::string ext_name = glx_extensions.substr(idx_entry_start, idx_entry_end - idx_entry_start);
+                ++idx_entry_end;
+
+                CheckExtension(ext_name.c_str());
+            }
+
+            idx_entry_start = idx_entry_end;
+        } while (idx_entry_start != std::string::npos);
+
+        XCloseDisplay(display);
+#endif
+#endif
+    }
+}  // namespace ogl_utils
 
 bool ogl_utils::LoadGl()
 {
@@ -159,13 +233,11 @@ void ogl_utils::QuerySupportedExtensions()
             for (GLint i = 0; i < num_extensions; i++)
             {
                 const char* extension = reinterpret_cast<const char*>(ogl_get_string_i(GL_EXTENSIONS, i));
-
-                if ((nullptr != extension) && (gl_extensions_map.find(extension) != gl_extensions_map.end()))
-                {
-                    gl_extensions_map[extension] = true;
-                }
+                CheckExtension(extension);
             }
         }
+
+        QuerySupportedPlatformExtensions();
 
         are_supported_extensions_queried = true;
     }
@@ -227,6 +299,28 @@ bool ogl_utils::InitCtxAmdPerfExtFunctions()
     }
 
     return false;
+}
+
+bool ogl_utils::InitPlatformExtFunctions()
+{
+#ifdef _LINUX
+#ifndef GLES
+    if (LoadGl())
+    {
+        if (nullptr == GET_PROC_ADDRESS_FUNC)
+        {
+            GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(gl_lib_handle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
+        }
+        GET_CONTEXT_PROC_ADDRESS(ogl_x_query_current_renderer_integer_mesa, PFN_GLX_QUERYCURRENTRENDERERINTEGERMESA, "glXQueryCurrentRendererIntegerMESA");
+        return nullptr != ogl_x_query_current_renderer_integer_mesa;
+    }
+    else
+    {
+        return false;
+    }
+#endif
+#endif
+    return true;
 }
 
 bool ogl_utils::InitializeGlFunctions()
@@ -385,16 +479,18 @@ bool ogl_utils::InitializeGlFunctions()
 
 #ifndef WIN32
     bool mesa_query_renderer_ext_found = gl_extensions_map["GLX_MESA_query_renderer"];
-
-    if (nullptr == ogl_x_query_current_renderer_integer_mesa)
+    if (!InitPlatformExtFunctions())
     {
-        if (mesa_query_renderer_ext_found)
+        if (nullptr == ogl_x_query_current_renderer_integer_mesa)
         {
-            GPA_LOG_MESSAGE("The GLX_MESA_query_renderer extension is exposed by the driver, but not all entry points are available.");
-        }
-        else
-        {
-            GPA_LOG_MESSAGE("The GLX_MESA_query_renderer extension is not exposed by the driver.");
+            if (mesa_query_renderer_ext_found)
+            {
+                GPA_LOG_MESSAGE("The GLX_MESA_query_renderer extension is exposed by the driver, but not all entry points are available.");
+            }
+            else
+            {
+                GPA_LOG_MESSAGE("The GLX_MESA_query_renderer extension is not exposed by the driver.");
+            }
         }
     }
 

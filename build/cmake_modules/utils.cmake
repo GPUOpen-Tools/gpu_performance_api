@@ -1,26 +1,31 @@
 ## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
+include(${GPA_CMAKE_MODULES_DIR}/clang_utils.cmake)
+
 macro(INCLUDE_ADDITIONAL_MODULE)
     if(NOT ${ADDITIONAL_INCLUDE} STREQUAL "")
         include(${ADDITIONAL_INCLUDE})
     endif()
 endmacro()
 
-## Macro to create shared library target with exports
-macro(ADD_SHARED_LIBRARY SHARED_LIB_NAME EXPORT_FILE_PATH)
-    add_library(${ARGV0} SHARED ${SOURCES} ${ARGV1})
-endmacro()
+## Function to create shared library target with exports
+function(ADD_SHARED_LIBRARY SHARED_LIB_NAME EXPORT_FILE_PATH)
+    add_library(${SHARED_LIB_NAME} SHARED ${ARGN} ${EXPORT_FILE_PATH})
+    add_lint_passes(${SHARED_LIB_NAME} ${ARGN})
+endfunction()
 
-## Macro to create shared library target without exports
-macro(ADD_SHARED_LIBRARY_NO_EXPORT SHARED_LIB_NAME)
-    add_library(${ARGV0} SHARED ${SOURCES})
-endmacro()
+## Function to create shared library target without exports
+function(ADD_SHARED_LIBRARY_NO_EXPORT SHARED_LIB_NAME)
+    add_library(${SHARED_LIB_NAME} SHARED ${ARGN})
+    add_lint_passes(${SHARED_LIB_NAME} ${ARGN})
+endfunction()
 
-## Macro to static library target
-macro(ADD_STATIC_LIBRARY STATIC_LIB_NAME)
-    add_library(${ARGV0} ${SOURCES})
-endmacro()
+## Function to create static library target
+function(ADD_STATIC_LIBRARY STATIC_LIB_NAME)
+    add_library(${STATIC_LIB_NAME} ${ARGN})
+    add_lint_passes(${STATIC_LIB_NAME} ${ARGN})
+endfunction()
 
 ## Macro to compile Win32 resource
 macro(INCLUDE_WIN_RESOURCE RES_FILE_NAME)

@@ -28,30 +28,6 @@
 
 using namespace ogl_utils;
 
-/// @brief Struct to hold values of command line arguments.
-struct CommandLineArgs
-{
-    /// Number of frames to execute -- zero indicates that the app should run until the user closes it.
-    unsigned int num_frames = 0;
-
-    /// Flag indicating if some counter values should be verified (experimental).
-    bool verify_counters = false;
-
-    /// Flag indicating whether the application should verify some counter values and confirm successful results.
-    bool confirm_success = false;
-
-    /// Flag indicating whether or not to include hardware counters in non-internal builds.
-    bool include_hw_counters = false;
-
-    /// Flag indicating whether the counter file is given or not.
-    bool counter_provided = false;
-
-    /// Counter file name.
-    std::string counter_file_name;
-};
-
-CommandLineArgs command_line_args;
-
 const unsigned int kWindowWidth     = 800;
 const unsigned int kWindowHeight    = 800;
 const std::wstring kWindowClassName = L"OpenGL Triangle Sample App";
@@ -96,23 +72,24 @@ decltype(glViewport)*  ogl_viewport   = nullptr;
 
 int DrawTriangle()
 {
-    if (command_line_args.num_frames > 0 && GpaHelper::Instance()->GetCurrentFrameCount() == command_line_args.num_frames)
+    const gpa_example::GpaSampleApp& app = *(GpaHelper::Instance()->App());
+
+    if (app.NumberOfFrames() > 0 && GpaHelper::Instance()->GetCurrentFrameCount() == app.NumberOfFrames())
     {
         GpaHelper::Instance()->CloseContext();
-        if (GpaHelper::Instance()->gpa_has_error_occured_)
-        {
-            exit(1);
-        }
 
-        exit(0);
+        // All profiling is done, the app can be exited.
+        int exit_code = GpaHelper::Instance()->has_error_occurred_ ? GpaHelper::Instance()->num_errors_occurred_ : 0;
+        GpaHelper::DeleteInstance();
+        exit(exit_code);
     }
 
     RETURN_IF_FAILED(GpaHelper::Instance()->CreateGpaSession());
 
-    if (command_line_args.counter_provided)
+    if (!app.Counterfile().empty())
     {
         std::fstream counter_file_stream;
-        counter_file_stream.open(command_line_args.counter_file_name.c_str(), std::ios_base::in);
+        counter_file_stream.open(app.Counterfile().c_str(), std::ios_base::in);
         std::vector<std::string> counter_list;
         char                     temp_counter[256];
         if (counter_file_stream.is_open())
@@ -132,8 +109,9 @@ int DrawTriangle()
         else
         {
             std::stringstream error;
-            error << "Unable to open Counter file " << command_line_args.counter_file_name.c_str() << " . Not enabling any counters";
+            error << "Unable to open Counter file " << app.Counterfile().c_str() << ". Not enabling any counters.";
             LOG_ERROR(kGeneralError, error.str().c_str());
+            return -1;
         }
     }
     else
@@ -182,104 +160,11 @@ int DrawTriangle()
     RETURN_IF_FAILED(GpaHelper::Instance()->OnGpaSessionEnd());
 
     unsigned int profile_set = GpaHelper::Instance()->GetCurrentFrameCount();
-    RETURN_IF_FAILED(GpaHelper::Instance()->PrintGpaSampleResults(profile_set, command_line_args.verify_counters || command_line_args.confirm_success));
+    RETURN_IF_FAILED(GpaHelper::Instance()->PrintGpaSampleResults(profile_set, app.Verify()));
     RETURN_IF_FAILED(GpaHelper::Instance()->DestroyGpaSession());
 
     GpaHelper::Instance()->IncrementFrameCounter();
     return 0;
-}
-
-/// @brief Print command line usage information.
-void Usage()
-{
-    std::cout << "GLTriangle [--numberofframes #] [--verify] [--confirmsuccess] [--counterfile <file>] [--includehwcounters]" << std::endl << std::endl;
-    std::cout << "  --numberofframes #: Renders the specified number of frames before exiting; if used with --verify then # must be a multiple of the number "
-                 "of passes needed"
-              << std::endl;
-    std::cout << "  --verify: Application will verify a few counter values (experimental)" << std::endl;
-    std::cout << "  --confirmsuccess: Implies --verify and confirms successful counter values in addition to errors" << std::endl;
-    std::cout << "  --counterfile <file>: File containing the list of counters to profile" << std::endl;
-    std::cout << "  --includehwcounters: Public hardware counters will be enabled in non-internal builds" << std::endl;
-}
-
-/// @brief Parse Command line arguments.
-///
-/// @param [in] argc The number of arguments.
-/// @param [in] argv The array of arguments.
-///
-/// @retval true If the arguments could be parsed.
-/// @retval false On error.
-bool ParseCommandLine(int argc, char* argv[])
-{
-    bool success = true;
-
-    for (int i = 1; i < argc; i++)
-    {
-        std::string this_arg(argv[i]);
-
-        if (0 == this_arg.compare("--numberofframes"))
-        {
-            i++;
-
-            if (i < argc)
-            {
-                std::istringstream iss(argv[i]);
-
-                iss >> command_line_args.num_frames;
-
-                if (iss.fail())
-                {
-                    success = false;
-                }
-            }
-            else
-            {
-                success = false;
-            }
-        }
-        else if (0 == this_arg.compare("--verify"))
-        {
-            command_line_args.verify_counters = true;
-        }
-        else if (0 == this_arg.compare("--confirmsuccess"))
-        {
-            command_line_args.confirm_success = true;
-        }
-        else if (0 == this_arg.compare("--includehwcounters"))
-        {
-            command_line_args.include_hw_counters = true;
-        }
-        else if (0 == this_arg.compare("--counterfile"))
-        {
-            i++;
-
-            if (i < argc)
-            {
-                std::istringstream iss(argv[i]);
-
-                iss >> command_line_args.counter_file_name;
-
-                if (iss.fail())
-                {
-                    success = false;
-                }
-                else
-                {
-                    command_line_args.counter_provided = true;
-                }
-            }
-            else
-            {
-                success = false;
-            }
-        }
-        else
-        {
-            success = false;
-        }
-    }
-
-    return success;
 }
 
 bool InitializeOpenGLFunctionPointers()
@@ -402,15 +287,16 @@ void CreateWindowAndContext()
 
 int main(int argc, char* argv[])
 {
-    if (!ParseCommandLine(argc, argv))
+    if (!GpaHelper::Instance()->ParseCommandLine(argc, argv))
     {
-        Usage();
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
     if (!InitializeOpenGLFunctionPointers())
     {
         LOG_ERROR(kGlError, "Failed to initialize OpenGL function pointers.");
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
@@ -424,14 +310,25 @@ int main(int argc, char* argv[])
     XSetWMProtocols(kDisplay, kAppWindow, &window_deletion, 1);
 
     XEvent event;
-    RETURN_IF_FAILED(GpaHelper::Instance()->SetupGpa());
-    RETURN_IF_FAILED(GpaHelper::Instance()->OpenContext(gl_context, command_line_args.include_hw_counters));
+
+    if (!GpaHelper::Instance()->SetupGpa())
+    {
+        GpaHelper::DeleteInstance();
+        return -1;
+    }
+
+    if (!GpaHelper::Instance()->OpenContext(gl_context, GpaHelper::Instance()->App()->IncludeHwCounters()))
+    {
+        GpaHelper::DeleteInstance();
+        return -1;
+    }
 
     decltype(glXSwapBuffers)* glx_swap_buffers = nullptr;
     LOAD_LIBRARY_SYMBOL(glx_swap_buffers, glXSwapBuffers);
     if (nullptr == glx_swap_buffers)
     {
         LOG_ERROR(kGlError, "Unable to acquire glXSwapBuffers function pointer.\n");
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
@@ -442,7 +339,13 @@ int main(int argc, char* argv[])
         if (event.type == Expose)
         {
             ogl_viewport(0, 0, 500, 500);
-            DrawTriangle();
+            if (DrawTriangle() == -1)
+            {
+                GpaHelper::Instance()->DestroyGpaSession();
+                GpaHelper::Instance()->CloseContext();
+                GpaHelper::DeleteInstance();
+                return -1;
+            }
             glx_swap_buffers(kDisplay, kAppWindow);
             int event_queue_length = XQLength(kDisplay);
             if (event_queue_length == 0)
@@ -461,6 +364,7 @@ int main(int argc, char* argv[])
                 XDestroyWindow(kDisplay, kAppWindow);
                 XCloseDisplay(kDisplay);
                 kDisplay = nullptr;
+                GpaHelper::DeleteInstance();
                 exit(0);
             }
         }
@@ -511,11 +415,14 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
                 LOG_ERROR(kWinError, "Unable to make context current.");
             }
 
-            RETURN_IF_FAILED(GpaHelper::Instance()->OpenContext(gl_context, command_line_args.include_hw_counters));
+            RETURN_IF_FAILED(GpaHelper::Instance()->OpenContext(gl_context, GpaHelper::Instance()->App()->IncludeHwCounters()));
         }
 
         if (DrawTriangle() == -1)
         {
+            GpaHelper::Instance()->DestroyGpaSession();
+            GpaHelper::Instance()->CloseContext();
+            PostQuitMessage(-1);
             return -1;
         }
 
@@ -539,15 +446,16 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE previous_instance, LPSTR
     UNREFERENCED_PARAMETER(cmd_line);
     UNREFERENCED_PARAMETER(previous_instance);
 
-    if (!ParseCommandLine(__argc, __argv))
+    if (!GpaHelper::Instance()->ParseCommandLine(__argc, __argv))
     {
-        Usage();
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
     if (!InitializeOpenGLFunctionPointers())
     {
         LOG_ERROR(kGlError, "Failed to initialize OpenGL function pointers.");
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
@@ -577,6 +485,7 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE previous_instance, LPSTR
         }
 
         // Failed to register window.
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
@@ -601,8 +510,11 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE previous_instance, LPSTR
         }
 
         // Failed to create window.
+        GpaHelper::DeleteInstance();
         return -1;
     }
+
+    //SetWindowLongPtr(window_handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(GpaHelper));
 
     PIXELFORMATDESCRIPTOR pixel_format_desc = {sizeof(PIXELFORMATDESCRIPTOR),
                                                1,
@@ -639,6 +551,7 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE previous_instance, LPSTR
         {
             LOG_ERROR(kWinError, "Unable to get device context from windows.");
         }
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
@@ -650,6 +563,7 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE previous_instance, LPSTR
         {
             LOG_ERROR(kWinError, "Unable to choose pixel format.");
         }
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
@@ -660,6 +574,7 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE previous_instance, LPSTR
         {
             LOG_ERROR(kWinError, "Unable to set pixel format.");
         }
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
@@ -670,6 +585,7 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE previous_instance, LPSTR
         {
             LOG_ERROR(kWinError, "Unable to show window.");
         }
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
@@ -693,9 +609,12 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE previous_instance, LPSTR
         {
             LOG_ERROR(kWinError, "Unable to unregister windows class.");
         }
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
-    return GpaHelper::Instance()->gpa_has_error_occured_ ? -1 : 0;
+    int return_code = GpaHelper::Instance()->has_error_occurred_ ? GpaHelper::Instance()->num_errors_occurred_ : 0;
+    GpaHelper::DeleteInstance();
+    return return_code;
 }
 #endif

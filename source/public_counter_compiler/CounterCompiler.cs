@@ -561,9 +561,9 @@ namespace PublicCounterCompiler
                                 break;
                             }
 
-                            result += "?";
+                            result += "!=0 ? ";
                             result += rpnStack.Pop();
-                            result += ":";
+                            result += " : ";
                             result += rpnStack.Pop();
                             rpnStack.Push(result);
                         }
@@ -631,7 +631,7 @@ namespace PublicCounterCompiler
                             result = ")";
                             rpnStack.Push(result);
                         }
-                            continue;
+                        continue;
 
                     case "num_shader_engines":
                     case "num_shader_arrays":
@@ -645,92 +645,95 @@ namespace PublicCounterCompiler
                 }
 
                 // Special handling for [sum, min, max, avg, mul, div]{N}
-                var prefix3 = component.Substring(0, 3);
-
-                if ("sum" == prefix3
-                    || "sub" == prefix3
-                    || "max" == prefix3
-                    || "min" == prefix3
-                    || "avg" == prefix3)
+                if (component.Length >= 3)
                 {
-                    int popCount = 0;
-                    string strCount = component.Substring(3);
-                    if (string.IsNullOrEmpty(strCount))
+                    var prefix3 = component.Substring(0, 3);
+
+                    if ("sum" == prefix3
+                        || "sub" == prefix3
+                        || "max" == prefix3
+                        || "min" == prefix3
+                        || "avg" == prefix3)
                     {
-                        popCount = 2;
-                    }
-                    else
-                    {
-                        isNumeric = int.TryParse(strCount, out popCount);
-                        if (!isNumeric)
+                        int popCount = 0;
+                        string strCount = component.Substring(3);
+                        if (string.IsNullOrEmpty(strCount))
                         {
-                            OutputCounterError(counter.Name, component, componentIndex, prefix3 + " operator with invalid component count", errorHandler);
-                            retVal = false;
-                            break;
+                            popCount = 2;
+                        }
+                        else
+                        {
+                            isNumeric = int.TryParse(strCount, out popCount);
+                            if (!isNumeric)
+                            {
+                                OutputCounterError(counter.Name, component, componentIndex, prefix3 + " operator with invalid component count", errorHandler);
+                                retVal = false;
+                                break;
+                            }
+
+                            if (rpnStack.Count < popCount)
+                            {
+                                OutputCounterError(counter.Name, component, componentIndex, "attempt to " + prefix3 + " more components than exist on stack", errorHandler);
+                                retVal = false;
+                                break;
+                            }
                         }
 
-                        if (rpnStack.Count < popCount)
+                        for (int i = 0; i < popCount; ++i)
                         {
-                            OutputCounterError(counter.Name, component, componentIndex, "attempt to " + prefix3 + " more components than exist on stack", errorHandler);
-                            retVal = false;
-                            break;
-                        }
-                    }
-
-                    for (int i = 0; i < popCount; ++i)
-                    {
-                        rpnStack.Pop();
-                    }
-
-                    rpnStack.Push("result:" + component);
-
-                    continue;
-                }
-
-                // Special handling for vector multiply and divide [vecMul, vecDiv, vecSum, vecSub]{N}
-                prefix3 = component.Substring(0, 3);
-
-                if ("vec" == prefix3)
-                {
-                    int popCount = 0;
-                    string strCount = component.Substring(6);
-                    if (string.IsNullOrEmpty(strCount))
-                    {
-                        popCount = 2;
-                    }
-                    else
-                    {
-                        isNumeric = int.TryParse(strCount, out popCount);
-                        if (!isNumeric)
-                        {
-                            OutputCounterError(counter.Name, component, componentIndex, prefix3 + " operator with invalid component count", errorHandler);
-                            retVal = false;
-                            break;
+                            rpnStack.Pop();
                         }
 
-                        if (rpnStack.Count < popCount)
+                        rpnStack.Push("result:" + component);
+
+                        continue;
+                    }
+
+                    // Special handling for vector multiply and divide [vecMul, vecDiv, vecSum, vecSub]{N}
+                    prefix3 = component.Substring(0, 3);
+
+                    if ("vec" == prefix3)
+                    {
+                        int popCount = 0;
+                        string strCount = component.Substring(6);
+                        if (string.IsNullOrEmpty(strCount))
                         {
-                            OutputCounterError(counter.Name, component, componentIndex, "attempt to " + prefix3 + " more components than exist on stack", errorHandler);
-                            retVal = false;
-                            break;
+                            popCount = 2;
                         }
-                    }
+                        else
+                        {
+                            isNumeric = int.TryParse(strCount, out popCount);
+                            if (!isNumeric)
+                            {
+                                OutputCounterError(counter.Name, component, componentIndex, prefix3 + " operator with invalid component count", errorHandler);
+                                retVal = false;
+                                break;
+                            }
 
-                    for (int i = 0; i < (2 * popCount); ++i)
-                    {
-                        rpnStack.Pop();
-                    }
+                            if (rpnStack.Count < popCount)
+                            {
+                                OutputCounterError(counter.Name, component, componentIndex, "attempt to " + prefix3 + " more components than exist on stack", errorHandler);
+                                retVal = false;
+                                break;
+                            }
+                        }
 
-                    for (int i = 0; i < popCount; ++i)
-                    {
-                        rpnStack.Push("result:" + component + i.ToString());
-                    }
+                        for (int i = 0; i < (2 * popCount); ++i)
+                        {
+                            rpnStack.Pop();
+                        }
 
-                    continue;
+                        for (int i = 0; i < popCount; ++i)
+                        {
+                            rpnStack.Push("result:" + component + i.ToString());
+                        }
+
+                        continue;
+                    }
                 }
 
                 // Special handling for dividesum{N}
-                if (component.Substring(0, 9) == "dividesum")
+                if (component.StartsWith("dividesum"))
                 {
                     int popCount = 0;
                     string strCount = component.Substring(9);
@@ -765,9 +768,9 @@ namespace PublicCounterCompiler
                 }
 
                 // scalarSub[n], scalarMul[n] scalarDiv[n]
-                if (component.Substring(0, 9) == "scalarmul"
-                    || component.Substring(0, 9) == "scalardiv"
-                    || component.Substring(0, 9) == "scalarsub")
+                if (component.StartsWith("scalarmul")
+                    || component.StartsWith("scalardiv")
+                    || component.StartsWith("scalarsub"))
                 {
                     int popCount = 0;
                     string strCount = component.Substring(9);
@@ -809,7 +812,7 @@ namespace PublicCounterCompiler
 
                 // Unknown component - error
                 OutputCounterError(counter.Name, component, componentIndex, "unknown formula component", errorHandler);
-                retVal = false;
+                return false;
             }
 
             // Validate stack contains a single result
@@ -1484,6 +1487,23 @@ namespace PublicCounterCompiler
                         }
 
                         counterDef = new DerivedCounterDef { Name = lineSplit[1] };
+
+                        // Make sure counter name isn't already in the list.
+                        bool counterAlreadyDefined = false;
+                        foreach (DerivedCounterDef def in counterDefList)
+                        {
+                            if (def.Name == counterDef.Name)
+                            {
+                                counterAlreadyDefined = true;
+                                break;
+                            }
+                        }
+
+                        if (counterAlreadyDefined)
+                        {
+                            errorHandler("Duplicate name found. Line'" + s + "'");
+                            return false;
+                        }
 
                         currentApis = new List<string>();
 
@@ -2355,13 +2375,17 @@ namespace PublicCounterCompiler
             docStream.WriteLine(new String('%', groupHeading.Length));
             docStream.WriteLine();
             docStream.WriteLine(".. csv-table::");
-            docStream.WriteLine("    :header: \"Counter Name\", \"Brief Description\"");
-            docStream.WriteLine("    :widths: 15, 80");
+            docStream.WriteLine("    :header: \"Counter Name\", \"Usage\", \"Brief Description\"");
+            docStream.WriteLine("    :widths: 15, 10, 75");
             docStream.WriteLine();
 
             foreach (KeyValuePair<string, DerivedCounterDef> deriveCounterDef in groupKvp.Value)
             {
-                docStream.WriteLine("    \"{0}\", \"{1}\"", deriveCounterDef.Key, deriveCounterDef.Value.Desc);
+                string usage = deriveCounterDef.Value.Usage;
+                const string kPrefix = "kGpaUsageType";
+                usage = usage.Remove(0, kPrefix.Length);
+
+                docStream.WriteLine("    \"{0}\", \"{1}\", \"{2}\"", deriveCounterDef.Key, usage, deriveCounterDef.Value.Desc);
             }
         }
 

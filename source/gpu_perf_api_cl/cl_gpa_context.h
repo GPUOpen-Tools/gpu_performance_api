@@ -65,7 +65,7 @@ private:
     cl_command_queue       cl_command_queue_;   ///< CL command queue for this context
     cl_device_id           cl_device_id_;       ///< CL device id for this context
     cl_DeviceClockMode_AMD clock_mode_;         ///< GPU Clock mode
-    int                    cl_driver_version_;  ///> CL driver version
+    int                    cl_driver_version_;  ///< CL driver version
 };
 
 #endif  // _CL_GPA_CONTEXT_H_

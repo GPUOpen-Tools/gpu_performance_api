@@ -44,7 +44,7 @@ set(SOURCES
     ${SOURCE_FILES}
     ${HEADER_FILES})
 
-ADD_SHARED_LIBRARY(${GPA_PROJECT_NAME} ${GPA_SRC_COMMON}/gpa_function_exports.def)
+ADD_SHARED_LIBRARY(${GPA_PROJECT_NAME} ${GPA_SRC_COMMON}/gpa_function_exports.def ${SOURCES})
 INCLUDE_WIN_RESOURCE(gpu_perf_api_dx12)
 
 target_link_libraries(${GPA_PROJECT_NAME}

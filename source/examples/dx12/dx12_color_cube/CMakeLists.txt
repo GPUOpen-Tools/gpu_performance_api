@@ -14,7 +14,15 @@ include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_SRC})
 
 set(CMAKE_INCLUDE_CURRENT_DIR OFF)
-set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/cube_sample.cc
+set(SOURCES ${GPA_SRC_COMMON}/utility.h
+            ${GPA_SRC_COMMON}/utility.cc
+            ${GPA_SRC_COMMON}/logging.h
+            ${GPA_SRC_COMMON}/logging.cc
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/cmdline_parser.h
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/cmdline_parser.cc
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/gpa_sample_app.h
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/gpa_sample_app.cc
+            ${CMAKE_CURRENT_SOURCE_DIR}/cube_sample.cc
             ${CMAKE_CURRENT_SOURCE_DIR}/cube_sample.h
             ${CMAKE_CURRENT_SOURCE_DIR}/../sample.cc
             ${CMAKE_CURRENT_SOURCE_DIR}/../sample.h)

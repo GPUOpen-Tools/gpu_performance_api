@@ -62,6 +62,22 @@ inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
     extern GpaHardwareCounterDesc kGcea13CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea13 block for Gfx9_placeholder4 family
     extern GpaHardwareCounterDesc kGcea14CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea14 block for Gfx9_placeholder4 family
     extern GpaHardwareCounterDesc kGcea15CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea15 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea16CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea16 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea17CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea17 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea18CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea18 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea19CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea19 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea20CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea20 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea21CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea21 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea22CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea22 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea23CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea23 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea24CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea24 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea25CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea25 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea26CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea26 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea27CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea27 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea28CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea28 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea29CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea29 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea30CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea30 block for Gfx9_placeholder4 family
+    extern GpaHardwareCounterDesc kGcea31CountersGfx9_placeholder4[]; ///< Array of internal counters for Gcea31 block for Gfx9_placeholder4 family
 
 /// @brief Replaces count number of block instance counters at the destination with the overriding source counters.
 ///
@@ -114,6 +130,22 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
     ReplaceBlockInstanceCounters(counter_gfx9::kGcea13CountersGfx9, kGcea13CountersGfx9_placeholder4, 83);
     ReplaceBlockInstanceCounters(counter_gfx9::kGcea14CountersGfx9, kGcea14CountersGfx9_placeholder4, 83);
     ReplaceBlockInstanceCounters(counter_gfx9::kGcea15CountersGfx9, kGcea15CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea16CountersGfx9, kGcea16CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea17CountersGfx9, kGcea17CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea18CountersGfx9, kGcea18CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea19CountersGfx9, kGcea19CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea20CountersGfx9, kGcea20CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea21CountersGfx9, kGcea21CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea22CountersGfx9, kGcea22CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea23CountersGfx9, kGcea23CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea24CountersGfx9, kGcea24CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea25CountersGfx9, kGcea25CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea26CountersGfx9, kGcea26CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea27CountersGfx9, kGcea27CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea28CountersGfx9, kGcea28CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea29CountersGfx9, kGcea29CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea30CountersGfx9, kGcea30CountersGfx9_placeholder4, 83);
+    ReplaceBlockInstanceCounters(counter_gfx9::kGcea31CountersGfx9, kGcea31CountersGfx9_placeholder4, 83);
 
     return true;
 }

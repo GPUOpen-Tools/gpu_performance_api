@@ -68,6 +68,7 @@ initialize the DirectX 12 version of GPA:
     GpaApiManager* GpaApiManager::gpa_api_manager_ = nullptr;
     #endif
     GpaFuncTableInfo* gpa_function_table_info = nullptr;
+    GpaFunctionTable* gpa_function_table      = nullptr;
 
     bool InitializeGpa()
     {
@@ -75,11 +76,11 @@ initialize the DirectX 12 version of GPA:
 
         if (kGpaStatusOk == GpaApiManager::Instance()->LoadApi(kGpaApiDirectx12))
         {
-            gpa_function_table_info = GpaApiManager::Instance()->GetFunctionTable(kGpaApiDirectx12);
+            gpa_function_table = GpaApiManager::Instance()->GetFunctionTable(kGpaApiDirectx12);
 
             if (nullptr != gpa_function_table)
             {
-                ret_val = kGpaStatusOk == gpa_function_table_info->GpaInitialize(kGpaInitializeDefaultBit);
+                ret_val = kGpaStatusOk == gpa_function_table->GpaInitialize(kGpaInitializeDefaultBit);
             }
         }
 
@@ -187,6 +188,7 @@ The following methods can be used to query information about the context:
     "GpaGetSupportedSampleTypes", "Gets a mask of the sample types supported by the specified context."
     "GpaGetDeviceAndRevisionId", "Gets the GPU device and revision id associated with the specified context."
     "GpaGetDeviceName", "Gets the device name of the GPU associated with the specified context."
+    "GpaGetDeviceGeneration", "Gets the device generation of the GPU associated with the specified context."
 
 The following methods can be used to query information about performance counters:
 

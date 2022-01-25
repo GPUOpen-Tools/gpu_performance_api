@@ -20,11 +20,19 @@ if(ANDROID)
     ## Reset all variables after creating the lib
     include (${GPA_CMAKE_MODULES_DIR}/common.cmake)
     set(ADDITIONAL_SOURCE ${CMAKE_CURRENT_SOURCE_DIR}/android_main.cc)
-    add_compile_options(-Wno-missing-braces)
+    add_compile_options(-Wno-missing-braces -Wno-unused-private-field)
 endif()
 
 set(CMAKE_INCLUDE_CURRENT_DIR OFF)
-set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/vk_color_cube.cc
+set(SOURCES ${GPA_SRC_COMMON}/utility.h
+            ${GPA_SRC_COMMON}/utility.cc
+            ${GPA_SRC_COMMON}/logging.h
+            ${GPA_SRC_COMMON}/logging.cc
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/cmdline_parser.h
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/cmdline_parser.cc
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/gpa_sample_app.h
+            ${GPA_SRC_EXAMPLE_COMMON_PATH}/gpa_sample_app.cc
+            ${CMAKE_CURRENT_SOURCE_DIR}/vk_color_cube.cc
             ${CMAKE_CURRENT_SOURCE_DIR}/vk_color_cube.h
             ${CMAKE_CURRENT_SOURCE_DIR}/gpa_helper.h
             ${CMAKE_CURRENT_SOURCE_DIR}/gpa_helper.cc
@@ -50,7 +58,8 @@ add_dependencies(${GPA_PROJECT_NAME} GPUPerfAPIVK)
 
 target_link_libraries(${LINK_LIBS}
                       $<$<PLATFORM_ID:Linux>:dl>
-                      $<$<PLATFORM_ID:Linux>:xcb>)
+                      $<$<PLATFORM_ID:Linux>:xcb>
+                      $<$<PLATFORM_ID:Linux>:pthread>)
 ADD_LINKER_FLAGS()
 
 if(WIN32)

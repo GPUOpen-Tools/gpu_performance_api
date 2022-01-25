@@ -388,12 +388,12 @@ bool Dx11GpaImplementor::GetAmdHwInfo(ID3D11Device* d3d11_device,
                             unsigned int   sub_minor_ver = 0;
                             ADLUtil_Result adl_result    = AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
 
-                            static const unsigned int kMinMajorVer      = 19;
-                            static const unsigned int kMinMinorVerFor30 = 30;
-
                             if ((ADL_SUCCESS == adl_result || ADL_WARNING == adl_result))
                             {
-                                if (major_ver >= kMinMajorVer && minor_ver >= kMinMinorVerFor30)
+                                static const unsigned int kMinMajorVer = 19;
+                                static const unsigned int kMinMinorVerFor30 = 30;
+
+                                if (major_ver > kMinMajorVer || (major_ver == kMinMajorVer && minor_ver >= kMinMinorVerFor30))
                                 {
                                     if (nullptr != dx_ext)
                                     {
@@ -415,7 +415,7 @@ bool Dx11GpaImplementor::GetAmdHwInfo(ID3D11Device* d3d11_device,
                                                     AmdDxASICInfoHWInfo asic_info = info_param.pASICInfo->hwInfo[gpu_index];
                                                     hw_info.SetNumberCus(asic_info.totalCU);
                                                     hw_info.SetNumberShaderEngines(asic_info.numShaderEngines);
-                                                    hw_info.SetNumberShaderArrays(asic_info.numShaderArraysPerSE);
+                                                    hw_info.SetNumberShaderArrays(asic_info.numShaderArraysPerSE * asic_info.numShaderEngines);
                                                     hw_info.SetNumberSimds(asic_info.totalCU * asic_info.numSimdsPerCU);
                                                 }
 

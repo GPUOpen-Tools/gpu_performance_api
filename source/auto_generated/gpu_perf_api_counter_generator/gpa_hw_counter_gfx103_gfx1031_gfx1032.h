@@ -26,7 +26,7 @@ namespace counter_gfx103_gfx1031_gfx1032
 /// @return True if the ASIC is matched by this file.
 inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
 {
-    static std::set<GDT_HW_ASIC_TYPE> asics_supported = { GDT_GFX10_3_1, GDT_GFX10_3_2 };
+    static std::set<GDT_HW_ASIC_TYPE> asics_supported = { GDT_GFX10_3_1, GDT_GFX10_3_2, GDT_GFX10_3_4 };
 
     if (asics_supported.find(asic_type) == asics_supported.end())
     {

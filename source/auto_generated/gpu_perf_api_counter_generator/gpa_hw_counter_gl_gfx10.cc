@@ -117,19 +117,19 @@ namespace counter_gl_gfx10
         kGl2c13CountersGfx10,
         kGl2c14CountersGfx10,
         kGl2c15CountersGfx10,
-        kGl2c16CountersGfx10,
-        kGl2c17CountersGfx10,
-        kGl2c18CountersGfx10,
-        kGl2c19CountersGfx10,
-        kGl2c20CountersGfx10,
-        kGl2c21CountersGfx10,
-        kGl2c22CountersGfx10,
-        kGl2c23CountersGfx10,
         kPaPhCountersGfx10,
         kUtcl10CountersGfx10,
         kChc0CountersGfx10,
         kChaCountersGfx10,
         kChcgCountersGfx10,
+        kRmi0CountersGfx10,
+        kRmi1CountersGfx10,
+        kRmi2CountersGfx10,
+        kRmi3CountersGfx10,
+        kRmi4CountersGfx10,
+        kRmi5CountersGfx10,
+        kRmi6CountersGfx10,
+        kRmi7CountersGfx10,
         kGpinCountersGfx10,
         kGpuTimeCountersGfx10,
     };
@@ -208,14 +208,6 @@ namespace counter_gl_gfx10
         kGl2c13ExposedCountersGfx10,
         kGl2c14ExposedCountersGfx10,
         kGl2c15ExposedCountersGfx10,
-        kGl2c16ExposedCountersGfx10,
-        kGl2c17ExposedCountersGfx10,
-        kGl2c18ExposedCountersGfx10,
-        kGl2c19ExposedCountersGfx10,
-        kGl2c20ExposedCountersGfx10,
-        kGl2c21ExposedCountersGfx10,
-        kGl2c22ExposedCountersGfx10,
-        kGl2c23ExposedCountersGfx10,
         kGputimeExposedCountersGfx10,
     };
 
@@ -318,19 +310,19 @@ namespace counter_gl_gfx10
         {95, "GL2C13", 13, 235, 4, 0},
         {96, "GL2C14", 14, 235, 4, 0},
         {97, "GL2C15", 15, 235, 4, 0},
-        {98, "GL2C16", 16, 235, 4, 0},
-        {99, "GL2C17", 17, 235, 4, 0},
-        {100, "GL2C18", 18, 235, 4, 0},
-        {101, "GL2C19", 19, 235, 4, 0},
-        {102, "GL2C20", 20, 235, 4, 0},
-        {103, "GL2C21", 21, 235, 4, 0},
-        {104, "GL2C22", 22, 235, 4, 0},
-        {105, "GL2C23", 23, 235, 4, 0},
-        {106, "PA_PH", 0, 960, 8, 0},
-        {107, "UTCL1", 0, 15, 2, 0},
-        {108, "CHC", 0, 35, 4, 0},
-        {109, "CHA", 0, 45, 4, 0},
-        {110, "CHCG", 0, 35, 4, 0},
+        {98, "PA_PH", 0, 960, 8, 0},
+        {99, "UTCL1", 0, 15, 2, 0},
+        {100, "CHC", 0, 35, 4, 0},
+        {101, "CHA", 0, 45, 4, 0},
+        {102, "CHCG", 0, 35, 4, 0},
+        {103, "RMI0", 0, 258, 4, 0},
+        {104, "RMI1", 1, 258, 4, 0},
+        {105, "RMI2", 2, 258, 4, 0},
+        {106, "RMI3", 3, 258, 4, 0},
+        {107, "RMI4", 4, 258, 4, 0},
+        {108, "RMI5", 5, 258, 4, 0},
+        {109, "RMI6", 6, 258, 4, 0},
+        {110, "RMI7", 7, 258, 4, 0},
         {111, "GPIN", 0, 5, 5, 0},
         {112, "GPUTime", 0, 6, 2, 0},
     };
@@ -409,15 +401,7 @@ namespace counter_gl_gfx10
         {95, 19360, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
         {96, 19595, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
         {97, 19830, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
-        {98, 20065, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
-        {99, 20300, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
-        {100, 20535, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
-        {101, 20770, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
-        {102, 21005, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
-        {103, 21240, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
-        {104, 21475, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
-        {105, 21710, {3, 35, 75, 76, 79, 89, 90, 91, 92}},
-        {112, 23040, {0, 1, 2, 3, 4, 5}},
+        {112, 23224, {0, 1, 2, 3, 4, 5}},
     };
 
     GpaPaddedCounterDesc kGlPaddedCounterByGroupGfx10[] = {
@@ -487,16 +471,16 @@ namespace counter_gl_gfx10
         71, // Tcp
     };
 
-    const unsigned int kHwGlGpuTimeBottomToBottomDurationIndexGfx10 = 23040; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Gl for Gfx10 family
+    const unsigned int kHwGlGpuTimeBottomToBottomDurationIndexGfx10 = 23224; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Gl for Gfx10 family
     const unsigned int kHwGlGpuTimeBottomToBottomStartIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for Gl for Gfx10 family
     const unsigned int kHwGlGpuTimeBottomToBottomEndIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for Gl for Gfx10 family
-    const unsigned int kHwGlGpuTimeTopToBottomDurationIndexGfx10 = 23043; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Gl for Gfx10 family
+    const unsigned int kHwGlGpuTimeTopToBottomDurationIndexGfx10 = 23227; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Gl for Gfx10 family
     const unsigned int kHwGlGpuTimeTopToBottomStartIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the top of pipe for Gl for Gfx10 family
     const unsigned int kHwGlGpuTimeTopToBottomEndIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the bottom of pipe for Gl for Gfx10 family
     const std::set<unsigned int> kHwGlTimestampBlockIdsGfx10 =       {112}; ///< Timestamp block id's for GL for gfx10 family
-    const std::set<unsigned int> kHwGlTimeCounterIndicesGfx10 =      {23040, 23041, 23042, 23043, 23044, 23045}; ///< Timestamp counter indices for GL for gfx10 family
+    const std::set<unsigned int> kHwGlTimeCounterIndicesGfx10 =      {23224, 23225, 23226, 23227, 23228, 23229}; ///< Timestamp counter indices for GL for gfx10 family
     const unsigned int           kHwGlGroupCountGfx10                = sizeof(kHwGlGroupsGfx10) / sizeof(GpaCounterGroupDesc);
-    const unsigned int           kHwGlExposedCountersGroupCountGfx10 = 82;
+    const unsigned int           kHwGlExposedCountersGroupCountGfx10 = 74;
     const unsigned int           kGlPaddedCounterGroupCountGfx10 = 0;
     const unsigned int           kHwGlSqGroupCountGfx10              = sizeof(kHwGlSqGroupsGfx10) / sizeof(GpaSqCounterGroupDesc);
     const unsigned int           kHwGlSqIsolatedGroupCountGfx10      = sizeof(kHwGlSqIsolatedGroupsGfx10) / sizeof(unsigned int);

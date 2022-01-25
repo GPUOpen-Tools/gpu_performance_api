@@ -22,97 +22,18 @@ extern HWND window_handle;
 extern LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam);
 
 extern bool any_errors_logged;  ///< Flag indicating if any GPA errors have been logged.
+extern int  num_errors_logged;  ///< Indicates the number of GPA errors that have been logged.
 
-CommandLineArgs args;
-
-/// @brief Print command line usage information.
-void Usage()
+gpa_example::Dx11SampleApp::Dx11SampleApp(const std::string app_name, CmdlineParser& cmdline_parser)
+    : GpaSampleApp(app_name, cmdline_parser)
+    , nogpa_(false)
 {
-    std::cout << "D3D11Triangle [--nogpa] [--numberofframes #] [--verify] [--confirmsuccess] [--counterfile <file>]" << std::endl << std::endl;
-    std::cout << "  --nogpa: Do not use GPUPerfAPI to collect performance counters" << std::endl;
-    std::cout << "  --numberofframes #: Renders the specified number of frames before exiting; if used with --verify then # must be a multiple of the number of passes needed" << std::endl;
-    std::cout << "  --verify: Application will verify a few counter values (experimental)" << std::endl;
-    std::cout << "  --confirmsuccess: Implies --verify and confirms successful counter values in addition to errors" << std::endl;
-    std::cout << "  --includehwcounters: Public hardware counters will be enabled in non-internal builds" << std::endl;
-    std::cout << "  --counterfile <file>: File containing the list of counters to profile" << std::endl;
+    cmdline_parser_.AddArg("--nogpa", &nogpa_, ArgType::ARG_TYPE_BOOL, "Do not use GPUPerfAPI to collect performance counters");
 }
 
-/// @brief Parse Command line arguments.
-bool ParseCommandLine(const int argc, const char* argv[])
+bool gpa_example::Dx11SampleApp::NoGpa()
 {
-    bool success = true;
-
-    for (int i = 1; i < argc; i++)
-    {
-        std::string this_arg(argv[i]);
-
-        if (0 == this_arg.compare("--numberofframes"))
-        {
-            i++;
-
-            if (i < argc)
-            {
-                std::istringstream iss(argv[i]);
-
-                iss >> args.num_frames;
-
-                if (iss.fail())
-                {
-                    success = false;
-                }
-            }
-            else
-            {
-                success = false;
-            }
-        }
-        else if (0 == this_arg.compare("--verify"))
-        {
-            args.verify_counters = true;
-        }
-        else if (0 == this_arg.compare("--confirmsuccess"))
-        {
-            args.confirm_success = true;
-        }
-        else if (0 == this_arg.compare("--nogpa"))
-        {
-            args.use_gpa = false;
-        }
-        else if (0 == this_arg.compare("--includehwcounters"))
-        {
-            args.include_hardware_counters = true;
-        }
-        else if (0 == this_arg.compare("--counterfile"))
-        {
-            i++;
-
-            if (i < argc)
-            {
-                std::istringstream iss(argv[i]);
-
-                iss >> args.counter_file_name;
-
-                if (iss.fail())
-                {
-                    success = false;
-                }
-                else
-                {
-                    args.counter_provided = true;
-                }
-            }
-            else
-            {
-                success = false;
-            }
-        }
-        else
-        {
-            success = false;
-        }
-    }
-
-    return success;
+    return nogpa_;
 }
 
 int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev_instance, _In_ LPSTR cmd_line, _In_ int cmd_show)
@@ -120,9 +41,12 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev_instance, _I
     UNREFERENCED_PARAMETER(cmd_line);
     UNREFERENCED_PARAMETER(prev_instance);
 
-    if (!ParseCommandLine(__argc, const_cast<const char**>(__argv)))
+    gpa_example::CmdlineParser parser(__argc, __argv);
+
+    gpa_example::Dx11SampleApp app("Dx11Triangle", parser);
+
+    if (!app.Initialize())
     {
-        Usage();
         return -1;
     }
 
@@ -166,6 +90,8 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev_instance, _I
         return -1;
     }
 
+    SetWindowLongPtr(window_handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(&app));
+
     ShowWindow(window_handle, cmd_show);
 
     // Main sample loop.
@@ -184,5 +110,5 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev_instance, _I
     DestroyWindow(window_handle);
     UnregisterClass(kWindowClassName.c_str(), instance);
 
-    return any_errors_logged ? -1 : 0;
+    return any_errors_logged ? num_errors_logged : 0;
 }

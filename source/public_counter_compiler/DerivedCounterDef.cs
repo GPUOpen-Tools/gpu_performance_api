@@ -193,8 +193,7 @@ namespace PublicCounterCompiler
                     return register.registerBaseName;
                 }
             }
-
-            Debug.Assert(false);
+            Debug.Assert(false, "Invalid index in equation", "Index {0} > size of the counter list ({1} counters)", index, registerBaseNameRanges.Count);
             return string.Empty;
         }
 

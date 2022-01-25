@@ -11,7 +11,7 @@ the GPU.
 This API is designed to:
 
 * Support Vulkan™, DirectX™ 12, DirectX 11, OpenGL, and OpenCL™ on
-  GCN-based Radeon™ graphics cards and APUs.
+  GCN, RDNA, and RDNA2-based Radeon™ graphics cards and APUs.
 * Support Microsoft Windows® and Linux®.
 * Provide derived counters based on raw hardware performance counters.
 * Provide a fine-grained way to collect performance data for an application.

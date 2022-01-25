@@ -127,7 +127,7 @@ GpaStatus GpaCounterSchedulerBase::GetEnabledIndex(GpaUInt32 enabled_index, GpaU
     if (enabled_index >= static_cast<GpaUInt32>(enabled_public_indices_.size()))
     {
         std::stringstream message;
-        message << "Parameter 'enabledNumber' is " << enabled_index << " but must be less than the number of enabled counters ("
+        message << "Parameter 'enabled_index' is " << enabled_index << " but must be less than the number of enabled counters ("
                 << enabled_public_indices_.size() << ").";
         GPA_LOG_ERROR(message.str().c_str());
         return kGpaStatusErrorIndexOutOfRange;
@@ -143,7 +143,7 @@ GpaStatus GpaCounterSchedulerBase::IsCounterEnabled(GpaUInt32 counter_index) con
     if (counter_index >= enabled_public_counter_bits_.size())
     {
         std::stringstream message;
-        message << "Parameter 'counterIndex' is " << counter_index << " but must be less than the number of enabled counters ("
+        message << "Parameter 'counter_index' is " << counter_index << " but must be less than the number of enabled counters ("
                 << enabled_public_counter_bits_.size() << ").";
         GPA_LOG_ERROR(message.str().c_str());
         return kGpaStatusErrorIndexOutOfRange;

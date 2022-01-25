@@ -14,7 +14,7 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
 {
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(23040);
+        internal_counters.push_back(23224);
 
         c.DefineDerivedCounter("GPUTime", "Timing", "Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "0,TS_FREQ,/,(1000000000),*", "cbd338f2-de6c-7b14-92ad-ba724ca2e501");
     }
@@ -33,30 +33,30 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5108);
-        internal_counters.push_back(5120);
         internal_counters.push_back(4801);
+        internal_counters.push_back(4818);
+        internal_counters.push_back(4841);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("VSBusy", "Timing", "The percentage of time the ShaderUnit has vertex shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,1,ifnotzero,2,2,ifnotzero,3,/,(100),*,(100),min", "94caad5e-867c-6c09-cf3a-d05b51df8f3b");
+        c.DefineDerivedCounter("VsGsBusy", "Timing", "The percentage of time the ShaderUnit has VS or GS work to do in a VS-[GS-]PS pipeline.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,max,NUM_SHADER_ENGINES,/,(0),2,ifnotzero,3,/,(100),*,(100),min", "969c41c7-eb0b-9706-a7a1-98f27c3af56b");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5108);
-        internal_counters.push_back(5120);
         internal_counters.push_back(4801);
+        internal_counters.push_back(4818);
+        internal_counters.push_back(4841);
 
-        c.DefineDerivedCounter("VSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has vertex shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,1,ifnotzero,2,2,ifnotzero", "a2086d4e-274b-48a8-3e08-a4ab76ac15dd");
+        c.DefineDerivedCounter("VsGsBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has VS or GS work to do in a VS-[GS-]PS pipeline.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,max,NUM_SHADER_ENGINES,/,(0),2,ifnotzero", "a8420bb7-6bd8-930a-9088-d73b9c039851");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(23040);
-        internal_counters.push_back(5108);
-        internal_counters.push_back(5120);
+        internal_counters.push_back(23224);
         internal_counters.push_back(4801);
+        internal_counters.push_back(4818);
+        internal_counters.push_back(4841);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("VSTime", "Timing", "Time vertex shaders are busy in nanoseconds.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "1,2,2,ifnotzero,3,3,ifnotzero,4,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "d6ce819e-69af-a241-d07a-5dd8d146e436");
+        c.DefineDerivedCounter("VsGsTime", "Timing", "Time VS or GS are busy in nanoseconds in a VS-[GS-]PS pipeline.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "1,2,max,NUM_SHADER_ENGINES,/,(0),3,ifnotzero,4,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "3ce33b11-210d-b3de-9b6c-b9f3cd04beff");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -64,53 +64,50 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(4841);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("HSBusy", "Timing", "The percentage of time the ShaderUnit has hull shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,ifnotzero,2,/,(100),*,(100),min", "16f30a0b-4cbf-eccd-b13f-ab68dd254d32");
+        c.DefineDerivedCounter("PreTessellationBusy", "Timing", "The percentage of time the ShaderUnit has VS and HS work to do in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,NUM_SHADER_ENGINES,/,1,ifnotzero,2,/,(100),*,(100),min", "346c7430-4666-7065-b5b7-1cb8cbb1c01c");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(4834);
         internal_counters.push_back(4841);
 
-        c.DefineDerivedCounter("HSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has hull shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,1,ifnotzero", "753e76ef-8ef8-3f13-b511-4bd9f3589fdb");
+        c.DefineDerivedCounter("PreTessellationBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has VS and HS work to do in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,NUM_SHADER_ENGINES,/,1,ifnotzero", "dac68e38-0e3a-9364-2674-308e63bee2d2");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(23040);
+        internal_counters.push_back(23224);
         internal_counters.push_back(4834);
         internal_counters.push_back(4841);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("HSTime", "Timing", "Time hull shaders are busy in nanoseconds.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "(0),1,2,ifnotzero,3,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "8386a863-dd34-1526-f703-0f0c7b241bc4");
+        c.DefineDerivedCounter("PreTessellationTime", "Timing", "Time VS and HS are busy in nanoseconds in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "(0),1,NUM_SHADER_ENGINES,/,2,ifnotzero,3,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "d5e6c54c-5ffb-b173-6118-bece61f0281c");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(4801);
-        internal_counters.push_back(5108);
-        internal_counters.push_back(5114);
-        internal_counters.push_back(5126);
+        internal_counters.push_back(4818);
+        internal_counters.push_back(4841);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("DSBusy", "Timing", "The percentage of time the ShaderUnit has domain shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,2,ifnotzero,3,ifnotzero,4,/,(100),*,(100),min", "0c626e8a-9b82-b6d4-d9a3-578509316301");
+        c.DefineDerivedCounter("PostTessellationBusy", "Timing", "The percentage of time the ShaderUnit has DS or GS work to do in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,max,NUM_SHADER_ENGINES,/,2,ifnotzero,3,/,(100),*,(100),min", "1a275c68-9340-f358-71c6-a2648390381d");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(4801);
-        internal_counters.push_back(5108);
-        internal_counters.push_back(5114);
-        internal_counters.push_back(5126);
+        internal_counters.push_back(4818);
+        internal_counters.push_back(4841);
 
-        c.DefineDerivedCounter("DSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has domain shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,1,2,ifnotzero,3,ifnotzero", "2f3f7561-0549-2232-536d-129ffc5f7703");
+        c.DefineDerivedCounter("PostTessellationBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has DS or GS work to do in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,1,max,NUM_SHADER_ENGINES,/,2,ifnotzero", "a5ed943b-13ef-942b-56fb-6d519eeb7337");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(23040);
+        internal_counters.push_back(23224);
         internal_counters.push_back(4801);
-        internal_counters.push_back(5108);
-        internal_counters.push_back(5114);
-        internal_counters.push_back(5126);
+        internal_counters.push_back(4818);
+        internal_counters.push_back(4841);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("DSTime", "Timing", "Time domain shaders are busy in nanoseconds.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "(0),1,2,3,ifnotzero,4,ifnotzero,5,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "bfe28947-c727-8a9f-aa59-c218e58bfba5");
+        c.DefineDerivedCounter("PostTessellationTime", "Timing", "Time DS or GS are busy in nanoseconds in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "(0),1,2,max,NUM_SHADER_ENGINES,/,3,ifnotzero,4,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "9f8dfa40-faee-2014-3467-2630a7d95c1e");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -124,7 +121,7 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(4883);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("PSBusy", "Timing", "The percentage of time the ShaderUnit has pixel shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,ifnotzero,(0),2,3,ifnotzero,(0),4,5,ifnotzero,(0),6,7,ifnotzero,max4,8,/,(100),*,(100),min", "7e772beb-d82c-bd9a-aed0-fe504d416ce5");
+        c.DefineDerivedCounter("PSBusy", "Timing", "The percentage of time the ShaderUnit has pixel shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,ifnotzero,(0),2,3,ifnotzero,(0),4,5,ifnotzero,(0),6,7,ifnotzero,max4,NUM_SHADER_ENGINES,/,8,/,(100),*,(100),min", "7e772beb-d82c-bd9a-aed0-fe504d416ce5");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -137,11 +134,11 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(4863);
         internal_counters.push_back(4883);
 
-        c.DefineDerivedCounter("PSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has pixel shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,1,ifnotzero,(0),2,3,ifnotzero,(0),4,5,ifnotzero,(0),6,7,ifnotzero,max4", "b58bea04-ce8e-2984-80f4-8aba7d4c817b");
+        c.DefineDerivedCounter("PSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has pixel shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,1,ifnotzero,(0),2,3,ifnotzero,(0),4,5,ifnotzero,(0),6,7,ifnotzero,max4,NUM_SHADER_ENGINES,/", "b58bea04-ce8e-2984-80f4-8aba7d4c817b");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(23040);
+        internal_counters.push_back(23224);
         internal_counters.push_back(4860);
         internal_counters.push_back(4880);
         internal_counters.push_back(4861);
@@ -152,7 +149,7 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(4883);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("PSTime", "Timing", "Time pixel shaders are busy in nanoseconds.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "(0),1,2,ifnotzero,(0),3,4,ifnotzero,(0),5,6,ifnotzero,(0),7,8,ifnotzero,max4,9,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "edca7694-7416-e8a6-0c5a-63a5ad5f3d74");
+        c.DefineDerivedCounter("PSTime", "Timing", "Time pixel shaders are busy in nanoseconds.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "(0),1,2,ifnotzero,(0),3,4,ifnotzero,(0),5,6,ifnotzero,(0),7,8,ifnotzero,max4,NUM_SHADER_ENGINES,/,9,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "edca7694-7416-e8a6-0c5a-63a5ad5f3d74");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -162,7 +159,7 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(4855);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("CSBusy", "Timing", "The percentage of time the ShaderUnit has compute shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,ifnotzero,(0),2,3,ifnotzero,max,4,/,(100),*,(100),min", "493fdd90-8d2b-a055-5e4e-2d29c3396b8c");
+        c.DefineDerivedCounter("CSBusy", "Timing", "The percentage of time the ShaderUnit has compute shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,ifnotzero,(0),2,3,ifnotzero,max,NUM_SHADER_ENGINES,/,4,/,(100),*,(100),min", "493fdd90-8d2b-a055-5e4e-2d29c3396b8c");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -171,158 +168,160 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(4851);
         internal_counters.push_back(4855);
 
-        c.DefineDerivedCounter("CSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has compute shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,1,ifnotzero,(0),2,3,ifnotzero,max", "39bcf1b8-f6b2-4c37-f9af-0a2bb59512f9");
+        c.DefineDerivedCounter("CSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has compute shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,1,ifnotzero,(0),2,3,ifnotzero,max,NUM_SHADER_ENGINES,/", "39bcf1b8-f6b2-4c37-f9af-0a2bb59512f9");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(23040);
+        internal_counters.push_back(23224);
         internal_counters.push_back(4845);
         internal_counters.push_back(4849);
         internal_counters.push_back(4851);
         internal_counters.push_back(4855);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("CSTime", "Timing", "Time compute shaders are busy in nanoseconds.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "(0),1,2,ifnotzero,(0),3,4,ifnotzero,max,5,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "dbc24916-ecb2-7eef-8d63-7afadaaab6bc");
+        c.DefineDerivedCounter("CSTime", "Timing", "Time compute shaders are busy in nanoseconds.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "(0),1,2,ifnotzero,(0),3,4,ifnotzero,max,NUM_SHADER_ENGINES,/,5,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "dbc24916-ecb2-7eef-8d63-7afadaaab6bc");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(15737);
-        internal_counters.push_back(15759);
-        internal_counters.push_back(15801);
-
-        c.DefineDerivedCounter("VSVerticesIn", "VertexShader", "The number of vertices processed by the VS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,1,ifnotzero,2,2,ifnotzero", "810a04c8-2ff4-081d-766d-bfa2bd4ad916");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5705);
-        internal_counters.push_back(5645);
-        internal_counters.push_back(7753);
-        internal_counters.push_back(7693);
         internal_counters.push_back(6729);
         internal_counters.push_back(6669);
+        internal_counters.push_back(6217);
+        internal_counters.push_back(6157);
+        internal_counters.push_back(4841);
 
-        c.DefineDerivedCounter("VSVALUInstCount", "VertexShader", "Average number of vector ALU instructions executed in the VS. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,/,1,ifnotzero,2,3,/,3,ifnotzero,4,5,/,5,ifnotzero", "8ec604e4-63f5-e6b5-4558-c38f0b26d4b1");
+        c.DefineDerivedCounter("VsGsVALUInstCount", "VertexGeometry", "Average number of vector ALU instructions executed for the VS and GS in a VS-[GS-]PS pipeline. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,/,1,ifnotzero,2,3,/,3,ifnotzero,(0),4,ifnotzero", "9f5e6407-3b8c-e0a8-9987-a59586b45ea8");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5701);
-        internal_counters.push_back(5645);
-        internal_counters.push_back(7749);
-        internal_counters.push_back(7693);
         internal_counters.push_back(6725);
         internal_counters.push_back(6669);
+        internal_counters.push_back(6213);
+        internal_counters.push_back(6157);
+        internal_counters.push_back(4841);
 
-        c.DefineDerivedCounter("VSSALUInstCount", "VertexShader", "Average number of scalar ALU instructions executed in the VS. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,/,1,ifnotzero,2,3,/,3,ifnotzero,4,5,/,5,ifnotzero", "e3da0383-7322-7f65-8cf2-3ce641578e54");
+        c.DefineDerivedCounter("VsGsSALUInstCount", "VertexGeometry", "Average number of scalar ALU instructions executed for the VS and GS. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,/,1,ifnotzero,2,3,/,3,ifnotzero,(0),4,ifnotzero", "67fe9696-8428-cf74-09d9-9133ea0f148c");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5758);
-        internal_counters.push_back(7806);
         internal_counters.push_back(6782);
+        internal_counters.push_back(6270);
         internal_counters.push_back(1868);
+        internal_counters.push_back(4841);
 
-        c.DefineDerivedCounter("VSVALUBusy", "VertexShader", "The percentage of GPUTime vector ALU instructions are being processed by the VS.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,1,ifnotzero,2,2,ifnotzero,NUM_SIMDS,/,3,/,(100),*", "8b3572f7-fda0-eddf-6c93-2ab145b8754b");
+        c.DefineDerivedCounter("VsGsVALUBusy", "VertexGeometry", "The percentage of GPUTime vector ALU instructions are being processed for the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,+,NUM_SIMDS,/,2,/,(100),*,(0),3,ifnotzero", "0e98794e-d570-20a5-671c-b65c3991d358");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5758);
-        internal_counters.push_back(7806);
         internal_counters.push_back(6782);
+        internal_counters.push_back(6270);
+        internal_counters.push_back(4841);
 
-        c.DefineDerivedCounter("VSVALUBusyCycles", "VertexShader", "Number of GPU cycles where vector ALU instructions are being processed by the VS.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,1,ifnotzero,2,2,ifnotzero", "0af1686e-6d77-2f6e-2862-7bb8e869a776");
+        c.DefineDerivedCounter("VsGsVALUBusyCycles", "VertexGeometry", "Number of GPU cycles where vector ALU instructions are being processed for the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,+,NUM_SIMDS,/,(0),2,ifnotzero", "3558535c-e727-e459-4484-bcb683fcac2f");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5701);
-        internal_counters.push_back(7749);
         internal_counters.push_back(6725);
+        internal_counters.push_back(6213);
         internal_counters.push_back(1868);
+        internal_counters.push_back(4841);
 
-        c.DefineDerivedCounter("VSSALUBusy", "VertexShader", "The percentage of GPUTime scalar ALU instructions are being processed by the VS.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,1,ifnotzero,2,2,ifnotzero,NUM_CUS,/,3,/,(100),*", "3bc8730c-e3bc-e2f0-7d24-36974064c25a");
+        c.DefineDerivedCounter("VsGsSALUBusy", "VertexGeometry", "The percentage of GPUTime scalar ALU instructions are being processed for the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,+,NUM_CUS,/,2,/,(100),*,(0),3,ifnotzero", "49521e07-5a41-0c17-38d9-450718dcb5ab");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(5701);
-        internal_counters.push_back(7749);
         internal_counters.push_back(6725);
+        internal_counters.push_back(6213);
+        internal_counters.push_back(4841);
 
-        c.DefineDerivedCounter("VSSALUBusyCycles", "VertexShader", "Number of GPU cycles where scalar ALU instructions are being processed by the VS.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,1,ifnotzero,2,2,ifnotzero,NUM_CUS,/", "357ac7cd-2e1c-dcb0-77f6-37527237f35b");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(15753);
-
-        c.DefineDerivedCounter("HSPatches", "HullShader", "The number of patches processed by the HS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0", "d1bbd27d-d591-4509-df52-d329fb73a98f");
+        c.DefineDerivedCounter("VsGsSALUBusyCycles", "VertexGeometry", "Number of GPU cycles where scalar ALU instructions are being processed for the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,+,NUM_CUS,/,(0),2,ifnotzero", "c4f78496-7f24-cb3d-3108-e9e8c761cf07");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(8265);
         internal_counters.push_back(8205);
 
-        c.DefineDerivedCounter("HSVALUInstCount", "HullShader", "Average number of vector ALU instructions executed in the HS. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,/", "786673bf-d58f-9895-3a37-9d6efb5e5804");
+        c.DefineDerivedCounter("PreTessVALUInstCount", "PreTessellation", "Average number of vector ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,/,1,ifnotzero", "a6894a29-4213-27d4-e186-b9ca6112e3f3");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(8261);
         internal_counters.push_back(8205);
 
-        c.DefineDerivedCounter("HSSALUInstCount", "HullShader", "Average number of scalar ALU instructions executed in the HS. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,/", "1af675c4-cb0b-c4c5-c131-2796750f683e");
+        c.DefineDerivedCounter("PreTessSALUInstCount", "PreTessellation", "Average number of scalar ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,/,1,ifnotzero", "c6d06968-3557-fb5d-7a28-5eda098190db");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(8318);
+        internal_counters.push_back(8205);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("HSVALUBusy", "HullShader", "The percentage of GPUTime vector ALU instructions are being processed by the HS.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,NUM_SIMDS,/,1,/,(100),*", "7880d192-8015-0311-d43e-fb0b7a4df179");
+        c.DefineDerivedCounter("PreTessVALUBusy", "PreTessellation", "The percentage of GPUTime vector ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,NUM_SIMDS,/,2,/,(100),*,1,ifnotzero", "72627e0a-da7e-899a-738c-69e8ba96bf42");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(8318);
+        internal_counters.push_back(8205);
 
-        c.DefineDerivedCounter("HSVALUBusyCycles", "HullShader", "Number of GPU cycles vector where ALU instructions are being processed by the HS.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,NUM_SIMDS,/", "3afb94e4-e937-5730-0cc9-41d3113ba012");
+        c.DefineDerivedCounter("PreTessVALUBusyCycles", "PreTessellation", "Number of GPU cycles vector where ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,NUM_SIMDS,/,1,ifnotzero", "2d750b51-a75e-380b-1b42-40d59f4fbdb6");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(8261);
+        internal_counters.push_back(8205);
         internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("HSSALUBusy", "HullShader", "The percentage of GPUTime scalar ALU instructions are being processed by the HS.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,NUM_CUS,/,1,/,(100),*", "34748a4b-9148-0b06-b7b9-5700d6631bde");
+        c.DefineDerivedCounter("PreTessSALUBusy", "PreTessellation", "The percentage of GPUTime scalar ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,NUM_CUS,/,2,/,(100),*,1,ifnotzero", "74e778bb-ce25-32cd-caa6-810eb44c95fa");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(8261);
+        internal_counters.push_back(8205);
 
-        c.DefineDerivedCounter("HSSALUBusyCycles", "HullShader", "Number of GPU cycles where scalar ALU instructions are being processed by the HS.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,NUM_CUS,/", "9bceabf7-3f01-2fd9-7b1d-8fe46c729efc");
+        c.DefineDerivedCounter("PreTessSALUBusyCycles", "PreTessellation", "Number of GPU cycles where scalar ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,NUM_CUS,/,1,ifnotzero", "8aa4a036-313f-f4b0-a820-ff0a6e71b1a2");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(15801);
-        internal_counters.push_back(15737);
-        internal_counters.push_back(15759);
+        internal_counters.push_back(6217);
+        internal_counters.push_back(6157);
 
-        c.DefineDerivedCounter("DSVerticesIn", "DomainShader", "The number of vertices processed by the DS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,1,ifnotzero,2,ifnotzero", "b88d9d05-2418-e639-4e3d-3a5815855f8d");
+        c.DefineDerivedCounter("PostTessVALUInstCount", "PostTessellation", "Average number of vector ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,/,1,ifnotzero", "718b7237-1371-4c85-3ad1-f12af258ba08");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(6729);
-        internal_counters.push_back(6669);
-        internal_counters.push_back(5705);
-        internal_counters.push_back(5645);
-        internal_counters.push_back(5649);
-        internal_counters.push_back(7697);
+        internal_counters.push_back(6213);
+        internal_counters.push_back(6157);
 
-        c.DefineDerivedCounter("DSVALUInstCount", "DomainShader", "Average number of vector ALU instructions executed in the DS. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,/,2,3,/,4,ifnotzero,5,ifnotzero", "03a3e949-82f9-be4d-7228-5eb5ad80915a");
+        c.DefineDerivedCounter("PostTessSALUInstCount", "PostTessellation", "Average number of scalar ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,/,1,ifnotzero", "546cecd8-53d4-c7b7-3b2e-f5b2db6c8282");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(6725);
-        internal_counters.push_back(6669);
-        internal_counters.push_back(5701);
-        internal_counters.push_back(5645);
-        internal_counters.push_back(5649);
-        internal_counters.push_back(7697);
+        internal_counters.push_back(6270);
+        internal_counters.push_back(6157);
+        internal_counters.push_back(1868);
 
-        c.DefineDerivedCounter("DSSALUInstCount", "DomainShader", "Average number of scalar ALU instructions executed in the DS. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,/,2,3,/,4,ifnotzero,5,ifnotzero", "73daa728-483e-95d0-5b40-504719aadc1c");
+        c.DefineDerivedCounter("PostTessVALUBusy", "PostTessellation", "The percentage of GPUTime vector ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,NUM_SIMDS,/,2,/,(100),*,1,ifnotzero", "068d1738-da17-7b6d-9d88-4013a8b27bf8");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(6270);
+        internal_counters.push_back(6157);
+
+        c.DefineDerivedCounter("PostTessVALUBusyCycles", "PostTessellation", "Number of GPU cycles vector where ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,NUM_SIMDS,/,1,ifnotzero", "29951e35-e415-22e9-ea59-03955faa8973");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(6213);
+        internal_counters.push_back(6157);
+        internal_counters.push_back(1868);
+
+        c.DefineDerivedCounter("PostTessSALUBusy", "PostTessellation", "The percentage of GPUTime scalar ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,NUM_CUS,/,2,/,(100),*,1,ifnotzero", "776fb8e3-1541-75e5-8a4c-28d43d39662b");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(6213);
+        internal_counters.push_back(6157);
+
+        c.DefineDerivedCounter("PostTessSALUBusyCycles", "PostTessellation", "Number of GPU cycles where scalar ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,NUM_CUS,/,1,ifnotzero", "fce0317e-c679-a310-fd96-85bbb4a8b79d");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -346,12 +345,6 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(3504);
 
         c.DefineDerivedCounter("PrimitiveAssemblyBusyCycles", "Timing", "Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,-,2,3,+,4,+,5,(2),*,+,SU_CLOCKS_PRIM,*,-,NUM_PRIM_PIPES,/,(0),max", "99777f2d-9626-c78a-a97c-c4505eba1e5f");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(3438);
-
-        c.DefineDerivedCounter("PrimitivesIn", "PrimitiveAssembly", "The number of primitives received by the hardware. This includes primitives generated by tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0", "a515b80d-75c3-c7d2-0d2f-d7766b4759a6");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -468,6 +461,14 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(8721);
 
         c.DefineDerivedCounter("CSThreads", "ComputeShader", "The number of CS threads processed by the hardware.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0", "7a648013-6eac-2665-ac36-13c6f4ac9c26");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(8721);
+        internal_counters.push_back(4846);
+        internal_counters.push_back(4852);
+
+        c.DefineDerivedCounter("CSThreadGroupSize", "ComputeShader", "The number of CS threads within each thread group.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,2,+,/,1,2,+,ifnotzero", "8c65008a-9957-7ca6-4199-f6fe940420f6");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -1100,16 +1101,7 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(2628);
         internal_counters.push_back(2998);
 
-        c.DefineDerivedCounter("HiZTilesAccepted", "DepthAndStencil", "Percentage of tiles accepted by HiZ and will be rendered to the depth or color buffers.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,2,3,sum4,4,5,6,7,sum4,/,(100),*", "56176f45-d7ff-813d-4f05-3b2f046067e7");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(1899);
-        internal_counters.push_back(2269);
-        internal_counters.push_back(2639);
-        internal_counters.push_back(3009);
-
-        c.DefineDerivedCounter("HiZTilesAcceptedCount", "DepthAndStencil", "Count of tiles accepted by HiZ and will be rendered to the depth or color buffers.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,sum4", "95d4e3f6-b2f0-f26e-8423-aacdfaf79ea3");
+        c.DefineDerivedCounter("HiZTilesAccepted", "DepthAndStencil", "Percentage of tiles accepted by HiZ and will be rendered to the depth or color buffers.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "4,5,6,7,sum4,0,1,2,3,sum4,-,(0),max,4,5,6,7,sum4,/,(100),*", "56176f45-d7ff-813d-4f05-3b2f046067e7");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -1117,6 +1109,19 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(2258);
         internal_counters.push_back(2628);
         internal_counters.push_back(2998);
+        internal_counters.push_back(1899);
+        internal_counters.push_back(2269);
+        internal_counters.push_back(2639);
+        internal_counters.push_back(3009);
+
+        c.DefineDerivedCounter("HiZTilesAcceptedCount", "DepthAndStencil", "Count of tiles accepted by HiZ and will be rendered to the depth or color buffers.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,sum4,4,5,6,7,sum4,-,(0),max", "95d4e3f6-b2f0-f26e-8423-aacdfaf79ea3");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(1899);
+        internal_counters.push_back(2269);
+        internal_counters.push_back(2639);
+        internal_counters.push_back(3009);
 
         c.DefineDerivedCounter("HiZTilesRejectedCount", "DepthAndStencil", "Count of tiles not accepted by HiZ.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,sum4", "156ba142-7eeb-aa6e-a00a-f8aea4e41e0b");
     }
@@ -1208,6 +1213,16 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3931);
+        internal_counters.push_back(4483);
+        internal_counters.push_back(3932);
+        internal_counters.push_back(4484);
+        internal_counters.push_back(3933);
+        internal_counters.push_back(4485);
+        internal_counters.push_back(3934);
+        internal_counters.push_back(4486);
+        internal_counters.push_back(3955);
+        internal_counters.push_back(4507);
         internal_counters.push_back(3855);
         internal_counters.push_back(4407);
         internal_counters.push_back(3856);
@@ -1216,31 +1231,11 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(4409);
         internal_counters.push_back(3858);
         internal_counters.push_back(4410);
-        internal_counters.push_back(3955);
-        internal_counters.push_back(4507);
-        internal_counters.push_back(3931);
-        internal_counters.push_back(4483);
-        internal_counters.push_back(3932);
-        internal_counters.push_back(4484);
-        internal_counters.push_back(3933);
-        internal_counters.push_back(4485);
-        internal_counters.push_back(3934);
-        internal_counters.push_back(4486);
 
-        c.DefineDerivedCounter("PreZQuadsCulled", "DepthAndStencil", "Percentage of quads rejected based on the detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "10,11,12,13,14,15,16,17,sum8,8,9,+,-,(0),max,0,1,2,3,4,5,6,7,sum8,/,(100),*", "4e77547b-ec55-5663-f034-af59be66d77d");
+        c.DefineDerivedCounter("PreZQuadsCulled", "DepthAndStencil", "Percentage of quads rejected based on the detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,2,3,4,5,6,7,sum8,8,9,+,-,(0),max,10,11,12,13,14,15,16,17,sum8,/,(100),*", "4e77547b-ec55-5663-f034-af59be66d77d");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(3855);
-        internal_counters.push_back(4407);
-        internal_counters.push_back(3856);
-        internal_counters.push_back(4408);
-        internal_counters.push_back(3857);
-        internal_counters.push_back(4409);
-        internal_counters.push_back(3858);
-        internal_counters.push_back(4410);
-        internal_counters.push_back(3955);
-        internal_counters.push_back(4507);
         internal_counters.push_back(3931);
         internal_counters.push_back(4483);
         internal_counters.push_back(3932);
@@ -1249,23 +1244,17 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(4485);
         internal_counters.push_back(3934);
         internal_counters.push_back(4486);
+        internal_counters.push_back(3955);
+        internal_counters.push_back(4507);
 
-        c.DefineDerivedCounter("PreZQuadsCulledCount", "DepthAndStencil", "Count of quads rejected based on the detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,sum8,8,9,+,-,10,11,12,13,14,15,16,17,sum8,-,(0),max", "1bf169e6-9304-834e-df5f-0c44d7890a08");
+        c.DefineDerivedCounter("PreZQuadsCulledCount", "DepthAndStencil", "Count of quads rejected based on the detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,sum8,8,9,sum2,-,(0),max", "1bf169e6-9304-834e-df5f-0c44d7890a08");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(3955);
         internal_counters.push_back(4507);
-        internal_counters.push_back(3931);
-        internal_counters.push_back(4483);
-        internal_counters.push_back(3932);
-        internal_counters.push_back(4484);
-        internal_counters.push_back(3933);
-        internal_counters.push_back(4485);
-        internal_counters.push_back(3934);
-        internal_counters.push_back(4486);
 
-        c.DefineDerivedCounter("PreZQuadsSurvivingCount", "DepthAndStencil", "Count of quads surviving detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "2,3,4,5,6,7,8,9,sum8,0,1,+,-,(0),max", "50e25e51-3713-89cb-7f92-559cde5e5532");
+        c.DefineDerivedCounter("PreZQuadsSurvivingCount", "DepthAndStencil", "Count of quads surviving detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,sum2", "50e25e51-3713-89cb-7f92-559cde5e5532");
     }
     {
         vector<GpaUInt32> internal_counters;

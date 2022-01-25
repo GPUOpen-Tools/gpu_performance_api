@@ -276,7 +276,7 @@ if __name__ == "__main__":
     gpa_build_number = 0
     debug_build = False
     is_android = False
-    pacakge_32_bit_binaries=True
+    package_32_bit_binaries=True
 
     if gpa_package_parsed_args.android == True:
         is_android = gpa_package_parsed_args.android
@@ -301,14 +301,14 @@ if __name__ == "__main__":
         gpa_build_number = gpa_build_number + gpa_package_parsed_args.buildnumber
 
     if gpa_package_parsed_args.skip32bit == True:
-        pacakge_32_bit_binaries = False
+        package_32_bit_binaries = False
 
     gpa_package = GpaPackage()
     gpa_package.CreatePackage(archive_output_dir=gpa_package_out_dir,
                               build_artifacts_dir=gpa_build_out_dir,
                               sphinx_docs_dir=gpa_docs_dir,
                               is_debug=debug_build,
-                              package_32_bit=pacakge_32_bit_binaries,
+                              package_32_bit=package_32_bit_binaries,
                               android=is_android,
                               build_number=gpa_build_number,
                               additional_suffix=None)

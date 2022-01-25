@@ -1,6 +1,65 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.10 (01/25/22)
+  * Add support for additional GPUs and APUs.
+  * Redefined derived counters on GCN (Vega), RDNA, and RDNA2 hardware.
+    * New pipeline-based counters to better match hardware behavior.
+    * GCN (Polaris) hardware:
+      * Added: CSThreadGroupSize.
+      * Fixed: CSThreads, CSFlatVMemInsts, HiZTilesAccepted, HiZTilesAcceptedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
+    * GCN (Radeon Vega Series) hardware:
+      * Removed: VSBusy, VSBusyCycles, VSTime, HSBusy, HSBusyCycles, HSTime, DSBusy, DSBusyCycles, DSTime.
+      * Added: VsGsBusy, VsGsBusyCycles, VsGsTime, PreTessellationBusy, PreTessellationBusyCycles, PreTessellationTime, PostTessellationBusy, PostTessellationBusyCycles, PostTessellationTime.
+      * Removed: VertexShader group (VSVerticesIn, VSVALUInstCount, VSSALUInstCount, VSVALUBusy, VSVALUBusyCycles, VSSALUBusy, VSSALUBusyCycles).
+      * Added: VertexGeometry group (VsGsVALUInstCount, VsGsSALUInstCount, VsGsVALUBusy, VsGsVALUBusyCycles, VsGsSALUBusy, VsGsSALUBusyCycles).
+        * Represents combined data from vertex and geometry shaders in a VS-PS or VS-GS-PS pipeline.
+      * Removed: HullShader group (HSPatches, HSVALUInstCount, HSSALUInstCount, HSVALUBusy, HSVALUBusyCycles, HSSALUBusy, HSSALUBusyCycles).
+      * Added: PreTessellation group (PreTessVALUInstCount, PreTessSALUInstCount, PreTessVALUBusy, PreTessVALUBusyCycles, PreTessSALUBusy, PreTessSALUBusyCycles).
+        * Represents combined data from vertex and hull shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
+      * Removed: DomainShader group (DSVerticesIn, DSVALUInstCount, DSSALUInstCount, DSVALUBusy, DSVALUBusyCycles, DSSALUBusy, DSSALUBusyCycles).
+      * Removed: GeometryShader group (GSPrimsIn, GSVerticesOut, GSVALUInstCount, GSSALUInstCount, GSVALUBusy, GSVALUBusyCycles, GSSALUBusy, GSSALUBusyCycles).
+      * Added: PostTessellation group (PostTessVALUInstCount, PostTessSALUInstCount, PostTessVALUBusy, PostTessVALUBusyCycles, PostTessSALUBusy, PostTessSALUBusyCycles).
+        * Represents combined data from domain and geometry shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
+      * Added: CSThreadGroupSize.
+      * Fixed: PSBusy, PSBusyCycles, PSTime, CSBusy, CSBusyCycles, CSTime, CSThreads, CSFlatVMemInsts, HiZTilesAccepted, HiZTilesAcceptedCount, HiZTilesRejectedCount, HiZQuadsCulled, HiZQuadsCulledCount, HiZQuadsAcceptedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
+    * RDNA (Radeon RX 5000 Series) hardware:
+      * Removed: VSBusy, VSBusyCycles, VSTime, HSBusy, HSBusyCycles, HSTime, DSBusy, DSBusyCycles, DSTime.
+      * Added: VsGsBusy, VsGsBusyCycles, VsGsTime, PreTessellationBusy, PreTessellationBusyCycles, PreTessellationTime, PostTessellationBusy, PostTessellationBusyCycles, PostTessellationTime.
+      * Removed: VertexShader group (VSVerticesIn, VSVALUInstCount, VSSALUInstCount, VSVALUBusy, VSVALUBusyCycles, VSSALUBusy, VSSALUBusyCycles).
+      * Added: VertexGeometry group (VsGsVALUInstCount, VsGsSALUInstCount, VsGsVALUBusy, VsGsVALUBusyCycles, VsGsSALUBusy, VsGsSALUBusyCycles).
+        * Represents combined data from vertex and geometry shaders in a VS-PS or VS-GS-PS pipeline.
+      * Removed: HullShader group (HSPatches, HSVALUInstCount, HSSALUInstCount, HSVALUBusy, HSVALUBusyCycles, HSSALUBusy, HSSALUBusyCycles).
+      * Added: PreTessellation group (PreTessVALUInstCount, PreTessSALUInstCount, PreTessVALUBusy, PreTessVALUBusyCycles, PreTessSALUBusy, PreTessSALUBusyCycles).
+        * Represents combined data from vertex and hull shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
+      * Removed: DomainShader group (DSVerticesIn, DSVALUInstCount, DSSALUInstCount, DSVALUBusy, DSVALUBusyCycles, DSSALUBusy, DSSALUBusyCycles).
+      * Removed: GeometryShader group (GSPrimsIn, GSVerticesOut, GSVALUInstCount, GSSALUInstCount, GSVALUBusy, GSVALUBusyCycles, GSSALUBusy, GSSALUBusyCycles).
+      * Added: PostTessellation group (PostTessVALUInstCount, PostTessSALUInstCount, PostTessVALUBusy, PostTessVALUBusyCycles, PostTessSALUBusy, PostTessSALUBusyCycles).
+        * Represents combined data from domain and geometry shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
+      * Removed: PrimitivesIn.
+      * Added: CSThreadGroupSize.
+      * Fixed: PSBusy, PSBusyCycles, PSTime, CSBusy, CSBusyCycles, CSTime, CSThreads, HiZTilesAccepted, HiZTilesAcceptedCount, HiZTilesRejectedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
+    * RDNA2 (Radeon RX 6000 Series) hardware:
+      * Removed: VSBusy, VSBusyCycles, VSTime, HSBusy, HSBusyCycles, HSTime, DSBusy, DSBusyCycles, DSTime.
+      * Removed: VertexShader group, HullShader group, DomainShader group, GeometryShader group.
+      * Removed: PrimitivesIn, PSVALUInstCount, PSSALUInstCount, PSVALUBusy, PSVALUBusyCycles, PSSALUBusy, PSSALUBusyCycles.
+      * Removed: CSVALUInsts, CSVALUUtilization, CSSALUInsts, CSVFetchInsts, CSSFetchInsts, CSVWriteInsts, CSVALUBusy, CSVALUBusyCycles, CSSALUBusy, CSSALUBusyCycles.
+      * Added: CSThreadGroupSize
+      * Fixed: CSThreads, HiZTilesAccepted, HiZTilesAcceptedCount, HiZTilesRejectedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
+  * Integrated clang-tidy and clang-format into cmake build options.
+  * New entrypoint added: GpaGetDeviceGeneration. Binary backwards compatibility is maintained.
+  * OpenGL on Linux: Fixed hardware detection on MESA drivers.
+  * OpenGL: Fixed hardware detection accuracy.
+  * DX11:
+    * Fixed Adrenalin driver version detection.
+    * Fixed setting the number of shader arrays based on client hardware.
+  * Improvements made to the sample applications:
+    * Extensive counter validation in DX12.
+    * Sample apps can now confirm successful validation tests.
+    * Sample apps now support passing in a counter file to specify which counters to enable.
+    * Consolidated parameter parsing logic in sample apps.
+    * In Vulkan and DX12 samples, the return code now indicates the number of errors that were reported.
+
 ## Version 3.9 (07/27/21)
   * Add support for additional GPUs and APUs.
   * Improvements made to the sample applications.

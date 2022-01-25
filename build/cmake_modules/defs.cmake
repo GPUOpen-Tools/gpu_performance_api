@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.5.1)
 
 ## Define the GPA version
 set(GPA_MAJOR_VERSION 3)
-set(GPA_MINOR_VERSION 9)
+set(GPA_MINOR_VERSION 10)
 set(GPA_UPDATE_VERSION 0)
 
 if(NOT DEFINED GPA_BUILD_NUMBER)
@@ -53,6 +53,8 @@ set(GPA_SRC_PUBLIC_COUNTER_COMPILER_REL_PATH                "source/public_count
 set(GPA_SRC_PUBLIC_COUNTER_COMPILER                         "${GPA_ROOT}/${GPA_SRC_PUBLIC_COUNTER_COMPILER_REL_PATH}")
 set(GPA_SRC_PUBLIC_COUNTER_INPUT_FILES_REL_PATH             "source/public_counter_compiler_input_files")
 set(GPA_SRC_PUBLIC_COUNTER_INPUT_FILES                      "${GPA_ROOT}/${GPA_SRC_PUBLIC_COUNTER_INPUT_FILES_REL_PATH}")
+set(GPA_SRC_EXAMPLE_COMMON_REL_PATH                         "source/examples/common")
+set(GPA_SRC_EXAMPLE_COMMON_PATH                             "${GPA_ROOT}/${GPA_SRC_EXAMPLE_COMMON_REL_PATH}")
 set(GPA_SRC_D3D12_COLOR_CUBE_REL_PATH                       "source/examples/dx12/dx12_color_cube")
 set(GPA_SRC_D3D12_COLOR_CUBE                                "${GPA_ROOT}/${GPA_SRC_D3D12_COLOR_CUBE_REL_PATH}")
 set(GPA_SRC_VK_COLOR_CUBE_REL_PATH                          "source/examples/vulkan/vk_color_cube")
@@ -86,3 +88,31 @@ set(CMAKE_COMMON_LIB_GLOBAL_AMD_OPENCL                      ${COMMON_DIR_LIB}/AM
 set(CMAKE_COMMON_LIB_GLOBAL_EXT_OPENGL                      ${COMMON_DIR_LIB}/Ext/OpenGL/Global-OpenGL.cmake)
 set(CMAKE_COMMON_LIB_GLOBAL_EXT_VULKAN                      ${COMMON_DIR_LIB}/Ext/Vulkan/Global-Vulkan.cmake)
 set(CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK                 ${COMMON_DIR_LIB}/Ext/Windows-Kits/Global-WindowsSDK.cmake)
+
+## Options controlling the behavior of clang tools
+
+## clang-format can be run prior to the build, however clang-tidy relies on the
+## presence of a compile-commands.json file, which is a build product.
+option(
+    GPA_RUN_CLANG_FORMAT
+    "Run clang-format on source files prior to performing a build"
+    OFF
+)
+
+option(
+    GPA_RUN_CLANG_TIDY
+    "Run clang-tidy on source files after a build completes"
+    OFF
+)
+
+option(
+    GPA_APPLY_LINT_FIXES
+    "Apply fixes suggested by clang-format and/or clang-tidy fixes directly to source files"
+    OFF
+)
+
+option(
+    GPA_REQUIRE_CLEAN_LINT
+    "Fail and stop a build if clang-format and/or clang-tidy suggests a fix"
+    OFF
+)

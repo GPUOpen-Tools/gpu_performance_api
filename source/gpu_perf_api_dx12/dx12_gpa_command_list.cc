@@ -70,7 +70,15 @@ bool Dx12GpaCommandList::BeginCommandListRequest()
         {
             Dx12GpaSession* dx12_gpa_session = reinterpret_cast<Dx12GpaSession*>(GetParentSession());
             amd_ext_session_                 = dx12_gpa_session->GetAmdExtInterface()->CreateGpaSession();
-            amd_ext_session_->AddRef();  // Holding a reference is not required here, but we are doing so in order to work around an issue in older drivers.
+
+            if (amd_ext_session_ == nullptr)
+            {
+                GPA_LOG_ERROR("Failed to create the AMD Extension session.");
+                return false;
+            }
+
+            // Holding a reference is not required here, but we are doing so in order to work around an issue in older drivers.
+            amd_ext_session_->AddRef();
         }
 
         HRESULT extension_op_result = amd_ext_session_->Begin(cmd_list_);

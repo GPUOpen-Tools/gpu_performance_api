@@ -21,113 +21,49 @@ extern HWND window_handle;
 
 extern LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam);
 
-extern bool any_errors_logged;  ///< Flag indicating if any GPA errors have been logged.
+extern bool         any_errors_logged;       ///< Flag indicating if any GPA errors have been logged.
+extern unsigned int validation_error_count;  ///< Number of counter validation errors that have been encountered.
 
-CommandLineArgs args;
-
-/// @brief Print command line usage information.
-void Usage()
+gpa_example::Dx12SampleApp::Dx12SampleApp(const std::string app_name, CmdlineParser& cmdline_parser)
+    : GpaSampleApp(app_name, cmdline_parser)
+    , nogpa_(false)
+    , profile_bundle_(false)
 {
-    std::cout << "D3D12ColorCube [--nogpa] [--numberofframes #] [--verify] [--confirmsuccess] [--counterfile <file>] [--profilebundle] [--includehwcounters]" << std::endl << std::endl;
-    std::cout << "  --nogpa: Do not use GPUPerfAPI to collect performance counters" << std::endl;
-    std::cout << "  --numberofframes #: Renders the specified number of frames before exiting; if used with --verify then # must be a multiple of the number of passes needed" << std::endl;
-    std::cout << "  --verify: Application will verify a few counter values (experimental)" << std::endl;
-    std::cout << "  --confirmsuccess: Implies --verify and confirms successful counter values in addition to errors" << std::endl;
-    std::cout << "  --includehwcounters: Public hardware counters will be enabled in non-internal builds" << std::endl;
-    std::cout << "  --counterfile <file>: File containing the list of counters to profile" << std::endl;
-    std::cout << "  --profilebundles: Include the bundled samples in the profile (experimental)" << std::endl;
+    cmdline_parser_.AddArg("--nogpa", &nogpa_, ArgType::ARG_TYPE_BOOL, "Do not use GPUPerfAPI to collect performance counters");
+    cmdline_parser_.AddArg("--profilebundle", &profile_bundle_, ArgType::ARG_TYPE_BOOL, "Include the bundled samples in the profile (experimental)");
 }
 
-/// Parse Command line arguments.
-bool ParseCommandLine(const int argc, const char* argv[])
+bool gpa_example::Dx12SampleApp::NoGpa()
 {
-    bool success = true;
-
-    for (int i = 1; i < argc; i++)
-    {
-        std::string this_arg(argv[i]);
-
-        if (0 == this_arg.compare("--numberofframes"))
-        {
-            i++;
-
-            if (i < argc)
-            {
-                std::istringstream iss(argv[i]);
-
-                iss >> args.num_frames;
-
-                if (iss.fail())
-                {
-                    success = false;
-                }
-            }
-            else
-            {
-                success = false;
-            }
-        }
-        else if (0 == this_arg.compare("--profilebundles"))
-        {
-            args.profile_bundles = true;
-        }
-        else if (0 == this_arg.compare("--verify"))
-        {
-            args.verify_counters = true;
-        }
-        else if (0 == this_arg.compare("--confirmsuccess"))
-        {
-            args.confirm_success = true;
-        }
-        else if (0 == this_arg.compare("--nogpa"))
-        {
-            args.use_gpa = false;
-        }
-        else if (0 == this_arg.compare("--includehwcounters"))
-        {
-            args.include_hw_counters = true;
-        }
-        else if (0 == this_arg.compare("--counterfile"))
-        {
-            i++;
-
-            if (i < argc)
-            {
-                std::istringstream iss(argv[i]);
-
-                iss >> args.counter_file_name;
-
-                if (iss.fail())
-                {
-                    success = false;
-                }
-                else
-                {
-                    args.counter_provided = true;
-                }
-            }
-            else
-            {
-                success = false;
-            }
-        }
-        else
-        {
-            success = false;
-        }
-    }
-
-    return success;
+    return nogpa_;
 }
 
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _In_ LPSTR pCmdLine, _In_ int cmdShow)
+bool gpa_example::Dx12SampleApp::ProfileBundle()
+{
+    return profile_bundle_;
+}
+
+/// @brief The main function of this sample application.
+///
+/// @param hInstance [in] The application instance.
+/// @param prevInstance [in] Unused.
+/// @param pCmdLine [in] Command line arguments as unicode string.
+/// @param nCmdShow [in] Flag that indicates whether the window will be minimized, maximized, or shown normally.
+///
+/// @return If the application ran successfully but there were counter validation errors, then the number of validation errors will be the return code.
+/// @retval -1 If there were errors executing the application.
+/// @retval 0 On success: the application ran successfully and all counters were validated to be correct.
+int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _In_ LPSTR pCmdLine, _In_ int nCmdShow)
 {
     UNREFERENCED_PARAMETER(pCmdLine);
     UNREFERENCED_PARAMETER(prevInstance);
 
-    if (!ParseCommandLine(__argc, const_cast<const char**>(__argv)))
+    gpa_example::CmdlineParser parser(__argc, __argv);
+
+    gpa_example::Dx12SampleApp app("D3D12ColorCube", parser);
+
+    if (!app.Initialize())
     {
-        Usage();
         return -1;
     }
 
@@ -171,7 +107,9 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _I
         return -1;
     }
 
-    ShowWindow(window_handle, cmdShow);
+    SetWindowLongPtr(window_handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(&app));
+
+    ShowWindow(window_handle, nCmdShow);
 
     // Main sample loop.
     MSG msg = {};
@@ -189,5 +127,8 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _I
     DestroyWindow(window_handle);
     UnregisterClass(kWindowClassName.c_str(), hInstance);
 
-    return any_errors_logged ? -1 : 0;
+    // If errors were logged and there were validation errors, then use the number of validation errors as the return code.
+    // If errors were logged and there were not validation errors, then return -1.
+    // On success return 0.
+    return any_errors_logged ? ((validation_error_count > 0) ? validation_error_count : -1) : 0;
 }

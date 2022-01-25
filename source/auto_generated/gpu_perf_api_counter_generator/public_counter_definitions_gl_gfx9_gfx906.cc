@@ -142,7 +142,7 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(3762);
         internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulled", internal_counters, "0,1,+,2,+,3,+,4,5,+,6,+,7,+,-,(0),max,0,1,+,2,+,3,+,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulled", internal_counters, "0,1,2,3,sum4,4,5,6,7,sum4,-,(0),max,0,1,2,3,sum4,/,(100),*");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -155,7 +155,7 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(3762);
         internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulledCount", internal_counters, "0,1,+,2,+,3,+,4,5,+,6,+,7,+,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulledCount", internal_counters, "0,1,2,3,sum4,4,5,6,7,sum4,-,(0),max");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -164,45 +164,37 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(3762);
         internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZQuadsAcceptedCount", internal_counters, "0,1,+,2,+,3,+");
+        c.UpdateAsicSpecificDerivedCounter("HiZQuadsAcceptedCount", internal_counters, "0,1,2,3,sum4");
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3760);
+        internal_counters.push_back(3761);
+        internal_counters.push_back(3762);
+        internal_counters.push_back(3763);
+        internal_counters.push_back(3784);
         internal_counters.push_back(3684);
         internal_counters.push_back(3685);
         internal_counters.push_back(3686);
         internal_counters.push_back(3687);
-        internal_counters.push_back(3784);
-        internal_counters.push_back(3760);
-        internal_counters.push_back(3761);
-        internal_counters.push_back(3762);
-        internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulled", internal_counters, "5,6,+,7,+,8,+,4,-,(0),max,0,1,+,2,+,3,+,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulled", internal_counters, "0,1,2,3,sum4,4,-,(0),max,5,6,7,8,sum4,/,(100),*");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(3684);
-        internal_counters.push_back(3685);
-        internal_counters.push_back(3686);
-        internal_counters.push_back(3687);
-        internal_counters.push_back(3784);
         internal_counters.push_back(3760);
         internal_counters.push_back(3761);
         internal_counters.push_back(3762);
         internal_counters.push_back(3763);
+        internal_counters.push_back(3784);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulledCount", internal_counters, "0,1,+,2,+,3,+,4,-,5,-,6,-,7,-,8,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulledCount", internal_counters, "0,1,2,3,sum4,4,-,(0),max");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(3784);
-        internal_counters.push_back(3760);
-        internal_counters.push_back(3761);
-        internal_counters.push_back(3762);
-        internal_counters.push_back(3763);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsSurvivingCount", internal_counters, "1,2,+,3,+,4,+,0,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsSurvivingCount", internal_counters, "0");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -212,7 +204,7 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(3686);
         internal_counters.push_back(3687);
 
-        c.UpdateAsicSpecificDerivedCounter("PostZQuads", internal_counters, "0,1,2,+,3,+,4,+,/,(100),*,(100),min");
+        c.UpdateAsicSpecificDerivedCounter("PostZQuads", internal_counters, "0,1,2,3,4,sum4,/,(100),*,(100),min");
     }
     {
         vector<GpaUInt32> internal_counters;

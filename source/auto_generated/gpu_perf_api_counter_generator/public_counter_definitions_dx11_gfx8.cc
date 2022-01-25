@@ -1212,6 +1212,10 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(22229);
+        internal_counters.push_back(22528);
+        internal_counters.push_back(22827);
+        internal_counters.push_back(23126);
         internal_counters.push_back(13114);
         internal_counters.push_back(13311);
         internal_counters.push_back(13508);
@@ -1220,12 +1224,25 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
         internal_counters.push_back(13317);
         internal_counters.push_back(13514);
         internal_counters.push_back(13711);
+
+        c.DefineDerivedCounter("CSThreads", "ComputeShader", "The number of CS threads processed by the hardware.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,8,9,10,11,sum8,ifnotzero", "7a648013-6eac-2665-ac36-13c6f4ac9c26");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
         internal_counters.push_back(22229);
         internal_counters.push_back(22528);
         internal_counters.push_back(22827);
         internal_counters.push_back(23126);
+        internal_counters.push_back(13114);
+        internal_counters.push_back(13311);
+        internal_counters.push_back(13508);
+        internal_counters.push_back(13705);
+        internal_counters.push_back(13120);
+        internal_counters.push_back(13317);
+        internal_counters.push_back(13514);
+        internal_counters.push_back(13711);
 
-        c.DefineDerivedCounter("CSThreads", "ComputeShader", "The number of CS threads processed by the hardware.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,2,3,4,5,6,7,sum8,8,9,10,11,sum4,ifnotzero", "7a648013-6eac-2665-ac36-13c6f4ac9c26");
+        c.DefineDerivedCounter("CSThreadGroupSize", "ComputeShader", "The number of CS threads within each thread group.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,8,9,10,11,sum8,/,4,5,6,7,8,9,10,11,sum8,ifnotzero", "8c65008a-9957-7ca6-4199-f6fe940420f6");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -1487,10 +1504,6 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
         internal_counters.push_back(22546);
         internal_counters.push_back(22845);
         internal_counters.push_back(23144);
-        internal_counters.push_back(22248);
-        internal_counters.push_back(22547);
-        internal_counters.push_back(22846);
-        internal_counters.push_back(23145);
         internal_counters.push_back(22219);
         internal_counters.push_back(22518);
         internal_counters.push_back(22817);
@@ -1504,7 +1517,7 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
         internal_counters.push_back(13514);
         internal_counters.push_back(13711);
 
-        c.DefineDerivedCounter("CSFlatVMemInsts", "ComputeShader", "The average number of FLAT instructions that read from or write to the video memory executed per work item (affected by flow control). Includes FLAT instructions that read from or write to scratch.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,-,8,9,10,11,sum4,/,12,13,14,15,16,17,18,19,sum8,ifnotzero", "2570b477-13e3-f5b6-e6ff-7159373bc74d");
+        c.DefineDerivedCounter("CSFlatVMemInsts", "ComputeShader", "The average number of FLAT instructions that read from or write to the video memory executed per work item (affected by flow control). Includes FLAT instructions that read from or write to scratch.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,8,9,10,11,12,13,14,15,sum8,ifnotzero", "2570b477-13e3-f5b6-e6ff-7159373bc74d");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -3426,7 +3439,7 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
         internal_counters.push_back(10108);
         internal_counters.push_back(10365);
 
-        c.DefineDerivedCounter("HiZTilesAccepted", "DepthAndStencil", "Percentage of tiles accepted by HiZ and will be rendered to the depth or color buffers.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,/,(100),*", "56176f45-d7ff-813d-4f05-3b2f046067e7");
+        c.DefineDerivedCounter("HiZTilesAccepted", "DepthAndStencil", "Percentage of tiles accepted by HiZ and will be rendered to the depth or color buffers.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,-,(0),max,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,/,(100),*", "56176f45-d7ff-813d-4f05-3b2f046067e7");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -3446,8 +3459,24 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
         internal_counters.push_back(9851);
         internal_counters.push_back(10108);
         internal_counters.push_back(10365);
+        internal_counters.push_back(6521);
+        internal_counters.push_back(6778);
+        internal_counters.push_back(7035);
+        internal_counters.push_back(7292);
+        internal_counters.push_back(7549);
+        internal_counters.push_back(7806);
+        internal_counters.push_back(8063);
+        internal_counters.push_back(8320);
+        internal_counters.push_back(8577);
+        internal_counters.push_back(8834);
+        internal_counters.push_back(9091);
+        internal_counters.push_back(9348);
+        internal_counters.push_back(9605);
+        internal_counters.push_back(9862);
+        internal_counters.push_back(10119);
+        internal_counters.push_back(10376);
 
-        c.DefineDerivedCounter("HiZTilesAcceptedCount", "DepthAndStencil", "Count of tiles accepted by HiZ and will be rendered to the depth or color buffers.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "95d4e3f6-b2f0-f26e-8423-aacdfaf79ea3");
+        c.DefineDerivedCounter("HiZTilesAcceptedCount", "DepthAndStencil", "Count of tiles accepted by HiZ and will be rendered to the depth or color buffers.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(0),max", "95d4e3f6-b2f0-f26e-8423-aacdfaf79ea3");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -3646,6 +3675,26 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(11570);
+        internal_counters.push_back(11967);
+        internal_counters.push_back(12364);
+        internal_counters.push_back(12761);
+        internal_counters.push_back(11571);
+        internal_counters.push_back(11968);
+        internal_counters.push_back(12365);
+        internal_counters.push_back(12762);
+        internal_counters.push_back(11572);
+        internal_counters.push_back(11969);
+        internal_counters.push_back(12366);
+        internal_counters.push_back(12763);
+        internal_counters.push_back(11573);
+        internal_counters.push_back(11970);
+        internal_counters.push_back(12367);
+        internal_counters.push_back(12764);
+        internal_counters.push_back(11594);
+        internal_counters.push_back(11991);
+        internal_counters.push_back(12388);
+        internal_counters.push_back(12785);
         internal_counters.push_back(11494);
         internal_counters.push_back(11891);
         internal_counters.push_back(12288);
@@ -3662,10 +3711,11 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
         internal_counters.push_back(11894);
         internal_counters.push_back(12291);
         internal_counters.push_back(12688);
-        internal_counters.push_back(11594);
-        internal_counters.push_back(11991);
-        internal_counters.push_back(12388);
-        internal_counters.push_back(12785);
+
+        c.DefineDerivedCounter("PreZQuadsCulled", "DepthAndStencil", "Percentage of quads rejected based on the detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,sum4,-,(0),max,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum16,/,(100),*", "4e77547b-ec55-5663-f034-af59be66d77d");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
         internal_counters.push_back(11570);
         internal_counters.push_back(11967);
         internal_counters.push_back(12364);
@@ -3682,8 +3732,12 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
         internal_counters.push_back(11970);
         internal_counters.push_back(12367);
         internal_counters.push_back(12764);
+        internal_counters.push_back(11594);
+        internal_counters.push_back(11991);
+        internal_counters.push_back(12388);
+        internal_counters.push_back(12785);
 
-        c.DefineDerivedCounter("PreZQuadsCulled", "DepthAndStencil", "Percentage of quads rejected based on the detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,sum16,16,17,18,19,sum4,-,(0),max,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,/,(100),*", "4e77547b-ec55-5663-f034-af59be66d77d");
+        c.DefineDerivedCounter("PreZQuadsCulledCount", "DepthAndStencil", "Count of quads rejected based on the detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,sum4,-,(0),max", "1bf169e6-9304-834e-df5f-0c44d7890a08");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -3691,61 +3745,8 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
         internal_counters.push_back(11991);
         internal_counters.push_back(12388);
         internal_counters.push_back(12785);
-        internal_counters.push_back(11570);
-        internal_counters.push_back(11967);
-        internal_counters.push_back(12364);
-        internal_counters.push_back(12761);
-        internal_counters.push_back(11571);
-        internal_counters.push_back(11968);
-        internal_counters.push_back(12365);
-        internal_counters.push_back(12762);
-        internal_counters.push_back(11572);
-        internal_counters.push_back(11969);
-        internal_counters.push_back(12366);
-        internal_counters.push_back(12763);
-        internal_counters.push_back(11573);
-        internal_counters.push_back(11970);
-        internal_counters.push_back(12367);
-        internal_counters.push_back(12764);
 
-        c.DefineDerivedCounter("PreZQuadsCulledCount", "DepthAndStencil", "Count of quads rejected based on the detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,sum4,+", "1bf169e6-9304-834e-df5f-0c44d7890a08");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(11494);
-        internal_counters.push_back(11891);
-        internal_counters.push_back(12288);
-        internal_counters.push_back(12685);
-        internal_counters.push_back(11495);
-        internal_counters.push_back(11892);
-        internal_counters.push_back(12289);
-        internal_counters.push_back(12686);
-        internal_counters.push_back(11496);
-        internal_counters.push_back(11893);
-        internal_counters.push_back(12290);
-        internal_counters.push_back(12687);
-        internal_counters.push_back(11497);
-        internal_counters.push_back(11894);
-        internal_counters.push_back(12291);
-        internal_counters.push_back(12688);
-        internal_counters.push_back(11570);
-        internal_counters.push_back(11967);
-        internal_counters.push_back(12364);
-        internal_counters.push_back(12761);
-        internal_counters.push_back(11571);
-        internal_counters.push_back(11968);
-        internal_counters.push_back(12365);
-        internal_counters.push_back(12762);
-        internal_counters.push_back(11572);
-        internal_counters.push_back(11969);
-        internal_counters.push_back(12366);
-        internal_counters.push_back(12763);
-        internal_counters.push_back(11573);
-        internal_counters.push_back(11970);
-        internal_counters.push_back(12367);
-        internal_counters.push_back(12764);
-
-        c.DefineDerivedCounter("PreZQuadsSurvivingCount", "DepthAndStencil", "Count of quads surviving detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,-,(0),max", "50e25e51-3713-89cb-7f92-559cde5e5532");
+        c.DefineDerivedCounter("PreZQuadsSurvivingCount", "DepthAndStencil", "Count of quads surviving detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,sum4", "50e25e51-3713-89cb-7f92-559cde5e5532");
     }
     {
         vector<GpaUInt32> internal_counters;

@@ -49,6 +49,13 @@ private:
     /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
     GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
 
+    /// @brief Attempt to retrieve the device ID from platform-specific OpenGL extensions.
+    ///
+    /// @param [out] driver_device_id If the calls to the extensions are successful, this will be set to the device ID.
+    ///
+    /// @return True if the driver_device_id has been set, and false otherwise.
+    bool GetDeviceIdFromPlatformExt(unsigned int& driver_device_id) const;
+
     mutable bool is_gl_entry_points_initialized_;  ///< Flag indicating the GL entry point has been initialized or not.
     mutable int  gl_driver_version_;               ///< GL driver version returned in the ASIC info.
 };

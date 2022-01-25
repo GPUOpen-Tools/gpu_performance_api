@@ -46,7 +46,7 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
 
         if (VK_NULL_HANDLE != vk_context_info->instance && VK_NULL_HANDLE != vk_context_info->physical_device && VK_NULL_HANDLE != vk_context_info->device)
         {
-            // For Vulkan, the context contains the VkInstance and vKDevice.
+            // For Vulkan, the context contains the VkInstance and VkDevice.
             if (vk_utils::InitializeVkEntryPoints(vk_context_info->instance, vk_context_info->device))
             {
                 if (vk_utils::IsDeviceSupportedForProfiling(vk_context_info->physical_device))

@@ -46,6 +46,9 @@ typedef GpaStatus (*GpaGetDeviceAndRevisionIdPtrType)(GpaContextId, GpaUInt32*, 
 /// Typedef for a function pointer for GpaGetDeviceName.
 typedef GpaStatus (*GpaGetDeviceNamePtrType)(GpaContextId, const char**);
 
+/// Typedef for a function pointer for GpaGetDeviceGeneration.
+typedef GpaStatus (*GpaGetDeviceGenerationPtrType)(GpaContextId, GpaHwGeneration*);
+
 /// Typedef for a function pointer for GpaGetNumCounters.
 typedef GpaStatus (*GpaGetNumCountersPtrType)(GpaContextId, GpaUInt32*);
 

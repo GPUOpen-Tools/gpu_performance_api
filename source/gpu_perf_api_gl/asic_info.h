@@ -2,7 +2,7 @@
 // Copyright (c) 2006-2021 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
-/// @brief  Utility routines for retrieving ASIC information
+/// @brief  Utility routines for retrieving ASIC information.
 //==============================================================================
 
 #ifndef GPU_PERF_API_GL_ASIC_INFO_H_
@@ -59,24 +59,26 @@ namespace ogl_utils
         kAsicIdVegaM,                   ///< ATI ASIC Id for VegaM (GFX8).
         kAsicIdGfx900,                  ///< ATI ASIC Id for GFX900.
         kAsicIdGfx902,                  ///< ATI ASIC Id for GFX902 (APU).
-        kAsicIdPlaceholder,             ///< ATI ASIC Id for placeholder APU.
+        kAsicIdPlaceholder,             ///< ATI ASIC Id for placeholder GFX9 (APU).
         kAsicIdPlaceholder1,            ///< ATI ASIC Id for placeholder GFX9.
         kAsicIdGfx906,                  ///< ATI ASIC Id for GFX906.
-        kAsicIdPlaceholder2,            ///< ATI ASIC Id for placeholder APU.
+        kAsicIdGfx90C,                  ///< ATI ASIC Id for GFX90C (APU).
         kAsicIdPlaceholder3,            ///< ATI ASIC Id for placeholder APU.
         kAsicIdGfx1010,                 ///< ATI ASIC Id for GFX1010.
         kAsicIdGfx1010Lite,             ///< ATI ASIC Id for GFX1010Lite.
-        kAsicIdPlaceholder4,            ///< ATI ASIC Id for placeholder GFX10.
-        kAsicIdPlaceholder5,            ///< ATI ASIC Id for placeholder GFX10.
+        kAsicIdGfx1011,                 ///< ATI ASIC Id for GFX1011.
+        kAsicIdGfx1011Lite,             ///< ATI ASIC Id for GFX1011Lite.
         kAsicIdGfx1012,                 ///< ATI ASIC Id for GFX1012.
-        kAsicIdGfx1030,                 ///< ATI ASIC Id for GFX10.3.
-        kAsicIdGfx1030Lite,             ///< ATI ASIC Id for GFX10.3 Lite.
+        kAsicIdGfx1030,                 ///< ATI ASIC Id for GFX103.
+        kAsicIdGfx1030Lite,             ///< ATI ASIC Id for GFX103 Lite.
         kAsicIdPlaceholder6,            ///< ATI ASIC Id for placeholder GFX10.3.
-        kAsicIdPlaceholder7,            ///< ATI ASIC Id for placeholder GFX10.3.
-        kAsicIdPlaceholder8,            ///< ATI ASIC Id for placeholder GFX10.3.
-        kAsicIdPlaceholder9,            ///< ATI ASIC Id for placeholder GFX10.3
+        kAsicIdGfx1031,                 ///< ATI ASIC Id for GFX1031.
+        kAsicIdGfx1032,                 ///< ATI ASIC Id for GFX1032.
+        kAsicIdGfx1034,                 ///< ATI ASIC Id for GFX1034.
+        kAsicIdPlaceholder9,            ///< ATI ASIC Id for placeholder GFX10.3.
         kAsicIdPlaceholder10,           ///< ATI ASIC Id for placeholder GFX10.3.
-        kAsicIdUnknown,                 ///< Unknown ASIC
+        kAsicIdPlaceholder11,           ///< ATI ASIC Id for placeholder GFX10.3.
+        kAsicIdUnknown,                 ///< Unknown ASIC.
         kAsicIdFirst = kAsicIdTahitiP,  ///< First place holder.
         kAsicIdLast  = kAsicIdUnknown   ///< Last place holder.
     } AsicId;
@@ -86,14 +88,14 @@ namespace ogl_utils
     {
         AsicType         asic_type;          ///< ASIC hardware generation.
         GDT_HW_ASIC_TYPE gdt_asic_type;      ///< GDT hardware ASIC type.
-        uint32_t         default_device_id;  ///< default device id.
+        uint32_t         default_device_id;  ///< Default device id.
         bool             is_apu;             ///< Flag indicating the ASIC is APU or not.
     } AsicIdInfo;
 
     /// @brief ASIC specific information.
     typedef struct _ASICInfo
     {
-        static const unsigned int unassigned_asic_info = static_cast<unsigned int>(-1);  ///< value indicating that ASICInfo member is unassigned
+        static const unsigned int unassigned_asic_info = static_cast<unsigned int>(-1);  ///< Value indicating that ASICInfo member is unassigned.
 
         int          driver_version = INT_MAX;               ///< The driver version extracted from GL_VERSION.
         AsicType     asic_type      = kAsicUnknown;          ///< The ASIC family.
@@ -102,7 +104,7 @@ namespace ogl_utils
         unsigned int device_rev     = unassigned_asic_info;  ///< The PCIE revision id.
         unsigned int num_simd       = unassigned_asic_info;  ///< The number of SIMD units.
         unsigned int num_se         = unassigned_asic_info;  ///< The number of shader engines.
-        unsigned int num_sa         = unassigned_asic_info;  ///< The number of shader arrays.
+        unsigned int num_sa_per_se  = unassigned_asic_info;  ///< The number of shader arrays per shader engine.
         unsigned int num_cu         = unassigned_asic_info;  ///< The number of compute units.
         unsigned int num_rb         = unassigned_asic_info;  ///< The number of render back-ends (CB / DB).
         unsigned int num_spi        = unassigned_asic_info;  ///< The number of shader processor interpolators.

@@ -21,6 +21,7 @@ if sys.version_info.major == 3:
 
 # Write files to a valid archive
 def WriteFileToArchive(archive_handle, file_absolute_path, file_path_in_archive):
+    print("Adding file to archive %s: %s (as %s)" % (archive_handle, file_absolute_path, file_path_in_archive))
     if archive_handle is not None:
         if sys.platform == "win32":
             archive_handle.write(file_absolute_path, file_path_in_archive)
@@ -33,6 +34,7 @@ def CreateArchive(archive_file_name):
         archive_handle = zipfile.ZipFile(archive_file_name, 'w', zipfile.ZIP_DEFLATED)
     else:
         archive_handle = tarfile.open(archive_file_name, 'w:gz')
+    print("Created archive %s at %s" % (archive_handle, archive_file_name))
     return archive_handle
 
 # Returns the SHA of the HEAD of the repo on local machine
@@ -101,17 +103,24 @@ def SwitchToBranchOrRef(localrepopath, branch_or_ref):
 
 def CloneGitRepo(remote, branch, target):
     target = os.path.normpath(target)
+
     commandArgs = ["git", "clone", remote, target]
+
     try:
         sys.stdout.flush()
         subprocess.check_call(commandArgs, shell=SHELLARG)
         sys.stdout.flush()
         sys.stderr.flush()
-        return True
     except subprocess.CalledProcessError as e:
         print ("'git clone' failed with returncode: %d\n" % e.returncode)
         sys.stderr.flush()
         return False
+
+    # Use SwitchToBranchOrRef so that both branch names and commit hashes are supported.
+    if branch is not None:
+        SwitchToBranchOrRef(target, branch)
+
+    return True
 
 # verify a branch exists in a repository.
 def VerifyBranch(repo_source, commit):

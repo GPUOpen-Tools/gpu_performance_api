@@ -3419,6 +3419,86 @@ namespace counter_gfx9
     {57, "GCEA15_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA15", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
 };
 
+    GpaHardwareCounterDesc kGcea16ExposedCountersGfx9[] = {
+    {55, "GCEA16_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA16", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA16_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA16", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea17ExposedCountersGfx9[] = {
+    {55, "GCEA17_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA17", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA17_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA17", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea18ExposedCountersGfx9[] = {
+    {55, "GCEA18_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA18", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA18_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA18", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea19ExposedCountersGfx9[] = {
+    {55, "GCEA19_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA19", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA19_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA19", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea20ExposedCountersGfx9[] = {
+    {55, "GCEA20_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA20", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA20_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA20", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea21ExposedCountersGfx9[] = {
+    {55, "GCEA21_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA21", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA21_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA21", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea22ExposedCountersGfx9[] = {
+    {55, "GCEA22_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA22", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA22_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA22", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea23ExposedCountersGfx9[] = {
+    {55, "GCEA23_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA23", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA23_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA23", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea24ExposedCountersGfx9[] = {
+    {55, "GCEA24_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA24", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA24_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA24", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea25ExposedCountersGfx9[] = {
+    {55, "GCEA25_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA25", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA25_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA25", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea26ExposedCountersGfx9[] = {
+    {55, "GCEA26_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA26", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA26_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA26", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea27ExposedCountersGfx9[] = {
+    {55, "GCEA27_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA27", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA27_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA27", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea28ExposedCountersGfx9[] = {
+    {55, "GCEA28_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA28", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA28_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA28", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea29ExposedCountersGfx9[] = {
+    {55, "GCEA29_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA29", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA29_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA29", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea30ExposedCountersGfx9[] = {
+    {55, "GCEA30_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA30", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA30_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA30", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
+    GpaHardwareCounterDesc kGcea31ExposedCountersGfx9[] = {
+    {55, "GCEA31_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA31", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    {57, "GCEA31_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA31", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+};
+
     GpaHardwareCounterDesc kGputimeExposedCountersGfx9[] = {
     {0, "GPUTime_BOTTOM_TO_BOTTOM_DURATION", "GPUTime", "delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {1, "GPUTime_BOTTOM_TO_BOTTOM_START", "GPUTime", "time of the previous command reaching bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},

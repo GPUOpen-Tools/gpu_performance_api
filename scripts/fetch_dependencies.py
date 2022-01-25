@@ -65,6 +65,24 @@ parser.add_argument('--usebranch', action='store', help='Branch to use when clon
 # to allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file
 scriptRoot = os.path.dirname(os.path.realpath(__file__))
 
+# wait up to a certain number of seconds for a file to become available for deletion, re-trying once a second.
+# os.remove raises a PermissionError on Windows if the file is currently open elsewhere, and we rethrow this
+# exception if our timeout expires. If the archive is deleted (i.e. by the other process that has the archive
+# opened), the FileNotFoundError that would occur in that situation is suppressed.
+def TryRemoveFile(filepath):
+    max_wait_secs = 10
+    for i in range(max_wait_secs):
+        try:
+            os.remove(filepath)
+            break
+        except PermissionError:
+            time.sleep(1)
+            if i == max_wait_secs - 1:
+                print("Waited {} seconds but could not delete {}".format(max_wait_secs, filepath))
+                raise
+        except FileNotFoundError:
+            break
+
 # for each dependency - test if it has already been fetched - if not, then fetch it, otherwise update it to top of tree
 def UpdateGitHubRepo(repoRootUrl, location, commit):
     # convert targetPath to OS specific format
@@ -99,9 +117,6 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
 
         if not GpaUtils.CloneGitRepo(ghRepoSource, reqdCommit, targetPath):
             sys.exit(1)
-
-        if reqdCommit is not None:
-            GpaUtils.SwitchToBranchOrRef(targetPath, reqdCommit)
 
 def ShowRevisions():
     repos_revision_map={}
@@ -183,7 +198,7 @@ def HandleVulkan(vulkanSrc, VulkanDest, vulkanInstallerFileName, version, instal
             if (os.path.isfile(installRootPath + VULKAN_LIB_PATH + VULKAN_LIB_FILENAME)) and (os.path.isfile(installRootPath + VULKAN_HEADER_FILE_PATH)):
                 print("The Vulkan SDK has been installed")
 
-        os.remove(VulkanSDKInstaller)
+        TryRemoveFile(VulkanSDKInstaller)
         os.chdir(scriptRoot)
         return
 
@@ -217,7 +232,7 @@ def HandleGpaDx11GetDeviceInfo(src, dest, fileName, version, copyDest):
         dx11getDeviceInfoArchive.extract(dx11DeviceInfoPlatform64File, copyArchive)
         dx11getDeviceInfoArchive.extract(dx11DeviceInfoPlatformFile, copyArchive)
         dx11getDeviceInfoArchive.close()
-        os.remove(GpaDx11GetDeviceInfoArchiveAbsPath)
+        TryRemoveFile(GpaDx11GetDeviceInfoArchiveAbsPath)
 
         if(os.path.isfile(dx11DeviceInfoPlatform64FileAbsPath) & os.path.isfile(dx11DeviceInfoPlatformFileAbsPath)):
             print("The DXGetAMDDeviceInfo libraries have been copied successfully")

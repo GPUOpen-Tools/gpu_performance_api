@@ -124,6 +124,11 @@ def define_cmake_arguments():
     script_parser.add_argument("--cmakecmd", type=str, default="cmake", help="command to use in place of 'cmake'")
     script_parser.add_argument("--verbose", action="store_true", help="Turns on the verbosity of the script'")
     script_parser.add_argument("--android", action="store_true", help="CMake will generate project files for android")
+
+    script_parser.add_argument("--clang_format", action="store_true", help="run clang-format on source files prior to performing a build")
+    script_parser.add_argument("--clang_tidy", action="store_true", help="run clang-tidy on source files after a build completes")
+    script_parser.add_argument("--fix", action="store_true", help="apply fixes suggested by clang-format and/or clang-tidy directly to source files")
+    script_parser.add_argument("--cleanlint", action="store_true", help="fail and stop a build if clang-format and/or clang-tidy suggests a fix")
     return script_parser
 
 def parse_cmake_arguments(cmake_arguments):
@@ -206,5 +211,29 @@ def parse_cmake_arguments(cmake_arguments):
 
     global verbosity_enabled
     verbosity_enabled=cmake_arguments.verbose
+
+    # Allow the build tool to emit a 'compile_commands.json' file for tools such as clang-tidy
+    # Ignored by generators other than Make and Ninja, so no harm in leaving it always on
+    cmake_additional_args.append("-DCMAKE_EXPORT_COMPILE_COMMANDS=ON")
+
+    if cmake_arguments.clang_format == True:
+        cmake_additional_args.append("-DGPA_RUN_CLANG_FORMAT=ON")
+    else:
+        cmake_additional_args.append("-DGPA_RUN_CLANG_FORMAT=OFF")
+
+    if cmake_arguments.clang_tidy == True:
+        cmake_additional_args.append("-DGPA_RUN_CLANG_TIDY=ON")
+    else:
+        cmake_additional_args.append("-DGPA_RUN_CLANG_TIDY=OFF")
+
+    if cmake_arguments.fix == True:
+        cmake_additional_args.append("-DGPA_APPLY_LINT_FIXES=ON")
+    else:
+        cmake_additional_args.append("-DGPA_APPLY_LINT_FIXES=OFF")
+
+    if cmake_arguments.cleanlint == True:
+        cmake_additional_args.append("-DGPA_REQUIRE_CLEAN_LINT=ON")
+    else:
+        cmake_additional_args.append("-DGPA_REQUIRE_CLEAN_LINT=OFF")
 
     return cmake_additional_args

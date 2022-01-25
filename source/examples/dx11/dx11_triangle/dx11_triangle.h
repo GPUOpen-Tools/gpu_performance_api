@@ -25,6 +25,8 @@
 
 #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
+#include "examples/dx11/sample.h"
+
 /// @brief Class for D3D11 triangle sample.
 ///
 /// This sample demonstrates usage of GPA by drawing a triangle.
@@ -37,7 +39,10 @@ public:
     static D3D11Triangle* Instance();
 
     /// @brief Initializes the triangle sample.
-    bool Init();
+    ///
+    /// @param A pointer to the sample application context.
+    /// @return true if initialization succeeds, and false otherwise.
+    bool Init(gpa_example::Dx11SampleApp* app);
 
     /// @brief Draw the triangle sample.
     void Draw();
@@ -95,6 +100,8 @@ private:
     std::fstream     counter_data_file_stream_;  ///< Counter data file stream.
     std::string      executable_path_;           ///< Path of the sample executable.
     bool             is_profiling_enabled_;      ///< Flag indicating profiling is enabled or not.
+
+    gpa_example::Dx11SampleApp* app_;  ///< Pointer the the sample application context.
 
     /// @brief Constructor.
     D3D11Triangle();

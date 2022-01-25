@@ -64,7 +64,7 @@ if(NOT WIN32)
     add_compile_options("-Wno-ignored-attributes")
 endif()
 
-ADD_SHARED_LIBRARY(${GPA_PROJECT_NAME} ${GPA_SRC_COMMON}/gpa_function_exports.def)
+ADD_SHARED_LIBRARY(${GPA_PROJECT_NAME} ${GPA_SRC_COMMON}/gpa_function_exports.def ${SOURCES})
 INCLUDE_WIN_RESOURCE(gpu_perf_api_cl)
 target_link_libraries(${GPA_PROJECT_NAME}
                       ${GPA_COMMON_LINK_ARCHIVE_FLAG}

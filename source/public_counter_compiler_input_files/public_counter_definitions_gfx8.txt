@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.
+;; Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
 ;;
 ;; Counter definitions for DX/VK/GL for Gfx8 (GFX IP v8)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1281,10 +1281,27 @@ eqn=0
 [DX11Gfx8]
 [DX12Gfx8]
 [VKGfx8]
+SQ_CS*_PERF_SEL_ITEMS[0..3]
 SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
 SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
+eqn=(0),SQ_CS*_PERF_SEL_ITEMS,sum4,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+
+name=CSThreadGroupSize
+desc=#ComputeShader#The number of CS threads within each thread group.
+type=gpa_float64
+usage=items
+[GLGfx8]
+SQ_CS_PERF_SEL_ITEMS
+SPI_PERF_CSG_NUM_THREADGROUPS
+SPI_PERF_CSN_NUM_THREADGROUPS
+eqn=(0),0,1,2,+,/,1,2,+,ifnotzero
+[DX11Gfx8]
+[DX12Gfx8]
+[VKGfx8]
 SQ_CS*_PERF_SEL_ITEMS[0..3]
-eqn=(0),SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,SQ_CS*_PERF_SEL_ITEMS,sum4,ifnotzero
+SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
+SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
+eqn=(0),SQ_CS*_PERF_SEL_ITEMS,sum4,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,/,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
 
 name=CSVALUInsts
 desc=#ComputeShader#The average number of vector ALU instructions executed per work-item (affected by flow control).
@@ -1398,18 +1415,16 @@ type=gpa_float64
 usage=items
 [GLGfx8]
 SQ_CS_PERF_SEL_INSTS_FLAT
-SQ_CS_PERF_SEL_INSTS_FLAT_LDS_ONLY
 SQ_CS_PERF_SEL_WAVES
-eqn=(0),0,1,-,2,/,2,ifnotzero
+eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx8]
 [DX12Gfx8]
 [VKGfx8]
 SQ_CS*_PERF_SEL_INSTS_FLAT[0..3]
-SQ_CS*_PERF_SEL_INSTS_FLAT_LDS_ONLY[0..3]
 SQ_CS*_PERF_SEL_WAVES[0..3]
 SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
 SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),SQ_CS*_PERF_SEL_INSTS_FLAT,sum4,SQ_CS*_PERF_SEL_INSTS_FLAT_LDS_ONLY,sum4,-,SQ_CS*_PERF_SEL_WAVES,sum4,/,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+eqn=(0),SQ_CS*_PERF_SEL_INSTS_FLAT,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
 
 name=CSVALUBusy
 desc=#ComputeShader#The percentage of GPUTime vector ALU instructions are processed. Value range: 0% (bad) to 100% (optimal).
@@ -1876,13 +1891,13 @@ usage=percentage
 [GLGfx8]
 DB*_PERF_SEL_DB_SC_TILE_CULLED[0..3]
 DB*_PERF_SEL_SC_DB_TILE_TILES[0..3]
-eqn=0..3,sum4,4..7,sum4,/,(100),*
+eqn=4..7,sum4,0..3,sum4,-,(0),max,4..7,sum4,/,(100),*
 [DX11Gfx8]
 [DX12Gfx8]
 [VKGfx8]
 DB*_PERF_SEL_DB_SC_TILE_CULLED[0..15]
 DB*_PERF_SEL_SC_DB_TILE_TILES[0..15]
-eqn=0..15,sum16,16..31,sum16,/,(100),*
+eqn=16..31,sum16,0..15,sum16,-,(0),max,16..31,sum16,/,(100),*
 
 name=HiZTilesAcceptedCount
 desc=#DepthAndStencil#Count of tiles accepted by HiZ and will be rendered to the depth or color buffers.
@@ -1890,11 +1905,15 @@ type=gpa_float64
 usage=items
 [GLGfx8]
 DB*_PERF_SEL_SC_DB_TILE_TILES[0..3]
+DB*_PERF_SEL_DB_SC_TILE_CULLED[0..3]
+eqn=0..3,sum4,4..7,sum4,-,(0),max
 eqn=0..3,sum4
 [DX11Gfx8]
 [DX12Gfx8]
 [VKGfx8]
 DB*_PERF_SEL_SC_DB_TILE_TILES[0..15]
+DB*_PERF_SEL_DB_SC_TILE_CULLED[0..15]
+eqn=0..15,sum16,16..31,sum16,-,(0),max
 eqn=0..15,sum16
 
 name=HiZTilesRejectedCount
@@ -2024,84 +2043,68 @@ PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
 eqn=0..15,sum16
 
-
 name=PreZQuadsCulled
 desc=#DepthAndStencil#Percentage of quads rejected based on the detailZ and earlyZ tests.
 type=gpa_float64
 usage=percentage
 [GLGfx8]
-PA_SC_QZ0_QUAD_COUNT
-PA_SC_QZ1_QUAD_COUNT
-PA_SC_QZ2_QUAD_COUNT
-PA_SC_QZ3_QUAD_COUNT
-PA_SC_EARLYZ_QUAD_COUNT
 PA_SC_P0_HIZ_QUAD_COUNT
 PA_SC_P1_HIZ_QUAD_COUNT
 PA_SC_P2_HIZ_QUAD_COUNT
 PA_SC_P3_HIZ_QUAD_COUNT
-eqn=5,6,+,7,+,8,+,4,-,(0),max,0,1,+,2,+,3,+,/,(100),*
+PA_SC_EARLYZ_QUAD_COUNT
+PA_SC_QZ0_QUAD_COUNT
+PA_SC_QZ1_QUAD_COUNT
+PA_SC_QZ2_QUAD_COUNT
+PA_SC_QZ3_QUAD_COUNT
+eqn=0..3,sum4,4,-,(0),max,5..8,sum4,/,(100),*
 [DX11Gfx8]
 [DX12Gfx8]
 [VKGfx8]
-PA_SC*_QZ0_QUAD_COUNT[0..3]
-PA_SC*_QZ1_QUAD_COUNT[0..3]
-PA_SC*_QZ2_QUAD_COUNT[0..3]
-PA_SC*_QZ3_QUAD_COUNT[0..3]
-PA_SC*_EARLYZ_QUAD_COUNT[0..3]
 PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=20..35,sum16,16..19,sum4,-,(0),max,0..15,sum16,/,(100),*
+PA_SC*_EARLYZ_QUAD_COUNT[0..3]
+PA_SC*_QZ0_QUAD_COUNT[0..3]
+PA_SC*_QZ1_QUAD_COUNT[0..3]
+PA_SC*_QZ2_QUAD_COUNT[0..3]
+PA_SC*_QZ3_QUAD_COUNT[0..3]
+eqn=0..15,sum16,16..19,sum4,-,(0),max,20..35,sum16,/,(100),*
 
 name=PreZQuadsCulledCount
 desc=#DepthAndStencil#Count of quads rejected based on the detailZ and earlyZ tests.
 type=gpa_float64
 usage=items
 [GLGfx8]
-PA_SC_EARLYZ_QUAD_COUNT
 PA_SC_P0_HIZ_QUAD_COUNT
 PA_SC_P1_HIZ_QUAD_COUNT
 PA_SC_P2_HIZ_QUAD_COUNT
 PA_SC_P3_HIZ_QUAD_COUNT
-eqn=0,1,+,2,+,3,+,4,+
+PA_SC_EARLYZ_QUAD_COUNT
+eqn=0..3,sum4,4,-,(0),max
 [DX11Gfx8]
 [DX12Gfx8]
 [VKGfx8]
-PA_SC*_EARLYZ_QUAD_COUNT[0..3]
 PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
 PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=0..15,sum16,16..19,sum4,+
+PA_SC*_EARLYZ_QUAD_COUNT[0..3]
+eqn=0..15,sum16,16..19,sum4,-,(0),max
 
 name=PreZQuadsSurvivingCount
 desc=#DepthAndStencil#Count of quads surviving detailZ and earlyZ tests.
 type=gpa_float64
 usage=items
 [GLGfx8]
-PA_SC_QZ0_QUAD_COUNT
-PA_SC_QZ1_QUAD_COUNT
-PA_SC_QZ2_QUAD_COUNT
-PA_SC_QZ3_QUAD_COUNT
 PA_SC_EARLYZ_QUAD_COUNT
-PA_SC_P0_HIZ_QUAD_COUNT
-PA_SC_P1_HIZ_QUAD_COUNT
-PA_SC_P2_HIZ_QUAD_COUNT
-PA_SC_P3_HIZ_QUAD_COUNT
-eqn=0,1,+,2,+,3,+,4,-,5,-,6,-,7,-,8,-,(0),max
+eqn=0
 [DX11Gfx8]
 [DX12Gfx8]
 [VKGfx8]
-PA_SC*_QZ0_QUAD_COUNT[0..3]
-PA_SC*_QZ1_QUAD_COUNT[0..3]
-PA_SC*_QZ2_QUAD_COUNT[0..3]
-PA_SC*_QZ3_QUAD_COUNT[0..3]
-PA_SC*_P0_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P1_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P2_HIZ_QUAD_COUNT[0..3]
-PA_SC*_P3_HIZ_QUAD_COUNT[0..3]
-eqn=0..15,sum16,16..31,sum16,-,(0),max
+PA_SC*_EARLYZ_QUAD_COUNT[0..3]
+eqn=0..3,sum4
 
 name=PostZQuads
 desc=#DepthAndStencil#Percentage of quads for which the pixel shader will run and may be postZ tested.
@@ -2113,7 +2116,7 @@ PA_SC_QZ0_QUAD_COUNT
 PA_SC_QZ1_QUAD_COUNT
 PA_SC_QZ2_QUAD_COUNT
 PA_SC_QZ3_QUAD_COUNT
-eqn=0,1,2,+,3,+,4,+,/,(100),*,(100),min
+eqn=0,1..4,sum4,/,(100),*,(100),min
 [DX11Gfx8]
 [DX12Gfx8]
 [VKGfx8]
@@ -2272,25 +2275,6 @@ eqn=0..3,sum4,(32),*,4..7,sum4,(32),*,+
 DB*_PERF_SEL_TILE_WR_SENDS[0..15]
 DB*_PERF_SEL_QUAD_WR_SENDS[0..15]
 eqn=0..15,sum16,(32),*,16..31,sum16,(32),*,+
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; The following are new on R8xx
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;Remove this since mostly it is duplicate of the psPixelsOut and the value is not correct when profiling alone.
-;name=PixelsAtCB
-;desc=#ColorBuffer#Number of pixels drawn into the the color buffer.
-;type=gpa_float64
-;usage=items
-;[GLGfx8]
-;CB0_PERF_SEL_DRAWN_PIXEL
-;CB1_PERF_SEL_DRAWN_PIXEL
-;[DX11Gfx8]
-;[DX12Gfx8]
-;[VKGfx8]
-;CB0_PERF_SEL_DRAWN_PIXEL
-;CB1_PERF_SEL_DRAWN_PIXEL
-;eqn=0,1,+
 
 name=CBMemRead
 desc=#ColorBuffer#Number of bytes read from the color buffer.
