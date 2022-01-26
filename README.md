@@ -31,7 +31,7 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-## Version 3.10 (01/255555/22)
+## Version 3.10 (01/25/22)
   * Add support for additional GPUs and APUs.
   * Redefined derived counters on GCN (Vega), RDNA, and RDNA2 hardware.
     * New pipeline-based counters to better match hardware behavior.
@@ -80,6 +80,7 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
   * New entrypoint added: GpaGetDeviceGeneration. Binary backwards compatibility is maintained.
   * OpenGL on Linux: Fixed hardware detection on MESA drivers.
   * OpenGL: Fixed hardware detection accuracy.
+  * Setting GPA_OVERRIDE_LOG_LEVEL env var to an integer equal to a GpaLoggingType enum can be used to increase or decrease logging output.
   * DX11:
     * Fixed Adrenalin driver version detection.
     * Fixed setting the number of shader arrays based on client hardware.
@@ -147,17 +148,26 @@ It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 arch
 | CS             |         |         |          |          |       |   CS    |
 
 ## Known Issues
+### Counter Validity on Specific Hardware
+There are some counters that are returning unexpected results on specific hardware with certain APIs.
+* AMD Radeon RX 6800, DX12: HiZ and PreZ counters may consistently report 33% higher than expected.
+* AMD Radeon RX 6800, DX11: CSThreadGroups may consistently report 33% higher than expected.
+* AMD Radeon RX 6700M, DX11: CSLDSBankConflict and CSLDSBankConflictCycles may consistently report as much as 30x higher than expected.
+* AMD Radeon RX 5000 Series, DX12: ScalarCacheHitCount may consistently report 0.
+* AMD Radeon RX 480, DX12: CulledPrims and PSPixelsOut may inconsistently report higher than expected.
+
 ### Counter Validation Errors in D3D12ColorCube Sample App
 Due to the extensive counter validation now being done in the D3D12ColorCube sample application, and some expected variation in nondeterministic counters across a wide range of systems, the sample app may report errors on some systems. Likewise, some counters are marked as known issues and we are investigating the underlying causes of the inconsistent results.
 
-Additionally, the following deterministic performance counter values may not be accurate for the D3D12ColorCube sample application:
-* CulledPrims, PSPixelsOut on Radeon RX 480 hardware.
-
-### Ubuntu 20.04 LTS Vulkan ICD Issue
-On Ubuntu 20.04 LTS, Vulkan ICD may not be set to use AMD Vulkan ICD. In this case, it needs to be explicitly set to use AMD Vulkan ICD before using the GPA. It can be done by setting the ```VK_ICD_FILENAMES``` environment variable to ```/etc/vulkan/icd.d/amd_icd64.json```.
+### OpenCL Performance Counter Accuracy For Radeon 6000 Series GPUs
+The following performance counter values may not be accurate for OpenCL applications running on Radeon 6000 Series GPUs:
+* Wavefronts, VALUInsts, SALUInsts, SALUBusy, VALUUtilization: These values should be representative of performance, but may not be 100% accurate.
 
 ### OpenGL FetchSize Counter on Radeon RX 6000 Series GPUs
 FetchSize counter will show an error when enabled on Radeon RX 6000 Series GPUs using OpenGL.
+
+### Ubuntu 20.04 LTS Vulkan ICD Issue
+On Ubuntu 20.04 LTS, Vulkan ICD may not be set to use AMD Vulkan ICD. In this case, it needs to be explicitly set to use AMD Vulkan ICD before using the GPA. It can be done by setting the ```VK_ICD_FILENAMES``` environment variable to ```/etc/vulkan/icd.d/amd_icd64.json```.
 
 ### Adjusting Linux Clock Mode
 Adjusting the GPU clock mode on Linux is accomplished by writing to: ```/sys/class/drm/card\<N\>/device/power_dpm_force_performance_level```, where \<N\> is the index of the card in question.
@@ -168,14 +178,10 @@ By default this file is only modifiable by root, so the application being profil
 * You may have to reboot the system for the change to take effect.
 * Setting the GPU clock mode is not working correctly for <b>Radeon 5700 Series GPUs</b>, potentially leading to some inconsistencies in counter values from one run to the next.
 
-### OpenCL Performance Counter Accuracy For Radeon 6000 Series GPUs
-The following performance counter values may not be accurate for OpenCL applications running on Radeon 6000 Series GPUs:
-* Wavefronts, VALUInsts, SALUInsts, SALUBusy, VALUUtilization: These values should be representative of performance, but may not be 100% accurate.
-
 ### Profiling Bundles
 Profiling bundles in DirectX12 and Vulkan is not working properly. It is recommended to remove those GPA Samples from your application, or move the calls out of the bundle for profiling.
 
 ## Style and Format Change
 The source code of this product is being reformatted to follow the Google C++ Style Guide https://google.github.io/styleguide/cppguide.html.
 In the interim you may encounter a mix of both an older C++ coding style, as well as the newer Google C++ Style.
-Please refer to the _clang-format file in the root directory of the product for additional style information.
+Please refer to the .clang-format file in the root directory of the product for additional style information.

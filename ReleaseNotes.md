@@ -50,6 +50,7 @@
   * New entrypoint added: GpaGetDeviceGeneration. Binary backwards compatibility is maintained.
   * OpenGL on Linux: Fixed hardware detection on MESA drivers.
   * OpenGL: Fixed hardware detection accuracy.
+  * Setting GPA_OVERRIDE_LOG_LEVEL env var to an integer equal to a GpaLoggingType enum can be used to increase or decrease logging output.
   * DX11:
     * Fixed Adrenalin driver version detection.
     * Fixed setting the number of shader arrays based on client hardware.
