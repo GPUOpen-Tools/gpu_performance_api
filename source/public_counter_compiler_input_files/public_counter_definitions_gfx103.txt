@@ -725,7 +725,7 @@ DB*_PERF_SEL_OP_PIPE_BUSY[0..15]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=0..15,max16,16,/,(100),*
 
-name=DepthStencilTestBusyCount
+name=DepthStencilTestBusyCycles
 desc=#Timing#Number of GPU cycles spent performing depth and stencil tests.
 type=gpa_float64
 usage=cycles
@@ -1652,7 +1652,7 @@ desc=#RayTracing#The number of ray triangle intersection tests.
 type=gpa_float64
 usage=items
 [DX12Gfx103]
-;[VKGfx103]
+[VKGfx103]
 TD*_PERF_SEL_RAY_TRACING_BVH4_TRI_NODE[0..79]
 eqn=0..79,sum80
 
@@ -1661,7 +1661,7 @@ desc=#RayTracing#The number of ray box intersection tests.
 type=gpa_float64
 usage=items
 [DX12Gfx103]
-;[VKGfx103]
+[VKGfx103]
 TD*_PERF_SEL_RAY_TRACING_BVH4_FP16_BOX_NODE[0..79]
 TD*_PERF_SEL_RAY_TRACING_BVH4_FP32_BOX_NODE[0..79]
 eqn=0..79,sum80,80..159,sum80,sum2
@@ -1671,7 +1671,7 @@ desc=#RayTracing#Total number of ray intersection tests, includes both box and t
 type=gpa_float64
 usage=items
 [DX12Gfx103]
-;[VKGfx103]
+[VKGfx103]
 TD*_PERF_SEL_RAY_TRACING_BVH4_TRI_NODE[0..79]
 TD*_PERF_SEL_RAY_TRACING_BVH4_FP16_BOX_NODE[0..79]
 TD*_PERF_SEL_RAY_TRACING_BVH4_FP32_BOX_NODE[0..79]
@@ -1682,6 +1682,6 @@ desc=#RayTracing#The number of ray intersection tests per wave.
 type=gpa_float64
 usage=items
 [DX12Gfx103]
-;[VKGfx103]
+[VKGfx103]
 TD*_PERF_SEL_TOTAL_NUM_RAY_TRACING_BVH4_INSTR[0..79]
 eqn=0..79,sum80

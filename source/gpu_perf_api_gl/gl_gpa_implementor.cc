@@ -276,6 +276,28 @@ GpaDeviceIdentifier GlGpaImplementor::GetDeviceIdentifierFromContextInfo(GpaCont
     return context_info;
 }
 
+bool GlGpaImplementor::IsDriverSupported(GpaContextInfoPtr context_info) const
+{
+    ogl_utils::InitializeGlCoreFunctions();
+    bool is_supported = true;
+    if (context_info != nullptr)
+    {
+        const GLubyte* driver_byte = ogl_utils::ogl_get_string(GL_VERSION);
+        std::string driver_string(reinterpret_cast<const char *>(driver_byte));
+        if (driver_string.find("Mesa") != std::string::npos)
+        {
+            GPA_LOG_ERROR("The Mesa driver is not currently supported.");
+            return false;
+        }
+    }
+    else
+    {
+        is_supported = false;
+    }
+    return is_supported;
+}
+
+
 bool GlGpaImplementor::GetDeviceIdFromPlatformExt(unsigned int& driver_device_id) const
 {
     bool device_id_retrieved = false;

@@ -55,6 +55,13 @@ private:
     ///
     /// @return True if the driver_device_id has been set, and false otherwise.
     bool GetDeviceIdFromPlatformExt(unsigned int& driver_device_id) const;
+    
+    /// @brief Checks whether the driver is supported.
+    ///
+    /// @param [in] context_info Context info pointer.
+    ///
+    /// @return True if operation is successful.
+    bool IsDriverSupported(GpaContextInfoPtr context_info) const override;
 
     mutable bool is_gl_entry_points_initialized_;  ///< Flag indicating the GL entry point has been initialized or not.
     mutable int  gl_driver_version_;               ///< GL driver version returned in the ASIC info.

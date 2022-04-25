@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief PublicCounterDefinitions for DX12 GFX8 for testing.
@@ -122,7 +122,7 @@
 #define NOTEXVOLFILTERINGCOUNT_PUBLIC_DX12_GFX8 106
 #define TEXAVEANISOTROPY_PUBLIC_DX12_GFX8 107
 #define DEPTHSTENCILTESTBUSY_PUBLIC_DX12_GFX8 108
-#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_DX12_GFX8 109
+#define DEPTHSTENCILTESTBUSYCYCLES_PUBLIC_DX12_GFX8 109
 #define HIZTILESACCEPTED_PUBLIC_DX12_GFX8 110
 #define HIZTILESACCEPTEDCOUNT_PUBLIC_DX12_GFX8 111
 #define HIZTILESREJECTEDCOUNT_PUBLIC_DX12_GFX8 112

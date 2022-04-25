@@ -56,16 +56,16 @@ except OSError:
     # likely to be due to inability to find git command
     print("Error calling command: git --version")
 
-# specify whether or not to download the Vulkan SDK (default is to download it)
-parser = argparse.ArgumentParser(description='UpdateCommon args')
+parser = argparse.ArgumentParser(description='fetch_dependencies args')
 parser.add_argument('--showrevisions', action='store_true', default=False, help='Show git revisions of HEAD in dependent repo')
 parser.add_argument('--gitserver', help='Git Server')
 parser.add_argument('--usebranch', action='store', help='Branch to use when cloning dependencies instead of the script default branch.')
 
-# to allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file
+# To allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file.
 scriptRoot = os.path.dirname(os.path.realpath(__file__))
+gpaRoot = os.path.normpath(os.path.join(scriptRoot, ".."))
 
-# wait up to a certain number of seconds for a file to become available for deletion, re-trying once a second.
+# Wait up to a certain number of seconds for a file to become available for deletion, re-trying once a second.
 # os.remove raises a PermissionError on Windows if the file is currently open elsewhere, and we rethrow this
 # exception if our timeout expires. If the archive is deleted (i.e. by the other process that has the archive
 # opened), the FileNotFoundError that would occur in that situation is suppressed.
@@ -83,20 +83,18 @@ def TryRemoveFile(filepath):
         except FileNotFoundError:
             break
 
-# for each dependency - test if it has already been fetched - if not, then fetch it, otherwise update it to top of tree
+# For each dependency - test if it has already been fetched - if not, then fetch it, otherwise update it to top of tree.
 def UpdateGitHubRepo(repoRootUrl, location, commit):
-    # convert targetPath to OS specific format
-    # add script directory to targetPath
-    tmppath = os.path.join(scriptRoot, "..", location)
-    # clean up targetPath, collapsing any ../ and converting / to \ for Windows
-    targetPath = os.path.normpath(tmppath)
+    # Convert targetPath to OS specific format.
+    # Add script directory to targetPath.
+    targetPath = os.path.join(gpaRoot, location)
 
     reqdCommit = commit
 
     print("\nChecking out commit: %s for %s\n"%(reqdCommit, targetPath))
 
     if os.path.isdir(targetPath):
-        # directory exists - get latest from git using pull
+        # Directory exists - get latest from git using pull.
         print("Directory " + targetPath + " exists. \n\tUsing 'git pull' to get latest")
         sys.stdout.flush()
         try:
@@ -109,7 +107,7 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
         if reqdCommit is not None:
             GpaUtils.SwitchToBranchOrRef(targetPath, reqdCommit)
     else:
-        # directory doesn't exist - clone from git
+        # Directory doesn't exist - clone from git.
         ghRepoSource = repoRootUrl
 
         print("Directory " + targetPath + " does not exist. \n\tUsing 'git clone' to get from " + ghRepoSource)
@@ -122,8 +120,7 @@ def ShowRevisions():
     repos_revision_map={}
 
     for key in DependencyMap.gitMapping:
-        local_git_repo_path = os.path.join(scriptRoot, "..", DependencyMap.gitMapping[key][0])
-        local_git_repo_path = os.path.normpath(local_git_repo_path)
+        local_git_repo_path = os.path.join(gpaRoot, DependencyMap.gitMapping[key][0])
         revision_str = GpaUtils.GetGitLocalRepoHead(local_git_repo_path)
         if revision_str is not None:
             repos_revision_map[key] = revision_str
@@ -186,7 +183,7 @@ def HandleVulkan(vulkanSrc, VulkanDest, vulkanInstallerFileName, version, instal
         installVulkanSDKProcess.wait()
 
         if "Windows" == MACHINE_OS:
-            # Check if VULKAN_SDK environment variable is set
+            # Check if VULKAN_SDK environment variable is set.
             VulkanSDKInstalledPath = os.environ.get("VULKAN_SDK")
             if (VulkanSDKInstalledPath is None):
                 print("The VULKAN_SDK environment variable is not set. This means that either the installation failed or you might need to restart the command shell in which you are running to refresh the environment variables.")
@@ -214,9 +211,7 @@ def HandleGpaDx11GetDeviceInfo(src, dest, fileName, version, copyDest):
     if dest != "default":
         DEST_PATH = dest
 
-    copyArchive = os.path.join(scriptRoot, "..", copyDest)
-    # clean up targetPath, collapsing any ../ and converting / to \ for Windows
-    copyArchive = os.path.normpath(copyArchive)
+    copyArchive = os.path.join(gpaRoot, copyDest)
     dx11DeviceInfoPlatform64File= version + "/Bin/x64/GPUPerfAPIDXGetAMDDeviceInfo-x64.dll"
     dx11DeviceInfoPlatformFile= version + "/Bin/x86/GPUPerfAPIDXGetAMDDeviceInfo.dll"
     dx11DeviceInfoPlatform64FileAbsPath = os.path.join(copyArchive, dx11DeviceInfoPlatform64File)

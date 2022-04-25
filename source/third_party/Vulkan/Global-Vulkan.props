@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ImportGroup Label="PropertySheets" />
+  <PropertyGroup Label="UserMacros">
+    <VULKAN_SDK Condition="Exists('$(VK_SDK_PATH)')">$(VK_SDK_PATH)</VULKAN_SDK>
+    <VULKAN_SDK Condition="!Exists('$(VK_SDK_PATH)')">$(CommonDir)Lib\Ext\Vulkan\Windows\</VULKAN_SDK>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(VULKAN_SDK)\Include\;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <BuildMacro Include="VULKAN_SDK">
+      <Value>$(VULKAN_SDK)</Value>
+    </BuildMacro>
+  </ItemGroup>
+</Project>

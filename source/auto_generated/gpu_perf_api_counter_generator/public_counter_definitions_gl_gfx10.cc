@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for GL GFX10.
@@ -1088,7 +1088,7 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(2768);
         internal_counters.push_back(3138);
 
-        c.DefineDerivedCounter("DepthStencilTestBusyCount", "Timing", "Number of GPU cycles spent performing depth and stencil tests.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,max,2,max,3,max,NUM_SHADER_ENGINES,/", "e02860fa-c7bd-90ea-2149-69b4e98a636c");
+        c.DefineDerivedCounter("DepthStencilTestBusyCycles", "Timing", "Number of GPU cycles spent performing depth and stencil tests.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,max,2,max,3,max,NUM_SHADER_ENGINES,/", "e02860fa-c7bd-90ea-2149-69b4e98a636c");
     }
     {
         vector<GpaUInt32> internal_counters;

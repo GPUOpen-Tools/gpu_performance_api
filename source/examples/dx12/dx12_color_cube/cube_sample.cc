@@ -472,7 +472,7 @@ bool CubeSample::InitializeCommonResource()
             std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
 
             std::wstring shader_path = wide_to_utf8_converter.from_bytes(executable_path_);
-            shader_path.append(L"shaders.hlsl");
+            shader_path.append(L"D3D12ColorCubeShaders.hlsl");
 
             result = ::D3DCompileFromFile(shader_path.c_str(), nullptr, nullptr, "VSMain", "vs_5_0", compile_flags, 0, &vertex_shader, &error);
 
@@ -2456,7 +2456,7 @@ bool CubeSample::GpaValidateDataGfx8(unsigned int profile_set,
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 2, 35);
         }
-        else if (0 == local_counter_name.compare("DepthStencilTestBusyCount"))
+        else if (0 == local_counter_name.compare("DepthStencilTestBusyCycles"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 1000) &&
                            GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 3000);
@@ -2556,7 +2556,7 @@ bool CubeSample::GpaValidateDataGfx8(unsigned int profile_set,
         else if (0 == local_counter_name.compare("MemUnitStalledCycles"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0) &&
-                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 1600);
+                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 1800);
         }
         else if (0 == local_counter_name.compare("TexUnitBusyCycles") || 0 == local_counter_name.compare("MemUnitBusyCycles"))
         {
@@ -2795,7 +2795,7 @@ bool CubeSample::GpaValidateDataGfx9(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("PSSALUBusy"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 1);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 2);
         }
         else if (0 == local_counter_name.compare("PSSALUBusyCycles"))
         {
@@ -2803,19 +2803,19 @@ bool CubeSample::GpaValidateDataGfx9(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("PSExportStalls"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 8);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 14);
         }
         else if (0 == local_counter_name.compare("PSExportStallsCycles"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0) &&
-                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 14000);
+                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 100000);
         }
         else if (0 == local_counter_name.compare("DepthStencilTestBusy"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0) &&
                            GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 40);
         }
-        else if (0 == local_counter_name.compare("DepthStencilTestBusyCount"))
+        else if (0 == local_counter_name.compare("DepthStencilTestBusyCycles"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 200) &&
                            GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 3000);
@@ -2889,7 +2889,7 @@ bool CubeSample::GpaValidateDataGfx9(unsigned int profile_set,
         else if (0 == local_counter_name.compare("WriteUnitStalled"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0) &&
-                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 15);
+                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 31);
         }
         else if (0 == local_counter_name.compare("WriteUnitStalledCycles"))
         {
@@ -3264,7 +3264,7 @@ bool CubeSample::GpaValidateDataGfx10(unsigned int profile_set,
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 8);
         }
-        else if (0 == local_counter_name.compare("DepthStencilTestBusyCount"))
+        else if (0 == local_counter_name.compare("DepthStencilTestBusyCycles"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 40) &&
                            GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 800);
@@ -3307,8 +3307,11 @@ bool CubeSample::GpaValidateDataGfx10(unsigned int profile_set,
             GpaFloat64 expected_value = (sample_index == 0) ? 2 : 4;
             return_value              = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_value);
         }
-        else if (0 == local_counter_name.compare("ScalarCacheRequestCount") || 0 == local_counter_name.compare("ScalarCacheMissCount") ||
-                 0 == local_counter_name.compare("ScalarCacheHitCount"))
+        else if (0 == local_counter_name.compare("ScalarCacheHitCount") || 0 == local_counter_name.compare("ScalarCacheHit"))
+        {
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0);
+        }
+        else if (0 == local_counter_name.compare("ScalarCacheRequestCount") || 0 == local_counter_name.compare("ScalarCacheMissCount"))
         {
             if (sample_index == 0)
             {
@@ -3319,13 +3322,9 @@ bool CubeSample::GpaValidateDataGfx10(unsigned int profile_set,
                 return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 2, 3);
             }
         }
-        else if (0 == local_counter_name.compare("ScalarCacheHit"))
-        {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0, 97);
-        }
         else if (0 == local_counter_name.compare("InstCacheRequestCount"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 5260, 52000);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 5250, 52000);
         }
         else if (0 == local_counter_name.compare("InstCacheMissCount"))
         {
@@ -3625,17 +3624,17 @@ bool CubeSample::GpaValidateDataGfx103(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("PSExportStalls"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 14);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 16);
         }
         else if (0 == local_counter_name.compare("PSExportStallsCycles"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0, 3100);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0, 7200);
         }
         else if (0 == local_counter_name.compare("DepthStencilTestBusy"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 8);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 11);
         }
-        else if (0 == local_counter_name.compare("DepthStencilTestBusyCount"))
+        else if (0 == local_counter_name.compare("DepthStencilTestBusyCycles"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 40) &&
                            GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 900);
@@ -3684,15 +3683,15 @@ bool CubeSample::GpaValidateDataGfx103(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("MemUnitBusy"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 4, 49);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 2, 49);
         }
         else if (0 == local_counter_name.compare("WriteUnitStalled"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 2);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 4);
         }
         else if (0 == local_counter_name.compare("WriteUnitStalledCycles"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 210);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 290);
         }
         else if (0 == local_counter_name.compare("MemUnitStalled"))
         {

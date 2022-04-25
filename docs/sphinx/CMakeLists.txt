@@ -1,7 +1,12 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../")
+
+find_program(SPHINX_EXECUTABLE sphinx-build)
+if(NOT SPHINX_EXECUTABLE)
+  message(FATAL_ERROR "SPHINX_EXECUTABLE (sphinx-build) is not found!")
+endif()
 
 set(GPA_PROJECT_NAME SphinxDocsGenerator)
 set(ProjectName ${GPA_PROJECT_NAME})
@@ -20,5 +25,5 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       GPUPerfAPI-Common)
 
 add_custom_command(TARGET ${GPA_PROJECT_NAME} PRE_BUILD
-                   COMMAND python -msphinx -M html ${CMAKE_CURRENT_LIST_DIR}/source ${GPA_OUTPUT_DIR}/docs/
+                   COMMAND ${SPHINX_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/source ${GPA_OUTPUT_DIR}/docs/
                    COMMENT "Generating sphinx documentation..." )

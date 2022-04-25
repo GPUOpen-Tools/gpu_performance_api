@@ -8,6 +8,9 @@ set(DEPTH "./")
 include(${GPA_CMAKE_MODULES_DIR}/defs.cmake)
 include(${GPA_CMAKE_MODULES_DIR}/build_flags.cmake)
 
+include(CTest)
+enable_testing()
+
 if(UNIX)
     set(skipopencl ON)
 endif()
@@ -51,8 +54,10 @@ if(WIN32)
         message(STATUS "Skipping DX12 from the build")
     endif()
 
-    add_subdirectory(${GPA_SRC_PUBLIC_COUNTER_COMPILER} ${CMAKE_BINARY_DIR}/${GPA_SRC_PUBLIC_COUNTER_COMPILER_REL_PATH})
-    add_subdirectory(${GPA_SRC_PUBLIC_COUNTER_INPUT_FILES} ${CMAKE_BINARY_DIR}/${GPA_SRC_PUBLIC_COUNTER_INPUT_FILES_REL_PATH})
+    if(CMAKE_GENERATOR MATCHES "Visual Studio")
+        add_subdirectory(${GPA_SRC_PUBLIC_COUNTER_COMPILER} ${CMAKE_BINARY_DIR}/${GPA_SRC_PUBLIC_COUNTER_COMPILER_REL_PATH})
+        add_subdirectory(${GPA_SRC_PUBLIC_COUNTER_INPUT_FILES} ${CMAKE_BINARY_DIR}/${GPA_SRC_PUBLIC_COUNTER_INPUT_FILES_REL_PATH})
+    endif()
 endif()
 
 if(NOT ${skipopengl})

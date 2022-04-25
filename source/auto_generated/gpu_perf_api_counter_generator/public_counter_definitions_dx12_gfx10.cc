@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for DX12 GFX10.
@@ -2007,7 +2007,7 @@ void AutoDefinePublicDerivedCountersDx12Gfx10(GpaDerivedCounters& c)
         internal_counters.push_back(35154);
         internal_counters.push_back(35524);
 
-        c.DefineDerivedCounter("DepthStencilTestBusyCount", "Timing", "Number of GPU cycles spent performing depth and stencil tests.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16", "e02860fa-c7bd-90ea-2149-69b4e98a636c");
+        c.DefineDerivedCounter("DepthStencilTestBusyCycles", "Timing", "Number of GPU cycles spent performing depth and stencil tests.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16", "e02860fa-c7bd-90ea-2149-69b4e98a636c");
     }
     {
         vector<GpaUInt32> internal_counters;

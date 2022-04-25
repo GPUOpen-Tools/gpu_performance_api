@@ -71,7 +71,7 @@ namespace PublicCounterCompiler
                 GpaTools.CMakeGenerator.Init = GpaTools.CounterDefCMakeGenerator.Init;
                 GpaTools.CMakeGenerator.ProcessFile = GpaTools.CounterDefCMakeGenerator.ProcessFiles;
                 GpaTools.CMakeGenerator.CMakeWriter = GpaTools.CounterDefCMakeGenerator.CMakeWriter;
-                GpaTools.CMakeGenerator.AddDirectory(GpaTools.Gpa.GetGpuPerfApiPath() + "GPA\\source\\auto_generated");
+                GpaTools.CMakeGenerator.AddDirectory(GpaTools.Gpa.GetGpuPerfApiPath() + "source\\auto_generated");
                 GpaTools.CMakeGenerator.GenerateCMakeFiles();
                 return;
             }
@@ -124,7 +124,7 @@ namespace PublicCounterCompiler
                 GpaTools.CMakeGenerator.Init = GpaTools.CounterDefCMakeGenerator.Init;
                 GpaTools.CMakeGenerator.ProcessFile = GpaTools.CounterDefCMakeGenerator.ProcessFiles;
                 GpaTools.CMakeGenerator.CMakeWriter = GpaTools.CounterDefCMakeGenerator.CMakeWriter;
-                GpaTools.CMakeGenerator.AddDirectory(GpaTools.Gpa.GetGpuPerfApiPath() + "GPA\\source\\auto_generated");
+                GpaTools.CMakeGenerator.AddDirectory(GpaTools.Gpa.GetGpuPerfApiPath() + "source\\auto_generated");
                 GpaTools.CMakeGenerator.GenerateCMakeFiles();
             }
             else if (args.Length == 7)

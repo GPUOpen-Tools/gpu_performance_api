@@ -128,8 +128,17 @@ namespace ogl_utils
             {
                 std::string message = "Unable to parse driver version from GL_VERSION string: '";
                 message.append((char*)version_gl_string);
-                message.append("', so assuming it is the most recent driver.");
+                message.append("', so assuming it is the most recent driver version.");
                 GPA_LOG_MESSAGE(message.c_str());
+            }
+            else if (version == 0)
+            {
+                std::string message = "Detected pre-release driver based on '";
+                message.append((char*)version_gl_string);
+                message.append("', so assuming it is the most recent driver version.");
+                GPA_LOG_MESSAGE(message.c_str());
+
+                version = INT_MAX;
             }
         }
 
@@ -475,7 +484,18 @@ namespace ogl_utils
         bool  result       = false;
 
 #ifndef GLES
+        if (!ogl_utils::InitializeGlCoreFunctions())
+        {
+            return false;
+        }
+
         const GLubyte* version_gl_string = ogl_get_string(GL_VERSION);
+        std::string driver_string = (const char*)version_gl_string;
+        if (driver_string.find("Mesa") != std::string::npos)
+        {
+            GPA_LOG_ERROR("The Mesa driver is not currently supported.");
+            return false;
+        }
         asic_info.driver_version         = ExtractDriverVersionNumber(version_gl_string);
 #else
         asic_info.driver_version = INT_MAX;
@@ -486,8 +506,9 @@ namespace ogl_utils
             // Pre-GCN devices were removed from the driver starting with version 13452.
             // If the driver version is earlier than that we will return an error.
 #ifndef GLES
-            std::string driver_version_message = "GL_VERSION: ";
+            std::string driver_version_message = "GL_VERSION: '";
             driver_version_message.append((const char*)version_gl_string);
+            driver_version_message.append("'.");
             GPA_LOG_ERROR(driver_version_message.c_str());
 #endif
             GPA_LOG_ERROR("OpenGL driver version is too old. Please update your driver.");

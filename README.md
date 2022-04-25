@@ -31,65 +31,16 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-## Version 3.10 (01/25/22)
+### Version 3.11 (04/25/22)
   * Add support for additional GPUs and APUs.
-  * Redefined derived counters on GCN (Vega), RDNA, and RDNA2 hardware.
-    * New pipeline-based counters to better match hardware behavior.
-    * GCN (Polaris) hardware:
-      * Added: CSThreadGroupSize.
-      * Fixed: CSThreads, CSFlatVMemInsts, HiZTilesAccepted, HiZTilesAcceptedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
-    * GCN (Radeon Vega Series) hardware:
-      * Removed: VSBusy, VSBusyCycles, VSTime, HSBusy, HSBusyCycles, HSTime, DSBusy, DSBusyCycles, DSTime.
-      * Added: VsGsBusy, VsGsBusyCycles, VsGsTime, PreTessellationBusy, PreTessellationBusyCycles, PreTessellationTime, PostTessellationBusy, PostTessellationBusyCycles, PostTessellationTime.
-      * Removed: VertexShader group (VSVerticesIn, VSVALUInstCount, VSSALUInstCount, VSVALUBusy, VSVALUBusyCycles, VSSALUBusy, VSSALUBusyCycles).
-      * Added: VertexGeometry group (VsGsVALUInstCount, VsGsSALUInstCount, VsGsVALUBusy, VsGsVALUBusyCycles, VsGsSALUBusy, VsGsSALUBusyCycles).
-        * Represents combined data from vertex and geometry shaders in a VS-PS or VS-GS-PS pipeline.
-      * Removed: HullShader group (HSPatches, HSVALUInstCount, HSSALUInstCount, HSVALUBusy, HSVALUBusyCycles, HSSALUBusy, HSSALUBusyCycles).
-      * Added: PreTessellation group (PreTessVALUInstCount, PreTessSALUInstCount, PreTessVALUBusy, PreTessVALUBusyCycles, PreTessSALUBusy, PreTessSALUBusyCycles).
-        * Represents combined data from vertex and hull shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
-      * Removed: DomainShader group (DSVerticesIn, DSVALUInstCount, DSSALUInstCount, DSVALUBusy, DSVALUBusyCycles, DSSALUBusy, DSSALUBusyCycles).
-      * Removed: GeometryShader group (GSPrimsIn, GSVerticesOut, GSVALUInstCount, GSSALUInstCount, GSVALUBusy, GSVALUBusyCycles, GSSALUBusy, GSSALUBusyCycles).
-      * Added: PostTessellation group (PostTessVALUInstCount, PostTessSALUInstCount, PostTessVALUBusy, PostTessVALUBusyCycles, PostTessSALUBusy, PostTessSALUBusyCycles).
-        * Represents combined data from domain and geometry shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
-      * Added: CSThreadGroupSize.
-      * Fixed: PSBusy, PSBusyCycles, PSTime, CSBusy, CSBusyCycles, CSTime, CSThreads, CSFlatVMemInsts, HiZTilesAccepted, HiZTilesAcceptedCount, HiZTilesRejectedCount, HiZQuadsCulled, HiZQuadsCulledCount, HiZQuadsAcceptedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
-    * RDNA (Radeon RX 5000 Series) hardware:
-      * Removed: VSBusy, VSBusyCycles, VSTime, HSBusy, HSBusyCycles, HSTime, DSBusy, DSBusyCycles, DSTime.
-      * Added: VsGsBusy, VsGsBusyCycles, VsGsTime, PreTessellationBusy, PreTessellationBusyCycles, PreTessellationTime, PostTessellationBusy, PostTessellationBusyCycles, PostTessellationTime.
-      * Removed: VertexShader group (VSVerticesIn, VSVALUInstCount, VSSALUInstCount, VSVALUBusy, VSVALUBusyCycles, VSSALUBusy, VSSALUBusyCycles).
-      * Added: VertexGeometry group (VsGsVALUInstCount, VsGsSALUInstCount, VsGsVALUBusy, VsGsVALUBusyCycles, VsGsSALUBusy, VsGsSALUBusyCycles).
-        * Represents combined data from vertex and geometry shaders in a VS-PS or VS-GS-PS pipeline.
-      * Removed: HullShader group (HSPatches, HSVALUInstCount, HSSALUInstCount, HSVALUBusy, HSVALUBusyCycles, HSSALUBusy, HSSALUBusyCycles).
-      * Added: PreTessellation group (PreTessVALUInstCount, PreTessSALUInstCount, PreTessVALUBusy, PreTessVALUBusyCycles, PreTessSALUBusy, PreTessSALUBusyCycles).
-        * Represents combined data from vertex and hull shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
-      * Removed: DomainShader group (DSVerticesIn, DSVALUInstCount, DSSALUInstCount, DSVALUBusy, DSVALUBusyCycles, DSSALUBusy, DSSALUBusyCycles).
-      * Removed: GeometryShader group (GSPrimsIn, GSVerticesOut, GSVALUInstCount, GSSALUInstCount, GSVALUBusy, GSVALUBusyCycles, GSSALUBusy, GSSALUBusyCycles).
-      * Added: PostTessellation group (PostTessVALUInstCount, PostTessSALUInstCount, PostTessVALUBusy, PostTessVALUBusyCycles, PostTessSALUBusy, PostTessSALUBusyCycles).
-        * Represents combined data from domain and geometry shaders in a VS-HS-DS-PS or VS-HS-DS-GS-PS pipeline.
-      * Removed: PrimitivesIn.
-      * Added: CSThreadGroupSize.
-      * Fixed: PSBusy, PSBusyCycles, PSTime, CSBusy, CSBusyCycles, CSTime, CSThreads, HiZTilesAccepted, HiZTilesAcceptedCount, HiZTilesRejectedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
-    * RDNA2 (Radeon RX 6000 Series) hardware:
-      * Removed: VSBusy, VSBusyCycles, VSTime, HSBusy, HSBusyCycles, HSTime, DSBusy, DSBusyCycles, DSTime.
-      * Removed: VertexShader group, HullShader group, DomainShader group, GeometryShader group.
-      * Removed: PrimitivesIn, PSVALUInstCount, PSSALUInstCount, PSVALUBusy, PSVALUBusyCycles, PSSALUBusy, PSSALUBusyCycles.
-      * Removed: CSVALUInsts, CSVALUUtilization, CSSALUInsts, CSVFetchInsts, CSSFetchInsts, CSVWriteInsts, CSVALUBusy, CSVALUBusyCycles, CSSALUBusy, CSSALUBusyCycles.
-      * Added: CSThreadGroupSize
-      * Fixed: CSThreads, HiZTilesAccepted, HiZTilesAcceptedCount, HiZTilesRejectedCount, PreZQuadsCulled, PreZQuadsCulledCount, PreZQuadsSurvivingCount.
-  * Integrated clang-tidy and clang-format into cmake build options.
-  * New entrypoint added: GpaGetDeviceGeneration. Binary backwards compatibility is maintained.
-  * OpenGL on Linux: Fixed hardware detection on MESA drivers.
-  * OpenGL: Fixed hardware detection accuracy.
-  * Setting GPA_OVERRIDE_LOG_LEVEL env var to an integer equal to a GpaLoggingType enum can be used to increase or decrease logging output.
-  * DX11:
-    * Fixed Adrenalin driver version detection.
-    * Fixed setting the number of shader arrays based on client hardware.
-  * Improvements made to the sample applications:
-    * Extensive counter validation in DX12.
-    * Sample apps can now confirm successful validation tests.
-    * Sample apps now support passing in a counter file to specify which counters to enable.
-    * Consolidated parameter parsing logic in sample apps.
-    * In Vulkan and DX12 samples, the return code now indicates the number of errors that were reported.
+  * Counter updates for RDNA2 (Radeon RX 6000 Series) hardware:
+    * Added ray tracing counters for Vulkan: RayTriTests, RayBoxTests, TotalRayTests, and RayTestsPerWave.
+    * Fixed values incorrectly reported by counters PSExportStalls and PSExportStallCycles.
+    * On all hardware: renamed counter "DepthStencilTestBusyCount" to "DepthStencilTestBusyCycles" for consistency with other similar counters.
+    * Added support for Ninja compiler.
+    * Improved error reporting.
+    * Improved counter validation.
+  * Disabled support for Mesa driver. We hope to re-enable it in a future release.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
@@ -153,7 +104,6 @@ There are some counters that are returning unexpected results on specific hardwa
 * AMD Radeon RX 6800, DX12: HiZ and PreZ counters may consistently report 33% higher than expected.
 * AMD Radeon RX 6800, DX11: CSThreadGroups may consistently report 33% higher than expected.
 * AMD Radeon RX 6700M, DX11: CSLDSBankConflict and CSLDSBankConflictCycles may consistently report as much as 30x higher than expected.
-* AMD Radeon RX 5000 Series, DX12: ScalarCacheHitCount may consistently report 0.
 * AMD Radeon RX 480, DX12: CulledPrims and PSPixelsOut may inconsistently report higher than expected.
 
 ### Counter Validation Errors in D3D12ColorCube Sample App

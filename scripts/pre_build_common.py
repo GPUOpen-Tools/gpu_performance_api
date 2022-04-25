@@ -16,6 +16,7 @@ cmake_vs2015_generators = {'x86':'Visual Studio 14 2015', 'x64':'Visual Studio 1
 cmake_vs2017_generators = {'x86':'Visual Studio 15 2017', 'x64':'Visual Studio 15 2017 Win64'}
 cmake_vs2019_generators = {'x86':'Visual Studio 16 2019', 'x64':'Visual Studio 16 2019'}
 cmake_make_file_generators = {'x86':'Unix Makefiles', 'x64':'Unix Makefiles'}
+cmake_ninja_file_generators = {'x86':'Ninja', 'x64':'Ninja'}
 cmake_cmd = "cmake"
 verbosity_enabled=False
 
@@ -35,10 +36,11 @@ def generate_project_file_using_cmake(cmake_generator, target_platform,
     if build_file_dir is not None:
         cmake_build_file_dir = build_file_dir
 
-    if sys.platform == "win32":
-        cmake_build_file_dir = os.path.join(cmake_list_dir, cmake_build_file_dir, target_platform)
-    else:
-        cmake_build_file_dir = os.path.join(cmake_list_dir, cmake_build_file_dir, target_platform, project_config)
+    if not os.path.isabs(cmake_build_file_dir):
+        if sys.platform == "win32" and cmake_generator != "Ninja":
+            cmake_build_file_dir = os.path.join(cmake_list_dir, cmake_build_file_dir, target_platform)
+        else:
+            cmake_build_file_dir = os.path.join(cmake_list_dir, cmake_build_file_dir, target_platform, project_config)
 
     cmake_build_file_dir = os.path.normpath(cmake_build_file_dir)
 
@@ -103,12 +105,14 @@ def define_cmake_arguments():
     # parse the command line arguments
     script_parser = argparse.ArgumentParser(description="Utility script to generate GPA Unix/Windows projects")
     if sys.platform == "win32":
-        script_parser.add_argument("--vs", default="2017", choices=["2015", "2017", "2019"], help="specify the version of Visual Studio to be used with this script (default: 2017)")
+        script_parser.add_argument("--vs", default="2019", choices=["2015", "2017", "2019"], help="specify the version of Visual Studio to be used with this script (default: 2019; overrides --ninja)")
 
+    script_parser.add_argument("--ninja", action="store_true", help="generate build files for the Ninja build system")
     script_parser.add_argument("--config", choices=["debug", "release"], help="specify the build config for Makefiles (default: both)")
     script_parser.add_argument("--platform", choices=["x86", "x64"], help="specify the platform for the project has to be generated (default: both)" )
     script_parser.add_argument("--clean", action="store_true", help="delete any directories created by this script")
     script_parser.add_argument("--build", action="store", help="GPA Build number")
+    script_parser.add_argument("--builddir", action="store", help="directory where the build will be performed; if not given as an absolute path then this will be relative to the top-level pre_build script")
 
     if sys.platform == "win32":
         script_parser.add_argument("--skipdx11", action="store_true", help="skip DX11 from the CMake generated project")
@@ -201,10 +205,15 @@ def parse_cmake_arguments(cmake_arguments):
             cmake_generator = cmake_vs2015_generators
         elif cmake_arguments.vs == "2019":
             cmake_generator = cmake_vs2019_generators
+        elif cmake_arguments.ninja:
+            cmake_generator = cmake_ninja_file_generators
         else:
             cmake_generator = cmake_vs2017_generators
     else:
-        cmake_generator = cmake_make_file_generators
+        if cmake_arguments.ninja:
+            cmake_generator = cmake_ninja_file_generators
+        else:
+            cmake_generator = cmake_make_file_generators
 
     global cmake_cmd
     cmake_cmd = cmake_arguments.cmakecmd

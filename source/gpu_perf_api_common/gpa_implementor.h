@@ -73,6 +73,13 @@ protected:
     /// @return kGpaStatusOk if operation is successful.
     GpaStatus IsDeviceSupported(GpaContextInfoPtr context_info, GpaHwInfo* hw_info) const;
 
+    /// @brief Checks whether the driver is supported.
+    ///
+    /// @param [in] context_info Context info pointer.
+    ///
+    /// @return True if operation is successful.
+    virtual bool IsDriverSupported(GpaContextInfoPtr context_info) const;
+
     /// @brief Gets the API level hardware info.
     ///
     /// @param [in] context_info Context info pointer.

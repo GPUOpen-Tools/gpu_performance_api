@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX103_GFX1031_GFX1032.
@@ -26,7 +26,7 @@ namespace counter_gfx103_gfx1031_gfx1032
 /// @return True if the ASIC is matched by this file.
 inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
 {
-    static std::set<GDT_HW_ASIC_TYPE> asics_supported = { GDT_GFX10_3_1, GDT_GFX10_3_2, GDT_GFX10_3_4 };
+    static std::set<GDT_HW_ASIC_TYPE> asics_supported = { GDT_GFX10_3_1, GDT_GFX10_3_2, GDT_GFX10_3_4, GDT_GFX10_3_5 };
 
     if (asics_supported.find(asic_type) == asics_supported.end())
     {

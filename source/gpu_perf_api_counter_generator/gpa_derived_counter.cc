@@ -263,11 +263,6 @@ GpaStatus GpaDerivedCounters::ComputeCounterValue(GpaUInt32                     
         return kGpaStatusErrorInvalidCounterEquation;
     }
 
-#ifdef AMDT_INTERNAL
-    GPA_LOG_DEBUG_COUNTER_DEFS(
-        "'%s' equation is %s.", derived_counter_list_[counter_index].counter_name_, derived_counter_list_[counter_index].compute_expression_);
-#endif
-
     GpaStatus status = kGpaStatusOk;
 
     if (internal_counter_types[0] == kGpaDataTypeUint64)
@@ -276,11 +271,13 @@ GpaStatus GpaDerivedCounters::ComputeCounterValue(GpaUInt32                     
         {
             status = EvaluateExpression<GpaFloat64, GpaUInt64>(
                 derived_counter_list_[counter_index].compute_expression_, result, results, derived_counter_list_[counter_index].data_type_, hw_info);
+
         }
         else if (derived_counter_list_[counter_index].data_type_ == kGpaDataTypeUint64)
         {
             status = EvaluateExpression<GpaUInt64, GpaUInt64>(
                 derived_counter_list_[counter_index].compute_expression_, result, results, derived_counter_list_[counter_index].data_type_, hw_info);
+
         }
         else
         {

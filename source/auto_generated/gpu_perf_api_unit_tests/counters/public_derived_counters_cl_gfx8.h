@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief PublicCounterDefinitions for CL GFX8 for testing.

@@ -1,4 +1,4 @@
-.. Copyright(c) 2018-2021 Advanced Micro Devices, Inc.All rights reserved.
+.. Copyright(c) 2018-2022 Advanced Micro Devices, Inc.All rights reserved.
 .. Graphics Performance Counters for RDNA2
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
@@ -30,7 +30,7 @@ Timing Group
     "TexUnitBusy", "Percentage", "The percentage of GPUTime the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account."
     "TexUnitBusyCycles", "Cycles", "Number of GPU cycles the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account."
     "DepthStencilTestBusy", "Percentage", "Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy."
-    "DepthStencilTestBusyCount", "Cycles", "Number of GPU cycles spent performing depth and stencil tests."
+    "DepthStencilTestBusyCycles", "Cycles", "Number of GPU cycles spent performing depth and stencil tests."
 
 PrimitiveAssembly Group
 %%%%%%%%%%%%%%%%%%%%%%%

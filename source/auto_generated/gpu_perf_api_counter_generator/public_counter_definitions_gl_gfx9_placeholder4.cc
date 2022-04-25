@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for GL GFX9_PLACEHOLDER4.

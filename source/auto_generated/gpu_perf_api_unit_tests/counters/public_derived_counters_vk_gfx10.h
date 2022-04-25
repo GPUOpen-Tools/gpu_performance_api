@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief PublicCounterDefinitions for VK GFX10 for testing.
@@ -103,7 +103,7 @@
 #define NOTEXVOLFILTERINGCOUNT_PUBLIC_VK_GFX10 87
 #define TEXAVEANISOTROPY_PUBLIC_VK_GFX10 88
 #define DEPTHSTENCILTESTBUSY_PUBLIC_VK_GFX10 89
-#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_VK_GFX10 90
+#define DEPTHSTENCILTESTBUSYCYCLES_PUBLIC_VK_GFX10 90
 #define HIZTILESACCEPTED_PUBLIC_VK_GFX10 91
 #define HIZTILESACCEPTEDCOUNT_PUBLIC_VK_GFX10 92
 #define HIZTILESREJECTEDCOUNT_PUBLIC_VK_GFX10 93

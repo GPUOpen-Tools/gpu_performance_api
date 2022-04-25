@@ -159,8 +159,12 @@ bool GpaHelper::OpenContext(GlContext gl_context, bool include_hw_counters)
 
 bool GpaHelper::CloseContext()
 {
-    bool is_context_closed = kGpaStatusOk == gpa_function_table_->GpaCloseContext(gpa_context_id_);
-    gpa_context_id_        = nullptr;
+    bool is_context_closed = true;
+    if (gpa_context_id_ != nullptr)
+    {
+        is_context_closed = (kGpaStatusOk == gpa_function_table_->GpaCloseContext(gpa_context_id_));
+        gpa_context_id_ = nullptr;
+    }
     gpa_hw_generation_     = kGpaHwGenerationNone;
     return is_context_closed;
 }
@@ -173,8 +177,11 @@ bool GpaHelper::CreateGpaSession()
 bool GpaHelper::DestroyGpaSession()
 {
     bool success    = true;
-    success         = kGpaStatusOk == gpa_function_table_->GpaDeleteSession(gpa_session_id_);
-    gpa_session_id_ = nullptr;
+    if (gpa_session_id_ != nullptr)
+    {
+        success         = (kGpaStatusOk == gpa_function_table_->GpaDeleteSession(gpa_session_id_));
+        gpa_session_id_ = nullptr;
+    }
     return success;
 }
 
@@ -495,7 +502,10 @@ GpaHelper::~GpaHelper()
 {
     gpa_log_file_stream_.close();
     counter_data_file_stream_.close();
-    gpa_function_table_->GpaDestroy();
+    if (gpa_function_table_ != nullptr)
+    {
+        gpa_function_table_->GpaDestroy();
+    }
 
     if (app_ != nullptr)
     {

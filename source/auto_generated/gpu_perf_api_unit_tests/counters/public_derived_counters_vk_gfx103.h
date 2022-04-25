@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief PublicCounterDefinitions for VK GFX103 for testing.
@@ -54,7 +54,7 @@
 #define TEXUNITBUSYCYCLES_PUBLIC_VK_GFX103 38
 #define TEXAVEANISOTROPY_PUBLIC_VK_GFX103 39
 #define DEPTHSTENCILTESTBUSY_PUBLIC_VK_GFX103 40
-#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_VK_GFX103 41
+#define DEPTHSTENCILTESTBUSYCYCLES_PUBLIC_VK_GFX103 41
 #define HIZTILESACCEPTED_PUBLIC_VK_GFX103 42
 #define HIZTILESACCEPTEDCOUNT_PUBLIC_VK_GFX103 43
 #define HIZTILESREJECTEDCOUNT_PUBLIC_VK_GFX103 44
@@ -116,9 +116,13 @@
 #define WRITEUNITSTALLEDCYCLES_PUBLIC_VK_GFX103 100
 #define LOCALVIDMEMBYTES_PUBLIC_VK_GFX103 101
 #define PCIEBYTES_PUBLIC_VK_GFX103 102
+#define RAYTRITESTS_PUBLIC_VK_GFX103 103
+#define RAYBOXTESTS_PUBLIC_VK_GFX103 104
+#define TOTALRAYTESTS_PUBLIC_VK_GFX103 105
+#define RAYTESTSPERWAVE_PUBLIC_VK_GFX103 106
 
 /// Number of public counters for VK GFX103 
-const size_t kVkGfx103PublicCounterCount = 103;
+const size_t kVkGfx103PublicCounterCount = 107;
 
 /// Array of public counters for VK GFX103 
 extern const GpaCounterDesc kVkGfx103PublicCounters[kVkGfx103PublicCounterCount];

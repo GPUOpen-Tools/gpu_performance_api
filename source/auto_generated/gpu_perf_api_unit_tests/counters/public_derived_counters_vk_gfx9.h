@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief PublicCounterDefinitions for VK GFX9 for testing.
@@ -108,7 +108,7 @@
 #define NOTEXVOLFILTERINGCOUNT_PUBLIC_VK_GFX9 92
 #define TEXAVEANISOTROPY_PUBLIC_VK_GFX9 93
 #define DEPTHSTENCILTESTBUSY_PUBLIC_VK_GFX9 94
-#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_VK_GFX9 95
+#define DEPTHSTENCILTESTBUSYCYCLES_PUBLIC_VK_GFX9 95
 #define HIZTILESACCEPTED_PUBLIC_VK_GFX9 96
 #define HIZTILESACCEPTEDCOUNT_PUBLIC_VK_GFX9 97
 #define HIZTILESREJECTEDCOUNT_PUBLIC_VK_GFX9 98

@@ -1,6 +1,18 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.11 (04/25/22)
+  * Add support for additional GPUs and APUs.
+  * Counter updates for RDNA2 (Radeon RX 6000 Series) hardware:
+    * Added ray tracing counters for Vulkan: RayTriTests, RayBoxTests, TotalRayTests, and RayTestsPerWave.
+    * Fixed values incorrectly reported by counters PSExportStalls and PSExportStallCycles.
+    * On all hardware: renamed counter "DepthStencilTestBusyCount" to "DepthStencilTestBusyCycles" for consistency with other similar counters.
+    * External dependent repositories are now cloned into an "external/" subdirectory within the gpu_performance_api repository.
+    * Added support for Ninja compiler.
+    * Improved error reporting.
+    * Improved counter validation.
+  * Disabled support for Mesa driver. We hope to re-enable it in a future release.
+
 ## Version 3.10 (01/25/22)
   * Add support for additional GPUs and APUs.
   * Redefined derived counters on GCN (Vega), RDNA, and RDNA2 hardware.

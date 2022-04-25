@@ -67,7 +67,7 @@ namespace ogl_utils
     bool        are_gl_functions_initialized = false;
     LibHandle   gl_lib_handle                = nullptr;
 #ifdef GLES
-    LibHandle gl_es_lib_handle = nullptr;
+    LibHandle egl_lib_handle = nullptr;
 #endif
     bool are_supported_extensions_queried = false;
 
@@ -186,14 +186,30 @@ bool ogl_utils::LoadGl()
 #ifdef _WIN32
 #ifndef GLES
         gl_lib_handle = LoadLibraryA("opengl32.dll");
+        if (gl_lib_handle == nullptr)
+        {
+            GPA_LOG_ERROR("Failed to load opengl32.dll");
+        }
 #else
         gl_lib_handle = LoadLibraryA("libEGL.dll");
+        if (gl_lib_handle == nullptr)
+        {
+            GPA_LOG_ERROR("Failed to load libEGL.dll");
+        }
 #endif
 #else
 #ifndef GLES
         gl_lib_handle = dlopen("libGL.so", RTLD_LAZY);
+        if (gl_lib_handle == nullptr)
+        {
+            GPA_LOG_ERROR("Failed to load libGL.so");
+        }
 #else
-        gl_es_lib_handle = dlopen("libEGL.so", RTLD_NOW);
+        egl_lib_handle = dlopen("libEGL.so", RTLD_NOW);
+        if (egl_lib_handle == nullptr)
+        {
+            GPA_LOG_ERROR("Failed to load libEGL.so");
+        }
 
         if (nullptr == gl_lib_handle)
         {
@@ -208,6 +224,11 @@ bool ogl_utils::LoadGl()
                     gl_lib_handle = dlopen("libGLES.so", RTLD_NOW);
                 }
             }
+
+            if (gl_lib_handle == nullptr)
+            {
+                GPA_LOG_ERROR("Failed to load libGLESv3.so or libGLESv2.so or libGLES.so");
+            }
         }
 #endif
 #endif
@@ -216,7 +237,8 @@ bool ogl_utils::LoadGl()
 #ifndef GLES
     return nullptr != gl_lib_handle;
 #else
-    return nullptr != gl_lib_handle && nullptr != gl_es_lib_handle;
+
+    return nullptr != gl_lib_handle && nullptr != egl_lib_handle;
 #endif
 }
 
@@ -253,13 +275,32 @@ bool ogl_utils::InitializeGlCoreFunctions()
         LOAD_LIBRARY_SYMBOL(ogl_get_integer_v, glGetIntegerv);
         LOAD_LIBRARY_SYMBOL(ogl_get_error, glGetError);
 
-        if (nullptr == ogl_flush || nullptr == ogl_get_string || nullptr == ogl_get_integer_v || nullptr == ogl_get_error)
+        if (nullptr == ogl_flush)
         {
-            GPA_LOG_MESSAGE("Unable to Initialize GL core functions.");
+            GPA_LOG_ERROR("Unable to initialize glFlush function pointer.");
+            return false;
+        }
+        else if (nullptr == ogl_get_string)
+        {
+            GPA_LOG_ERROR("Unable to initialize glGetString function pointer.");
+            return false;
+        }
+        else if (nullptr == ogl_get_integer_v)
+        {
+            GPA_LOG_ERROR("Unable to initialize glGetIntegerv function pointer.");
+            return false;
+        }
+        else if (nullptr == ogl_get_error)
+        {
+            GPA_LOG_ERROR("Unable to initialize glGetError function pointer.");
             return false;
         }
 
         return true;
+    }
+    else
+    {
+        GPA_LOG_ERROR("Failed to load GL when initializing GL core functions.");
     }
 
     return false;
@@ -274,7 +315,7 @@ bool ogl_utils::InitCtxAmdPerfExtFunctions()
 #ifndef GLES
             GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(gl_lib_handle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
 #else
-            GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(gl_es_lib_handle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
+            GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(egl_lib_handle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
 #endif
         }
 
@@ -297,6 +338,10 @@ bool ogl_utils::InitCtxAmdPerfExtFunctions()
                 nullptr != ogl_select_perf_monitor_counters_amd && nullptr != ogl_begin_perf_monitor_amd && nullptr != ogl_end_perf_monitor_amd &&
                 nullptr != ogl_get_perf_monitor_counter_data_amd);
     }
+    else
+    {
+        GPA_LOG_ERROR("Failed to load GL when initializing gl_AMD_performance_monitor extension.");
+    }
 
     return false;
 }
@@ -316,6 +361,7 @@ bool ogl_utils::InitPlatformExtFunctions()
     }
     else
     {
+        GPA_LOG_ERROR("Failed to load GL when initializing Linux platform extensions.");
         return false;
     }
 #endif
@@ -341,7 +387,7 @@ bool ogl_utils::InitializeGlFunctions()
 #ifndef GLES
     GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(gl_lib_handle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
 #else
-    GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(gl_es_lib_handle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
+    GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(egl_lib_handle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
 #endif
 
     if (!InitializeGlCoreFunctions())

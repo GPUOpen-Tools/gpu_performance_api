@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief PublicCounterDefinitions for DX12 GFX103 for testing.
@@ -54,7 +54,7 @@
 #define TEXUNITBUSYCYCLES_PUBLIC_DX12_GFX103 38
 #define TEXAVEANISOTROPY_PUBLIC_DX12_GFX103 39
 #define DEPTHSTENCILTESTBUSY_PUBLIC_DX12_GFX103 40
-#define DEPTHSTENCILTESTBUSYCOUNT_PUBLIC_DX12_GFX103 41
+#define DEPTHSTENCILTESTBUSYCYCLES_PUBLIC_DX12_GFX103 41
 #define HIZTILESACCEPTED_PUBLIC_DX12_GFX103 42
 #define HIZTILESACCEPTEDCOUNT_PUBLIC_DX12_GFX103 43
 #define HIZTILESREJECTEDCOUNT_PUBLIC_DX12_GFX103 44

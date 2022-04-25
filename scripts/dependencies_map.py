@@ -10,24 +10,21 @@
 # "git repo name"  : ["Directory for clone relative to parent project directory",  "branch or commit to checkout (or None for top of tree)"]
 gitMapping = {
  # Lib.
-    "common-lib-amd-ADL"                  : ["../Common/Lib/AMD/ADL",               None],
-    "common-lib-amd-APPSDK-3.0"           : ["../Common/Lib/AMD/APPSDK",            None],
-    "common-lib-ext-OpenGL"               : ["../Common/Lib/Ext/OpenGL",            None],
-    "common-lib-ext-WindowsKits"          : ["../Common/Lib/Ext/Windows-Kits",      None],
-    "googletest"                          : ["../Common/Lib/Ext/GoogleTest",        "v1.8.x"],
+    "adl"              : ["external/Lib/AMD/ADL",               None],
+    "appsdk"           : ["external/Lib/AMD/APPSDK",            None],
+    "opengl"           : ["external/Lib/Ext/OpenGL",            None],
+    "windows_kits"     : ["external/Lib/Ext/Windows-Kits",      None],
+    "googletest"       : ["external/Lib/Ext/GoogleTest",        "v1.8.x"],
 # Src.
-    "common-src-ADLUtil"                  : ["../Common/Src/ADLUtil",               None],
-    "common-src-AmdDxExt"                 : ["../Common/Src/AmdDxExt",              None],
-    "common-src-AmdVkExt"                 : ["../Common/Src/AmdVkExt",              None],
-    "common-src-DeviceInfo"               : ["../Common/Src/DeviceInfo",            None],
-    "common-src-DynamicLibraryModule"     : ["../Common/Src/DynamicLibraryModule",  None],
-    "common-src-TSingleton"               : ["../Common/Src/TSingleton",            None],
-    "common-src-CMakeModules"             : ["../Common/Src/CMakeModules",          None],
+    "adl_util"                 : ["external/Src/ADLUtil",               None],
+    "device_info"              : ["external/Src/DeviceInfo",            None],
+    "dynamic_library_module"   : ["external/Src/DynamicLibraryModule",  None],
+    "tsingleton"               : ["external/Src/TSingleton",            None],
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
 downloadWin = {
-    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/gpu_performance_api/releases/download/v3.9/GPUPerfAPI-3.9.0.13.zip" , "default", "3_9", "../Common/Lib/AMD/GPUPerfAPI"]
+    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/gpu_performance_api/releases/download/v3.10/GPUPerfAPI-3.10.0.77.zip" , "default", "3_10", "external/Lib/AMD/GPUPerfAPI"]
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root

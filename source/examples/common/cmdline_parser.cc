@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2021-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Command Line Parser.
@@ -7,7 +7,8 @@
 
 #include "examples/common/cmdline_parser.h"
 
-#include "gpu_perf_api_common/logging.h"
+#include <iostream>
+#include <sstream>
 #include <utility>
 
 namespace
@@ -58,7 +59,7 @@ namespace gpa_example
             message = "WARNING: The following argument has already been passed to CmdlineParser::AddArg() and will not be added again: ";
             message += name;
             message += ".";
-            GPA_LOG_MESSAGE(message.c_str());
+            std::cout << message.c_str() << std::endl;
             return;
         }
 
@@ -79,7 +80,7 @@ namespace gpa_example
             message = "Unknown ArgType provided for ";
             message += name;
             message += ".";
-            GPA_LOG_ERROR(message.c_str());
+            std::cout << message.c_str() << std::endl;
         }
 
         if (p_entry == nullptr)
@@ -87,7 +88,7 @@ namespace gpa_example
             message = "Failed to allocate storage for the following argument: ";
             message += name;
             message += ".";
-            GPA_LOG_ERROR(message.c_str());
+            std::cout << message.c_str() << std::endl;
         }
         else
         {
@@ -99,7 +100,7 @@ namespace gpa_example
     {
         if (parsed_)
         {
-            GPA_LOG_MESSAGE("WARNING: Parsing command line more than once.");
+            std::cout << "WARNING: Parsing command line more than once." << std::endl;
         }
 
         for (int i = 1; i < argc_; ++i)
@@ -137,7 +138,7 @@ namespace gpa_example
                 message = "Unknown ArgType retrieved for ";
                 message += entry->first;
                 message += ".";
-                GPA_LOG_ERROR(message.c_str());
+                std::cout << message.c_str() << std::endl;
                 parse_success = false;
             }
 

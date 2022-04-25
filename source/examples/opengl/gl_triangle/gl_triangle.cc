@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL triangle.
@@ -12,25 +12,39 @@
 #ifdef _WIN32
 #pragma warning(disable : 4505)
 #include <windows.h>
-#include <GL/gL.h>
-#include <GL/gLext.h>
+#include <GL/GL.h>
+#include <GL/GLext.h>
 #include <GL/wglext.h>
-#else
+#endif
+
+#ifdef _LINUX
 #include <GL/glx.h>
+#include <dlfcn.h>
 #include <X11/Xutil.h>
 #endif
 
-#include "gpu_perf_api_counter_generator/gl_entry_points.h"
+#ifdef _WIN32
+typedef HMODULE LibHandle;
+#define LOAD_SYMBOL GetProcAddress
+#define GET_PROC_ADDRESS_TYPE wglGetProcAddress
+#define GET_PROC_ADDRESS_FUNC _wglGetProcAddress
+#endif
 
-#include "gpu_perf_api_common/gpa_common_defs.h"
+#ifdef _LINUX
+typedef void* LibHandle;
+#define LOAD_SYMBOL dlsym
+#define GET_PROC_ADDRESS_TYPE glXGetProcAddressARB
+#define GET_PROC_ADDRESS_FUNC _glXGetProcAddressARB
+#endif
 
 #include "examples/opengl/gl_triangle/gpa_helper.h"
-
-using namespace ogl_utils;
 
 const unsigned int kWindowWidth     = 800;
 const unsigned int kWindowHeight    = 800;
 const std::wstring kWindowClassName = L"OpenGL Triangle Sample App";
+
+/// Handle to the OpenGL library.
+LibHandle gl_lib_handle = nullptr;
 
 #ifdef _LINUX
 Display* kDisplay;
@@ -48,6 +62,8 @@ decltype(glFinish)*    ogl_finish     = nullptr;
 decltype(glColor3f)*   ogl_color_3f   = nullptr;
 decltype(glVertex3fv)* ogl_vertex_3fv = nullptr;
 decltype(glViewport)*  ogl_viewport   = nullptr;
+decltype(glGetError)*  ogl_get_error  = nullptr;
+decltype(glFlush)*     ogl_flush      = nullptr;
 
 #define MAKE_STRING(X) #X
 
@@ -64,6 +80,24 @@ decltype(glViewport)*  ogl_viewport   = nullptr;
             error_string << error_message << " at line " MAKE_STRING(line); \
             LOG_ERROR(kGlError, error_string.str().c_str());                \
         }                                                                   \
+    }
+
+#define LOAD_LIBRARY_SYMBOL(varName, type)                                                \
+    if (nullptr == (varName))                                                             \
+    {                                                                                     \
+        (varName) = reinterpret_cast<decltype(type)*>(LOAD_SYMBOL(gl_lib_handle, #type)); \
+    }
+
+
+#define CHECK_LOAD_LIBRARY_SYMBOL(varName, type)                                          \
+    if (nullptr == (varName))                                                             \
+    {                                                                                     \
+        (varName) = reinterpret_cast<decltype(type)*>(LOAD_SYMBOL(gl_lib_handle, #type)); \
+        if (nullptr == (varName))                                                         \
+        {                                                                                 \
+            LOG_ERROR(kGlError, "Unable to obtain " #type " function pointer.");          \
+            return false;                                                                 \
+        }                                                                                 \
     }
 
 #define RETURN_IF_FAILED(X) \
@@ -167,55 +201,44 @@ int DrawTriangle()
     return 0;
 }
 
+bool LoadOpenGL()
+{
+    if (nullptr == gl_lib_handle)
+    {
+#ifdef _WIN32
+        gl_lib_handle = LoadLibraryA("opengl32.dll");
+        if (gl_lib_handle == nullptr)
+        {
+            LOG_ERROR(kGlError, "Failed to load opengl32.dll");
+        }
+#endif
+#ifdef _LINUX
+        gl_lib_handle = dlopen("libGL.so", RTLD_LAZY);
+        if (gl_lib_handle == nullptr)
+        {
+            LOG_ERROR(kGlError, "Failed to load libGL.so");
+        }
+#endif
+    }
+
+    return nullptr != gl_lib_handle;
+}
+
 bool InitializeOpenGLFunctionPointers()
 {
-    if (!InitializeGlCoreFunctions())
+    if (!LoadOpenGL())
     {
-        LOG_ERROR(kGlError, "Unable to initialize OpenGL function core functions.");
         return false;
     }
 
-    LOAD_LIBRARY_SYMBOL(ogl_begin, glBegin);
-    if (nullptr == ogl_begin)
-    {
-        LOG_ERROR(kGlError, "Unable to obtain glBegin function pointer.");
-        return false;
-    }
-
-    LOAD_LIBRARY_SYMBOL(ogl_end, glEnd);
-    if (nullptr == ogl_end)
-    {
-        LOG_ERROR(kGlError, "Unable to obtain glEnd function pointer.");
-        return false;
-    }
-
-    LOAD_LIBRARY_SYMBOL(ogl_finish, glFinish);
-    if (nullptr == ogl_finish)
-    {
-        LOG_ERROR(kGlError, "Unable to obtain glFinish function pointer.");
-        return false;
-    }
-
-    LOAD_LIBRARY_SYMBOL(ogl_color_3f, glColor3f);
-    if (nullptr == ogl_color_3f)
-    {
-        LOG_ERROR(kGlError, "Unable to obtain glColor3f function pointer.");
-        return false;
-    }
-
-    LOAD_LIBRARY_SYMBOL(ogl_vertex_3fv, glVertex3fv);
-    if (nullptr == ogl_vertex_3fv)
-    {
-        LOG_ERROR(kGlError, "Unable to obtain glVertex3fv function pointer.");
-        return false;
-    }
-
-    LOAD_LIBRARY_SYMBOL(ogl_viewport, glViewport);
-    if (nullptr == ogl_viewport)
-    {
-        LOG_ERROR(kGlError, "Unable to obtain glViewport function pointer.");
-        return false;
-    }
+    CHECK_LOAD_LIBRARY_SYMBOL(ogl_flush, glFlush);
+    CHECK_LOAD_LIBRARY_SYMBOL(ogl_get_error, glGetError);
+    CHECK_LOAD_LIBRARY_SYMBOL(ogl_begin, glBegin);
+    CHECK_LOAD_LIBRARY_SYMBOL(ogl_end, glEnd);
+    CHECK_LOAD_LIBRARY_SYMBOL(ogl_finish, glFinish);
+    CHECK_LOAD_LIBRARY_SYMBOL(ogl_color_3f, glColor3f);
+    CHECK_LOAD_LIBRARY_SYMBOL(ogl_vertex_3fv, glVertex3fv);
+    CHECK_LOAD_LIBRARY_SYMBOL(ogl_viewport, glViewport);
 
     return true;
 }
@@ -232,7 +255,7 @@ int XGLTriangleErrorHandler(Display* display, XErrorEvent* error_event)
     return -1;
 }
 
-void CreateWindowAndContext()
+bool CreateWindowAndContext()
 {
     kDisplay = XOpenDisplay(nullptr);
 
@@ -245,12 +268,7 @@ void CreateWindowAndContext()
         int    default_screen = DefaultScreen(kDisplay);
 
         decltype(glXChooseVisual)* glx_choose_visual = nullptr;
-        LOAD_LIBRARY_SYMBOL(glx_choose_visual, glXChooseVisual);
-        if (nullptr == glx_choose_visual)
-        {
-            LOG_ERROR(kGlError, "Unable to acquire glXChooseVisual function pointer.\n");
-            return;
-        }
+        CHECK_LOAD_LIBRARY_SYMBOL(glx_choose_visual, glXChooseVisual);
         XVisualInfo* visual_info = glx_choose_visual(kDisplay, default_screen, gl_attributes);
 
         // Create color map for the window.
@@ -266,23 +284,15 @@ void CreateWindowAndContext()
         XMapWindow(kDisplay, kAppWindow);
 
         decltype(glXCreateContext)* glx_create_context = nullptr;
-        LOAD_LIBRARY_SYMBOL(glx_create_context, glXCreateContext);
-        if (nullptr == glx_create_context)
-        {
-            LOG_ERROR(kGlError, "Unable to acquire glXCreateContext function pointer.\n");
-            return;
-        }
+        CHECK_LOAD_LIBRARY_SYMBOL(glx_create_context, glXCreateContext);
         gl_context = glx_create_context(kDisplay, visual_info, nullptr, GL_TRUE);
 
         decltype(glXMakeCurrent)* glx_make_current = nullptr;
-        LOAD_LIBRARY_SYMBOL(glx_make_current, glXMakeCurrent);
-        if (nullptr == glx_make_current)
-        {
-            LOG_ERROR(kGlError, "Unable to acquire glXMakeCurrent function pointer.\n");
-            return;
-        }
+        CHECK_LOAD_LIBRARY_SYMBOL(glx_make_current, glXMakeCurrent);
         glx_make_current(kDisplay, kAppWindow, gl_context);
     }
+
+    return true;
 }
 
 int main(int argc, char* argv[])
@@ -295,7 +305,6 @@ int main(int argc, char* argv[])
 
     if (!InitializeOpenGLFunctionPointers())
     {
-        LOG_ERROR(kGlError, "Failed to initialize OpenGL function pointers.");
         GpaHelper::DeleteInstance();
         return -1;
     }
@@ -304,7 +313,10 @@ int main(int argc, char* argv[])
     int height = 250;
     ogl_viewport(0, 0, width, height);
 
-    CreateWindowAndContext();
+    if (!CreateWindowAndContext())
+    {
+        return -1;
+    }
 
     Atom window_deletion = XInternAtom(kDisplay, "WM_DELETE_WINDOW", False);
     XSetWMProtocols(kDisplay, kAppWindow, &window_deletion, 1);
@@ -382,24 +394,33 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
         if (nullptr == device_context && ERROR_SUCCESS != GetLastError())
         {
             LOG_ERROR(kWinError, "GetDC failed.");
+            PostQuitMessage(-1);
+            return -1;
         }
 
         if (nullptr == gl_context)
         {
-            RETURN_IF_FAILED(GpaHelper::Instance()->SetupGpa());
+            if (!GpaHelper::Instance()->SetupGpa())
+            {
+                PostQuitMessage(-1);
+                return -1;
+            }
 
             decltype(wglCreateContext)* wgl_create_context = nullptr;
             LOAD_LIBRARY_SYMBOL(wgl_create_context, wglCreateContext);
             if (nullptr == wgl_create_context)
             {
                 LOG_ERROR(kGlError, "Unable to acquire wglCreateContext function pointer.");
-                return false;
+                PostQuitMessage(-1);
+                return -1;
             }
 
             gl_context = wgl_create_context(device_context);
             if (nullptr == gl_context && ERROR_SUCCESS != GetLastError())
             {
                 LOG_ERROR(kWinError, "Unable to create context.");
+                PostQuitMessage(-1);
+                return -1;
             }
 
             decltype(wglMakeCurrent)* wgl_make_current = nullptr;
@@ -407,15 +428,22 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
             if (nullptr == wgl_make_current)
             {
                 LOG_ERROR(kGlError, "Unable to acquire wglMakeCurrent function pointer.");
-                return false;
+                PostQuitMessage(-1);
+                return -1;
             }
 
             if (FAILED(wgl_make_current(device_context, gl_context)) && ERROR_SUCCESS != GetLastError())
             {
                 LOG_ERROR(kWinError, "Unable to make context current.");
+                PostQuitMessage(-1);
+                return -1;
             }
 
-            RETURN_IF_FAILED(GpaHelper::Instance()->OpenContext(gl_context, GpaHelper::Instance()->App()->IncludeHwCounters()));
+            if (!GpaHelper::Instance()->OpenContext(gl_context, GpaHelper::Instance()->App()->IncludeHwCounters()))
+            {
+                PostQuitMessage(-1);
+                return -1;
+            }
         }
 
         if (DrawTriangle() == -1)
@@ -454,7 +482,6 @@ int WINAPI WinMain(HINSTANCE instance_handle, HINSTANCE previous_instance, LPSTR
 
     if (!InitializeOpenGLFunctionPointers())
     {
-        LOG_ERROR(kGlError, "Failed to initialize OpenGL function pointers.");
         GpaHelper::DeleteInstance();
         return -1;
     }

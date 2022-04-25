@@ -31,6 +31,7 @@ order to clone/update any dependent repositories.
 present on the system, this script will instead do a "git pull" on those repositories to ensure that they are up to date. Please re-run
 this script everytime you pull new changes from GPA repository.
  * NOTE: For GPA 3.3 or newer, if you are updating an existing clone of the GPA repo from a GPA release prior than 3.3, you will first need to delete the Common/Lib/Ext/GoogleTest directory. Starting with GPA 3.3, GPA is now using a fork of the official GoogleTest repo. Failure to remove this directory will lead to git errors when running [pre_build.py](build/pre_build.py) or [fetch_dependencies.py](scripts/fetch_dependencies.py).
+ * NOTE: For GPA 3.11 and newer, the Common/ directory has been removed, and the external/Lib/Ext/GoogleTest will first need to be deleted instead.
  * This script will also download and execute the Vulkan� SDK installer.
    * On Windows, running the installer may require elevation.  If you've previously installed the required Vulkan version, fetch_dependencies.py will simply copy the files from the default installation location into the correct place into the GPUPerfAPI directory tree.
    * fetch_dependencies.py is set up to install the version of the Vulkan SDK which was used during development. If you want to use a newer version of the SDK, the following file will need to be updated:
@@ -58,7 +59,7 @@ this script everytime you pull new changes from GPA repository.
 ##### Prerequisites
  * Microsoft Visual Studio 2017
  * Windows 10 SDK Version 10.0.10586.0 from https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk
-   * You can override the version of the Windows 10 SDK used by modifying Common/Lib/Ext/Windows-Kits/Global-WindowsSDK.props
+   * You can override the version of the Windows 10 SDK used by modifying external/Lib/Ext/Windows-Kits/Global-WindowsSDK.props
  * Microsoft .NET 4.6.2 SDK from https://www.microsoft.com/en-us/download/details.aspx?id=53321
 
 ##### Build Instructions

@@ -108,6 +108,7 @@ link_directories(${ADDITIONAL_LINK_DIRECTORIES})
 add_executable(${GPA_PROJECT_NAME} ${SOURCES})
 add_dependencies(${GPA_PROJECT_NAME} GPUPerfAPICounters)
 ADD_GPA_USER_COMPILE_DEFINITIONS()
+add_test(NAME ${GPA_PROJECT_NAME} COMMAND ${GPA_PROJECT_NAME})
 
 if(NOT ${skipvulkan})
     set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-VK)

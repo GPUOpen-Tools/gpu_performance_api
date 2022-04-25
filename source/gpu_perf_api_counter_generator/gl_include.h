@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
-/// \author AMD Developer Tools Team
-/// \file
-/// \brief  GL include files and common util functions
+// Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
+/// @author AMD Developer Tools Team
+/// @file
+/// @brief  GL include files and common util functions.
 //==============================================================================
 
 #ifndef GPA_COUNTER_GENERATOR_GL_INCLUDE_H_
@@ -28,7 +28,7 @@
 typedef unsigned __int64 uint64_t;
 #endif
 
-// by default, GLES uses 32 bits for 64 bit types. GPA extensions require 64 bits
+// By default, GLES uses 32 bits for 64 bit types. GPA extensions require 64 bits.
 #define _USE64BIT
 #include <stdint.h>
 #include <EGL/egl.h>
@@ -60,14 +60,17 @@ typedef unsigned __int64 uint64_t;
 
 namespace ogl_utils
 {
-    extern const int kGlDriverVerWithOnlyGcnSupport;           ///< GL driver version where pre-GCN hardware was dropped
-    extern const int kGlDriverVerWithLinuxStableClockSupport;  ///< GL driver version where stable clocks are working on Linux
-    extern const int kGlDriverVerWithGpinCounters;             ///< GL driver version where GPIN counters have been validated
+    extern const int kGlDriverVerWithOnlyGcnSupport;           ///< GL driver version where pre-GCN hardware was dropped.
+    extern const int kGlDriverVerWithLinuxStableClockSupport;  ///< GL driver version where stable clocks are working on Linux.
+    extern const int kGlDriverVerWithGpinCounters;             ///< GL driver version where GPIN counters have been validated.
 
-    /// checks for OpenGL errors, logs the specified message if there is an error, and return true / false to indicate an error.
-    /// This can be used anywhere, but should only be used in conditionals where the return value is needed; otherwise, use the
-    /// \param error_message the error message to put in the log
-    /// \return true if there is an error; false if there is no error
+    /// Checks for OpenGL errors, logs the specified message if there is an error, and return true / false to indicate an error.
+    ///
+    /// This can be used anywhere, but should only be used in conditionals where the return value is needed.
+    ///
+    /// @param error_message The error message to put in the log.
+    ///
+    /// @return true if there is an error; false if there is no error.
     extern bool CheckForGlError(const std::string& error_message);
 }  // namespace ogl_utils
 

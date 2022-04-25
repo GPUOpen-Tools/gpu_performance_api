@@ -14,16 +14,13 @@ compile_commands.json
 # Build results
 [Oo]utput/
 [Dd]ebug/
-!Common/Lib/**/[Dd]ebug
 [Dd]ebugPublic/
 [Rr]elease/
-!Common/Lib/**/[Rr]elease
 [Rr]eleases/
 x64/
 x86/
 bld/
 [Bb]in/
-!Common/Lib/**/[Bb]in
 [Oo]bj/
 [Ll]og/
 Doc/public
@@ -59,10 +56,8 @@ artifacts/
 *.ilk
 *.meta
 *.obj
-!Common/Lib/**/*.obj
 *.pch
 *.pdb
-!Common/Lib/**/*.pdb
 *.pgc
 *.pgd
 *.rsp
@@ -152,7 +147,7 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
-# TODO: Comment the next line if you want to checkin your web deploy settings 
+# TODO: Comment the next line if you want to checkin your web deploy settings
 # but database connection strings (with potential passwords) will be unencrypted
 *.pubxml
 *.publishproj
@@ -252,4 +247,6 @@ _Pvt_Extensions
 
 # Documentation build files
 docs/build
+.doctrees/
 
+external/**

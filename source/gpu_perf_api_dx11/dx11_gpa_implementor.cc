@@ -393,7 +393,10 @@ bool Dx11GpaImplementor::GetAmdHwInfo(ID3D11Device* d3d11_device,
                                 static const unsigned int kMinMajorVer = 19;
                                 static const unsigned int kMinMinorVerFor30 = 30;
 
-                                if (major_ver > kMinMajorVer || (major_ver == kMinMajorVer && minor_ver >= kMinMinorVerFor30))
+                                // Make sure the ADL version is greater than the expected version,
+                                // but also allow version 0.0.0 which is used for internal builds of ADL, which we assume support our needed functionality.
+                                if ((major_ver > kMinMajorVer || (major_ver == kMinMajorVer && minor_ver >= kMinMinorVerFor30)) ||
+                                    (major_ver == 0 && minor_ver == 0 && sub_minor_ver == 0))
                                 {
                                     if (nullptr != dx_ext)
                                     {

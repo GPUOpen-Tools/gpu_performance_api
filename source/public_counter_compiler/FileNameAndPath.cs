@@ -37,18 +37,17 @@ namespace GpaTools
 
     class Gpa
     {
-        public const string gpaStr = "GPA\\";
-        public const string autoGenPublicCounterInputDir = gpaStr + "source\\auto_generated\\public_counter_compiler_input_files\\";
-        public const string autoGenCounterGeneratorOutDir = gpaStr + "source\\auto_generated\\gpu_perf_api_counter_generator\\";
+        public const string autoGenPublicCounterInputDir = "source\\auto_generated\\public_counter_compiler_input_files\\";
+        public const string autoGenCounterGeneratorOutDir = "source\\auto_generated\\gpu_perf_api_counter_generator\\";
         public const string publicStr = "Public";
         public const string internalStr = "Internal";
         public const string publicFilePrefix = "public_";
         public const string internalFilePrefix = "internal_";
         public const string counterFileNamePrefix = "counter_names_";
         public const string counterListOutDir = "counter_list_files\\";
-        public const string autoGenTestOutDir = gpaStr + "source\\auto_generated\\gpu_perf_api_unit_tests\\counters\\";
-        public const string gpaDocSourceDir = gpaStr + "docs\\sphinx\\source\\";
-        public const string counterDefDir = gpaStr + "source\\public_counter_compiler_input_files\\";
+        public const string autoGenTestOutDir = "source\\auto_generated\\gpu_perf_api_unit_tests\\counters\\";
+        public const string gpaDocSourceDir = "docs\\sphinx\\source\\";
+        public const string counterDefDir = "source\\public_counter_compiler_input_files\\";
         public const string counterDefinitionsStr = "counter_definitions_";
         public const string derivedCounterOutFileName = "derived_counters_";
         public const string gpaCounterHeaderFileStr = "gpu_perf_api_counter_generator/gpa_counter.h";
@@ -81,8 +80,8 @@ namespace GpaTools
         /// <returns>The path to the root GPUPerfAPI folder</returns>
         public static string GetGpuPerfApiPath()
         {
-            int endPath = Application.StartupPath.LastIndexOf("GPA", StringComparison.Ordinal);
-            string gpaPath = Application.StartupPath.Substring(0, endPath);
+            int endPath = Application.StartupPath.LastIndexOf("gpu_performance_api", StringComparison.Ordinal);
+            string gpaPath = Application.StartupPath.Substring(0, endPath) + "gpu_performance_api\\";
             return gpaPath;
         }
 

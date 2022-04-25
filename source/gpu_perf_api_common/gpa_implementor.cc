@@ -108,7 +108,19 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
     {
         GpaHwInfo hw_info;
 
-        if (kGpaStatusOk == IsDeviceSupported(context, &hw_info))
+        // driver not supported, logging error
+        if(!IsDriverSupported(context))
+        {
+            GPA_LOG_ERROR("Driver not supported.");
+            return kGpaStatusErrorDriverNotSupported;
+        }
+
+        if (IsDeviceSupported(context, &hw_info) != kGpaStatusOk)
+        {
+            GPA_LOG_ERROR("Device not supported.");
+            gpa_status = kGpaStatusErrorHardwareNotSupported;
+        }
+        else
         {
             IGpaContext* new_gpa_context = nullptr;
             new_gpa_context              = OpenApiContext(context, hw_info, flags);
@@ -124,11 +136,7 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
                 gpa_status = kGpaStatusErrorFailed;
             }
         }
-        else
-        {
-            GPA_LOG_ERROR("Device not supported.");
-            gpa_status = kGpaStatusErrorHardwareNotSupported;
-        }
+
     }
     else
     {
@@ -424,6 +432,12 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaH
     }
 
     return status;
+}
+
+bool GpaImplementor::IsDriverSupported(GpaContextInfoPtr context_info) const
+{
+    UNREFERENCED_PARAMETER(context_info);
+    return true;
 }
 
 bool GpaImplementor::CompareHwInfo(const GpaHwInfo& first, const GpaHwInfo& second) const

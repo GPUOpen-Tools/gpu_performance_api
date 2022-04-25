@@ -1,9 +1,9 @@
-## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 ## Define the GPA version
 set(GPA_MAJOR_VERSION 3)
-set(GPA_MINOR_VERSION 10)
+set(GPA_MINOR_VERSION 11)
 set(GPA_UPDATE_VERSION 0)
 
 if(NOT DEFINED GPA_BUILD_NUMBER)
@@ -11,15 +11,15 @@ if(NOT DEFINED GPA_BUILD_NUMBER)
 endif()
 
 if(NOT DEFINED GPA_ROOT)
-    set(GPA_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
+    set(GPA_ROOT ${CMAKE_CURRENT_LIST_DIR}/../..)
 endif()
 
 if(NOT DEFINED GPA_OUTPUT_DIR)
-    set(GPA_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/output)
+    set(GPA_OUTPUT_DIR ${GPA_ROOT}/output)
 endif()
 
 ## Set the Common Directories
-set(COMMON_DIR                                              "${CMAKE_SOURCE_DIR}/../Common")
+set(COMMON_DIR                                              "${GPA_ROOT}/external")
 set(COMMON_DIR_LIB                                          "${COMMON_DIR}/Lib")
 set(COMMON_DIR_SRC                                          "${COMMON_DIR}/Src")
 set(GPA_PUBLIC_HEADER_REL_PATH                              "include")
@@ -69,15 +69,17 @@ set(GPA_SRC_GL_TRIANGLE_REL_PATH                            "source/examples/ope
 set(GPA_SRC_GL_TRIANGLE                                     "${GPA_ROOT}/${GPA_SRC_GL_TRIANGLE_REL_PATH}")
 set(GPA_SRC_D3D11_TRIANGLE_REL_PATH                         "source/examples/dx11/dx11_triangle")
 set(GPA_SRC_D3D11_TRIANGLE                                  "${GPA_ROOT}/${GPA_SRC_D3D11_TRIANGLE_REL_PATH}")
+set(GPA_SRC_THIRD_PARTY_REL_PATH                            "source/third_party")
+set(GPA_SRC_THIRD_PARTY                                     "${GPA_ROOT}/${GPA_SRC_THIRD_PARTY_REL_PATH}")
 
 set(GOOGLETEST_DIR                                          ${COMMON_DIR_LIB}/Ext/GoogleTest)
 
 ## List of common cmake files
-set(CMAKE_COMMON_SRC_GLOBAL_CMAKE_MODULE                    ${COMMON_DIR_SRC}/CMakeModules/Global-Common.cmake)
-set(CMAKE_COMMON_SRC_GLOBAL_INTERNAL                        ${COMMON_DIR_SRC}/CMakeModules/Global-Internal.cmake)
+set(CMAKE_COMMON_SRC_GLOBAL_CMAKE_MODULE                    ${GPA_SRC_THIRD_PARTY}/CMakeModules/Global-Common.cmake)
+set(CMAKE_COMMON_SRC_GLOBAL_INTERNAL                        ${GPA_SRC_THIRD_PARTY}/CMakeModules/Global-Internal.cmake)
 set(CMAKE_COMMON_SRC_GLOBAL_ADL_UTIL                        ${COMMON_DIR_SRC}/ADLUtil/Global-ADLUtil.cmake)
-set(CMAKE_COMMON_SRC_GLOBAL_AMD_DX_EXT                      ${COMMON_DIR_SRC}/AmdDxExt/Global-AmdDxExt.cmake)
-set(CMAKE_COMMON_SRC_GLOBAL_AMD_VK_EXT                      ${COMMON_DIR_SRC}/AmdVkExt/Global-AmdVkExt.cmake)
+set(CMAKE_COMMON_SRC_GLOBAL_AMD_DX_EXT                      ${GPA_SRC_THIRD_PARTY}/AmdDxExt/Global-AmdDxExt.cmake)
+set(CMAKE_COMMON_SRC_GLOBAL_AMD_VK_EXT                      ${GPA_SRC_THIRD_PARTY}/AmdVkExt/Global-AmdVkExt.cmake)
 set(CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO                     ${COMMON_DIR_SRC}/DeviceInfo/Global-DeviceInfo.cmake)
 set(CMAKE_COMMON_SRC_GLOBAL_DYNAMIC_LIBRARY_MODULE          ${COMMON_DIR_SRC}/DynamicLibraryModule/Global-DynamicLibraryModule.cmake)
 set(CMAKE_COMMON_SRC_GLOBAL_TSINGLETON                      ${COMMON_DIR_SRC}/TSingleton/Global-TSingleton.cmake)
@@ -86,7 +88,7 @@ set(CMAKE_COMMON_LIB_GLOBAL_AMD_ADL                         ${COMMON_DIR_LIB}/AM
 set(CMAKE_COMMON_LIB_GLOBAL_AMD_OPENCL_NO_LIB               ${COMMON_DIR_LIB}/AMD/APPSDK/Global-OpenCL-NoLib.cmake)
 set(CMAKE_COMMON_LIB_GLOBAL_AMD_OPENCL                      ${COMMON_DIR_LIB}/AMD/APPSDK/Global-OpenCL.cmake)
 set(CMAKE_COMMON_LIB_GLOBAL_EXT_OPENGL                      ${COMMON_DIR_LIB}/Ext/OpenGL/Global-OpenGL.cmake)
-set(CMAKE_COMMON_LIB_GLOBAL_EXT_VULKAN                      ${COMMON_DIR_LIB}/Ext/Vulkan/Global-Vulkan.cmake)
+set(CMAKE_COMMON_LIB_GLOBAL_EXT_VULKAN                      ${GPA_SRC_THIRD_PARTY}/Vulkan/Global-Vulkan.cmake)
 set(CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK                 ${COMMON_DIR_LIB}/Ext/Windows-Kits/Global-WindowsSDK.cmake)
 
 ## Options controlling the behavior of clang tools
