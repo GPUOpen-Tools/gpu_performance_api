@@ -1088,7 +1088,7 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(2768);
         internal_counters.push_back(3138);
 
-        c.DefineDerivedCounter("DepthStencilTestBusyCycles", "Timing", "Number of GPU cycles spent performing depth and stencil tests.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,max,2,max,3,max,NUM_SHADER_ENGINES,/", "e02860fa-c7bd-90ea-2149-69b4e98a636c");
+        c.DefineDerivedCounter("DepthStencilTestBusyCycles", "Timing", "Number of GPU cycles spent performing depth and stencil tests.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,max,2,max,3,max,NUM_SHADER_ENGINES,/", "07ad48f0-49d8-87e7-1ef5-1e24ff2cef49");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -1600,6 +1600,43 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(15895);
 
         c.DefineDerivedCounter("L1CacheMissCount", "MemoryCache", "The number of read or write requests which result in a cache miss from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0", "71bfec6d-257b-849d-e212-cdf5c1b1de65");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(16308);
+        internal_counters.push_back(16543);
+        internal_counters.push_back(16778);
+        internal_counters.push_back(17013);
+        internal_counters.push_back(17248);
+        internal_counters.push_back(17483);
+        internal_counters.push_back(17718);
+        internal_counters.push_back(17953);
+        internal_counters.push_back(18188);
+        internal_counters.push_back(18423);
+        internal_counters.push_back(18658);
+        internal_counters.push_back(18893);
+        internal_counters.push_back(19128);
+        internal_counters.push_back(19363);
+        internal_counters.push_back(19598);
+        internal_counters.push_back(19833);
+        internal_counters.push_back(16340);
+        internal_counters.push_back(16575);
+        internal_counters.push_back(16810);
+        internal_counters.push_back(17045);
+        internal_counters.push_back(17280);
+        internal_counters.push_back(17515);
+        internal_counters.push_back(17750);
+        internal_counters.push_back(17985);
+        internal_counters.push_back(18220);
+        internal_counters.push_back(18455);
+        internal_counters.push_back(18690);
+        internal_counters.push_back(18925);
+        internal_counters.push_back(19160);
+        internal_counters.push_back(19395);
+        internal_counters.push_back(19630);
+        internal_counters.push_back(19865);
+
+        c.DefineDerivedCounter("L2CacheHit", "MemoryCache", "The percentage of read or write requests that hit the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),(1),16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,sum16,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16,ifnotzero", "47694e4d-6ce6-f387-080d-b1f3d00b73ac");
     }
     {
         vector<GpaUInt32> internal_counters;

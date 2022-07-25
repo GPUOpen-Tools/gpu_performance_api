@@ -44,7 +44,7 @@ namespace GpaTools
         public const string publicFilePrefix = "public_";
         public const string internalFilePrefix = "internal_";
         public const string counterFileNamePrefix = "counter_names_";
-        public const string counterListOutDir = "counter_list_files\\";
+        public const string counterListOutDir = "..\\counter_list_files\\";
         public const string autoGenTestOutDir = "source\\auto_generated\\gpu_perf_api_unit_tests\\counters\\";
         public const string gpaDocSourceDir = "docs\\sphinx\\source\\";
         public const string counterDefDir = "source\\public_counter_compiler_input_files\\";

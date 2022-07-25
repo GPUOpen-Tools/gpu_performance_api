@@ -207,7 +207,7 @@ GpuIndex Dx11GpaContext::GetCfActiveGpu() const
     return kActiveGpuCf;
 }
 
-GpaUInt32 Dx11GpaContext::GetInstanceCount(PE_BLOCK_ID block) const
+GpaUInt32 Dx11GpaContext::GetNumInstances(PE_BLOCK_ID block) const
 {
     GpaUInt32 ret_val = 0u;
 
@@ -219,7 +219,7 @@ GpaUInt32 Dx11GpaContext::GetInstanceCount(PE_BLOCK_ID block) const
     return ret_val;
 }
 
-GpaUInt32 Dx11GpaContext::GetMaxEventIdCount(PE_BLOCK_ID block) const
+GpaUInt32 Dx11GpaContext::GetMaxEventId(PE_BLOCK_ID block) const
 {
     GpaUInt32 ret_val = 0u;
 

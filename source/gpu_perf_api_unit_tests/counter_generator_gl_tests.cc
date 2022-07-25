@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit Tests for GL Counter Generator.
@@ -9,16 +9,16 @@
 
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 
-#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_gl_gfx8.h"
-#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_gl_gfx9.h"
-#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_gl_gfx10.h"
-#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_gl_gfx103.h"
+#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_oglp_gfx8.h"
+#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_oglp_gfx9.h"
+#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_oglp_gfx10.h"
+#include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_oglp_gfx103.h"
 
 #ifdef AMDT_INTERNAL
-#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gl_gfx8.h"
-#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gl_gfx9.h"
-#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gl_gfx10.h"
-#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gl_gfx103.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_oglp_gfx8.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_oglp_gfx9.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_oglp_gfx10.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_oglp_gfx103.h"
 #endif
 
 #include "gpu_perf_api_unit_tests/counter_generator_tests.h"
@@ -37,42 +37,42 @@ static void GetExpectedCountersForGeneration(GpaHwGeneration gen, std::vector<co
     switch (gen)
     {
     case kGpaHwGenerationGfx8:
-        public_counters      = kGlGfx8PublicCounters;
-        public_counter_count = kGlGfx8PublicCounterCount;
+        public_counters      = kOglpGfx8PublicCounters;
+        public_counter_count = kOglpGfx8PublicCounterCount;
 #ifdef AMDT_INTERNAL
-        hardware_groups   = counter_gl_gfx8::kHwGlGroupsGfx8;
-        hw_group_count    = counter_gl_gfx8::kHwGlGroupCountGfx8;
-        hardware_counters = counter_gl_gfx8::kGlCounterGroupArrayGfx8;
+        hardware_groups   = counter_oglp_gfx8::kHwOglpGroupsGfx8;
+        hw_group_count    = counter_oglp_gfx8::kHwOglpGroupCountGfx8;
+        hardware_counters = counter_oglp_gfx8::kOglpCounterGroupArrayGfx8;
 #endif
         break;
 
     case kGpaHwGenerationGfx9:
-        public_counters      = kGlGfx9PublicCounters;
-        public_counter_count = kGlGfx9PublicCounterCount;
+        public_counters      = kOglpGfx9PublicCounters;
+        public_counter_count = kOglpGfx9PublicCounterCount;
 #ifdef AMDT_INTERNAL
-        hardware_groups   = counter_gl_gfx9::kHwGlGroupsGfx9;
-        hw_group_count    = counter_gl_gfx9::kHwGlGroupCountGfx9;
-        hardware_counters = counter_gl_gfx9::kGlCounterGroupArrayGfx9;
+        hardware_groups   = counter_oglp_gfx9::kHwOglpGroupsGfx9;
+        hw_group_count    = counter_oglp_gfx9::kHwOglpGroupCountGfx9;
+        hardware_counters = counter_oglp_gfx9::kOglpCounterGroupArrayGfx9;
 #endif
         break;
 
     case kGpaHwGenerationGfx10:
-        public_counters      = kGlGfx10PublicCounters;
-        public_counter_count = kGlGfx10PublicCounterCount;
+        public_counters      = kOglpGfx10PublicCounters;
+        public_counter_count = kOglpGfx10PublicCounterCount;
 #ifdef AMDT_INTERNAL
-        hardware_groups   = counter_gl_gfx10::kHwGlGroupsGfx10;
-        hw_group_count    = counter_gl_gfx10::kHwGlGroupCountGfx10;
-        hardware_counters = counter_gl_gfx10::kGlCounterGroupArrayGfx10;
+        hardware_groups   = counter_oglp_gfx10::kHwOglpGroupsGfx10;
+        hw_group_count    = counter_oglp_gfx10::kHwOglpGroupCountGfx10;
+        hardware_counters = counter_oglp_gfx10::kOglpCounterGroupArrayGfx10;
 #endif
         break;
 
     case kGpaHwGenerationGfx103:
-        public_counters      = kGlGfx103PublicCounters;
-        public_counter_count = kGlGfx103PublicCounterCount;
+        public_counters      = kOglpGfx103PublicCounters;
+        public_counter_count = kOglpGfx103PublicCounterCount;
 #ifdef AMDT_INTERNAL
-        hardware_groups   = counter_gl_gfx103::kHwGlGroupsGfx103;
-        hw_group_count    = counter_gl_gfx103::kHwGlGroupCountGfx103;
-        hardware_counters = counter_gl_gfx103::kGlCounterGroupArrayGfx103;
+        hardware_groups   = counter_oglp_gfx103::kHwOglpGroupsGfx103;
+        hw_group_count    = counter_oglp_gfx103::kHwOglpGroupCountGfx103;
+        hardware_counters = counter_oglp_gfx103::kOglpCounterGroupArrayGfx103;
 #endif
         break;
 
@@ -115,23 +115,23 @@ static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration gen
     switch (gen)
     {
     case kGpaHwGenerationGfx8:
-        public_counters      = kGlGfx8PublicCounters;
-        public_counter_count = kGlGfx8PublicCounterCount;
+        public_counters      = kOglpGfx8PublicCounters;
+        public_counter_count = kOglpGfx8PublicCounterCount;
         break;
 
     case kGpaHwGenerationGfx9:
-        public_counters      = kGlGfx9PublicCounters;
-        public_counter_count = kGlGfx9PublicCounterCount;
+        public_counters      = kOglpGfx9PublicCounters;
+        public_counter_count = kOglpGfx9PublicCounterCount;
         break;
 
     case kGpaHwGenerationGfx10:
-        public_counters      = kGlGfx10PublicCounters;
-        public_counter_count = kGlGfx10PublicCounterCount;
+        public_counters      = kOglpGfx10PublicCounters;
+        public_counter_count = kOglpGfx10PublicCounterCount;
         break;
 
     case kGpaHwGenerationGfx103:
-        public_counters      = kGlGfx103PublicCounters;
-        public_counter_count = kGlGfx103PublicCounterCount;
+        public_counters      = kOglpGfx103PublicCounters;
+        public_counter_count = kOglpGfx103PublicCounterCount;
         break;
 
     default:

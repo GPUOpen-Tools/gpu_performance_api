@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Helper class implementation.
@@ -64,7 +64,7 @@ void GpaLogger(GpaLoggingType log_type, const char* log_msg)
     if (static_cast<unsigned int>(log_type) == static_cast<unsigned int>(kGlError))
     {
         log_message.clear();
-        log_message = "GL ERROR: ";
+        log_message                                = "GL ERROR: ";
         GpaHelper::Instance()->has_error_occurred_ = true;
         GpaHelper::Instance()->num_errors_occurred_ += 1;
     }
@@ -72,7 +72,7 @@ void GpaLogger(GpaLoggingType log_type, const char* log_msg)
     if (static_cast<unsigned int>(log_type) == static_cast<unsigned int>(kWinError))
     {
         log_message.clear();
-        log_message = "WINDOWS ERROR: ";
+        log_message                                = "WINDOWS ERROR: ";
         GpaHelper::Instance()->has_error_occurred_ = true;
         GpaHelper::Instance()->num_errors_occurred_ += 1;
     }
@@ -80,7 +80,7 @@ void GpaLogger(GpaLoggingType log_type, const char* log_msg)
     if (static_cast<unsigned int>(log_type) == static_cast<unsigned int>(kXServerError))
     {
         log_message.clear();
-        log_message = "X SERVER ERROR: ";
+        log_message                                = "X SERVER ERROR: ";
         GpaHelper::Instance()->has_error_occurred_ = true;
         GpaHelper::Instance()->num_errors_occurred_ += 1;
     }
@@ -163,9 +163,9 @@ bool GpaHelper::CloseContext()
     if (gpa_context_id_ != nullptr)
     {
         is_context_closed = (kGpaStatusOk == gpa_function_table_->GpaCloseContext(gpa_context_id_));
-        gpa_context_id_ = nullptr;
+        gpa_context_id_   = nullptr;
     }
-    gpa_hw_generation_     = kGpaHwGenerationNone;
+    gpa_hw_generation_ = kGpaHwGenerationNone;
     return is_context_closed;
 }
 
@@ -176,7 +176,7 @@ bool GpaHelper::CreateGpaSession()
 
 bool GpaHelper::DestroyGpaSession()
 {
-    bool success    = true;
+    bool success = true;
     if (gpa_session_id_ != nullptr)
     {
         success         = (kGpaStatusOk == gpa_function_table_->GpaDeleteSession(gpa_session_id_));
@@ -234,51 +234,41 @@ bool GpaHelper::OnPassEnd()
 
     if (nullptr != gpa_function_table_ && nullptr != gpa_session_id_)
     {
-        success                   = kGpaStatusOk == gpa_function_table_->GpaEndCommandList(gpa_command_list_id_);
-        bool           is_ready   = false;
-        const uint32_t time_out   = 10000;  // ms
-        auto           start_time = std::chrono::high_resolution_clock::now();
-
-        do
-        {
-            is_ready = kGpaStatusOk == gpa_function_table_->GpaIsPassComplete(gpa_session_id_, current_pass_index_);
-
-            if (!is_ready)
-            {
-                std::this_thread::sleep_for(std::chrono::milliseconds(0));
-
-                auto                                      end_time     = std::chrono::high_resolution_clock::now();
-                std::chrono::duration<double, std::milli> elapsed_time = end_time - start_time;
-
-                if (elapsed_time.count() > time_out)
-                {
-                    success = false;
-                    break;
-                }
-            }
-        } while (!is_ready);
+        success = kGpaStatusOk == gpa_function_table_->GpaEndCommandList(gpa_command_list_id_);
     }
 
     gpa_command_list_id_ = nullptr;
     return success;
 }
 
-bool GpaHelper::BeginSample()
+void GpaHelper::CheckForPassResults()
 {
-    bool success = true;
-    sample_counter_++;
-
-    success = kGpaStatusOk == gpa_function_table_->GpaBeginSample(sample_counter_, gpa_command_list_id_);
-    sample_list_.push_back(sample_counter_);
-
-    return success;
+    if (nullptr != gpa_function_table_ && nullptr != gpa_session_id_)
+    {
+        GpaStatus status = gpa_function_table_->GpaIsPassComplete(gpa_session_id_, current_pass_index_);
+        UNREFERENCED_PARAMETER(status);
+        //assert(status == kGpaStatusOk);
+    }
 }
 
-bool GpaHelper::EndSample()
+void GpaHelper::BeginSample()
 {
-    bool success = true;
-    success      = kGpaStatusOk == gpa_function_table_->GpaEndSample(gpa_command_list_id_);
-    return success;
+    sample_counter_++;
+
+    if (kGpaStatusOk != gpa_function_table_->GpaBeginSample(sample_counter_, gpa_command_list_id_))
+    {
+        GpaLogger((GpaLoggingType)kGeneralError, "GpaBeginSample failed.");
+    }
+
+    sample_list_.push_back(sample_counter_);
+}
+
+void GpaHelper::EndSample()
+{
+    if (kGpaStatusOk != gpa_function_table_->GpaEndSample(gpa_command_list_id_))
+    {
+        GpaLogger((GpaLoggingType)kGeneralError, "GpaEndSample failed.");
+    }
 }
 
 bool GpaHelper::CounterValueCompare(unsigned int profile_set,
@@ -348,7 +338,7 @@ bool GpaHelper::PrintGpaSampleResults(unsigned int profile_set, bool verify_coun
     bool      success              = kGpaStatusOk == status;
     bool      verification_success = true;
 
-    for (std::vector<unsigned int>::iterator sample_iter = sample_list_.begin(); sample_iter != sample_list_.end(); ++sample_iter)
+    for (std::vector<unsigned int>::iterator sample_iter = sample_list_.begin(); success == true && sample_iter != sample_list_.end(); ++sample_iter)
     {
         if (success && sample_count == sample_list_.size())
         {
@@ -357,130 +347,159 @@ bool GpaHelper::PrintGpaSampleResults(unsigned int profile_set, bool verify_coun
 
             void* sample_result = malloc(sample_data_size);
 
-            success = success && kGpaStatusOk == gpa_function_table_->GpaGetSampleResult(gpa_session_id_, *sample_iter, sample_data_size, sample_result);
-
-            if (nullptr != sample_result)
+            if (nullptr == sample_result)
             {
-                GpaUInt32 num_enabled_counters = 0;
-                success = success && kGpaStatusOk == gpa_function_table_->GpaGetNumEnabledCounters(gpa_session_id_, &num_enabled_counters);
-
-                for (GpaUInt32 i = 0; i < num_enabled_counters; i++)
-                {
-                    GpaUInt32 enabled_index = 0;
-                    success                 = success && kGpaStatusOk == gpa_function_table_->GpaGetEnabledIndex(gpa_session_id_, i, &enabled_index);
-
-                    const char* counter_name = nullptr;
-                    success                  = success && kGpaStatusOk == gpa_function_table_->GpaGetCounterName(gpa_context_id_, enabled_index, &counter_name);
-
-                    if (!is_header_written_)
-                    {
-                        header_ << counter_name << ",";
-                    }
-
-                    GpaUsageType usage_type = kGpaUsageTypeLast;
-                    success = success && kGpaStatusOk == gpa_function_table_->GpaGetCounterUsageType(gpa_context_id_, enabled_index, &usage_type);
-
-                    GpaDataType data_type = kGpaDataTypeFloat64;
-                    success               = success && kGpaStatusOk == gpa_function_table_->GpaGetCounterDataType(gpa_context_id_, enabled_index, &data_type);
-
-                    GpaFloat64 float_result = 0.0f;
-
-                    if (data_type == kGpaDataTypeUint64)
-                    {
-                        GpaUInt64 result = reinterpret_cast<GpaUInt64*>(sample_result)[i];
-                        float_result     = static_cast<GpaFloat64>(result);
-                        content_ << result << ",";
-                    }
-                    else if (data_type == kGpaDataTypeFloat64)
-                    {
-                        float_result = reinterpret_cast<GpaFloat64*>(sample_result)[i];
-                        content_ << float_result << ",";
-                    }
-
-                    if (verify_counters)
-                    {
-                        verification_success = true;
-                        std::stringstream error_string;
-                        error_string << "Incorrect value for counter ";
-
-                        std::string local_counter_name = "";
-                        if (nullptr != counter_name)
-                        {
-                            local_counter_name = counter_name;
-                        }
-
-                        if (kGpaUsageTypePercentage == usage_type)
-                        {
-                            verification_success &=
-                                (CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThanOrEqualTo, 0.0f) &&
-                                 CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeLessThanOrEqualTo, 100.0f));
-                        }
-
-                        if (0 == local_counter_name.compare("GPUTime"))
-                        {
-                            verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
-                        }
-                        else if (0 == local_counter_name.compare("GPUBusy"))
-                        {
-                            verification_success &=
-                                (CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f) &&
-                                 CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeLessThanOrEqualTo, 100.0f));
-                        }
-                        else if (0 == local_counter_name.compare("VSBusy"))
-                        {
-                            verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
-                        }
-                        else if (0 == local_counter_name.compare("VSTime"))
-                        {
-                            verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
-                        }
-                        else if (0 == local_counter_name.compare("PSBusy"))
-                        {
-                            verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
-                        }
-                        else if (0 == local_counter_name.compare("PSTime"))
-                        {
-                            verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
-                        }
-                        else if (0 == local_counter_name.compare("VSVerticesIn"))
-                        {
-                            verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 3);
-                        }
-                        else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PSPixelsOut"))
-                        {
-                            verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
-                        }
-                        else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PreZSamplesPassing"))
-                        {
-                            verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
-                        }
-                        else if (0 == local_counter_name.compare("PrimitivesIn"))
-                        {
-                            verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 1);
-                        }
-                    }
-                }
-
-                if (counter_data_file_stream_.is_open())
-                {
-                    if (!is_header_written_)
-                    {
-                        counter_data_file_stream_ << "Frame"
-                                                  << "," << header_.str() << std::endl;
-                        is_header_written_ = true;
-                    }
-
-                    counter_data_file_stream_ << frame_counter_ << "," << content_.str() << std::endl;
-                    content_.str(std::string());
-                    header_.str(std::string());
-                }
+                success = false;
             }
+            else
+            {
+                GpaStatus sample_result_status = gpa_function_table_->GpaGetSampleResult(gpa_session_id_, *sample_iter, sample_data_size, sample_result);
 
-            free(sample_result);
+                if (kGpaStatusErrorTimeout == sample_result_status)
+                {
+                    GpaLogger(kGpaLoggingError, "Received a timeout when attempting to get sample result.");
+                    success = false;
+                }
+                else if (kGpaStatusOk != sample_result_status)
+                {
+                    success = false;
+                }
+                else
+                {
+                    GpaUInt32 num_enabled_counters = 0;
+
+                    if (kGpaStatusOk != gpa_function_table_->GpaGetNumEnabledCounters(gpa_session_id_, &num_enabled_counters))
+                    {
+                        success = false;
+                    }
+                    else
+                    {
+                        for (GpaUInt32 i = 0; i < num_enabled_counters; i++)
+                        {
+                            GpaUInt32 enabled_index = 0;
+                            success                 = success && kGpaStatusOk == gpa_function_table_->GpaGetEnabledIndex(gpa_session_id_, i, &enabled_index);
+
+                            const char* counter_name = nullptr;
+                            success = success && kGpaStatusOk == gpa_function_table_->GpaGetCounterName(gpa_context_id_, enabled_index, &counter_name);
+
+                            if (!is_header_written_)
+                            {
+                                header_ << counter_name << ",";
+                            }
+
+                            GpaUsageType usage_type = kGpaUsageTypeLast;
+                            success = success && kGpaStatusOk == gpa_function_table_->GpaGetCounterUsageType(gpa_context_id_, enabled_index, &usage_type);
+
+                            GpaDataType data_type = kGpaDataTypeFloat64;
+                            success = success && kGpaStatusOk == gpa_function_table_->GpaGetCounterDataType(gpa_context_id_, enabled_index, &data_type);
+
+                            GpaFloat64 float_result = 0.0f;
+
+                            if (data_type == kGpaDataTypeUint64)
+                            {
+                                GpaUInt64 result = reinterpret_cast<GpaUInt64*>(sample_result)[i];
+                                float_result     = static_cast<GpaFloat64>(result);
+                                content_ << result << ",";
+                            }
+                            else if (data_type == kGpaDataTypeFloat64)
+                            {
+                                float_result = reinterpret_cast<GpaFloat64*>(sample_result)[i];
+                                content_ << float_result << ",";
+                            }
+
+                            if (verify_counters)
+                            {
+                                verification_success = true;
+                                std::stringstream error_string;
+                                error_string << "Incorrect value for counter ";
+
+                                std::string local_counter_name = "";
+                                if (nullptr != counter_name)
+                                {
+                                    local_counter_name = counter_name;
+                                }
+
+                                if (kGpaUsageTypePercentage == usage_type)
+                                {
+                                    verification_success &=
+                                        (CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThanOrEqualTo, 0.0f) &&
+                                         CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeLessThanOrEqualTo, 100.0f));
+                                }
+
+                                if (0 == local_counter_name.compare("GPUTime"))
+                                {
+                                    verification_success &=
+                                        CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("GPUBusy"))
+                                {
+                                    verification_success &=
+                                        (CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f) &&
+                                         CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeLessThanOrEqualTo, 100.0f));
+                                }
+                                else if (0 == local_counter_name.compare("VSBusy"))
+                                {
+                                    verification_success &=
+                                        CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("VSTime"))
+                                {
+                                    verification_success &=
+                                        CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("PSBusy"))
+                                {
+                                    verification_success &=
+                                        CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("PSTime"))
+                                {
+                                    verification_success &=
+                                        CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("VSVerticesIn"))
+                                {
+                                    verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 3);
+                                }
+                                else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PSPixelsOut"))
+                                {
+                                    verification_success &=
+                                        CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
+                                }
+                                else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PreZSamplesPassing"))
+                                {
+                                    verification_success &=
+                                        CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
+                                }
+                                else if (0 == local_counter_name.compare("PrimitivesIn"))
+                                {
+                                    verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 1);
+                                }
+                            }
+                        }
+
+                        if (counter_data_file_stream_.is_open())
+                        {
+                            if (!is_header_written_)
+                            {
+                                counter_data_file_stream_ << "Frame"
+                                                          << "," << header_.str() << std::endl;
+                                is_header_written_ = true;
+                            }
+
+                            counter_data_file_stream_ << frame_counter_ << "," << content_.str() << std::endl;
+                            content_.str(std::string());
+                            header_.str(std::string());
+                        }
+                    }
+                }
+
+                free(sample_result);
+            }
         }
     }
 
-    return verification_success;
+    return success && verification_success;
 }
 
 unsigned int GpaHelper::GetPassRequired() const
@@ -510,12 +529,14 @@ GpaHelper::~GpaHelper()
     if (app_ != nullptr)
     {
         delete app_;
+        app_ = nullptr;
     }
 }
 
 GpaHelper::GpaHelper()
     : has_error_occurred_(false)
     , num_errors_occurred_(0)
+    , app_(nullptr)
     , gpa_function_table_(nullptr)
     , gpa_hw_generation_(kGpaHwGenerationNone)
     , gpa_context_id_(nullptr)

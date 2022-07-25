@@ -1,6 +1,11 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.11.1 (07/27/22)
+  * Updated OpenGL support for the Adrenalin 22.7.1 driver.
+  * Added L2CacheHit counter for OpenGL on Radeon RX 5000 Series hardware.
+  * Improved GPA integration into GLTriangle sample application.
+
 ## Version 3.11 (04/25/22)
   * Add support for additional GPUs and APUs.
   * Counter updates for RDNA2 (Radeon RX 6000 Series) hardware:

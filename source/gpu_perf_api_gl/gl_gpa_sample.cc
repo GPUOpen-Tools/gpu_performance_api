@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GL GPA Sample Implementation
@@ -149,6 +149,14 @@ bool GlGpaSample::CopyResults()
         GLuint64EXT gpu_time_results[2];
         gpu_time_results[0] = 0ull;
         gpu_time_results[1] = 0ull;
+
+        GLuint64 is_ready = GL_FALSE;
+        while (!is_ready)
+        {
+            ogl_utils::ogl_get_query_object_ui_64_v_ext(sample_data_buffer_.gpu_time_query[0], GL_QUERY_RESULT_AVAILABLE, &is_ready);
+            std::this_thread::sleep_for(std::chrono::milliseconds(1));
+        }
+
         ogl_utils::ogl_get_query_object_ui_64_v_ext(sample_data_buffer_.gpu_time_query[0], GL_QUERY_RESULT, &gpu_time_results[0]);
 
         if (!ogl_utils::CheckForGlError("Unable to get first timing data."))
@@ -190,11 +198,37 @@ bool GlGpaSample::CopyResults()
 
                     if (!ogl_utils::CheckForGlError("Unable to get the counter data."))
                     {
-                        // The returned data is structured like this:
-                        // -----------------------------------------------------
+                        // UGL and OGLP have two different result structures:
+                        // UGL:
+                        // +----------------------------------------+-----------
                         // |  BlockID  |  CounterID  |  result data |  BlockID ...
-                        // -----------------------------------------------------
+                        // +----------------------------------------+-----------
+                        //
+                        // OGLP:
+                        // +---------------------------------------------------------+-----------
+                        // |  BlockID  |  BlockInstance |  CounterID  |  result data |  BlockID ...
+                        // +---------------------------------------------------------+-----------
+                        //
                         // So, it may not be in the same order it was specified.
+
+                        CounterCount num_counter_results = 0;
+                        if (ogl_utils::IsOglpDriver())
+                        {
+                            // OGLP returns 4 GLuint values.
+                            num_counter_results = result_size / (4 * sizeof(GLuint));
+                        }
+                        else
+                        {
+                            // Other drivers return 3 GLuint values;
+                            num_counter_results = result_size / (3 * sizeof(GLuint));
+                        }
+
+                        if (num_counter_results != counter_count)
+                        {
+                            // This is not expected, but seems to be happening.
+                            // Update the counter_count to avoid reading past the end of the results buffer.
+                            counter_count = num_counter_results;
+                        }
 
                         // Cycle through all the counters and store the data.
                         GLsizei word_index = 0;
@@ -203,12 +237,28 @@ bool GlGpaSample::CopyResults()
                         {
                             // GL may return the data in a different order than expected.
                             // Find the correct counter to assign the data to.
-                            GLuint       group_id                 = counter_data[word_index++];
-                            GLuint       counter_id               = counter_data[word_index++];
-                            GLuint*      data                     = &counter_data[word_index];
+                            GLuint  group_id       = 0;
+                            GLuint  group_instance = 0;
+                            GLuint  counter_id     = 0;
+                            GLuint* data           = nullptr;
+
+                            if (ogl_utils::IsOglpDriver())
+                            {
+                                group_id       = counter_data[word_index++];
+                                group_instance = counter_data[word_index++];
+                                counter_id     = counter_data[word_index++];
+                                data           = &counter_data[word_index];
+                            }
+                            else
+                            {
+                                group_id       = counter_data[word_index++];
+                                group_instance = 0;
+                                counter_id     = counter_data[word_index++];
+                                data           = &counter_data[word_index];
+                            }
                             unsigned int cur_counter_result_index = 0u;
 
-                            const GlCounter* gl_counter = gl_gpa_pass_->GetGLCounter(group_id, counter_id, cur_counter_result_index);
+                            const GlCounter* gl_counter = gl_gpa_pass_->GetGLCounter(group_id, group_instance, counter_id, cur_counter_result_index);
 
                             if (nullptr != gl_counter)
                             {
@@ -251,6 +301,11 @@ bool GlGpaSample::CopyResults()
                                 {
                                     assert(!"CounterType not recognized.");
                                 }
+                            }
+                            else
+                            {
+                                // Probably indicates that invalid data was in the results buffer from the driver.
+                                assert(!"GLCounter not found.");
                             }
                         }
                     }

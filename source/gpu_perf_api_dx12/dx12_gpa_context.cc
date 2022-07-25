@@ -107,7 +107,7 @@ ID3D12Device* Dx12GpaContext::GetD3D12Device() const
     return d3d12_device_;
 }
 
-GpaUInt32 Dx12GpaContext::GetInstanceCount(AmdExtGpuBlock block) const
+GpaUInt32 Dx12GpaContext::GetNumInstances(AmdExtGpuBlock block) const
 {
     GpaUInt32 instance_count = 0;
 
@@ -119,7 +119,7 @@ GpaUInt32 Dx12GpaContext::GetInstanceCount(AmdExtGpuBlock block) const
     return instance_count;
 }
 
-GpaUInt32 Dx12GpaContext::GetMaxEventIdCount(AmdExtGpuBlock block) const
+GpaUInt32 Dx12GpaContext::GetMaxEventId(AmdExtGpuBlock block) const
 {
     GpaUInt32 max_event_id = 0;
 

@@ -137,15 +137,16 @@ public:
     /// @return True upon successful operation otherwise false.
     bool OnPassEnd();
 
-    /// @brief Begins the sample.
+    /// @brief Checks if the current pass is complete.
     ///
-    /// @return True upon successful operation otherwise false.
-    bool BeginSample();
+    /// If it is, then GPA will store the results.
+    void CheckForPassResults();
+
+    /// @brief Begins the sample.
+    void BeginSample();
 
     /// @brief Ends the sample.
-    ///
-    /// @return True upon successful operation otherwise false.
-    bool EndSample();
+    void EndSample();
 
     /// @brief Enum to define type of counter validation to perform
     typedef enum

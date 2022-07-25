@@ -56,14 +56,16 @@ HWND window_handle;
 
 GlContext gl_context = nullptr;
 
-decltype(glBegin)*     ogl_begin      = nullptr;
-decltype(glEnd)*       ogl_end        = nullptr;
-decltype(glFinish)*    ogl_finish     = nullptr;
-decltype(glColor3f)*   ogl_color_3f   = nullptr;
-decltype(glVertex3fv)* ogl_vertex_3fv = nullptr;
-decltype(glViewport)*  ogl_viewport   = nullptr;
-decltype(glGetError)*  ogl_get_error  = nullptr;
-decltype(glFlush)*     ogl_flush      = nullptr;
+decltype(glBegin)*      ogl_begin       = nullptr;
+decltype(glEnd)*        ogl_end         = nullptr;
+decltype(glFinish)*     ogl_finish      = nullptr;
+decltype(glColor3f)*    ogl_color_3f    = nullptr;
+decltype(glVertex3fv)*  ogl_vertex_3fv  = nullptr;
+decltype(glViewport)*   ogl_viewport    = nullptr;
+decltype(glGetError)*   ogl_get_error   = nullptr;
+decltype(glFlush)*      ogl_flush       = nullptr;
+decltype(glClearColor)* ogl_clear_color = nullptr;
+decltype(glClear)*      ogl_clear       = nullptr;
 
 #define MAKE_STRING(X) #X
 
@@ -88,7 +90,6 @@ decltype(glFlush)*     ogl_flush      = nullptr;
         (varName) = reinterpret_cast<decltype(type)*>(LOAD_SYMBOL(gl_lib_handle, #type)); \
     }
 
-
 #define CHECK_LOAD_LIBRARY_SYMBOL(varName, type)                                          \
     if (nullptr == (varName))                                                             \
     {                                                                                     \
@@ -104,21 +105,14 @@ decltype(glFlush)*     ogl_flush      = nullptr;
     if (!X)                 \
         return -1;
 
-int DrawTriangle()
+bool CreateSessionAndEnableCounters()
 {
     const gpa_example::GpaSampleApp& app = *(GpaHelper::Instance()->App());
 
-    if (app.NumberOfFrames() > 0 && GpaHelper::Instance()->GetCurrentFrameCount() == app.NumberOfFrames())
+    if (!GpaHelper::Instance()->CreateGpaSession())
     {
-        GpaHelper::Instance()->CloseContext();
-
-        // All profiling is done, the app can be exited.
-        int exit_code = GpaHelper::Instance()->has_error_occurred_ ? GpaHelper::Instance()->num_errors_occurred_ : 0;
-        GpaHelper::DeleteInstance();
-        exit(exit_code);
+        return false;
     }
-
-    RETURN_IF_FAILED(GpaHelper::Instance()->CreateGpaSession());
 
     if (!app.Counterfile().empty())
     {
@@ -137,7 +131,13 @@ int DrawTriangle()
 
             for (std::vector<std::string>::const_iterator it = counter_list.cbegin(); it != counter_list.cend(); ++it)
             {
-                RETURN_IF_FAILED(GpaHelper::Instance()->EnableCounterByName(it->c_str()));
+                if (!GpaHelper::Instance()->EnableCounterByName(it->c_str()))
+                {
+                    std::stringstream error;
+                    error << "Failed to enable counter '" << it->c_str() << "'.";
+                    GpaLogger(static_cast<GpaLoggingType>(kGeneralError), error.str().c_str());
+                    return false;
+                }
             }
         }
         else
@@ -145,60 +145,48 @@ int DrawTriangle()
             std::stringstream error;
             error << "Unable to open Counter file " << app.Counterfile().c_str() << ". Not enabling any counters.";
             LOG_ERROR(kGeneralError, error.str().c_str());
-            return -1;
+            return false;
         }
     }
     else
     {
 #ifndef AMDT_INTERNAL
-        RETURN_IF_FAILED(GpaHelper::Instance()->EnableAllCounters());
+        if (!GpaHelper::Instance()->EnableAllCounters())
+        {
+            return false;
+        }
 #else
-        RETURN_IF_FAILED(GpaHelper::Instance()->EnableCounterByName("GPUTime"));
+        if (!GpaHelper::Instance()->EnableCounterByName("GPUTime"))
+        {
+            return false;
+        }
 #endif
     }
-    RETURN_IF_FAILED(GpaHelper::Instance()->OnGpaSessionStart());
 
-    GL_FUNC(ogl_flush(), "glFlush failed", __LINE__);
-    GL_FUNC(ogl_finish(), "glFinish failed", __LINE__);
+    return true;
+}
 
-    unsigned int pass_iter = 0u;
+void DrawClear()
+{
+    ogl_clear_color(0.0f, 0.0f, 0.0f, 1.0f);
+    ogl_clear(GL_COLOR_BUFFER_BIT);
+}
 
-    do
-    {
-        RETURN_IF_FAILED(GpaHelper::Instance()->OnPassStart());
-        RETURN_IF_FAILED(GpaHelper::Instance()->BeginSample());
-        GL_FUNC(ogl_flush(), "glFlush failed", __LINE__);
-        GL_FUNC(ogl_finish(), "glFinish failed", __LINE__);
-        GL_FUNC(ogl_viewport(0, 0, kWindowWidth, kWindowHeight), "glViewPort failed", __LINE__);
-        ogl_begin(GL_TRIANGLES);
-        GLfloat v1[] = {0.0f, 0.75f, 1.0f};
-        GLfloat v2[] = {-0.75f, -0.75f, 0.0f};
-        GLfloat v3[] = {0.75f, -0.75f, 0.0f};
-        ogl_color_3f(0.0f, 0.0f, 1.0f);  // Blue color.
-        ogl_vertex_3fv(v1);
-        ogl_color_3f(1.0f, 0.0f, 0.0f);  // Red color.
-        ogl_vertex_3fv(v2);
-        ogl_color_3f(0.0f, 1.0f, 0.0f);  // Green color.
-        ogl_vertex_3fv(v3);
-        ogl_end();
-        GL_FUNC(ogl_flush(), "glFlush failed", __LINE__);
-        GL_FUNC(ogl_finish(), "glFinish failed", __LINE__);
-        RETURN_IF_FAILED(GpaHelper::Instance()->EndSample());
-        RETURN_IF_FAILED(GpaHelper::Instance()->OnPassEnd());
-        pass_iter++;
-    } while (pass_iter < GpaHelper::Instance()->GetPassRequired());
+void DrawTriangle()
+{
+    GL_FUNC(ogl_viewport(0, 0, kWindowWidth, kWindowHeight), "glViewPort failed", __LINE__);
 
-    GL_FUNC(ogl_flush(), "glFlush failed", __LINE__);
-    GL_FUNC(ogl_finish(), "glFinish failed", __LINE__);
-
-    RETURN_IF_FAILED(GpaHelper::Instance()->OnGpaSessionEnd());
-
-    unsigned int profile_set = GpaHelper::Instance()->GetCurrentFrameCount();
-    RETURN_IF_FAILED(GpaHelper::Instance()->PrintGpaSampleResults(profile_set, app.Verify()));
-    RETURN_IF_FAILED(GpaHelper::Instance()->DestroyGpaSession());
-
-    GpaHelper::Instance()->IncrementFrameCounter();
-    return 0;
+    ogl_begin(GL_TRIANGLES);
+    GLfloat v1[] = {0.0f, 0.75f, 1.0f};
+    GLfloat v2[] = {-0.75f, -0.75f, 0.0f};
+    GLfloat v3[] = {0.75f, -0.75f, 0.0f};
+    ogl_color_3f(0.0f, 0.0f, 1.0f);  // Blue color.
+    ogl_vertex_3fv(v1);
+    ogl_color_3f(1.0f, 0.0f, 0.0f);  // Red color.
+    ogl_vertex_3fv(v2);
+    ogl_color_3f(0.0f, 1.0f, 0.0f);  // Green color.
+    ogl_vertex_3fv(v3);
+    ogl_end();
 }
 
 bool LoadOpenGL()
@@ -233,6 +221,8 @@ bool InitializeOpenGLFunctionPointers()
 
     CHECK_LOAD_LIBRARY_SYMBOL(ogl_flush, glFlush);
     CHECK_LOAD_LIBRARY_SYMBOL(ogl_get_error, glGetError);
+    CHECK_LOAD_LIBRARY_SYMBOL(ogl_clear_color, glClearColor);
+    CHECK_LOAD_LIBRARY_SYMBOL(ogl_clear, glClear);
     CHECK_LOAD_LIBRARY_SYMBOL(ogl_begin, glBegin);
     CHECK_LOAD_LIBRARY_SYMBOL(ogl_end, glEnd);
     CHECK_LOAD_LIBRARY_SYMBOL(ogl_finish, glFinish);
@@ -309,12 +299,11 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    int width  = 500;
-    int height = 250;
-    ogl_viewport(0, 0, width, height);
+    ogl_viewport(0, 0, kWindowWidth, kWindowHeight);
 
     if (!CreateWindowAndContext())
     {
+        GpaHelper::DeleteInstance();
         return -1;
     }
 
@@ -329,7 +318,9 @@ int main(int argc, char* argv[])
         return -1;
     }
 
-    if (!GpaHelper::Instance()->OpenContext(gl_context, GpaHelper::Instance()->App()->IncludeHwCounters()))
+    const gpa_example::GpaSampleApp& app = *(GpaHelper::Instance()->App());
+
+    if (!GpaHelper::Instance()->OpenContext(gl_context, app.IncludeHwCounters()))
     {
         GpaHelper::DeleteInstance();
         return -1;
@@ -350,15 +341,50 @@ int main(int argc, char* argv[])
 
         if (event.type == Expose)
         {
-            ogl_viewport(0, 0, 500, 500);
-            if (DrawTriangle() == -1)
+            if (!CreateSessionAndEnableCounters())
             {
-                GpaHelper::Instance()->DestroyGpaSession();
                 GpaHelper::Instance()->CloseContext();
                 GpaHelper::DeleteInstance();
                 return -1;
             }
-            glx_swap_buffers(kDisplay, kAppWindow);
+
+            ogl_viewport(0, 0, kWindowWidth, kWindowHeight);
+
+            GpaHelper::Instance()->OnGpaSessionStart();
+
+            for (unsigned int pass_iter = 0; pass_iter < GpaHelper::Instance()->GetPassRequired(); ++pass_iter)
+            {
+                GpaHelper::Instance()->OnPassStart();
+
+                DrawClear();
+
+                GpaHelper::Instance()->BeginSample();
+                DrawTriangle();
+                GpaHelper::Instance()->EndSample();
+
+                GpaHelper::Instance()->OnPassEnd();
+
+                glx_swap_buffers(kDisplay, kAppWindow);
+            }
+
+            GpaHelper::Instance()->OnGpaSessionEnd();
+
+            static unsigned int profile_set = GpaHelper::Instance()->GetCurrentFrameCount();
+            GpaHelper::Instance()->PrintGpaSampleResults(profile_set, app.Verify());
+
+            GpaHelper::Instance()->DestroyGpaSession();
+
+            GpaHelper::Instance()->IncrementFrameCounter();
+
+            // Exit if this is the number of frames expected.
+            if (app.NumberOfFrames() > 0 && GpaHelper::Instance()->GetCurrentFrameCount() == app.NumberOfFrames())
+            {
+                // All profiling is done, the app can be exited.
+                GpaHelper::Instance()->CloseContext();
+                GpaHelper::DeleteInstance();
+                return 0;
+            }
+
             int event_queue_length = XQLength(kDisplay);
             if (event_queue_length == 0)
             {
@@ -397,6 +423,8 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
             PostQuitMessage(-1);
             return -1;
         }
+
+        const gpa_example::GpaSampleApp& app = *(GpaHelper::Instance()->App());
 
         if (nullptr == gl_context)
         {
@@ -439,22 +467,54 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
                 return -1;
             }
 
-            if (!GpaHelper::Instance()->OpenContext(gl_context, GpaHelper::Instance()->App()->IncludeHwCounters()))
+            if (!GpaHelper::Instance()->OpenContext(gl_context, app.IncludeHwCounters()))
             {
                 PostQuitMessage(-1);
                 return -1;
             }
         }
 
-        if (DrawTriangle() == -1)
+        if (!CreateSessionAndEnableCounters())
         {
-            GpaHelper::Instance()->DestroyGpaSession();
             GpaHelper::Instance()->CloseContext();
             PostQuitMessage(-1);
             return -1;
         }
 
-        SwapBuffers(device_context);
+        GpaHelper::Instance()->OnGpaSessionStart();
+
+        for (unsigned int pass_iter = 0; pass_iter < GpaHelper::Instance()->GetPassRequired(); ++pass_iter)
+        {
+            GpaHelper::Instance()->OnPassStart();
+
+            DrawClear();
+
+            GpaHelper::Instance()->BeginSample();
+            DrawTriangle();
+            GpaHelper::Instance()->EndSample();
+
+            GpaHelper::Instance()->OnPassEnd();
+
+            SwapBuffers(device_context);
+        }
+
+        GpaHelper::Instance()->OnGpaSessionEnd();
+
+        static unsigned int profile_set = GpaHelper::Instance()->GetCurrentFrameCount();
+        GpaHelper::Instance()->PrintGpaSampleResults(profile_set, app.Verify());
+
+        GpaHelper::Instance()->DestroyGpaSession();
+
+        GpaHelper::Instance()->IncrementFrameCounter();
+
+        // Exit if this is the number of frames expected.
+        if (app.NumberOfFrames() > 0 && GpaHelper::Instance()->GetCurrentFrameCount() == app.NumberOfFrames())
+        {
+            // All profiling is done, the app can be exited.
+            GpaHelper::Instance()->CloseContext();
+            PostQuitMessage(0);
+        }
+
         return 0;
     }
 

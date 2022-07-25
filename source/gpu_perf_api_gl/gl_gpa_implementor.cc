@@ -113,7 +113,7 @@ bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
         {
             ogl_utils::AsicInfo asic_info;
 
-            if (!ogl_utils::AsicInfoManager::Instance()->GetAsicInfoFromDriver(asic_info))
+            if (!ogl_utils::GetAsicInfoFromDriver(asic_info))
             {
                 GPA_LOG_ERROR("Unable to obtain asic information.");
                 return false;
@@ -153,7 +153,7 @@ bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                 GDT_HW_ASIC_TYPE asic_type = GDT_ASIC_TYPE_NONE;
                 uint32_t         device_id;
 
-                if (ogl_utils::AsicInfoManager::Instance()->GetFallbackAsicInfo(asic_info.asic_id, asic_type, device_id))
+                if (ogl_utils::GetFallbackAsicInfo(asic_info.asic_revision, asic_type, device_id))
                 {
                     hw_info.SetDeviceId(static_cast<GpaUInt32>(device_id));
                 }

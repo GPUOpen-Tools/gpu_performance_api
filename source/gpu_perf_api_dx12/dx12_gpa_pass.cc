@@ -286,13 +286,13 @@ void Dx12GpaPass::InitializeSampleConfig()
                     UINT32 instance = static_cast<UINT32>(hardware_counters->internal_counter_groups_[counter->group_index].block_instance);
                     UINT32 event_id = static_cast<UINT32>(counter->hardware_counters->counter_index_in_group);
 
-                    if (reinterpret_cast<Dx12GpaContext*>(GetGpaSession()->GetParentContext())->GetInstanceCount(block) <= instance)
+                    if (reinterpret_cast<Dx12GpaContext*>(GetGpaSession()->GetParentContext())->GetNumInstances(block) <= instance)
                     {
                         DisableCounterForPass(counter_list_->at(i));
                         continue;
                     }
 
-                    if (reinterpret_cast<Dx12GpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventIdCount(block) <= event_id)
+                    if (reinterpret_cast<Dx12GpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventId(block) <= event_id)
                     {
                         DisableCounterForPass(counter_list_->at(i));
                         continue;

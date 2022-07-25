@@ -114,7 +114,7 @@ void Dx11GpaPass::InitializeCounterInfo()
 
                 // On mid and low end hardware, not all block instances are available. This logic makes sure that we only attempt to
                 // enable counters for block instances which exist.
-                if (instance >= dx11_gpa_context->GetInstanceCount(block_id) || event_id > dx11_gpa_context->GetMaxEventIdCount(block_id))
+                if (instance >= dx11_gpa_context->GetNumInstances(block_id) || event_id > dx11_gpa_context->GetMaxEventId(block_id))
                 {
                     // Don't try to enable this counter. When the results are collected, this will be given
                     // a result of 0, so that it has no contribution.

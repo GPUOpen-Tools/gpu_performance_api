@@ -64,14 +64,14 @@ public:
     /// @param [in] block The block whose number of instances is needed.
     ///
     /// @return The number of instances of the specific block. Could be zero if block does not exist.
-    GpaUInt32 GetInstanceCount(VkGpaPerfBlockAMD block) const;
+    GpaUInt32 GetNumInstances(VkGpaPerfBlockAMD block) const;
 
     /// @brief Get the max event id of the specified block.
     ///
     /// @param [in] block The block whose max event id is needed.
     ///
     /// @return the max event id of the specified block. Could be zero if block does not exist.
-    GpaUInt32 GetMaxEventIdCount(VkGpaPerfBlockAMD block) const;
+    GpaUInt32 GetMaxEventId(VkGpaPerfBlockAMD block) const;
 
     /// @copydoc IGpaContext::SetStableClocks(bool)
     GpaStatus SetStableClocks(bool use_profiling_clocks) override;

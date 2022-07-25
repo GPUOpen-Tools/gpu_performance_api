@@ -230,7 +230,7 @@ VkPhysicalDevice VkGpaContext::GetVkPhysicalDevice() const
     return physical_device_;
 }
 
-GpaUInt32 VkGpaContext::GetInstanceCount(VkGpaPerfBlockAMD block) const
+GpaUInt32 VkGpaContext::GetNumInstances(VkGpaPerfBlockAMD block) const
 {
     GpaUInt32 instance_count = 0;
 
@@ -249,7 +249,7 @@ GpaUInt32 VkGpaContext::GetInstanceCount(VkGpaPerfBlockAMD block) const
     return instance_count;
 }
 
-GpaUInt32 VkGpaContext::GetMaxEventIdCount(VkGpaPerfBlockAMD block) const
+GpaUInt32 VkGpaContext::GetMaxEventId(VkGpaPerfBlockAMD block) const
 {
     GpaUInt32 max_event_id = 0;
 

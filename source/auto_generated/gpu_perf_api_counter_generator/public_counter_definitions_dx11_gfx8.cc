@@ -3402,7 +3402,7 @@ void AutoDefinePublicDerivedCountersDx11Gfx8(GpaDerivedCounters& c)
         internal_counters.push_back(10248);
         internal_counters.push_back(10505);
 
-        c.DefineDerivedCounter("DepthStencilTestBusyCycles", "Timing", "Number of GPU cycles spent performing depth and stencil tests.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16", "e02860fa-c7bd-90ea-2149-69b4e98a636c");
+        c.DefineDerivedCounter("DepthStencilTestBusyCycles", "Timing", "Number of GPU cycles spent performing depth and stencil tests.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16", "07ad48f0-49d8-87e7-1ef5-1e24ff2cef49");
     }
     {
         vector<GpaUInt32> internal_counters;

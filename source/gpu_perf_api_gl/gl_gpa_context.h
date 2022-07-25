@@ -1,8 +1,8 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
-/// @brief  GPA GL Context declarations
+/// @brief GPA GL Context declarations.
 //==============================================================================
 
 #ifndef GPU_PERF_API_GL_GPA_CONTEXT_H_
@@ -66,17 +66,56 @@ public:
     /// @copydoc IGpaContext::SetStableClocks()
     GpaStatus SetStableClocks(bool use_profiling_clocks) override;
 
+    /// @brief Get the number of instances of the specified group.
+    ///
+    /// @param [in] driver_group_id The group id whose number of instances is needed.
+    ///
+    /// @return The number of instances of the specific group. Could be zero if group does not exist.
+    GpaUInt32 GetNumInstances(unsigned int driver_group_id) const;
+
+    /// @brief Get the max event id of the specified group.
+    ///
+    /// @param [in] block The group id whose max event id is needed.
+    ///
+    /// @return the max event id of the specified group. Could be zero if group does not exist.
+    GpaUInt32 GetMaxEventId(unsigned int driver_group_id) const;
+
 private:
-    /// @brief Validates the counter from counter generator and gl driver counters and updates it if necessary.
+    /// @brief Structure to store the information about a specific counter group exposed from the gl_amd_performance_monitor extension.
+    struct GpaGlPerfMonitorGroupData
+    {
+        static const int kMaxNameLength = 10;  ///< Max number of characters in the group name, including ending NULL character.
+
+        GLuint group_id;                                   ///< The driver-assigned group id.
+        GLchar group_name[kMaxNameLength];                 ///< The driver-assigned group name.
+        GLuint num_instances;                              ///< The number of instances of this group available on the current hardware.
+        GLint  num_counters;                               ///< The number of counter events that are exposed by this group.
+        GLint  max_active_discrete_counters_per_instance;  ///< The number of counters that can be enabled simultaneously.
+    };
+
+    /// @brief Validates the counter from counter generator and GL driver counters and updates it if necessary.
     ///
     /// @return Success status of validation.
     /// @retval True on success.
     /// @retval False on failure.
     bool ValidateAndUpdateGlCounters() const;
 
+    /// @brief Queries the information exposed by the driver via the performance monitor extension and caches it for later use.
+    ///
+    /// @retval True If the counter group information could be queried successfully.
+    /// @retval False If there were errors or unexpected situations while querying the counter group information.
+    bool PopulateDriverCounterGroupInfo();
+
     GlContextPtr             gl_context_;      ///< GL rendering context pointer.
     ogl_utils::AmdXClockMode clock_mode_;      ///< GPU Clock mode.
     int                      driver_version_;  ///< GL driver version.
+
+    typedef std::vector<GpaGlPerfMonitorGroupData> GpaGlPerfGroupVector;
+    GpaGlPerfGroupVector                           driver_counter_group_info_;  ///< All the counter group information from the driver.
+    bool                                           driver_supports_GL1CG_;      ///< Not all hardware supports the GL1CG block, so detect when it exists.
+    bool                                           driver_supports_ATCL2_;      ///< Not all hardware supports the ATCL2 block, so detect when it exists.
+    bool                                           driver_supports_CHCG_;       ///< Not all hardware supports the CHCG block, so detect when it exists.
+    bool                                           driver_supports_GUS_;        ///< Not all hardware supports the GUS block, so detect when it exists.
 };
 
 #endif  // GPU_PERF_API_GL_GPA_CONTEXT_H_

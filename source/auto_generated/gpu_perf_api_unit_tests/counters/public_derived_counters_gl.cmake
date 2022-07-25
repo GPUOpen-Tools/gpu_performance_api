@@ -6,11 +6,19 @@ set(PUBLIC_DERIVED_COUNTERS_API_HEADERS_GL
 ${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_gl_gfx10.h
 ${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_gl_gfx103.h
 ${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_gl_gfx8.h
-${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_gl_gfx9.h)
+${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_gl_gfx9.h
+${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_oglp_gfx10.h
+${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_oglp_gfx103.h
+${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_oglp_gfx8.h
+${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_oglp_gfx9.h)
 
 set(PUBLIC_DERIVED_COUNTERS_API_SRC_GL
 ${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_gl_gfx10.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_gl_gfx103.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_gl_gfx8.cc
-${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_gl_gfx9.cc)
+${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_gl_gfx9.cc
+${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_oglp_gfx10.cc
+${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_oglp_gfx103.cc
+${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_oglp_gfx8.cc
+${CMAKE_CURRENT_LIST_DIR}/public_derived_counters_oglp_gfx9.cc)
 

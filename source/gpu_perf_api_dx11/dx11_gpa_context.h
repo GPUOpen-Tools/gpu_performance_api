@@ -80,14 +80,14 @@ public:
     /// @param [in] block The block whose number of instances is needed.
     ///
     /// @return The number of instances of the specific block. Could be zero if block does not exist.
-    GpaUInt32 GetInstanceCount(PE_BLOCK_ID block) const;
+    GpaUInt32 GetNumInstances(PE_BLOCK_ID block) const;
 
     /// @brief Get the max event id of the specified block.
     ///
     /// @param [in] block The block whose max event id is needed.
     ///
     /// @return The max event id of the specified block. Could be zero if block does not exist.
-    GpaUInt32 GetMaxEventIdCount(PE_BLOCK_ID block) const;
+    GpaUInt32 GetMaxEventId(PE_BLOCK_ID block) const;
 
     /// @copydoc IGpaContext::SetStableClocks()
     GpaStatus SetStableClocks(bool use_profiling_clocks) override;

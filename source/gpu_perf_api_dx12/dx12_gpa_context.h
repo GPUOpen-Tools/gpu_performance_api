@@ -57,14 +57,14 @@ public:
     /// @param [in] block The block whose number of instances is needed.
     ///
     /// @return The number of instances of the specific block. Could be zero if block does not exist.
-    GpaUInt32 GetInstanceCount(AmdExtGpuBlock block) const;
+    GpaUInt32 GetNumInstances(AmdExtGpuBlock block) const;
 
     /// @brief Get the max event id of the specified block.
     ///
     /// @param [in] block The block whose max event id is needed.
     ///
     /// @return The max event id of the specified block. Could be zero if block does not exist.
-    GpaUInt32 GetMaxEventIdCount(AmdExtGpuBlock block) const;
+    GpaUInt32 GetMaxEventId(AmdExtGpuBlock block) const;
 
     /// @brief Obtain the ID3D12Device pointer.
     ///

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL entry points.
@@ -57,13 +57,22 @@ namespace ogl_utils
     // Function pointers for GLX_MESA_query_renderer extension.
     PFN_GLX_QUERYCURRENTRENDERERINTEGERMESA ogl_x_query_current_renderer_integer_mesa = nullptr;
 
+    // Private entrypoints that are not associated with an extension string.
     PFN_GL_SETGPADEVICECLOCKMODEAMDX ogl_set_gpa_device_clock_mode_amd_x = nullptr;
+
+    // Private entrypoint that will be associated with GL_AMD_performance_monitor_2 extension, but does not officially exist yet.
+    PFN_GL_GETPERFMONITORGROUPS2AMDPROC      ogl_get_perf_monitor_groups_2_amd      = nullptr;
+    PFN_GL_SELECTPERFMONITORCOUNTERS2AMDPROC ogl_select_perf_monitor_counters_2_amd = nullptr;
+
+    GpaGlDriverType gl_driver_type    = GpaGlDriverType::kUnknown;
+    int             gl_driver_version = 0;
 
     const char* kAmdRendererString           = "AMD";
     const char* kRadeonRendererString        = "Radeon";
     const char* kAtiRendererString           = "ATI";
     const char* kNvidiaRendererString        = "NVIDIA";
     const char* kIntelRendererString         = "Intel";
+    const char* kMesaString                  = "Mesa";
     bool        are_gl_functions_initialized = false;
     LibHandle   gl_lib_handle                = nullptr;
 #ifdef GLES
@@ -79,9 +88,10 @@ namespace ogl_utils
                                                           {std::string("WGL_AMD_gpu_association"), false},
                                                           {std::string("GLX_AMD_GPU_association"), false}};
 
-    const int kGlDriverVerWithOnlyGcnSupport          = 13452;  ///< GL driver version where pre-GCN hardware was dropped.
-    const int kGlDriverVerWithLinuxStableClockSupport = 13562;  ///< GL driver version where stable clocks are working on Linux.
-    const int kGlDriverVerWithGpinCounters            = 13565;  ///< GL driver version where GPIN counters have been validated.
+    const int kGlDriverVerWithOnlyGcnSupport          = 13452;   ///< GL driver version where pre-GCN hardware was dropped.
+    const int kGlDriverVerWithLinuxStableClockSupport = 13562;   ///< GL driver version where stable clocks are working on Linux.
+    const int kGlDriverVerWithGpinCounters            = 13565;   ///< GL driver version where GPIN counters have been validated.
+    const int kGlDriverVerSwitchFromUgl               = 200000;  ///< GL driver version where we switched from Ugl to Oglp.
 
     void CheckExtension(const char* ext_name)
     {
@@ -124,6 +134,7 @@ namespace ogl_utils
 // On Linux we must enumerate the GLX extensions separately, as they will not be included in the list of GL_EXTENSIONS queried by ogl_get_string_i
 #ifdef _LINUX
 #ifndef GLES
+        if (ogl_x_get_client_string == nullptr)
         if (ogl_x_get_client_string == nullptr)
         {
             LOAD_LIBRARY_SYMBOL(ogl_x_get_client_string, glXGetClientString);
@@ -306,7 +317,201 @@ bool ogl_utils::InitializeGlCoreFunctions()
     return false;
 }
 
-bool ogl_utils::InitCtxAmdPerfExtFunctions()
+/// @brief Checks if the supplied GL_VERSION string represents a Mesa driver.
+///
+/// Mesa drivers will include the word "Mesa" in the GL_VERSION string.
+///
+/// @param [in] version The version string to check for Mesa.
+/// @return True if the version represents Mesa; false otherwise.
+bool CheckForMesaDriver(const GLubyte* version)
+{
+    assert(version != nullptr);
+
+    bool is_mesa = false;
+    if (version != nullptr)
+    {
+        const char* version_c_string = (const char*)version;
+        std::string version_std_string(version_c_string);
+
+        is_mesa = (version_std_string.find("Mesa") != std::string::npos);
+    }
+
+    return is_mesa;
+}
+
+/// @brief Queries necessary GL strings to determine which GL driver is being used and the corresponding version number.
+///
+/// The order of tasks here is important, as it narrows down the options.
+/// First it checks for the Mesa driver, which is obvious because the word "Mesa" will be in the GL_VERSION string.
+/// If it is not a Mesa driver, then this needs to determine whether it is a UGL or OGLP driver.
+///
+/// UGL drivers have their version number at the start of the string (eg: "4.2.12325 Compatibility Profile Context 13.100.0.0").
+/// In this case the "4.2" is the OpenGL version, and the "12325" is the version of the driver. UGL version numbers are 5 digits
+/// or less, but we've decided to use 200000 (represented by kGlDriverVerSwitchFromUgl) as the cut-off.
+///
+/// OGLP drivers will have their version number at the end of the string (eg: "4.0.0 Compatibility Profile Context 22.10.220528").
+/// Here the "4.0" is represenging the OpenGL version, the additional "0" helps to indicates that this is an OGLP driver, and the
+/// final version number "22.10.220528" represents the version of our AMD driver package "22.10" and the specific OpenGL driver
+/// version "220528" which is based on the date in a YYMMDD format. This means it will always be 6 digits in length, and will
+/// always be greater than the 200000 value (represented by kGlDriverVerSwitchFromUgl).
+///
+/// @return true on success and the gl_driver_type and gl_driver_versions will have been set appropriately; false on failure.
+bool ExtractDriverVersionInfo()
+{
+    if (ogl_utils::ogl_get_string == nullptr)
+    {
+        GPA_LOG_ERROR("Failed to extract driver version info - glGetString is undefined.");
+        return false;
+    }
+
+    const GLubyte* gl_version_string = ogl_utils::ogl_get_string(GL_VERSION);
+
+    if (gl_version_string == nullptr)
+    {
+        // This is possible in our unit tests since there will not be a driver loaded.
+        return false;
+    }
+
+    if (CheckForMesaDriver(gl_version_string))
+    {
+        ogl_utils::gl_driver_type = ogl_utils::GpaGlDriverType::kMesa;
+        GPA_LOG_MESSAGE("Unable to parse version number - Mesa is not currently supported.");
+
+        // Determining that this is the Mesa driver is sufficient to return true here.
+        return true;
+    }
+    else
+    {
+        const char* version_c_string = (const char*)gl_version_string;
+        std::string version_std_string(version_c_string);
+
+        // The build number ends at the first space.
+        size_t end_build_number = version_std_string.find_first_of(' ');
+
+        if (end_build_number == std::string::npos)
+        {
+            GPA_LOG_ERROR("Failed to parse version number - missing first space.");
+            return false;
+        }
+
+        // Truncate the input at the first space.
+        std::string pre_version_string = version_std_string.substr(0, end_build_number);
+
+        // Sanity check that there are two decimal points in the version number.
+        size_t first_decimal  = pre_version_string.find_first_of('.');
+        size_t second_decimal = pre_version_string.find_last_of('.');
+
+        if (first_decimal == second_decimal)
+        {
+            GPA_LOG_ERROR("Failed to parse version number - does not contain two decimal points.");
+            return false;
+        }
+
+        // The build number starts after the last decimal point.
+        size_t start_build_number = second_decimal + 1;
+
+        // Parse the version number.
+        int pre_version_number = atoi(pre_version_string.substr(start_build_number, end_build_number - start_build_number).c_str());
+
+        if (pre_version_number > 0 && pre_version_number < ogl_utils::kGlDriverVerSwitchFromUgl)
+        {
+            // This is the UGL driver.
+            ogl_utils::gl_driver_type    = ogl_utils::GpaGlDriverType::kUgl;
+            ogl_utils::gl_driver_version = pre_version_number;
+        }
+        else
+        {
+            // This is the OGLP driver.
+            // Need to parse the "post" version number (ie: from the end of the string).
+            size_t      final_decimal       = version_std_string.find_last_of('.');
+            size_t      start_post_version  = final_decimal + 1;
+            std::string post_version_string = version_std_string.substr(start_post_version, version_std_string.length() - start_post_version);
+
+            // Sanity check that this string is 6 characters long. The version format is "YYMMDD".
+            if (post_version_string.length() != 6)
+            {
+                GPA_LOG_MESSAGE("Post version string has an unexpected length. Expected format is YYMMDD.");
+            }
+
+            int post_version_number      = atoi(post_version_string.c_str());
+            ogl_utils::gl_driver_type    = ogl_utils::GpaGlDriverType::kOglp;
+            ogl_utils::gl_driver_version = post_version_number;
+        }
+    }
+
+    return true;
+}
+
+bool ogl_utils::IsMesaDriver()
+{
+    if (gl_driver_type == GpaGlDriverType::kUnknown)
+    {
+        if (!ExtractDriverVersionInfo())
+        {
+            return false;
+        }
+    }
+
+    return (gl_driver_type == GpaGlDriverType::kMesa);
+}
+
+bool ogl_utils::IsUglDriver()
+{
+    if (gl_driver_type == GpaGlDriverType::kUnknown)
+    {
+        if (!ExtractDriverVersionInfo())
+        {
+            return false;
+        }
+    }
+
+    return (gl_driver_type == GpaGlDriverType::kUgl);
+}
+
+bool ogl_utils::IsOglpDriver()
+{
+    if (gl_driver_type == GpaGlDriverType::kUnknown)
+    {
+        if (!ExtractDriverVersionInfo())
+        {
+            return false;
+        }
+    }
+
+    return (gl_driver_type == GpaGlDriverType::kOglp);
+}
+
+bool ogl_utils::IsNoDriver()
+{
+    if (ogl_utils::ogl_get_string == nullptr)
+    {
+        // The glGetString function won't have been assigned if there is no driver.
+        return true;
+    }
+
+    const GLubyte* gl_version_string = ogl_utils::ogl_get_string(GL_VERSION);
+    if (gl_version_string == nullptr)
+    {
+        return true;
+    }
+
+    return false;
+}
+
+int ogl_utils::GetDriverVersion()
+{
+    if (gl_driver_type == GpaGlDriverType::kUnknown)
+    {
+        if (!ExtractDriverVersionInfo())
+        {
+            return 0;
+        }
+    }
+
+    return gl_driver_version;
+}
+
+bool ogl_utils::InitContextGlAmdPerfMonitorExtensionFunctions()
 {
     if (LoadGl())
     {
@@ -341,6 +546,46 @@ bool ogl_utils::InitCtxAmdPerfExtFunctions()
     else
     {
         GPA_LOG_ERROR("Failed to load GL when initializing gl_AMD_performance_monitor extension.");
+    }
+
+    return false;
+}
+
+bool ogl_utils::InitContextGlAmdPerfMonitor2ExtensionFunctions()
+{
+    if (LoadGl())
+    {
+        if (nullptr == GET_PROC_ADDRESS_FUNC)
+        {
+#ifndef GLES
+            GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(gl_lib_handle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
+#else
+            GET_PROC_ADDRESS_FUNC = reinterpret_cast<decltype(GET_PROC_ADDRESS_TYPE)*>(LOAD_SYMBOL(egl_lib_handle, GPA_STRINGIFY(GET_PROC_ADDRESS_TYPE)));
+#endif
+        }
+
+        GET_CONTEXT_PROC_ADDRESS(ogl_get_perf_monitor_counters_amd, PFNGLGETPERFMONITORCOUNTERSAMDPROC, "glGetPerfMonitorCountersAMD");
+        GET_CONTEXT_PROC_ADDRESS(ogl_get_perf_monitor_group_string_amd, PFNGLGETPERFMONITORGROUPSTRINGAMDPROC, "glGetPerfMonitorGroupStringAMD");
+        GET_CONTEXT_PROC_ADDRESS(ogl_get_perf_monitor_counter_string_amd, PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC, "glGetPerfMonitorCounterStringAMD");
+        GET_CONTEXT_PROC_ADDRESS(ogl_get_perf_monitor_counter_info_amd, PFNGLGETPERFMONITORCOUNTERINFOAMDPROC, "glGetPerfMonitorCounterInfoAMD");
+        GET_CONTEXT_PROC_ADDRESS(ogl_gen_perf_monitors_amd, PFNGLGENPERFMONITORSAMDPROC, "glGenPerfMonitorsAMD");
+        GET_CONTEXT_PROC_ADDRESS(ogl_delete_perf_monitors_amd, PFNGLDELETEPERFMONITORSAMDPROC, "glDeletePerfMonitorsAMD");
+        GET_CONTEXT_PROC_ADDRESS(ogl_begin_perf_monitor_amd, PFNGLBEGINPERFMONITORAMDPROC, "glBeginPerfMonitorAMD");
+        GET_CONTEXT_PROC_ADDRESS(ogl_end_perf_monitor_amd, PFNGLENDPERFMONITORAMDPROC, "glEndPerfMonitorAMD");
+        GET_CONTEXT_PROC_ADDRESS(ogl_get_perf_monitor_counter_data_amd, PFNGLGETPERFMONITORCOUNTERDATAAMDPROC, "glGetPerfMonitorCounterDataAMD");
+
+        GET_CONTEXT_PROC_ADDRESS(ogl_get_perf_monitor_groups_2_amd, PFN_GL_GETPERFMONITORGROUPS2AMDPROC, "glGetPerfMonitorGroups2AMD");
+        GET_CONTEXT_PROC_ADDRESS(ogl_select_perf_monitor_counters_2_amd, PFN_GL_SELECTPERFMONITORCOUNTERS2AMDPROC, "glSelectPerfMonitorCounters2AMD");
+
+        return (nullptr != ogl_get_perf_monitor_groups_2_amd && nullptr != ogl_get_perf_monitor_counters_amd &&
+                nullptr != ogl_get_perf_monitor_group_string_amd && nullptr != ogl_get_perf_monitor_counter_string_amd &&
+                nullptr != ogl_get_perf_monitor_counter_info_amd && nullptr != ogl_gen_perf_monitors_amd && nullptr != ogl_delete_perf_monitors_amd &&
+                nullptr != ogl_select_perf_monitor_counters_2_amd && nullptr != ogl_begin_perf_monitor_amd && nullptr != ogl_end_perf_monitor_amd &&
+                nullptr != ogl_get_perf_monitor_counter_data_amd);
+    }
+    else
+    {
+        GPA_LOG_ERROR("Failed to load GL when initializing gl_AMD_performance_monitor_2 extension.");
     }
 
     return false;
@@ -403,31 +648,47 @@ bool ogl_utils::InitializeGlFunctions()
     bool perf_mon_ext_found    = gl_extensions_map["GL_AMD_performance_monitor"];
     bool timer_query_ext_found = gl_extensions_map["GL_ARB_timer_query"] || gl_extensions_map["GL_EXT_disjoint_timer_query"];
 
-    if (!InitCtxAmdPerfExtFunctions())
+    if (ogl_utils::IsUglDriver() || ogl_utils::IsMesaDriver())
     {
-        if (perf_mon_ext_found)
+        if (!InitContextGlAmdPerfMonitorExtensionFunctions())
         {
-            GPA_LOG_ERROR("The GL_AMD_performance_monitor extension is exposed by the driver, but not all entry points are available.");
-        }
-        else
-        {
-            GPA_LOG_ERROR("The GL_AMD_performance_monitor extension is not exposed by the driver.");
-        }
+            if (perf_mon_ext_found)
+            {
+                GPA_LOG_ERROR("The GL_AMD_performance_monitor extension is exposed by the driver, but not all entrypoints are available.");
+            }
+            else
+            {
+                GPA_LOG_ERROR("The GL_AMD_performance_monitor extension is not exposed by the driver.");
+            }
 
-        const GLubyte* renderer = ogl_get_string(GL_RENDERER);
+            const GLubyte* renderer = ogl_get_string(GL_RENDERER);
 
-        if (nullptr == renderer)
-        {
-            // Return error if unable to retrieve renderer.
-            ret_val = false;
+            if (nullptr == renderer)
+            {
+                // Return error if unable to retrieve renderer.
+                ret_val = false;
+            }
+            else if (strstr(reinterpret_cast<const char*>(renderer), kAtiRendererString) == 0 ||
+                     strstr(reinterpret_cast<const char*>(renderer), kAmdRendererString) == 0)
+            {
+                // Return error if AMD extension is missing on AMD hardware.
+                ret_val = false;
+            }
         }
-        else if (strstr(reinterpret_cast<const char*>(renderer), kAtiRendererString) == 0 ||
-                 strstr(reinterpret_cast<const char*>(renderer), kAmdRendererString) == 0)
+    }
+    else if (ogl_utils::IsOglpDriver())
+    {
+        if (!InitContextGlAmdPerfMonitor2ExtensionFunctions())
         {
-            // Return error if AMD extension is missing on AMD hardware.
             ret_val = false;
         }
     }
+    else
+    {
+        GPA_LOG_ERROR("Unsure which performance monitor extension to load for this driver.");
+        ret_val = false;
+    }
+
 
     GET_CONTEXT_PROC_ADDRESS(ogl_set_gpa_device_clock_mode_amd_x, PFN_GL_SETGPADEVICECLOCKMODEAMDX, "glSetGpaDeviceClockModeAMDX");
     GET_CONTEXT_PROC_ADDRESS(ogl_get_query_object_ui_64_v_ext, PFNGLGETQUERYOBJECTUI64VPROC, "glGetQueryObjectui64v");

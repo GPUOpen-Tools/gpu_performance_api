@@ -830,7 +830,7 @@ public:
 
     /// Hardware exposed counters.
     GpaHardwareCounterDesc**
-                                        hardware_exposed_counters_;  ///< List of counter groups as defined by the list of hardware exposed counters counters in each group.
+        hardware_exposed_counters_;  ///< List of counter groups as defined by the list of hardware exposed counters counters in each group.
     GpaCounterGroupExposedCounterDesc*  hardware_exposed_counter_groups_;                 ///< List of hardware exposed counter groups.
     unsigned int                        hardware_exposed_counter_group_count_;            ///< The number of hardware exposed counter groups.
     std::vector<GpaHardwareCounterDesc> hardware_exposed_counters_list_;                  ///< Vector of hardware exposed counters.

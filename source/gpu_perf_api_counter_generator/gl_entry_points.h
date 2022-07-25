@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL entry points.
@@ -55,10 +55,10 @@ typedef void* LibHandle;
 #endif
 #endif
 
-#define LOAD_LIBRARY_SYMBOL(varName, type)                                                \
-    if (nullptr == (varName))                                                             \
-    {                                                                                     \
-        (varName) = reinterpret_cast<decltype(type)*>(LOAD_SYMBOL(gl_lib_handle, #type)); \
+#define LOAD_LIBRARY_SYMBOL(varName, type)                                                           \
+    if (nullptr == (varName))                                                                        \
+    {                                                                                                \
+        (varName) = reinterpret_cast<decltype(type)*>(LOAD_SYMBOL(ogl_utils::gl_lib_handle, #type)); \
     }
 
 // Declarations for GLX_MESA_query_renderer extension (subset -- just what is needed for GPA GL).
@@ -106,6 +106,9 @@ namespace ogl_utils
     extern PFNGLENDPERFMONITORAMDPROC              ogl_end_perf_monitor_amd;
     extern PFNGLGETPERFMONITORCOUNTERDATAAMDPROC   ogl_get_perf_monitor_counter_data_amd;
 
+    extern PFN_GL_GETPERFMONITORGROUPS2AMDPROC      ogl_get_perf_monitor_groups_2_amd;
+    extern PFN_GL_SELECTPERFMONITORCOUNTERS2AMDPROC ogl_select_perf_monitor_counters_2_amd;
+
 #ifdef DEBUG_GL_ERRORS
     extern PFN_OGL_GLDEBUGMESSAGECONTROLARB  ogl_debug_message_control_arb;
     extern PFN_OGL_GLDEBUGMESSAGEINSERTARB   ogl_debug_message_insert_arb;
@@ -115,6 +118,18 @@ namespace ogl_utils
 
     extern PFN_GLX_QUERYCURRENTRENDERERINTEGERMESA ogl_x_query_current_renderer_integer_mesa;  ///< Function pointer for glxQueryCurrentRendererIntegerMesa.
     extern PFN_GL_SETGPADEVICECLOCKMODEAMDX        ogl_set_gpa_device_clock_mode_amd_x;        ///< Function pointer for glSetGpaDeviceClockModeAMDX.
+
+    /// @brief Different OpenGL drivers that must be recognized by GPA and may or may not be fully supported.
+    enum class GpaGlDriverType
+    {
+        kUnknown = 0,
+        kMesa    = 1,
+        kUgl     = 2,
+        kOglp    = 3,
+    };
+
+    extern GpaGlDriverType gl_driver_type;     ///< The type of driver that is recognized based on various GL strings.
+    extern int             gl_driver_version;  ///< The driver version. Note this version number is specific to the driver type.
 
     /// @brief Loads the OpenGL library.
     ///
@@ -142,10 +157,59 @@ namespace ogl_utils
     /// @return True upon success otherwise false.
     bool InitializeGlCoreFunctions();
 
-    /// @brief Initializes the OpenGL AMD perf extension function to use with current rendering context.
+    /// @brief Indicates if the current driver is a Mesa driver.
+    ///
+    /// This will query and parse the GL_VERSION string if it has not already been done, which imposes the restriction
+    /// that this function will only work correctly after the GL context has been created.
+    ///
+    /// @return True if the Mesa driver is being used; false otherwise.
+    bool IsMesaDriver();
+
+    /// @brief Indicates if the current driver is a UGL driver.
+    ///
+    /// This will query and parse the GL_VERSION string if it has not already been done, which imposes the restriction
+    /// that this function will only work correctly after the GL context has been created.
+    ///
+    /// @return True if the UGL driver is being used; false otherwise.
+    bool IsUglDriver();
+
+    /// @brief Indicates if the current driver is an OGLP driver.
+    ///
+    /// This will query and parse the GL_VERSION string if it has not already been done, which imposes the restriction
+    /// that this function will only work correctly after the GL context has been created.
+    ///
+    /// @return True if the OGLP driver is being used; false otherwise.
+    bool IsOglpDriver();
+
+    /// @brief Indicates if the current driver cannot be identified in the event that the GL context cannot be created.
+    ///
+    /// This will check if the gl_version_string is a null pointer, and if so will return false to indicate that no driver
+    /// can be successfully found.
+    ///
+    /// @return True if an unidentifiable driver is being used; false otherwise.
+    bool IsNoDriver();
+
+    /// @brief Gets the driver version number.
+    ///
+    /// This will query and parse the GL_VERSION string if it has not already been done, which imposes the restriction
+    /// that this function will only work correctly after the GL context has been created. The version number is relative
+    /// to the driver type being used (Mesa, UGL, OGLP, etc).
+    ///
+    /// @return The driver version number.
+    /// @retval 0 If there was an error determining the driver version.
+    int GetDriverVersion();
+
+    /// @brief Initializes the GL_AMD_performance_monitor extension functions to use with current rendering context.
     ///
     /// @return True upon successful otherwise false.
-    bool InitCtxAmdPerfExtFunctions();
+    bool InitContextGlAmdPerfMonitorExtensionFunctions();
+
+    /// @brief Initializes the GL_AMD_performance_monitor_2 extension functions to use with current rendering context.
+    ///
+    /// This extension is currently a private extension and is not actually exposed as a named extension string.
+    ///
+    /// @return True upon successful otherwise false.
+    bool InitContextGlAmdPerfMonitor2ExtensionFunctions();
 
     /// @brief Initialize platform-specific OpenGL extensions.
     ///
@@ -157,6 +221,7 @@ namespace ogl_utils
     extern const char* kAtiRendererString;            ///< ATI Renderer string (legacy).
     extern const char* kNvidiaRendererString;         ///< NVIDIA Renderer string.
     extern const char* kIntelRendererString;          ///< Intel Renderer string.
+    extern const char* kMesaString;                   ///< Mesa string.
     extern bool        are_gl_functions_initialized;  ///< Flag indicating if the GL extensions and functions have been initialized.
     extern LibHandle   gl_lib_handle;                 ///< Handle to the GL lib.
 

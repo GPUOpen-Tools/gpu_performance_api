@@ -94,13 +94,13 @@ void VkGpaPass::InitializeSampleConfig()
                     GpaUInt32                        instance = hardware_counters->internal_counter_groups_[counter->group_index].block_instance;
                     GpaUInt32                        event_id = static_cast<GpaUInt32>(counter->hardware_counters->counter_index_in_group);
 
-                    if (reinterpret_cast<VkGpaContext*>(GetGpaSession()->GetParentContext())->GetInstanceCount(block) <= instance)
+                    if (reinterpret_cast<VkGpaContext*>(GetGpaSession()->GetParentContext())->GetNumInstances(block) <= instance)
                     {
                         DisableCounterForPass(counter_list_->at(i));
                         continue;
                     }
 
-                    if (reinterpret_cast<VkGpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventIdCount(block) <= event_id)
+                    if (reinterpret_cast<VkGpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventId(block) <= event_id)
                     {
                         DisableCounterForPass(counter_list_->at(i));
                         continue;

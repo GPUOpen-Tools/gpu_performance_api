@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for GL counter generation.
@@ -28,6 +28,19 @@
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_gl_gfx10_asics.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_gl_gfx103_asics.h"
 
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_oglp_gfx8.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_oglp_gfx9.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_oglp_gfx10.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_oglp_gfx103.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_oglp_gfx8.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_oglp_gfx9.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_oglp_gfx10.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_oglp_gfx103.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_oglp_gfx8_asics.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_oglp_gfx9_asics.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_oglp_gfx10_asics.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_oglp_gfx103_asics.h"
+
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_scheduler_manager.h"
 
 static const char* kDriverSuppliedCounter = GPA_HIDE_NAME("OpenGL Driver-Supplied Counter");  ///< Default counter name for a driver-supplied counter.
@@ -51,15 +64,22 @@ GpaCounterGeneratorGl::~GpaCounterGeneratorGl()
 
 bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCounters* hardware_counters)
 {
-    if (ogl_utils::InitializeGlFunctions() && driver_supplied_groups_count_ == 0 && nullptr != ogl_utils::ogl_get_perf_monitor_groups_amd &&
-        nullptr != ogl_utils::ogl_get_perf_monitor_group_string_amd && nullptr != ogl_utils::ogl_get_perf_monitor_counters_amd &&
-        nullptr != ogl_utils::ogl_get_perf_monitor_counter_string_amd)
+    if (ogl_utils::InitializeGlFunctions() && driver_supplied_groups_count_ == 0 && nullptr != ogl_utils::ogl_get_perf_monitor_group_string_amd &&
+        nullptr != ogl_utils::ogl_get_perf_monitor_counters_amd && nullptr != ogl_utils::ogl_get_perf_monitor_counter_string_amd &&
+        (nullptr != ogl_utils::ogl_get_perf_monitor_groups_amd || nullptr != ogl_utils::ogl_get_perf_monitor_groups_2_amd))
     {
         // Clean up previously allocated memory, if any (there shouldn't be...).
         Cleanup();
 
         GLint num_groups = 0;
-        ogl_utils::ogl_get_perf_monitor_groups_amd(&num_groups, 0, nullptr);
+        if (ogl_utils::IsOglpDriver())
+        {
+            ogl_utils::ogl_get_perf_monitor_groups_2_amd(&num_groups, 0, nullptr, nullptr);
+        }
+        else
+        {
+            ogl_utils::ogl_get_perf_monitor_groups_amd(&num_groups, 0, nullptr);
+        }
 
         if (0 == num_groups)
         {
@@ -73,14 +93,28 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
 
         // Get the group Ids.
         GLuint* perf_groups = new (std::nothrow) GLuint[num_groups];
-
         if (nullptr == perf_groups)
         {
             GPA_LOG_ERROR("Unable to allocate memory to store the group IDs.");
             return false;
         }
 
-        ogl_utils::ogl_get_perf_monitor_groups_amd(nullptr, num_groups, perf_groups);
+        GLuint* group_instances = new (std::nothrow) GLuint[num_groups];
+        if (nullptr == group_instances)
+        {
+            GPA_LOG_ERROR("Unable to allocate memory to store the group instances.");
+            delete[] perf_groups;
+            return false;
+        }
+
+        if (ogl_utils::IsOglpDriver())
+        {
+            ogl_utils::ogl_get_perf_monitor_groups_2_amd(nullptr, num_groups, perf_groups, group_instances);
+        }
+        else
+        {
+            ogl_utils::ogl_get_perf_monitor_groups_amd(nullptr, num_groups, perf_groups);
+        }
 
         driver_supplied_groups_count_ = num_groups - (hardware_counters->group_count_ - 1);
 
@@ -89,6 +123,8 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
         if (nullptr == driver_supplied_groups_)
         {
             GPA_LOG_ERROR("Unable to allocate memory to store the group IDs.");
+            delete[] perf_groups;
+            delete[] group_instances;
             return false;
         }
 
@@ -112,6 +148,8 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
             if (nullptr == driver_supplied_groups_[i].name)
             {
                 GPA_LOG_ERROR("Unable to allocate memory to store the counter group name.");
+                delete[] perf_groups;
+                delete[] group_instances;
                 return false;
             }
 
@@ -128,6 +166,8 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
             driver_supplied_groups_[i].num_counters                 = num_counters;
             driver_supplied_groups_[i].block_instance               = 0;
 
+            assert(ogl_utils::IsUglDriver() && "The block_instance variable above needs to be updated to support OGLP.");
+
             for (int c = 0; c < num_counters; c++)
             {
                 counter.group_index       = driver_supplied_groups_[i].group_index + 1;
@@ -136,6 +176,8 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                 if (nullptr == counter.hardware_counters)
                 {
                     GPA_LOG_ERROR("Unable to allocate memory to store the hardwareCounter.");
+                    delete[] perf_groups;
+                    delete[] group_instances;
                     return false;
                 }
 
@@ -151,6 +193,8 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                 if (nullptr == counter_name)
                 {
                     GPA_LOG_ERROR("Unable to allocate memory to store the counter name.");
+                    delete[] perf_groups;
+                    delete[] group_instances;
                     return false;
                 }
 
@@ -168,6 +212,8 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                 if (nullptr == counter.hardware_counters->description)
                 {
                     GPA_LOG_ERROR("Unable to allocate memory to store the counter description.");
+                    delete[] perf_groups;
+                    delete[] group_instances;
                     return false;
                 }
 
@@ -182,6 +228,8 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
                 if (nullptr == counter.hardware_counters->group)
                 {
                     GPA_LOG_ERROR("Unable to allocate memory to store the counter group.");
+                    delete[] perf_groups;
+                    delete[] group_instances;
                     return false;
                 }
 
@@ -201,6 +249,7 @@ bool GpaCounterGeneratorGl::GenerateDriverSuppliedInternalCounters(GpaHardwareCo
         counter_group_descs_.push_back(driver_supplied_groups_);
 
         delete[] perf_groups;
+        delete[] group_instances;
     }
 
     hardware_counters->additional_groups_      = driver_supplied_groups_;
@@ -324,63 +373,131 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
     {
         public_counters->Clear();
 
-        switch (desired_generation)
+        if (ogl_utils::IsUglDriver())
         {
-        case GDT_HW_GENERATION_VOLCANICISLAND:
-        {
-            AutoDefinePublicDerivedCountersGlGfx8(*public_counters);
-
-            if (generate_asic_specific_counters)
+            switch (desired_generation)
             {
-                gl_gfx8_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-            }
-
-            status = kGpaStatusOk;
-        }
-        break;
-
-        case GDT_HW_GENERATION_GFX9:
-        {
-            AutoDefinePublicDerivedCountersGlGfx9(*public_counters);
-
-            if (generate_asic_specific_counters)
+            case GDT_HW_GENERATION_VOLCANICISLAND:
             {
-                gl_gfx9_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                AutoDefinePublicDerivedCountersGlGfx8(*public_counters);
+
+                if (generate_asic_specific_counters)
+                {
+                    gl_gfx8_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                }
+
+                status = kGpaStatusOk;
             }
-
-            status = kGpaStatusOk;
-        }
-        break;
-
-        case GDT_HW_GENERATION_GFX10:
-        {
-            AutoDefinePublicDerivedCountersGlGfx10(*public_counters);
-
-            if (generate_asic_specific_counters)
-            {
-                gl_gfx10_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-            }
-
-            status = kGpaStatusOk;
-        }
-        break;
-
-        case GDT_HW_GENERATION_GFX103:
-        {
-            AutoDefinePublicDerivedCountersGlGfx103(*public_counters);
-
-            if (generate_asic_specific_counters)
-            {
-                gl_gfx103_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-            }
-
-            status = kGpaStatusOk;
-        }
-        break;
-
-        default:
-            GPA_LOG_ERROR("Unsupported or unrecognized hardware generation. Cannot generate public counters.");
             break;
+
+            case GDT_HW_GENERATION_GFX9:
+            {
+                AutoDefinePublicDerivedCountersGlGfx9(*public_counters);
+
+                if (generate_asic_specific_counters)
+                {
+                    gl_gfx9_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                }
+
+                status = kGpaStatusOk;
+            }
+            break;
+
+            case GDT_HW_GENERATION_GFX10:
+            {
+                AutoDefinePublicDerivedCountersGlGfx10(*public_counters);
+
+                if (generate_asic_specific_counters)
+                {
+                    gl_gfx10_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                }
+
+                status = kGpaStatusOk;
+            }
+            break;
+
+            case GDT_HW_GENERATION_GFX103:
+            {
+                AutoDefinePublicDerivedCountersGlGfx103(*public_counters);
+
+                if (generate_asic_specific_counters)
+                {
+                    gl_gfx103_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                }
+
+                status = kGpaStatusOk;
+            }
+            break;
+
+            default:
+                GPA_LOG_ERROR("Unsupported or unrecognized hardware generation. Cannot generate public counters.");
+                break;
+            }
+        }
+        else if (ogl_utils::IsNoDriver() || ogl_utils::IsOglpDriver())
+        {
+            switch (desired_generation)
+            {
+            case GDT_HW_GENERATION_VOLCANICISLAND:
+            {
+                AutoDefinePublicDerivedCountersOglpGfx8(*public_counters);
+
+                if (generate_asic_specific_counters)
+                {
+                    oglp_gfx8_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                }
+
+                status = kGpaStatusOk;
+            }
+            break;
+
+            case GDT_HW_GENERATION_GFX9:
+            {
+                AutoDefinePublicDerivedCountersOglpGfx9(*public_counters);
+
+                if (generate_asic_specific_counters)
+                {
+                    oglp_gfx9_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                }
+
+                status = kGpaStatusOk;
+            }
+            break;
+
+            case GDT_HW_GENERATION_GFX10:
+            {
+                AutoDefinePublicDerivedCountersOglpGfx10(*public_counters);
+
+                if (generate_asic_specific_counters)
+                {
+                    oglp_gfx10_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                }
+
+                status = kGpaStatusOk;
+            }
+            break;
+
+            case GDT_HW_GENERATION_GFX103:
+            {
+                AutoDefinePublicDerivedCountersOglpGfx103(*public_counters);
+
+                if (generate_asic_specific_counters)
+                {
+                    oglp_gfx103_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
+                }
+
+                status = kGpaStatusOk;
+            }
+            break;
+
+            default:
+                GPA_LOG_ERROR("Unsupported or unrecognized hardware generation. Cannot generate public counters.");
+                break;
+            }
+        }
+        else
+        {
+            assert(!"Need to add other driver support.");
         }
     }
 
@@ -424,91 +541,187 @@ GpaStatus GpaCounterGeneratorGl::GenerateHardwareCounters(GDT_HW_GENERATION    d
 
     hardware_counters->Clear();
 
-    switch (desired_generation)
+    if (ogl_utils::IsUglDriver())
     {
-    case GDT_HW_GENERATION_VOLCANICISLAND:
-        hardware_counters->counter_groups_array_                             = counter_gl_gfx8::kGlCounterGroupArrayGfx8;
-        hardware_counters->internal_counter_groups_                          = counter_gl_gfx8::kHwGlGroupsGfx8;
-        hardware_counters->group_count_                                      = counter_gl_gfx8::kHwGlGroupCountGfx8;
-        hardware_counters->sq_counter_groups_                                = counter_gl_gfx8::kHwGlSqGroupsGfx8;
-        hardware_counters->sq_group_count_                                   = counter_gl_gfx8::kHwGlSqGroupCountGfx8;
-        hardware_counters->timestamp_block_ids_                              = counter_gl_gfx8::kHwGlTimestampBlockIdsGfx8;
-        hardware_counters->time_counter_indices_                             = counter_gl_gfx8::kHwGlTimeCounterIndicesGfx8;
-        hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_gl_gfx8::kHwGlGpuTimeBottomToBottomDurationIndexGfx8;
-        hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_gl_gfx8::kHwGlGpuTimeBottomToBottomStartIndexGfx8;
-        hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_gl_gfx8::kHwGlGpuTimeBottomToBottomEndIndexGfx8;
-        hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_gl_gfx8::kHwGlGpuTimeTopToBottomDurationIndexGfx8;
-        hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_gl_gfx8::kHwGlGpuTimeTopToBottomStartIndexGfx8;
-        hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_gl_gfx8::kHwGlGpuTimeTopToBottomEndIndexGfx8;
-        hardware_counters->isolated_groups_                                  = counter_gl_gfx8::kHwGlSqIsolatedGroupsGfx8;
-        hardware_counters->isolated_group_count_                             = counter_gl_gfx8::kHwGlSqIsolatedGroupCountGfx8;
-        hardware_counters->padded_counters_                                  = counter_gl_gfx8::kGlPaddedCounterByGroupGfx8;
-        hardware_counters->padded_counter_count_                             = counter_gl_gfx8::kGlPaddedCounterGroupCountGfx8;
-        break;
+        switch (desired_generation)
+        {
+        case GDT_HW_GENERATION_VOLCANICISLAND:
+            hardware_counters->counter_groups_array_                             = counter_gl_gfx8::kGlCounterGroupArrayGfx8;
+            hardware_counters->internal_counter_groups_                          = counter_gl_gfx8::kHwGlGroupsGfx8;
+            hardware_counters->group_count_                                      = counter_gl_gfx8::kHwGlGroupCountGfx8;
+            hardware_counters->sq_counter_groups_                                = counter_gl_gfx8::kHwGlSqGroupsGfx8;
+            hardware_counters->sq_group_count_                                   = counter_gl_gfx8::kHwGlSqGroupCountGfx8;
+            hardware_counters->timestamp_block_ids_                              = counter_gl_gfx8::kHwGlTimestampBlockIdsGfx8;
+            hardware_counters->time_counter_indices_                             = counter_gl_gfx8::kHwGlTimeCounterIndicesGfx8;
+            hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_gl_gfx8::kHwGlGpuTimeBottomToBottomDurationIndexGfx8;
+            hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_gl_gfx8::kHwGlGpuTimeBottomToBottomStartIndexGfx8;
+            hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_gl_gfx8::kHwGlGpuTimeBottomToBottomEndIndexGfx8;
+            hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_gl_gfx8::kHwGlGpuTimeTopToBottomDurationIndexGfx8;
+            hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_gl_gfx8::kHwGlGpuTimeTopToBottomStartIndexGfx8;
+            hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_gl_gfx8::kHwGlGpuTimeTopToBottomEndIndexGfx8;
+            hardware_counters->isolated_groups_                                  = counter_gl_gfx8::kHwGlSqIsolatedGroupsGfx8;
+            hardware_counters->isolated_group_count_                             = counter_gl_gfx8::kHwGlSqIsolatedGroupCountGfx8;
+            hardware_counters->padded_counters_                                  = counter_gl_gfx8::kGlPaddedCounterByGroupGfx8;
+            hardware_counters->padded_counter_count_                             = counter_gl_gfx8::kGlPaddedCounterGroupCountGfx8;
+            break;
 
-    case GDT_HW_GENERATION_GFX9:
-        hardware_counters->counter_groups_array_                             = counter_gl_gfx9::kGlCounterGroupArrayGfx9;
-        hardware_counters->internal_counter_groups_                          = counter_gl_gfx9::kHwGlGroupsGfx9;
-        hardware_counters->group_count_                                      = counter_gl_gfx9::kHwGlGroupCountGfx9;
-        hardware_counters->sq_counter_groups_                                = counter_gl_gfx9::kHwGlSqGroupsGfx9;
-        hardware_counters->sq_group_count_                                   = counter_gl_gfx9::kHwGlSqGroupCountGfx9;
-        hardware_counters->timestamp_block_ids_                              = counter_gl_gfx9::kHwGlTimestampBlockIdsGfx9;
-        hardware_counters->time_counter_indices_                             = counter_gl_gfx9::kHwGlTimeCounterIndicesGfx9;
-        hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_gl_gfx9::kHwGlGpuTimeBottomToBottomDurationIndexGfx9;
-        hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_gl_gfx9::kHwGlGpuTimeBottomToBottomStartIndexGfx9;
-        hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_gl_gfx9::kHwGlGpuTimeBottomToBottomEndIndexGfx9;
-        hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_gl_gfx9::kHwGlGpuTimeTopToBottomDurationIndexGfx9;
-        hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_gl_gfx9::kHwGlGpuTimeTopToBottomStartIndexGfx9;
-        hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_gl_gfx9::kHwGlGpuTimeTopToBottomEndIndexGfx9;
-        hardware_counters->isolated_groups_                                  = counter_gl_gfx9::kHwGlSqIsolatedGroupsGfx9;
-        hardware_counters->isolated_group_count_                             = counter_gl_gfx9::kHwGlSqIsolatedGroupCountGfx9;
-        hardware_counters->padded_counters_                                  = counter_gl_gfx9::kGlPaddedCounterByGroupGfx9;
-        hardware_counters->padded_counter_count_                             = counter_gl_gfx9::kGlPaddedCounterGroupCountGfx9;
-        break;
+        case GDT_HW_GENERATION_GFX9:
+            hardware_counters->counter_groups_array_                             = counter_gl_gfx9::kGlCounterGroupArrayGfx9;
+            hardware_counters->internal_counter_groups_                          = counter_gl_gfx9::kHwGlGroupsGfx9;
+            hardware_counters->group_count_                                      = counter_gl_gfx9::kHwGlGroupCountGfx9;
+            hardware_counters->sq_counter_groups_                                = counter_gl_gfx9::kHwGlSqGroupsGfx9;
+            hardware_counters->sq_group_count_                                   = counter_gl_gfx9::kHwGlSqGroupCountGfx9;
+            hardware_counters->timestamp_block_ids_                              = counter_gl_gfx9::kHwGlTimestampBlockIdsGfx9;
+            hardware_counters->time_counter_indices_                             = counter_gl_gfx9::kHwGlTimeCounterIndicesGfx9;
+            hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_gl_gfx9::kHwGlGpuTimeBottomToBottomDurationIndexGfx9;
+            hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_gl_gfx9::kHwGlGpuTimeBottomToBottomStartIndexGfx9;
+            hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_gl_gfx9::kHwGlGpuTimeBottomToBottomEndIndexGfx9;
+            hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_gl_gfx9::kHwGlGpuTimeTopToBottomDurationIndexGfx9;
+            hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_gl_gfx9::kHwGlGpuTimeTopToBottomStartIndexGfx9;
+            hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_gl_gfx9::kHwGlGpuTimeTopToBottomEndIndexGfx9;
+            hardware_counters->isolated_groups_                                  = counter_gl_gfx9::kHwGlSqIsolatedGroupsGfx9;
+            hardware_counters->isolated_group_count_                             = counter_gl_gfx9::kHwGlSqIsolatedGroupCountGfx9;
+            hardware_counters->padded_counters_                                  = counter_gl_gfx9::kGlPaddedCounterByGroupGfx9;
+            hardware_counters->padded_counter_count_                             = counter_gl_gfx9::kGlPaddedCounterGroupCountGfx9;
+            break;
 
-    case GDT_HW_GENERATION_GFX10:
-        hardware_counters->counter_groups_array_                             = counter_gl_gfx10::kGlCounterGroupArrayGfx10;
-        hardware_counters->internal_counter_groups_                          = counter_gl_gfx10::kHwGlGroupsGfx10;
-        hardware_counters->group_count_                                      = counter_gl_gfx10::kHwGlGroupCountGfx10;
-        hardware_counters->sq_counter_groups_                                = counter_gl_gfx10::kHwGlSqGroupsGfx10;
-        hardware_counters->sq_group_count_                                   = counter_gl_gfx10::kHwGlSqGroupCountGfx10;
-        hardware_counters->timestamp_block_ids_                              = counter_gl_gfx10::kHwGlTimestampBlockIdsGfx10;
-        hardware_counters->time_counter_indices_                             = counter_gl_gfx10::kHwGlTimeCounterIndicesGfx10;
-        hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_gl_gfx10::kHwGlGpuTimeBottomToBottomDurationIndexGfx10;
-        hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_gl_gfx10::kHwGlGpuTimeBottomToBottomStartIndexGfx10;
-        hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_gl_gfx10::kHwGlGpuTimeBottomToBottomEndIndexGfx10;
-        hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_gl_gfx10::kHwGlGpuTimeTopToBottomDurationIndexGfx10;
-        hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_gl_gfx10::kHwGlGpuTimeTopToBottomStartIndexGfx10;
-        hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_gl_gfx10::kHwGlGpuTimeTopToBottomEndIndexGfx10;
-        hardware_counters->isolated_groups_                                  = counter_gl_gfx10::kHwGlSqIsolatedGroupsGfx10;
-        hardware_counters->isolated_group_count_                             = counter_gl_gfx10::kHwGlSqIsolatedGroupCountGfx10;
-        hardware_counters->padded_counters_                                  = counter_gl_gfx10::kGlPaddedCounterByGroupGfx10;
-        hardware_counters->padded_counter_count_                             = counter_gl_gfx10::kGlPaddedCounterGroupCountGfx10;
-        break;
+        case GDT_HW_GENERATION_GFX10:
+            hardware_counters->counter_groups_array_                             = counter_gl_gfx10::kGlCounterGroupArrayGfx10;
+            hardware_counters->internal_counter_groups_                          = counter_gl_gfx10::kHwGlGroupsGfx10;
+            hardware_counters->group_count_                                      = counter_gl_gfx10::kHwGlGroupCountGfx10;
+            hardware_counters->sq_counter_groups_                                = counter_gl_gfx10::kHwGlSqGroupsGfx10;
+            hardware_counters->sq_group_count_                                   = counter_gl_gfx10::kHwGlSqGroupCountGfx10;
+            hardware_counters->timestamp_block_ids_                              = counter_gl_gfx10::kHwGlTimestampBlockIdsGfx10;
+            hardware_counters->time_counter_indices_                             = counter_gl_gfx10::kHwGlTimeCounterIndicesGfx10;
+            hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_gl_gfx10::kHwGlGpuTimeBottomToBottomDurationIndexGfx10;
+            hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_gl_gfx10::kHwGlGpuTimeBottomToBottomStartIndexGfx10;
+            hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_gl_gfx10::kHwGlGpuTimeBottomToBottomEndIndexGfx10;
+            hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_gl_gfx10::kHwGlGpuTimeTopToBottomDurationIndexGfx10;
+            hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_gl_gfx10::kHwGlGpuTimeTopToBottomStartIndexGfx10;
+            hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_gl_gfx10::kHwGlGpuTimeTopToBottomEndIndexGfx10;
+            hardware_counters->isolated_groups_                                  = counter_gl_gfx10::kHwGlSqIsolatedGroupsGfx10;
+            hardware_counters->isolated_group_count_                             = counter_gl_gfx10::kHwGlSqIsolatedGroupCountGfx10;
+            hardware_counters->padded_counters_                                  = counter_gl_gfx10::kGlPaddedCounterByGroupGfx10;
+            hardware_counters->padded_counter_count_                             = counter_gl_gfx10::kGlPaddedCounterGroupCountGfx10;
+            break;
 
-    case GDT_HW_GENERATION_GFX103:
-        hardware_counters->counter_groups_array_                             = counter_gl_gfx103::kGlCounterGroupArrayGfx103;
-        hardware_counters->internal_counter_groups_                          = counter_gl_gfx103::kHwGlGroupsGfx103;
-        hardware_counters->group_count_                                      = counter_gl_gfx103::kHwGlGroupCountGfx103;
-        hardware_counters->sq_counter_groups_                                = counter_gl_gfx103::kHwGlSqGroupsGfx103;
-        hardware_counters->sq_group_count_                                   = counter_gl_gfx103::kHwGlSqGroupCountGfx103;
-        hardware_counters->timestamp_block_ids_                              = counter_gl_gfx103::kHwGlTimestampBlockIdsGfx103;
-        hardware_counters->time_counter_indices_                             = counter_gl_gfx103::kHwGlTimeCounterIndicesGfx103;
-        hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_gl_gfx103::kHwGlGpuTimeBottomToBottomDurationIndexGfx103;
-        hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_gl_gfx103::kHwGlGpuTimeBottomToBottomStartIndexGfx103;
-        hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_gl_gfx103::kHwGlGpuTimeBottomToBottomEndIndexGfx103;
-        hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_gl_gfx103::kHwGlGpuTimeTopToBottomDurationIndexGfx103;
-        hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_gl_gfx103::kHwGlGpuTimeTopToBottomStartIndexGfx103;
-        hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_gl_gfx103::kHwGlGpuTimeTopToBottomEndIndexGfx103;
-        hardware_counters->isolated_groups_                                  = counter_gl_gfx103::kHwGlSqIsolatedGroupsGfx103;
-        hardware_counters->isolated_group_count_                             = counter_gl_gfx103::kHwGlSqIsolatedGroupCountGfx103;
-        hardware_counters->padded_counters_                                  = counter_gl_gfx103::kGlPaddedCounterByGroupGfx103;
-        hardware_counters->padded_counter_count_                             = counter_gl_gfx103::kGlPaddedCounterGroupCountGfx103;
-        break;
+        case GDT_HW_GENERATION_GFX103:
+            hardware_counters->counter_groups_array_                             = counter_gl_gfx103::kGlCounterGroupArrayGfx103;
+            hardware_counters->internal_counter_groups_                          = counter_gl_gfx103::kHwGlGroupsGfx103;
+            hardware_counters->group_count_                                      = counter_gl_gfx103::kHwGlGroupCountGfx103;
+            hardware_counters->sq_counter_groups_                                = counter_gl_gfx103::kHwGlSqGroupsGfx103;
+            hardware_counters->sq_group_count_                                   = counter_gl_gfx103::kHwGlSqGroupCountGfx103;
+            hardware_counters->timestamp_block_ids_                              = counter_gl_gfx103::kHwGlTimestampBlockIdsGfx103;
+            hardware_counters->time_counter_indices_                             = counter_gl_gfx103::kHwGlTimeCounterIndicesGfx103;
+            hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_gl_gfx103::kHwGlGpuTimeBottomToBottomDurationIndexGfx103;
+            hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_gl_gfx103::kHwGlGpuTimeBottomToBottomStartIndexGfx103;
+            hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_gl_gfx103::kHwGlGpuTimeBottomToBottomEndIndexGfx103;
+            hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_gl_gfx103::kHwGlGpuTimeTopToBottomDurationIndexGfx103;
+            hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_gl_gfx103::kHwGlGpuTimeTopToBottomStartIndexGfx103;
+            hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_gl_gfx103::kHwGlGpuTimeTopToBottomEndIndexGfx103;
+            hardware_counters->isolated_groups_                                  = counter_gl_gfx103::kHwGlSqIsolatedGroupsGfx103;
+            hardware_counters->isolated_group_count_                             = counter_gl_gfx103::kHwGlSqIsolatedGroupCountGfx103;
+            hardware_counters->padded_counters_                                  = counter_gl_gfx103::kGlPaddedCounterByGroupGfx103;
+            hardware_counters->padded_counter_count_                             = counter_gl_gfx103::kGlPaddedCounterGroupCountGfx103;
+            break;
 
-    default:
-        GPA_LOG_ERROR("Unrecognized or unhandled hardware generation.");
-        return kGpaStatusErrorHardwareNotSupported;
+        default:
+            GPA_LOG_ERROR("Unrecognized or unhandled hardware generation.");
+            return kGpaStatusErrorHardwareNotSupported;
+        }
+    }
+    else if (ogl_utils::IsNoDriver() || ogl_utils::IsOglpDriver())
+    {
+        switch (desired_generation)
+        {
+        case GDT_HW_GENERATION_VOLCANICISLAND:
+            hardware_counters->counter_groups_array_                             = counter_oglp_gfx8::kOglpCounterGroupArrayGfx8;
+            hardware_counters->internal_counter_groups_                          = counter_oglp_gfx8::kHwOglpGroupsGfx8;
+            hardware_counters->group_count_                                      = counter_oglp_gfx8::kHwOglpGroupCountGfx8;
+            hardware_counters->sq_counter_groups_                                = counter_oglp_gfx8::kHwOglpSqGroupsGfx8;
+            hardware_counters->sq_group_count_                                   = counter_oglp_gfx8::kHwOglpSqGroupCountGfx8;
+            hardware_counters->timestamp_block_ids_                              = counter_oglp_gfx8::kHwOglpTimestampBlockIdsGfx8;
+            hardware_counters->time_counter_indices_                             = counter_oglp_gfx8::kHwOglpTimeCounterIndicesGfx8;
+            hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_oglp_gfx8::kHwOglpGpuTimeBottomToBottomDurationIndexGfx8;
+            hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_oglp_gfx8::kHwOglpGpuTimeBottomToBottomStartIndexGfx8;
+            hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_oglp_gfx8::kHwOglpGpuTimeBottomToBottomEndIndexGfx8;
+            hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_oglp_gfx8::kHwOglpGpuTimeTopToBottomDurationIndexGfx8;
+            hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_oglp_gfx8::kHwOglpGpuTimeTopToBottomStartIndexGfx8;
+            hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_oglp_gfx8::kHwOglpGpuTimeTopToBottomEndIndexGfx8;
+            hardware_counters->isolated_groups_                                  = counter_oglp_gfx8::kHwOglpSqIsolatedGroupsGfx8;
+            hardware_counters->isolated_group_count_                             = counter_oglp_gfx8::kHwOglpSqIsolatedGroupCountGfx8;
+            hardware_counters->padded_counters_                                  = counter_oglp_gfx8::kOglpPaddedCounterByGroupGfx8;
+            hardware_counters->padded_counter_count_                             = counter_oglp_gfx8::kOglpPaddedCounterGroupCountGfx8;
+            break;
+
+        case GDT_HW_GENERATION_GFX9:
+            hardware_counters->counter_groups_array_                             = counter_oglp_gfx9::kOglpCounterGroupArrayGfx9;
+            hardware_counters->internal_counter_groups_                          = counter_oglp_gfx9::kHwOglpGroupsGfx9;
+            hardware_counters->group_count_                                      = counter_oglp_gfx9::kHwOglpGroupCountGfx9;
+            hardware_counters->sq_counter_groups_                                = counter_oglp_gfx9::kHwOglpSqGroupsGfx9;
+            hardware_counters->sq_group_count_                                   = counter_oglp_gfx9::kHwOglpSqGroupCountGfx9;
+            hardware_counters->timestamp_block_ids_                              = counter_oglp_gfx9::kHwOglpTimestampBlockIdsGfx9;
+            hardware_counters->time_counter_indices_                             = counter_oglp_gfx9::kHwOglpTimeCounterIndicesGfx9;
+            hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_oglp_gfx9::kHwOglpGpuTimeBottomToBottomDurationIndexGfx9;
+            hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_oglp_gfx9::kHwOglpGpuTimeBottomToBottomStartIndexGfx9;
+            hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_oglp_gfx9::kHwOglpGpuTimeBottomToBottomEndIndexGfx9;
+            hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_oglp_gfx9::kHwOglpGpuTimeTopToBottomDurationIndexGfx9;
+            hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_oglp_gfx9::kHwOglpGpuTimeTopToBottomStartIndexGfx9;
+            hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_oglp_gfx9::kHwOglpGpuTimeTopToBottomEndIndexGfx9;
+            hardware_counters->isolated_groups_                                  = counter_oglp_gfx9::kHwOglpSqIsolatedGroupsGfx9;
+            hardware_counters->isolated_group_count_                             = counter_oglp_gfx9::kHwOglpSqIsolatedGroupCountGfx9;
+            hardware_counters->padded_counters_                                  = counter_oglp_gfx9::kOglpPaddedCounterByGroupGfx9;
+            hardware_counters->padded_counter_count_                             = counter_oglp_gfx9::kOglpPaddedCounterGroupCountGfx9;
+            break;
+
+        case GDT_HW_GENERATION_GFX10:
+            hardware_counters->counter_groups_array_                             = counter_oglp_gfx10::kOglpCounterGroupArrayGfx10;
+            hardware_counters->internal_counter_groups_                          = counter_oglp_gfx10::kHwOglpGroupsGfx10;
+            hardware_counters->group_count_                                      = counter_oglp_gfx10::kHwOglpGroupCountGfx10;
+            hardware_counters->sq_counter_groups_                                = counter_oglp_gfx10::kHwOglpSqGroupsGfx10;
+            hardware_counters->sq_group_count_                                   = counter_oglp_gfx10::kHwOglpSqGroupCountGfx10;
+            hardware_counters->timestamp_block_ids_                              = counter_oglp_gfx10::kHwOglpTimestampBlockIdsGfx10;
+            hardware_counters->time_counter_indices_                             = counter_oglp_gfx10::kHwOglpTimeCounterIndicesGfx10;
+            hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_oglp_gfx10::kHwOglpGpuTimeBottomToBottomDurationIndexGfx10;
+            hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_oglp_gfx10::kHwOglpGpuTimeBottomToBottomStartIndexGfx10;
+            hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_oglp_gfx10::kHwOglpGpuTimeBottomToBottomEndIndexGfx10;
+            hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_oglp_gfx10::kHwOglpGpuTimeTopToBottomDurationIndexGfx10;
+            hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_oglp_gfx10::kHwOglpGpuTimeTopToBottomStartIndexGfx10;
+            hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_oglp_gfx10::kHwOglpGpuTimeTopToBottomEndIndexGfx10;
+            hardware_counters->isolated_groups_                                  = counter_oglp_gfx10::kHwOglpSqIsolatedGroupsGfx10;
+            hardware_counters->isolated_group_count_                             = counter_oglp_gfx10::kHwOglpSqIsolatedGroupCountGfx10;
+            hardware_counters->padded_counters_                                  = counter_oglp_gfx10::kOglpPaddedCounterByGroupGfx10;
+            hardware_counters->padded_counter_count_                             = counter_oglp_gfx10::kOglpPaddedCounterGroupCountGfx10;
+            break;
+
+        case GDT_HW_GENERATION_GFX103:
+            hardware_counters->counter_groups_array_                             = counter_oglp_gfx103::kOglpCounterGroupArrayGfx103;
+            hardware_counters->internal_counter_groups_                          = counter_oglp_gfx103::kHwOglpGroupsGfx103;
+            hardware_counters->group_count_                                      = counter_oglp_gfx103::kHwOglpGroupCountGfx103;
+            hardware_counters->sq_counter_groups_                                = counter_oglp_gfx103::kHwOglpSqGroupsGfx103;
+            hardware_counters->sq_group_count_                                   = counter_oglp_gfx103::kHwOglpSqGroupCountGfx103;
+            hardware_counters->timestamp_block_ids_                              = counter_oglp_gfx103::kHwOglpTimestampBlockIdsGfx103;
+            hardware_counters->time_counter_indices_                             = counter_oglp_gfx103::kHwOglpTimeCounterIndicesGfx103;
+            hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_ = counter_oglp_gfx103::kHwOglpGpuTimeBottomToBottomDurationIndexGfx103;
+            hardware_counters->gpu_time_bottom_to_bottom_start_counter_index_    = counter_oglp_gfx103::kHwOglpGpuTimeBottomToBottomStartIndexGfx103;
+            hardware_counters->gpu_time_bottom_to_bottom_end_counter_index_      = counter_oglp_gfx103::kHwOglpGpuTimeBottomToBottomEndIndexGfx103;
+            hardware_counters->gpu_time_top_to_bottom_duration_counter_index_    = counter_oglp_gfx103::kHwOglpGpuTimeTopToBottomDurationIndexGfx103;
+            hardware_counters->gpu_time_top_to_bottom_start_counter_index_       = counter_oglp_gfx103::kHwOglpGpuTimeTopToBottomStartIndexGfx103;
+            hardware_counters->gpu_time_top_to_bottom_end_counter_index_         = counter_oglp_gfx103::kHwOglpGpuTimeTopToBottomEndIndexGfx103;
+            hardware_counters->isolated_groups_                                  = counter_oglp_gfx103::kHwOglpSqIsolatedGroupsGfx103;
+            hardware_counters->isolated_group_count_                             = counter_oglp_gfx103::kHwOglpSqIsolatedGroupCountGfx103;
+            hardware_counters->padded_counters_                                  = counter_oglp_gfx103::kOglpPaddedCounterByGroupGfx103;
+            hardware_counters->padded_counter_count_                             = counter_oglp_gfx103::kOglpPaddedCounterGroupCountGfx103;
+            break;
+
+        default:
+            GPA_LOG_ERROR("Unrecognized or unhandled hardware generation.");
+            return kGpaStatusErrorHardwareNotSupported;
+        }
+    }
+    else
+    {
+        assert(!"Need to add other driver support.");
     }
 
     // Need to count total number of internal counters, since split into groups.
@@ -564,35 +777,75 @@ GpaStatus GpaCounterGeneratorGl::GenerateHardwareExposedCounters(GDT_HW_GENERATI
         return kGpaStatusOk;
     }
 
-    switch (desired_generation)
+    if (ogl_utils::IsUglDriver())
     {
-    case GDT_HW_GENERATION_VOLCANICISLAND:
-        hardware_counters->hardware_exposed_counters_            = counter_gl_gfx8::kGlExposedCountersGroupArrayGfx8;
-        hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx8::kHwGlExposedCountersByGroupGfx8;
-        hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx8::kHwGlExposedCountersGroupCountGfx8;
-        break;
+        switch (desired_generation)
+        {
+        case GDT_HW_GENERATION_VOLCANICISLAND:
+            hardware_counters->hardware_exposed_counters_            = counter_gl_gfx8::kGlExposedCountersGroupArrayGfx8;
+            hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx8::kHwGlExposedCountersByGroupGfx8;
+            hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx8::kHwGlExposedCountersGroupCountGfx8;
+            break;
 
-    case GDT_HW_GENERATION_GFX9:
-        hardware_counters->hardware_exposed_counters_            = counter_gl_gfx9::kGlExposedCountersGroupArrayGfx9;
-        hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx9::kHwGlExposedCountersByGroupGfx9;
-        hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx9::kHwGlExposedCountersGroupCountGfx9;
-        break;
+        case GDT_HW_GENERATION_GFX9:
+            hardware_counters->hardware_exposed_counters_            = counter_gl_gfx9::kGlExposedCountersGroupArrayGfx9;
+            hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx9::kHwGlExposedCountersByGroupGfx9;
+            hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx9::kHwGlExposedCountersGroupCountGfx9;
+            break;
 
-    case GDT_HW_GENERATION_GFX10:
-        hardware_counters->hardware_exposed_counters_            = counter_gl_gfx10::kGlExposedCountersGroupArrayGfx10;
-        hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx10::kHwGlExposedCountersByGroupGfx10;
-        hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx10::kHwGlExposedCountersGroupCountGfx10;
-        break;
+        case GDT_HW_GENERATION_GFX10:
+            hardware_counters->hardware_exposed_counters_            = counter_gl_gfx10::kGlExposedCountersGroupArrayGfx10;
+            hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx10::kHwGlExposedCountersByGroupGfx10;
+            hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx10::kHwGlExposedCountersGroupCountGfx10;
+            break;
 
-    case GDT_HW_GENERATION_GFX103:
-        hardware_counters->hardware_exposed_counters_            = counter_gl_gfx103::kGlExposedCountersGroupArrayGfx103;
-        hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx103::kHwGlExposedCountersByGroupGfx103;
-        hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx103::kHwGlExposedCountersGroupCountGfx103;
-        break;
+        case GDT_HW_GENERATION_GFX103:
+            hardware_counters->hardware_exposed_counters_            = counter_gl_gfx103::kGlExposedCountersGroupArrayGfx103;
+            hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx103::kHwGlExposedCountersByGroupGfx103;
+            hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx103::kHwGlExposedCountersGroupCountGfx103;
+            break;
 
-    default:
-        GPA_LOG_ERROR("Unrecognized or unhandled hardware generation.");
-        return kGpaStatusErrorHardwareNotSupported;
+        default:
+            GPA_LOG_ERROR("Unrecognized or unhandled hardware generation.");
+            return kGpaStatusErrorHardwareNotSupported;
+        }
+    }
+    else if (ogl_utils::IsNoDriver() || ogl_utils::IsOglpDriver())
+    {
+        switch (desired_generation)
+        {
+        case GDT_HW_GENERATION_VOLCANICISLAND:
+            hardware_counters->hardware_exposed_counters_            = counter_oglp_gfx8::kOglpExposedCountersGroupArrayGfx8;
+            hardware_counters->hardware_exposed_counter_groups_      = counter_oglp_gfx8::kHwOglpExposedCountersByGroupGfx8;
+            hardware_counters->hardware_exposed_counter_group_count_ = counter_oglp_gfx8::kHwOglpExposedCountersGroupCountGfx8;
+            break;
+
+        case GDT_HW_GENERATION_GFX9:
+            hardware_counters->hardware_exposed_counters_            = counter_oglp_gfx9::kOglpExposedCountersGroupArrayGfx9;
+            hardware_counters->hardware_exposed_counter_groups_      = counter_oglp_gfx9::kHwOglpExposedCountersByGroupGfx9;
+            hardware_counters->hardware_exposed_counter_group_count_ = counter_oglp_gfx9::kHwOglpExposedCountersGroupCountGfx9;
+            break;
+
+        case GDT_HW_GENERATION_GFX10:
+            hardware_counters->hardware_exposed_counters_            = counter_oglp_gfx10::kOglpExposedCountersGroupArrayGfx10;
+            hardware_counters->hardware_exposed_counter_groups_      = counter_oglp_gfx10::kHwOglpExposedCountersByGroupGfx10;
+            hardware_counters->hardware_exposed_counter_group_count_ = counter_oglp_gfx10::kHwOglpExposedCountersGroupCountGfx10;
+            break;
+
+        case GDT_HW_GENERATION_GFX103:
+            hardware_counters->hardware_exposed_counters_            = counter_oglp_gfx103::kOglpExposedCountersGroupArrayGfx103;
+            hardware_counters->hardware_exposed_counter_groups_      = counter_oglp_gfx103::kHwOglpExposedCountersByGroupGfx103;
+            hardware_counters->hardware_exposed_counter_group_count_ = counter_oglp_gfx103::kHwOglpExposedCountersGroupCountGfx103;
+            break;
+
+        default:
+            GPA_LOG_ERROR("Unrecognized or unhandled hardware generation.");
+            return kGpaStatusErrorHardwareNotSupported;
+        }
+    }
+    else
+    {
+        assert(!"Need to add other driver support.");
     }
 
     hardware_counters->hardware_exposed_counters_generated_ = MapHardwareExposedCounter(hardware_counters);

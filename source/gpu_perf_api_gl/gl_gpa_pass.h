@@ -26,6 +26,7 @@ struct GlCounter
         : counter_id(0)
         , counter_type(0)
         , counter_group(0)
+        , counter_group_instance(0)
         , counter_index(0)
         , is_counter_result_ready(false)
     {
@@ -34,6 +35,7 @@ struct GlCounter
     GLuint counter_id;               ///< ID that is calculated in the CounterDefinition files.
     GLenum counter_type;             ///< Data type that GL specifies the result will be.
     GLuint counter_group;            ///< Group that this counter is in.
+    GLuint counter_group_instance;   ///< Instance of the group that this counter is in.
     GLuint counter_index;            ///< Index to this counter within its group.
     bool   is_counter_result_ready;  ///< Indicates whether the result has been stored in the pCounterResult buffer.
 };
@@ -82,11 +84,15 @@ public:
     /// @brief Returns the GL counter in the pass.
     ///
     /// @param [in] counter_group Group of the counter.
+    /// @param [in] counter_group_instance Group instance of the counter.
     /// @param [in] counter_index Index of the counter.
     /// @param [out] index_of_counter_within_pass Index of the counter within pass.
     ///
     /// @return Pointer to the GL counter if found otherwise nullptr.
-    const GlCounter* GetGLCounter(const GLuint& counter_group, const GLuint& counter_index, unsigned int& index_of_counter_within_pass) const;
+    const GlCounter* GetGLCounter(const GLuint& counter_group,
+                                  const GLuint& counter_group_instance,
+                                  const GLuint& counter_index,
+                                  unsigned int& index_of_counter_within_pass) const;
 
 private:
     /// @brief Initializes the counter info for the passed performance Id.

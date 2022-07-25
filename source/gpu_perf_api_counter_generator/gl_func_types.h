@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief File defines the functions which are not declared in any of the GL headers.
@@ -13,6 +13,9 @@ namespace ogl_utils
     typedef unsigned int GLhandle;                                                                        ///< Workaround missing def in headers.
     typedef bool(APIENTRY* PFN_GLX_QUERYCURRENTRENDERERINTEGERMESA)(int attribute, unsigned int* value);  ///< Typedef for glxQueryCurrentRendererIntegerMesa.
     typedef unsigned int(APIENTRY* PFN_GL_SETGPADEVICECLOCKMODEAMDX)(void* clock_mode);                   ///< Typedef for glSetGpaDeviceClockModeAMDX.
+
+    typedef void(APIENTRY* PFN_GL_GETPERFMONITORGROUPS2AMDPROC)(GLint* numGroups, GLsizei groupsSize, GLuint* groups, GLuint* numGroupInstances);
+    typedef void(APIENTRY* PFN_GL_SELECTPERFMONITORCOUNTERS2AMDPROC)(GLuint monitor, GLboolean enable, GLuint group, GLuint instance, GLint numCounters, GLuint* counterList);
 
 #ifdef GLES
     typedef GLvoid(APIENTRY* PFNGLQUERYCOUNTERPROC)(GLuint id, GLenum target);                         ///< Typedef for glQueryCounter.

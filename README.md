@@ -31,16 +31,10 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-### Version 3.11 (04/25/22)
-  * Add support for additional GPUs and APUs.
-  * Counter updates for RDNA2 (Radeon RX 6000 Series) hardware:
-    * Added ray tracing counters for Vulkan: RayTriTests, RayBoxTests, TotalRayTests, and RayTestsPerWave.
-    * Fixed values incorrectly reported by counters PSExportStalls and PSExportStallCycles.
-    * On all hardware: renamed counter "DepthStencilTestBusyCount" to "DepthStencilTestBusyCycles" for consistency with other similar counters.
-    * Added support for Ninja compiler.
-    * Improved error reporting.
-    * Improved counter validation.
-  * Disabled support for Mesa driver. We hope to re-enable it in a future release.
+### Version 3.11.1 (07/27/22)
+  * Updated OpenGL support for the Adrenalin 22.7.1 driver.
+  * Added L2CacheHit counter for OpenGL on Radeon RX 5000 Series hardware.
+  * Improved GPA integration into GLTriangle sample application.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
