@@ -18,6 +18,7 @@
 static const int kAmdVendorId    = 0x1002;  ///< The AMD vendor ID.
 static const int kNvidiaVendorId = 0x10DE;  ///< The Nvidia vendor ID.
 static const int kIntelVendorId  = 0x8086;  ///< The Intel vendor ID.
+static const int kSamsungVendorId = 0x144D;  ///< The Samsung vendor ID.
 
 /// @brief Stores information about the hardware installed in the machine.
 class GpaHwInfo
@@ -230,7 +231,26 @@ public:
     /// @return True if the current hardware is AMD hardware.
     bool IsAmd() const
     {
-        return vendor_id_set_ && kAmdVendorId == vendor_id_;
+        return vendor_id_set_ && (kAmdVendorId == vendor_id_);
+    };
+
+    /// @brief Check if the current hardware is Samsung hardware.
+    ///
+    /// @return True if the current hardware is Samsung hardware.
+    bool IsSamsung() const
+    {
+        return vendor_id_set_ && (kSamsungVendorId == vendor_id_);
+    };
+
+    /// @brief Check if the current hardware is AMD or Samsung hardware.
+    ///
+    /// The Samsung Xclipse GPU is based on AMD RDNA2 and can be treated like AMD
+    /// in most cases.
+    ///
+    /// @return True if the current hardware is AMD or Samsung hardware.
+    bool IsAmdOrSamsung() const
+    {
+        return IsAmd() || IsSamsung();
     };
 
     /// @brief Check if the current hardware is Nvidia hardware.

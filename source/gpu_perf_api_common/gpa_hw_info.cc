@@ -264,7 +264,7 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId()
     }
 
     // Only emit an error for AMD devices.
-    if (IsAmd())
+    if (IsAmdOrSamsung())
     {
         std::stringstream ss;
         ss << "Unrecognized device ID: " << device_id_ << ".";

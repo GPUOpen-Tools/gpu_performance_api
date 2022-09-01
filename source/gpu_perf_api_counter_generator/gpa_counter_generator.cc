@@ -163,7 +163,7 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
     {
         desired_generation = GDT_HW_GENERATION_INTEL;
     }
-    else if (kAmdVendorId == vendor_id)
+    else if ((kAmdVendorId == vendor_id) || (kSamsungVendorId == vendor_id))
     {
         if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(device_id, revision_id, card_info))
         {

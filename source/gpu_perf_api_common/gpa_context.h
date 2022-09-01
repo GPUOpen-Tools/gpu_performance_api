@@ -129,6 +129,19 @@ protected:
     /// @return true if context device is AMD device otherwise false.
     bool IsAmdDevice() const;
 
+    /// @brief Returns whether the device is Samsung device or not.
+    ///
+    /// @return true if context device is Samsung device otherwise false.
+    bool IsSamsungDevice() const;
+
+    /// @brief Returns whether the device is AMD or Samsung device.
+    ///
+    /// The Samsung Xclipse GPU is based on AMD RDNA2 and can be treated like AMD
+    /// in most cases.
+    ///
+    /// @return true if context device is AMD or Samsung device otherwise false.
+    bool IsAmdOrSamsungDevice() const;
+
     /// @brief Adds the GPA session to the session list.
     ///
     /// @param [in] gpa_session GPA session object pointer.
@@ -163,7 +176,6 @@ private:
     bool                 invalidate_and_flush_l2_cache_enabled_;  ///< Flag indicating flush and invalidation of L2 cache is enabled or not.
     bool                 is_open_;                                ///< Flag indicating context is open or not.
     GpaSessionList       gpa_session_list_;                       ///< List of GPA sessions in the context.
-    bool                 is_amd_device_;                          ///< Flag indicating whether the device is AMD or not.
     mutable std::mutex   gpa_session_list_mutex_;                 ///< Mutex for GPA session list.
     IGpaSession*         active_session_;                         ///< Gpa session to keep track of active session.
     mutable std::mutex   active_session_mutex_;                   ///< Mutex for the active session.

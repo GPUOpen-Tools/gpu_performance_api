@@ -311,7 +311,7 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
     {
         GPA_LOG_ERROR("Unable to get necessary hardware info.");
     }
-    else if (hwInfo.IsAmd())
+    else if (hwInfo.IsAmdOrSamsung())
     {
         if (driver_counter_group_info_.size() == 0)
         {
