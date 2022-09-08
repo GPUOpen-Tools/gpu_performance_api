@@ -91,7 +91,7 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                         {
                             hardware_generation = GDT_HW_GENERATION_INTEL;
                         }
-                        else if (kAmdVendorId == vendor_id)
+                        else if ((kAmdVendorId == vendor_id) || (kSamsungVendorId == vendor_id))
                         {
                             GDT_GfxCardInfo card_info = {};
 

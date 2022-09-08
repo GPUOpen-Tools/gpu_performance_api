@@ -305,7 +305,7 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaH
         return kGpaStatusErrorFailed;
     }
 
-    if (api_hw_info.IsAmd())
+    if (api_hw_info.IsAmdOrSamsung())
     {
         AMDTADLUtils::Instance()->GetAsicInfoList(asic_info_list);
         GpaHwInfo asic_hw_info;

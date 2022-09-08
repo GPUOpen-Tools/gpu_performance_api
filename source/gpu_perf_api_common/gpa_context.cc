@@ -22,15 +22,8 @@ GpaContext::GpaContext(GpaHwInfo& hw_info, GpaOpenContextFlags flags)
     , hw_info_(hw_info)
     , invalidate_and_flush_l2_cache_enabled_(false)
     , is_open_(false)
-    , is_amd_device_(false)
     , active_session_(nullptr)
 {
-    GpaUInt32 vendor_id;
-
-    if (hw_info_.GetVendorId(vendor_id) && kAmdVendorId == vendor_id)
-    {
-        is_amd_device_ = true;
-    }
 }
 
 GpaContext::~GpaContext()
@@ -416,15 +409,19 @@ void GpaContext::SetAsOpened(bool open)
 
 bool GpaContext::IsAmdDevice() const
 {
-    GpaUInt32 vendor_id;
-    bool      is_amd = false;
+    GpaUInt32 vendor_id = 0;
+    return hw_info_.GetVendorId(vendor_id) && (kAmdVendorId == vendor_id);
+}
 
-    if (hw_info_.GetVendorId(vendor_id) && kAmdVendorId == vendor_id)
-    {
-        is_amd = true;
-    }
+bool GpaContext::IsSamsungDevice() const
+{
+    GpaUInt32 vendor_id = 0;
+    return hw_info_.GetVendorId(vendor_id) && (kSamsungVendorId == vendor_id);
+}
 
-    return is_amd;
+bool GpaContext::IsAmdOrSamsungDevice() const
+{
+    return IsAmdDevice() || IsSamsungDevice();
 }
 
 void GpaContext::AddGpaSession(IGpaSession* gpa_session)
