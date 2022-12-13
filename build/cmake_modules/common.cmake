@@ -57,16 +57,10 @@ if(NOT WIN32)
         set(CMAKE_C_COMPILER gcc)
         set(CMAKE_CXX_COMPILER g++)
     endif()
-endif()
 
 if(NOT APPLE)
     set(GPA_COMMON_LINK_ARCHIVE_FLAG -Wl,--whole-archive)
     set(GPA_COMMON_LINK_NO_ARCHIVE_FLAG -Wl,--no-whole-archive)
 endif()
-
-add_compile_options(-Wno-unknown-pragmas -Wno-strict-aliasing -Wno-non-virtual-dtor -Wno-unused-value -fvisibility=hidden)
-
-# Don't add -msse if building for Android ARM. Arg is not relevant for ARM and -Werror,-Wunused-command-line-argument makes that an error
-if(NOT ((ANDROID) AND (ANDROID_ABI STREQUAL "arm64-v8a")))
-    add_compile_options(-msse)
+    add_compile_options(-Wno-unknown-pragmas -Wno-strict-aliasing -Wno-non-virtual-dtor -Wno-unused-value -msse -fvisibility=hidden)
 endif()

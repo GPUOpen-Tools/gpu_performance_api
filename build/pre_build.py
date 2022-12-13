@@ -33,10 +33,8 @@ def pre_build(build_args):
 
     build_dir_name = "cmake_bld"
 
-    if build_args.android_x64 == True:
-        build_dir_name = "cmake_bld_android_x64"
-    elif build_args.android_arm64 == True:
-        build_dir_name = "cmake_bld_android_arm64"
+    if build_args.android == True:
+        build_dir_name = "cmake_bld_android"
 
     cmake_additional_args = PreBuildCMakeCommon.parse_cmake_arguments(build_args)
 
@@ -45,13 +43,14 @@ def pre_build(build_args):
     else:
         cmake_additional_args.append("-Dbuild=0")
 
-    if build_args.android_x64 == True or build_args.android_arm64 == True:
+    if build_args.android == True:
         PreBuildCMakeCommon.cmake_generator_platforms.remove('x86')
         android_ndk=os.environ["ANDROID_NDK"]
         if android_ndk == "":
             print("Android environment variable is not defined. Exiting.")
             exit(1)
         cmake_additional_args.append("-DBUILD_ANDROID=ON")
+        cmake_additional_args.append("-DANDROID_ABI=x86_64")
         cmake_additional_args.append("-DANDROID_PLATFORM=24")
         cmake_additional_args.append("-DANDROID_NATIVE_API_LEVEL=24")
         cmake_additional_args.append("-DANDROID_STL=c++_static")
@@ -59,11 +58,6 @@ def pre_build(build_args):
         cmake_additional_args.append("-Dskipopencl=ON")
         cmake_additional_args.append("-Dskiptests=ON")
         cmake_additional_args.append("-Dbuild-32bit=OFF")
-
-    if build_args.android_x64 == True:
-        cmake_additional_args.append("-DANDROID_ABI=x86_64")
-    elif build_args.android_arm64 == True:
-        cmake_additional_args.append("-DANDROID_ABI=arm64-v8a")
 
     print(PreBuildCMakeCommon.cmake_generator)
     if sys.platform == "win32":
