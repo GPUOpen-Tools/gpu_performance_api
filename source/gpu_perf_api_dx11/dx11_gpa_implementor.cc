@@ -128,7 +128,7 @@ bool Dx11GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info
     {
         GpaStatus status = kGpaStatusOk;
 
-        if (hw_info.IsAmdOrSamsung())
+        if (hw_info.IsAmd())
         {
             unsigned int   major_ver     = 0;
             unsigned int   minor_ver     = 0;

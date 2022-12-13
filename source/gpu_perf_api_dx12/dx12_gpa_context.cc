@@ -137,7 +137,7 @@ bool Dx12GpaContext::InitializeAMDExtension()
 
     if (nullptr != d3d12_device_)
     {
-        if (nullptr == gpa_interface_ && IsAmdOrSamsungDevice())
+        if (nullptr == gpa_interface_ && IsAmdDevice())
         {
             result = kGpaStatusErrorDriverNotSupported;
 
