@@ -191,13 +191,6 @@ class GpaPackage:
                                             doc_file_abs_path_str.split(gpa_docs_dir_str)[1]
                     GpaUtils.WriteFileToArchive(gpa_archive_handle, doc_file_abs_path,
                                                                     doc_file_in_archive)
-            # Add android specific script file
-            if android == True:
-                _android_device_connect_script_file = os.path.normpath(os.path.join(self._gpa_root_dir, "scripts", self._android_device_connect_script))
-                _android_device_connect_script_file_in_archive = os.path.normpath(os.path.join(gpa_archive_root_name, self._android_device_connect_script))
-
-                GpaUtils.WriteFileToArchive(gpa_archive_handle, _android_device_connect_script_file,
-                                                                _android_device_connect_script_file_in_archive)
 
     # Returns the gpa version
     def GetGpaVersion(self, _build_numberin):
@@ -258,7 +251,6 @@ class GpaPackage:
                  "LICENSE"]
 
     _version_file="source/gpu_perf_api_common/gpa_version.h"
-    _android_device_connect_script = "enable_set_device_clock_android.py"
     _major_version=0
     _minor_version=0
     _update_version=0

@@ -14,9 +14,9 @@
 
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gl_gfx9.h"
 
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_gl_gfx9_gfx904.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_gl_gfx9_gfx906.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_gl_gfx9_gfx909.h"
-#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_gl_gfx9_placeholder4.h"
 
 namespace gl_gfx9_asics
 {
@@ -32,17 +32,17 @@ namespace gl_gfx9_asics
         // Override max block events first so we could chain these if we want
         counter_gl_gfx9::OverrideMaxBlockEvents(asic_type);
 
+        if (gl_gfx9_gfx904::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
+        {
+            return;
+        }
+
         if (gl_gfx9_gfx906::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
         {
             return;
         }
 
         if (gl_gfx9_gfx909::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
-        {
-            return;
-        }
-
-        if (gl_gfx9_placeholder4::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
         {
             return;
         }

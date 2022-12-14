@@ -25,10 +25,11 @@ namespace ogl_utils
         kAsicGfx9,    ///< GFX9 Family.
         kAsicGfx10,   ///< GFX10 Family.
         kAsicGfx103,  ///< GFX103 Family.
+        kAsicGfx11,   ///< GFX11 Family.
         kAsicUnknown  ///< Unknown ASIC Family.
     } AsicGeneration;
 
-    static const char* kAsicGenerationStrings[] = {"Gfx6", "Gfx7", "Gfx8", "Gfx9", "Gfx10", "Gfx103", "Unknown"};
+    static const char* kAsicGenerationStrings[] = {"Gfx6", "Gfx7", "Gfx8", "Gfx9", "Gfx10", "Gfx103", "Gfx11", "Unknown"};
     static_assert(sizeof(kAsicGenerationStrings) / sizeof(char*) == (kAsicUnknown + 1), "kAsicGenerationStrings does not have enough entries.");
 
     /// @brief ASIC identifier enumeration from the UGL driver.
@@ -62,7 +63,7 @@ namespace ogl_utils
         kAsicIdGfx900,                  ///< ATI ASIC Id for GFX900.
         kAsicIdGfx902,                  ///< ATI ASIC Id for GFX902 (APU).
         kAsicIdPlaceholder,             ///< ATI ASIC Id for placeholder.
-        kAsicIdPlaceholder1,            ///< ATI ASIC Id for placeholder1.
+        kAsicIdGfx904,                  ///< ATI ASIC Id for GFX904.
         kAsicIdGfx906,                  ///< ATI ASIC Id for GFX906.
         kAsicIdGfx90C,                  ///< ATI ASIC Id for GFX90C (APU).
         kAsicIdPlaceholder3,            ///< ATI ASIC Id for placeholder APU.
@@ -139,7 +140,8 @@ namespace ogl_utils
         kNavi21Lite   = 0x28,
         kPlaceholder6 = 0x2A,
         kNavi14Lite   = 0x2B,
-        kGfx1035      = 0x2F,
+        kGfx1100      = 0x2C,
+        kGfx1035 = 0x2F,
 
         kAsicRevisionLast
     } AsicRevision;

@@ -88,7 +88,7 @@ void ClGpaPass::InitializeClCounterInfo()
     ClGpaContext*              cl_gpa_context    = reinterpret_cast<ClGpaContext*>(GetGpaSession()->GetParentContext());
     IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(cl_gpa_context);
     const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
-    GpaUInt32                  group_count       = static_cast<GpaUInt32>(hardware_counters->group_count_);
+    GpaUInt32                  group_count       = static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size());
     UNREFERENCED_PARAMETER(group_count);
 
     auto add_counter_to_cl_counter_info = [&](CounterIndex counter_index) -> bool {

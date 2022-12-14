@@ -43,7 +43,7 @@ void LogGPA(GpaLoggingType logging_type, const char* log_message)
 
 LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wParam, _In_ LPARAM lParam)
 {
-    static unsigned int paint_count = 0;
+    static unsigned int profile_count = 0;
 
     gpa_example::Dx11SampleApp& app = *(reinterpret_cast<gpa_example::Dx11SampleApp*>(GetWindowLongPtr(hwnd, GWLP_USERDATA)));
 
@@ -72,61 +72,88 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
 
     case WM_PAINT:
     {
-        bool session_created = D3D11Triangle::Instance()->GpaCreateProfilingSession();
-        bool session_started = false;
+        static bool start_new_session = true;
+        static bool session_created   = false;
+        static bool session_started   = false;
 
-        if (session_created)
+        if (start_new_session)
         {
-            if (D3D11Triangle::Instance()->GpaEnableCounters())
-            {
-                session_started = D3D11Triangle::Instance()->GpaBeginProfilingSession();
-            }
-            else
-            {
-                D3D11Triangle::Instance()->GpaDeleteProfilingSession();
-            }
-        }
-
-        do
-        {
-            bool pass_started = false;
-
-            if (session_started)
-            {
-                pass_started = D3D11Triangle::Instance()->GpaBeginPass();
-                D3D11Triangle::Instance()->GpaBeginSample();
-            }
-
-            // Draw the triangle.
-            D3D11Triangle::Instance()->Draw();
-
-            if (pass_started)
-            {
-                D3D11Triangle::Instance()->GpaEndSample();
-                D3D11Triangle::Instance()->GpaEndPass();
-            }
-        } while (D3D11Triangle::Instance()->GpaNextPassNeeded());
-
-        bool session_ended = false;
-
-        if (session_started)
-        {
-            session_ended = D3D11Triangle::Instance()->GpaEndProfilingSession();
-        }
-
-        if (session_ended)
-        {
-            D3D11Triangle::Instance()->GpaPopulateSessionResult();
+            session_created = D3D11Triangle::Instance()->GpaCreateProfilingSession();
 
             if (session_created)
             {
-                D3D11Triangle::Instance()->GpaDeleteProfilingSession();
+                if (D3D11Triangle::Instance()->GpaEnableCounters())
+                {
+                    session_started = D3D11Triangle::Instance()->GpaBeginProfilingSession();
+                    start_new_session = false;
+                }
+                else
+                {
+                    D3D11Triangle::Instance()->GpaDeleteProfilingSession();
+                }
             }
         }
 
-        paint_count++;
+        bool pass_started = false;
+        bool sample_started = false;
 
-        if (app.NumberOfFrames() > 0 && paint_count >= app.NumberOfFrames())
+        if (session_started)
+        {
+            pass_started = D3D11Triangle::Instance()->GpaBeginPass();
+        }
+
+        if (pass_started)
+        {
+            sample_started = D3D11Triangle::Instance()->GpaBeginSample();
+        }
+
+        // Draw the triangle.
+        D3D11Triangle::Instance()->Draw();
+
+        if (sample_started)
+        {
+            D3D11Triangle::Instance()->GpaEndSample();
+        }
+
+        // Present the backbuffer.
+        D3D11Triangle::Instance()->Present();
+
+        if (pass_started)
+        {
+            D3D11Triangle::Instance()->GpaEndPass();
+        }
+
+        if (session_started)
+        {
+            if (D3D11Triangle::Instance()->GpaNextPassNeeded() == false)
+            {
+                if (D3D11Triangle::Instance()->GpaEndProfilingSession())
+                {
+                    session_started = false;
+                    D3D11Triangle::Instance()->GpaPopulateSessionResult();
+
+                    ++profile_count;
+
+                    if (session_created)
+                    {
+                        D3D11Triangle::Instance()->GpaDeleteProfilingSession();
+                        session_created = false;
+
+                        if (app.NumberOfFrames() > 0 && profile_count < app.NumberOfFrames())
+                        {
+                            // Start a new session on the next WM_PAINT.
+                            start_new_session = true;
+                        }
+                    }
+                }
+            }
+        }
+        else
+        {
+            ++profile_count;
+        }
+
+        if (app.NumberOfFrames() > 0 && profile_count >= app.NumberOfFrames())
         {
             // If the user specified a number of frames, and we've rendered that many frames, then exit.
             PostQuitMessage(0);
@@ -454,18 +481,6 @@ bool D3D11Triangle::Init(gpa_example::Dx11SampleApp* app)
 
 void D3D11Triangle::Draw()
 {
-    if (is_profiling_enabled_)
-    {
-        if (current_pass_ <= 0)
-        {
-            ++frame_counter_;
-        }
-    }
-    else
-    {
-        ++frame_counter_;
-    }
-
     UINT stride        = sizeof(VertexData);
     UINT buffer_offset = 0;
 
@@ -479,7 +494,23 @@ void D3D11Triangle::Draw()
     dx11_immediate_context_->OMSetDepthStencilState(depth_setncil_state_, NULL);
     dx11_immediate_context_->OMSetRenderTargets(1, &render_target_view_, nullptr);
     dx11_immediate_context_->Draw(3, 0);
+}
+
+void D3D11Triangle::Present()
+{
     dxgi_swap_chain_->Present(1, 0);
+
+    if (is_profiling_enabled_)
+    {
+        if (current_pass_ <= 0)
+        {
+            ++frame_counter_;
+        }
+    }
+    else
+    {
+        ++frame_counter_;
+    }
 }
 
 void D3D11Triangle::ToggleProfiling()
@@ -647,11 +678,7 @@ bool D3D11Triangle::GpaEnableCounters()
             }
             else
             {
-#ifndef AMDT_INTERNAL
                 success = kGpaStatusOk == gpa_function_table_->GpaEnableAllCounters(gpa_session_id_);
-#else
-                success = kGpaStatusOk == gpa_function_table_->GpaEnableCounterByName(gpa_session_id_, "GPUTime");
-#endif
             }
             success = success && kGpaStatusOk == gpa_function_table_->GpaGetPassCount(gpa_session_id_, &num_passes_required_);
         }
@@ -967,6 +994,20 @@ bool D3D11Triangle::GpaValidateData(unsigned int frame_number,
         else if (0 == local_counter_name.compare("VSVerticesIn"))
         {
             return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 3);
+        }
+        else if (app_->IncludeKnownIssues() && (0 == local_counter_name.compare("PSSALUInstCount") || 0 == local_counter_name.compare("PSVALUInstCount")))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0);
+        }
+        else if (app_->IncludeKnownIssues() && (0 == local_counter_name.compare("VsGsSALUInstCount") || 0 == local_counter_name.compare("VsGsVALUInstCount")))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0);
+        }
+        else if (0 == local_counter_name.compare("CSSALUInstCount") || 0 == local_counter_name.compare("CSVALUInstCount") ||
+                 0 == local_counter_name.compare("PreTessSALUInstCount") || 0 == local_counter_name.compare("PreTessVALUInstCount") ||
+                 0 == local_counter_name.compare("PostTessSALUInstCount") || 0 == local_counter_name.compare("PostTessVALUInstCount"))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 0);
         }
         else if (0 == local_counter_name.compare("PSPixelsOut"))
         {

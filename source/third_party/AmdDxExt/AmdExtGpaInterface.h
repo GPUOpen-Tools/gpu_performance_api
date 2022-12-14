@@ -1,7 +1,7 @@
 /*
 ***************************************************************************************************
 *
-*  Copyright (c) 2017 Advanced Micro Devices, Inc. All rights reserved.
+*  Copyright (c) 2017-2022 Advanced Micro Devices, Inc. All rights reserved.
 *
 ***************************************************************************************************
 */
@@ -71,6 +71,7 @@ enum class AmdExtGpuBlock : UINT32
     GeDist = 0x2E,
     GeSe   = 0x2F,
     DfMall = 0x30,
+    SqWgp  = 0x31,
     Count
 };
 
@@ -178,7 +179,8 @@ struct AmdExtGpaSampleConfig
             UINT32 cacheFlushOnCounterCollection : 1;  ///< Insert cache flush and invalidate events before and
                                                        ///  after every sample.
             UINT32 sqShaderMask                  : 1;  ///< Whether or not the contents of sqShaderMask are valid.
-            UINT32 reserved                      : 29; ///< Reserved for future use.
+            UINT32 sqWgpShaderMask               : 1;  ///< Whether or not the contents of sqWgpShaderMask are valid.
+            UINT32 reserved                      : 28; ///< Reserved for future use.
         };
         UINT32 u32All;                                 ///< Bit flags packed as uint32.
     } flags;                                           ///< Bit flags controlling sample operation for all sample
@@ -235,6 +237,9 @@ struct AmdExtGpaSampleConfig
         AmdExtHwPipePoint preSample;   ///< The point in the GPU pipeline where the begin timestamp should take place.
         AmdExtHwPipePoint postSample;  ///< The point in the GPU pipeline where the end timestamp should take place.
     } timing;   ///< Timestamp configuration. (only valid for timing samples)
+
+    AmdExtPerfExperimentShaderFlags sqWgpShaderMask;  ///< Indicates which hardware shader stages should be
+                                                      ///  sampled. Only valid if flags.sqWgpShaderMask is set to 1.
 };
 
 enum class AmdExtDeviceClockMode : UINT32

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Helper functions for Counter Generator Unit Tests.
@@ -36,6 +36,7 @@ static const unsigned int kDevIdGfx8     = 0x67DF;      ///< Gfx8.
 static const unsigned int kDevIdGfx9     = 0x6863;      ///< Gfx9.
 static const unsigned int kDevIdGfx10    = 0x7310;      ///< Gfx10.
 static const unsigned int kDevIdGfx10_3  = 0x73A0;      ///< Gfx10_3.
+static const unsigned int kDevIdGfx11    = 0x744C;      ///< Gfx11.
 
 /// Name of the counter library.
 extern const char* kCountersLibName;

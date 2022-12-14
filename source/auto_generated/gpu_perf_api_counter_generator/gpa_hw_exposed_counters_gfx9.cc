@@ -13,12 +13,12 @@
 namespace counter_gfx9
 {
 
-    GpaHardwareCounterDesc kCpfExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCpfExposedCountersGfx9 = {
     {0, "CPF_PERF_SEL_ALWAYS_COUNT", "CPF", "Always Count.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {23, "CPF_PERF_SEL_CPF_STAT_BUSY", "CPF", "CPF Busy.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb0ExposedCountersGfx9 = {
     {7, "CB0_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB0", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB0_PERF_SEL_CM_MC_WRITE_REQUEST", "CB0", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB0_PERF_SEL_FC_MC_WRITE_REQUEST", "CB0", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -29,9 +29,9 @@ namespace counter_gfx9
     {162, "CB0_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB0", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB0_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB0", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB0_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB0", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb1ExposedCountersGfx9 = {
     {7, "CB1_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB1", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB1_PERF_SEL_CM_MC_WRITE_REQUEST", "CB1", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB1_PERF_SEL_FC_MC_WRITE_REQUEST", "CB1", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -42,9 +42,9 @@ namespace counter_gfx9
     {162, "CB1_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB1", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB1_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB1", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB1_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB1", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb2ExposedCountersGfx9 = {
     {7, "CB2_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB2", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB2_PERF_SEL_CM_MC_WRITE_REQUEST", "CB2", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB2_PERF_SEL_FC_MC_WRITE_REQUEST", "CB2", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -55,9 +55,9 @@ namespace counter_gfx9
     {162, "CB2_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB2", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB2_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB2", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB2_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB2", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb3ExposedCountersGfx9 = {
     {7, "CB3_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB3", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB3_PERF_SEL_CM_MC_WRITE_REQUEST", "CB3", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB3_PERF_SEL_FC_MC_WRITE_REQUEST", "CB3", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -68,9 +68,9 @@ namespace counter_gfx9
     {162, "CB3_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB3", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB3_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB3", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB3_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB3", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb4ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb4ExposedCountersGfx9 = {
     {7, "CB4_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB4", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB4_PERF_SEL_CM_MC_WRITE_REQUEST", "CB4", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB4_PERF_SEL_FC_MC_WRITE_REQUEST", "CB4", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -81,9 +81,9 @@ namespace counter_gfx9
     {162, "CB4_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB4", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB4_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB4", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB4_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB4", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb5ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb5ExposedCountersGfx9 = {
     {7, "CB5_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB5", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB5_PERF_SEL_CM_MC_WRITE_REQUEST", "CB5", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB5_PERF_SEL_FC_MC_WRITE_REQUEST", "CB5", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -94,9 +94,9 @@ namespace counter_gfx9
     {162, "CB5_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB5", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB5_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB5", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB5_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB5", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb6ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb6ExposedCountersGfx9 = {
     {7, "CB6_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB6", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB6_PERF_SEL_CM_MC_WRITE_REQUEST", "CB6", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB6_PERF_SEL_FC_MC_WRITE_REQUEST", "CB6", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -107,9 +107,9 @@ namespace counter_gfx9
     {162, "CB6_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB6", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB6_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB6", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB6_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB6", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb7ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb7ExposedCountersGfx9 = {
     {7, "CB7_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB7", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB7_PERF_SEL_CM_MC_WRITE_REQUEST", "CB7", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB7_PERF_SEL_FC_MC_WRITE_REQUEST", "CB7", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -120,9 +120,9 @@ namespace counter_gfx9
     {162, "CB7_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB7", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB7_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB7", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB7_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB7", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb8ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb8ExposedCountersGfx9 = {
     {7, "CB8_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB8", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB8_PERF_SEL_CM_MC_WRITE_REQUEST", "CB8", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB8_PERF_SEL_FC_MC_WRITE_REQUEST", "CB8", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -133,9 +133,9 @@ namespace counter_gfx9
     {162, "CB8_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB8", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB8_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB8", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB8_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB8", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb9ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb9ExposedCountersGfx9 = {
     {7, "CB9_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB9", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB9_PERF_SEL_CM_MC_WRITE_REQUEST", "CB9", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB9_PERF_SEL_FC_MC_WRITE_REQUEST", "CB9", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -146,9 +146,9 @@ namespace counter_gfx9
     {162, "CB9_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB9", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB9_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB9", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB9_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB9", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb10ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb10ExposedCountersGfx9 = {
     {7, "CB10_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB10", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB10_PERF_SEL_CM_MC_WRITE_REQUEST", "CB10", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB10_PERF_SEL_FC_MC_WRITE_REQUEST", "CB10", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -159,9 +159,9 @@ namespace counter_gfx9
     {162, "CB10_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB10", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB10_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB10", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB10_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB10", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb11ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb11ExposedCountersGfx9 = {
     {7, "CB11_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB11", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB11_PERF_SEL_CM_MC_WRITE_REQUEST", "CB11", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB11_PERF_SEL_FC_MC_WRITE_REQUEST", "CB11", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -172,9 +172,9 @@ namespace counter_gfx9
     {162, "CB11_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB11", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB11_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB11", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB11_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB11", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb12ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb12ExposedCountersGfx9 = {
     {7, "CB12_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB12", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB12_PERF_SEL_CM_MC_WRITE_REQUEST", "CB12", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB12_PERF_SEL_FC_MC_WRITE_REQUEST", "CB12", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -185,9 +185,9 @@ namespace counter_gfx9
     {162, "CB12_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB12", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB12_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB12", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB12_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB12", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb13ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb13ExposedCountersGfx9 = {
     {7, "CB13_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB13", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB13_PERF_SEL_CM_MC_WRITE_REQUEST", "CB13", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB13_PERF_SEL_FC_MC_WRITE_REQUEST", "CB13", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -198,9 +198,9 @@ namespace counter_gfx9
     {162, "CB13_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB13", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB13_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB13", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB13_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB13", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb14ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb14ExposedCountersGfx9 = {
     {7, "CB14_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB14", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB14_PERF_SEL_CM_MC_WRITE_REQUEST", "CB14", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB14_PERF_SEL_FC_MC_WRITE_REQUEST", "CB14", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -211,9 +211,9 @@ namespace counter_gfx9
     {162, "CB14_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB14", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB14_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB14", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB14_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB14", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kCb15ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kCb15ExposedCountersGfx9 = {
     {7, "CB15_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB15", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {116, "CB15_PERF_SEL_CM_MC_WRITE_REQUEST", "CB15", "Number of 32-byte cmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {117, "CB15_PERF_SEL_FC_MC_WRITE_REQUEST", "CB15", "Number of 32-byte fmask mc write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -224,9 +224,9 @@ namespace counter_gfx9
     {162, "CB15_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT", "CB15", "Number of EXPORT_32_ABGR quad fragments.  It takes two clocks to send the src color data for these.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {257, "CB15_PERF_SEL_FC_MC_DCC_WRITE_REQUEST", "CB15", "Number of 32-byte fmask mc DCC write requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "CB15_PERF_SEL_FC_MC_DCC_READ_REQUEST", "CB15", "Number of 32-byte fmask mc DCC read requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb0ExposedCountersGfx9 = {
     {4, "DB0_PERF_SEL_SC_DB_TILE_TILES", "DB0", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB0_PERF_SEL_DB_SC_TILE_CULLED", "DB0", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB0_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB0", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -242,9 +242,9 @@ namespace counter_gfx9
     {177, "DB0_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB0", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB0_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB0", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB0_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB0", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb1ExposedCountersGfx9 = {
     {4, "DB1_PERF_SEL_SC_DB_TILE_TILES", "DB1", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB1_PERF_SEL_DB_SC_TILE_CULLED", "DB1", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB1_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB1", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -260,9 +260,9 @@ namespace counter_gfx9
     {177, "DB1_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB1", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB1_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB1", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB1_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB1", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb2ExposedCountersGfx9 = {
     {4, "DB2_PERF_SEL_SC_DB_TILE_TILES", "DB2", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB2_PERF_SEL_DB_SC_TILE_CULLED", "DB2", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB2_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB2", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -278,9 +278,9 @@ namespace counter_gfx9
     {177, "DB2_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB2", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB2_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB2", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB2_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB2", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb3ExposedCountersGfx9 = {
     {4, "DB3_PERF_SEL_SC_DB_TILE_TILES", "DB3", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB3_PERF_SEL_DB_SC_TILE_CULLED", "DB3", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB3_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB3", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -296,9 +296,9 @@ namespace counter_gfx9
     {177, "DB3_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB3", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB3_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB3", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB3_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB3", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb4ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb4ExposedCountersGfx9 = {
     {4, "DB4_PERF_SEL_SC_DB_TILE_TILES", "DB4", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB4_PERF_SEL_DB_SC_TILE_CULLED", "DB4", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB4_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB4", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -314,9 +314,9 @@ namespace counter_gfx9
     {177, "DB4_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB4", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB4_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB4", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB4_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB4", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb5ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb5ExposedCountersGfx9 = {
     {4, "DB5_PERF_SEL_SC_DB_TILE_TILES", "DB5", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB5_PERF_SEL_DB_SC_TILE_CULLED", "DB5", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB5_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB5", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -332,9 +332,9 @@ namespace counter_gfx9
     {177, "DB5_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB5", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB5_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB5", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB5_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB5", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb6ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb6ExposedCountersGfx9 = {
     {4, "DB6_PERF_SEL_SC_DB_TILE_TILES", "DB6", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB6_PERF_SEL_DB_SC_TILE_CULLED", "DB6", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB6_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB6", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -350,9 +350,9 @@ namespace counter_gfx9
     {177, "DB6_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB6", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB6_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB6", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB6_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB6", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb7ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb7ExposedCountersGfx9 = {
     {4, "DB7_PERF_SEL_SC_DB_TILE_TILES", "DB7", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB7_PERF_SEL_DB_SC_TILE_CULLED", "DB7", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB7_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB7", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -368,9 +368,9 @@ namespace counter_gfx9
     {177, "DB7_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB7", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB7_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB7", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB7_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB7", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb8ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb8ExposedCountersGfx9 = {
     {4, "DB8_PERF_SEL_SC_DB_TILE_TILES", "DB8", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB8_PERF_SEL_DB_SC_TILE_CULLED", "DB8", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB8_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB8", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -386,9 +386,9 @@ namespace counter_gfx9
     {177, "DB8_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB8", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB8_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB8", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB8_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB8", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb9ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb9ExposedCountersGfx9 = {
     {4, "DB9_PERF_SEL_SC_DB_TILE_TILES", "DB9", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB9_PERF_SEL_DB_SC_TILE_CULLED", "DB9", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB9_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB9", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -404,9 +404,9 @@ namespace counter_gfx9
     {177, "DB9_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB9", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB9_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB9", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB9_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB9", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb10ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb10ExposedCountersGfx9 = {
     {4, "DB10_PERF_SEL_SC_DB_TILE_TILES", "DB10", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB10_PERF_SEL_DB_SC_TILE_CULLED", "DB10", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB10_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB10", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -422,9 +422,9 @@ namespace counter_gfx9
     {177, "DB10_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB10", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB10_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB10", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB10_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB10", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb11ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb11ExposedCountersGfx9 = {
     {4, "DB11_PERF_SEL_SC_DB_TILE_TILES", "DB11", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB11_PERF_SEL_DB_SC_TILE_CULLED", "DB11", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB11_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB11", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -440,9 +440,9 @@ namespace counter_gfx9
     {177, "DB11_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB11", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB11_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB11", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB11_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB11", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb12ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb12ExposedCountersGfx9 = {
     {4, "DB12_PERF_SEL_SC_DB_TILE_TILES", "DB12", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB12_PERF_SEL_DB_SC_TILE_CULLED", "DB12", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB12_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB12", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -458,9 +458,9 @@ namespace counter_gfx9
     {177, "DB12_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB12", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB12_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB12", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB12_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB12", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb13ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb13ExposedCountersGfx9 = {
     {4, "DB13_PERF_SEL_SC_DB_TILE_TILES", "DB13", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB13_PERF_SEL_DB_SC_TILE_CULLED", "DB13", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB13_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB13", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -476,9 +476,9 @@ namespace counter_gfx9
     {177, "DB13_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB13", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB13_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB13", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB13_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB13", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb14ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb14ExposedCountersGfx9 = {
     {4, "DB14_PERF_SEL_SC_DB_TILE_TILES", "DB14", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB14_PERF_SEL_DB_SC_TILE_CULLED", "DB14", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB14_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB14", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -494,9 +494,9 @@ namespace counter_gfx9
     {177, "DB14_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB14", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB14_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB14", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB14_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB14", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kDb15ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kDb15ExposedCountersGfx9 = {
     {4, "DB15_PERF_SEL_SC_DB_TILE_TILES", "DB15", "Tiles sent over interface", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {15, "DB15_PERF_SEL_DB_SC_TILE_CULLED", "DB15", "Tiles culled in total", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {28, "DB15_PERF_SEL_SC_DB_QUAD_KILLED_TILES", "DB15", "Number of detail killed tiles", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -512,14 +512,14 @@ namespace counter_gfx9
     {177, "DB15_PERF_SEL_PREZ_SAMPLES_PASSING_Z", "DB15", "Samples passing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {178, "DB15_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB15", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {179, "DB15_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB15", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGrbmExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGrbmExposedCountersGfx9 = {
     {0, "GRBM_PERF_SEL_COUNT", "GRBM", "Tie High - Count Number of Clocks", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {2, "GRBM_PERF_SEL_GUI_ACTIVE", "GRBM", "The GUI is Active", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kPaSu0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kPaSu0ExposedCountersGfx9 = {
     {8, "PA_SU0_PERF_PAPC_PA_INPUT_PRIM", "PA_SU0", "Number of Primitives input to PA; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "PA_SU0_PERF_PAPC_CLPR_CULL_PRIM", "PA_SU0", "Number of Prims Culled by Clipper for VV, UCP, VTX_KILL, VTX_NAN; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; combined with _CLPR_VVUCP_CULL_PRIM, _CLPR_VV_CULL_PRIM, _VV_CULL_PRIM,_UCP_CULL_PRIM, _VTX_KILL_CULL_PRIM, _VTX_NAN_CULL_PRIM", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {21, "PA_SU0_PERF_PAPC_CLPR_VVUCP_CLIP_PRIM", "PA_SU0", "Number of Prims Clipped by Clipper for VV and/or UCP; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -533,9 +533,9 @@ namespace counter_gfx9
     {74, "PA_SU0_PERF_PAPC_SU_OUTPUT_CLIP_PRIM_DUAL", "PA_SU0", "Number of dual gradient clipped primitives output from the Setup block; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {105, "PA_SU0_PERF_PAPC_CLIP_BUSY", "PA_SU0", "Number of clocks Clip is Busy;  range-1/clk;it can potentially be used to detect bad performance;all instances report the same result; can be used to detect bottlenecks in combination with other signals", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {109, "PA_SU0_PERF_PAPC_SU_STALLED_SC", "PA_SU0", "Number of clocks Setup is stalled by SC;  range-1/clk;it can potentially be used to detect bad performance;all instances report the same result", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kPaSu1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kPaSu1ExposedCountersGfx9 = {
     {8, "PA_SU1_PERF_PAPC_PA_INPUT_PRIM", "PA_SU1", "Number of Primitives input to PA; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "PA_SU1_PERF_PAPC_CLPR_CULL_PRIM", "PA_SU1", "Number of Prims Culled by Clipper for VV, UCP, VTX_KILL, VTX_NAN; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; combined with _CLPR_VVUCP_CULL_PRIM, _CLPR_VV_CULL_PRIM, _VV_CULL_PRIM,_UCP_CULL_PRIM, _VTX_KILL_CULL_PRIM, _VTX_NAN_CULL_PRIM", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {21, "PA_SU1_PERF_PAPC_CLPR_VVUCP_CLIP_PRIM", "PA_SU1", "Number of Prims Clipped by Clipper for VV and/or UCP; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -549,9 +549,9 @@ namespace counter_gfx9
     {74, "PA_SU1_PERF_PAPC_SU_OUTPUT_CLIP_PRIM_DUAL", "PA_SU1", "Number of dual gradient clipped primitives output from the Setup block; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {105, "PA_SU1_PERF_PAPC_CLIP_BUSY", "PA_SU1", "Number of clocks Clip is Busy;  range-1/clk;it can potentially be used to detect bad performance;all instances report the same result; can be used to detect bottlenecks in combination with other signals", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {109, "PA_SU1_PERF_PAPC_SU_STALLED_SC", "PA_SU1", "Number of clocks Setup is stalled by SC;  range-1/clk;it can potentially be used to detect bad performance;all instances report the same result", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kPaSu2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kPaSu2ExposedCountersGfx9 = {
     {8, "PA_SU2_PERF_PAPC_PA_INPUT_PRIM", "PA_SU2", "Number of Primitives input to PA; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "PA_SU2_PERF_PAPC_CLPR_CULL_PRIM", "PA_SU2", "Number of Prims Culled by Clipper for VV, UCP, VTX_KILL, VTX_NAN; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; combined with _CLPR_VVUCP_CULL_PRIM, _CLPR_VV_CULL_PRIM, _VV_CULL_PRIM,_UCP_CULL_PRIM, _VTX_KILL_CULL_PRIM, _VTX_NAN_CULL_PRIM", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {21, "PA_SU2_PERF_PAPC_CLPR_VVUCP_CLIP_PRIM", "PA_SU2", "Number of Prims Clipped by Clipper for VV and/or UCP; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -565,9 +565,9 @@ namespace counter_gfx9
     {74, "PA_SU2_PERF_PAPC_SU_OUTPUT_CLIP_PRIM_DUAL", "PA_SU2", "Number of dual gradient clipped primitives output from the Setup block; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {105, "PA_SU2_PERF_PAPC_CLIP_BUSY", "PA_SU2", "Number of clocks Clip is Busy;  range-1/clk;it can potentially be used to detect bad performance;all instances report the same result; can be used to detect bottlenecks in combination with other signals", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {109, "PA_SU2_PERF_PAPC_SU_STALLED_SC", "PA_SU2", "Number of clocks Setup is stalled by SC;  range-1/clk;it can potentially be used to detect bad performance;all instances report the same result", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kPaSu3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kPaSu3ExposedCountersGfx9 = {
     {8, "PA_SU3_PERF_PAPC_PA_INPUT_PRIM", "PA_SU3", "Number of Primitives input to PA; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "PA_SU3_PERF_PAPC_CLPR_CULL_PRIM", "PA_SU3", "Number of Prims Culled by Clipper for VV, UCP, VTX_KILL, VTX_NAN; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; combined with _CLPR_VVUCP_CULL_PRIM, _CLPR_VV_CULL_PRIM, _VV_CULL_PRIM,_UCP_CULL_PRIM, _VTX_KILL_CULL_PRIM, _VTX_NAN_CULL_PRIM", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {21, "PA_SU3_PERF_PAPC_CLPR_VVUCP_CLIP_PRIM", "PA_SU3", "Number of Prims Clipped by Clipper for VV and/or UCP; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -581,9 +581,9 @@ namespace counter_gfx9
     {74, "PA_SU3_PERF_PAPC_SU_OUTPUT_CLIP_PRIM_DUAL", "PA_SU3", "Number of dual gradient clipped primitives output from the Setup block; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {105, "PA_SU3_PERF_PAPC_CLIP_BUSY", "PA_SU3", "Number of clocks Clip is Busy;  range-1/clk;it can potentially be used to detect bad performance;all instances report the same result; can be used to detect bottlenecks in combination with other signals", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {109, "PA_SU3_PERF_PAPC_SU_STALLED_SC", "PA_SU3", "Number of clocks Setup is stalled by SC;  range-1/clk;it can potentially be used to detect bad performance;all instances report the same result", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kPaSc0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kPaSc0ExposedCountersGfx9 = {
     {159, "PA_SC0_QZ0_QUAD_COUNT", "PA_SC0", "quad count; quad-z pipe 0;Where measured: sc sc_qdmsk_z output to sc_z_interp in db pipe 0;increment rate-one to 16  per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {160, "PA_SC0_QZ1_QUAD_COUNT", "PA_SC0", "quad count; quad-z pipe 1;Where measured: sc sc_qdmsk_z output to sc_z_interp in db pipe 1;increment rate-one to 16 per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1. Valid only if NUM_DB_PER_PACKER=2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {161, "PA_SC0_QZ2_QUAD_COUNT", "PA_SC0", "quad count; quad-z pipe 2 DEPRECATED (NUM_DB_PER_PACKER=4 variants only)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -593,9 +593,9 @@ namespace counter_gfx9
     {237, "PA_SC0_P2_HIZ_QUAD_COUNT", "PA_SC0", "total quads surviving hi-z; db pipe 2 (DEPRECATED only valid for NUM_DB_PER_PACKER=4)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {238, "PA_SC0_P3_HIZ_QUAD_COUNT", "PA_SC0", "total quads surviving hi-z; db pipe 3 (DEPRECATED only valid for NUM_DB_PER_PACKER=4)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "PA_SC0_EARLYZ_QUAD_COUNT", "PA_SC0", "total quads surviving early-z;Where measured: sc_tileaccum (sc_quadaccum if 1db per packer) inputs to packer;increment rate 1 to 2 quads per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kPaSc1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kPaSc1ExposedCountersGfx9 = {
     {159, "PA_SC1_QZ0_QUAD_COUNT", "PA_SC1", "quad count; quad-z pipe 0;Where measured: sc sc_qdmsk_z output to sc_z_interp in db pipe 0;increment rate-one to 16  per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {160, "PA_SC1_QZ1_QUAD_COUNT", "PA_SC1", "quad count; quad-z pipe 1;Where measured: sc sc_qdmsk_z output to sc_z_interp in db pipe 1;increment rate-one to 16 per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1. Valid only if NUM_DB_PER_PACKER=2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {161, "PA_SC1_QZ2_QUAD_COUNT", "PA_SC1", "quad count; quad-z pipe 2 DEPRECATED (NUM_DB_PER_PACKER=4 variants only)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -605,9 +605,9 @@ namespace counter_gfx9
     {237, "PA_SC1_P2_HIZ_QUAD_COUNT", "PA_SC1", "total quads surviving hi-z; db pipe 2 (DEPRECATED only valid for NUM_DB_PER_PACKER=4)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {238, "PA_SC1_P3_HIZ_QUAD_COUNT", "PA_SC1", "total quads surviving hi-z; db pipe 3 (DEPRECATED only valid for NUM_DB_PER_PACKER=4)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "PA_SC1_EARLYZ_QUAD_COUNT", "PA_SC1", "total quads surviving early-z;Where measured: sc_tileaccum (sc_quadaccum if 1db per packer) inputs to packer;increment rate 1 to 2 quads per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kPaSc2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kPaSc2ExposedCountersGfx9 = {
     {159, "PA_SC2_QZ0_QUAD_COUNT", "PA_SC2", "quad count; quad-z pipe 0;Where measured: sc sc_qdmsk_z output to sc_z_interp in db pipe 0;increment rate-one to 16  per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {160, "PA_SC2_QZ1_QUAD_COUNT", "PA_SC2", "quad count; quad-z pipe 1;Where measured: sc sc_qdmsk_z output to sc_z_interp in db pipe 1;increment rate-one to 16 per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1. Valid only if NUM_DB_PER_PACKER=2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {161, "PA_SC2_QZ2_QUAD_COUNT", "PA_SC2", "quad count; quad-z pipe 2 DEPRECATED (NUM_DB_PER_PACKER=4 variants only)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -617,9 +617,9 @@ namespace counter_gfx9
     {237, "PA_SC2_P2_HIZ_QUAD_COUNT", "PA_SC2", "total quads surviving hi-z; db pipe 2 (DEPRECATED only valid for NUM_DB_PER_PACKER=4)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {238, "PA_SC2_P3_HIZ_QUAD_COUNT", "PA_SC2", "total quads surviving hi-z; db pipe 3 (DEPRECATED only valid for NUM_DB_PER_PACKER=4)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "PA_SC2_EARLYZ_QUAD_COUNT", "PA_SC2", "total quads surviving early-z;Where measured: sc_tileaccum (sc_quadaccum if 1db per packer) inputs to packer;increment rate 1 to 2 quads per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kPaSc3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kPaSc3ExposedCountersGfx9 = {
     {159, "PA_SC3_QZ0_QUAD_COUNT", "PA_SC3", "quad count; quad-z pipe 0;Where measured: sc sc_qdmsk_z output to sc_z_interp in db pipe 0;increment rate-one to 16  per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {160, "PA_SC3_QZ1_QUAD_COUNT", "PA_SC3", "quad count; quad-z pipe 1;Where measured: sc sc_qdmsk_z output to sc_z_interp in db pipe 1;increment rate-one to 16 per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1. Valid only if NUM_DB_PER_PACKER=2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {161, "PA_SC3_QZ2_QUAD_COUNT", "PA_SC3", "quad count; quad-z pipe 2 DEPRECATED (NUM_DB_PER_PACKER=4 variants only)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -629,9 +629,9 @@ namespace counter_gfx9
     {237, "PA_SC3_P2_HIZ_QUAD_COUNT", "PA_SC3", "total quads surviving hi-z; db pipe 2 (DEPRECATED only valid for NUM_DB_PER_PACKER=4)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {238, "PA_SC3_P3_HIZ_QUAD_COUNT", "PA_SC3", "total quads surviving hi-z; db pipe 3 (DEPRECATED only valid for NUM_DB_PER_PACKER=4)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {259, "PA_SC3_EARLYZ_QUAD_COUNT", "PA_SC3", "total quads surviving early-z;Where measured: sc_tileaccum (sc_quadaccum if 1db per packer) inputs to packer;increment rate 1 to 2 quads per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSx0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSx0ExposedCountersGfx9 = {
     {12, "SX0_PERF_SEL_DB0_PIXELS", "SX0", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SX0_PERF_SEL_DB0_PIXEL_STALL", "SX0", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {17, "SX0_PERF_SEL_DB1_PIXELS", "SX0", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -640,9 +640,9 @@ namespace counter_gfx9
     {24, "SX0_PERF_SEL_DB2_PIXEL_STALL", "SX0", "Number of cycles where pixel traffic is stalled due to the DB2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {27, "SX0_PERF_SEL_DB3_PIXELS", "SX0", "Number of pixels sent to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "SX0_PERF_SEL_DB3_PIXEL_STALL", "SX0", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSx1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSx1ExposedCountersGfx9 = {
     {12, "SX1_PERF_SEL_DB0_PIXELS", "SX1", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SX1_PERF_SEL_DB0_PIXEL_STALL", "SX1", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {17, "SX1_PERF_SEL_DB1_PIXELS", "SX1", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -651,9 +651,9 @@ namespace counter_gfx9
     {24, "SX1_PERF_SEL_DB2_PIXEL_STALL", "SX1", "Number of cycles where pixel traffic is stalled due to the DB2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {27, "SX1_PERF_SEL_DB3_PIXELS", "SX1", "Number of pixels sent to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "SX1_PERF_SEL_DB3_PIXEL_STALL", "SX1", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSx2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSx2ExposedCountersGfx9 = {
     {12, "SX2_PERF_SEL_DB0_PIXELS", "SX2", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SX2_PERF_SEL_DB0_PIXEL_STALL", "SX2", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {17, "SX2_PERF_SEL_DB1_PIXELS", "SX2", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -662,9 +662,9 @@ namespace counter_gfx9
     {24, "SX2_PERF_SEL_DB2_PIXEL_STALL", "SX2", "Number of cycles where pixel traffic is stalled due to the DB2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {27, "SX2_PERF_SEL_DB3_PIXELS", "SX2", "Number of pixels sent to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "SX2_PERF_SEL_DB3_PIXEL_STALL", "SX2", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSx3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSx3ExposedCountersGfx9 = {
     {12, "SX3_PERF_SEL_DB0_PIXELS", "SX3", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SX3_PERF_SEL_DB0_PIXEL_STALL", "SX3", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {17, "SX3_PERF_SEL_DB1_PIXELS", "SX3", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -673,9 +673,9 @@ namespace counter_gfx9
     {24, "SX3_PERF_SEL_DB2_PIXEL_STALL", "SX3", "Number of cycles where pixel traffic is stalled due to the DB2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {27, "SX3_PERF_SEL_DB3_PIXELS", "SX3", "Number of pixels sent to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "SX3_PERF_SEL_DB3_PIXEL_STALL", "SX3", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSpi0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSpi0ExposedCountersGfx9 = {
     {1, "SPI0_PERF_VS_BUSY", "SPI0", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {10, "SPI0_PERF_VS_WAVE", "SPI0", "Number of waves", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {20, "SPI0_PERF_GS_BUSY", "SPI0", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -690,9 +690,9 @@ namespace counter_gfx9
     {52, "SPI0_PERF_CSN_WAVE", "SPI0", "Number of waves.Requires SPI_DEBUG_CNTL.DEBUG_PIPE_SEL to select source,DEBUG_PIPE_SEL = 1, source is CS1;DEBUG_PIPE_SEL = 2, source is CS2;DEBUG_PIPE_SEL = 3, source is CS3;default, source is CS0;", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {54, "SPI0_PERF_PS_BUSY", "SPI0", "Number of clocks with outstanding waves (SPI or SH), Requires SPI_DEBUG_CNTL.DEBUG_SH_SEL to select source,DEBUG_SH_SEL =0, source is PS0,DEBUG_SH_SEL =1, source is PS1,", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {59, "SPI0_PERF_PS_WAVE", "SPI0", "Number of waves, Requires SPI_DEBUG_CNTL.DEBUG_SH_SEL to select source,DEBUG_SH_SEL =0, source is PS0,DEBUG_SH_SEL =1, source is PS1,", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSpi1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSpi1ExposedCountersGfx9 = {
     {1, "SPI1_PERF_VS_BUSY", "SPI1", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {10, "SPI1_PERF_VS_WAVE", "SPI1", "Number of waves", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {20, "SPI1_PERF_GS_BUSY", "SPI1", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -707,9 +707,9 @@ namespace counter_gfx9
     {52, "SPI1_PERF_CSN_WAVE", "SPI1", "Number of waves.Requires SPI_DEBUG_CNTL.DEBUG_PIPE_SEL to select source,DEBUG_PIPE_SEL = 1, source is CS1;DEBUG_PIPE_SEL = 2, source is CS2;DEBUG_PIPE_SEL = 3, source is CS3;default, source is CS0;", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {54, "SPI1_PERF_PS_BUSY", "SPI1", "Number of clocks with outstanding waves (SPI or SH), Requires SPI_DEBUG_CNTL.DEBUG_SH_SEL to select source,DEBUG_SH_SEL =0, source is PS0,DEBUG_SH_SEL =1, source is PS1,", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {59, "SPI1_PERF_PS_WAVE", "SPI1", "Number of waves, Requires SPI_DEBUG_CNTL.DEBUG_SH_SEL to select source,DEBUG_SH_SEL =0, source is PS0,DEBUG_SH_SEL =1, source is PS1,", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSpi2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSpi2ExposedCountersGfx9 = {
     {1, "SPI2_PERF_VS_BUSY", "SPI2", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {10, "SPI2_PERF_VS_WAVE", "SPI2", "Number of waves", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {20, "SPI2_PERF_GS_BUSY", "SPI2", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -724,9 +724,9 @@ namespace counter_gfx9
     {52, "SPI2_PERF_CSN_WAVE", "SPI2", "Number of waves.Requires SPI_DEBUG_CNTL.DEBUG_PIPE_SEL to select source,DEBUG_PIPE_SEL = 1, source is CS1;DEBUG_PIPE_SEL = 2, source is CS2;DEBUG_PIPE_SEL = 3, source is CS3;default, source is CS0;", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {54, "SPI2_PERF_PS_BUSY", "SPI2", "Number of clocks with outstanding waves (SPI or SH), Requires SPI_DEBUG_CNTL.DEBUG_SH_SEL to select source,DEBUG_SH_SEL =0, source is PS0,DEBUG_SH_SEL =1, source is PS1,", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {59, "SPI2_PERF_PS_WAVE", "SPI2", "Number of waves, Requires SPI_DEBUG_CNTL.DEBUG_SH_SEL to select source,DEBUG_SH_SEL =0, source is PS0,DEBUG_SH_SEL =1, source is PS1,", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSpi3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSpi3ExposedCountersGfx9 = {
     {1, "SPI3_PERF_VS_BUSY", "SPI3", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {10, "SPI3_PERF_VS_WAVE", "SPI3", "Number of waves", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {20, "SPI3_PERF_GS_BUSY", "SPI3", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -741,9 +741,9 @@ namespace counter_gfx9
     {52, "SPI3_PERF_CSN_WAVE", "SPI3", "Number of waves.Requires SPI_DEBUG_CNTL.DEBUG_PIPE_SEL to select source,DEBUG_PIPE_SEL = 1, source is CS1;DEBUG_PIPE_SEL = 2, source is CS2;DEBUG_PIPE_SEL = 3, source is CS3;default, source is CS0;", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {54, "SPI3_PERF_PS_BUSY", "SPI3", "Number of clocks with outstanding waves (SPI or SH), Requires SPI_DEBUG_CNTL.DEBUG_SH_SEL to select source,DEBUG_SH_SEL =0, source is PS0,DEBUG_SH_SEL =1, source is PS1,", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {59, "SPI3_PERF_PS_WAVE", "SPI3", "Number of waves, Requires SPI_DEBUG_CNTL.DEBUG_SH_SEL to select source,DEBUG_SH_SEL =0, source is PS0,DEBUG_SH_SEL =1, source is PS1,", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSq0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSq0ExposedCountersGfx9 = {
     {4, "SQ0_PERF_SEL_WAVES", "SQ0", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ0_PERF_SEL_ITEMS", "SQ0", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ0_PERF_SEL_INSTS_VALU", "SQ0", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -760,9 +760,9 @@ namespace counter_gfx9
     {84, "SQ0_PERF_SEL_INST_CYCLES_SALU", "SQ0", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ0_PERF_SEL_THREAD_CYCLES_VALU", "SQ0", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ0_PERF_SEL_LDS_BANK_CONFLICT", "SQ0", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSq1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSq1ExposedCountersGfx9 = {
     {4, "SQ1_PERF_SEL_WAVES", "SQ1", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ1_PERF_SEL_ITEMS", "SQ1", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ1_PERF_SEL_INSTS_VALU", "SQ1", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -779,9 +779,9 @@ namespace counter_gfx9
     {84, "SQ1_PERF_SEL_INST_CYCLES_SALU", "SQ1", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ1_PERF_SEL_THREAD_CYCLES_VALU", "SQ1", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ1_PERF_SEL_LDS_BANK_CONFLICT", "SQ1", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSq2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSq2ExposedCountersGfx9 = {
     {4, "SQ2_PERF_SEL_WAVES", "SQ2", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ2_PERF_SEL_ITEMS", "SQ2", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ2_PERF_SEL_INSTS_VALU", "SQ2", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -798,9 +798,9 @@ namespace counter_gfx9
     {84, "SQ2_PERF_SEL_INST_CYCLES_SALU", "SQ2", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ2_PERF_SEL_THREAD_CYCLES_VALU", "SQ2", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ2_PERF_SEL_LDS_BANK_CONFLICT", "SQ2", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSq3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSq3ExposedCountersGfx9 = {
     {4, "SQ3_PERF_SEL_WAVES", "SQ3", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ3_PERF_SEL_ITEMS", "SQ3", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ3_PERF_SEL_INSTS_VALU", "SQ3", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -817,9 +817,9 @@ namespace counter_gfx9
     {84, "SQ3_PERF_SEL_INST_CYCLES_SALU", "SQ3", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ3_PERF_SEL_THREAD_CYCLES_VALU", "SQ3", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ3_PERF_SEL_LDS_BANK_CONFLICT", "SQ3", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqEs0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqEs0ExposedCountersGfx9 = {
     {4, "SQ_ES0_PERF_SEL_WAVES", "SQ_ES0", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_ES0_PERF_SEL_ITEMS", "SQ_ES0", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_ES0_PERF_SEL_INSTS_VALU", "SQ_ES0", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -836,9 +836,9 @@ namespace counter_gfx9
     {84, "SQ_ES0_PERF_SEL_INST_CYCLES_SALU", "SQ_ES0", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_ES0_PERF_SEL_THREAD_CYCLES_VALU", "SQ_ES0", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_ES0_PERF_SEL_LDS_BANK_CONFLICT", "SQ_ES0", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqEs1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqEs1ExposedCountersGfx9 = {
     {4, "SQ_ES1_PERF_SEL_WAVES", "SQ_ES1", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_ES1_PERF_SEL_ITEMS", "SQ_ES1", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_ES1_PERF_SEL_INSTS_VALU", "SQ_ES1", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -855,9 +855,9 @@ namespace counter_gfx9
     {84, "SQ_ES1_PERF_SEL_INST_CYCLES_SALU", "SQ_ES1", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_ES1_PERF_SEL_THREAD_CYCLES_VALU", "SQ_ES1", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_ES1_PERF_SEL_LDS_BANK_CONFLICT", "SQ_ES1", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqEs2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqEs2ExposedCountersGfx9 = {
     {4, "SQ_ES2_PERF_SEL_WAVES", "SQ_ES2", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_ES2_PERF_SEL_ITEMS", "SQ_ES2", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_ES2_PERF_SEL_INSTS_VALU", "SQ_ES2", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -874,9 +874,9 @@ namespace counter_gfx9
     {84, "SQ_ES2_PERF_SEL_INST_CYCLES_SALU", "SQ_ES2", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_ES2_PERF_SEL_THREAD_CYCLES_VALU", "SQ_ES2", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_ES2_PERF_SEL_LDS_BANK_CONFLICT", "SQ_ES2", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqEs3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqEs3ExposedCountersGfx9 = {
     {4, "SQ_ES3_PERF_SEL_WAVES", "SQ_ES3", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_ES3_PERF_SEL_ITEMS", "SQ_ES3", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_ES3_PERF_SEL_INSTS_VALU", "SQ_ES3", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -893,9 +893,9 @@ namespace counter_gfx9
     {84, "SQ_ES3_PERF_SEL_INST_CYCLES_SALU", "SQ_ES3", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_ES3_PERF_SEL_THREAD_CYCLES_VALU", "SQ_ES3", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_ES3_PERF_SEL_LDS_BANK_CONFLICT", "SQ_ES3", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqGs0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqGs0ExposedCountersGfx9 = {
     {4, "SQ_GS0_PERF_SEL_WAVES", "SQ_GS0", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_GS0_PERF_SEL_ITEMS", "SQ_GS0", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_GS0_PERF_SEL_INSTS_VALU", "SQ_GS0", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -912,9 +912,9 @@ namespace counter_gfx9
     {84, "SQ_GS0_PERF_SEL_INST_CYCLES_SALU", "SQ_GS0", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_GS0_PERF_SEL_THREAD_CYCLES_VALU", "SQ_GS0", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_GS0_PERF_SEL_LDS_BANK_CONFLICT", "SQ_GS0", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqGs1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqGs1ExposedCountersGfx9 = {
     {4, "SQ_GS1_PERF_SEL_WAVES", "SQ_GS1", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_GS1_PERF_SEL_ITEMS", "SQ_GS1", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_GS1_PERF_SEL_INSTS_VALU", "SQ_GS1", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -931,9 +931,9 @@ namespace counter_gfx9
     {84, "SQ_GS1_PERF_SEL_INST_CYCLES_SALU", "SQ_GS1", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_GS1_PERF_SEL_THREAD_CYCLES_VALU", "SQ_GS1", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_GS1_PERF_SEL_LDS_BANK_CONFLICT", "SQ_GS1", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqGs2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqGs2ExposedCountersGfx9 = {
     {4, "SQ_GS2_PERF_SEL_WAVES", "SQ_GS2", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_GS2_PERF_SEL_ITEMS", "SQ_GS2", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_GS2_PERF_SEL_INSTS_VALU", "SQ_GS2", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -950,9 +950,9 @@ namespace counter_gfx9
     {84, "SQ_GS2_PERF_SEL_INST_CYCLES_SALU", "SQ_GS2", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_GS2_PERF_SEL_THREAD_CYCLES_VALU", "SQ_GS2", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_GS2_PERF_SEL_LDS_BANK_CONFLICT", "SQ_GS2", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqGs3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqGs3ExposedCountersGfx9 = {
     {4, "SQ_GS3_PERF_SEL_WAVES", "SQ_GS3", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_GS3_PERF_SEL_ITEMS", "SQ_GS3", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_GS3_PERF_SEL_INSTS_VALU", "SQ_GS3", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -969,9 +969,9 @@ namespace counter_gfx9
     {84, "SQ_GS3_PERF_SEL_INST_CYCLES_SALU", "SQ_GS3", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_GS3_PERF_SEL_THREAD_CYCLES_VALU", "SQ_GS3", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_GS3_PERF_SEL_LDS_BANK_CONFLICT", "SQ_GS3", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqVs0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqVs0ExposedCountersGfx9 = {
     {4, "SQ_VS0_PERF_SEL_WAVES", "SQ_VS0", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_VS0_PERF_SEL_ITEMS", "SQ_VS0", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_VS0_PERF_SEL_INSTS_VALU", "SQ_VS0", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -988,9 +988,9 @@ namespace counter_gfx9
     {84, "SQ_VS0_PERF_SEL_INST_CYCLES_SALU", "SQ_VS0", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_VS0_PERF_SEL_THREAD_CYCLES_VALU", "SQ_VS0", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_VS0_PERF_SEL_LDS_BANK_CONFLICT", "SQ_VS0", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqVs1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqVs1ExposedCountersGfx9 = {
     {4, "SQ_VS1_PERF_SEL_WAVES", "SQ_VS1", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_VS1_PERF_SEL_ITEMS", "SQ_VS1", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_VS1_PERF_SEL_INSTS_VALU", "SQ_VS1", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1007,9 +1007,9 @@ namespace counter_gfx9
     {84, "SQ_VS1_PERF_SEL_INST_CYCLES_SALU", "SQ_VS1", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_VS1_PERF_SEL_THREAD_CYCLES_VALU", "SQ_VS1", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_VS1_PERF_SEL_LDS_BANK_CONFLICT", "SQ_VS1", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqVs2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqVs2ExposedCountersGfx9 = {
     {4, "SQ_VS2_PERF_SEL_WAVES", "SQ_VS2", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_VS2_PERF_SEL_ITEMS", "SQ_VS2", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_VS2_PERF_SEL_INSTS_VALU", "SQ_VS2", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1026,9 +1026,9 @@ namespace counter_gfx9
     {84, "SQ_VS2_PERF_SEL_INST_CYCLES_SALU", "SQ_VS2", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_VS2_PERF_SEL_THREAD_CYCLES_VALU", "SQ_VS2", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_VS2_PERF_SEL_LDS_BANK_CONFLICT", "SQ_VS2", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqVs3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqVs3ExposedCountersGfx9 = {
     {4, "SQ_VS3_PERF_SEL_WAVES", "SQ_VS3", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_VS3_PERF_SEL_ITEMS", "SQ_VS3", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_VS3_PERF_SEL_INSTS_VALU", "SQ_VS3", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1045,9 +1045,9 @@ namespace counter_gfx9
     {84, "SQ_VS3_PERF_SEL_INST_CYCLES_SALU", "SQ_VS3", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_VS3_PERF_SEL_THREAD_CYCLES_VALU", "SQ_VS3", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_VS3_PERF_SEL_LDS_BANK_CONFLICT", "SQ_VS3", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqPs0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqPs0ExposedCountersGfx9 = {
     {4, "SQ_PS0_PERF_SEL_WAVES", "SQ_PS0", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_PS0_PERF_SEL_ITEMS", "SQ_PS0", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_PS0_PERF_SEL_INSTS_VALU", "SQ_PS0", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1064,9 +1064,9 @@ namespace counter_gfx9
     {84, "SQ_PS0_PERF_SEL_INST_CYCLES_SALU", "SQ_PS0", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_PS0_PERF_SEL_THREAD_CYCLES_VALU", "SQ_PS0", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_PS0_PERF_SEL_LDS_BANK_CONFLICT", "SQ_PS0", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqPs1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqPs1ExposedCountersGfx9 = {
     {4, "SQ_PS1_PERF_SEL_WAVES", "SQ_PS1", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_PS1_PERF_SEL_ITEMS", "SQ_PS1", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_PS1_PERF_SEL_INSTS_VALU", "SQ_PS1", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1083,9 +1083,9 @@ namespace counter_gfx9
     {84, "SQ_PS1_PERF_SEL_INST_CYCLES_SALU", "SQ_PS1", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_PS1_PERF_SEL_THREAD_CYCLES_VALU", "SQ_PS1", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_PS1_PERF_SEL_LDS_BANK_CONFLICT", "SQ_PS1", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqPs2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqPs2ExposedCountersGfx9 = {
     {4, "SQ_PS2_PERF_SEL_WAVES", "SQ_PS2", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_PS2_PERF_SEL_ITEMS", "SQ_PS2", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_PS2_PERF_SEL_INSTS_VALU", "SQ_PS2", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1102,9 +1102,9 @@ namespace counter_gfx9
     {84, "SQ_PS2_PERF_SEL_INST_CYCLES_SALU", "SQ_PS2", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_PS2_PERF_SEL_THREAD_CYCLES_VALU", "SQ_PS2", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_PS2_PERF_SEL_LDS_BANK_CONFLICT", "SQ_PS2", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqPs3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqPs3ExposedCountersGfx9 = {
     {4, "SQ_PS3_PERF_SEL_WAVES", "SQ_PS3", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_PS3_PERF_SEL_ITEMS", "SQ_PS3", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_PS3_PERF_SEL_INSTS_VALU", "SQ_PS3", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1121,9 +1121,9 @@ namespace counter_gfx9
     {84, "SQ_PS3_PERF_SEL_INST_CYCLES_SALU", "SQ_PS3", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_PS3_PERF_SEL_THREAD_CYCLES_VALU", "SQ_PS3", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_PS3_PERF_SEL_LDS_BANK_CONFLICT", "SQ_PS3", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqLs0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqLs0ExposedCountersGfx9 = {
     {4, "SQ_LS0_PERF_SEL_WAVES", "SQ_LS0", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_LS0_PERF_SEL_ITEMS", "SQ_LS0", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_LS0_PERF_SEL_INSTS_VALU", "SQ_LS0", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1140,9 +1140,9 @@ namespace counter_gfx9
     {84, "SQ_LS0_PERF_SEL_INST_CYCLES_SALU", "SQ_LS0", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_LS0_PERF_SEL_THREAD_CYCLES_VALU", "SQ_LS0", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_LS0_PERF_SEL_LDS_BANK_CONFLICT", "SQ_LS0", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqLs1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqLs1ExposedCountersGfx9 = {
     {4, "SQ_LS1_PERF_SEL_WAVES", "SQ_LS1", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_LS1_PERF_SEL_ITEMS", "SQ_LS1", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_LS1_PERF_SEL_INSTS_VALU", "SQ_LS1", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1159,9 +1159,9 @@ namespace counter_gfx9
     {84, "SQ_LS1_PERF_SEL_INST_CYCLES_SALU", "SQ_LS1", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_LS1_PERF_SEL_THREAD_CYCLES_VALU", "SQ_LS1", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_LS1_PERF_SEL_LDS_BANK_CONFLICT", "SQ_LS1", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqLs2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqLs2ExposedCountersGfx9 = {
     {4, "SQ_LS2_PERF_SEL_WAVES", "SQ_LS2", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_LS2_PERF_SEL_ITEMS", "SQ_LS2", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_LS2_PERF_SEL_INSTS_VALU", "SQ_LS2", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1178,9 +1178,9 @@ namespace counter_gfx9
     {84, "SQ_LS2_PERF_SEL_INST_CYCLES_SALU", "SQ_LS2", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_LS2_PERF_SEL_THREAD_CYCLES_VALU", "SQ_LS2", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_LS2_PERF_SEL_LDS_BANK_CONFLICT", "SQ_LS2", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqLs3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqLs3ExposedCountersGfx9 = {
     {4, "SQ_LS3_PERF_SEL_WAVES", "SQ_LS3", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_LS3_PERF_SEL_ITEMS", "SQ_LS3", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_LS3_PERF_SEL_INSTS_VALU", "SQ_LS3", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1197,9 +1197,9 @@ namespace counter_gfx9
     {84, "SQ_LS3_PERF_SEL_INST_CYCLES_SALU", "SQ_LS3", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_LS3_PERF_SEL_THREAD_CYCLES_VALU", "SQ_LS3", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_LS3_PERF_SEL_LDS_BANK_CONFLICT", "SQ_LS3", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqHs0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqHs0ExposedCountersGfx9 = {
     {4, "SQ_HS0_PERF_SEL_WAVES", "SQ_HS0", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_HS0_PERF_SEL_ITEMS", "SQ_HS0", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_HS0_PERF_SEL_INSTS_VALU", "SQ_HS0", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1216,9 +1216,9 @@ namespace counter_gfx9
     {84, "SQ_HS0_PERF_SEL_INST_CYCLES_SALU", "SQ_HS0", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_HS0_PERF_SEL_THREAD_CYCLES_VALU", "SQ_HS0", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_HS0_PERF_SEL_LDS_BANK_CONFLICT", "SQ_HS0", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqHs1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqHs1ExposedCountersGfx9 = {
     {4, "SQ_HS1_PERF_SEL_WAVES", "SQ_HS1", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_HS1_PERF_SEL_ITEMS", "SQ_HS1", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_HS1_PERF_SEL_INSTS_VALU", "SQ_HS1", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1235,9 +1235,9 @@ namespace counter_gfx9
     {84, "SQ_HS1_PERF_SEL_INST_CYCLES_SALU", "SQ_HS1", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_HS1_PERF_SEL_THREAD_CYCLES_VALU", "SQ_HS1", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_HS1_PERF_SEL_LDS_BANK_CONFLICT", "SQ_HS1", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqHs2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqHs2ExposedCountersGfx9 = {
     {4, "SQ_HS2_PERF_SEL_WAVES", "SQ_HS2", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_HS2_PERF_SEL_ITEMS", "SQ_HS2", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_HS2_PERF_SEL_INSTS_VALU", "SQ_HS2", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1254,9 +1254,9 @@ namespace counter_gfx9
     {84, "SQ_HS2_PERF_SEL_INST_CYCLES_SALU", "SQ_HS2", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_HS2_PERF_SEL_THREAD_CYCLES_VALU", "SQ_HS2", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_HS2_PERF_SEL_LDS_BANK_CONFLICT", "SQ_HS2", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqHs3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqHs3ExposedCountersGfx9 = {
     {4, "SQ_HS3_PERF_SEL_WAVES", "SQ_HS3", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_HS3_PERF_SEL_ITEMS", "SQ_HS3", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_HS3_PERF_SEL_INSTS_VALU", "SQ_HS3", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1273,9 +1273,9 @@ namespace counter_gfx9
     {84, "SQ_HS3_PERF_SEL_INST_CYCLES_SALU", "SQ_HS3", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_HS3_PERF_SEL_THREAD_CYCLES_VALU", "SQ_HS3", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_HS3_PERF_SEL_LDS_BANK_CONFLICT", "SQ_HS3", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqCs0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqCs0ExposedCountersGfx9 = {
     {4, "SQ_CS0_PERF_SEL_WAVES", "SQ_CS0", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_CS0_PERF_SEL_ITEMS", "SQ_CS0", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_CS0_PERF_SEL_INSTS_VALU", "SQ_CS0", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1292,9 +1292,9 @@ namespace counter_gfx9
     {84, "SQ_CS0_PERF_SEL_INST_CYCLES_SALU", "SQ_CS0", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_CS0_PERF_SEL_THREAD_CYCLES_VALU", "SQ_CS0", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_CS0_PERF_SEL_LDS_BANK_CONFLICT", "SQ_CS0", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqCs1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqCs1ExposedCountersGfx9 = {
     {4, "SQ_CS1_PERF_SEL_WAVES", "SQ_CS1", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_CS1_PERF_SEL_ITEMS", "SQ_CS1", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_CS1_PERF_SEL_INSTS_VALU", "SQ_CS1", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1311,9 +1311,9 @@ namespace counter_gfx9
     {84, "SQ_CS1_PERF_SEL_INST_CYCLES_SALU", "SQ_CS1", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_CS1_PERF_SEL_THREAD_CYCLES_VALU", "SQ_CS1", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_CS1_PERF_SEL_LDS_BANK_CONFLICT", "SQ_CS1", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqCs2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqCs2ExposedCountersGfx9 = {
     {4, "SQ_CS2_PERF_SEL_WAVES", "SQ_CS2", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_CS2_PERF_SEL_ITEMS", "SQ_CS2", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_CS2_PERF_SEL_INSTS_VALU", "SQ_CS2", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1330,9 +1330,9 @@ namespace counter_gfx9
     {84, "SQ_CS2_PERF_SEL_INST_CYCLES_SALU", "SQ_CS2", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_CS2_PERF_SEL_THREAD_CYCLES_VALU", "SQ_CS2", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_CS2_PERF_SEL_LDS_BANK_CONFLICT", "SQ_CS2", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kSqCs3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kSqCs3ExposedCountersGfx9 = {
     {4, "SQ_CS3_PERF_SEL_WAVES", "SQ_CS3", "Count number of waves sent to SQs. (per-simd, emulated, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {14, "SQ_CS3_PERF_SEL_ITEMS", "SQ_CS3", "Number of valid items per wave. (per-simd, global)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {26, "SQ_CS3_PERF_SEL_INSTS_VALU", "SQ_CS3", "Number of VALU instructions issued. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1349,9 +1349,9 @@ namespace counter_gfx9
     {84, "SQ_CS3_PERF_SEL_INST_CYCLES_SALU", "SQ_CS3", "Number of cycles needed to execute non-memory read scalar operations. (per-simd, emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {85, "SQ_CS3_PERF_SEL_THREAD_CYCLES_VALU", "SQ_CS3", "Number of thread-cycles used to execute VALU operations (similar to INST_CYCLES_VALU but multiplied by number of active threads). (per-simd)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {93, "SQ_CS3_PERF_SEL_LDS_BANK_CONFLICT", "SQ_CS3", "Number of cycles LDS is stalled by bank conflicts. (emulated)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa0ExposedCountersGfx9 = {
     {15, "TA0_PERF_SEL_TA_BUSY", "TA0", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA0_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA0", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA0_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA0", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1368,9 +1368,9 @@ namespace counter_gfx9
     {97, "TA0_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA0", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA0_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA0", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA0_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA0", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa1ExposedCountersGfx9 = {
     {15, "TA1_PERF_SEL_TA_BUSY", "TA1", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA1_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA1", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA1_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA1", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1387,9 +1387,9 @@ namespace counter_gfx9
     {97, "TA1_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA1", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA1_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA1", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA1_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA1", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa2ExposedCountersGfx9 = {
     {15, "TA2_PERF_SEL_TA_BUSY", "TA2", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA2_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA2", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA2_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA2", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1406,9 +1406,9 @@ namespace counter_gfx9
     {97, "TA2_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA2", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA2_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA2", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA2_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA2", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa3ExposedCountersGfx9 = {
     {15, "TA3_PERF_SEL_TA_BUSY", "TA3", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA3_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA3", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA3_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA3", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1425,9 +1425,9 @@ namespace counter_gfx9
     {97, "TA3_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA3", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA3_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA3", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA3_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA3", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa4ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa4ExposedCountersGfx9 = {
     {15, "TA4_PERF_SEL_TA_BUSY", "TA4", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA4_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA4", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA4_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA4", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1444,9 +1444,9 @@ namespace counter_gfx9
     {97, "TA4_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA4", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA4_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA4", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA4_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA4", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa5ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa5ExposedCountersGfx9 = {
     {15, "TA5_PERF_SEL_TA_BUSY", "TA5", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA5_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA5", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA5_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA5", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1463,9 +1463,9 @@ namespace counter_gfx9
     {97, "TA5_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA5", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA5_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA5", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA5_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA5", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa6ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa6ExposedCountersGfx9 = {
     {15, "TA6_PERF_SEL_TA_BUSY", "TA6", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA6_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA6", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA6_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA6", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1482,9 +1482,9 @@ namespace counter_gfx9
     {97, "TA6_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA6", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA6_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA6", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA6_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA6", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa7ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa7ExposedCountersGfx9 = {
     {15, "TA7_PERF_SEL_TA_BUSY", "TA7", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA7_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA7", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA7_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA7", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1501,9 +1501,9 @@ namespace counter_gfx9
     {97, "TA7_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA7", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA7_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA7", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA7_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA7", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa8ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa8ExposedCountersGfx9 = {
     {15, "TA8_PERF_SEL_TA_BUSY", "TA8", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA8_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA8", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA8_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA8", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1520,9 +1520,9 @@ namespace counter_gfx9
     {97, "TA8_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA8", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA8_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA8", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA8_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA8", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa9ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa9ExposedCountersGfx9 = {
     {15, "TA9_PERF_SEL_TA_BUSY", "TA9", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA9_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA9", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA9_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA9", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1539,9 +1539,9 @@ namespace counter_gfx9
     {97, "TA9_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA9", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA9_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA9", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA9_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA9", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa10ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa10ExposedCountersGfx9 = {
     {15, "TA10_PERF_SEL_TA_BUSY", "TA10", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA10_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA10", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA10_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA10", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1558,9 +1558,9 @@ namespace counter_gfx9
     {97, "TA10_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA10", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA10_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA10", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA10_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA10", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa11ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa11ExposedCountersGfx9 = {
     {15, "TA11_PERF_SEL_TA_BUSY", "TA11", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA11_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA11", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA11_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA11", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1577,9 +1577,9 @@ namespace counter_gfx9
     {97, "TA11_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA11", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA11_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA11", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA11_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA11", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa12ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa12ExposedCountersGfx9 = {
     {15, "TA12_PERF_SEL_TA_BUSY", "TA12", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA12_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA12", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA12_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA12", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1596,9 +1596,9 @@ namespace counter_gfx9
     {97, "TA12_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA12", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA12_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA12", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA12_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA12", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa13ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa13ExposedCountersGfx9 = {
     {15, "TA13_PERF_SEL_TA_BUSY", "TA13", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA13_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA13", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA13_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA13", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1615,9 +1615,9 @@ namespace counter_gfx9
     {97, "TA13_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA13", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA13_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA13", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA13_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA13", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa14ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa14ExposedCountersGfx9 = {
     {15, "TA14_PERF_SEL_TA_BUSY", "TA14", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA14_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA14", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA14_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA14", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1634,9 +1634,9 @@ namespace counter_gfx9
     {97, "TA14_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA14", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA14_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA14", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA14_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA14", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa15ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa15ExposedCountersGfx9 = {
     {15, "TA15_PERF_SEL_TA_BUSY", "TA15", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA15_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA15", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA15_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA15", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1653,9 +1653,9 @@ namespace counter_gfx9
     {97, "TA15_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA15", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA15_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA15", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA15_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA15", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa16ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa16ExposedCountersGfx9 = {
     {15, "TA16_PERF_SEL_TA_BUSY", "TA16", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA16_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA16", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA16_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA16", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1672,9 +1672,9 @@ namespace counter_gfx9
     {97, "TA16_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA16", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA16_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA16", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA16_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA16", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa17ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa17ExposedCountersGfx9 = {
     {15, "TA17_PERF_SEL_TA_BUSY", "TA17", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA17_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA17", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA17_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA17", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1691,9 +1691,9 @@ namespace counter_gfx9
     {97, "TA17_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA17", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA17_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA17", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA17_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA17", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa18ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa18ExposedCountersGfx9 = {
     {15, "TA18_PERF_SEL_TA_BUSY", "TA18", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA18_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA18", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA18_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA18", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1710,9 +1710,9 @@ namespace counter_gfx9
     {97, "TA18_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA18", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA18_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA18", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA18_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA18", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa19ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa19ExposedCountersGfx9 = {
     {15, "TA19_PERF_SEL_TA_BUSY", "TA19", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA19_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA19", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA19_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA19", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1729,9 +1729,9 @@ namespace counter_gfx9
     {97, "TA19_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA19", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA19_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA19", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA19_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA19", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa20ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa20ExposedCountersGfx9 = {
     {15, "TA20_PERF_SEL_TA_BUSY", "TA20", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA20_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA20", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA20_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA20", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1748,9 +1748,9 @@ namespace counter_gfx9
     {97, "TA20_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA20", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA20_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA20", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA20_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA20", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa21ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa21ExposedCountersGfx9 = {
     {15, "TA21_PERF_SEL_TA_BUSY", "TA21", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA21_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA21", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA21_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA21", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1767,9 +1767,9 @@ namespace counter_gfx9
     {97, "TA21_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA21", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA21_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA21", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA21_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA21", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa22ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa22ExposedCountersGfx9 = {
     {15, "TA22_PERF_SEL_TA_BUSY", "TA22", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA22_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA22", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA22_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA22", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1786,9 +1786,9 @@ namespace counter_gfx9
     {97, "TA22_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA22", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA22_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA22", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA22_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA22", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa23ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa23ExposedCountersGfx9 = {
     {15, "TA23_PERF_SEL_TA_BUSY", "TA23", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA23_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA23", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA23_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA23", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1805,9 +1805,9 @@ namespace counter_gfx9
     {97, "TA23_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA23", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA23_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA23", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA23_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA23", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa24ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa24ExposedCountersGfx9 = {
     {15, "TA24_PERF_SEL_TA_BUSY", "TA24", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA24_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA24", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA24_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA24", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1824,9 +1824,9 @@ namespace counter_gfx9
     {97, "TA24_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA24", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA24_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA24", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA24_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA24", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa25ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa25ExposedCountersGfx9 = {
     {15, "TA25_PERF_SEL_TA_BUSY", "TA25", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA25_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA25", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA25_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA25", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1843,9 +1843,9 @@ namespace counter_gfx9
     {97, "TA25_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA25", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA25_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA25", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA25_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA25", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa26ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa26ExposedCountersGfx9 = {
     {15, "TA26_PERF_SEL_TA_BUSY", "TA26", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA26_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA26", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA26_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA26", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1862,9 +1862,9 @@ namespace counter_gfx9
     {97, "TA26_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA26", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA26_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA26", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA26_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA26", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa27ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa27ExposedCountersGfx9 = {
     {15, "TA27_PERF_SEL_TA_BUSY", "TA27", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA27_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA27", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA27_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA27", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1881,9 +1881,9 @@ namespace counter_gfx9
     {97, "TA27_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA27", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA27_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA27", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA27_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA27", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa28ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa28ExposedCountersGfx9 = {
     {15, "TA28_PERF_SEL_TA_BUSY", "TA28", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA28_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA28", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA28_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA28", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1900,9 +1900,9 @@ namespace counter_gfx9
     {97, "TA28_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA28", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA28_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA28", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA28_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA28", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa29ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa29ExposedCountersGfx9 = {
     {15, "TA29_PERF_SEL_TA_BUSY", "TA29", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA29_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA29", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA29_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA29", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1919,9 +1919,9 @@ namespace counter_gfx9
     {97, "TA29_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA29", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA29_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA29", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA29_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA29", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa30ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa30ExposedCountersGfx9 = {
     {15, "TA30_PERF_SEL_TA_BUSY", "TA30", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA30_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA30", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA30_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA30", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1938,9 +1938,9 @@ namespace counter_gfx9
     {97, "TA30_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA30", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA30_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA30", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA30_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA30", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa31ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa31ExposedCountersGfx9 = {
     {15, "TA31_PERF_SEL_TA_BUSY", "TA31", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA31_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA31", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA31_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA31", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1957,9 +1957,9 @@ namespace counter_gfx9
     {97, "TA31_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA31", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA31_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA31", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA31_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA31", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa32ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa32ExposedCountersGfx9 = {
     {15, "TA32_PERF_SEL_TA_BUSY", "TA32", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA32_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA32", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA32_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA32", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1976,9 +1976,9 @@ namespace counter_gfx9
     {97, "TA32_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA32", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA32_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA32", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA32_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA32", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa33ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa33ExposedCountersGfx9 = {
     {15, "TA33_PERF_SEL_TA_BUSY", "TA33", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA33_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA33", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA33_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA33", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1995,9 +1995,9 @@ namespace counter_gfx9
     {97, "TA33_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA33", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA33_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA33", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA33_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA33", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa34ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa34ExposedCountersGfx9 = {
     {15, "TA34_PERF_SEL_TA_BUSY", "TA34", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA34_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA34", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA34_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA34", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2014,9 +2014,9 @@ namespace counter_gfx9
     {97, "TA34_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA34", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA34_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA34", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA34_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA34", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa35ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa35ExposedCountersGfx9 = {
     {15, "TA35_PERF_SEL_TA_BUSY", "TA35", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA35_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA35", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA35_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA35", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2033,9 +2033,9 @@ namespace counter_gfx9
     {97, "TA35_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA35", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA35_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA35", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA35_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA35", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa36ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa36ExposedCountersGfx9 = {
     {15, "TA36_PERF_SEL_TA_BUSY", "TA36", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA36_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA36", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA36_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA36", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2052,9 +2052,9 @@ namespace counter_gfx9
     {97, "TA36_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA36", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA36_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA36", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA36_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA36", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa37ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa37ExposedCountersGfx9 = {
     {15, "TA37_PERF_SEL_TA_BUSY", "TA37", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA37_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA37", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA37_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA37", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2071,9 +2071,9 @@ namespace counter_gfx9
     {97, "TA37_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA37", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA37_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA37", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA37_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA37", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa38ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa38ExposedCountersGfx9 = {
     {15, "TA38_PERF_SEL_TA_BUSY", "TA38", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA38_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA38", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA38_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA38", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2090,9 +2090,9 @@ namespace counter_gfx9
     {97, "TA38_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA38", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA38_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA38", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA38_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA38", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa39ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa39ExposedCountersGfx9 = {
     {15, "TA39_PERF_SEL_TA_BUSY", "TA39", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA39_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA39", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA39_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA39", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2109,9 +2109,9 @@ namespace counter_gfx9
     {97, "TA39_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA39", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA39_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA39", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA39_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA39", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa40ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa40ExposedCountersGfx9 = {
     {15, "TA40_PERF_SEL_TA_BUSY", "TA40", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA40_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA40", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA40_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA40", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2128,9 +2128,9 @@ namespace counter_gfx9
     {97, "TA40_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA40", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA40_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA40", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA40_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA40", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa41ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa41ExposedCountersGfx9 = {
     {15, "TA41_PERF_SEL_TA_BUSY", "TA41", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA41_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA41", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA41_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA41", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2147,9 +2147,9 @@ namespace counter_gfx9
     {97, "TA41_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA41", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA41_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA41", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA41_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA41", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa42ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa42ExposedCountersGfx9 = {
     {15, "TA42_PERF_SEL_TA_BUSY", "TA42", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA42_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA42", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA42_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA42", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2166,9 +2166,9 @@ namespace counter_gfx9
     {97, "TA42_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA42", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA42_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA42", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA42_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA42", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa43ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa43ExposedCountersGfx9 = {
     {15, "TA43_PERF_SEL_TA_BUSY", "TA43", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA43_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA43", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA43_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA43", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2185,9 +2185,9 @@ namespace counter_gfx9
     {97, "TA43_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA43", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA43_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA43", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA43_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA43", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa44ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa44ExposedCountersGfx9 = {
     {15, "TA44_PERF_SEL_TA_BUSY", "TA44", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA44_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA44", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA44_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA44", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2204,9 +2204,9 @@ namespace counter_gfx9
     {97, "TA44_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA44", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA44_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA44", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA44_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA44", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa45ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa45ExposedCountersGfx9 = {
     {15, "TA45_PERF_SEL_TA_BUSY", "TA45", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA45_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA45", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA45_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA45", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2223,9 +2223,9 @@ namespace counter_gfx9
     {97, "TA45_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA45", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA45_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA45", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA45_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA45", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa46ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa46ExposedCountersGfx9 = {
     {15, "TA46_PERF_SEL_TA_BUSY", "TA46", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA46_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA46", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA46_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA46", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2242,9 +2242,9 @@ namespace counter_gfx9
     {97, "TA46_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA46", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA46_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA46", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA46_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA46", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa47ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa47ExposedCountersGfx9 = {
     {15, "TA47_PERF_SEL_TA_BUSY", "TA47", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA47_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA47", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA47_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA47", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2261,9 +2261,9 @@ namespace counter_gfx9
     {97, "TA47_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA47", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA47_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA47", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA47_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA47", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa48ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa48ExposedCountersGfx9 = {
     {15, "TA48_PERF_SEL_TA_BUSY", "TA48", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA48_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA48", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA48_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA48", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2280,9 +2280,9 @@ namespace counter_gfx9
     {97, "TA48_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA48", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA48_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA48", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA48_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA48", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa49ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa49ExposedCountersGfx9 = {
     {15, "TA49_PERF_SEL_TA_BUSY", "TA49", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA49_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA49", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA49_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA49", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2299,9 +2299,9 @@ namespace counter_gfx9
     {97, "TA49_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA49", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA49_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA49", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA49_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA49", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa50ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa50ExposedCountersGfx9 = {
     {15, "TA50_PERF_SEL_TA_BUSY", "TA50", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA50_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA50", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA50_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA50", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2318,9 +2318,9 @@ namespace counter_gfx9
     {97, "TA50_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA50", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA50_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA50", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA50_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA50", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa51ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa51ExposedCountersGfx9 = {
     {15, "TA51_PERF_SEL_TA_BUSY", "TA51", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA51_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA51", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA51_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA51", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2337,9 +2337,9 @@ namespace counter_gfx9
     {97, "TA51_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA51", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA51_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA51", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA51_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA51", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa52ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa52ExposedCountersGfx9 = {
     {15, "TA52_PERF_SEL_TA_BUSY", "TA52", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA52_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA52", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA52_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA52", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2356,9 +2356,9 @@ namespace counter_gfx9
     {97, "TA52_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA52", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA52_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA52", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA52_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA52", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa53ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa53ExposedCountersGfx9 = {
     {15, "TA53_PERF_SEL_TA_BUSY", "TA53", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA53_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA53", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA53_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA53", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2375,9 +2375,9 @@ namespace counter_gfx9
     {97, "TA53_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA53", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA53_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA53", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA53_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA53", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa54ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa54ExposedCountersGfx9 = {
     {15, "TA54_PERF_SEL_TA_BUSY", "TA54", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA54_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA54", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA54_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA54", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2394,9 +2394,9 @@ namespace counter_gfx9
     {97, "TA54_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA54", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA54_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA54", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA54_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA54", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa55ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa55ExposedCountersGfx9 = {
     {15, "TA55_PERF_SEL_TA_BUSY", "TA55", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA55_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA55", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA55_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA55", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2413,9 +2413,9 @@ namespace counter_gfx9
     {97, "TA55_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA55", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA55_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA55", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA55_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA55", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa56ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa56ExposedCountersGfx9 = {
     {15, "TA56_PERF_SEL_TA_BUSY", "TA56", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA56_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA56", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA56_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA56", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2432,9 +2432,9 @@ namespace counter_gfx9
     {97, "TA56_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA56", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA56_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA56", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA56_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA56", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa57ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa57ExposedCountersGfx9 = {
     {15, "TA57_PERF_SEL_TA_BUSY", "TA57", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA57_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA57", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA57_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA57", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2451,9 +2451,9 @@ namespace counter_gfx9
     {97, "TA57_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA57", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA57_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA57", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA57_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA57", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa58ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa58ExposedCountersGfx9 = {
     {15, "TA58_PERF_SEL_TA_BUSY", "TA58", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA58_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA58", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA58_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA58", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2470,9 +2470,9 @@ namespace counter_gfx9
     {97, "TA58_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA58", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA58_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA58", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA58_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA58", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa59ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa59ExposedCountersGfx9 = {
     {15, "TA59_PERF_SEL_TA_BUSY", "TA59", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA59_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA59", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA59_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA59", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2489,9 +2489,9 @@ namespace counter_gfx9
     {97, "TA59_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA59", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA59_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA59", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA59_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA59", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa60ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa60ExposedCountersGfx9 = {
     {15, "TA60_PERF_SEL_TA_BUSY", "TA60", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA60_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA60", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA60_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA60", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2508,9 +2508,9 @@ namespace counter_gfx9
     {97, "TA60_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA60", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA60_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA60", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA60_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA60", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa61ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa61ExposedCountersGfx9 = {
     {15, "TA61_PERF_SEL_TA_BUSY", "TA61", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA61_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA61", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA61_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA61", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2527,9 +2527,9 @@ namespace counter_gfx9
     {97, "TA61_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA61", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA61_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA61", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA61_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA61", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa62ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa62ExposedCountersGfx9 = {
     {15, "TA62_PERF_SEL_TA_BUSY", "TA62", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA62_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA62", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA62_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA62", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2546,9 +2546,9 @@ namespace counter_gfx9
     {97, "TA62_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA62", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA62_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA62", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA62_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA62", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTa63ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTa63ExposedCountersGfx9 = {
     {15, "TA63_PERF_SEL_TA_BUSY", "TA63", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {68, "TA63_PERF_SEL_MIP_1_CYCLE_PIXELS", "TA63", "Number of pixels requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TA63_PERF_SEL_MIP_2_CYCLE_PIXELS", "TA63", "Number of pixels requiring sampler state machine to take 2 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2565,585 +2565,585 @@ namespace counter_gfx9
     {97, "TA63_PERF_SEL_ANISO_16_CYCLE_QUADS", "TA63", "Number of quads requiring 16 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {101, "TA63_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA63", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {102, "TA63_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA63", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp0ExposedCountersGfx9 = {
     {6, "TCP0_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP0", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP0_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP0", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP0_PERF_SEL_TCC_READ_REQ", "TCP0", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP0_PERF_SEL_TCC_WRITE_REQ", "TCP0", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP0_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP0", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP0_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP0", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp1ExposedCountersGfx9 = {
     {6, "TCP1_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP1", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP1_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP1", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP1_PERF_SEL_TCC_READ_REQ", "TCP1", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP1_PERF_SEL_TCC_WRITE_REQ", "TCP1", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP1_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP1", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP1_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP1", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp2ExposedCountersGfx9 = {
     {6, "TCP2_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP2", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP2_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP2", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP2_PERF_SEL_TCC_READ_REQ", "TCP2", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP2_PERF_SEL_TCC_WRITE_REQ", "TCP2", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP2_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP2", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP2_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP2", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp3ExposedCountersGfx9 = {
     {6, "TCP3_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP3", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP3_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP3", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP3_PERF_SEL_TCC_READ_REQ", "TCP3", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP3_PERF_SEL_TCC_WRITE_REQ", "TCP3", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP3_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP3", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP3_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP3", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp4ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp4ExposedCountersGfx9 = {
     {6, "TCP4_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP4", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP4_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP4", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP4_PERF_SEL_TCC_READ_REQ", "TCP4", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP4_PERF_SEL_TCC_WRITE_REQ", "TCP4", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP4_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP4", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP4_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP4", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp5ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp5ExposedCountersGfx9 = {
     {6, "TCP5_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP5", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP5_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP5", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP5_PERF_SEL_TCC_READ_REQ", "TCP5", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP5_PERF_SEL_TCC_WRITE_REQ", "TCP5", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP5_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP5", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP5_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP5", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp6ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp6ExposedCountersGfx9 = {
     {6, "TCP6_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP6", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP6_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP6", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP6_PERF_SEL_TCC_READ_REQ", "TCP6", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP6_PERF_SEL_TCC_WRITE_REQ", "TCP6", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP6_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP6", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP6_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP6", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp7ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp7ExposedCountersGfx9 = {
     {6, "TCP7_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP7", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP7_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP7", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP7_PERF_SEL_TCC_READ_REQ", "TCP7", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP7_PERF_SEL_TCC_WRITE_REQ", "TCP7", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP7_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP7", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP7_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP7", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp8ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp8ExposedCountersGfx9 = {
     {6, "TCP8_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP8", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP8_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP8", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP8_PERF_SEL_TCC_READ_REQ", "TCP8", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP8_PERF_SEL_TCC_WRITE_REQ", "TCP8", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP8_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP8", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP8_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP8", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp9ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp9ExposedCountersGfx9 = {
     {6, "TCP9_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP9", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP9_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP9", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP9_PERF_SEL_TCC_READ_REQ", "TCP9", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP9_PERF_SEL_TCC_WRITE_REQ", "TCP9", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP9_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP9", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP9_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP9", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp10ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp10ExposedCountersGfx9 = {
     {6, "TCP10_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP10", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP10_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP10", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP10_PERF_SEL_TCC_READ_REQ", "TCP10", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP10_PERF_SEL_TCC_WRITE_REQ", "TCP10", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP10_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP10", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP10_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP10", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp11ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp11ExposedCountersGfx9 = {
     {6, "TCP11_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP11", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP11_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP11", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP11_PERF_SEL_TCC_READ_REQ", "TCP11", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP11_PERF_SEL_TCC_WRITE_REQ", "TCP11", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP11_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP11", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP11_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP11", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp12ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp12ExposedCountersGfx9 = {
     {6, "TCP12_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP12", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP12_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP12", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP12_PERF_SEL_TCC_READ_REQ", "TCP12", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP12_PERF_SEL_TCC_WRITE_REQ", "TCP12", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP12_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP12", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP12_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP12", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp13ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp13ExposedCountersGfx9 = {
     {6, "TCP13_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP13", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP13_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP13", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP13_PERF_SEL_TCC_READ_REQ", "TCP13", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP13_PERF_SEL_TCC_WRITE_REQ", "TCP13", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP13_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP13", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP13_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP13", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp14ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp14ExposedCountersGfx9 = {
     {6, "TCP14_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP14", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP14_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP14", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP14_PERF_SEL_TCC_READ_REQ", "TCP14", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP14_PERF_SEL_TCC_WRITE_REQ", "TCP14", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP14_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP14", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP14_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP14", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp15ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp15ExposedCountersGfx9 = {
     {6, "TCP15_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP15", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP15_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP15", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP15_PERF_SEL_TCC_READ_REQ", "TCP15", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP15_PERF_SEL_TCC_WRITE_REQ", "TCP15", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP15_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP15", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP15_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP15", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp16ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp16ExposedCountersGfx9 = {
     {6, "TCP16_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP16", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP16_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP16", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP16_PERF_SEL_TCC_READ_REQ", "TCP16", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP16_PERF_SEL_TCC_WRITE_REQ", "TCP16", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP16_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP16", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP16_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP16", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp17ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp17ExposedCountersGfx9 = {
     {6, "TCP17_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP17", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP17_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP17", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP17_PERF_SEL_TCC_READ_REQ", "TCP17", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP17_PERF_SEL_TCC_WRITE_REQ", "TCP17", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP17_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP17", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP17_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP17", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp18ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp18ExposedCountersGfx9 = {
     {6, "TCP18_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP18", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP18_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP18", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP18_PERF_SEL_TCC_READ_REQ", "TCP18", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP18_PERF_SEL_TCC_WRITE_REQ", "TCP18", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP18_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP18", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP18_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP18", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp19ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp19ExposedCountersGfx9 = {
     {6, "TCP19_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP19", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP19_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP19", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP19_PERF_SEL_TCC_READ_REQ", "TCP19", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP19_PERF_SEL_TCC_WRITE_REQ", "TCP19", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP19_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP19", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP19_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP19", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp20ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp20ExposedCountersGfx9 = {
     {6, "TCP20_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP20", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP20_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP20", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP20_PERF_SEL_TCC_READ_REQ", "TCP20", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP20_PERF_SEL_TCC_WRITE_REQ", "TCP20", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP20_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP20", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP20_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP20", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp21ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp21ExposedCountersGfx9 = {
     {6, "TCP21_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP21", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP21_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP21", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP21_PERF_SEL_TCC_READ_REQ", "TCP21", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP21_PERF_SEL_TCC_WRITE_REQ", "TCP21", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP21_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP21", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP21_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP21", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp22ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp22ExposedCountersGfx9 = {
     {6, "TCP22_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP22", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP22_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP22", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP22_PERF_SEL_TCC_READ_REQ", "TCP22", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP22_PERF_SEL_TCC_WRITE_REQ", "TCP22", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP22_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP22", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP22_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP22", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp23ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp23ExposedCountersGfx9 = {
     {6, "TCP23_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP23", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP23_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP23", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP23_PERF_SEL_TCC_READ_REQ", "TCP23", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP23_PERF_SEL_TCC_WRITE_REQ", "TCP23", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP23_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP23", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP23_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP23", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp24ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp24ExposedCountersGfx9 = {
     {6, "TCP24_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP24", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP24_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP24", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP24_PERF_SEL_TCC_READ_REQ", "TCP24", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP24_PERF_SEL_TCC_WRITE_REQ", "TCP24", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP24_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP24", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP24_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP24", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp25ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp25ExposedCountersGfx9 = {
     {6, "TCP25_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP25", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP25_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP25", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP25_PERF_SEL_TCC_READ_REQ", "TCP25", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP25_PERF_SEL_TCC_WRITE_REQ", "TCP25", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP25_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP25", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP25_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP25", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp26ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp26ExposedCountersGfx9 = {
     {6, "TCP26_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP26", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP26_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP26", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP26_PERF_SEL_TCC_READ_REQ", "TCP26", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP26_PERF_SEL_TCC_WRITE_REQ", "TCP26", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP26_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP26", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP26_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP26", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp27ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp27ExposedCountersGfx9 = {
     {6, "TCP27_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP27", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP27_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP27", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP27_PERF_SEL_TCC_READ_REQ", "TCP27", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP27_PERF_SEL_TCC_WRITE_REQ", "TCP27", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP27_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP27", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP27_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP27", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp28ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp28ExposedCountersGfx9 = {
     {6, "TCP28_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP28", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP28_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP28", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP28_PERF_SEL_TCC_READ_REQ", "TCP28", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP28_PERF_SEL_TCC_WRITE_REQ", "TCP28", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP28_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP28", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP28_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP28", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp29ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp29ExposedCountersGfx9 = {
     {6, "TCP29_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP29", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP29_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP29", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP29_PERF_SEL_TCC_READ_REQ", "TCP29", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP29_PERF_SEL_TCC_WRITE_REQ", "TCP29", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP29_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP29", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP29_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP29", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp30ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp30ExposedCountersGfx9 = {
     {6, "TCP30_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP30", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP30_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP30", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP30_PERF_SEL_TCC_READ_REQ", "TCP30", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP30_PERF_SEL_TCC_WRITE_REQ", "TCP30", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP30_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP30", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP30_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP30", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp31ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp31ExposedCountersGfx9 = {
     {6, "TCP31_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP31", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP31_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP31", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP31_PERF_SEL_TCC_READ_REQ", "TCP31", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP31_PERF_SEL_TCC_WRITE_REQ", "TCP31", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP31_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP31", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP31_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP31", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp32ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp32ExposedCountersGfx9 = {
     {6, "TCP32_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP32", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP32_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP32", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP32_PERF_SEL_TCC_READ_REQ", "TCP32", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP32_PERF_SEL_TCC_WRITE_REQ", "TCP32", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP32_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP32", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP32_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP32", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp33ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp33ExposedCountersGfx9 = {
     {6, "TCP33_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP33", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP33_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP33", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP33_PERF_SEL_TCC_READ_REQ", "TCP33", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP33_PERF_SEL_TCC_WRITE_REQ", "TCP33", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP33_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP33", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP33_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP33", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp34ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp34ExposedCountersGfx9 = {
     {6, "TCP34_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP34", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP34_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP34", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP34_PERF_SEL_TCC_READ_REQ", "TCP34", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP34_PERF_SEL_TCC_WRITE_REQ", "TCP34", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP34_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP34", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP34_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP34", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp35ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp35ExposedCountersGfx9 = {
     {6, "TCP35_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP35", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP35_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP35", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP35_PERF_SEL_TCC_READ_REQ", "TCP35", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP35_PERF_SEL_TCC_WRITE_REQ", "TCP35", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP35_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP35", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP35_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP35", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp36ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp36ExposedCountersGfx9 = {
     {6, "TCP36_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP36", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP36_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP36", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP36_PERF_SEL_TCC_READ_REQ", "TCP36", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP36_PERF_SEL_TCC_WRITE_REQ", "TCP36", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP36_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP36", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP36_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP36", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp37ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp37ExposedCountersGfx9 = {
     {6, "TCP37_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP37", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP37_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP37", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP37_PERF_SEL_TCC_READ_REQ", "TCP37", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP37_PERF_SEL_TCC_WRITE_REQ", "TCP37", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP37_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP37", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP37_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP37", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp38ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp38ExposedCountersGfx9 = {
     {6, "TCP38_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP38", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP38_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP38", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP38_PERF_SEL_TCC_READ_REQ", "TCP38", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP38_PERF_SEL_TCC_WRITE_REQ", "TCP38", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP38_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP38", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP38_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP38", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp39ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp39ExposedCountersGfx9 = {
     {6, "TCP39_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP39", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP39_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP39", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP39_PERF_SEL_TCC_READ_REQ", "TCP39", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP39_PERF_SEL_TCC_WRITE_REQ", "TCP39", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP39_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP39", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP39_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP39", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp40ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp40ExposedCountersGfx9 = {
     {6, "TCP40_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP40", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP40_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP40", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP40_PERF_SEL_TCC_READ_REQ", "TCP40", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP40_PERF_SEL_TCC_WRITE_REQ", "TCP40", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP40_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP40", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP40_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP40", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp41ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp41ExposedCountersGfx9 = {
     {6, "TCP41_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP41", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP41_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP41", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP41_PERF_SEL_TCC_READ_REQ", "TCP41", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP41_PERF_SEL_TCC_WRITE_REQ", "TCP41", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP41_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP41", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP41_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP41", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp42ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp42ExposedCountersGfx9 = {
     {6, "TCP42_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP42", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP42_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP42", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP42_PERF_SEL_TCC_READ_REQ", "TCP42", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP42_PERF_SEL_TCC_WRITE_REQ", "TCP42", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP42_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP42", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP42_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP42", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp43ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp43ExposedCountersGfx9 = {
     {6, "TCP43_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP43", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP43_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP43", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP43_PERF_SEL_TCC_READ_REQ", "TCP43", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP43_PERF_SEL_TCC_WRITE_REQ", "TCP43", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP43_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP43", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP43_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP43", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp44ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp44ExposedCountersGfx9 = {
     {6, "TCP44_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP44", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP44_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP44", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP44_PERF_SEL_TCC_READ_REQ", "TCP44", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP44_PERF_SEL_TCC_WRITE_REQ", "TCP44", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP44_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP44", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP44_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP44", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp45ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp45ExposedCountersGfx9 = {
     {6, "TCP45_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP45", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP45_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP45", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP45_PERF_SEL_TCC_READ_REQ", "TCP45", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP45_PERF_SEL_TCC_WRITE_REQ", "TCP45", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP45_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP45", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP45_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP45", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp46ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp46ExposedCountersGfx9 = {
     {6, "TCP46_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP46", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP46_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP46", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP46_PERF_SEL_TCC_READ_REQ", "TCP46", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP46_PERF_SEL_TCC_WRITE_REQ", "TCP46", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP46_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP46", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP46_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP46", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp47ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp47ExposedCountersGfx9 = {
     {6, "TCP47_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP47", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP47_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP47", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP47_PERF_SEL_TCC_READ_REQ", "TCP47", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP47_PERF_SEL_TCC_WRITE_REQ", "TCP47", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP47_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP47", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP47_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP47", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp48ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp48ExposedCountersGfx9 = {
     {6, "TCP48_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP48", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP48_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP48", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP48_PERF_SEL_TCC_READ_REQ", "TCP48", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP48_PERF_SEL_TCC_WRITE_REQ", "TCP48", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP48_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP48", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP48_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP48", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp49ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp49ExposedCountersGfx9 = {
     {6, "TCP49_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP49", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP49_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP49", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP49_PERF_SEL_TCC_READ_REQ", "TCP49", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP49_PERF_SEL_TCC_WRITE_REQ", "TCP49", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP49_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP49", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP49_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP49", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp50ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp50ExposedCountersGfx9 = {
     {6, "TCP50_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP50", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP50_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP50", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP50_PERF_SEL_TCC_READ_REQ", "TCP50", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP50_PERF_SEL_TCC_WRITE_REQ", "TCP50", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP50_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP50", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP50_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP50", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp51ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp51ExposedCountersGfx9 = {
     {6, "TCP51_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP51", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP51_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP51", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP51_PERF_SEL_TCC_READ_REQ", "TCP51", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP51_PERF_SEL_TCC_WRITE_REQ", "TCP51", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP51_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP51", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP51_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP51", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp52ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp52ExposedCountersGfx9 = {
     {6, "TCP52_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP52", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP52_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP52", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP52_PERF_SEL_TCC_READ_REQ", "TCP52", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP52_PERF_SEL_TCC_WRITE_REQ", "TCP52", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP52_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP52", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP52_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP52", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp53ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp53ExposedCountersGfx9 = {
     {6, "TCP53_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP53", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP53_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP53", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP53_PERF_SEL_TCC_READ_REQ", "TCP53", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP53_PERF_SEL_TCC_WRITE_REQ", "TCP53", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP53_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP53", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP53_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP53", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp54ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp54ExposedCountersGfx9 = {
     {6, "TCP54_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP54", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP54_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP54", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP54_PERF_SEL_TCC_READ_REQ", "TCP54", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP54_PERF_SEL_TCC_WRITE_REQ", "TCP54", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP54_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP54", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP54_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP54", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp55ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp55ExposedCountersGfx9 = {
     {6, "TCP55_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP55", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP55_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP55", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP55_PERF_SEL_TCC_READ_REQ", "TCP55", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP55_PERF_SEL_TCC_WRITE_REQ", "TCP55", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP55_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP55", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP55_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP55", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp56ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp56ExposedCountersGfx9 = {
     {6, "TCP56_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP56", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP56_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP56", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP56_PERF_SEL_TCC_READ_REQ", "TCP56", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP56_PERF_SEL_TCC_WRITE_REQ", "TCP56", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP56_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP56", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP56_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP56", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp57ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp57ExposedCountersGfx9 = {
     {6, "TCP57_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP57", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP57_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP57", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP57_PERF_SEL_TCC_READ_REQ", "TCP57", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP57_PERF_SEL_TCC_WRITE_REQ", "TCP57", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP57_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP57", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP57_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP57", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp58ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp58ExposedCountersGfx9 = {
     {6, "TCP58_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP58", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP58_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP58", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP58_PERF_SEL_TCC_READ_REQ", "TCP58", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP58_PERF_SEL_TCC_WRITE_REQ", "TCP58", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP58_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP58", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP58_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP58", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp59ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp59ExposedCountersGfx9 = {
     {6, "TCP59_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP59", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP59_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP59", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP59_PERF_SEL_TCC_READ_REQ", "TCP59", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP59_PERF_SEL_TCC_WRITE_REQ", "TCP59", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP59_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP59", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP59_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP59", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp60ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp60ExposedCountersGfx9 = {
     {6, "TCP60_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP60", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP60_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP60", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP60_PERF_SEL_TCC_READ_REQ", "TCP60", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP60_PERF_SEL_TCC_WRITE_REQ", "TCP60", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP60_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP60", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP60_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP60", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp61ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp61ExposedCountersGfx9 = {
     {6, "TCP61_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP61", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP61_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP61", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP61_PERF_SEL_TCC_READ_REQ", "TCP61", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP61_PERF_SEL_TCC_WRITE_REQ", "TCP61", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP61_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP61", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP61_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP61", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp62ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp62ExposedCountersGfx9 = {
     {6, "TCP62_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP62", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP62_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP62", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP62_PERF_SEL_TCC_READ_REQ", "TCP62", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP62_PERF_SEL_TCC_WRITE_REQ", "TCP62", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP62_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP62", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP62_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP62", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcp63ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcp63ExposedCountersGfx9 = {
     {6, "TCP63_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP63", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {60, "TCP63_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP63", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {69, "TCP63_PERF_SEL_TCC_READ_REQ", "TCP63", "Total read requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {70, "TCP63_PERF_SEL_TCC_WRITE_REQ", "TCP63", "Total write requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {71, "TCP63_PERF_SEL_TCC_ATOMIC_WITH_RET_REQ", "TCP63", "Total atomic with return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {72, "TCP63_PERF_SEL_TCC_ATOMIC_WITHOUT_RET_REQ", "TCP63", "Total atomic without return requests from TCP to all TCCs", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc0ExposedCountersGfx9 = {
     {20, "TCC0_PERF_SEL_HIT", "TCC0", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC0_PERF_SEL_MISS", "TCC0", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC0_PERF_SEL_EA_WRREQ", "TCC0", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3151,9 +3151,9 @@ namespace counter_gfx9
     {33, "TCC0_PERF_SEL_EA_WRREQ_STALL", "TCC0", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC0_PERF_SEL_EA_RDREQ", "TCC0", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC0_PERF_SEL_EA_RDREQ_32B", "TCC0", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc1ExposedCountersGfx9 = {
     {20, "TCC1_PERF_SEL_HIT", "TCC1", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC1_PERF_SEL_MISS", "TCC1", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC1_PERF_SEL_EA_WRREQ", "TCC1", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3161,9 +3161,9 @@ namespace counter_gfx9
     {33, "TCC1_PERF_SEL_EA_WRREQ_STALL", "TCC1", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC1_PERF_SEL_EA_RDREQ", "TCC1", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC1_PERF_SEL_EA_RDREQ_32B", "TCC1", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc2ExposedCountersGfx9 = {
     {20, "TCC2_PERF_SEL_HIT", "TCC2", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC2_PERF_SEL_MISS", "TCC2", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC2_PERF_SEL_EA_WRREQ", "TCC2", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3171,9 +3171,9 @@ namespace counter_gfx9
     {33, "TCC2_PERF_SEL_EA_WRREQ_STALL", "TCC2", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC2_PERF_SEL_EA_RDREQ", "TCC2", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC2_PERF_SEL_EA_RDREQ_32B", "TCC2", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc3ExposedCountersGfx9 = {
     {20, "TCC3_PERF_SEL_HIT", "TCC3", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC3_PERF_SEL_MISS", "TCC3", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC3_PERF_SEL_EA_WRREQ", "TCC3", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3181,9 +3181,9 @@ namespace counter_gfx9
     {33, "TCC3_PERF_SEL_EA_WRREQ_STALL", "TCC3", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC3_PERF_SEL_EA_RDREQ", "TCC3", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC3_PERF_SEL_EA_RDREQ_32B", "TCC3", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc4ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc4ExposedCountersGfx9 = {
     {20, "TCC4_PERF_SEL_HIT", "TCC4", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC4_PERF_SEL_MISS", "TCC4", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC4_PERF_SEL_EA_WRREQ", "TCC4", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3191,9 +3191,9 @@ namespace counter_gfx9
     {33, "TCC4_PERF_SEL_EA_WRREQ_STALL", "TCC4", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC4_PERF_SEL_EA_RDREQ", "TCC4", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC4_PERF_SEL_EA_RDREQ_32B", "TCC4", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc5ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc5ExposedCountersGfx9 = {
     {20, "TCC5_PERF_SEL_HIT", "TCC5", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC5_PERF_SEL_MISS", "TCC5", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC5_PERF_SEL_EA_WRREQ", "TCC5", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3201,9 +3201,9 @@ namespace counter_gfx9
     {33, "TCC5_PERF_SEL_EA_WRREQ_STALL", "TCC5", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC5_PERF_SEL_EA_RDREQ", "TCC5", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC5_PERF_SEL_EA_RDREQ_32B", "TCC5", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc6ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc6ExposedCountersGfx9 = {
     {20, "TCC6_PERF_SEL_HIT", "TCC6", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC6_PERF_SEL_MISS", "TCC6", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC6_PERF_SEL_EA_WRREQ", "TCC6", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3211,9 +3211,9 @@ namespace counter_gfx9
     {33, "TCC6_PERF_SEL_EA_WRREQ_STALL", "TCC6", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC6_PERF_SEL_EA_RDREQ", "TCC6", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC6_PERF_SEL_EA_RDREQ_32B", "TCC6", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc7ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc7ExposedCountersGfx9 = {
     {20, "TCC7_PERF_SEL_HIT", "TCC7", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC7_PERF_SEL_MISS", "TCC7", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC7_PERF_SEL_EA_WRREQ", "TCC7", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3221,9 +3221,9 @@ namespace counter_gfx9
     {33, "TCC7_PERF_SEL_EA_WRREQ_STALL", "TCC7", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC7_PERF_SEL_EA_RDREQ", "TCC7", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC7_PERF_SEL_EA_RDREQ_32B", "TCC7", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc8ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc8ExposedCountersGfx9 = {
     {20, "TCC8_PERF_SEL_HIT", "TCC8", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC8_PERF_SEL_MISS", "TCC8", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC8_PERF_SEL_EA_WRREQ", "TCC8", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3231,9 +3231,9 @@ namespace counter_gfx9
     {33, "TCC8_PERF_SEL_EA_WRREQ_STALL", "TCC8", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC8_PERF_SEL_EA_RDREQ", "TCC8", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC8_PERF_SEL_EA_RDREQ_32B", "TCC8", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc9ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc9ExposedCountersGfx9 = {
     {20, "TCC9_PERF_SEL_HIT", "TCC9", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC9_PERF_SEL_MISS", "TCC9", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC9_PERF_SEL_EA_WRREQ", "TCC9", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3241,9 +3241,9 @@ namespace counter_gfx9
     {33, "TCC9_PERF_SEL_EA_WRREQ_STALL", "TCC9", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC9_PERF_SEL_EA_RDREQ", "TCC9", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC9_PERF_SEL_EA_RDREQ_32B", "TCC9", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc10ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc10ExposedCountersGfx9 = {
     {20, "TCC10_PERF_SEL_HIT", "TCC10", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC10_PERF_SEL_MISS", "TCC10", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC10_PERF_SEL_EA_WRREQ", "TCC10", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3251,9 +3251,9 @@ namespace counter_gfx9
     {33, "TCC10_PERF_SEL_EA_WRREQ_STALL", "TCC10", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC10_PERF_SEL_EA_RDREQ", "TCC10", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC10_PERF_SEL_EA_RDREQ_32B", "TCC10", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc11ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc11ExposedCountersGfx9 = {
     {20, "TCC11_PERF_SEL_HIT", "TCC11", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC11_PERF_SEL_MISS", "TCC11", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC11_PERF_SEL_EA_WRREQ", "TCC11", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3261,9 +3261,9 @@ namespace counter_gfx9
     {33, "TCC11_PERF_SEL_EA_WRREQ_STALL", "TCC11", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC11_PERF_SEL_EA_RDREQ", "TCC11", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC11_PERF_SEL_EA_RDREQ_32B", "TCC11", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc12ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc12ExposedCountersGfx9 = {
     {20, "TCC12_PERF_SEL_HIT", "TCC12", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC12_PERF_SEL_MISS", "TCC12", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC12_PERF_SEL_EA_WRREQ", "TCC12", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3271,9 +3271,9 @@ namespace counter_gfx9
     {33, "TCC12_PERF_SEL_EA_WRREQ_STALL", "TCC12", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC12_PERF_SEL_EA_RDREQ", "TCC12", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC12_PERF_SEL_EA_RDREQ_32B", "TCC12", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc13ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc13ExposedCountersGfx9 = {
     {20, "TCC13_PERF_SEL_HIT", "TCC13", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC13_PERF_SEL_MISS", "TCC13", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC13_PERF_SEL_EA_WRREQ", "TCC13", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3281,9 +3281,9 @@ namespace counter_gfx9
     {33, "TCC13_PERF_SEL_EA_WRREQ_STALL", "TCC13", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC13_PERF_SEL_EA_RDREQ", "TCC13", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC13_PERF_SEL_EA_RDREQ_32B", "TCC13", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc14ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc14ExposedCountersGfx9 = {
     {20, "TCC14_PERF_SEL_HIT", "TCC14", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC14_PERF_SEL_MISS", "TCC14", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC14_PERF_SEL_EA_WRREQ", "TCC14", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3291,9 +3291,9 @@ namespace counter_gfx9
     {33, "TCC14_PERF_SEL_EA_WRREQ_STALL", "TCC14", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC14_PERF_SEL_EA_RDREQ", "TCC14", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC14_PERF_SEL_EA_RDREQ_32B", "TCC14", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kTcc15ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kTcc15ExposedCountersGfx9 = {
     {20, "TCC15_PERF_SEL_HIT", "TCC15", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {22, "TCC15_PERF_SEL_MISS", "TCC15", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {29, "TCC15_PERF_SEL_EA_WRREQ", "TCC15", "Number of transactions (either 32-byte or 64-byte) going over the TC_EA_wrreq interface. Atomics may travel over the same interface and are generally classified as write requests. This does not include probe commands.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3301,210 +3301,210 @@ namespace counter_gfx9
     {33, "TCC15_PERF_SEL_EA_WRREQ_STALL", "TCC15", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {41, "TCC15_PERF_SEL_EA_RDREQ", "TCC15", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {42, "TCC15_PERF_SEL_EA_RDREQ_32B", "TCC15", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kVgt0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kVgt0ExposedCountersGfx9 = {
     {1, "VGT0_PERF_VGT_SPI_ESVERT_VALID", "VGT0", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {9, "VGT0_PERF_VGT_SPI_GSPRIM_VALID", "VGT0", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {20, "VGT0_PERF_VGT_SPI_VSVERT_SEND", "VGT0", "number of VS verts, including null EOV`s", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {96, "VGT0_PERF_VGT_SPI_LSVERT_VALID", "VGT0", "LS Vert is valid.  Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {105, "VGT0_PERF_VGT_SPI_HSVERT_VALID", "VGT0", "HS Vert is valid.  Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {125, "VGT0_PERF_VGT_TE11_BUSY", "VGT0", "Counts number of cycles the TE11 block is busy. (DX11 Tessellation Fixed Function Logic)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kVgt1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kVgt1ExposedCountersGfx9 = {
     {1, "VGT1_PERF_VGT_SPI_ESVERT_VALID", "VGT1", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {9, "VGT1_PERF_VGT_SPI_GSPRIM_VALID", "VGT1", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {20, "VGT1_PERF_VGT_SPI_VSVERT_SEND", "VGT1", "number of VS verts, including null EOV`s", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {96, "VGT1_PERF_VGT_SPI_LSVERT_VALID", "VGT1", "LS Vert is valid.  Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {105, "VGT1_PERF_VGT_SPI_HSVERT_VALID", "VGT1", "HS Vert is valid.  Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {125, "VGT1_PERF_VGT_TE11_BUSY", "VGT1", "Counts number of cycles the TE11 block is busy. (DX11 Tessellation Fixed Function Logic)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kVgt2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kVgt2ExposedCountersGfx9 = {
     {1, "VGT2_PERF_VGT_SPI_ESVERT_VALID", "VGT2", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {9, "VGT2_PERF_VGT_SPI_GSPRIM_VALID", "VGT2", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {20, "VGT2_PERF_VGT_SPI_VSVERT_SEND", "VGT2", "number of VS verts, including null EOV`s", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {96, "VGT2_PERF_VGT_SPI_LSVERT_VALID", "VGT2", "LS Vert is valid.  Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {105, "VGT2_PERF_VGT_SPI_HSVERT_VALID", "VGT2", "HS Vert is valid.  Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {125, "VGT2_PERF_VGT_TE11_BUSY", "VGT2", "Counts number of cycles the TE11 block is busy. (DX11 Tessellation Fixed Function Logic)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kVgt3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kVgt3ExposedCountersGfx9 = {
     {1, "VGT3_PERF_VGT_SPI_ESVERT_VALID", "VGT3", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {9, "VGT3_PERF_VGT_SPI_GSPRIM_VALID", "VGT3", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {20, "VGT3_PERF_VGT_SPI_VSVERT_SEND", "VGT3", "number of VS verts, including null EOV`s", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {96, "VGT3_PERF_VGT_SPI_LSVERT_VALID", "VGT3", "LS Vert is valid.  Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {105, "VGT3_PERF_VGT_SPI_HSVERT_VALID", "VGT3", "HS Vert is valid.  Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {125, "VGT3_PERF_VGT_TE11_BUSY", "VGT3", "Counts number of cycles the TE11 block is busy. (DX11 Tessellation Fixed Function Logic)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea0ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea0ExposedCountersGfx9 = {
     {55, "GCEA0_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA0", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA0_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA0", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea1ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea1ExposedCountersGfx9 = {
     {55, "GCEA1_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA1", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA1_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA1", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea2ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea2ExposedCountersGfx9 = {
     {55, "GCEA2_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA2", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA2_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA2", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea3ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea3ExposedCountersGfx9 = {
     {55, "GCEA3_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA3", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA3_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA3", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea4ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea4ExposedCountersGfx9 = {
     {55, "GCEA4_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA4", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA4_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA4", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea5ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea5ExposedCountersGfx9 = {
     {55, "GCEA5_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA5", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA5_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA5", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea6ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea6ExposedCountersGfx9 = {
     {55, "GCEA6_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA6", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA6_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA6", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea7ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea7ExposedCountersGfx9 = {
     {55, "GCEA7_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA7", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA7_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA7", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea8ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea8ExposedCountersGfx9 = {
     {55, "GCEA8_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA8", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA8_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA8", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea9ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea9ExposedCountersGfx9 = {
     {55, "GCEA9_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA9", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA9_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA9", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea10ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea10ExposedCountersGfx9 = {
     {55, "GCEA10_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA10", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA10_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA10", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea11ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea11ExposedCountersGfx9 = {
     {55, "GCEA11_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA11", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA11_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA11", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea12ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea12ExposedCountersGfx9 = {
     {55, "GCEA12_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA12", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA12_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA12", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea13ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea13ExposedCountersGfx9 = {
     {55, "GCEA13_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA13", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA13_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA13", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea14ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea14ExposedCountersGfx9 = {
     {55, "GCEA14_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA14", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA14_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA14", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea15ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea15ExposedCountersGfx9 = {
     {55, "GCEA15_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA15", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA15_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA15", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea16ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea16ExposedCountersGfx9 = {
     {55, "GCEA16_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA16", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA16_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA16", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea17ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea17ExposedCountersGfx9 = {
     {55, "GCEA17_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA17", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA17_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA17", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea18ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea18ExposedCountersGfx9 = {
     {55, "GCEA18_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA18", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA18_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA18", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea19ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea19ExposedCountersGfx9 = {
     {55, "GCEA19_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA19", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA19_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA19", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea20ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea20ExposedCountersGfx9 = {
     {55, "GCEA20_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA20", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA20_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA20", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea21ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea21ExposedCountersGfx9 = {
     {55, "GCEA21_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA21", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA21_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA21", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea22ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea22ExposedCountersGfx9 = {
     {55, "GCEA22_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA22", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA22_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA22", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea23ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea23ExposedCountersGfx9 = {
     {55, "GCEA23_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA23", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA23_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA23", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea24ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea24ExposedCountersGfx9 = {
     {55, "GCEA24_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA24", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA24_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA24", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea25ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea25ExposedCountersGfx9 = {
     {55, "GCEA25_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA25", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA25_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA25", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea26ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea26ExposedCountersGfx9 = {
     {55, "GCEA26_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA26", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA26_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA26", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea27ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea27ExposedCountersGfx9 = {
     {55, "GCEA27_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA27", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA27_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA27", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea28ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea28ExposedCountersGfx9 = {
     {55, "GCEA28_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA28", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA28_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA28", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea29ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea29ExposedCountersGfx9 = {
     {55, "GCEA29_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA29", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA29_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA29", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea30ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea30ExposedCountersGfx9 = {
     {55, "GCEA30_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA30", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA30_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA30", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGcea31ExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGcea31ExposedCountersGfx9 = {
     {55, "GCEA31_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA31", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {57, "GCEA31_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA31", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 
-    GpaHardwareCounterDesc kGputimeExposedCountersGfx9[] = {
+    std::vector<GpaHardwareCounterDesc> kGputimeExposedCountersGfx9 = {
     {0, "GPUTime_BOTTOM_TO_BOTTOM_DURATION", "GPUTime", "delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {1, "GPUTime_BOTTOM_TO_BOTTOM_START", "GPUTime", "time of the previous command reaching bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {2, "GPUTime_BOTTOM_TO_BOTTOM_END", "GPUTime", "time of the current command reaching bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {3, "GPUTime_TOP_TO_BOTTOM_DURATION", "GPUTime", "execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {4, "GPUTime_TOP_TO_BOTTOM_START", "GPUTime", "time that the current command reaches the top of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     {5, "GPUTime_TOP_TO_BOTTOM_END", "GPUTime", "time that the current command reaches the bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-};
+    };
 } // counter_gfx9

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA API Helper class Implementation
@@ -241,6 +241,7 @@ bool GpaHelper::CounterValueCompare(unsigned int profile_set,
                                     GpaFloat64   counter_value,
                                     CompareType  compare_type,
                                     GpaFloat64   compare_value,
+                                    GpaFloat64   compare_value2,
                                     bool         confirm_success)
 {
     bool              return_value = false;
@@ -280,6 +281,28 @@ bool GpaHelper::CounterValueCompare(unsigned int profile_set,
         return_value = counter_value <= compare_value;
         compare_string << "less than or equal to " << compare_value;
         break;
+
+    case kCompareTypeEpsilon:
+    {
+        // Treat compare_value2 as a +/- epsilon.
+        GpaFloat64 low  = compare_value - compare_value2;
+        GpaFloat64 high = compare_value + compare_value2;
+
+        return_value = (counter_value >= low && counter_value <= high);
+        compare_string << compare_value << " +/- " << compare_value2 << ".";
+
+        if (compare_value != 0)
+        {
+            compare_string << " A difference of " << ((counter_value - compare_value) / compare_value) * 100.0f << "%.";
+        }
+
+        break;
+    }
+    case kCompareTypeRangeInclusive:
+        // Treat compare_value as the low, and compare_value2 as the high.
+        return_value = (counter_value >= compare_value && counter_value <= compare_value2);
+        compare_string << "between " << compare_value << " and " << compare_value2 << ", inclusive.";
+        break;
     }
 
     if (!return_value)
@@ -296,12 +319,13 @@ bool GpaHelper::CounterValueCompare(unsigned int profile_set,
     return return_value;
 }
 
-bool GpaHelper::ValidateData(unsigned int profile_set,
-                             unsigned int sample_index,
-                             const char*  counter_name,
-                             GpaFloat64   counter_value,
-                             GpaUsageType counter_usage_type,
-                             bool         confirm_success)
+bool GpaHelper::ValidateData(GpaHwGeneration generation,
+                             unsigned int    profile_set,
+                             unsigned int    sample_index,
+                             const char*     counter_name,
+                             GpaFloat64      counter_value,
+                             GpaUsageType    counter_usage_type,
+                             bool            confirm_success)
 {
     bool return_value = true;
 
@@ -309,44 +333,216 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
 
     if (kGpaUsageTypePercentage == counter_usage_type)
     {
-        return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0.0f, confirm_success) &&
-                       CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 100.0f, confirm_success);
+        return_value =
+            CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0.0f, 0.0f, confirm_success) &&
+            CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 100.0f, 0.0f, confirm_success);
     }
 
     if (return_value)
     {
         if (0 == local_counter_name.compare("GPUTime"))
         {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("GPUBusy"))
         {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success) &&
-                           CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 100.0f, confirm_success);
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success) &&
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 100.0f, 0.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("VSBusy"))
         {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("VSBusyCycles"))
         {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("VSTime"))
         {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
-        else if (0 == local_counter_name.compare("PSBusy"))
+        else if (0 == local_counter_name.compare("VsGsBusy") || 0 == local_counter_name.compare("VsGsBusyCycles") ||
+                 0 == local_counter_name.compare("VsGsTime"))
         {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
+            // Sanity check
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
-        else if (0 == local_counter_name.compare("PSBusyCycles"))
+        else if (0 == local_counter_name.compare("VsGsVALUInstCount") || 0 == local_counter_name.compare("VsGsSALUInstCount") ||
+                 0 == local_counter_name.compare("VsGsVALUBusy") || 0 == local_counter_name.compare("VsGsVALUBusyCycles") ||
+                 0 == local_counter_name.compare("VsGsSALUBusy") || 0 == local_counter_name.compare("VsGsSALUBusyCycles"))
         {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
+            if (include_known_issues && generation == kGpaHwGenerationGfx10)
+            {
+                // We expect this counter to return a non-zero result, but it is returning 0 for Navi1x devices.
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            }
+            else if (generation <= kGpaHwGenerationGfx103)
+            {
+                // All samples should be returning non-zero results for these counters.
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            }
+            else if (include_known_issues && generation == kGpaHwGenerationGfx11)
+            {
+                // We expect this counter to return a non-zero result, but it is returning 0 for Gfx11.
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            }
         }
-        else if (0 == local_counter_name.compare("PSTime"))
+        else if (0 == local_counter_name.compare("PreTessellationBusy") || 0 == local_counter_name.compare("PreTessellationBusyCycles") ||
+                 0 == local_counter_name.compare("PreTessellationTime") || 0 == local_counter_name.compare("PreTessVALUInstCount") ||
+                 0 == local_counter_name.compare("PreTessSALUInstCount") || 0 == local_counter_name.compare("PreTessVALUBusy") ||
+                 0 == local_counter_name.compare("PreTessVALUBusyCycles") || 0 == local_counter_name.compare("PreTessSALUBusy") ||
+                 0 == local_counter_name.compare("PreTessSALUBusyCycles"))
         {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, confirm_success);
+            // Sanity check
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("PostTessellationBusy") || 0 == local_counter_name.compare("PostTessellationBusyCycles") ||
+                 0 == local_counter_name.compare("PostTessellationTime") || 0 == local_counter_name.compare("PostTessVALUInstCount") ||
+                 0 == local_counter_name.compare("PostTessSALUInstCount") || 0 == local_counter_name.compare("PostTessVALUBusy") ||
+                 0 == local_counter_name.compare("PostTessVALUBusyCycles") || 0 == local_counter_name.compare("PostTessSALUBusy") ||
+                 0 == local_counter_name.compare("PostTessSALUBusyCycles"))
+        {
+            // Sanity check
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("PSBusy") || 0 == local_counter_name.compare("PSBusyCycles") || 0 == local_counter_name.compare("PSTime"))
+        {
+            // Sanity Check
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("PSVALUInstCount") || 0 == local_counter_name.compare("PSVALUBusy") ||
+                 0 == local_counter_name.compare("PSVALUBusy"))
+        {
+            // Sanity Check
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("PSSALUInstCount") || 0 == local_counter_name.compare("PSSALUBusy") ||
+                 0 == local_counter_name.compare("PSSALUBusy"))
+        {
+            if (sample_index == 1)
+            {
+                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+            }
+            else
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            }
+        }
+        else if (0 == local_counter_name.compare("L0CacheHit"))
+        {
+            if (generation == kGpaHwGenerationGfx11)
+            {
+                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 35.0f, confirm_success);
+            }
+            else
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            }
+        }
+        else if (0 == local_counter_name.compare("L0CacheHitCount"))
+        {
+            if (generation == kGpaHwGenerationGfx11)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 6.0f, confirm_success);
+            }
+            else
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            }
+        }
+        else if (0 == local_counter_name.compare("L0CacheRequestCount") || 0 == local_counter_name.compare("L0CacheMissCount"))
+        {
+            // Sanity Check
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("L1CacheRequestCount"))
+        {
+            // Sanity Check
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("L1CacheHit") || 0 == local_counter_name.compare("L1CacheHitCount"))
+        {
+            if (generation < kGpaHwGenerationGfx11)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 8.0f, confirm_success);
+            }
+            else 
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+            }
+        }
+        else if (0 == local_counter_name.compare("L1CacheMissCount"))
+        {
+            if (sample_index == 1 && generation == kGpaHwGenerationGfx9)
+            {
+                // This sample may or may not return 0. This is obvious since they UINTs, but these are valid results.
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0.0f, 0.0f, confirm_success);
+            }
+            else
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            }
+        }
+        else if (0 == local_counter_name.compare("L2CacheHit") || 0 == local_counter_name.compare("L2CacheRequestCount") ||
+                 0 == local_counter_name.compare("L2CacheHitCount"))
+        {
+            // Sanity Check
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("L2CacheMiss"))
+        {
+            if (generation == kGpaHwGenerationGfx9 && sample_index == 2)
+            {
+                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx10)
+            {
+                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx11)
+            {
+                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 37.0f, confirm_success);
+            }
+            else
+            {
+                // Sanity Check
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            }
+        }
+        else if (0 == local_counter_name.compare("L2CacheMissCount"))
+        {
+            if (generation == kGpaHwGenerationGfx9 && sample_index == 2)
+            {
+                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx10)
+            {
+                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx11)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 60.0f, confirm_success);
+            }
+            else
+            {
+                // Sanity Check
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            }
         }
         else if (include_known_issues && 0 == local_counter_name.compare("VSVerticesIn"))
         {
@@ -363,7 +559,8 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
                 expected_vertex_count = 72;
             }
 
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_vertex_count, confirm_success);
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_vertex_count, 0.0f, confirm_success);
         }
         else if (include_known_issues && 0 == local_counter_name.compare("PSPixelsOut"))
         {
@@ -380,7 +577,8 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
                 expected_pixel_count = 14482;
             }
 
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_pixel_count, confirm_success);
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_pixel_count, 0.0f, confirm_success);
         }
         else if (include_known_issues && 0 == local_counter_name.compare("PreZSamplesPassing"))
         {
@@ -397,7 +595,8 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
                 expected_passing = 14482;
             }
 
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_passing, confirm_success);
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_passing, 0.0f, confirm_success);
         }
         else if (include_known_issues && 0 == local_counter_name.compare("PrimitivesIn"))
         {
@@ -414,7 +613,8 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
                 expected_primitive_count = 24;
             }
 
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_primitive_count, confirm_success);
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_primitive_count, 0.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("CSTime") || 0 == local_counter_name.compare("CSBusy") || 0 == local_counter_name.compare("CSBusyCycles") ||
                  0 == local_counter_name.compare("PAStalledOnRasterizerCycles") || 0 == local_counter_name.compare("CSThreadGroups") ||
@@ -432,7 +632,7 @@ bool GpaHelper::ValidateData(unsigned int profile_set,
                  0 == local_counter_name.compare("CSALUStalledByLDSCycles") || 0 == local_counter_name.compare("CSLDSBankConflict") ||
                  0 == local_counter_name.compare("CSLDSBankConflictCycles"))
         {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, confirm_success);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
         }
     }
 
@@ -464,6 +664,14 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
     if (kGpaStatusOk != gpa_status)
     {
         std::cout << "ERROR: Failed to get the device name.\n";
+        return;
+    }
+
+    GpaHwGeneration hardware_generation = kGpaHwGenerationNone;
+    gpa_status                          = gpa_function_table_->GpaGetDeviceGeneration(context_id, &hardware_generation);
+    if (kGpaStatusOk != gpa_status)
+    {
+        std::cout << "ERROR: Failed to get the device generation.\n";
         return;
     }
 
@@ -521,6 +729,10 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
         {
             std::stringstream csv_content;
 
+            csv_header << "Sample Id,";
+
+            csv_content << sample_id << ",";
+
             for (GpaUInt32 i = 0; i < enabled_count; i++)
             {
                 GpaUInt32 counter_index = 0;
@@ -568,7 +780,13 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
                         if (verify_counters || confirm_success)
                         {
-                            ValidateData(profile_set, sample_id, counter_name, static_cast<GpaFloat64>(results_buffer[i]), counter_usage_type, confirm_success);
+                            ValidateData(hardware_generation,
+                                         profile_set,
+                                         sample_id,
+                                         counter_name,
+                                         static_cast<GpaFloat64>(results_buffer[i]),
+                                         counter_usage_type,
+                                         confirm_success);
                         }
                     }
                     else if (counter_type == kGpaDataTypeFloat64)
@@ -587,7 +805,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
                         if (verify_counters || confirm_success)
                         {
-                            ValidateData(profile_set, sample_id, counter_name, result, counter_usage_type, confirm_success);
+                            ValidateData(hardware_generation, profile_set, sample_id, counter_name, result, counter_usage_type, confirm_success);
                         }
                     }
                     else

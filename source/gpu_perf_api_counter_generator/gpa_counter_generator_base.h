@@ -176,28 +176,6 @@ public:
     GpaSoftwareCounters software_counters_;  ///< The generated software counters.
 
 private:
-#ifdef AMDT_INTERNAL
-    /// @brief Allow hardware counters to be given an alternate name when they are enabled using the "block:instance:event:alt_name" syntax.
-    ///
-    /// @param [in] index The index of a counter, must be between 0 and the value returned from GetNumPublicCounters().
-    /// @param [in] counter_name The alternate counter name to be used for the hardware counter.
-    ///
-    /// @return true upon success otherwise false.
-    bool SetCounterName(GpaUInt32 index, const char* counter_name);
-
-    /// @brief Entry point to load internal counters.
-    ///
-    /// @param [in] desired_generation The generation whose counters are needed.
-    /// @param [in] asic_type The ASIC whose counters are needed.
-    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
-    /// @param [out] public_counters The generated counters.
-    ///
-    /// @return kGpaStatusOk on success.
-    virtual GpaStatus GenerateInternalDerivedCounters(GDT_HW_GENERATION   desired_generation,
-                                                      GDT_HW_ASIC_TYPE    asic_type,
-                                                      GpaUInt8            generate_asic_specific_counters,
-                                                      GpaDerivedCounters* public_counters);
-#endif
 
     bool do_allow_public_counters_;            ///< Flag indicating whether or not public counters are allowed.
     bool do_allow_hardware_counters_;          ///< Flag indicating whether or not hardware counters are allowed.

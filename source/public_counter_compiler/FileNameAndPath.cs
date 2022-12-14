@@ -1,6 +1,6 @@
 ﻿// =====================================================================
 // <copyright file="FileNameAndPaths.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -11,6 +11,7 @@
 // =====================================================================
 
 using System;
+using System.Diagnostics;
 using System.Windows.Forms;
 using System.Collections.Generic;
 using System.IO;
@@ -32,6 +33,7 @@ namespace GpaTools
         Gfx9,
         Gfx10,
         Gfx103,
+        Gfx11,
         Unknown
     };
 
@@ -63,6 +65,7 @@ namespace GpaTools
         public const string gfx9Str = "gfx9";
         public const string gfx10Str = "gfx10";
         public const string gfx103Str = "gfx103";
+        public const string gfx11Str = "gfx11";
         public static Dictionary<GfxGeneration, string> gfxGenAsStr = new Dictionary<GfxGeneration, string>();
         public static Dictionary<Api, string> apiAsStr = new Dictionary<Api, string>();
         public static Dictionary<GfxGeneration, string> gfxGenerationDisplayName = new Dictionary<GfxGeneration, string>();
@@ -80,8 +83,11 @@ namespace GpaTools
         /// <returns>The path to the root GPUPerfAPI folder</returns>
         public static string GetGpuPerfApiPath()
         {
-            int endPath = Application.StartupPath.LastIndexOf("gpu_performance_api", StringComparison.Ordinal);
-            string gpaPath = Application.StartupPath.Substring(0, endPath) + "gpu_performance_api\\";
+            int startRepoRoot = Application.StartupPath.LastIndexOf("gpu_performance_api", StringComparison.Ordinal);
+            Debug.Assert(startRepoRoot > 0, "The repo root directory must contain 'gpu_performance_api' for the CounterCompiler to work correctly.");
+
+            int endPath = Application.StartupPath.IndexOf("\\", startRepoRoot);
+            string gpaPath = Application.StartupPath.Substring(0, endPath) + "\\";
             return gpaPath;
         }
 
@@ -165,11 +171,13 @@ namespace GpaTools
                 Directory.CreateDirectory(pathName);
             }
 
+            gfxGenAsStr.Add(GfxGeneration.Gfx11, gfx11Str);
             gfxGenAsStr.Add(GfxGeneration.Gfx103, gfx103Str);
             gfxGenAsStr.Add(GfxGeneration.Gfx10, gfx10Str);
             gfxGenAsStr.Add(GfxGeneration.Gfx9, gfx9Str);
             gfxGenAsStr.Add(GfxGeneration.Gfx8, gfx8Str);
 
+            gfxGenerationDisplayName.Add(GfxGeneration.Gfx11, "RDNA3");
             gfxGenerationDisplayName.Add(GfxGeneration.Gfx103, "RDNA2");
             gfxGenerationDisplayName.Add(GfxGeneration.Gfx10, "RDNA");
             gfxGenerationDisplayName.Add(GfxGeneration.Gfx9, "Vega");

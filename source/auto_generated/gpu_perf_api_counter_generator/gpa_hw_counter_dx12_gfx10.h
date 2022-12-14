@@ -26,27 +26,26 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_dx12_gfx10
 {
-    extern GpaHardwareCounterDesc*           kDx12CounterGroupArrayGfx10[]; ///< Array of hardware counter groups for Dx12 for Gfx10 family
-    extern GpaHardwareCounterDesc*           kDx12ExposedCountersGroupArrayGfx10[]; ///< Array of hardware exposed counter groups for Dx12 for Gfx10 family
-    extern GpaCounterGroupDesc               kHwDx12GroupsGfx10[]; ///< Array of counter groups for Dx12 for Gfx10 family
-    extern GpaCounterGroupExposedCounterDesc kHwDx12ExposedCountersByGroupGfx10[]; ///< Array of exposed counter groups for Dx12 for Gfx10 family
-    extern GpaPaddedCounterDesc              kDx12PaddedCounterByGroupGfx10[]; ///< Array of reserved counter for Dx12 for Gfx10 family
-    extern GpaSqCounterGroupDesc             kHwDx12SqGroupsGfx10[]; ///< Array of SQ groups for Dx12 for Gfx10 family
-    extern unsigned int                       kHwDx12SqIsolatedGroupsGfx10[]; ///< Array of counter groups isolated from SQ counter groups for Dx12 for Gfx10 family
-    extern AmdExtGpuBlock                     kHwDx12DriverEnumGfx10[]; ///< Array of driver enum values per group for Dx12 for Gfx10 family
-    extern const unsigned int                 kHwDx12GpuTimeBottomToBottomDurationIndexGfx10; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Dx12 for Gfx10 family
-    extern const unsigned int                 kHwDx12GpuTimeBottomToBottomStartIndexGfx10; ///< Index of time of the previous command reaching bottom of pipe for Dx12 for Gfx10 family
-    extern const unsigned int                 kHwDx12GpuTimeBottomToBottomEndIndexGfx10; ///< Index of time of the current command reaching bottom of pipe for Dx12 for Gfx10 family
-    extern const unsigned int                 kHwDx12GpuTimeTopToBottomDurationIndexGfx10; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Dx12 for Gfx10 family
-    extern const unsigned int                 kHwDx12GpuTimeTopToBottomStartIndexGfx10; ///< Index of time that the current command reaches the top of pipe for Dx12 for Gfx10 family
-    extern const unsigned int                 kHwDx12GpuTimeTopToBottomEndIndexGfx10; ///< Index of time that the current command reaches the bottom of pipe for Dx12 for Gfx10 family
-    extern const std::set<unsigned int>       kHwDx12TimestampBlockIdsGfx10; ///< Timestamp block id's for Dx12 for Gfx10 family
-    extern const std::set<unsigned int>       kHwDx12TimeCounterIndicesGfx10; ///< Timestamp counter indices for Dx12 for Gfx10 family
-    extern const unsigned int                 kHwDx12GroupCountGfx10; ///< Hardware Group Count for Dx12 for Gfx10 family
-    extern const unsigned int                 kHwDx12ExposedCountersGroupCountGfx10; ///< Whitelist hardware counter Group Count for Dx12 for Gfx10 family
-    extern const unsigned int                 kDx12PaddedCounterGroupCountGfx10; ///< reserved counter group count for Dx12 for Gfx10 family
-    extern const unsigned int                 kHwDx12SqGroupCountGfx10; ///< Hardware SQ Group Count for Dx12 for Gfx10 family
-    extern const unsigned int                 kHwDx12SqIsolatedGroupCountGfx10; ///< Hardware Isolated Group Count for Dx12 for Gfx10 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kDx12ExposedCountersGroupArrayGfx10; ///< Array of hardware exposed counter groups for Dx12 for Gfx10 family
+    extern std::vector<GpaCounterGroupDesc>                           kHwDx12GroupsGfx10; ///< Array of counter groups for Dx12 for Gfx10 family
+    extern GpaCounterGroupExposedCounterDesc                          kHwDx12ExposedCountersByGroupGfx10[]; ///< Array of exposed counter groups for Dx12 for Gfx10 family
+    extern GpaPaddedCounterDesc                                       kDx12PaddedCounterByGroupGfx10[]; ///< Array of reserved counter for Dx12 for Gfx10 family
+    extern GpaSqCounterGroupDesc                                      kHwDx12SqGroupsGfx10[]; ///< Array of SQ groups for Dx12 for Gfx10 family
+    extern unsigned int                                               kHwDx12SqIsolatedGroupsGfx10[]; ///< Array of counter groups isolated from SQ counter groups for Dx12 for Gfx10 family
+    extern AmdExtGpuBlock                                             kHwDx12DriverEnumGfx10[]; ///< Array of driver enum values per group for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12GpuTimeBottomToBottomDurationIndexGfx10; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12GpuTimeBottomToBottomStartIndexGfx10; ///< Index of time of the previous command reaching bottom of pipe for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12GpuTimeBottomToBottomEndIndexGfx10; ///< Index of time of the current command reaching bottom of pipe for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12GpuTimeTopToBottomDurationIndexGfx10; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12GpuTimeTopToBottomStartIndexGfx10; ///< Index of time that the current command reaches the top of pipe for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12GpuTimeTopToBottomEndIndexGfx10; ///< Index of time that the current command reaches the bottom of pipe for Dx12 for Gfx10 family
+    extern const std::set<unsigned int>                               kHwDx12TimestampBlockIdsGfx10; ///< Timestamp block id's for Dx12 for Gfx10 family
+    extern const std::set<unsigned int>                               kHwDx12TimeCounterIndicesGfx10; ///< Timestamp counter indices for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12GroupCountGfx10; ///< Hardware Group Count for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12ExposedCountersGroupCountGfx10; ///< Whitelist hardware counter Group Count for Dx12 for Gfx10 family
+    extern const unsigned int                                         kDx12PaddedCounterGroupCountGfx10; ///< reserved counter group count for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12SqGroupCountGfx10; ///< Hardware SQ Group Count for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12SqIsolatedGroupCountGfx10; ///< Hardware Isolated Group Count for Dx12 for Gfx10 family
 
 /// @brief If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
 ///

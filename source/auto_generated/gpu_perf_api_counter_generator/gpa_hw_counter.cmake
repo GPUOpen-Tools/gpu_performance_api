@@ -6,6 +6,7 @@ set(HW_COUNTER_HEADERS
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx10.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103_gfx1031_gfx1032.h
+${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx11.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_baffin.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_carrizo.h
@@ -14,14 +15,15 @@ ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_fiji.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_iceland.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_tonga.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9.h
+${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_gfx904.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_gfx906.h
-${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_gfx909.h
-${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_placeholder4.h)
+${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_gfx909.h)
 
 set(HW_COUNTER_SRC
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx10.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103_gfx1031_gfx1032.cc
+${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx11.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_baffin.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_carrizo.cc
@@ -30,7 +32,7 @@ ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_fiji.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_iceland.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_tonga.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9.cc
+${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_gfx904.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_gfx906.cc
-${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_gfx909.cc
-${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_placeholder4.cc)
+${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx9_gfx909.cc)
 

@@ -20,20 +20,19 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_cl_gfx9
 {
-    extern GpaHardwareCounterDesc*           kClCounterGroupArrayGfx9[]; ///< Array of hardware counter groups for Cl for Gfx9 family
-    extern GpaHardwareCounterDesc*           kClExposedCountersGroupArrayGfx9[]; ///< Array of hardware exposed counter groups for Cl for Gfx9 family
-    extern GpaCounterGroupDesc               kHwClGroupsGfx9[]; ///< Array of counter groups for Cl for Gfx9 family
-    extern GpaCounterGroupExposedCounterDesc kHwClExposedCountersByGroupGfx9[]; ///< Array of exposed counter groups for Cl for Gfx9 family
-    extern GpaPaddedCounterDesc              kClPaddedCounterByGroupGfx9[]; ///< Array of reserved counter for Cl for Gfx9 family
-    extern GpaSqCounterGroupDesc             kHwClSqGroupsGfx9[]; ///< Array of SQ groups for Cl for Gfx9 family
-    extern unsigned int                       kHwClSqIsolatedGroupsGfx9[]; ///< Array of counter groups isolated from SQ counter groups for Cl for Gfx9 family
-    extern const std::set<unsigned int>       kHwClTimestampBlockIdsGfx9; ///< Timestamp block id's for Cl for Gfx9 family
-    extern const std::set<unsigned int>       kHwClTimeCounterIndicesGfx9; ///< Timestamp counter indices for Cl for Gfx9 family
-    extern const unsigned int                 kHwClGroupCountGfx9; ///< Hardware Group Count for Cl for Gfx9 family
-    extern const unsigned int                 kHwClExposedCountersGroupCountGfx9; ///< Whitelist hardware counter Group Count for Cl for Gfx9 family
-    extern const unsigned int                 kClPaddedCounterGroupCountGfx9; ///< reserved counter group count for Cl for Gfx9 family
-    extern const unsigned int                 kHwClSqGroupCountGfx9; ///< Hardware SQ Group Count for Cl for Gfx9 family
-    extern const unsigned int                 kHwClSqIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for Cl for Gfx9 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kClExposedCountersGroupArrayGfx9; ///< Array of hardware exposed counter groups for Cl for Gfx9 family
+    extern std::vector<GpaCounterGroupDesc>                           kHwClGroupsGfx9; ///< Array of counter groups for Cl for Gfx9 family
+    extern GpaCounterGroupExposedCounterDesc                          kHwClExposedCountersByGroupGfx9[]; ///< Array of exposed counter groups for Cl for Gfx9 family
+    extern GpaPaddedCounterDesc                                       kClPaddedCounterByGroupGfx9[]; ///< Array of reserved counter for Cl for Gfx9 family
+    extern GpaSqCounterGroupDesc                                      kHwClSqGroupsGfx9[]; ///< Array of SQ groups for Cl for Gfx9 family
+    extern unsigned int                                               kHwClSqIsolatedGroupsGfx9[]; ///< Array of counter groups isolated from SQ counter groups for Cl for Gfx9 family
+    extern const std::set<unsigned int>                               kHwClTimestampBlockIdsGfx9; ///< Timestamp block id's for Cl for Gfx9 family
+    extern const std::set<unsigned int>                               kHwClTimeCounterIndicesGfx9; ///< Timestamp counter indices for Cl for Gfx9 family
+    extern const unsigned int                                         kHwClGroupCountGfx9; ///< Hardware Group Count for Cl for Gfx9 family
+    extern const unsigned int                                         kHwClExposedCountersGroupCountGfx9; ///< Whitelist hardware counter Group Count for Cl for Gfx9 family
+    extern const unsigned int                                         kClPaddedCounterGroupCountGfx9; ///< reserved counter group count for Cl for Gfx9 family
+    extern const unsigned int                                         kHwClSqGroupCountGfx9; ///< Hardware SQ Group Count for Cl for Gfx9 family
+    extern const unsigned int                                         kHwClSqIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for Cl for Gfx9 family
 
 /// @brief If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
 ///

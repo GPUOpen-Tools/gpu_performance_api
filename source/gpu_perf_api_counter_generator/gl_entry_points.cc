@@ -10,6 +10,13 @@
 #include "gpu_perf_api_common/gpa_common_defs.h"
 #include "gpu_perf_api_common/logging.h"
 
+#define UNLOAD_GL_FUNC(func) \
+    if ((func) != nullptr)   \
+    {                        \
+        func = nullptr;      \
+    }
+
+
 namespace ogl_utils
 {
     decltype(GET_PROC_ADDRESS_TYPE)* GET_PROC_ADDRESS_FUNC = nullptr;
@@ -27,7 +34,7 @@ namespace ogl_utils
 
     PFNGLGETSTRINGIPROC ogl_get_string_i = nullptr;
 
-    PFNGLGETQUERYOBJECTIVPROC       ogl_get_query_objective_iv       = nullptr;
+    PFNGLGETQUERYOBJECTIVPROC       ogl_get_query_object_iv          = nullptr;
     PFNGLGENQUERIESPROC             ogl_gen_queries                  = nullptr;
     PFNGLDELETEQUERIESPROC          ogl_delete_queries               = nullptr;
     PFNGLQUERYCOUNTERPROC           ogl_query_counter                = nullptr;
@@ -274,6 +281,58 @@ void ogl_utils::QuerySupportedExtensions()
 
         are_supported_extensions_queried = true;
     }
+}
+
+void ogl_utils::UnloadGl()
+{
+    if (gl_lib_handle != nullptr)
+    {
+#ifdef _WIN32
+        FreeLibrary(gl_lib_handle);
+#else
+        dlclose(gl_lib_handle);
+#endif  // !_WIN32
+        gl_lib_handle = nullptr;
+    }
+
+    are_gl_functions_initialized = false;
+    gl_extensions_map.clear();
+    gl_driver_type    = GpaGlDriverType::kUnknown;
+    gl_driver_version = 0;
+
+    UNLOAD_GL_FUNC(ogl_flush);
+    UNLOAD_GL_FUNC(ogl_get_string);
+    UNLOAD_GL_FUNC(ogl_get_integer_v);
+    UNLOAD_GL_FUNC(ogl_get_error);
+    UNLOAD_GL_FUNC(ogl_get_string_i);
+    UNLOAD_GL_FUNC(ogl_gen_queries);
+    UNLOAD_GL_FUNC(ogl_delete_queries);
+    UNLOAD_GL_FUNC(ogl_get_query_object_iv);
+    UNLOAD_GL_FUNC(ogl_query_counter);
+    UNLOAD_GL_FUNC(ogl_get_query_object_ui_64_v_ext);
+    UNLOAD_GL_FUNC(ogl_get_perf_monitor_groups_amd);
+    UNLOAD_GL_FUNC(ogl_get_perf_monitor_counters_amd);
+    UNLOAD_GL_FUNC(ogl_get_perf_monitor_group_string_amd);
+    UNLOAD_GL_FUNC(ogl_get_perf_monitor_counter_string_amd);
+    UNLOAD_GL_FUNC(ogl_get_perf_monitor_counter_info_amd);
+    UNLOAD_GL_FUNC(ogl_gen_perf_monitors_amd);
+    UNLOAD_GL_FUNC(ogl_delete_perf_monitors_amd);
+    UNLOAD_GL_FUNC(ogl_select_perf_monitor_counters_amd);
+    UNLOAD_GL_FUNC(ogl_begin_perf_monitor_amd);
+    UNLOAD_GL_FUNC(ogl_end_perf_monitor_amd);
+    UNLOAD_GL_FUNC(ogl_get_perf_monitor_counter_data_amd);
+    UNLOAD_GL_FUNC(ogl_get_perf_monitor_groups_2_amd);
+    UNLOAD_GL_FUNC(ogl_select_perf_monitor_counters_2_amd);
+
+#ifdef DEBUG_GL_ERRORS
+    UNLOAD_GL_FUNC(ogl_debug_message_control_arb);
+    UNLOAD_GL_FUNC(ogl_debug_message_insert_arb);
+    UNLOAD_GL_FUNC(ogl_debug_message_callback_arb);
+    UNLOAD_GL_FUNC(ogl_get_debug_message_log_arb);
+#endif
+
+    UNLOAD_GL_FUNC(ogl_x_query_current_renderer_integer_mesa);
+    UNLOAD_GL_FUNC(ogl_set_gpa_device_clock_mode_amd_x);
 }
 
 bool ogl_utils::InitializeGlCoreFunctions()
@@ -694,12 +753,12 @@ bool ogl_utils::InitializeGlFunctions()
     GET_CONTEXT_PROC_ADDRESS(ogl_get_query_object_ui_64_v_ext, PFNGLGETQUERYOBJECTUI64VPROC, "glGetQueryObjectui64v");
 
 #if defined(GLES) && !defined(WIN32)
-    GET_CONTEXT_PROC_ADDRESS(ogl_get_query_objective_iv, PFNGLGETQUERYOBJECTIVPROC, "glGetQueryObjectivEXT");
+    GET_CONTEXT_PROC_ADDRESS(ogl_get_query_object_iv, PFNGLGETQUERYOBJECTIVPROC, "glGetQueryObjectivEXT");
     GET_CONTEXT_PROC_ADDRESS(ogl_gen_queries, PFNGLGENQUERIESPROC, "glGenQueriesEXT");
     GET_CONTEXT_PROC_ADDRESS(ogl_delete_queries, PFNGLDELETEQUERIESPROC, "glDeleteQueriesEXT");
     GET_CONTEXT_PROC_ADDRESS(ogl_query_counter, PFNGLQUERYCOUNTERPROC, "glQueryCounterEXT");
 #else
-    GET_CONTEXT_PROC_ADDRESS(ogl_get_query_objective_iv, PFNGLGETQUERYOBJECTIVPROC, "glGetQueryObjectiv");
+    GET_CONTEXT_PROC_ADDRESS(ogl_get_query_object_iv, PFNGLGETQUERYOBJECTIVPROC, "glGetQueryObjectiv");
     GET_CONTEXT_PROC_ADDRESS(ogl_gen_queries, PFNGLGENQUERIESPROC, "glGenQueries");
     GET_CONTEXT_PROC_ADDRESS(ogl_delete_queries, PFNGLDELETEQUERIESPROC, "glDeleteQueries");
     GET_CONTEXT_PROC_ADDRESS(ogl_query_counter, PFNGLQUERYCOUNTERPROC, "glQueryCounter");
@@ -711,7 +770,7 @@ bool ogl_utils::InitializeGlFunctions()
 #endif
 #endif
 
-    if (nullptr == ogl_get_query_objective_iv)
+    if (nullptr == ogl_get_query_object_iv)
     {
         GPA_LOG_MESSAGE("glGetQueryObjectiv entry point not exposed by the driver.");
     }
@@ -736,7 +795,7 @@ bool ogl_utils::InitializeGlFunctions()
         GPA_LOG_MESSAGE("glGetQueryObjectui64vEXT entry point not exposed by the driver.");
     }
 
-    if (nullptr == ogl_get_string_i || nullptr == ogl_get_query_object_ui_64_v_ext || nullptr == ogl_get_query_objective_iv || nullptr == ogl_gen_queries ||
+    if (nullptr == ogl_get_string_i || nullptr == ogl_get_query_object_ui_64_v_ext || nullptr == ogl_get_query_object_iv || nullptr == ogl_gen_queries ||
         nullptr == ogl_delete_queries || nullptr == ogl_query_counter)
     {
         if (timer_query_ext_found)

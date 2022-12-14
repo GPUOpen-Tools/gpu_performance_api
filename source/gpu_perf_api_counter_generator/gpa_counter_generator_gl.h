@@ -45,21 +45,14 @@ protected:
                                               GpaUInt8             generate_asic_specific_counters,
                                               GpaHardwareCounters* hardware_counters) override;
 
-#ifdef AMDT_INTERNAL
-    /// @copydoc GpaCounterGeneratorBase::GenerateInternalDerivedCounters()
-    GpaStatus GenerateInternalDerivedCounters(GDT_HW_GENERATION   desired_generation,
-                                              GDT_HW_ASIC_TYPE    asic_type,
-                                              GpaUInt8            generate_asic_specific_counters,
-                                              GpaDerivedCounters* public_counters) override;
-#endif
-
 private:
     /// @brief Helper function to generate the driver-supplied counters.
     ///
     /// @param [in] hardware_counters The list of hardware counters to augment with the driver-supplied counters.
+    /// @param [in] global_counter_index The global index of the current counter added to the hardware counters list.
     ///
     /// @return True on success, false on failure.
-    bool GenerateDriverSuppliedInternalCounters(GpaHardwareCounters* hardware_counters);
+    bool GenerateDriverSuppliedInternalCounters(GpaHardwareCounters* hardware_counters, unsigned int global_counter_index);
 
     /// @brief Helper function to generate the internal counters.
     ///
@@ -74,7 +67,7 @@ private:
 
     GpaCounterGroupDesc*                   driver_supplied_groups_;        ///< Driver-supplied counter groups.
     unsigned int                           driver_supplied_groups_count_;  ///< Number of driver-supplied counter groups.
-    std::vector<GpaHardwareCounterDescExt> driver_supplied_counters_;      ///< List of driver-supplied counters.
+    std::map<GpaUInt32, GpaHardwareCounterDescExt> driver_supplied_counters_;      ///< List of driver-supplied counters.
 
     // The following vectors are used to track and free allocated memory.
     std::vector<GpaCounterGroupDesc*>    counter_group_descs_;     ///< Allocated GpaCounterGroupDescs.

@@ -258,17 +258,19 @@ IGpaContext* GlGpaImplementor::OpenApiContext(GpaContextInfoPtr context_info, Gp
 
 bool GlGpaImplementor::CloseApiContext(GpaDeviceIdentifier device_identifier, IGpaContext* context)
 {
+    UNREFERENCED_PARAMETER(device_identifier);
     assert(nullptr != device_identifier);
     assert(nullptr != context);
-
-    UNREFERENCED_PARAMETER(device_identifier);
 
     if (nullptr != context)
     {
         delete reinterpret_cast<GlGpaContext*>(context);
+        context = nullptr;
     }
 
-    return (nullptr != context) && (nullptr != device_identifier);
+    ogl_utils::UnloadGl();
+
+    return true;
 }
 
 GpaDeviceIdentifier GlGpaImplementor::GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const

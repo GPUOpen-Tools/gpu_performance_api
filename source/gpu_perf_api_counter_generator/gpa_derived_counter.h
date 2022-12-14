@@ -263,22 +263,4 @@ protected:
     vector<GpaDerivedCounterInfoClass> derived_counter_list_;  ///< The set of available derived counters.
 };
 
-#ifdef AMDT_INTERNAL
-
-struct GpaCounterDesc;
-/// @brief Entry point to get internal derived counters.
-///
-/// @param [in] api_type The API whose counters are needed.
-/// @param [in] desired_generation The generation whose counters are needed.
-/// @param [out] internal_derived_counters[out] Pointer to array of internal derived counters.
-/// @param [out] internal_derived_counter_count Pointer to count of internal derived counters.
-///
-/// @return internal_derived_counter_count.
-GpaStatus GpaGetInternalDerivedCounters(GpaApiType             api_type,
-                                        GpaHwGeneration        desired_generation,
-                                        const GpaCounterDesc** internal_derived_counters,
-                                        size_t*                internal_derived_counter_count);
-
-#endif  // AMDT_INTERNAL
-
 #endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_DERIVED_COUNTER_H_

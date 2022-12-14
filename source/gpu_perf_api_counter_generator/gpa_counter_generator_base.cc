@@ -19,16 +19,10 @@ void GpaCounterGeneratorBase::SetAllowedCounters(bool allow_public_counters, boo
 {
     do_allow_public_counters_ = allow_public_counters;
 
-#ifdef AMDT_INTERNAL
-    // Only allow HW counters for internal builds.
-    do_allow_hardware_counters_         = allow_hardware_counters;
-    do_allow_hardware_exposed_counters_ = false;
-#else
     UNREFERENCED_PARAMETER(allow_hardware_counters);
     // Force HW counters to OFF for non internal builds.
     do_allow_hardware_counters_         = false;
     do_allow_hardware_exposed_counters_ = allow_hardware_counters;
-#endif
 
     do_allow_software_counters_ = allow_software_counters;
 }
@@ -47,6 +41,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
         if (status != kGpaStatusOk)
         {
+            GPA_LOG_ERROR("Failed to generate public counters.");
             return status;
         }
     }
@@ -58,6 +53,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
         if (status != kGpaStatusOk)
         {
+            GPA_LOG_ERROR("Failed to generate hardware counters.");
             return status;
         }
     }
@@ -68,6 +64,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
         if (status != kGpaStatusOk)
         {
+            GPA_LOG_ERROR("Failed to generate hardware exposed counters.");
             return status;
         }
     }
@@ -78,6 +75,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
         if (status != kGpaStatusOk)
         {
+            GPA_LOG_ERROR("Failed to generate software counters.");
             return status;
         }
     }
@@ -85,6 +83,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
     if (0 == GetNumCounters())
     {
         // No counters reported, return hardware not supported.
+        GPA_LOG_ERROR("No counters were available to expose.");
         status = kGpaStatusErrorHardwareNotSupported;
     }
 
@@ -170,10 +169,11 @@ bool GpaCounterGeneratorBase::MapHardwareExposedCounter(GpaHardwareCounters* har
              iter != hardware_counters->hardware_exposed_counter_groups_[g].white_list_counters.cend();
              ++iter)
         {
-            GpaHardwareCounterDesc* whitelist_counter = hardware_counters->hardware_exposed_counters_[g] + count_iter;
+            GpaHardwareCounterDesc* whitelist_counter = &hardware_counters->hardware_exposed_counters_.at(g)->at(count_iter);
             hardware_counters->hardware_exposed_counters_list_.push_back(*whitelist_counter);
-            hardware_counters->hardware_exposed_counter_internal_indices_list_.push_back(block_counter_start_index + (*iter));
-            hardware_counters->hardware_counters_[block_counter_start_index + (*iter)].hardware_counters = whitelist_counter;
+            unsigned int global_counter_index = block_counter_start_index + *iter;
+            hardware_counters->hardware_exposed_counter_internal_indices_list_.push_back(global_counter_index);
+            hardware_counters->hardware_counters_[global_counter_index].hardware_counters = whitelist_counter;
             count_iter++;
         }
     }
@@ -223,62 +223,6 @@ const char* GpaCounterGeneratorBase::GetCounterName(GpaUInt32 index) const
     return nullptr;
 }
 
-#ifdef AMDT_INTERNAL
-bool GpaCounterGeneratorBase::SetCounterName(GpaUInt32 index, const char* counter_name)
-{
-    if (do_allow_public_counters_)
-    {
-        if (index < public_counters_.GetNumCounters())
-        {
-            return false;  // Not allowed to change name of derived counters.
-        }
-
-        index -= public_counters_.GetNumCounters();
-    }
-
-    if (do_allow_hardware_counters_)
-    {
-        if (index < hardware_counters_.GetNumCounters())
-        {
-            return hardware_counters_.SetCounterName(index, counter_name);
-        }
-
-        index -= hardware_counters_.GetNumCounters();
-    }
-    else if (do_allow_hardware_exposed_counters_)
-    {
-        if (index < hardware_counters_.GetNumHardwareExposedCounters())
-        {
-            return false;  // Not allowed to change name of exposed hardware counters.
-        }
-
-        index -= hardware_counters_.GetNumHardwareExposedCounters();
-    }
-
-    if (do_allow_software_counters_)
-    {
-        if (index < software_counters_.GetNumCounters())
-        {
-            return false;  // Not allowed to change name of derived counters.
-        }
-    }
-
-    return false;
-}
-
-GpaStatus GpaCounterGeneratorBase::GenerateInternalDerivedCounters(GDT_HW_GENERATION   desired_generation,
-                                                                   GDT_HW_ASIC_TYPE    asic_type,
-                                                                   GpaUInt8            generate_asic_specific_counters,
-                                                                   GpaDerivedCounters* public_counters)
-{
-    UNREFERENCED_PARAMETER(desired_generation);
-    UNREFERENCED_PARAMETER(asic_type);
-    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
-    UNREFERENCED_PARAMETER(public_counters);
-    return kGpaStatusOk;
-}
-#endif
-
 bool GpaCounterGeneratorBase::GetCounterIndex(const char* counter_name, GpaUInt32* counter_index) const
 {
     bool ret_val                = false;
@@ -314,118 +258,6 @@ bool GpaCounterGeneratorBase::GetCounterIndex(const char* counter_name, GpaUInt3
                 break;
             }
         }
-
-#ifdef AMDT_INTERNAL
-        if (!ret_val)
-        {
-            std::vector<std::string> tokens;
-            std::string              token;
-            const char*              local_name = counter_name;
-
-            // First tokenize the input string on the ':' delimiter.
-            while (*local_name != '\0')
-            {
-                if (*local_name == ':' && !token.empty())
-                {
-                    tokens.push_back(token);
-                    token.clear();
-                }
-                else
-                {
-                    token.push_back(*local_name);
-                }
-
-                local_name++;
-            }
-
-            // Add the trailing token to the list.
-            if (!token.empty())
-            {
-                tokens.push_back(token);
-            }
-
-            // Valid strings must have 3 or 4 tokens: block, instance, event id, alternate_name.
-            // "alternate_name" is optional
-            if (3 == tokens.size() || 4 == tokens.size())
-            {
-                std::string gpa_group_name = tokens[0] + tokens[1];
-                std::string gpa_group_name_alt;
-                bool        check_alt_group_name = false;
-
-                // Special case instance 0 -- in cases where a block is single-instance,
-                // the GPA name for the block won't have '0' appended to it. We need to
-                // account for that situation here.
-                if ("0" == tokens[1])
-                {
-                    gpa_group_name_alt   = tokens[0];
-                    check_alt_group_name = true;
-                }
-
-                for (GpaUInt32 i = public_counters_.GetNumCounters(); i < num_counters; i++)
-                {
-                    const char* counter_group = GetCounterGroup(i);
-
-                    if (nullptr != counter_group)
-                    {
-                        bool group_name_found     = false;
-                        bool alt_group_name_found = false;
-
-                        group_name_found = (0 == _strcmpi(gpa_group_name.c_str(), counter_group));
-
-                        if (!group_name_found && check_alt_group_name)
-                        {
-                            group_name_found = (0 == _strcmpi(gpa_group_name_alt.c_str(), counter_group));
-
-                            if (group_name_found)
-                            {
-                                alt_group_name_found = true;
-                            }
-                        }
-
-                        if (group_name_found)
-                        {
-                            // This is the specified block, now just index to the specified event id.
-                            GpaUInt32 ret_counter_index = i + atoi(tokens[2].c_str());
-
-                            if (4 <= tokens.size())
-                            {
-                                // If user is asking for an alternate name, set the name so that subsequent calls to GetCounterName will return the modified name.
-                                // It's not ideal casting away constness here, but it is required since we're in a const function
-                                // (we don't want to change that since this is only used in internal builds).
-                                const_cast<GpaCounterGeneratorBase*>(this)->SetCounterName(ret_counter_index, tokens[3].c_str());
-                            }
-
-                            counter_group = GetCounterGroup(ret_counter_index);
-
-                            // Make sure the specified index is still in the specified block.
-                            if (nullptr != counter_group)
-                            {
-                                bool correct_group_name = false;
-
-                                if (alt_group_name_found)
-                                {
-                                    correct_group_name = (0 == _strcmpi(gpa_group_name_alt.c_str(), counter_group));
-                                }
-                                else
-                                {
-                                    correct_group_name = (0 == _strcmpi(gpa_group_name.c_str(), counter_group));
-                                }
-
-                                if (correct_group_name)
-                                {
-                                    counter_index_cache_[counter_name] = ret_counter_index;
-                                    *counter_index                     = ret_counter_index;
-                                    ret_val                            = true;
-                                }
-                            }
-
-                            break;
-                        }
-                    }
-                }
-            }
-        }
-#endif
 
         if (!ret_val)
         {
@@ -800,7 +632,7 @@ const GpaDerivedCounterInfoClass* GpaCounterGeneratorBase::GetPublicCounter(GpaU
 
 const GpaHardwareCounterDescExt* GpaCounterGeneratorBase::GetHardwareCounterExt(GpaUInt32 index) const
 {
-    return &(hardware_counters_.hardware_counters_[index]);
+    return &(hardware_counters_.hardware_counters_.at(index));
 }
 
 GpaUInt32 GpaCounterGeneratorBase::GetNumPublicCounters() const

@@ -1,11 +1,15 @@
-## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
-include(${GPA_CMAKE_MODULES_DIR}/defs.cmake)
 include (${GPA_CMAKE_MODULES_DIR}/utils.cmake)
 
 # Include global cmake common file
 include(${CMAKE_COMMON_SRC_GLOBAL_CMAKE_MODULE})
+
+# Check for required variables from other cmake files.
+if (${GPA_OUTPUT_DIR} STREQUAL "")
+    message(FATAL_ERROR "No output directory is defined, make sure defs.cmake is included before common.cmake")
+endif()
 
 # Global compiler options
 add_compile_options(${COMMON_COMPILATION_FLAGS})

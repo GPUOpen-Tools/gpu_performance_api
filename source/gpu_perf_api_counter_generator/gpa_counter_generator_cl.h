@@ -41,13 +41,6 @@ protected:
                                               GDT_HW_ASIC_TYPE     asic_type,
                                               GpaUInt8             generate_asic_specific_counters,
                                               GpaHardwareCounters* hardware_counters) override;
-#ifdef AMDT_INTERNAL
-    /// @copydoc GpaCounterGeneratorBase::GenerateInternalDerivedCounters()
-    GpaStatus GenerateInternalDerivedCounters(GDT_HW_GENERATION   desired_generation,
-                                              GDT_HW_ASIC_TYPE    asic_type,
-                                              GpaUInt8            generate_asic_specific_counters,
-                                              GpaDerivedCounters* public_counters) override;
-#endif
 
 private:
     /// @brief Function to map from GPA block index to the OCL driver's block index for a particular hw generation.

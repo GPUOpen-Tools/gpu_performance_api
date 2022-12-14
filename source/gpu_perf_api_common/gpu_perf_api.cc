@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief This file contains the main entry points into GPA.
@@ -494,6 +494,9 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHw
                 break;
             case GDT_HW_GENERATION_GFX103:
                 *hardware_generation = kGpaHwGenerationGfx103;
+                break;
+            case GDT_HW_GENERATION_GFX11:
+                *hardware_generation = kGpaHwGenerationGfx11;
                 break;
             case GDT_HW_GENERATION_LAST:
                 *hardware_generation = kGpaHwGenerationLast;

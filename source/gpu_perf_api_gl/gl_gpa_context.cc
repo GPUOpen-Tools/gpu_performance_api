@@ -23,6 +23,7 @@ GlGpaContext::GlGpaContext(GlContextPtr context, GpaHwInfo& hw_info, GpaOpenCont
     , driver_supports_ATCL2_(false)
     , driver_supports_CHCG_(false)
     , driver_supports_GUS_(false)
+    , driver_supports_UMC_(false)
 {
 }
 
@@ -287,6 +288,10 @@ bool GlGpaContext::PopulateDriverCounterGroupInfo()
                 {
                     driver_supports_GUS_ = true;
                 }
+                else if (strncmp(group_data.group_name, "UMC", 3) == 0)
+                {
+                    driver_supports_UMC_ = true;
+                }
             }
 
             delete[] perf_groups;
@@ -320,9 +325,10 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
         else
         {
             // A const_cast is a feasible and simple workaround here, as GL is the only API in which we are changing the hardware counter info.
-            IGpaCounterAccessor* counter_accessor       = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
-            GpaHardwareCounters* hardware_counters      = const_cast<GpaHardwareCounters*>(counter_accessor->GetHardwareCounters());
-            unsigned int         expected_driver_groups = hardware_counters->group_count_ + hardware_counters->additional_group_count_ - 1;
+            IGpaCounterAccessor* counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
+            GpaHardwareCounters* hardware_counters = const_cast<GpaHardwareCounters*>(counter_accessor->GetHardwareCounters());
+            unsigned int         expected_driver_groups =
+                static_cast<unsigned int>(hardware_counters->counter_groups_array_.size() + hardware_counters->additional_group_count_) - 1;
 
             // Calculate the total number of block instances available, since that is what GPA uses internally.
             // Since the driver only exposes what is actually on the current hardware, it will be less than what GPA expects
@@ -354,13 +360,22 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
 
                 // Iterate through all of GPA's expanded groups, verify the order, and
                 // then update the group Id based on what was returned from the driver.
-                std::vector<GpaHardwareCounterDescExt>::iterator hardware_counter_iter = hardware_counters->hardware_counters_.begin();
-                GpaGlPerfGroupVector::const_iterator             driver_group_iter     = driver_counter_group_info_.cbegin();
+                std::map<GpaUInt32, GpaHardwareCounterDescExt>::iterator hardware_counter_iter = hardware_counters->hardware_counters_.begin();
+                GpaGlPerfGroupVector::const_iterator                     driver_group_iter     = driver_counter_group_info_.cbegin();
 
-                for (unsigned int gpa_group_index = 0; gpa_group_index < hardware_counters->group_count_; ++gpa_group_index)
+                for (unsigned int gpa_group_index = 0; gpa_group_index < static_cast<unsigned int>(hardware_counters->internal_counter_groups_.size());
+                     ++gpa_group_index)
                 {
-                    GpaCounterGroupDesc* gpa_group = &hardware_counters->internal_counter_groups_[gpa_group_index];
+                    GpaCounterGroupDesc* gpa_group = &hardware_counters->internal_counter_groups_.at(gpa_group_index);
                     std::string          gpa_group_name(gpa_group->name);
+
+                    if (gpa_group_name.find("GPUTime") == 0)
+                    {
+                        // This is the last group that GPA needs support from the driver, so we can exit here.
+                        // The driver may expose more groups, but GPA doesn't reference them, so it is safe to exit early.
+                        success = true;
+                        break;
+                    }
 
                     if (!driver_supports_GL1CG_)
                     {
@@ -398,8 +413,15 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                             continue;
                         }
                     }
+                    if (!driver_supports_UMC_)
+                    {
+                        if (gpa_group_name.find("UMC") == 0)
+                        {
+                            continue;
+                        }
+                    }
 
-                    // Advance the driver_group_iter if this is not the very first iteration of the loop,
+                    // Advance the driver_group_iter if this is not the very first iteration of the loop.
                     if (gpa_group_index != 0)
                     {
                         if (ogl_utils ::IsOglpDriver())
@@ -437,6 +459,25 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                     if (driver_group_name_extended.find("DF_MALL") == 0)
                     {
                         // "Rewinding" index for GPA group so that same group is used on next iteration of loop.
+                        gpa_group_index -= 1;
+                        continue;
+                    }
+
+                    // GPA does not yet support GE_DIST or GE_SE on GFX11.
+                    if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 &&
+                        (driver_group_name_extended.find("GE_DIST") == 0 || driver_group_name_extended.find("GE_SE") == 0))
+                    {
+                        // "Rewinding" index for GPA group so that same group is used on next iteration of loop.
+                        gpa_group_index -= 1;
+                        continue;
+                    }
+
+                    // On GFX11, OGLP may expose SQ_ES, SQ_VS, and SQ_LS, even though they are not actually supported on the hardware.
+                    // Skip these blocks and "rewind" the gpa group index so that it used again on the next iteration of the loop.
+                    if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 &&
+                        (driver_group_name_extended.find("SQ_ES") == 0 || driver_group_name_extended.find("SQ_VS") == 0 ||
+                         driver_group_name_extended.find("SQ_LS") == 0))
+                    {
                         gpa_group_index -= 1;
                         continue;
                     }
@@ -482,6 +523,30 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                     {
                         driver_group_name_extended = "GE_SE";
                     }
+                    else if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 && driver_group_name_extended == "SQ")
+                    {
+                        driver_group_name_extended = "SQG";
+                    }
+                    else if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 && driver_group_name_extended == "SQ_GS")
+                    {
+                        driver_group_name_extended = "SQG_GS";
+                    }
+                    else if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 && driver_group_name_extended == "SQ_PS")
+                    {
+                        driver_group_name_extended = "SQG_PS";
+                    }
+                    else if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 && driver_group_name_extended == "SQ_HS")
+                    {
+                        driver_group_name_extended = "SQG_HS";
+                    }
+                    else if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 && driver_group_name_extended == "SQ_CS")
+                    {
+                        driver_group_name_extended = "SQG_CS";
+                    }
+                    else if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 && driver_group_name_extended == "MCVML2")
+                    {
+                        driver_group_name_extended = "GCVML2";
+                    }
 
                     if (ogl_utils::IsOglpDriver() && driver_group_iter->num_instances > 1)
                     {
@@ -506,7 +571,7 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                         // This is an error.
                         std::stringstream error;
                         error << "GPA is expecting group " << gpa_group_name << " but the driver is exposing group " << driver_group_iter->group_name
-                                << ". This GPA group will not be updated." << std::endl;
+                              << ". This GPA group will not be updated." << std::endl;
                         GPA_LOG_ERROR(error.str().c_str());
 
                         break;
@@ -535,26 +600,15 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                         }
 
                         // Iterate through each counter within this group and update the driver group id.
-                        for (GpaUInt32 c = 0; c < gpa_num_counters; c++)
+                        while ((hardware_counter_iter != hardware_counters->hardware_counters_.end()) &&
+                               strncmp(gpa_group_name.c_str(), hardware_counter_iter->second.hardware_counters->name, gpa_group_name.size()) == 0)
                         {
-                            hardware_counter_iter->group_id_driver = driver_group_iter->group_id;
-
-                            if (hardware_counter_iter != hardware_counters->hardware_counters_.cend())
-                            {
-                                ++hardware_counter_iter;
-                            }
+                            hardware_counter_iter->second.group_id_driver = driver_group_iter->group_id;
+                            ++hardware_counter_iter;
                         }
                     }
                     else
                     {
-                        break;
-                    }
-
-                    if (driver_group_name_extended.find("GPIN") == 0)
-                    {
-                        // This is the last group that GPA needs support from the driver, so we can exit here.
-                        // The driver may expose more groups, but GPA doesn't reference them, so it is safe to exit early.
-                        success = true;
                         break;
                     }
                 }

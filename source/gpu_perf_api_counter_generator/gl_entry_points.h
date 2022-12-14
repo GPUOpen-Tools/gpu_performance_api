@@ -75,6 +75,10 @@ typedef void* LibHandle;
 #define PFNGLQUERYCOUNTERPROC PFNGLQUERYCOUNTEREXTPROC
 #endif
 
+typedef uint64_t GLuint64;
+typedef GLvoid(APIENTRY* PFNGLQUERYCOUNTERPROC)(GLuint id, GLenum target);  ///< Typedef for glQueryCounter.
+typedef GLvoid(APIENTRY* PFNGLGETQUERYOBJECTUI64VPROC)(GLuint id, GLenum name, GLuint64* params);  ///< Typedef for glQueryObjectUI64.
+
 namespace ogl_utils
 {
     extern decltype(GET_PROC_ADDRESS_TYPE)* GET_PROC_ADDRESS_FUNC;
@@ -82,7 +86,8 @@ namespace ogl_utils
     // Timer query GL extensions.
     extern PFNGLGENQUERIESPROC       ogl_gen_queries;
     extern PFNGLDELETEQUERIESPROC    ogl_delete_queries;
-    extern PFNGLGETQUERYOBJECTIVPROC ogl_get_query_objective_iv;
+    extern PFNGLGETQUERYOBJECTIVPROC ogl_get_query_object_iv;
+
     extern PFNGLQUERYCOUNTERPROC     ogl_query_counter;
 
     extern decltype(glFlush)*       ogl_flush;
@@ -135,6 +140,9 @@ namespace ogl_utils
     ///
     /// @return True if loaded successfully otherwise false.
     bool LoadGl();
+
+    /// @brief Reset all GL entrypoints and variables.
+    void UnloadGl();
 
     /// @brief Queries OpenGL extensions and initializes the entry points needed for perf counter collection.
     ///

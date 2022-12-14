@@ -193,7 +193,7 @@ GPA_LIB_DECL GpaStatus GpaCloseContext(GpaContextId gpa_context_id);
 
 /// @brief Gets a mask of the sample types supported by the specified context.
 ///
-/// A call to GPA_CreateSession will fail if the requested sample types are not compatible with the context's sample types.
+/// A call to GpaCreateSession will fail if the requested sample types are not compatible with the context's sample types.
 /// supported by the context.
 ///
 /// @ingroup gpa_context_interrogation
@@ -468,7 +468,7 @@ GPA_LIB_DECL GpaStatus GpaGetUsageTypeAsStr(GpaUsageType counter_usage_type, con
 ///
 /// @param [in] gpa_context_id The context on which to create the session.
 /// @param [in] gpa_session_sample_type The sample type that will be created on this session.
-/// @param [out] gpa_session_id The address of a GPA_SessionId which will be populated with the created session Id.
+/// @param [out] gpa_session_id The address of a GpaSessionId which will be populated with the created session Id.
 ///
 /// @return The GPA result status of the operation.
 /// @retval kGpaStatusOk If the operation is successful.
@@ -707,13 +707,13 @@ GPA_LIB_DECL GpaStatus GpaGetNumEnabledCounters(GpaSessionId gpa_session_id, Gpa
 
 /// @brief Gets the counter index for an enabled counter.
 ///
-/// This is meant to be used with GPA_GetNumEnabledCounters. Once you determine the number of enabled counters,
-/// you can use GPA_GetEnabledIndex to determine which counters are enabled.
+/// This is meant to be used with GpaGetNumEnabledCounters. Once you determine the number of enabled counters,
+/// you can use GpaGetEnabledIndex to determine which counters are enabled.
 ///
 /// @ingroup gpa_counter_scheduling
 ///
 /// @param [in] gpa_session_id Unique identifier of the session.
-/// @param [in] enabled_number The number of the enabled counter to get the counter index for. Must lie between 0 and (GPA_GetNumEnabledCounters result - 1).
+/// @param [in] enabled_number The number of the enabled counter to get the counter index for. Must lie between 0 and (GpaGetNumEnabledCounters result - 1).
 /// @param [out] enabled_counter_index The value that will hold the index of the counter upon successful execution.
 ///
 /// @return The GPA result status of the operation.
@@ -775,7 +775,7 @@ GPA_LIB_DECL GpaStatus GpaBeginCommandList(GpaSessionId       gpa_session_id,
 
 /// @brief Ends command list for sampling.
 ///
-/// You will be unable to create samples on the specified command list after GPA_EndCommandList is called.
+/// You will be unable to create samples on the specified command list after GpaEndCommandList is called.
 ///
 /// @ingroup gpa_sample_handling
 ///
@@ -798,8 +798,8 @@ GPA_LIB_DECL GpaStatus GpaEndCommandList(GpaCommandListId gpa_command_list_id);
 /// Samples can be created by multiple threads provided no two threads are creating samples on same command list.
 /// You must provide a unique Id for every new sample. When performing multiple passes, a sample must exist in all passes.
 /// You may create as many samples as needed. However, nesting of samples is not allowed.
-/// Each sample must be wrapped in sequence of GPA_BeginSample/GPA_EndSample before starting another one.
-/// A sample can be started in one primary command list and continued/ended on another primary command list - See GPA_ContinueSampleOnCommandList.
+/// Each sample must be wrapped in sequence of GpaBeginSample/GpaEndSample before starting another one.
+/// A sample can be started in one primary command list and continued/ended on another primary command list - See GpaContinueSampleOnCommandList.
 ///
 /// @ingroup gpa_sample_handling
 ///
@@ -950,7 +950,7 @@ GPA_LIB_DECL GpaStatus GpaIsPassComplete(GpaSessionId gpa_session_id, GpaUInt32 
 /// After a sampling session results may be available immediately or take a certain amount of time to become available.
 /// This function allows you to determine when the results of a session can be read.
 /// The function does not block, permitting periodic polling.
-/// To block until a sample is ready use GPA_GetSampleResult instead.
+/// To block until a sample is ready use GpaGetSampleResult instead.
 ///
 /// @ingroup gpa_query_results
 ///
@@ -988,7 +988,7 @@ GPA_LIB_DECL GpaStatus GpaGetSampleResultSize(GpaSessionId gpa_session_id, GpaUI
 
 /// @brief Gets the result data for a given sample.
 ///
-/// This function will block until results are ready. Use GPA_IsSessionComplete to check if results are ready.
+/// This function will block until results are ready. Use GpaIsSessionComplete to check if results are ready.
 ///
 /// @ingroup gpa_query_results
 ///

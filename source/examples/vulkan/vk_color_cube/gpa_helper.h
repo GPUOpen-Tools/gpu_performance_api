@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA API Helper class.
@@ -82,6 +82,8 @@ public:
         kCompareTypeGreaterThanOrEqualTo,  ///< Counter value must be greater than or equal to a specified value.
         kCompareTypeLessThan,              ///< Counter value must be less than a specified value.
         kCompareTypeLessThanOrEqualTo,     ///< Counter value must be less than or equal to a specified value.
+        kCompareTypeEpsilon,               ///< Counter value must be within range of the specified value +/- the epsilon value, inclusive.
+        kCompareTypeRangeInclusive,        ///< Counter value must be within the range of the specified values, inclusive.
     } CompareType;
 
     /// @brief Compare retrieved counter value to an expected value.
@@ -92,13 +94,22 @@ public:
     /// @param [in] counter_value The retrieved counter value.
     /// @param [in] compare_type The type of compare to perform.
     /// @param [in] compare_value The expected counter value (subject to the compare type).
+    /// @param [in] compare_value2 A secondary value that may be used depending on the CompareType that is supplied.
     /// @param [in] confirm_success Flag indicating whether or not to confirm successful counter verifications.
     ///
     /// @return True if the Counter value compares successfully, false otherwise.
-    bool CounterValueCompare(unsigned int profile_set, unsigned int sample_index, const char* counter_name, GpaFloat64 counter_value, CompareType compare_type, GpaFloat64 compare_value, bool confirm_success);
+    bool CounterValueCompare(unsigned int profile_set,
+                             unsigned int sample_index,
+                             const char*  counter_name,
+                             GpaFloat64   counter_value,
+                             CompareType  compare_type,
+                             GpaFloat64   compare_value,
+                             GpaFloat64   compare_value2,
+                             bool         confirm_success);
 
     /// @brief Validate a specified counter in a specified sample.
     ///
+    /// @param [in] generation The hardware generation to validate for.
     /// @param [in] profile_set The index of the profile set being validated.
     /// @param [in] sample_index The index of the sample containing the counter.
     /// @param [in] counter_name The name of the counter to validate.
@@ -107,7 +118,7 @@ public:
     /// @param [in] confirm_success Flag indicating whether or not to confirm successful counter verifications.
     ///
     /// @return True if the counter value validates successfully, false otherwise.
-    bool ValidateData(unsigned int profile_set, unsigned int sample_index, const char* counter_name, GpaFloat64 counter_value, GpaUsageType counter_usage_type, bool confirm_success);
+    bool ValidateData(GpaHwGeneration generation, unsigned int profile_set, unsigned int sample_index, const char* counter_name, GpaFloat64 counter_value, GpaUsageType counter_usage_type, bool confirm_success);
 
     /// @brief Print counter results from a specific sample. If the CSV file is open, results will be written there too.
     ///

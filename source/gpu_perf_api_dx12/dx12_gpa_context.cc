@@ -42,7 +42,15 @@ bool Dx12GpaContext::Initialize()
 
     if (nullptr != d3d12_device_)
     {
-        if (InitializeAMDExtension() && OpenCounters())
+        if (!InitializeAMDExtension())
+        {
+            GPA_LOG_ERROR("Unabled to initialize AMD profiling extension for DX12.");
+        }
+        else if (!OpenCounters())
+        {
+            GPA_LOG_ERROR("Unabled to open counters for DX12.");
+        }
+        else
         {
             is_succeeded = true;
         }

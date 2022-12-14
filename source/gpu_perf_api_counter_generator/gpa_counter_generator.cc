@@ -77,7 +77,7 @@ public:
     std::map<std::string, std::vector<GpaCounterGroupDesc*>> blocks_;  ///< Map of ASIC blocks by name.
 };
 
-std::shared_ptr<BlockMap> BuildBlockMap(GpaCounterGroupDesc* counter_group_list, uint32_t max_count)
+std::shared_ptr<BlockMap> BuildBlockMap(std::vector<GpaCounterGroupDesc>& counter_group_list, uint32_t max_count)
 {
     std::shared_ptr<BlockMap> block_map = std::make_shared<BlockMap>();
 
@@ -171,6 +171,7 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
 
             if ((kGpaApiDirectx12 == desired_api || (kGpaApiVulkan == desired_api)) && GDT_HW_GENERATION_VOLCANICISLAND > desired_generation)
             {
+                GPA_LOG_ERROR("Desired generation is too old and no longer supported.");
                 return kGpaStatusErrorHardwareNotSupported;
             }
         }
@@ -178,7 +179,7 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
 
     if (desired_generation == GDT_HW_GENERATION_NONE)
     {
-        GPA_LOG_ERROR("desiredGeneration is GDT_HW_GENERATION_NONE.");
+        GPA_LOG_ERROR("Desired generation is GDT_HW_GENERATION_NONE.");
         return kGpaStatusErrorHardwareNotSupported;
     }
 
@@ -198,11 +199,6 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
     bool allow_software         = (flags & kGpaOpenContextHideSoftwareCountersBit) == 0;
     bool allow_hardware_exposed = (flags & kGpaOpenContextEnableHardwareCountersBit) == kGpaOpenContextEnableHardwareCountersBit;
     bool enable_hardware        = allow_hardware_exposed;
-
-#ifdef AMDT_INTERNAL
-    bool allow_all_hardware = (flags & kGpaOpenContextHideHardwareCountersBit) == 0;
-    enable_hardware         = allow_all_hardware;
-#endif
 
     tmp_accessor->SetAllowedCounters(allow_public, enable_hardware, allow_software);
     status = tmp_accessor->GenerateCounters(desired_generation, card_info.m_asicType, generate_asic_specific_counters);

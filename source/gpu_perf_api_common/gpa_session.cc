@@ -722,36 +722,6 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
                     return status;
                 }
 
-#ifdef AMDT_INTERNAL
-                GpaUInt32   num_public_counters = counter_accessor->GetNumPublicCounters();
-                const char* internal_name       = counter_accessor->GetCounterName(num_public_counters + *required_counter_iter);
-                const char* public_name         = counter_accessor->GetCounterName(exposed_counter_index);
-
-                std::stringstream message;
-                message << "Sample " << sample_id << ", pubCounter '" << public_name << "', iCounter: '" << internal_name << "', [" << *required_counter_iter
-                        << "] = ";
-
-                if (kGpaDataTypeUint64 == type)
-                {
-                    GpaUInt64* value = result_buffer;
-
-                    message << *value;
-                }
-                else if (kGpaDataTypeFloat64 == type)
-                {
-                    GpaFloat64* value = reinterpret_cast<GpaFloat64*>(result_buffer);
-
-                    message << *value;
-                }
-                else
-                {
-                    // Case not covered.
-                    assert(false);
-                }
-
-                message << ".";
-                GPA_LOG_DEBUG_COUNTER_DEFS(message.str().c_str());
-#endif
             }
 
             GpaDataType current_counter_type = counter_accessor->GetCounterDataType(exposed_counter_index);

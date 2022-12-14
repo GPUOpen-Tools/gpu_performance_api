@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -6,7 +6,7 @@ set(DEPTH "../../")
 set(GPA_PROJECT_NAME GPUPerfAPICL)
 set(ProjectName ${GPA_PROJECT_NAME})
 
-include (${GPA_CMAKE_MODULES_DIR}/common.cmake)
+include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
 include(${CMAKE_COMMON_LIB_GLOBAL_AMD_ADL})
 include(${CMAKE_COMMON_SRC_GLOBAL_ADL_UTIL})
 include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})

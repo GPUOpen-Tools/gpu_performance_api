@@ -28,13 +28,8 @@ void GpaInternalLogger(GpaLoggingType log_type, const char* log_msg)
 
 GpaTracer::GpaTracer()
 {
-#ifdef AMDT_INTERNAL
-    // In internal builds, we want all the tracing to be displayed.
-    top_level_only_ = false;
-#else
     // In public builds, the end-user should only see the functions they call.
     top_level_only_ = true;
-#endif  // AMDT_INTERNAL
 }
 
 void GpaTracer::EnterFunction(const char* function_name)
@@ -56,18 +51,7 @@ void GpaTracer::EnterFunction(const char* function_name)
         message << function_name;
         message << ".";
 
-#ifdef AMDT_INTERNAL
-        GPA_LOG_DEBUG_TRACE(message.str().c_str());
-
-        if (tab_counter->second == 0)
-        {
-            // If this is the top level, also pass it to the normal LogTrace.
-            GPA_LOG_TRACE(message.str().c_str());
-        }
-
-#else
         GPA_LOG_TRACE(message.str().c_str());
-#endif  // AMDT_INTERNAL
     }
 
     ++tab_counter->second;
@@ -97,18 +81,7 @@ void GpaTracer::LeaveFunction(const char* function_name)
         message << function_name;
         message << ".";
 
-#ifdef AMDT_INTERNAL
-        GPA_LOG_DEBUG_TRACE(message.str().c_str());
-
-        if (tab_counter->second == 0)
-        {
-            // If this is the top level, also pass it to the normal LogTrace.
-            GPA_LOG_TRACE(message.str().c_str());
-        }
-
-#else
         GPA_LOG_TRACE(message.str().c_str());
-#endif  // AMDT_INTERNAL
     }
 }
 
@@ -130,18 +103,7 @@ void GpaTracer::OutputFunctionData(const char* data)
         message << data;
         message << ".";
 
-#ifdef AMDT_INTERNAL
-        GPA_LOG_DEBUG_TRACE(message.str().c_str());
-
-        if (tab_counter->second == 0)
-        {
-            // If this is the top level, also pass it to the normal LogTrace.
-            GPA_LOG_TRACE(message.str().c_str());
-        }
-
-#else
         GPA_LOG_TRACE(message.str().c_str());
-#endif  // AMDT_INTERNAL
     }
 }
 

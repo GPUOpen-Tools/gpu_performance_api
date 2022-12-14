@@ -569,6 +569,38 @@ namespace PublicCounterCompiler
                         }
                         continue;
 
+                    case "comparemax6":
+                        {
+                            if (rpnStack.Count < 12)
+                            {
+                                OutputCounterError(counter.Name, component, componentIndex, "stack has insufficient entries (pop 12) for", errorHandler);
+                                retVal = false;
+                                break;
+                            }
+                            string result = string.Empty;
+                            result = "max(";
+                            for (int i = 0; i < 6; ++i)
+                            {
+                                result = rpnStack.Pop();
+                                if (i != 5)
+                                {
+                                    result += ", ";
+                                }
+                            }
+                            result = ") ? ret(";
+                            for (int i = 0; i < 6; ++i)
+                            {
+                                result = rpnStack.Pop();
+                                if (i != 5)
+                                {
+                                    result += ", ";
+                                }
+                            }
+                            result = ")";
+                            rpnStack.Push(result);
+                        }
+                        continue;
+
                     case "comparemax4":
                         {
                             if (rpnStack.Count < 8)
@@ -957,7 +989,11 @@ namespace PublicCounterCompiler
         {
             GfxGeneration gfxGen = GfxGeneration.Unknown;
 
-            if ("Gfx103" == generation)
+            if ("Gfx11" == generation)
+            {
+                gfxGen = GfxGeneration.Gfx11;
+            }
+            else if ("Gfx103" == generation)
             {
                 gfxGen = GfxGeneration.Gfx103;
             }
@@ -972,6 +1008,10 @@ namespace PublicCounterCompiler
             else if ("Gfx8" == generation)
             {
                 gfxGen = GfxGeneration.Gfx8;
+            }
+            else
+            {
+                throw new Exception("Unknown hardware generation");
             }
 
             foreach (var counter in derivedCounterList)

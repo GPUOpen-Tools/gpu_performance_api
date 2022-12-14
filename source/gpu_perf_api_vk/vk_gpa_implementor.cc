@@ -68,6 +68,11 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                     physical_device_properties.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
                     physical_device_properties.pNext                          = &shader_core_properties_amd;
 
+                    VkPhysicalDeviceGpaProperties2AMD physical_device_properties2 = {};
+                    physical_device_properties2.sType                             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES2_AMD;
+                    physical_device_properties2.revisionId                        = REVISION_ID_ANY;
+                    physical_device_properties2.pNext                             = &physical_device_properties;
+
                     _vkGetPhysicalDeviceProperties2KHR(vk_context_info->physical_device, &physical_device_properties);
 
                     GpaUInt64 freq = 0ull;
@@ -78,7 +83,7 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
 
                         GpaUInt32 vendor_id       = physical_device_properties.properties.vendorID;
                         GpaUInt32 device_id       = physical_device_properties.properties.deviceID;
-                        uint32_t  device_revision = REVISION_ID_ANY;  // Vulkan doesn't have this.
+                        uint32_t  device_revision = physical_device_properties2.revisionId;
 
                         std::string       adapter_name(physical_device_properties.properties.deviceName);
                         GDT_HW_GENERATION hardware_generation = GDT_HW_GENERATION_NONE;

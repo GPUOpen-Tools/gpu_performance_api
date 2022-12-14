@@ -1,4 +1,4 @@
-.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
 .. GPU Performance Counters
 
 .. _gpa_counters:
@@ -30,7 +30,7 @@ information on the stage and whether or not potential optimizations exist.
 Pipeline-Based Counter Groups
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-On Vega, RDNA, and RDNA2 hardware, certain use cases allow the driver to make
+On Vega, RDNA, RDNA2, and RDNA3 hardware, certain use cases allow the driver to make
 optimizations by combining two shader stages together. For example, in a Vertex
 + Geometry + Pixel Shader pipeline (VS-GS-PS), the Vertex and Geometry Shaders
 get combined and GPUPerfAPI exposes them in the "VertexGeometry" group
@@ -82,6 +82,7 @@ The following tables show the set of counters exposed for analysis of GPU
 Graphics workloads, as well the family of GPUs and APUs on which each counter
 is available:
 
+.. include:: graphics_counter_tables_gfx11.rst
 .. include:: graphics_counter_tables_gfx103.rst
 .. include:: graphics_counter_tables_gfx10.rst
 .. include:: graphics_counter_tables_gfx9.rst
@@ -94,6 +95,7 @@ The following tables show the set of counters exposed for analysis of GPU
 Compute workloads, as well the family of GPUs and APUs on which each counter
 is available:
 
+.. include:: compute_counter_tables_gfx11.rst
 .. include:: compute_counter_tables_gfx103.rst
 .. include:: compute_counter_tables_gfx10.rst
 .. include:: compute_counter_tables_gfx9.rst

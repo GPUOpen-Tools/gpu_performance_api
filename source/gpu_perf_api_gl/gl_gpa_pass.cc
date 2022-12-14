@@ -42,17 +42,15 @@ GlGpaPass::GlGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterS
                     GLint  num_counters_in_group = 0;
                     GLuint group_instance        = 0;
 
-                    if (group_index < hardware_counters->group_count_)
+                    if (group_index < static_cast<unsigned int>(hardware_counters->internal_counter_groups_.size()))
                     {
-                        num_counters_in_group = static_cast<GLint>(hardware_counters->internal_counter_groups_[group_index].num_counters);
-                        group_instance        = static_cast<GLuint>(hardware_counters->internal_counter_groups_[group_index].block_instance);
+                        num_counters_in_group = static_cast<GLint>(hardware_counters->internal_counter_groups_.at(group_index).num_counters);
+                        group_instance        = static_cast<GLuint>(hardware_counters->internal_counter_groups_.at(group_index).block_instance);
                     }
                     else
                     {
-                        num_counters_in_group =
-                            static_cast<GLint>(hardware_counters->additional_groups_[group_index - hardware_counters->group_count_].num_counters);
-                        group_instance =
-                            static_cast<GLuint>(hardware_counters->additional_groups_[group_index - hardware_counters->group_count_].block_instance);
+                        num_counters_in_group = static_cast<GLint>(hardware_counters->additional_groups_[group_index - hardware_counters->counter_groups_array_.size()].num_counters);
+                        group_instance = static_cast<GLuint>(hardware_counters->additional_groups_[group_index - hardware_counters->counter_groups_array_.size()].block_instance);
                     }
 
                     assert(counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(num_counters_in_group));
@@ -235,16 +233,17 @@ bool GlGpaPass::InitializeCounters(const GlPerfMonitorId& gl_perf_monitor_id)
 
         GLint  num_counters_in_group = 0;
         GLuint group_instance        = 0;
+        unsigned int counter_groups_array_count = static_cast<unsigned int>(hardware_counters->counter_groups_array_.size());
 
-        if (group_index < hardware_counters->group_count_)
+        if (group_index < static_cast<unsigned int>(hardware_counters->internal_counter_groups_.size()))
         {
             num_counters_in_group = static_cast<GLint>(hardware_counters->internal_counter_groups_[group_index].num_counters);
             group_instance        = static_cast<GLuint>(hardware_counters->internal_counter_groups_[group_index].block_instance);
         }
         else
         {
-            num_counters_in_group = static_cast<GLint>(hardware_counters->additional_groups_[group_index - hardware_counters->group_count_].num_counters);
-            group_instance        = static_cast<GLuint>(hardware_counters->additional_groups_[group_index - hardware_counters->group_count_].block_instance);
+            num_counters_in_group = static_cast<GLint>(hardware_counters->additional_groups_[group_index - counter_groups_array_count].num_counters);
+            group_instance        = static_cast<GLuint>(hardware_counters->additional_groups_[group_index - counter_groups_array_count].block_instance);
         }
 
         assert(counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(num_counters_in_group));
@@ -301,7 +300,7 @@ bool GlGpaPass::InitializeCounters(const GlPerfMonitorId& gl_perf_monitor_id)
             memset(counter_name, 0, 256);
             GLsizei length = 0;
 
-            if (group_index <= (hardware_counters->group_count_ + hardware_counters->additional_group_count_))
+            if (group_index <= (counter_groups_array_count + hardware_counters->additional_group_count_))
             {
                 ogl_utils::ogl_get_perf_monitor_group_string_amd(counter->group_id_driver, 256, &length, group_name);
 

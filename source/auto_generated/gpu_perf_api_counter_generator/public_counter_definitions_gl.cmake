@@ -17,14 +17,16 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx8_iceland.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx8_tonga.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9_asics.h
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9_gfx904.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9_gfx906.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9_gfx909.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9_placeholder4.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx10.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx103.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx103_asics.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx103_gfx1031_gfx1032.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx10_asics.h
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx11.h
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx11_asics.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8_asics.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8_baffin.h
@@ -35,9 +37,9 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8_iceland.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8_tonga.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_asics.h
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_gfx904.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_gfx906.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_gfx909.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_placeholder4.h)
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_gfx909.h)
 
 set(PUBLIC_COUNTER_DEF_SRC_GL
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx10.cc
@@ -50,12 +52,13 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx8_fiji.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx8_iceland.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx8_tonga.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9.cc
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9_gfx904.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9_gfx906.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9_gfx909.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_gl_gfx9_placeholder4.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx10.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx103.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx103_gfx1031_gfx1032.cc
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx11.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8_baffin.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8_carrizo.cc
@@ -64,7 +67,7 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8_fiji.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8_iceland.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx8_tonga.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9.cc
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_gfx904.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_gfx906.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_gfx909.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_placeholder4.cc)
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_oglp_gfx9_gfx909.cc)
 

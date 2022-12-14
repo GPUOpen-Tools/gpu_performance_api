@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+;; Copyright (c) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
 ;;
 ;; Counter definitions for DX/VK/GL for Gfx10 (GFX IP v10)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -535,14 +535,14 @@ type=gpa_float64
 usage=items
 [GLGfx10]
 SQ_HS_PERF_SEL_INSTS_VALU
-SQ_HS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
 eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [OGLPGfx10]
 [VKGfx10]
 SQ_HS*_PERF_SEL_INSTS_VALU[0..1]
-SQ_HS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 eqn=(0),0..1,sum2,2..3,sum2,/,2..3,sum2,ifnotzero
 
 name=PreTessSALUInstCount
@@ -551,14 +551,14 @@ type=gpa_float64
 usage=items
 [GLGfx10]
 SQ_HS_PERF_SEL_INSTS_SALU
-SQ_HS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
 eqn=(0),0,1,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [OGLPGfx10]
 [VKGfx10]
 SQ_HS*_PERF_SEL_INSTS_SALU[0..1]
-SQ_HS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 eqn=(0),0..1,sum2,2..3,sum2,/,2..3,sum2,ifnotzero
 
 name=PreTessVALUBusy
@@ -567,7 +567,7 @@ type=gpa_float64
 usage=percentage
 [GLGfx10]
 SQ_HS_PERF_SEL_INST_CYCLES_VALU
-SQ_HS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=(0),0,NUM_SIMDS,/,2,/,(100),*,1,ifnotzero
 [DX11Gfx10]
@@ -575,7 +575,7 @@ eqn=(0),0,NUM_SIMDS,/,2,/,(100),*,1,ifnotzero
 [OGLPGfx10]
 [VKGfx10]
 SQ_HS*_PERF_SEL_INST_CYCLES_VALU[0..1]
-SQ_HS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=(0),0..1,sum2,NUM_SIMDS,/,4,/,(100),*,2..3,sum2,ifnotzero
 
@@ -585,14 +585,14 @@ type=gpa_float64
 usage=cycles
 [GLGfx10]
 SQ_HS_PERF_SEL_INST_CYCLES_VALU
-SQ_HS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
 eqn=(0),0,NUM_SIMDS,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [OGLPGfx10]
 [VKGfx10]
 SQ_HS*_PERF_SEL_INST_CYCLES_VALU[0..1]
-SQ_HS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 eqn=(0),0..1,sum2,NUM_SIMDS,/,2..3,sum2,ifnotzero
 
 name=PreTessSALUBusy
@@ -601,7 +601,7 @@ type=gpa_float64
 usage=percentage
 [GLGfx10]
 SQ_HS_PERF_SEL_INSTS_SALU
-SQ_HS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=(0),0,NUM_CUS,/,2,/,(100),*,1,ifnotzero
 [DX11Gfx10]
@@ -609,7 +609,7 @@ eqn=(0),0,NUM_CUS,/,2,/,(100),*,1,ifnotzero
 [OGLPGfx10]
 [VKGfx10]
 SQ_HS*_PERF_SEL_INSTS_SALU[0..1]
-SQ_HS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=(0),0..1,sum2,NUM_CUS,/,4,/,(100),*,2..3,sum2,ifnotzero
 
@@ -619,20 +619,21 @@ type=gpa_float64
 usage=cycles
 [GLGfx10]
 SQ_HS_PERF_SEL_INSTS_SALU
-SQ_HS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
 eqn=(0),0,NUM_CUS,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [OGLPGfx10]
 [VKGfx10]
 SQ_HS*_PERF_SEL_INSTS_SALU[0..1]
-SQ_HS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 eqn=(0),0..1,sum2,NUM_CUS,/,2..3,sum2,ifnotzero
 
 ;; PostTessellation means Domain + Geometry Shader from the application.
 ;; On GFX9 and later NGG: these shaders get compiled together and processed as GS waves.
 ;; On GFX9 and later non-NGG: these get executed as either VS waves (DS-only) or compiled together as GS waves.
-;; So below we sum the VS and GS wave counters.
+;; So below we sum the VS and GS wave counters. (Actually these equations are not currently supporting non-NGG since they do not add instrutions from SQ_VS)
+;; SPI_PERF_HS_WAVE != 0 implies that tessellation is being used in the pipeline. These counters should always return 0 if there is no tessellation.
 
 name=PostTessVALUInstCount
 desc=#PostTessellation#Average number of vector ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control.
@@ -641,14 +642,16 @@ usage=items
 [GLGfx10]
 SQ_GS_PERF_SEL_INSTS_VALU
 SQ_GS_PERF_SEL_WAVES
-eqn=(0),0,1,/,1,ifnotzero
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,/,2,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [OGLPGfx10]
 [VKGfx10]
 SQ_GS*_PERF_SEL_INSTS_VALU[0..1]
 SQ_GS*_PERF_SEL_WAVES[0..1]
-eqn=(0),0..1,sum2,2..3,sum2,/,2..3,sum2,ifnotzero
+SPI*_PERF_HS_WAVE[0..1]
+eqn=(0),0..1,sum2,2..3,sum2,/,SPI*_PERF_HS_WAVE,sum2,ifnotzero
 
 name=PostTessSALUInstCount
 desc=#PostTessellation#Average number of scalar ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control.
@@ -657,14 +660,16 @@ usage=items
 [GLGfx10]
 SQ_GS_PERF_SEL_INSTS_SALU
 SQ_GS_PERF_SEL_WAVES
-eqn=(0),0,1,/,1,ifnotzero
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,/,2,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [OGLPGfx10]
 [VKGfx10]
 SQ_GS*_PERF_SEL_INSTS_SALU[0..1]
 SQ_GS*_PERF_SEL_WAVES[0..1]
-eqn=(0),0..1,sum2,2..3,sum2,/,2..3,sum2,ifnotzero
+SPI*_PERF_HS_WAVE[0..1]
+eqn=(0),0..1,sum2,2..3,sum2,/,4..5,sum2,ifnotzero
 
 name=PostTessVALUBusy
 desc=#PostTessellation#The percentage of GPUTime vector ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation.
@@ -672,7 +677,7 @@ type=gpa_float64
 usage=percentage
 [GLGfx10]
 SQ_GS_PERF_SEL_INST_CYCLES_VALU
-SQ_GS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=(0),0,NUM_SIMDS,/,2,/,(100),*,1,ifnotzero
 [DX11Gfx10]
@@ -680,7 +685,7 @@ eqn=(0),0,NUM_SIMDS,/,2,/,(100),*,1,ifnotzero
 [OGLPGfx10]
 [VKGfx10]
 SQ_GS*_PERF_SEL_INST_CYCLES_VALU[0..1]
-SQ_GS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=(0),0..1,sum2,NUM_SIMDS,/,4,/,(100),*,2..3,sum2,ifnotzero
 
@@ -690,14 +695,14 @@ type=gpa_float64
 usage=cycles
 [GLGfx10]
 SQ_GS_PERF_SEL_INST_CYCLES_VALU
-SQ_GS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
 eqn=(0),0,NUM_SIMDS,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [OGLPGfx10]
 [VKGfx10]
 SQ_GS*_PERF_SEL_INST_CYCLES_VALU[0..1]
-SQ_GS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 eqn=(0),0..1,sum2,NUM_SIMDS,/,2..3,sum2,ifnotzero
 
 name=PostTessSALUBusy
@@ -706,7 +711,7 @@ type=gpa_float64
 usage=percentage
 [GLGfx10]
 SQ_GS_PERF_SEL_INSTS_SALU
-SQ_GS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=(0),0,NUM_CUS,/,2,/,(100),*,1,ifnotzero
 [DX11Gfx10]
@@ -714,7 +719,7 @@ eqn=(0),0,NUM_CUS,/,2,/,(100),*,1,ifnotzero
 [OGLPGfx10]
 [VKGfx10]
 SQ_GS*_PERF_SEL_INSTS_SALU[0..1]
-SQ_GS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=(0),0..1,sum2,NUM_CUS,/,4,/,(100),*,2..3,sum2,ifnotzero
 
@@ -724,14 +729,14 @@ type=gpa_float64
 usage=cycles
 [GLGfx10]
 SQ_GS_PERF_SEL_INSTS_SALU
-SQ_GS_PERF_SEL_WAVES
+SPI_PERF_HS_WAVE
 eqn=(0),0,NUM_CUS,/,1,ifnotzero
 [DX11Gfx10]
 [DX12Gfx10]
 [OGLPGfx10]
 [VKGfx10]
 SQ_GS*_PERF_SEL_INSTS_SALU[0..1]
-SQ_GS*_PERF_SEL_WAVES[0..1]
+SPI*_PERF_HS_WAVE[0..1]
 eqn=(0),0..1,sum2,NUM_CUS,/,2..3,sum2,ifnotzero
 
 name=PrimitiveAssemblyBusy

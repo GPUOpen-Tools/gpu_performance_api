@@ -288,7 +288,6 @@ bool ClGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
     return is_success;
 }
 
-// TODO: this implementation doesn't do much -- is it needed?
 bool ClGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, const GpaHwInfo& hw_info) const
 {
     UNREFERENCED_PARAMETER(context_info);
@@ -304,6 +303,12 @@ bool ClGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, 
     else
     {
         is_supported = true;
+    }
+
+    if (generation == GDT_HW_GENERATION_GFX11)
+    {
+        GPA_LOG_ERROR("Known Issue: The OpenCL extension for GPA does not yet support GFX11.");
+        is_supported = false;
     }
 
     return is_supported;

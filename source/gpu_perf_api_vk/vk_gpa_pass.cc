@@ -89,7 +89,7 @@ void VkGpaPass::InitializeSampleConfig()
                 // Add all desired counters.
                 for (size_t i = 0; i < counter_list_->size(); i++)
                 {
-                    const GpaHardwareCounterDescExt* counter  = &hardware_counters->hardware_counters_[counter_list_->at(i)];
+                    const GpaHardwareCounterDescExt* counter  = &hardware_counters->hardware_counters_.at(counter_list_->at(i));
                     VkGpaPerfBlockAMD                block    = static_cast<VkGpaPerfBlockAMD>(counter->group_id_driver);
                     GpaUInt32                        instance = hardware_counters->internal_counter_groups_[counter->group_index].block_instance;
                     GpaUInt32                        event_id = static_cast<GpaUInt32>(counter->hardware_counters->counter_index_in_group);
@@ -110,13 +110,13 @@ void VkGpaPass::InitializeSampleConfig()
                     uint32_t group_index = counter->group_index;
                     uint32_t counters    = 0;
 
-                    if (group_index < hardware_counters->group_count_)
+                    if (group_index < static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size()))
                     {
                         counters = hardware_counters->internal_counter_groups_[group_index].num_counters;
                     }
                     else
                     {
-                        counters = hardware_counters->additional_groups_[group_index - hardware_counters->group_count_].num_counters;
+                        counters = hardware_counters->additional_groups_[group_index - static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size())].num_counters;
                     }
 
                     if (counter->hardware_counters->counter_index_in_group > counters)
@@ -126,9 +126,9 @@ void VkGpaPass::InitializeSampleConfig()
                         continue;
                     }
 
-                    if (group_index > (hardware_counters->group_count_ + hardware_counters->additional_group_count_))
+                    if (group_index > (static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size()) + hardware_counters->additional_group_count_))
                     {
-                        assert(group_index <= (hardware_counters->group_count_ + hardware_counters->additional_group_count_));
+                        assert(group_index <= (static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size()) + hardware_counters->additional_group_count_));
                         DisableCounterForPass(counter_list_->at(i));
                         continue;
                     }

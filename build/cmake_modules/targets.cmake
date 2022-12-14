@@ -5,7 +5,6 @@ cmake_minimum_required(VERSION 3.5.1)
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 set(DEPTH "./")
 
-include(${GPA_CMAKE_MODULES_DIR}/defs.cmake)
 include(${GPA_CMAKE_MODULES_DIR}/build_flags.cmake)
 
 include(CTest)

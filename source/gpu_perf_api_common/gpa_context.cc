@@ -232,9 +232,10 @@ GpaCounterSource GpaContext::GetCounterSource(GpaUInt32 internal_counter_index) 
     if (nullptr != counter_accessor)
     {
         const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
+        unsigned int               internal_counter_groups_count = static_cast<unsigned int>(hardware_counters->internal_counter_groups_.size());
 
         GpaCounterGroupAccessor counter_group_accessor(hardware_counters->internal_counter_groups_,
-                                                       hardware_counters->group_count_,
+                                                       internal_counter_groups_count,
                                                        hardware_counters->additional_groups_,
                                                        hardware_counters->additional_group_count_);
 

@@ -21,7 +21,7 @@ public:
     /// @param [in] hardware_group_count The number of hardware counter groups.
     /// @param [in] hardware_additional_groups The additional hardware counter groups.
     /// @param [in] hardware_additional_group_count The number of additional hardware counter groups.
-    GpaCounterGroupAccessor(GpaCounterGroupDesc* hardware_groups,
+    GpaCounterGroupAccessor(std::vector<GpaCounterGroupDesc> hardware_groups,
                             unsigned int         hardware_group_count,
                             GpaCounterGroupDesc* hardware_additional_groups,
                             unsigned int         hardware_additional_group_count)
@@ -184,7 +184,7 @@ public:
     }
 
 private:
-    GpaCounterGroupDesc* hardware_groups_;                  ///< Points to the array of internal hardware counter groups.
+    std::vector<GpaCounterGroupDesc> hardware_groups_;                  ///< Points to the array of internal hardware counter groups.
     unsigned int         hardware_group_count_;             ///< Stores the number of hardware counter groups in the array.
     GpaCounterGroupDesc* hardware_additional_groups_;       ///< Points to the array of internal additional hardware counter groups.
     unsigned int         hardware_additional_group_count_;  ///< Stores the number of additional hardware counter groups in the array.

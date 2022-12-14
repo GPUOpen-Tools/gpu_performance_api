@@ -16,11 +16,7 @@
 #include "gpa_split_counters_interfaces.h"
 
 /// Macro to remove counter names from public builds.
-#ifdef AMDT_INTERNAL
-#define GPA_HIDE_NAME(counter_name) (counter_name)
-#else
 #define GPA_HIDE_NAME(counter_name) ""
-#endif
 
 /// @brief Contains the hardware exposed counter information.
 struct GpaCounterGroupExposedCounterDesc
@@ -132,7 +128,7 @@ class BlockMap;
 /// @param [in] max_count Count of items in list.
 ///
 /// @return shared pointer to BlockMap.
-std::shared_ptr<BlockMap> BuildBlockMap(GpaCounterGroupDesc* counter_group_list, uint32_t max_count);
+std::shared_ptr<BlockMap> BuildBlockMap(std::vector<GpaCounterGroupDesc>& counter_group_list, uint32_t max_count);
 
 /// @brief Update max discrete events for a block.
 ///

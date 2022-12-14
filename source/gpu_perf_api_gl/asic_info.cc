@@ -266,8 +266,8 @@ namespace ogl_utils
 
         case kVega12:
             asic_id_info.asic_generation   = kAsicGfx9;
-            asic_id_info.gdt_asic_type     = GDT_ASIC_TYPE_NONE;
-            asic_id_info.default_device_id = 0x0000;
+            asic_id_info.gdt_asic_type     = GDT_GFX9_0_4;
+            asic_id_info.default_device_id = 0x69A0;
             break;
 
         case kVega20:
@@ -340,6 +340,12 @@ namespace ogl_utils
             asic_id_info.default_device_id = 0x164D;
             break;
 
+        case kGfx1100:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_0;
+            asic_id_info.default_device_id = 0x73A8;
+            break;
+
         default:
             assert(!"Unhandled AsicRevision type");
             asic_id_info.asic_generation   = kAsicUnknown;
@@ -354,6 +360,10 @@ namespace ogl_utils
     AsicRevision GetAsicRevisionFromAsicId(AsicId asic_id)
     {
         AsicRevision revision = kUnknown;
+
+        // This static assert will help to find error when we update the AsicIdEnum for new hardware.
+        // Upon failure, we need to add suitable entry for public device and update the static assert for update count.
+        static_assert(kAsicIdLast == 43, "AsicIdEnum has changed, add suitable entry for asic info.");
 
         switch (asic_id)
         {
@@ -449,8 +459,8 @@ namespace ogl_utils
             revision = kUnknown;
             break;
 
-        case kAsicIdPlaceholder1:
-            revision = kUnknown;
+        case kAsicIdGfx904:
+            revision = kVega12;
             break;
 
         case kAsicIdGfx906:
@@ -642,6 +652,12 @@ namespace ogl_utils
 
         // Start by getting the list of counters in the group.
         ogl_get_perf_monitor_counters_amd(group, &num_counters, nullptr, 0, nullptr);
+        GLenum error_getting_num_gpin_counters = ogl_get_error();
+        if (error_getting_num_gpin_counters != GL_NO_ERROR)
+        {
+            GPA_LOG_ERROR("Error getting the number of GPIN counters.");
+            return false;
+        }
 
         AsicId ugl_asic_id = kAsicIdUnknown;
 
@@ -654,161 +670,190 @@ namespace ogl_utils
         }
         else
         {
+            memset(counter_list, 0, num_counters * sizeof(GLuint));
+
             // Get the list of counters in the group.
             ogl_get_perf_monitor_counters_amd(group, nullptr, nullptr, num_counters, counter_list);
-
-            GLuint monitor     = 0;
-            GLuint result_size = 0;
-
-            // Create a monitor for all GPIN counters.
-            ogl_gen_perf_monitors_amd(1, &monitor);
-
-            // Enable all GPIN counters.
-            if (found_ugl_entrypoints)
+            GLenum error_getting_counter_ids = ogl_get_error();
+            if (error_getting_counter_ids != GL_NO_ERROR)
             {
-                ogl_select_perf_monitor_counters_amd(monitor, GL_TRUE, group, num_counters, &counter_list[0]);
+                GPA_LOG_ERROR("Error getting GPIN counter IDs.");
             }
-            else if (found_oglp_entrypoints)
+            else
             {
-                ogl_select_perf_monitor_counters_2_amd(monitor, GL_TRUE, group, 0, num_counters, &counter_list[0]);
-            }
-
-            // Begin / end the monitor so that the data is obtained.
-            ogl_begin_perf_monitor_amd(monitor);
-            ogl_end_perf_monitor_amd(monitor);
-
-            // Get the counter result size.
-            ogl_get_perf_monitor_counter_data_amd(monitor, GL_PERFMON_RESULT_SIZE_AMD, sizeof(result_size), &result_size, nullptr);
-
-            // Result should be 4 GLuint per counter.
-            GLint expected_result_size = (4 * sizeof(GLuint)) * num_counters;
-
-            if (found_ugl_entrypoints)
-            {
-                // Result is only 3 GLuint per counter on ugl.
-                expected_result_size = (3 * sizeof(GLuint)) * num_counters;
-            }
-
-            assert(static_cast<GLint>(result_size) == expected_result_size);
-
-            if (static_cast<GLint>(result_size) == expected_result_size)
-            {
-                GLubyte* counter_data = new (std::nothrow) GLubyte[result_size];
-
-                if (nullptr != counter_data)
+                // Create a monitor for all GPIN counters.
+                GLuint monitor = 0;
+                ogl_gen_perf_monitors_amd(1, &monitor);
+                GLenum error_gening_gpin_monitor = ogl_get_error();
+                if (error_gening_gpin_monitor != GL_NO_ERROR)
                 {
-                    // Get the counter results.
-                    ogl_get_perf_monitor_counter_data_amd(monitor, GL_PERFMON_RESULT_AMD, result_size, reinterpret_cast<GLuint*>(counter_data), nullptr);
-
-                    for (int i = 0; i < num_counters; i++)
+                    GPA_LOG_ERROR("Error generating monitor for GPIN counters.");
+                }
+                else
+                {
+                    // Enable all GPIN counters.
+                    if (found_ugl_entrypoints)
                     {
-                        // Index into the result array for each counter -- the result is the third GLuint out of the three.
-                        unsigned int value = 0;
-                        if (ogl_utils::IsUglDriver() || ogl_utils::IsMesaDriver())
-                        {
-                            value = (reinterpret_cast<GLuint*>(counter_data))[(i * 3) + 2];
-                        }
-                        else if (ogl_utils::IsOglpDriver())
-                        {
-                            value = (reinterpret_cast<GLuint*>(counter_data))[(i * 4) + 3];
-                        }
-
-                        std::stringstream message;
-
-                        switch (i)
-                        {
-                        case kAsicRevisionIndex:
-                            if (found_ugl_entrypoints)
-                            {
-                                ugl_asic_id             = static_cast<AsicId>(value);
-                                asic_info.asic_revision = GetAsicRevisionFromAsicId(ugl_asic_id);
-                            }
-                            else
-                            {
-                                asic_info.asic_revision = static_cast<AsicRevision>(value);
-                            }
-                            asic_info.asic_generation = GetAsicTypeFromAsicRevision(asic_info.asic_revision);
-                            break;
-
-                        case kAsicNumSimdIndex:
-                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                            {
-                                asic_info.num_simd = value;
-                            }
-                            break;
-
-                        case kAsicNumRbIndex:
-                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                            {
-                                asic_info.num_rb = value;
-                            }
-                            break;
-
-                        case kAsicNumSpiIndex:
-                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                            {
-                                asic_info.num_spi = value;
-                            }
-                            break;
-
-                        case kAsicNumSeIndex:
-                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                            {
-                                asic_info.num_se = value;
-                            }
-                            break;
-
-                        case kAsicNumSaIndex:
-                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                            {
-                                asic_info.num_sa_per_se = value;
-                            }
-                            break;
-
-                        case kAsicNumCuIndex:
-                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                            {
-                                asic_info.num_cu = value;
-                            }
-                            break;
-
-                        case kAsicDevIdIndex:
-                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                            {
-                                asic_info.device_id = value;
-
-                                message << "Retrieved ASIC device ID: " << std::hex << std::showbase << value << ".";
-                                GPA_LOG_MESSAGE(message.str().c_str());
-                            }
-                            break;
-
-                        case kAsicDevRevIndex:
-                            if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                            {
-                                asic_info.device_rev = value;
-
-                                message << "Retrieved ASIC device revision: " << std::hex << std::showbase << value << ".";
-                                GPA_LOG_MESSAGE(message.str().c_str());
-                            }
-                            break;
-                        }
-
-                        if (ogl_utils::IsUglDriver() || ogl_utils::IsMesaDriver())
-                        {
-                            ogl_select_perf_monitor_counters_amd(monitor, GL_FALSE, group, 1, &counter_list[i]);
-                        }
-                        else if (ogl_utils::IsOglpDriver())
-                        {
-                            ogl_select_perf_monitor_counters_2_amd(monitor, GL_FALSE, group, 0, 1, &counter_list[i]);
-                        }
+                        ogl_select_perf_monitor_counters_amd(monitor, GL_TRUE, group, num_counters, &counter_list[0]);
+                    }
+                    else if (found_oglp_entrypoints)
+                    {
+                        ogl_select_perf_monitor_counters_2_amd(monitor, GL_TRUE, group, 0, num_counters, &counter_list[0]);
                     }
 
-                    result = true;
-                    delete[] counter_data;
+                    // Begin / end the monitor so that the data is obtained.
+                    ogl_begin_perf_monitor_amd(monitor);
+                    GLenum error_begin_gpin_monitor = ogl_get_error();
+                    if (error_begin_gpin_monitor != GL_NO_ERROR)
+                    {
+                        GPA_LOG_ERROR("Error beginning GPIN monitor.");
+                    }
+                    else
+                    {
+                        ogl_end_perf_monitor_amd(monitor);
+                        GLenum error_end_gpin_monitor = ogl_get_error();
+                        if (error_end_gpin_monitor != GL_NO_ERROR)
+                        {
+                            GPA_LOG_ERROR("Error ending GPIN monitor.");
+                        }
+
+                        // Get the counter result size.
+                        GLuint result_size = 0;
+                        ogl_get_perf_monitor_counter_data_amd(monitor, GL_PERFMON_RESULT_SIZE_AMD, sizeof(result_size), &result_size, nullptr);
+
+                        // Result should be 4 GLuint per counter.
+                        GLint expected_result_size = (4 * sizeof(GLuint)) * num_counters;
+
+                        if (found_ugl_entrypoints)
+                        {
+                            // Result is only 3 GLuint per counter on ugl.
+                            expected_result_size = (3 * sizeof(GLuint)) * num_counters;
+                        }
+
+                        assert(static_cast<GLint>(result_size) == expected_result_size);
+
+                        if (static_cast<GLint>(result_size) == expected_result_size)
+                        {
+                            GLubyte* counter_data = new (std::nothrow) GLubyte[result_size];
+
+                            if (nullptr != counter_data)
+                            {
+                                // Get the counter results.
+                                ogl_get_perf_monitor_counter_data_amd(monitor, GL_PERFMON_RESULT_AMD, result_size, reinterpret_cast<GLuint*>(counter_data), nullptr);
+
+                                for (int i = 0; i < num_counters; i++)
+                                {
+                                    // Index into the result array for each counter -- the result is the third GLuint out of the three.
+                                    unsigned int value = 0;
+                                    if (ogl_utils::IsUglDriver() || ogl_utils::IsMesaDriver())
+                                    {
+                                        value = (reinterpret_cast<GLuint*>(counter_data))[(i * 3) + 2];
+                                    }
+                                    else if (ogl_utils::IsOglpDriver())
+                                    {
+                                        value = (reinterpret_cast<GLuint*>(counter_data))[(i * 4) + 3];
+                                    }
+
+                                    std::stringstream message;
+
+                                    switch (i)
+                                    {
+                                    case kAsicRevisionIndex:
+                                        if (found_ugl_entrypoints)
+                                        {
+                                            ugl_asic_id             = static_cast<AsicId>(value);
+                                            asic_info.asic_revision = GetAsicRevisionFromAsicId(ugl_asic_id);
+                                        }
+                                        else
+                                        {
+                                            asic_info.asic_revision = static_cast<AsicRevision>(value);
+                                        }
+                                        asic_info.asic_generation = GetAsicTypeFromAsicRevision(asic_info.asic_revision);
+                                        break;
+
+                                    case kAsicNumSimdIndex:
+                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
+                                        {
+                                            asic_info.num_simd = value;
+                                        }
+                                        break;
+
+                                    case kAsicNumRbIndex:
+                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
+                                        {
+                                            asic_info.num_rb = value;
+                                        }
+                                        break;
+
+                                    case kAsicNumSpiIndex:
+                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
+                                        {
+                                            asic_info.num_spi = value;
+                                        }
+                                        break;
+
+                                    case kAsicNumSeIndex:
+                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
+                                        {
+                                            asic_info.num_se = value;
+                                        }
+                                        break;
+
+                                    case kAsicNumSaIndex:
+                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
+                                        {
+                                            asic_info.num_sa_per_se = value;
+                                        }
+                                        break;
+
+                                    case kAsicNumCuIndex:
+                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
+                                        {
+                                            asic_info.num_cu = value;
+                                        }
+                                        break;
+
+                                    case kAsicDevIdIndex:
+                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
+                                        {
+                                            asic_info.device_id = value;
+
+                                            message << "Retrieved ASIC device ID: " << std::hex << std::showbase << value << ".";
+                                            GPA_LOG_MESSAGE(message.str().c_str());
+                                        }
+                                        break;
+
+                                    case kAsicDevRevIndex:
+                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
+                                        {
+                                            asic_info.device_rev = value;
+
+                                            message << "Retrieved ASIC device revision: " << std::hex << std::showbase << value << ".";
+                                            GPA_LOG_MESSAGE(message.str().c_str());
+                                        }
+                                        break;
+                                    }
+
+                                    if (ogl_utils::IsUglDriver() || ogl_utils::IsMesaDriver())
+                                    {
+                                        ogl_select_perf_monitor_counters_amd(monitor, GL_FALSE, group, 1, &counter_list[i]);
+                                    }
+                                    else if (ogl_utils::IsOglpDriver())
+                                    {
+                                        ogl_select_perf_monitor_counters_2_amd(monitor, GL_FALSE, group, 0, 1, &counter_list[i]);
+                                    }
+                                }
+
+                                result = true;
+                                delete[] counter_data;
+                            }
+                        }
+                    }
                 }
+
+                ogl_delete_perf_monitors_amd(1, &monitor);
             }
 
-            ogl_delete_perf_monitors_amd(1, &monitor);
             delete[] counter_list;
         }
 

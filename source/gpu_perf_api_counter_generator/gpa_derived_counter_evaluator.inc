@@ -441,6 +441,25 @@ static GpaStatus EvaluateExpression(const char*                      expression,
 
             stack.push_back(max_value);
         }
+        else if (_strcmpi(pch, "max6") == 0)
+        {
+            assert(stack.size() >= 6);
+
+            // initialize the max value to the 1st item
+            T max_value = stack.back();
+            stack.pop_back();
+
+            // pop the last 5 items and compute the max
+            for (int i = 0; i < 5; i++)
+            {
+                T value = stack.back();
+                stack.pop_back();
+
+                max_value = (max_value > value) ? max_value : value;
+            }
+
+            stack.push_back(max_value);
+        }
         else if (_strcmpi(pch, "max8") == 0)
         {
             assert(stack.size() >= 8);
@@ -470,6 +489,25 @@ static GpaStatus EvaluateExpression(const char*                      expression,
 
             // pop the last 9 items and compute the max
             for (int i = 0; i < 9; i++)
+            {
+                T value = stack.back();
+                stack.pop_back();
+
+                max_value = (max_value > value) ? max_value : value;
+            }
+
+            stack.push_back(max_value);
+        }
+        else if (_strcmpi(pch, "max12") == 0)
+        {
+            assert(stack.size() >= 12);
+
+            // initialize the max value to the 1st item
+            T max_value = stack.back();
+            stack.pop_back();
+
+            // pop the last 11 items and compute the max
+            for (int i = 0; i < 11; i++)
             {
                 T value = stack.back();
                 stack.pop_back();
@@ -612,6 +650,25 @@ static GpaStatus EvaluateExpression(const char*                      expression,
 
             stack.push_back(max_value);
         }
+        else if (_strcmpi(pch, "max96") == 0)
+        {
+            assert(stack.size() >= 96);
+
+            // initialize the max value to the 1st item
+            T max_value = stack.back();
+            stack.pop_back();
+
+            // pop the last 95 items and compute the max
+            for (int i = 0; i < 95; i++)
+            {
+                T value = stack.back();
+                stack.pop_back();
+
+                max_value = (max_value > value) ? max_value : value;
+            }
+
+            stack.push_back(max_value);
+        }
         else if (_strcmpi(pch, "min") == 0 || _strcmpi(pch, "min2") == 0)
         {
             assert(stack.size() >= 2);
@@ -720,6 +777,41 @@ static GpaStatus EvaluateExpression(const char*                      expression,
                 stack.push_back(*iter);
             }
         }
+        else if (_strcmpi(pch, "comparemax6") == 0)
+        {
+            assert(stack.size() >= 12);
+
+            std::vector<T> values;
+
+            for (int i = 0; i < 6; ++i)
+            {
+                values.push_back(stack.back());
+                stack.pop_back();
+            }
+
+            std::vector<T> potential_returns;
+
+            for (int i = 0; i < 6; ++i)
+            {
+                // Only consider potential returns where the values[i] is non-zero
+                if (values[i])
+                {
+                    potential_returns.push_back(stack.back());
+                }
+
+                stack.pop_back();
+            }
+
+            if (potential_returns.empty())
+            {
+                stack.push_back(0);
+            }
+            else
+            {
+                auto iter = std::max_element(potential_returns.begin(), potential_returns.end());
+                stack.push_back(*iter);
+            }
+        }
         else if (_strcmpi(pch, "sum2") == 0)
         {
             const int value_count = 2;
@@ -798,6 +890,12 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             assert(stack.size() >= value_count);
             SumN(stack, value_count);
         }
+        else if (_strcmpi(pch, "sum48") == 0)
+        {
+            const int value_count = 48;
+            assert(stack.size() >= value_count);
+            SumN(stack, value_count);
+        }
         else if (_strcmpi(pch, "sum64") == 0)
         {
             const int value_count = 64;
@@ -807,6 +905,12 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         else if (_strcmpi(pch, "sum80") == 0)
         {
             const int value_count = 80;
+            assert(stack.size() >= value_count);
+            SumN(stack, value_count);
+        }
+        else if (_strcmpi(pch, "sum96") == 0)
+        {
+            const int value_count = 96;
             assert(stack.size() >= value_count);
             SumN(stack, value_count);
         }
@@ -840,6 +944,12 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec4
             VecSumN<T>(stack, vector_width);
         }
+        else if (_strcmpi(pch, "vecsum6") == 0)
+        {
+            const int32_t vector_width = 6;
+            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec6
+            VecSumN<T>(stack, vector_width);
+        }
         else if (_strcmpi(pch, "vecsum8") == 0)
         {
             const int32_t vector_width = 8;
@@ -862,6 +972,12 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         {
             const int32_t vector_width = 2;
             assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec2
+            VecSubN<T>(stack, vector_width);
+        }
+        else if (_strcmpi(pch, "vecsub6") == 0)
+        {
+            const int32_t vector_width = 6;
+            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec6
             VecSubN<T>(stack, vector_width);
         }
         else if (_strcmpi(pch, "vecsub16") == 0)
@@ -1012,6 +1128,12 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         {
             const int32_t vector_width = 4;
             assert(stack.size() >= (vector_width + 1));  // vec4 + 1 scalar
+            ScalarMulN(stack, vector_width);
+        }
+        else if (_strcmpi(pch, "scalarMul6") == 0)
+        {
+            const int32_t vector_width = 6;
+            assert(stack.size() >= (vector_width + 1));  // vec6 + 1 scalar
             ScalarMulN(stack, vector_width);
         }
         else if (_strcmpi(pch, "scalarMul8") == 0)

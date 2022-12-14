@@ -1,6 +1,17 @@
 ﻿# GPU Performance API Release Notes
 ---
 
+## Version 3.12 (12/14/22)
+  * Add support for AMD Radeon™ RX 7900 XTX and AMD Radeon™ RX 7900 XT GPUs.
+  * Add support for compiling with Visual Studio 2022.
+  * Reduced binary sizes by an average of 75%.
+  * Bug Fixes:
+    * AMD Radeon RX 6800, DX12: HiZ and PreZ counters are now reporting correct values (requires Adrenalin 22.7.1 or newer driver).
+    * AMD Radeon RX 6800: CSThreadgroups is now reporting the correct values (requires Adrenalin 22.7.1 or newer driver).
+    * AMD Radeon RX 6000 Series: PostTessellation counters now only show results in pipelines using tessellation.
+    * AMD Radeon RX 5000 Series: PreTessellation counters now only show results in pipelines using tessellation.
+    * Sample apps: Fix implementation of passes in D3D11Triangle, and improve general error handling.
+
 ## Version 3.11.1 (07/27/22)
   * Updated OpenGL support for the Adrenalin 22.7.1 driver.
   * Added L2CacheHit counter for OpenGL on Radeon RX 5000 Series hardware.

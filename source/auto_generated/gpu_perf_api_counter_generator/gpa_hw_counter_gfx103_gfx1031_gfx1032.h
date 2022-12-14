@@ -36,19 +36,17 @@ inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
     return true;
 }
 
-    extern GpaHardwareCounterDesc kGcrCountersGfx103_gfx1031_gfx1032[]; ///< Array of internal counters for Gcr block for Gfx103_gfx1031_gfx1032 family
+    extern std::vector<GpaHardwareCounterDesc> kGcrCountersGfx103_gfx1031_gfx1032; ///< Array of internal counters for Gcr block for Gfx103_gfx1031_gfx1032 family
 
 /// @brief Replaces count number of block instance counters at the destination with the overriding source counters.
 ///
 /// @param [in] dest_counter Destination to update.
 /// @param [in] src_counter Source to update from.
 /// @param [in] count Number of counters to update.
-inline void ReplaceBlockInstanceCounters(GpaHardwareCounterDesc* dest_counter, GpaHardwareCounterDesc* src_counter, uint32_t count)
+inline void ReplaceBlockInstanceCounters(std::vector<GpaHardwareCounterDesc> &dest_counter, const std::vector<GpaHardwareCounterDesc> &src_counter)
 {
-    for (uint32_t i = 0; i < count; i++)
-    {
-        dest_counter[i] = src_counter[i];
-    }
+    assert(src_counter.size() == dest_counter.size());
+    dest_counter = src_counter;
 }
 
 /// @brief If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
@@ -63,7 +61,7 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
         return false;
     }
 
-    ReplaceBlockInstanceCounters(counter_gfx103::kGcrCountersGfx103, kGcrCountersGfx103_gfx1031_gfx1032, 110);
+    ReplaceBlockInstanceCounters(counter_gfx103::kGcrCountersGfx103, kGcrCountersGfx103_gfx1031_gfx1032);
 
     return true;
 }
@@ -71,6 +69,6 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
 bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type);
 } // counter_gfx103_gfx1031_gfx1032
 
-#endif  // GPA_AUTO_GENERATED_GPU_PERF_API_COUNTER_GENERATOR_GPA_HW_COUNTER_GFX103_GFX1031_GFX1032_H_
-
 // clang-format on
+
+#endif  // GPA_AUTO_GENERATED_GPU_PERF_API_COUNTER_GENERATOR_GPA_HW_COUNTER_GFX103_GFX1031_GFX1032_H_

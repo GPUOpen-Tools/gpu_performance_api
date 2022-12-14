@@ -149,6 +149,7 @@ private:
     bool is_non_gpa_resource_released_;    ///< Flag indicating ID3DGraphicsCommand list has been released or not.
     bool has_any_hardware_counters_;       ///< Flag indicating if there are any non-skipped hardware counters in this request.
     bool use_pre1850_config_;              ///< Flag indicating whether to use pre-18.50 configuration.
+    bool use_pre2240_config_;              ///< Flag indicating whether to use pre-22.40 configuration.
 };
 
 #endif  // GPU_PERF_API_DX12_DX12_GPA_COMMAND_LIST_H_

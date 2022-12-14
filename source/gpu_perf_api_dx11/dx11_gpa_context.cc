@@ -117,21 +117,30 @@ GpaApiType Dx11GpaContext::GetApiType() const
 
 bool Dx11GpaContext::Initialize()
 {
-    bool success = OpenCounters() && InitializeProfileAMDExtension();
+    bool is_success = false;
 
-    GpaStatus set_stable_clocks_status = SetStableClocks(true);
-
-    if (kGpaStatusOk != set_stable_clocks_status)
+    if (!OpenCounters())
     {
-        GPA_LOG_ERROR("Driver was unable to set stable clocks for profiling.");
+        GPA_LOG_ERROR("Unable to open counters for DX11.");
+    }
+    else if (!InitializeProfileAMDExtension())
+    {
+        GPA_LOG_ERROR("Unable to initialize AMD profile extension for DX11.");
+    }
+    else
+    {
+        GpaStatus set_stable_clocks_status = SetStableClocks(true);
+        if (kGpaStatusOk != set_stable_clocks_status)
+        {
+            GPA_LOG_ERROR("Driver was unable to set stable clocks for profiling.");
+        }
+
+        // Even if the stable clocks could not be set, this is considered successful.
+        is_success = true;
     }
 
-    if (success)
-    {
-        SetAsOpened(true);
-    }
-
-    return success;
+    SetAsOpened(is_success);
+    return is_success;
 }
 
 IAmdDxExt* Dx11GpaContext::GetAmdDxExtension() const
@@ -278,8 +287,9 @@ bool Dx11GpaContext::InitializeProfileAMDExtension()
                     // Note: if using an older driver (one that doesn't support the new Performance Experiment interface -- see IsMgpuPerfExpSupported)
                     //       gpuID will be 0. However, looking at driver sources, the implementation of GetBlockCounterInfo in those older
                     //       drivers ignores this parameter anyway.
-
-                    if (PE_OK == dx_ext_pe_->GetBlockCounterInfo(active_gpu, static_cast<PE_BLOCK_ID>(gpu_block_iter), &block_counter_info_[gpu_block_iter]))
+                    PE_RESULT block_counter_info_result =
+                        dx_ext_pe_->GetBlockCounterInfo(active_gpu, static_cast<PE_BLOCK_ID>(gpu_block_iter), &block_counter_info_[gpu_block_iter]);
+                    if (PE_OK == block_counter_info_result)
                     {
                         block_info_init_[gpu_block_iter] = true;
                         success &= true;
@@ -287,6 +297,7 @@ bool Dx11GpaContext::InitializeProfileAMDExtension()
                     else
                     {
                         block_info_init_[gpu_block_iter] = false;
+                        GPA_LOG_DEBUG_ERROR("Failed to retrieve block counter info, block info will not be set on this iteration.");
                     }
                 }
             }

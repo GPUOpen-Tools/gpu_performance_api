@@ -12,14 +12,20 @@
 
 // Make sure to increment GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER anytime GPA_MAJOR_VERSION is incremented
 #define GPA_MAJOR_VERSION 3   ///< Macro for GPA major version.
-#define GPA_MINOR_VERSION 11  ///< Macro for GPA minor version.
-#define GPA_UPDATE_VERSION 1  ///< Macro for GPA update version.
+#define GPA_MINOR_VERSION 12  ///< Macro for GPA minor version.
+#define GPA_UPDATE_VERSION 0  ///< Macro for GPA update version.
 
 /// Macro for GPA build number
 #define GPA_BUILD_NUMBER 0
 
 #define GPA_STR_VALUE(s) #s                     ///< Macro to stringify a value.
-#define GPA_VERSION_STRING(s) GPA_STR_VALUE(s)  ///< Macro to stringify a version value.
+#ifdef WIN32
+#define GPA_STR_EMPTY()                         ///< Macro to stringify an empty value.
+#define GPA_GET_MACRO(_0, _1, MACRO, ...) MACRO ///< Macro to select between GPA_STR_VALUE and GPA_STR_EMPTY.
+#define GPA_VERSION_STRING(s) GPA_GET_MACRO(_0, ##__VA_ARGS__, GPA_STR_VALUE, GPA_STR_EMPTY)(__VA_ARGS__)  ///< Macro to stringify a version value.
+#else
+#define GPA_VERSION_STRING(s) GPA_STR_VALUE(s)  ///< Macro to stringify a version value
+#endif // !WIN32
 
 #define GPA_MAJOR_VERSION_STR GPA_VERSION_STRING(GPA_MAJOR_VERSION)    ///< Macro for major version string.
 #define GPA_MINOR_VERSION_STR GPA_VERSION_STRING(GPA_MINOR_VERSION)    ///< Macro for minor version string.

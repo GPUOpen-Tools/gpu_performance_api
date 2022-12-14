@@ -231,12 +231,12 @@ bool Dx11GpaSample::BeginRequest()
                 // Counter not created, create here.
                 D3D11_COUNTER_DESC ctr_desc = {};
                 ctr_desc.Counter            = static_cast<D3D11_COUNTER>(
-                    hardware_counters->hardware_counters_[hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_].counter_id_driver);
+                    hardware_counters->hardware_counters_.at(hardware_counters->gpu_time_bottom_to_bottom_duration_counter_index_).counter_id_driver);
 
                 if (dx11_gpa_pass->GetTopToBottomTimingDurationCounterIndex() != static_cast<DWORD>(-1))
                 {
                     ctr_desc.Counter = static_cast<D3D11_COUNTER>(
-                        hardware_counters->hardware_counters_[hardware_counters->gpu_time_top_to_bottom_duration_counter_index_].counter_id_driver);
+                        hardware_counters->hardware_counters_.at(hardware_counters->gpu_time_top_to_bottom_duration_counter_index_).counter_id_driver);
                 }
 
                 assert(ctr_desc.Counter != 0);
@@ -416,10 +416,11 @@ bool Dx11GpaSample::CreateSampleExperiment()
                 if (nullptr != amd_dx_ext_perf_experiment_)
                 {
                     auto assign_engine_param = [&](CounterIndex counter_index) -> bool {
-                        const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_[counter_index];
+                        const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_.at(counter_index);
                         engine_param_set_success                 = true;
 
-                        if (counter->group_id_driver == PE_BLOCK_SQ)
+                        if (counter->group_id_driver == PE_BLOCK_SQ ||
+                            counter->group_id_driver == PE_BLOCK_SQWGP)
                         {
                             // Set all valid shader engines to the current stage mask.
                             for (unsigned int ii = 0; ii < dx11_gpa_context->GetHwInfo()->GetNumberShaderEngines(); ii++)
@@ -481,7 +482,7 @@ bool Dx11GpaSample::CreateAndAddCounterToExperiment()
         auto add_counter_to_experiment = [&](CounterIndex counter_index) -> bool {
             success = true;
             // Need to Add a counter.
-            const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_[counter_index];
+            const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_.at(counter_index);
             UINT32 instance = static_cast<unsigned int>(hardware_counters->internal_counter_groups_[counter->group_index].block_instance);
 
             // Add valid counters to the experiment.
@@ -503,6 +504,7 @@ bool Dx11GpaSample::CreateAndAddCounterToExperiment()
                 {
                     if (counter->group_id_driver == PE_BLOCK_SQ)
                     {
+                        // The SQ_SIMD_MASK only applies to GFX9 and earlier, and is ignored on newer generations.
                         result = amd_dx_ext_perf_counters_[enabled_counter_count_index]->SetParam(PE_COUNTER_SQ_SIMD_MASK, 0xF);
 
                         if (result != PE_OK)

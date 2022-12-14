@@ -31,10 +31,16 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-### Version 3.11.1 (07/27/22)
-  * Updated OpenGL support for the Adrenalin 22.7.1 driver.
-  * Added L2CacheHit counter for OpenGL on Radeon RX 5000 Series hardware.
-  * Improved GPA integration into GLTriangle sample application.
+### Version 3.12 (12/14/22)
+* Add support for AMD Radeon™ RX 7900 XTX and AMD Radeon™ RX 7900 XT GPUs.
+* Add support for compiling with Visual Studio 2022.
+* Reduced binary sizes by an average of 75%.
+* Bug Fixes:
+  * AMD Radeon RX 6800, DX12: HiZ and PreZ counters are now reporting correct values (requires Adrenalin 22.7.1 or newer driver).
+  * AMD Radeon RX 6800: CSThreadgroups is now reporting the correct values (requires Adrenalin 22.7.1 or newer driver).
+  * AMD Radeon RX 6000 Series: PostTessellation counters now only show results in pipelines using tessellation.
+  * AMD Radeon RX 5000 Series: PreTessellation counters now only show results in pipelines using tessellation.
+  * Sample apps: Fix implementation of passes in D3D11Triangle, and improve general error handling.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
@@ -95,8 +101,6 @@ It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 arch
 ## Known Issues
 ### Counter Validity on Specific Hardware
 There are some counters that are returning unexpected results on specific hardware with certain APIs.
-* AMD Radeon RX 6800, DX12: HiZ and PreZ counters may consistently report 33% higher than expected.
-* AMD Radeon RX 6800, DX11: CSThreadGroups may consistently report 33% higher than expected.
 * AMD Radeon RX 6700M, DX11: CSLDSBankConflict and CSLDSBankConflictCycles may consistently report as much as 30x higher than expected.
 * AMD Radeon RX 480, DX12: CulledPrims and PSPixelsOut may inconsistently report higher than expected.
 

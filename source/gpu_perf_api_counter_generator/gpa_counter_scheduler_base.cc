@@ -303,10 +303,10 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
     std::vector<unsigned int> max_counters_per_group;
 
     // Create space for the number of HW and SW groups.
-    max_counters_per_group.reserve(hw_counters->group_count_ + hw_counters->additional_group_count_ + sw_counters->group_count_);
+    max_counters_per_group.reserve(hw_counters->internal_counter_groups_.size()+ hw_counters->additional_group_count_ + sw_counters->group_count_);
 
     // Add the HW groups max's.
-    for (unsigned int i = 0; i < hw_counters->group_count_; ++i)
+    for (unsigned int i = 0; i < hw_counters->internal_counter_groups_.size(); ++i)
     {
         max_counters_per_group.push_back(hw_counters->internal_counter_groups_[i].max_active_discrete_counters);
     }
@@ -323,8 +323,10 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
         max_counters_per_group.push_back(DoGetNumSoftwareCounters());
     }
 
-    GpaCounterGroupAccessor accessor(
-        hw_counters->internal_counter_groups_, hw_counters->group_count_, hw_counters->additional_groups_, hw_counters->additional_group_count_);
+    GpaCounterGroupAccessor accessor(hw_counters->internal_counter_groups_,
+                                     static_cast<GpaUInt32>(hw_counters->internal_counter_groups_.size()),
+                                     hw_counters->additional_groups_,
+                                     hw_counters->additional_group_count_);
 
     unsigned int num_internal_counters_scheduled = 0;
 

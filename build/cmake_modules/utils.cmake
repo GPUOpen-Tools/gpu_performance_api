@@ -49,9 +49,14 @@ macro(SET_EXECUTABLE_NAME EXECUTABLE_NAME)
     endif()
 endmacro()
 
-## Macro to define additional compile defintion to GPA user
+## Macro to define additional compile definition to GPA user
 macro(ADD_GPA_USER_COMPILE_DEFINITIONS)
     set_property(TARGET ${GPA_PROJECT_NAME} PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:DEBUG>:USE_DEBUG_GPA> ${ADDITIONAL_INTERNAL_DEFINITION})
+endmacro()
+
+## Macro to define additional compile definitions to a named GPA Target project.
+macro(ADD_GPA_COMPILE_DEFINITIONS TARGET_NAME)
+    set_property(TARGET ${ARGV0} PROPERTY COMPILE_DEFINITIONS $<$<CONFIG:DEBUG>:USE_DEBUG_GPA> ${ADDITIONAL_INTERNAL_DEFINITION})
 endmacro()
 
 if(CMAKE_GENERATOR MATCHES "Visual Studio")

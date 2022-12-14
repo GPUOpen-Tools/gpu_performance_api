@@ -40,25 +40,11 @@
 #undef TRACE_FUNCTION
 /// Macro for tracing function calls.
 #define TRACE_FUNCTION(func) ScopeTrace temp_scope_trace_object(#func)  ///< Macro used for tracing functions.
-#ifdef AMDT_INTERNAL
-#undef TRACE_PRIVATE_FUNCTION
-#undef TRACE_PRIVATE_FUNCTION_WITH_ARGS
-/// Macro for tracing private function calls.
-#define TRACE_PRIVATE_FUNCTION(func) ScopeTrace temp_scope_trace_object(#func)  ///< Macro used for tracing private functions.
-#define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)                 \
-    TRACE_PRIVATE_FUNCTION(func);                                   \
-    {                                                               \
-        std::ostringstream o;                                       \
-        o << ##__VA_ARGS__;                                         \
-        GpaTracer::Instance()->OutputFunctionData(o.str().c_str()); \
-    }  ///< Macro used for tracing private function with parameters.
-#else  // public build
 #undef TRACE_PRIVATE_FUNCTION
 #undef TRACE_PRIVATE_FUNCTION_WITH_ARGS
 /// Macro for tracing private function calls.
 #define TRACE_PRIVATE_FUNCTION(func)                 ///< Macro used for tracing private functions.
 #define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)  ///< Macro used for tracing private function with parameters.
-#endif                                               // AMDT_INTERNAL / public build.
 #else                                                // disable trace functions.
 #undef TRACE_FUNCTION
 #define TRACE_FUNCTION(func)  ///< Macro used for tracing functions.

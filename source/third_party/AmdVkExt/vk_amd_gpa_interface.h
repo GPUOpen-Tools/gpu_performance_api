@@ -109,8 +109,9 @@ typedef enum VkGpaPerfBlockAMD
     VK_GPA_PERF_BLOCK_GE_DIST_AMD         = 46,
     VK_GPA_PERF_BLOCK_GE_SE_AMD           = 47,
     VK_GPA_PERF_BLOCK_DF_MALL_AMD         = 48,
+    VK_GPA_PERF_BLOCK_SQWGP_AMD           = 49,
     VK_GPA_PERF_BLOCK_BEGIN_RANGE_AMD     = VK_GPA_PERF_BLOCK_CPF_AMD,
-    VK_GPA_PERF_BLOCK_END_RANGE_AMD       = VK_GPA_PERF_BLOCK_DF_MALL_AMD,
+    VK_GPA_PERF_BLOCK_END_RANGE_AMD       = VK_GPA_PERF_BLOCK_SQWGP_AMD,
     VK_GPA_PERF_BLOCK_RANGE_SIZE_AMD      = (VK_GPA_PERF_BLOCK_END_RANGE_AMD - VK_GPA_PERF_BLOCK_BEGIN_RANGE_AMD + 1),
     VK_GPA_PERF_BLOCK_MAX_ENUM_AMD        = 0x7FFFFFFF
 } VkGpaPerfBlockAMD;
@@ -151,6 +152,14 @@ typedef struct VkPhysicalDeviceGpaPropertiesAMD
     uint32_t                             perfBlockCount;
     VkGpaPerfBlockPropertiesAMD*         pPerfBlocks;
 } VkPhysicalDeviceGpaPropertiesAMD;
+
+typedef struct VkPhysicalDeviceGpaProperties2AMD
+{
+    VkStructureType sType;
+    const void*     pNext;
+
+    uint32_t revisionId;
+} VkPhysicalDeviceGpaProperties2AMD;
 
 typedef enum VkGpaSampleTypeAMD
 {
@@ -292,5 +301,6 @@ typedef void (VKAPI_PTR *PFN_vkCmdCopyGpaSessionResultsAMD)(
 #define VK_STRUCTURE_TYPE_GPA_SAMPLE_BEGIN_INFO_AMD          VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 2)
 #define VK_STRUCTURE_TYPE_GPA_SESSION_CREATE_INFO_AMD        VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 3)
 #define VK_STRUCTURE_TYPE_GPA_DEVICE_CLOCK_MODE_INFO_AMD     VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 4)
+#define VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES2_AMD VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 5)
 
 #endif /* VK_AMD_GPA_H_ */

@@ -5,7 +5,6 @@
 /// @brief  Internal class to support profiling GPA calls themselves.
 //==============================================================================
 
-//#define ENABLE_PROFILING
 #ifdef ENABLE_PROFILING
 
 #include "gpu_perf_api_common/gpa_profiler.h"

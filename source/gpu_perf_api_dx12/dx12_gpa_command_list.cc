@@ -26,6 +26,7 @@ Dx12GpaCommandList::Dx12GpaCommandList(Dx12GpaSession*    dx12_gpa_session,
                                        GpaCommandListType cmd_type)
     : GpaCommandList(dx12_gpa_session, dx12_gpa_pass, command_list_id, cmd_type)
     , use_pre1850_config_(false)
+    , use_pre2240_config_(false)
 {
     cmd_list_             = reinterpret_cast<ID3D12GraphicsCommandList*>(cmd);
     unsigned int refCount = cmd_list_->AddRef();
@@ -43,13 +44,22 @@ Dx12GpaCommandList::Dx12GpaCommandList(Dx12GpaSession*    dx12_gpa_session,
     uint32_t sub_minor_ver = 0;
     AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
 
-    // If the driver is unsigned, or the version is >= 18.50 use the default configuration.
-    if (!(major_ver || minor_ver || sub_minor_ver) || (major_ver > 18) || (major_ver == 18 && minor_ver >= 50))
+    // If the driver is unsigned, or the version is >= 22.40 use the default configuration.
+    if (!(major_ver || minor_ver || sub_minor_ver) || (major_ver > 22) || (major_ver == 22 && minor_ver >= 40))
     {
+        use_pre2240_config_ = false;
+        use_pre1850_config_ = false;
+    }
+    else if (((major_ver < 22) || (major_ver == 22 && minor_ver < 40)) && ((major_ver > 18) || (major_ver == 18 && minor_ver >= 50)))
+    {
+        // If the driver is < 22.40 and >= 18.50 use the pre-22.40 configuration.
+        use_pre2240_config_ = true;
         use_pre1850_config_ = false;
     }
     else
     {
+        // If the driver is < 18.50 use the pre-18.50 configuration.
+        use_pre2240_config_ = false;
         use_pre1850_config_ = true;
     }
 }
@@ -276,15 +286,23 @@ bool Dx12GpaCommandList::OpenHwSample(ClientSampleId client_sample_id, DriverSam
 
             if (has_any_hardware_counters_)
             {
-                // If the driver is unsigned, or the version is >= 18.50 use the default configuration.
-                if (use_pre1850_config_)
+                if (use_pre2240_config_)
                 {
+                    // Pre-22.40 config struct.
+                    auto older_config = reinterpret_cast<Dx12GpaPass*>(GetPass())->GetPre2240DriverExtSampleConfig();
+
+                    *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, *(AmdExtGpaSampleConfig*)(&older_config));
+                }
+                else if (use_pre1850_config_)
+                {
+                    // Pre-18.50 config struct.
                     auto older_config = reinterpret_cast<Dx12GpaPass*>(GetPass())->GetPre1850DriverExtSampleConfig();
 
                     *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, *(AmdExtGpaSampleConfig*)(&older_config));
                 }
                 else
                 {
+                    // Latest config struct.
                     *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, reinterpret_cast<Dx12GpaPass*>(GetPass())->GetDriverExtSampleConfig());
                 }
 

@@ -99,7 +99,7 @@ void Dx11GpaPass::InitializeCounterInfo()
 
             for (CounterIndex counter_iter = 0; counter_iter < counter_list_->size(); counter_iter++)
             {
-                const GpaHardwareCounterDescExt* counter  = &hardware_counters->hardware_counters_[counter_list_->at(counter_iter)];
+                const GpaHardwareCounterDescExt* counter  = &hardware_counters->hardware_counters_.at(counter_list_->at(counter_iter));
                 PE_BLOCK_ID                      block_id = static_cast<PE_BLOCK_ID>(counter->group_id_driver);
                 UINT32 instance = static_cast<UINT32>(hardware_counters->internal_counter_groups_[counter->group_index].block_instance);
                 UINT32 event_id = static_cast<UINT32>(counter->hardware_counters->counter_index_in_group);
@@ -141,9 +141,10 @@ void Dx11GpaPass::InitializeCounterExperimentParameters()
     const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
 
     auto PopulateExperimentParams = [&](const CounterIndex& counter_index) -> bool {
-        const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_[counter_index];
+        const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_.at(counter_index);
 
-        if (counter->group_id_driver == PE_BLOCK_SQ)
+        if (counter->group_id_driver == PE_BLOCK_SQ ||
+            counter->group_id_driver == PE_BLOCK_SQWGP)
         {
             // Set the engine parameter if the SQ block is being used
             // convert the instance to a shader mask.

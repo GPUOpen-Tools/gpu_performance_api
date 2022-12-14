@@ -260,6 +260,8 @@ enum PE_BLOCK_ID : UINT
     PE_BLOCK_GE2_SE,
     PE_BLOCK_DF_MALL,
     PE_BLOCK_MAX_GFX10_3,
+    PE_BLOCK_SQWGP,
+    PE_BLOCK_MAX_GFX11,
 };
 
 // Counter parameters

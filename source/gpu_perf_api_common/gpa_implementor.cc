@@ -31,7 +31,7 @@ GpaStatus GpaImplementor::Initialize(GpaInitializeFlags flags)
 
     if (kGpaInitializeDefaultBit != flags && GPA_INITIALIZE_SIMULTANEOUS_QUEUES_ENABLE_BIT != flags)
     {
-        GPA_LOG_ERROR("Invalid flags passed to GPA_Initialize.");
+        GPA_LOG_ERROR("Invalid flags passed to GpaInitialize.");
         gpa_status = kGpaStatusErrorInvalidParameter;
     }
     else

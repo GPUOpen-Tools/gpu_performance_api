@@ -21,10 +21,6 @@
 // the "USE_DEBUG_GPA" preprocessor macro should be defined before
 // including this header file
 
-// In order to use this header file with an internal build of GPA
-// the "USE_INTERNAL_GPA" preprocessor macro should be defined before
-// including this header file
-
 #ifndef GPU_PERF_API_INTERFACE_LOADER_H_
 #define GPU_PERF_API_INTERFACE_LOADER_H_
 

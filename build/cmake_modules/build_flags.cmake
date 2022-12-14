@@ -1,11 +1,9 @@
-## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 ## GPA has only Debug and Release
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 set(DEPTH "./")
-
-include(${GPA_CMAKE_MODULES_DIR}/defs.cmake)
 
 if(NOT DEFINED usingscript)
     set(usingscript OFF CACHE BOOL "Turn on to indicate CMake is called using script" FORCE)

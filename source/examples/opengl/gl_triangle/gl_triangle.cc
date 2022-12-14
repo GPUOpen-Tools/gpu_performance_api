@@ -150,17 +150,10 @@ bool CreateSessionAndEnableCounters()
     }
     else
     {
-#ifndef AMDT_INTERNAL
         if (!GpaHelper::Instance()->EnableAllCounters())
         {
             return false;
         }
-#else
-        if (!GpaHelper::Instance()->EnableCounterByName("GPUTime"))
-        {
-            return false;
-        }
-#endif
     }
 
     return true;
@@ -463,6 +456,18 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
             if (FAILED(wgl_make_current(device_context, gl_context)) && ERROR_SUCCESS != GetLastError())
             {
                 LOG_ERROR(kWinError, "Unable to make context current.");
+                PostQuitMessage(-1);
+                return -1;
+            }
+
+            if (!GpaHelper::Instance()->OpenContext(gl_context, app.IncludeHwCounters()))
+            {
+                PostQuitMessage(-1);
+                return -1;
+            }
+
+            if (!GpaHelper::Instance()->CloseContext())
+            {
                 PostQuitMessage(-1);
                 return -1;
             }

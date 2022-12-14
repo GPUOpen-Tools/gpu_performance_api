@@ -44,7 +44,6 @@
 // total time in: total time spent within this function, not including time spent in profiled functions called by it.
 // time in per call: average time spent within this function per call, not including time spent in profiled functions called by it.
 
-//#define ENABLE_PROFILING
 #ifdef ENABLE_PROFILING
 
 #include <windows.h>

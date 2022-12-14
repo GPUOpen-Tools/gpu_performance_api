@@ -19,10 +19,6 @@
 // the "USE_DEBUG_GPA" preprocessor macro should be defined before
 // including this header file
 
-// In order to use this header file with an internal build of GPA
-// the "USE_INTERNAL_GPA" preprocessor macro should be defined before
-// including this header file
-
 #ifndef GPU_PERFORMANCE_API_GPU_PERF_API_INTERFACE_LOADER_H_
 #define GPU_PERFORMANCE_API_GPU_PERF_API_INTERFACE_LOADER_H_
 
@@ -240,10 +236,6 @@ static inline const LocaleChar* GpaInterfaceLoaderGetLibraryFileName(GpaApiType 
 
 #ifdef USE_DEBUG_GPA
     STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_DEBUG_SUFFIX);
-#endif
-
-#ifdef USE_INTERNAL_GPA
-    STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_INTERNAL_SUFFIX);
 #endif
 
     STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_LIB_SUFFIX);

@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 set(DEPTH "../../")
@@ -14,6 +14,7 @@ include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})
 include(${CMAKE_COMMON_SRC_GLOBAL_DEVICE_INFO})
 include(${CMAKE_COMMON_SRC_GLOBAL_DYNAMIC_LIBRARY_MODULE})
 
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_PUBLIC_HEADER}
@@ -22,15 +23,12 @@ include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
 set(ADDITIONAL_SOURCE
     ${ADL_UTIL_DIR}/ADLUtil.cpp
     ${DYNAMIC_LIBRARY_MODULE}/DynamicLibraryModule.cpp
-    ${DEVICE_INFO}/DeviceInfoUtils.cpp
-    ${DEVICE_INFO}/DeviceInfo.cpp
-    ${ADDITIONAL_DEVICEINFO_SOURCES})
+    ${DEVICE_INFO_SRC})
 
 set(ADDITIONAL_SOURCE_HEADERS
     ${ADL_UTIL_DIR}/ADLUtil.h
     ${DYNAMIC_LIBRARY_MODULE}/DynamicLibraryModule.h
-    ${DEVICE_INFO}/DeviceInfo.h
-    ${DEVICE_INFO}/DeviceInfoUtils.h)
+    ${DEVICE_INFO_HEADERS})
 
 set(PUBLIC_HEADERS  ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api.h
                     ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_counters.h

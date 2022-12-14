@@ -20,20 +20,19 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_cl_gfx10
 {
-    extern GpaHardwareCounterDesc*           kClCounterGroupArrayGfx10[]; ///< Array of hardware counter groups for Cl for Gfx10 family
-    extern GpaHardwareCounterDesc*           kClExposedCountersGroupArrayGfx10[]; ///< Array of hardware exposed counter groups for Cl for Gfx10 family
-    extern GpaCounterGroupDesc               kHwClGroupsGfx10[]; ///< Array of counter groups for Cl for Gfx10 family
-    extern GpaCounterGroupExposedCounterDesc kHwClExposedCountersByGroupGfx10[]; ///< Array of exposed counter groups for Cl for Gfx10 family
-    extern GpaPaddedCounterDesc              kClPaddedCounterByGroupGfx10[]; ///< Array of reserved counter for Cl for Gfx10 family
-    extern GpaSqCounterGroupDesc             kHwClSqGroupsGfx10[]; ///< Array of SQ groups for Cl for Gfx10 family
-    extern unsigned int                       kHwClSqIsolatedGroupsGfx10[]; ///< Array of counter groups isolated from SQ counter groups for Cl for Gfx10 family
-    extern const std::set<unsigned int>       kHwClTimestampBlockIdsGfx10; ///< Timestamp block id's for Cl for Gfx10 family
-    extern const std::set<unsigned int>       kHwClTimeCounterIndicesGfx10; ///< Timestamp counter indices for Cl for Gfx10 family
-    extern const unsigned int                 kHwClGroupCountGfx10; ///< Hardware Group Count for Cl for Gfx10 family
-    extern const unsigned int                 kHwClExposedCountersGroupCountGfx10; ///< Whitelist hardware counter Group Count for Cl for Gfx10 family
-    extern const unsigned int                 kClPaddedCounterGroupCountGfx10; ///< reserved counter group count for Cl for Gfx10 family
-    extern const unsigned int                 kHwClSqGroupCountGfx10; ///< Hardware SQ Group Count for Cl for Gfx10 family
-    extern const unsigned int                 kHwClSqIsolatedGroupCountGfx10; ///< Hardware Isolated Group Count for Cl for Gfx10 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kClExposedCountersGroupArrayGfx10; ///< Array of hardware exposed counter groups for Cl for Gfx10 family
+    extern std::vector<GpaCounterGroupDesc>                           kHwClGroupsGfx10; ///< Array of counter groups for Cl for Gfx10 family
+    extern GpaCounterGroupExposedCounterDesc                          kHwClExposedCountersByGroupGfx10[]; ///< Array of exposed counter groups for Cl for Gfx10 family
+    extern GpaPaddedCounterDesc                                       kClPaddedCounterByGroupGfx10[]; ///< Array of reserved counter for Cl for Gfx10 family
+    extern GpaSqCounterGroupDesc                                      kHwClSqGroupsGfx10[]; ///< Array of SQ groups for Cl for Gfx10 family
+    extern unsigned int                                               kHwClSqIsolatedGroupsGfx10[]; ///< Array of counter groups isolated from SQ counter groups for Cl for Gfx10 family
+    extern const std::set<unsigned int>                               kHwClTimestampBlockIdsGfx10; ///< Timestamp block id's for Cl for Gfx10 family
+    extern const std::set<unsigned int>                               kHwClTimeCounterIndicesGfx10; ///< Timestamp counter indices for Cl for Gfx10 family
+    extern const unsigned int                                         kHwClGroupCountGfx10; ///< Hardware Group Count for Cl for Gfx10 family
+    extern const unsigned int                                         kHwClExposedCountersGroupCountGfx10; ///< Whitelist hardware counter Group Count for Cl for Gfx10 family
+    extern const unsigned int                                         kClPaddedCounterGroupCountGfx10; ///< reserved counter group count for Cl for Gfx10 family
+    extern const unsigned int                                         kHwClSqGroupCountGfx10; ///< Hardware SQ Group Count for Cl for Gfx10 family
+    extern const unsigned int                                         kHwClSqIsolatedGroupCountGfx10; ///< Hardware Isolated Group Count for Cl for Gfx10 family
 
 /// @brief If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
 ///

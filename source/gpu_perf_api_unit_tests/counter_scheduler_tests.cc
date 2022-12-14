@@ -809,11 +809,6 @@ void TestD3D11QueryCounter(unsigned int device_id,
     // the D3D query counters appear after the public counters
     unsigned int query_counter_index = public_counter_count + d3d_query_counter_index;
 
-#ifdef AMDT_INTERNAL
-    // in the internal build, the D3D query counters are also after the hardware counters
-    query_counter_index += hardware_counter_count;
-#endif
-
     counters.push_back(query_counter_index);
 
     std::map<unsigned int, GpaCounterResultLocation> expected_locations_gpu_time;

@@ -21,7 +21,6 @@
 #include <dxgidebug.h>
 #endif
 
-//#define DISABLE_GPA 1 - Uncomment to disable GPA
 
 #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
@@ -44,8 +43,11 @@ public:
     /// @return true if initialization succeeds, and false otherwise.
     bool Init(gpa_example::Dx11SampleApp* app);
 
-    /// @brief Draw the triangle sample.
+    /// @brief Draw the triangle.
     void Draw();
+
+    /// @brief Present the drawn triangle.
+    void Present();
 
     /// @brief Toggles the profiling.
     void ToggleProfiling();

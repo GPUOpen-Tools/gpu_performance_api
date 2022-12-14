@@ -413,6 +413,12 @@ bool Dx11GpaImplementor::GetAmdHwInfo(ID3D11Device* d3d11_device,
                                                 info_param.pASICInfo = new_asic_info;
                                                 amd_dx_ext_asic_info->GetInfoData(&info_param);
 
+                                                // Fix RX 6800
+                                                if (new_asic_info->hwInfo[0].chipID == 0x73bf && new_asic_info->hwInfo[0].revisionID == 0xC3)
+                                                {
+                                                    new_asic_info->hwInfo[0].numShaderEngines = 3;
+                                                }
+
                                                 if (nullptr != info_param.pASICInfo && gpu_index < info_param.pASICInfo->gpuCount)
                                                 {
                                                     AmdDxASICInfoHWInfo asic_info = info_param.pASICInfo->hwInfo[gpu_index];

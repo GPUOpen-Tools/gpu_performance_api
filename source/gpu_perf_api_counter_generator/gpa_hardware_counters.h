@@ -8,10 +8,6 @@
 #ifndef GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_HARDWARE_COUNTERS_H_
 #define GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_HARDWARE_COUNTERS_H_
 
-#ifdef AMDT_INTERNAL
-#include <unordered_map>
-#endif
-
 #include <sstream>
 
 #include "gpa_counter.h"
@@ -19,7 +15,7 @@
 #include "gpa_split_counters_interfaces.h"
 #include "gpa_counter_scheduler_interface.h"
 
-/// @brief Struct to describe a hardware counter
+/// @brief Struct to describe a hardware counter.
 struct GpaHardwareCounterDescExt
 {
     GpaUInt32               group_index;        ///< Index of group containing this counter.
@@ -35,64 +31,78 @@ public:
     /// @brief Enum of all available hardware blocks.
     enum GpaInternalHardwareBlock
     {
-        kGpaInternalHwBlockCpf = 0,                            ///< The Gpa hardware block is CPF.
-        kGpaInternalHwBlockIa,                                 ///< The Gpa hardware block is IA.
-        kGpaInternalHwBlockVgt,                                ///< The Gpa hardware block is VGT.
-        kGpaInternalHwBlockPa,                                 ///< The Gpa hardware block is PA.
-        kGpaInternalHwBlockSc,                                 ///< The Gpa hardware block is SC.
-        kGpaInternalHwBlockSpi,                                ///< The Gpa hardware block is SPI.
-        kGpaInternalHwBlockSq,                                 ///< The Gpa hardware block is SQ.
-        kGpaInternalHwBlockSx,                                 ///< The Gpa hardware block is SX.
-        kGpaInternalHwBlockTa,                                 ///< The Gpa hardware block is TA.
-        kGpaInternalHwBlockTd,                                 ///< The Gpa hardware block is TD.
-        kGpaInternalHwBlockTcp,                                ///< The Gpa hardware block is TCP.
-        kGpaInternalHwBlockTcc,                                ///< The Gpa hardware block is TCC.
-        kGpaInternalHwBlockTca,                                ///< The Gpa hardware block is TCA.
-        kGpaInternalHwBlockDb,                                 ///< The Gpa hardware block is DB.
-        kGpaInternalHwBlockCb,                                 ///< The Gpa hardware block is CB.
-        kGpaInternalHwBlockGds,                                ///< The Gpa hardware block is GDS.
-        kGpaInternalHwBlockSrbm,                               ///< The Gpa hardware block is SRBM.
-        kGpaInternalHwBlockGrbm,                               ///< The Gpa hardware block is GRBM.
-        kGpaInternalHwBlockGrbmse,                             ///< The Gpa hardware block is GRBMSE.
-        kGpaInternalHwBlockRlc,                                ///< The Gpa hardware block is RLC.
-        kGpaInternalHwBlockDma,                                ///< The Gpa hardware block is DMA.
-        kGpaInternalHwBlockMc,                                 ///< The Gpa hardware block is MC.
-        kGpaInternalHwBlockCpg,                                ///< The Gpa hardware block is CPG.
-        kGpaInternalHwBlockCpc,                                ///< The Gpa hardware block is CPC.
-        kGpaInternalHwBlockWd,                                 ///< The Gpa hardware block is WD.
-        kGpaInternalHwBlockTcs,                                ///< The Gpa hardware block is TCS.
-        kGpaInternalHwBlockAtc,                                ///< The Gpa hardware block is ATC.
-        kGpaInternalHwBlockAtcl2,                              ///< The Gpa hardware block is ATCL2.
-        kGpaInternalHwBlockMcvml2,                             ///< The Gpa hardware block is MCVML2.
-        kGpaInternalHwBlockEa,                                 ///< The Gpa hardware block is EA.
-        kGpaInternalHwBlockRpb,                                ///< The Gpa hardware block is RPB.
-        kGpaInternalHwBlockRmi,                                ///< The Gpa hardware block is RMI.
-        kGpaInternalHwBlockUmcch,                              ///< The Gpa hardware block is UMCCH.
-        kGpaInternalHwBlockGe,                                 ///< The Gpa hardware block is GE.
-        kGpaInternalHwBlockGl1A,                               ///< The Gpa hardware block is GL1A.
-        kGpaInternalHwBlockGl1C,                               ///< The Gpa hardware block is GL1C.
-        kGpaInternalHwBlockGl1Cg,                              ///< The Gpa hardware block is GL1CG.
-        kGpaInternalHwBlockGl2A,                               ///< The Gpa hardware block is GL2A.
-        kGpaInternalHwBlockGl2C,                               ///< The Gpa hardware block is GL2C.
-        kGpaInternalHwBlockCha,                                ///< The Gpa hardware block is CHA.
-        kGpaInternalHwBlockChc,                                ///< The Gpa hardware block is CHC.
-        kGpaInternalHwBlockChcg,                               ///< The Gpa hardware block is CHCG.
-        kGpaInternalHwBlockGus,                                ///< The Gpa hardware block is GUS.
-        kGpaInternalHwBlockGcr,                                ///< The Gpa hardware block is GCR.
-        kGpaInternalHwBlockPh,                                 ///< The Gpa hardware block is PH.
-        kGpaInternalHwBlockUtcl1,                              ///< The Gpa hardware block is UTCL1.
-        kGpaInternalHwBlockGedist,                             ///< The Gpa hardware block is GEDIST.
-        kGpaInternalHwBlockGese,                               ///< The Gpa hardware block is GESE.
-        kGpaInternalHwBlockDfmall,                             ///< The Gpa hardware block is DFMALL.
-        kGpaInternalHwBlockSqFirst,                            ///< The Gpa hardware block is SQ.
-        kGpaInternalHwBlockSqPs = kGpaInternalHwBlockSqFirst,  ///< The Gpa hardware block is SQ_PS.
-        kGpaInternalHwBlockSqVs,                               ///< The Gpa hardware block is SQ_VS.
-        kGpaInternalHwBlockSqGs,                               ///< The Gpa hardware block is SQ_GS.
-        kGpaInternalHwBlockSqEs,                               ///< The Gpa hardware block is SQ_ES.
-        kGpaInternalHwBlockSqHs,                               ///< The Gpa hardware block is SQ_HS.
-        kGpaInternalHwBlockSqLs,                               ///< The Gpa hardware block is SQ_LS.
-        kGpaInternalHwBlockSqCs,                               ///< The Gpa hardware block is SQ_CS.
-        kGpaInternalHwBlockCount,                              ///< Count.
+        kGpaInternalHwBlockCpf = 0,                                  ///< The Gpa hardware block is CPF.
+        kGpaInternalHwBlockIa,                                       ///< The Gpa hardware block is IA.
+        kGpaInternalHwBlockVgt,                                      ///< The Gpa hardware block is VGT.
+        kGpaInternalHwBlockPa,                                       ///< The Gpa hardware block is PA.
+        kGpaInternalHwBlockSc,                                       ///< The Gpa hardware block is SC.
+        kGpaInternalHwBlockSpi,                                      ///< The Gpa hardware block is SPI.
+        kGpaInternalHwBlockSq,                                       ///< The Gpa hardware block is SQ.
+        kGpaInternalHwBlockSx,                                       ///< The Gpa hardware block is SX.
+        kGpaInternalHwBlockTa,                                       ///< The Gpa hardware block is TA.
+        kGpaInternalHwBlockTd,                                       ///< The Gpa hardware block is TD.
+        kGpaInternalHwBlockTcp,                                      ///< The Gpa hardware block is TCP.
+        kGpaInternalHwBlockTcc,                                      ///< The Gpa hardware block is TCC.
+        kGpaInternalHwBlockTca,                                      ///< The Gpa hardware block is TCA.
+        kGpaInternalHwBlockDb,                                       ///< The Gpa hardware block is DB.
+        kGpaInternalHwBlockCb,                                       ///< The Gpa hardware block is CB.
+        kGpaInternalHwBlockGds,                                      ///< The Gpa hardware block is GDS.
+        kGpaInternalHwBlockSrbm,                                     ///< The Gpa hardware block is SRBM.
+        kGpaInternalHwBlockGrbm,                                     ///< The Gpa hardware block is GRBM.
+        kGpaInternalHwBlockGrbmse,                                   ///< The Gpa hardware block is GRBMSE.
+        kGpaInternalHwBlockRlc,                                      ///< The Gpa hardware block is RLC.
+        kGpaInternalHwBlockDma,                                      ///< The Gpa hardware block is DMA.
+        kGpaInternalHwBlockMc,                                       ///< The Gpa hardware block is MC.
+        kGpaInternalHwBlockCpg,                                      ///< The Gpa hardware block is CPG.
+        kGpaInternalHwBlockCpc,                                      ///< The Gpa hardware block is CPC.
+        kGpaInternalHwBlockWd,                                       ///< The Gpa hardware block is WD.
+        kGpaInternalHwBlockTcs,                                      ///< The Gpa hardware block is TCS.
+        kGpaInternalHwBlockAtc,                                      ///< The Gpa hardware block is ATC.
+        kGpaInternalHwBlockAtcl2,                                    ///< The Gpa hardware block is ATCL2.
+        kGpaInternalHwBlockMcvml2,                                   ///< The Gpa hardware block is MCVML2.
+        kGpaInternalHwBlockEa,                                       ///< The Gpa hardware block is EA.
+        kGpaInternalHwBlockRpb,                                      ///< The Gpa hardware block is RPB.
+        kGpaInternalHwBlockRmi,                                      ///< The Gpa hardware block is RMI.
+        kGpaInternalHwBlockUmcch,                                    ///< The Gpa hardware block is UMCCH.
+        kGpaInternalHwBlockGe,                                       ///< The Gpa hardware block is GE.
+        kGpaInternalHwBlockGl1A,                                     ///< The Gpa hardware block is GL1A.
+        kGpaInternalHwBlockGl1C,                                     ///< The Gpa hardware block is GL1C.
+        kGpaInternalHwBlockGl1Cg,                                    ///< The Gpa hardware block is GL1CG.
+        kGpaInternalHwBlockGl2A,                                     ///< The Gpa hardware block is GL2A.
+        kGpaInternalHwBlockGl2C,                                     ///< The Gpa hardware block is GL2C.
+        kGpaInternalHwBlockCha,                                      ///< The Gpa hardware block is CHA.
+        kGpaInternalHwBlockChc,                                      ///< The Gpa hardware block is CHC.
+        kGpaInternalHwBlockChcg,                                     ///< The Gpa hardware block is CHCG.
+        kGpaInternalHwBlockGus,                                      ///< The Gpa hardware block is GUS.
+        kGpaInternalHwBlockGcr,                                      ///< The Gpa hardware block is GCR.
+        kGpaInternalHwBlockPh,                                       ///< The Gpa hardware block is PH.
+        kGpaInternalHwBlockUtcl1,                                    ///< The Gpa hardware block is UTCL1.
+        kGpaInternalHwBlockGedist,                                   ///< The Gpa hardware block is GEDIST.
+        kGpaInternalHwBlockGese,                                     ///< The Gpa hardware block is GESE.
+        kGpaInternalHwBlockDfmall,                                   ///< The Gpa hardware block is DFMALL.
+        kGpaInternalHwBlockSqWgp,                                    ///< The Gpa hardware block is SQWGP.
+        kGpaInternalHwBlockSqFirst,                                  ///< The Gpa hardware block is SQ_PS.
+        kGpaInternalHwBlockSqPs = kGpaInternalHwBlockSqFirst,        ///< The Gpa hardware block is SQ_PS.
+        kGpaInternalHwBlockSqVs,                                     ///< The Gpa hardware block is SQ_VS.
+        kGpaInternalHwBlockSqGs,                                     ///< The Gpa hardware block is SQ_GS.
+        kGpaInternalHwBlockSqEs,                                     ///< The Gpa hardware block is SQ_ES.
+        kGpaInternalHwBlockSqHs,                                     ///< The Gpa hardware block is SQ_HS.
+        kGpaInternalHwBlockSqLs,                                     ///< The Gpa hardware block is SQ_LS.
+        kGpaInternalHwBlockSqCs,                                     ///< The Gpa hardware block is SQ_CS.
+        kGpaInternalHwBlockSqLast = kGpaInternalHwBlockSqCs,         ///< The Gpa hardware block is SQ_CS.
+        kGpaInternalHwBlockSqGFirst,                                 ///< The Gpa hardware block is SQG_PS.
+        kGpaInternalHwBlockSqGPs = kGpaInternalHwBlockSqGFirst,      ///< The Gpa hardware block is SQG_PS.
+        kGpaInternalHwBlockSqGGs,                                    ///< The Gpa hardware block is SQG_GS.
+        kGpaInternalHwBlockSqGHs,                                    ///< The Gpa hardware block is SQG_HS.
+        kGpaInternalHwBlockSqGCs,                                    ///< The Gpa hardware block is SQG_CS.
+        kGpaInternalHwBlockSqGLast = kGpaInternalHwBlockSqGCs,       ///< The Gpa hardware block is SQG_CS.
+        kGpaInternalHwBlockSqWgpFirst,                               ///< The Gpa hardware block is SQWGP_PS.
+        kGpaInternalHwBlockSqWgpPs = kGpaInternalHwBlockSqWgpFirst,  ///< The Gpa hardware block is SQWGP_PS.
+        kGpaInternalHwBlockSqWgpGs,                                  ///< The Gpa hardware block is SQWGP_GS.
+        kGpaInternalHwBlockSqWgpHs,                                  ///< The Gpa hardware block is SQWGP_HS.
+        kGpaInternalHwBlockSqWgpCs,                                  ///< The Gpa hardware block is SQWGP_CS.
+        kGpaInternalHwBlockSqWgpLast = kGpaInternalHwBlockSqWgpCs,   ///< The Gpa hardware block is SQWGP_CS.
+        kGpaInternalHwBlockCount,                                    ///< Count.
     };
 
     /// @brief Initializes an instance of the GPA_HardwareCounters class.
@@ -149,6 +159,7 @@ public:
             static_assert(kGpaHwBlockGedist == static_cast<GpaHwBlock>(kGpaInternalHwBlockGedist), "Mismatched block");
             static_assert(kGpaHwBlockGese == static_cast<GpaHwBlock>(kGpaInternalHwBlockGese), "Mismatched block");
             static_assert(kGpaHwBlockDfmall == static_cast<GpaHwBlock>(kGpaInternalHwBlockDfmall), "Mismatched block");
+            static_assert(kGpaHwBlockSqWgp == static_cast<GpaHwBlock>(kGpaInternalHwBlockSqWgp), "Mismatched block");
             static_assert(kGpaHwBlockCount == static_cast<GpaHwBlock>(kGpaInternalHwBlockSqFirst), "Mismatched block");
 
             kHardwareBlockString = {GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpf, "CPF"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockIa, "IA"),
@@ -175,10 +186,15 @@ public:
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGus, "GUS"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGcr, "GCR"),
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPh, "PA_PH"),      GPA_ENUM_STRING_VAL(kGpaInternalHwBlockUtcl1, "UTCL1"),
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGedist, "GEDIST"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGese, "GESE"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDfmall, "DFMALL"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQ_PS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqVs, "SQ_VS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQ_GS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqEs, "SQ_ES"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQ_HS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqLs, "SQ_LS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQ_CS")};
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDfmall, "DFMALL"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqWgp, "SQWGP"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQ_PS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqVs, "SQ_VS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQ_GS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqEs, "SQ_ES"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQ_HS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqLs, "SQ_LS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQ_CS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQG_PS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQG_GS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQG_HS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQG_CS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQWGP_PS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQWGP_GS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQWGP_HS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS")};
         }
 
         Clear();
@@ -200,10 +216,8 @@ public:
     {
         current_group_used_counts_.clear();
         hardware_counters_.clear();
-        counter_groups_array_                             = nullptr;
-        hardware_exposed_counters_                        = nullptr;
-        internal_counter_groups_                          = nullptr;
-        group_count_                                      = 0;
+        counter_groups_array_.clear();
+        internal_counter_groups_.clear();
         additional_groups_                                = nullptr;
         additional_group_count_                           = 0;
         sq_counter_groups_                                = nullptr;
@@ -218,7 +232,7 @@ public:
         isolated_groups_                                  = nullptr;
         isolated_group_count_                             = 0;
 
-        hardware_exposed_counters_            = nullptr;
+        hardware_exposed_counters_.clear();
         hardware_exposed_counter_groups_      = nullptr;
         hardware_exposed_counter_group_count_ = 0;
         hardware_exposed_counters_list_.clear();
@@ -285,7 +299,8 @@ public:
             std::string hardware_block_string = kHardwareBlockString[gpa_internal_hardware_block];
             std::string current_block_string;
 
-            while (!found_block && group_iter < group_count_)
+            const GpaUInt32 internal_groups_size = static_cast<GpaUInt32>(internal_counter_groups_.size());
+            while (!found_block && group_iter < internal_groups_size)
             {
                 current_block_string.clear();
                 current_block_string = std::string(internal_counter_groups_[group_iter].name);
@@ -340,6 +355,8 @@ public:
 
         if (kGpaHwBlockSq == gpa_hardware_block)
         {
+            static_assert((unsigned int)kGpaHwBlockSq == (unsigned int)kGpaInternalHwBlockSq,
+                          "Make sure the Sq hardware block indexes are consistent with eachother");
             GpaInternalHardwareBlock sq_internal_block = static_cast<GpaInternalHardwareBlock>(kGpaHwBlockSq);
 
             switch (sq_shader_mask)
@@ -367,10 +384,39 @@ public:
                 break;
             case kGpaShaderMaskAll:
                 break;
-            default:;
+            default:
+                assert(!"Invalid SQ shader mask specified.");
             }
 
             gpa_internal_hardware_block_mapped = sq_internal_block;
+        }
+        else if (kGpaHwBlockSqWgp == gpa_hardware_block)
+        {
+            static_assert((unsigned int)kGpaHwBlockSqWgp == (unsigned int)kGpaInternalHwBlockSqWgp,
+                          "Make sure the SqWgp hardware block indexes are consistent with eachother");
+            GpaInternalHardwareBlock sqwgp_internal_block = static_cast<GpaInternalHardwareBlock>(kGpaHwBlockSqWgp);
+
+            switch (sq_shader_mask)
+            {
+            case kGpaShaderMaskCs:
+                sqwgp_internal_block = kGpaInternalHwBlockSqWgpCs;
+                break;
+            case kGpaShaderMaskPs:
+                sqwgp_internal_block = kGpaInternalHwBlockSqWgpPs;
+                break;
+            case kGpaShaderMaskGs:
+                sqwgp_internal_block = kGpaInternalHwBlockSqWgpGs;
+                break;
+            case kGpaShaderMaskHs:
+                sqwgp_internal_block = kGpaInternalHwBlockSqWgpHs;
+                break;
+            case kGpaShaderMaskAll:
+                break;
+            default:
+                assert(!"Invalid SQWGP shader mask specified.");
+            }
+
+            gpa_internal_hardware_block_mapped = sqwgp_internal_block;
         }
         else
         {
@@ -411,13 +457,7 @@ public:
     /// @return The name of the specified counter.
     const char* GetCounterName(GpaUInt32 index) const
     {
-#ifdef AMDT_INTERNAL
-        if (0 < alternate_name_map_.count(index))
-        {
-            return alternate_name_map_.at(index).c_str();
-        }
-#endif
-        return hardware_counters_[index].hardware_counters->name;
+        return hardware_counters_.at(index).hardware_counters->name;
     }
 
     /// @brief Gets the name of the specified hardware exposed counter.
@@ -451,13 +491,13 @@ public:
     /// @return The group name of the specified counter.
     const char* GetCounterGroup(GpaUInt32 index) const
     {
-        if (hardware_counters_[index].group_index < group_count_)
+        if (hardware_counters_.at(index).group_index < static_cast<GpaUInt32>(internal_counter_groups_.size()))
         {
-            return internal_counter_groups_[hardware_counters_[index].group_index].name;
+            return internal_counter_groups_[hardware_counters_.at(index).group_index].name;
         }
         else
         {
-            GpaUInt32 additional_group_index = hardware_counters_[index].group_index - group_count_;
+            GpaUInt32 additional_group_index = hardware_counters_.at(index).group_index - static_cast<GpaUInt32>(internal_counter_groups_.size());
 
             if (additional_group_index < additional_group_count_)
             {
@@ -489,8 +529,9 @@ public:
 
         if (found)
         {
-            if (internal_hw_block >= kGpaInternalHwBlockSqFirst)
+            if (internal_hw_block >= kGpaInternalHwBlockSqFirst && internal_hw_block <= kGpaInternalHwBlockSqLast)
             {
+                // These ensure that the blocks and the shader mask are in the same order.
                 static_assert((kGpaInternalHwBlockSqPs - kGpaHwBlockCount) == kGpaShaderMaskPs, "");
                 static_assert((kGpaInternalHwBlockSqVs - kGpaHwBlockCount) == kGpaShaderMaskVs, "");
                 static_assert((kGpaInternalHwBlockSqGs - kGpaHwBlockCount) == kGpaShaderMaskGs, "");
@@ -499,8 +540,102 @@ public:
                 static_assert((kGpaInternalHwBlockSqLs - kGpaHwBlockCount) == kGpaShaderMaskLs, "");
                 static_assert((kGpaInternalHwBlockSqCs - kGpaHwBlockCount) == kGpaShaderMaskCs, "");
 
-                gpa_hw_block    = kGpaHwBlockSq;
-                gpa_shader_mask = static_cast<GpaShaderMask>(internal_hw_block - kGpaInternalHwBlockSqFirst);
+                gpa_hw_block = kGpaHwBlockSq;
+
+                if (internal_hw_block == kGpaInternalHwBlockSqPs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskPs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqVs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskVs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqGs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskGs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqEs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskEs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqHs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskHs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqLs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskLs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqCs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskCs;
+                }
+            }
+            else if (internal_hw_block >= kGpaInternalHwBlockSqGFirst && internal_hw_block <= kGpaInternalHwBlockSqGLast)
+            {
+                // These ensure that the blocks and the shader mask are in the correct order.
+                // SQG doesn't have all the same wave types, so there are additional offsets added in.
+                static_assert((kGpaInternalHwBlockSqGPs - kGpaInternalHwBlockSqGFirst) == kGpaShaderMaskPs, "");
+                static_assert((kGpaInternalHwBlockSqGGs - kGpaInternalHwBlockSqGFirst + 1) == kGpaShaderMaskGs, "");
+                static_assert((kGpaInternalHwBlockSqGHs - kGpaInternalHwBlockSqGFirst + 2) == kGpaShaderMaskHs, "");
+                static_assert((kGpaInternalHwBlockSqGCs - kGpaInternalHwBlockSqGFirst + 3) == kGpaShaderMaskCs, "");
+
+                // The SQG block maps back to the SQ block that has been used in previous generations.
+
+                gpa_hw_block = kGpaHwBlockSq;
+
+                if (internal_hw_block == kGpaInternalHwBlockSqGPs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskPs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqGGs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskGs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqGHs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskHs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqGCs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskCs;
+                }
+                else
+                {
+                    assert(!"Invalid SQG wave type requested.");
+                }
+            }
+            else if (internal_hw_block >= kGpaInternalHwBlockSqWgpFirst && internal_hw_block <= kGpaInternalHwBlockSqWgpLast)
+            {
+                // These ensure that the blocks and the shader mask are in the correct order.
+                // SQWGP doesn't have all the same wave types, so there are additional offsets added in.
+                static_assert((kGpaInternalHwBlockSqWgpPs - kGpaInternalHwBlockSqWgpFirst) == kGpaShaderMaskPs, "");
+                static_assert((kGpaInternalHwBlockSqWgpGs - kGpaInternalHwBlockSqWgpFirst + 1) == kGpaShaderMaskGs, "");
+                static_assert((kGpaInternalHwBlockSqWgpHs - kGpaInternalHwBlockSqWgpFirst + 2) == kGpaShaderMaskHs, "");
+                static_assert((kGpaInternalHwBlockSqWgpCs - kGpaInternalHwBlockSqWgpFirst + 3) == kGpaShaderMaskCs, "");
+
+                gpa_hw_block = kGpaHwBlockSqWgp;
+
+                if (internal_hw_block == kGpaInternalHwBlockSqWgpPs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskPs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqWgpGs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskGs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqWgpHs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskHs;
+                }
+                else if (internal_hw_block == kGpaInternalHwBlockSqWgpCs)
+                {
+                    gpa_shader_mask = kGpaShaderMaskCs;
+                }
+                else
+                {
+                    assert(!"Invalid SQWGP wave type requested.");
+                }
             }
             else
             {
@@ -575,43 +710,42 @@ public:
             return true;
         }
 
-        if (counter_index <= hardware_counters_.size())
+        assert(hardware_counters_.end() != hardware_counters_.find(counter_index));
+
+        const auto counter_hardware_info = counter_hardware_info_map_.find(counter_index);
+
+        if (counter_hardware_info != counter_hardware_info_map_.end())
         {
-            const auto counter_hardware_info = counter_hardware_info_map_.find(counter_index);
+            gpa_hw_counter = counter_hardware_info->second;
+            return true;
+        }
 
-            if (counter_hardware_info != counter_hardware_info_map_.end())
+        bool      found_counter      = false;
+        GpaUInt32 counter_group      = 0u;
+        GpaUInt32 counter_index_iter = 0u;
+
+        do
+        {
+            const GpaUInt32 temp_counter_index = counter_index_iter + internal_counter_groups_[counter_group].num_counters;
+            if (counter_index < temp_counter_index)
             {
-                gpa_hw_counter = counter_hardware_info->second;
-                return true;
+                found_counter = true;
             }
-
-            bool      found_counter      = false;
-            GpaUInt32 counter_group      = 0u;
-            GpaUInt32 counter_index_iter = 0u;
-
-            do
+            else
             {
-                const GpaUInt32 temp_counter_index = counter_index_iter + internal_counter_groups_[counter_group].num_counters;
-                if (counter_index < temp_counter_index)
-                {
-                    found_counter = true;
-                }
-                else
-                {
-                    ++counter_group;
-                    counter_index_iter = temp_counter_index;
-                }
-            } while (!found_counter);
-
-            if (found_counter)
-            {
-                gpa_hw_counter.is_timing_block       = false;
-                gpa_hw_counter.gpa_hw_block_event_id = counter_index - counter_index_iter;
-                gpa_hw_counter.gpa_hw_block_instance = internal_counter_groups_[counter_group].block_instance;
-                GetHardwareBlock(counter_group, gpa_hw_counter.gpa_hw_block, gpa_hw_counter.gpa_shader_mask);
-                counter_hardware_info_map_.insert(std::pair<CounterIndex, GpaHwCounter>(counter_index, gpa_hw_counter));
-                return true;
+                ++counter_group;
+                counter_index_iter = temp_counter_index;
             }
+        } while (!found_counter);
+
+        if (found_counter)
+        {
+            gpa_hw_counter.is_timing_block       = false;
+            gpa_hw_counter.gpa_hw_block_event_id = counter_index - counter_index_iter;
+            gpa_hw_counter.gpa_hw_block_instance = internal_counter_groups_[counter_group].block_instance;
+            GetHardwareBlock(counter_group, gpa_hw_counter.gpa_hw_block, gpa_hw_counter.gpa_shader_mask);
+            counter_hardware_info_map_.insert(std::pair<CounterIndex, GpaHwCounter>(counter_index, gpa_hw_counter));
+            return true;
         }
 
         return false;
@@ -624,7 +758,7 @@ public:
     /// @return The description of the specified counter.
     const char* GetCounterDescription(GpaUInt32 index) const
     {
-        return hardware_counters_[index].hardware_counters->description;
+        return hardware_counters_.at(index).hardware_counters->description;
     }
 
     /// @brief Gets the description of the specified counter.
@@ -799,26 +933,26 @@ public:
                counter_index == gpu_time_top_to_bottom_end_counter_index_;
     }
 
-    GpaHardwareCounterDesc** counter_groups_array_;                  ///< List of counter groups as defined by the list of internal counters in each group.
-    GpaCounterGroupDesc*     internal_counter_groups_;               ///< List of internal counter groups.
-    GpaCounterGroupDesc*     additional_groups_;                     ///< List of internal counter groups exposed by the driver, but not known by GPA.
-    unsigned int             group_count_;                           ///< The number of internal counter groups.
-    unsigned int             additional_group_count_;                ///< The number of internal counter groups exposed by the driver, but not known by GPA.
-    GpaSqCounterGroupDesc*   sq_counter_groups_;                     ///< List of GpaSqCounterGroupDesc.
-    unsigned int             sq_group_count_;                        ///< The number of internal SQ counter groups.
-    std::set<unsigned int>   timestamp_block_ids_;                   ///< Set of timestamp block id's.
-    std::set<unsigned int>   time_counter_indices_;                  ///< Set of timestamp counter indices.
-    unsigned int gpu_time_bottom_to_bottom_duration_counter_index_;  ///< The index of the GPUTime Bottom-to-Bottom duration counter (-1 if it doesn't exist).
-    unsigned int gpu_time_bottom_to_bottom_start_counter_index_;     ///< The index of the GPUTime Bottom-to-Bottom start counter (-1 if it doesn't exist).
-    unsigned int gpu_time_bottom_to_bottom_end_counter_index_;       ///< The index of the GPUTime Bottom-to-Bottom end counter (-1 if it doesn't exist).
-    unsigned int gpu_time_top_to_bottom_duration_counter_index_;     ///< The index of the GPUTime Top-to-Bottom duration counter (-1 if it doesn't exist).
-    unsigned int gpu_time_top_to_bottom_start_counter_index_;        ///< The index of the GPUTime Top-to-Bottom start counter (-1 if it doesn't exist).
-    unsigned int gpu_time_top_to_bottom_end_counter_index_;          ///< The index of the GPUTime Top-to-Bottom end counter (-1 if it doesn't exist).
-    bool         counters_generated_;                                ///< Indicates that the internal counters have been generated.
-    const uint32_t*                        isolated_groups_;         ///< List of groups that are isolated from SQ groups.
-    uint32_t                               isolated_group_count_;    ///< The number of isolated groups.
-    std::vector<GpaHardwareCounterDescExt> hardware_counters_;       ///< Vector of hardware counters.
-    std::vector<int>                       current_group_used_counts_;  ///< List of the number of counters which have been enabled in each group.
+    std::vector<std::vector<GpaHardwareCounterDesc>*>
+                                     counter_groups_array_;           ///< List of counter groups as defined by the list of internal counters in each group.
+    std::vector<GpaCounterGroupDesc> internal_counter_groups_;        ///< List of internal counter groups.
+    GpaCounterGroupDesc*             additional_groups_;              ///< List of internal counter groups exposed by the driver, but not known by GPA.
+    unsigned int                     additional_group_count_;         ///< The number of internal counter groups exposed by the driver, but not known by GPA.
+    GpaSqCounterGroupDesc*           sq_counter_groups_;              ///< List of GpaSqCounterGroupDesc.
+    unsigned int                     sq_group_count_;                 ///< The number of internal SQ counter groups.
+    std::set<unsigned int>           timestamp_block_ids_;            ///< Set of timestamp block id's.
+    std::set<unsigned int>           time_counter_indices_;           ///< Set of timestamp counter indices.
+    unsigned int gpu_time_bottom_to_bottom_duration_counter_index_;   ///< The index of the GPUTime Bottom-to-Bottom duration counter (-1 if it doesn't exist).
+    unsigned int gpu_time_bottom_to_bottom_start_counter_index_;      ///< The index of the GPUTime Bottom-to-Bottom start counter (-1 if it doesn't exist).
+    unsigned int gpu_time_bottom_to_bottom_end_counter_index_;        ///< The index of the GPUTime Bottom-to-Bottom end counter (-1 if it doesn't exist).
+    unsigned int gpu_time_top_to_bottom_duration_counter_index_;      ///< The index of the GPUTime Top-to-Bottom duration counter (-1 if it doesn't exist).
+    unsigned int gpu_time_top_to_bottom_start_counter_index_;         ///< The index of the GPUTime Top-to-Bottom start counter (-1 if it doesn't exist).
+    unsigned int gpu_time_top_to_bottom_end_counter_index_;           ///< The index of the GPUTime Top-to-Bottom end counter (-1 if it doesn't exist).
+    bool         counters_generated_;                                 ///< Indicates that the internal counters have been generated.
+    const uint32_t*                                isolated_groups_;  ///< List of groups that are isolated from SQ groups.
+    uint32_t                                       isolated_group_count_;       ///< The number of isolated groups.
+    std::map<GpaUInt32, GpaHardwareCounterDescExt> hardware_counters_;          ///< Map of hardware counters.
+    std::vector<int>                               current_group_used_counts_;  ///< List of the number of counters which have been enabled in each group.
 
     using BlockCounterIndexOffset = GpaUInt32;
     using BlockInstance           = GpaUInt32;
@@ -829,7 +963,7 @@ public:
     mutable std::map<CounterIndex, GpaHwCounter> counter_hardware_info_map_;  ///< Cache of the counter index and hardware info.
 
     /// Hardware exposed counters.
-    GpaHardwareCounterDesc**
+    std::vector<std::vector<GpaHardwareCounterDesc>*>
         hardware_exposed_counters_;  ///< List of counter groups as defined by the list of hardware exposed counters counters in each group.
     GpaCounterGroupExposedCounterDesc*  hardware_exposed_counter_groups_;                 ///< List of hardware exposed counter groups.
     unsigned int                        hardware_exposed_counter_group_count_;            ///< The number of hardware exposed counter groups.
@@ -841,22 +975,6 @@ public:
     static std::vector<std::string>     kHardwareBlockString;                             ///< Internal hardware block string map.
     mutable std::map<CounterIndex, GpaCounterInfo*> counter_info_map_;                    ///< Map from counter index to counter info.
 
-#ifdef AMDT_INTERNAL
-    /// A map from counter index to the alternate name for that counter.
-    std::unordered_map<GpaUInt32, std::string> alternate_name_map_;
-
-    /// @brief Allow hardware counters to be given an alternate name when they are enabled using the "block:instance:event:alt_name" syntax.
-    ///
-    /// @param [in] index The index of a counter.
-    /// @param [in] counter_name The alternate counter name to be used for the hardware counter.
-    ///
-    /// @return True upon success otherwise false.
-    bool SetCounterName(const GpaUInt32& index, const char* counter_name)
-    {
-        alternate_name_map_[index] = std::string(counter_name);
-        return true;
-    }
-#endif
 };
 
 #endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_HARDWARE_COUNTERS_H_

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Defines the data types and enumerations used by GPUPerfAPI.
@@ -280,6 +280,7 @@ typedef enum
     kGpaHwGenerationGfx9,                                   ///< GFX IP 9.
     kGpaHwGenerationGfx10,                                  ///< GFX IP 10.
     kGpaHwGenerationGfx103,                                 ///< GFX IP 10.3.
+    kGpaHwGenerationGfx11,                                  ///< GFX IP 11.
     kGpaHwGenerationLast                                    ///< Marker indicating last element.
 } GpaHwGeneration;
 

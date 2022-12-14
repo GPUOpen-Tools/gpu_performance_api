@@ -391,17 +391,9 @@ bool AMDVulkanDemo::InitializeGpa()
 
 #else
 #ifdef _DEBUG
-#ifdef AMDT_INTERNAL
-    void* gpa_lib = dlopen("libGPUPerfAPIVK-d-Internal.so", RTLD_NOW);
-#else
     void* gpa_lib = dlopen("libGPUPerfAPIVK-d.so", RTLD_NOW);
-#endif
-#else
-#ifdef AMDT_INTERNAL
-    void* gpa_lib = dlopen("libGPUPerfAPIVK-Internal.so", RTLD_NOW);
 #else
     void* gpa_lib = dlopen("libGPUPerfAPIVK.so", RTLD_NOW);
-#endif
 #endif
 
     if (nullptr != gpa_lib)
@@ -906,15 +898,11 @@ bool AMDVulkanDemo::InitializeVulkan()
         }
         else
         {
-#ifndef AMDT_INTERNAL
 #ifdef ANDROID
             gpa_enable_all_counters_status = gpu_perf_api_helper_.gpa_function_table_->GpaEnableAllCounters(gpa_session_id_);
 #else
             // Enable all the counters.
             gpa_enable_all_counters_status = gpu_perf_api_helper_.gpa_function_table_->GpaEnableAllCounters(gpa_session_id_);
-#endif
-#else
-            gpa_enable_all_counters_status = gpu_perf_api_helper_.gpa_function_table_->GpaEnableCounterByName(gpa_session_id_, "GPUTime");
 #endif
         }
 

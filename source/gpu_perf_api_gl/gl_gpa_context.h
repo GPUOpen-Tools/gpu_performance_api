@@ -37,7 +37,7 @@ public:
     GlGpaContext(GlContextPtr context, GpaHwInfo& hw_info, GpaOpenContextFlags context_flags, int driver_version);
 
     /// @brief Destructor.
-    ~GlGpaContext();
+    virtual ~GlGpaContext();
 
     /// @copydoc IGpaContext::CreateSession()
     GpaSessionId CreateSession(GpaSessionSampleType sample_type) override;
@@ -116,6 +116,7 @@ private:
     bool                                           driver_supports_ATCL2_;      ///< Not all hardware supports the ATCL2 block, so detect when it exists.
     bool                                           driver_supports_CHCG_;       ///< Not all hardware supports the CHCG block, so detect when it exists.
     bool                                           driver_supports_GUS_;        ///< Not all hardware supports the GUS block, so detect when it exists.
+    bool                                           driver_supports_UMC_;        ///< Not all hardware supports the UMC block, so detect when it exists.
 };
 
 #endif  // GPU_PERF_API_GL_GPA_CONTEXT_H_

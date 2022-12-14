@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Common DX12 counter generation.
@@ -206,6 +206,7 @@ GpaStatus GpaCounterGeneratorDx12Base::GenerateSoftwareCounters(GDT_HW_GENERATIO
     case GDT_HW_GENERATION_GFX9:
     case GDT_HW_GENERATION_GFX10:
     case GDT_HW_GENERATION_GFX103:
+    case GDT_HW_GENERATION_GFX11:
     case GDT_HW_GENERATION_INTEL:
     case GDT_HW_GENERATION_NVIDIA:
         break;

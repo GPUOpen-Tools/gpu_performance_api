@@ -22,7 +22,6 @@
 #include <dxgi1_4.h>
 #include <d3d12.h>
 
-//#define DISABLE_GPA 1 // Uncomment to disable GPA.
 #include "gpu_performance_api/gpu_perf_api_interface_loader.h"
 
 #include "examples/dx12/sample.h"
@@ -541,6 +540,21 @@ public:
                                const char*  counter_name,
                                GpaFloat64   counter_value,
                                GpaUsageType counter_usage_type);
+
+    /// @brief Validate a specified counter in a specified sample against expectations for GFX11 hardware.
+    ///
+    /// @param [in] frame_number The frame number containing the counter being compared.
+    /// @param [in] sample_index The index of the sample containing the counter.
+    /// @param [in] counter_name The name of the counter to validate.
+    /// @param [in] counter_value The value of the counter to validate.
+    /// @param [in] counter_usage_type The usage type of the counter being compared.
+    ///
+    /// @return True if the counter value validates successfully, false otherwise.
+    bool GpaValidateDataGfx11(unsigned int frame_number,
+                              unsigned int sample_index,
+                              const char*  counter_name,
+                              GpaFloat64   counter_value,
+                              GpaUsageType counter_usage_type);
 
     /// @brief Populates the session result.
     ///

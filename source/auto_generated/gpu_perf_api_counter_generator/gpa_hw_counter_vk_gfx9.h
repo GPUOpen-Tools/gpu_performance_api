@@ -23,27 +23,26 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_vk_gfx9
 {
-    extern GpaHardwareCounterDesc*           kVkCounterGroupArrayGfx9[]; ///< Array of hardware counter groups for Vk for Gfx9 family
-    extern GpaHardwareCounterDesc*           kVkExposedCountersGroupArrayGfx9[]; ///< Array of hardware exposed counter groups for Vk for Gfx9 family
-    extern GpaCounterGroupDesc               kHwVkGroupsGfx9[]; ///< Array of counter groups for Vk for Gfx9 family
-    extern GpaCounterGroupExposedCounterDesc kHwVkExposedCountersByGroupGfx9[]; ///< Array of exposed counter groups for Vk for Gfx9 family
-    extern GpaPaddedCounterDesc              kVkPaddedCounterByGroupGfx9[]; ///< Array of reserved counter for Vk for Gfx9 family
-    extern GpaSqCounterGroupDesc             kHwVkSqGroupsGfx9[]; ///< Array of SQ groups for Vk for Gfx9 family
-    extern unsigned int                       kHwVkSqIsolatedGroupsGfx9[]; ///< Array of counter groups isolated from SQ counter groups for Vk for Gfx9 family
-    extern VkGpaPerfBlockAMD                  kHwVkDriverEnumGfx9[]; ///< Array of driver enum values per group for Vk for Gfx9 family
-    extern const unsigned int                 kHwVkGpuTimeBottomToBottomDurationIndexGfx9; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Vk for Gfx9 family
-    extern const unsigned int                 kHwVkGpuTimeBottomToBottomStartIndexGfx9; ///< Index of time of the previous command reaching bottom of pipe for Vk for Gfx9 family
-    extern const unsigned int                 kHwVkGpuTimeBottomToBottomEndIndexGfx9; ///< Index of time of the current command reaching bottom of pipe for Vk for Gfx9 family
-    extern const unsigned int                 kHwVkGpuTimeTopToBottomDurationIndexGfx9; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Vk for Gfx9 family
-    extern const unsigned int                 kHwVkGpuTimeTopToBottomStartIndexGfx9; ///< Index of time that the current command reaches the top of pipe for Vk for Gfx9 family
-    extern const unsigned int                 kHwVkGpuTimeTopToBottomEndIndexGfx9; ///< Index of time that the current command reaches the bottom of pipe for Vk for Gfx9 family
-    extern const std::set<unsigned int>       kHwVkTimestampBlockIdsGfx9; ///< Timestamp block id's for Vk for Gfx9 family
-    extern const std::set<unsigned int>       kHwVkTimeCounterIndicesGfx9; ///< Timestamp counter indices for Vk for Gfx9 family
-    extern const unsigned int                 kHwVkGroupCountGfx9; ///< Hardware Group Count for Vk for Gfx9 family
-    extern const unsigned int                 kHwVkExposedCountersGroupCountGfx9; ///< Whitelist hardware counter Group Count for Vk for Gfx9 family
-    extern const unsigned int                 kVkPaddedCounterGroupCountGfx9; ///< reserved counter group count for Vk for Gfx9 family
-    extern const unsigned int                 kHwVkSqGroupCountGfx9; ///< Hardware SQ Group Count for Vk for Gfx9 family
-    extern const unsigned int                 kHwVkSqIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for Vk for Gfx9 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kVkExposedCountersGroupArrayGfx9; ///< Array of hardware exposed counter groups for Vk for Gfx9 family
+    extern std::vector<GpaCounterGroupDesc>                           kHwVkGroupsGfx9; ///< Array of counter groups for Vk for Gfx9 family
+    extern GpaCounterGroupExposedCounterDesc                          kHwVkExposedCountersByGroupGfx9[]; ///< Array of exposed counter groups for Vk for Gfx9 family
+    extern GpaPaddedCounterDesc                                       kVkPaddedCounterByGroupGfx9[]; ///< Array of reserved counter for Vk for Gfx9 family
+    extern GpaSqCounterGroupDesc                                      kHwVkSqGroupsGfx9[]; ///< Array of SQ groups for Vk for Gfx9 family
+    extern unsigned int                                               kHwVkSqIsolatedGroupsGfx9[]; ///< Array of counter groups isolated from SQ counter groups for Vk for Gfx9 family
+    extern VkGpaPerfBlockAMD                                          kHwVkDriverEnumGfx9[]; ///< Array of driver enum values per group for Vk for Gfx9 family
+    extern const unsigned int                                         kHwVkGpuTimeBottomToBottomDurationIndexGfx9; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Vk for Gfx9 family
+    extern const unsigned int                                         kHwVkGpuTimeBottomToBottomStartIndexGfx9; ///< Index of time of the previous command reaching bottom of pipe for Vk for Gfx9 family
+    extern const unsigned int                                         kHwVkGpuTimeBottomToBottomEndIndexGfx9; ///< Index of time of the current command reaching bottom of pipe for Vk for Gfx9 family
+    extern const unsigned int                                         kHwVkGpuTimeTopToBottomDurationIndexGfx9; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Vk for Gfx9 family
+    extern const unsigned int                                         kHwVkGpuTimeTopToBottomStartIndexGfx9; ///< Index of time that the current command reaches the top of pipe for Vk for Gfx9 family
+    extern const unsigned int                                         kHwVkGpuTimeTopToBottomEndIndexGfx9; ///< Index of time that the current command reaches the bottom of pipe for Vk for Gfx9 family
+    extern const std::set<unsigned int>                               kHwVkTimestampBlockIdsGfx9; ///< Timestamp block id's for Vk for Gfx9 family
+    extern const std::set<unsigned int>                               kHwVkTimeCounterIndicesGfx9; ///< Timestamp counter indices for Vk for Gfx9 family
+    extern const unsigned int                                         kHwVkGroupCountGfx9; ///< Hardware Group Count for Vk for Gfx9 family
+    extern const unsigned int                                         kHwVkExposedCountersGroupCountGfx9; ///< Whitelist hardware counter Group Count for Vk for Gfx9 family
+    extern const unsigned int                                         kVkPaddedCounterGroupCountGfx9; ///< reserved counter group count for Vk for Gfx9 family
+    extern const unsigned int                                         kHwVkSqGroupCountGfx9; ///< Hardware SQ Group Count for Vk for Gfx9 family
+    extern const unsigned int                                         kHwVkSqIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for Vk for Gfx9 family
 
 /// @brief If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
 ///
