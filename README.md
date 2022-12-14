@@ -107,6 +107,9 @@ There are some counters that are returning unexpected results on specific hardwa
 ### Counter Validation Errors in D3D12ColorCube Sample App
 Due to the extensive counter validation now being done in the D3D12ColorCube sample application, and some expected variation in nondeterministic counters across a wide range of systems, the sample app may report errors on some systems. Likewise, some counters are marked as known issues and we are investigating the underlying causes of the inconsistent results.
 
+### Support for OpenCL is not enabled for Radeon 7000 Series GPUs
+This should be resolved in a future release.
+
 ### OpenCL Performance Counter Accuracy For Radeon 6000 Series GPUs
 The following performance counter values may not be accurate for OpenCL applications running on Radeon 6000 Series GPUs:
 * Wavefronts, VALUInsts, SALUInsts, SALUBusy, VALUUtilization: These values should be representative of performance, but may not be 100% accurate.
