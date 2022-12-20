@@ -91,13 +91,18 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
 
     reqdCommit = commit
 
-    print("\nChecking out commit: %s for %s\n"%(reqdCommit, targetPath))
-
     if os.path.isdir(targetPath):
         # Directory exists - get latest from git using pull.
-        print("Directory " + targetPath + " exists. \n\tUsing 'git pull' to get latest")
-        sys.stdout.flush()
         try:
+            if reqdCommit is not None:
+                currentCommit = subprocess.check_output(["git", "-C", targetPath, "rev-parse", "HEAD"], shell=SHELLARG).decode().strip()
+                if currentCommit == reqdCommit:
+                    print("Directory " + targetPath + " exists and is at expected commit. Nothing to do.")
+                    sys.stdout.flush()
+                    return
+            print("Directory " + targetPath + " exists but is not at the required commit. \n\tUsing 'git pull' to get latest")
+            sys.stdout.flush()
+            subprocess.check_call(["git", "-C", targetPath, "checkout", "master"], shell=SHELLARG)
             subprocess.check_call(["git", "-C", targetPath, "pull", "origin"], shell=SHELLARG)
         except subprocess.CalledProcessError as e:
             print ("'git pull' failed with returncode: %d\n" % e.returncode)
