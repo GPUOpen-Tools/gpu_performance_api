@@ -89,16 +89,24 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
     # Add script directory to targetPath.
     targetPath = os.path.join(gpaRoot, location)
 
-    reqdCommit = commit
+    # 'location' has forward slashes even on Windows. Clean up the final path
+    # for purely aesthetical reasons (script output)
+    targetPath = os.path.realpath(targetPath)
 
-    print("\nChecking out commit: %s for %s\n"%(reqdCommit, targetPath))
+    reqdCommit = commit
 
     if os.path.isdir(targetPath):
         # Directory exists - get latest from git using pull.
-        print("Directory " + targetPath + " exists. \n\tUsing 'git pull' to get latest")
-        sys.stdout.flush()
         try:
-            subprocess.check_call(["git", "-C", targetPath, "pull", "origin"], shell=SHELLARG)
+            if reqdCommit is not None:
+                currentCommit = subprocess.check_output(["git", "-C", targetPath, "rev-parse", "HEAD"], shell=SHELLARG).decode().strip()
+                if currentCommit == reqdCommit:
+                    print("Directory " + targetPath + " exists and is at expected commit. Nothing to do.")
+                    sys.stdout.flush()
+                    return
+            print("Directory " + targetPath + " exists but is not at the required commit. \n\tUsing 'git fetch' and 'git checkout' to move the workspace to " + reqdCommit[0:7])
+            sys.stdout.flush()
+            subprocess.check_call(["git", "-C", targetPath, "fetch", "--tags", "-f", "origin"], shell=SHELLARG)
         except subprocess.CalledProcessError as e:
             print ("'git pull' failed with returncode: %d\n" % e.returncode)
             sys.exit(1)
