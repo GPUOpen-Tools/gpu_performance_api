@@ -250,10 +250,3 @@ docs/build
 .doctrees/
 
 external/**
-
-# File downloaded form the Internet
-GPUPerfAPI-3.10.0.77.zip
-
-# File generated when building PublicCounterCompiler
-source/public_counter_compiler/CMakeCache.txt
-source/public_counter_compiler/CMakeFiles/

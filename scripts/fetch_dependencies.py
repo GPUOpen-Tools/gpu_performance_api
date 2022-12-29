@@ -89,6 +89,10 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
     # Add script directory to targetPath.
     targetPath = os.path.join(gpaRoot, location)
 
+    # 'location' has forward slashes even on Windows. Clean up the final path
+    # for purely aesthetical reasons (script output)
+    targetPath = os.path.realpath(targetPath)
+
     reqdCommit = commit
 
     if os.path.isdir(targetPath):
@@ -100,10 +104,9 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
                     print("Directory " + targetPath + " exists and is at expected commit. Nothing to do.")
                     sys.stdout.flush()
                     return
-            print("Directory " + targetPath + " exists but is not at the required commit. \n\tUsing 'git pull' to get latest")
+            print("Directory " + targetPath + " exists but is not at the required commit. \n\tUsing 'git fetch' and 'git checkout' to move the workspace to " + reqdCommit[0:7])
             sys.stdout.flush()
-            subprocess.check_call(["git", "-C", targetPath, "checkout", "master"], shell=SHELLARG)
-            subprocess.check_call(["git", "-C", targetPath, "pull", "origin"], shell=SHELLARG)
+            subprocess.check_call(["git", "-C", targetPath, "fetch", "--tags", "-f", "origin"], shell=SHELLARG)
         except subprocess.CalledProcessError as e:
             print ("'git pull' failed with returncode: %d\n" % e.returncode)
             sys.exit(1)
