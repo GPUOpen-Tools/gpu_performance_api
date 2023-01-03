@@ -406,21 +406,21 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         }
         else if ((tolower(pch[0]) == 'm') && (tolower(pch[1]) == 'a') && (tolower(pch[2]) == 'x') && ((pch[3] == '\0') || isdigit(pch[3])))
         {
-            long int count = 2;
+            long value_count = 2;
             if (pch[3] != '\0')
             {
                 char* endptr = nullptr;
                 errno = 0;
-                count = std::strtol(&pch[3], &endptr, 10);
+                value_count = std::strtol(&pch[3], &endptr, 10);
                 assert(endptr != nullptr);
-                assert(count > 0);
+                assert(value_count > 0);
                 assert(errno == 0);
             }
-            assert(stack.size() >= static_cast<std::size_t>(count));
+            assert(stack.size() >= static_cast<std::size_t>(value_count));
 
             T max = stack.back();
             stack.pop_back();
-            for (long int i = 1; i < count; i++)
+            for (long int i = 1; i < value_count; i++)
             {
                 max = std::max(max, stack.back());
                 stack.pop_back();
@@ -429,21 +429,21 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         }
         else if ((tolower(pch[0]) == 'm') && (tolower(pch[1]) == 'i') && (tolower(pch[2]) == 'n') && ((pch[3] == '\0') || isdigit(pch[3])))
         {
-            long int count = 2;
+            long value_count = 2;
             if (pch[3] != '\0')
             {
                 char* endptr = nullptr;
                 errno = 0;
-                count = std::strtol(&pch[3], &endptr, 10);
+                value_count = std::strtol(&pch[3], &endptr, 10);
                 assert(endptr != nullptr);
-                assert(count > 0);
+                assert(value_count > 0);
                 assert(errno == 0);
             }
-            assert(stack.size() >= static_cast<std::size_t>(count));
+            assert(stack.size() >= static_cast<std::size_t>(value_count));
 
             T min = stack.back();
             stack.pop_back();
-            for (long int i = 1; i < count; i++)
+            for (long int i = 1; i < value_count; i++)
             {
                 min = std::max(min, stack.back());
                 stack.pop_back();
@@ -575,124 +575,19 @@ static GpaStatus EvaluateExpression(const char*                      expression,
                 stack.push_back(*iter);
             }
         }
-        else if (_strcmpi(pch, "sum2") == 0)
+        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'u') && (tolower(pch[2]) == 'm') && ((pch[3] == '\0') || isdigit(pch[3])))
         {
-            const int value_count = 2;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum4") == 0)
-        {
-            const int value_count = 4;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum6") == 0)
-        {
-            const int value_count = 6;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum8") == 0)
-        {
-            const int value_count = 8;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum10") == 0)
-        {
-            const int value_count = 10;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum11") == 0)
-        {
-            const int value_count = 11;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum12") == 0)
-        {
-            const int value_count = 12;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum16") == 0)
-        {
-            const int value_count = 16;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum20") == 0)
-        {
-            const int value_count = 20;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum24") == 0)
-        {
-            const int value_count = 24;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum32") == 0)
-        {
-            const int value_count = 32;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum40") == 0)
-        {
-            const int value_count = 40;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum44") == 0)
-        {
-            const int value_count = 44;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum48") == 0)
-        {
-            const int value_count = 48;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum64") == 0)
-        {
-            const int value_count = 64;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum80") == 0)
-        {
-            const int value_count = 80;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum96") == 0)
-        {
-            const int value_count = 96;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum128") == 0)
-        {
-            const int value_count = 128;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum256") == 0)
-        {
-            const int value_count = 256;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum320") == 0)
-        {
-            const int value_count = 320;
-            assert(stack.size() >= value_count);
+            long value_count = 2;
+            if (pch[3] != '\0')
+            {
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[3], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
+            }
+            assert(stack.size() >= static_cast<std::size_t>(value_count));
             SumN(stack, value_count);
         }
         else if (_strcmpi(pch, "vecsum2") == 0)
