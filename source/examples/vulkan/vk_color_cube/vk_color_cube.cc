@@ -152,7 +152,7 @@ void AMDVulkanDemo::CreateWindowWin32(WNDPROC demo_window_procedure)
 {
     if (hWindow_ != nullptr)
     {
-        std::cout << "WARNING: calling CreateWindowWin32 more than once!" << std::endl;
+        AMDVulkanDemoVkUtils::Log("WARNING: calling CreateWindowWin32 more than once!");
     }
 
     WNDCLASSEXW window_class;
@@ -225,7 +225,7 @@ xcb_connection_t* AMDVulkanDemo::InitializeWindowXcb()
 
     if (xcb_connection_has_error(xcb_conntection_) > 0)
     {
-        std::cout << "ERROR: Cannot find a compatible Vulkan installable client driver (ICD)." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Cannot find a compatible Vulkan installable client driver (ICD).");
         return nullptr;
     }
 
@@ -297,7 +297,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* file_name)
 
             if (shader_byte_code_len == AAsset_read(shader_file, shader_bytes.data(), shader_byte_code_len))
             {
-                std::cout << "Success";
+                AMDVulkanDemoVkUtils::Log("Shader successfully loaded");
             }
 
             AAsset_close(shader_file);
@@ -305,7 +305,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* file_name)
     }
     else
     {
-        std::cout << "No native activity";
+        AMDVulkanDemoVkUtils::Log("No native activity");
     }
 
 #else
@@ -316,7 +316,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* file_name)
 
     if (!shader_file.is_open())
     {
-        std::cout << "ERROR: Failed to read shader file: '" << shader_path << "'" << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to read shader file: %s'", shader_path.c_str());
         return VK_NULL_HANDLE;
     }
 
@@ -340,7 +340,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* file_name)
 
     if (create_shader_module_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create shader module for '" << shader_path << "'." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create shader module for %s", shader_path.c_str());
         return VK_NULL_HANDLE;
     }
 
@@ -352,7 +352,7 @@ bool AMDVulkanDemo::InitializeGpa()
 #ifndef ANDROID
     if (!gpu_perf_api_helper_.Load())
     {
-        std::cout << "ERROR: Failed to Load GPA library." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to Load GPA library.");
         return false;
     }
 
@@ -370,10 +370,9 @@ bool AMDVulkanDemo::InitializeGpa()
 
         GpaStatus status_register_callback =
             gpu_perf_api_helper_.gpa_function_table_->GpaRegisterLoggingCallback(gpa_log_types, gpu_perf_api_helper_.gpaLoggingCallback);
-
         if (status_register_callback != kGpaStatusOk)
         {
-            std::cout << "ERROR: Failed to register GPA logging callback." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to register GPA logging callback.");
             return false;
         }
 
@@ -381,7 +380,7 @@ bool AMDVulkanDemo::InitializeGpa()
 
         if (status_gpa_initialize != kGpaStatusOk)
         {
-            std::cout << "ERROR: Failed to initialize GPA." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to initialize GPA.");
             return false;
         }
 
@@ -395,28 +394,56 @@ bool AMDVulkanDemo::InitializeGpa()
 #else
     void* gpa_lib = dlopen("libGPUPerfAPIVK.so", RTLD_NOW);
 #endif
-
-    if (nullptr != gpa_lib)
+    if (nullptr == gpa_lib)
     {
-        GpaGetFuncTablePtrType get_function_table_type = (GpaGetFuncTablePtrType)(dlsym(gpa_lib, "GpaGetFuncTable"));
-        if (nullptr != get_function_table_type)
-        {
-            GpaFunctionTable* gpa_function_table = new (std::nothrow) GpaFunctionTable();
-
-            if (nullptr != gpa_function_table)
-            {
-                gpa_function_table->major_version = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER;
-                gpa_function_table->minor_version = GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER;
-                GpaStatus status                  = get_function_table_type((void*)(gpa_function_table));
-
-                if (kGpaStatusOk == status)
-                {
-                    gpu_perf_api_helper_.gpa_function_table_ = gpa_function_table;
-                    return true;
-                }
-            }
-        }
+        AMDVulkanDemoVkUtils::Log("ERROR: failed to dlopen the GPA vulkan library");
+        return false;
     }
+
+    GpaGetFuncTablePtrType get_function_table_type = (GpaGetFuncTablePtrType)(dlsym(gpa_lib, "GpaGetFuncTable"));
+    if (nullptr == get_function_table_type)
+    {
+        AMDVulkanDemoVkUtils::Log("ERROR: unable to get GpaGetFuncTable pointer from GPA vulkan library");
+        return false;
+    }
+
+    GpaFunctionTable* gpa_function_table = new (std::nothrow) GpaFunctionTable();
+    if (nullptr == gpa_function_table)
+    {
+        AMDVulkanDemoVkUtils::Log("ERROR: out of memory");
+        return false;
+    }
+
+    gpa_function_table->major_version = GPA_FUNCTION_TABLE_MAJOR_VERSION_NUMBER;
+    gpa_function_table->minor_version = GPA_FUNCTION_TABLE_MINOR_VERSION_NUMBER;
+
+    GpaStatus status = get_function_table_type((void*)(gpa_function_table));
+    if (kGpaStatusOk != status)
+    {
+        AMDVulkanDemoVkUtils::Log("ERROR: GpaGetFuncTable failed with status %d", status);
+        return false;
+    }
+
+    gpu_perf_api_helper_.gpa_function_table_ = gpa_function_table;
+
+    // Register our logging callback function
+    GpaLoggingType gpa_log_types = kGpaLoggingError;
+    if (ConfirmSuccess())
+    {
+        // Only log message types if confirm_success_ is enabled, because GPA will log a confirmation message
+        // that the logging callback was registered, and we don't want to output a log if --verify was enabled
+        // but not --confirmsuccess.
+        gpa_log_types = kGpaLoggingErrorAndMessage;
+    }
+
+    status = gpu_perf_api_helper_.gpa_function_table_->GpaRegisterLoggingCallback(gpa_log_types, gpu_perf_api_helper_.gpaLoggingCallback);
+    if (status != kGpaStatusOk)
+    {
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to register GPA logging callback.");
+        return false;
+    }
+
+    return true;
 #endif
 
     return false;
@@ -455,7 +482,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         {
             for (uint32_t i = 0; i < instance_layer_count; ++i)
             {
-                std::cout << "Instance Layer " << i << ": " << instanceLayerProperties[i].layerName << std::endl;
+                AMDVulkanDemoVkUtils::Log("Instance Layer %d: %s", i, instanceLayerProperties[i].layerName);
             }
         }
     }
@@ -466,7 +493,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (instance_extension_properties_result != VK_SUCCESS || instance_extension_count == 0)
     {
-        std::cout << "WARNING: No instance extension properties are available." << std::endl;
+        AMDVulkanDemoVkUtils::Log("WARNING: No instance extension properties are available.");
     }
     else
     {
@@ -477,7 +504,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (instance_extension_properties_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to get instance extension properties." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get instance extension properties.");
         }
         else
         {
@@ -488,7 +515,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
                 if (print_debug_output_)
                 {
-                    std::cout << "Instance Extension " << i << ": " << instance_extension_properties[i].extensionName << std::endl;
+                    AMDVulkanDemoVkUtils::Log("Instance Extension %d: %s", i, instance_extension_properties[i].extensionName);
                 }
             }
 
@@ -499,7 +526,7 @@ bool AMDVulkanDemo::InitializeVulkan()
             {
                 if (!IsInstanceExtensionSupported(required_instance_extensions_[r]))
                 {
-                    std::cout << "ERROR: Required Instance extension '" << required_instance_extensions_[r] << "' is not available." << std::endl;
+                    AMDVulkanDemoVkUtils::Log("ERROR: Required Instance extension '%s' is not available.", required_instance_extensions_[r]);
                     missing_required_extensions = true;
                 }
             }
@@ -544,7 +571,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (VK_SUCCESS != create_instance_result)
     {
-        std::cout << "ERROR: Failed to create VkInstance (VkResult " << create_instance_result << ")." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create VkInstance (VkResult %d).", create_instance_result);
         return false;
     }
 
@@ -564,7 +591,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (get_physical_devices_result != VK_SUCCESS || physical_device_count == 0)
     {
-        std::cout << "ERROR: Failed to enumerate physical devices, and had " << physical_device_count << " physical devices." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to enumerate physical devices, and had %d physical devices.", physical_device_count);
         return false;
     }
     else
@@ -575,7 +602,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (get_physical_devices_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to enumerate physical devices." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to enumerate physical devices.");
             return false;
         }
 
@@ -587,7 +614,7 @@ bool AMDVulkanDemo::InitializeVulkan()
             for (uint32_t i = 0; i < physical_device_count; ++i)
             {
                 _vkGetPhysicalDeviceProperties(physical_devices[i], &physical_device_properties);
-                std::cout << "PhysicalDevice[" << i << "]: " << physical_device_properties.deviceName << std::endl;
+                AMDVulkanDemoVkUtils::Log("PhysicalDevice[%d]: %s", i, physical_device_properties.deviceName);
             }
         }
 
@@ -611,7 +638,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_surface_result != VK_SUCCESS || vk_surface_ == VK_NULL_HANDLE)
     {
-        std::cout << "ERROR: Failed to create Win32 surface." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create Win32 surface.");
         return false;
     }
 
@@ -627,20 +654,26 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_surface_result != VK_SUCCESS || vk_surface_ == VK_NULL_HANDLE)
     {
-        std::cout << "ERROR: Failed to create XCB surface." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create XCB surface.");
         return false;
     }
 #elif defined(VK_USE_PLATFORM_ANDROID_KHR)
     assert(native_window_ != nullptr);
+    assert(vk_surface_ == VK_NULL_HANDLE);
 
     VkAndroidSurfaceCreateInfoKHR surface_create_info{};
     surface_create_info.sType = VK_STRUCTURE_TYPE_ANDROID_SURFACE_CREATE_INFO_KHR, surface_create_info.pNext = nullptr, surface_create_info.flags = 0,
     surface_create_info.window = native_window_;
 
     VkResult result = _vkCreateAndroidSurfaceKHR(vk_instance_, &surface_create_info, nullptr, &vk_surface_);
-    std::cout << result;
+    if (result != VK_SUCCESS || vk_surface_ == VK_NULL_HANDLE)
+    {
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create Android surface. _vkCreateAndroidSurfaceKHR() returned %d", result);
+        return false;
+    }
+    assert(vk_surface_ != VK_NULL_HANDLE);
 #else
-    std::cout << "ERROR: The current platform is not supported - no VkSurface will be created!";
+    AMDVulkanDemoVkUtils::Log("ERROR: The current platform is not supported - no VkSurface will be created!");
     assert(!"The current platform is not supported - no VkSurface will be created!");
     return false;
 #endif
@@ -660,7 +693,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (queue_family_count == 0)
     {
-        std::cout << "ERROR: Selected physical device does not support any queue families." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Selected physical device does not support any queue families.");
         return false;
     }
 
@@ -680,7 +713,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         {
             if (print_debug_output_)
             {
-                std::cout << "DEBUG: QueueFamilyIndex " << queue_family_index << " supports Graphics." << std::endl;
+                AMDVulkanDemoVkUtils::Log("DEBUG: QueueFamilyIndex %d supports Graphics.", queue_family_index);
             }
 
             supports_graphics = true;
@@ -692,7 +725,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (surface_support_result == VK_SUCCESS && supports_present == VK_TRUE && print_debug_output_)
         {
-            std::cout << "DEBUG: QueueFamilyIndex " << queue_family_index << " supports present." << std::endl;
+            AMDVulkanDemoVkUtils::Log("DEBUG: QueueFamilyIndex %d supports present.", queue_family_index);
         }
 
         if (supports_graphics && supports_present)
@@ -700,7 +733,7 @@ bool AMDVulkanDemo::InitializeVulkan()
             // Both graphics and present is supported, so store this queue_family_index.
             if (print_debug_output_)
             {
-                std::cout << "DEBUG: Selecting QueueFamilyIndex " << queue_family_index << "." << std::endl;
+                AMDVulkanDemoVkUtils::Log("DEBUG: Selecting QueueFamilyIndex %d", queue_family_index);
             }
 
             found_supporting_queue       = true;
@@ -711,7 +744,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (!found_supporting_queue)
     {
-        std::cout << "ERROR: Unable to find a queue family that supports graphics and present." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Unable to find a queue family that supports graphics and present.");
         return false;
     }
 
@@ -721,7 +754,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (get_device_extension_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Unable to get number of device extensions." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Unable to get number of device extensions.");
         return false;
     }
 
@@ -733,7 +766,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (get_device_extension_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Unable to get device extensions." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Unable to get device extensions.");
         return false;
     }
     else
@@ -745,7 +778,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
             if (print_debug_output_)
             {
-                std::cout << "Device Extension " << i << ": " << available_device_extensions[i].extensionName << "." << std::endl;
+                AMDVulkanDemoVkUtils::Log("Device Extension %d: %s", i, available_device_extensions[i].extensionName);
             }
         }
 
@@ -756,7 +789,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         {
             if (!IsDeviceExtensionSupported(required_device_extensions_[r]))
             {
-                std::cout << "ERROR: Required Device extension '" << required_device_extensions_[r] << "' is not available." << std::endl;
+                AMDVulkanDemoVkUtils::Log("ERROR: Required Device extension '%s' is not available.", required_device_extensions_[r]);
                 missing_required_extensions = true;
             }
         }
@@ -802,7 +835,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_device_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create device\n." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create device.");
         return false;
     }
 
@@ -830,7 +863,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_open_context_status != kGpaStatusOk)
         {
-            std::cout << "ERROR: Failed to open GPA context." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to open GPA context.");
             return false;
         }
 
@@ -842,10 +875,9 @@ bool AMDVulkanDemo::InitializeVulkan()
         // Make sure discrete counters are supported.
         GpaContextSampleTypeFlags sample_types = 0;
         GpaStatus get_sample_types_status      = gpu_perf_api_helper_.gpa_function_table_->GpaGetSupportedSampleTypes(gpa_context_id_, &sample_types);
-
         if (get_sample_types_status != kGpaStatusOk)
         {
-            std::cout << "ERROR: Failed to get supported GPA sample types." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get supported GPA sample types.");
             return false;
         }
 
@@ -854,7 +886,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_create_session_status != kGpaStatusOk)
         {
-            std::cout << "ERROR: Failed to create GPA session." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to create GPA session.");
             return false;
         }
 
@@ -880,7 +912,7 @@ bool AMDVulkanDemo::InitializeVulkan()
                     GpaStatus gpa_status = gpu_perf_api_helper_.gpa_function_table_->GpaEnableCounterByName(gpa_session_id_, it->c_str());
                     if (gpa_status != kGpaStatusOk)
                     {
-                        std::cout << "Failed to enable counter: " << it->c_str() << std::endl;
+                        AMDVulkanDemoVkUtils::Log("Failed to enable counter: %s", it->c_str());
                     }
                     success_enable_counter &= gpa_status == kGpaStatusOk;
                 }
@@ -908,23 +940,22 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_enable_all_counters_status != kGpaStatusOk)
         {
-            std::cout << "ERROR: Failed to enable all GPA counters." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to enable all GPA counters.");
             return false;
         }
 
         // Get the number of required passes based on the counters that were enabled above. Store it as a member
         // because it will be needed to control which CommandBuffers get GPA calls included.
         GpaStatus gpa_get_pass_count_status = gpu_perf_api_helper_.gpa_function_table_->GpaGetPassCount(gpa_session_id_, &required_pass_count_);
-
         if (gpa_get_pass_count_status != kGpaStatusOk)
         {
-            std::cout << "ERROR: Failed to get the number of required GPA passes." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the number of required GPA passes.");
             return false;
         }
 
         if (print_debug_output_)
         {
-            std::cout << "GPA requires " << required_pass_count_ << " pass(es)." << std::endl;
+            AMDVulkanDemoVkUtils::Log("GPA requires %d pass(es).", required_pass_count_);
         }
 
         // Begin the GPA session to lock in the set of selected counters and allow command buffers to start
@@ -933,7 +964,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_begin_session_status != kGpaStatusOk)
         {
-            std::cout << "ERROR: Failed to begin GPA session." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to begin GPA session.");
             return false;
         }
     }
@@ -948,7 +979,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (get_surface_formats_result != VK_SUCCESS || format_count == 0)
     {
-        std::cout << "ERROR: The selected physical device does not support any surface formats." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: The selected physical device does not support any surface formats.");
         return false;
     }
 
@@ -958,7 +989,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (get_surface_formats_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to get surface formats." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get surface formats.");
         return false;
     }
 
@@ -996,7 +1027,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (get_present_modes_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to get number of supported present modes." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get number of supported present modes.");
         return false;
     }
 
@@ -1006,7 +1037,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (get_present_modes_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to get supported present modes." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get supported present modes.");
         return false;
     }
 
@@ -1043,7 +1074,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (get_surface_capabilities_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to get surface capabilities." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get surface capabilities.");
         return false;
     }
 
@@ -1106,7 +1137,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_swap_chain_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create swapchain." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create swapchain.");
         return false;
     }
 
@@ -1116,7 +1147,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (get_swap_chain_images_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to get final swapchain image count." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get final swapchain image count.");
         return false;
     }
 
@@ -1126,7 +1157,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (get_swap_chain_images_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to get swapchain images." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get swapchain images.");
         return false;
     }
 
@@ -1167,7 +1198,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (create_image_view_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to create a swapchain image view." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to create a swapchain image view.");
             return false;
         }
     }
@@ -1236,7 +1267,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_render_pass_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create render pass." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create render pass.");
         return false;
     }
 
@@ -1268,7 +1299,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (result_create_render_pass_mid != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create render pass mid." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create render pass mid.");
         return false;
     }
 
@@ -1298,7 +1329,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_render_pass_final_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create render pass final." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create render pass final.");
         return false;
     }
 
@@ -1322,7 +1353,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (create_frame_buffer_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to create frame_buffer." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to create frame_buffer.");
             return false;
         }
     }
@@ -1341,7 +1372,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_pipeline_layout_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create pipeline layout." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create pipeline layout.");
         return false;
     }
 
@@ -1510,7 +1541,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_graphics_pipelines_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create graphics pipelines." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create graphics pipelines.");
         return false;
     }
 
@@ -1537,7 +1568,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_graphics_pipeline_wire_frame_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create wireframe graphics pipelines." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create wireframe graphics pipelines.");
         return false;
     }
 
@@ -1564,7 +1595,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_command_pool_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create command pool." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create command pool.");
         return false;
     }
 
@@ -1578,7 +1609,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_semaphore_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create semaphore to acquire swapchain images." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create semaphore to acquire swapchain images.");
         return false;
     }
 
@@ -1586,7 +1617,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
     if (create_semaphore_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to create semaphore to control rendering." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create semaphore to control rendering.");
         return false;
     }
 
@@ -1622,12 +1653,13 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_end_session_status != kGpaStatusOk)
         {
-            std::cout << "ERROR: Failed to end GPA session." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to end GPA session.");
         }
     }
 
     // Set the app as being successfully intialized.
     initialized_ = true;
+    AMDVulkanDemoVkUtils::Log("Vulkan initialization successful");
 
     return true;
 }
@@ -1651,7 +1683,7 @@ void AMDVulkanDemo::DrawScene()
 
     if (aquire_next_image_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to acquire next image." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to acquire next image.");
     }
 
     std::vector<VkCommandBuffer> command_buffers_to_submit;
@@ -1714,7 +1746,7 @@ void AMDVulkanDemo::DrawScene()
 
     if (queue_submit_result != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to submit to queue." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to submit to queue.");
     }
 
     // Now present the rendered image to the screen!
@@ -1735,7 +1767,7 @@ void AMDVulkanDemo::DrawScene()
 
     if (result_present != VK_SUCCESS)
     {
-        std::cout << "ERROR: Failed to present queue." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to present queue.");
     }
 
     if (gpu_perf_api_helper_.IsLoaded() && num_frames_rendered_ == required_pass_count_)
@@ -1769,13 +1801,13 @@ void AMDVulkanDemo::DrawScene()
 
             if (print_debug_output_)
             {
-                std::cout << "There were " << sample_count << " GPA samples recorded." << std::endl;
+                AMDVulkanDemoVkUtils::Log("There were %d GPA samples recorded.", sample_count);
             }
 
             // Open the CSV file so that counter results also get output there.
             if (!gpu_perf_api_helper_.OpenCSVFile())
             {
-                std::cout << "ERROR: Unable to open CSV file to output profile results." << std::endl;
+                AMDVulkanDemoVkUtils::Log("ERROR: Unable to open CSV file to output profile results.");
             }
 
             // This example only renders one set of profiles (aka, only the number of passes needed to generate one set of results).
@@ -1810,7 +1842,7 @@ void AMDVulkanDemo::Destroy()
 
             if (gpa_delete_session_status != kGpaStatusOk)
             {
-                std::cout << "ERROR: Failed to delete GPA session." << std::endl;
+                AMDVulkanDemoVkUtils::Log("ERROR: Failed to delete GPA session.");
             }
         }
 
@@ -1820,7 +1852,7 @@ void AMDVulkanDemo::Destroy()
 
             if (gpa_close_context_status != kGpaStatusOk)
             {
-                std::cout << "ERROR: Failed to close GPA Context." << std::endl;
+                AMDVulkanDemoVkUtils::Log("ERROR: Failed to close GPA Context.");
             }
         }
     }
@@ -1831,7 +1863,7 @@ void AMDVulkanDemo::Destroy()
 
         if (device_wait_idle_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to wait for the device to idle." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to wait for the device to idle.");
         }
 
         if (VK_NULL_HANDLE != vk_semaphore_acquired_swapchain_image_)
@@ -2049,7 +2081,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_r
 
         if (allocate_command_buffers_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to allocate command buffers." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to allocate command buffers.");
             return;
         }
 
@@ -2106,7 +2138,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_r
 
         if (end_cmd_buffer_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to end command buffer." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to end command buffer.");
         }
     }
 
@@ -2117,7 +2149,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_r
 
         if (allocate_command_buffers_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to allocate wireframe command buffers." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to allocate wireframe command buffers.");
             return;
         }
 
@@ -2174,7 +2206,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_r
 
         if (end_command_buffer_wire_frame_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to end wireframe command buffer." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to end wireframe command buffer.");
         }
     }
 
@@ -2187,7 +2219,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_r
 
         if (allocate_command_buffers_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to allocate command buffers." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to allocate command buffers.");
             return;
         }
 
@@ -2246,7 +2278,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_r
 
         if (end_cmd_buffer_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to end command buffer." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to end command buffer.");
         }
     }
 
@@ -2257,7 +2289,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_r
 
         if (allocate_command_buffers_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to allocate wireframe command buffers." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to allocate wireframe command buffers.");
             return;
         }
 
@@ -2321,7 +2353,7 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_r
 
         if (end_command_buffer_wire_frame_result != VK_SUCCESS)
         {
-            std::cout << "ERROR: Failed to end wireframe command buffer." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to end wireframe command buffer.");
         }
     }
 }

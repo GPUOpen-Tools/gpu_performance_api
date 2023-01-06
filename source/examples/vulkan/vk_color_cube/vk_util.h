@@ -127,6 +127,15 @@ namespace AMDVulkanDemoVkUtils
     /// @return True upon success otherwise false.
     bool InitDeviceFunctions(VkDevice vk_device);
 
+    /// @brief Log a message
+    ///
+    //  On Android, the message is written to logcat. On all other
+    //  platforms, the message is written to stdout.
+    //
+    /// @param [in] format printf style format string
+    /// @param [in] ... arguments to format string, if any
+    void Log(const char *format, ...)  __attribute__((format(printf, 1, 2)));
+
     extern bool are_vk_entry_points_initialized;  ///< Flag indicating the initialization status of vulkan entry points.
 
 };  // namespace AMDVulkanDemoVkUtils
