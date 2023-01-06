@@ -308,19 +308,37 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
     // Add the HW groups max's.
     for (unsigned int i = 0; i < hw_counters->internal_counter_groups_.size(); ++i)
     {
-        max_counters_per_group.push_back(hw_counters->internal_counter_groups_[i].max_active_discrete_counters);
+        auto count = hw_counters->internal_counter_groups_[i].max_active_discrete_counters;
+        if (count == 0)
+        {
+            GPA_LOG_DEBUG_ERROR("ERROR: hardware counter group '%s' has zero for max-counters-per-group", hw_counters->internal_counter_groups_[i].name);
+            return gGpaInvalidCounterGroupData;
+        }
+        max_counters_per_group.push_back(count);
     }
 
     // Add the Additional groups max's.
     for (unsigned int i = 0; i < hw_counters->additional_group_count_; ++i)
     {
-        max_counters_per_group.push_back(hw_counters->additional_groups_[i].max_active_discrete_counters);
+        auto count = hw_counters->additional_groups_[i].max_active_discrete_counters;
+        if (count == 0)
+        {
+            GPA_LOG_DEBUG_ERROR("ERROR: hardware counter additional group '%s' has zero for max-counters-per-group", hw_counters->additional_groups_[i].name);
+            return gGpaInvalidCounterGroupData;
+        }
+        max_counters_per_group.push_back(count);
     }
 
     // TODO: properly handle software groups -- right now, this works because there is only ever a single group defined.
     if (sw_counters->group_count_ == 1)
     {
-        max_counters_per_group.push_back(DoGetNumSoftwareCounters());
+        auto count = DoGetNumSoftwareCounters();
+        if (count == 0)
+        {
+            GPA_LOG_DEBUG_ERROR("ERROR: software counter group has zero for max-counters-per-group");
+            return gGpaInvalidCounterGroupData;
+        }
+        max_counters_per_group.push_back(count);
     }
 
     GpaCounterGroupAccessor accessor(hw_counters->internal_counter_groups_,
