@@ -75,12 +75,9 @@ GpaStatus GpaCounterSchedulerBase::EnableCounter(GpaUInt32 index)
 #pragma endregion
     if (enabled_public_counter_bits_[index])
     {
-        std::stringstream message;
-        message << "Counter index " << index << " has already been enabled.";
-
         // We will log this as a debug message rather than an error at this point,
         // this error will be reported to the logger from the caller.
-        GPA_LOG_DEBUG_MESSAGE(message.str().c_str());
+        GPA_LOG_DEBUG_MESSAGE("Counter index %d has already been enabled.", index);
         return kGpaStatusErrorAlreadyEnabled;
     }
 
@@ -108,9 +105,7 @@ GpaStatus GpaCounterSchedulerBase::DisableCounter(GpaUInt32 index)
         }
     }
 
-    std::stringstream message;
-    message << "Counter index " << index << " was not previously enabled, so it could not be disabled.";
-    GPA_LOG_ERROR(message.str().c_str());
+    GPA_LOG_ERROR("Counter index %d was not previously enabled, so it could not be disabled.", index);
     return kGpaStatusErrorNotEnabled;
 }
 
@@ -126,10 +121,8 @@ GpaStatus GpaCounterSchedulerBase::GetEnabledIndex(GpaUInt32 enabled_index, GpaU
 {
     if (enabled_index >= static_cast<GpaUInt32>(enabled_public_indices_.size()))
     {
-        std::stringstream message;
-        message << "Parameter 'enabled_index' is " << enabled_index << " but must be less than the number of enabled counters ("
-                << enabled_public_indices_.size() << ").";
-        GPA_LOG_ERROR(message.str().c_str());
+        GPA_LOG_ERROR("Parameter 'enabled_index' is %u but must be less than the number of enabled counters (%zu)",
+            enabled_index, enabled_public_indices_.size());
         return kGpaStatusErrorIndexOutOfRange;
     }
 
@@ -142,10 +135,9 @@ GpaStatus GpaCounterSchedulerBase::IsCounterEnabled(GpaUInt32 counter_index) con
 {
     if (counter_index >= enabled_public_counter_bits_.size())
     {
-        std::stringstream message;
-        message << "Parameter 'counter_index' is " << counter_index << " but must be less than the number of enabled counters ("
-                << enabled_public_counter_bits_.size() << ").";
-        GPA_LOG_ERROR(message.str().c_str());
+        GPA_LOG_ERROR("Parameter 'counter_index' is %u but must be less than the number of enabled counters (%zu)",
+            counter_index, enabled_public_counter_bits_.size());
+
         return kGpaStatusErrorIndexOutOfRange;
     }
 
@@ -155,9 +147,7 @@ GpaStatus GpaCounterSchedulerBase::IsCounterEnabled(GpaUInt32 counter_index) con
     }
     else
     {
-        std::stringstream message;
-        message << "Parameter 'counter_index' (" << counter_index << ") is not an enabled counter.";
-        GPA_LOG_MESSAGE(message.str().c_str());
+        GPA_LOG_MESSAGE("Parameter 'counter_index' (%d) is not an enabled counter.", counter_index);
         return kGpaStatusErrorCounterNotFound;
     }
 

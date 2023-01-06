@@ -47,9 +47,7 @@ extern IGpaImplementor* gpa_imp;  ///< GPA implementor instance.
     }                                                                                                         \
     if (index >= num_counters)                                                                                \
     {                                                                                                         \
-        std::stringstream message;                                                                            \
-        message << "Parameter '" #index "' is " << index << " but must be less than " << num_counters << "."; \
-        GPA_LOG_ERROR(message.str().c_str());                                                                 \
+        GPA_LOG_ERROR("Parameter index is %d but must be less than %d.", index, num_counters);                \
         return kGpaStatusErrorIndexOutOfRange;                                                                \
     }
 
@@ -575,10 +573,7 @@ GPA_LIB_DECL GpaStatus GpaGetCounterIndex(GpaContextId gpa_context_id, const cha
 
         if (!counter_found)
         {
-            std::string message = "Specified counter '";
-            message += counter_name;
-            message += "' was not found. Please check spelling or availability.";
-            GPA_LOG_ERROR(message.c_str());
+            GPA_LOG_ERROR("Specified counter '%s' was not found. Please check spelling or availability.", counter_name);
             return kGpaStatusErrorCounterNotFound;
         }
 
@@ -963,10 +958,7 @@ GPA_LIB_DECL GpaStatus GpaEnableCounterByName(GpaSessionId gpa_session_id, const
 
         if (kGpaStatusOk != status)
         {
-            std::string message = "Specified counter '";
-            message += counter_name;
-            message += "' was not found. Please check spelling or availability.";
-            GPA_LOG_ERROR(message.c_str());
+            GPA_LOG_ERROR("Specified counter '%s' was not found. Please check spelling or availability.", counter_name);
             return kGpaStatusErrorCounterNotFound;
         }
 
@@ -994,10 +986,7 @@ GPA_LIB_DECL GpaStatus GpaDisableCounterByName(GpaSessionId gpa_session_id, cons
 
         if (kGpaStatusOk != status)
         {
-            std::string message = "Specified counter '";
-            message += counter_name;
-            message += "' was not found. Please check spelling or availability.";
-            GPA_LOG_ERROR(message.c_str());
+            GPA_LOG_ERROR("Specified counter '%s' was not found. Please check spelling or availability.", counter_name);
             return kGpaStatusErrorCounterNotFound;
         }
 

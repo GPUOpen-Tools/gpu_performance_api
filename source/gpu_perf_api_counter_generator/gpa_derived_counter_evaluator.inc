@@ -1210,9 +1210,7 @@ static GpaStatus EvaluateExpression(const char*                      expression,
 
     if (stack.size() != 1)
     {
-        std::stringstream ss;
-        ss << "Invalid formula: " << expression << ".";
-        GPA_LOG_ERROR(ss.str().c_str());
+        GPA_LOG_ERROR("Invalid formula: %s", expression);
         status = kGpaStatusErrorInvalidCounterEquation;
     }
 

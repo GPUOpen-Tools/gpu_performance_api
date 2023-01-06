@@ -232,9 +232,8 @@ void GpaDerivedCounters::UpdateAsicSpecificDerivedCounter(const char* counter_na
     // Errors aside, the counter will not be found if it's not supported on the ASIC.
     // e.g.: there's a discrete counter version, but not an SPM version.
     {
-        std::stringstream o;
-        o << "Warning: unable to find counter for ASIC-specific update:" << counter_name << ". This may be an unsupported SPM counter.";
-        GPA_LOG_MESSAGE(o.str().c_str());
+        GPA_LOG_MESSAGE("Warning: unable to find counter for ASIC-specific update:%s . This may be an unsupported SPM counter.",
+            counter_name);
     }
 }
 
