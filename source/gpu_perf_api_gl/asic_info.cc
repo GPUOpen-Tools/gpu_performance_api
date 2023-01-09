@@ -527,9 +527,7 @@ namespace ogl_utils
         default:
             revision = kUnknown;
 
-            std::stringstream error_message;
-            error_message << "Unrecognized asic Id: " << asic_id << ".";
-            GPA_LOG_ERROR(error_message.str().c_str());
+            GPA_LOG_ERROR("Unrecognized asic Id: %d.", asic_id);
             assert(!"Unrecognized AsicId");
             break;
         }
@@ -547,24 +545,19 @@ namespace ogl_utils
         {
             ret_val = info.asic_generation;
 
-            std::stringstream ss;
             if (info.is_apu)
             {
-                ss << "Recognized an APU with " << kAsicGenerationStrings[ret_val] << " graphics.";
+                GPA_LOG_MESSAGE("Recognized an APU with %s graphics.", kAsicGenerationStrings[ret_val]);
             }
             else
             {
-                ss << "Recognized a " << kAsicGenerationStrings[ret_val] << " card.";
+                GPA_LOG_MESSAGE("Recognized a %s card.", kAsicGenerationStrings[ret_val]);
             }
-
-            GPA_LOG_MESSAGE(ss.str().c_str());
         }
         else
         {
             assert(!"Unknown AsicRevision, may need to update enum list from PAL.");
-            std::stringstream error_message;
-            error_message << "Unrecognized asic revision: " << asic_revision << ".";
-            GPA_LOG_ERROR(error_message.str().c_str());
+            GPA_LOG_ERROR("Unrecognized asic revision: %d.", asic_revision);
             ret_val = kAsicUnknown;
         }
 
@@ -632,11 +625,8 @@ namespace ogl_utils
             // Pre-GCN devices were removed from the driver starting with version 13452.
             // If the driver version is earlier than that we will return an error.
 #ifndef GLES
-            const GLubyte* gl_version_string      = ogl_get_string(GL_VERSION);
-            std::string    driver_version_message = "GL_VERSION: '";
-            driver_version_message.append((const char*)gl_version_string);
-            driver_version_message.append("'.");
-            GPA_LOG_ERROR(driver_version_message.c_str());
+            const GLubyte* gl_version_string = ogl_get_string(GL_VERSION);
+            GPA_LOG_ERROR("GL_VERSION: %s.", (const char*)gl_version_string);
 #endif
             GPA_LOG_ERROR("OpenGL driver version is too old. Please update your driver.");
             return false;
@@ -817,9 +807,7 @@ namespace ogl_utils
                                         if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                                         {
                                             asic_info.device_id = value;
-
-                                            message << "Retrieved ASIC device ID: " << std::hex << std::showbase << value << ".";
-                                            GPA_LOG_MESSAGE(message.str().c_str());
+                                            GPA_LOG_MESSAGE("Retrieved ASIC device ID: 0x%04x.", value);
                                         }
                                         break;
 
@@ -827,9 +815,7 @@ namespace ogl_utils
                                         if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                                         {
                                             asic_info.device_rev = value;
-
-                                            message << "Retrieved ASIC device revision: " << std::hex << std::showbase << value << ".";
-                                            GPA_LOG_MESSAGE(message.str().c_str());
+                                            GPA_LOG_MESSAGE("Retrieved ASIC device revision: 0x%04x.", value);
                                         }
                                         break;
                                     }
@@ -861,16 +847,11 @@ namespace ogl_utils
         {
             if (found_ugl_entrypoints)
             {
-                std::stringstream message;
-                message << "ASIC ID returned from driver is: " << ugl_asic_id << " and GL_VERSION is: " << asic_info.driver_version << ".";
-                GPA_LOG_MESSAGE(message.str().c_str());
+                GPA_LOG_MESSAGE("ASIC ID returned from driver is: %d and GL_VERSION is: %d.", ugl_asic_id, asic_info.driver_version);
             }
             else if (found_oglp_entrypoints)
             {
-                std::stringstream message;
-                message << "ASIC revision returned from driver is: " << asic_info.asic_revision << " (decimal) and GL_VERSION is: " << asic_info.driver_version
-                        << ".";
-                GPA_LOG_MESSAGE(message.str().c_str());
+                GPA_LOG_MESSAGE("ASIC revision returned from driver is: %d (decimal) and GL_VERSION is: %d.", asic_info.asic_revision, asic_info.driver_version);
 
                 if (asic_info.asic_revision == kUnknown)
                 {

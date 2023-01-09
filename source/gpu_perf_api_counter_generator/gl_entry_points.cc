@@ -124,7 +124,7 @@ namespace ogl_utils
             case GL_STACK_UNDERFLOW:
             case GL_OUT_OF_MEMORY:
                 error_found = true;
-                GPA_LOG_ERROR(error_message.c_str());
+                GPA_LOG_ERROR("%s", error_message.c_str());
                 break;
 
             default:
