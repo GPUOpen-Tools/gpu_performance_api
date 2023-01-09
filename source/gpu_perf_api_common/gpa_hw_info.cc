@@ -266,7 +266,7 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId()
     // Only emit an error for AMD devices.
     if (IsAmd())
     {
-        GPA_LOG_ERROR("Unrecognized device ID: %X", device_id_);
+        GPA_LOG_ERROR("Unrecognized device ID: 0x%04X", device_id_);
     }
 
     return false;
