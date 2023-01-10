@@ -82,11 +82,14 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibOpenCounterContext(GpaApiType 
         return kGpaStatusErrorNullPointer;
     }
 
-    // Gpa no longer supports software counters
-    const GpaOpenContextFlags context_flags_temp = context_flags | kGpaOpenContextHideSoftwareCountersBit;
+    if ((context_flags & kGpaOpenContextHideDerivedCountersBit) && !(context_flags & kGpaOpenContextEnableHardwareCountersBit))
+    {
+        GPA_LOG_ERROR("Requested no counters. Specify a different GpaOpenContextFlags argument.");
+        return kGpaStatusErrorInvalidParameter;
+    }
 
     return GpaCounterContextManager::Instance()->OpenCounterContext(
-        api, gpa_counter_context_hardware_info, context_flags_temp, generate_asic_specific_counters, gpa_virtual_context);
+        api, gpa_counter_context_hardware_info, context_flags, generate_asic_specific_counters, gpa_virtual_context);
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibCloseCounterContext(const GpaCounterContext gpa_virtual_context)

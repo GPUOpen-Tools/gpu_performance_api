@@ -216,12 +216,13 @@ bool GpaContext::ArePublicCountersExposed() const
 
 bool GpaContext::AreHardwareCountersExposed() const
 {
-    return (context_flags_ & kGpaOpenContextHideHardwareCountersBit) == 0;
+    return (context_flags_ & kGpaOpenContextEnableHardwareCountersBit) == 0;
 }
 
 bool GpaContext::AreSoftwareCountersExposed() const
 {
-    return (context_flags_ & kGpaOpenContextHideSoftwareCountersBit) == 0;
+    // GPA no longer support SW counters
+    return false;
 }
 
 GpaCounterSource GpaContext::GetCounterSource(GpaUInt32 internal_counter_index) const

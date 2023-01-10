@@ -328,9 +328,6 @@ GPA_LIB_DECL GpaStatus GpaOpenContext(void* api_context, GpaOpenContextFlags gpa
             return kGpaStatusErrorNullPointer;
         }
 
-        // For GPA 3.0 - disable Software counters.
-        gpa_open_context_flags |= kGpaOpenContextHideSoftwareCountersBit;
-
         GpaStatus ret_status = gpa_imp->OpenContext(api_context, gpa_open_context_flags, gpa_context_id);
 
         GPA_INTERNAL_LOG(GpaOpenContext,

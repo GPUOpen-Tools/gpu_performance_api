@@ -235,6 +235,20 @@ TEST(CounterDllTests, OpenGlCounterNamesByGeneration)
     VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx11, FALSE, counter_names);
 }
 
+TEST(CounterDllTests, OpenGlOpenCounterContext)
+{
+    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationNvidia, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationIntel, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationGfx6, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationGfx7, FALSE);
+
+    VerifyOpenCounterContext(kGpaApiOpengl, kGpaHwGenerationGfx8);
+    VerifyOpenCounterContext(kGpaApiOpengl, kGpaHwGenerationGfx9);
+    VerifyOpenCounterContext(kGpaApiOpengl, kGpaHwGenerationGfx10);
+    VerifyOpenCounterContext(kGpaApiOpengl, kGpaHwGenerationGfx103);
+    VerifyOpenCounterContext(kGpaApiOpengl, kGpaHwGenerationGfx11);
+}
+
 #ifdef _WIN32
 TEST(CounterDllTests, GlCounterLibTestDeviceIdGfx8)
 {
