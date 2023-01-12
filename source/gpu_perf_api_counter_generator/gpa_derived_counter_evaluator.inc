@@ -445,7 +445,7 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             stack.pop_back();
             for (long int i = 1; i < value_count; i++)
             {
-                min = std::max(min, stack.back());
+                min = std::min(min, stack.back());
                 stack.pop_back();
             }
             stack.push_back(min);
