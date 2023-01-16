@@ -404,288 +404,51 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             GPA_ASSERT(hw_info->GetTimeStampFrequency(freq));
             stack.push_back(static_cast<T>(freq));
         }
-        else if (_strcmpi(pch, "max") == 0 || _strcmpi(pch, "max2") == 0)
+        else if ((tolower(pch[0]) == 'm') && (tolower(pch[1]) == 'a') && (tolower(pch[2]) == 'x') && ((pch[3] == '\0') || isdigit(pch[3])))
         {
-            assert(stack.size() >= 2);
-
-            T p2 = stack.back();
-            stack.pop_back();
-            T p1 = stack.back();
-            stack.pop_back();
-
-            if (p1 > p2)
+            long value_count = 2;
+            if (pch[3] != '\0')
             {
-                stack.push_back(p1);
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[3], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
             }
-            else
-            {
-                stack.push_back(p2);
-            }
-        }
-        else if (_strcmpi(pch, "max4") == 0)
-        {
-            assert(stack.size() >= 4);
+            assert(stack.size() >= static_cast<std::size_t>(value_count));
 
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
+            T max = stack.back();
             stack.pop_back();
-
-            // pop the last 3 items and compute the max
-            for (int i = 0; i < 3; i++)
+            for (long int i = 1; i < value_count; i++)
             {
-                T value = stack.back();
+                max = std::max(max, stack.back());
                 stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
             }
-
-            stack.push_back(max_value);
+            stack.push_back(max);
         }
-        else if (_strcmpi(pch, "max6") == 0)
+        else if ((tolower(pch[0]) == 'm') && (tolower(pch[1]) == 'i') && (tolower(pch[2]) == 'n') && ((pch[3] == '\0') || isdigit(pch[3])))
         {
-            assert(stack.size() >= 6);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 5 items and compute the max
-            for (int i = 0; i < 5; i++)
+            long value_count = 2;
+            if (pch[3] != '\0')
             {
-                T value = stack.back();
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[3], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
+            }
+            assert(stack.size() >= static_cast<std::size_t>(value_count));
+
+            T min = stack.back();
+            stack.pop_back();
+            for (long int i = 1; i < value_count; i++)
+            {
+                min = std::min(min, stack.back());
                 stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
             }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max8") == 0)
-        {
-            assert(stack.size() >= 8);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 7 items and compute the max
-            for (int i = 0; i < 7; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max10") == 0)
-        {
-            assert(stack.size() >= 10);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 9 items and compute the max
-            for (int i = 0; i < 9; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max12") == 0)
-        {
-            assert(stack.size() >= 12);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 11 items and compute the max
-            for (int i = 0; i < 11; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max16") == 0)
-        {
-            assert(stack.size() >= 16);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 15 items and compute the max
-            for (int i = 0; i < 15; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max24") == 0)
-        {
-            assert(stack.size() >= 24);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 23 items and compute the max
-            for (int i = 0; i < 23; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max32") == 0)
-        {
-            assert(stack.size() >= 32);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 31 items and compute the max
-            for (int i = 0; i < 31; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max40") == 0)
-        {
-            assert(stack.size() >= 40);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 39 items and compute the max
-            for (int i = 0; i < 39; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max44") == 0)
-        {
-            assert(stack.size() >= 44);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 43 items and compute the max
-            for (int i = 0; i < 43; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max64") == 0)
-        {
-            assert(stack.size() >= 64);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 63 items and compute the max
-            for (int i = 0; i < 63; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max80") == 0)
-        {
-            assert(stack.size() >= 80);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 79 items and compute the max
-            for (int i = 0; i < 79; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "max96") == 0)
-        {
-            assert(stack.size() >= 96);
-
-            // initialize the max value to the 1st item
-            T max_value = stack.back();
-            stack.pop_back();
-
-            // pop the last 95 items and compute the max
-            for (int i = 0; i < 95; i++)
-            {
-                T value = stack.back();
-                stack.pop_back();
-
-                max_value = (max_value > value) ? max_value : value;
-            }
-
-            stack.push_back(max_value);
-        }
-        else if (_strcmpi(pch, "min") == 0 || _strcmpi(pch, "min2") == 0)
-        {
-            assert(stack.size() >= 2);
-
-            T p2 = stack.back();
-            stack.pop_back();
-            T p1 = stack.back();
-            stack.pop_back();
-
-            if (p1 < p2)
-            {
-                stack.push_back(p1);
-            }
-            else
-            {
-                stack.push_back(p2);
-            }
+            stack.push_back(min);
         }
         else if (_strcmpi(pch, "ifnotzero") == 0)
         {
@@ -812,124 +575,19 @@ static GpaStatus EvaluateExpression(const char*                      expression,
                 stack.push_back(*iter);
             }
         }
-        else if (_strcmpi(pch, "sum2") == 0)
+        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'u') && (tolower(pch[2]) == 'm') && ((pch[3] == '\0') || isdigit(pch[3])))
         {
-            const int value_count = 2;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum4") == 0)
-        {
-            const int value_count = 4;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum6") == 0)
-        {
-            const int value_count = 6;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum8") == 0)
-        {
-            const int value_count = 8;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum10") == 0)
-        {
-            const int value_count = 10;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum11") == 0)
-        {
-            const int value_count = 11;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum12") == 0)
-        {
-            const int value_count = 12;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum16") == 0)
-        {
-            const int value_count = 16;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum20") == 0)
-        {
-            const int value_count = 20;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum24") == 0)
-        {
-            const int value_count = 24;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum32") == 0)
-        {
-            const int value_count = 32;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum40") == 0)
-        {
-            const int value_count = 40;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum44") == 0)
-        {
-            const int value_count = 44;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum48") == 0)
-        {
-            const int value_count = 48;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum64") == 0)
-        {
-            const int value_count = 64;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum80") == 0)
-        {
-            const int value_count = 80;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum96") == 0)
-        {
-            const int value_count = 96;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum128") == 0)
-        {
-            const int value_count = 128;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum256") == 0)
-        {
-            const int value_count = 256;
-            assert(stack.size() >= value_count);
-            SumN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "sum320") == 0)
-        {
-            const int value_count = 320;
-            assert(stack.size() >= value_count);
+            long value_count = 2;
+            if (pch[3] != '\0')
+            {
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[3], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
+            }
+            assert(stack.size() >= static_cast<std::size_t>(value_count));
             SumN(stack, value_count);
         }
         else if (_strcmpi(pch, "vecsum2") == 0)
