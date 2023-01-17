@@ -392,7 +392,7 @@ protected:
         unsigned int group_limit = max_counters_per_group[group_index];
         if (group_limit == 0)
         {
-            GPA_LOG_DEBUG_ERROR("ERROR: group(%d) count limit is zero", group_index);
+            GPA_LOG_DEBUG_ERROR("ERROR: group(%d) counter limit is zero", group_index);
             return false;
         }
 
