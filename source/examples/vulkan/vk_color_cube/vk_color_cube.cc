@@ -421,6 +421,7 @@ bool AMDVulkanDemo::InitializeGpa()
     if (kGpaStatusOk != status)
     {
         AMDVulkanDemoVkUtils::Log("ERROR: GpaGetFuncTable failed with status %d", status);
+        delete gpa_function_table;
         return false;
     }
 
