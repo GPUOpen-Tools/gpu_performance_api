@@ -91,6 +91,7 @@ public:
 
             // Format string.
             char    buffer[1024 * 50];
+            buffer[0] = '\0';
 #ifdef WIN32
             vsnprintf_s(buffer, sizeof(buffer), msg_fmt, args);
 #else
