@@ -265,6 +265,51 @@ void VerifyCounterNames(GpaApiType api, unsigned int device_id, GpaUInt8 generat
     UnloadLib(lib_handle);
 }
 
+// Verifies that GpaCounterLibOpenCounterContext() succeeds with all values of
+// GpaOpenContextBits, as well as with or without generate_asic_specific_counters
+//
+void VerifyOpenCounterContext(GpaApiType api, GpaHwGeneration generation)
+{
+    LibHandle              lib_handle                 = nullptr;
+    GpaCounterLibFuncTable gpa_counter_lib_func_table = {};
+
+    LOAD_AND_VERIFY_COUNTER_LIB(&lib_handle, &gpa_counter_lib_func_table);
+
+    GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, generation_device_map[generation], REVISION_ID_ANY, nullptr, 0};
+
+    GpaOpenContextBits context_bits_values[] = {
+        kGpaOpenContextDefaultBit,
+
+        // This alone will generate an error--requested no counters
+        // kGpaOpenContextHideDerivedCountersBit,
+
+        kGpaOpenContextClockModeNoneBit,
+        kGpaOpenContextClockModePeakBit,
+        kGpaOpenContextClockModeMinMemoryBit,
+        kGpaOpenContextClockModeMinEngineBit,
+        kGpaOpenContextEnableHardwareCountersBit,
+
+        // Ask for only the HW counters (exclude derived counters)
+        (GpaOpenContextBits)(kGpaOpenContextHideDerivedCountersBit | kGpaOpenContextEnableHardwareCountersBit),
+    };
+
+    for (GpaOpenContextBits context_bits : context_bits_values)
+    {
+        for (GpaUInt8 generate_asic_specific_counters = 0; generate_asic_specific_counters < 2; generate_asic_specific_counters++)
+        {
+            GpaCounterContext gpa_counter_context = nullptr;
+            gpa_status = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
+                api, counter_context_hardware_info, context_bits, generate_asic_specific_counters, &gpa_counter_context);
+            EXPECT_EQ(kGpaStatusOk, gpa_status);
+            EXPECT_NE(gpa_counter_context, nullptr);
+
+            gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
+            EXPECT_EQ(kGpaStatusOk, gpa_status);
+        }
+    }
+    UnloadLib(lib_handle);
+}
+
 void VerifyCounterNames(GpaApiType api, GpaHwGeneration generation, GpaUInt8 generate_asic_specific_counters, std::vector<const char*> expectedNames)
 {
     assert(generation_device_map.size() == GDT_HW_GENERATION_LAST);

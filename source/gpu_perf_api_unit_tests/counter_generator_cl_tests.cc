@@ -163,8 +163,11 @@ TEST(CounterDllTests, OpenClCounterNames)
 // Test the openCL counter names on each generation
 TEST(CounterDllTests, OpenClCounterNamesByGeneration)
 {
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationNone, FALSE);
     VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationNvidia, FALSE);
     VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationIntel, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationGfx6, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationGfx7, FALSE);
 
     std::vector<const char*> counterNames;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, counterNames);
@@ -177,6 +180,21 @@ TEST(CounterDllTests, OpenClCounterNamesByGeneration)
     VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx103, FALSE, counterNames);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, counterNames);
     VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx11, FALSE, counterNames);
+}
+
+TEST(CounterDllTests, ClOpenCounterContext)
+{
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationNone, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationNvidia, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationIntel, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationGfx6, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationGfx7, FALSE);
+
+    VerifyOpenCounterContext(kGpaApiOpencl, kGpaHwGenerationGfx8);
+    VerifyOpenCounterContext(kGpaApiOpencl, kGpaHwGenerationGfx9);
+    VerifyOpenCounterContext(kGpaApiOpencl, kGpaHwGenerationGfx10);
+    VerifyOpenCounterContext(kGpaApiOpencl, kGpaHwGenerationGfx103);
+    VerifyOpenCounterContext(kGpaApiOpencl, kGpaHwGenerationGfx11);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx8)

@@ -179,6 +179,21 @@ TEST(CounterDllTests, Dx11CounterNamesByGeneration)
     VerifyCounterNames(kGpaApiDirectx11, kGpaHwGenerationGfx11, FALSE, counter_names);
 }
 
+TEST(CounterDllTests, Dx11OpenCounterContext)
+{
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationNone, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationNvidia, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationIntel, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationGfx6, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationGfx7, FALSE);
+
+    VerifyOpenCounterContext(kGpaApiDirectx11, kGpaHwGenerationGfx8);
+    VerifyOpenCounterContext(kGpaApiDirectx11, kGpaHwGenerationGfx9);
+    VerifyOpenCounterContext(kGpaApiDirectx11, kGpaHwGenerationGfx10);
+    VerifyOpenCounterContext(kGpaApiDirectx11, kGpaHwGenerationGfx103);
+    VerifyOpenCounterContext(kGpaApiDirectx11, kGpaHwGenerationGfx11);
+}
+
 TEST(CounterDllTests, Dx11CounterLibTestGfx8)
 {
     VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdVI, REVISION_ID_ANY, false);

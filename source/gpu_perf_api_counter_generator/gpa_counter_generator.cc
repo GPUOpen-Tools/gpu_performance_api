@@ -196,7 +196,7 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
     }
 
     bool allow_public           = (flags & kGpaOpenContextHidePublicCountersBit) == 0;
-    bool allow_software         = (flags & kGpaOpenContextHideSoftwareCountersBit) == 0;
+    bool allow_software         = false; // SW counters no longer supported as of GPA 3.0
     bool allow_hardware_exposed = (flags & kGpaOpenContextEnableHardwareCountersBit) == kGpaOpenContextEnableHardwareCountersBit;
     bool enable_hardware        = allow_hardware_exposed;
 

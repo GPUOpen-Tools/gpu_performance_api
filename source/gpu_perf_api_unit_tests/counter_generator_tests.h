@@ -84,6 +84,8 @@ void VerifyCounterNames(GpaApiType api, unsigned int device_id, GpaUInt8 generat
 
 void VerifyCounterNames(GpaApiType api, GpaHwGeneration generation, GpaUInt8 generate_asic_specific_counters, std::vector<const char*> expected_names);
 
+void VerifyOpenCounterContext(GpaApiType api, GpaHwGeneration generation);
+
 void VerifyCounterLibInterface(GpaApiType                         api,
                                unsigned int                       device_id,
                                unsigned int                       revision_id,

@@ -184,6 +184,22 @@ TEST(CounterDllTests, VkCounterNamesByGeneration)
     VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx11, FALSE, counter_names);
 }
 
+TEST(CounterDllTests, VkOpenCounterContext)
+{
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationNone, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx6, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationNvidia, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationIntel, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx6, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx7, FALSE);
+
+    VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx8);
+    VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx9);
+    VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx10);
+    VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx103);
+    VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx11);
+}
+
 #ifdef _WIN32
 TEST(CounterDllTests, VkCounterLibTestGfx8)
 {

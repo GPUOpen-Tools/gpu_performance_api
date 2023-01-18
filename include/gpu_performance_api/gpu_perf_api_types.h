@@ -193,8 +193,8 @@ typedef enum
         0,  ///< Open contexts using all default options (all counters exposed, clocks are set to stable frequencies which are known to be power and thermal sustainable. The ratio between the engine and memory clock frequencies will be kept the same as much as possible).
     kGpaOpenContextHideDerivedCountersBit  = 0x01,                                   ///< Prevent the derived counters from being exposed.
     kGpaOpenContextHidePublicCountersBit   = kGpaOpenContextHideDerivedCountersBit,  ///< For backwards compatibility.
-    kGpaOpenContextHideSoftwareCountersBit = 0x02,                                   ///< Prevent the software counters from being exposed.
-    kGpaOpenContextHideHardwareCountersBit = 0x04,                                   ///< Prevent the hardware counters from being exposed.
+    kGpaOpenContextHideSoftwareCountersBit_obsolete = 0x02,                          ///< Prevent the software counters from being exposed. OBSOLETE: sw counters not supported as of GPA 3.0
+    kGpaOpenContextHideHardwareCountersBit_obsolete = 0x04,                          ///< Prevent the hardware counters from being exposed. OBSOLETE: hw counters hidden by default. kGpaOpenContextEnableHardwareCountersBit enables them
     kGpaOpenContextClockModeNoneBit = 0x0008,  ///< Clock frequencies are not altered and may vary widely during profiling based on GPU usage and other factors.
     kGpaOpenContextClockModePeakBit =
         0x0010,  ///< Clocks are set to peak frequencies. In most cases this is safe to do for short periods of time while profiling. However, the GPU clock frequencies could still be reduced from peak level under power and thermal constraints.

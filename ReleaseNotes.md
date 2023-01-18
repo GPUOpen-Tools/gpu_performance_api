@@ -1,5 +1,7 @@
 ﻿# GPU Performance API Release Notes
----
+
+## Upcoming Release
+  * Renamed kGpaOpenContextHideSoftwareCountesrBit and kGpaOpenContextHideHardwareCountersBit since they are obsolete.
 
 ## Version 3.12 (12/14/22)
   * Add support for AMD Radeon™ RX 7900 XTX and AMD Radeon™ RX 7900 XT GPUs.
