@@ -47,7 +47,7 @@ extern IGpaImplementor* gpa_imp;  ///< GPA implementor instance.
     }                                                                                                         \
     if (index >= num_counters)                                                                                \
     {                                                                                                         \
-        GPA_LOG_ERROR("Parameter index is %d but must be less than %d.", index, num_counters);                \
+        GPA_LOG_ERROR("Parameter %s is %d but must be less than %d.", #index, index, num_counters);           \
         return kGpaStatusErrorIndexOutOfRange;                                                                \
     }
 
