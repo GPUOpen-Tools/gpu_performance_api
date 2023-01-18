@@ -132,6 +132,13 @@ static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration gen
 // Test the Dx12 derived counter blocks
 TEST(CounterDllTests, Dx12DerivedCounterBlocks)
 {
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationNone, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationNvidia, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationIntel, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationNone, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationGfx6, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationGfx7, FALSE);
+
     VerifyDerivedCounterCount(kGpaApiDirectx12, kGpaHwGenerationGfx8, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx8));
     VerifyDerivedCounterCount(kGpaApiDirectx12, kGpaHwGenerationGfx9, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx9));
     VerifyDerivedCounterCount(kGpaApiDirectx12, kGpaHwGenerationGfx10, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx10));
@@ -163,9 +170,9 @@ TEST(CounterDllTests, Dx12CounterNames)
 TEST(CounterDllTests, Dx12CounterNamesByGeneration)
 {
     VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationNone, FALSE);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx6, FALSE);
     VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationNvidia, FALSE);
     VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationIntel, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx6, FALSE);
     VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx7, FALSE);
 
     std::vector<const char*> counter_names;
@@ -184,9 +191,9 @@ TEST(CounterDllTests, Dx12CounterNamesByGeneration)
 TEST(CounterDllTests, Dx12OpenCounterContext)
 {
     VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationNone, FALSE);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx6, FALSE);
     VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationNvidia, FALSE);
     VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationIntel, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx6, FALSE);
     VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx7, FALSE);
 
     VerifyOpenCounterContext(kGpaApiDirectx12, kGpaHwGenerationGfx8);
