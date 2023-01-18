@@ -6,6 +6,7 @@
 //==============================================================================
 
 #include "examples/vulkan/vk_color_cube/gpa_helper.h"
+#include "examples/vulkan/vk_color_cube/vk_util.h"
 
 #include <assert.h>
 
@@ -80,7 +81,7 @@ void GpaHelper::PrintGPACounterInfo(GpaContextId context_id) const
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get device and revision id.\n";
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get device and revision id.");
         return;
     }
 
@@ -88,21 +89,21 @@ void GpaHelper::PrintGPACounterInfo(GpaContextId context_id) const
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get the device name.\n";
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the device name.");
         return;
     }
     std::string device_name_string(device_name_ptr);
 
-    std::cout << "Device Id: " << std::showbase << std::hex << device_id << std::endl;
-    std::cout << "Revision Id: " << FormatRevisionId(revision_id) << std::endl;
-    std::cout << "Device Name: " << device_name_string.c_str() << std::endl;
+    AMDVulkanDemoVkUtils::Log("Device Id: 0x%04X", device_id);
+    AMDVulkanDemoVkUtils::Log("Revision Id: %s", FormatRevisionId(revision_id).c_str());
+    AMDVulkanDemoVkUtils::Log("Device Name: %s", device_name_string.c_str());
 
     GpaUInt32 num_counters = 0;
     gpa_status             = gpa_function_table_->GpaGetNumCounters(context_id, &num_counters);
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get the number of available counters." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the number of available counters.");
         return;
     }
 
@@ -119,11 +120,11 @@ void GpaHelper::PrintGPACounterInfo(GpaContextId context_id) const
 
         if (kGpaStatusOk == name_status && kGpaStatusOk == group_status && kGpaStatusOk == description_status)
         {
-            std::cout << counter_index << ": " << name << " \"" << group << "\" - " << description << std::endl;
+            AMDVulkanDemoVkUtils::Log("%d: %s \"%s\" - %s", counter_index, name, group, description);
         }
         else
         {
-            std::cout << "ERROR: Failed to get counter name, group, or description." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get counter name, group, or description.");
         }
     }
 }
@@ -233,6 +234,11 @@ void GpaHelper::gpaLoggingCallback(GpaLoggingType type, const char* msg)
     }
 
     gpa_log_file_stream << log_message << std::endl;
+
+#ifdef ANDROID
+    // Write the message to logcat
+    AMDVulkanDemoVkUtils::Log("%s", log_message.c_str());
+#endif
 }
 
 bool GpaHelper::CounterValueCompare(unsigned int profile_set,
@@ -655,7 +661,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get device and revision id.\n";
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get device and revision id.");
         return;
     }
 
@@ -663,7 +669,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get the device name.\n";
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the device name.");
         return;
     }
 
@@ -671,7 +677,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
     gpa_status                          = gpa_function_table_->GpaGetDeviceGeneration(context_id, &hardware_generation);
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get the device generation.\n";
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the device generation.");
         return;
     }
 
@@ -679,12 +685,11 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (output_to_console)
     {
-        std::cout << "--------------------------------------------------" << std::endl;
-        std::cout << "Device Id: " << std::showbase << std::hex << device_id << std::endl;
-        std::cout << "Revision Id: " << FormatRevisionId(revision_id) << std::endl;
-        std::cout << "Device Name: " << device_name_string.c_str() << std::endl;
-        std::cout << "--------------------------------------------------" << std::endl;
-        std::cout << "Profile " << profile_set << ", Sample ID: " << sample_id << std::endl;
+        AMDVulkanDemoVkUtils::Log("Device Id: 0x%04X", device_id);
+        AMDVulkanDemoVkUtils::Log("Revision Id: %s", FormatRevisionId(revision_id).c_str());
+        AMDVulkanDemoVkUtils::Log("Device Name: %s", device_name_string.c_str());
+        AMDVulkanDemoVkUtils::Log("--------------------------------------------------");
+        AMDVulkanDemoVkUtils::Log("Profile %d, Sample ID: %d", profile_set, sample_id);
     }
 
     std::stringstream csv_header;
@@ -698,7 +703,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get GPA sample result size." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get GPA sample result size.");
         return;
     }
 
@@ -706,7 +711,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (results_buffer == nullptr)
     {
-        std::cout << "ERROR: Failed to allocate memory for GPA results." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to allocate memory for GPA results.");
         return;
     }
 
@@ -714,7 +719,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get GPA sample results." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get GPA sample results.");
     }
     else
     {
@@ -723,7 +728,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
         if (kGpaStatusOk != gpa_status)
         {
-            std::cout << "ERROR: Failed to get the number of enabled counters from GPA." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the number of enabled counters from GPA.");
         }
         else
         {
@@ -740,7 +745,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
                 if (kGpaStatusOk != gpa_status)
                 {
-                    std::cout << "ERROR: Failed to get the exposed GPA counter id of the enabled counter at index " << counter_index << "." << std::endl;
+                    AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the exposed GPA counter id of the enabled counter at index %d", counter_index);
                 }
                 else
                 {
