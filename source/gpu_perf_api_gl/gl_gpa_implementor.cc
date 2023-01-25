@@ -309,9 +309,7 @@ bool GlGpaImplementor::GetDeviceIdFromPlatformExt(unsigned int& driver_device_id
     {
         if (ogl_utils::ogl_x_query_current_renderer_integer_mesa(GLX_RENDERER_DEVICE_ID_MESA, &driver_device_id))
         {
-            std::stringstream message;
-            message << "GLX renderer device ID is 0x" << std::hex << driver_device_id << ".";
-            GPA_LOG_MESSAGE(message.str().c_str());
+            GPA_LOG_MESSAGE("GLX renderer device ID is 0x%04X.", driver_device_id);
             device_id_retrieved = true;
         }
         else

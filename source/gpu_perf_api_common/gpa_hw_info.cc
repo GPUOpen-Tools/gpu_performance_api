@@ -216,7 +216,7 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId()
     {
         if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(device_id_, revision_id_, card_info))
         {
-            GPA_LOG_DEBUG_MESSAGE("Found device ID: %X which is generation %d.", card_info.m_deviceID, card_info.m_generation);
+            GPA_LOG_DEBUG_MESSAGE("Found device ID: %zX which is generation %d.", card_info.m_deviceID, card_info.m_generation);
 
             if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(device_id_, revision_id_, device_info))
             {
@@ -266,9 +266,7 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId()
     // Only emit an error for AMD devices.
     if (IsAmd())
     {
-        std::stringstream ss;
-        ss << "Unrecognized device ID: " << device_id_ << ".";
-        GPA_LOG_ERROR(ss.str().c_str());
+        GPA_LOG_ERROR("Unrecognized device ID: 0x%04X", device_id_);
     }
 
     return false;

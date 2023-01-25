@@ -342,20 +342,16 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
             if (ogl_utils::IsUglDriver() && total_group_instances < expected_driver_groups)
             {
                 // We should not proceed if the driver exposes less groups that we expect
-                std::stringstream error;
-                error << "GL_AMD_performance_monitor exposes " << total_group_instances << " counter group instances, but GPUPerfAPI requires at least "
-                      << expected_driver_groups << ".";
-                GPA_LOG_ERROR(error.str().c_str());
+                GPA_LOG_ERROR("GL_AMD_performance_monitor exposes %d counter group instances, but GPUPerfAPI requires at least %d.",
+                    total_group_instances, expected_driver_groups);
             }
             else
             {
                 if (ogl_utils::IsUglDriver() && total_group_instances > expected_driver_groups)
                 {
                     // Report an message if the driver exposes more groups than we expect, but allow the code to continue.
-                    std::stringstream error;
-                    error << "GL_AMD_performance_monitor exposes " << total_group_instances << " counter group instances, but GPUPerfAPI expected "
-                          << expected_driver_groups << ". This is acceptable.";
-                    GPA_LOG_MESSAGE(error.str().c_str());
+                    GPA_LOG_MESSAGE("GL_AMD_performance_monitor exposes %d counter group instances, but GPUPerfAPI expected %d.",
+                          total_group_instances, expected_driver_groups);
                 }
 
                 // Iterate through all of GPA's expanded groups, verify the order, and
@@ -569,10 +565,8 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                     else
                     {
                         // This is an error.
-                        std::stringstream error;
-                        error << "GPA is expecting group " << gpa_group_name << " but the driver is exposing group " << driver_group_iter->group_name
-                              << ". This GPA group will not be updated." << std::endl;
-                        GPA_LOG_ERROR(error.str().c_str());
+                        GPA_LOG_ERROR("GPA is expecting group %s but the driver is exposing group %s. This GPA group will not be updated.",
+                            gpa_group_name.c_str(), driver_group_iter->group_name);
 
                         break;
                     }
@@ -583,20 +577,15 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                         const GpaUInt32 gpa_num_counters = gpa_group->num_counters;
                         if (static_cast<GpaUInt32>(driver_group_iter->num_counters) != gpa_num_counters)
                         {
-                            std::stringstream error;
-                            error << "GPA's group " << gpa_group_name << " is expecting " << gpa_num_counters << " counters but the driver is reporting "
-                                  << driver_group_iter->num_counters << ".";
-                            GPA_LOG_MESSAGE(error.str().c_str());
+                            GPA_LOG_MESSAGE("GPA's group %s is expecting %d counters but the driver is reporting %d.",
+                                gpa_group_name.c_str(), gpa_num_counters, driver_group_iter->num_counters);
                         }
 
                         const GpaUInt32 gpa_num_max_active = gpa_group->max_active_discrete_counters;
                         if (static_cast<GpaUInt32>(driver_group_iter->max_active_discrete_counters_per_instance) != gpa_num_max_active)
                         {
-                            std::stringstream error;
-                            error << "GPA's group " << gpa_group_name << " is expecting " << gpa_num_max_active
-                                  << " max active discrete counters, but the driver is reporting "
-                                  << driver_group_iter->max_active_discrete_counters_per_instance << ".";
-                            GPA_LOG_MESSAGE(error.str().c_str());
+                            GPA_LOG_MESSAGE("GPA's group %s is expecting %d max active discrete counters, but the driver is reporting %d.",
+                                gpa_group_name.c_str(), gpa_num_max_active, driver_group_iter->max_active_discrete_counters_per_instance);
                         }
 
                         // Iterate through each counter within this group and update the driver group id.
