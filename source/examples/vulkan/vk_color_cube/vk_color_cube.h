@@ -142,13 +142,6 @@ public:
     /// Default window height.
     const uint32_t kDefaultWindowHeight = 300;
 
-    /// Note that GPA sample IDs are client defined. However, the Vulkan GPA
-    /// extension assigns an ID to each sample (they are not client defined).
-    /// The GPA library manages the mapping between them. These are the former.
-    static constexpr GpaUInt32 kGpaSampleIdCube = 0;
-    static constexpr GpaUInt32 kGpaSampleIdWireframe = 1;
-    static constexpr GpaUInt32 kGpaSampleIdCubeAndWireframe = 2;
-
 #ifdef ANDROID
     inline void SetWindow(ANativeWindow* native_window)
     {
@@ -249,7 +242,7 @@ private:
 
             /// Sample Id that the application (not GPA) assigns to the cube.
             /// The cube will have this same sample_id in all passes.
-            const GpaUInt32 gpa_sample_id = kGpaSampleIdCube;
+            const GpaUInt32 gpa_sample_id = 0;
         } cube_;
 
         /// @brief Container for objects related to drawing the wireframe.
@@ -263,7 +256,7 @@ private:
 
             /// Sample Id that the application (not GPA) assigns to the wireframe.
             /// The wireframe will have this same sample_id in all passes.
-            const GpaUInt32 gpa_sample_id = kGpaSampleIdWireframe;
+            const GpaUInt32 gpa_sample_id = 1;
         } wire_frame_;
 
         /// @brief Container for objects related to drawing the cube and wireframe.
@@ -286,7 +279,7 @@ private:
 
             /// Sample Id that the application (not GPA) assigns to the cube wireframe.
             /// The combined cube + wireframe sample will have this same sample_id in all passes.
-            const GpaUInt32 gpa_sample_id = kGpaSampleIdCubeAndWireframe;
+            const GpaUInt32 gpa_sample_id = 2;
         } cube_and_wire_frame_;
     };
 
@@ -393,6 +386,12 @@ private:
     /// @param [in] enable_gpa Indicates whether GPA profiling should be enabled in these command buffers or not.
     /// @param [in] gpa_pass_index If GPA is enabled for these command buffers, this indicates which profile pass is being built; ignored if enable_gpa is false.
     void PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_resources, VkFramebuffer frame_buffer, bool enable_gpa, uint32_t gpa_pass_index);
+
+    /// @brief Log the textual representation of a failure status code
+    ///
+    /// @param [in] status the failure code
+    /// @param [in] msg optional additional context. Should not contain trailing punctuation.
+    void LogStatus(GpaStatus status, const char* msg=nullptr);
 
     /// GPA helper.
     GpaHelper gpu_perf_api_helper_;
