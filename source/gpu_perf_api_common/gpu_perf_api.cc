@@ -47,7 +47,7 @@ extern IGpaImplementor* gpa_imp;  ///< GPA implementor instance.
     }                                                                                                         \
     if (index >= num_counters)                                                                                \
     {                                                                                                         \
-        GPA_LOG_ERROR("Parameter index is %d but must be less than %d.", index, num_counters);                \
+        GPA_LOG_ERROR("Parameter %s is %d but must be less than %d.", #index, index, num_counters);           \
         return kGpaStatusErrorIndexOutOfRange;                                                                \
     }
 
@@ -493,15 +493,6 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHw
             case GDT_HW_GENERATION_GFX11:
                 *hardware_generation = kGpaHwGenerationGfx11;
                 break;
-            case GDT_HW_GENERATION_GFX104:
-                *hardware_generation = kGpaHwGenerationGfx104;
-                break;
-            case GDT_HW_GENERATION_GFX401:
-                *hardware_generation = kGpaHwGenerationGfx401;
-                break;
-            case GDT_HW_GENERATION_GFX402:
-                *hardware_generation = kGpaHwGenerationGfx402;
-                break;
             case GDT_HW_GENERATION_LAST:
                 *hardware_generation = kGpaHwGenerationLast;
                 break;
@@ -856,8 +847,6 @@ GPA_LIB_DECL GpaStatus GpaDeleteSession(GpaSessionId gpa_session_id)
 
 GPA_LIB_DECL GpaStatus GpaBeginSession(GpaSessionId gpa_session_id)
 {
-    GPA_LOG_ERROR("jjjjjjjjjjjjj GpaBeginSession");
-
     try
     {
         PROFILE_FUNCTION(GpaBeginSession);

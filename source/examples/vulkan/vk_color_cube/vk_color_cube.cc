@@ -421,6 +421,7 @@ bool AMDVulkanDemo::InitializeGpa()
     if (kGpaStatusOk != status)
     {
         AMDVulkanDemoVkUtils::Log("ERROR: GpaGetFuncTable failed with status %d", status);
+        delete gpa_function_table;
         return false;
     }
 
@@ -1814,10 +1815,9 @@ void AMDVulkanDemo::DrawScene()
             // This example only renders one set of profiles (aka, only the number of passes needed to generate one set of results).
             unsigned int profile_set = 0;
 
-            // NOTE: we can't loop over these because it is not guaranteed that the sample_ids will be 0-based and monotonically increasing.
-            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, 0, print_debug_output_, Verify(), ConfirmSuccess());
-            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, 1, print_debug_output_, Verify(), ConfirmSuccess());
-            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, 2, print_debug_output_, Verify(), ConfirmSuccess());
+            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, AMDVulkanDemo::kGpaSampleIdCube,             print_debug_output_, Verify(), ConfirmSuccess());
+            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, AMDVulkanDemo::kGpaSampleIdWireframe,        print_debug_output_, Verify(), ConfirmSuccess());
+            gpu_perf_api_helper_.PrintGpaSampleResults(gpa_context_id_, gpa_session_id_, profile_set, AMDVulkanDemo::kGpaSampleIdCubeAndWireframe, print_debug_output_, Verify(), ConfirmSuccess());
 
             // Close the CSV file so that it actually gets saved out.
             gpu_perf_api_helper_.CloseCSVFile();
