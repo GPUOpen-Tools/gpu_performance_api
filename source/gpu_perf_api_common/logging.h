@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Logging utility.
@@ -53,6 +53,12 @@
 #define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)  ///< Macro used for tracing private function with parameters.
 #endif                                               // trace functions.
 
+#ifdef __GNUC__
+#define GPA_ATTRIBUTE_PRINTF(fmt, args) __attribute__((format(printf, fmt, args)))
+#else
+#define GPA_ATTRIBUTE_PRINTF(fmg, args)
+#endif
+
 /// @brief Internal GPA logger function.
 ///
 /// @param [in] log_type Logging type.
@@ -103,7 +109,7 @@ public:
         }
     }
 
-    void Logf(GpaLoggingType type, const char* msg_fmt, ...) __attribute__((format(printf, 3, 4)))
+    void Logf(GpaLoggingType type, const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(3, 4)
     {
         va_list args;
         va_start(args, msg_fmt);
@@ -114,7 +120,7 @@ public:
     /// @brief Logs an error message.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    inline void LogError(const char* msg_fmt, ...) __attribute__((format(printf, 2, 3)))
+    inline void LogError(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
         va_list args;
         va_start(args, msg_fmt);
@@ -125,7 +131,7 @@ public:
     /// @brief Logs an informational message.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    inline void LogMessage(const char* msg_fmt, ...) __attribute__((format(printf, 2, 3)))
+    inline void LogMessage(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
         va_list args;
         va_start(args, msg_fmt);
@@ -136,7 +142,7 @@ public:
     /// @brief Logs a trace message.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    inline void LogTrace(const char* msg_fmt, ...) __attribute__((format(printf, 2, 3)))
+    inline void LogTrace(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
         va_list args;
         va_start(args, msg_fmt);
@@ -147,7 +153,7 @@ public:
     /// @brief Logs a formatted message in internal builds; does nothing in release.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugMessage(const char* msg_fmt, ...) __attribute__((format(printf, 2, 3)))
+    void LogDebugMessage(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
         va_list args;
         va_start(args, msg_fmt);
@@ -158,7 +164,7 @@ public:
     /// @brief Logs a formatted error message in debug builds; does nothing in release.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugError(const char* msg_fmt, ...) __attribute__((format(printf, 2, 3)))
+    void LogDebugError(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
         va_list args;
         va_start(args, msg_fmt);
@@ -169,7 +175,7 @@ public:
     /// @brief Logs a formatted error message in debug builds; does nothing in release.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugTrace(const char* msg_fmt, ...) __attribute__((format(printf, 2, 3)))
+    void LogDebugTrace(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
         va_list args;
         va_start(args, msg_fmt);
@@ -180,7 +186,7 @@ public:
     /// @brief Logs a formatted message in internal builds; does nothing in public builds.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugCounterDefs(const char* msg_fmt, ...) __attribute__((format(printf, 2, 3)))
+    void LogDebugCounterDefs(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
         va_list args;
         va_start(args, msg_fmt);

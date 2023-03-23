@@ -28,6 +28,12 @@
 
 #include <vulkan/vulkan.h>
 
+#ifdef __GNUC__
+#define GPA_ATTRIBUTE_PRINTF(fmt, args) __attribute__((format(printf, fmt, args)))
+#else
+#define GPA_ATTRIBUTE_PRINTF(fmg, args)
+#endif
+
 #define VK_MODULE_FUNC(X)                     \
     X(vkEnumerateInstanceExtensionProperties) \
     X(vkEnumerateInstanceLayerProperties)     \
@@ -134,7 +140,7 @@ namespace AMDVulkanDemoVkUtils
     //
     /// @param [in] format printf style format string
     /// @param [in] ... arguments to format string, if any
-    void Log(const char *format, ...)  __attribute__((format(printf, 1, 2)));
+    void Log(const char* format, ...) GPA_ATTRIBUTE_PRINTF(1, 2);
 
     extern bool are_vk_entry_points_initialized;  ///< Flag indicating the initialization status of vulkan entry points.
 

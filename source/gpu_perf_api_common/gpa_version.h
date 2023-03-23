@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Macros used for defining GPUPerfAPI version.
@@ -34,7 +34,7 @@
 
 #define AMDT_PROJECT_SUFFIX_STR GPA_VERSION_STRING(AMDT_PROJECT_SUFFIX)  ///< Macro for project suffix string.
 
-#define GPA_COPYRIGHT_CURRENT_YEAR 2022  ///< Macro for current year.
+#define GPA_COPYRIGHT_CURRENT_YEAR 2023  ///< Macro for current year.
 
 #define GPA_COPYRIGHT_STR \
     "Copyright (c) 2010-" GPA_VERSION_STRING(GPA_COPYRIGHT_CURRENT_YEAR) " Advanced Micro Devices, Inc. All rights reserved."  ///< Macro for copyright string.
