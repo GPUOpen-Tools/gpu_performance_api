@@ -394,6 +394,12 @@ private:
     /// @param [in] gpa_pass_index If GPA is enabled for these command buffers, this indicates which profile pass is being built; ignored if enable_gpa is false.
     void PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_resources, VkFramebuffer frame_buffer, bool enable_gpa, uint32_t gpa_pass_index);
 
+    /// @brief Log the textual representation of a failure status code
+    ///
+    /// @param [in] status the failure code
+    /// @param [in] msg optional additional context. Should not contain trailing punctuation.
+    void LogStatus(GpaStatus status, const char* msg=nullptr);
+
     /// GPA helper.
     GpaHelper gpu_perf_api_helper_;
 

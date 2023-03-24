@@ -372,7 +372,7 @@ bool AMDVulkanDemo::InitializeGpa()
             gpu_perf_api_helper_.gpa_function_table_->GpaRegisterLoggingCallback(gpa_log_types, gpu_perf_api_helper_.gpaLoggingCallback);
         if (status_register_callback != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to register GPA logging callback.");
+            LogStatus(status_register_callback, "ERROR: Failed to register GPA logging callback");
             return false;
         }
 
@@ -380,7 +380,7 @@ bool AMDVulkanDemo::InitializeGpa()
 
         if (status_gpa_initialize != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to initialize GPA.");
+            LogStatus(status_gpa_initialize, "ERROR: Failed to initialize GPA");
             return false;
         }
 
@@ -440,7 +440,7 @@ bool AMDVulkanDemo::InitializeGpa()
     status = gpu_perf_api_helper_.gpa_function_table_->GpaRegisterLoggingCallback(gpa_log_types, gpu_perf_api_helper_.gpaLoggingCallback);
     if (status != kGpaStatusOk)
     {
-        AMDVulkanDemoVkUtils::Log("ERROR: Failed to register GPA logging callback.");
+        LogStatus(status, "ERROR: Failed to register GPA logging callback");
         return false;
     }
 
@@ -864,7 +864,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_open_context_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to open GPA context.");
+            LogStatus(gpa_open_context_status, "ERROR: Failed to open GPA context");
             return false;
         }
 
@@ -878,7 +878,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         GpaStatus get_sample_types_status      = gpu_perf_api_helper_.gpa_function_table_->GpaGetSupportedSampleTypes(gpa_context_id_, &sample_types);
         if (get_sample_types_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get supported GPA sample types.");
+            LogStatus(get_sample_types_status, "ERROR: Failed to get supported GPA sample types");
             return false;
         }
 
@@ -887,7 +887,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_create_session_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to create GPA session.");
+            LogStatus(gpa_create_session_status, "ERROR: Failed to create GPA session");
             return false;
         }
 
@@ -914,6 +914,7 @@ bool AMDVulkanDemo::InitializeVulkan()
                     if (gpa_status != kGpaStatusOk)
                     {
                         AMDVulkanDemoVkUtils::Log("Failed to enable counter: %s", it->c_str());
+                        LogStatus(gpa_status);
                     }
                     success_enable_counter &= gpa_status == kGpaStatusOk;
                 }
@@ -941,7 +942,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_enable_all_counters_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to enable all GPA counters.");
+            LogStatus(gpa_enable_all_counters_status, "ERROR: Failed to enable all GPA counters");
             return false;
         }
 
@@ -950,7 +951,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         GpaStatus gpa_get_pass_count_status = gpu_perf_api_helper_.gpa_function_table_->GpaGetPassCount(gpa_session_id_, &required_pass_count_);
         if (gpa_get_pass_count_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the number of required GPA passes.");
+            LogStatus(gpa_get_pass_count_status, "ERROR: Failed to get the number of required GPA passes");
             return false;
         }
 
@@ -965,7 +966,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_begin_session_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to begin GPA session.");
+            LogStatus(gpa_begin_session_status, "ERROR: Failed to begin GPA session");
             return false;
         }
     }
@@ -1654,7 +1655,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_end_session_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to end GPA session.");
+            LogStatus(gpa_end_session_status, "ERROR: Failed to end GPA session");
         }
     }
 
@@ -1842,7 +1843,7 @@ void AMDVulkanDemo::Destroy()
 
             if (gpa_delete_session_status != kGpaStatusOk)
             {
-                AMDVulkanDemoVkUtils::Log("ERROR: Failed to delete GPA session.");
+                LogStatus(gpa_delete_session_status, "ERROR: Failed to delete GPA session");
             }
         }
 
@@ -1852,7 +1853,7 @@ void AMDVulkanDemo::Destroy()
 
             if (gpa_close_context_status != kGpaStatusOk)
             {
-                AMDVulkanDemoVkUtils::Log("ERROR: Failed to close GPA Context.");
+                LogStatus(gpa_close_context_status, "ERROR: Failed to close GPA Context");
             }
         }
     }
@@ -2355,6 +2356,19 @@ void AMDVulkanDemo::PreBuildCommandBuffers(PrebuiltPerFrameResources* prebuilt_r
         {
             AMDVulkanDemoVkUtils::Log("ERROR: Failed to end wireframe command buffer.");
         }
+    }
+}
+
+void AMDVulkanDemo::LogStatus(GpaStatus status, const char* msg)
+{
+    auto status_as_str = gpu_perf_api_helper_.gpa_function_table_->GpaGetStatusAsStr(status);
+    if (msg != nullptr)
+    {
+        AMDVulkanDemoVkUtils::Log("%s. %s", msg, status_as_str);
+    }
+    else
+    {
+        AMDVulkanDemoVkUtils::Log("%s", status_as_str);
     }
 }
 

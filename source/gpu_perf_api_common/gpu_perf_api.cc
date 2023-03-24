@@ -1657,7 +1657,7 @@ static const char* kErrorString[] = {
     GPA_ENUM_STRING_VAL(kGpaStatusErrorTimeout, "GPA Error: Attempt to Retrieve Data Failed due to Timeout."),
     GPA_ENUM_STRING_VAL(kGpaStatusErrorLibAlreadyLoaded, "GPA Error: Library Is Already Loaded."),
     GPA_ENUM_STRING_VAL(kGpaStatusErrorOtherSessionActive, "GPA Error: Other Session Is Active."),
-    GPA_ENUM_STRING_VAL(kGpaStatusErrorException, "GPA Error: Exception Occurred.")};
+    GPA_ENUM_STRING_VAL(kGpaStatusErrorException, "GPA Error: C++ Exception Occurred.")};
 
 /// Size of kErrorString array.
 static size_t kErrorStringSize = sizeof(kErrorString) / sizeof(const char*);
