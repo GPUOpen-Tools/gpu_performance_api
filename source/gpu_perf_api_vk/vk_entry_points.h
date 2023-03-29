@@ -9,6 +9,8 @@
 #define GPU_PERF_API_VK_VK_ENTRYPOINTS_H_
 
 #include "gpu_perf_api_vk/vk_includes.h"
+#include "gpu_perf_api_vk.h"
+
 
 extern PFN_vkGetPhysicalDeviceProperties            _vkGetPhysicalDeviceProperties;             ///< Vulkan entrypoint.
 extern PFN_vkGetPhysicalDeviceQueueFamilyProperties _vkGetPhysicalDeviceQueueFamilyProperties;  ///< Vulkan entrypoint.
@@ -83,6 +85,11 @@ namespace vk_utils
     ///
     /// @return True if all entrypoints cuold be initialized.
     bool InitializeVkEntryPoints(VkInstance instance, VkDevice device);
+
+    /// WZ DEBUG
+    bool InitializeVkEntryPointsFromLayer(VkInstance instance, VkDevice device,
+        GpaVkApiEntrypoints_v1* pVkEntry);
+
 }  // namespace vk_utils
 
 #endif  // GPU_PERF_API_VK_VK_ENTRYPOINTS_H_

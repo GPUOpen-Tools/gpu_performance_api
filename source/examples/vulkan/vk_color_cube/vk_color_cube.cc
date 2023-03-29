@@ -856,6 +856,14 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         GpaOpenContextFlags open_flags    = IncludeHwCounters() ? kGpaOpenContextEnableHardwareCountersBit : kGpaOpenContextDefaultBit;
         GpaStatus gpa_open_context_status = gpu_perf_api_helper_.gpa_function_table_->GpaOpenContext(&gpa_context_open_info, open_flags, &gpa_context_id_);
+        if (gpa_open_context_status != kGpaStatusOk)
+        {
+            return false;
+        }
+        else{
+            AMDVulkanDemoVkUtils::Log("SUCCESS to open GPA context.");
+        }
+
         GpaUInt32 device_id, revision_id;
         /*GpaStatus deviceInfoStatus =*/gpu_perf_api_helper_.gpa_function_table_->GpaGetDeviceAndRevisionId(gpa_context_id_, &device_id, &revision_id);
         char        device_name[80] = {};

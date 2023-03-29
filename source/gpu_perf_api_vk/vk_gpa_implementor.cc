@@ -46,8 +46,19 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
 
         if (VK_NULL_HANDLE != vk_context_info->instance && VK_NULL_HANDLE != vk_context_info->physical_device && VK_NULL_HANDLE != vk_context_info->device)
         {
+            bool success = false;
+            if ( vk_context_info->callFromLayer )
+            {
+                success = vk_utils::InitializeVkEntryPointsFromLayer(vk_context_info->instance, vk_context_info->device,
+                    &vk_context_info->vkEntry);
+            }
+            else
+            {
+                success = vk_utils::InitializeVkEntryPoints(vk_context_info->instance, vk_context_info->device);
+            }
+
             // For Vulkan, the context contains the VkInstance and VkDevice.
-            if (vk_utils::InitializeVkEntryPoints(vk_context_info->instance, vk_context_info->device))
+            if (success)
             {
                 if (vk_utils::IsDeviceSupportedForProfiling(vk_context_info->physical_device))
                 {
@@ -200,8 +211,17 @@ bool VkGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, 
 
         if (VK_NULL_HANDLE != vk_context_info->instance && VK_NULL_HANDLE != vk_context_info->physical_device && VK_NULL_HANDLE != vk_context_info->device)
         {
-            // For Vulkan, the context contains the VkInstance.
-            if (vk_utils::InitializeVkEntryPoints(vk_context_info->instance, vk_context_info->device))
+            if ( vk_context_info->callFromLayer )
+            {
+                is_supported = vk_utils::InitializeVkEntryPointsFromLayer(vk_context_info->instance, vk_context_info->device,
+                    &vk_context_info->vkEntry);
+            }
+            else
+            {
+                is_supported = vk_utils::InitializeVkEntryPoints(vk_context_info->instance, vk_context_info->device);
+            }
+            
+            if (is_supported)
             {
                 is_supported = vk_utils::IsDeviceSupportedForProfiling(vk_context_info->physical_device);
             }
