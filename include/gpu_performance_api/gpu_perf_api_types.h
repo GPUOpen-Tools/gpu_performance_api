@@ -170,7 +170,8 @@ typedef enum
     kGpaStatusErrorLibAlreadyLoaded                 = -41,
     kGpaStatusErrorOtherSessionActive               = -42,
     kGpaStatusErrorException                        = -43,
-    kGpaStatusMin                                   = kGpaStatusErrorException,
+    kGpaStatusErrorInvalidCounterGroupData          = -44,
+    kGpaStatusMin                                   = kGpaStatusErrorInvalidCounterGroupData,
     kGpaStatusInternal                              = 256,  ///< Status codes used internally within GPUPerfAPI.
 } GpaStatus;
 
