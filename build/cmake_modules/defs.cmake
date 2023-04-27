@@ -1,9 +1,9 @@
 ## Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.19)
 
 ## Define the GPA version
 set(GPA_MAJOR_VERSION 3)
-set(GPA_MINOR_VERSION 12)
+set(GPA_MINOR_VERSION 13)
 set(GPA_UPDATE_VERSION 0)
 
 if(NOT DEFINED GPA_BUILD_NUMBER)
@@ -11,7 +11,7 @@ if(NOT DEFINED GPA_BUILD_NUMBER)
 endif()
 
 if(NOT DEFINED GPA_ROOT)
-    set(GPA_ROOT ${CMAKE_CURRENT_LIST_DIR}/../..)
+    file(REAL_PATH "${CMAKE_CURRENT_LIST_DIR}/../.." GPA_ROOT)
 endif()
 
 if(NOT DEFINED GPA_OUTPUT_DIR)

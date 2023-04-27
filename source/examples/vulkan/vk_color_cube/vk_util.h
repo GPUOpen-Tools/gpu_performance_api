@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2020-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Utility functions to handle vulkan loading, and initializing vulkan entry points.
@@ -26,13 +26,13 @@
 
 #endif
 
-#include <vulkan/vulkan.h>
-
 #ifdef __GNUC__
-#define GPA_ATTRIBUTE_PRINTF(fmt, args) __attribute__((format(printf, fmt, args)))
+#define GPA_ATTRIBUTE_PRINTF(msg, args) __attribute__((format(printf, msg, args)))
 #else
-#define GPA_ATTRIBUTE_PRINTF(fmg, args)
-#endif
+#define GPA_ATTRIBUTE_PRINTF(msg, args)
+#endif  // !__GNUC__
+
+#include <vulkan/vulkan.h>
 
 #define VK_MODULE_FUNC(X)                     \
     X(vkEnumerateInstanceExtensionProperties) \
@@ -140,7 +140,7 @@ namespace AMDVulkanDemoVkUtils
     //
     /// @param [in] format printf style format string
     /// @param [in] ... arguments to format string, if any
-    void Log(const char* format, ...) GPA_ATTRIBUTE_PRINTF(1, 2);
+    void Log(const char* format, ...)  GPA_ATTRIBUTE_PRINTF(1, 2);
 
     extern bool are_vk_entry_points_initialized;  ///< Flag indicating the initialization status of vulkan entry points.
 

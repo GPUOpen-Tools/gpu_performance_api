@@ -21,6 +21,20 @@ GpaApiManager*    GpaApiManager::gpa_api_manager_ = nullptr;
 GpaHelper*        GpaHelper::gpa_helper_          = nullptr;
 GpaFuncTableInfo* gpa_function_table_info         = nullptr;
 
+#ifdef _WIN32
+/// @brief Converts string from wide to utf-8 encoding.
+///
+/// @return The converted utf-8 encoded string.
+static std::string wide_to_utf8_converter(const std::wstring wide)
+{
+    int         num_bytes_needed = WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), nullptr, 0, nullptr, nullptr);
+    std::string utf8;
+    utf8.resize(num_bytes_needed);
+    WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), utf8.data(), num_bytes_needed, nullptr, nullptr);
+    return utf8;
+}
+#endif
+
 GpaHelper* GpaHelper::Instance()
 {
     if (nullptr == gpa_helper_)
@@ -98,7 +112,7 @@ void GpaLogger(GpaLoggingType log_type, const char* log_msg)
 bool GpaHelper::ParseCommandLine(int argc, char* argv[])
 {
     gpa_example::CmdlineParser cmdline_parser(argc, argv);
-    app_ = new (std::nothrow) gpa_example::GpaSampleApp("GLTriangle", cmdline_parser);
+    app_ = new (std::nothrow) gpa_example::GpaSampleApp(AMDT_PROJECT_NAME, cmdline_parser);
 
     if (app_ == nullptr)
     {
@@ -559,9 +573,7 @@ void GpaHelper::InitializeIO()
 
     std::wstring executable_path = std::wstring(module_string.begin(), module_string.begin() + (last_slash_position + 1));
 
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
-
-    std::string utf8_executable_path = wide_to_utf8_converter.to_bytes(executable_path);
+    std::string utf8_executable_path = wide_to_utf8_converter(executable_path);
 
 #else
     int  len;
@@ -587,9 +599,9 @@ void GpaHelper::InitializeIO()
     utf8_executable_path.append(executable_path.begin(), executable_path.end());
 #endif
 
-    counter_data_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Datafile());
+    gpa_counter_file_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Datafile());
     gpa_log_file_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Logfile());
-    std::remove(counter_data_name_.c_str());
+    std::remove(gpa_counter_file_name_.c_str());
     std::remove(gpa_log_file_name_.c_str());
-    counter_data_file_stream_.open(counter_data_name_.c_str(), std::ios_base::out | std::ios_base::app);
+    counter_data_file_stream_.open(gpa_counter_file_name_.c_str(), std::ios_base::out | std::ios_base::app);
 }

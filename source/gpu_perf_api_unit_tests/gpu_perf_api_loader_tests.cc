@@ -62,6 +62,8 @@ void GpuPerfApiLoaderTest::Run()
 
     EXPECT_TRUE(gpa_loader.Load(dll_path, api, &error_message))
         << "GPA loading with the legacy method failed for " << api_name << ". Error message: " << error_message;
+
+    // When the GpuPerfApiLoader is destroyed, it will automatically unload the loaded DLL.
 }
 
 TEST_P(GpuPerfApiLoaderTest, api)

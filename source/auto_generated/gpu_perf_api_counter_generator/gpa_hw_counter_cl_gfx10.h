@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief CL counter definitions for GFX10.
@@ -20,7 +20,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_cl_gfx10
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kClExposedCountersGroupArrayGfx10; ///< Array of hardware exposed counter groups for Cl for Gfx10 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kClCounterGroupArrayGfx10; ///< Array of hardware counter groups for Cl for Gfx10 family
     extern std::vector<GpaCounterGroupDesc>                           kHwClGroupsGfx10; ///< Array of counter groups for Cl for Gfx10 family
     extern GpaCounterGroupExposedCounterDesc                          kHwClExposedCountersByGroupGfx10[]; ///< Array of exposed counter groups for Cl for Gfx10 family
     extern GpaPaddedCounterDesc                                       kClPaddedCounterByGroupGfx10[]; ///< Array of reserved counter for Cl for Gfx10 family
@@ -29,7 +29,7 @@ namespace counter_cl_gfx10
     extern const std::set<unsigned int>                               kHwClTimestampBlockIdsGfx10; ///< Timestamp block id's for Cl for Gfx10 family
     extern const std::set<unsigned int>                               kHwClTimeCounterIndicesGfx10; ///< Timestamp counter indices for Cl for Gfx10 family
     extern const unsigned int                                         kHwClGroupCountGfx10; ///< Hardware Group Count for Cl for Gfx10 family
-    extern const unsigned int                                         kHwClExposedCountersGroupCountGfx10; ///< Whitelist hardware counter Group Count for Cl for Gfx10 family
+    extern const unsigned int                                         kHwClExposedCountersGroupCountGfx10; ///< Exposed hardware counter Group Count for Cl for Gfx10 family
     extern const unsigned int                                         kClPaddedCounterGroupCountGfx10; ///< reserved counter group count for Cl for Gfx10 family
     extern const unsigned int                                         kHwClSqGroupCountGfx10; ///< Hardware SQ Group Count for Cl for Gfx10 family
     extern const unsigned int                                         kHwClSqIsolatedGroupCountGfx10; ///< Hardware Isolated Group Count for Cl for Gfx10 family

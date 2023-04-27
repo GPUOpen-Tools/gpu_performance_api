@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 counter generation for non-AMD hardware (used simply to register the generator).
@@ -12,7 +12,7 @@
 GpaCounterGeneratorDx12NonAmd::GpaCounterGeneratorDx12NonAmd()
 {
     // Enable only sw counters.
-    GpaCounterGeneratorBase::SetAllowedCounters(false, false, true);
+    GpaCounterGeneratorBase::SetAllowedCounters(false, false);
 
     // Allow future registrations to override this default one.
     CounterGeneratorSchedulerManager::Instance()->RegisterCounterGenerator(kGpaApiDirectx12, GDT_HW_GENERATION_INTEL, this, false);

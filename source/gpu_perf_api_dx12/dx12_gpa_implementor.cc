@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Implementation
@@ -22,6 +22,18 @@ IGpaImplementor*                     gpa_imp = Dx12GpaImplementor::Instance();
 static GpaCounterGeneratorDx12       counter_generator_dx12;          ///< Static instance of DX12 generator.
 static GpaCounterGeneratorDx12NonAmd counter_generator_dx12_non_amd;  ///< Static instance of DX12 non-AMD generator.
 static GpaCounterSchedulerDx12       counter_scheduler_dx12;          ///< Static instance of DX12 scheduler.
+
+/// @brief Converts string from wide to utf-8 encoding.
+///
+/// @return The converted utf-8 encoded string.
+static std::string wide_to_utf8_converter(const std::wstring wide)
+{
+    int         num_bytes_needed = WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), nullptr, 0, nullptr, nullptr);
+    std::string utf8;
+    utf8.resize(num_bytes_needed);
+    WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), utf8.data(), num_bytes_needed, nullptr, nullptr);
+    return utf8;
+}
 
 Dx12GpaImplementor::~Dx12GpaImplementor()
 {
@@ -57,9 +69,7 @@ bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
             hw_info.SetRevisionId(adapter_desc.Revision);
             std::wstring adapter_name_wide_string(adapter_desc.Description);
 
-            std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
-
-            std::string adapter_name = wide_to_utf8_converter.to_bytes(adapter_name_wide_string);
+            std::string adapter_name = wide_to_utf8_converter(adapter_name_wide_string);
 
             hw_info.SetDeviceName(adapter_name.c_str());
             GDT_HW_GENERATION hw_gen = GDT_HW_GENERATION_NONE;

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Maintains a set of hardware counters.
@@ -231,6 +231,8 @@ public:
         counters_generated_                               = false;
         isolated_groups_                                  = nullptr;
         isolated_group_count_                             = 0;
+        padded_counters_                                  = nullptr;
+        padded_counter_count_                             = 0;
 
         hardware_exposed_counters_.clear();
         hardware_exposed_counter_groups_      = nullptr;
@@ -292,58 +294,59 @@ public:
                 }
             }
 
+            // Iterate through all the individual block instances to find the matching hardware block.
+            // Then build up a vector of counter index offsets to each of the block instances so it can be cached.
+            // The idea here is that if GPA enables a counter in the first instance of a block, it will likely
+            // follow up with the same counter in the other block instances. Caching the offsets to the start of each
+            // instance makes it faster to find the other indices.
+            // Example: pretend TA has 31 counters, and TD has 10, and a counter is being enabled in TD.
+            // The internal_counter_groups_ may be [ TA0, TA1, TD0, TD1 ...]
+            // The outer loop will skip over the two TA's and calculate the counter offset as 31+31 = 62.
+            // Then "TD0" would match.
+            // The block_instance_counter_offsets would then get populated with [62, 72] as the starting counter index for TD0 and TD1, and added to the cache.
             bool      found_block    = false;
             GpaUInt32 group_iter     = 0u;
             GpaUInt32 counter_offset = 0u;
 
-            std::string hardware_block_string = kHardwareBlockString[gpa_internal_hardware_block];
-            std::string current_block_string;
+            // Setup strings to find the first hardware block instance. If there is only 1 instance, then it won't
+            // have the "0" afterwards to indicate the block instance number, but if there are multiple instances
+            // then the first one will end with a "0". Taking this approach allows us to search for an exact match.
+            // There are some hardware blocks with similar names that shouldn't be accidentally matched ie: ATC / ATCL2,
+            // GE / GESE / GEDIST, SQ / SQ_GS (etc) / SQWGP / SQWGP_GS (etc).
+            const std::string hardware_block_to_find               = kHardwareBlockString[gpa_internal_hardware_block];
+            const std::string hardware_block_to_find_instance_zero = hardware_block_to_find + "0";
 
             const GpaUInt32 internal_groups_size = static_cast<GpaUInt32>(internal_counter_groups_.size());
             while (!found_block && group_iter < internal_groups_size)
             {
-                current_block_string.clear();
-                current_block_string = std::string(internal_counter_groups_[group_iter].name);
+                const std::string current_block_string(internal_counter_groups_[group_iter].name);
 
-                if (current_block_string.find(hardware_block_string) != std::string::npos)
+                if (current_block_string.compare(hardware_block_to_find) == 0 || current_block_string.compare(hardware_block_to_find_instance_zero) == 0)
                 {
-                    found_block                                                       = true;
-                    auto                                 instance_iter                = 0u;
-                    auto                                 group_id_with_first_instance = group_iter;
+                    found_block = true;
+
+                    const GpaUInt32                      group_id_with_first_instance = group_iter;
                     std::vector<BlockCounterIndexOffset> block_instance_counter_offsets;
-                    bool                                 updated_all_instance = false;
+
+                    // Loop through each block instance to update its counter offset.
+                    // Use the fact that block instances will reset to 0 when a new set of HW block instances start.
                     do
                     {
                         block_instance_counter_offsets.push_back(counter_offset);
                         counter_offset += internal_counter_groups_[group_iter].num_counters;
-                        ++instance_iter;
+
                         ++group_iter;
-                        current_block_string.clear();
-                        current_block_string = std::string(internal_counter_groups_[group_iter].name);
 
-                        if (hardware_block_string.find("SQ") != std::string::npos || hardware_block_string.find("GL1C") != std::string::npos)
-                        {
-                            std::stringstream hardware_block_str_with_instance;
-                            hardware_block_str_with_instance << hardware_block_string.c_str() << instance_iter;
-
-                            if (hardware_block_str_with_instance.str().find(current_block_string) == std::string::npos)
-                            {
-                                updated_all_instance = true;
-                            }
-                        }
-                        else if (current_block_string.find(hardware_block_string) == std::string::npos)
-                        {
-                            updated_all_instance = true;
-                        }
-
-                    } while (!updated_all_instance);
+                    } while (group_iter < internal_groups_size && internal_counter_groups_[group_iter].block_instance > 0);
 
                     block_instance_counters_index_cache_[gpa_internal_hardware_block]     = block_instance_counter_offsets;
                     gpa_hw_block_hardware_block_group_cache_[gpa_internal_hardware_block] = group_id_with_first_instance;
                 }
-
-                counter_offset += internal_counter_groups_[group_iter].num_counters;
-                ++group_iter;
+                else
+                {
+                    counter_offset += internal_counter_groups_[group_iter].num_counters;
+                    ++group_iter;
+                }
             }
 
             return found_block;

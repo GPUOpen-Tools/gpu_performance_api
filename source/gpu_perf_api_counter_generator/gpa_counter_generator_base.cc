@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base class for counter generation.
@@ -10,21 +10,16 @@
 GpaCounterGeneratorBase::GpaCounterGeneratorBase()
     : do_allow_public_counters_(false)
     , do_allow_hardware_counters_(false)
-    , do_allow_software_counters_(false)
     , do_allow_hardware_exposed_counters_(false)
 {
 }
 
-void GpaCounterGeneratorBase::SetAllowedCounters(bool allow_public_counters, bool allow_hardware_counters, bool allow_software_counters)
+void GpaCounterGeneratorBase::SetAllowedCounters(bool allow_public_counters, bool allow_hardware_counters)
 {
     do_allow_public_counters_ = allow_public_counters;
 
-    UNREFERENCED_PARAMETER(allow_hardware_counters);
-    // Force HW counters to OFF for non internal builds.
     do_allow_hardware_counters_         = false;
     do_allow_hardware_exposed_counters_ = allow_hardware_counters;
-
-    do_allow_software_counters_ = allow_software_counters;
 }
 
 GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaUInt8 generate_asic_specific_counters)
@@ -33,7 +28,6 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
     public_counters_.Clear();
     hardware_counters_.Clear();
-    software_counters_.Clear();
 
     if (do_allow_public_counters_)
     {
@@ -69,17 +63,6 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
         }
     }
 
-    if (do_allow_software_counters_)
-    {
-        status = GenerateSoftwareCounters(desired_generation, asic_type, generate_asic_specific_counters, &software_counters_);
-
-        if (status != kGpaStatusOk)
-        {
-            GPA_LOG_ERROR("Failed to generate software counters.");
-            return status;
-        }
-    }
-
     if (0 == GetNumCounters())
     {
         // No counters reported, return hardware not supported.
@@ -106,11 +89,6 @@ GpaUInt32 GpaCounterGeneratorBase::GetNumCounters() const
     else if (do_allow_hardware_exposed_counters_)
     {
         count += hardware_counters_.GetNumHardwareExposedCounters();
-    }
-
-    if (do_allow_software_counters_)
-    {
-        count += software_counters_.GetNumCounters();
     }
 
     return count;
@@ -212,14 +190,6 @@ const char* GpaCounterGeneratorBase::GetCounterName(GpaUInt32 index) const
         index -= hardware_counters_.GetNumHardwareExposedCounters();
     }
 
-    if (do_allow_software_counters_)
-    {
-        if (index < software_counters_.GetNumCounters())
-        {
-            return software_counters_.GetCounterName(index);
-        }
-    }
-
     return nullptr;
 }
 
@@ -317,7 +287,7 @@ bool GpaCounterGeneratorBase::GetCounterIndex(const GpaHwBlock&    gpa_hardware_
 
 bool GpaCounterGeneratorBase::GetPublicInterfaceCounterIndex(const GpaUInt32& hardware_counter_index, GpaUInt32* public_interface_counter_index) const
 {
-    if (!do_allow_hardware_counters_ && !do_allow_public_counters_ && !do_allow_hardware_exposed_counters_ && !do_allow_software_counters_)
+    if (!do_allow_hardware_counters_ && !do_allow_public_counters_ && !do_allow_hardware_exposed_counters_)
     {
         return false;
     }
@@ -369,14 +339,6 @@ const char* GpaCounterGeneratorBase::GetCounterGroup(GpaUInt32 index) const
         index -= hardware_counters_.GetNumHardwareExposedCounters();
     }
 
-    if (do_allow_software_counters_)
-    {
-        if (index < software_counters_.GetNumCounters())
-        {
-            return software_counters_.GetCounterGroup(index);
-        }
-    }
-
     return nullptr;
 }
 
@@ -413,14 +375,6 @@ const char* GpaCounterGeneratorBase::GetCounterDescription(GpaUInt32 index) cons
         index -= hardware_counters_.GetNumHardwareExposedCounters();
     }
 
-    if (do_allow_software_counters_)
-    {
-        if (index < software_counters_.GetNumCounters())
-        {
-            return software_counters_.GetCounterDescription(index);
-        }
-    }
-
     return nullptr;
 }
 
@@ -455,26 +409,6 @@ GpaDataType GpaCounterGeneratorBase::GetCounterDataType(GpaUInt32 index) const
         }
 
         index -= hardware_counters_.GetNumHardwareExposedCounters();
-    }
-
-    if (do_allow_software_counters_)
-    {
-        GpaDataType type = kGpaDataTypeUint64;
-
-        if (SwCounterManager::Instance()->SwCounterEnabled())
-        {
-            if (index >= GetNumAmdCounters())
-            {
-                index -= GetNumAmdCounters();
-            }
-        }
-
-        if (index < software_counters_.GetNumCounters())
-        {
-            type = software_counters_.GetCounterType(index);
-        }
-
-        return type;
     }
 
     return kGpaDataTypeUint64;
@@ -515,25 +449,6 @@ GpaUsageType GpaCounterGeneratorBase::GetCounterUsageType(GpaUInt32 index) const
         index -= hardware_counters_.GetNumHardwareExposedCounters();
     }
 
-    if (do_allow_software_counters_)
-    {
-        if (SwCounterManager::Instance()->SwCounterEnabled())
-        {
-            if (index >= GetNumAmdCounters())
-            {
-                index -= GetNumAmdCounters();
-            }
-        }
-
-        // SW GPUTime counter.
-        if (0 == index)
-        {
-            return kGpaUsageTypeMilliseconds;
-        }
-
-        return kGpaUsageTypeItems;
-    }
-
     return kGpaUsageTypeItems;
 }
 
@@ -570,14 +485,6 @@ GpaUuid GpaCounterGeneratorBase::GetCounterUuid(GpaUInt32 index) const
         index -= hardware_counters_.GetNumHardwareExposedCounters();
     }
 
-    if (do_allow_software_counters_)
-    {
-        if (index < software_counters_.GetNumCounters())
-        {
-            return software_counters_.GetCounterUuid(index);
-        }
-    }
-
     return GpaUuid{};
 }
 
@@ -612,14 +519,6 @@ GpaCounterSampleType GpaCounterGeneratorBase::GetCounterSampleType(GpaUInt32 ind
         }
 
         index -= hardware_counters_.GetNumHardwareExposedCounters();
-    }
-
-    if (do_allow_software_counters_)
-    {
-        if (index < software_counters_.GetNumCounters())
-        {
-            return software_counters_.GetCounterSampleType(index);
-        }
     }
 
     return kGpaCounterSampleTypeDiscrete;
@@ -686,19 +585,6 @@ std::vector<GpaUInt32> GpaCounterGeneratorBase::GetInternalCountersRequired(GpaU
         index -= hardware_counters_.GetNumHardwareExposedCounters();
     }
 
-    if (do_allow_software_counters_)
-    {
-        if (index < software_counters_.GetNumCounters())
-        {
-            // The index is now the same as the needed hardware counter.
-            vec_internal_counters.push_back(index + hardware_counters_.GetNumCounters());
-        }
-        else
-        {
-            index -= software_counters_.GetNumCounters();
-        }
-    }
-
     return vec_internal_counters;
 }
 
@@ -726,11 +612,6 @@ void GpaCounterGeneratorBase::ComputeSwCounterValue(GpaUInt32 software_counter_i
 const GpaHardwareCounters* GpaCounterGeneratorBase::GetHardwareCounters() const
 {
     return &hardware_counters_;
-}
-
-const GpaSoftwareCounters* GpaCounterGeneratorBase::GetSoftwareCounters() const
-{
-    return &software_counters_;
 }
 
 GpaCounterInfo* GpaCounterGeneratorBase::GetCounterInfo(const GpaUInt32& counter_index) const
@@ -801,12 +682,6 @@ GpaCounterSourceInfo GpaCounterGeneratorBase::GetCounterSourceInfo(GpaUInt32 glo
         }
 
         global_index -= hardware_counters_.GetNumHardwareExposedCounters();
-    }
-
-    if (do_allow_software_counters_)
-    {
-        info.Set(global_index, GpaCounterSource::kSoftware);
-        return info;
     }
 
     // Unknown counter.

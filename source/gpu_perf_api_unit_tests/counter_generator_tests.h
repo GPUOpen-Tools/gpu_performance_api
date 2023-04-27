@@ -80,9 +80,9 @@ void VerifyHardwareNotSupported(GpaApiType api, unsigned int device_id, GpaUInt8
 
 void VerifyHardwareNotSupported(GpaApiType api, GpaHwGeneration generation, GpaUInt8 generate_asic_specific_counters);
 
-void VerifyCounterNames(GpaApiType api, unsigned int device_id, GpaUInt8 generate_asic_specific_counters, std::vector<const char*> expected_names);
+void VerifyCounterNames(GpaApiType api, unsigned int device_id, GpaUInt8 generate_asic_specific_counters, std::vector<const char*> expected_names, std::vector<const char*> expected_hardware_names);
 
-void VerifyCounterNames(GpaApiType api, GpaHwGeneration generation, GpaUInt8 generate_asic_specific_counters, std::vector<const char*> expected_names);
+void VerifyCounterNames(GpaApiType api, GpaHwGeneration generation, GpaUInt8 generate_asic_specific_counters, std::vector<const char*> expected_names, std::vector<const char*> expected_hardware_names);
 
 void VerifyOpenCounterContext(GpaApiType api, GpaHwGeneration generation);
 

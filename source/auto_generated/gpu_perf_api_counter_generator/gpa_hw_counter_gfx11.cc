@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX11.
@@ -12,24 +12,9 @@
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx11.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
+
 namespace counter_gfx11
 {
-    std::vector<GpaHardwareCounterDesc> kSdma0CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kSdma1CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kSdma2CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kSdma3CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kSdma4CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kSdma5CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kCpgCountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kCpcCountersGfx11 = {
-    };
     std::vector<GpaHardwareCounterDesc> kCpfCountersGfx11 = {
         {0, "CPF_PERF_SEL_ALWAYS_COUNT", "CPF", "Always Count.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {24, "CPF_PERF_SEL_CPF_STAT_BUSY", "CPF", "CPF Busy.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -37,20 +22,6 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kGrbmCountersGfx11 = {
         {0, "GRBM_PERF_SEL_COUNT", "GRBM", "Tie High - Count Number of Clocks", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {2, "GRBM_PERF_SEL_GUI_ACTIVE", "GRBM", "The GUI is Active", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse0CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse1CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse2CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse3CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse4CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse5CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGeCountersGfx11 = {
     };
     std::vector<GpaHardwareCounterDesc> kPaSu0CountersGfx11 = {
         {14, "PA_SU0_PERF_PAPC_CLPR_CULL_PRIM", "PA_SU0", "PAPC_PERF_SEL_CLPR_CULL_PRIM Number of Prims Culled by Clipper for VV, UCP, VTX_KILL, VTX_NAN; increment rate-one per clock ; range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; combined with _CLPR_VVUCP_CULL_PRIM , _CLPR_VV_CULL_PRIM, _VV_CULL_PRIM ,_UCP_CULL_PRIM, _VTX_KILL_CULL_PRIM, _VTX_NAN_CULL_PRIM", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -406,6 +377,36 @@ namespace counter_gfx11
         {21, "SQG5_PERF_SEL_WAVES_32", "SQG5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {24, "SQG5_PERF_SEL_ITEMS", "SQG5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
+    std::vector<GpaHardwareCounterDesc> kSqgEs0CountersGfx11 = {
+        {20, "SQG_ES0_PERF_SEL_WAVES", "SQG_ES0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_ES0_PERF_SEL_WAVES_32", "SQG_ES0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_ES0_PERF_SEL_ITEMS", "SQG_ES0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgEs1CountersGfx11 = {
+        {20, "SQG_ES1_PERF_SEL_WAVES", "SQG_ES1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_ES1_PERF_SEL_WAVES_32", "SQG_ES1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_ES1_PERF_SEL_ITEMS", "SQG_ES1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgEs2CountersGfx11 = {
+        {20, "SQG_ES2_PERF_SEL_WAVES", "SQG_ES2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_ES2_PERF_SEL_WAVES_32", "SQG_ES2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_ES2_PERF_SEL_ITEMS", "SQG_ES2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgEs3CountersGfx11 = {
+        {20, "SQG_ES3_PERF_SEL_WAVES", "SQG_ES3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_ES3_PERF_SEL_WAVES_32", "SQG_ES3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_ES3_PERF_SEL_ITEMS", "SQG_ES3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgEs4CountersGfx11 = {
+        {20, "SQG_ES4_PERF_SEL_WAVES", "SQG_ES4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_ES4_PERF_SEL_WAVES_32", "SQG_ES4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_ES4_PERF_SEL_ITEMS", "SQG_ES4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgEs5CountersGfx11 = {
+        {20, "SQG_ES5_PERF_SEL_WAVES", "SQG_ES5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_ES5_PERF_SEL_WAVES_32", "SQG_ES5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_ES5_PERF_SEL_ITEMS", "SQG_ES5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
     std::vector<GpaHardwareCounterDesc> kSqgGs0CountersGfx11 = {
         {20, "SQG_GS0_PERF_SEL_WAVES", "SQG_GS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {21, "SQG_GS0_PERF_SEL_WAVES_32", "SQG_GS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -436,6 +437,36 @@ namespace counter_gfx11
         {21, "SQG_GS5_PERF_SEL_WAVES_32", "SQG_GS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {24, "SQG_GS5_PERF_SEL_ITEMS", "SQG_GS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
+    std::vector<GpaHardwareCounterDesc> kSqgVs0CountersGfx11 = {
+        {20, "SQG_VS0_PERF_SEL_WAVES", "SQG_VS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_VS0_PERF_SEL_WAVES_32", "SQG_VS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_VS0_PERF_SEL_ITEMS", "SQG_VS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgVs1CountersGfx11 = {
+        {20, "SQG_VS1_PERF_SEL_WAVES", "SQG_VS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_VS1_PERF_SEL_WAVES_32", "SQG_VS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_VS1_PERF_SEL_ITEMS", "SQG_VS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgVs2CountersGfx11 = {
+        {20, "SQG_VS2_PERF_SEL_WAVES", "SQG_VS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_VS2_PERF_SEL_WAVES_32", "SQG_VS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_VS2_PERF_SEL_ITEMS", "SQG_VS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgVs3CountersGfx11 = {
+        {20, "SQG_VS3_PERF_SEL_WAVES", "SQG_VS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_VS3_PERF_SEL_WAVES_32", "SQG_VS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_VS3_PERF_SEL_ITEMS", "SQG_VS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgVs4CountersGfx11 = {
+        {20, "SQG_VS4_PERF_SEL_WAVES", "SQG_VS4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_VS4_PERF_SEL_WAVES_32", "SQG_VS4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_VS4_PERF_SEL_ITEMS", "SQG_VS4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgVs5CountersGfx11 = {
+        {20, "SQG_VS5_PERF_SEL_WAVES", "SQG_VS5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_VS5_PERF_SEL_WAVES_32", "SQG_VS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_VS5_PERF_SEL_ITEMS", "SQG_VS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
     std::vector<GpaHardwareCounterDesc> kSqgPs0CountersGfx11 = {
         {20, "SQG_PS0_PERF_SEL_WAVES", "SQG_PS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {21, "SQG_PS0_PERF_SEL_WAVES_32", "SQG_PS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -465,6 +496,36 @@ namespace counter_gfx11
         {20, "SQG_PS5_PERF_SEL_WAVES", "SQG_PS5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {21, "SQG_PS5_PERF_SEL_WAVES_32", "SQG_PS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {24, "SQG_PS5_PERF_SEL_ITEMS", "SQG_PS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgLs0CountersGfx11 = {
+        {20, "SQG_LS0_PERF_SEL_WAVES", "SQG_LS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_LS0_PERF_SEL_WAVES_32", "SQG_LS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_LS0_PERF_SEL_ITEMS", "SQG_LS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgLs1CountersGfx11 = {
+        {20, "SQG_LS1_PERF_SEL_WAVES", "SQG_LS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_LS1_PERF_SEL_WAVES_32", "SQG_LS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_LS1_PERF_SEL_ITEMS", "SQG_LS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgLs2CountersGfx11 = {
+        {20, "SQG_LS2_PERF_SEL_WAVES", "SQG_LS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_LS2_PERF_SEL_WAVES_32", "SQG_LS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_LS2_PERF_SEL_ITEMS", "SQG_LS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgLs3CountersGfx11 = {
+        {20, "SQG_LS3_PERF_SEL_WAVES", "SQG_LS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_LS3_PERF_SEL_WAVES_32", "SQG_LS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_LS3_PERF_SEL_ITEMS", "SQG_LS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgLs4CountersGfx11 = {
+        {20, "SQG_LS4_PERF_SEL_WAVES", "SQG_LS4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_LS4_PERF_SEL_WAVES_32", "SQG_LS4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_LS4_PERF_SEL_ITEMS", "SQG_LS4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
+    std::vector<GpaHardwareCounterDesc> kSqgLs5CountersGfx11 = {
+        {20, "SQG_LS5_PERF_SEL_WAVES", "SQG_LS5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {21, "SQG_LS5_PERF_SEL_WAVES_32", "SQG_LS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {24, "SQG_LS5_PERF_SEL_ITEMS", "SQG_LS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSqgHs0CountersGfx11 = {
         {20, "SQG_HS0_PERF_SEL_WAVES", "SQG_HS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6646,8 +6707,6 @@ namespace counter_gfx11
         {27, "SX11_PERF_SEL_DB3_PIXELS", "SX11", "Number of pixels sent to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SX11_PERF_SEL_DB3_PIXEL_STALL", "SX11", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kGdsCountersGfx11 = {
-    };
     std::vector<GpaHardwareCounterDesc> kTa0CountersGfx11 = {
         {15, "TA0_PERF_SEL_TA_BUSY", "TA0", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {68, "TA0_PERF_SEL_MIP_1_CYCLE_QUADS", "TA0", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -9240,30 +9299,6 @@ namespace counter_gfx11
         {17, "TCP95_PERF_SEL_REQ_MISS", "TCP95", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {39, "TCP95_PERF_SEL_TCP_TA_REQ_STALL", "TCP95", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kUtcl10CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl11CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl12CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl13CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl14CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl15CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl16CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl17CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl18CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl19CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl110CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl111CountersGfx11 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGl2c0CountersGfx11 = {
         {3, "GL2C0_PERF_SEL_REQ", "GL2C0", "Number of requests of all types. This is measured at the tag block. This may be more than the number of requests arriving at the GL2C, but it is a good indication of the total amount of work that needs to be performed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {43, "GL2C0_PERF_SEL_MISS", "GL2C0", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -9528,14 +9563,6 @@ namespace counter_gfx11
         {101, "GL2C23_PERF_SEL_EA_RDREQ_96B", "GL2C23", "Number of 96-byte GL2C/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {102, "GL2C23_PERF_SEL_EA_RDREQ_128B", "GL2C23", "Number of 128-byte GL2C/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kGl2a0CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl2a1CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl2a2CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl2a3CountersGfx11 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGl1c0CountersGfx11 = {
         {14, "GL1C0_PERF_SEL_REQ", "GL1C0", "Read, writes, atomics, nop. Invalids are not counted as requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "GL1C0_PERF_SEL_REQ_MISS", "GL1C0", "Count of requests that miss in the cache. Writes and atomics always miss. Partial miss counts as miss.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -9727,16 +9754,6 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kGl1c47CountersGfx11 = {
         {14, "GL1C47_PERF_SEL_REQ", "GL1C47", "Read, writes, atomics, nop. Invalids are not counted as requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "GL1C47_PERF_SEL_REQ_MISS", "GL1C47", "Count of requests that miss in the cache. Writes and atomics always miss. Partial miss counts as miss.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kChc0CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc1CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc2CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc3CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChcgCountersGfx11 = {
     };
     std::vector<GpaHardwareCounterDesc> kCb0CountersGfx11 = {
         {5, "CB0_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB0", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -10314,146 +10331,6 @@ namespace counter_gfx11
         {178, "DB23_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB23", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {179, "DB23_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB23", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kRmi0CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi1CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi2CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi3CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi4CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi5CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi6CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi7CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi8CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi9CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi10CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi11CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi12CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi13CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi14CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi15CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi16CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi17CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi18CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi19CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi20CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi21CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi22CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi23CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi24CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi25CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi26CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi27CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi28CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi29CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi30CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi31CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi32CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi33CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi34CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi35CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi36CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi37CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi38CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi39CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi40CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi41CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi42CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi43CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi44CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi45CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi46CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi47CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc0CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc1CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc2CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc3CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc4CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc5CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc6CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc7CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc8CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc9CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc10CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc11CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc12CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc13CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc14CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc15CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc16CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc17CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc18CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc19CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRlcCountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGcrCountersGfx11 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGcea0CountersGfx11 = {
         {55, "GCEA0_PERF_SEL_SARB_DRAM_SIZE_REQ", "GCEA0", "55 | (size_p1 ) & (4(reqdram)) | DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {57, "GCEA0_PERF_SEL_SARB_IO_SIZE_REQ", "GCEA0", "57 | (size_p1 ) & (4(reqio )) | I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -10550,42 +10427,6 @@ namespace counter_gfx11
         {55, "GCEA23_PERF_SEL_SARB_DRAM_SIZE_REQ", "GCEA23", "55 | (size_p1 ) & (4(reqdram)) | DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {57, "GCEA23_PERF_SEL_SARB_IO_SIZE_REQ", "GCEA23", "57 | (size_p1 ) & (4(reqio )) | I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kRpbCountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGcvml2CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGusCountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kPaPhCountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a0CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a1CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a2CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a3CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a4CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a5CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a6CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a7CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a8CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a9CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a10CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a11CountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChaCountersGfx11 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGpuTimestampCountersGfx11 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGpuTimeCountersGfx11 = {
         {0, "GPUTime_BOTTOM_TO_BOTTOM_DURATION", "GPUTime", "delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {1, "GPUTime_BOTTOM_TO_BOTTOM_START", "GPUTime", "time of the previous command reaching bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -10593,8 +10434,6 @@ namespace counter_gfx11
         {3, "GPUTime_TOP_TO_BOTTOM_DURATION", "GPUTime", "execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {4, "GPUTime_TOP_TO_BOTTOM_START", "GPUTime", "time that the current command reaches the top of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "GPUTime_TOP_TO_BOTTOM_END", "GPUTime", "time that the current command reaches the bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGpinCountersGfx11 = {
     };
 } // counter_gfx11
 

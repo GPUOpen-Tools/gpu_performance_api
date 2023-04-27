@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX103.
@@ -12,16 +12,9 @@
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx103.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
+
 namespace counter_gfx103
 {
-    std::vector<GpaHardwareCounterDesc> kSdma0CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kSdma1CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kCpgCountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kCpcCountersGfx103 = {
-    };
     std::vector<GpaHardwareCounterDesc> kCpfCountersGfx103 = {
         {0, "CPF_PERF_SEL_ALWAYS_COUNT", "CPF", "Always Count.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {24, "CPF_PERF_SEL_CPF_STAT_BUSY", "CPF", "CPF Busy.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -29,18 +22,6 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kGrbmCountersGfx103 = {
         {0, "GRBM_PERF_SEL_COUNT", "GRBM", "Tie High - Count Number of Clocks", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {2, "GRBM_PERF_SEL_GUI_ACTIVE", "GRBM", "The GUI is Active", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse0CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse1CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse2CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse3CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGeCountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGe2DistCountersGfx103 = {
     };
     std::vector<GpaHardwareCounterDesc> kGeSe0CountersGfx103 = {
         {73, "GE_SE0_SPI_ESVERT_VALID", "GE_SE0", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1289,8 +1270,6 @@ namespace counter_gfx103
         {24, "SX7_PERF_SEL_DB2_PIXEL_STALL", "SX7", "Number of cycles where pixel traffic is stalled due to the DB2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {27, "SX7_PERF_SEL_DB3_PIXELS", "SX7", "Number of pixels sent to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SX7_PERF_SEL_DB3_PIXEL_STALL", "SX7", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGdsCountersGfx103 = {
     };
     std::vector<GpaHardwareCounterDesc> kTa0CountersGfx103 = {
         {15, "TA0_PERF_SEL_TA_BUSY", "TA0", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3132,22 +3111,6 @@ namespace counter_gfx103
         {18, "TCP79_PERF_SEL_REQ_MISS", "TCP79", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP79_PERF_SEL_TCP_TA_REQ_STALL", "TCP79", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kUtcl10CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl11CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl12CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl13CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl14CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl15CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl16CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl17CountersGfx103 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGl2c0CountersGfx103 = {
         {3, "GL2C0_PERF_SEL_REQ", "GL2C0", "Number of requests of all types. This is measured at the tag block. This may be more than the number of requests arriving at the GL2C, but it is a good indication of the total amount of work that needs to be performed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {43, "GL2C0_PERF_SEL_MISS", "GL2C0", "Number of cache misses. UC reads count as misses.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3412,14 +3375,6 @@ namespace counter_gfx103
         {101, "GL2C23_PERF_SEL_EA_RDREQ_96B", "GL2C23", "Number of 96-byte GL2C/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {102, "GL2C23_PERF_SEL_EA_RDREQ_128B", "GL2C23", "Number of 128-byte GL2C/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kGl2a0CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl2a1CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl2a2CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl2a3CountersGfx103 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGl1c0CountersGfx103 = {
         {14, "GL1C0_PERF_SEL_REQ", "GL1C0", "Read, writes, atomics, nop. Invalids are not counted as requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "GL1C0_PERF_SEL_REQ_MISS", "GL1C0", "Count of requests that miss in the cache. Writes and atomics always miss. Partial miss counts as miss.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3547,80 +3502,6 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kGl1c31CountersGfx103 = {
         {14, "GL1C31_PERF_SEL_REQ", "GL1C31", "Read, writes, atomics, nop. Invalids are not counted as requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "GL1C31_PERF_SEL_REQ_MISS", "GL1C31", "Count of requests that miss in the cache. Writes and atomics always miss. Partial miss counts as miss.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg0CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg1CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg2CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg3CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg4CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg5CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg6CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg7CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg8CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg9CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg10CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg11CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg12CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg13CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg14CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg15CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg16CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg17CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg18CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg19CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg20CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg21CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg22CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg23CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg24CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg25CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg26CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg27CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg28CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg29CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg30CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg31CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc0CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc1CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc2CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc3CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChcgCountersGfx103 = {
     };
     std::vector<GpaHardwareCounterDesc> kCb0CountersGfx103 = {
         {7, "CB0_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB0", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4086,118 +3967,6 @@ namespace counter_gfx103
         {178, "DB15_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB15", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {179, "DB15_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB15", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kRmi0CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi1CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi2CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi3CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi4CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi5CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi6CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi7CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi8CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi9CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi10CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi11CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi12CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi13CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi14CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi15CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi16CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi17CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi18CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi19CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi20CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi21CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi22CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi23CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi24CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi25CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi26CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi27CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi28CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi29CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi30CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi31CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc0CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc1CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc2CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc3CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc4CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc5CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc6CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc7CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc8CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc9CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc10CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc11CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc12CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc13CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc14CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc15CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc16CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc17CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc18CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc19CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRlcCountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGcrCountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kAtcCountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kAtcl2CountersGfx103 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGcea0CountersGfx103 = {
         {55, "GCEA0_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA0", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {57, "GCEA0_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA0", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4262,34 +4031,6 @@ namespace counter_gfx103
         {55, "GCEA15_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA15", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {57, "GCEA15_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA15", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kRpbCountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMcvml2CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGusCountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kPaPhCountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a0CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a1CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a2CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a3CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a4CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a5CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a6CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a7CountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChaCountersGfx103 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGpuTimestampCountersGfx103 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGpuTimeCountersGfx103 = {
         {0, "GPUTime_BOTTOM_TO_BOTTOM_DURATION", "GPUTime", "delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {1, "GPUTime_BOTTOM_TO_BOTTOM_START", "GPUTime", "time of the previous command reaching bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4297,8 +4038,6 @@ namespace counter_gfx103
         {3, "GPUTime_TOP_TO_BOTTOM_DURATION", "GPUTime", "execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {4, "GPUTime_TOP_TO_BOTTOM_START", "GPUTime", "time that the current command reaches the top of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "GPUTime_TOP_TO_BOTTOM_END", "GPUTime", "time that the current command reaches the bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGpinCountersGfx103 = {
     };
 } // counter_gfx103
 

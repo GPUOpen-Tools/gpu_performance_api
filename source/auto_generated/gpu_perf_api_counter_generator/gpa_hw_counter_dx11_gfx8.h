@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX11 counter definitions for GFX8.
@@ -23,7 +23,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_dx11_gfx8
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kDx11ExposedCountersGroupArrayGfx8; ///< Array of hardware exposed counter groups for Dx11 for Gfx8 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kDx11CounterGroupArrayGfx8; ///< Array of hardware counter groups for Dx11 for Gfx8 family
     extern std::vector<GpaCounterGroupDesc>                           kHwDx11GroupsGfx8; ///< Array of counter groups for Dx11 for Gfx8 family
     extern GpaCounterGroupExposedCounterDesc                          kHwDx11ExposedCountersByGroupGfx8[]; ///< Array of exposed counter groups for Dx11 for Gfx8 family
     extern GpaPaddedCounterDesc                                       kDx11PaddedCounterByGroupGfx8[]; ///< Array of reserved counter for Dx11 for Gfx8 family
@@ -39,7 +39,7 @@ namespace counter_dx11_gfx8
     extern const std::set<unsigned int>                               kHwDx11TimestampBlockIdsGfx8; ///< Timestamp block id's for Dx11 for Gfx8 family
     extern const std::set<unsigned int>                               kHwDx11TimeCounterIndicesGfx8; ///< Timestamp counter indices for Dx11 for Gfx8 family
     extern const unsigned int                                         kHwDx11GroupCountGfx8; ///< Hardware Group Count for Dx11 for Gfx8 family
-    extern const unsigned int                                         kHwDx11ExposedCountersGroupCountGfx8; ///< Whitelist hardware counter Group Count for Dx11 for Gfx8 family
+    extern const unsigned int                                         kHwDx11ExposedCountersGroupCountGfx8; ///< Exposed hardware counter Group Count for Dx11 for Gfx8 family
     extern const unsigned int                                         kDx11PaddedCounterGroupCountGfx8; ///< reserved counter group count for Dx11 for Gfx8 family
     extern const unsigned int                                         kHwDx11SqGroupCountGfx8; ///< Hardware SQ Group Count for Dx11 for Gfx8 family
     extern const unsigned int                                         kHwDx11SqIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for Dx11 for Gfx8 family

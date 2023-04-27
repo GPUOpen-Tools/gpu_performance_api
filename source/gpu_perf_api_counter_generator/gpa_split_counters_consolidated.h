@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2014-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2014-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief This file implements the "consolidated" counter splitter.
@@ -19,7 +19,6 @@
 
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "gpu_perf_api_counter_generator/gpa_split_counters_interfaces.h"
-#include "gpu_perf_api_counter_generator/gpa_sw_counter_manager.h"
 
 /// @brief Splits counters such that no individual public counter will be split into any more passes than minimally required.
 ///
@@ -64,7 +63,6 @@ public:
     ///
     /// @param [in] public_counters_to_split The set of public counters that need to be split into passes.
     /// @param [in] internal_counters_to_schedule Additional internal counters that need to be scheduled (used by internal builds).
-    /// @param [in] software_counters_to_schedule Additional software counters that need to be scheduled.
     /// @param [in] counter_group_accessor A class to access the internal counters.
     /// @param [in] max_counters_per_group The maximum number of counters that can be enabled in a single pass on each HW block or SW group.
     /// @param [out] num_scheduled_counters Indicates the total number of internal counters that were assigned to a pass.
@@ -72,7 +70,6 @@ public:
     /// @return The list of passes that the counters are separated into.
     std::list<GpaCounterPass> SplitCounters(const std::vector<const GpaDerivedCounterInfoClass*>& public_counters_to_split,
                                             const std::vector<GpaHardwareCounterIndices>          internal_counters_to_schedule,
-                                            const std::vector<GpaSoftwareCounterIndices>          software_counters_to_schedule,
                                             IGpaCounterGroupAccessor*                             accessor,
                                             const std::vector<unsigned int>&                      max_counters_per_group,
                                             unsigned int&                                         num_scheduled_counters) override
@@ -103,62 +100,7 @@ public:
         InsertHardwareCounters(
             pass_partitions, internal_counters_to_schedule, accessor, num_used_counters_per_pass_per_block, max_counters_per_group, num_scheduled_counters);
 
-        // Handle the software counters.
-        InsertSoftwareCounters(
-            pass_partitions, software_counters_to_schedule, accessor, num_used_counters_per_pass_per_block, max_counters_per_group, num_scheduled_counters);
-
         return pass_partitions;
-    }
-
-protected:
-    /// @brief Test if this is a timestamp query based counter.
-    ///
-    /// Normally only the time counter is based on the timestamp query.
-    ///
-    /// @param [in] sw_counter_index The SW counter index.
-    ///
-    /// @return True if the counter is based on the timestamp query, false if not.
-    virtual bool IsTimestampQueryCounter(const GpaUInt32 sw_counter_index) const
-    {
-        bool                    is_timestamp_query = false;
-        const SwCounterDescVec* sw_counters        = SwCounterManager::Instance()->GetSwCounters();
-        const GpaUInt32         amd_counters       = SwCounterManager::Instance()->GetNumAmdCounters();
-
-        if (0 == sw_counter_index && 0 == amd_counters && 0 == static_cast<GpaUInt32>(sw_counters->size()))
-        {
-            SwCounterManager::Instance()->SetSwGpuTimeCounterIndex(sw_counter_index);
-            SwCounterManager::Instance()->SetSwGpuTimeCounterEnabled(true);
-            return true;
-        }
-
-        if (sw_counter_index >= amd_counters)
-        {
-            GpaUInt32 sw_counter_group_index = sw_counter_index - amd_counters;
-
-            if (sw_counter_group_index < static_cast<GpaUInt32>(sw_counters->size()))
-            {
-                const std::string gpu_time       = "GPUTime";
-                const std::string d3d_gpu_time   = "D3DGPUTime";
-                const std::string vk_gpu_time    = "VKGPUTime";
-                const std::string pre_timestamp  = "PreBottomTimestamp";
-                const std::string post_timestamp = "PostBottomTimestamp";
-                const std::string counter_name   = sw_counters->at(sw_counter_group_index).name;
-
-                if (counter_name == d3d_gpu_time || counter_name == vk_gpu_time || counter_name == gpu_time || counter_name == pre_timestamp ||
-                    counter_name == post_timestamp)
-                {
-                    is_timestamp_query = true;
-
-                    if (counter_name == gpu_time || counter_name == d3d_gpu_time || counter_name == vk_gpu_time)
-                    {
-                        SwCounterManager::Instance()->SetSwGpuTimeCounterIndex(sw_counter_index);
-                        SwCounterManager::Instance()->SetSwGpuTimeCounterEnabled(true);
-                    }
-                }
-            }
-        }
-
-        return is_timestamp_query;
     }
 
 private:
@@ -654,86 +596,6 @@ private:
 
                     // Increment the iterator after any necessary new passes have been allocated.
                     ++counters_used_iter;
-                }
-            }
-        }
-    }
-
-    /// @brief Inserts each software counter into the earliest possible pass.
-    ///
-    /// NOTE: This could potentially do some load balancing by preferring passes with fewer counters in them.
-    ///
-    /// @param [in,out] pass_partitions The pass partitions that are generated.
-    /// @param [in] sw_counters_to_schedule The software counters that need to be scheduled.
-    /// @param [in] counter_accessor A interface that accesses the internal counters.
-    /// @param [in] num_used_counters_per_pass_per_block A list of passes, each consisting of the number of counters scheduled on each block.
-    /// @param [in] max_counters_per_group A vector containing the maximum number of simultaneous counters for each block.
-    /// @param [in,out] num_scheduled_counters The total number of internal counters that were scheduled.
-    void InsertSoftwareCounters(std::list<GpaCounterPass>&                   pass_partitions,
-                                const std::vector<GpaSoftwareCounterIndices> sw_counters_to_schedule,
-                                IGpaCounterGroupAccessor*                    counter_accessor,
-                                std::list<PerPassData>&                      num_used_counters_per_pass_per_block,
-                                const std::vector<unsigned int>&             max_counters_per_group,
-                                unsigned int&                                num_scheduled_counters)
-    {
-        if (0 < sw_counters_to_schedule.size())
-        {
-            UNREFERENCED_PARAMETER(max_counters_per_group);
-            // Add the first SW pass.
-            unsigned int existing_pass_count = static_cast<unsigned int>(pass_partitions.size());
-            AddNewPassInfo(existing_pass_count + 1, &pass_partitions, &num_used_counters_per_pass_per_block);
-            static const unsigned int kMaxScheduledCountersInPassCount = 120;
-            SwCounterManager::Instance()->ClearSwCounterMap();
-            SwCounterManager::Instance()->SetSwGpuTimeCounterEnabled(false);
-            bool first_non_time_counter = true;
-
-            for (const auto& sw_counter : sw_counters_to_schedule)
-            {
-                unsigned int pass_index                = 0;
-                bool         counter_already_scheduled = false;
-                auto         pass_iter                 = pass_partitions.begin();
-                bool         sw_time_pass              = false;
-
-                while ((pass_partitions.end() != pass_iter) && (!counter_already_scheduled))
-                {
-                    int existing_offset = VectorContains<unsigned int>(pass_iter->pass_counter_list, sw_counter.software_index);
-
-                    if (existing_offset >= 0)
-                    {
-                        counter_already_scheduled = true;
-                        AddCounterResultLocation(sw_counter.public_index, sw_counter.software_index, pass_index, existing_offset);
-                    }
-
-                    ++pass_index;
-                    ++pass_iter;
-                }
-
-                if (!counter_already_scheduled)
-                {
-                    auto rev_pass_iter      = pass_partitions.rbegin();
-                    pass_index              = static_cast<unsigned int>(pass_partitions.size() - 1);
-                    auto counters_used_iter = num_used_counters_per_pass_per_block.begin();
-                    sw_time_pass            = IsTimestampQueryCounter(sw_counter.public_index);
-
-                    if ((rev_pass_iter->pass_counter_list.size() >= kMaxScheduledCountersInPassCount) ||
-                        (!sw_time_pass && SwCounterManager::Instance()->SwGpuTimeCounterEnabled()))
-                    {
-                        if (first_non_time_counter)
-                        {
-                            ++pass_index;
-                            AddNewPassInfo(pass_index + 1, &pass_partitions, &num_used_counters_per_pass_per_block);
-                            rev_pass_iter          = pass_partitions.rbegin();
-                            first_non_time_counter = false;
-                        }
-                    }
-
-                    rev_pass_iter->pass_counter_list.push_back(sw_counter.software_index);
-                    counter_accessor->SetCounterIndex(sw_counter.software_index);
-                    counters_used_iter->num_used_counters_per_block[counter_accessor->GroupIndex()].push_back(counter_accessor->CounterIndex());
-                    unsigned int offset = static_cast<unsigned int>(rev_pass_iter->pass_counter_list.size() - 1);
-                    AddCounterResultLocation(sw_counter.public_index, sw_counter.software_index, pass_index, offset);
-                    SwCounterManager::Instance()->AddSwCounterMap(sw_counter.public_index, sw_counter.software_index);
-                    ++num_scheduled_counters;
                 }
             }
         }

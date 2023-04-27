@@ -94,6 +94,16 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
         num_clock_modes++;
     }
 
+    if (kGpaOpenContextHideSoftwareCountersBit_obsolete & flags)
+    {
+        GPA_LOG_ERROR("kGpaOpenContextHideSoftwareCountersBit has been marked obsolete. Software counters have not been supported since GPA 3.0.");
+    }
+
+    if (kGpaOpenContextHideHardwareCountersBit_obsolete & flags)
+    {
+        GPA_LOG_ERROR("kGpaOpenContextHideHardwareCountersBit has been marked obsolete. Hardware counters are not exposed by default.");
+    }
+
     if (1 < num_clock_modes)
     {
         GPA_LOG_ERROR("More than one clock mode specified.");
@@ -136,7 +146,6 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
                 gpa_status = kGpaStatusErrorFailed;
             }
         }
-
     }
     else
     {
@@ -307,7 +316,17 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaH
 
     if (api_hw_info.IsAmd())
     {
+        // Checking for integrated GPUs that are not supported.
+        GpaUInt32 device_id_api;
+        api_hw_info.GetDeviceId(device_id_api);
+        if (device_id_api == 0x1506 || device_id_api == 0x164e)
+        {
+            GPA_LOG_ERROR("The current hardware does not properly support GPUPerfAPI.");
+            return kGpaStatusErrorHardwareNotSupported;
+        }
+
         AMDTADLUtils::Instance()->GetAsicInfoList(asic_info_list);
+        AMDTADLUtils::DeleteInstance();
         GpaHwInfo asic_hw_info;
 
         // Make sure there are available asics for AMD card.

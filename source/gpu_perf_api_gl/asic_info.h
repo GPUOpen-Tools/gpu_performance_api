@@ -141,6 +141,7 @@ namespace ogl_utils
         kPlaceholder6 = 0x2A,
         kNavi14Lite   = 0x2B,
         kGfx1100      = 0x2C,
+        kGfx1102 = 0x2E,
         kGfx1035 = 0x2F,
 
         kAsicRevisionLast

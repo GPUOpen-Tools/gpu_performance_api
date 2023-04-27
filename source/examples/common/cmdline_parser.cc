@@ -73,7 +73,7 @@ namespace gpa_example
         case ArgType::ARG_TYPE_INT:
             p_entry = MakeArgEntry<int>(p_destination, arg_type, doc_string);
             break;
-        case ArgType::ARG_TYPE_FILEPATH:
+        case ArgType::ARG_TYPE_STRING:
             p_entry = MakeArgEntry<std::string>(p_destination, arg_type, doc_string);
             break;
         default:
@@ -131,7 +131,7 @@ namespace gpa_example
             case ArgType::ARG_TYPE_INT:
                 SetDestinationVal<int>(entry->second, ParseArgument<int>(parse_success, argv_, i));
                 break;
-            case ArgType::ARG_TYPE_FILEPATH:
+            case ArgType::ARG_TYPE_STRING:
                 SetDestinationVal<std::string>(entry->second, ParseArgument<std::string>(parse_success, argv_, i));
                 break;
             default:
@@ -171,7 +171,7 @@ namespace gpa_example
                 summary_message << " #";
                 detailed_message << " #";
             }
-            else if (entry.second->arg_type == ArgType::ARG_TYPE_FILEPATH)
+            else if (entry.second->arg_type == ArgType::ARG_TYPE_STRING)
             {
                 summary_message << " <file>";
                 detailed_message << " <file>";

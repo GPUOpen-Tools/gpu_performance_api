@@ -1,6 +1,6 @@
 // =====================================================================
 // <copyright file="CounterCompiler.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2020 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -74,10 +74,6 @@ namespace PublicCounterCompiler
         /// </summary>
         public DerivedCounterFileInput derivedCounterFileInput = null;
 
-        /// <summary>
-        /// Flag indicated this is compiling internal derived counters (true), or public derived counters (false)
-        /// </summary>
-        public bool isInternal = false;
 
         /// <summary>
         /// A map of Counter Group to a map of counter name to documentation info for Graphics Counters
@@ -134,125 +130,133 @@ namespace PublicCounterCompiler
             Func<string, bool> errorHandler
             )
         {
-            string baseGfxFileName = derivedCounterFileInput.rootFilename + GpaTools.Gpa.counterFileNamePrefix + api.ToLower() + "_" + generation.ToLower() + ".txt";
-            string[] baseGfxFileNames = Directory.GetFiles(derivedCounterFileInput.autoGenCompilerInputFilePath, baseGfxFileName);
-
-            // Iterate over files that match the base of the counter name's generation file
-            string searchForAsicFilename = derivedCounterFileInput.rootFilename + GpaTools.Gpa.counterFileNamePrefix + api.ToLower() + "_" + generation.ToLower() + "_*.txt";
-
-            string[] asicfileNames = Directory.GetFiles(derivedCounterFileInput.autoGenCompilerInputFilePath, searchForAsicFilename);
-
-            List<String> fileNames = new List<string>();
-
-            foreach (string counterNamesFile in baseGfxFileNames)
+            try
             {
-                fileNames.Add(counterNamesFile);
-            }
+                string baseGfxFileName = derivedCounterFileInput.rootFilename + GpaTools.Gpa.counterFileNamePrefix + api.ToLower() + "_" + generation.ToLower() + ".txt";
+                string[] baseGfxFileNames = Directory.GetFiles(derivedCounterFileInput.autoGenCompilerInputFilePath, baseGfxFileName);
 
-            foreach (string counterNamesFile in asicfileNames)
-            {
-                fileNames.Add(counterNamesFile);
-            }
+                // Iterate over files that match the base of the counter name's generation file
+                string searchForAsicFilename = derivedCounterFileInput.rootFilename + GpaTools.Gpa.counterFileNamePrefix + api.ToLower() + "_" + generation.ToLower() + "_*.txt";
 
-            if (fileNames.Count == 0)
-            {
-                infoHandler("No files found at:" + derivedCounterFileInput.compilerInputPath + " matching:" + baseGfxFileName);
-                return false;
-            }
+                string[] asicfileNames = Directory.GetFiles(derivedCounterFileInput.autoGenCompilerInputFilePath, searchForAsicFilename);
 
-            List<string> asicSpecificFiles = new List<string>();
+                List<String> fileNames = new List<string>();
 
-            string baseCounterDefFile = "";
-            foreach (string counterNamesFile in fileNames)
-            {
-                // Determine the specific ASIC, if any
-                string baseFilename = Path.GetFileNameWithoutExtension(counterNamesFile);
-                bool isBaseDeriveCounterDefFileParsing = false;
-
-                int asicIndex = baseFilename.IndexOf(generation.ToLower());
-                string asic = baseFilename.Substring(asicIndex + generation.Length);
-
-                if (!string.IsNullOrEmpty(asic))
+                foreach (string counterNamesFile in baseGfxFileNames)
                 {
-                    asic = asic.Substring(1, asic.Length - 1);
-                    asicSpecificFiles.Add(asic);
-                    isBaseDeriveCounterDefFileParsing = false;
-                }
-                else
-                {
-                    isBaseDeriveCounterDefFileParsing = true;
+                    fileNames.Add(counterNamesFile);
                 }
 
-                // Suffix
-                string suffix = string.Empty;
-                if (api.ToLower() == "cl")
+                foreach (string counterNamesFile in asicfileNames)
                 {
-                    suffix = "compute_";
+                    fileNames.Add(counterNamesFile);
                 }
 
-                string derivedCounterDefsFile = derivedCounterFileInput.compilerInputPath +
-                                                derivedCounterFileInput.rootFilename +
-                                                GpaTools.Gpa.counterDefinitionsStr +
-                                                suffix +
-                                                generation.ToLower() +
-                                                (!String.IsNullOrEmpty(asic) ? "_" + asic.ToLower() : "") +
-                                                ".txt";
-
-                string section = api + generation;
-
-                if (isBaseDeriveCounterDefFileParsing && String.IsNullOrEmpty(baseCounterDefFile))
+                if (fileNames.Count == 0)
                 {
-                    baseCounterDefFile = derivedCounterDefsFile;
+                    infoHandler("No files found at:" + derivedCounterFileInput.compilerInputPath + " matching:" + baseGfxFileName);
+                    return false;
                 }
 
-                // Some files may not exist for certain combinations of APIs and architectures
-                if (!File.Exists(derivedCounterDefsFile))
+                List<string> asicSpecificFiles = new List<string>();
+
+                string baseCounterDefFile = "";
+                foreach (string counterNamesFile in fileNames)
                 {
-                    if (!isBaseDeriveCounterDefFileParsing && !String.IsNullOrEmpty(baseCounterDefFile))
+                    // Determine the specific ASIC, if any
+                    string baseFilename = Path.GetFileNameWithoutExtension(counterNamesFile);
+                    bool isBaseDeriveCounterDefFileParsing = false;
+
+                    int asicIndex = baseFilename.IndexOf(generation.ToLower());
+                    string asic = baseFilename.Substring(asicIndex + generation.Length);
+
+                    if (!string.IsNullOrEmpty(asic))
                     {
-                        infoHandler("Info: Unable to find file " + derivedCounterDefsFile + " Using base counter def file.");
-                        derivedCounterDefsFile = baseCounterDefFile;
+                        asic = asic.Substring(1, asic.Length - 1);
+                        asicSpecificFiles.Add(asic);
+                        isBaseDeriveCounterDefFileParsing = false;
                     }
                     else
                     {
-                        infoHandler("Info: Unable to find file " + derivedCounterDefsFile);
-                        return true;
+                        isBaseDeriveCounterDefFileParsing = true;
+                    }
+
+                    // Suffix
+                    string suffix = string.Empty;
+                    if (api.ToLower() == "cl")
+                    {
+                        suffix = "compute_";
+                    }
+
+                    string derivedCounterDefsFile = derivedCounterFileInput.compilerInputPath +
+                                                    derivedCounterFileInput.rootFilename +
+                                                    GpaTools.Gpa.counterDefinitionsStr +
+                                                    suffix +
+                                                    generation.ToLower() +
+                                                    (!String.IsNullOrEmpty(asic) ? "_" + asic.ToLower() : "") +
+                                                    ".txt";
+
+                    string section = api + generation;
+
+                    if (isBaseDeriveCounterDefFileParsing && String.IsNullOrEmpty(baseCounterDefFile))
+                    {
+                        baseCounterDefFile = derivedCounterDefsFile;
+                    }
+
+                    // Some files may not exist for certain combinations of APIs and architectures
+                    if (!File.Exists(derivedCounterDefsFile))
+                    {
+                        if (!isBaseDeriveCounterDefFileParsing && !String.IsNullOrEmpty(baseCounterDefFile))
+                        {
+                            infoHandler("Info: Unable to find file " + derivedCounterDefsFile + " Using base counter def file.");
+                            derivedCounterDefsFile = baseCounterDefFile;
+                        }
+                        else
+                        {
+                            infoHandler("Info: Unable to find file " + derivedCounterDefsFile);
+                            return true;
+                        }
+                    }
+
+                    if (LoadFilesAndGenerateOutput(derivedCounterFileInput.rootFilename,
+                        counterNamesFile,
+                        derivedCounterDefsFile,
+                        derivedCounterFileInput.outputDirectory,
+                        derivedCounterFileInput.counterListOutputDirectory,
+                        derivedCounterFileInput.testOutputDirectory,
+                        api,
+                        generation,
+                        asic,
+                        infoHandler,
+                        errorHandler))
+                    {
+                        infoHandler(derivedCounterFileInput.rootFilename + Gpa.counterDefinitionsStr + section + asic + ".cpp / .h written out to:" + derivedCounterFileInput.outputDirectory);
+                    }
+                    else
+                    {
+                        return false;
                     }
                 }
 
-                if (LoadFilesAndGenerateOutput(derivedCounterFileInput.rootFilename,
-                    counterNamesFile,
-                    derivedCounterDefsFile,
-                    derivedCounterFileInput.outputDirectory,
-                    derivedCounterFileInput.counterListOutputDirectory,
-                    derivedCounterFileInput.testOutputDirectory,
-                    api,
-                    generation,
-                    asic,
-                    infoHandler,
-                    errorHandler))
+                // Generate section + ASIC file
+                bool retVal = GenerateSectionAsicFiles(derivedCounterFileInput.rootFilename, api, generation, derivedCounterFileInput.outputDirectory, asicSpecificFiles, infoHandler, errorHandler);
+
+                if (retVal)
                 {
-                    infoHandler(derivedCounterFileInput.rootFilename + Gpa.counterDefinitionsStr + section + asic + ".cpp / .h written out to:" + derivedCounterFileInput.outputDirectory);
+                    infoHandler("Counter generation completed successfully");
                 }
                 else
                 {
-                    return false;
+                    errorHandler("Counter generation failed");
                 }
+
+                return retVal;
             }
-
-            // Generate section + ASIC file
-            bool retVal = GenerateSectionAsicFiles(derivedCounterFileInput.rootFilename, api, generation, derivedCounterFileInput.outputDirectory, asicSpecificFiles, infoHandler, errorHandler);
-
-            if (retVal)
+            catch (Exception e)
             {
-                infoHandler("Counter generation completed successfully");
+                errorHandler(e.ToString());
+                return false;
             }
-            else
-            {
-                errorHandler("Counter generation failed");
-            }
-
-            return retVal;
         }
 
         /// <summary>
@@ -293,7 +297,7 @@ namespace PublicCounterCompiler
                 return false;
             }
 
-            string baseDirForHeaderGuard = isInternal ? "GPA_INTERNAL" : "GPA";
+            string baseDirForHeaderGuard = "GPA";
 
             includeFile.WriteLine("//==============================================================================");
             includeFile.WriteLine("// Copyright (c) 2010-{0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Today.Year);
@@ -1164,7 +1168,6 @@ namespace PublicCounterCompiler
 
             bool isGraphicsAPI = (api != "CL");
 
-            if (!isInternal)
             {
                 AddInfoToRSTDocInfo(ref publicCounterDerivedList, generation, isGraphicsAPI ? docInfoMapGraphicsByGeneration : docInfoMapComputeByGeneration, infoHandler);
             }
@@ -2044,7 +2047,7 @@ namespace PublicCounterCompiler
                 return false;
             }
 
-            string baseDirForHeaderGuard = isInternal ? "GPA_INTERNAL" : "GPA";
+            string baseDirForHeaderGuard = "GPA";
 
             includeFile.WriteLine("//==============================================================================");
             includeFile.WriteLine("// Copyright (c) 2010-{0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Today.Year);
@@ -2057,11 +2060,6 @@ namespace PublicCounterCompiler
             includeFile.WriteLine("#define {0}_AUTO_GEN_COUNTER_GEN_{1}COUNTER_DEFINITIONS_{2}_{3}{4}_H_", baseDirForHeaderGuard, rootFilename.ToUpper(), api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
             includeFile.WriteLine();
 
-            if (isInternal)
-            {
-                includeFile.WriteLine("#ifdef AMDT_INTERNAL");
-                includeFile.WriteLine();
-            }
 
             includeFile.WriteLine("//*** Note, this is an auto-generated file. Do not edit. Execute {0}CounterCompiler to rebuild.", derivedCounterFileInput.compiler_type_str);
             includeFile.WriteLine();
@@ -2093,11 +2091,6 @@ namespace PublicCounterCompiler
 
             includeFile.WriteLine();
 
-            if (isInternal)
-            {
-                includeFile.WriteLine("#endif  // AMDT_INTERNAL");
-                includeFile.WriteLine();
-            }
 
             includeFile.WriteLine("#endif  // {0}_AUTO_GEN_COUNTER_GEN_{1}COUNTER_DEFINITIONS_{2}_{3}{4}_H_",
                 baseDirForHeaderGuard, rootFilename.ToUpper(), api.ToUpper(), generation.ToUpper(),
@@ -2128,11 +2121,6 @@ namespace PublicCounterCompiler
             cppFile.WriteLine("//==============================================================================");
             cppFile.WriteLine();
 
-            if (isInternal)
-            {
-                cppFile.WriteLine("#ifdef AMDT_INTERNAL");
-                cppFile.WriteLine();
-            }
 
             cppFile.WriteLine("#include \"{0}\"", Gpa.gpaCounterHeaderFileStr);
             cppFile.WriteLine("#include \"auto_generated/gpu_perf_api_counter_generator/{0}counter_definitions_{1}_{2}{3}.h\"", rootFilename.ToLower(), api.ToLower(), generation.ToLower(), asic_prefix_str.ToLower());
@@ -2234,10 +2222,6 @@ namespace PublicCounterCompiler
                 cppFile.WriteLine();
             }
 
-            if (isInternal)
-            {
-                cppFile.WriteLine("#endif  // AMDT_INTERNAL");
-            }
 
             cppFile.Close();
             if (lsw != null)
@@ -2358,7 +2342,7 @@ namespace PublicCounterCompiler
                 asicStr = '_' + asic.ToCamelCase('_') + '_';
             }
 
-            string repoStr = isInternal ? "GPA_INTERNAL" : "GPA";
+            string repoStr = "GPA";
             string headerGuard = repoStr + "_AUTO_GEN_UNIT_TESTS_COUNTERS_" + derivedCounterFileInput.compiler_type_str.ToUpper() + "_" + api.ToUpper() + "_" + generation.ToUpper() + asicStr;
 
             headerStream.WriteLine("#ifndef {0}", headerGuard);
@@ -2434,7 +2418,6 @@ namespace PublicCounterCompiler
         /// </summary>
         public void DoneRSTDocumentation(Func<string, bool> infoHandler, Func<string, bool> errorHandler)
         {
-            if (!isInternal)
             {
                 { // Graphics Counters
                     foreach (var counterGroupByGfxGen in docInfoMapGraphicsByGeneration)

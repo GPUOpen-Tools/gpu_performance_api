@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief VK counter definitions for GFX11.
@@ -23,7 +23,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_vk_gfx11
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kVkExposedCountersGroupArrayGfx11; ///< Array of hardware exposed counter groups for Vk for Gfx11 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kVkCounterGroupArrayGfx11; ///< Array of hardware counter groups for Vk for Gfx11 family
     extern std::vector<GpaCounterGroupDesc>                           kHwVkGroupsGfx11; ///< Array of counter groups for Vk for Gfx11 family
     extern GpaCounterGroupExposedCounterDesc                          kHwVkExposedCountersByGroupGfx11[]; ///< Array of exposed counter groups for Vk for Gfx11 family
     extern GpaPaddedCounterDesc                                       kVkPaddedCounterByGroupGfx11[]; ///< Array of reserved counter for Vk for Gfx11 family
@@ -39,7 +39,7 @@ namespace counter_vk_gfx11
     extern const std::set<unsigned int>                               kHwVkTimestampBlockIdsGfx11; ///< Timestamp block id's for Vk for Gfx11 family
     extern const std::set<unsigned int>                               kHwVkTimeCounterIndicesGfx11; ///< Timestamp counter indices for Vk for Gfx11 family
     extern const unsigned int                                         kHwVkGroupCountGfx11; ///< Hardware Group Count for Vk for Gfx11 family
-    extern const unsigned int                                         kHwVkExposedCountersGroupCountGfx11; ///< Whitelist hardware counter Group Count for Vk for Gfx11 family
+    extern const unsigned int                                         kHwVkExposedCountersGroupCountGfx11; ///< Exposed hardware counter Group Count for Vk for Gfx11 family
     extern const unsigned int                                         kVkPaddedCounterGroupCountGfx11; ///< reserved counter group count for Vk for Gfx11 family
     extern const unsigned int                                         kHwVkSqGroupCountGfx11; ///< Hardware SQ Group Count for Vk for Gfx11 family
     extern const unsigned int                                         kHwVkSqIsolatedGroupCountGfx11; ///< Hardware Isolated Group Count for Vk for Gfx11 family

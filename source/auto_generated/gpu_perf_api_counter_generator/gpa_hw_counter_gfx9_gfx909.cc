@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX9_GFX909.
@@ -14,6 +14,7 @@
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx9_gfx909.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
+
 namespace counter_gfx9_gfx909
 {
     std::vector<GpaHardwareCounterDesc> kCb0CountersGfx9_gfx909 = {
@@ -455,12 +456,6 @@ namespace counter_gfx9_gfx909
         {33, "TCC15_PERF_SEL_EA_WRREQ_STALL", "TCC15", "Number of cycles a write request was stalled.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {41, "TCC15_PERF_SEL_EA_RDREQ", "TCC15", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {42, "TCC15_PERF_SEL_EA_RDREQ_32B", "TCC15", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kIa0CountersGfx9_gfx909 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kIa1CountersGfx9_gfx909 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRpbCountersGfx9_gfx909 = {
     };
     std::vector<GpaHardwareCounterDesc> kGcea0CountersGfx9_gfx909 = {
         {55, "GCEA0_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA0", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit tests for GPAInterfaceLoader.
@@ -191,6 +191,7 @@ TEST_F(GpaInterfaceLoaderTest, TestDeleteInstance)
     GpaApiManager::Instance()->LoadApi(kGpaApiVulkan);
     GpaFunctionTable* function_table = GpaApiManager::Instance()->GetFunctionTable(kGpaApiVulkan);
     EXPECT_NE(nullptr, function_table);
+    // Deleting the instance below should also cause the API to be unloaded, so it does not need to explicitly unloaded.
     GpaApiManager::DeleteInstance();
     function_table = GpaApiManager::Instance()->GetFunctionTable(kGpaApiVulkan);
     EXPECT_EQ(nullptr, function_table);
@@ -204,6 +205,7 @@ TEST_F(GpaInterfaceLoaderTest, TestDeleteInstance)
     EXPECT_NE(nullptr, function_table);
     function_table = GpaApiManager::Instance()->GetFunctionTable(second_api);
     EXPECT_NE(nullptr, function_table);
+    // Deleting the instance below should also cause the API to be unloaded, so it does not need to explicitly unloaded.
     GpaApiManager::DeleteInstance();
 
     function_table = GpaApiManager::Instance()->GetFunctionTable(kGpaApiVulkan);

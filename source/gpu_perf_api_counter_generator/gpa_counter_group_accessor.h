@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Counter group accessor class.
@@ -147,12 +147,6 @@ public:
     bool IsHwCounter() const override
     {
         return is_hw_;
-    }
-
-    /// @copydoc IGpaCounterGroupAccessor::IsSwCounter()
-    bool IsSwCounter() const override
-    {
-        return is_sw_;
     }
 
     /// @copydoc IGpaCounterGroupAccessor::GlobalGroupIndex()

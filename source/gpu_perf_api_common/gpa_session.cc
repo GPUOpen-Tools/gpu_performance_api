@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief A base-class implementation of the GPA Session interface.
@@ -759,21 +759,6 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
             assert(internal_counters_required.size() == 1);  // Hardware counters will always have one internal counter required.
             GpaUInt16 counter_result_pass = result_locations[internal_counters_required.at(0)].pass_index_;
             status                        = passes_[counter_result_pass]->GetResult(sample_id, internal_counters_required[0], uint64_results);
-            break;
-        }
-
-        case GpaCounterSource::kSoftware:
-        {
-            GpaUInt64 buf = 0;
-
-            auto      iter                = result_locations.begin();
-            GpaUInt16 counter_result_pass = iter->second.pass_index_;
-            status                        = passes_[counter_result_pass]->GetResult(sample_id, internal_counters_required[0], &buf);
-
-            GpaUInt64* uint64_results = reinterpret_cast<GpaUInt64*>(counter_sample_results) + counter_index_iter;
-
-            // Compute using supplied function. value order is as defined when registered.
-            counter_accessor->ComputeSwCounterValue(source_local_index, buf, uint64_results, parent_context_->GetHwInfo());
             break;
         }
 

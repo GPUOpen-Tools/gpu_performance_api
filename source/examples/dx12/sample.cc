@@ -60,7 +60,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _I
 
     gpa_example::CmdlineParser parser(__argc, __argv);
 
-    gpa_example::Dx12SampleApp app("D3D12ColorCube", parser);
+    gpa_example::Dx12SampleApp app(AMDT_PROJECT_NAME, parser);
 
     if (!app.Initialize())
     {

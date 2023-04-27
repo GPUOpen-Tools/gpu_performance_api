@@ -224,6 +224,9 @@ namespace ogl_utils
     /// @return True upon success otherwise false.
     bool InitPlatformExtFunctions();
 
+    /// @brief Delete objects that are no longer needed.
+    void Cleanup();
+
     extern const char* kAmdRendererString;            ///< AMD Renderer string.
     extern const char* kRadeonRendererString;         ///< Radeon Renderer string.
     extern const char* kAtiRendererString;            ///< ATI Renderer string (legacy).

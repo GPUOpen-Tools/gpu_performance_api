@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Common Context class implementation.
@@ -10,7 +10,6 @@
 #include "gpu_perf_api_counter_generator/gpa_counter_generator.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_group_accessor.h"
 #include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
-#include "gpu_perf_api_counter_generator/gpa_software_counters.h"
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
 #include "gpu_perf_api_common/gpa_context_counter_mediator.h"
@@ -242,11 +241,7 @@ GpaCounterSource GpaContext::GetCounterSource(GpaUInt32 internal_counter_index) 
 
         counter_group_accessor.SetCounterIndex(internal_counter_index);
 
-        if (counter_group_accessor.IsSwCounter())
-        {
-            source = GpaCounterSource::kSoftware;
-        }
-        else if (counter_group_accessor.IsHwCounter())
+        if (counter_group_accessor.IsHwCounter())
         {
             source = GpaCounterSource::kHardware;
         }

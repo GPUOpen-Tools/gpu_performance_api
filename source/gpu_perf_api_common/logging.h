@@ -54,10 +54,10 @@
 #endif                                               // trace functions.
 
 #ifdef __GNUC__
-#define GPA_ATTRIBUTE_PRINTF(fmt, args) __attribute__((format(printf, fmt, args)))
+#define GPA_ATTRIBUTE_PRINTF(msg, args) __attribute__((format(printf, msg, args)))
 #else
-#define GPA_ATTRIBUTE_PRINTF(fmg, args)
-#endif
+#define GPA_ATTRIBUTE_PRINTF(msg, args)
+#endif  // !__GNUC__
 
 /// @brief Internal GPA logger function.
 ///
@@ -87,6 +87,11 @@ public:
     /// @param [in] log_message The message to pass along.
     void Log(GpaLoggingType log_type, const char* log_message);
 
+    /// @brief Passes the supplied formatted message to the callback function if the user has accepted that type of message.
+    ///
+    /// @param [in] type The type of message being supplied.
+    /// @param [in] msg_fmt The message to format.
+    /// @param [in] args Variable arguments supplied for the message.
     void Logfv(GpaLoggingType type, const char* msg_fmt, va_list args)
     {
         // If the supplied message type is among those that the user wants be notified of,
@@ -109,6 +114,10 @@ public:
         }
     }
 
+    /// @brief Passes the supplied formatted message to the callback function if the user has accepted that type of message.
+    ///
+    /// @param [in] type The type of message being supplied.
+    /// @param [in] msg_fmt The message to format.
     void Logf(GpaLoggingType type, const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(3, 4)
     {
         va_list args;

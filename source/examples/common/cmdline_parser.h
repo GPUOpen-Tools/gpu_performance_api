@@ -19,7 +19,7 @@ namespace gpa_example
     {
         ARG_TYPE_BOOL,
         ARG_TYPE_INT,
-        ARG_TYPE_FILEPATH,
+        ARG_TYPE_STRING,
     };
 
     /// @brief Structure which describes a given argument.

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base class for counter generation.
@@ -12,7 +12,6 @@
 
 #include "gpu_perf_api_counter_generator/gpa_counter_accessor_interface.h"
 #include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
-#include "gpu_perf_api_counter_generator/gpa_software_counters.h"
 
 /// @brief Base class for counter generation.
 class GpaCounterGeneratorBase : public IGpaCounterAccessor
@@ -25,7 +24,7 @@ public:
     virtual ~GpaCounterGeneratorBase() = default;
 
     /// @copydoc IGpaCounterAccessor::SetAllowedCounters()
-    void SetAllowedCounters(bool allow_public_counters, bool allow_hardware_counters, bool allow_software_counters) override;
+    void SetAllowedCounters(bool allow_public_counters, bool allow_hardware_counters) override;
 
     /// @copydoc IGpaCounterAccessor::GetNumCounters()
     GpaUInt32 GetNumCounters() const override;
@@ -89,9 +88,6 @@ public:
     /// @copydoc IGpaCounterAccessor::GetHardwareCounters()
     const GpaHardwareCounters* GetHardwareCounters() const override;
 
-    /// @copydoc IGpaCounterAccessor::GetSoftwareCounters()
-    const GpaSoftwareCounters* GetSoftwareCounters() const override;
-
     /// @copydoc IGpaCounterAccessor::GetCounterInfo()
     GpaCounterInfo* GetCounterInfo(const GpaUInt32& derived_counter_index) const override;
 
@@ -138,19 +134,6 @@ public:
                                                GpaUInt8             generate_asic_specific_counters,
                                                GpaHardwareCounters* hardware_counters) = 0;
 
-    /// @brief Generate the software counters for the specified hardware generation.
-    ///
-    /// @param [in] desired_generation The generation whose counters are needed.
-    /// @param [in] asic_type The ASIC whose counters are needed.
-    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
-    /// @param [out] software_counters The generated counters.
-    ///
-    /// @return kGpaStatusOk on success.
-    virtual GpaStatus GenerateSoftwareCounters(GDT_HW_GENERATION    desired_generation,
-                                               GDT_HW_ASIC_TYPE     asic_type,
-                                               GpaUInt8             generate_asic_specific_counters,
-                                               GpaSoftwareCounters* software_counters) = 0;
-
     /// @brief Generate the hardware exposed counters for the specified hardware generation
     ///
     /// @param [in] desired_generation The generation whose counters are needed
@@ -173,13 +156,11 @@ public:
 
     GpaDerivedCounters  public_counters_;    ///< The generated public counters.
     GpaHardwareCounters hardware_counters_;  ///< The generated hardware counters.
-    GpaSoftwareCounters software_counters_;  ///< The generated software counters.
 
 private:
 
     bool do_allow_public_counters_;            ///< Flag indicating whether or not public counters are allowed.
     bool do_allow_hardware_counters_;          ///< Flag indicating whether or not hardware counters are allowed.
-    bool do_allow_software_counters_;          ///< Flag indicating whether or not software counters are allowed.
     bool do_allow_hardware_exposed_counters_;  ///< Flag indicating whether or not whitelist counters are allowed.
 
     /// Typedef for an unordered_map from counter name to index.

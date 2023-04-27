@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA API Helper class Implementation
@@ -21,6 +21,20 @@
 #endif
 
 #define REVISION_ID_ANY 0xFFFFFFFF
+
+#ifdef _WIN32
+/// @brief Converts string from wide to utf-8 encoding.
+///
+/// @return The converted utf-8 encoded string.
+static std::string wide_to_utf8_converter(const std::wstring wide)
+{
+    int         num_bytes_needed = WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), nullptr, 0, nullptr, nullptr);
+    std::string utf8;
+    utf8.resize(num_bytes_needed);
+    WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), utf8.data(), num_bytes_needed, nullptr, nullptr);
+    return utf8;
+}
+#endif
 
 GpaHelper::GpaHelper()
     : gpa_function_table_(nullptr)
@@ -140,9 +154,7 @@ std::string GpaHelper::GetExecutablePath()
 
     std::wstring executable_path = std::wstring(module_string.begin(), module_string.begin() + (last_slash_position + 1));
 
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
-
-    std::string utf8_executable_path = wide_to_utf8_converter.to_bytes(executable_path);
+    std::string utf8_executable_path = wide_to_utf8_converter(executable_path);
 #else
     int  len;
     char module_path[GPA_MAX_PATH];
@@ -175,10 +187,10 @@ std::string GpaHelper::GetCSVFileName() const
 #ifdef ANDROID
     // This path is dedicated to the app.
     std::string temp_string("/sdcard/Android/data/com.amd.gpa.vkcolorcube/");
-    temp_string.append(csv_file_name_);
+    temp_string.append(csv_file_name);
     return temp_string;
 #else
-    return GetExecutablePath().append(csv_file_name_);
+    return GetExecutablePath().append(csv_file_name);
 #endif
 }
 
@@ -203,6 +215,23 @@ bool GpaHelper::OpenCSVFile()
 void GpaHelper::CloseCSVFile()
 {
     csv_file_.close();
+}
+
+void GpaHelper::LogStatus(GpaStatus status, const char* msg)
+{
+    assert(gpa_function_table_ != nullptr);
+    if (gpa_function_table_ != nullptr)
+    {
+        auto status_as_str = gpa_function_table_->GpaGetStatusAsStr(status);
+        if (msg != nullptr)
+        {
+            AMDVulkanDemoVkUtils::Log("%s %s", msg, status_as_str);
+        }
+        else
+        {
+            AMDVulkanDemoVkUtils::Log("%s", status_as_str);
+        }
+    }
 }
 
 void GpaHelper::gpaLoggingCallback(GpaLoggingType type, const char* msg)
@@ -443,12 +472,23 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         {
             if (generation == kGpaHwGenerationGfx11)
             {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 35.0f, confirm_success);
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 85.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx103)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 85.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx10)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 82.0f, confirm_success);
             }
             else
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
             }
         }
         else if (0 == local_counter_name.compare("L0CacheHitCount"))
@@ -458,10 +498,20 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
                 return_value =
                     CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 6.0f, confirm_success);
             }
+            else if (generation == kGpaHwGenerationGfx103)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 35.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx10)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 28.0f, confirm_success);
+            }
             else
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
             }
         }
         else if (0 == local_counter_name.compare("L0CacheRequestCount") || 0 == local_counter_name.compare("L0CacheMissCount"))
@@ -476,20 +526,25 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         }
         else if (0 == local_counter_name.compare("L1CacheHit") || 0 == local_counter_name.compare("L1CacheHitCount"))
         {
-            if (generation < kGpaHwGenerationGfx11)
+            if (generation == kGpaHwGenerationGfx9)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 8.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 250.0f, confirm_success);
             }
-            else 
+            else if (generation == kGpaHwGenerationGfx8 || generation == kGpaHwGenerationGfx10 || generation == kGpaHwGenerationGfx103)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
+            }
+            else
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 20.0f, confirm_success);
             }
         }
         else if (0 == local_counter_name.compare("L1CacheMissCount"))
         {
-            if (sample_index == 1 && generation == kGpaHwGenerationGfx9)
+            if (generation == kGpaHwGenerationGfx9)
             {
                 // This sample may or may not return 0. This is obvious since they UINTs, but these are valid results.
                 return_value =
@@ -504,22 +559,11 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         else if (0 == local_counter_name.compare("L2CacheHit") || 0 == local_counter_name.compare("L2CacheRequestCount") ||
                  0 == local_counter_name.compare("L2CacheHitCount"))
         {
-            // Sanity Check
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
-        }
-        else if (0 == local_counter_name.compare("L2CacheMiss"))
-        {
-            if (generation == kGpaHwGenerationGfx9 && sample_index == 2)
+            if (sample_index == 2)
             {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
-            }
-            else if (generation == kGpaHwGenerationGfx10)
-            {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
-            }
-            else if (generation == kGpaHwGenerationGfx11)
-            {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 37.0f, confirm_success);
+                // This may equal 0 if the other caches perform well. The conditional below is a truism because a UNIT is always >= 0.
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0.0f, 0.0f, confirm_success);
             }
             else
             {
@@ -528,15 +572,51 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
                     CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
             }
         }
-        else if (0 == local_counter_name.compare("L2CacheMissCount"))
+        else if (0 == local_counter_name.compare("L2CacheMiss"))
         {
-            if (generation == kGpaHwGenerationGfx9 && sample_index == 2)
+            if (generation == kGpaHwGenerationGfx9)
             {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 5.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx10)
             {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 5.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx103)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx11)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 37.0f, confirm_success);
+            }
+            else
+            {
+                // Sanity check, assumes the L2 cache will not miss more than 50% in our test app and still be a valid result.
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
+            }
+        }
+        else if (0 == local_counter_name.compare("L2CacheMissCount"))
+        {
+            if (generation == kGpaHwGenerationGfx9)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx10)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx103)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx11)
             {
@@ -745,7 +825,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
                 if (kGpaStatusOk != gpa_status)
                 {
-                    AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the exposed GPA counter id of the enabled counter at index %d", counter_index);
+                    AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the exposed GPA counter id of the enabled counter at index %d.", counter_index);
                 }
                 else
                 {

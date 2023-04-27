@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Interface Loader Utility header file
@@ -349,16 +349,16 @@ static inline GpaStatus GpaInterfaceLoaderLoadApi(GpaApiType api_type, const Loc
             }
 
             {
-                GpaFuncTableInfo* function_table_info = gpa_function_table_info;
+                GpaFuncTableInfo* function_table_info_iter = gpa_function_table_info;
 
-                while (NULL != function_table_info)
+                while (NULL != function_table_info_iter)
                 {
-                    if (function_table_info->gpa_api_type == api_type)
+                    if (function_table_info_iter->gpa_api_type == api_type)
                     {
                         return kGpaStatusErrorLibAlreadyLoaded;
                     }
 
-                    function_table_info = (GpaFuncTableInfo*)function_table_info->next_func_table_info;
+                    function_table_info_iter = (GpaFuncTableInfo*)function_table_info_iter->next_func_table_info;
                 }
             }
 
@@ -425,14 +425,14 @@ static inline GpaStatus GpaInterfaceLoaderLoadApi(GpaApiType api_type, const Loc
                             new_table_info->lib_handle           = lib_handle;
                             new_table_info->next_func_table_info = NULL;
 
-                            GpaFuncTableInfo* function_table_info = gpa_function_table_info;
+                            GpaFuncTableInfo* function_table_info_iter = gpa_function_table_info;
 
-                            while (NULL != function_table_info->next_func_table_info)
+                            while (NULL != function_table_info_iter->next_func_table_info)
                             {
-                                function_table_info = (GpaFuncTableInfo*)function_table_info->next_func_table_info;
+                                function_table_info_iter = (GpaFuncTableInfo*)function_table_info_iter->next_func_table_info;
                             }
 
-                            function_table_info->next_func_table_info = new_table_info;
+                            function_table_info_iter->next_func_table_info = new_table_info;
                         }
                     }
                     else
@@ -502,14 +502,14 @@ static inline GpaStatus GpaInterfaceLoaderUnLoadApi(GpaApiType gpa_api_type)
 #else
     GpaStatus status = kGpaStatusErrorFailed;
 
-    GpaFuncTableInfo* function_table_info = gpa_function_table_info;
+    GpaFuncTableInfo* function_table_info_iter = gpa_function_table_info;
 
-    while (NULL != function_table_info)
+    while (NULL != function_table_info_iter)
     {
-        if (function_table_info->gpa_api_type == gpa_api_type)
+        if (function_table_info_iter->gpa_api_type == gpa_api_type)
         {
-            free(function_table_info->gpa_func_table);
-            LibHandle lib_handle = function_table_info->lib_handle;
+            free(function_table_info_iter->gpa_func_table);
+            LibHandle lib_handle = function_table_info_iter->lib_handle;
 
             if (NULL != lib_handle)
             {
@@ -518,14 +518,14 @@ static inline GpaStatus GpaInterfaceLoaderUnLoadApi(GpaApiType gpa_api_type)
 #else
                 dlclose(lib_handle);
 #endif
-                function_table_info->lib_handle     = NULL;
-                function_table_info->gpa_func_table = NULL;
-                status                              = kGpaStatusOk;
+                function_table_info_iter->lib_handle     = NULL;
+                function_table_info_iter->gpa_func_table = NULL;
+                status                                   = kGpaStatusOk;
                 break;
             }
         }
 
-        function_table_info = (GpaFuncTableInfo*)function_table_info->next_func_table_info;
+        function_table_info_iter = (GpaFuncTableInfo*)function_table_info_iter->next_func_table_info;
     }
 
     return status;
@@ -543,55 +543,37 @@ static inline void GpaInterfaceLoaderClearLoader()
 #else
     if (NULL != gpa_function_table_info)
     {
-        while (NULL != gpa_function_table_info->next_func_table_info)
-        {
-            GpaFuncTableInfo* function_table_info = (GpaFuncTableInfo*)(gpa_function_table_info->next_func_table_info);
+        // Iterate through each function table in the chain and delete it.
+        GpaFuncTableInfo* function_table_info_iter = gpa_function_table_info;
 
-            if (NULL != function_table_info->lib_handle)
+        while (NULL != function_table_info_iter)
+        {
+            if (NULL != function_table_info_iter->lib_handle)
             {
 #ifdef _WIN32
-                FreeLibrary(function_table_info->lib_handle);
+                FreeLibrary(function_table_info_iter->lib_handle);
 #else
-                dlclose(function_table_info->lib_handle);
+                dlclose(function_table_info_iter->lib_handle);
 #endif
-                function_table_info->lib_handle = NULL;
+                function_table_info_iter->lib_handle = NULL;
             }
 
-            if (NULL != function_table_info->gpa_func_table)
+            if (NULL != function_table_info_iter->gpa_func_table)
             {
-                free(function_table_info->gpa_func_table);
-                function_table_info->gpa_func_table = NULL;
+                free(function_table_info_iter->gpa_func_table);
+                function_table_info_iter->gpa_func_table = NULL;
             }
 
-            if (NULL != function_table_info->next_func_table_info)
-            {
-                gpa_function_table_info->next_func_table_info = function_table_info->next_func_table_info;
-                free(function_table_info);
-            }
-            else
-            {
-                gpa_function_table_info->next_func_table_info = NULL;
-            }
+            // Temporarily back up the current pointer.
+            GpaFuncTableInfo* tmp_func_table_info = function_table_info_iter;
+
+            // Increment the iterator.
+            function_table_info_iter = (GpaFuncTableInfo*)(function_table_info_iter->next_func_table_info);
+
+            // Free the previous func table info.
+            free(tmp_func_table_info);
         }
 
-        if (NULL != gpa_function_table_info->lib_handle)
-        {
-#ifdef _WIN32
-            FreeLibrary(gpa_function_table_info->lib_handle);
-#else
-            dlclose(gpa_function_table_info->lib_handle);
-#endif
-            gpa_function_table_info->lib_handle = NULL;
-        }
-
-        if (NULL != gpa_function_table_info->gpa_func_table)
-        {
-            free(gpa_function_table_info->gpa_func_table);
-            gpa_function_table_info->gpa_func_table = NULL;
-        }
-
-        gpa_function_table_info->gpa_api_type = kGpaApiNoSupport;
-        free(gpa_function_table_info);
         gpa_function_table_info = NULL;
     }
 #endif
@@ -628,7 +610,7 @@ public:
     /// @brief Loads the dll and initialize the function table for the passed API type.
     ///
     /// @param [in] api_type Type of the API to be loaded.
-    /// @param[in] lib_path Path to the folder containing dll.
+    /// @param [in] lib_path Path to the folder containing dll.
     ///
     /// @return The status of the operation.
     /// @retval kGpaStatusOk On success.

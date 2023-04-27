@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief OGLP counter definitions for GFX11.
@@ -20,7 +20,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_oglp_gfx11
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kOglpExposedCountersGroupArrayGfx11; ///< Array of hardware exposed counter groups for Oglp for Gfx11 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kOglpCounterGroupArrayGfx11; ///< Array of hardware counter groups for Oglp for Gfx11 family
     extern std::vector<GpaCounterGroupDesc>                           kHwOglpGroupsGfx11; ///< Array of counter groups for Oglp for Gfx11 family
     extern GpaCounterGroupExposedCounterDesc                          kHwOglpExposedCountersByGroupGfx11[]; ///< Array of exposed counter groups for Oglp for Gfx11 family
     extern GpaPaddedCounterDesc                                       kOglpPaddedCounterByGroupGfx11[]; ///< Array of reserved counter for Oglp for Gfx11 family
@@ -35,7 +35,7 @@ namespace counter_oglp_gfx11
     extern const std::set<unsigned int>                               kHwOglpTimestampBlockIdsGfx11; ///< Timestamp block id's for Oglp for Gfx11 family
     extern const std::set<unsigned int>                               kHwOglpTimeCounterIndicesGfx11; ///< Timestamp counter indices for Oglp for Gfx11 family
     extern const unsigned int                                         kHwOglpGroupCountGfx11; ///< Hardware Group Count for Oglp for Gfx11 family
-    extern const unsigned int                                         kHwOglpExposedCountersGroupCountGfx11; ///< Whitelist hardware counter Group Count for Oglp for Gfx11 family
+    extern const unsigned int                                         kHwOglpExposedCountersGroupCountGfx11; ///< Exposed hardware counter Group Count for Oglp for Gfx11 family
     extern const unsigned int                                         kOglpPaddedCounterGroupCountGfx11; ///< reserved counter group count for Oglp for Gfx11 family
     extern const unsigned int                                         kHwOglpSqGroupCountGfx11; ///< Hardware SQ Group Count for Oglp for Gfx11 family
     extern const unsigned int                                         kHwOglpSqIsolatedGroupCountGfx11; ///< Hardware Isolated Group Count for Oglp for Gfx11 family

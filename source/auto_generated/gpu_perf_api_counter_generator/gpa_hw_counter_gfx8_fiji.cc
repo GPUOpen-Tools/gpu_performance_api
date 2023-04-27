@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX8_FIJI.
@@ -14,6 +14,7 @@
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx8_fiji.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
+
 namespace counter_gfx8_fiji
 {
     std::vector<GpaHardwareCounterDesc> kVgt0CountersGfx8_fiji = {
@@ -47,70 +48,6 @@ namespace counter_gfx8_fiji
         {96, "VGT3_PERF_VGT_SPI_LSVERT_VALID", "VGT3", "LS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {105, "VGT3_PERF_VGT_SPI_HSVERT_VALID", "VGT3", "HS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {124, "VGT3_PERF_VGT_TE11_BUSY", "VGT3", "Counts number of cycles the TE11 block is busy. (DX11 Tessellation Fixed Function Logic)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kMc0CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc1CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc2CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc3CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc4CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc5CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc6CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc7CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc8CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc9CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc10CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc11CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc12CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc13CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc14CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc15CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc16CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc17CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc18CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc19CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc20CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc21CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc22CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc23CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc24CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc25CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc26CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc27CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc28CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc29CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc30CountersGfx8_fiji = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMc31CountersGfx8_fiji = {
     };
 } // counter_gfx8_fiji
 

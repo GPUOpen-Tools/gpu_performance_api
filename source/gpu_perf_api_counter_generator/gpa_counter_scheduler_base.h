@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Base Class for counter scheduling.
@@ -84,11 +84,6 @@ protected:
     ///
     /// @return kGpaStatusOk on success.
     virtual GpaStatus DoDisableCounter(GpaUInt32 index);
-
-    /// @brief Helper function to get the number of software counters.
-    ///
-    /// @return The number of software counters.
-    virtual GpaUInt32 DoGetNumSoftwareCounters() const;
 
     /// @brief Helper function called when beginning a profile.
     ///

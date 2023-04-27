@@ -64,14 +64,14 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                     shader_core_properties_amd.sType                                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD;
                     shader_core_properties_amd.pNext                                   = &shader_core_properties_2_amd;
 
-                    VkPhysicalDeviceProperties2KHR physical_device_properties = {};
-                    physical_device_properties.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
-                    physical_device_properties.pNext                          = &shader_core_properties_amd;
-
                     VkPhysicalDeviceGpaProperties2AMD physical_device_properties2 = {};
                     physical_device_properties2.sType                             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES2_AMD;
                     physical_device_properties2.revisionId                        = REVISION_ID_ANY;
-                    physical_device_properties2.pNext                             = &physical_device_properties;
+                    physical_device_properties2.pNext                             = &shader_core_properties_amd;
+
+                    VkPhysicalDeviceProperties2KHR physical_device_properties = {};
+                    physical_device_properties.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
+                    physical_device_properties.pNext                          = &physical_device_properties2;
 
                     _vkGetPhysicalDeviceProperties2KHR(vk_context_info->physical_device, &physical_device_properties);
 

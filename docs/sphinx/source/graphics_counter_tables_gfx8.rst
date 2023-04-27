@@ -1,4 +1,4 @@
-.. Copyright(c) 2018-2022 Advanced Micro Devices, Inc.All rights reserved.
+.. Copyright(c) 2018-2023 Advanced Micro Devices, Inc.All rights reserved.
 .. Graphics Performance Counters for Graphics IP v8
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.

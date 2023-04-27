@@ -299,6 +299,8 @@ typedef GpaStatus (*GpaCounterLibGetCounterNamePtrType)(const GpaCounterContext,
 /// @param [out] gpa_counter_index The address which will hold the index upon successful execution.
 ///
 /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+/// @retval kGpaStatusErrorNullPointer if the gpa_counter_info or gpa_counter_index is null, or if the gpa_counter_info
+///         indicates that it is a derived counter, but the derived counter name is null.
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterIndex(const GpaCounterContext gpa_virtual_context,
                                                                   const GpaCounterParam*  gpa_counter_info,
                                                                   GpaUInt32*              gpa_counter_index);

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface for Vulkan-specific GPA Command List Object
@@ -10,7 +10,6 @@
 
 #include "gpu_perf_api_common/gpa_command_list.h"
 
-#include "gpu_perf_api_vk/vk_command_list_sw_queries.h"
 #include "gpu_perf_api_vk/vk_gpa_sample.h"
 #include "gpu_perf_api_vk/vk_includes.h"
 
@@ -109,9 +108,6 @@ private:
 
     /// The AMD Extension session that is being used by this command list. The session may also be in use by other CommandLists.
     VkGpaSessionAMD gpa_ext_session_command_list_;
-
-    /// The queries that are needed for each software sample.
-    VkCommandListSwQueries sw_queries_;
 
     /// Flag indicating if the command list has been started in the driver (i.e. if it is in a recording state).
     bool is_command_list_open_in_driver_;

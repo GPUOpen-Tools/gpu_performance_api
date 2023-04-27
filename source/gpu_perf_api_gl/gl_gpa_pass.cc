@@ -318,8 +318,7 @@ bool GlGpaPass::InitializeCounters(const GlPerfMonitorId& gl_perf_monitor_id)
                 ogl_utils::CheckForGlError("glGetPerfMonitorCounterStringAMD failed to get the counter name.");
             }
 
-            GPA_LOG_ERROR("Failed to enable counter '%s' from group '%s' instance %d." ,
-                counter_name, group_name, counter->group_id_driver);
+            GPA_LOG_ERROR("Failed to enable counter '%s' from group '%s' instance %d.", counter_name, group_name, counter->group_id_driver);
         }
 
         return is_counter_enabled;

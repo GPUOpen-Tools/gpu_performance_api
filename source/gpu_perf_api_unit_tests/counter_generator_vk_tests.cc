@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit Tests for VK Counter Generator.
@@ -15,80 +15,86 @@
 #include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_vk_gfx103.h"
 #include "auto_generated/gpu_perf_api_unit_tests/counters/public_derived_counters_vk_gfx11.h"
 
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx8.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx9.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx10.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx103.h"
+#include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx11.h"
+
 #include "gpu_perf_api_unit_tests/counter_generator_tests.h"
 #include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
-static void GetExpectedCountersForGeneration(GpaHwGeneration gen, std::vector<const char*>& counter_names)
+static void GetExpectedCountersForGeneration(GpaHwGeneration           generation,
+                                             std::vector<const char*>& derived_counter_names,
+                                             std::vector<const char*>& hardware_counter_names)
 {
-    counter_names.clear();
+    derived_counter_names.clear();
+    hardware_counter_names.clear();
 
     const GpaCounterDesc* public_counters      = nullptr;
     size_t                public_counter_count = 0;
 
-    std::vector<GpaCounterGroupDesc>                  hardware_groups;
-    std::vector<std::vector<GpaHardwareCounterDesc>*> hardware_counters;
-    unsigned int                                      hw_group_count = 0;
+    std::vector<std::vector<GpaHardwareCounterDesc>*> hardware_counter_groups;
 
-    switch (gen)
+    switch (generation)
     {
     case kGpaHwGenerationGfx8:
-        public_counters      = kVkGfx8PublicCounters;
-        public_counter_count = kVkGfx8PublicCounterCount;
+        public_counters         = kVkGfx8PublicCounters;
+        public_counter_count    = kVkGfx8PublicCounterCount;
+        hardware_counter_groups = counter_vk_gfx8::kVkCounterGroupArrayGfx8;
         break;
 
     case kGpaHwGenerationGfx9:
-        public_counters      = kVkGfx9PublicCounters;
-        public_counter_count = kVkGfx9PublicCounterCount;
+        public_counters         = kVkGfx9PublicCounters;
+        public_counter_count    = kVkGfx9PublicCounterCount;
+        hardware_counter_groups = counter_vk_gfx9::kVkCounterGroupArrayGfx9;
         break;
 
     case kGpaHwGenerationGfx10:
-        public_counters      = kVkGfx10PublicCounters;
-        public_counter_count = kVkGfx10PublicCounterCount;
+        public_counters         = kVkGfx10PublicCounters;
+        public_counter_count    = kVkGfx10PublicCounterCount;
+        hardware_counter_groups = counter_vk_gfx10::kVkCounterGroupArrayGfx10;
         break;
 
     case kGpaHwGenerationGfx103:
-        public_counters      = kVkGfx103PublicCounters;
-        public_counter_count = kVkGfx103PublicCounterCount;
+        public_counters         = kVkGfx103PublicCounters;
+        public_counter_count    = kVkGfx103PublicCounterCount;
+        hardware_counter_groups = counter_vk_gfx103::kVkCounterGroupArrayGfx103;
         break;
 
     case kGpaHwGenerationGfx11:
-        public_counters      = kVkGfx11PublicCounters;
-        public_counter_count = kVkGfx11PublicCounterCount;
+        public_counters         = kVkGfx11PublicCounters;
+        public_counter_count    = kVkGfx11PublicCounterCount;
+        hardware_counter_groups = counter_vk_gfx11::kVkCounterGroupArrayGfx11;
         break;
 
     default:
+        assert(!"Unrecognized hardware generation in GetExpectedCountersForGeneration");
         break;
     }
 
     for (size_t i = 0; i < public_counter_count; i++)
     {
-        counter_names.push_back(public_counters[i].name);
+        derived_counter_names.push_back(public_counters[i].name);
     }
 
-    // Optionally, get internal derived counters.
-    const GpaCounterDesc* kInternalDerivedCounters       = nullptr;
-    size_t                internal_derived_counter_count = 0;
-
-    for (size_t i = 0; i < internal_derived_counter_count; i++)
+    const size_t num_hardware_counter_groups = hardware_counter_groups.size();
+    for (size_t i = 0; i < num_hardware_counter_groups; ++i)
     {
-        counter_names.push_back(kInternalDerivedCounters[i].name);
-    }
-
-    for (unsigned int i = 0; i < hw_group_count; i++)
-    {
-        for (unsigned int j = 0; j < hardware_groups.at(i).num_counters; j++)
+        const size_t num_counters_in_group = hardware_counter_groups[i]->size();
+        for (size_t j = 0; j < num_counters_in_group; ++j)
         {
-            counter_names.push_back(hardware_counters.at(i)->at(j).name);
+            hardware_counter_names.push_back(hardware_counter_groups[i]->at(j).name);
         }
     }
 }
 
-static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration gen)
+static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration generation)
 {
     const GpaCounterDesc* public_counters      = nullptr;
     size_t                public_counter_count = 0;
 
-    switch (gen)
+    switch (generation)
     {
     case kGpaHwGenerationGfx8:
         public_counters      = kVkGfx8PublicCounters;
@@ -116,6 +122,7 @@ static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration gen
         break;
 
     default:
+        assert(!"Unrecognized hardware generation in GetExpectedPublicCounters");
         break;
     }
 
@@ -127,6 +134,15 @@ static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration gen
     }
 
     return public_counter_list;
+}
+
+TEST(CounterDllTests, VkUnsupportedHardwareGenerations)
+{
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationNone, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationNvidia, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationIntel, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx6, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx7, FALSE);
 }
 
 #ifdef _WIN32
@@ -142,57 +158,86 @@ TEST(CounterDllTests, VulkanDerivedCounterBlocks)
 #endif
 
 // Test the VK counter names on all supported hardware.
-TEST(CounterDllTests, VkCounterNames)
+TEST(CounterDllTests, VkCounterNamesByDeviceId)
 {
     VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdUnknown, FALSE);
     VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdSI, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdCI, FALSE);
     VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdCIHawaii, FALSE);
 
-    std::vector<const char*> counterNames;
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, counterNames);
-    VerifyCounterNames(kGpaApiVulkan, kDevIdVI, FALSE, counterNames);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, counterNames);
-    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx9, FALSE, counterNames);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, counterNames);
-    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx10, FALSE, counterNames);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, counterNames);
-    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx10_3, FALSE, counterNames);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, counterNames);
-    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11, FALSE, counterNames);
+    std::vector<const char*> derived_counter_names;
+    std::vector<const char*> hardware_counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kDevIdVI, FALSE, derived_counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx9, FALSE, derived_counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx10, FALSE, derived_counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx10_3, FALSE, derived_counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11, FALSE, derived_counter_names, hardware_counter_names);
+}
+
+TEST(CounterDllTests, VkCounterNamesGfx8)
+{
+    std::vector<const char*> counter_names;
+    std::vector<const char*> hardware_counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx8, FALSE, counter_names, hardware_counter_names);
+}
+
+TEST(CounterDllTests, VkCounterNamesGfx9)
+{
+    std::vector<const char*> counter_names;
+    std::vector<const char*> hardware_counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx9, FALSE, counter_names, hardware_counter_names);
+}
+
+TEST(CounterDllTests, VkCounterNamesGfx10)
+{
+    std::vector<const char*> counter_names;
+    std::vector<const char*> hardware_counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx10, FALSE, counter_names, hardware_counter_names);
+}
+
+TEST(CounterDllTests, VkCounterNamesGfx103)
+{
+    std::vector<const char*> counter_names;
+    std::vector<const char*> hardware_counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx103, FALSE, counter_names, hardware_counter_names);
+}
+
+TEST(CounterDllTests, VkCounterNamesGfx11)
+{
+    std::vector<const char*> counter_names;
+    std::vector<const char*> hardware_counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx11, FALSE, counter_names, hardware_counter_names);
 }
 
 // Test the VK counter names on all generations.
 TEST(CounterDllTests, VkCounterNamesByGeneration)
 {
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationNone, FALSE);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx6, FALSE);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationNvidia, FALSE);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationIntel, FALSE);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx6, FALSE);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx7, FALSE);
-
     std::vector<const char*> counter_names;
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, counter_names);
-    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx8, FALSE, counter_names);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, counter_names);
-    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx9, FALSE, counter_names);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, counter_names);
-    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx10, FALSE, counter_names);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, counter_names);
-    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx103, FALSE, counter_names);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, counter_names);
-    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx11, FALSE, counter_names);
+    std::vector<const char*> hardware_counter_names;
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx8, FALSE, counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx9, FALSE, counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx10, FALSE, counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx103, FALSE, counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kGpaHwGenerationGfx11, FALSE, counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, VkOpenCounterContext)
 {
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationNone, FALSE);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx6, FALSE);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationNvidia, FALSE);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationIntel, FALSE);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx6, FALSE);
-    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx7, FALSE);
-
     VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx8);
     VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx9);
     VerifyOpenCounterContext(kGpaApiVulkan, kGpaHwGenerationGfx10);
@@ -234,7 +279,6 @@ TEST(CounterDllTests, VkCounterLibTestGfx11)
 
 TEST(CounterDllTests, VkCounterFormulaTest)
 {
-    std::vector<const char*> counter_names;
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx8));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx9));
     VerifyCounterFormula(GetExpectedPublicCounters(kGpaHwGenerationGfx10));

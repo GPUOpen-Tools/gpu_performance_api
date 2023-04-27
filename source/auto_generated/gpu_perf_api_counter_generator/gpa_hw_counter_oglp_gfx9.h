@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief OGLP counter definitions for GFX9.
@@ -20,7 +20,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_oglp_gfx9
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kOglpExposedCountersGroupArrayGfx9; ///< Array of hardware exposed counter groups for Oglp for Gfx9 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kOglpCounterGroupArrayGfx9; ///< Array of hardware counter groups for Oglp for Gfx9 family
     extern std::vector<GpaCounterGroupDesc>                           kHwOglpGroupsGfx9; ///< Array of counter groups for Oglp for Gfx9 family
     extern GpaCounterGroupExposedCounterDesc                          kHwOglpExposedCountersByGroupGfx9[]; ///< Array of exposed counter groups for Oglp for Gfx9 family
     extern GpaPaddedCounterDesc                                       kOglpPaddedCounterByGroupGfx9[]; ///< Array of reserved counter for Oglp for Gfx9 family
@@ -35,7 +35,7 @@ namespace counter_oglp_gfx9
     extern const std::set<unsigned int>                               kHwOglpTimestampBlockIdsGfx9; ///< Timestamp block id's for Oglp for Gfx9 family
     extern const std::set<unsigned int>                               kHwOglpTimeCounterIndicesGfx9; ///< Timestamp counter indices for Oglp for Gfx9 family
     extern const unsigned int                                         kHwOglpGroupCountGfx9; ///< Hardware Group Count for Oglp for Gfx9 family
-    extern const unsigned int                                         kHwOglpExposedCountersGroupCountGfx9; ///< Whitelist hardware counter Group Count for Oglp for Gfx9 family
+    extern const unsigned int                                         kHwOglpExposedCountersGroupCountGfx9; ///< Exposed hardware counter Group Count for Oglp for Gfx9 family
     extern const unsigned int                                         kOglpPaddedCounterGroupCountGfx9; ///< reserved counter group count for Oglp for Gfx9 family
     extern const unsigned int                                         kHwOglpSqGroupCountGfx9; ///< Hardware SQ Group Count for Oglp for Gfx9 family
     extern const unsigned int                                         kHwOglpSqIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for Oglp for Gfx9 family

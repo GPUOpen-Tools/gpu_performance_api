@@ -1,12 +1,12 @@
 ﻿// =====================================================================
 // <copyright file="CounterDefCMakeGen.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
 // </author>
 // <summary>
-//      CMake File generator for counter definitions
+//      CMake File generator for counter definitions.
 // </summary>
 // =====================================================================
 
@@ -30,10 +30,6 @@ namespace GpaTools
         /// </summary>
         public static ApiDictionary counterDefs = new ApiDictionary();
 
-        /// <summary>
-        /// Flag indicating the internal counter compiler or not
-        /// </summary>
-        public static bool isInternal = false;
 
         /// <summary>
         /// Initializes the memory for the file lists
@@ -63,9 +59,11 @@ namespace GpaTools
         {
             string file = Gpa.GetFileNameFromFilePath(fileName);
 
+            string prefix = Gpa.publicFilePrefix;
+
             // PublicCounterDefs*
             {
-                int indexOf = file.IndexOf((isInternal ? Gpa.internalFilePrefix : Gpa.publicFilePrefix) + Gpa.counterDefinitionsStr, StringComparison.Ordinal);
+                int indexOf = file.IndexOf(prefix + Gpa.counterDefinitionsStr, StringComparison.Ordinal);
                 if (indexOf != -1)
                 {
                     string api = Gpa.GetApiFromFileName(file);
@@ -78,7 +76,7 @@ namespace GpaTools
 
             // DerivedCounterDefs*
             {
-                int indexOf = file.IndexOf((isInternal ? Gpa.internalFilePrefix : Gpa.publicFilePrefix) + Gpa.derivedCounterOutFileName, StringComparison.Ordinal);
+                int indexOf = file.IndexOf(prefix + Gpa.derivedCounterOutFileName, StringComparison.Ordinal);
                 if (indexOf != -1)
                 {
                     string api = Gpa.GetApiFromFileName(file);
@@ -95,7 +93,8 @@ namespace GpaTools
         /// </summary>
         public static void CMakeWriter()
         {
-            string TypePrefix = (isInternal ? Gpa.internalStr : Gpa.publicStr);
+            string TypePrefix = Gpa.publicStr;
+
             foreach (var api in counterDefs)
             {
                 bool Init = false;

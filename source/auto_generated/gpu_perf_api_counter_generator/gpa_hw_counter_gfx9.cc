@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX9.
@@ -12,12 +12,9 @@
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx9.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
+
 namespace counter_gfx9
 {
-    std::vector<GpaHardwareCounterDesc> kSdma0CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kSdma1CountersGfx9 = {
-    };
     std::vector<GpaHardwareCounterDesc> kCpfCountersGfx9 = {
         {0, "CPF_PERF_SEL_ALWAYS_COUNT", "CPF", "Always Count.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {23, "CPF_PERF_SEL_CPF_STAT_BUSY", "CPF", "CPF Busy.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -489,16 +486,6 @@ namespace counter_gfx9
     std::vector<GpaHardwareCounterDesc> kGrbmCountersGfx9 = {
         {0, "GRBM_PERF_SEL_COUNT", "GRBM", "Tie High - Count Number of Clocks", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {2, "GRBM_PERF_SEL_GUI_ACTIVE", "GRBM", "The GUI is Active", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse0CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse1CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse2CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse3CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRlcCountersGfx9 = {
     };
     std::vector<GpaHardwareCounterDesc> kPaSu0CountersGfx9 = {
         {8, "PA_SU0_PERF_PAPC_PA_INPUT_PRIM", "PA_SU0", "Number of Primitives input to PA; increment rate-one per clock ;  range-1/clk;it does not indicate bad performance; no bottleneck detection;all instances report the same result; no combinations", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2436,134 +2423,6 @@ namespace counter_gfx9
         {101, "TA63_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA63", "Number of flat opcode reads processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {102, "TA63_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA63", "Number of flat opcode writes processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kTd0CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd1CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd2CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd3CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd4CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd5CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd6CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd7CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd8CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd9CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd10CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd11CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd12CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd13CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd14CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd15CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd16CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd17CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd18CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd19CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd20CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd21CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd22CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd23CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd24CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd25CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd26CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd27CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd28CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd29CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd30CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd31CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd32CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd33CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd34CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd35CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd36CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd37CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd38CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd39CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd40CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd41CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd42CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd43CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd44CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd45CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd46CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd47CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd48CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd49CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd50CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd51CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd52CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd53CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd54CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd55CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd56CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd57CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd58CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd59CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd60CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd61CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd62CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd63CountersGfx9 = {
-    };
     std::vector<GpaHardwareCounterDesc> kTcp0CountersGfx9 = {
         {6, "TCP0_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP0", "TCP stalls TA data interface. Not Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {60, "TCP0_PERF_SEL_TOTAL_CACHE_ACCESSES", "TCP0", "Count of total cache line (tag) accesses (includes hits and misses).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3220,16 +3079,6 @@ namespace counter_gfx9
         {41, "TCC15_PERF_SEL_EA_RDREQ", "TCC15", "Number of TCC/EA read requests (either 32-byte or 64-byte)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {42, "TCC15_PERF_SEL_EA_RDREQ_32B", "TCC15", "Number of 32-byte TCC/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kTca0CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTca1CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGdsCountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kIa0CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kIa1CountersGfx9 = {
-    };
     std::vector<GpaHardwareCounterDesc> kVgt0CountersGfx9 = {
         {1, "VGT0_PERF_VGT_SPI_ESVERT_VALID", "VGT0", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {9, "VGT0_PERF_VGT_SPI_GSPRIM_VALID", "VGT0", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3261,20 +3110,6 @@ namespace counter_gfx9
         {96, "VGT3_PERF_VGT_SPI_LSVERT_VALID", "VGT3", "LS Vert is valid.  Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {105, "VGT3_PERF_VGT_SPI_HSVERT_VALID", "VGT3", "HS Vert is valid.  Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {125, "VGT3_PERF_VGT_TE11_BUSY", "VGT3", "Counts number of cycles the TE11 block is busy. (DX11 Tessellation Fixed Function Logic)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kCpgCountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kCpcCountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kWdCountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMcvml2CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kAtcCountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kAtcl2CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRpbCountersGfx9 = {
     };
     std::vector<GpaHardwareCounterDesc> kGcea0CountersGfx9 = {
         {55, "GCEA0_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA0", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3404,88 +3239,6 @@ namespace counter_gfx9
         {55, "GCEA31_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA31", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {57, "GCEA31_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA31", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kRmi0CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi1CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi2CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi3CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi4CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi5CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi6CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi7CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc0CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc1CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc2CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc3CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc4CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc5CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc6CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc7CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc8CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc9CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc10CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc11CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc12CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc13CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc14CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc15CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc16CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc17CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc18CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc19CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc20CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc21CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc22CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc23CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc24CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc25CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc26CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc27CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc28CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc29CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc30CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc31CountersGfx9 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGpuTimestampCountersGfx9 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGpuTimeCountersGfx9 = {
         {0, "GPUTime_BOTTOM_TO_BOTTOM_DURATION", "GPUTime", "delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {1, "GPUTime_BOTTOM_TO_BOTTOM_START", "GPUTime", "time of the previous command reaching bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3493,8 +3246,6 @@ namespace counter_gfx9
         {3, "GPUTime_TOP_TO_BOTTOM_DURATION", "GPUTime", "execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {4, "GPUTime_TOP_TO_BOTTOM_START", "GPUTime", "time that the current command reaches the top of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "GPUTime_TOP_TO_BOTTOM_END", "GPUTime", "time that the current command reaches the bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGpinCountersGfx9 = {
     };
 } // counter_gfx9
 

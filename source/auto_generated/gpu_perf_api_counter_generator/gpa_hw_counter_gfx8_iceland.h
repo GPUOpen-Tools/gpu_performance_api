@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX8_ICELAND.
@@ -12,9 +12,11 @@
 
 // clang-format off
 
+#include <vector>
 #include <set>
 
 struct GpaHardwareCounterDesc;
+
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx8.h"
 
 namespace counter_gfx8_iceland
@@ -28,12 +30,7 @@ inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
 {
     static std::set<GDT_HW_ASIC_TYPE> asics_supported = { GDT_ICELAND };
 
-    if (asics_supported.find(asic_type) == asics_supported.end())
-    {
-        return false;
-    }
-
-    return true;
+    return asics_supported.find(asic_type) != asics_supported.end();
 }
 
     extern std::vector<GpaHardwareCounterDesc> kVgt0CountersGfx8_iceland; ///< Array of internal counters for Vgt0 block for Gfx8_iceland family

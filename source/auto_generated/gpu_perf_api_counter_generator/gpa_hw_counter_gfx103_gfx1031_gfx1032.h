@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX103_GFX1031_GFX1032.
@@ -12,9 +12,11 @@
 
 // clang-format off
 
+#include <vector>
 #include <set>
 
 struct GpaHardwareCounterDesc;
+
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx103.h"
 
 namespace counter_gfx103_gfx1031_gfx1032
@@ -28,15 +30,8 @@ inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
 {
     static std::set<GDT_HW_ASIC_TYPE> asics_supported = { GDT_GFX10_3_1, GDT_GFX10_3_2, GDT_GFX10_3_4, GDT_GFX10_3_5 };
 
-    if (asics_supported.find(asic_type) == asics_supported.end())
-    {
-        return false;
-    }
-
-    return true;
+    return asics_supported.find(asic_type) != asics_supported.end();
 }
-
-    extern std::vector<GpaHardwareCounterDesc> kGcrCountersGfx103_gfx1031_gfx1032; ///< Array of internal counters for Gcr block for Gfx103_gfx1031_gfx1032 family
 
 /// @brief Replaces count number of block instance counters at the destination with the overriding source counters.
 ///
@@ -60,8 +55,6 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
     {
         return false;
     }
-
-    ReplaceBlockInstanceCounters(counter_gfx103::kGcrCountersGfx103, kGcrCountersGfx103_gfx1031_gfx1032);
 
     return true;
 }

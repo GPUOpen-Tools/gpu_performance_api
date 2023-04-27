@@ -167,6 +167,14 @@ GpaCounterContextManager* GpaCounterContextManager::Instance()
     return gpa_counter_context_manager_;
 }
 
+void GpaCounterContextManager::DeleteInstanceIfZero()
+{
+    if (gpa_counter_context_manager_->gpa_counter_context_map_.size() == 0)
+    {
+        DeleteInstance();
+    }
+}
+
 void GpaCounterContextManager::DeleteInstance()
 {
     delete gpa_counter_context_manager_;

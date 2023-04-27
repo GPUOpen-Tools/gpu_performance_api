@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Pass Object Implementation.
@@ -96,10 +96,6 @@ GpaSample* GpaPass::CreateAndBeginSample(ClientSampleId client_sample_id, IGpaCo
         if (GpaCounterSource::kHardware == counter_source_)
         {
             sample = CreateApiSpecificSample(gpa_cmd_list, GpaSampleType::kHardware, client_sample_id);
-        }
-        else if (GpaCounterSource::kSoftware == counter_source_)
-        {
-            sample = CreateApiSpecificSample(gpa_cmd_list, GpaSampleType::kSoftware, client_sample_id);
         }
 
         if (nullptr != sample)

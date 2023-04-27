@@ -43,7 +43,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev_instance, _I
 
     gpa_example::CmdlineParser parser(__argc, __argv);
 
-    gpa_example::Dx11SampleApp app("Dx11Triangle", parser);
+    gpa_example::Dx11SampleApp app(AMDT_PROJECT_NAME, parser);
 
     if (!app.Initialize())
     {

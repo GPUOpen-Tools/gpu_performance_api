@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
+# Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 # dependencies_map.py
 #
 #    Map of GitHub project names to clone target paths, relative to the GPUPerfAPI
@@ -17,7 +17,7 @@ gitMapping = {
     "googletest"       : ["external/Lib/Ext/GoogleTest",        "542e057c6c5bf45454b43764b881397b71164d62"],
 # Src.
     "adl_util"                 : ["external/Src/ADLUtil",               "d62c94514326775c83fc129bb89d299c8749ebd1"],
-    "device_info"              : ["external/Src/DeviceInfo",            "5e6c83cc74e4588bdf44e1f3c74d419b46bb1a0c"],
+    "device_info"              : ["external/Src/DeviceInfo",            "7f814f15a0896659af005498d9008fd627446ba0"],
     "dynamic_library_module"   : ["external/Src/DynamicLibraryModule",  "e6451ce26b8509cf724c7cf5d007878791143a58"],
     "tsingleton"               : ["external/Src/TSingleton",            "02e8fa7d98f33cdbd0e1f77d1a8a403a32e35882"],
 }

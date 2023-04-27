@@ -33,6 +33,18 @@ static GpaCounterGeneratorDx11       counter_generator_dx11;          ///< Stati
 static GpaCounterGeneratorDx11NonAmd counter_generator_dx11_non_amd;  ///< Static instance of DX11 non-AMD generator.
 static GpaCounterSchedulerDx11       counter_scheduler_dx11;          ///< Static instance of DX11 scheduler.
 
+/// @brief Converts string from wide to utf-8 encoding.
+///
+/// @return The converted utf-8 encoded string.
+static std::string wide_to_utf8_converter(const std::wstring wide)
+{
+    int         num_bytes_needed = WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), nullptr, 0, nullptr, nullptr);
+    std::string utf8;
+    utf8.resize(num_bytes_needed);
+    WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), utf8.data(), num_bytes_needed, nullptr, nullptr);
+    return utf8;
+}
+
 GpaApiType Dx11GpaImplementor::GetApiType() const
 {
     return kGpaApiDirectx11;
@@ -79,9 +91,7 @@ bool Dx11GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
                 hw_info.SetRevisionId(adapter_desc.Revision);
                 std::wstring adapter_name_wide_string(adapter_desc.Description);
 
-                std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
-
-                std::string adapter_name = wide_to_utf8_converter.to_bytes(adapter_name_wide_string);
+                std::string adapter_name = wide_to_utf8_converter(adapter_name_wide_string);
 
                 hw_info.SetDeviceName(adapter_name.c_str());
 
@@ -134,6 +144,7 @@ bool Dx11GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info
             unsigned int   minor_ver     = 0;
             unsigned int   sub_minor_ver = 0;
             ADLUtil_Result adl_result    = AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
+            AMDTADLUtils::DeleteInstance();
 
             static const unsigned int kMinMajorVer      = 16;
             static const unsigned int kMinMinorVerFor16 = 15;
@@ -347,6 +358,7 @@ bool Dx11GpaImplementor::GetAmdHwInfo(ID3D11Device* d3d11_device,
 
                     AsicInfoList asic_info_list;
                     AMDTADLUtils::Instance()->GetAsicInfoList(asic_info_list);
+                    AMDTADLUtils::DeleteInstance();
 
                     for (AsicInfoList::iterator asic_info_iter = asic_info_list.begin(); asic_info_list.end() != asic_info_iter; ++asic_info_iter)
                     {
@@ -387,6 +399,7 @@ bool Dx11GpaImplementor::GetAmdHwInfo(ID3D11Device* d3d11_device,
                             unsigned int   minor_ver     = 0;
                             unsigned int   sub_minor_ver = 0;
                             ADLUtil_Result adl_result    = AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
+                            AMDTADLUtils::DeleteInstance();
 
                             if ((ADL_SUCCESS == adl_result || ADL_WARNING == adl_result))
                             {

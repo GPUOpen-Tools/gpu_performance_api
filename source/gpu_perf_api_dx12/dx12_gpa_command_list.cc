@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 GPA Command List Implementation
@@ -43,6 +43,7 @@ Dx12GpaCommandList::Dx12GpaCommandList(Dx12GpaSession*    dx12_gpa_session,
     uint32_t minor_ver     = 0;
     uint32_t sub_minor_ver = 0;
     AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
+    AMDTADLUtils::DeleteInstance();
 
     // If the driver is unsigned, or the version is >= 22.40 use the default configuration.
     if (!(major_ver || minor_ver || sub_minor_ver) || (major_ver > 22) || (major_ver == 22 && minor_ver >= 40))
@@ -154,13 +155,6 @@ bool Dx12GpaCommandList::BeginSampleRequest(ClientSampleId client_sample_id, Gpa
             success = true;
         }
     }
-    else if (GpaCounterSource::kSoftware == counter_source)
-    {
-        if (OpenSwSample(client_sample_id, &driver_sample_id))
-        {
-            success = true;
-        }
-    }
 
     if (success)
     {
@@ -181,10 +175,6 @@ bool Dx12GpaCommandList::CloseLastSampleRequest()
     if (GpaCounterSource::kHardware == counter_source)
     {
         CloseHwSample();
-    }
-    else if (GpaCounterSource::kSoftware == counter_source)
-    {
-        CloseSwSample();
     }
 
     return true;

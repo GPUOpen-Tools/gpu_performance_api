@@ -34,6 +34,18 @@ GpaFuncTableInfo* gpa_function_table_info         = nullptr;
 bool any_errors_logged = false;  ///< Flag indicating if any GPA errors have been logged.
 int  num_errors_logged = 0;      ///< Indicates the number of GPA errors that have been logged.
 
+/// @brief Converts string from wide to utf-8 encoding.
+///
+/// @return The converted utf-8 encoded string.
+static std::wstring utf8_to_wide_converter(const std::string utf8)
+{
+    int         num_characters_needed = MultiByteToWideChar(CP_UTF8, 0, utf8.data(), (int)utf8.size(), nullptr, 0);
+    std::wstring wide;
+    wide.resize(num_characters_needed);
+    MultiByteToWideChar(CP_UTF8, 0, utf8.data(), (int)utf8.size(), wide.data(), num_characters_needed);
+    return wide;
+}
+
 void LogGPA(GpaLoggingType logging_type, const char* log_message)
 {
     D3D11Triangle::Instance()->GpaLog(logging_type, log_message);
@@ -277,7 +289,24 @@ bool D3D11Triangle::Init(gpa_example::Dx11SampleApp* app)
 
     if (!dxgi_adapters.empty())
     {
-        dxgi_adapter_1 = dxgi_adapters.at(0);
+        // Pick first supported hardware adapter to create the device.
+        bool found_supported_gpu = false;
+        for (uint32_t i = 0; i < adapter_count; i++)
+        {
+            DXGI_ADAPTER_DESC1 adapter_desc_i;
+            dxgi_adapters.at(i)->GetDesc1(&adapter_desc_i);
+            int candidate_device_id = adapter_desc_i.DeviceId;
+            if (!(candidate_device_id == 0x1506 || candidate_device_id == 0x164e))
+            {
+                found_supported_gpu = true;
+                dxgi_adapter_1      = dxgi_adapters.at(i);
+                break;
+            }
+        }
+        if (!found_supported_gpu)
+        {
+            return false;
+        };
 
         D3D_FEATURE_LEVEL feature_levels[] = {D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_11_1};
         D3D_FEATURE_LEVEL feature_level_supported;
@@ -371,9 +400,7 @@ bool D3D11Triangle::Init(gpa_example::Dx11SampleApp* app)
 
         UINT compile_flags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 
-        std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
-
-        std::wstring shader_path = wide_to_utf8_converter.from_bytes(executable_path_);
+        std::wstring shader_path = utf8_to_wide_converter(executable_path_);
         shader_path.append(L"dx11_triangle_shaders.hlsl");
 
         std::ifstream shader_file(shader_path.c_str());

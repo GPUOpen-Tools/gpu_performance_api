@@ -1,17 +1,28 @@
 ﻿# GPU Performance API Release Notes
+---
+## Version 3.13 (04/27/2023)
+* Add support for AMD Radeon RX 7600 series hardware.
+* Add support for AMD Radeon RX 7700 series hardware.
+* OpenCL support for AMD Radeon RX 7000 series hardware has been restored if using Adrenalin 23.3.2 or newer.
+* Removed implementation related to supporting software counters. They have not been supported since GPA 3.0.
+* Update C++ language standard to C++ 17.
+* CMake 3.19 or newer is now required.
+* 32-bit Linux builds are no longer supported.
+* Bug Fixes:
+  * Fixed a regression that resulted in a crash on certain hardware variants.
+  * Fix a memory leak in the GpaInterfaceLoader if multiple APIs were loaded.
+  * Fix a memory leak in GPUPerfAPIUnitTests caused by not closing a context.
+  * Marked kGpaOpenContextHideSoftwareCountersBit as obsolete.
+  * Marked kGpaOpenContextHideHardwareCountesrBit as obsolete.
 
-## Upcoming Release
-  * Renamed kGpaOpenContextHideSoftwareCountesrBit and kGpaOpenContextHideHardwareCountersBit since they are obsolete.
-
-## Version 3.12 (12/14/22)
-  * Add support for AMD Radeon™ RX 7900 XTX and AMD Radeon™ RX 7900 XT GPUs.
+## Version 3.12 (12/14/2022)
+  * Add support for AMD Radeon RX 7000 Series hardware.
   * Add support for compiling with Visual Studio 2022.
-  * Reduced binary sizes by an average of 75%.
+  * Reduced binary sizes by an average of 45%.
   * Bug Fixes:
     * AMD Radeon RX 6800, DX12: HiZ and PreZ counters are now reporting correct values (requires Adrenalin 22.7.1 or newer driver).
     * AMD Radeon RX 6800: CSThreadgroups is now reporting the correct values (requires Adrenalin 22.7.1 or newer driver).
     * AMD Radeon RX 6000 Series: PostTessellation counters now only show results in pipelines using tessellation.
-    * AMD Radeon RX 5000 Series: PreTessellation counters now only show results in pipelines using tessellation.
     * Sample apps: Fix implementation of passes in D3D11Triangle, and improve general error handling.
 
 ## Version 3.11.1 (07/27/22)

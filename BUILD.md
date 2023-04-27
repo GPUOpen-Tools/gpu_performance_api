@@ -12,7 +12,7 @@ order to clone/update any dependent repositories.
 
 #### Prerequisites
   * Python 3.x, which can be installed from https://www.python.org/.
-  * CMake 3.7.2 or newer
+  * CMake 3.19 or newer
     * For Windows, this can be downloaded from https://cmake.org/download/
     * For Linux, this can be installed using: sudo apt-get install cmake
   * To build the documentation:
@@ -41,7 +41,7 @@ this script everytime you pull new changes from GPA repository.
  * This script also executes cmake to generate all required files to build GPA.
  * If you want to generate all cmake build files without trying to clone/pull dependent repos, you can add "--nofetch" to the [pre_build.py](build/pre_build.py) command line.
  * Additional switches that can be used with the [pre_build.py](build/pre_build.py) script:
-   * `--vs=[2015,2017,2019]`: Specify the Visual Studio version for which to generate projects. Default is 2017.
+   * `--vs=[2015,2017,2019,2022]`: Specify the Visual Studio version for which to generate projects. Default is 2019.
     * `--config=[debug,release]`: Specify the config for which to generate makefiles. Default is both. A specific config can only be specified on Linux. On Windows, both configs are always supported by the generated VS solution and project files.
    * `--platform=[x86,x64]`: Specify the platform for which to generate build files. Default is both.
    * `--clean`: Deletes CMakeBuild directory and regenerates all build files from scratch
@@ -57,10 +57,10 @@ this script everytime you pull new changes from GPA repository.
 ## Windows Build Information
 
 ##### Prerequisites
- * Microsoft Visual Studio 2017
+ * Microsoft Visual Studio 2019
  * Windows 10 SDK Version 10.0.10586.0 from https://developer.microsoft.com/en-US/windows/downloads/windows-10-sdk
-   * You can override the version of the Windows 10 SDK used by modifying external/Lib/Ext/Windows-Kits/Global-WindowsSDK.props
- * Microsoft .NET 4.6.2 SDK from https://www.microsoft.com/en-us/download/details.aspx?id=53321
+   * You can override the version of the Windows 10 SDK used by modifying external/Lib/Ext/Windows-Kits/Global-WindowsSDK.cmake
+ * Microsoft .NET 4.6.2 SDK from https://dotnet.microsoft.com/en-us/download/dotnet-framework/thank-you/net462-developer-pack-offline-installer
 
 ##### Build Instructions
  * Load cmake_bld\x64\GPUPerfAPI.sln into Visual Studio to build the 64-bit version of GPA
@@ -75,15 +75,11 @@ this script everytime you pull new changes from GPA repository.
 
 ##### Prerequisites
  * Install the Mesa common development package: sudo apt-get install mesa-common-dev
- * For 32-bit builds, install the multilib packages: sudo apt-get install gcc-multilib g++-multilib
 
 ##### Build Instructions
  * Execute "make" in the cmake_bld/x64/debug to build the 64-bit debug version of GPA
  * Execute "make" in the cmake_bld/x64/release to build the 64-bit release version of GPA
- * Execute "make" in the cmake_bld/x86/debug to build the 32-bit debug version of GPA
- * Execute "make" in the cmake_bld/x86/release to build the 32-bit release version of GPA
  * After a successful build, the GPUPerfAPI binaries can be found in `gpu_performance_api/output/$(Configuration)` (for example gpu_performance_api/output/release)
- * When building the internal version, each binary filename will also have a "-Internal" suffix (for example libGPUPerfAPIGL-Internal.so)
 
 ## PublicCounterCompiler Tool
 

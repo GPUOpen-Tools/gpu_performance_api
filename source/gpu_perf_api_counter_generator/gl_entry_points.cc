@@ -870,3 +870,8 @@ bool ogl_utils::InitializeGlFunctions()
     are_gl_functions_initialized = ret_val;
     return ret_val;
 }
+
+void ogl_utils::Cleanup()
+{
+    GpaLogger::DeleteInstance();
+}

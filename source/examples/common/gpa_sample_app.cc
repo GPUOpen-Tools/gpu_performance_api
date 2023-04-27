@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Sample Application.
@@ -22,6 +22,7 @@ namespace gpa_example
         , counterfile_("")
         , logfile_(app_name_ + "_gpa_log.txt")
         , datafile_(app_name_ + "_counter_data.csv")
+        , testmode_("")
     {
         cmdline_parser.AddArg("--numberofframes",
                               &number_of_frames_,
@@ -35,23 +36,25 @@ namespace gpa_example
         cmdline_parser.AddArg(
             "--includeknownissues", &include_known_issues_, ArgType::ARG_TYPE_BOOL, "Known issues will be included in the counter validation");
 
+        cmdline_parser.AddArg("--testmode", &testmode_, ArgType::ARG_TYPE_STRING, "Postfix to be appended to logfile and datafile indicating test mode (full or sanity)");
+
         cmdline_parser.AddArg("--verify", &verify_, ArgType::ARG_TYPE_BOOL, "Application will verify a few counter values (experimental)");
 
         cmdline_parser.AddArg(
             "--confirmsuccess", &confirm_success_, ArgType::ARG_TYPE_BOOL, "Implies --verify and confirms successful counter values in addition to errors");
 
-        cmdline_parser.AddArg("--counterfile", &counterfile_, ArgType::ARG_TYPE_FILEPATH, "File containing the list of counters to profile");
+        cmdline_parser.AddArg("--counterfile", &counterfile_, ArgType::ARG_TYPE_STRING, "File containing the list of counters to profile");
 
         cmdline_parser.AddArg(
             "--logfile",
             &logfile_,
-            ArgType::ARG_TYPE_FILEPATH,
-            "The full path to the file where GPA log messages will be written; defaults to '<app_name>_gpaLog.txt' in the same directory as this executable");
+            ArgType::ARG_TYPE_STRING,
+            "The full path to the file where GPA log messages will be written; defaults to '<app_name>_gpa_log.txt' in the same directory as this executable");
 
         cmdline_parser.AddArg("--datafile",
                               &datafile_,
-                              ArgType::ARG_TYPE_FILEPATH,
-                              "The full path to the file where GPA counter data will be written; defaults to '<app_name>_counterData.csv' in the same "
+                              ArgType::ARG_TYPE_STRING,
+                              "The full path to the file where GPA counter data will be written; defaults to '<app_name>_counter_data.csv' in the same "
                               "directory as this executable");
     }
 
@@ -62,7 +65,23 @@ namespace gpa_example
         {
             std::cout << cmdline_parser_.UsageString() << std::endl;
         }
-
+        else
+        {
+            if (testmode_.compare("sanity") == 0)
+            {
+                datafile_.insert(datafile_.rfind("."), "_sanity");
+                logfile_.insert(logfile_.rfind("."), "_sanity");
+            }
+            else if (testmode_.compare("full") == 0)
+            {
+                datafile_.insert(datafile_.rfind("."), "_full");
+                logfile_.insert(logfile_.rfind("."), "_full");
+            }
+            else if (testmode_.compare("") != 0)
+            {
+                std::cout << "The --testmode argument provided is invalid. Please input either full or sanity for the test mode." << std::endl;
+            }
+        }
         return args_parsed;
     }
 

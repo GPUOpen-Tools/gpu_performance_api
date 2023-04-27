@@ -1,4 +1,4 @@
-.. Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 .. GPU Performance API Usage
 
 .. highlight:: c++
@@ -23,7 +23,6 @@ for each API
     "Vulkan", "| 64-bit Windows: GPUPerfAPIVK-x64.dll
     | 32-bit Windows: GPUPerfAPIVK.dll
     | 64-bit Linux: libGPUPerfAPIVK.so
-    | 32-bit Linux: libGPUPerfAPIVK32.so"
     "DirectX 12", "| 64-bit Windows: GPUPerfAPIDX12-x64.dll
     | 32-bit Windows: GPUPerfAPIDX12.dll"
     "DirectX 11", "| 64-bit Windows: GPUPerfAPIDX11-x64.dll
@@ -31,7 +30,6 @@ for each API
     "OpenGL", "| 64-bit Windows: GPUPerfAPIGL-x64.dll
     | 32-bit Windows: GPUPerfAPIGL.dll
     | 64-bit Linux: libGPUPerfAPIGL.so
-    | 32-bit Linux: libGPUPerfAPIGL32.so"
     "OpenCL", "| 64-bit Windows: GPUPerfAPICL-x64.dll
     | 32-bit Windows: GPUPerfAPICL.dll"
 

@@ -206,10 +206,9 @@ private:
 #endif
 
     VkInstance                       vk_instance_;                        ///< The instance of the Vulkan API.
-    const uint32_t                   default_physical_device_index_ = 0;  ///< The default index of the physical device (ie: GPU) to use when running this demo.
     VkPhysicalDevice                 default_physical_device_;            ///< The selected physical device that will execute this demo.
     VkPhysicalDeviceProperties       physical_device_properties_;         ///< Properties of the selected physical device.
-    VkPhysicalDeviceFeatures         phsyical_device_features_;           ///< Available features of the selected physical device.
+    VkPhysicalDeviceFeatures         physical_device_features_;           ///< Available features of the selected physical device.
     VkPhysicalDeviceMemoryProperties physical_device_memory_properties_;  ///< Properties of the selected physical device.
     VkDevice                         vk_device_;                          ///< The logical device that will be used to render.
     VkQueue                          vk_queue_;                           ///< The queue on which rendering commands will be scheduled.

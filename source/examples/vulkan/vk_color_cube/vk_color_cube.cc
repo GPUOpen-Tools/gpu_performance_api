@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Vulkan Color Cube Sample.
@@ -36,7 +36,8 @@
 
 GpaApiManager*    GpaApiManager::gpa_api_manager_ = nullptr;
 GpaFuncTableInfo* gpa_function_table_info         = nullptr;
-std::string       GpaHelper::gpa_log_file_name    = "VkColorCube_gpa_log.txt";
+std::string       GpaHelper::gpa_log_file_name    = AMDT_PROJECT_NAME "_gpa_log.txt";
+std::string       GpaHelper::csv_file_name        = AMDT_PROJECT_NAME "_counter_data.csv";
 std::fstream      GpaHelper::gpa_log_file_stream;
 bool              GpaHelper::gpa_any_errors_logged = false;
 int               GpaHelper::gpa_num_errors_logged = 0;
@@ -96,7 +97,7 @@ AMDVulkanDemo::AMDVulkanDemo(const std::string app_name, gpa_example::CmdlinePar
         "--printcounterinfo", &print_gpa_counter_info_, gpa_example::ArgType::ARG_TYPE_BOOL, "Output information about available performance counters");
 
     physical_device_properties_        = {};
-    phsyical_device_features_          = {};
+    physical_device_features_          = {};
     physical_device_memory_properties_ = {};
     vk_surface_format_                 = {};
     vk_present_mode_                   = VK_PRESENT_MODE_FIFO_KHR;
@@ -297,7 +298,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* file_name)
 
             if (shader_byte_code_len == AAsset_read(shader_file, shader_bytes.data(), shader_byte_code_len))
             {
-                AMDVulkanDemoVkUtils::Log("Shader successfully loaded");
+                AMDVulkanDemoVkUtils::Log("Shader successfully loaded.");
             }
 
             AAsset_close(shader_file);
@@ -305,7 +306,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* file_name)
     }
     else
     {
-        AMDVulkanDemoVkUtils::Log("No native activity");
+        AMDVulkanDemoVkUtils::Log("No native activity.");
     }
 
 #else
@@ -316,7 +317,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* file_name)
 
     if (!shader_file.is_open())
     {
-        AMDVulkanDemoVkUtils::Log("ERROR: Failed to read shader file: %s'", shader_path.c_str());
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to read shader file: '%s'.", shader_path.c_str());
         return VK_NULL_HANDLE;
     }
 
@@ -340,7 +341,7 @@ VkShaderModule AMDVulkanDemo::LoadShader(const char* file_name)
 
     if (create_shader_module_result != VK_SUCCESS)
     {
-        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create shader module for %s", shader_path.c_str());
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create shader module for '%s'.", shader_path.c_str());
         return VK_NULL_HANDLE;
     }
 
@@ -372,7 +373,7 @@ bool AMDVulkanDemo::InitializeGpa()
             gpu_perf_api_helper_.gpa_function_table_->GpaRegisterLoggingCallback(gpa_log_types, gpu_perf_api_helper_.gpaLoggingCallback);
         if (status_register_callback != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to register GPA logging callback.");
+            gpu_perf_api_helper_.LogStatus(status_register_callback, "ERROR: Failed to register GPA logging callback.");
             return false;
         }
 
@@ -380,7 +381,7 @@ bool AMDVulkanDemo::InitializeGpa()
 
         if (status_gpa_initialize != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to initialize GPA.");
+            gpu_perf_api_helper_.LogStatus(status_gpa_initialize, "ERROR: Failed to initialize GPA.");
             return false;
         }
 
@@ -396,21 +397,21 @@ bool AMDVulkanDemo::InitializeGpa()
 #endif
     if (nullptr == gpa_lib)
     {
-        AMDVulkanDemoVkUtils::Log("ERROR: failed to dlopen the GPA vulkan library");
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to dlopen the GPA vulkan library.");
         return false;
     }
 
     GpaGetFuncTablePtrType get_function_table_type = (GpaGetFuncTablePtrType)(dlsym(gpa_lib, "GpaGetFuncTable"));
     if (nullptr == get_function_table_type)
     {
-        AMDVulkanDemoVkUtils::Log("ERROR: unable to get GpaGetFuncTable pointer from GPA vulkan library");
+        AMDVulkanDemoVkUtils::Log("ERROR: Unable to get GpaGetFuncTable pointer from GPA vulkan library.");
         return false;
     }
 
     GpaFunctionTable* gpa_function_table = new (std::nothrow) GpaFunctionTable();
     if (nullptr == gpa_function_table)
     {
-        AMDVulkanDemoVkUtils::Log("ERROR: out of memory");
+        AMDVulkanDemoVkUtils::Log("ERROR: Out of memory.");
         return false;
     }
 
@@ -420,7 +421,7 @@ bool AMDVulkanDemo::InitializeGpa()
     GpaStatus status = get_function_table_type((void*)(gpa_function_table));
     if (kGpaStatusOk != status)
     {
-        AMDVulkanDemoVkUtils::Log("ERROR: GpaGetFuncTable failed with status %d", status);
+        AMDVulkanDemoVkUtils::Log("ERROR: GpaGetFuncTable failed with status %d.", status);
         delete gpa_function_table;
         return false;
     }
@@ -440,7 +441,7 @@ bool AMDVulkanDemo::InitializeGpa()
     status = gpu_perf_api_helper_.gpa_function_table_->GpaRegisterLoggingCallback(gpa_log_types, gpu_perf_api_helper_.gpaLoggingCallback);
     if (status != kGpaStatusOk)
     {
-        AMDVulkanDemoVkUtils::Log("ERROR: Failed to register GPA logging callback.");
+        gpu_perf_api_helper_.LogStatus(status, "ERROR: Failed to register GPA logging callback.");
         return false;
     }
 
@@ -483,7 +484,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         {
             for (uint32_t i = 0; i < instance_layer_count; ++i)
             {
-                AMDVulkanDemoVkUtils::Log("Instance Layer %d: %s", i, instanceLayerProperties[i].layerName);
+                AMDVulkanDemoVkUtils::Log("Instance Layer %d: '%s'.", i, instanceLayerProperties[i].layerName);
             }
         }
     }
@@ -516,7 +517,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
                 if (print_debug_output_)
                 {
-                    AMDVulkanDemoVkUtils::Log("Instance Extension %d: %s", i, instance_extension_properties[i].extensionName);
+                    AMDVulkanDemoVkUtils::Log("Instance Extension %d: '%s'.", i, instance_extension_properties[i].extensionName);
                 }
             }
 
@@ -620,12 +621,25 @@ bool AMDVulkanDemo::InitializeVulkan()
         }
 
         // Select the default physical device and store related information.
-        // Theoretically, an application might query this for each available physical device
-        // and then use the information to select a physical device to use for rendering.
-        default_physical_device_ = physical_devices[default_physical_device_index_];
-        _vkGetPhysicalDeviceProperties(default_physical_device_, &physical_device_properties_);
-        _vkGetPhysicalDeviceFeatures(default_physical_device_, &phsyical_device_features_);
-        _vkGetPhysicalDeviceMemoryProperties(default_physical_device_, &physical_device_memory_properties_);
+        // Iterating through each of the retrieved physical devices and skipping over unsupported hardware when selecting device.
+        bool found_supported_gpu = false;
+        for (uint32_t i = 0; i < physical_device_count; i++)
+        {
+            default_physical_device_ = physical_devices.at(i);
+            _vkGetPhysicalDeviceProperties(default_physical_device_, &physical_device_properties_);
+            if (!(physical_device_properties_.deviceID == 0x1506 || physical_device_properties_.deviceID == 0x164e))
+            {
+                found_supported_gpu = true;
+                _vkGetPhysicalDeviceFeatures(default_physical_device_, &physical_device_features_);
+                _vkGetPhysicalDeviceMemoryProperties(default_physical_device_, &physical_device_memory_properties_);
+                break;
+            }
+        }
+        if (!found_supported_gpu)
+        {
+            std::cout << "ERROR: Failed to find a supported physical device." << std::endl;
+            return false;
+        }
     }
 
 #if defined(VK_USE_PLATFORM_WIN32_KHR)
@@ -669,7 +683,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     VkResult result = _vkCreateAndroidSurfaceKHR(vk_instance_, &surface_create_info, nullptr, &vk_surface_);
     if (result != VK_SUCCESS || vk_surface_ == VK_NULL_HANDLE)
     {
-        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create Android surface. _vkCreateAndroidSurfaceKHR() returned %d", result);
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to create Android surface. _vkCreateAndroidSurfaceKHR() returned %d.", result);
         return false;
     }
     assert(vk_surface_ != VK_NULL_HANDLE);
@@ -734,7 +748,7 @@ bool AMDVulkanDemo::InitializeVulkan()
             // Both graphics and present is supported, so store this queue_family_index.
             if (print_debug_output_)
             {
-                AMDVulkanDemoVkUtils::Log("DEBUG: Selecting QueueFamilyIndex %d", queue_family_index);
+                AMDVulkanDemoVkUtils::Log("DEBUG: Selecting QueueFamilyIndex %d.", queue_family_index);
             }
 
             found_supporting_queue       = true;
@@ -821,7 +835,7 @@ bool AMDVulkanDemo::InitializeVulkan()
     device_create_info.ppEnabledLayerNames     = nullptr;
     device_create_info.enabledExtensionCount   = static_cast<uint32_t>(optional_device_extensions_.size());
     device_create_info.ppEnabledExtensionNames = optional_device_extensions_.data();
-    device_create_info.pEnabledFeatures        = &phsyical_device_features_;
+    device_create_info.pEnabledFeatures        = &physical_device_features_;
 
     VkResult create_device_result = _vkCreateDevice(default_physical_device_, &device_create_info, nullptr, &vk_device_);
 
@@ -857,14 +871,14 @@ bool AMDVulkanDemo::InitializeVulkan()
         GpaOpenContextFlags open_flags    = IncludeHwCounters() ? kGpaOpenContextEnableHardwareCountersBit : kGpaOpenContextDefaultBit;
         GpaStatus gpa_open_context_status = gpu_perf_api_helper_.gpa_function_table_->GpaOpenContext(&gpa_context_open_info, open_flags, &gpa_context_id_);
         GpaUInt32 device_id, revision_id;
-        /*GpaStatus deviceInfoStatus =*/gpu_perf_api_helper_.gpa_function_table_->GpaGetDeviceAndRevisionId(gpa_context_id_, &device_id, &revision_id);
+        gpu_perf_api_helper_.gpa_function_table_->GpaGetDeviceAndRevisionId(gpa_context_id_, &device_id, &revision_id);
         char        device_name[80] = {};
         const char* device          = device_name;
         gpu_perf_api_helper_.gpa_function_table_->GpaGetDeviceName(gpa_context_id_, &device);
 
         if (gpa_open_context_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to open GPA context.");
+            gpu_perf_api_helper_.LogStatus(gpa_open_context_status, "ERROR: Failed to open GPA context.");
             return false;
         }
 
@@ -878,7 +892,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         GpaStatus get_sample_types_status      = gpu_perf_api_helper_.gpa_function_table_->GpaGetSupportedSampleTypes(gpa_context_id_, &sample_types);
         if (get_sample_types_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get supported GPA sample types.");
+            gpu_perf_api_helper_.LogStatus(get_sample_types_status, "ERROR: Failed to get supported GPA sample types.");
             return false;
         }
 
@@ -887,7 +901,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_create_session_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to create GPA session.");
+            gpu_perf_api_helper_.LogStatus(gpa_create_session_status, "ERROR: Failed to create GPA session.");
             return false;
         }
 
@@ -913,7 +927,8 @@ bool AMDVulkanDemo::InitializeVulkan()
                     GpaStatus gpa_status = gpu_perf_api_helper_.gpa_function_table_->GpaEnableCounterByName(gpa_session_id_, it->c_str());
                     if (gpa_status != kGpaStatusOk)
                     {
-                        AMDVulkanDemoVkUtils::Log("Failed to enable counter: %s", it->c_str());
+                        AMDVulkanDemoVkUtils::Log("Failed to enable counter: '%s'.", it->c_str());
+                        gpu_perf_api_helper_.LogStatus(gpa_status);
                     }
                     success_enable_counter &= gpa_status == kGpaStatusOk;
                 }
@@ -925,23 +940,18 @@ bool AMDVulkanDemo::InitializeVulkan()
             }
             else
             {
-                std::stringstream error;
-                error << "Unable to open Counter file " << Counterfile().c_str() << " . Not enabling any counters";
+                AMDVulkanDemoVkUtils::Log("ERROR: Unable to open counter file '%s'. Not enabling any counters.", Counterfile().c_str());
             }
         }
         else
         {
-#ifdef ANDROID
-            gpa_enable_all_counters_status = gpu_perf_api_helper_.gpa_function_table_->GpaEnableAllCounters(gpa_session_id_);
-#else
             // Enable all the counters.
             gpa_enable_all_counters_status = gpu_perf_api_helper_.gpa_function_table_->GpaEnableAllCounters(gpa_session_id_);
-#endif
         }
 
         if (gpa_enable_all_counters_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to enable all GPA counters.");
+            gpu_perf_api_helper_.LogStatus(gpa_enable_all_counters_status, "ERROR: Failed to enable all GPA counters.");
             return false;
         }
 
@@ -950,7 +960,7 @@ bool AMDVulkanDemo::InitializeVulkan()
         GpaStatus gpa_get_pass_count_status = gpu_perf_api_helper_.gpa_function_table_->GpaGetPassCount(gpa_session_id_, &required_pass_count_);
         if (gpa_get_pass_count_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the number of required GPA passes.");
+            gpu_perf_api_helper_.LogStatus(gpa_get_pass_count_status, "ERROR: Failed to get the number of required GPA passes.");
             return false;
         }
 
@@ -965,7 +975,7 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_begin_session_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to begin GPA session.");
+            gpu_perf_api_helper_.LogStatus(gpa_begin_session_status, "ERROR: Failed to begin GPA session.");
             return false;
         }
     }
@@ -1654,13 +1664,13 @@ bool AMDVulkanDemo::InitializeVulkan()
 
         if (gpa_end_session_status != kGpaStatusOk)
         {
-            AMDVulkanDemoVkUtils::Log("ERROR: Failed to end GPA session.");
+            gpu_perf_api_helper_.LogStatus(gpa_end_session_status, "ERROR: Failed to end GPA session.");
         }
     }
 
     // Set the app as being successfully intialized.
     initialized_ = true;
-    AMDVulkanDemoVkUtils::Log("Vulkan initialization successful");
+    AMDVulkanDemoVkUtils::Log("Vulkan initialization successful.");
 
     return true;
 }
@@ -1842,7 +1852,7 @@ void AMDVulkanDemo::Destroy()
 
             if (gpa_delete_session_status != kGpaStatusOk)
             {
-                AMDVulkanDemoVkUtils::Log("ERROR: Failed to delete GPA session.");
+                gpu_perf_api_helper_.LogStatus(gpa_delete_session_status, "ERROR: Failed to delete GPA session.");
             }
         }
 
@@ -1852,7 +1862,7 @@ void AMDVulkanDemo::Destroy()
 
             if (gpa_close_context_status != kGpaStatusOk)
             {
-                AMDVulkanDemoVkUtils::Log("ERROR: Failed to close GPA Context.");
+                gpu_perf_api_helper_.LogStatus(gpa_close_context_status, "ERROR: Failed to close GPA Context.");
             }
         }
     }
@@ -2402,12 +2412,16 @@ int WINAPI WinMain(_In_ HINSTANCE instance_handle, _In_opt_ HINSTANCE previous_i
 
     gpa_example::CmdlineParser parser(__argc, __argv);
 
-    AMDVulkanDemo app("VkColorCube", parser);
+    AMDVulkanDemo app(AMDT_PROJECT_NAME, parser);
 
     if (!app.Initialize())
     {
         return -1;
     }
+
+    // Setting log and data file names in GPAHelper based on command line input.
+    GpaHelper::gpa_log_file_name = app.Logfile();
+    GpaHelper::csv_file_name     = app.Datafile();
 
     // Include known issues in counter validation.
     GpaHelper::include_known_issues = app.IncludeKnownIssues();
@@ -2430,26 +2444,28 @@ int WINAPI WinMain(_In_ HINSTANCE instance_handle, _In_opt_ HINSTANCE previous_i
         return -1;
     }
 
-    if (app.InitializeVulkan())
+    if (!app.InitializeVulkan())
     {
-        // Main message loop.
-        while (!app.Exit())
+        return -1;
+    }
+
+    // Main message loop.
+    while (!app.Exit())
+    {
+        PeekMessage(&message, NULL, 0, 0, PM_REMOVE);
+
+        if (message.message == WM_QUIT)
         {
-            PeekMessage(&message, NULL, 0, 0, PM_REMOVE);
-
-            if (message.message == WM_QUIT)
-            {
-                app.Exit(true);
-            }
-            else
-            {
-                // Translate and dispatch to event queue.
-                TranslateMessage(&message);
-                DispatchMessage(&message);
-            }
-
-            RedrawWindow(app.GetWindowWin32(), NULL, NULL, RDW_INTERNALPAINT);
+            app.Exit(true);
         }
+        else
+        {
+            // Translate and dispatch to event queue.
+            TranslateMessage(&message);
+            DispatchMessage(&message);
+        }
+
+        RedrawWindow(app.GetWindowWin32(), NULL, NULL, RDW_INTERNALPAINT);
     }
 
     int return_value = static_cast<int>(message.wParam);
@@ -2502,12 +2518,19 @@ int main(const int argc, const char* argv[])
 
     gpa_example::CmdlineParser parser(argc, const_cast<char**>(argv));
 
-    AMDVulkanDemo app("VkColorCube", parser);
+    AMDVulkanDemo app(AMDT_PROJECT_NAME, parser);
 
     if (!app.Initialize())
     {
         return -1;
     }
+
+    // Setting log and data file names in GPAHelper based on command line input.
+    GpaHelper::gpa_log_file_name = app.Logfile();
+    GpaHelper::csv_file_name     = app.Datafile();
+
+    // Include known issues in counter validation.
+    GpaHelper::include_known_issues = app.IncludeKnownIssues();
 
     // First load GPUPerfAPI if needed.
     if (!app.NoGpa())
@@ -2527,31 +2550,33 @@ int main(const int argc, const char* argv[])
         return -1;
     }
 
-    if (app.InitializeVulkan())
+    if (!app.InitializeVulkan())
     {
-        xcb_flush(connection);
-        xcb_generic_event_t* event;
+        return -1;
+    }
 
-        // Main message loop.
-        while (!app.Exit())
+    xcb_flush(connection);
+    xcb_generic_event_t* event;
+
+    // Main message loop.
+    while (!app.Exit())
+    {
+        event = xcb_poll_for_event(connection);
+
+        while (event)
         {
+            demoWindowMessageProcessorXcb(app, event);
+            free(event);
             event = xcb_poll_for_event(connection);
+        }
 
-            while (event)
-            {
-                demoWindowMessageProcessorXcb(app, event);
-                free(event);
-                event = xcb_poll_for_event(connection);
-            }
-
-            // Only draw if the demo has been initialized successfully. This may not be the case
-            // if there was an error during initialization which would display a message box and
-            // cause the window to paint. If this happens, skip drawing and let the default windowing
-            // behavior occur.
-            if (app.Initialized())
-            {
-                app.DrawScene();
-            }
+        // Only draw if the demo has been initialized successfully. This may not be the case
+        // if there was an error during initialization which would display a message box and
+        // cause the window to paint. If this happens, skip drawing and let the default windowing
+        // behavior occur.
+        if (app.Initialized())
+        {
+            app.DrawScene();
         }
     }
 

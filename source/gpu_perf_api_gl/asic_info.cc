@@ -346,6 +346,12 @@ namespace ogl_utils
             asic_id_info.default_device_id = 0x73A8;
             break;
 
+        case kGfx1102:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_2;
+            asic_id_info.default_device_id = 0x7480;
+            break;
+
         default:
             assert(!"Unhandled AsicRevision type");
             asic_id_info.asic_generation   = kAsicUnknown;
@@ -729,7 +735,8 @@ namespace ogl_utils
                             if (nullptr != counter_data)
                             {
                                 // Get the counter results.
-                                ogl_get_perf_monitor_counter_data_amd(monitor, GL_PERFMON_RESULT_AMD, result_size, reinterpret_cast<GLuint*>(counter_data), nullptr);
+                                ogl_get_perf_monitor_counter_data_amd(
+                                    monitor, GL_PERFMON_RESULT_AMD, result_size, reinterpret_cast<GLuint*>(counter_data), nullptr);
 
                                 for (int i = 0; i < num_counters; i++)
                                 {
@@ -851,7 +858,8 @@ namespace ogl_utils
             }
             else if (found_oglp_entrypoints)
             {
-                GPA_LOG_MESSAGE("ASIC revision returned from driver is: %d (decimal) and GL_VERSION is: %d.", asic_info.asic_revision, asic_info.driver_version);
+                GPA_LOG_MESSAGE(
+                    "ASIC revision returned from driver is: %d (decimal) and GL_VERSION is: %d.", asic_info.asic_revision, asic_info.driver_version);
 
                 if (asic_info.asic_revision == kUnknown)
                 {

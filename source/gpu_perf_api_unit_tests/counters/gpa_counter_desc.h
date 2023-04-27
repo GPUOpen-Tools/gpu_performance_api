@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2014-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2014-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GpaCounterDesc declaration.
@@ -19,7 +19,7 @@ struct GpaCounterDesc
     const char*  group;                  ///< Counter group name.
     const char*  description;            ///< Counter description.
     const char*  equation;               ///< Counter equation.
-    GpaUInt32    num_internal_counters;  ///< NUmber of internal counters required.
+    GpaUInt32    num_hardware_counters;  ///< Number of hardware counters required.
     GpaDataType  data_type;              ///< Counter type.
     GpaUsageType usage_type;             ///< Counter usage.
     GpaUuid      uuid;                   ///< Counter UUID.

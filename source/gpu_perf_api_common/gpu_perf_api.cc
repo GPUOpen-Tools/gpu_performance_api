@@ -297,6 +297,7 @@ GPA_LIB_DECL GpaStatus GpaDestroy()
         TRACE_FUNCTION(GpaDestroy);
 
         GpaStatus ret_status = gpa_imp->Destroy();
+        GpaLogger::DeleteInstance();
         GPA_INTERNAL_LOG(GpaDestroy, MAKE_PARAM_STRING(ret_status));
 
         return ret_status;

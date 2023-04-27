@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 counter definitions for GFX10.
@@ -26,7 +26,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_dx12_gfx10
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kDx12ExposedCountersGroupArrayGfx10; ///< Array of hardware exposed counter groups for Dx12 for Gfx10 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kDx12CounterGroupArrayGfx10; ///< Array of hardware counter groups for Dx12 for Gfx10 family
     extern std::vector<GpaCounterGroupDesc>                           kHwDx12GroupsGfx10; ///< Array of counter groups for Dx12 for Gfx10 family
     extern GpaCounterGroupExposedCounterDesc                          kHwDx12ExposedCountersByGroupGfx10[]; ///< Array of exposed counter groups for Dx12 for Gfx10 family
     extern GpaPaddedCounterDesc                                       kDx12PaddedCounterByGroupGfx10[]; ///< Array of reserved counter for Dx12 for Gfx10 family
@@ -42,7 +42,7 @@ namespace counter_dx12_gfx10
     extern const std::set<unsigned int>                               kHwDx12TimestampBlockIdsGfx10; ///< Timestamp block id's for Dx12 for Gfx10 family
     extern const std::set<unsigned int>                               kHwDx12TimeCounterIndicesGfx10; ///< Timestamp counter indices for Dx12 for Gfx10 family
     extern const unsigned int                                         kHwDx12GroupCountGfx10; ///< Hardware Group Count for Dx12 for Gfx10 family
-    extern const unsigned int                                         kHwDx12ExposedCountersGroupCountGfx10; ///< Whitelist hardware counter Group Count for Dx12 for Gfx10 family
+    extern const unsigned int                                         kHwDx12ExposedCountersGroupCountGfx10; ///< Exposed hardware counter Group Count for Dx12 for Gfx10 family
     extern const unsigned int                                         kDx12PaddedCounterGroupCountGfx10; ///< reserved counter group count for Dx12 for Gfx10 family
     extern const unsigned int                                         kHwDx12SqGroupCountGfx10; ///< Hardware SQ Group Count for Dx12 for Gfx10 family
     extern const unsigned int                                         kHwDx12SqIsolatedGroupCountGfx10; ///< Hardware Isolated Group Count for Dx12 for Gfx10 family

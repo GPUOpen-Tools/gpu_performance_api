@@ -17,6 +17,7 @@ if(${build-internal})
     set(AMDT_INTERNAL_BUILD_FLAG ON)
 endif()
 
+
 if(${usingscript})
     # Platform Control variable
     if(NOT DEFINED build-32bit)

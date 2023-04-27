@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPUPerfAPI Counter Generator function.
@@ -121,10 +121,6 @@ void UpdateMaxSpmBlockEvents(BlockMap* block_map, const char* block_name, uint32
         {
             // If the block is not found, and max events are zero, it's not an error.
         }
-        else
-        {
-            assert(0);
-        }
     }
     else
     {
@@ -195,12 +191,10 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
         return kGpaStatusErrorHardwareNotSupported;
     }
 
-    bool allow_public           = (flags & kGpaOpenContextHidePublicCountersBit) == 0;
-    bool allow_software         = false; // SW counters no longer supported as of GPA 3.0
-    bool allow_hardware_exposed = (flags & kGpaOpenContextEnableHardwareCountersBit) == kGpaOpenContextEnableHardwareCountersBit;
-    bool enable_hardware        = allow_hardware_exposed;
+    bool allow_public   = (flags & kGpaOpenContextHidePublicCountersBit) == 0;
+    bool allow_hardware = (flags & kGpaOpenContextEnableHardwareCountersBit) == kGpaOpenContextEnableHardwareCountersBit;
 
-    tmp_accessor->SetAllowedCounters(allow_public, enable_hardware, allow_software);
+    tmp_accessor->SetAllowedCounters(allow_public, allow_hardware);
     status = tmp_accessor->GenerateCounters(desired_generation, card_info.m_asicType, generate_asic_specific_counters);
 
     if (status == kGpaStatusOk)

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2020 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Implements a library that allows access to the available counters
@@ -22,6 +22,36 @@
 #include "gpa_version.h"
 
 GpaCounterContextManager* GpaCounterContextManager::gpa_counter_context_manager_ = nullptr;
+
+#ifdef _WIN32
+BOOL WINAPI DllMain(HINSTANCE, DWORD reason, LPVOID)
+{
+    switch (reason)
+    {
+    case DLL_PROCESS_ATTACH:
+        break;
+
+    case DLL_THREAD_ATTACH:
+        break;
+
+    case DLL_THREAD_DETACH:
+        break;
+
+    case DLL_PROCESS_DETACH:
+        GpaCounterContextManager::DeleteInstance();
+        break;
+    }
+    return TRUE;
+}
+#endif
+
+#ifdef __linux__
+void __attribute__((destructor)) dll_fini(void)
+{
+    // Perform any necessary cleanup.
+    GpaCounterContextManager::DeleteInstance();
+}
+#endif
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetVersion(GpaUInt32* major_version,
                                                              GpaUInt32* minor_version,
@@ -104,7 +134,11 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibCloseCounterContext(const GpaC
         return kGpaStatusErrorContextNotOpen;
     }
 
-    return GpaCounterContextManager::Instance()->CloseCounterContext(gpa_virtual_context);
+    GpaStatus close_status = GpaCounterContextManager::Instance()->CloseCounterContext(gpa_virtual_context);
+
+    GpaCounterContextManager::DeleteInstanceIfZero();
+
+    return close_status;
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetNumCounters(const GpaCounterContext gpa_virtual_context, GpaUInt32* counter_count)
@@ -131,8 +165,8 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetNumCounters(const GpaCounte
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterName(const GpaCounterContext gpa_virtual_context,
-                                                                   GpaUInt32               gpa_counter_index,
-                                                                   const char**             gpa_counter_name)
+                                                                 GpaUInt32               gpa_counter_index,
+                                                                 const char**            gpa_counter_name)
 {
     if (nullptr == gpa_virtual_context)
     {
@@ -166,6 +200,11 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterIndex(const GpaCount
                                                                     GpaUInt32*              gpa_counter_index)
 {
     if (nullptr == gpa_virtual_context || nullptr == gpa_counter_info)
+    {
+        return kGpaStatusErrorNullPointer;
+    }
+
+    if (gpa_counter_info->is_derived_counter && gpa_counter_info->derived_counter_name == nullptr)
     {
         return kGpaStatusErrorNullPointer;
     }
@@ -205,8 +244,8 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterIndex(const GpaCount
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterGroup(const GpaCounterContext gpa_virtual_context,
-                                                                    GpaUInt32               gpa_counter_index,
-                                                                    const char**             gpa_counter_group)
+                                                                  GpaUInt32               gpa_counter_index,
+                                                                  const char**            gpa_counter_group)
 {
     if (nullptr == gpa_virtual_context)
     {
@@ -230,8 +269,8 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterGroup(const GpaCount
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterDescription(const GpaCounterContext gpa_virtual_context,
-                                                                          GpaUInt32               gpa_counter_index,
-                                                                          const char**             gpa_counter_description)
+                                                                        GpaUInt32               gpa_counter_index,
+                                                                        const char**            gpa_counter_description)
 {
     if (nullptr == gpa_virtual_context)
     {
@@ -255,8 +294,8 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterDescription(const Gp
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterDataType(const GpaCounterContext gpa_virtual_context,
-                                                                       GpaUInt32               gpa_counter_index,
-                                                                       GpaDataType*           gpa_counter_data_type)
+                                                                     GpaUInt32               gpa_counter_index,
+                                                                     GpaDataType*            gpa_counter_data_type)
 {
     if (nullptr == gpa_virtual_context)
     {
@@ -280,8 +319,8 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterDataType(const GpaCo
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterUsageType(const GpaCounterContext gpa_virtual_context,
-                                                                        GpaUInt32               gpa_counter_index,
-                                                                        GpaUsageType*          gpa_counter_usage_type)
+                                                                      GpaUInt32               gpa_counter_index,
+                                                                      GpaUsageType*           gpa_counter_usage_type)
 {
     if (nullptr == gpa_virtual_context)
     {
@@ -305,8 +344,8 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterUsageType(const GpaC
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterUuid(const GpaCounterContext gpa_virtual_context,
-                                                                   GpaUInt32               gpa_counter_index,
-                                                                   GpaUuid*                gpa_counter_uuid)
+                                                                 GpaUInt32               gpa_counter_index,
+                                                                 GpaUuid*                gpa_counter_uuid)
 {
     if (nullptr == gpa_virtual_context)
     {
@@ -330,8 +369,8 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterUuid(const GpaCounte
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterSampleType(const GpaCounterContext gpa_virtual_context,
-                                                                         GpaUInt32               gpa_counter_index,
-                                                                         GpaCounterSampleType* gpa_counter_sample_type)
+                                                                       GpaUInt32               gpa_counter_index,
+                                                                       GpaCounterSampleType*   gpa_counter_sample_type)
 {
     if (nullptr == gpa_virtual_context)
     {
@@ -355,8 +394,8 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterSampleType(const Gpa
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterInfo(const GpaCounterContext gpa_virtual_context,
-                                                                   GpaUInt32               gpa_counter_index,
-                                                                   const GpaCounterInfo**   gpa_counter_info)
+                                                                 GpaUInt32               gpa_counter_index,
+                                                                 const GpaCounterInfo**  gpa_counter_info)
 {
     if (nullptr == gpa_virtual_context || nullptr == gpa_counter_info)
     {
@@ -385,10 +424,10 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterInfo(const GpaCounte
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibComputeDerivedCounterResult(const GpaCounterContext gpa_virtual_context,
-                                                                                GpaUInt32               gpa_derived_counter_index,
-                                                                                const GpaUInt64*        gpa_hw_counter_result,
-                                                                                GpaUInt32               gpa_hw_counter_result_count,
-                                                                                GpaFloat64*             gpa_derived_counter_result)
+                                                                              GpaUInt32               gpa_derived_counter_index,
+                                                                              const GpaUInt64*        gpa_hw_counter_result,
+                                                                              GpaUInt32               gpa_hw_counter_result_count,
+                                                                              GpaFloat64*             gpa_derived_counter_result)
 {
     if (nullptr == gpa_virtual_context || nullptr == gpa_derived_counter_result || nullptr == gpa_hw_counter_result)
     {
@@ -434,9 +473,9 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibComputeDerivedCounterResult(co
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetPassCount(const GpaCounterContext gpa_virtual_context,
-                                                                 const GpaUInt32*        gpa_counter_indices,
-                                                                 GpaUInt32               gpa_counter_count,
-                                                                 GpaUInt32*              number_of_pass_req)
+                                                               const GpaUInt32*        gpa_counter_indices,
+                                                               GpaUInt32               gpa_counter_count,
+                                                               GpaUInt32*              number_of_pass_req)
 {
     if (nullptr == gpa_virtual_context || nullptr == gpa_counter_indices)
     {
@@ -477,11 +516,11 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetPassCount(const GpaCounterC
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCountersByPass(const GpaCounterContext gpa_virtual_context,
-                                                                      GpaUInt32               gpa_counter_count,
-                                                                      const GpaUInt32*        gpa_counter_indices,
-                                                                      GpaUInt32*              pass_count,
-                                                                      GpaUInt32*              counter_by_pass_list,
-                                                                      GpaPassCounter*          gpa_pass_counters)
+                                                                    GpaUInt32               gpa_counter_count,
+                                                                    const GpaUInt32*        gpa_counter_indices,
+                                                                    GpaUInt32*              pass_count,
+                                                                    GpaUInt32*              counter_by_pass_list,
+                                                                    GpaPassCounter*         gpa_pass_counters)
 {
     if (nullptr == gpa_virtual_context || nullptr == gpa_counter_indices || nullptr == pass_count)
     {

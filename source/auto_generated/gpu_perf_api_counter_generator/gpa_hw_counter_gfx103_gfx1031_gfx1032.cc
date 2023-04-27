@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX103_GFX1031_GFX1032.
@@ -14,10 +14,9 @@
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx103_gfx1031_gfx1032.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
+
 namespace counter_gfx103_gfx1031_gfx1032
 {
-    std::vector<GpaHardwareCounterDesc> kGcrCountersGfx103_gfx1031_gfx1032 = {
-    };
 } // counter_gfx103_gfx1031_gfx1032
 
 // clang-format on

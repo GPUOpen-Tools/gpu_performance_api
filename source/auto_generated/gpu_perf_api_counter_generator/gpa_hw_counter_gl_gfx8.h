@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL counter definitions for GFX8.
@@ -20,7 +20,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_gl_gfx8
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kGlExposedCountersGroupArrayGfx8; ///< Array of hardware exposed counter groups for Gl for Gfx8 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kGlCounterGroupArrayGfx8; ///< Array of hardware counter groups for Gl for Gfx8 family
     extern std::vector<GpaCounterGroupDesc>                           kHwGlGroupsGfx8; ///< Array of counter groups for Gl for Gfx8 family
     extern GpaCounterGroupExposedCounterDesc                          kHwGlExposedCountersByGroupGfx8[]; ///< Array of exposed counter groups for Gl for Gfx8 family
     extern GpaPaddedCounterDesc                                       kGlPaddedCounterByGroupGfx8[]; ///< Array of reserved counter for Gl for Gfx8 family
@@ -35,7 +35,7 @@ namespace counter_gl_gfx8
     extern const std::set<unsigned int>                               kHwGlTimestampBlockIdsGfx8; ///< Timestamp block id's for Gl for Gfx8 family
     extern const std::set<unsigned int>                               kHwGlTimeCounterIndicesGfx8; ///< Timestamp counter indices for Gl for Gfx8 family
     extern const unsigned int                                         kHwGlGroupCountGfx8; ///< Hardware Group Count for Gl for Gfx8 family
-    extern const unsigned int                                         kHwGlExposedCountersGroupCountGfx8; ///< Whitelist hardware counter Group Count for Gl for Gfx8 family
+    extern const unsigned int                                         kHwGlExposedCountersGroupCountGfx8; ///< Exposed hardware counter Group Count for Gl for Gfx8 family
     extern const unsigned int                                         kGlPaddedCounterGroupCountGfx8; ///< reserved counter group count for Gl for Gfx8 family
     extern const unsigned int                                         kHwGlSqGroupCountGfx8; ///< Hardware SQ Group Count for Gl for Gfx8 family
     extern const unsigned int                                         kHwGlSqIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for Gl for Gfx8 family

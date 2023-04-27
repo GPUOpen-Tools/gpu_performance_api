@@ -97,6 +97,18 @@ void ClPerfCounterBlock::Create()
 
                 return;
             }
+#ifdef _DEBUG
+            else
+            {
+                cl_ulong          block = properties[0][1];
+                cl_ulong          slot  = properties[1][1];
+                cl_ulong          event = properties[2][1];
+                std::stringstream ss;
+                ss << "clCreatePerfCounterAMD succeeded (pass: " << i << ", index in pass: " << j << ", global index: " << index
+                   << ", counter: " << counters_list_[index] << ", block: " << block << ", slot: " << slot << ", event: " << event << ").";
+                GPA_LOG_DEBUG_MESSAGE(ss.str().c_str());
+            }
+#endif
         }
     }
 }
