@@ -1,9 +1,9 @@
 ﻿# GPU Performance API Release Notes
 ---
 ## Version 3.13 (04/27/2023)
-* Add support for AMD Radeon RX 7600 series hardware.
-* Add support for AMD Radeon RX 7700 series hardware.
-* OpenCL support for AMD Radeon RX 7000 series hardware has been restored if using Adrenalin 23.3.2 or newer.
+* Add support for AMD Radeon RX 7000M Series hardware.
+* Add support for AMD Radeon RX 7000S Series hardware.
+* OpenCL support for AMD Radeon RX 7000 Series hardware has been restored if using Adrenalin 23.3.2 or newer.
 * Removed implementation related to supporting software counters. They have not been supported since GPA 3.0.
 * Update C++ language standard to C++ 17.
 * CMake 3.19 or newer is now required.
