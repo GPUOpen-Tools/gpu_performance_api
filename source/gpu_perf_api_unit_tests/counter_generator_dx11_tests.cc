@@ -191,6 +191,8 @@ TEST(CounterDllTests, Dx11CounterNamesByDeviceId)
     VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx10_3, FALSE, counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11, FALSE, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11_0_3, FALSE, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11_0_3B, FALSE, counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, Dx11CounterNamesGfx8)
@@ -287,6 +289,18 @@ TEST(CounterDllTests, Dx11CounterLibTestGfx11)
 {
     VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11, REVISION_ID_ANY, false);
     VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11, REVISION_ID_ANY, false);
+}
+
+TEST(CounterDllTests, Dx11CounterLibTestGfx1103)
+{
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_0_3, REVISION_ID_ANY, false);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_0_3, REVISION_ID_ANY, false);
+}
+
+TEST(CounterDllTests, Dx11CounterLibTestGfx1103B)
+{
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_0_3B, REVISION_ID_ANY, false);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_0_3B, REVISION_ID_ANY, false);
 }
 
 TEST(CounterDllTests, Dx11CounterFormulaTest)

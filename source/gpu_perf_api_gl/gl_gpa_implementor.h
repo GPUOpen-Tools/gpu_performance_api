@@ -55,7 +55,7 @@ private:
     ///
     /// @return True if the driver_device_id has been set, and false otherwise.
     bool GetDeviceIdFromPlatformExt(unsigned int& driver_device_id) const;
-    
+
     /// @brief Checks whether the driver is supported.
     ///
     /// @param [in] context_info Context info pointer.

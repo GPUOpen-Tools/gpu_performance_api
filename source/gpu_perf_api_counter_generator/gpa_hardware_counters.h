@@ -294,6 +294,12 @@ public:
                 }
             }
 
+            if ((size_t)gpa_internal_hardware_block >= kHardwareBlockString.size())
+            {
+                // The supplied hardware block is out of range, so it cannot be added to the cache, nor found in the cache.
+                return false;
+            }
+
             // Iterate through all the individual block instances to find the matching hardware block.
             // Then build up a vector of counter index offsets to each of the block instances so it can be cached.
             // The idea here is that if GPA enables a counter in the first instance of a block, it will likely

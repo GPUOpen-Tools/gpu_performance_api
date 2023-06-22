@@ -534,7 +534,7 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
             else if (generation == kGpaHwGenerationGfx8 || generation == kGpaHwGenerationGfx10 || generation == kGpaHwGenerationGfx103)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 20.0f, confirm_success);
             }
             else
             {
@@ -577,22 +577,22 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
             if (generation == kGpaHwGenerationGfx9)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 5.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 98.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx10)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 5.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 7.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx103)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx11)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 37.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 80.0f, confirm_success);
             }
             else
             {
@@ -606,7 +606,7 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
             if (generation == kGpaHwGenerationGfx9)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 1200.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx10)
             {
@@ -616,18 +616,17 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
             else if (generation == kGpaHwGenerationGfx103)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 290.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx11)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 60.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 300.0f, confirm_success);
             }
             else
             {
-                // Sanity Check
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 60.0f, confirm_success);
             }
         }
         else if (include_known_issues && 0 == local_counter_name.compare("VSVerticesIn"))

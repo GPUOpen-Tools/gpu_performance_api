@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  A class for managing hardware information.
@@ -8,7 +8,6 @@
 #include "gpu_perf_api_common/gpa_hw_info.h"
 
 #include <assert.h>
-
 #include <DeviceInfoUtils.h>
 
 #include "gpu_perf_api_common/logging.h"
@@ -41,12 +40,23 @@ GpaHwInfo::GpaHwInfo()
     , num_prim_pipes_(0)
     , num_prim_pipes_set_(false)
 {
+    // These devices are APUs that do not support stable power state for profiling
+    // therefore they do not properly support GPA, and GPA will not support them.
+    // They need to be explicitly handled in the common case that there is also a discrete GPU in the system,
+    // and GPA needs to avoid reporting an error about these unsupported devices.
+    unsupported_device_ids_.push_back(0x1506);
+    unsupported_device_ids_.push_back(0x164e);
 }
 
 bool GpaHwInfo::GetDeviceId(GpaUInt32& id) const
 {
     id = device_id_;
     return device_id_set_;
+}
+
+bool GpaHwInfo::IsUnsupportedDeviceId(GpaUInt32& id) const
+{
+    return std::find(unsupported_device_ids_.begin(), unsupported_device_ids_.end(), id) != unsupported_device_ids_.end();
 }
 
 bool GpaHwInfo::GetRevisionId(GpaUInt32& id) const
@@ -262,14 +272,24 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId()
         SetHwGeneration(card_info.m_generation);
         return true;
     }
-
-    // Only emit an error for AMD devices.
-    if (IsAmd())
+    else
     {
-        GPA_LOG_ERROR("Unrecognized device ID: 0x%04X", device_id_);
-    }
+        // Only emit an error for AMD devices.
+        if (IsAmd())
+        {
+            // Checking for recognized unsupported cards and only logging debug message if an unsupported card is found.
+            if (IsUnsupportedDeviceId(device_id_))
+            {
+                GPA_LOG_DEBUG_MESSAGE("Device ID of unsupported card found: 0x%04X.", device_id_);
+            }
+            else
+            {
+                GPA_LOG_ERROR("Unrecognized device ID: 0x%04X.", device_id_);
+            }
+        }
 
-    return false;
+        return false;
+    }
 }
 
 bool GpaHwInfo::UpdateRevisionIdBasedOnDeviceIdAndName()

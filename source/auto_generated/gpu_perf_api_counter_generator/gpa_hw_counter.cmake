@@ -7,6 +7,7 @@ ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx10.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103_gfx1031_gfx1032.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx11.h
+${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx11_gfx1103.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_baffin.h
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_carrizo.h
@@ -24,6 +25,7 @@ ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx10.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx103_gfx1031_gfx1032.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx11.cc
+${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx11_gfx1103.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_baffin.cc
 ${CMAKE_CURRENT_LIST_DIR}/gpa_hw_counter_gfx8_carrizo.cc

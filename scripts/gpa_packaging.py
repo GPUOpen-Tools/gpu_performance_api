@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-## Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
 # GPA Packaging script
 
 import os
@@ -75,9 +75,6 @@ class GpaPackage:
     def CreatePackage(self, archive_output_dir, build_artifacts_dir, sphinx_docs_dir, package_32_bit, is_debug, android, build_number, additional_suffix):
         gpa_build_artifacts_dir = self._gpa_build_artifacts_dir
         gpa_archive_out_dir = self._gpa_build_artifacts_dir
-
-        if sphinx_docs_dir is None:
-            sphinx_docs_dir = self._gpa_build_artifacts_dir
 
         config_str = "release"
         if is_debug == True:
@@ -172,25 +169,31 @@ class GpaPackage:
                 GpaUtils.WriteFileToArchive(gpa_archive_handle, other_file_abs_path,
                                                                 other_file_in_archive)
 
-            # Write docs
-            gpa_docs_dir = os.path.normpath(os.path.join(gpa_build_artifacts_dir, sphinx_docs_dir, "html"))
-            gpa_docs_dir_str = str(gpa_docs_dir)
-            gpa_docs_dir_info = os.walk(gpa_docs_dir)
+            if (sphinx_docs_dir is not None) and (sphinx_docs_dir != ""):
+                # Write docs
+                gpa_docs_dir = os.path.normpath(os.path.join(gpa_build_artifacts_dir, sphinx_docs_dir, "html"))
+                gpa_docs_dir_str = str(gpa_docs_dir)
+                gpa_docs_dir_info = os.walk(gpa_docs_dir)
 
-            if sys.platform == "win32":
-                doc_folder_str = "\\docs"
-            else:
-                doc_folder_str = "/docs"
+                if sys.platform == "win32":
+                    doc_folder_str = "\\docs"
+                else:
+                    doc_folder_str = "/docs"
 
-            for dirs, sub_dirs, files in gpa_docs_dir_info:
-                for file in files:
-                    doc_file_abs_path = os.path.join(dirs, file)
-                    doc_file_abs_path = os.path.normpath(doc_file_abs_path)
-                    doc_file_abs_path_str = str(doc_file_abs_path)
-                    doc_file_in_archive = gpa_archive_root_name + doc_folder_str + \
-                                            doc_file_abs_path_str.split(gpa_docs_dir_str)[1]
-                    GpaUtils.WriteFileToArchive(gpa_archive_handle, doc_file_abs_path,
-                                                                    doc_file_in_archive)
+                file_count = 0
+                for dirs, sub_dirs, files in gpa_docs_dir_info:
+                    for file in files:
+                        file_count = file_count + 1
+                        doc_file_abs_path = os.path.join(dirs, file)
+                        doc_file_abs_path = os.path.normpath(doc_file_abs_path)
+                        doc_file_abs_path_str = str(doc_file_abs_path)
+                        doc_file_in_archive = gpa_archive_root_name + doc_folder_str + \
+                                                doc_file_abs_path_str.split(gpa_docs_dir_str)[1]
+                        GpaUtils.WriteFileToArchive(gpa_archive_handle, doc_file_abs_path,
+                                                                        doc_file_in_archive)
+
+                if file_count == 0:
+                    raise Exception("Failed to find html documentation")
 
     # Returns the gpa version
     def GetGpaVersion(self, _build_numberin):

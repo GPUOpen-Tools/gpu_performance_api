@@ -22,14 +22,14 @@ for each API
 
     "Vulkan", "| 64-bit Windows: GPUPerfAPIVK-x64.dll
     | 32-bit Windows: GPUPerfAPIVK.dll
-    | 64-bit Linux: libGPUPerfAPIVK.so
+    | 64-bit Linux: libGPUPerfAPIVK.so"
     "DirectX 12", "| 64-bit Windows: GPUPerfAPIDX12-x64.dll
     | 32-bit Windows: GPUPerfAPIDX12.dll"
     "DirectX 11", "| 64-bit Windows: GPUPerfAPIDX11-x64.dll
     | 32-bit Windows: GPUPerfAPIDX11.dll"
     "OpenGL", "| 64-bit Windows: GPUPerfAPIGL-x64.dll
     | 32-bit Windows: GPUPerfAPIGL.dll
-    | 64-bit Linux: libGPUPerfAPIGL.so
+    | 64-bit Linux: libGPUPerfAPIGL.so"
     "OpenCL", "| 64-bit Windows: GPUPerfAPICL-x64.dll
     | 32-bit Windows: GPUPerfAPICL.dll"
 

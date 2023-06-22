@@ -7,8 +7,6 @@
 
 #include "gpu_perf_api_dx12/dx12_gpa_command_list.h"
 
-#include "ADLUtil.h"
-
 #include "gpu_perf_api_common/gpa_common_defs.h"
 #include "gpu_perf_api_common/logging.h"
 
@@ -42,8 +40,10 @@ Dx12GpaCommandList::Dx12GpaCommandList(Dx12GpaSession*    dx12_gpa_session,
     uint32_t major_ver     = 0;
     uint32_t minor_ver     = 0;
     uint32_t sub_minor_ver = 0;
-    AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
-    AMDTADLUtils::DeleteInstance();
+    if (dx12_gpa_session != nullptr)
+    {
+        dx12_gpa_session->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
+    }
 
     // If the driver is unsigned, or the version is >= 22.40 use the default configuration.
     if (!(major_ver || minor_ver || sub_minor_ver) || (major_ver > 22) || (major_ver == 22 && minor_ver >= 40))

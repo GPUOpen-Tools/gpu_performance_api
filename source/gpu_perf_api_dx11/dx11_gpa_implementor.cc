@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX11 GPA Implementation
@@ -165,6 +165,18 @@ bool Dx11GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info
                     else
                     {
                         // This is a warning due to an unsigned driver.
+                    }
+                }
+
+                GpaUInt32 device_id = 0;
+                if (hw_info.GetDeviceId(device_id) && (device_id == 0x15BF || device_id == 0x15C8))
+                {
+                    // The 22.40 driver does not properly support GPA on these devices.
+                    if ((major_ver < 22 || (major_ver == 22 && minor_ver <= 40)) &&
+                        (0 != major_ver || 0 != minor_ver || 0 != sub_minor_ver))
+                    {
+                        status = kGpaStatusErrorDriverNotSupported;
+                        GPA_LOG_ERROR("The current DX11 driver does not support GPUPerfAPI on this hardware, please update to a newer driver.");
                     }
                 }
             }

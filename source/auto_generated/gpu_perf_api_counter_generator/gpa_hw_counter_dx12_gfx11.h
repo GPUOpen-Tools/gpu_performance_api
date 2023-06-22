@@ -75,7 +75,7 @@ inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
     UpdateMaxSpmBlockEvents(block_map.get(), "SDMA", 8);
     UpdateMaxSpmBlockEvents(block_map.get(), "CPG", 4);
     UpdateMaxSpmBlockEvents(block_map.get(), "CPC", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "MCVML2", 8);
+    UpdateMaxSpmBlockEvents(block_map.get(), "GCVML2", 8);
     UpdateMaxSpmBlockEvents(block_map.get(), "GCEA", 4);
     UpdateMaxSpmBlockEvents(block_map.get(), "RMI", 4);
     UpdateMaxSpmBlockEvents(block_map.get(), "GE", 16);
@@ -90,8 +90,6 @@ inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
     UpdateMaxSpmBlockEvents(block_map.get(), "GCR", 4);
     UpdateMaxSpmBlockEvents(block_map.get(), "PA_PH", 16);
     UpdateMaxSpmBlockEvents(block_map.get(), "UTCL1", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GE2_DIST", 16);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GE_SE", 16);
     UpdateMaxSpmBlockEvents(block_map.get(), "GPIN", 0);
     UpdateMaxSpmBlockEvents(block_map.get(), "GPUTimeStamp", 0);
     UpdateMaxSpmBlockEvents(block_map.get(), "GPUTime", 0);

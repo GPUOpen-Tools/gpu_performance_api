@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA DX12 Context implementation
@@ -7,6 +7,7 @@
 
 #include "gpu_perf_api_dx12/dx12_gpa_context.h"
 
+#include "ADLUtil.h"
 #include "DeviceInfoUtils.h"
 
 #include "gpu_perf_api_common/gpa_unique_object.h"
@@ -27,6 +28,9 @@ Dx12GpaContext::Dx12GpaContext(ID3D12Device* d3d12_device, GpaHwInfo& hw_info, G
     gpa_interface_              = nullptr;
     gpa_interface2_             = nullptr;
     clock_mode_                 = AmdExtDeviceClockMode::Default;
+
+    AMDTADLUtils::Instance()->GetDriverVersion(driver_major_ver_, driver_minor_ver_, driver_sub_minor_ver_);
+    AMDTADLUtils::DeleteInstance();
 }
 
 Dx12GpaContext::~Dx12GpaContext()
@@ -324,4 +328,11 @@ GpaStatus Dx12GpaContext::SetStableClocks(bool use_profiling_clocks)
     }
 
     return kGpaStatusOk;
+}
+
+void Dx12GpaContext::GetDriverVersion(uint32_t& major, uint32_t& minor, uint32_t& sub_minor)
+{
+    major     = driver_major_ver_;
+    minor     = driver_minor_ver_;
+    sub_minor = driver_sub_minor_ver_;
 }

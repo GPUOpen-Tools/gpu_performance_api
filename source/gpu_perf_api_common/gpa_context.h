@@ -8,9 +8,10 @@
 #ifndef GPU_PERF_API_COMMON_GPA_CONTEXT_H_
 #define GPU_PERF_API_COMMON_GPA_CONTEXT_H_
 
+#include <functional>
 #include <list>
 #include <mutex>
-#include <functional>
+#include <numeric>
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 

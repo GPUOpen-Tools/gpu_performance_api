@@ -1,5 +1,12 @@
 ﻿# GPU Performance API Release Notes
 ---
+## Version 3.13.1 (06/22/2023)
+* Add support for additional AMD Radeon RX 7000 Series hardware.
+* Add support for AMD Radeon 700M Series APUs.
+  * Vulkan and OpenGL are supported on existing drivers; DX12, DX11, and OpenCL will be enabled by an upcoming driver.
+* Bug Fixes:
+  * Fixed performance regression in GPUPerfAPIDX12[-x64].dll
+
 ## Version 3.13 (04/27/2023)
 * Add support for AMD Radeon RX 7000M Series hardware.
 * Add support for AMD Radeon RX 7000S Series hardware.

@@ -482,14 +482,15 @@ void VerifyCounterLibInterface(GpaApiType                         api,
 
     {
         GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, revision_id, nullptr, 0};
-        gpa_status                                                  = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
-            api, counter_context_hardware_info, kGpaOpenContextDefaultBit, asic_specific, &gpa_counter_context);
-        EXPECT_EQ(kGpaStatusOk, gpa_status);
+        EXPECT_EQ(kGpaStatusOk,
+                  gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(
+                      api, counter_context_hardware_info, kGpaOpenContextDefaultBit, asic_specific, &gpa_counter_context));
 
         const GpaCounterInfo* temp_ptr = nullptr;
-        gpa_status                     = gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, 8, &temp_ptr);
+        EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, 8, &temp_ptr));
 
-        if (device_id == kDevIdGfx11 && (kGpaApiDirectx11 == api || kGpaApiOpengl == api || kGpaApiDirectx12 == api || kGpaApiVulkan == api))
+        if ((device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B) &&
+            (kGpaApiDirectx11 == api || kGpaApiOpengl == api || kGpaApiDirectx12 == api || kGpaApiVulkan == api))
         {
             GpaCounterParam counter_param;
             counter_param.is_derived_counter   = true;
@@ -516,15 +517,20 @@ void VerifyCounterLibInterface(GpaApiType                         api,
                 GpaCounterParam counter_param;
                 counter_param.is_derived_counter   = true;
                 counter_param.derived_counter_name = "PSVALUInstCount";
-                GpaUInt32 counter_index            = 0;
-                gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
-                EXPECT_EQ(kGpaStatusOk, gpa_status);
-                gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, counter_index, &temp_ptr);
-                EXPECT_EQ(kGpaStatusOk, gpa_status);
-                EXPECT_TRUE(temp_ptr->is_derived_counter);
-                for (GpaUInt32 i = 0; i < temp_ptr->gpa_derived_counter->gpa_hw_counter_count; i++)
+                GpaUInt32 counter_index            = GPA_UINT32_MAX;
+                EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index));
+                EXPECT_NE(counter_index, GPA_UINT32_MAX);
+                if (counter_index != GPA_UINT32_MAX)
                 {
-                    EXPECT_EQ(kGpaShaderMaskPs, temp_ptr->gpa_derived_counter->gpa_hw_counters[i].gpa_shader_mask);
+                    EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, counter_index, &temp_ptr));
+                    if (temp_ptr != nullptr)
+                    {
+                        EXPECT_TRUE(temp_ptr->is_derived_counter);
+                        for (GpaUInt32 i = 0; i < temp_ptr->gpa_derived_counter->gpa_hw_counter_count; i++)
+                        {
+                            EXPECT_EQ(kGpaShaderMaskPs, temp_ptr->gpa_derived_counter->gpa_hw_counters[i].gpa_shader_mask);
+                        }
+                    }
                 }
             }
 
@@ -533,19 +539,24 @@ void VerifyCounterLibInterface(GpaApiType                         api,
                 counter_param.is_derived_counter   = true;
                 counter_param.derived_counter_name = "PSTime";
                 GpaUInt32 counter_index            = 0;
-                gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
-                EXPECT_EQ(kGpaStatusOk, gpa_status);
-                gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, counter_index, &temp_ptr);
-                EXPECT_EQ(kGpaStatusOk, gpa_status);
-                EXPECT_TRUE(temp_ptr->is_derived_counter);
-
-                bool does_gpu_time_block_exist = false;
-                for (GpaUInt32 i = 0; i < temp_ptr->gpa_derived_counter->gpa_hw_counter_count; i++)
+                EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index));
+                EXPECT_NE(counter_index, GPA_UINT32_MAX);
+                if (counter_index != GPA_UINT32_MAX)
                 {
-                    does_gpu_time_block_exist |= temp_ptr->gpa_derived_counter->gpa_hw_counters[i].is_timing_block;
-                }
+                    EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, counter_index, &temp_ptr));
+                    if (temp_ptr != nullptr)
+                    {
+                        EXPECT_TRUE(temp_ptr->is_derived_counter);
 
-                EXPECT_TRUE(does_gpu_time_block_exist);
+                        bool does_gpu_time_block_exist = false;
+                        for (GpaUInt32 i = 0; i < temp_ptr->gpa_derived_counter->gpa_hw_counter_count; i++)
+                        {
+                            does_gpu_time_block_exist |= temp_ptr->gpa_derived_counter->gpa_hw_counters[i].is_timing_block;
+                        }
+
+                        EXPECT_TRUE(does_gpu_time_block_exist);
+                    }
+                }
             }
         }
         else if (kGpaApiOpencl == api)
@@ -584,7 +595,7 @@ void VerifyCounterLibInterface(GpaApiType                         api,
             GpaCounterParam counter_param;
             counter_param.is_derived_counter = false;
 
-            if (device_id == kDevIdGfx11)
+            if (device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B)
             {
                 // On Gfx11, the previous SQ block was renamed to SQG, and the actual underlying SQ blocks were introduced as SQWGP.
                 // This test is intended to ensure that we can access the SQ_PERF_SEL_WAVES event, which is now on the SQWGP blocks.
@@ -607,43 +618,45 @@ void VerifyCounterLibInterface(GpaApiType                         api,
                 counter_param.gpa_hw_counter.gpa_shader_mask       = kGpaShaderMaskPs;
             }
 
-            GpaUInt32 index = 0;
-            gpa_status       = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &index);
-            EXPECT_EQ(kGpaStatusOk, gpa_status);
-
-            const char* temp_char = nullptr;
-            gpa_status            = gpa_counter_lib_func_table.GpaCounterLibGetCounterName(gpa_counter_context, index, &temp_char);
-            EXPECT_EQ(kGpaStatusOk, gpa_status);
-            EXPECT_NE(temp_char, nullptr);
-
-            if (gpa_status == kGpaStatusOk && temp_char != nullptr)
+            GpaUInt32 index = GPA_UINT32_MAX;
+            EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &index));
+            EXPECT_NE(index, GPA_UINT32_MAX);
+            if (index != GPA_UINT32_MAX)
             {
-                GpaUInt32       index2 = 0;
-                GpaCounterParam counter_param2;
-                counter_param2.is_derived_counter   = true;
-                counter_param2.derived_counter_name = temp_char;
-                gpa_status                          = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param2, &index2);
-                if (index != index2)
-                {
-                    std::cout << "Index1 " << index << " counter name " << temp_char << " doesn't match with " << index2 << "and gpa status is " << gpa_status
-                              << std::endl;
-                }
-                EXPECT_EQ(index, index2);
+                const char* temp_char = nullptr;
+                gpa_status            = gpa_counter_lib_func_table.GpaCounterLibGetCounterName(gpa_counter_context, index, &temp_char);
+                EXPECT_EQ(kGpaStatusOk, gpa_status);
+                EXPECT_NE(temp_char, nullptr);
 
-                const GpaCounterInfo* temp_ptr = nullptr;
-                gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, index2, &temp_ptr);
-                EXPECT_FALSE(temp_ptr->is_derived_counter);
-                EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block, counter_param.gpa_hw_counter.gpa_hw_block);
-                EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_instance, counter_param.gpa_hw_counter.gpa_hw_block_instance);
-                EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_event_id, counter_param.gpa_hw_counter.gpa_hw_block_event_id);
-                EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_shader_mask, counter_param.gpa_hw_counter.gpa_shader_mask);
+                if (gpa_status == kGpaStatusOk && temp_char != nullptr)
+                {
+                    GpaUInt32       index2 = 0;
+                    GpaCounterParam counter_param2;
+                    counter_param2.is_derived_counter   = true;
+                    counter_param2.derived_counter_name = temp_char;
+                    gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param2, &index2);
+                    if (index != index2)
+                    {
+                        std::cout << "Index1 " << index << " counter name " << temp_char << " doesn't match with " << index2 << "and gpa status is "
+                                  << gpa_status << std::endl;
+                    }
+                    EXPECT_EQ(index, index2);
+
+                    const GpaCounterInfo* temp_ptr = nullptr;
+                    gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, index2, &temp_ptr);
+                    EXPECT_FALSE(temp_ptr->is_derived_counter);
+                    EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block, counter_param.gpa_hw_counter.gpa_hw_block);
+                    EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_instance, counter_param.gpa_hw_counter.gpa_hw_block_instance);
+                    EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_event_id, counter_param.gpa_hw_counter.gpa_hw_block_event_id);
+                    EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_shader_mask, counter_param.gpa_hw_counter.gpa_shader_mask);
+                }
             }
         }
 
         {
             GpaCounterParam counter_param;
 
-            if (device_id == kDevIdGfx11)
+            if (device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B)
             {
                 // On Gfx11, the previous SQ block was renamed to SQG, and the actual underlying SQ blocks were introduced as SQWGP.
                 // This test is intended to ensure that we can access the SQ_PERF_SEL_WAVES event, which is now on the SQWGP blocks.
@@ -662,67 +675,82 @@ void VerifyCounterLibInterface(GpaApiType                         api,
                 counter_param.gpa_hw_counter.gpa_shader_mask       = kGpaShaderMaskAll;
             }
 
-            GpaUInt32 index = 0u;
-            gpa_status       = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &index);
-            EXPECT_EQ(kGpaStatusOk, gpa_status);
-
-            const char* temp_char = nullptr;
-            gpa_status            = gpa_counter_lib_func_table.GpaCounterLibGetCounterName(gpa_counter_context, index, &temp_char);
-            EXPECT_EQ(kGpaStatusOk, gpa_status);
-
-            GpaUInt32       index2 = 0u;
-            GpaCounterParam counter_param2;
-            counter_param2.is_derived_counter   = true;
-            counter_param2.derived_counter_name = temp_char;
-            const GpaCounterInfo* temp_ptr      = nullptr;
-            gpa_status                          = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param2, &index2);
-            EXPECT_EQ(index, index2);
-            gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, index2, &temp_ptr);
-            EXPECT_FALSE(temp_ptr->is_derived_counter);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block, counter_param.gpa_hw_counter.gpa_hw_block);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_instance, counter_param.gpa_hw_counter.gpa_hw_block_instance);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_event_id, counter_param.gpa_hw_counter.gpa_hw_block_event_id);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_shader_mask, counter_param.gpa_hw_counter.gpa_shader_mask);
-
-
-            if (device_id == kDevIdGfx11)
+            GpaUInt32 index = GPA_UINT32_MAX;
+            EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &index));
+            EXPECT_NE(index, GPA_UINT32_MAX);
+            if (index != GPA_UINT32_MAX)
             {
-                // On Gfx11, the previous SQ block was renamed to SQG, and the actual underlying SQ blocks were introduced as SQWGP.
-                // This test is intended to ensure that we can access the SQ_PERF_SEL_WAVES event, which is now on the SQWGP blocks.
-                // LS shader waves were removed from GFX11, so use HS instead.
-                counter_param.gpa_hw_counter.gpa_hw_block          = kGpaHwBlockSqWgp;
-                counter_param.gpa_hw_counter.gpa_hw_block_instance = 0;
-                counter_param.gpa_hw_counter.gpa_hw_block_event_id = kSqPerfSelWaves;
-                counter_param.gpa_hw_counter.gpa_shader_mask       = kGpaShaderMaskHs;
+                const char* temp_char = nullptr;
+                gpa_status            = gpa_counter_lib_func_table.GpaCounterLibGetCounterName(gpa_counter_context, index, &temp_char);
+                EXPECT_EQ(kGpaStatusOk, gpa_status);
+                EXPECT_NE(temp_char, nullptr);
 
-                if (api == kGpaApiOpencl)
+                GpaUInt32       index2 = 0u;
+                GpaCounterParam counter_param2;
+                counter_param2.is_derived_counter   = true;
+                counter_param2.derived_counter_name = temp_char;
+                const GpaCounterInfo* temp_ptr      = nullptr;
+                EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param2, &index2));
+                EXPECT_EQ(index, index2);
+                EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, index2, &temp_ptr));
+                EXPECT_NE(temp_ptr, nullptr);
+                if (temp_ptr != nullptr)
                 {
-                    // OpenCL doesn't need to concern itself with different wave-types, so it uses All for SqWgp.
-                    counter_param.gpa_hw_counter.gpa_shader_mask = kGpaShaderMaskAll;
+                    EXPECT_FALSE(temp_ptr->is_derived_counter);
+                    EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block, counter_param.gpa_hw_counter.gpa_hw_block);
+                    EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_instance, counter_param.gpa_hw_counter.gpa_hw_block_instance);
+                    EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_event_id, counter_param.gpa_hw_counter.gpa_hw_block_event_id);
+                    EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_shader_mask, counter_param.gpa_hw_counter.gpa_shader_mask);
+                }
+
+                if (device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B)
+                {
+                    // On Gfx11, the previous SQ block was renamed to SQG, and the actual underlying SQ blocks were introduced as SQWGP.
+                    // This test is intended to ensure that we can access the SQ_PERF_SEL_WAVES event, which is now on the SQWGP blocks.
+                    // LS shader waves were removed from GFX11, so use HS instead.
+                    counter_param.gpa_hw_counter.gpa_hw_block          = kGpaHwBlockSqWgp;
+                    counter_param.gpa_hw_counter.gpa_hw_block_instance = 0;
+                    counter_param.gpa_hw_counter.gpa_hw_block_event_id = kSqPerfSelWaves;
+                    counter_param.gpa_hw_counter.gpa_shader_mask       = kGpaShaderMaskHs;
+
+                    if (api == kGpaApiOpencl)
+                    {
+                        // OpenCL doesn't need to concern itself with different wave-types, so it uses All for SqWgp.
+                        counter_param.gpa_hw_counter.gpa_shader_mask = kGpaShaderMaskAll;
+                    }
+                }
+                else
+                {
+                    counter_param.gpa_hw_counter.gpa_hw_block          = kGpaHwBlockSq;
+                    counter_param.gpa_hw_counter.gpa_hw_block_instance = 0;
+                    counter_param.gpa_hw_counter.gpa_hw_block_event_id = kSqPerfSelWaves;
+                    counter_param.gpa_hw_counter.gpa_shader_mask       = kGpaShaderMaskLs;
+                }
+
+                EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &index));
+
+                temp_char = nullptr;
+                EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterName(gpa_counter_context, index, &temp_char));
+                EXPECT_NE(temp_char, nullptr);
+                if (temp_char != nullptr)
+                {
+                    counter_param2.derived_counter_name = temp_char;
+                    EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param2, &index2));
+                    EXPECT_NE(index2, GPA_UINT32_MAX);
+                    EXPECT_EQ(index, index2);
+                    temp_ptr = nullptr;
+                    EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, index2, &temp_ptr));
+                    EXPECT_NE(temp_ptr, nullptr);
+                    if (temp_ptr != nullptr)
+                    {
+                        EXPECT_FALSE(temp_ptr->is_derived_counter);
+                        EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block, counter_param.gpa_hw_counter.gpa_hw_block);
+                        EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_instance, counter_param.gpa_hw_counter.gpa_hw_block_instance);
+                        EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_event_id, counter_param.gpa_hw_counter.gpa_hw_block_event_id);
+                        EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_shader_mask, counter_param.gpa_hw_counter.gpa_shader_mask);
+                    }
                 }
             }
-            else
-            {
-                counter_param.gpa_hw_counter.gpa_hw_block          = kGpaHwBlockSq;
-                counter_param.gpa_hw_counter.gpa_hw_block_instance = 0;
-                counter_param.gpa_hw_counter.gpa_hw_block_event_id = kSqPerfSelWaves;
-                counter_param.gpa_hw_counter.gpa_shader_mask       = kGpaShaderMaskLs;
-            }
-
-            EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &index));
-
-            temp_char  = nullptr;
-            EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterName(gpa_counter_context, index, &temp_char));
-
-            counter_param2.derived_counter_name = temp_char;
-            gpa_status                          = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param2, &index2);
-            EXPECT_EQ(index, index2);
-            gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, index2, &temp_ptr);
-            EXPECT_FALSE(temp_ptr->is_derived_counter);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block, counter_param.gpa_hw_counter.gpa_hw_block);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_instance, counter_param.gpa_hw_counter.gpa_hw_block_instance);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_event_id, counter_param.gpa_hw_counter.gpa_hw_block_event_id);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_shader_mask, counter_param.gpa_hw_counter.gpa_shader_mask);
         }
 
         if (device_id == kDevIdGfx10)
@@ -754,17 +782,22 @@ void VerifyCounterLibInterface(GpaApiType                         api,
             counter_param2.is_derived_counter   = true;
             counter_param2.derived_counter_name = temp_char;
             GpaUInt32 index2                    = 0u;
-            gpa_status                          = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param2, &index2);
+            EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param2, &index2));
             EXPECT_EQ(index, index2);
 
             const GpaCounterInfo* temp_ptr = nullptr;
-            gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, index2, &temp_ptr);
-            EXPECT_FALSE(temp_ptr->is_derived_counter);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block, counter_param.gpa_hw_counter.gpa_hw_block);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_instance, counter_param.gpa_hw_counter.gpa_hw_block_instance);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_event_id, counter_param.gpa_hw_counter.gpa_hw_block_event_id);
-            EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_shader_mask,
-                      kGpaShaderMaskAll);  // check for GPA_SHADER_MASK_ALL since the only the SQ block supports the shader mask
+            EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, index2, &temp_ptr));
+            EXPECT_NE(temp_ptr, nullptr);
+            if (temp_ptr != nullptr)
+            {
+                EXPECT_FALSE(temp_ptr->is_derived_counter);
+                EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block, counter_param.gpa_hw_counter.gpa_hw_block);
+                EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_instance, counter_param.gpa_hw_counter.gpa_hw_block_instance);
+                EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_hw_block_event_id, counter_param.gpa_hw_counter.gpa_hw_block_event_id);
+
+                // Check for GPA_SHADER_MASK_ALL since the only the SQ block supports the shader mask.
+                EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_shader_mask, kGpaShaderMaskAll);
+            }
         }
 
         if (device_id == kDevIdGfx10_3)

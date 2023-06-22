@@ -177,6 +177,8 @@ TEST(CounterDllTests, OpenClCounterNamesByDeviceId)
     VerifyCounterNames(kGpaApiOpencl, kDevIdGfx10_3, FALSE, derived_counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11_0_3, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11_0_3B, FALSE, derived_counter_names, hardware_counter_names);
 }
 
 // Test the openCL counter names on each generation
@@ -252,6 +254,16 @@ TEST(CounterDllTests, ClCounterLibTestGfx103)
 TEST(CounterDllTests, ClCounterLibTestGfx11)
 {
     VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11, REVISION_ID_ANY, false);
+}
+
+TEST(CounterDllTests, ClCounterLibTestGfx1103)
+{
+    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11_0_3, REVISION_ID_ANY, false);
+}
+
+TEST(CounterDllTests, ClCounterLibTestGfx1103B)
+{
+    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11_0_3B, REVISION_ID_ANY, false);
 }
 
 TEST(CounterDllTests, ClCounterFormulaTest)

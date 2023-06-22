@@ -177,6 +177,8 @@ TEST(CounterDllTests, VkCounterNamesByDeviceId)
     VerifyCounterNames(kGpaApiVulkan, kDevIdGfx10_3, FALSE, derived_counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
     VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11_0_3, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11_0_3B, FALSE, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, VkCounterNamesGfx8)
@@ -274,6 +276,18 @@ TEST(CounterDllTests, VkCounterLibTestGfx11)
 {
     VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11, REVISION_ID_ANY, false);
     VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11, REVISION_ID_ANY, false);
+}
+
+TEST(CounterDllTests, VkCounterLibTestGfx1103)
+{
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_0_3, REVISION_ID_ANY, false);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_0_3, REVISION_ID_ANY, false);
+}
+
+TEST(CounterDllTests, VkCounterLibTestGfx1103B)
+{
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_0_3B, REVISION_ID_ANY, false);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_0_3B, REVISION_ID_ANY, false);
 }
 #endif
 

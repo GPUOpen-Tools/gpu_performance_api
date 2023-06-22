@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief D3D11 Triangle Sample.
@@ -39,7 +39,7 @@ int  num_errors_logged = 0;      ///< Indicates the number of GPA errors that ha
 /// @return The converted utf-8 encoded string.
 static std::wstring utf8_to_wide_converter(const std::string utf8)
 {
-    int         num_characters_needed = MultiByteToWideChar(CP_UTF8, 0, utf8.data(), (int)utf8.size(), nullptr, 0);
+    int          num_characters_needed = MultiByteToWideChar(CP_UTF8, 0, utf8.data(), (int)utf8.size(), nullptr, 0);
     std::wstring wide;
     wide.resize(num_characters_needed);
     MultiByteToWideChar(CP_UTF8, 0, utf8.data(), (int)utf8.size(), wide.data(), num_characters_needed);
@@ -96,7 +96,7 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
             {
                 if (D3D11Triangle::Instance()->GpaEnableCounters())
                 {
-                    session_started = D3D11Triangle::Instance()->GpaBeginProfilingSession();
+                    session_started   = D3D11Triangle::Instance()->GpaBeginProfilingSession();
                     start_new_session = false;
                 }
                 else
@@ -106,7 +106,7 @@ LRESULT CALLBACK SampleWindowProc(_In_ HWND hwnd, _In_ UINT uMsg, _In_ WPARAM wP
             }
         }
 
-        bool pass_started = false;
+        bool pass_started   = false;
         bool sample_started = false;
 
         if (session_started)
@@ -268,12 +268,12 @@ bool D3D11Triangle::Init(gpa_example::Dx11SampleApp* app)
         return false;
     }
 
-    unsigned int                adapter_count = 0;
+    unsigned int                adapter_iter = 0;
     std::vector<IDXGIAdapter1*> dxgi_adapters;
     IDXGIAdapter1*              dxgi_adapter_1 = nullptr;
 
     // Description flag is only available in type IDXGIAdapter1 and later.
-    while (SUCCEEDED(dxgi_factory_1_->EnumAdapters1(adapter_count, &dxgi_adapter_1)))
+    while (SUCCEEDED(dxgi_factory_1_->EnumAdapters1(adapter_iter, &dxgi_adapter_1)))
     {
         DXGI_ADAPTER_DESC1 adapter_description_1;
         dxgi_adapter_1->GetDesc1(&adapter_description_1);
@@ -283,15 +283,16 @@ bool D3D11Triangle::Init(gpa_example::Dx11SampleApp* app)
             dxgi_adapters.push_back(dxgi_adapter_1);
         }
 
-        adapter_count++;
+        adapter_iter++;
         dxgi_adapter_1 = nullptr;
     }
 
     if (!dxgi_adapters.empty())
     {
         // Pick first supported hardware adapter to create the device.
-        bool found_supported_gpu = false;
-        for (uint32_t i = 0; i < adapter_count; i++)
+        bool         found_supported_gpu = false;
+        const size_t num_adapters        = dxgi_adapters.size();
+        for (size_t i = 0; i < num_adapters; ++i)
         {
             DXGI_ADAPTER_DESC1 adapter_desc_i;
             dxgi_adapters.at(i)->GetDesc1(&adapter_desc_i);
@@ -1042,7 +1043,15 @@ bool D3D11Triangle::GpaValidateData(unsigned int frame_number,
         }
         else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PreZSamplesPassing"))
         {
-            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 180000);
+            // Checking for Gfx1103 hardware.
+            if (device_id_ == 0x15BF || device_id_ == 0x15C8)
+            {
+                return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 0);
+            }
+            else
+            {
+                return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 18000);
+            }
         }
         else if (0 == local_counter_name.compare("PrimitivesIn"))
         {

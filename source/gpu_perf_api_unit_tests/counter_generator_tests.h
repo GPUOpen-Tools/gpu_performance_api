@@ -27,16 +27,18 @@
 
 #include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
-static const unsigned int kDevIdUnknown  = 0xFFFFFFFF;  ///< bogus device id.
-static const unsigned int kDevIdSI       = 0x6798;      ///< 7970 Series.
-static const unsigned int kDevIdCI       = 0x6649;      ///< FirePro W5100.
-static const unsigned int kDevIdCIHawaii = 0x67A0;      ///< HAWAII XTGL.
-static const unsigned int kDevIdVI       = 0x6900;      ///< R7 M260.
-static const unsigned int kDevIdGfx8     = 0x67DF;      ///< Gfx8.
-static const unsigned int kDevIdGfx9     = 0x6863;      ///< Gfx9.
-static const unsigned int kDevIdGfx10    = 0x7310;      ///< Gfx10.
-static const unsigned int kDevIdGfx10_3  = 0x73A0;      ///< Gfx10_3.
-static const unsigned int kDevIdGfx11    = 0x744C;      ///< Gfx11.
+static const unsigned int kDevIdUnknown    = 0xFFFFFFFF;  ///< bogus device id.
+static const unsigned int kDevIdSI         = 0x6798;      ///< 7970 Series.
+static const unsigned int kDevIdCI         = 0x6649;      ///< FirePro W5100.
+static const unsigned int kDevIdCIHawaii   = 0x67A0;      ///< HAWAII XTGL.
+static const unsigned int kDevIdVI         = 0x6900;      ///< R7 M260.
+static const unsigned int kDevIdGfx8       = 0x67DF;      ///< Gfx8.
+static const unsigned int kDevIdGfx9       = 0x6863;      ///< Gfx9.
+static const unsigned int kDevIdGfx10      = 0x7310;      ///< Gfx10.
+static const unsigned int kDevIdGfx10_3    = 0x73A0;      ///< Gfx10_3.
+static const unsigned int kDevIdGfx11      = 0x744C;      ///< Gfx11.
+static const unsigned int kDevIdGfx11_0_3  = 0x15BF;      ///< Gfx11_0_3.
+static const unsigned int kDevIdGfx11_0_3B = 0x15C8;      ///< Gfx11_0_3B.
 
 /// Name of the counter library.
 extern const char* kCountersLibName;
@@ -80,9 +82,17 @@ void VerifyHardwareNotSupported(GpaApiType api, unsigned int device_id, GpaUInt8
 
 void VerifyHardwareNotSupported(GpaApiType api, GpaHwGeneration generation, GpaUInt8 generate_asic_specific_counters);
 
-void VerifyCounterNames(GpaApiType api, unsigned int device_id, GpaUInt8 generate_asic_specific_counters, std::vector<const char*> expected_names, std::vector<const char*> expected_hardware_names);
+void VerifyCounterNames(GpaApiType               api,
+                        unsigned int             device_id,
+                        GpaUInt8                 generate_asic_specific_counters,
+                        std::vector<const char*> expected_names,
+                        std::vector<const char*> expected_hardware_names);
 
-void VerifyCounterNames(GpaApiType api, GpaHwGeneration generation, GpaUInt8 generate_asic_specific_counters, std::vector<const char*> expected_names, std::vector<const char*> expected_hardware_names);
+void VerifyCounterNames(GpaApiType               api,
+                        GpaHwGeneration          generation,
+                        GpaUInt8                 generate_asic_specific_counters,
+                        std::vector<const char*> expected_names,
+                        std::vector<const char*> expected_hardware_names);
 
 void VerifyOpenCounterContext(GpaApiType api, GpaHwGeneration generation);
 

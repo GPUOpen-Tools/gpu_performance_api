@@ -4,7 +4,7 @@ cmake_minimum_required(VERSION 3.19)
 ## Define the GPA version
 set(GPA_MAJOR_VERSION 3)
 set(GPA_MINOR_VERSION 13)
-set(GPA_UPDATE_VERSION 0)
+set(GPA_UPDATE_VERSION 1)
 
 if(NOT DEFINED GPA_BUILD_NUMBER)
     set(GPA_BUILD_NUMBER 0)

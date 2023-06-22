@@ -31,20 +31,12 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-### Version 3.13 (04/27/2023)
-* Add support for AMD Radeon RX 7000M Series hardware.
-* Add support for AMD Radeon RX 7000S Series hardware.
-* OpenCL support for AMD Radeon RX 7000 Series hardware has been restored if using Adrenalin 23.3.2 or newer.
-* Removed implementation related to supporting software counters. They have not been supported since GPA 3.0.
-* Update C++ language standard to C++ 17.
-* CMake 3.19 or newer is now required.
-* 32-bit Linux builds are no longer supported.
+### Version 3.13.1 (06/22/2023)
+* Add support for additional AMD Radeon RX 7000 Series hardware.
+* Add support for AMD Radeon 700M Series APUs.
+  * Vulkan and OpenGL are supported on existing drivers; DX12, DX11, and OpenCL will be enabled by an upcoming driver.
 * Bug Fixes:
-  * Fixed a regression that resulted in a crash on certain hardware variants.
-  * Fix a memory leak in the GpaInterfaceLoader if multiple APIs were loaded.
-  * Fix a memory leak in GPUPerfAPIUnitTests caused by not closing a context.
-  * Marked kGpaOpenContextHideSoftwareCountersBit as obsolete.
-  * Marked kGpaOpenContextHideHardwareCountesrBit as obsolete.
+  * Fixed performance regression in GPUPerfAPIDX12[-x64].dll
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.

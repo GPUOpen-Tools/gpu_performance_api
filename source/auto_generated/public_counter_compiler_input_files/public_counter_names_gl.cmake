@@ -20,6 +20,7 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx10.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx103.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx103_gfx1031_gfx1032.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx11.txt
+${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx11_gfx1103.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx8.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx8_baffin.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx8_carrizo.txt

@@ -482,8 +482,17 @@ bool GpaHelper::PrintGpaSampleResults(unsigned int profile_set, bool verify_coun
                                 }
                                 else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PreZSamplesPassing"))
                                 {
-                                    verification_success &=
-                                        CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
+                                    if (gpa_hw_generation_ == kGpaHwGenerationGfx11)
+                                    {
+                                        verification_success &=
+                                            (CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThanOrEqualTo, 0.0f) &&
+                                             CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeLessThanOrEqualTo, 18000.0f));
+                                    }
+                                    else
+                                    {
+                                        verification_success &=
+                                            CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
+                                    }
                                 }
                                 else if (0 == local_counter_name.compare("PrimitivesIn"))
                                 {
@@ -600,7 +609,7 @@ void GpaHelper::InitializeIO()
 #endif
 
     gpa_counter_file_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Datafile());
-    gpa_log_file_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Logfile());
+    gpa_log_file_name_     = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Logfile());
     std::remove(gpa_counter_file_name_.c_str());
     std::remove(gpa_log_file_name_.c_str());
     counter_data_file_stream_.open(gpa_counter_file_name_.c_str(), std::ios_base::out | std::ios_base::app);

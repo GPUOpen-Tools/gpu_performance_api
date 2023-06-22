@@ -143,7 +143,8 @@ namespace ogl_utils
         kGfx1100      = 0x2C,
         kGfx1102 = 0x2E,
         kGfx1035 = 0x2F,
-
+        kGfx1103 = 0x35,
+        kGfx1103B = 0x38,
         kAsicRevisionLast
     } AsicRevision;
 

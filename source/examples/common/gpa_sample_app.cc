@@ -67,6 +67,12 @@ namespace gpa_example
         }
         else
         {
+            if (include_known_issues_)
+            {
+                datafile_.insert(datafile_.rfind("."), "_known_issues");
+                logfile_.insert(logfile_.rfind("."), "_known_issues");
+            }
+            // Appending test mode flag after known issues.
             if (testmode_.compare("sanity") == 0)
             {
                 datafile_.insert(datafile_.rfind("."), "_sanity");

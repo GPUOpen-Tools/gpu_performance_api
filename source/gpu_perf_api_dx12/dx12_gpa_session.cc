@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 GPA Session implementation
@@ -28,6 +28,15 @@ Dx12GpaSession::~Dx12GpaSession()
     if (nullptr != amd_ext_gpa_interface_)
     {
         amd_ext_gpa_interface_->Release();
+    }
+}
+
+void Dx12GpaSession::GetDriverVersion(uint32_t& major, uint32_t& minor, uint32_t& sub_minor)
+{
+    Dx12GpaContext* dx12_gpa_context = dynamic_cast<Dx12GpaContext*>(this->GetParentContext());
+    if (dx12_gpa_context != nullptr)
+    {
+        dx12_gpa_context->GetDriverVersion(major, minor, sub_minor);
     }
 }
 

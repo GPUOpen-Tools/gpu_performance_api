@@ -8,6 +8,7 @@
 #ifndef GPU_PERF_API_COMMON_GPA_HW_INFO_H_
 #define GPU_PERF_API_COMMON_GPA_HW_INFO_H_
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -156,6 +157,13 @@ public:
     /// @return True if the device ID is available; false otherwise.
     bool GetDeviceId(GpaUInt32& id) const;
 
+    /// @brief Checks if card is unsupported by device ID.
+    ///
+    /// @param [in] id The device ID.
+    ///
+    /// @return True if the device ID is in unsupported card list; false otherwise.
+    bool IsUnsupportedDeviceId(GpaUInt32& id) const;
+
     /// @brief Gets the vendor id.
     ///
     /// @param [out] vid The vendor id.
@@ -257,8 +265,9 @@ public:
     bool operator==(GpaHwInfo other_hw_info) const;
 
 private:
-    GpaUInt32 device_id_;      ///< The device ID.
-    bool      device_id_set_;  ///< Indicates if the Device ID has been set.
+    GpaUInt32              device_id_;               ///< The device ID.
+    bool                   device_id_set_;           ///< Indicates if the Device ID has been set.
+    std::vector<GpaUInt32> unsupported_device_ids_;  ///< List of unsupported cards by device ID.
 
     GpaUInt32 revision_id_;      ///< The revision ID.
     bool      revision_id_set_;  ///< Indicates if the Revision ID has been set.
