@@ -187,8 +187,9 @@ TEST_F(GpaInterfaceLoaderTest, TestDeleteInstance)
 {
     GpaApiType second_api = kGpaApiOpengl;
 
-    // Using Vulkan and OpenCL here, since those exist on all platforms.
-    GpaApiManager::Instance()->LoadApi(kGpaApiVulkan);
+    // Using Vulkan and OpenGL here, since those exist on all platforms.
+    GpaStatus load_status = GpaApiManager::Instance()->LoadApi(kGpaApiVulkan);
+    EXPECT_EQ(kGpaStatusOk, load_status);
     GpaFunctionTable* function_table = GpaApiManager::Instance()->GetFunctionTable(kGpaApiVulkan);
     EXPECT_NE(nullptr, function_table);
     // Deleting the instance below should also cause the API to be unloaded, so it does not need to explicitly unloaded.
@@ -199,7 +200,8 @@ TEST_F(GpaInterfaceLoaderTest, TestDeleteInstance)
     EXPECT_EQ(nullptr, function_table);
     GpaApiManager::DeleteInstance();
 
-    GpaApiManager::Instance()->LoadApi(kGpaApiVulkan);
+    load_status = GpaApiManager::Instance()->LoadApi(kGpaApiVulkan);
+    EXPECT_EQ(kGpaStatusOk, load_status);
     GpaApiManager::Instance()->LoadApi(second_api);
     function_table = GpaApiManager::Instance()->GetFunctionTable(kGpaApiVulkan);
     EXPECT_NE(nullptr, function_table);
@@ -220,16 +222,19 @@ TEST_F(GpaInterfaceLoaderTest, TestLoadAPIWithPath)
     GpaApiType second_api = kGpaApiOpengl;
 
     LocaleString cwd = GpaInterfaceLoaderGetWorkingDirectoryPath();
-    // Using Vulkan and OpenCL here, since those exist on all platforms.
-    GpaApiManager::Instance()->LoadApi(kGpaApiVulkan, cwd);
+    // Using Vulkan and OpenGL here, since those exist on all platforms.
+    GpaStatus load_status = GpaApiManager::Instance()->LoadApi(kGpaApiVulkan, cwd);
+    EXPECT_EQ(kGpaStatusOk, load_status);
     EXPECT_NE(nullptr, GpaApiManager::Instance()->GetFunctionTable(kGpaApiVulkan));
     GpaApiManager::DeleteInstance();
     EXPECT_EQ(nullptr, GpaApiManager::Instance()->GetFunctionTable(kGpaApiVulkan));
     EXPECT_EQ(nullptr, GpaApiManager::Instance()->GetFunctionTable(second_api));
     GpaApiManager::DeleteInstance();
 
-    GpaApiManager::Instance()->LoadApi(kGpaApiVulkan, cwd);
-    GpaApiManager::Instance()->LoadApi(second_api, cwd);
+    load_status = GpaApiManager::Instance()->LoadApi(kGpaApiVulkan, cwd);
+    EXPECT_EQ(kGpaStatusOk, load_status);
+    load_status = GpaApiManager::Instance()->LoadApi(second_api, cwd);
+    EXPECT_EQ(kGpaStatusOk, load_status);
     EXPECT_NE(nullptr, GpaApiManager::Instance()->GetFunctionTable(kGpaApiVulkan));
     EXPECT_NE(nullptr, GpaApiManager::Instance()->GetFunctionTable(second_api));
     GpaApiManager::DeleteInstance();

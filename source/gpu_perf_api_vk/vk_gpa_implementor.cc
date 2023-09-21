@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Vk API implementation
@@ -15,7 +15,6 @@
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_vk.h"
-#include "gpu_perf_api_counter_generator/gpa_counter_generator_vk_non_amd.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_scheduler_vk.h"
 
 #include "gpu_perf_api_common/gpa_command_list_interface.h"
@@ -28,7 +27,6 @@
 
 IGpaImplementor*                   gpa_imp = VkGpaImplementor::Instance();
 static GpaCounterGeneratorVk       generator_vk;          ///< Static instance of VK generator.
-static GpaCounterGeneratorVkNonAmd generator_vk_non_amd;  ///< Static instance of Vulkan non-AMD generator.
 static GpaCounterSchedulerVk       scheduler_vk;          ///< Static instance of VK scheduler.
 
 GpaApiType VkGpaImplementor::GetApiType() const

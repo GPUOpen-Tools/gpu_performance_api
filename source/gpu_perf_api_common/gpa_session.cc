@@ -5,10 +5,10 @@
 /// @brief A base-class implementation of the GPA Session interface.
 //==============================================================================
 
-#include <list>
+#include "gpu_perf_api_common/gpa_session.h"
+
 #include <chrono>
 #include <thread>
-#include <algorithm>
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 
@@ -17,7 +17,6 @@
 #include "gpu_perf_api_common/gpa_command_list_interface.h"
 #include "gpu_perf_api_common/gpa_context_counter_mediator.h"
 #include "gpu_perf_api_common/gpa_pass.h"
-#include "gpu_perf_api_common/gpa_session.h"
 #include "gpu_perf_api_common/gpa_unique_object.h"
 
 /// Default SPM sampling interval (4096 clock cycles) (estimate).
@@ -43,6 +42,7 @@ GpaSession::GpaSession(IGpaContext* parent_context, GpaSessionSampleType sample_
     , counter_set_changed_(false)
 {
     TRACE_PRIVATE_FUNCTION(GpaSession::CONSTRUCTOR);
+
 }
 
 GpaSession::~GpaSession()
@@ -65,6 +65,7 @@ GpaSession::~GpaSession()
     }
 
     passes_.clear();
+
 }
 
 GpaObjectType GpaSession::ObjectType() const
@@ -92,7 +93,7 @@ GpaStatus GpaSession::EnableCounter(GpaUInt32 index)
     if (kGpaSessionSampleTypeDiscreteCounter != sample_type_ && GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER != sample_type_ &&
         GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT != sample_type_)
     {
-        GPA_LOG_ERROR("Unable to enable counter. Session was not created with a GPA_Session_Sample_Type value that supports counter collection.");
+        GPA_LOG_ERROR("Unable to enable counter. Session was not created with a GpaSessionSampleType value that supports counter collection.");
         return kGpaStatusErrorIncompatibleSampleTypes;
     }
 
@@ -233,6 +234,7 @@ GpaStatus GpaSession::IsCounterEnabled(GpaUInt32 counter_index) const
 
 GpaStatus GpaSession::GetNumRequiredPasses(GpaUInt32* num_passes)
 {
+
     GpaStatus ret_status = kGpaStatusOk;
 
     if (!counter_set_changed_)
@@ -247,7 +249,8 @@ GpaStatus GpaSession::GetNumRequiredPasses(GpaUInt32* num_passes)
         }
 
         unsigned int pass_req = 0u;
-        ret_status            = GpaContextCounterMediator::Instance()->GetRequiredPassCount(GetParentContext(), session_counters_, pass_req);
+
+        ret_status = GpaContextCounterMediator::Instance()->GetRequiredPassCount(GetParentContext(), session_counters_, pass_req);
 
         if (kGpaStatusOk == ret_status)
         {
@@ -255,6 +258,7 @@ GpaStatus GpaSession::GetNumRequiredPasses(GpaUInt32* num_passes)
             *num_passes          = pass_req;
             counter_set_changed_ = false;
         }
+
     }
 
     return ret_status;
@@ -283,7 +287,6 @@ GpaStatus GpaSession::Begin()
         if (kGpaStatusOk == status && GpaContextCounterMediator::Instance()->IsCounterSchedulingSupported(GetParentContext()))
         {
             status = GpaContextCounterMediator::Instance()->ScheduleCounters(GetParentContext(), this, session_counters_);
-
             if (kGpaStatusOk == status)
             {
                 unsigned int pass_count = 0u;
@@ -305,7 +308,7 @@ GpaStatus GpaSession::Begin()
                     for (GpaUInt32 pass_index_iter = 0; pass_index_iter < pass_count && success; pass_index_iter++)
                     {
                         CounterList* pass_counter_list = GpaContextCounterMediator::Instance()->GetCounterForPass(GetParentContext(), pass_index_iter);
-                        CounterList  temp_counter_list = *pass_counter_list;
+                        CounterList temp_counter_list = *pass_counter_list;
                         pass_counters_map_.insert(PassCountersPair(pass_index_iter, temp_counter_list));
 
                         GpaPass* current_pass = CreateApiPass(pass_index_iter);
@@ -627,7 +630,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
     }
 
     // It is not allowed to get sample results from a sample that was done on a secondary command list.
-    // The app MUST call GPA_CopySecondarySamples() and supply new unique sampleIds, then they may get
+    // The app MUST call GpaCopySecondarySamples() and supply new unique sampleIds, then they may get
     // the results from those copied samples.
     // NOTE: All the passes should have the same SampleIds, so it's safe for us to simply use pass 0 to
     // test for the sample being secondary and/or copied.
@@ -683,7 +686,7 @@ GpaStatus GpaSession::GetSampleResult(GpaUInt32 sample_id, size_t sample_result_
             return kGpaStatusErrorIndexOutOfRange;
         }
 
-        IGpaCounterAccessor* counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetParentContext());
+        IGpaCounterAccessor*      counter_accessor      = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetParentContext());
 
         switch (source)
         {
@@ -1041,3 +1044,4 @@ GpaStatus GpaSession::CopySecondarySamples(GpaCommandListId secondary_cmd_list_i
     UNREFERENCED_PARAMETER(new_sample_ids);
     return kGpaStatusErrorApiNotSupported;
 }
+

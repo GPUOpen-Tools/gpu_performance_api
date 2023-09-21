@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief A base-class implementation of the GPA Session interface.
@@ -17,6 +17,9 @@ using PassInfo = std::vector<GpaPass*>;  ///< Type alias for pass index and its 
 
 /// Timeout constant indicating "infinite", or no, timeout.
 const uint32_t kGpaTimeoutInfinite = static_cast<uint32_t>(-1);
+
+/// Type alias for counter and its result location map.
+using CounterResultLocations = std::map<DerivedCounterIndex, CounterResultLocationMap>;
 
 /// @brief Base class implementation for the IGpaSession.
 class GpaSession : public IGpaSession
@@ -103,7 +106,7 @@ public:
     /// @copydoc IGpaSession::UpdateResults()
     bool UpdateResults() override;
 
-    /// @copydoc IGpaSession::UpdateResults(GpaUInt32)
+    /// @copydoc IGpaSession::UpdateResults()
     bool UpdateResults(GpaUInt32 pass_index) override;
 
     /// @copydoc IGpaSession::IsSessionRunning()
@@ -185,7 +188,6 @@ private:
 
     using SessionCounters           = std::vector<GpaUInt32>;                                    ///< Type alias for counters in the session.
     using CounterResultLocationPair = std::pair<DerivedCounterIndex, CounterResultLocationMap>;  ///< Type alias for counter and its result location pair.
-    using CounterResultLocations    = std::map<DerivedCounterIndex, CounterResultLocationMap>;   ///< Type alias for counter and its result location map.
     using PassCountersPair          = std::pair<PassIndex, CounterList>;                         ///< Type alias for pass and its counters pair.
     using PassCountersMap           = std::map<PassIndex, CounterList>;                          ///< Type alias for pass and its counters map.
 

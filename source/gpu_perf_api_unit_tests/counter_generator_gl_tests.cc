@@ -179,6 +179,10 @@ TEST(CounterDllTests, OpenGlCounterNamesByDeviceId)
     VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdSI, FALSE);
     VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdCI, FALSE);
     VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdCIHawaii, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdMi250X, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdMi210, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnsupported1, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnsupported2, FALSE);
 
     std::vector<const char*> counter_names;
     std::vector<const char*> hardware_counter_names;

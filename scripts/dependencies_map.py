@@ -17,7 +17,7 @@ gitMapping = {
     "googletest"       : ["external/Lib/Ext/GoogleTest",        "542e057c6c5bf45454b43764b881397b71164d62"],
 # Src.
     "adl_util"                 : ["external/Src/ADLUtil",               "d62c94514326775c83fc129bb89d299c8749ebd1"],
-    "device_info"              : ["external/Src/DeviceInfo",            "0893fae90b1a0d75780bdafef81b2e4d836ce56b"],
+    "device_info"              : ["external/Src/DeviceInfo",            "8c2adcc8136dab662a58e93ead3027ee68e318c6"],
     "dynamic_library_module"   : ["external/Src/DynamicLibraryModule",  "e6451ce26b8509cf724c7cf5d007878791143a58"],
     "tsingleton"               : ["external/Src/TSingleton",            "02e8fa7d98f33cdbd0e1f77d1a8a403a32e35882"],
 }

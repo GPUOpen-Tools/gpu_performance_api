@@ -43,9 +43,10 @@ public:
     /// @copydoc IGpaCounterGroupAccessor::SetCounterIndex()
     void SetCounterIndex(unsigned int index) override
     {
+
         // Count the number of counters that belong to groups that do not include the desired index.
         unsigned int prev_group_counters = 0;
-        unsigned int tmp_sum            = 0;
+        unsigned int tmp_sum             = 0;
 
         is_hw_            = false;
         is_additional_hw_ = false;

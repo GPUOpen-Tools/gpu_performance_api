@@ -36,6 +36,7 @@ GpaPass::GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSourc
             is_timing_pass_ = true;
         }
     }
+
 }
 
 GpaPass::~GpaPass()
@@ -140,6 +141,8 @@ bool GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* prim
     // We will mark the parent sample as to be continued by the client.
 
     bool       success       = false;
+
+    {
     GpaSample* parent_sample = GetSampleByIdNotThreadSafe(src_sample_id);
 
     if (nullptr != parent_sample)
@@ -190,6 +193,7 @@ bool GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* prim
     else
     {
         GPA_LOG_ERROR("Unable to continue sample: The specified sample id was not found in this pass.");
+    }
     }
 
     return success;

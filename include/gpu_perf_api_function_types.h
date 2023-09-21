@@ -45,21 +45,22 @@ typedef GPA_Status (*GPA_GetDeviceAndRevisionIdPtrType)(GPA_ContextId,
 typedef GPA_Status (*GPA_GetDeviceNamePtrType)(GPA_ContextId, const char**);  ///< Typedef for a function pointer for GPA_GetDeviceName
 
 // Counter Interrogation
-typedef GPA_Status (*GPA_GetNumCountersPtrType)(GPA_ContextId, gpa_uint32*);                ///< Typedef for a function pointer for GPA_GetNumCounters
-typedef GPA_Status (*GPA_GetCounterNamePtrType)(GPA_ContextId, gpa_uint32, const char**);   ///< Typedef for a function pointer for GPA_GetCounterName
-typedef GPA_Status (*GPA_GetCounterIndexPtrType)(GPA_ContextId, const char*, gpa_uint32*);  ///< Typedef for a function pointer for GPA_GetCounterIndex
-typedef GPA_Status (*GPA_GetCounterGroupPtrType)(GPA_ContextId, gpa_uint32, const char**);  ///< Typedef for a function pointer for GPA_GetCounterGroup
-typedef GPA_Status (*GPA_GetCounterDescriptionPtrType)(GPA_ContextId,
-                                                       gpa_uint32,
-                                                       const char**);  ///< Typedef for a function pointer for GPA_GetCounterDescription
-typedef GPA_Status (*GPA_GetCounterDataTypePtrType)(GPA_ContextId, gpa_uint32, GPA_Data_Type*);  ///< Typedef for a function pointer for GPA_GetCounterDataType
-typedef GPA_Status (*GPA_GetCounterUsageTypePtrType)(GPA_ContextId,
-                                                     gpa_uint32,
-                                                     GPA_Usage_Type*);                  ///< Typedef for a function pointer for GPA_GetCounterUsageType
-typedef GPA_Status (*GPA_GetCounterUuidPtrType)(GPA_ContextId, gpa_uint32, GPA_UUID*);  ///< Typedef for a function pointer for GPA_GetCounterUuid
-typedef GPA_Status (*GPA_GetCounterSampleTypePtrType)(GPA_ContextId,
-                                                      gpa_uint32,
-                                                      GPA_Counter_Sample_Type*);   ///< Typedef for a function pointer for GPA_GetCounterSampleType
+typedef GPA_Status(*GPA_GetNumCountersPtrType)(GPA_ContextId, gpa_uint32*);                ///< Typedef for a function pointer for GPA_GetNumCounters
+typedef GPA_Status(*GPA_GetCounterNamePtrType)(GPA_ContextId, gpa_uint32, const char**);   ///< Typedef for a function pointer for GPA_GetCounterName
+typedef GPA_Status(*GPA_GetCounterIndexPtrType)(GPA_ContextId, const char*, gpa_uint32*);  ///< Typedef for a function pointer for GPA_GetCounterIndex
+typedef GPA_Status(*GPA_GetCounterGroupPtrType)(GPA_ContextId, gpa_uint32, const char**);  ///< Typedef for a function pointer for GPA_GetCounterGroup
+typedef GPA_Status(*GPA_GetCounterDescriptionPtrType)(GPA_ContextId,
+    gpa_uint32,
+    const char**);  ///< Typedef for a function pointer for GPA_GetCounterDescription
+typedef GPA_Status(*GPA_GetCounterDataTypePtrType)(GPA_ContextId, gpa_uint32, GPA_Data_Type*);  ///< Typedef for a function pointer for GPA_GetCounterDataType
+typedef GPA_Status(*GPA_GetCounterUsageTypePtrType)(GPA_ContextId,
+    gpa_uint32,
+    GPA_Usage_Type*);                  ///< Typedef for a function pointer for GPA_GetCounterUsageType
+typedef GPA_Status(*GPA_GetCounterUuidPtrType)(GPA_ContextId, gpa_uint32, GPA_UUID*);  ///< Typedef for a function pointer for GPA_GetCounterUuid
+typedef GPA_Status(*GPA_GetCounterSampleTypePtrType)(GPA_ContextId,
+    gpa_uint32,
+    GPA_Counter_Sample_Type*);   ///< Typedef for a function pointer for GPA_GetCounterSampleType
+
 typedef GPA_Status (*GPA_GetDataTypeAsStrPtrType)(GPA_Data_Type, const char**);    ///< Typedef for a function pointer for GPA_GetDataTypeAsStr
 typedef GPA_Status (*GPA_GetUsageTypeAsStrPtrType)(GPA_Usage_Type, const char**);  ///< Typedef for a function pointer for GPA_GetUsageTypeAsStr
 
@@ -70,6 +71,7 @@ typedef GPA_Status (*GPA_CreateSessionPtrType)(GPA_ContextId,
 typedef GPA_Status (*GPA_DeleteSessionPtrType)(GPA_SessionId);   ///< Typedef for a function pointer for GPA_DeleteSession
 typedef GPA_Status (*GPA_BeginSessionPtrType)(GPA_SessionId);    ///< Typedef for a function pointer for GPA_BeginSession
 typedef GPA_Status (*GPA_EndSessionPtrType)(GPA_SessionId);      ///< Typedef for a function pointer for GPA_EndSession
+
 
 // Counter Scheduling
 typedef GPA_Status (*GPA_EnableCounterPtrType)(GPA_SessionId, gpa_uint32);          ///< Typedef for a function pointer for GPA_EnableCounter

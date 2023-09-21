@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2006-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2006-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Utility routines for retrieving ASIC information
@@ -346,23 +346,32 @@ namespace ogl_utils
             asic_id_info.default_device_id = 0x73A8;
             break;
 
+        case kGfx1101:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_1;
+            asic_id_info.default_device_id = 0x73C8;
+            break;
+
         case kGfx1102:
             asic_id_info.asic_generation   = kAsicGfx11;
             asic_id_info.gdt_asic_type     = GDT_GFX11_0_2;
             asic_id_info.default_device_id = 0x7480;
             break;
+
         case kGfx1103:
             asic_id_info.asic_generation   = kAsicGfx11;
             asic_id_info.gdt_asic_type     = GDT_GFX11_0_3;
             asic_id_info.default_device_id = 0x15BF;
             asic_id_info.is_apu            = true;
             break;
+
         case kGfx1103B:
             asic_id_info.asic_generation   = kAsicGfx11;
             asic_id_info.gdt_asic_type     = GDT_GFX11_0_3B;
             asic_id_info.default_device_id = 0x15C8;
             asic_id_info.is_apu            = true;
             break;
+
         default:
             assert(!"Unhandled AsicRevision type");
             asic_id_info.asic_generation   = kAsicUnknown;

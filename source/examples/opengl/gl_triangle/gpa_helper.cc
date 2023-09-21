@@ -471,9 +471,31 @@ bool GpaHelper::PrintGpaSampleResults(unsigned int profile_set, bool verify_coun
                                     verification_success &=
                                         CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
                                 }
-                                else if (0 == local_counter_name.compare("VSVerticesIn"))
+                                else if (0 == local_counter_name.compare("TessellatorBusy") || 0 == local_counter_name.compare("TessellatorBusyCycles"))
                                 {
-                                    verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 3);
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("VsGsVerticesIn"))
+                                {
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 3.0f);
+                                }
+                                else if (0 == local_counter_name.compare("GSVerticesOut"))
+                                {
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("PreTessVerticesIn"))
+                                {
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("GSPrimsIn"))
+                                {
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("TexTriFilteringPct") || 0 == local_counter_name.compare("TexTriFilteringCount") ||
+                                         0 == local_counter_name.compare("NoTexTriFilteringCount") || 0 == local_counter_name.compare("TexVolFilteringPct") ||
+                                         0 == local_counter_name.compare("TexVolFilteringCount") || 0 == local_counter_name.compare("NoTexVolFilteringCount"))
+                                {
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 0.0f);
                                 }
                                 else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PSPixelsOut"))
                                 {
@@ -494,7 +516,7 @@ bool GpaHelper::PrintGpaSampleResults(unsigned int profile_set, bool verify_coun
                                             CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
                                     }
                                 }
-                                else if (0 == local_counter_name.compare("PrimitivesIn"))
+                                else if (0 == local_counter_name.compare("PrimitivesIn") || 0 == local_counter_name.compare("VsGsPrimsIn"))
                                 {
                                     verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 1);
                                 }

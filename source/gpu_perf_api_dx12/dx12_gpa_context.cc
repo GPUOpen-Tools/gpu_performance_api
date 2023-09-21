@@ -28,6 +28,7 @@ Dx12GpaContext::Dx12GpaContext(ID3D12Device* d3d12_device, GpaHwInfo& hw_info, G
     gpa_interface_              = nullptr;
     gpa_interface2_             = nullptr;
     clock_mode_                 = AmdExtDeviceClockMode::Default;
+    supported_sample_types_     = kGpaContextSampleTypeDiscreteCounter;
 
     AMDTADLUtils::Instance()->GetDriverVersion(driver_major_ver_, driver_minor_ver_, driver_sub_minor_ver_);
     AMDTADLUtils::DeleteInstance();
@@ -46,7 +47,7 @@ bool Dx12GpaContext::Initialize()
 
     if (nullptr != d3d12_device_)
     {
-        if (!InitializeAMDExtension())
+        if (!InitializeAmdExtension())
         {
             GPA_LOG_ERROR("Unabled to initialize AMD profiling extension for DX12.");
         }
@@ -143,7 +144,7 @@ GpaUInt32 Dx12GpaContext::GetMaxEventId(AmdExtGpuBlock block) const
     return max_event_id;
 }
 
-bool Dx12GpaContext::InitializeAMDExtension()
+bool Dx12GpaContext::InitializeAmdExtension()
 {
     GpaStatus result = kGpaStatusOk;
 

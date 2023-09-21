@@ -37,12 +37,12 @@ public:
     /// @param [in] num_isolated_from_sq_groups The number of counter groups that must be isolated from SQ counter groups.
     /// @param [in] isolated_from_sq_groups The list of counter groups that must be isolated from SQ counter groups.
     GpaSplitCountersConsolidated(const std::set<unsigned int>& timestamp_block_ids,
-                                 const std::set<unsigned int>& time_counter_indices,
-                                 unsigned int                  max_sq_counters,
-                                 unsigned int                  num_sq_groups,
-                                 GpaSqCounterGroupDesc*        sq_counter_block_info,
-                                 unsigned int                  num_isolated_from_sq_groups,
-                                 const unsigned int*           isolated_from_sq_groups)
+                               const std::set<unsigned int>& time_counter_indices,
+                               unsigned int                  max_sq_counters,
+                               unsigned int                  num_sq_groups,
+                               GpaSqCounterGroupDesc*        sq_counter_block_info,
+                               unsigned int                  num_isolated_from_sq_groups,
+                               const unsigned int*           isolated_from_sq_groups)
         : IGpaSplitCounters(timestamp_block_ids,
                             time_counter_indices,
                             max_sq_counters,
@@ -560,7 +560,7 @@ private:
                 continue;
             }
 
-            // The counter needs to be scheduled.0
+            // The counter needs to be scheduled.
             // Make sure there is enough space for the first pass.
             AddNewPassInfo(1, &pass_partitions, &num_used_counters_per_pass_per_block);
 

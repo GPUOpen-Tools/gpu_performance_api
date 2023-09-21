@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2006-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2006-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Utility routines for retrieving ASIC information.
@@ -141,10 +141,11 @@ namespace ogl_utils
         kPlaceholder6 = 0x2A,
         kNavi14Lite   = 0x2B,
         kGfx1100      = 0x2C,
-        kGfx1102 = 0x2E,
-        kGfx1035 = 0x2F,
-        kGfx1103 = 0x35,
-        kGfx1103B = 0x38,
+        kGfx1101      = 0x2D,
+        kGfx1102      = 0x2E,
+        kGfx1035      = 0x2F,
+        kGfx1103      = 0x35,
+        kGfx1103B     = 0x38,
         kAsicRevisionLast
     } AsicRevision;
 

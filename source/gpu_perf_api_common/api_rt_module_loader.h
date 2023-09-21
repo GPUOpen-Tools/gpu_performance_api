@@ -2,7 +2,7 @@
 // Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
-/// @brief  This file provides access to the an API's runtime module.
+/// @brief  This file provides access to an API's runtime module.
 //==============================================================================
 
 #ifndef GPU_PERF_API_COMMON_API_RT_MODULE_LOADER_H_

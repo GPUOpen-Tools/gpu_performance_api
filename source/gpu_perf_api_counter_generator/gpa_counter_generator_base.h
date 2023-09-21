@@ -171,6 +171,7 @@ private:
 
     /// Cache of counter indexes, so we don't have to look up a counter more than once (it can be expensive).
     mutable CounterNameIndexMap counter_index_cache_;
+
 };
 
 #endif  // GPU_PERF_API_COUNTER_GENERATOR_GPA_COUNTER_GENERATOR_BASE_H_

@@ -112,7 +112,7 @@ private:
 enum class GpaSampleType
 {
     kSoftware,  ///< Enum value for software samples.
-    kHardware   ///< Enum value for hardware samples.
+    kHardware,  ///< Enum value for hardware samples.
 };
 
 /// @brief Enum for the state of the GPA Sample.
@@ -257,6 +257,11 @@ public:
     /// @return True if sample is secondary otherwise false.
     bool IsSecondary() const;
 
+    /// @brief Return the GPA sample result location.
+    ///
+    /// @return GPA sample result location.
+    GpaSampleResult* GetSampleResultLocation() const;
+
 protected:
     /// @brief Marks the sample as being completed.
     ///
@@ -272,11 +277,6 @@ protected:
     ///
     /// @return GPA sample state.
     GpaSampleState GetGpaSampleState() const;
-
-    /// @brief Return the GPA sample result location.
-    ///
-    /// @return GPA sample result location.
-    GpaSampleResult* GetSampleResultLocation() const;
 
     /// @brief Returns the continuing sample.
     ///

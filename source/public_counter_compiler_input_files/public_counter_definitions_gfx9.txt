@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+;; Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 ;;
 ;; Counter definitions for DX/VK/GL for Gfx9 (GFX IP v9)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -395,6 +395,60 @@ SPI*_PERF_CSN_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=SPI*_PERF_CSG_BUSY,SPI*_PERF_CSG_WAVE,comparemax4,SPI*_PERF_CSN_BUSY,SPI*_PERF_CSN_WAVE,comparemax4,max,CPF_PERF_SEL_CPF_STAT_BUSY,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
+name=VsGsVerticesIn
+desc=#VertexGeometry#The number of unique vertices processed by the VS and GS.
+type=gpa_float64
+usage=items
+[GLGfx9]
+VGT_PERF_VGT_SPI_VSVERT_VALID
+VGT_PERF_VGT_SPI_ESVERT_VALID
+SPI_PERF_HS_WAVE
+eqn=0,1,1,ifnotzero,(0),2,ifnotzero
+[DX11Gfx9]
+[DX12Gfx9]
+[OGLPGfx9]
+[VKGfx9]
+VGT*_PERF_VGT_SPI_VSVERT_VALID[0..3]
+VGT*_PERF_VGT_SPI_ESVERT_VALID[0..3]
+SPI*_PERF_HS_WAVE[0..3]
+eqn=0..3,sum4,4..7,sum4,,4..7,sum4,ifnotzero,(0),8..11,sum4,ifnotzero
+
+name=VsGsPrimsIn
+desc=#VertexGeometry#The number of primitives passed into the VS and GS.
+type=gpa_float64
+usage=items
+[GLGfx9]
+PA_SU_PERF_PAPC_PA_INPUT_PRIM
+VGT_PERF_VGT_SPI_GSPRIM_VALID
+SPI_PERF_HS_WAVE
+eqn=0,1,1,ifnotzero,(0),2,ifnotzero
+[DX11Gfx9]
+[DX12Gfx9]
+[OGLPGfx9]
+[VKGfx9]
+PA_SU*_PERF_PAPC_PA_INPUT_PRIM[0..3]
+VGT*_PERF_VGT_SPI_GSPRIM_VALID[0..3]
+SPI*_PERF_HS_WAVE[0..3]
+eqn=0..3,sum4,4..7,sum4,,4..7,sum4,ifnotzero,(0),8..11,sum4,ifnotzero
+
+name=GSVerticesOut
+desc=#VertexGeometry#The number of vertices output by the GS.
+type=gpa_float64
+usage=items
+[GLGfx9]
+VGT_PERF_VGT_SPI_VSVERT_VALID
+VGT_PERF_VGT_SPI_ESVERT_VALID
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,ifnotzero,(0),2,ifnotzero
+[DX11Gfx9]
+[DX12Gfx9]
+[OGLPGfx9]
+[VKGfx9]
+VGT*_PERF_VGT_SPI_VSVERT_VALID[0..3]
+VGT*_PERF_VGT_SPI_ESVERT_VALID[0..3]
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),0..3,sum4,4..7,sum4,ifnotzero,(0),8..11,sum4,ifnotzero
+
 name=VsGsVALUInstCount
 desc=#VertexGeometry#Average number of vector ALU instructions executed in the VS and GS in a VS-[GS-]PS pipeline. Affected by flow control.
 type=gpa_float64
@@ -518,6 +572,23 @@ eqn=0..3,sum4,4..7,sum4,+,(0),8..11,sum4,ifnotzero,(4),*,NUM_CUS,/
 ;; PreTessellation means Vertex + Hull Shader from the application.
 ;; On GFX9 and later these shaders get compiled together and processed as HS waves.
 
+name=PreTessVerticesIn
+desc=#PreTessellation#The number of vertices processed by the VS and HS when using tessellation.
+type=gpa_float64
+usage=items
+[GLGfx9]
+VGT_PERF_VGT_SPI_HSVERT_VALID
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,ifnotzero
+[DX11Gfx9]
+[DX12Gfx9]
+[OGLPGfx9]
+[VKGfx9]
+VGT*_PERF_VGT_SPI_HSVERT_VALID[0..3]
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),0..3,sum4,4..7,sum4,ifnotzero
+
+
 name=PreTessVALUInstCount
 desc=#PreTessellation#Average number of vector ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control.
 type=gpa_float64
@@ -622,6 +693,23 @@ eqn=(0),0..3,sum4,NUM_CUS,/,4..7,sum4,ifnotzero
 ;; On GFX9 and later NGG: these shaders get compiled together and processed as GS waves.
 ;; On GFX9 and later non-NGG: these get executed as either VS waves (DS-only) or compiled together as GS waves.
 ;; So below we sum the VS and GS wave counters.
+
+name=PostTessPrimsOut
+desc=#PostTessellation#The number of primitives output by the DS and GS when using tessellation.
+type=gpa_float64
+usage=items
+[GLGfx9]
+VGT_PERF_DS_PRIMS
+SPI_PERF_HS_WAVE
+eqn=(0),0,1,ifnotzero
+[DX11Gfx9]
+[DX12Gfx9]
+[OGLPGfx9]
+[VKGfx9]
+VGT*_PERF_DS_PRIMS[0..3]
+SPI*_PERF_HS_WAVE[0..3]
+eqn=(0),0..3,sum4,4..7,sum4,ifnotzero
+
 
 name=PostTessVALUInstCount
 desc=#PostTessellation#Average number of vector ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control.
@@ -2221,6 +2309,48 @@ eqn=0..3,sum4
 [VKGfx9]
 CB*_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT[0..15]
 eqn=0..15,sum16
+
+name=L0TagConflictReadStalledCycles
+desc=#MemoryCache#The number of cycles read operations from the L0 cache are stalled due to tag conflicts.
+type=gpa_float64
+usage=items
+[GLGfx9]
+TCP*_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES[0..15]
+eqn=0..15,sum16
+[DX11Gfx9]
+[DX12Gfx9]
+[OGLPGfx9]
+[VKGfx9]
+TCP*_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES[0..63]
+eqn=0..63,max64
+
+name=L0TagConflictWriteStalledCycles
+desc=#MemoryCache#The number of cycles write operations to the L0 cache are stalled due to tag conflicts.
+type=gpa_float64
+usage=items
+[GLGfx9]
+TCP*_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES[0..15]
+eqn=0..15,sum16
+[DX11Gfx9]
+[DX12Gfx9]
+[OGLPGfx9]
+[VKGfx9]
+TCP*_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES[0..63]
+eqn=0..63,max64
+
+name=L0TagConflictAtomicStalledCycles
+desc=#MemoryCache#The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts.
+type=gpa_float64
+usage=items
+[GLGfx9]
+TCP*_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES[0..15]
+eqn=0..15,sum16
+[DX11Gfx9]
+[DX12Gfx9]
+[OGLPGfx9]
+[VKGfx9]
+TCP*_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES[0..63]
+eqn=0..63,max64
 
 name=FetchSize
 desc=#GlobalMemory#The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.

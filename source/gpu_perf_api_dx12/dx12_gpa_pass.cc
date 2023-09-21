@@ -422,8 +422,9 @@ void Dx12GpaPass::ResetPass() const
     for (auto it = GetCmdList().begin(); it != GetCmdList().end(); ++it)
     {
         Dx12GpaCommandList* dx12_cmd_list = reinterpret_cast<Dx12GpaCommandList*>(*it);
-        dx12_cmd_list->ReleaseNonGPAResources();
+        dx12_cmd_list->ReleaseNonGpaResources();
     }
 
     UnlockCommandListMutex();
 }
+

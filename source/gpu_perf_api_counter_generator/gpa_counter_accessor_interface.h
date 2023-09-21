@@ -14,12 +14,11 @@
 #include "gpu_performance_api/gpu_perf_api_counters.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
 
+#include "gpu_perf_api_counter_generator/gpa_derived_counter.h"
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+
 struct GpaHardwareCounterDescExt;
-class GpaHwInfo;
 class GpaHardwareCounters;
-class GpaSoftwareCounters;
-class GpaDerivedCounterInfoClass;
-class GpaCounterResultLocation;
 
 /// @brief Indicates the source or origin of a counter.
 enum class GpaCounterSource : uint32_t

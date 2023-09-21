@@ -2437,195 +2437,387 @@ namespace counter_gfx8
     };
     std::vector<GpaHardwareCounterDesc> kTcp0CountersGfx8 = {
         {3, "TCP0_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP0", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP0_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP0", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP0_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP0", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP0_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP0", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp1CountersGfx8 = {
         {3, "TCP1_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP1", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP1_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP1", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP1_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP1", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP1_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP1", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp2CountersGfx8 = {
         {3, "TCP2_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP2", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP2_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP2", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP2_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP2", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP2_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP2", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp3CountersGfx8 = {
         {3, "TCP3_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP3", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP3_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP3", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP3_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP3", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP3_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP3", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp4CountersGfx8 = {
         {3, "TCP4_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP4", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP4_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP4", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP4_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP4", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP4_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP4", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp5CountersGfx8 = {
         {3, "TCP5_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP5", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP5_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP5", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP5_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP5", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP5_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP5", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp6CountersGfx8 = {
         {3, "TCP6_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP6", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP6_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP6", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP6_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP6", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP6_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP6", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp7CountersGfx8 = {
         {3, "TCP7_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP7", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP7_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP7", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP7_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP7", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP7_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP7", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp8CountersGfx8 = {
         {3, "TCP8_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP8", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP8_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP8", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP8_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP8", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP8_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP8", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp9CountersGfx8 = {
         {3, "TCP9_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP9", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP9_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP9", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP9_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP9", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP9_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP9", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp10CountersGfx8 = {
         {3, "TCP10_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP10", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP10_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP10", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP10_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP10", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP10_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP10", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp11CountersGfx8 = {
         {3, "TCP11_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP11", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP11_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP11", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP11_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP11", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP11_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP11", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp12CountersGfx8 = {
         {3, "TCP12_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP12", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP12_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP12", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP12_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP12", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP12_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP12", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp13CountersGfx8 = {
         {3, "TCP13_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP13", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP13_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP13", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP13_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP13", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP13_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP13", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp14CountersGfx8 = {
         {3, "TCP14_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP14", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP14_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP14", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP14_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP14", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP14_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP14", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp15CountersGfx8 = {
         {3, "TCP15_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP15", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP15_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP15", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP15_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP15", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP15_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP15", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp16CountersGfx8 = {
         {3, "TCP16_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP16", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP16_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP16", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP16_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP16", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP16_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP16", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp17CountersGfx8 = {
         {3, "TCP17_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP17", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP17_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP17", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP17_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP17", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP17_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP17", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp18CountersGfx8 = {
         {3, "TCP18_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP18", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP18_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP18", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP18_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP18", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP18_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP18", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp19CountersGfx8 = {
         {3, "TCP19_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP19", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP19_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP19", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP19_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP19", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP19_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP19", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp20CountersGfx8 = {
         {3, "TCP20_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP20", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP20_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP20", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP20_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP20", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP20_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP20", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp21CountersGfx8 = {
         {3, "TCP21_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP21", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP21_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP21", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP21_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP21", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP21_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP21", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp22CountersGfx8 = {
         {3, "TCP22_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP22", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP22_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP22", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP22_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP22", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP22_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP22", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp23CountersGfx8 = {
         {3, "TCP23_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP23", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP23_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP23", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP23_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP23", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP23_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP23", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp24CountersGfx8 = {
         {3, "TCP24_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP24", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP24_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP24", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP24_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP24", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP24_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP24", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp25CountersGfx8 = {
         {3, "TCP25_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP25", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP25_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP25", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP25_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP25", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP25_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP25", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp26CountersGfx8 = {
         {3, "TCP26_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP26", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP26_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP26", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP26_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP26", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP26_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP26", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp27CountersGfx8 = {
         {3, "TCP27_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP27", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP27_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP27", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP27_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP27", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP27_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP27", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp28CountersGfx8 = {
         {3, "TCP28_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP28", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP28_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP28", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP28_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP28", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP28_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP28", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp29CountersGfx8 = {
         {3, "TCP29_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP29", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP29_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP29", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP29_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP29", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP29_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP29", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp30CountersGfx8 = {
         {3, "TCP30_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP30", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP30_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP30", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP30_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP30", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP30_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP30", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp31CountersGfx8 = {
         {3, "TCP31_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP31", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP31_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP31", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP31_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP31", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP31_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP31", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp32CountersGfx8 = {
         {3, "TCP32_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP32", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP32_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP32", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP32_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP32", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP32_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP32", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp33CountersGfx8 = {
         {3, "TCP33_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP33", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP33_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP33", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP33_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP33", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP33_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP33", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp34CountersGfx8 = {
         {3, "TCP34_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP34", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP34_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP34", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP34_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP34", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP34_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP34", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp35CountersGfx8 = {
         {3, "TCP35_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP35", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP35_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP35", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP35_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP35", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP35_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP35", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp36CountersGfx8 = {
         {3, "TCP36_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP36", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP36_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP36", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP36_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP36", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP36_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP36", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp37CountersGfx8 = {
         {3, "TCP37_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP37", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP37_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP37", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP37_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP37", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP37_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP37", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp38CountersGfx8 = {
         {3, "TCP38_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP38", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP38_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP38", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP38_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP38", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP38_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP38", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp39CountersGfx8 = {
         {3, "TCP39_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP39", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP39_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP39", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP39_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP39", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP39_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP39", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp40CountersGfx8 = {
         {3, "TCP40_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP40", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP40_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP40", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP40_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP40", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP40_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP40", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp41CountersGfx8 = {
         {3, "TCP41_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP41", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP41_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP41", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP41_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP41", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP41_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP41", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp42CountersGfx8 = {
         {3, "TCP42_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP42", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP42_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP42", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP42_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP42", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP42_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP42", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp43CountersGfx8 = {
         {3, "TCP43_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP43", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP43_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP43", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP43_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP43", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP43_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP43", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp44CountersGfx8 = {
         {3, "TCP44_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP44", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP44_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP44", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP44_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP44", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP44_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP44", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp45CountersGfx8 = {
         {3, "TCP45_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP45", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP45_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP45", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP45_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP45", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP45_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP45", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp46CountersGfx8 = {
         {3, "TCP46_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP46", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP46_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP46", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP46_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP46", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP46_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP46", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp47CountersGfx8 = {
         {3, "TCP47_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP47", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP47_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP47", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP47_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP47", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP47_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP47", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp48CountersGfx8 = {
         {3, "TCP48_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP48", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP48_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP48", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP48_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP48", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP48_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP48", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp49CountersGfx8 = {
         {3, "TCP49_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP49", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP49_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP49", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP49_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP49", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP49_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP49", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp50CountersGfx8 = {
         {3, "TCP50_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP50", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP50_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP50", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP50_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP50", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP50_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP50", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp51CountersGfx8 = {
         {3, "TCP51_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP51", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP51_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP51", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP51_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP51", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP51_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP51", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp52CountersGfx8 = {
         {3, "TCP52_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP52", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP52_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP52", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP52_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP52", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP52_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP52", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp53CountersGfx8 = {
         {3, "TCP53_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP53", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP53_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP53", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP53_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP53", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP53_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP53", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp54CountersGfx8 = {
         {3, "TCP54_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP54", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP54_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP54", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP54_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP54", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP54_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP54", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp55CountersGfx8 = {
         {3, "TCP55_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP55", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP55_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP55", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP55_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP55", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP55_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP55", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp56CountersGfx8 = {
         {3, "TCP56_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP56", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP56_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP56", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP56_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP56", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP56_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP56", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp57CountersGfx8 = {
         {3, "TCP57_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP57", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP57_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP57", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP57_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP57", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP57_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP57", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp58CountersGfx8 = {
         {3, "TCP58_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP58", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP58_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP58", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP58_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP58", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP58_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP58", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp59CountersGfx8 = {
         {3, "TCP59_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP59", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP59_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP59", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP59_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP59", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP59_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP59", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp60CountersGfx8 = {
         {3, "TCP60_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP60", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP60_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP60", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP60_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP60", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP60_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP60", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp61CountersGfx8 = {
         {3, "TCP61_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP61", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP61_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP61", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP61_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP61", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP61_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP61", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp62CountersGfx8 = {
         {3, "TCP62_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP62", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP62_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP62", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP62_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP62", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP62_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP62", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp63CountersGfx8 = {
         {3, "TCP63_PERF_SEL_TCP_TA_DATA_STALL_CYCLES", "TCP63", "TCP stalls TA data interface. Now Windowed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "TCP63_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES", "TCP63", "Tagram conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {8, "TCP63_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES", "TCP63", "Tagram conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {9, "TCP63_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES", "TCP63", "Tagram conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcc0CountersGfx8 = {
         {18, "TCC0_PERF_SEL_HIT", "TCC0", "Number of cache hits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},

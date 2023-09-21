@@ -32,14 +32,14 @@ public:
     GpaSplitCountersOnePerPass(const std::set<unsigned int>& timestamp_block_ids,
                                const std::set<unsigned int>& time_counter_indices,
                                unsigned int                  max_sq_counters,
-                               unsigned int                  num_sq_blocks,
+                               unsigned int                  num_sq_groups,
                                GpaSqCounterGroupDesc*        sq_counter_block_info,
                                unsigned int                  num_isolated_from_sq_groups,
                                const unsigned int*           isolated_from_sq_groups)
         : IGpaSplitCounters(timestamp_block_ids,
                             time_counter_indices,
                             max_sq_counters,
-                            num_sq_blocks,
+                            num_sq_groups,
                             sq_counter_block_info,
                             num_isolated_from_sq_groups,
                             isolated_from_sq_groups){};

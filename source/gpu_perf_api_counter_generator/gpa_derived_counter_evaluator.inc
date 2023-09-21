@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2020-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Functions for evaluating derived counter formula.
@@ -138,7 +138,7 @@ void VecDivN(std::vector<T>& stack, int32_t vector_width)
 /// T is derived counter type.
 ///
 /// @param [in,out] stack RPN counter formula expression stack.
-/// @param[in] count Number of stack items.
+/// @param [in] count Number of stack items.
 template <class T>
 void AvgN(std::vector<T>& stack, int32_t count)
 {
@@ -406,6 +406,7 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         }
         else if ((tolower(pch[0]) == 'm') && (tolower(pch[1]) == 'a') && (tolower(pch[2]) == 'x') && ((pch[3] == '\0') || isdigit(pch[3])))
         {
+            // max
             long value_count = 2;
             if (pch[3] != '\0')
             {
@@ -429,6 +430,7 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         }
         else if ((tolower(pch[0]) == 'm') && (tolower(pch[1]) == 'i') && (tolower(pch[2]) == 'n') && ((pch[3] == '\0') || isdigit(pch[3])))
         {
+            // min
             long value_count = 2;
             if (pch[3] != '\0')
             {
@@ -577,6 +579,7 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         }
         else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'u') && (tolower(pch[2]) == 'm') && ((pch[3] == '\0') || isdigit(pch[3])))
         {
+            // SumN
             long value_count = 2;
             if (pch[3] != '\0')
             {
@@ -590,245 +593,123 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             assert(stack.size() >= static_cast<std::size_t>(value_count));
             SumN(stack, value_count);
         }
-        else if (_strcmpi(pch, "vecsum2") == 0)
+        else if ((tolower(pch[0]) == 'v') && (tolower(pch[1]) == 'e') && (tolower(pch[2]) == 'c') && (tolower(pch[3]) == 's') && (tolower(pch[4]) == 'u') && (tolower(pch[5]) == 'm') && ((pch[6] == '\0') || isdigit(pch[6])))
         {
-            const int32_t vector_width = 2;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec2
-            VecSumN<T>(stack, vector_width);
+            // VecSumN
+            long value_count = 2;
+            if (pch[6] != '\0')
+            {
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[6], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
+            }
+            assert(stack.size() >= static_cast<std::size_t>(value_count) * 2); // 2 vectors of value_count entries.
+            VecSumN<T>(stack, value_count);
         }
-        else if (_strcmpi(pch, "vecsum4") == 0)
+        else if ((tolower(pch[0]) == 'v') && (tolower(pch[1]) == 'e') && (tolower(pch[2]) == 'c') && (tolower(pch[3]) == 's') && (tolower(pch[4]) == 'u') && (tolower(pch[5]) == 'b') && ((pch[6] == '\0') || isdigit(pch[6])))
         {
-            const int32_t vector_width = 4;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec4
-            VecSumN<T>(stack, vector_width);
+            // VecSubN
+            long value_count = 2;
+            if (pch[6] != '\0')
+            {
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[6], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
+            }
+            assert(stack.size() >= static_cast<std::size_t>(value_count) * 2); // 2 vectors of value_count entries.
+            VecSubN<T>(stack, value_count);
         }
-        else if (_strcmpi(pch, "vecsum6") == 0)
+        else if ((tolower(pch[0]) == 'v') && (tolower(pch[1]) == 'e') && (tolower(pch[2]) == 'c') && (tolower(pch[3]) == 'd') && (tolower(pch[4]) == 'i') && (tolower(pch[5]) == 'v') && ((pch[6] == '\0') || isdigit(pch[6])))
         {
-            const int32_t vector_width = 6;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec6
-            VecSumN<T>(stack, vector_width);
+            // VecDivN
+            long value_count = 2;
+            if (pch[6] != '\0')
+            {
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[6], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
+            }
+            assert(stack.size() >= static_cast<std::size_t>(value_count) * 2); // 2 vectors of value_count entries.
+            VecDivN<T>(stack, value_count);
         }
-        else if (_strcmpi(pch, "vecsum8") == 0)
+        else if ((tolower(pch[0]) == 'a') && (tolower(pch[1]) == 'v') && (tolower(pch[2]) == 'g') && ((pch[3] == '\0') || isdigit(pch[3])))
         {
-            const int32_t vector_width = 8;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec8
-            VecSumN<T>(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecsum16") == 0)
-        {
-            const int32_t vector_width = 16;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec16
-            VecSumN<T>(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecsum64") == 0)
-        {
-            const int32_t vector_width = 64;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec64
-            VecSumN<T>(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecsub2") == 0)
-        {
-            const int32_t vector_width = 2;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec2
-            VecSubN<T>(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecsub6") == 0)
-        {
-            const int32_t vector_width = 6;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec6
-            VecSubN<T>(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecsub16") == 0)
-        {
-            const int32_t vector_width = 16;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec16
-            VecSubN<T>(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecdiv2") == 0)
-        {
-            const int32_t vector_width = 2;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec2
-            VecDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecdiv4") == 0)
-        {
-            const int32_t vector_width = 4;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec4
-            VecDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecdiv8") == 0)
-        {
-            const int32_t vector_width = 8;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec8
-            VecDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecdiv10") == 0)
-        {
-            const int32_t vector_width = 10;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec10
-            VecDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecdiv16") == 0)
-        {
-            const int32_t vector_width = 16;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec16
-            VecDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecdiv20") == 0)
-        {
-            const int32_t vector_width = 20;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec20
-            VecDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecdiv32") == 0)
-        {
-            const int32_t vector_width = 32;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec32
-            VecDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecdiv40") == 0)
-        {
-            const int32_t vector_width = 40;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec40
-            VecDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecdiv64") == 0)
-        {
-            const int32_t vector_width = 64;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec64
-            VecDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "vecdiv80") == 0)
-        {
-            const int32_t vector_width = 80;
-            assert(stack.size() >= 2 * vector_width);  // 2 vectors with vec80
-            VecDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "avg2") == 0)
-        {
-            const int32_t value_count = 2;
-            assert(stack.size() >= value_count);
+            // AvgN
+            long value_count = 2;
+            if (pch[3] != '\0')
+            {
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[3], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
+            }
+            assert(stack.size() >= static_cast<std::size_t>(value_count));
             AvgN(stack, value_count);
         }
-        else if (_strcmpi(pch, "avg4") == 0)
+        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'c') && (tolower(pch[2]) == 'a') && (tolower(pch[3]) == 'l') && (tolower(pch[4]) == 'a') && (tolower(pch[5]) == 'r')
+                 && (tolower(pch[6]) == 's') && (tolower(pch[7]) == 'u') && (tolower(pch[8]) == 'b')
+                 && ((pch[9] == '\0') || isdigit(pch[9])))
         {
-            const int32_t value_count = 4;
-            assert(stack.size() >= value_count);
-            AvgN(stack, value_count);
+            // ScalarSubN
+            long value_count = 2;
+            if (pch[9] != '\0')
+            {
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[9], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
+            }
+            assert(stack.size() >= static_cast<std::size_t>(value_count) + 1); // 1 scalar + 1 vector of value_count entries.
+            ScalarSubN<T>(stack, value_count);
         }
-        else if (_strcmpi(pch, "avg8") == 0)
+        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'c') && (tolower(pch[2]) == 'a') && (tolower(pch[3]) == 'l') && (tolower(pch[4]) == 'a') && (tolower(pch[5]) == 'r')
+                 && (tolower(pch[6]) == 'd') && (tolower(pch[7]) == 'i') && (tolower(pch[8]) == 'v')
+                 && ((pch[9] == '\0') || isdigit(pch[9])))
         {
-            const int32_t value_count = 8;
-            assert(stack.size() >= value_count);
-            AvgN(stack, value_count);
+            // ScalarDivN
+            long value_count = 2;
+            if (pch[9] != '\0')
+            {
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[9], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
+            }
+            assert(stack.size() >= static_cast<std::size_t>(value_count) + 1); // 1 scalar + 1 vector of value_count entries.
+            ScalarDivN<T>(stack, value_count);
         }
-        else if (_strcmpi(pch, "avg16") == 0)
+        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'c') && (tolower(pch[2]) == 'a') && (tolower(pch[3]) == 'l') && (tolower(pch[4]) == 'a') && (tolower(pch[5]) == 'r')
+                 && (tolower(pch[6]) == 'm') && (tolower(pch[7]) == 'u') && (tolower(pch[8]) == 'l')
+                 && ((pch[9] == '\0') || isdigit(pch[9])))
         {
-            const int32_t value_count = 16;
-            assert(stack.size() >= value_count);
-            AvgN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "avg20") == 0)
-        {
-            const int32_t value_count = 20;
-            assert(stack.size() >= value_count);
-            AvgN(stack, value_count);
-        }
-        else if (_strcmpi(pch, "scalarSub10") == 0)
-        {
-            const int32_t vector_width = 10;
-            assert(stack.size() >= (vector_width + 1));  // vec10 + 1 scalar
-            ScalarSubN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarSub20") == 0)
-        {
-            const int32_t vector_width = 20;
-            assert(stack.size() >= (vector_width + 1));  // vec20 + 1 scalar
-            ScalarSubN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarSub40") == 0)
-        {
-            const int32_t vector_width = 40;
-            assert(stack.size() >= (vector_width + 1));  // vec40 + 1 scalar
-            ScalarSubN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarSub80") == 0)
-        {
-            const int32_t vector_width = 80;
-            assert(stack.size() >= (vector_width + 1));  // vec80 + 1 scalar
-            ScalarSubN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarDiv2") == 0)
-        {
-            const int32_t vector_width = 2;
-            assert(stack.size() >= (vector_width + 1));  // vec2 + 1 scalar
-            ScalarDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarDiv4") == 0)
-        {
-            const int32_t vector_width = 4;
-            assert(stack.size() >= (vector_width + 1));  // vec4 + 1 scalar
-            ScalarDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarDiv8") == 0)
-        {
-            const int32_t vector_width = 8;
-            assert(stack.size() >= (vector_width + 1));  // vec8 + 1 scalar
-            ScalarDivN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarMul2") == 0)
-        {
-            const int32_t vector_width = 2;
-            assert(stack.size() >= (vector_width + 1));  // vec2 + 1 scalar
-            ScalarMulN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarMul4") == 0)
-        {
-            const int32_t vector_width = 4;
-            assert(stack.size() >= (vector_width + 1));  // vec4 + 1 scalar
-            ScalarMulN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarMul6") == 0)
-        {
-            const int32_t vector_width = 6;
-            assert(stack.size() >= (vector_width + 1));  // vec6 + 1 scalar
-            ScalarMulN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarMul8") == 0)
-        {
-            const int32_t vector_width = 8;
-            assert(stack.size() >= (vector_width + 1));  // vec8 + 1 scalar
-            ScalarMulN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarMul16") == 0)
-        {
-            const int32_t vector_width = 16;
-            assert(stack.size() >= (vector_width + 1));  // vec16 + 1 scalar
-            ScalarMulN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarMul20") == 0)
-        {
-            const int32_t vector_width = 20;
-            assert(stack.size() >= (vector_width + 1));  // vec20 + 1 scalar
-            ScalarMulN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarMul32") == 0)
-        {
-            const int32_t vector_width = 32;
-            assert(stack.size() >= (vector_width + 1));  // vec32 + 1 scalar
-            ScalarMulN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarMul40") == 0)
-        {
-            const int32_t vector_width = 40;
-            assert(stack.size() >= (vector_width + 1));  // vec40 + 1 scalar
-            ScalarMulN(stack, vector_width);
-        }
-        else if (_strcmpi(pch, "scalarMul64") == 0)
-        {
-            const int32_t vector_width = 64;
-            assert(stack.size() >= (vector_width + 1));  // vec64 + 1 scalar
-            ScalarMulN(stack, vector_width);
+            // ScalarMulN
+            long value_count = 2;
+            if (pch[9] != '\0')
+            {
+                char* endptr = nullptr;
+                errno = 0;
+                value_count = std::strtol(&pch[9], &endptr, 10);
+                assert(endptr != nullptr);
+                assert(value_count > 0);
+                assert(errno == 0);
+            }
+            assert(stack.size() >= static_cast<std::size_t>(value_count) + 1); // 1 scalar + 1 vector of value_count entries.
+            ScalarMulN<T>(stack, value_count);
         }
         else
         {

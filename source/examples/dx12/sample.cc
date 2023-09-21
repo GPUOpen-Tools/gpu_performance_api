@@ -29,8 +29,8 @@ gpa_example::Dx12SampleApp::Dx12SampleApp(const std::string app_name, CmdlinePar
     , nogpa_(false)
     , profile_bundle_(false)
 {
-    cmdline_parser_.AddArg("--nogpa", &nogpa_, ArgType::ARG_TYPE_BOOL, "Do not use GPUPerfAPI to collect performance counters");
-    cmdline_parser_.AddArg("--profilebundle", &profile_bundle_, ArgType::ARG_TYPE_BOOL, "Include the bundled samples in the profile (experimental)");
+    cmdline_parser_.AddArg("--nogpa", &nogpa_, ArgType::kArgTypeBool, "Do not use GPUPerfAPI to collect performance counters");
+    cmdline_parser_.AddArg("--profilebundle", &profile_bundle_, ArgType::kArgTypeBool, "Include the bundled samples in the profile (experimental)");
 }
 
 bool gpa_example::Dx12SampleApp::NoGpa()
@@ -45,18 +45,18 @@ bool gpa_example::Dx12SampleApp::ProfileBundle()
 
 /// @brief The main function of this sample application.
 ///
-/// @param hInstance [in] The application instance.
-/// @param prevInstance [in] Unused.
-/// @param pCmdLine [in] Command line arguments as unicode string.
-/// @param nCmdShow [in] Flag that indicates whether the window will be minimized, maximized, or shown normally.
+/// @param instance [in] The application instance.
+/// @param prev_instance [in] Unused.
+/// @param cmd_line [in] Command line arguments as unicode string.
+/// @param cmd_show [in] Flag that indicates whether the window will be minimized, maximized, or shown normally.
 ///
 /// @return If the application ran successfully but there were counter validation errors, then the number of validation errors will be the return code.
 /// @retval -1 If there were errors executing the application.
 /// @retval 0 On success: the application ran successfully and all counters were validated to be correct.
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _In_ LPSTR pCmdLine, _In_ int nCmdShow)
+int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev_instance, _In_ LPSTR cmd_line, _In_ int cmd_show)
 {
-    UNREFERENCED_PARAMETER(pCmdLine);
-    UNREFERENCED_PARAMETER(prevInstance);
+    UNREFERENCED_PARAMETER(cmd_line);
+    UNREFERENCED_PARAMETER(prev_instance);
 
     gpa_example::CmdlineParser parser(__argc, __argv);
 
@@ -73,7 +73,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _I
                                         SampleWindowProc,
                                         0,
                                         0,
-                                        hInstance,
+                                        instance,
                                         NULL,  // Default icon.
                                         LoadCursor(nullptr, IDC_IBEAM),
                                         NULL,  // No brush.
@@ -98,7 +98,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _I
                                  kWindowHeight,
                                  nullptr,
                                  nullptr,
-                                 hInstance,
+                                 instance,
                                  nullptr);
 
     if (window_handle == nullptr)
@@ -109,7 +109,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _I
 
     SetWindowLongPtr(window_handle, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(&app));
 
-    ShowWindow(window_handle, nCmdShow);
+    ShowWindow(window_handle, cmd_show);
 
     // Main sample loop.
     MSG msg = {};
@@ -125,7 +125,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE prevInstance, _I
     }
 
     DestroyWindow(window_handle);
-    UnregisterClass(kWindowClassName.c_str(), hInstance);
+    UnregisterClass(kWindowClassName.c_str(), instance);
 
     // If errors were logged and there were validation errors, then use the number of validation errors as the return code.
     // If errors were logged and there were not validation errors, then return -1.

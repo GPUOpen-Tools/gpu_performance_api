@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Common GPA Implementor.
@@ -119,7 +119,7 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
         GpaHwInfo hw_info;
 
         // driver not supported, logging error
-        if(!IsDriverSupported(context))
+        if (!IsDriverSupported(context))
         {
             GPA_LOG_ERROR("Driver not supported.");
             return kGpaStatusErrorDriverNotSupported;
@@ -316,10 +316,8 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaH
 
     if (api_hw_info.IsAmd())
     {
-        // Checking for integrated GPUs that are not supported.
-        GpaUInt32 device_id_api;
-        api_hw_info.GetDeviceId(device_id_api);
-        if (device_id_api == 0x1506 || device_id_api == 0x164e)
+        // Checking for AMD GPUs that are not supported by GPA for one reason or another.
+        if (api_hw_info.IsUnsupportedDeviceId())
         {
             GPA_LOG_ERROR("The current hardware does not properly support GPUPerfAPI.");
             return kGpaStatusErrorHardwareNotSupported;
@@ -338,12 +336,25 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaH
 
         for (auto asic_info : asic_info_list)
         {
+            // Skip integrated GPUs that are not supported.
+            if (asic_hw_info.IsUnsupportedDeviceId(asic_info.deviceID))
+            {
+                continue;
+            }
+
             asic_hw_info.SetVendorId(asic_info.vendorID);
             asic_hw_info.SetDeviceName(asic_info.adapterName.c_str());
             asic_hw_info.SetDeviceId(asic_info.deviceID);
             asic_hw_info.SetRevisionId(asic_info.revID);
             asic_hw_info.SetGpuIndex(asic_info.gpuIndex);
             asic_hw_info.UpdateDeviceInfoBasedOnDeviceId();
+
+            // Checking for integrated GPUs that are not supported.
+            if (asic_info.deviceID == 0x1506 || asic_info.deviceID == 0x164e)
+            {
+                GPA_LOG_ERROR("The current hardware does not properly support GPUPerfAPI.");
+                return kGpaStatusErrorHardwareNotSupported;
+            }
 
             if (CompareHwInfo(api_hw_info, asic_hw_info))
             {

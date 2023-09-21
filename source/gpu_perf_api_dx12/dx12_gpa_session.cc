@@ -7,7 +7,10 @@
 
 #include "dx12_gpa_session.h"
 
+#include <inttypes.h>
+
 #include "gpu_perf_api_common/gpa_common_defs.h"
+
 #include "gpu_perf_api_common/gpa_sample.h"
 #include "gpu_perf_api_common/gpa_unique_object.h"
 
@@ -25,6 +28,7 @@ Dx12GpaSession::Dx12GpaSession(Dx12GpaContext* dx12_gpa_context, GpaSessionSampl
 
 Dx12GpaSession::~Dx12GpaSession()
 {
+
     if (nullptr != amd_ext_gpa_interface_)
     {
         amd_ext_gpa_interface_->Release();
@@ -131,8 +135,8 @@ GpaPass* Dx12GpaSession::CreateApiPass(PassIndex pass_index)
 
     CounterList*     pass_counters  = GetCountersForPass(pass_index);
     GpaCounterSource counter_source = GetParentContext()->GetCounterSource((*pass_counters)[0]);
-    Dx12GpaPass*     dx12_pass      = new (std::nothrow) Dx12GpaPass(this, pass_index, counter_source, pass_counters);
 
+    Dx12GpaPass* dx12_pass = new (std::nothrow) Dx12GpaPass(this, pass_index, counter_source, pass_counters);
     if (nullptr != dx12_pass)
     {
         ret_pass = dx12_pass;
@@ -140,3 +144,4 @@ GpaPass* Dx12GpaSession::CreateApiPass(PassIndex pass_index)
 
     return ret_pass;
 }
+

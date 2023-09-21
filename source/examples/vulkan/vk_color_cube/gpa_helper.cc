@@ -629,77 +629,105 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
                     CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 60.0f, confirm_success);
             }
         }
-        else if (include_known_issues && 0 == local_counter_name.compare("VSVerticesIn"))
+        else if (0 == local_counter_name.compare("TessellatorBusy") || 0 == local_counter_name.compare("TessellatorBusyCycles"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("VsGsVerticesIn"))
         {
             // Sample 0
-            GpaFloat64 expected_vertex_count = 36;
-
+            GpaFloat64 vertex_count = 36;
             if (sample_index == 1)
-            {
-                expected_vertex_count = 36;
-            }
+                vertex_count = 36;
             else if (sample_index == 2)
-            {
                 // In this example, sample 2 vertices = sample 0 vertices + sample 1 vertices.
-                expected_vertex_count = 72;
-            }
+                vertex_count = 72;
 
-            return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_vertex_count, 0.0f, confirm_success);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, vertex_count, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("GSVerticesOut"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("PreTessVerticesIn"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("GSPrimsIn"))
+        {
+            // Sample 0
+            GpaFloat64 prim_count = 12;
+            if (sample_index == 1)
+                prim_count = 12;
+            else if (sample_index == 2)
+                // In this example, sample 2 prims = sample 0 prims + sample 1 prims.
+                prim_count = 24;
+
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("TexTriFilteringPct") || 0 == local_counter_name.compare("TexTriFilteringCount") ||
+                 0 == local_counter_name.compare("NoTexTriFilteringCount") || 0 == local_counter_name.compare("TexVolFilteringPct") ||
+                 0 == local_counter_name.compare("TexVolFilteringCount") || 0 == local_counter_name.compare("NoTexVolFilteringCount"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
         }
         else if (include_known_issues && 0 == local_counter_name.compare("PSPixelsOut"))
         {
             // Sample 0
-            GpaFloat64 expected_pixel_count = 11662;
-
+            GpaFloat64 pixel_count = 11662;
             if (sample_index == 1)
-            {
-                expected_pixel_count = 2820;
-            }
+                pixel_count = 2820;
             else if (sample_index == 2)
-            {
                 // In this example, sample 2 pixels = sample 0 pixels + sample 1 pixels.
-                expected_pixel_count = 14482;
+                pixel_count = 14482;
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, pixel_count, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("VsGsPrimsIn"))
+        {
+            // Samples 0 and 1
+            GpaFloat64 prim_count = 12;
+            // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
+            if (sample_index == 2)
+                prim_count = 24;
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("PrimitivesIn"))
+        {
+            if (generation == kGpaHwGenerationGfx11)
+            {
+                // Samples 0 and 1
+                GpaFloat64 prim_count = 12;
+                // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
+                if (sample_index == 2)
+                    prim_count = 24;
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
             }
-
-            return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_pixel_count, 0.0f, confirm_success);
+            else
+            {
+                // Sample 0
+                GpaFloat64 prim_count = 4;
+                // No backface culling on wireframe so twice the number of primitives.
+                if (sample_index == 1)
+                    prim_count = 8;
+                // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
+                else if (sample_index == 2)
+                    prim_count = 12;
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
+            }
         }
         else if (include_known_issues && 0 == local_counter_name.compare("PreZSamplesPassing"))
         {
             // Sample 0
-            GpaFloat64 expected_passing = 11662;
-
+            GpaFloat64 expected = 11662;
             if (sample_index == 1)
-            {
-                expected_passing = 2820;
-            }
+                expected = 2820;
             else if (sample_index == 2)
-            {
                 // In this example, sample 2 passing = sample 0 passing + sample 1 passing.
-                expected_passing = 14482;
-            }
+                expected = 14482;
 
-            return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_passing, 0.0f, confirm_success);
-        }
-        else if (include_known_issues && 0 == local_counter_name.compare("PrimitivesIn"))
-        {
-            // Sample 0
-            GpaFloat64 expected_primitive_count = 12;
-
-            if (sample_index == 1)
-            {
-                expected_primitive_count = 12;
-            }
-            else if (sample_index == 2)
-            {
-                // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
-                expected_primitive_count = 24;
-            }
-
-            return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_primitive_count, 0.0f, confirm_success);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected, 0.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("CSTime") || 0 == local_counter_name.compare("CSBusy") || 0 == local_counter_name.compare("CSBusyCycles") ||
                  0 == local_counter_name.compare("PAStalledOnRasterizerCycles") || 0 == local_counter_name.compare("CSThreadGroups") ||

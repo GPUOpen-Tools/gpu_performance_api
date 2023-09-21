@@ -28,6 +28,14 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
 
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3182);
+        internal_counters.push_back(16301);
+        internal_counters.push_back(4055);
+
+        c.UpdateAsicSpecificDerivedCounter("VsGsPrimsIn", internal_counters, "0,1,1,ifnotzero,(0),2,ifnotzero");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
         internal_counters.push_back(3279);
         internal_counters.push_back(3283);
         internal_counters.push_back(3235);

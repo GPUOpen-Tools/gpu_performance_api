@@ -1019,9 +1019,35 @@ bool D3D11Triangle::GpaValidateData(unsigned int frame_number,
         {
             return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f);
         }
-        else if (0 == local_counter_name.compare("VSVerticesIn"))
+        else if (0 == local_counter_name.compare("TessellatorBusy") || 0 == local_counter_name.compare("TessellatorBusyCycles"))
         {
-            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 3);
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f);
+        }
+        else if (0 == local_counter_name.compare("VsGsVerticesIn"))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 3.0f);
+        }
+        else if (0 == local_counter_name.compare("GSVerticesOut"))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f);
+        }
+        else if (0 == local_counter_name.compare("PreTessVerticesIn"))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f);
+        }
+        else if (0 == local_counter_name.compare("GSPrimsIn"))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f);
+        }
+        else if (0 == local_counter_name.compare("VsGsPrimsIn"))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 1.0f);
+        }
+        else if (0 == local_counter_name.compare("TexTriFilteringPct") || 0 == local_counter_name.compare("TexTriFilteringCount") ||
+                 0 == local_counter_name.compare("NoTexTriFilteringCount") || 0 == local_counter_name.compare("TexVolFilteringPct") ||
+                 0 == local_counter_name.compare("TexVolFilteringCount") || 0 == local_counter_name.compare("NoTexVolFilteringCount"))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f);
         }
         else if (app_->IncludeKnownIssues() && (0 == local_counter_name.compare("PSSALUInstCount") || 0 == local_counter_name.compare("PSVALUInstCount")))
         {

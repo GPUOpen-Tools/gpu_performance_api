@@ -23,32 +23,35 @@ namespace counter_gfx103
         {0, "GRBM_PERF_SEL_COUNT", "GRBM", "Tie High - Count Number of Clocks", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {2, "GRBM_PERF_SEL_GUI_ACTIVE", "GRBM", "The GUI is Active", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
+    std::vector<GpaHardwareCounterDesc> kGe2DistCountersGfx103 = {
+        {42, "GE2_DIST_GE_DIST_WD_TE11_BUSY", "GE2_DIST", "Counts number of cycles the TE11 block is busy. (DX11 Tessellation Fixed Function Logic)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+    };
     std::vector<GpaHardwareCounterDesc> kGeSe0CountersGfx103 = {
+        {4, "GE_SE0_DS_PRIMS", "GE_SE0", "Number of prims output from the tessellator", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {73, "GE_SE0_SPI_ESVERT_VALID", "GE_SE0", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {80, "GE_SE0_SPI_GSPRIM_VALID", "GE_SE0", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {86, "GE_SE0_SPI_HSVERT_VALID", "GE_SE0", "HS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {92, "GE_SE0_SPI_LSVERT_VALID", "GE_SE0", "LS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {111, "GE_SE0_SPI_VSVERT_VALID", "GE_SE0", "number of valid VS verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kGeSe1CountersGfx103 = {
+        {4, "GE_SE1_DS_PRIMS", "GE_SE1", "Number of prims output from the tessellator", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {73, "GE_SE1_SPI_ESVERT_VALID", "GE_SE1", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {80, "GE_SE1_SPI_GSPRIM_VALID", "GE_SE1", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {86, "GE_SE1_SPI_HSVERT_VALID", "GE_SE1", "HS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {92, "GE_SE1_SPI_LSVERT_VALID", "GE_SE1", "LS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {111, "GE_SE1_SPI_VSVERT_VALID", "GE_SE1", "number of valid VS verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kGeSe2CountersGfx103 = {
+        {4, "GE_SE2_DS_PRIMS", "GE_SE2", "Number of prims output from the tessellator", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {73, "GE_SE2_SPI_ESVERT_VALID", "GE_SE2", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {80, "GE_SE2_SPI_GSPRIM_VALID", "GE_SE2", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {86, "GE_SE2_SPI_HSVERT_VALID", "GE_SE2", "HS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {92, "GE_SE2_SPI_LSVERT_VALID", "GE_SE2", "LS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {111, "GE_SE2_SPI_VSVERT_VALID", "GE_SE2", "number of valid VS verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kGeSe3CountersGfx103 = {
+        {4, "GE_SE3_DS_PRIMS", "GE_SE3", "Number of prims output from the tessellator", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {73, "GE_SE3_SPI_ESVERT_VALID", "GE_SE3", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {80, "GE_SE3_SPI_GSPRIM_VALID", "GE_SE3", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {86, "GE_SE3_SPI_HSVERT_VALID", "GE_SE3", "HS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {92, "GE_SE3_SPI_LSVERT_VALID", "GE_SE3", "LS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {111, "GE_SE3_SPI_VSVERT_VALID", "GE_SE3", "number of valid VS verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kPaSu0CountersGfx103 = {
@@ -1273,6 +1276,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa0CountersGfx103 = {
         {15, "TA0_PERF_SEL_TA_BUSY", "TA0", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA0_PERF_SEL_MIP_1_CYCLE_QUADS", "TA0", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA0_PERF_SEL_MIP_2_CYCLE_QUADS", "TA0", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA0_PERF_SEL_VOL_1_CYCLE_QUADS", "TA0", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA0_PERF_SEL_VOL_2_CYCLE_QUADS", "TA0", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA0_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA0", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA0_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA0", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA0_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA0", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1285,6 +1292,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa1CountersGfx103 = {
         {15, "TA1_PERF_SEL_TA_BUSY", "TA1", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA1_PERF_SEL_MIP_1_CYCLE_QUADS", "TA1", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA1_PERF_SEL_MIP_2_CYCLE_QUADS", "TA1", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA1_PERF_SEL_VOL_1_CYCLE_QUADS", "TA1", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA1_PERF_SEL_VOL_2_CYCLE_QUADS", "TA1", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA1_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA1", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA1_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA1", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA1_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA1", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1297,6 +1308,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa2CountersGfx103 = {
         {15, "TA2_PERF_SEL_TA_BUSY", "TA2", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA2_PERF_SEL_MIP_1_CYCLE_QUADS", "TA2", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA2_PERF_SEL_MIP_2_CYCLE_QUADS", "TA2", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA2_PERF_SEL_VOL_1_CYCLE_QUADS", "TA2", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA2_PERF_SEL_VOL_2_CYCLE_QUADS", "TA2", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA2_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA2", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA2_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA2", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA2_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA2", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1309,6 +1324,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa3CountersGfx103 = {
         {15, "TA3_PERF_SEL_TA_BUSY", "TA3", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA3_PERF_SEL_MIP_1_CYCLE_QUADS", "TA3", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA3_PERF_SEL_MIP_2_CYCLE_QUADS", "TA3", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA3_PERF_SEL_VOL_1_CYCLE_QUADS", "TA3", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA3_PERF_SEL_VOL_2_CYCLE_QUADS", "TA3", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA3_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA3", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA3_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA3", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA3_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA3", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1321,6 +1340,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa4CountersGfx103 = {
         {15, "TA4_PERF_SEL_TA_BUSY", "TA4", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA4_PERF_SEL_MIP_1_CYCLE_QUADS", "TA4", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA4_PERF_SEL_MIP_2_CYCLE_QUADS", "TA4", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA4_PERF_SEL_VOL_1_CYCLE_QUADS", "TA4", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA4_PERF_SEL_VOL_2_CYCLE_QUADS", "TA4", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA4_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA4", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA4_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA4", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA4_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA4", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1333,6 +1356,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa5CountersGfx103 = {
         {15, "TA5_PERF_SEL_TA_BUSY", "TA5", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA5_PERF_SEL_MIP_1_CYCLE_QUADS", "TA5", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA5_PERF_SEL_MIP_2_CYCLE_QUADS", "TA5", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA5_PERF_SEL_VOL_1_CYCLE_QUADS", "TA5", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA5_PERF_SEL_VOL_2_CYCLE_QUADS", "TA5", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA5_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA5", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA5_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA5", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA5_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA5", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1345,6 +1372,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa6CountersGfx103 = {
         {15, "TA6_PERF_SEL_TA_BUSY", "TA6", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA6_PERF_SEL_MIP_1_CYCLE_QUADS", "TA6", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA6_PERF_SEL_MIP_2_CYCLE_QUADS", "TA6", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA6_PERF_SEL_VOL_1_CYCLE_QUADS", "TA6", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA6_PERF_SEL_VOL_2_CYCLE_QUADS", "TA6", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA6_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA6", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA6_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA6", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA6_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA6", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1357,6 +1388,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa7CountersGfx103 = {
         {15, "TA7_PERF_SEL_TA_BUSY", "TA7", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA7_PERF_SEL_MIP_1_CYCLE_QUADS", "TA7", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA7_PERF_SEL_MIP_2_CYCLE_QUADS", "TA7", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA7_PERF_SEL_VOL_1_CYCLE_QUADS", "TA7", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA7_PERF_SEL_VOL_2_CYCLE_QUADS", "TA7", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA7_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA7", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA7_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA7", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA7_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA7", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1369,6 +1404,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa8CountersGfx103 = {
         {15, "TA8_PERF_SEL_TA_BUSY", "TA8", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA8_PERF_SEL_MIP_1_CYCLE_QUADS", "TA8", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA8_PERF_SEL_MIP_2_CYCLE_QUADS", "TA8", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA8_PERF_SEL_VOL_1_CYCLE_QUADS", "TA8", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA8_PERF_SEL_VOL_2_CYCLE_QUADS", "TA8", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA8_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA8", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA8_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA8", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA8_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA8", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1381,6 +1420,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa9CountersGfx103 = {
         {15, "TA9_PERF_SEL_TA_BUSY", "TA9", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA9_PERF_SEL_MIP_1_CYCLE_QUADS", "TA9", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA9_PERF_SEL_MIP_2_CYCLE_QUADS", "TA9", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA9_PERF_SEL_VOL_1_CYCLE_QUADS", "TA9", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA9_PERF_SEL_VOL_2_CYCLE_QUADS", "TA9", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA9_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA9", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA9_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA9", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA9_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA9", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1393,6 +1436,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa10CountersGfx103 = {
         {15, "TA10_PERF_SEL_TA_BUSY", "TA10", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA10_PERF_SEL_MIP_1_CYCLE_QUADS", "TA10", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA10_PERF_SEL_MIP_2_CYCLE_QUADS", "TA10", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA10_PERF_SEL_VOL_1_CYCLE_QUADS", "TA10", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA10_PERF_SEL_VOL_2_CYCLE_QUADS", "TA10", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA10_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA10", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA10_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA10", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA10_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA10", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1405,6 +1452,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa11CountersGfx103 = {
         {15, "TA11_PERF_SEL_TA_BUSY", "TA11", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA11_PERF_SEL_MIP_1_CYCLE_QUADS", "TA11", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA11_PERF_SEL_MIP_2_CYCLE_QUADS", "TA11", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA11_PERF_SEL_VOL_1_CYCLE_QUADS", "TA11", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA11_PERF_SEL_VOL_2_CYCLE_QUADS", "TA11", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA11_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA11", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA11_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA11", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA11_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA11", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1417,6 +1468,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa12CountersGfx103 = {
         {15, "TA12_PERF_SEL_TA_BUSY", "TA12", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA12_PERF_SEL_MIP_1_CYCLE_QUADS", "TA12", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA12_PERF_SEL_MIP_2_CYCLE_QUADS", "TA12", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA12_PERF_SEL_VOL_1_CYCLE_QUADS", "TA12", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA12_PERF_SEL_VOL_2_CYCLE_QUADS", "TA12", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA12_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA12", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA12_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA12", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA12_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA12", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1429,6 +1484,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa13CountersGfx103 = {
         {15, "TA13_PERF_SEL_TA_BUSY", "TA13", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA13_PERF_SEL_MIP_1_CYCLE_QUADS", "TA13", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA13_PERF_SEL_MIP_2_CYCLE_QUADS", "TA13", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA13_PERF_SEL_VOL_1_CYCLE_QUADS", "TA13", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA13_PERF_SEL_VOL_2_CYCLE_QUADS", "TA13", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA13_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA13", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA13_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA13", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA13_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA13", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1441,6 +1500,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa14CountersGfx103 = {
         {15, "TA14_PERF_SEL_TA_BUSY", "TA14", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA14_PERF_SEL_MIP_1_CYCLE_QUADS", "TA14", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA14_PERF_SEL_MIP_2_CYCLE_QUADS", "TA14", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA14_PERF_SEL_VOL_1_CYCLE_QUADS", "TA14", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA14_PERF_SEL_VOL_2_CYCLE_QUADS", "TA14", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA14_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA14", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA14_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA14", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA14_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA14", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1453,6 +1516,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa15CountersGfx103 = {
         {15, "TA15_PERF_SEL_TA_BUSY", "TA15", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA15_PERF_SEL_MIP_1_CYCLE_QUADS", "TA15", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA15_PERF_SEL_MIP_2_CYCLE_QUADS", "TA15", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA15_PERF_SEL_VOL_1_CYCLE_QUADS", "TA15", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA15_PERF_SEL_VOL_2_CYCLE_QUADS", "TA15", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA15_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA15", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA15_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA15", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA15_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA15", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1465,6 +1532,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa16CountersGfx103 = {
         {15, "TA16_PERF_SEL_TA_BUSY", "TA16", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA16_PERF_SEL_MIP_1_CYCLE_QUADS", "TA16", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA16_PERF_SEL_MIP_2_CYCLE_QUADS", "TA16", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA16_PERF_SEL_VOL_1_CYCLE_QUADS", "TA16", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA16_PERF_SEL_VOL_2_CYCLE_QUADS", "TA16", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA16_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA16", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA16_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA16", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA16_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA16", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1477,6 +1548,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa17CountersGfx103 = {
         {15, "TA17_PERF_SEL_TA_BUSY", "TA17", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA17_PERF_SEL_MIP_1_CYCLE_QUADS", "TA17", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA17_PERF_SEL_MIP_2_CYCLE_QUADS", "TA17", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA17_PERF_SEL_VOL_1_CYCLE_QUADS", "TA17", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA17_PERF_SEL_VOL_2_CYCLE_QUADS", "TA17", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA17_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA17", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA17_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA17", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA17_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA17", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1489,6 +1564,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa18CountersGfx103 = {
         {15, "TA18_PERF_SEL_TA_BUSY", "TA18", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA18_PERF_SEL_MIP_1_CYCLE_QUADS", "TA18", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA18_PERF_SEL_MIP_2_CYCLE_QUADS", "TA18", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA18_PERF_SEL_VOL_1_CYCLE_QUADS", "TA18", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA18_PERF_SEL_VOL_2_CYCLE_QUADS", "TA18", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA18_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA18", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA18_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA18", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA18_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA18", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1501,6 +1580,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa19CountersGfx103 = {
         {15, "TA19_PERF_SEL_TA_BUSY", "TA19", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA19_PERF_SEL_MIP_1_CYCLE_QUADS", "TA19", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA19_PERF_SEL_MIP_2_CYCLE_QUADS", "TA19", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA19_PERF_SEL_VOL_1_CYCLE_QUADS", "TA19", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA19_PERF_SEL_VOL_2_CYCLE_QUADS", "TA19", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA19_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA19", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA19_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA19", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA19_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA19", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1513,6 +1596,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa20CountersGfx103 = {
         {15, "TA20_PERF_SEL_TA_BUSY", "TA20", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA20_PERF_SEL_MIP_1_CYCLE_QUADS", "TA20", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA20_PERF_SEL_MIP_2_CYCLE_QUADS", "TA20", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA20_PERF_SEL_VOL_1_CYCLE_QUADS", "TA20", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA20_PERF_SEL_VOL_2_CYCLE_QUADS", "TA20", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA20_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA20", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA20_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA20", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA20_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA20", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1525,6 +1612,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa21CountersGfx103 = {
         {15, "TA21_PERF_SEL_TA_BUSY", "TA21", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA21_PERF_SEL_MIP_1_CYCLE_QUADS", "TA21", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA21_PERF_SEL_MIP_2_CYCLE_QUADS", "TA21", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA21_PERF_SEL_VOL_1_CYCLE_QUADS", "TA21", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA21_PERF_SEL_VOL_2_CYCLE_QUADS", "TA21", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA21_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA21", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA21_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA21", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA21_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA21", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1537,6 +1628,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa22CountersGfx103 = {
         {15, "TA22_PERF_SEL_TA_BUSY", "TA22", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA22_PERF_SEL_MIP_1_CYCLE_QUADS", "TA22", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA22_PERF_SEL_MIP_2_CYCLE_QUADS", "TA22", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA22_PERF_SEL_VOL_1_CYCLE_QUADS", "TA22", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA22_PERF_SEL_VOL_2_CYCLE_QUADS", "TA22", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA22_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA22", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA22_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA22", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA22_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA22", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1549,6 +1644,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa23CountersGfx103 = {
         {15, "TA23_PERF_SEL_TA_BUSY", "TA23", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA23_PERF_SEL_MIP_1_CYCLE_QUADS", "TA23", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA23_PERF_SEL_MIP_2_CYCLE_QUADS", "TA23", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA23_PERF_SEL_VOL_1_CYCLE_QUADS", "TA23", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA23_PERF_SEL_VOL_2_CYCLE_QUADS", "TA23", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA23_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA23", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA23_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA23", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA23_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA23", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1561,6 +1660,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa24CountersGfx103 = {
         {15, "TA24_PERF_SEL_TA_BUSY", "TA24", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA24_PERF_SEL_MIP_1_CYCLE_QUADS", "TA24", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA24_PERF_SEL_MIP_2_CYCLE_QUADS", "TA24", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA24_PERF_SEL_VOL_1_CYCLE_QUADS", "TA24", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA24_PERF_SEL_VOL_2_CYCLE_QUADS", "TA24", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA24_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA24", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA24_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA24", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA24_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA24", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1573,6 +1676,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa25CountersGfx103 = {
         {15, "TA25_PERF_SEL_TA_BUSY", "TA25", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA25_PERF_SEL_MIP_1_CYCLE_QUADS", "TA25", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA25_PERF_SEL_MIP_2_CYCLE_QUADS", "TA25", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA25_PERF_SEL_VOL_1_CYCLE_QUADS", "TA25", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA25_PERF_SEL_VOL_2_CYCLE_QUADS", "TA25", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA25_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA25", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA25_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA25", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA25_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA25", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1585,6 +1692,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa26CountersGfx103 = {
         {15, "TA26_PERF_SEL_TA_BUSY", "TA26", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA26_PERF_SEL_MIP_1_CYCLE_QUADS", "TA26", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA26_PERF_SEL_MIP_2_CYCLE_QUADS", "TA26", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA26_PERF_SEL_VOL_1_CYCLE_QUADS", "TA26", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA26_PERF_SEL_VOL_2_CYCLE_QUADS", "TA26", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA26_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA26", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA26_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA26", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA26_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA26", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1597,6 +1708,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa27CountersGfx103 = {
         {15, "TA27_PERF_SEL_TA_BUSY", "TA27", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA27_PERF_SEL_MIP_1_CYCLE_QUADS", "TA27", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA27_PERF_SEL_MIP_2_CYCLE_QUADS", "TA27", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA27_PERF_SEL_VOL_1_CYCLE_QUADS", "TA27", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA27_PERF_SEL_VOL_2_CYCLE_QUADS", "TA27", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA27_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA27", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA27_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA27", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA27_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA27", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1609,6 +1724,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa28CountersGfx103 = {
         {15, "TA28_PERF_SEL_TA_BUSY", "TA28", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA28_PERF_SEL_MIP_1_CYCLE_QUADS", "TA28", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA28_PERF_SEL_MIP_2_CYCLE_QUADS", "TA28", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA28_PERF_SEL_VOL_1_CYCLE_QUADS", "TA28", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA28_PERF_SEL_VOL_2_CYCLE_QUADS", "TA28", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA28_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA28", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA28_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA28", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA28_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA28", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1621,6 +1740,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa29CountersGfx103 = {
         {15, "TA29_PERF_SEL_TA_BUSY", "TA29", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA29_PERF_SEL_MIP_1_CYCLE_QUADS", "TA29", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA29_PERF_SEL_MIP_2_CYCLE_QUADS", "TA29", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA29_PERF_SEL_VOL_1_CYCLE_QUADS", "TA29", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA29_PERF_SEL_VOL_2_CYCLE_QUADS", "TA29", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA29_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA29", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA29_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA29", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA29_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA29", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1633,6 +1756,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa30CountersGfx103 = {
         {15, "TA30_PERF_SEL_TA_BUSY", "TA30", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA30_PERF_SEL_MIP_1_CYCLE_QUADS", "TA30", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA30_PERF_SEL_MIP_2_CYCLE_QUADS", "TA30", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA30_PERF_SEL_VOL_1_CYCLE_QUADS", "TA30", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA30_PERF_SEL_VOL_2_CYCLE_QUADS", "TA30", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA30_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA30", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA30_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA30", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA30_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA30", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1645,6 +1772,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa31CountersGfx103 = {
         {15, "TA31_PERF_SEL_TA_BUSY", "TA31", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA31_PERF_SEL_MIP_1_CYCLE_QUADS", "TA31", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA31_PERF_SEL_MIP_2_CYCLE_QUADS", "TA31", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA31_PERF_SEL_VOL_1_CYCLE_QUADS", "TA31", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA31_PERF_SEL_VOL_2_CYCLE_QUADS", "TA31", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA31_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA31", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA31_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA31", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA31_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA31", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1657,6 +1788,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa32CountersGfx103 = {
         {15, "TA32_PERF_SEL_TA_BUSY", "TA32", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA32_PERF_SEL_MIP_1_CYCLE_QUADS", "TA32", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA32_PERF_SEL_MIP_2_CYCLE_QUADS", "TA32", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA32_PERF_SEL_VOL_1_CYCLE_QUADS", "TA32", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA32_PERF_SEL_VOL_2_CYCLE_QUADS", "TA32", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA32_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA32", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA32_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA32", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA32_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA32", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1669,6 +1804,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa33CountersGfx103 = {
         {15, "TA33_PERF_SEL_TA_BUSY", "TA33", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA33_PERF_SEL_MIP_1_CYCLE_QUADS", "TA33", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA33_PERF_SEL_MIP_2_CYCLE_QUADS", "TA33", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA33_PERF_SEL_VOL_1_CYCLE_QUADS", "TA33", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA33_PERF_SEL_VOL_2_CYCLE_QUADS", "TA33", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA33_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA33", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA33_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA33", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA33_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA33", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1681,6 +1820,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa34CountersGfx103 = {
         {15, "TA34_PERF_SEL_TA_BUSY", "TA34", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA34_PERF_SEL_MIP_1_CYCLE_QUADS", "TA34", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA34_PERF_SEL_MIP_2_CYCLE_QUADS", "TA34", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA34_PERF_SEL_VOL_1_CYCLE_QUADS", "TA34", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA34_PERF_SEL_VOL_2_CYCLE_QUADS", "TA34", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA34_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA34", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA34_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA34", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA34_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA34", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1693,6 +1836,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa35CountersGfx103 = {
         {15, "TA35_PERF_SEL_TA_BUSY", "TA35", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA35_PERF_SEL_MIP_1_CYCLE_QUADS", "TA35", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA35_PERF_SEL_MIP_2_CYCLE_QUADS", "TA35", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA35_PERF_SEL_VOL_1_CYCLE_QUADS", "TA35", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA35_PERF_SEL_VOL_2_CYCLE_QUADS", "TA35", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA35_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA35", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA35_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA35", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA35_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA35", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1705,6 +1852,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa36CountersGfx103 = {
         {15, "TA36_PERF_SEL_TA_BUSY", "TA36", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA36_PERF_SEL_MIP_1_CYCLE_QUADS", "TA36", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA36_PERF_SEL_MIP_2_CYCLE_QUADS", "TA36", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA36_PERF_SEL_VOL_1_CYCLE_QUADS", "TA36", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA36_PERF_SEL_VOL_2_CYCLE_QUADS", "TA36", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA36_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA36", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA36_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA36", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA36_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA36", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1717,6 +1868,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa37CountersGfx103 = {
         {15, "TA37_PERF_SEL_TA_BUSY", "TA37", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA37_PERF_SEL_MIP_1_CYCLE_QUADS", "TA37", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA37_PERF_SEL_MIP_2_CYCLE_QUADS", "TA37", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA37_PERF_SEL_VOL_1_CYCLE_QUADS", "TA37", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA37_PERF_SEL_VOL_2_CYCLE_QUADS", "TA37", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA37_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA37", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA37_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA37", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA37_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA37", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1729,6 +1884,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa38CountersGfx103 = {
         {15, "TA38_PERF_SEL_TA_BUSY", "TA38", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA38_PERF_SEL_MIP_1_CYCLE_QUADS", "TA38", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA38_PERF_SEL_MIP_2_CYCLE_QUADS", "TA38", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA38_PERF_SEL_VOL_1_CYCLE_QUADS", "TA38", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA38_PERF_SEL_VOL_2_CYCLE_QUADS", "TA38", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA38_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA38", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA38_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA38", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA38_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA38", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1741,6 +1900,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa39CountersGfx103 = {
         {15, "TA39_PERF_SEL_TA_BUSY", "TA39", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA39_PERF_SEL_MIP_1_CYCLE_QUADS", "TA39", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA39_PERF_SEL_MIP_2_CYCLE_QUADS", "TA39", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA39_PERF_SEL_VOL_1_CYCLE_QUADS", "TA39", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA39_PERF_SEL_VOL_2_CYCLE_QUADS", "TA39", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA39_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA39", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA39_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA39", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA39_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA39", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1753,6 +1916,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa40CountersGfx103 = {
         {15, "TA40_PERF_SEL_TA_BUSY", "TA40", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA40_PERF_SEL_MIP_1_CYCLE_QUADS", "TA40", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA40_PERF_SEL_MIP_2_CYCLE_QUADS", "TA40", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA40_PERF_SEL_VOL_1_CYCLE_QUADS", "TA40", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA40_PERF_SEL_VOL_2_CYCLE_QUADS", "TA40", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA40_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA40", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA40_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA40", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA40_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA40", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1765,6 +1932,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa41CountersGfx103 = {
         {15, "TA41_PERF_SEL_TA_BUSY", "TA41", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA41_PERF_SEL_MIP_1_CYCLE_QUADS", "TA41", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA41_PERF_SEL_MIP_2_CYCLE_QUADS", "TA41", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA41_PERF_SEL_VOL_1_CYCLE_QUADS", "TA41", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA41_PERF_SEL_VOL_2_CYCLE_QUADS", "TA41", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA41_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA41", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA41_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA41", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA41_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA41", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1777,6 +1948,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa42CountersGfx103 = {
         {15, "TA42_PERF_SEL_TA_BUSY", "TA42", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA42_PERF_SEL_MIP_1_CYCLE_QUADS", "TA42", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA42_PERF_SEL_MIP_2_CYCLE_QUADS", "TA42", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA42_PERF_SEL_VOL_1_CYCLE_QUADS", "TA42", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA42_PERF_SEL_VOL_2_CYCLE_QUADS", "TA42", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA42_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA42", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA42_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA42", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA42_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA42", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1789,6 +1964,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa43CountersGfx103 = {
         {15, "TA43_PERF_SEL_TA_BUSY", "TA43", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA43_PERF_SEL_MIP_1_CYCLE_QUADS", "TA43", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA43_PERF_SEL_MIP_2_CYCLE_QUADS", "TA43", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA43_PERF_SEL_VOL_1_CYCLE_QUADS", "TA43", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA43_PERF_SEL_VOL_2_CYCLE_QUADS", "TA43", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA43_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA43", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA43_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA43", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA43_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA43", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1801,6 +1980,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa44CountersGfx103 = {
         {15, "TA44_PERF_SEL_TA_BUSY", "TA44", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA44_PERF_SEL_MIP_1_CYCLE_QUADS", "TA44", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA44_PERF_SEL_MIP_2_CYCLE_QUADS", "TA44", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA44_PERF_SEL_VOL_1_CYCLE_QUADS", "TA44", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA44_PERF_SEL_VOL_2_CYCLE_QUADS", "TA44", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA44_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA44", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA44_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA44", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA44_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA44", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1813,6 +1996,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa45CountersGfx103 = {
         {15, "TA45_PERF_SEL_TA_BUSY", "TA45", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA45_PERF_SEL_MIP_1_CYCLE_QUADS", "TA45", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA45_PERF_SEL_MIP_2_CYCLE_QUADS", "TA45", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA45_PERF_SEL_VOL_1_CYCLE_QUADS", "TA45", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA45_PERF_SEL_VOL_2_CYCLE_QUADS", "TA45", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA45_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA45", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA45_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA45", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA45_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA45", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1825,6 +2012,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa46CountersGfx103 = {
         {15, "TA46_PERF_SEL_TA_BUSY", "TA46", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA46_PERF_SEL_MIP_1_CYCLE_QUADS", "TA46", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA46_PERF_SEL_MIP_2_CYCLE_QUADS", "TA46", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA46_PERF_SEL_VOL_1_CYCLE_QUADS", "TA46", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA46_PERF_SEL_VOL_2_CYCLE_QUADS", "TA46", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA46_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA46", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA46_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA46", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA46_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA46", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1837,6 +2028,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa47CountersGfx103 = {
         {15, "TA47_PERF_SEL_TA_BUSY", "TA47", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA47_PERF_SEL_MIP_1_CYCLE_QUADS", "TA47", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA47_PERF_SEL_MIP_2_CYCLE_QUADS", "TA47", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA47_PERF_SEL_VOL_1_CYCLE_QUADS", "TA47", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA47_PERF_SEL_VOL_2_CYCLE_QUADS", "TA47", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA47_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA47", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA47_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA47", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA47_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA47", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1849,6 +2044,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa48CountersGfx103 = {
         {15, "TA48_PERF_SEL_TA_BUSY", "TA48", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA48_PERF_SEL_MIP_1_CYCLE_QUADS", "TA48", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA48_PERF_SEL_MIP_2_CYCLE_QUADS", "TA48", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA48_PERF_SEL_VOL_1_CYCLE_QUADS", "TA48", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA48_PERF_SEL_VOL_2_CYCLE_QUADS", "TA48", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA48_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA48", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA48_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA48", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA48_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA48", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1861,6 +2060,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa49CountersGfx103 = {
         {15, "TA49_PERF_SEL_TA_BUSY", "TA49", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA49_PERF_SEL_MIP_1_CYCLE_QUADS", "TA49", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA49_PERF_SEL_MIP_2_CYCLE_QUADS", "TA49", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA49_PERF_SEL_VOL_1_CYCLE_QUADS", "TA49", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA49_PERF_SEL_VOL_2_CYCLE_QUADS", "TA49", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA49_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA49", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA49_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA49", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA49_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA49", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1873,6 +2076,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa50CountersGfx103 = {
         {15, "TA50_PERF_SEL_TA_BUSY", "TA50", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA50_PERF_SEL_MIP_1_CYCLE_QUADS", "TA50", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA50_PERF_SEL_MIP_2_CYCLE_QUADS", "TA50", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA50_PERF_SEL_VOL_1_CYCLE_QUADS", "TA50", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA50_PERF_SEL_VOL_2_CYCLE_QUADS", "TA50", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA50_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA50", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA50_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA50", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA50_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA50", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1885,6 +2092,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa51CountersGfx103 = {
         {15, "TA51_PERF_SEL_TA_BUSY", "TA51", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA51_PERF_SEL_MIP_1_CYCLE_QUADS", "TA51", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA51_PERF_SEL_MIP_2_CYCLE_QUADS", "TA51", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA51_PERF_SEL_VOL_1_CYCLE_QUADS", "TA51", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA51_PERF_SEL_VOL_2_CYCLE_QUADS", "TA51", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA51_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA51", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA51_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA51", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA51_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA51", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1897,6 +2108,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa52CountersGfx103 = {
         {15, "TA52_PERF_SEL_TA_BUSY", "TA52", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA52_PERF_SEL_MIP_1_CYCLE_QUADS", "TA52", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA52_PERF_SEL_MIP_2_CYCLE_QUADS", "TA52", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA52_PERF_SEL_VOL_1_CYCLE_QUADS", "TA52", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA52_PERF_SEL_VOL_2_CYCLE_QUADS", "TA52", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA52_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA52", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA52_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA52", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA52_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA52", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1909,6 +2124,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa53CountersGfx103 = {
         {15, "TA53_PERF_SEL_TA_BUSY", "TA53", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA53_PERF_SEL_MIP_1_CYCLE_QUADS", "TA53", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA53_PERF_SEL_MIP_2_CYCLE_QUADS", "TA53", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA53_PERF_SEL_VOL_1_CYCLE_QUADS", "TA53", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA53_PERF_SEL_VOL_2_CYCLE_QUADS", "TA53", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA53_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA53", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA53_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA53", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA53_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA53", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1921,6 +2140,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa54CountersGfx103 = {
         {15, "TA54_PERF_SEL_TA_BUSY", "TA54", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA54_PERF_SEL_MIP_1_CYCLE_QUADS", "TA54", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA54_PERF_SEL_MIP_2_CYCLE_QUADS", "TA54", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA54_PERF_SEL_VOL_1_CYCLE_QUADS", "TA54", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA54_PERF_SEL_VOL_2_CYCLE_QUADS", "TA54", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA54_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA54", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA54_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA54", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA54_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA54", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1933,6 +2156,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa55CountersGfx103 = {
         {15, "TA55_PERF_SEL_TA_BUSY", "TA55", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA55_PERF_SEL_MIP_1_CYCLE_QUADS", "TA55", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA55_PERF_SEL_MIP_2_CYCLE_QUADS", "TA55", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA55_PERF_SEL_VOL_1_CYCLE_QUADS", "TA55", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA55_PERF_SEL_VOL_2_CYCLE_QUADS", "TA55", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA55_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA55", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA55_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA55", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA55_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA55", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1945,6 +2172,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa56CountersGfx103 = {
         {15, "TA56_PERF_SEL_TA_BUSY", "TA56", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA56_PERF_SEL_MIP_1_CYCLE_QUADS", "TA56", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA56_PERF_SEL_MIP_2_CYCLE_QUADS", "TA56", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA56_PERF_SEL_VOL_1_CYCLE_QUADS", "TA56", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA56_PERF_SEL_VOL_2_CYCLE_QUADS", "TA56", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA56_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA56", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA56_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA56", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA56_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA56", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1957,6 +2188,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa57CountersGfx103 = {
         {15, "TA57_PERF_SEL_TA_BUSY", "TA57", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA57_PERF_SEL_MIP_1_CYCLE_QUADS", "TA57", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA57_PERF_SEL_MIP_2_CYCLE_QUADS", "TA57", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA57_PERF_SEL_VOL_1_CYCLE_QUADS", "TA57", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA57_PERF_SEL_VOL_2_CYCLE_QUADS", "TA57", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA57_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA57", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA57_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA57", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA57_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA57", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1969,6 +2204,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa58CountersGfx103 = {
         {15, "TA58_PERF_SEL_TA_BUSY", "TA58", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA58_PERF_SEL_MIP_1_CYCLE_QUADS", "TA58", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA58_PERF_SEL_MIP_2_CYCLE_QUADS", "TA58", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA58_PERF_SEL_VOL_1_CYCLE_QUADS", "TA58", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA58_PERF_SEL_VOL_2_CYCLE_QUADS", "TA58", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA58_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA58", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA58_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA58", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA58_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA58", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1981,6 +2220,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa59CountersGfx103 = {
         {15, "TA59_PERF_SEL_TA_BUSY", "TA59", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA59_PERF_SEL_MIP_1_CYCLE_QUADS", "TA59", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA59_PERF_SEL_MIP_2_CYCLE_QUADS", "TA59", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA59_PERF_SEL_VOL_1_CYCLE_QUADS", "TA59", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA59_PERF_SEL_VOL_2_CYCLE_QUADS", "TA59", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA59_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA59", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA59_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA59", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA59_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA59", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1993,6 +2236,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa60CountersGfx103 = {
         {15, "TA60_PERF_SEL_TA_BUSY", "TA60", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA60_PERF_SEL_MIP_1_CYCLE_QUADS", "TA60", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA60_PERF_SEL_MIP_2_CYCLE_QUADS", "TA60", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA60_PERF_SEL_VOL_1_CYCLE_QUADS", "TA60", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA60_PERF_SEL_VOL_2_CYCLE_QUADS", "TA60", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA60_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA60", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA60_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA60", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA60_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA60", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2005,6 +2252,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa61CountersGfx103 = {
         {15, "TA61_PERF_SEL_TA_BUSY", "TA61", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA61_PERF_SEL_MIP_1_CYCLE_QUADS", "TA61", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA61_PERF_SEL_MIP_2_CYCLE_QUADS", "TA61", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA61_PERF_SEL_VOL_1_CYCLE_QUADS", "TA61", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA61_PERF_SEL_VOL_2_CYCLE_QUADS", "TA61", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA61_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA61", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA61_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA61", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA61_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA61", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2017,6 +2268,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa62CountersGfx103 = {
         {15, "TA62_PERF_SEL_TA_BUSY", "TA62", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA62_PERF_SEL_MIP_1_CYCLE_QUADS", "TA62", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA62_PERF_SEL_MIP_2_CYCLE_QUADS", "TA62", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA62_PERF_SEL_VOL_1_CYCLE_QUADS", "TA62", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA62_PERF_SEL_VOL_2_CYCLE_QUADS", "TA62", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA62_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA62", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA62_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA62", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA62_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA62", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2029,6 +2284,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa63CountersGfx103 = {
         {15, "TA63_PERF_SEL_TA_BUSY", "TA63", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA63_PERF_SEL_MIP_1_CYCLE_QUADS", "TA63", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA63_PERF_SEL_MIP_2_CYCLE_QUADS", "TA63", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA63_PERF_SEL_VOL_1_CYCLE_QUADS", "TA63", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA63_PERF_SEL_VOL_2_CYCLE_QUADS", "TA63", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA63_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA63", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA63_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA63", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA63_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA63", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2041,6 +2300,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa64CountersGfx103 = {
         {15, "TA64_PERF_SEL_TA_BUSY", "TA64", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA64_PERF_SEL_MIP_1_CYCLE_QUADS", "TA64", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA64_PERF_SEL_MIP_2_CYCLE_QUADS", "TA64", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA64_PERF_SEL_VOL_1_CYCLE_QUADS", "TA64", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA64_PERF_SEL_VOL_2_CYCLE_QUADS", "TA64", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA64_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA64", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA64_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA64", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA64_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA64", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2053,6 +2316,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa65CountersGfx103 = {
         {15, "TA65_PERF_SEL_TA_BUSY", "TA65", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA65_PERF_SEL_MIP_1_CYCLE_QUADS", "TA65", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA65_PERF_SEL_MIP_2_CYCLE_QUADS", "TA65", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA65_PERF_SEL_VOL_1_CYCLE_QUADS", "TA65", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA65_PERF_SEL_VOL_2_CYCLE_QUADS", "TA65", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA65_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA65", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA65_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA65", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA65_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA65", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2065,6 +2332,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa66CountersGfx103 = {
         {15, "TA66_PERF_SEL_TA_BUSY", "TA66", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA66_PERF_SEL_MIP_1_CYCLE_QUADS", "TA66", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA66_PERF_SEL_MIP_2_CYCLE_QUADS", "TA66", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA66_PERF_SEL_VOL_1_CYCLE_QUADS", "TA66", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA66_PERF_SEL_VOL_2_CYCLE_QUADS", "TA66", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA66_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA66", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA66_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA66", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA66_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA66", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2077,6 +2348,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa67CountersGfx103 = {
         {15, "TA67_PERF_SEL_TA_BUSY", "TA67", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA67_PERF_SEL_MIP_1_CYCLE_QUADS", "TA67", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA67_PERF_SEL_MIP_2_CYCLE_QUADS", "TA67", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA67_PERF_SEL_VOL_1_CYCLE_QUADS", "TA67", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA67_PERF_SEL_VOL_2_CYCLE_QUADS", "TA67", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA67_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA67", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA67_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA67", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA67_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA67", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2089,6 +2364,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa68CountersGfx103 = {
         {15, "TA68_PERF_SEL_TA_BUSY", "TA68", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA68_PERF_SEL_MIP_1_CYCLE_QUADS", "TA68", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA68_PERF_SEL_MIP_2_CYCLE_QUADS", "TA68", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA68_PERF_SEL_VOL_1_CYCLE_QUADS", "TA68", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA68_PERF_SEL_VOL_2_CYCLE_QUADS", "TA68", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA68_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA68", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA68_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA68", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA68_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA68", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2101,6 +2380,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa69CountersGfx103 = {
         {15, "TA69_PERF_SEL_TA_BUSY", "TA69", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA69_PERF_SEL_MIP_1_CYCLE_QUADS", "TA69", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA69_PERF_SEL_MIP_2_CYCLE_QUADS", "TA69", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA69_PERF_SEL_VOL_1_CYCLE_QUADS", "TA69", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA69_PERF_SEL_VOL_2_CYCLE_QUADS", "TA69", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA69_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA69", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA69_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA69", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA69_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA69", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2113,6 +2396,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa70CountersGfx103 = {
         {15, "TA70_PERF_SEL_TA_BUSY", "TA70", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA70_PERF_SEL_MIP_1_CYCLE_QUADS", "TA70", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA70_PERF_SEL_MIP_2_CYCLE_QUADS", "TA70", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA70_PERF_SEL_VOL_1_CYCLE_QUADS", "TA70", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA70_PERF_SEL_VOL_2_CYCLE_QUADS", "TA70", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA70_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA70", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA70_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA70", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA70_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA70", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2125,6 +2412,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa71CountersGfx103 = {
         {15, "TA71_PERF_SEL_TA_BUSY", "TA71", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA71_PERF_SEL_MIP_1_CYCLE_QUADS", "TA71", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA71_PERF_SEL_MIP_2_CYCLE_QUADS", "TA71", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA71_PERF_SEL_VOL_1_CYCLE_QUADS", "TA71", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA71_PERF_SEL_VOL_2_CYCLE_QUADS", "TA71", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA71_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA71", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA71_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA71", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA71_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA71", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2137,6 +2428,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa72CountersGfx103 = {
         {15, "TA72_PERF_SEL_TA_BUSY", "TA72", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA72_PERF_SEL_MIP_1_CYCLE_QUADS", "TA72", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA72_PERF_SEL_MIP_2_CYCLE_QUADS", "TA72", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA72_PERF_SEL_VOL_1_CYCLE_QUADS", "TA72", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA72_PERF_SEL_VOL_2_CYCLE_QUADS", "TA72", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA72_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA72", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA72_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA72", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA72_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA72", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2149,6 +2444,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa73CountersGfx103 = {
         {15, "TA73_PERF_SEL_TA_BUSY", "TA73", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA73_PERF_SEL_MIP_1_CYCLE_QUADS", "TA73", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA73_PERF_SEL_MIP_2_CYCLE_QUADS", "TA73", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA73_PERF_SEL_VOL_1_CYCLE_QUADS", "TA73", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA73_PERF_SEL_VOL_2_CYCLE_QUADS", "TA73", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA73_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA73", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA73_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA73", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA73_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA73", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2161,6 +2460,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa74CountersGfx103 = {
         {15, "TA74_PERF_SEL_TA_BUSY", "TA74", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA74_PERF_SEL_MIP_1_CYCLE_QUADS", "TA74", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA74_PERF_SEL_MIP_2_CYCLE_QUADS", "TA74", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA74_PERF_SEL_VOL_1_CYCLE_QUADS", "TA74", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA74_PERF_SEL_VOL_2_CYCLE_QUADS", "TA74", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA74_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA74", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA74_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA74", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA74_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA74", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2173,6 +2476,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa75CountersGfx103 = {
         {15, "TA75_PERF_SEL_TA_BUSY", "TA75", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA75_PERF_SEL_MIP_1_CYCLE_QUADS", "TA75", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA75_PERF_SEL_MIP_2_CYCLE_QUADS", "TA75", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA75_PERF_SEL_VOL_1_CYCLE_QUADS", "TA75", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA75_PERF_SEL_VOL_2_CYCLE_QUADS", "TA75", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA75_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA75", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA75_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA75", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA75_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA75", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2185,6 +2492,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa76CountersGfx103 = {
         {15, "TA76_PERF_SEL_TA_BUSY", "TA76", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA76_PERF_SEL_MIP_1_CYCLE_QUADS", "TA76", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA76_PERF_SEL_MIP_2_CYCLE_QUADS", "TA76", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA76_PERF_SEL_VOL_1_CYCLE_QUADS", "TA76", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA76_PERF_SEL_VOL_2_CYCLE_QUADS", "TA76", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA76_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA76", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA76_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA76", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA76_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA76", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2197,6 +2508,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa77CountersGfx103 = {
         {15, "TA77_PERF_SEL_TA_BUSY", "TA77", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA77_PERF_SEL_MIP_1_CYCLE_QUADS", "TA77", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA77_PERF_SEL_MIP_2_CYCLE_QUADS", "TA77", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA77_PERF_SEL_VOL_1_CYCLE_QUADS", "TA77", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA77_PERF_SEL_VOL_2_CYCLE_QUADS", "TA77", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA77_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA77", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA77_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA77", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA77_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA77", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2209,6 +2524,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa78CountersGfx103 = {
         {15, "TA78_PERF_SEL_TA_BUSY", "TA78", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA78_PERF_SEL_MIP_1_CYCLE_QUADS", "TA78", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA78_PERF_SEL_MIP_2_CYCLE_QUADS", "TA78", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA78_PERF_SEL_VOL_1_CYCLE_QUADS", "TA78", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA78_PERF_SEL_VOL_2_CYCLE_QUADS", "TA78", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA78_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA78", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA78_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA78", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA78_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA78", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2221,6 +2540,10 @@ namespace counter_gfx103
     };
     std::vector<GpaHardwareCounterDesc> kTa79CountersGfx103 = {
         {15, "TA79_PERF_SEL_TA_BUSY", "TA79", "Cycles TA block is busy. Perf_windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {68, "TA79_PERF_SEL_MIP_1_CYCLE_QUADS", "TA79", "Quads requiring sampler state machine to take 1 cycle due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {69, "TA79_PERF_SEL_MIP_2_CYCLE_QUADS", "TA79", "Quads requiring sampler state machine to take 2 cycles due to mip filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {70, "TA79_PERF_SEL_VOL_1_CYCLE_QUADS", "TA79", "Quads requiring sampler state machine to take 1 cycle due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {71, "TA79_PERF_SEL_VOL_2_CYCLE_QUADS", "TA79", "Quads requiring sampler state machine to take 2 cycles due to z filter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {89, "TA79_PERF_SEL_ANISO_1_CYCLE_QUADS", "TA79", "Quads requiring 1 aniso sample.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {90, "TA79_PERF_SEL_ANISO_2_CYCLE_QUADS", "TA79", "Quads requiring 2 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {91, "TA79_PERF_SEL_ANISO_4_CYCLE_QUADS", "TA79", "Quads requiring 4 aniso samples.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2715,401 +3038,641 @@ namespace counter_gfx103
         {9, "TCP0_PERF_SEL_REQ", "TCP0", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP0_PERF_SEL_REQ_MISS", "TCP0", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP0_PERF_SEL_TCP_TA_REQ_STALL", "TCP0", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP0_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP0", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP0_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP0", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP0_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP0", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp1CountersGfx103 = {
         {9, "TCP1_PERF_SEL_REQ", "TCP1", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP1_PERF_SEL_REQ_MISS", "TCP1", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP1_PERF_SEL_TCP_TA_REQ_STALL", "TCP1", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP1_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP1", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP1_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP1", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP1_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP1", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp2CountersGfx103 = {
         {9, "TCP2_PERF_SEL_REQ", "TCP2", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP2_PERF_SEL_REQ_MISS", "TCP2", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP2_PERF_SEL_TCP_TA_REQ_STALL", "TCP2", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP2_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP2", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP2_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP2", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP2_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP2", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp3CountersGfx103 = {
         {9, "TCP3_PERF_SEL_REQ", "TCP3", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP3_PERF_SEL_REQ_MISS", "TCP3", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP3_PERF_SEL_TCP_TA_REQ_STALL", "TCP3", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP3_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP3", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP3_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP3", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP3_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP3", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp4CountersGfx103 = {
         {9, "TCP4_PERF_SEL_REQ", "TCP4", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP4_PERF_SEL_REQ_MISS", "TCP4", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP4_PERF_SEL_TCP_TA_REQ_STALL", "TCP4", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP4_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP4", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP4_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP4", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP4_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP4", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp5CountersGfx103 = {
         {9, "TCP5_PERF_SEL_REQ", "TCP5", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP5_PERF_SEL_REQ_MISS", "TCP5", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP5_PERF_SEL_TCP_TA_REQ_STALL", "TCP5", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP5_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP5", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP5_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP5", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP5_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP5", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp6CountersGfx103 = {
         {9, "TCP6_PERF_SEL_REQ", "TCP6", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP6_PERF_SEL_REQ_MISS", "TCP6", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP6_PERF_SEL_TCP_TA_REQ_STALL", "TCP6", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP6_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP6", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP6_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP6", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP6_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP6", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp7CountersGfx103 = {
         {9, "TCP7_PERF_SEL_REQ", "TCP7", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP7_PERF_SEL_REQ_MISS", "TCP7", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP7_PERF_SEL_TCP_TA_REQ_STALL", "TCP7", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP7_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP7", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP7_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP7", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP7_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP7", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp8CountersGfx103 = {
         {9, "TCP8_PERF_SEL_REQ", "TCP8", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP8_PERF_SEL_REQ_MISS", "TCP8", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP8_PERF_SEL_TCP_TA_REQ_STALL", "TCP8", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP8_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP8", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP8_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP8", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP8_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP8", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp9CountersGfx103 = {
         {9, "TCP9_PERF_SEL_REQ", "TCP9", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP9_PERF_SEL_REQ_MISS", "TCP9", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP9_PERF_SEL_TCP_TA_REQ_STALL", "TCP9", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP9_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP9", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP9_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP9", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP9_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP9", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp10CountersGfx103 = {
         {9, "TCP10_PERF_SEL_REQ", "TCP10", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP10_PERF_SEL_REQ_MISS", "TCP10", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP10_PERF_SEL_TCP_TA_REQ_STALL", "TCP10", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP10_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP10", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP10_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP10", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP10_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP10", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp11CountersGfx103 = {
         {9, "TCP11_PERF_SEL_REQ", "TCP11", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP11_PERF_SEL_REQ_MISS", "TCP11", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP11_PERF_SEL_TCP_TA_REQ_STALL", "TCP11", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP11_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP11", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP11_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP11", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP11_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP11", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp12CountersGfx103 = {
         {9, "TCP12_PERF_SEL_REQ", "TCP12", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP12_PERF_SEL_REQ_MISS", "TCP12", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP12_PERF_SEL_TCP_TA_REQ_STALL", "TCP12", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP12_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP12", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP12_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP12", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP12_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP12", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp13CountersGfx103 = {
         {9, "TCP13_PERF_SEL_REQ", "TCP13", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP13_PERF_SEL_REQ_MISS", "TCP13", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP13_PERF_SEL_TCP_TA_REQ_STALL", "TCP13", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP13_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP13", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP13_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP13", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP13_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP13", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp14CountersGfx103 = {
         {9, "TCP14_PERF_SEL_REQ", "TCP14", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP14_PERF_SEL_REQ_MISS", "TCP14", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP14_PERF_SEL_TCP_TA_REQ_STALL", "TCP14", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP14_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP14", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP14_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP14", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP14_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP14", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp15CountersGfx103 = {
         {9, "TCP15_PERF_SEL_REQ", "TCP15", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP15_PERF_SEL_REQ_MISS", "TCP15", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP15_PERF_SEL_TCP_TA_REQ_STALL", "TCP15", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP15_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP15", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP15_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP15", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP15_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP15", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp16CountersGfx103 = {
         {9, "TCP16_PERF_SEL_REQ", "TCP16", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP16_PERF_SEL_REQ_MISS", "TCP16", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP16_PERF_SEL_TCP_TA_REQ_STALL", "TCP16", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP16_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP16", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP16_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP16", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP16_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP16", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp17CountersGfx103 = {
         {9, "TCP17_PERF_SEL_REQ", "TCP17", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP17_PERF_SEL_REQ_MISS", "TCP17", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP17_PERF_SEL_TCP_TA_REQ_STALL", "TCP17", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP17_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP17", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP17_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP17", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP17_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP17", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp18CountersGfx103 = {
         {9, "TCP18_PERF_SEL_REQ", "TCP18", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP18_PERF_SEL_REQ_MISS", "TCP18", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP18_PERF_SEL_TCP_TA_REQ_STALL", "TCP18", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP18_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP18", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP18_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP18", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP18_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP18", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp19CountersGfx103 = {
         {9, "TCP19_PERF_SEL_REQ", "TCP19", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP19_PERF_SEL_REQ_MISS", "TCP19", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP19_PERF_SEL_TCP_TA_REQ_STALL", "TCP19", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP19_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP19", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP19_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP19", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP19_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP19", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp20CountersGfx103 = {
         {9, "TCP20_PERF_SEL_REQ", "TCP20", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP20_PERF_SEL_REQ_MISS", "TCP20", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP20_PERF_SEL_TCP_TA_REQ_STALL", "TCP20", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP20_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP20", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP20_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP20", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP20_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP20", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp21CountersGfx103 = {
         {9, "TCP21_PERF_SEL_REQ", "TCP21", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP21_PERF_SEL_REQ_MISS", "TCP21", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP21_PERF_SEL_TCP_TA_REQ_STALL", "TCP21", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP21_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP21", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP21_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP21", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP21_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP21", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp22CountersGfx103 = {
         {9, "TCP22_PERF_SEL_REQ", "TCP22", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP22_PERF_SEL_REQ_MISS", "TCP22", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP22_PERF_SEL_TCP_TA_REQ_STALL", "TCP22", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP22_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP22", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP22_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP22", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP22_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP22", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp23CountersGfx103 = {
         {9, "TCP23_PERF_SEL_REQ", "TCP23", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP23_PERF_SEL_REQ_MISS", "TCP23", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP23_PERF_SEL_TCP_TA_REQ_STALL", "TCP23", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP23_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP23", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP23_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP23", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP23_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP23", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp24CountersGfx103 = {
         {9, "TCP24_PERF_SEL_REQ", "TCP24", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP24_PERF_SEL_REQ_MISS", "TCP24", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP24_PERF_SEL_TCP_TA_REQ_STALL", "TCP24", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP24_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP24", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP24_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP24", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP24_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP24", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp25CountersGfx103 = {
         {9, "TCP25_PERF_SEL_REQ", "TCP25", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP25_PERF_SEL_REQ_MISS", "TCP25", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP25_PERF_SEL_TCP_TA_REQ_STALL", "TCP25", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP25_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP25", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP25_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP25", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP25_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP25", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp26CountersGfx103 = {
         {9, "TCP26_PERF_SEL_REQ", "TCP26", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP26_PERF_SEL_REQ_MISS", "TCP26", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP26_PERF_SEL_TCP_TA_REQ_STALL", "TCP26", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP26_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP26", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP26_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP26", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP26_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP26", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp27CountersGfx103 = {
         {9, "TCP27_PERF_SEL_REQ", "TCP27", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP27_PERF_SEL_REQ_MISS", "TCP27", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP27_PERF_SEL_TCP_TA_REQ_STALL", "TCP27", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP27_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP27", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP27_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP27", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP27_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP27", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp28CountersGfx103 = {
         {9, "TCP28_PERF_SEL_REQ", "TCP28", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP28_PERF_SEL_REQ_MISS", "TCP28", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP28_PERF_SEL_TCP_TA_REQ_STALL", "TCP28", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP28_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP28", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP28_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP28", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP28_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP28", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp29CountersGfx103 = {
         {9, "TCP29_PERF_SEL_REQ", "TCP29", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP29_PERF_SEL_REQ_MISS", "TCP29", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP29_PERF_SEL_TCP_TA_REQ_STALL", "TCP29", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP29_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP29", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP29_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP29", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP29_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP29", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp30CountersGfx103 = {
         {9, "TCP30_PERF_SEL_REQ", "TCP30", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP30_PERF_SEL_REQ_MISS", "TCP30", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP30_PERF_SEL_TCP_TA_REQ_STALL", "TCP30", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP30_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP30", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP30_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP30", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP30_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP30", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp31CountersGfx103 = {
         {9, "TCP31_PERF_SEL_REQ", "TCP31", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP31_PERF_SEL_REQ_MISS", "TCP31", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP31_PERF_SEL_TCP_TA_REQ_STALL", "TCP31", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP31_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP31", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP31_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP31", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP31_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP31", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp32CountersGfx103 = {
         {9, "TCP32_PERF_SEL_REQ", "TCP32", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP32_PERF_SEL_REQ_MISS", "TCP32", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP32_PERF_SEL_TCP_TA_REQ_STALL", "TCP32", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP32_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP32", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP32_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP32", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP32_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP32", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp33CountersGfx103 = {
         {9, "TCP33_PERF_SEL_REQ", "TCP33", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP33_PERF_SEL_REQ_MISS", "TCP33", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP33_PERF_SEL_TCP_TA_REQ_STALL", "TCP33", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP33_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP33", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP33_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP33", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP33_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP33", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp34CountersGfx103 = {
         {9, "TCP34_PERF_SEL_REQ", "TCP34", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP34_PERF_SEL_REQ_MISS", "TCP34", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP34_PERF_SEL_TCP_TA_REQ_STALL", "TCP34", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP34_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP34", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP34_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP34", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP34_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP34", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp35CountersGfx103 = {
         {9, "TCP35_PERF_SEL_REQ", "TCP35", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP35_PERF_SEL_REQ_MISS", "TCP35", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP35_PERF_SEL_TCP_TA_REQ_STALL", "TCP35", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP35_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP35", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP35_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP35", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP35_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP35", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp36CountersGfx103 = {
         {9, "TCP36_PERF_SEL_REQ", "TCP36", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP36_PERF_SEL_REQ_MISS", "TCP36", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP36_PERF_SEL_TCP_TA_REQ_STALL", "TCP36", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP36_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP36", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP36_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP36", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP36_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP36", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp37CountersGfx103 = {
         {9, "TCP37_PERF_SEL_REQ", "TCP37", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP37_PERF_SEL_REQ_MISS", "TCP37", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP37_PERF_SEL_TCP_TA_REQ_STALL", "TCP37", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP37_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP37", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP37_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP37", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP37_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP37", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp38CountersGfx103 = {
         {9, "TCP38_PERF_SEL_REQ", "TCP38", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP38_PERF_SEL_REQ_MISS", "TCP38", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP38_PERF_SEL_TCP_TA_REQ_STALL", "TCP38", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP38_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP38", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP38_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP38", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP38_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP38", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp39CountersGfx103 = {
         {9, "TCP39_PERF_SEL_REQ", "TCP39", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP39_PERF_SEL_REQ_MISS", "TCP39", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP39_PERF_SEL_TCP_TA_REQ_STALL", "TCP39", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP39_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP39", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP39_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP39", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP39_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP39", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp40CountersGfx103 = {
         {9, "TCP40_PERF_SEL_REQ", "TCP40", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP40_PERF_SEL_REQ_MISS", "TCP40", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP40_PERF_SEL_TCP_TA_REQ_STALL", "TCP40", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP40_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP40", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP40_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP40", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP40_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP40", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp41CountersGfx103 = {
         {9, "TCP41_PERF_SEL_REQ", "TCP41", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP41_PERF_SEL_REQ_MISS", "TCP41", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP41_PERF_SEL_TCP_TA_REQ_STALL", "TCP41", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP41_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP41", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP41_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP41", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP41_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP41", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp42CountersGfx103 = {
         {9, "TCP42_PERF_SEL_REQ", "TCP42", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP42_PERF_SEL_REQ_MISS", "TCP42", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP42_PERF_SEL_TCP_TA_REQ_STALL", "TCP42", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP42_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP42", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP42_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP42", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP42_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP42", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp43CountersGfx103 = {
         {9, "TCP43_PERF_SEL_REQ", "TCP43", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP43_PERF_SEL_REQ_MISS", "TCP43", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP43_PERF_SEL_TCP_TA_REQ_STALL", "TCP43", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP43_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP43", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP43_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP43", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP43_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP43", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp44CountersGfx103 = {
         {9, "TCP44_PERF_SEL_REQ", "TCP44", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP44_PERF_SEL_REQ_MISS", "TCP44", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP44_PERF_SEL_TCP_TA_REQ_STALL", "TCP44", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP44_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP44", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP44_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP44", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP44_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP44", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp45CountersGfx103 = {
         {9, "TCP45_PERF_SEL_REQ", "TCP45", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP45_PERF_SEL_REQ_MISS", "TCP45", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP45_PERF_SEL_TCP_TA_REQ_STALL", "TCP45", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP45_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP45", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP45_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP45", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP45_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP45", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp46CountersGfx103 = {
         {9, "TCP46_PERF_SEL_REQ", "TCP46", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP46_PERF_SEL_REQ_MISS", "TCP46", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP46_PERF_SEL_TCP_TA_REQ_STALL", "TCP46", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP46_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP46", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP46_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP46", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP46_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP46", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp47CountersGfx103 = {
         {9, "TCP47_PERF_SEL_REQ", "TCP47", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP47_PERF_SEL_REQ_MISS", "TCP47", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP47_PERF_SEL_TCP_TA_REQ_STALL", "TCP47", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP47_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP47", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP47_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP47", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP47_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP47", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp48CountersGfx103 = {
         {9, "TCP48_PERF_SEL_REQ", "TCP48", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP48_PERF_SEL_REQ_MISS", "TCP48", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP48_PERF_SEL_TCP_TA_REQ_STALL", "TCP48", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP48_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP48", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP48_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP48", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP48_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP48", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp49CountersGfx103 = {
         {9, "TCP49_PERF_SEL_REQ", "TCP49", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP49_PERF_SEL_REQ_MISS", "TCP49", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP49_PERF_SEL_TCP_TA_REQ_STALL", "TCP49", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP49_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP49", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP49_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP49", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP49_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP49", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp50CountersGfx103 = {
         {9, "TCP50_PERF_SEL_REQ", "TCP50", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP50_PERF_SEL_REQ_MISS", "TCP50", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP50_PERF_SEL_TCP_TA_REQ_STALL", "TCP50", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP50_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP50", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP50_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP50", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP50_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP50", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp51CountersGfx103 = {
         {9, "TCP51_PERF_SEL_REQ", "TCP51", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP51_PERF_SEL_REQ_MISS", "TCP51", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP51_PERF_SEL_TCP_TA_REQ_STALL", "TCP51", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP51_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP51", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP51_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP51", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP51_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP51", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp52CountersGfx103 = {
         {9, "TCP52_PERF_SEL_REQ", "TCP52", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP52_PERF_SEL_REQ_MISS", "TCP52", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP52_PERF_SEL_TCP_TA_REQ_STALL", "TCP52", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP52_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP52", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP52_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP52", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP52_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP52", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp53CountersGfx103 = {
         {9, "TCP53_PERF_SEL_REQ", "TCP53", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP53_PERF_SEL_REQ_MISS", "TCP53", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP53_PERF_SEL_TCP_TA_REQ_STALL", "TCP53", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP53_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP53", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP53_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP53", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP53_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP53", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp54CountersGfx103 = {
         {9, "TCP54_PERF_SEL_REQ", "TCP54", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP54_PERF_SEL_REQ_MISS", "TCP54", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP54_PERF_SEL_TCP_TA_REQ_STALL", "TCP54", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP54_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP54", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP54_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP54", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP54_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP54", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp55CountersGfx103 = {
         {9, "TCP55_PERF_SEL_REQ", "TCP55", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP55_PERF_SEL_REQ_MISS", "TCP55", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP55_PERF_SEL_TCP_TA_REQ_STALL", "TCP55", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP55_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP55", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP55_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP55", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP55_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP55", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp56CountersGfx103 = {
         {9, "TCP56_PERF_SEL_REQ", "TCP56", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP56_PERF_SEL_REQ_MISS", "TCP56", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP56_PERF_SEL_TCP_TA_REQ_STALL", "TCP56", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP56_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP56", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP56_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP56", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP56_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP56", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp57CountersGfx103 = {
         {9, "TCP57_PERF_SEL_REQ", "TCP57", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP57_PERF_SEL_REQ_MISS", "TCP57", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP57_PERF_SEL_TCP_TA_REQ_STALL", "TCP57", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP57_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP57", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP57_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP57", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP57_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP57", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp58CountersGfx103 = {
         {9, "TCP58_PERF_SEL_REQ", "TCP58", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP58_PERF_SEL_REQ_MISS", "TCP58", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP58_PERF_SEL_TCP_TA_REQ_STALL", "TCP58", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP58_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP58", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP58_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP58", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP58_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP58", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp59CountersGfx103 = {
         {9, "TCP59_PERF_SEL_REQ", "TCP59", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP59_PERF_SEL_REQ_MISS", "TCP59", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP59_PERF_SEL_TCP_TA_REQ_STALL", "TCP59", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP59_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP59", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP59_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP59", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP59_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP59", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp60CountersGfx103 = {
         {9, "TCP60_PERF_SEL_REQ", "TCP60", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP60_PERF_SEL_REQ_MISS", "TCP60", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP60_PERF_SEL_TCP_TA_REQ_STALL", "TCP60", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP60_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP60", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP60_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP60", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP60_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP60", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp61CountersGfx103 = {
         {9, "TCP61_PERF_SEL_REQ", "TCP61", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP61_PERF_SEL_REQ_MISS", "TCP61", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP61_PERF_SEL_TCP_TA_REQ_STALL", "TCP61", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP61_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP61", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP61_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP61", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP61_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP61", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp62CountersGfx103 = {
         {9, "TCP62_PERF_SEL_REQ", "TCP62", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP62_PERF_SEL_REQ_MISS", "TCP62", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP62_PERF_SEL_TCP_TA_REQ_STALL", "TCP62", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP62_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP62", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP62_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP62", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP62_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP62", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp63CountersGfx103 = {
         {9, "TCP63_PERF_SEL_REQ", "TCP63", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP63_PERF_SEL_REQ_MISS", "TCP63", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP63_PERF_SEL_TCP_TA_REQ_STALL", "TCP63", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP63_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP63", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP63_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP63", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP63_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP63", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp64CountersGfx103 = {
         {9, "TCP64_PERF_SEL_REQ", "TCP64", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP64_PERF_SEL_REQ_MISS", "TCP64", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP64_PERF_SEL_TCP_TA_REQ_STALL", "TCP64", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP64_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP64", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP64_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP64", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP64_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP64", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp65CountersGfx103 = {
         {9, "TCP65_PERF_SEL_REQ", "TCP65", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP65_PERF_SEL_REQ_MISS", "TCP65", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP65_PERF_SEL_TCP_TA_REQ_STALL", "TCP65", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP65_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP65", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP65_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP65", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP65_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP65", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp66CountersGfx103 = {
         {9, "TCP66_PERF_SEL_REQ", "TCP66", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP66_PERF_SEL_REQ_MISS", "TCP66", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP66_PERF_SEL_TCP_TA_REQ_STALL", "TCP66", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP66_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP66", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP66_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP66", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP66_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP66", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp67CountersGfx103 = {
         {9, "TCP67_PERF_SEL_REQ", "TCP67", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP67_PERF_SEL_REQ_MISS", "TCP67", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP67_PERF_SEL_TCP_TA_REQ_STALL", "TCP67", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP67_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP67", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP67_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP67", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP67_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP67", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp68CountersGfx103 = {
         {9, "TCP68_PERF_SEL_REQ", "TCP68", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP68_PERF_SEL_REQ_MISS", "TCP68", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP68_PERF_SEL_TCP_TA_REQ_STALL", "TCP68", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP68_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP68", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP68_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP68", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP68_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP68", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp69CountersGfx103 = {
         {9, "TCP69_PERF_SEL_REQ", "TCP69", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP69_PERF_SEL_REQ_MISS", "TCP69", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP69_PERF_SEL_TCP_TA_REQ_STALL", "TCP69", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP69_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP69", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP69_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP69", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP69_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP69", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp70CountersGfx103 = {
         {9, "TCP70_PERF_SEL_REQ", "TCP70", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP70_PERF_SEL_REQ_MISS", "TCP70", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP70_PERF_SEL_TCP_TA_REQ_STALL", "TCP70", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP70_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP70", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP70_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP70", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP70_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP70", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp71CountersGfx103 = {
         {9, "TCP71_PERF_SEL_REQ", "TCP71", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP71_PERF_SEL_REQ_MISS", "TCP71", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP71_PERF_SEL_TCP_TA_REQ_STALL", "TCP71", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP71_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP71", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP71_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP71", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP71_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP71", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp72CountersGfx103 = {
         {9, "TCP72_PERF_SEL_REQ", "TCP72", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP72_PERF_SEL_REQ_MISS", "TCP72", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP72_PERF_SEL_TCP_TA_REQ_STALL", "TCP72", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP72_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP72", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP72_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP72", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP72_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP72", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp73CountersGfx103 = {
         {9, "TCP73_PERF_SEL_REQ", "TCP73", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP73_PERF_SEL_REQ_MISS", "TCP73", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP73_PERF_SEL_TCP_TA_REQ_STALL", "TCP73", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP73_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP73", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP73_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP73", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP73_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP73", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp74CountersGfx103 = {
         {9, "TCP74_PERF_SEL_REQ", "TCP74", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP74_PERF_SEL_REQ_MISS", "TCP74", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP74_PERF_SEL_TCP_TA_REQ_STALL", "TCP74", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP74_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP74", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP74_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP74", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP74_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP74", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp75CountersGfx103 = {
         {9, "TCP75_PERF_SEL_REQ", "TCP75", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP75_PERF_SEL_REQ_MISS", "TCP75", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP75_PERF_SEL_TCP_TA_REQ_STALL", "TCP75", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP75_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP75", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP75_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP75", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP75_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP75", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp76CountersGfx103 = {
         {9, "TCP76_PERF_SEL_REQ", "TCP76", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP76_PERF_SEL_REQ_MISS", "TCP76", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP76_PERF_SEL_TCP_TA_REQ_STALL", "TCP76", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP76_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP76", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP76_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP76", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP76_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP76", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp77CountersGfx103 = {
         {9, "TCP77_PERF_SEL_REQ", "TCP77", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP77_PERF_SEL_REQ_MISS", "TCP77", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP77_PERF_SEL_TCP_TA_REQ_STALL", "TCP77", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP77_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP77", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP77_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP77", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP77_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP77", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp78CountersGfx103 = {
         {9, "TCP78_PERF_SEL_REQ", "TCP78", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP78_PERF_SEL_REQ_MISS", "TCP78", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP78_PERF_SEL_TCP_TA_REQ_STALL", "TCP78", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP78_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP78", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP78_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP78", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP78_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP78", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp79CountersGfx103 = {
         {9, "TCP79_PERF_SEL_REQ", "TCP79", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP79_PERF_SEL_REQ_MISS", "TCP79", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP79_PERF_SEL_TCP_TA_REQ_STALL", "TCP79", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {43, "TCP79_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP79", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP79_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP79", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP79_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP79", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kGl2c0CountersGfx103 = {
         {3, "GL2C0_PERF_SEL_REQ", "GL2C0", "Number of requests of all types. This is measured at the tag block. This may be more than the number of requests arriving at the GL2C, but it is a good indication of the total amount of work that needs to be performed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},

@@ -67,7 +67,7 @@ Dx12GpaCommandList::Dx12GpaCommandList(Dx12GpaSession*    dx12_gpa_session,
 
 Dx12GpaCommandList::~Dx12GpaCommandList()
 {
-    ReleaseNonGPAResources();
+    ReleaseNonGpaResources();
 }
 
 bool Dx12GpaCommandList::BeginCommandListRequest()
@@ -147,6 +147,7 @@ bool Dx12GpaCommandList::BeginSampleRequest(ClientSampleId client_sample_id, Gpa
 
     DriverSampleId   driver_sample_id = 0;
     GpaCounterSource counter_source   = GetPass()->GetCounterSource();
+
 
     if (GpaCounterSource::kHardware == counter_source)
     {
@@ -343,7 +344,7 @@ bool Dx12GpaCommandList::CloseSwSample()
     return true;
 }
 
-void Dx12GpaCommandList::ReleaseNonGPAResources()
+void Dx12GpaCommandList::ReleaseNonGpaResources()
 {
     if (!is_non_gpa_resource_released_)
     {

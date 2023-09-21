@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2021-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Command Line Parser header.
@@ -17,9 +17,9 @@ namespace gpa_example
     /// @brief Enumeration specifying the underlying type for a given argument.
     enum class ArgType
     {
-        ARG_TYPE_BOOL,
-        ARG_TYPE_INT,
-        ARG_TYPE_STRING,
+        kArgTypeBool,
+        kArgTypeInt,
+        kArgTypeString,
     };
 
     /// @brief Structure which describes a given argument.
@@ -27,8 +27,8 @@ namespace gpa_example
     {
         /// @brief Constructor
         ///
-        /// @param type The type of the argument.
-        /// @param doc A description of the argument.
+        /// @param [in] type The type of the argument.
+        /// @param [in] doc A description of the argument.
         ArgEntryBase(const ArgType type, const std::string& doc)
             : arg_type(type)
             , doc_string(doc)
@@ -51,10 +51,10 @@ namespace gpa_example
     {
         /// @brief Constructor
         ///
-        /// @param dst A reference the the location where the value of the argument will be written
+        /// @param [in] dst A reference the the location where the value of the argument will be written
         ///     to, if it is received on the command line.
-        /// @param type The type of the argument.
-        /// @param doc A description of the argument.
+        /// @param [in] type The type of the argument.
+        /// @param [in] doc A description of the argument.
         ArgEntry(T& dst, const ArgType type, const std::string& doc)
             : ArgEntryBase(type, doc)
             , destination(dst)
@@ -81,12 +81,12 @@ namespace gpa_example
 
         /// @brief Inform the parser of an argument which should be parsed if detected in argv_.
         ///
-        /// @param name The name of the argument, inclusive of any leading '-' characters.
-        /// @param p_destination Pointer to the location in memory where the value of this argument
+        /// @param [in] name The name of the argument, inclusive of any leading '-' characters.
+        /// @param [in] destination Pointer to the location in memory where the value of this argument
         ///     will be written to, if parsed as part of ParseArgs().
-        /// @param arg_type The type of the argument.
-        /// @param doc_string A description of the argument.
-        void AddArg(const std::string& name, void* p_destination, const ArgType arg_type, const std::string& doc_string);
+        /// @param [in] arg_type The type of the argument.
+        /// @param [in] doc_string A description of the argument.
+        void AddArg(const std::string& name, void* destination, const ArgType arg_type, const std::string& doc_string);
 
         /// @brief Parse the arguments in argv_.
         ///

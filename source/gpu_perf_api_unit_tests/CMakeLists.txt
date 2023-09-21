@@ -156,3 +156,4 @@ SET_EXECUTABLE_NAME(${GPA_PROJECT_NAME})
 if(WIN32)
     source_group("Utils" FILES ${UTIL_FILES})
 endif()
+

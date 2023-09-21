@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Defines the data types and enumerations used by GPUPerfAPI.
@@ -183,7 +183,7 @@ typedef enum
     kGpaInitializeDefaultBit = 0,  ///< Initialize GPA using all default options.
 } GpaInitializeBits;
 
-/// Allows GPA_Initialize_Bits to be combined into a single parameter.
+/// Allows GpaInitializeBits to be combined into a single parameter.
 typedef GpaFlags GpaInitializeFlags;
 
 /// @brief Flags to pass in when opening a GPA context.
@@ -191,10 +191,11 @@ typedef enum
 {
     kGpaOpenContextDefaultBit =
         0,  ///< Open contexts using all default options (all counters exposed, clocks are set to stable frequencies which are known to be power and thermal sustainable. The ratio between the engine and memory clock frequencies will be kept the same as much as possible).
-    kGpaOpenContextHideDerivedCountersBit  = 0x01,                                   ///< Prevent the derived counters from being exposed.
-    kGpaOpenContextHidePublicCountersBit   = kGpaOpenContextHideDerivedCountersBit,  ///< For backwards compatibility.
-    kGpaOpenContextHideSoftwareCountersBit_obsolete = 0x02,                          ///< OBSOLETE: Software counters not supported as of GPA 3.0.
-    kGpaOpenContextHideHardwareCountersBit_obsolete = 0x04,                          ///< OBSOLETE: Hardware counters hidden by default. kGpaOpenContextEnableHardwareCountersBit enables them.
+    kGpaOpenContextHideDerivedCountersBit           = 0x01,                                   ///< Prevent the derived counters from being exposed.
+    kGpaOpenContextHidePublicCountersBit            = kGpaOpenContextHideDerivedCountersBit,  ///< For backwards compatibility.
+    kGpaOpenContextHideSoftwareCountersBit_obsolete = 0x02,                                   ///< OBSOLETE: Software counters not supported as of GPA 3.0.
+    kGpaOpenContextHideHardwareCountersBit_obsolete =
+        0x04,                                  ///< OBSOLETE: Hardware counters hidden by default. kGpaOpenContextEnableHardwareCountersBit enables them.
     kGpaOpenContextClockModeNoneBit = 0x0008,  ///< Clock frequencies are not altered and may vary widely during profiling based on GPU usage and other factors.
     kGpaOpenContextClockModePeakBit =
         0x0010,  ///< Clocks are set to peak frequencies. In most cases this is safe to do for short periods of time while profiling. However, the GPU clock frequencies could still be reduced from peak level under power and thermal constraints.
@@ -205,7 +206,7 @@ typedef enum
     kGpaOpenContextEnableHardwareCountersBit = 0x0080  ///< Include the hardware counters when exposing counters.
 } GpaOpenContextBits;
 
-/// Allows GPA_OpenContext_Bits to be combined into a single parameter.
+/// Allows GpaOpenContextBits to be combined into a single parameter.
 typedef GpaFlags GpaOpenContextFlags;
 
 /// @brief Value type definitions.
@@ -296,22 +297,24 @@ typedef enum
 /// @brief Counter sample types - used to indicate which sample types are supported by a counter.
 typedef enum
 {
-    kGpaCounterSampleTypeDiscrete,  ///< Discrete counter type -- discrete counters provide a single value per workload measured.
+    kGpaCounterSampleTypeDiscrete = 0x1,  ///< Discrete counter type -- discrete counters provide a single value per workload measured.
 } GpaCounterSampleType;
 
 /// @brief Context Sample types -- used to indicate which sample types are supported by a context. A context can support any combination of these.
 typedef enum
 {
-    kGpaContextSampleTypeDiscreteCounter = 0x01,  ///< Discrete counters sample type -- discrete counters provide a single value per workload measured.
+    kGpaContextSampleTypeDiscreteCounter,  ///< Discrete counters sample type -- discrete counters provide a single value per workload measured.
 } GpaContextSampleTypeBits;
 
-/// @brief Allows GPA_Context_Sample_Type_Bits to be combined into a single parameter.
+/// @brief Allows GpaContextSampleTypeBits to be combined into a single parameter.
 typedef GpaFlags GpaContextSampleTypeFlags;
 
 /// @brief Session Sample types -- used by the client to tell GPUPerfAPI which sample types will be created for a session.
 typedef enum
 {
     kGpaSessionSampleTypeDiscreteCounter,  ///< Discrete counters sample type -- discrete counters provide a single value per workload measured.
+    kGpaSessionSampleTypeLast                      ///< Marker indicating last element.
+
 } GpaSessionSampleType;
 
 #endif  // GPU_PERFORMANCE_API_GPU_PERF_API_TYPES_H_

@@ -87,14 +87,14 @@ AMDVulkanDemo::AMDVulkanDemo(const std::string app_name, gpa_example::CmdlinePar
     , exit_(false)
     , nogpa_(false)
 {
-    cmdline_parser_.AddArg("--nogpa", &nogpa_, gpa_example::ArgType::ARG_TYPE_BOOL, "Do not use GPUPerfAPI to collect performance counters");
+    cmdline_parser_.AddArg("--nogpa", &nogpa_, gpa_example::ArgType::kArgTypeBool, "Do not use GPUPerfAPI to collect performance counters");
     cmdline_parser_.AddArg("--exitafterprofile",
                            &exit_after_profile_,
-                           gpa_example::ArgType::ARG_TYPE_BOOL,
+                           gpa_example::ArgType::kArgTypeBool,
                            "Application will exit automatically after collecting performance counters");
-    cmdline_parser_.AddArg("--verbose", &print_debug_output_, gpa_example::ArgType::ARG_TYPE_BOOL, "Produce verbose output");
+    cmdline_parser_.AddArg("--verbose", &print_debug_output_, gpa_example::ArgType::kArgTypeBool, "Produce verbose output");
     cmdline_parser_.AddArg(
-        "--printcounterinfo", &print_gpa_counter_info_, gpa_example::ArgType::ARG_TYPE_BOOL, "Output information about available performance counters");
+        "--printcounterinfo", &print_gpa_counter_info_, gpa_example::ArgType::kArgTypeBool, "Output information about available performance counters");
 
     physical_device_properties_        = {};
     physical_device_features_          = {};
@@ -2519,6 +2519,10 @@ int main(const int argc, const char* argv[])
     gpa_example::CmdlineParser parser(argc, const_cast<char**>(argv));
 
     AMDVulkanDemo app(AMDT_PROJECT_NAME, parser);
+
+    // Setting log and data file names in GPAHelper based on command line input.
+    GpaHelper::gpa_log_file_name = app.Logfile();
+    GpaHelper::csv_file_name     = app.Datafile();
 
     if (!app.Initialize())
     {

@@ -86,7 +86,7 @@ public:
     IAmdExtGpaSession* GetBundleResultAmdExtSession(ClientSampleId client_sample_id) const;
 
     /// @brief Release the graphics command list.
-    void ReleaseNonGPAResources();
+    void ReleaseNonGpaResources();
 
 private:
     /// @copydoc GpaCommandList::BeginCommandListRequest()

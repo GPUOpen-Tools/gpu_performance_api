@@ -178,6 +178,10 @@ TEST(CounterDllTests, Dx12CounterNamesByDeviceId)
     VerifyHardwareNotSupported(kGpaApiDirectx12, kDevIdSI, FALSE);
     VerifyHardwareNotSupported(kGpaApiDirectx12, kDevIdCI, FALSE);
     VerifyHardwareNotSupported(kGpaApiDirectx12, kDevIdCIHawaii, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx12, kDevIdMi250X, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx12, kDevIdMi210, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx12, kDevIdUnsupported1, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx12, kDevIdUnsupported2, FALSE);
 
     std::vector<const char*> counter_name;
     std::vector<const char*> hardware_counter_names;
@@ -238,12 +242,6 @@ TEST(CounterDllTests, Dx12CounterNamesGfx11)
 // Test the Dx12 counter names on all generations
 TEST(CounterDllTests, Dx12CounterNamesByGeneration)
 {
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationNone, FALSE);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationNvidia, FALSE);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationIntel, FALSE);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx6, FALSE);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx7, FALSE);
-
     std::vector<const char*> counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, counter_names, hardware_counter_names);
@@ -260,12 +258,6 @@ TEST(CounterDllTests, Dx12CounterNamesByGeneration)
 
 TEST(CounterDllTests, Dx12OpenCounterContext)
 {
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationNone, FALSE);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationNvidia, FALSE);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationIntel, FALSE);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx6, FALSE);
-    VerifyHardwareNotSupported(kGpaApiDirectx12, kGpaHwGenerationGfx7, FALSE);
-
     VerifyOpenCounterContext(kGpaApiDirectx12, kGpaHwGenerationGfx8);
     VerifyOpenCounterContext(kGpaApiDirectx12, kGpaHwGenerationGfx9);
     VerifyOpenCounterContext(kGpaApiDirectx12, kGpaHwGenerationGfx10);

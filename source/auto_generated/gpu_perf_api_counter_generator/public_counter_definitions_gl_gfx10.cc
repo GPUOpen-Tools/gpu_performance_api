@@ -33,6 +33,19 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(15773);
+        internal_counters.push_back(1868);
+
+        c.DefineDerivedCounter("TessellatorBusy", "Timing", "The percentage of time the tessellation engine is busy.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,/,(100),*", "36af6c72-dcfb-8102-4fd4-ce8ddc573365");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(15773);
+
+        c.DefineDerivedCounter("TessellatorBusyCycles", "Timing", "Number of GPU cycles that the tessellation engine is busy.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0", "60289dcb-7b33-46e7-26d1-8a2121605543");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
         internal_counters.push_back(4801);
         internal_counters.push_back(4818);
         internal_counters.push_back(4841);
@@ -183,6 +196,30 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(15801);
+        internal_counters.push_back(15737);
+        internal_counters.push_back(4841);
+
+        c.DefineDerivedCounter("VsGsVerticesIn", "VertexGeometry", "The number of unique vertices processed by the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,1,ifnotzero,(0),2,ifnotzero", "17d0c775-3ed5-affb-d5ac-5391a198a4aa");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3438);
+        internal_counters.push_back(15747);
+        internal_counters.push_back(4841);
+
+        c.DefineDerivedCounter("VsGsPrimsIn", "VertexGeometry", "The number of primitives passed into the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,1,ifnotzero,(0),2,ifnotzero", "1bbdf2ec-cca3-4d9a-a243-94f4aec5409b");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(15801);
+        internal_counters.push_back(15737);
+        internal_counters.push_back(4841);
+
+        c.DefineDerivedCounter("GSVerticesOut", "VertexGeometry", "The number of vertices output by the GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,ifnotzero,(0),2,ifnotzero", "775b9736-319a-bd8a-48c9-68db9c91d978");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
         internal_counters.push_back(6729);
         internal_counters.push_back(6669);
         internal_counters.push_back(6217);
@@ -237,6 +274,13 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(15753);
+        internal_counters.push_back(4841);
+
+        c.DefineDerivedCounter("PreTessVerticesIn", "PreTessellation", "The number of vertices processed by the VS and HS when using tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,ifnotzero", "b0d4c894-2fd0-6f4f-0b07-d5369769ef2d");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
         internal_counters.push_back(8265);
         internal_counters.push_back(4841);
 
@@ -278,6 +322,13 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(4841);
 
         c.DefineDerivedCounter("PreTessSALUBusyCycles", "PreTessellation", "Number of GPU cycles where scalar ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,NUM_CUS,/,1,ifnotzero", "8aa4a036-313f-f4b0-a820-ff0a6e71b1a2");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(15747);
+        internal_counters.push_back(4841);
+
+        c.DefineDerivedCounter("PostTessPrimsOut", "PostTessellation", "The number of primitives output by the DS and GS when using tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,ifnotzero", "d38dabe8-1f13-ea34-d3c1-eb5783b737f1");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -347,6 +398,12 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(3504);
 
         c.DefineDerivedCounter("PrimitiveAssemblyBusyCycles", "Timing", "Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,-,2,3,+,4,+,5,(2),*,+,SU_CLOCKS_PRIM,*,-,NUM_PRIM_PIPES,/,(0),max", "99777f2d-9626-c78a-a97c-c4505eba1e5f");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3438);
+
+        c.DefineDerivedCounter("PrimitivesIn", "PrimitiveAssembly", "The number of primitives received by the hardware. This includes primitives generated by tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0", "a515b80d-75c3-c7d2-0d2f-d7766b4759a6");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -1755,6 +1812,69 @@ void AutoDefinePublicDerivedCountersGlGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(19865);
 
         c.DefineDerivedCounter("L2CacheMissCount", "MemoryCache", "The number of read or write requests which result in a cache miss from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "376eec7b-ab25-9012-06b5-63291a17fd47");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(14086);
+        internal_counters.push_back(14163);
+        internal_counters.push_back(14240);
+        internal_counters.push_back(14317);
+        internal_counters.push_back(14394);
+        internal_counters.push_back(14471);
+        internal_counters.push_back(14548);
+        internal_counters.push_back(14625);
+        internal_counters.push_back(14702);
+        internal_counters.push_back(14779);
+        internal_counters.push_back(14856);
+        internal_counters.push_back(14933);
+        internal_counters.push_back(15010);
+        internal_counters.push_back(15087);
+        internal_counters.push_back(15164);
+        internal_counters.push_back(15241);
+
+        c.DefineDerivedCounter("L0TagConflictReadStalledCycles", "MemoryCache", "The number of cycles read operations from the L0 cache are stalled due to tag conflicts.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "e2412737-e2bf-c791-5f2f-64abd4ba47cf");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(14087);
+        internal_counters.push_back(14164);
+        internal_counters.push_back(14241);
+        internal_counters.push_back(14318);
+        internal_counters.push_back(14395);
+        internal_counters.push_back(14472);
+        internal_counters.push_back(14549);
+        internal_counters.push_back(14626);
+        internal_counters.push_back(14703);
+        internal_counters.push_back(14780);
+        internal_counters.push_back(14857);
+        internal_counters.push_back(14934);
+        internal_counters.push_back(15011);
+        internal_counters.push_back(15088);
+        internal_counters.push_back(15165);
+        internal_counters.push_back(15242);
+
+        c.DefineDerivedCounter("L0TagConflictWriteStalledCycles", "MemoryCache", "The number of cycles write operations to the L0 cache are stalled due to tag conflicts.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "0c2571f3-f084-f351-99ba-0d9e23b47e8e");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(14088);
+        internal_counters.push_back(14165);
+        internal_counters.push_back(14242);
+        internal_counters.push_back(14319);
+        internal_counters.push_back(14396);
+        internal_counters.push_back(14473);
+        internal_counters.push_back(14550);
+        internal_counters.push_back(14627);
+        internal_counters.push_back(14704);
+        internal_counters.push_back(14781);
+        internal_counters.push_back(14858);
+        internal_counters.push_back(14935);
+        internal_counters.push_back(15012);
+        internal_counters.push_back(15089);
+        internal_counters.push_back(15166);
+        internal_counters.push_back(15243);
+
+        c.DefineDerivedCounter("L0TagConflictAtomicStalledCycles", "MemoryCache", "The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "f13f8563-4151-1533-f42f-0f9c08a20210");
     }
     {
         vector<GpaUInt32> internal_counters;

@@ -350,7 +350,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
     {
         status = kGpaStatusErrorNullPointer;
     }
-    else if (public_counters->counters_generated_)
+    else if (public_counters->GetCountersGenerated())
     {
         status = kGpaStatusOk;
     }
@@ -501,7 +501,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
 
     if (kGpaStatusOk == status)
     {
-        public_counters->counters_generated_ = true;
+        public_counters->SetCountersGenerated(true);
     }
 
     return status;

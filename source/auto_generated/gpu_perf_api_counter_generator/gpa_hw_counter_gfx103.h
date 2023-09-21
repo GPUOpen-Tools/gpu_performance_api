@@ -21,6 +21,7 @@ namespace counter_gfx103
 {
     extern std::vector<GpaHardwareCounterDesc> kCpfCountersGfx103; ///< Array of internal counters for Cpf block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGrbmCountersGfx103; ///< Array of internal counters for Grbm block for Gfx103 family
+    extern std::vector<GpaHardwareCounterDesc> kGe2DistCountersGfx103; ///< Array of internal counters for Ge2Dist block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGeSe0CountersGfx103; ///< Array of internal counters for GeSe0 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGeSe1CountersGfx103; ///< Array of internal counters for GeSe1 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGeSe2CountersGfx103; ///< Array of internal counters for GeSe2 block for Gfx103 family

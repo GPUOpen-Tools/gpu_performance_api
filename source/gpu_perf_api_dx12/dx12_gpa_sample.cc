@@ -59,15 +59,13 @@ void Dx12GpaSample::ReleaseCounters()
 GpaSampleResult* Dx12GpaSample::PopulateSampleResult()
 {
     size_t sample_data_bytes = 0u;
-
     // Validate result space.
     sample_data_bytes = GetSampleResultLocation()->GetBufferBytes();
-
     if (0 != sample_data_bytes)
     {
-        if (nullptr != GetSampleResultLocation()->GetAsCounterSampleResult()->GetResultBuffer())
+        if (GetSampleResultLocation()->GetBufferBytes())
         {
-            GpaUInt64* result_buffer  = nullptr;
+            void*      result_buffer  = nullptr;
             GpaUInt64  timing_data[2] = {};
 
             if (GetPass()->IsTimingPass())
@@ -153,11 +151,11 @@ GpaSampleResult* Dx12GpaSample::PopulateSampleResult()
 bool Dx12GpaSample::CopyResult(size_t sample_data_size, void* result_buffer) const
 {
     bool is_data_ready                   = false;
-    bool is_any_hardware_counter_enabled = GetPass()->GetEnabledCounterCount() > 0;
+    bool should_driver_have_results = GetPass()->GetEnabledCounterCount() > 0;
 
     if (nullptr != result_buffer)
     {
-        if (is_any_hardware_counter_enabled)
+        if (should_driver_have_results)
         {
             Dx12GpaCommandList* dx12_gpa_cmd_list = reinterpret_cast<Dx12GpaCommandList*>(GetCmdList());
 

@@ -17,7 +17,6 @@
 #include "gpu_perf_api_common/utility.h"
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_dx11.h"
-#include "gpu_perf_api_counter_generator/gpa_counter_generator_dx11_non_amd.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_scheduler_dx11.h"
 
 #include "gpu_perf_api_dx/dx_utils.h"
@@ -30,7 +29,6 @@
 
 IGpaImplementor*                     gpa_imp = Dx11GpaImplementor::Instance();
 static GpaCounterGeneratorDx11       counter_generator_dx11;          ///< Static instance of DX11 generator.
-static GpaCounterGeneratorDx11NonAmd counter_generator_dx11_non_amd;  ///< Static instance of DX11 non-AMD generator.
 static GpaCounterSchedulerDx11       counter_scheduler_dx11;          ///< Static instance of DX11 scheduler.
 
 /// @brief Converts string from wide to utf-8 encoding.

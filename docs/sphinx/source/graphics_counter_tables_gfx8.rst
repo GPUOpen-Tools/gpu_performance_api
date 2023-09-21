@@ -1,4 +1,4 @@
-.. Copyright(c) 2018-2023 Advanced Micro Devices, Inc.All rights reserved.
+.. Copyright(c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 .. Graphics Performance Counters for Graphics IP v8
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
@@ -233,6 +233,17 @@ ColorBuffer Group
     "CBColorAndMaskWritten", "Bytes", "Total number of bytes written to the color and mask buffers."
     "CBSlowPixelPct", "Percentage", "Percentage of pixels written to the color buffer using a half-rate or quarter-rate format."
     "CBSlowPixelCount", "Items", "Number of pixels written to the color buffer using a half-rate or quarter-rate format."
+
+MemoryCache Group
+%%%%%%%%%%%%%%%%%
+
+.. csv-table::
+    :header: "Counter Name", "Usage", "Brief Description"
+    :widths: 15, 10, 75
+
+    "L0TagConflictReadStalledCycles", "Items", "The number of cycles read operations from the L0 cache are stalled due to tag conflicts."
+    "L0TagConflictWriteStalledCycles", "Items", "The number of cycles write operations to the L0 cache are stalled due to tag conflicts."
+    "L0TagConflictAtomicStalledCycles", "Items", "The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts."
 
 GlobalMemory Group
 %%%%%%%%%%%%%%%%%%

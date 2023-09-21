@@ -6,7 +6,7 @@
 //    AMD Developer Tools Team
 // </author>
 // <summary>
-//      GPA file name and paths.
+//    GPA file name and paths.
 // </summary>
 // =====================================================================
 

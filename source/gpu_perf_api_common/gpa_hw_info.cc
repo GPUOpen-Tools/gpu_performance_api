@@ -6,11 +6,10 @@
 //==============================================================================
 
 #include "gpu_perf_api_common/gpa_hw_info.h"
+#include "gpu_perf_api_common/logging.h"
 
 #include <assert.h>
 #include <DeviceInfoUtils.h>
-
-#include "gpu_perf_api_common/logging.h"
 
 GpaHwInfo::GpaHwInfo()
     : device_id_(0)
@@ -46,6 +45,11 @@ GpaHwInfo::GpaHwInfo()
     // and GPA needs to avoid reporting an error about these unsupported devices.
     unsupported_device_ids_.push_back(0x1506);
     unsupported_device_ids_.push_back(0x164e);
+
+    // These are MI (Machine Inferencing) devices that do not have a full graphics pipeline
+    // and are not currently supported by GPA.
+    unsupported_device_ids_.push_back(0x740C);
+    unsupported_device_ids_.push_back(0x740F);
 }
 
 bool GpaHwInfo::GetDeviceId(GpaUInt32& id) const
@@ -54,7 +58,17 @@ bool GpaHwInfo::GetDeviceId(GpaUInt32& id) const
     return device_id_set_;
 }
 
-bool GpaHwInfo::IsUnsupportedDeviceId(GpaUInt32& id) const
+bool GpaHwInfo::IsUnsupportedDeviceId() const
+{
+    bool is_unsupported = true;
+    if (device_id_set_)
+    {
+        is_unsupported = IsUnsupportedDeviceId(device_id_);
+    }
+    return is_unsupported;
+}
+
+bool GpaHwInfo::IsUnsupportedDeviceId(const GpaUInt32& id) const
 {
     return std::find(unsupported_device_ids_.begin(), unsupported_device_ids_.end(), id) != unsupported_device_ids_.end();
 }
@@ -65,9 +79,9 @@ bool GpaHwInfo::GetRevisionId(GpaUInt32& id) const
     return revision_id_set_;
 }
 
-bool GpaHwInfo::GetVendorId(GpaUInt32& vid) const
+bool GpaHwInfo::GetVendorId(GpaUInt32& vendor_id) const
 {
-    vid = vendor_id_;
+    vendor_id = vendor_id_;
     return vendor_id_set_;
 }
 
@@ -107,10 +121,10 @@ void GpaHwInfo::SetRevisionId(const GpaUInt32& id)
     revision_id_     = id;
 }
 
-void GpaHwInfo::SetVendorId(const GpaUInt32& vid)
+void GpaHwInfo::SetVendorId(const GpaUInt32& vendor_id)
 {
     vendor_id_set_ = true;
-    vendor_id_     = vid;
+    vendor_id_     = vendor_id;
 }
 
 void GpaHwInfo::SetDeviceName(const char* device_name)

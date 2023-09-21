@@ -119,7 +119,8 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibOpenCounterContext(GpaApiType 
     }
 
     return GpaCounterContextManager::Instance()->OpenCounterContext(
-        api, gpa_counter_context_hardware_info, context_flags, generate_asic_specific_counters, gpa_virtual_context);
+        api,
+        gpa_counter_context_hardware_info, context_flags, generate_asic_specific_counters, gpa_virtual_context);
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibCloseCounterContext(const GpaCounterContext gpa_virtual_context)
@@ -196,8 +197,8 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterName(const GpaCounte
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCounterIndex(const GpaCounterContext gpa_virtual_context,
-                                                                    const GpaCounterParam*   gpa_counter_info,
-                                                                    GpaUInt32*              gpa_counter_index)
+                                                                  const GpaCounterParam*  gpa_counter_info,
+                                                                  GpaUInt32*              gpa_counter_index)
 {
     if (nullptr == gpa_virtual_context || nullptr == gpa_counter_info)
     {

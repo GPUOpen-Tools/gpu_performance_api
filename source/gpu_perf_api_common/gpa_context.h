@@ -60,22 +60,19 @@ public:
     GpaStatus GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType* counter_sample_type) const override;
 
     /// @copydoc IGpaContext::GetCounterIndex()
-    GpaStatus GetCounterIndex(const char* pCounterName, GpaUInt32* counter_index) const override;
+    GpaStatus GetCounterIndex(const char* counter_name, GpaUInt32* counter_index) const override;
 
     /// @copydoc IGpaContext::GetCounterSourceLocalIndex()
     bool GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, GpaCounterSource* counter_source, GpaUInt32* source_local_index) const override;
+
+    /// @copydoc IGpaContext::GetCounterSource()
+    GpaCounterSource GetCounterSource(GpaUInt32 internal_counter_index) const override;
 
     /// @copydoc IGpaContext::ArePublicCountersExposed()
     bool ArePublicCountersExposed() const override;
 
     /// @copydoc IGpaContext::AreHardwareCountersExposed()
     bool AreHardwareCountersExposed() const override;
-
-    /// @copydoc IGpaContext::AreSoftwareCountersExposed()
-    bool AreSoftwareCountersExposed() const override;
-
-    /// @copydoc IGpaContext::GetCounterSource()
-    GpaCounterSource GetCounterSource(GpaUInt32 internal_counter_index) const override;
 
     /// @copydoc IGpaContext::SetInvalidateAndFlushL2Cache()
     void SetInvalidateAndFlushL2Cache(bool should_invalidate_and_flush_l2_cache) override;
@@ -108,7 +105,7 @@ public:
     GpaStatus BeginSession(IGpaSession* gpa_session) override;
 
     /// @copydoc IGpaContext::EndSession()
-    GpaStatus EndSession(IGpaSession* gpa_session) override;
+    GpaStatus EndSession(IGpaSession* gpa_session, bool force_end) override;
 
     /// @copydoc IGpaContext::GetActiveSession()
     const IGpaSession* GetActiveSession() const override;

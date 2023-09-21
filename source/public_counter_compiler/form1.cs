@@ -1,12 +1,12 @@
 ﻿// =============================================================================
-// <copyright file="Form1.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2020 Advanced Micro Devices, Inc. All rights reserved.
+// <copyright file="form1.cs" company="Advanced Micro Devices, Inc.">
+//    Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
 // </author>
 // <summary>
-//      Main form for PublicCounterCompiler
+//    Main form for PublicCounterCompiler.
 // </summary>
 // =============================================================================
 namespace PublicCounterCompiler
@@ -18,12 +18,12 @@ namespace PublicCounterCompiler
     using Microsoft.Win32;
 
     /// <summary>
-    /// the main form of the PublicCounterCompiler
+    /// The main form of the PublicCounterCompiler.
     /// </summary>
     public partial class Form1 : Form
     {
         /// <summary>
-        /// the singleton instance
+        /// The singleton instance.
         /// </summary>
         private static Form1 _instance = null;
 
@@ -72,6 +72,7 @@ namespace PublicCounterCompiler
 
             CompileButton.Text = "Compile " + counterCompiler.derivedCounterFileInput.compiler_type_str + " Counters";
 
+            _backgroundWorker.WorkerSupportsCancellation = true;
             _backgroundWorker.DoWork += new DoWorkEventHandler(backgroundWorker_CompileCounters);
             _backgroundWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(backgroundWorker_CompileCountersCompleted);
         }
@@ -136,20 +137,20 @@ namespace PublicCounterCompiler
         {
             if (_counterCompiler.isConsoleApp)
             {
-                Console.Out.Write("Error:" + message);
+                Console.Out.Write("Error: " + message);
             }
             else
             {
                 // Invoke is used as this may be called from the worker thread
                 BeginInvoke((Action)(() =>
                 {
-                    richTextBoxOutput.Text += "Error:" + message + "\n";
+                    richTextBoxOutput.Text += "Error: " + message + "\n";
                     richTextBoxOutput.SelectionStart = richTextBoxOutput.Text.Length;
                     richTextBoxOutput.ScrollToCaret();
                 }));
             }
 
-            System.Diagnostics.Debug.Print("Error:" + message);
+            System.Diagnostics.Debug.Print("Error: " + message);
             return false;
         }
 
@@ -174,10 +175,11 @@ namespace PublicCounterCompiler
             }
 
             Registry.SetValue(_registryKey, _registryApiEntry, api);
-
             Registry.SetValue(_registryKey, _registryGpuFamilyEntry, gpu);
 
-            StartCompileCounters(api, gpu);
+            string[] apis = { api };
+            string[] gpus = { gpu };
+            StartCompileCounters(apis, gpus);
         }
 
         /// <summary>
@@ -202,20 +204,14 @@ namespace PublicCounterCompiler
             string[] apis = batchApiList.Text.Trim().Split(',');
             string[] gpus = batchGpuFamilyList.Text.Trim().Split(',');
 
-            foreach (var api in apis)
+            var doneEvent = new AutoResetEvent(false);
+
+            StartCompileCounters(apis, gpus, doneEvent);
+
+            // Wait with timeout so we can pump the UI update
+            while (false == doneEvent.WaitOne(100))
             {
-                foreach (var gpu in gpus)
-                {
-                    var doneEvent = new AutoResetEvent(false);
-
-                    StartCompileCounters(api, gpu, doneEvent);
-
-                    // Wait with timeout so we can pump the UI update
-                    while (false == doneEvent.WaitOne(100))
-                    {
-                        Application.DoEvents();
-                    }
-                }
+                Application.DoEvents();
             }
 
             _counterCompiler.DoneRSTDocumentation(DisplayMessageHandler, ErrorHandler);
@@ -229,25 +225,25 @@ namespace PublicCounterCompiler
             /// <summary>
             /// Ctor
             /// </summary>
-            /// <param name="_api">API</param>
-            /// <param name="_gpu">GPU ASIC</param>
+            /// <param name="_apis">API</param>
+            /// <param name="_gpus">GPU ASIC</param>
             /// <param name="_doneEvent">Optional done event</param>
-            public BackgroundWorkerArgs(string _api, string _gpu, AutoResetEvent _doneEvent)
+            public BackgroundWorkerArgs(string[] _apis, string[] _gpus, AutoResetEvent _doneEvent)
             {
-                api = _api;
-                gpu = _gpu;
+                apis = _apis;
+                gpus = _gpus;
                 doneEvent = _doneEvent;
             }
 
             /// <summary>
-            /// API
+            /// The array of APIs to process.
             /// </summary>
-            public string api;
+            public string[] apis;
 
             /// <summary>
-            /// GPU ASIC
+            /// The array of GPU ASICs to process.
             /// </summary>
-            public string gpu;
+            public string[] gpus;
 
             /// <summary>
             /// Optional done event
@@ -258,15 +254,15 @@ namespace PublicCounterCompiler
         /// <summary>
         /// Starts background worker thread to compile counters
         /// </summary>
-        /// <param name="api">API</param>
-        /// <param name="gpu">GPU</param>
+        /// <param name="apis">The array of APIs to process.</param>
+        /// <param name="gpus">The array of Gfx generations to process.</param>
         /// <param name="autoResetEvent">Optional reset event</param>
-        private void StartCompileCounters(string api, string gpu, AutoResetEvent autoResetEvent = null)
+        private void StartCompileCounters(string[] apis, string[] gpus, AutoResetEvent autoResetEvent = null)
         {
             CompileButton.Enabled = false;
             batchCompile.Enabled = false;
 
-            _backgroundWorkerArgs = new BackgroundWorkerArgs(api, gpu, autoResetEvent);
+            _backgroundWorkerArgs = new BackgroundWorkerArgs(apis, gpus, autoResetEvent);
 
             // Start the asynchronous operation.
             _backgroundWorker.RunWorkerAsync(_backgroundWorkerArgs);
@@ -284,9 +280,27 @@ namespace PublicCounterCompiler
 
             var args = e.Argument as BackgroundWorkerArgs;
 
-            DisplayMessageHandler("\nCompiling API " + args.api + " for GPU Family " + args.gpu);
+            foreach (var api in args.apis)
+            {
+                foreach (var gpu in args.gpus)
+                {
+                    if (api.ToLower() == "gl" && gpu.ToLower() == "gfx11")
+                    {
+                        DisplayMessageHandler("\nSkipping GL on Gfx11 because the ugl driver does not support Gfx11.");
+                    }
+                    else
+                    {
+                        DisplayMessageHandler("\nCompiling API " + api + " for GPU Family " + gpu);
 
-            _counterCompiler.CompileCounters(args.api, args.gpu, DisplayMessageHandler, ErrorHandler);
+                        if (false == _counterCompiler.CompileCounters(api, gpu, DisplayMessageHandler, ErrorHandler))
+                        {
+                            e.Cancel = true;
+                            worker.CancelAsync();
+                            return;
+                        }
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -296,12 +310,20 @@ namespace PublicCounterCompiler
         /// <param name="e">Completed work event args</param>
         private void backgroundWorker_CompileCountersCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
+            // Get the BackgroundWorker that raised this event.
+            BackgroundWorker worker = sender as BackgroundWorker;
+
             CompileButton.Enabled = true;
             batchCompile.Enabled = true;
 
             if (null != _backgroundWorkerArgs.doneEvent)
             {
                 _backgroundWorkerArgs.doneEvent.Set();
+            }
+
+            if (e.Cancelled)
+            {
+                DisplayMessageHandler("Stopped early due to an error.");
             }
         }
 

@@ -1,12 +1,12 @@
 // =====================================================================
-// <copyright file="PublicCounterDef.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2020 Advanced Micro Devices, Inc. All rights reserved.
+// <copyright file="DerivedCounterDef.cs" company="Advanced Micro Devices, Inc.">
+//    Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
 // </author>
 // <summary>
-//      A class which contains information about a public counter.
+//    A class which contains information about a public counter.
 // </summary>
 // =====================================================================
 namespace PublicCounterCompiler
@@ -329,6 +329,11 @@ namespace PublicCounterCompiler
             set;
         }
 
+
+        /// <summary>
+        /// Indicates if the usage has been set.
+        /// </summary>
+        /// <returns>True if the usage is not null or empty; false otherwise.</returns>
         public bool ValidUsage()
         {
             return !string.IsNullOrEmpty(Usage);
@@ -436,4 +441,3 @@ namespace PublicCounterCompiler
 
     }
 }
-

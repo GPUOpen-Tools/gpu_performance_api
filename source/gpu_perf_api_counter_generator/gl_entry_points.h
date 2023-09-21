@@ -242,3 +242,4 @@ namespace ogl_utils
 }  // namespace ogl_utils
 
 #endif  // GPA_COUNTER_GENERATOR_GL_GL_ENTRY_POINTS_H_
+

@@ -164,6 +164,10 @@ TEST(CounterDllTests, VkCounterNamesByDeviceId)
     VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdSI, FALSE);
     VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdCI, FALSE);
     VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdCIHawaii, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdMi250X, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdMi210, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdUnsupported1, FALSE);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kDevIdUnsupported2, FALSE);
 
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;

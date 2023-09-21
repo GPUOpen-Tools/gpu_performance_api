@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Helper functions for Counter Generator Unit Tests.
@@ -27,18 +27,22 @@
 
 #include "gpu_perf_api_unit_tests/counters/gpa_counter_desc.h"
 
-static const unsigned int kDevIdUnknown    = 0xFFFFFFFF;  ///< bogus device id.
-static const unsigned int kDevIdSI         = 0x6798;      ///< 7970 Series.
-static const unsigned int kDevIdCI         = 0x6649;      ///< FirePro W5100.
-static const unsigned int kDevIdCIHawaii   = 0x67A0;      ///< HAWAII XTGL.
-static const unsigned int kDevIdVI         = 0x6900;      ///< R7 M260.
-static const unsigned int kDevIdGfx8       = 0x67DF;      ///< Gfx8.
-static const unsigned int kDevIdGfx9       = 0x6863;      ///< Gfx9.
-static const unsigned int kDevIdGfx10      = 0x7310;      ///< Gfx10.
-static const unsigned int kDevIdGfx10_3    = 0x73A0;      ///< Gfx10_3.
-static const unsigned int kDevIdGfx11      = 0x744C;      ///< Gfx11.
-static const unsigned int kDevIdGfx11_0_3  = 0x15BF;      ///< Gfx11_0_3.
-static const unsigned int kDevIdGfx11_0_3B = 0x15C8;      ///< Gfx11_0_3B.
+static const unsigned int kDevIdUnknown      = 0xFFFFFFFF;  ///< bogus device id.
+static const unsigned int kDevIdSI           = 0x6798;      ///< 7970 Series.
+static const unsigned int kDevIdCI           = 0x6649;      ///< FirePro W5100.
+static const unsigned int kDevIdCIHawaii     = 0x67A0;      ///< HAWAII XTGL.
+static const unsigned int kDevIdVI           = 0x6900;      ///< R7 M260.
+static const unsigned int kDevIdGfx8         = 0x67DF;      ///< Gfx8.
+static const unsigned int kDevIdGfx9         = 0x6863;      ///< Gfx9.
+static const unsigned int kDevIdMi250X       = 0x740C;      ///< GFX9_0_A (MI250X).
+static const unsigned int kDevIdMi210        = 0x740F;      ///< GFX9_0_A (MI210).
+static const unsigned int kDevIdGfx10        = 0x7310;      ///< Gfx10.
+static const unsigned int kDevIdGfx10_3      = 0x73A0;      ///< Gfx10_3.
+static const unsigned int kDevIdGfx11        = 0x744C;      ///< Gfx11.
+static const unsigned int kDevIdGfx11_0_3    = 0x15BF;      ///< Gfx11_0_3.
+static const unsigned int kDevIdGfx11_0_3B   = 0x15C8;      ///< Gfx11_0_3B.
+static const unsigned int kDevIdUnsupported1 = 0x1506;      ///< An unsupported device id.
+static const unsigned int kDevIdUnsupported2 = 0x164e;      ///< An unsupported device id.
 
 /// Name of the counter library.
 extern const char* kCountersLibName;

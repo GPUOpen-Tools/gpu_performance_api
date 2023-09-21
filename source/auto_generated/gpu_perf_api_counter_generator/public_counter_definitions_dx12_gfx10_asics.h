@@ -28,6 +28,7 @@ namespace dx12_gfx10_asics
         UNREFERENCED_PARAMETER(desired_generation);
         UNREFERENCED_PARAMETER(asic_type);
         UNREFERENCED_PARAMETER(c);
+
     }
 
 }  // namespace dx12_gfx10asics

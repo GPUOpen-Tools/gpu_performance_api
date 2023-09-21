@@ -26,34 +26,35 @@ namespace gpa_example
     {
         cmdline_parser.AddArg("--numberofframes",
                               &number_of_frames_,
-                              ArgType::ARG_TYPE_INT,
+                              ArgType::kArgTypeInt,
                               "The number of profiles to complete. Additional frames will be rendered to complete all the necessary passes required for the "
                               "enabled counters. 0 indicates to continue until the application is closed");
 
         cmdline_parser.AddArg(
-            "--includehwcounters", &include_hw_counters_, ArgType::ARG_TYPE_BOOL, "Public hardware counters will be enabled in non-internal builds");
+            "--includehwcounters", &include_hw_counters_, ArgType::kArgTypeBool, "Public hardware counters will be enabled in non-internal builds");
 
         cmdline_parser.AddArg(
-            "--includeknownissues", &include_known_issues_, ArgType::ARG_TYPE_BOOL, "Known issues will be included in the counter validation");
-
-        cmdline_parser.AddArg("--testmode", &testmode_, ArgType::ARG_TYPE_STRING, "Postfix to be appended to logfile and datafile indicating test mode (full or sanity)");
-
-        cmdline_parser.AddArg("--verify", &verify_, ArgType::ARG_TYPE_BOOL, "Application will verify a few counter values (experimental)");
+            "--includeknownissues", &include_known_issues_, ArgType::kArgTypeBool, "Known issues will be included in the counter validation");
 
         cmdline_parser.AddArg(
-            "--confirmsuccess", &confirm_success_, ArgType::ARG_TYPE_BOOL, "Implies --verify and confirms successful counter values in addition to errors");
+            "--testmode", &testmode_, ArgType::kArgTypeString, "Postfix to be appended to logfile and datafile indicating test mode (full or sanity)");
 
-        cmdline_parser.AddArg("--counterfile", &counterfile_, ArgType::ARG_TYPE_STRING, "File containing the list of counters to profile");
+        cmdline_parser.AddArg("--verify", &verify_, ArgType::kArgTypeBool, "Application will verify a few counter values (experimental)");
+
+        cmdline_parser.AddArg(
+            "--confirmsuccess", &confirm_success_, ArgType::kArgTypeBool, "Implies --verify and confirms successful counter values in addition to errors");
+
+        cmdline_parser.AddArg("--counterfile", &counterfile_, ArgType::kArgTypeString, "File containing the list of counters to profile");
 
         cmdline_parser.AddArg(
             "--logfile",
             &logfile_,
-            ArgType::ARG_TYPE_STRING,
+            ArgType::kArgTypeString,
             "The full path to the file where GPA log messages will be written; defaults to '<app_name>_gpa_log.txt' in the same directory as this executable");
 
         cmdline_parser.AddArg("--datafile",
                               &datafile_,
-                              ArgType::ARG_TYPE_STRING,
+                              ArgType::kArgTypeString,
                               "The full path to the file where GPA counter data will be written; defaults to '<app_name>_counter_data.csv' in the same "
                               "directory as this executable");
     }

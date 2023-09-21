@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Context Counter Mediator Header.
@@ -121,7 +121,7 @@ private:
     };
 
     using GpaCtxStatusInfoPair = std::pair<const IGpaContext*, GpaContextStatus>;  ///< Type alias for GPA context and its status info pair.
-    using GpaCtxStatusInfoMap  = std::map<const IGpaContext*, GpaContextStatus>;   ///< Type alias for GPA context and its status info map.
+    using GpaCtxStatusInfoMap = std::map<const IGpaContext*, GpaContextStatus>;   ///< Type alias for GPA context and its status info map.
 
     GpaCtxStatusInfoMap context_info_map_;        ///< Map of context and its info.
     mutable std::mutex  context_info_map_mutex_;  ///< Mutex for context info map.

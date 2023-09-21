@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface to access to the available counters in GPUPerfAPI.
@@ -252,8 +252,9 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibOpenCounterContext(GpaApiType 
                                                                      GpaUInt8                      generate_asic_specific_counters,
                                                                      GpaCounterContext*            gpa_virtual_context);
 
-/// Typedef for GpaCounterLibOpenCounterContext function pointer.
-typedef GpaStatus (*GpaCounterLibOpenCounterContextPtrType)(GpaApiType, GpaCounterContextHardwareInfo, GpaOpenContextFlags, GpaUInt8, GpaCounterContext*);
+/// typedef for GpaCounterLibOpenCounterContext function pointer.
+typedef GpaStatus (*GpaCounterLibOpenCounterContextPtrType)(GpaApiType,
+    GpaCounterContextHardwareInfo, GpaOpenContextFlags, GpaUInt8, GpaCounterContext*);
 
 /// @brief Closes the specified context, which ends access to GPU performance counters.
 ///

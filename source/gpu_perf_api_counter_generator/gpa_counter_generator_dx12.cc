@@ -91,7 +91,7 @@ GpaStatus GpaCounterGeneratorDx12::GeneratePublicCounters(GDT_HW_GENERATION   de
     {
         status = kGpaStatusErrorNullPointer;
     }
-    else if (public_counters->counters_generated_)
+    else if (public_counters->GetCountersGenerated())
     {
         status = kGpaStatusOk;
     }
@@ -174,7 +174,7 @@ GpaStatus GpaCounterGeneratorDx12::GeneratePublicCounters(GDT_HW_GENERATION   de
 
     if (kGpaStatusOk == status)
     {
-        public_counters->counters_generated_ = true;
+        public_counters->SetCountersGenerated(true);
     }
 
     return status;

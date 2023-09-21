@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Context Counter Mediator Implementation.
@@ -41,10 +41,10 @@ GpaStatus GpaContextCounterMediator::GenerateCounters(const IGpaContext* gpa_con
         return kGpaStatusErrorContextAlreadyOpen;
     }
 
-    GpaStatus             ret_status        = kGpaStatusOk;
-    IGpaCounterAccessor*  counter_accessor  = nullptr;
+    GpaStatus             ret_status = kGpaStatusOk;
+    IGpaCounterAccessor*  counter_accessor = nullptr;
     IGpaCounterScheduler* counter_scheduler = nullptr;
-    const GpaHwInfo*      hw_info           = gpa_context->GetHwInfo();
+    const GpaHwInfo* hw_info = gpa_context->GetHwInfo();
 
     if (nullptr == hw_info)
     {
@@ -62,7 +62,7 @@ GpaStatus GpaContextCounterMediator::GenerateCounters(const IGpaContext* gpa_con
 
         if (kGpaStatusOk == ret_status)
         {
-            GpaContextStatus contextStatus = {counter_scheduler, counter_accessor};
+            GpaContextStatus contextStatus = { counter_scheduler, counter_accessor };
 
             if (kGpaStatusOk == counter_scheduler->SetCounterAccessor(counter_accessor, vendor_id, device_id, revision_id))
             {
@@ -123,7 +123,7 @@ GpaStatus GpaContextCounterMediator::ScheduleCounters(const IGpaContext* gpa_con
         return kGpaStatusErrorOtherSessionActive;
     }
 
-    IGpaCounterScheduler* counter_scheduler = context_info_map_.at(gpa_context).counter_scheduler;
+    IGpaCounterScheduler * counter_scheduler = context_info_map_.at(gpa_context).counter_scheduler;
 
     for (std::vector<GpaUInt32>::const_iterator it = counter_set.cbegin(); it != counter_set.cend(); ++it)
     {
@@ -133,8 +133,8 @@ GpaStatus GpaContextCounterMediator::ScheduleCounters(const IGpaContext* gpa_con
     return kGpaStatusOk;
 }
 
-GpaStatus GpaContextCounterMediator::UnscheduleCounters(const IGpaContext*            gpa_context,
-                                                        const IGpaSession*            gpa_session,
+GpaStatus GpaContextCounterMediator::UnscheduleCounters(const IGpaContext* gpa_context,
+                                                        const IGpaSession* gpa_session,
                                                         const std::vector<GpaUInt32>& counter_set)
 {
     std::lock_guard<std::mutex> lock(context_info_map_mutex_);
@@ -172,7 +172,7 @@ GpaStatus GpaContextCounterMediator::GetRequiredPassCount(const IGpaContext*    
         return kGpaStatusErrorContextNotOpen;
     }
 
-    IGpaCounterScheduler* counter_scheduler = context_info_map_.at(gpa_context).counter_scheduler;
+    IGpaCounterScheduler * counter_scheduler = context_info_map_.at(gpa_context).counter_scheduler;
 
     GpaUInt32 pass_req = 0u;
     counter_scheduler->DisableAllCounters();
@@ -208,7 +208,7 @@ CounterResultLocationMap* GpaContextCounterMediator::GetCounterResultLocations(c
         return nullptr;
     }
 
-    IGpaCounterScheduler* counter_scheduler = context_info_map_.at(gpa_context).counter_scheduler;
+    IGpaCounterScheduler * counter_scheduler = context_info_map_.at(gpa_context).counter_scheduler;
 
     if (nullptr == counter_scheduler)
     {
@@ -228,7 +228,7 @@ void GpaContextCounterMediator::RemoveContext(IGpaContext* gpa_context)
     }
 }
 
-CounterList* GpaContextCounterMediator::GetCounterForPass(IGpaContext* gpa_context, PassIndex pass_index)
+CounterList* GpaContextCounterMediator::GetCounterForPass(IGpaContext * gpa_context, PassIndex pass_index)
 {
     std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
@@ -237,7 +237,7 @@ CounterList* GpaContextCounterMediator::GetCounterForPass(IGpaContext* gpa_conte
         return nullptr;
     }
 
-    IGpaCounterScheduler* counter_scheduler = context_info_map_[gpa_context].counter_scheduler;
+    IGpaCounterScheduler * counter_scheduler = context_info_map_[gpa_context].counter_scheduler;
 
     if (nullptr == counter_scheduler)
     {

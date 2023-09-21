@@ -14,14 +14,13 @@
 #include <DeviceInfoUtils.h>
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12.h"
-#include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12_non_amd.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_scheduler_dx12.h"
 
 #include "gpu_perf_api_dx12/dx12_utils.h"
 
 IGpaImplementor*                     gpa_imp = Dx12GpaImplementor::Instance();
+
 static GpaCounterGeneratorDx12       counter_generator_dx12;          ///< Static instance of DX12 generator.
-static GpaCounterGeneratorDx12NonAmd counter_generator_dx12_non_amd;  ///< Static instance of DX12 non-AMD generator.
 static GpaCounterSchedulerDx12       counter_scheduler_dx12;          ///< Static instance of DX12 scheduler.
 
 /// @brief Converts string from wide to utf-8 encoding.

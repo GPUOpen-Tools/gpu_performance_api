@@ -357,6 +357,7 @@ private:
     CommandListCounter command_list_counter_;
     mutable bool       is_all_sample_valid_in_pass_;  ///< Flag indicating all the sample in the pass is valid or not - for cache.
     mutable bool       is_pass_complete_;             ///< Flag indicating whether or not the command list and sample on them is complete.
+
 };
 
 #endif  // GPU_PERF_API_COMMON_GPA_PASS_H_

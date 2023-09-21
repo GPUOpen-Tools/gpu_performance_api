@@ -91,7 +91,7 @@ GpaStatus GpaCounterGeneratorVk::GeneratePublicCounters(GDT_HW_GENERATION   desi
     {
         status = kGpaStatusErrorNullPointer;
     }
-    else if (public_counters->counters_generated_)
+    else if (public_counters->GetCountersGenerated())
     {
         status = kGpaStatusOk;
     }
@@ -174,7 +174,7 @@ GpaStatus GpaCounterGeneratorVk::GeneratePublicCounters(GDT_HW_GENERATION   desi
 
     if (kGpaStatusOk == status)
     {
-        public_counters->counters_generated_ = true;
+        public_counters->SetCountersGenerated(true);
     }
 
     return status;
@@ -248,7 +248,7 @@ GpaStatus GpaCounterGeneratorVk::GenerateHardwareCounters(GDT_HW_GENERATION    d
 
     if (desired_generation == GDT_HW_GENERATION_VOLCANICISLAND)
     {
-        hardware_counters->counter_groups_array_ = counter_vk_gfx8::kVkCounterGroupArrayGfx8;
+        hardware_counters->counter_groups_array_                             = counter_vk_gfx8::kVkCounterGroupArrayGfx8;
         hardware_counters->internal_counter_groups_                          = counter_vk_gfx8::kHwVkGroupsGfx8;
         hardware_counters->sq_counter_groups_                                = counter_vk_gfx8::kHwVkSqGroupsGfx8;
         hardware_counters->sq_group_count_                                   = counter_vk_gfx8::kHwVkSqGroupCountGfx8;
@@ -265,7 +265,7 @@ GpaStatus GpaCounterGeneratorVk::GenerateHardwareCounters(GDT_HW_GENERATION    d
     }
     else if (desired_generation == GDT_HW_GENERATION_GFX9)
     {
-        hardware_counters->counter_groups_array_ = counter_vk_gfx9::kVkCounterGroupArrayGfx9;
+        hardware_counters->counter_groups_array_                             = counter_vk_gfx9::kVkCounterGroupArrayGfx9;
         hardware_counters->internal_counter_groups_                          = counter_vk_gfx9::kHwVkGroupsGfx9;
         hardware_counters->sq_counter_groups_                                = counter_vk_gfx9::kHwVkSqGroupsGfx9;
         hardware_counters->sq_group_count_                                   = counter_vk_gfx9::kHwVkSqGroupCountGfx9;
@@ -282,7 +282,7 @@ GpaStatus GpaCounterGeneratorVk::GenerateHardwareCounters(GDT_HW_GENERATION    d
     }
     else if (desired_generation == GDT_HW_GENERATION_GFX10)
     {
-        hardware_counters->counter_groups_array_ = counter_vk_gfx10::kVkCounterGroupArrayGfx10;
+        hardware_counters->counter_groups_array_                             = counter_vk_gfx10::kVkCounterGroupArrayGfx10;
         hardware_counters->internal_counter_groups_                          = counter_vk_gfx10::kHwVkGroupsGfx10;
         hardware_counters->sq_counter_groups_                                = counter_vk_gfx10::kHwVkSqGroupsGfx10;
         hardware_counters->sq_group_count_                                   = counter_vk_gfx10::kHwVkSqGroupCountGfx10;
@@ -299,7 +299,7 @@ GpaStatus GpaCounterGeneratorVk::GenerateHardwareCounters(GDT_HW_GENERATION    d
     }
     else if (desired_generation == GDT_HW_GENERATION_GFX103)
     {
-        hardware_counters->counter_groups_array_ = counter_vk_gfx103::kVkCounterGroupArrayGfx103;
+        hardware_counters->counter_groups_array_                             = counter_vk_gfx103::kVkCounterGroupArrayGfx103;
         hardware_counters->internal_counter_groups_                          = counter_vk_gfx103::kHwVkGroupsGfx103;
         hardware_counters->sq_counter_groups_                                = counter_vk_gfx103::kHwVkSqGroupsGfx103;
         hardware_counters->sq_group_count_                                   = counter_vk_gfx103::kHwVkSqGroupCountGfx103;
@@ -316,7 +316,7 @@ GpaStatus GpaCounterGeneratorVk::GenerateHardwareCounters(GDT_HW_GENERATION    d
     }
     else if (desired_generation == GDT_HW_GENERATION_GFX11)
     {
-        hardware_counters->counter_groups_array_ = counter_vk_gfx11::kVkCounterGroupArrayGfx11;
+        hardware_counters->counter_groups_array_                             = counter_vk_gfx11::kVkCounterGroupArrayGfx11;
         hardware_counters->internal_counter_groups_                          = counter_vk_gfx11::kHwVkGroupsGfx11;
         hardware_counters->sq_counter_groups_                                = counter_vk_gfx11::kHwVkSqGroupsGfx11;
         hardware_counters->sq_group_count_                                   = counter_vk_gfx11::kHwVkSqGroupCountGfx11;

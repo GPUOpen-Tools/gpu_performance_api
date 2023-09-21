@@ -1,12 +1,12 @@
 // =====================================================================
 // <copyright file="InternalCounterDef.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2020 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
 // </author>
 // <summary>
-//      A class which contains information about an internal counter.
+//    A class which contains information about an internal counter.
 // </summary>
 // =====================================================================
 namespace PublicCounterCompiler

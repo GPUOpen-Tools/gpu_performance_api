@@ -97,14 +97,20 @@ bool GpaCounterContextHandler::InitCounters()
     {
         if (gpa_hw_info_.UpdateDeviceInfoBasedOnDeviceId())
         {
+            if (gpa_hw_info_.IsUnsupportedDeviceId())
+            {
+                return false;
+            }
+
             GpaUInt32 vendorId;
             GpaUInt32 deviceId;
             GpaUInt32 revisionId;
 
             if (gpa_hw_info_.GetVendorId(vendorId) && gpa_hw_info_.GetDeviceId(deviceId) && gpa_hw_info_.GetRevisionId(revisionId))
             {
-                const GpaStatus status = ::GenerateCounters(
-                    gpa_api_type_, vendorId, deviceId, revisionId, gpa_open_context_flags_, asic_specific_, &gpa_counter_accessor_, &gpa_counter_scheduler_);
+                const GpaStatus status = GenerateCounters(
+                    gpa_api_type_,
+                    vendorId, deviceId, revisionId, gpa_open_context_flags_, asic_specific_, &gpa_counter_accessor_, &gpa_counter_scheduler_);
 
                 if (kGpaStatusOk == status)
                 {
@@ -195,7 +201,8 @@ GpaStatus GpaCounterContextManager::OpenCounterContext(const GpaApiType&        
     Init(api_type);
 
     GpaCounterContextHandler* gpa_new_counter_context =
-        new (std::nothrow) GpaCounterContextHandler(api_type, gpa_counter_context_hardware_info, context_flags, generate_asic_specific_counters);
+        new (std::nothrow) GpaCounterContextHandler(api_type,
+            gpa_counter_context_hardware_info, context_flags, generate_asic_specific_counters);
 
     if (nullptr != gpa_new_counter_context)
     {
@@ -211,6 +218,7 @@ GpaStatus GpaCounterContextManager::OpenCounterContext(const GpaApiType&        
             }
 
             *gpa_counter_context = nullptr;
+            delete gpa_new_counter_context;
             return kGpaStatusErrorFailed;
         }
 
@@ -350,7 +358,7 @@ void GpaCounterContextManager::InitCounterScheduler(const GpaApiType& api_type)
         break;
     case kGpaApiDirectx12:
 #ifdef ENABLE_GPA_DX12
-        gpa_counter_scheduler_map_[kGpaApiDirectx11] = new GpaCounterSchedulerDx12();
+        gpa_counter_scheduler_map_[kGpaApiDirectx12] = new GpaCounterSchedulerDx12();
 #endif
         break;
     case kGpaApiOpengl:

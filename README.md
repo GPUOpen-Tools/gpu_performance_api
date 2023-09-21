@@ -31,12 +31,21 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-### Version 3.13.1 (06/22/2023)
-* Add support for additional AMD Radeon RX 7000 Series hardware.
-* Add support for AMD Radeon 700M Series APUs.
-  * Vulkan and OpenGL are supported on existing drivers; DX12, DX11, and OpenCL will be enabled by an upcoming driver.
-* Bug Fixes:
-  * Fixed performance regression in GPUPerfAPIDX12[-x64].dll
+### Version 3.14 (09/21/2023)
+* Added support for AMD Radeon RX 7700 XT and AMD Radeon RX 7800 XT graphics cards.
+* Added support for additional AMD Radeon 700M Series devices.
+* Added counters back to Gfx9, Gfx10, Gfx103, and Gfx11 hardware generations. These restored counters are listed below by group:
+  * Timing: TessellatorBusy, TessellatorBusyCycles, VsGsBusy, VsGsBusyCycles, VsGsTime, PreTessellationBusy, PreTessellationBusyCycles, PreTessellationTime, PostTessellationBusy, PostTessellationBusyCycles, PostTessellationTime
+  * VertexGeometry: VsGsVerticesIn, VsGsPrimsIn, GSVerticesOut
+  * PreTessellation: PreTessVerticesIn
+  * PostTessellation: PostTessPrimsOut
+  * PrimitiveAssembly: PrimitivesIn
+  * TextureUnit: TexTriFilteringPct, TexTriFilteringCount, NoTexTriFilteringCount, TexVolFilteringPct, TexVolFilteringCount, NoTexVolFilteringCount
+* New counters added:
+  * MemoryCache: L0TagConflictReadStalledCycles, L0TagConflictWriteStalledCycles, L0TagConflictAtomicStalledCycles
+* Changed to Visual Studio 2022 as the default build environment on Windows (previously Visual Studio 2019).
+* Added improved support for multi-GPU systems.
+* Removed code related to software counters on non-AMD hardware.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.

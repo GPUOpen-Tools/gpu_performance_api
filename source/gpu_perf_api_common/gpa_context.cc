@@ -7,7 +7,6 @@
 
 #include "gpu_perf_api_common/gpa_context.h"
 
-#include "gpu_perf_api_counter_generator/gpa_counter_generator.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_group_accessor.h"
 #include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
 
@@ -172,7 +171,7 @@ GpaStatus GpaContext::GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType
     return kGpaStatusOk;
 }
 
-GpaStatus GpaContext::GetCounterIndex(const char* pCounterName, GpaUInt32* counter_index) const
+GpaStatus GpaContext::GetCounterIndex(const char* counter_name, GpaUInt32* counter_index) const
 {
     GPA_INTERNAL_CHECK_NULL_PARAM(counter_index);
 
@@ -184,7 +183,7 @@ GpaStatus GpaContext::GetCounterIndex(const char* pCounterName, GpaUInt32* count
         return kGpaStatusErrorFailed;
     }
 
-    return counter_accessor->GetCounterIndex(pCounterName, counter_index) ? kGpaStatusOk : kGpaStatusErrorFailed;
+    return counter_accessor->GetCounterIndex(counter_name, counter_index) ? kGpaStatusOk : kGpaStatusErrorFailed;
 }
 
 bool GpaContext::GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, GpaCounterSource* counter_source, GpaUInt32* source_local_index) const
@@ -206,22 +205,6 @@ bool GpaContext::GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, Gpa
     }
 
     return isValid;
-}
-
-bool GpaContext::ArePublicCountersExposed() const
-{
-    return (context_flags_ & kGpaOpenContextHidePublicCountersBit) == 0;
-}
-
-bool GpaContext::AreHardwareCountersExposed() const
-{
-    return (context_flags_ & kGpaOpenContextEnableHardwareCountersBit) == 0;
-}
-
-bool GpaContext::AreSoftwareCountersExposed() const
-{
-    // GPA no longer support SW counters
-    return false;
 }
 
 GpaCounterSource GpaContext::GetCounterSource(GpaUInt32 internal_counter_index) const
@@ -248,6 +231,16 @@ GpaCounterSource GpaContext::GetCounterSource(GpaUInt32 internal_counter_index) 
     }
 
     return source;
+}
+
+bool GpaContext::ArePublicCountersExposed() const
+{
+    return (context_flags_ & kGpaOpenContextHidePublicCountersBit) == 0;
+}
+
+bool GpaContext::AreHardwareCountersExposed() const
+{
+    return (context_flags_ & kGpaOpenContextEnableHardwareCountersBit) == 0;
 }
 
 void GpaContext::SetInvalidateAndFlushL2Cache(bool should_invalidate_and_flush_l2_cache)
@@ -358,7 +351,7 @@ GpaStatus GpaContext::BeginSession(IGpaSession* gpa_session)
     return ret_status;
 }
 
-GpaStatus GpaContext::EndSession(IGpaSession* gpa_session)
+GpaStatus GpaContext::EndSession(IGpaSession* gpa_session, bool force_end)
 {
     GpaStatus ret_status = kGpaStatusOk;
 
@@ -385,11 +378,11 @@ GpaStatus GpaContext::EndSession(IGpaSession* gpa_session)
         active_session_mutex_.unlock();
     }
 
-    if (kGpaStatusOk == ret_status)
+    if (force_end || kGpaStatusOk == ret_status)
     {
         ret_status = gpa_session->End();
 
-        if (kGpaStatusOk == ret_status)
+        if (force_end || kGpaStatusOk == ret_status)
         {
             active_session_mutex_.lock();
             active_session_ = nullptr;
@@ -479,3 +472,4 @@ bool GpaContext::GetIndex(IGpaSession* gpa_session, unsigned int* index) const
 
     return found;
 }
+

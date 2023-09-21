@@ -109,6 +109,7 @@ public:
     ///
     /// @return The total number of groups.
     virtual unsigned int GlobalGroupIndex() const = 0;
+
 };
 
 /// @brief Interface for a class that can split public and internal counters into separate passes.
@@ -221,6 +222,7 @@ protected:
     {
         return time_counter_indices_.find(counter_index) != time_counter_indices_.end();
     }
+
 
     /// @brief Adds a counter result location.
     ///
@@ -376,6 +378,9 @@ protected:
         }
 
         unsigned int group_limit = max_counters_per_group[group_index];
+
+        // This should never occur. It indicates the counter relies on a block without any collectible events.
+        assert(group_limit > 0);
 
         return new_group_used_count <= group_limit;
     }

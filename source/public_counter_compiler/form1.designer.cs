@@ -1,12 +1,12 @@
 ﻿// =============================================================================
-// <copyright file="Form1.Designer.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2017 Advanced Micro Devices, Inc. All rights reserved.
+// <copyright file="form1.designer.cs" company="Advanced Micro Devices, Inc.">
+//    Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
 // </author>
 // <summary>
-//      Main form for PublicCounterCompiler
+//    Main form for PublicCounterCompiler
 // </summary>
 // =============================================================================
 namespace PublicCounterCompiler

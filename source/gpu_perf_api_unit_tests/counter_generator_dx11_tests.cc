@@ -178,6 +178,10 @@ TEST(CounterDllTests, Dx11CounterNamesByDeviceId)
     VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdSI, FALSE);
     VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdCI, FALSE);
     VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdCIHawaii, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdMi250X, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdMi210, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdUnsupported1, FALSE);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kDevIdUnsupported2, FALSE);
 
     std::vector<const char*> counter_names;
     std::vector<const char*> hardware_counter_names;

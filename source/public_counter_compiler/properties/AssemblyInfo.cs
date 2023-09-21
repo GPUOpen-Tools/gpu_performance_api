@@ -1,6 +1,6 @@
 ﻿// =====================================================================
 // <copyright file="AssemblyInfo.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2018 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -22,7 +22,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("PublicCounterCompiler")]
-[assembly: AssemblyCopyright("Copyright (c) 2010-2018 Advanced Micro Devices, Inc. All rights reserved.")]
+[assembly: AssemblyCopyright("Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

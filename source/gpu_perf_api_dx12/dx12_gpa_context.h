@@ -85,7 +85,7 @@ private:
     /// @brief Initializes the AMD Driver extension objects for the context.
     ///
     /// @return True upon successful initialization otherwise false.
-    bool InitializeAMDExtension();
+    bool InitializeAmdExtension();
 
     /// @brief Destroys all the allocated resources for the context.
     void CleanUp();

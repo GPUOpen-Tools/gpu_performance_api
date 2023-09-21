@@ -1,7 +1,7 @@
 DO NOT TRANSLATE OR LOCALIZE
 
 
-Third-Party Notices Report for GPUPerfAPI v3.13.1
+Third-Party Notices Report for GPUPerfAPI v3.14
 
 
 

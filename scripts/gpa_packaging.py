@@ -240,7 +240,7 @@ class GpaPackage:
 
     _gpa_binaries=["GPUPerfAPICounters"]
 
-    if sys.platform == "win32" or sys.platform.startswith("linux"):
+    if sys.platform.startswith("linux") or sys.platform == "win32":
         _gpa_binaries.append("GPUPerfAPIVK")
         _gpa_binaries.append("GPUPerfAPIGL")
 

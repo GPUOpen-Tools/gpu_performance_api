@@ -56,47 +56,6 @@ inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
 {
     UNREFERENCED_PARAMETER(asic_type);
 
-    // dx12 specific max event overrides
-    auto block_map = BuildBlockMap(kHwDx12GroupsGfx9, kHwDx12GroupCountGfx9);
-
-    UpdateMaxSpmBlockEvents(block_map.get(), "CPF", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "IA", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "VGT", 5);
-    UpdateMaxSpmBlockEvents(block_map.get(), "PA_SU", 6);
-    UpdateMaxSpmBlockEvents(block_map.get(), "PA_SC", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "SPI", 16);
-    UpdateMaxSpmBlockEvents(block_map.get(), "SQ", 16);
-    UpdateMaxSpmBlockEvents(block_map.get(), "SX", 8);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TA", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TD", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TCP", 6);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TCC", 8);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TCA", 8);
-    UpdateMaxSpmBlockEvents(block_map.get(), "DB", 6);
-    UpdateMaxSpmBlockEvents(block_map.get(), "CB", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GDS", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "SRBM", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GRBM", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GRBMSE", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "RLC", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "SDMA", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "MC", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "CPG", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "CPC", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "WD", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TCS", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "ATC", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "ATCL2", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "MCVML2", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GCEA", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "RPB", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "RMI", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "UMC", 5);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GPIN", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GPUTimeStamp", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GPUTime", 0);
-
-
     return true;
 }
 } //  namespace counter_dx12_gfx9

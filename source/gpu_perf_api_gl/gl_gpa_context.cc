@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA GL Context Implementation.
@@ -447,10 +447,9 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                         continue;
                     }
 
-                    // GPA does not yet support GE_DIST or GE_SE on GFX11. On GFX11, OGLP may expose SQ_ES, SQ_VS, and SQ_LS, even though they are not actually supported on the hardware.
+                    // On GFX11, OGLP may expose SQ_ES, SQ_VS, and SQ_LS, even though they are not actually supported on the hardware.
                     if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 &&
-                        (driver_group_name_extended.find("GE_DIST") == 0 || driver_group_name_extended.find("GE_SE") == 0 ||
-                         driver_group_name_extended.find("SQ_ES") == 0 || driver_group_name_extended.find("SQ_VS") == 0 ||
+                        (driver_group_name_extended.find("SQ_ES") == 0 || driver_group_name_extended.find("SQ_VS") == 0 ||
                          driver_group_name_extended.find("SQ_LS") == 0))
                     {
                         gpa_group_index -= 1;

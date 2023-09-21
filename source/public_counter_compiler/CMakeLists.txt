@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.5.1)
 
 enable_language(CSharp)
@@ -16,8 +16,8 @@ set(SOURCES ${CMAKE_CURRENT_SOURCE_DIR}/properties/AssemblyInfo.cs
             ${CMAKE_CURRENT_SOURCE_DIR}/app.manifest
             ${CMAKE_CURRENT_SOURCE_DIR}/DerivedCounterDef.cs
             ${CMAKE_CURRENT_SOURCE_DIR}/Form1.cs
-            ${CMAKE_CURRENT_SOURCE_DIR}/Form1.Designer.cs
-            ${CMAKE_CURRENT_SOURCE_DIR}/form1.resx
+            ${CMAKE_CURRENT_SOURCE_DIR}/Form1.designer.cs
+            ${CMAKE_CURRENT_SOURCE_DIR}/Form1.resx
             ${CMAKE_CURRENT_SOURCE_DIR}/InternalCounterDef.cs
             ${CMAKE_CURRENT_SOURCE_DIR}/packages.config
             ${CMAKE_CURRENT_SOURCE_DIR}/Program.cs

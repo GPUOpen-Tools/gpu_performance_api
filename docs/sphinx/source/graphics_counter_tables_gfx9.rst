@@ -1,4 +1,4 @@
-.. Copyright(c) 2018-2023 Advanced Micro Devices, Inc.All rights reserved.
+.. Copyright(c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 .. Graphics Performance Counters for Vega
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
@@ -50,6 +50,9 @@ VertexGeometry Group
     :header: "Counter Name", "Usage", "Brief Description"
     :widths: 15, 10, 75
 
+    "VsGsVerticesIn", "Items", "The number of unique vertices processed by the VS and GS."
+    "VsGsPrimsIn", "Items", "The number of primitives passed into the VS and GS."
+    "GSVerticesOut", "Items", "The number of vertices output by the GS."
     "VsGsVALUInstCount", "Items", "Average number of vector ALU instructions executed in the VS and GS in a VS-[GS-]PS pipeline. Affected by flow control."
     "VsGsSALUInstCount", "Items", "Average number of scalar ALU instructions executed in the VS and GS in a VS-[GS-]PS pipeline. Affected by flow control."
     "VsGsVALUBusy", "Percentage", "The percentage of GPUTime vector ALU instructions are being processed by the VS and GS in a VS-[GS-]PS pipeline."
@@ -64,6 +67,7 @@ PreTessellation Group
     :header: "Counter Name", "Usage", "Brief Description"
     :widths: 15, 10, 75
 
+    "PreTessVerticesIn", "Items", "The number of vertices processed by the VS and HS when using tessellation."
     "PreTessVALUInstCount", "Items", "Average number of vector ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control."
     "PreTessSALUInstCount", "Items", "Average number of scalar ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control."
     "PreTessVALUBusy", "Percentage", "The percentage of GPUTime vector ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation."
@@ -78,6 +82,7 @@ PostTessellation Group
     :header: "Counter Name", "Usage", "Brief Description"
     :widths: 15, 10, 75
 
+    "PostTessPrimsOut", "Items", "The number of primitives output by the DS and GS when using tessellation."
     "PostTessVALUInstCount", "Items", "Average number of vector ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control."
     "PostTessSALUInstCount", "Items", "Average number of scalar ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control."
     "PostTessVALUBusy", "Percentage", "The percentage of GPUTime vector ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation."
@@ -211,6 +216,17 @@ ColorBuffer Group
     "CBColorAndMaskWritten", "Bytes", "Total number of bytes written to the color and mask buffers."
     "CBSlowPixelPct", "Percentage", "Percentage of pixels written to the color buffer using a half-rate or quarter-rate format."
     "CBSlowPixelCount", "Items", "Number of pixels written to the color buffer using a half-rate or quarter-rate format."
+
+MemoryCache Group
+%%%%%%%%%%%%%%%%%
+
+.. csv-table::
+    :header: "Counter Name", "Usage", "Brief Description"
+    :widths: 15, 10, 75
+
+    "L0TagConflictReadStalledCycles", "Items", "The number of cycles read operations from the L0 cache are stalled due to tag conflicts."
+    "L0TagConflictWriteStalledCycles", "Items", "The number of cycles write operations to the L0 cache are stalled due to tag conflicts."
+    "L0TagConflictAtomicStalledCycles", "Items", "The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts."
 
 GlobalMemory Group
 %%%%%%%%%%%%%%%%%%

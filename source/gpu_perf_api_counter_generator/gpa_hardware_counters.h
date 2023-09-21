@@ -10,10 +10,10 @@
 
 #include <sstream>
 
-#include "gpa_counter.h"
 #include "gpu_perf_api_common/gpa_common_defs.h"
-#include "gpa_split_counters_interfaces.h"
-#include "gpa_counter_scheduler_interface.h"
+#include "gpu_perf_api_counter_generator/gpa_counter.h"
+#include "gpu_perf_api_counter_generator/gpa_split_counters_interfaces.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_scheduler_interface.h"
 
 /// @brief Struct to describe a hardware counter.
 struct GpaHardwareCounterDescExt
@@ -102,10 +102,11 @@ public:
         kGpaInternalHwBlockSqWgpHs,                                  ///< The Gpa hardware block is SQWGP_HS.
         kGpaInternalHwBlockSqWgpCs,                                  ///< The Gpa hardware block is SQWGP_CS.
         kGpaInternalHwBlockSqWgpLast = kGpaInternalHwBlockSqWgpCs,   ///< The Gpa hardware block is SQWGP_CS.
+        kGpaInternalHwBlockSqG,                                      ///< The Gpa hardware block is SQG.
         kGpaInternalHwBlockCount,                                    ///< Count.
     };
 
-    /// @brief Initializes an instance of the GPA_HardwareCounters class.
+    /// @brief Initializes an instance of the GpaHardwareCounters class.
     GpaHardwareCounters()
     {
         if (kHardwareBlockString.empty())
@@ -194,7 +195,7 @@ public:
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQG_GS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQG_HS"),
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQG_CS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQWGP_PS"),
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQWGP_GS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQWGP_HS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS")};
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqG, "SQG")};
         }
 
         Clear();
@@ -318,7 +319,7 @@ public:
             // have the "0" afterwards to indicate the block instance number, but if there are multiple instances
             // then the first one will end with a "0". Taking this approach allows us to search for an exact match.
             // There are some hardware blocks with similar names that shouldn't be accidentally matched ie: ATC / ATCL2,
-            // GE / GESE / GEDIST, SQ / SQ_GS (etc) / SQWGP / SQWGP_GS (etc).
+            // GE / GESE / GEDIST, SQ / SQ_GS (etc) / SQG / SQG_GS (etc) / SQWGP / SQWGP_GS (etc).
             const std::string hardware_block_to_find               = kHardwareBlockString[gpa_internal_hardware_block];
             const std::string hardware_block_to_find_instance_zero = hardware_block_to_find + "0";
 
@@ -943,14 +944,14 @@ public:
     }
 
     std::vector<std::vector<GpaHardwareCounterDesc>*>
-                                     counter_groups_array_;           ///< List of counter groups as defined by the list of internal counters in each group.
-    std::vector<GpaCounterGroupDesc> internal_counter_groups_;        ///< List of internal counter groups.
-    GpaCounterGroupDesc*             additional_groups_;              ///< List of internal counter groups exposed by the driver, but not known by GPA.
-    unsigned int                     additional_group_count_;         ///< The number of internal counter groups exposed by the driver, but not known by GPA.
-    GpaSqCounterGroupDesc*           sq_counter_groups_;              ///< List of GpaSqCounterGroupDesc.
-    unsigned int                     sq_group_count_;                 ///< The number of internal SQ counter groups.
-    std::set<unsigned int>           timestamp_block_ids_;            ///< Set of timestamp block id's.
-    std::set<unsigned int>           time_counter_indices_;           ///< Set of timestamp counter indices.
+                                     counter_groups_array_;     ///< List of counter groups as defined by the list of internal counters in each group.
+    std::vector<GpaCounterGroupDesc> internal_counter_groups_;  ///< List of internal counter groups.
+    GpaCounterGroupDesc*             additional_groups_;        ///< List of internal counter groups exposed by the driver, but not known by GPA.
+    unsigned int                     additional_group_count_;   ///< The number of internal counter groups exposed by the driver, but not known by GPA.
+    GpaSqCounterGroupDesc*           sq_counter_groups_;        ///< List of GpaSqCounterGroupDesc.
+    unsigned int                     sq_group_count_;           ///< The number of internal SQ counter groups.
+    std::set<unsigned int>           timestamp_block_ids_;      ///< Set of timestamp block id's.
+    std::set<unsigned int> time_counter_indices_;  ///< Set of timestamp counter indices.
     unsigned int gpu_time_bottom_to_bottom_duration_counter_index_;   ///< The index of the GPUTime Bottom-to-Bottom duration counter (-1 if it doesn't exist).
     unsigned int gpu_time_bottom_to_bottom_start_counter_index_;      ///< The index of the GPUTime Bottom-to-Bottom start counter (-1 if it doesn't exist).
     unsigned int gpu_time_bottom_to_bottom_end_counter_index_;        ///< The index of the GPUTime Bottom-to-Bottom end counter (-1 if it doesn't exist).

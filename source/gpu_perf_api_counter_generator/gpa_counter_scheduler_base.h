@@ -143,6 +143,7 @@ protected:
 
     /// As the profile is happening, this tracks the current pass.
     unsigned int pass_index_;
+
 };
 
 #endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_SCHEDULER_BASE_H_

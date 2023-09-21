@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  This file defines function types to make it easier to dynamically load
