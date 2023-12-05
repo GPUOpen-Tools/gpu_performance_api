@@ -2706,7 +2706,7 @@ type=gpa_float64
 usage=cycles
 [GLGfx10]
 TA*_PERF_SEL_TA_BUSY[0..15]
-eqn=0..15,max16
+eqn=0..15,max16,NUM_SHADER_ARRAYS,/
 [DX11Gfx10]
 [DX12Gfx10]
 [OGLPGfx10]

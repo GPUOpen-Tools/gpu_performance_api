@@ -136,7 +136,6 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
                            GpaUInt32              device_id,
                            GpaUInt32              revision_id,
                            GpaOpenContextFlags    flags,
-                           GpaUInt8               generate_asic_specific_counters,
                            IGpaCounterAccessor**  counter_accessor_out,
                            IGpaCounterScheduler** counter_scheduler_out)
 {
@@ -195,7 +194,7 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
     bool allow_hardware = (flags & kGpaOpenContextEnableHardwareCountersBit) == kGpaOpenContextEnableHardwareCountersBit;
 
     tmp_accessor->SetAllowedCounters(allow_public, allow_hardware);
-    status = tmp_accessor->GenerateCounters(desired_generation, card_info.m_asicType, generate_asic_specific_counters);
+    status = tmp_accessor->GenerateCounters(desired_generation, card_info.m_asicType);
 
     if (status == kGpaStatusOk)
     {

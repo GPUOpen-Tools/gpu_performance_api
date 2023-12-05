@@ -290,7 +290,7 @@ DeviceClockMode GpaContext::GetDeviceClockMode() const
 
 bool GpaContext::OpenCounters()
 {
-    bool success = (kGpaStatusOk == GpaContextCounterMediator::Instance()->GenerateCounters(this, context_flags_, true));
+    bool success = (kGpaStatusOk == GpaContextCounterMediator::Instance()->GenerateCounters(this, context_flags_));
     return success;
 }
 

@@ -32,6 +32,7 @@ Dx12GpaSession::~Dx12GpaSession()
     if (nullptr != amd_ext_gpa_interface_)
     {
         amd_ext_gpa_interface_->Release();
+        amd_ext_gpa_interface_ = nullptr;
     }
 }
 

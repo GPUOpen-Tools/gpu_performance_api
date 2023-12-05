@@ -39,22 +39,22 @@ GlGpaPass::GlGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterS
 
                     unsigned int group_index = counter->group_index;
 
-                    GLint  num_counters_in_group = 0;
+                    GLint  last_counter_in_group = 0;
                     GLuint group_instance        = 0;
 
                     if (group_index < static_cast<unsigned int>(hardware_counters->internal_counter_groups_.size()))
                     {
-                        num_counters_in_group = static_cast<GLint>(hardware_counters->internal_counter_groups_.at(group_index).num_counters);
+                        last_counter_in_group = static_cast<GLint>(hardware_counters->internal_counter_groups_.at(group_index).num_counters);
                         group_instance        = static_cast<GLuint>(hardware_counters->internal_counter_groups_.at(group_index).block_instance);
                     }
                     else
                     {
-                        num_counters_in_group = static_cast<GLint>(hardware_counters->additional_groups_[group_index - hardware_counters->counter_groups_array_.size()].num_counters);
+                        last_counter_in_group = static_cast<GLint>(hardware_counters->additional_groups_[group_index - hardware_counters->counter_groups_array_.size()].num_counters);
                         group_instance = static_cast<GLuint>(hardware_counters->additional_groups_[group_index - hardware_counters->counter_groups_array_.size()].block_instance);
                     }
 
-                    assert(counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(num_counters_in_group));
-                    UNREFERENCED_PARAMETER(num_counters_in_group);
+                    assert(counter->hardware_counters->counter_index_in_group <= static_cast<unsigned int>(last_counter_in_group));
+                    UNREFERENCED_PARAMETER(last_counter_in_group);
 
                     // If the block instance to enable does not exist on this hardware, then disable the counter in this pass.
                     // This will basically just fake the result as returning 0.

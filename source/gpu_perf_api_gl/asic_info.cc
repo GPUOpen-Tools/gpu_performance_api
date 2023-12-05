@@ -108,7 +108,7 @@ namespace ogl_utils
 
     AsicIdInfo GetAsicInfoForAsicRevision(AsicRevision asic_revision)
     {
-        static_assert(kAsicRevisionLast == 0x39, "AsicRevision has changed, add necessary entry for asic info.");
+        static_assert(kAsicRevisionLast == 0x3B, "AsicRevision has changed, add necessary entry for asic info.");
 
         AsicIdInfo asic_id_info = {};
 
@@ -372,7 +372,21 @@ namespace ogl_utils
             asic_id_info.is_apu            = true;
             break;
 
-        default:
+        case kGfx1103HP1:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_3;
+            asic_id_info.default_device_id = 0x1900;
+            asic_id_info.is_apu            = true;
+            break;
+
+        case kGfx1103HP2:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_3B;
+            asic_id_info.default_device_id = 0x1901;
+            asic_id_info.is_apu            = true;
+            break;
+
+	default:
             assert(!"Unhandled AsicRevision type");
             asic_id_info.asic_generation   = kAsicUnknown;
             asic_id_info.gdt_asic_type     = GDT_ASIC_TYPE_NONE;

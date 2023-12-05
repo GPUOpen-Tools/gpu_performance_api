@@ -7780,7 +7780,7 @@ void AutoDefinePublicDerivedCountersVkGfx11(GpaDerivedCounters& c)
         internal_counters.push_back(91007);
         internal_counters.push_back(91105);
 
-        c.DefineDerivedCounter("LocalVidMemBytes", "GlobalMemory", "Number of bytes read from or written to local video memory", kGpaDataTypeFloat64, kGpaUsageTypeBytes, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*", "2a601145-56c1-625b-bedd-66d959c5ecc3");
+        c.DefineDerivedCounter("LocalVidMemBytes", "GlobalMemory", "Number of bytes read from or written to the Infinity Cache (if available) or local video memory", kGpaDataTypeFloat64, kGpaUsageTypeBytes, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*", "48207266-a1ef-290a-3c77-effd1260fa2c");
     }
     {
         vector<GpaUInt32> internal_counters;

@@ -29,7 +29,6 @@ namespace counter_cl_gfx8
     extern const std::set<unsigned int>                               kHwClTimestampBlockIdsGfx8; ///< Timestamp block id's for Cl for Gfx8 family
     extern const std::set<unsigned int>                               kHwClTimeCounterIndicesGfx8; ///< Timestamp counter indices for Cl for Gfx8 family
     extern const unsigned int                                         kHwClGroupCountGfx8; ///< Hardware Group Count for Cl for Gfx8 family
-    extern const unsigned int                                         kHwClExposedCountersGroupCountGfx8; ///< Exposed hardware counter Group Count for Cl for Gfx8 family
     extern const unsigned int                                         kClPaddedCounterGroupCountGfx8; ///< reserved counter group count for Cl for Gfx8 family
     extern const unsigned int                                         kHwClSqGroupCountGfx8; ///< Hardware SQ Group Count for Cl for Gfx8 family
     extern const unsigned int                                         kHwClSqIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for Cl for Gfx8 family

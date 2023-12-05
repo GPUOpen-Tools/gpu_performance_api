@@ -35,8 +35,7 @@ public:
     ///
     /// @param [in] gpa_context GPA context.
     /// @param [in] flags Flags used to initialize the context. Should be a combination of GPA_OpenContext_Bits.
-    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
-    GpaStatus GenerateCounters(const IGpaContext* gpa_context, GpaOpenContextFlags flags, GpaUInt8 generate_asic_specific_counters);
+    GpaStatus GenerateCounters(const IGpaContext* gpa_context, GpaOpenContextFlags flags);
 
     /// @brief Checks whether the counter scheduling is supported or not for the given context.
     ///

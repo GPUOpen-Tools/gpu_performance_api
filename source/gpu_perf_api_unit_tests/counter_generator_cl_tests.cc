@@ -140,49 +140,59 @@ static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration gen
 
 TEST(CounterDllTests, OpenClUnsupportedHardwareGenerations)
 {
-    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationNone, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationNvidia, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationIntel, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationGfx6, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationGfx7, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationNone);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationNvidia);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationIntel);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationGfx6);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationGfx7);
+}
+
+TEST(CounterDllTests, OpenClVerifyInvalidOpenContextParameters)
+{
+    VerifyInvalidOpenContextParameters(kGpaApiOpencl, kDevIdGfx11);
 }
 
 // Test the OpenCL derived counter blocks
 TEST(CounterDllTests, OpenClDerivedCounterBlocks)
 {
-    VerifyDerivedCounterCount(kGpaApiOpencl, kGpaHwGenerationGfx8, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx8));
-    VerifyDerivedCounterCount(kGpaApiOpencl, kGpaHwGenerationGfx9, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx9));
-    VerifyDerivedCounterCount(kGpaApiOpencl, kGpaHwGenerationGfx10, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx10));
-    VerifyDerivedCounterCount(kGpaApiOpencl, kGpaHwGenerationGfx103, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx103));
-    VerifyDerivedCounterCount(kGpaApiOpencl, kGpaHwGenerationGfx11, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx11));
+    VerifyDerivedCounterCount(kGpaApiOpencl, kGpaHwGenerationGfx8, GetExpectedPublicCounters(kGpaHwGenerationGfx8));
+    VerifyDerivedCounterCount(kGpaApiOpencl, kGpaHwGenerationGfx9, GetExpectedPublicCounters(kGpaHwGenerationGfx9));
+    VerifyDerivedCounterCount(kGpaApiOpencl, kGpaHwGenerationGfx10, GetExpectedPublicCounters(kGpaHwGenerationGfx10));
+    VerifyDerivedCounterCount(kGpaApiOpencl, kGpaHwGenerationGfx103, GetExpectedPublicCounters(kGpaHwGenerationGfx103));
+    VerifyDerivedCounterCount(kGpaApiOpencl, kGpaHwGenerationGfx11, GetExpectedPublicCounters(kGpaHwGenerationGfx11));
 }
 
-// Test the openCL counter names on all supported hardware
+// Test the openCL counter names on all supported hardware.
 TEST(CounterDllTests, OpenClCounterNamesByDeviceId)
 {
-    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdUnknown, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdSI, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdCI, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdCIHawaii, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdMi250X, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdMi210, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdUnsupported1, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdUnsupported2, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdUnknown);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdSI);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdCI);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdCIHawaii);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdMi250X);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdMi210);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdUnsupported1);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kDevIdUnsupported2);
 
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kDevIdVI, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx8, derived_counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx9, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx9, derived_counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx10, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx10, derived_counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx10_3, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx10_3, derived_counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11, FALSE, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11_0_3, FALSE, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11_0_3B, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11, derived_counter_names, hardware_counter_names);
+
+    // The variant hardware can only have the derived counter names verified.
+    // GetExpectedCountersForGeneration() method in our tests is not thorough enough to create
+    // the expected list of hardware counters for each variant.
+    std::vector<const char*> empty_list_to_skip_tests;
+    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11_0_3, derived_counter_names, empty_list_to_skip_tests);
+    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11_0_3B, derived_counter_names, empty_list_to_skip_tests);
 }
 
 // Test the openCL counter names on each generation
@@ -191,7 +201,7 @@ TEST(CounterDllTests, OpenClCounterNamesGfx8)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx8, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx8, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenClCounterNamesGfx9)
@@ -199,7 +209,7 @@ TEST(CounterDllTests, OpenClCounterNamesGfx9)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx9, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx9, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenClCounterNamesGfx10)
@@ -207,7 +217,7 @@ TEST(CounterDllTests, OpenClCounterNamesGfx10)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx10, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx10, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenClCounterNamesGfx103)
@@ -215,7 +225,7 @@ TEST(CounterDllTests, OpenClCounterNamesGfx103)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx103, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx103, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenClCounterNamesGfx11)
@@ -223,7 +233,7 @@ TEST(CounterDllTests, OpenClCounterNamesGfx11)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx11, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpencl, kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, ClOpenCounterContext)
@@ -237,37 +247,37 @@ TEST(CounterDllTests, ClOpenCounterContext)
 
 TEST(CounterDllTests, ClCounterLibTestGfx8)
 {
-    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdVI, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdVI, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx9)
 {
-    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx9, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx9, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx10)
 {
-    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx10, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx10, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx103)
 {
-    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx10_3, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx10_3, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx11)
 {
-    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx1103)
 {
-    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11_0_3, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11_0_3, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx1103B)
 {
-    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11_0_3B, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11_0_3B, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterFormulaTest)

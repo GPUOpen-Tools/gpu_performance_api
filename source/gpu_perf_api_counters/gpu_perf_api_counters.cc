@@ -104,7 +104,7 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetFuncTable(void* gpa_counter
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibOpenCounterContext(GpaApiType                    api,
                                                                      GpaCounterContextHardwareInfo gpa_counter_context_hardware_info,
                                                                      GpaOpenContextFlags           context_flags,
-                                                                     GpaUInt8                      generate_asic_specific_counters,
+                                                                     GpaUInt8                      generate_asic_specific_counters_deprecated,
                                                                      GpaCounterContext*            gpa_virtual_context)
 {
     if (nullptr == gpa_virtual_context)
@@ -112,15 +112,20 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibOpenCounterContext(GpaApiType 
         return kGpaStatusErrorNullPointer;
     }
 
+    if (generate_asic_specific_counters_deprecated != TRUE)
+    {
+        // GPA always generates ASIC-Specific counters now, so passing in anything other than TRUE (1) is an invalid parameter.
+        return kGpaStatusErrorInvalidParameter;
+    }
+
     if ((context_flags & kGpaOpenContextHideDerivedCountersBit) && !(context_flags & kGpaOpenContextEnableHardwareCountersBit))
     {
-        GPA_LOG_ERROR("Requested no counters. Specify a different GpaOpenContextFlags argument.");
         return kGpaStatusErrorInvalidParameter;
     }
 
     return GpaCounterContextManager::Instance()->OpenCounterContext(
         api,
-        gpa_counter_context_hardware_info, context_flags, generate_asic_specific_counters, gpa_virtual_context);
+        gpa_counter_context_hardware_info, context_flags, gpa_virtual_context);
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibCloseCounterContext(const GpaCounterContext gpa_virtual_context)

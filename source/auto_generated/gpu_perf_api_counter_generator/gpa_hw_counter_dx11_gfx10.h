@@ -39,7 +39,6 @@ namespace counter_dx11_gfx10
     extern const std::set<unsigned int>                               kHwDx11TimestampBlockIdsGfx10; ///< Timestamp block id's for Dx11 for Gfx10 family
     extern const std::set<unsigned int>                               kHwDx11TimeCounterIndicesGfx10; ///< Timestamp counter indices for Dx11 for Gfx10 family
     extern const unsigned int                                         kHwDx11GroupCountGfx10; ///< Hardware Group Count for Dx11 for Gfx10 family
-    extern const unsigned int                                         kHwDx11ExposedCountersGroupCountGfx10; ///< Exposed hardware counter Group Count for Dx11 for Gfx10 family
     extern const unsigned int                                         kDx11PaddedCounterGroupCountGfx10; ///< reserved counter group count for Dx11 for Gfx10 family
     extern const unsigned int                                         kHwDx11SqGroupCountGfx10; ///< Hardware SQ Group Count for Dx11 for Gfx10 family
     extern const unsigned int                                         kHwDx11SqIsolatedGroupCountGfx10; ///< Hardware Isolated Group Count for Dx11 for Gfx10 family

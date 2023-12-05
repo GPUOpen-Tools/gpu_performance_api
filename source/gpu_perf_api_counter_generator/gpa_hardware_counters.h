@@ -237,7 +237,6 @@ public:
 
         hardware_exposed_counters_.clear();
         hardware_exposed_counter_groups_      = nullptr;
-        hardware_exposed_counter_group_count_ = 0;
         hardware_exposed_counters_list_.clear();
         hardware_exposed_counter_internal_indices_list_.clear();
         hardware_exposed_counters_generated_ = false;
@@ -976,7 +975,6 @@ public:
     std::vector<std::vector<GpaHardwareCounterDesc>*>
         hardware_exposed_counters_;  ///< List of counter groups as defined by the list of hardware exposed counters counters in each group.
     GpaCounterGroupExposedCounterDesc*  hardware_exposed_counter_groups_;                 ///< List of hardware exposed counter groups.
-    unsigned int                        hardware_exposed_counter_group_count_;            ///< The number of hardware exposed counter groups.
     std::vector<GpaHardwareCounterDesc> hardware_exposed_counters_list_;                  ///< Vector of hardware exposed counters.
     std::vector<GpaUInt32>              hardware_exposed_counter_internal_indices_list_;  ///< Internal hardware index for the hardware exposed counter.
     bool                                hardware_exposed_counters_generated_;             ///< Indicates that the hardware exposed counters have been generated.

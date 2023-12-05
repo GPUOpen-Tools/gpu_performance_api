@@ -1,5 +1,15 @@
 ﻿# GPU Performance API Release Notes
 ---
+# Version 3.15 (12/06/2023)
+* Updated minimum CMake version to 3.10 from 3.05.
+* Updated equation for MemUnitBusyCycles.
+* Updated description of LocalVidMemBytes.
+* Renamed *.inc files to .hpp files.
+* Reduced size of static buffer when logging messages to avoid compiler warning.
+* Fixed an issue on some variant hardware that would prevent enabling certain hardware counters when kGpaOpenContextExposeHardwareCountersBit was specified to GpaOpenContext() by always generating asic-specific counters.
+* Known Issues:
+  * VsGsVerticesIn is incorrectly reporting zero when using Vulkan on Linux for some hardware.
+
 ## Version 3.14 (09/21/2023)
 * Added support for AMD Radeon RX 7700 XT and AMD Radeon RX 7800 XT graphics cards.
 * Added support for additional AMD Radeon 700M Series devices.

@@ -22,7 +22,7 @@ void GpaCounterGeneratorBase::SetAllowedCounters(bool allow_public_counters, boo
     do_allow_hardware_exposed_counters_ = allow_hardware_counters;
 }
 
-GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaUInt8 generate_asic_specific_counters)
+GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type)
 {
     GpaStatus status = kGpaStatusErrorNotEnabled;
 
@@ -31,7 +31,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
     if (do_allow_public_counters_)
     {
-        status = GeneratePublicCounters(desired_generation, asic_type, generate_asic_specific_counters, &public_counters_);
+        status = GeneratePublicCounters(desired_generation, asic_type, &public_counters_);
 
         if (status != kGpaStatusOk)
         {
@@ -43,7 +43,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
     // Hw counters are required if generating public counters.
     if (do_allow_public_counters_ || do_allow_hardware_counters_ || do_allow_hardware_exposed_counters_)
     {
-        status = GenerateHardwareCounters(desired_generation, asic_type, generate_asic_specific_counters, &hardware_counters_);
+        status = GenerateHardwareCounters(desired_generation, asic_type, &hardware_counters_);
 
         if (status != kGpaStatusOk)
         {
@@ -54,7 +54,7 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
     if (!do_allow_hardware_counters_ && do_allow_hardware_exposed_counters_)
     {
-        status = GenerateHardwareExposedCounters(desired_generation, asic_type, generate_asic_specific_counters, &hardware_counters_);
+        status = GenerateHardwareExposedCounters(desired_generation, asic_type, &hardware_counters_);
 
         if (status != kGpaStatusOk)
         {
@@ -118,12 +118,10 @@ GpaUInt32 GpaCounterGeneratorBase::GetNumAmdCounters() const
 
 GpaStatus GpaCounterGeneratorBase::GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
                                                                    GDT_HW_ASIC_TYPE     asic_type,
-                                                                   GpaUInt8             generate_asic_specific_counters,
                                                                    GpaHardwareCounters* hardware_counters)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(asic_type);
-    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
     UNREFERENCED_PARAMETER(hardware_counters);
     return kGpaStatusOk;
 }
@@ -138,21 +136,25 @@ bool GpaCounterGeneratorBase::MapHardwareExposedCounter(GpaHardwareCounters* har
     }
 
     hardware_counters->hardware_exposed_counters_list_.clear();
-    for (unsigned int g = 0; g < hardware_counters->hardware_exposed_counter_group_count_; g++)
+    size_t num_hardware_exposed_counter_groups = hardware_counters->hardware_exposed_counters_.size();
+    for (size_t g = 0; g < num_hardware_exposed_counter_groups; ++g)
     {
         const GpaUInt32 block_counter_start_index = hardware_counters->hardware_exposed_counter_groups_[g].hardware_block_start_index;
+        const GpaUInt32 num_exposed_counters_in_group = static_cast<GpaUInt32>(hardware_counters->hardware_exposed_counters_[g]->size());
 
-        unsigned int count_iter = 0;
-        for (auto iter = hardware_counters->hardware_exposed_counter_groups_[g].white_list_counters.cbegin();
-             iter != hardware_counters->hardware_exposed_counter_groups_[g].white_list_counters.cend();
-             ++iter)
+        for (unsigned int count_iter = 0; count_iter < num_exposed_counters_in_group; ++count_iter)
         {
-            GpaHardwareCounterDesc* whitelist_counter = &hardware_counters->hardware_exposed_counters_.at(g)->at(count_iter);
-            hardware_counters->hardware_exposed_counters_list_.push_back(*whitelist_counter);
-            unsigned int global_counter_index = block_counter_start_index + *iter;
+            // Get the counter to expose.
+            GpaHardwareCounterDesc* exposed_counter = &hardware_counters->hardware_exposed_counters_.at(g)->at(count_iter);
+
+            // Add the counter to a long list of all the exposed counters from all the groups.
+            hardware_counters->hardware_exposed_counters_list_.push_back(*exposed_counter);
+
+            // Calculate the global counter index, add it to a long list of all the global counter indices,
+            // and add it to a map directly to the corresponding exposed counter.
+            GpaUInt32 global_counter_index = block_counter_start_index + static_cast<GpaUInt32>(exposed_counter->counter_index_in_group);
             hardware_counters->hardware_exposed_counter_internal_indices_list_.push_back(global_counter_index);
-            hardware_counters->hardware_counters_[global_counter_index].hardware_counters = whitelist_counter;
-            count_iter++;
+            hardware_counters->hardware_counters_[global_counter_index].hardware_counters = exposed_counter;
         }
     }
 

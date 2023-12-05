@@ -1,5 +1,5 @@
 ## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.10)
 
 if(NOT DEFINED AMDTPlatform)
     set(AMDTPlatform "x64")

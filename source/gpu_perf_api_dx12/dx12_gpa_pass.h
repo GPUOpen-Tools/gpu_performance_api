@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Pass Object Header
@@ -54,49 +54,20 @@ public:
                               Dx12GpaCommandList*         dx12_primary_gpa_cmd_list,
                               Dx12GpaCommandList*         dx12_secondary_gpa_cmd_list);
 
-    /// @brief Returns the current sample config for the set of counters in the pass.
+    /// @brief Returns the sample config for the set of counters in the pass.
     ///
     /// @return AMD extension sample config for the set of counters in the pass.
-    const AmdExtGpaSampleConfig& GetDriverExtSampleConfig() const
-    {
-        return amd_ext_sample_config_;
-    }
-
-    /// @brief Returns older sample config for the set of counters in the pass.
-    ///
-    /// @return AMD extension sample config for the set of counters in the pass.
-    AmdExtGpaSampleConfigPre1850 GetPre1850DriverExtSampleConfig() const
-    {
-        AmdExtGpaSampleConfigPre1850 older_config;
-        older_config = amd_ext_sample_config_;
-        return older_config;
-    }
-
-    /// @brief Returns older sample config for the set of counters in the pass.
-    ///
-    /// @return AMD extension sample config for the set of counters in the pass.
-    AmdExtGpaSampleConfigPre2240 GetPre2240DriverExtSampleConfig() const
-    {
-        AmdExtGpaSampleConfigPre2240 older_config;
-        older_config = amd_ext_sample_config_;
-        return older_config;
-    }
+    const Dx12GpaSampleConfig& Dx12GpaPass::GetAmdExtSampleConfig();
 
     /// @brief Destructor.
     virtual ~Dx12GpaPass();
 
 private:
-    /// @brief Initializes the sample config for the pass if pass counter source is hardware.
-    void InitializeSampleConfig();
-
     /// @brief Removes the irrelevant resources.
     void ResetPass() const;
 
-    /// AMD Extension configuration for hardware samples.
-    AmdExtGpaSampleConfig amd_ext_sample_config_;
-
-    /// Flag indicating whether the sample config is initialized or not for the hardware samples.
-    bool is_sample_config_initialized_;
+    /// AMD extension sample configuration.
+    Dx12GpaSampleConfig amd_ext_sample_config_;
 };
 
 #endif  // GPU_PERF_API_DX12_DX12_GPA_PASS_H_

@@ -39,7 +39,6 @@ namespace counter_vk_gfx9
     extern const std::set<unsigned int>                               kHwVkTimestampBlockIdsGfx9; ///< Timestamp block id's for Vk for Gfx9 family
     extern const std::set<unsigned int>                               kHwVkTimeCounterIndicesGfx9; ///< Timestamp counter indices for Vk for Gfx9 family
     extern const unsigned int                                         kHwVkGroupCountGfx9; ///< Hardware Group Count for Vk for Gfx9 family
-    extern const unsigned int                                         kHwVkExposedCountersGroupCountGfx9; ///< Exposed hardware counter Group Count for Vk for Gfx9 family
     extern const unsigned int                                         kVkPaddedCounterGroupCountGfx9; ///< reserved counter group count for Vk for Gfx9 family
     extern const unsigned int                                         kHwVkSqGroupCountGfx9; ///< Hardware SQ Group Count for Vk for Gfx9 family
     extern const unsigned int                                         kHwVkSqIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for Vk for Gfx9 family

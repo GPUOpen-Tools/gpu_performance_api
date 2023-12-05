@@ -2092,7 +2092,7 @@ type=gpa_float64
 usage=cycles
 [GLGfx103]
 TA*_PERF_SEL_TA_BUSY[0..15]
-eqn=0..15,max16
+eqn=0..15,max16,NUM_SHADER_ARRAYS,/
 [DX11Gfx103]
 [DX12Gfx103]
 [OGLPGfx103]
@@ -2156,7 +2156,7 @@ GL2C*_PERF_SEL_MC_WRREQ_STALL[0..15]
 eqn=0..15,max16
 
 name=LocalVidMemBytes
-desc=#GlobalMemory#Number of bytes read from or written to local video memory
+desc=#GlobalMemory#Number of bytes read from or written to the Infinity Cache (if available) or local video memory
 type=gpa_float64
 usage=bytes
 [DX12Gfx103]

@@ -22,6 +22,7 @@
 #include "gpu_perf_api_common/utility.h"
 
 #include "gpu_perf_api_counter_generator/gpa_derived_counter.h"
+#include "gpu_perf_api_counter_generator/gpa_derived_counter_evaluator.hpp"
 #include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
 
 GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass()
@@ -249,8 +250,6 @@ GpaUInt32 GpaDerivedCounters::GetNumCounters() const
 {
     return static_cast<GpaUInt32>(derived_counter_list_.size());
 }
-
-#include "gpu_perf_api_counter_generator/gpa_derived_counter_evaluator.inc"
 
 GpaStatus GpaDerivedCounters::ComputeCounterValue(GpaUInt32                       counter_index,
                                                   const vector<const GpaUInt64*>& results,

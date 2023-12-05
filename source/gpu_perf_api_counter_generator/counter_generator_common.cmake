@@ -1,5 +1,5 @@
 ## Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
 
@@ -73,7 +73,7 @@ set(HARDWARE_COUNTER_SRC ${HARDWARE_COUNTER_SRC} ${HW_COUNTER_SRC})
 
 set(DERIVED_COUNTER_HEADERS
     gpa_derived_counter.h
-    gpa_derived_counter_evaluator.inc)
+    gpa_derived_counter_evaluator.hpp)
 
 set(DERIVED_COUNTER_SRC
     gpa_derived_counter.cc)

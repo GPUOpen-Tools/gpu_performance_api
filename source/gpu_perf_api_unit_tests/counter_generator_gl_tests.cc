@@ -137,72 +137,62 @@ static std::vector<GpaCounterDesc> GetExpectedPublicCounters(GpaHwGeneration gen
 
 TEST(CounterDllTests, OpenGlUnsupportedHardwareGeneration)
 {
-    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationNone, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationNvidia, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationIntel, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationGfx6, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationGfx7, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationNone);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationNvidia);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationIntel);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationGfx6);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kGpaHwGenerationGfx7);
+}
+
+TEST(CounterDllTests, OpenGlVerifyInvalidOpenContextParameters)
+{
+    VerifyInvalidOpenContextParameters(kGpaApiOpengl, kDevIdGfx11);
 }
 
 #ifdef _WIN32
 // Test the OpenGl derived counter blocks
 TEST(CounterDllTests, OpenGlDerivedCounterBlocksGfx8)
 {
-    VerifyDerivedCounterCount(kGpaApiOpengl, kGpaHwGenerationGfx8, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx8));
+    VerifyDerivedCounterCount(kGpaApiOpengl, kGpaHwGenerationGfx8, GetExpectedPublicCounters(kGpaHwGenerationGfx8));
 }
 
 TEST(CounterDllTests, OpenGlDerivedCounterBlocksGfx9)
 {
-    VerifyDerivedCounterCount(kGpaApiOpengl, kGpaHwGenerationGfx9, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx9));
+    VerifyDerivedCounterCount(kGpaApiOpengl, kGpaHwGenerationGfx9, GetExpectedPublicCounters(kGpaHwGenerationGfx9));
 }
 
 TEST(CounterDllTests, OpenGlDerivedCounterBlocksGfx10)
 {
-    VerifyDerivedCounterCount(kGpaApiOpengl, kGpaHwGenerationGfx10, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx10));
+    VerifyDerivedCounterCount(kGpaApiOpengl, kGpaHwGenerationGfx10, GetExpectedPublicCounters(kGpaHwGenerationGfx10));
 }
 
 TEST(CounterDllTests, OpenGlDerivedCounterBlocksGfx103)
 {
-    VerifyDerivedCounterCount(kGpaApiOpengl, kGpaHwGenerationGfx103, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx103));
+    VerifyDerivedCounterCount(kGpaApiOpengl, kGpaHwGenerationGfx103, GetExpectedPublicCounters(kGpaHwGenerationGfx103));
 }
 
 TEST(CounterDllTests, OpenGlDerivedCounterBlocksGfx11)
 {
-    VerifyDerivedCounterCount(kGpaApiOpengl, kGpaHwGenerationGfx11, FALSE, GetExpectedPublicCounters(kGpaHwGenerationGfx11));
+    VerifyDerivedCounterCount(kGpaApiOpengl, kGpaHwGenerationGfx11, GetExpectedPublicCounters(kGpaHwGenerationGfx11));
 }
 #endif
 
-// Test the OpenGl counter names on all supported hardware by DeviceID back-to-back.
-TEST(CounterDllTests, OpenGlCounterNamesByDeviceId)
+TEST(CounterDllTests, OpenGlUnsupportedDeviceId)
 {
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnknown, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdSI, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdCI, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdCIHawaii, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdMi250X, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdMi210, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnsupported1, FALSE);
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnsupported2, FALSE);
-
-    std::vector<const char*> counter_names;
-    std::vector<const char*> hardware_counter_names;
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdVI, FALSE, counter_names, hardware_counter_names);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx9, FALSE, counter_names, hardware_counter_names);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx10, FALSE, counter_names, hardware_counter_names);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx10_3, FALSE, counter_names, hardware_counter_names);
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11, FALSE, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11_0_3, FALSE, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11_0_3B, FALSE, counter_names, hardware_counter_names);
+    // Verify that any unsupported Device IDs properly report that the hardware is not supported.
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnknown);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdSI);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdCI);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdCIHawaii);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdMi250X);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdMi210);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnsupported1);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnsupported2);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesDeviceIdUnknown)
 {
-    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnknown, FALSE);
+    VerifyHardwareNotSupported(kGpaApiOpengl, kDevIdUnknown);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx8)
@@ -210,7 +200,7 @@ TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx8)
     std::vector<const char*> counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdVI, FALSE, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kDevIdVI, counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx9)
@@ -218,7 +208,7 @@ TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx9)
     std::vector<const char*> counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx9, FALSE, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx9, counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx10)
@@ -226,7 +216,7 @@ TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx10)
     std::vector<const char*> counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx10, FALSE, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx10, counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx103)
@@ -234,17 +224,22 @@ TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx103)
     std::vector<const char*> counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx10_3, FALSE, counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx10_3, counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesDeviceIdGfx11)
 {
-    std::vector<const char*> counter_names;
+    std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
-    GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11, FALSE, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11_0_3, FALSE, counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11_0_3B, FALSE, counter_names, hardware_counter_names);
+    GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11, derived_counter_names, hardware_counter_names);
+
+    // The variant hardware can only have the derived counter names verified.
+    // GetExpectedCountersForGeneration() method in our tests is not thorough enough to create
+    // the expected list of hardware counters for each variant.
+    std::vector<const char*> empty_list_to_skip_tests;
+    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11_0_3, derived_counter_names, empty_list_to_skip_tests);
+    VerifyCounterNames(kGpaApiOpengl, kDevIdGfx11_0_3B, derived_counter_names, empty_list_to_skip_tests);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesGfx8)
@@ -252,7 +247,7 @@ TEST(CounterDllTests, OpenGlCounterNamesGfx8)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx8, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx8, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesGfx9)
@@ -260,7 +255,7 @@ TEST(CounterDllTests, OpenGlCounterNamesGfx9)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx9, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx9, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesGfx10)
@@ -268,7 +263,7 @@ TEST(CounterDllTests, OpenGlCounterNamesGfx10)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx10, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx10, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesGfx103)
@@ -276,7 +271,7 @@ TEST(CounterDllTests, OpenGlCounterNamesGfx103)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx103, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx103, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenGlCounterNamesGfx11)
@@ -284,7 +279,7 @@ TEST(CounterDllTests, OpenGlCounterNamesGfx11)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx11, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
 }
 
 // Test the OpenGl counter names on all generations back-to-back.
@@ -293,15 +288,15 @@ TEST(CounterDllTests, OpenGlCounterNamesByGeneration)
     std::vector<const char*> derived_counter_names;
     std::vector<const char*> hardware_counter_names;
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx8, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx8, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx8, derived_counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx9, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx9, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx9, derived_counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx10, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx10, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx10, derived_counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx103, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx103, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx103, derived_counter_names, hardware_counter_names);
     GetExpectedCountersForGeneration(kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
-    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx11, FALSE, derived_counter_names, hardware_counter_names);
+    VerifyCounterNames(kGpaApiOpengl, kGpaHwGenerationGfx11, derived_counter_names, hardware_counter_names);
 }
 
 TEST(CounterDllTests, OpenGlOpenCounterContext)
@@ -316,44 +311,44 @@ TEST(CounterDllTests, OpenGlOpenCounterContext)
 #ifdef _WIN32
 TEST(CounterDllTests, GlCounterLibTestDeviceIdGfx8)
 {
-    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdVI, REVISION_ID_ANY, false);
-    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdVI, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdVI, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdVI, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, GlCounterLibTestDeviceIdGfx9)
 {
-    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx9, REVISION_ID_ANY, false);
-    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx9, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx9, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx9, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, GlCounterLibTestDeviceIdGfx10)
 {
-    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx10, REVISION_ID_ANY, false);
-    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx10, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx10, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx10, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, GlCounterLibTestDeviceIdGfx103)
 {
-    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx10_3, REVISION_ID_ANY, false);
-    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx10_3, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx10_3, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx10_3, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, GlCounterLibTestDeviceIdGfx11)
 {
-    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx11, REVISION_ID_ANY, false);
-    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx11, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx11, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx11, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, GlCounterLibTestDeviceIdGfx1103)
 {
-    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx11_0_3, REVISION_ID_ANY, false);
-    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx11_0_3, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx11_0_3, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx11_0_3, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, GlCounterLibTestDeviceIdGfx1103B)
 {
-    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx11_0_3B, REVISION_ID_ANY, false);
-    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx11_0_3B, REVISION_ID_ANY, false);
+    VerifyCounterLibInterface(kGpaApiOpengl, kDevIdGfx11_0_3B, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpengl, kDevIdGfx11_0_3B, REVISION_ID_ANY);
 }
 #endif
 

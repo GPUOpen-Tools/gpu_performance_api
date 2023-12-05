@@ -12,24 +12,20 @@
 
 GpaStatus GpaCounterGeneratorVkBase::GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
                                                             GDT_HW_ASIC_TYPE    asic_type,
-                                                            GpaUInt8            generate_asic_specific_counters,
                                                             GpaDerivedCounters* public_counters)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(asic_type);
-    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
     UNREFERENCED_PARAMETER(public_counters);
     return kGpaStatusOk;
 }
 
 GpaStatus GpaCounterGeneratorVkBase::GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
                                                               GDT_HW_ASIC_TYPE     asic_type,
-                                                              GpaUInt8             generate_asic_specific_counters,
                                                               GpaHardwareCounters* hardware_counters)
 {
     UNREFERENCED_PARAMETER(desired_generation);
     UNREFERENCED_PARAMETER(asic_type);
-    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
     UNREFERENCED_PARAMETER(hardware_counters);
     return kGpaStatusOk;
 }

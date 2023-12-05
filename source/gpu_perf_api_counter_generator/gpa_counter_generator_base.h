@@ -95,10 +95,9 @@ public:
     ///
     /// @param [in] desired_generation The generation whose counters are needed.
     /// @param [in] asic_type The ASIC type whose counters are needed.
-    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
     ///
     /// @return kGpaStatusOk on success.
-    GpaStatus GenerateCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaUInt8 generate_asic_specific_counters);
+    GpaStatus GenerateCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type);
 
     /// @copydoc IGpaCounterAccessor::ComputeSwCounterValue().
     void ComputeSwCounterValue(GpaUInt32 software_counter_index, GpaUInt64 value, void* result, const GpaHwInfo* hardware_info) const override;
@@ -112,39 +111,33 @@ public:
     ///
     /// @param [in] desired_generation The generation whose counters are needed.
     /// @param [in] asic_type The ASIC whose counters are needed.
-    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
     /// @param [out] public_counters The generated counters.
     ///
     /// @return kGpaStatusOk on success.
     virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
                                              GDT_HW_ASIC_TYPE    asic_type,
-                                             GpaUInt8            generate_asic_specific_counters,
                                              GpaDerivedCounters* public_counters) = 0;
 
     /// @brief Generate the hardware counters for the specified hardware generation.
     ///
     /// @param [in] desired_generation The generation whose counters are needed.
     /// @param [in] asic_type The ASIC whose counters are needed.
-    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
     /// @param [out] hardware_counters The generated counters.
     ///
     /// @return kGpaStatusOk on success.
     virtual GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
                                                GDT_HW_ASIC_TYPE     asic_type,
-                                               GpaUInt8             generate_asic_specific_counters,
                                                GpaHardwareCounters* hardware_counters) = 0;
 
     /// @brief Generate the hardware exposed counters for the specified hardware generation
     ///
     /// @param [in] desired_generation The generation whose counters are needed
     /// @param [in] asic_type The ASIC whose counters are needed
-    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
     /// @param [out] hardware_counters The generated counters
     ///
     /// @return kGpaStatusOk on success
     virtual GpaStatus GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
                                                       GDT_HW_ASIC_TYPE     asic_type,
-                                                      GpaUInt8             generate_asic_specific_counters,
                                                       GpaHardwareCounters* hardware_counters);
 
     /// @brief Maps the hardware counter and hardware exposed counter.

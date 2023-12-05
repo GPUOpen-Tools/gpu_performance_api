@@ -20,13 +20,11 @@ public:
     /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
     virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
                                              GDT_HW_ASIC_TYPE    asic_type,
-                                             GpaUInt8            generate_asic_specific_counters,
                                              GpaDerivedCounters* public_counters) override;
 
     /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
     virtual GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
                                                GDT_HW_ASIC_TYPE     asic_type,
-                                               GpaUInt8             generate_asic_specific_counters,
                                                GpaHardwareCounters* hardware_counters) override;
 
     /// @brief Helper function to indicates whether the specified HW generation represents an AMD GPU.

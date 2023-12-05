@@ -2645,7 +2645,7 @@ type=gpa_float64
 usage=cycles
 [GLGfx8]
 TA*_PERF_SEL_TA_BUSY[0..15]
-eqn=0..15,max16
+eqn=0..15,max16,NUM_SHADER_ENGINES,/
 [DX11Gfx8]
 [DX12Gfx8]
 [OGLPGfx8]

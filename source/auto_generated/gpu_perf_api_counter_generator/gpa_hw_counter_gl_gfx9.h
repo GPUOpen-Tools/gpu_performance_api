@@ -35,7 +35,6 @@ namespace counter_gl_gfx9
     extern const std::set<unsigned int>                               kHwGlTimestampBlockIdsGfx9; ///< Timestamp block id's for Gl for Gfx9 family
     extern const std::set<unsigned int>                               kHwGlTimeCounterIndicesGfx9; ///< Timestamp counter indices for Gl for Gfx9 family
     extern const unsigned int                                         kHwGlGroupCountGfx9; ///< Hardware Group Count for Gl for Gfx9 family
-    extern const unsigned int                                         kHwGlExposedCountersGroupCountGfx9; ///< Exposed hardware counter Group Count for Gl for Gfx9 family
     extern const unsigned int                                         kGlPaddedCounterGroupCountGfx9; ///< reserved counter group count for Gl for Gfx9 family
     extern const unsigned int                                         kHwGlSqGroupCountGfx9; ///< Hardware SQ Group Count for Gl for Gfx9 family
     extern const unsigned int                                         kHwGlSqIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for Gl for Gfx9 family

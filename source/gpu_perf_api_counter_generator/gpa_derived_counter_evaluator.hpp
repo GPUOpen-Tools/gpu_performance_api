@@ -5,6 +5,11 @@
 /// @brief Functions for evaluating derived counter formula.
 //==============================================================================
 
+#include <vector>
+
+#include "gpu_performance_api/gpu_perf_api_types.h"
+#include "gpu_perf_api_common/gpa_hw_info.h"
+
 /// @brief Performs a sum of the specified number of stack values.
 ///
 /// T is derived counter type.
@@ -262,11 +267,11 @@ void ScalarMulN(std::vector<T>& stack, int32_t vector_width)
 ///
 /// @return kGpaStatusOk on success, otherwise an error code.
 template <class T, class InternalCounterType>
-static GpaStatus EvaluateExpression(const char*                      expression,
-                                     void*                           result,
-                                     const vector<const GpaUInt64*>& results,
-                                     GpaDataType                     result_type,
-                                     const GpaHwInfo*                hw_info)
+static GpaStatus EvaluateExpression(const char*                          expression,
+                             void*                                result,
+                             const std::vector<const GpaUInt64*>& results,
+                             GpaDataType                          result_type,
+                             const GpaHwInfo*                     hw_info)
 {
     GpaStatus status = kGpaStatusOk;
 
@@ -341,7 +346,7 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         else if (*pch == '(')
         {
             // constant
-            T   constant   = static_cast<T>(0);
+            T   constant    = static_cast<T>(0);
             int scan_result = 0;
 
             if (result_type == kGpaDataTypeFloat64)
@@ -398,6 +403,8 @@ static GpaStatus EvaluateExpression(const char*                      expression,
         {
             stack.push_back(static_cast<T>(hw_info->GetNumberCus()));
         }
+// START_REMOVE_DURING_SANITIZATION
+// END_REMOVE_DURING_SANITIZATION
         else if (_strcmpi(pch, "TS_FREQ") == 0)
         {
             GpaUInt64 freq = 1u;
@@ -411,8 +418,8 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             if (pch[3] != '\0')
             {
                 char* endptr = nullptr;
-                errno = 0;
-                value_count = std::strtol(&pch[3], &endptr, 10);
+                errno        = 0;
+                value_count  = std::strtol(&pch[3], &endptr, 10);
                 assert(endptr != nullptr);
                 assert(value_count > 0);
                 assert(errno == 0);
@@ -435,8 +442,8 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             if (pch[3] != '\0')
             {
                 char* endptr = nullptr;
-                errno = 0;
-                value_count = std::strtol(&pch[3], &endptr, 10);
+                errno        = 0;
+                value_count  = std::strtol(&pch[3], &endptr, 10);
                 assert(endptr != nullptr);
                 assert(value_count > 0);
                 assert(errno == 0);
@@ -584,8 +591,8 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             if (pch[3] != '\0')
             {
                 char* endptr = nullptr;
-                errno = 0;
-                value_count = std::strtol(&pch[3], &endptr, 10);
+                errno        = 0;
+                value_count  = std::strtol(&pch[3], &endptr, 10);
                 assert(endptr != nullptr);
                 assert(value_count > 0);
                 assert(errno == 0);
@@ -593,52 +600,55 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             assert(stack.size() >= static_cast<std::size_t>(value_count));
             SumN(stack, value_count);
         }
-        else if ((tolower(pch[0]) == 'v') && (tolower(pch[1]) == 'e') && (tolower(pch[2]) == 'c') && (tolower(pch[3]) == 's') && (tolower(pch[4]) == 'u') && (tolower(pch[5]) == 'm') && ((pch[6] == '\0') || isdigit(pch[6])))
+        else if ((tolower(pch[0]) == 'v') && (tolower(pch[1]) == 'e') && (tolower(pch[2]) == 'c') && (tolower(pch[3]) == 's') && (tolower(pch[4]) == 'u') &&
+                 (tolower(pch[5]) == 'm') && ((pch[6] == '\0') || isdigit(pch[6])))
         {
             // VecSumN
             long value_count = 2;
             if (pch[6] != '\0')
             {
                 char* endptr = nullptr;
-                errno = 0;
-                value_count = std::strtol(&pch[6], &endptr, 10);
+                errno        = 0;
+                value_count  = std::strtol(&pch[6], &endptr, 10);
                 assert(endptr != nullptr);
                 assert(value_count > 0);
                 assert(errno == 0);
             }
-            assert(stack.size() >= static_cast<std::size_t>(value_count) * 2); // 2 vectors of value_count entries.
+            assert(stack.size() >= static_cast<std::size_t>(value_count) * 2);  // 2 vectors of value_count entries.
             VecSumN<T>(stack, value_count);
         }
-        else if ((tolower(pch[0]) == 'v') && (tolower(pch[1]) == 'e') && (tolower(pch[2]) == 'c') && (tolower(pch[3]) == 's') && (tolower(pch[4]) == 'u') && (tolower(pch[5]) == 'b') && ((pch[6] == '\0') || isdigit(pch[6])))
+        else if ((tolower(pch[0]) == 'v') && (tolower(pch[1]) == 'e') && (tolower(pch[2]) == 'c') && (tolower(pch[3]) == 's') && (tolower(pch[4]) == 'u') &&
+                 (tolower(pch[5]) == 'b') && ((pch[6] == '\0') || isdigit(pch[6])))
         {
             // VecSubN
             long value_count = 2;
             if (pch[6] != '\0')
             {
                 char* endptr = nullptr;
-                errno = 0;
-                value_count = std::strtol(&pch[6], &endptr, 10);
+                errno        = 0;
+                value_count  = std::strtol(&pch[6], &endptr, 10);
                 assert(endptr != nullptr);
                 assert(value_count > 0);
                 assert(errno == 0);
             }
-            assert(stack.size() >= static_cast<std::size_t>(value_count) * 2); // 2 vectors of value_count entries.
+            assert(stack.size() >= static_cast<std::size_t>(value_count) * 2);  // 2 vectors of value_count entries.
             VecSubN<T>(stack, value_count);
         }
-        else if ((tolower(pch[0]) == 'v') && (tolower(pch[1]) == 'e') && (tolower(pch[2]) == 'c') && (tolower(pch[3]) == 'd') && (tolower(pch[4]) == 'i') && (tolower(pch[5]) == 'v') && ((pch[6] == '\0') || isdigit(pch[6])))
+        else if ((tolower(pch[0]) == 'v') && (tolower(pch[1]) == 'e') && (tolower(pch[2]) == 'c') && (tolower(pch[3]) == 'd') && (tolower(pch[4]) == 'i') &&
+                 (tolower(pch[5]) == 'v') && ((pch[6] == '\0') || isdigit(pch[6])))
         {
             // VecDivN
             long value_count = 2;
             if (pch[6] != '\0')
             {
                 char* endptr = nullptr;
-                errno = 0;
-                value_count = std::strtol(&pch[6], &endptr, 10);
+                errno        = 0;
+                value_count  = std::strtol(&pch[6], &endptr, 10);
                 assert(endptr != nullptr);
                 assert(value_count > 0);
                 assert(errno == 0);
             }
-            assert(stack.size() >= static_cast<std::size_t>(value_count) * 2); // 2 vectors of value_count entries.
+            assert(stack.size() >= static_cast<std::size_t>(value_count) * 2);  // 2 vectors of value_count entries.
             VecDivN<T>(stack, value_count);
         }
         else if ((tolower(pch[0]) == 'a') && (tolower(pch[1]) == 'v') && (tolower(pch[2]) == 'g') && ((pch[3] == '\0') || isdigit(pch[3])))
@@ -648,8 +658,8 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             if (pch[3] != '\0')
             {
                 char* endptr = nullptr;
-                errno = 0;
-                value_count = std::strtol(&pch[3], &endptr, 10);
+                errno        = 0;
+                value_count  = std::strtol(&pch[3], &endptr, 10);
                 assert(endptr != nullptr);
                 assert(value_count > 0);
                 assert(errno == 0);
@@ -657,58 +667,58 @@ static GpaStatus EvaluateExpression(const char*                      expression,
             assert(stack.size() >= static_cast<std::size_t>(value_count));
             AvgN(stack, value_count);
         }
-        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'c') && (tolower(pch[2]) == 'a') && (tolower(pch[3]) == 'l') && (tolower(pch[4]) == 'a') && (tolower(pch[5]) == 'r')
-                 && (tolower(pch[6]) == 's') && (tolower(pch[7]) == 'u') && (tolower(pch[8]) == 'b')
-                 && ((pch[9] == '\0') || isdigit(pch[9])))
+        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'c') && (tolower(pch[2]) == 'a') && (tolower(pch[3]) == 'l') && (tolower(pch[4]) == 'a') &&
+                 (tolower(pch[5]) == 'r') && (tolower(pch[6]) == 's') && (tolower(pch[7]) == 'u') && (tolower(pch[8]) == 'b') &&
+                 ((pch[9] == '\0') || isdigit(pch[9])))
         {
             // ScalarSubN
             long value_count = 2;
             if (pch[9] != '\0')
             {
                 char* endptr = nullptr;
-                errno = 0;
-                value_count = std::strtol(&pch[9], &endptr, 10);
+                errno        = 0;
+                value_count  = std::strtol(&pch[9], &endptr, 10);
                 assert(endptr != nullptr);
                 assert(value_count > 0);
                 assert(errno == 0);
             }
-            assert(stack.size() >= static_cast<std::size_t>(value_count) + 1); // 1 scalar + 1 vector of value_count entries.
+            assert(stack.size() >= static_cast<std::size_t>(value_count) + 1);  // 1 scalar + 1 vector of value_count entries.
             ScalarSubN<T>(stack, value_count);
         }
-        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'c') && (tolower(pch[2]) == 'a') && (tolower(pch[3]) == 'l') && (tolower(pch[4]) == 'a') && (tolower(pch[5]) == 'r')
-                 && (tolower(pch[6]) == 'd') && (tolower(pch[7]) == 'i') && (tolower(pch[8]) == 'v')
-                 && ((pch[9] == '\0') || isdigit(pch[9])))
+        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'c') && (tolower(pch[2]) == 'a') && (tolower(pch[3]) == 'l') && (tolower(pch[4]) == 'a') &&
+                 (tolower(pch[5]) == 'r') && (tolower(pch[6]) == 'd') && (tolower(pch[7]) == 'i') && (tolower(pch[8]) == 'v') &&
+                 ((pch[9] == '\0') || isdigit(pch[9])))
         {
             // ScalarDivN
             long value_count = 2;
             if (pch[9] != '\0')
             {
                 char* endptr = nullptr;
-                errno = 0;
-                value_count = std::strtol(&pch[9], &endptr, 10);
+                errno        = 0;
+                value_count  = std::strtol(&pch[9], &endptr, 10);
                 assert(endptr != nullptr);
                 assert(value_count > 0);
                 assert(errno == 0);
             }
-            assert(stack.size() >= static_cast<std::size_t>(value_count) + 1); // 1 scalar + 1 vector of value_count entries.
+            assert(stack.size() >= static_cast<std::size_t>(value_count) + 1);  // 1 scalar + 1 vector of value_count entries.
             ScalarDivN<T>(stack, value_count);
         }
-        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'c') && (tolower(pch[2]) == 'a') && (tolower(pch[3]) == 'l') && (tolower(pch[4]) == 'a') && (tolower(pch[5]) == 'r')
-                 && (tolower(pch[6]) == 'm') && (tolower(pch[7]) == 'u') && (tolower(pch[8]) == 'l')
-                 && ((pch[9] == '\0') || isdigit(pch[9])))
+        else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'c') && (tolower(pch[2]) == 'a') && (tolower(pch[3]) == 'l') && (tolower(pch[4]) == 'a') &&
+                 (tolower(pch[5]) == 'r') && (tolower(pch[6]) == 'm') && (tolower(pch[7]) == 'u') && (tolower(pch[8]) == 'l') &&
+                 ((pch[9] == '\0') || isdigit(pch[9])))
         {
             // ScalarMulN
             long value_count = 2;
             if (pch[9] != '\0')
             {
                 char* endptr = nullptr;
-                errno = 0;
-                value_count = std::strtol(&pch[9], &endptr, 10);
+                errno        = 0;
+                value_count  = std::strtol(&pch[9], &endptr, 10);
                 assert(endptr != nullptr);
                 assert(value_count > 0);
                 assert(errno == 0);
             }
-            assert(stack.size() >= static_cast<std::size_t>(value_count) + 1); // 1 scalar + 1 vector of value_count entries.
+            assert(stack.size() >= static_cast<std::size_t>(value_count) + 1);  // 1 scalar + 1 vector of value_count entries.
             ScalarMulN<T>(stack, value_count);
         }
         else
@@ -722,7 +732,7 @@ static GpaStatus EvaluateExpression(const char*                      expression,
 #endif
             UNREFERENCED_PARAMETER(scan_result);
 
-            if(1 != scan_result)
+            if (1 != scan_result)
             {
                 GPA_LOG_DEBUG_ERROR("Failed for expression %s", expression);
             }

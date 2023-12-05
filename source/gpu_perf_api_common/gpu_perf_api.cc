@@ -1698,4 +1698,4 @@ GPA_LIB_DECL const char* GpaGetStatusAsStr(GpaStatus gpa_status_as_str)
     }
 }
 
-#include "gpu_perf_api_deprecated.inc"
+#include "gpu_perf_api_deprecated.hpp"

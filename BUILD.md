@@ -64,7 +64,7 @@ this script everytime you pull new changes from GPA repository.
    * Desktop development with C++
  * Within the Visual Studio Installer, the following individual components:
    * Windows 11 SDK (10.0.22621.0)
-   * MSVC v143 - VS 2022 C++ x74/x86 build tools (latest)
+   * MSVC v143 - VS 2022 C++ x64/x86 build tools (latest)
    * C++ CMake tools for Windows
    * C++ Clang Compiler for Windows (15.0.1)
    * .NET Framework 4.6.2-4.8.1 SDKs and targeting packs

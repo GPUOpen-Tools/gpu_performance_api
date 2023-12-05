@@ -32,7 +32,7 @@ GpaContextCounterMediator::~GpaContextCounterMediator()
     context_info_map_.clear();
 }
 
-GpaStatus GpaContextCounterMediator::GenerateCounters(const IGpaContext* gpa_context, GpaOpenContextFlags flags, GpaUInt8 generate_asic_specific_counters)
+GpaStatus GpaContextCounterMediator::GenerateCounters(const IGpaContext* gpa_context, GpaOpenContextFlags flags)
 {
     std::lock_guard<std::mutex> lock(context_info_map_mutex_);
 
@@ -58,7 +58,7 @@ GpaStatus GpaContextCounterMediator::GenerateCounters(const IGpaContext* gpa_con
     if (hw_info->GetVendorId(vendor_id) && hw_info->GetDeviceId(device_id) && hw_info->GetRevisionId(revision_id))
     {
         ret_status = ::GenerateCounters(
-            gpa_context->GetApiType(), vendor_id, device_id, revision_id, flags, generate_asic_specific_counters, &counter_accessor, &counter_scheduler);
+            gpa_context->GetApiType(), vendor_id, device_id, revision_id, flags, &counter_accessor, &counter_scheduler);
 
         if (kGpaStatusOk == ret_status)
         {

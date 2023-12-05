@@ -31,21 +31,13 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-### Version 3.14 (09/21/2023)
-* Added support for AMD Radeon RX 7700 XT and AMD Radeon RX 7800 XT graphics cards.
-* Added support for additional AMD Radeon 700M Series devices.
-* Added counters back to Gfx9, Gfx10, Gfx103, and Gfx11 hardware generations. These restored counters are listed below by group:
-  * Timing: TessellatorBusy, TessellatorBusyCycles, VsGsBusy, VsGsBusyCycles, VsGsTime, PreTessellationBusy, PreTessellationBusyCycles, PreTessellationTime, PostTessellationBusy, PostTessellationBusyCycles, PostTessellationTime
-  * VertexGeometry: VsGsVerticesIn, VsGsPrimsIn, GSVerticesOut
-  * PreTessellation: PreTessVerticesIn
-  * PostTessellation: PostTessPrimsOut
-  * PrimitiveAssembly: PrimitivesIn
-  * TextureUnit: TexTriFilteringPct, TexTriFilteringCount, NoTexTriFilteringCount, TexVolFilteringPct, TexVolFilteringCount, NoTexVolFilteringCount
-* New counters added:
-  * MemoryCache: L0TagConflictReadStalledCycles, L0TagConflictWriteStalledCycles, L0TagConflictAtomicStalledCycles
-* Changed to Visual Studio 2022 as the default build environment on Windows (previously Visual Studio 2019).
-* Added improved support for multi-GPU systems.
-* Removed code related to software counters on non-AMD hardware.
+### Version 3.15 (12/06/2023)
+* Updated minimum CMake version to 3.10 from 3.05.
+* Updated equation for MemUnitBusyCycles.
+* Updated description of LocalVidMemBytes.
+* Renamed *.inc files to .hpp files.
+* Reduced size of static buffer when logging messages to avoid compiler warning.
+* Fixed an issue on some variant hardware that would prevent enabling certain hardware counters when kGpaOpenContextExposeHardwareCountersBit was specified to GpaOpenContext() by always generating asic-specific counters.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
@@ -108,6 +100,7 @@ It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 arch
 There are some counters that are returning unexpected results on specific hardware with certain APIs.
 * AMD Radeon RX 6700M, DX11: CSLDSBankConflict and CSLDSBankConflictCycles may consistently report as much as 30x higher than expected.
 * AMD Radeon RX 480, DX12: CulledPrims and PSPixelsOut may inconsistently report higher than expected.
+* VsGsVerticesIn is incorrectly reporting zero when using Vulkan on Linux for some hardware.
 
 ### Counter Validation Errors in D3D12ColorCube Sample App
 Due to the extensive counter validation now being done in the D3D12ColorCube sample application, and some expected variation in nondeterministic counters across a wide range of systems, the sample app may report errors on some systems. Likewise, some counters are marked as known issues and we are investigating the underlying causes of the inconsistent results.

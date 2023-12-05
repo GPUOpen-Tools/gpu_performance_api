@@ -23,11 +23,9 @@ public:
     /// @param [in] api_type API.
     /// @param [in] gpa_counter_context_hardware_info Context hardware info.
     /// @param [in] context_flags Context flags.
-    /// @param [in] generate_asic_specific_counters Flag indicating asic specific counter generation is required.
     GpaCounterContextHandler(const GpaApiType&                    api_type,
                              const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
-                             const GpaOpenContextFlags&           context_flags,
-                             const GpaUInt8&                      generate_asic_specific_counters);
+                             const GpaOpenContextFlags&           context_flags);
 
     /// Initializes the counter for the context.
     ///
@@ -52,7 +50,6 @@ public:
 private:
     GpaApiType            gpa_api_type_;            ///< API type.
     GpaHwInfo             gpa_hw_info_;             ///< Hardware info.
-    bool                  asic_specific_;           ///< Asic specific flag.
     GpaOpenContextFlags   gpa_open_context_flags_;  ///< Context flags.
     bool                  initialized_;             ///< Flag indicating context initialization status.
     IGpaCounterAccessor*  gpa_counter_accessor_;    ///< Context counter accessor.
@@ -101,14 +98,12 @@ public:
     /// @param [in] api_type the api whose available counters are requested.
     /// @param [in] gpa_counter_context_hardware_info counter context hardware info.
     /// @param [in] context_flags Flags used to initialize the context. Should be a combination of GpaOpenContextBits.
-    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
     /// @param [out] gpa_counter_context Unique identifier of the opened virtual context.
     ///
     /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
     GpaStatus OpenCounterContext(const GpaApiType&                    api_type,
                                  const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
                                  const GpaOpenContextFlags&           context_flags,
-                                 const GpaUInt8&                      generate_asic_specific_counters,
                                  GpaCounterContext*                   gpa_counter_context);
 
     /// Returns the counter accessor for the given context.

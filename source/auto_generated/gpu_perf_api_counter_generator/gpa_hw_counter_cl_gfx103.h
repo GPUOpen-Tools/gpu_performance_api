@@ -29,7 +29,6 @@ namespace counter_cl_gfx103
     extern const std::set<unsigned int>                               kHwClTimestampBlockIdsGfx103; ///< Timestamp block id's for Cl for Gfx103 family
     extern const std::set<unsigned int>                               kHwClTimeCounterIndicesGfx103; ///< Timestamp counter indices for Cl for Gfx103 family
     extern const unsigned int                                         kHwClGroupCountGfx103; ///< Hardware Group Count for Cl for Gfx103 family
-    extern const unsigned int                                         kHwClExposedCountersGroupCountGfx103; ///< Exposed hardware counter Group Count for Cl for Gfx103 family
     extern const unsigned int                                         kClPaddedCounterGroupCountGfx103; ///< reserved counter group count for Cl for Gfx103 family
     extern const unsigned int                                         kHwClSqGroupCountGfx103; ///< Hardware SQ Group Count for Cl for Gfx103 family
     extern const unsigned int                                         kHwClSqIsolatedGroupCountGfx103; ///< Hardware Isolated Group Count for Cl for Gfx103 family

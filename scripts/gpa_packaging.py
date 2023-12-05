@@ -251,7 +251,7 @@ class GpaPackage:
         _gpa_binaries.append("GPUPerfAPICL")
 
     _other_files=["NOTICES.txt",
-                 "LICENSE"]
+                 "LICENSE.txt"]
 
     _version_file="source/gpu_perf_api_common/gpa_version.h"
     _major_version=0

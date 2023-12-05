@@ -35,7 +35,6 @@ namespace counter_oglp_gfx9
     extern const std::set<unsigned int>                               kHwOglpTimestampBlockIdsGfx9; ///< Timestamp block id's for Oglp for Gfx9 family
     extern const std::set<unsigned int>                               kHwOglpTimeCounterIndicesGfx9; ///< Timestamp counter indices for Oglp for Gfx9 family
     extern const unsigned int                                         kHwOglpGroupCountGfx9; ///< Hardware Group Count for Oglp for Gfx9 family
-    extern const unsigned int                                         kHwOglpExposedCountersGroupCountGfx9; ///< Exposed hardware counter Group Count for Oglp for Gfx9 family
     extern const unsigned int                                         kOglpPaddedCounterGroupCountGfx9; ///< reserved counter group count for Oglp for Gfx9 family
     extern const unsigned int                                         kHwOglpSqGroupCountGfx9; ///< Hardware SQ Group Count for Oglp for Gfx9 family
     extern const unsigned int                                         kHwOglpSqIsolatedGroupCountGfx9; ///< Hardware Isolated Group Count for Oglp for Gfx9 family

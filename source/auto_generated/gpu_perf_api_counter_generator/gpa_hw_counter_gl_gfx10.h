@@ -35,7 +35,6 @@ namespace counter_gl_gfx10
     extern const std::set<unsigned int>                               kHwGlTimestampBlockIdsGfx10; ///< Timestamp block id's for Gl for Gfx10 family
     extern const std::set<unsigned int>                               kHwGlTimeCounterIndicesGfx10; ///< Timestamp counter indices for Gl for Gfx10 family
     extern const unsigned int                                         kHwGlGroupCountGfx10; ///< Hardware Group Count for Gl for Gfx10 family
-    extern const unsigned int                                         kHwGlExposedCountersGroupCountGfx10; ///< Exposed hardware counter Group Count for Gl for Gfx10 family
     extern const unsigned int                                         kGlPaddedCounterGroupCountGfx10; ///< reserved counter group count for Gl for Gfx10 family
     extern const unsigned int                                         kHwGlSqGroupCountGfx10; ///< Hardware SQ Group Count for Gl for Gfx10 family
     extern const unsigned int                                         kHwGlSqIsolatedGroupCountGfx10; ///< Hardware Isolated Group Count for Gl for Gfx10 family

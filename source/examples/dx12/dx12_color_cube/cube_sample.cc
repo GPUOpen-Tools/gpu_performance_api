@@ -2575,7 +2575,7 @@ bool CubeSample::GpaValidateDataGfx8(unsigned int profile_set,
         else if (0 == local_counter_name.compare("L2CacheRequestCount") || 0 == local_counter_name.compare("L2CacheHitCount") ||
                  0 == local_counter_name.compare("L2CacheMissCount"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0) &&
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0) &&
                            GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 3000);
         }
         else if (0 == local_counter_name.compare("PostZQuads"))
@@ -2928,7 +2928,7 @@ bool CubeSample::GpaValidateDataGfx9(unsigned int profile_set,
         else if (0 == local_counter_name.compare("L2CacheRequestCount") || 0 == local_counter_name.compare("L2CacheHitCount") ||
                  0 == local_counter_name.compare("L2CacheMissCount"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0) &&
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0) &&
                            GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 5500);
         }
         else if (0 == local_counter_name.compare("WriteUnitStalled"))
@@ -3377,15 +3377,15 @@ bool CubeSample::GpaValidateDataGfx10(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("InstCacheRequestCount"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 1, 52000);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 1, 300000);
         }
         else if (0 == local_counter_name.compare("InstCacheHitCount") || 0 == local_counter_name.compare("InstCacheMissCount"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0, 52000);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0, 300000);
         }
         else if (0 == local_counter_name.compare("L1CacheRequestCount") || 0 == local_counter_name.compare("L1CacheMissCount"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 10) &&
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0) &&
                            GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 3000);
         }
         else if (0 == local_counter_name.compare("L2CacheRequestCount") || 0 == local_counter_name.compare("L2CacheHitCount") ||
@@ -3405,7 +3405,8 @@ bool CubeSample::GpaValidateDataGfx10(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("WriteUnitStalled") || 0 == local_counter_name.compare("WriteUnitStalledCycles"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0) &&
+                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 40);
         }
         else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("GPUBusyCycles"))
         {
@@ -4164,11 +4165,11 @@ bool CubeSample::GpaValidateDataGfx11(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("WriteUnitStalled"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 22);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 24);
         }
         else if (0 == local_counter_name.compare("WriteUnitStalledCycles"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 3600);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 3700);
         }
         else if (0 == local_counter_name.compare("MemUnitStalled"))
         {
@@ -4181,7 +4182,7 @@ bool CubeSample::GpaValidateDataGfx11(unsigned int profile_set,
         else if (0 == local_counter_name.compare("GPUBusyCycles"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 8000) &&
-                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 32000);
+                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 35000);
         }
         else if (0 == local_counter_name.compare("CBMemRead") || 0 == local_counter_name.compare("CBColorAndMaskRead"))
         {
@@ -4201,7 +4202,7 @@ bool CubeSample::GpaValidateDataGfx11(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("TexUnitBusyCycles") || 0 == local_counter_name.compare("MemUnitBusyCycles"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 500, 5100);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 500, 8500);
         }
         else if (0 == local_counter_name.compare("FetchSize"))
         {

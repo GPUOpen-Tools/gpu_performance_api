@@ -35,7 +35,6 @@ namespace counter_oglp_gfx103
     extern const std::set<unsigned int>                               kHwOglpTimestampBlockIdsGfx103; ///< Timestamp block id's for Oglp for Gfx103 family
     extern const std::set<unsigned int>                               kHwOglpTimeCounterIndicesGfx103; ///< Timestamp counter indices for Oglp for Gfx103 family
     extern const unsigned int                                         kHwOglpGroupCountGfx103; ///< Hardware Group Count for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpExposedCountersGroupCountGfx103; ///< Exposed hardware counter Group Count for Oglp for Gfx103 family
     extern const unsigned int                                         kOglpPaddedCounterGroupCountGfx103; ///< reserved counter group count for Oglp for Gfx103 family
     extern const unsigned int                                         kHwOglpSqGroupCountGfx103; ///< Hardware SQ Group Count for Oglp for Gfx103 family
     extern const unsigned int                                         kHwOglpSqIsolatedGroupCountGfx103; ///< Hardware Isolated Group Count for Oglp for Gfx103 family

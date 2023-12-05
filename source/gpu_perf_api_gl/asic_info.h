@@ -146,7 +146,9 @@ namespace ogl_utils
         kGfx1035      = 0x2F,
         kGfx1103      = 0x35,
         kGfx1103B     = 0x38,
-        kAsicRevisionLast
+        kGfx1103HP1   = 0x39,
+        kGfx1103HP2   = 0x3A,
+	kAsicRevisionLast
     } AsicRevision;
 
     /// @brief ASIC Id specific information

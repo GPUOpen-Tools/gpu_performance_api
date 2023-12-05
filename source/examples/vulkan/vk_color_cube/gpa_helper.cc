@@ -446,16 +446,16 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         }
         else if (0 == local_counter_name.compare("PSBusy") || 0 == local_counter_name.compare("PSBusyCycles") || 0 == local_counter_name.compare("PSTime"))
         {
-            // Sanity Check
+            // Sanity check
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
-        else if (0 == local_counter_name.compare("PSVALUInstCount") || 0 == local_counter_name.compare("PSVALUBusy") ||
+        else if (0 == local_counter_name.compare("PSVALUInstCount") || 0 == local_counter_name.compare("PSVALUBusyCycles") ||
                  0 == local_counter_name.compare("PSVALUBusy"))
         {
-            // Sanity Check
+            // Sanity check
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
-        else if (0 == local_counter_name.compare("PSSALUInstCount") || 0 == local_counter_name.compare("PSSALUBusy") ||
+        else if (0 == local_counter_name.compare("PSSALUInstCount") || 0 == local_counter_name.compare("PSSALUBusyCycles") ||
                  0 == local_counter_name.compare("PSSALUBusy"))
         {
             if (sample_index == 1)
@@ -516,13 +516,14 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         }
         else if (0 == local_counter_name.compare("L0CacheRequestCount") || 0 == local_counter_name.compare("L0CacheMissCount"))
         {
-            // Sanity Check
+            // Sanity check
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L1CacheRequestCount"))
         {
-            // Sanity Check
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            // Sanity check
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 800.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L1CacheHit") || 0 == local_counter_name.compare("L1CacheHitCount"))
         {
@@ -544,33 +545,14 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         }
         else if (0 == local_counter_name.compare("L1CacheMissCount"))
         {
-            if (generation == kGpaHwGenerationGfx9)
-            {
-                // This sample may or may not return 0. This is obvious since they UINTs, but these are valid results.
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0.0f, 0.0f, confirm_success);
-            }
-            else
-            {
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
-            }
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 800.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L2CacheHit") || 0 == local_counter_name.compare("L2CacheRequestCount") ||
                  0 == local_counter_name.compare("L2CacheHitCount"))
         {
-            if (sample_index == 2)
-            {
-                // This may equal 0 if the other caches perform well. The conditional below is a truism because a UNIT is always >= 0.
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0.0f, 0.0f, confirm_success);
-            }
-            else
-            {
-                // Sanity Check
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
-            }
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 800.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L2CacheMiss"))
         {
@@ -582,7 +564,7 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
             else if (generation == kGpaHwGenerationGfx10)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 7.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 65.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx103)
             {
@@ -596,7 +578,6 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
             }
             else
             {
-                // Sanity check, assumes the L2 cache will not miss more than 50% in our test app and still be a valid result.
                 return_value =
                     CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
             }
@@ -633,6 +614,7 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         {
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
         }
+#ifdef _WIN32
         else if (0 == local_counter_name.compare("VsGsVerticesIn"))
         {
             // Sample 0
@@ -645,6 +627,7 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
 
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, vertex_count, 0.0f, confirm_success);
         }
+#endif
         else if (0 == local_counter_name.compare("GSVerticesOut"))
         {
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
@@ -693,7 +676,7 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         }
         else if (0 == local_counter_name.compare("PrimitivesIn"))
         {
-            if (generation == kGpaHwGenerationGfx11)
+            if (generation == kGpaHwGenerationGfx10 || generation >= kGpaHwGenerationGfx11)
             {
                 // Samples 0 and 1
                 GpaFloat64 prim_count = 12;

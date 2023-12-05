@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2020 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Implements Gpa counter context related functionality.
@@ -42,10 +42,8 @@
 
 GpaCounterContextHandler::GpaCounterContextHandler(const GpaApiType&                    api_type,
                                                    const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
-                                                   const GpaOpenContextFlags&           context_flags,
-                                                   const GpaUInt8&                      generate_asic_specific_counters)
+                                                   const GpaOpenContextFlags&           context_flags)
     : gpa_api_type_(api_type)
-    , asic_specific_(generate_asic_specific_counters)
     , gpa_open_context_flags_(context_flags)
     , initialized_(false)
     , gpa_counter_accessor_(nullptr)
@@ -110,7 +108,7 @@ bool GpaCounterContextHandler::InitCounters()
             {
                 const GpaStatus status = GenerateCounters(
                     gpa_api_type_,
-                    vendorId, deviceId, revisionId, gpa_open_context_flags_, asic_specific_, &gpa_counter_accessor_, &gpa_counter_scheduler_);
+                    vendorId, deviceId, revisionId, gpa_open_context_flags_, &gpa_counter_accessor_, &gpa_counter_scheduler_);
 
                 if (kGpaStatusOk == status)
                 {
@@ -195,14 +193,13 @@ GpaCounterContextManager::~GpaCounterContextManager()
 GpaStatus GpaCounterContextManager::OpenCounterContext(const GpaApiType&                    api_type,
                                                        const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
                                                        const GpaOpenContextFlags&           context_flags,
-                                                       const GpaUInt8&                      generate_asic_specific_counters,
                                                        GpaCounterContext*                   gpa_counter_context)
 {
     Init(api_type);
 
     GpaCounterContextHandler* gpa_new_counter_context =
         new (std::nothrow) GpaCounterContextHandler(api_type,
-            gpa_counter_context_hardware_info, context_flags, generate_asic_specific_counters);
+            gpa_counter_context_hardware_info, context_flags);
 
     if (nullptr != gpa_new_counter_context)
     {

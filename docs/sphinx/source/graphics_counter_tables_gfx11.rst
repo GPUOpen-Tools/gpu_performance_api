@@ -223,7 +223,7 @@ GlobalMemory Group
     "MemUnitStalledCycles", "Cycles", "Number of GPU cycles the memory unit is stalled."
     "WriteUnitStalled", "Percentage", "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad)."
     "WriteUnitStalledCycles", "Cycles", "Number of GPU cycles the Write unit is stalled."
-    "LocalVidMemBytes", "Bytes", "Number of bytes read from or written to local video memory"
+    "LocalVidMemBytes", "Bytes", "Number of bytes read from or written to the Infinity Cache (if available) or local video memory"
     "PcieBytes", "Bytes", "Number of bytes sent and received over the PCIe bus"
 
 RayTracing Group

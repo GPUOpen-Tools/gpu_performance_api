@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Sample Configuration Header.
@@ -8,10 +8,17 @@
 #ifndef GPU_PERF_API_DX12_DX12_GPA_SAMPLE_CONFIG_H_
 #define GPU_PERF_API_DX12_DX12_GPA_SAMPLE_CONFIG_H_
 
+#include <assert.h>
+
 // AMD Ext
 #pragma warning(push)
 #pragma warning(disable : 4201)
 #include <AmdExtGpaInterfaceApi.h>
+
+#include "gpa_counter_accessor_interface.h"
+#include "gpa_pass.h"
+#include "gpa_session_interface.h"
+#include "logging.h"
 
 /// @brief Input structure for CmdBeginGpuProfilerSample on drivers older than 18.50.
 ///
@@ -89,13 +96,15 @@ struct AmdExtGpaSampleConfigPre1850
         AmdExtHwPipePoint postSample;  ///< The point in the GPU pipeline where the end timestamp should take place.
     } timing;                          ///< Timestamp configuration. (only valid for timing samples)
 
-    /// Translate from newer configuration to this older configuration
-    /// \updatedConfig[in] updated GPA sample configuration
-    /// \return this AmdExtGpaSampleConfigPre1850 instance
-    AmdExtGpaSampleConfigPre1850& operator=(const AmdExtGpaSampleConfig& updatedConfig)
+    /// Translate from newer configuration to this older configuration.
+    ///
+    /// @param [in] updated_config updated GPA sample configuration.
+    ///
+    /// @return This AmdExtGpaSampleConfigPre1850 instance.
+    AmdExtGpaSampleConfigPre1850& operator=(const AmdExtGpaSampleConfig& updated_config)
     {
         // Query type is not supported by older configuration
-        type = updatedConfig.type;
+        type = updated_config.type;
 
         if (type == AmdExtGpaSampleType::Query)
         {
@@ -104,16 +113,16 @@ struct AmdExtGpaSampleConfigPre1850
             type = AmdExtGpaSampleType::None;
         }
 
-        flags.u32All = updatedConfig.flags.u32All;
-        sqShaderMask = updatedConfig.sqShaderMask;
+        flags.u32All = updated_config.flags.u32All;
+        sqShaderMask = updated_config.sqShaderMask;
 
-        memcpy(&perfCounters, &updatedConfig.perfCounters, sizeof(perfCounters));
+        memcpy(&perfCounters, &updated_config.perfCounters, sizeof(perfCounters));
 
         // sqtt struct differs between older and newer configuration
-        sqtt.flags.u32All   = updatedConfig.sqtt.flags.u32All;
-        sqtt.gpuMemoryLimit = updatedConfig.sqtt.gpuMemoryLimit;
+        sqtt.flags.u32All   = updated_config.sqtt.flags.u32All;
+        sqtt.gpuMemoryLimit = updated_config.sqtt.gpuMemoryLimit;
 
-        memcpy(&timing, &updatedConfig.timing, sizeof(timing));
+        memcpy(&timing, &updated_config.timing, sizeof(timing));
 
         return *this;
     }
@@ -244,8 +253,6 @@ public:
 
     bool Initialize(IGpaSession* session, GpaCounterSource counter_source, const CounterList* counter_list, GpaPass* gpa_pass, bool is_timing_pass);
 
-    bool UpdateSettings(const IGpaSession* gpa_session);
-
     const AmdExtGpaSampleConfig& GetDriverExtSampleConfig() const
     {
         return amd_ext_sample_config_;
@@ -274,11 +281,9 @@ public:
     }
 
 private:
-    bool UpdateSpmSettings(const IGpaSession* session);
-
-    AmdExtGpaSampleConfig   amd_ext_sample_config_;       ///< AMD Extension configuration for hardware samples
-    bool                    is_sample_config_initialized_;  ///< flag indicating whether the sample config is initialized or not for the hardware samples
-    GpaSessionSampleType    sample_type_;
+    AmdExtGpaSampleConfig amd_ext_sample_config_;         ///< AMD Extension configuration for hardware samples.
+    bool                  is_sample_config_initialized_;  ///< Flag indicating whether the sample config is initialized for the hardware samples.
+    GpaSessionSampleType  sample_type_;                   ///< The type of samples being collected in this configuration.
 
     std::vector<CounterResultEntry> counter_result_entries_;
 };

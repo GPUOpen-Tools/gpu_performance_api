@@ -1522,7 +1522,7 @@ GL2C*_PERF_SEL_MC_WRREQ_STALL[0..23]
 eqn=0..23,max24
 
 name=LocalVidMemBytes
-desc=#GlobalMemory#Number of bytes read from or written to local video memory
+desc=#GlobalMemory#Number of bytes read from or written to the Infinity Cache (if available) or local video memory
 type=gpa_float64
 usage=bytes
 [OGLPGfx11]

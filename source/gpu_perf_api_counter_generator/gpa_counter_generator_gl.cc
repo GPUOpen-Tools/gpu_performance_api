@@ -341,7 +341,6 @@ void GpaCounterGeneratorGl::Cleanup()
 
 GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
                                                         GDT_HW_ASIC_TYPE    asic_type,
-                                                        GpaUInt8            generate_asic_specific_counters,
                                                         GpaDerivedCounters* public_counters)
 {
     GpaStatus status = kGpaStatusErrorHardwareNotSupported;
@@ -365,12 +364,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
             case GDT_HW_GENERATION_VOLCANICISLAND:
             {
                 AutoDefinePublicDerivedCountersGlGfx8(*public_counters);
-
-                if (generate_asic_specific_counters)
-                {
-                    gl_gfx8_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-                }
-
+                gl_gfx8_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
                 status = kGpaStatusOk;
             }
             break;
@@ -378,12 +372,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
             case GDT_HW_GENERATION_GFX9:
             {
                 AutoDefinePublicDerivedCountersGlGfx9(*public_counters);
-
-                if (generate_asic_specific_counters)
-                {
-                    gl_gfx9_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-                }
-
+                gl_gfx9_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
                 status = kGpaStatusOk;
             }
             break;
@@ -391,12 +380,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
             case GDT_HW_GENERATION_GFX10:
             {
                 AutoDefinePublicDerivedCountersGlGfx10(*public_counters);
-
-                if (generate_asic_specific_counters)
-                {
-                    gl_gfx10_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-                }
-
+                gl_gfx10_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
                 status = kGpaStatusOk;
             }
             break;
@@ -404,12 +388,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
             case GDT_HW_GENERATION_GFX103:
             {
                 AutoDefinePublicDerivedCountersGlGfx103(*public_counters);
-
-                if (generate_asic_specific_counters)
-                {
-                    gl_gfx103_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-                }
-
+                gl_gfx103_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
                 status = kGpaStatusOk;
             }
             break;
@@ -426,12 +405,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
             case GDT_HW_GENERATION_VOLCANICISLAND:
             {
                 AutoDefinePublicDerivedCountersOglpGfx8(*public_counters);
-
-                if (generate_asic_specific_counters)
-                {
-                    oglp_gfx8_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-                }
-
+                oglp_gfx8_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
                 status = kGpaStatusOk;
             }
             break;
@@ -439,12 +413,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
             case GDT_HW_GENERATION_GFX9:
             {
                 AutoDefinePublicDerivedCountersOglpGfx9(*public_counters);
-
-                if (generate_asic_specific_counters)
-                {
-                    oglp_gfx9_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-                }
-
+                oglp_gfx9_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
                 status = kGpaStatusOk;
             }
             break;
@@ -452,12 +421,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
             case GDT_HW_GENERATION_GFX10:
             {
                 AutoDefinePublicDerivedCountersOglpGfx10(*public_counters);
-
-                if (generate_asic_specific_counters)
-                {
-                    oglp_gfx10_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-                }
-
+                oglp_gfx10_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
                 status = kGpaStatusOk;
             }
             break;
@@ -465,12 +429,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
             case GDT_HW_GENERATION_GFX103:
             {
                 AutoDefinePublicDerivedCountersOglpGfx103(*public_counters);
-
-                if (generate_asic_specific_counters)
-                {
-                    oglp_gfx103_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-                }
-
+                oglp_gfx103_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
                 status = kGpaStatusOk;
             }
             break;
@@ -478,12 +437,7 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
             case GDT_HW_GENERATION_GFX11:
             {
                 AutoDefinePublicDerivedCountersOglpGfx11(*public_counters);
-
-                if (generate_asic_specific_counters)
-                {
-                    oglp_gfx11_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
-                }
-
+                oglp_gfx11_asics::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, *public_counters);
                 status = kGpaStatusOk;
             }
             break;
@@ -509,11 +463,9 @@ GpaStatus GpaCounterGeneratorGl::GeneratePublicCounters(GDT_HW_GENERATION   desi
 
 GpaStatus GpaCounterGeneratorGl::GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
                                                           GDT_HW_ASIC_TYPE     asic_type,
-                                                          GpaUInt8             generate_asic_specific_counters,
                                                           GpaHardwareCounters* hardware_counters)
 {
     UNREFERENCED_PARAMETER(asic_type);
-    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
 
     GpaStatus status = kGpaStatusOk;
 
@@ -746,11 +698,9 @@ GpaStatus GpaCounterGeneratorGl::GenerateHardwareCounters(GDT_HW_GENERATION    d
 
 GpaStatus GpaCounterGeneratorGl::GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
                                                                  GDT_HW_ASIC_TYPE     asic_type,
-                                                                 GpaUInt8             generate_asic_specific_counters,
                                                                  GpaHardwareCounters* hardware_counters)
 {
     UNREFERENCED_PARAMETER(asic_type);
-    UNREFERENCED_PARAMETER(generate_asic_specific_counters);
 
     if (nullptr == hardware_counters)
     {
@@ -769,25 +719,21 @@ GpaStatus GpaCounterGeneratorGl::GenerateHardwareExposedCounters(GDT_HW_GENERATI
         case GDT_HW_GENERATION_VOLCANICISLAND:
             hardware_counters->hardware_exposed_counters_            = counter_gl_gfx8::kGlCounterGroupArrayGfx8;
             hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx8::kHwGlExposedCountersByGroupGfx8;
-            hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx8::kHwGlExposedCountersGroupCountGfx8;
             break;
 
         case GDT_HW_GENERATION_GFX9:
             hardware_counters->hardware_exposed_counters_            = counter_gl_gfx9::kGlCounterGroupArrayGfx9;
             hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx9::kHwGlExposedCountersByGroupGfx9;
-            hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx9::kHwGlExposedCountersGroupCountGfx9;
             break;
 
         case GDT_HW_GENERATION_GFX10:
             hardware_counters->hardware_exposed_counters_            = counter_gl_gfx10::kGlCounterGroupArrayGfx10;
             hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx10::kHwGlExposedCountersByGroupGfx10;
-            hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx10::kHwGlExposedCountersGroupCountGfx10;
             break;
 
         case GDT_HW_GENERATION_GFX103:
             hardware_counters->hardware_exposed_counters_            = counter_gl_gfx103::kGlCounterGroupArrayGfx103;
             hardware_counters->hardware_exposed_counter_groups_      = counter_gl_gfx103::kHwGlExposedCountersByGroupGfx103;
-            hardware_counters->hardware_exposed_counter_group_count_ = counter_gl_gfx103::kHwGlExposedCountersGroupCountGfx103;
             break;
 
         default:
@@ -802,31 +748,26 @@ GpaStatus GpaCounterGeneratorGl::GenerateHardwareExposedCounters(GDT_HW_GENERATI
         case GDT_HW_GENERATION_VOLCANICISLAND:
             hardware_counters->hardware_exposed_counters_            = counter_oglp_gfx8::kOglpCounterGroupArrayGfx8;
             hardware_counters->hardware_exposed_counter_groups_      = counter_oglp_gfx8::kHwOglpExposedCountersByGroupGfx8;
-            hardware_counters->hardware_exposed_counter_group_count_ = counter_oglp_gfx8::kHwOglpExposedCountersGroupCountGfx8;
             break;
 
         case GDT_HW_GENERATION_GFX9:
             hardware_counters->hardware_exposed_counters_            = counter_oglp_gfx9::kOglpCounterGroupArrayGfx9;
             hardware_counters->hardware_exposed_counter_groups_      = counter_oglp_gfx9::kHwOglpExposedCountersByGroupGfx9;
-            hardware_counters->hardware_exposed_counter_group_count_ = counter_oglp_gfx9::kHwOglpExposedCountersGroupCountGfx9;
             break;
 
         case GDT_HW_GENERATION_GFX10:
             hardware_counters->hardware_exposed_counters_            = counter_oglp_gfx10::kOglpCounterGroupArrayGfx10;
             hardware_counters->hardware_exposed_counter_groups_      = counter_oglp_gfx10::kHwOglpExposedCountersByGroupGfx10;
-            hardware_counters->hardware_exposed_counter_group_count_ = counter_oglp_gfx10::kHwOglpExposedCountersGroupCountGfx10;
             break;
 
         case GDT_HW_GENERATION_GFX103:
             hardware_counters->hardware_exposed_counters_            = counter_oglp_gfx103::kOglpCounterGroupArrayGfx103;
             hardware_counters->hardware_exposed_counter_groups_      = counter_oglp_gfx103::kHwOglpExposedCountersByGroupGfx103;
-            hardware_counters->hardware_exposed_counter_group_count_ = counter_oglp_gfx103::kHwOglpExposedCountersGroupCountGfx103;
             break;
 
         case GDT_HW_GENERATION_GFX11:
             hardware_counters->hardware_exposed_counters_            = counter_oglp_gfx11::kOglpCounterGroupArrayGfx11;
             hardware_counters->hardware_exposed_counter_groups_      = counter_oglp_gfx11::kHwOglpExposedCountersByGroupGfx11;
-            hardware_counters->hardware_exposed_counter_group_count_ = counter_oglp_gfx11::kHwOglpExposedCountersGroupCountGfx11;
             break;
 
         default:

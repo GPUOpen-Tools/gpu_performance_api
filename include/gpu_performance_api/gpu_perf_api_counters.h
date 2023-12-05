@@ -241,15 +241,18 @@ typedef GpaStatus (*GpaCounterLibGetFuncTablePtrType)(void*);
 ///
 /// @param [in] api the api whose available counters are requested.
 /// @param [in] gpa_counter_context_hardware_info counter context hardware info.
-/// @param [in] context_flags Flags used to initialize the context. Should be a combination of GPA_OpenContext_Bits.
-/// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
+/// @param [in] context_flags Flags used to initialize the context. Should be a combination of GpaOpenContextBits.
+/// @param [in] generate_asic_specific_counters_deprecated No longer supported, only acceptable value is 1 (true).
 /// @param [out] gpa_virtual_context Unique identifier of the opened virtual context.
 ///
 /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+/// @retval kGpaStatusErrorNullPointer If the supplied gpa_virtual_context is a nullptr.
+/// @retval kGpaStatusErrorInvalidParameter If any value other than 1 (true) is passed in for generate_asic_specific_counters_deprecated,
+///         or if the context_flags specified would result in zero counters being exposed.
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibOpenCounterContext(GpaApiType                    api,
                                                                      GpaCounterContextHardwareInfo gpa_counter_context_hardware_info,
                                                                      GpaOpenContextFlags           context_flags,
-                                                                     GpaUInt8                      generate_asic_specific_counters,
+                                                                     GpaUInt8                      generate_asic_specific_counters_deprecated,
                                                                      GpaCounterContext*            gpa_virtual_context);
 
 /// typedef for GpaCounterLibOpenCounterContext function pointer.

@@ -101,7 +101,7 @@ public:
             EnterCriticalSection(&lock_handle);
 
             // Format string.
-            char    buffer[1024 * 50];
+            char    buffer[1024 * 5];
             buffer[0] = '\0';
 #ifdef WIN32
             vsnprintf_s(buffer, sizeof(buffer), msg_fmt, args);
