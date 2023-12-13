@@ -108,8 +108,8 @@ elseif(ANDROID)
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/APK/$<CONFIG>/shaders
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/obj/$<CONFIG>/
                     COMMAND ${CMAKE_COMMAND} -E make_directory ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/src/com/amd/gpa/vk_color_cube
-                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libGPUPerfAPIVK${TARGET_NAME_SUFFIX}.so ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/APK/$<CONFIG>/libs/lib/x86_64/libGPUPerfAPIVK${TARGET_NAME_SUFFIX}.so
-                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libVkColorCube${TARGET_NAME_SUFFIX}.so ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/APK/$<CONFIG>/libs/lib/x86_64/libVkColorCube${TARGET_NAME_SUFFIX}.so
+                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libGPUPerfAPIVK${TARGET_NAME_SUFFIX}.so ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/APK/$<CONFIG>/libs/lib/${ANDROID_ABI}/libGPUPerfAPIVK${TARGET_NAME_SUFFIX}.so
+                    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}/libVkColorCube${TARGET_NAME_SUFFIX}.so ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/APK/$<CONFIG>/libs/lib/${ANDROID_ABI}/libVkColorCube${TARGET_NAME_SUFFIX}.so
                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_BINARY_DIR}/VkColorCubeLoader.java ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/src/com/amd/gpa/vk_color_cube
                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vk_color_cube_shader.vert.spv ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/APK/$<CONFIG>/shaders/vk_color_cube_shader.vert.spv
                     COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/vk_color_cube_shader.frag.spv ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/APK/$<CONFIG>/shaders/vk_color_cube_shader.frag.spv

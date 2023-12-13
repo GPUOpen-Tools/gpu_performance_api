@@ -128,7 +128,9 @@ def define_cmake_arguments():
     script_parser.add_argument("--nofetch", action="store_true", help="skip fetching repo dependencies")
     script_parser.add_argument("--cmakecmd", type=str, default="cmake", help="command to use in place of 'cmake'")
     script_parser.add_argument("--verbose", action="store_true", help="Turns on the verbosity of the script'")
-    script_parser.add_argument("--android", action="store_true", help="CMake will generate project files for android")
+    script_parser.add_argument("--android_x64", action="store_true", help="CMake will generate project files for Android x64")
+    script_parser.add_argument("--android_arm64", action="store_true", help="CMake will generate project files for Android Arm-64")
+    script_parser.add_argument("--android", dest="android_x64", action="store_true", help="Same as --android_x64 (for backwards compatibility)")
 
     script_parser.add_argument("--clang_format", action="store_true", help="run clang-format on source files prior to performing a build")
     script_parser.add_argument("--clang_tidy", action="store_true", help="run clang-tidy on source files after a build completes")
