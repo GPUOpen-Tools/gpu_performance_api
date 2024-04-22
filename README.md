@@ -15,8 +15,8 @@ is used by [Radeon GPU Profiler](https://github.com/GPUOpen-Tools/radeon_gpu_pro
 * [Raw Hardware Counters](#raw-hardware-counters)
 * [Known Issues](#known-issues)
 * [Building the Source Code](BUILD.md)
-* [License](LICENSE)
-* [Historical Release Notes](ReleaseNotes.md)
+* [License](LICENSE.txt)
+* [Historical Release Notes](RELEASE_NOTES.txt)
 * [Style and Format Change](#Style-and-Format-Change)
 
 ## Downloads
