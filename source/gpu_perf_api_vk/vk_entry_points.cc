@@ -55,6 +55,63 @@ PFN_vkCmdCopyGpaSessionResultsAMD _vkCmdCopyGpaSessionResultsAMD = nullptr;
 
 bool vk_utils::are_entry_points_initialized = false;
 
+bool vk_utils::InitializeVkEntryPointsFromLayer(VkInstance instance, VkDevice device, 
+        GpaVkApiEntrypoints_v1* pVkEntry
+    )
+{
+    if (!are_entry_points_initialized) 
+    {
+        _vkGetPhysicalDeviceProperties            = pVkEntry->vkGetPhysicalDeviceProperties;
+        _vkGetPhysicalDeviceQueueFamilyProperties = pVkEntry->vkGetPhysicalDeviceQueueFamilyProperties;
+        _vkGetPhysicalDeviceMemoryProperties = pVkEntry->vkGetPhysicalDeviceMemoryProperties;
+        _vkGetPhysicalDeviceFeatures = pVkEntry->vkGetPhysicalDeviceFeatures;
+        _vkGetBufferMemoryRequirements = pVkEntry->vkGetBufferMemoryRequirements;
+        _vkGetPhysicalDeviceProperties2KHR = pVkEntry->vkGetPhysicalDeviceProperties2KHR;
+        _vkGetPhysicalDeviceFeatures2KHR = pVkEntry->vkGetPhysicalDeviceFeatures2KHR;
+
+        _vkGetDeviceQueue = pVkEntry->vkGetDeviceQueue;
+        _vkCreateQueryPool = pVkEntry->vkCreateQueryPool;
+        _vkDestroyQueryPool = pVkEntry->vkDestroyQueryPool;
+        _vkCreateBuffer = pVkEntry->vkCreateBuffer;
+        _vkDestroyBuffer = pVkEntry->vkDestroyBuffer;
+
+
+        _vkAllocateMemory = pVkEntry->vkAllocateMemory;
+        _vkBindBufferMemory = pVkEntry->vkBindBufferMemory;
+        _vkFreeMemory = pVkEntry->vkFreeMemory;
+        _vkMapMemory = pVkEntry->vkMapMemory;
+        _vkUnmapMemory = pVkEntry->vkUnmapMemory;
+        _vkFlushMappedMemoryRanges = pVkEntry->vkFlushMappedMemoryRanges;
+        _vkCmdResetQueryPool = pVkEntry->vkCmdResetQueryPool;
+        _vkCmdBeginQuery = pVkEntry->vkCmdBeginQuery;
+        _vkCmdEndQuery = pVkEntry->vkCmdEndQuery;
+        _vkCmdWriteTimestamp = pVkEntry->vkCmdWriteTimestamp;
+        _vkCmdCopyQueryPoolResults = pVkEntry->vkCmdCopyQueryPoolResults;
+        _vkGetQueryPoolResults = pVkEntry->vkGetQueryPoolResults;
+        _vkCmdCopyBuffer = pVkEntry->vkCmdCopyBuffer;
+        _vkDeviceWaitIdle = pVkEntry->vkDeviceWaitIdle;
+
+        _vkCreateGpaSessionAMD = reinterpret_cast<PFN_vkCreateGpaSessionAMD>(pVkEntry->vkCreateGpaSessionAMD);
+        _vkDestroyGpaSessionAMD = reinterpret_cast<PFN_vkDestroyGpaSessionAMD>(pVkEntry->vkDestroyGpaSessionAMD);
+        _vkSetGpaDeviceClockModeAMD = reinterpret_cast<PFN_vkSetGpaDeviceClockModeAMD>(pVkEntry->vkSetGpaDeviceClockModeAMD);
+        _vkCmdBeginGpaSessionAMD = reinterpret_cast<PFN_vkCmdBeginGpaSessionAMD>(pVkEntry->vkCmdBeginGpaSessionAMD);
+        _vkCmdEndGpaSessionAMD = reinterpret_cast<PFN_vkCmdEndGpaSessionAMD>(pVkEntry->vkCmdEndGpaSessionAMD);
+        _vkCmdBeginGpaSampleAMD = reinterpret_cast<PFN_vkCmdBeginGpaSampleAMD>(pVkEntry->vkCmdBeginGpaSampleAMD);
+        _vkCmdEndGpaSampleAMD = reinterpret_cast<PFN_vkCmdEndGpaSampleAMD>(pVkEntry->vkCmdEndGpaSampleAMD);
+
+        _vkGetGpaSessionStatusAMD = reinterpret_cast<PFN_vkGetGpaSessionStatusAMD>(pVkEntry->vkGetGpaSessionStatusAMD);
+        _vkGetGpaSessionResultsAMD = reinterpret_cast<PFN_vkGetGpaSessionResultsAMD>(pVkEntry->vkGetGpaSessionResultsAMD);
+
+        _vkResetGpaSessionAMD = reinterpret_cast<PFN_vkResetGpaSessionAMD>(pVkEntry->vkResetGpaSessionAMD);
+        _vkCmdCopyGpaSessionResultsAMD = reinterpret_cast<PFN_vkCmdCopyGpaSessionResultsAMD>(pVkEntry->vkCmdCopyGpaSessionResultsAMD);
+
+        are_entry_points_initialized = true;
+    }   
+
+    return true;
+}
+
+// this interface to be used by APP only
 bool vk_utils::InitializeVkEntryPoints(VkInstance instance, VkDevice device)
 {
     if (!are_entry_points_initialized)
@@ -62,6 +119,7 @@ bool vk_utils::InitializeVkEntryPoints(VkInstance instance, VkDevice device)
 #ifdef _WIN32
         HMODULE vulkan_module = ::GetModuleHandleW(L"Vulkan-1.dll");
 #else
+
         void* vulkan_module = dlopen("libvulkan.so", RTLD_NOLOAD);
 
         if (nullptr == vulkan_module)
@@ -102,7 +160,7 @@ bool vk_utils::InitializeVkEntryPoints(VkInstance instance, VkDevice device)
             VK_GET_INSTANCE_PROC_ADDR(vkGetPhysicalDeviceQueueFamilyProperties);
             VK_GET_INSTANCE_PROC_ADDR(vkGetPhysicalDeviceMemoryProperties);
             VK_GET_INSTANCE_PROC_ADDR(vkGetPhysicalDeviceFeatures);
-            VK_GET_INSTANCE_PROC_ADDR(vkGetBufferMemoryRequirements);
+            VK_GET_INSTANCE_PROC_ADDR(vkGetBufferMemoryRequirements);            
         }
 
         if (result)
