@@ -273,13 +273,25 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
     // Add the HW groups max's.
     for (unsigned int i = 0; i < hw_counters->internal_counter_groups_.size(); ++i)
     {
-        max_counters_per_group.push_back(hw_counters->internal_counter_groups_[i].max_active_discrete_counters);
+        auto count = hw_counters->internal_counter_groups_[i].max_active_discrete_counters;
+        if (count == 0)
+        {
+            GPA_LOG_DEBUG_ERROR("Hardware counter group '%s' has zero for max-counters-per-group.", hw_counters->internal_counter_groups_[i].name);
+            return kGpaStatusErrorInvalidCounterGroupData;
+        }
+        max_counters_per_group.push_back(count);
     }
 
     // Add the Additional groups max's.
     for (unsigned int i = 0; i < hw_counters->additional_group_count_; ++i)
     {
-        max_counters_per_group.push_back(hw_counters->additional_groups_[i].max_active_discrete_counters);
+        auto count = hw_counters->additional_groups_[i].max_active_discrete_counters;
+        if (count == 0)
+        {
+            GPA_LOG_DEBUG_ERROR("Hardware counter additional group '%s' has zero for max-counters-per-group.", hw_counters->additional_groups_[i].name);
+            return kGpaStatusErrorInvalidCounterGroupData;
+        }
+        max_counters_per_group.push_back(count);
     }
 
     GpaCounterGroupAccessor accessor(hw_counters->internal_counter_groups_,

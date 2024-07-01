@@ -16,10 +16,10 @@
 
 #ifdef DEBUG_PUBLIC_COUNTER_SPLITTER
 #include <sstream>
-#include "gpu_perf_api_common/logging.h"
 #endif
 
 #include "gpu_perf_api_counter_generator/gpa_derived_counter.h"
+#include "gpu_perf_api_common/logging.h"
 
 /// @brief Enum to represent the different SQ shader stages.
 enum GpaSqShaderStage
@@ -378,6 +378,11 @@ protected:
         }
 
         unsigned int group_limit = max_counters_per_group[group_index];
+        if (group_limit == 0)
+        {
+            GPA_LOG_DEBUG_ERROR("Group(%d) counter limit is zero.", group_index);
+            return false;
+        }
 
         // This should never occur. It indicates the counter relies on a block without any collectible events.
         assert(group_limit > 0);
