@@ -1027,6 +1027,10 @@ bool D3D11Triangle::GpaValidateData(unsigned int frame_number,
         {
             return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 3.0f);
         }
+        else if (0 == local_counter_name.compare("VsGsPrimsIn"))
+        {
+            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 1.0f);
+        }
         else if (0 == local_counter_name.compare("GSVerticesOut"))
         {
             return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f);
@@ -1038,10 +1042,6 @@ bool D3D11Triangle::GpaValidateData(unsigned int frame_number,
         else if (0 == local_counter_name.compare("GSPrimsIn"))
         {
             return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f);
-        }
-        else if (0 == local_counter_name.compare("VsGsPrimsIn"))
-        {
-            return_value = GpaCounterValueCompare(frame_number, sample_index, counter_name, counter_value, kCompareTypeEqual, 1.0f);
         }
         else if (0 == local_counter_name.compare("TexTriFilteringPct") || 0 == local_counter_name.compare("TexTriFilteringCount") ||
                  0 == local_counter_name.compare("NoTexTriFilteringCount") || 0 == local_counter_name.compare("TexVolFilteringPct") ||

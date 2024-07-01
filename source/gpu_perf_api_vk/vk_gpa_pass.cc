@@ -136,9 +136,8 @@ void VkGpaPass::InitializeSampleConfig()
 
                     counter_ids_.push_back(this_counter);
 
-                    // If dealing with an SQ counter, check if the the stage mask needs to be set.
-                    if (counter->group_index >= hardware_counters->sq_counter_groups_[0].group_index &&
-                        counter->group_index <= hardware_counters->sq_counter_groups_[hardware_counters->sq_group_count_ - 1].group_index)
+                    // If dealing with an SQ or SqWgp counter, check if the stage mask needs to be set.
+                    if (block == VK_GPA_PERF_BLOCK_SQ_AMD || block == VK_GPA_PERF_BLOCK_SQWGP_AMD)
                     {
                         GpaSqShaderStage stage = kSqAll;
 

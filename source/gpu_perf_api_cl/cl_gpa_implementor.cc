@@ -307,26 +307,8 @@ bool ClGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, 
 
     if (generation == GDT_HW_GENERATION_GFX11)
     {
-        unsigned int   major_ver     = 0;
-        unsigned int   minor_ver     = 0;
-        unsigned int   sub_minor_ver = 0;
-        ADLUtil_Result adl_result    = AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
-        AMDTADLUtils::DeleteInstance();
-
-        if ((ADL_SUCCESS == adl_result || ADL_WARNING == adl_result))
-        {
-            // 22.40.43 is the first driver that properly supports perf counters on GFX11.
-            static const unsigned int kMinMajorVersionForGfx11Support = 22;
-            static const unsigned int kMinMinorVersionForGfx11Support = 40;
-            static const unsigned int kMinSubMinorVersionForGfx11Support = 43;
-
-            if (major_ver < kMinMajorVersionForGfx11Support || (major_ver == kMinMajorVersionForGfx11Support && minor_ver < kMinMinorVersionForGfx11Support) ||
-                (major_ver == kMinMajorVersionForGfx11Support && minor_ver == kMinMinorVersionForGfx11Support && sub_minor_ver < kMinSubMinorVersionForGfx11Support))
-            {
-                GPA_LOG_ERROR("Known Issue: This driver version does not properly support GPUPerfAPI on this hardware.");
-                is_supported = false;
-            }
-        }
+        GPA_LOG_ERROR("Known Issue: This OpenCL driver version does not properly support GPUPerfAPI on GFX11 hardware.");
+        is_supported = false;
     }
 
     return is_supported;

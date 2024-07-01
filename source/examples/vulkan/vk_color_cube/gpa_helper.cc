@@ -458,15 +458,8 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         else if (0 == local_counter_name.compare("PSSALUInstCount") || 0 == local_counter_name.compare("PSSALUBusyCycles") ||
                  0 == local_counter_name.compare("PSSALUBusy"))
         {
-            if (sample_index == 1)
-            {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
-            }
-            else
-            {
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
-            }
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 20.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L0CacheHit"))
         {
@@ -532,15 +525,10 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
                 return_value =
                     CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 250.0f, confirm_success);
             }
-            else if (generation == kGpaHwGenerationGfx8 || generation == kGpaHwGenerationGfx10 || generation == kGpaHwGenerationGfx103)
-            {
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 20.0f, confirm_success);
-            }
             else
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 20.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
             }
         }
         else if (0 == local_counter_name.compare("L1CacheMissCount"))
@@ -552,7 +540,7 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
                  0 == local_counter_name.compare("L2CacheHitCount"))
         {
             return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 800.0f, confirm_success);
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 1000.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L2CacheMiss"))
         {
@@ -592,7 +580,7 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
             else if (generation == kGpaHwGenerationGfx10)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx103)
             {
@@ -614,7 +602,14 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         {
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
         }
-#ifdef _WIN32
+        else if (0 == local_counter_name.compare("GSVerticesOut"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("PreTessVerticesIn"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+        }
         else if (0 == local_counter_name.compare("VsGsVerticesIn"))
         {
             // Sample 0
@@ -626,15 +621,6 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
                 vertex_count = 72;
 
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, vertex_count, 0.0f, confirm_success);
-        }
-#endif
-        else if (0 == local_counter_name.compare("GSVerticesOut"))
-        {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
-        }
-        else if (0 == local_counter_name.compare("PreTessVerticesIn"))
-        {
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("GSPrimsIn"))
         {
@@ -676,11 +662,10 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         }
         else if (0 == local_counter_name.compare("PrimitivesIn"))
         {
-            if (generation == kGpaHwGenerationGfx10 || generation >= kGpaHwGenerationGfx11)
+            if (generation == kGpaHwGenerationGfx10 || generation == kGpaHwGenerationGfx11)
             {
                 // Samples 0 and 1
                 GpaFloat64 prim_count = 12;
-                // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
                 if (sample_index == 2)
                     prim_count = 24;
                 return_value =

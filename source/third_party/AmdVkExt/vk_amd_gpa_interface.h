@@ -34,14 +34,13 @@
 
 #include "vk_internal_ext_helper.h"
 
-#define VK_AMD_gpa_interface                             1
-#define VK_AMD_GPA_INTERFACE_SPEC_VERSION                1
-#define VK_AMD_GPA_INTERFACE_EXTENSION_NAME              "VK_AMD_gpa_interface"
+#define VK_AMD_gpa_interface 1
+#define VK_AMD_GPA_INTERFACE_SPEC_VERSION 1
+#define VK_AMD_GPA_INTERFACE_EXTENSION_NAME "VK_AMD_gpa_interface"
 
-#define VK_AMD_GPA_INTERFACE_EXTENSION_NUMBER            134
+#define VK_AMD_GPA_INTERFACE_EXTENSION_NUMBER 134
 
-#define VK_AMD_GPA_INTERFACE_ENUM(type, offset) \
-    VK_EXTENSION_ENUM(VK_AMD_GPA_INTERFACE_EXTENSION_NUMBER, type, offset)
+#define VK_AMD_GPA_INTERFACE_ENUM(type, offset) VK_EXTENSION_ENUM(VK_AMD_GPA_INTERFACE_EXTENSION_NUMBER, type, offset)
 
 typedef enum VkGpaSqShaderStageFlagBitsAMD
 {
@@ -59,98 +58,99 @@ typedef VkFlags VkGpaSqShaderStageFlags;
 
 typedef enum VkGpaPerfBlockAMD
 {
-    VK_GPA_PERF_BLOCK_CPF_AMD             = 0,
-    VK_GPA_PERF_BLOCK_IA_AMD              = 1,
-    VK_GPA_PERF_BLOCK_VGT_AMD             = 2,
-    VK_GPA_PERF_BLOCK_PA_AMD              = 3,
-    VK_GPA_PERF_BLOCK_SC_AMD              = 4,
-    VK_GPA_PERF_BLOCK_SPI_AMD             = 5,
-    VK_GPA_PERF_BLOCK_SQ_AMD              = 6,
-    VK_GPA_PERF_BLOCK_SX_AMD              = 7,
-    VK_GPA_PERF_BLOCK_TA_AMD              = 8,
-    VK_GPA_PERF_BLOCK_TD_AMD              = 9,
-    VK_GPA_PERF_BLOCK_TCP_AMD             = 10,
-    VK_GPA_PERF_BLOCK_TCC_AMD             = 11,
-    VK_GPA_PERF_BLOCK_TCA_AMD             = 12,
-    VK_GPA_PERF_BLOCK_DB_AMD              = 13,
-    VK_GPA_PERF_BLOCK_CB_AMD              = 14,
-    VK_GPA_PERF_BLOCK_GDS_AMD             = 15,
-    VK_GPA_PERF_BLOCK_SRBM_AMD            = 16,
-    VK_GPA_PERF_BLOCK_GRBM_AMD            = 17,
-    VK_GPA_PERF_BLOCK_GRBM_SE_AMD         = 18,
-    VK_GPA_PERF_BLOCK_RLC_AMD             = 19,
-    VK_GPA_PERF_BLOCK_DMA_AMD             = 20,
-    VK_GPA_PERF_BLOCK_MC_AMD              = 21,
-    VK_GPA_PERF_BLOCK_CPG_AMD             = 22,
-    VK_GPA_PERF_BLOCK_CPC_AMD             = 23,
-    VK_GPA_PERF_BLOCK_WD_AMD              = 24,
-    VK_GPA_PERF_BLOCK_TCS_AMD             = 25,
-    VK_GPA_PERF_BLOCK_ATC_AMD             = 26,
-    VK_GPA_PERF_BLOCK_ATC_L2_AMD          = 27,
-    VK_GPA_PERF_BLOCK_MC_VM_L2_AMD        = 28,
-    VK_GPA_PERF_BLOCK_EA_AMD              = 29,
-    VK_GPA_PERF_BLOCK_RPB_AMD             = 30,
-    VK_GPA_PERF_BLOCK_RMI_AMD             = 31,
-    VK_GPA_PERF_BLOCK_UMCCH_AMD           = 32,
-    VK_GPA_PERF_BLOCK_GE_AMD              = 33,
-    VK_GPA_PERF_BLOCK_GL1A_AMD            = 34,
-    VK_GPA_PERF_BLOCK_GL1C_AMD            = 35,
-    VK_GPA_PERF_BLOCK_GL1CG_AMD           = 36,
-    VK_GPA_PERF_BLOCK_GL2A_AMD            = 37,
-    VK_GPA_PERF_BLOCK_GL2C_AMD            = 38,
-    VK_GPA_PERF_BLOCK_CHA_AMD             = 39,
-    VK_GPA_PERF_BLOCK_CHC_AMD             = 40,
-    VK_GPA_PERF_BLOCK_CHCG_AMD            = 41,
-    VK_GPA_PERF_BLOCK_GUS_AMD             = 42,
-    VK_GPA_PERF_BLOCK_GCR_AMD             = 43,
-    VK_GPA_PERF_BLOCK_PH_AMD              = 44,
-    VK_GPA_PERF_BLOCK_UTCL1_AMD           = 45,
-    VK_GPA_PERF_BLOCK_GE1_AMD             = VK_GPA_PERF_BLOCK_GE_AMD,
-    VK_GPA_PERF_BLOCK_GE_DIST_AMD         = 46,
-    VK_GPA_PERF_BLOCK_GE_SE_AMD           = 47,
-    VK_GPA_PERF_BLOCK_DF_MALL_AMD         = 48,
-    VK_GPA_PERF_BLOCK_SQWGP_AMD           = 49,
-    VK_GPA_PERF_BLOCK_BEGIN_RANGE_AMD     = VK_GPA_PERF_BLOCK_CPF_AMD,
-    VK_GPA_PERF_BLOCK_END_RANGE_AMD       = VK_GPA_PERF_BLOCK_SQWGP_AMD,
-    VK_GPA_PERF_BLOCK_RANGE_SIZE_AMD      = (VK_GPA_PERF_BLOCK_END_RANGE_AMD - VK_GPA_PERF_BLOCK_BEGIN_RANGE_AMD + 1),
-    VK_GPA_PERF_BLOCK_MAX_ENUM_AMD        = 0x7FFFFFFF
+    VK_GPA_PERF_BLOCK_CPF_AMD         = 0,
+    VK_GPA_PERF_BLOCK_IA_AMD          = 1,
+    VK_GPA_PERF_BLOCK_VGT_AMD         = 2,
+    VK_GPA_PERF_BLOCK_PA_AMD          = 3,
+    VK_GPA_PERF_BLOCK_SC_AMD          = 4,
+    VK_GPA_PERF_BLOCK_SPI_AMD         = 5,
+    VK_GPA_PERF_BLOCK_SQ_AMD          = 6,
+    VK_GPA_PERF_BLOCK_SX_AMD          = 7,
+    VK_GPA_PERF_BLOCK_TA_AMD          = 8,
+    VK_GPA_PERF_BLOCK_TD_AMD          = 9,
+    VK_GPA_PERF_BLOCK_TCP_AMD         = 10,
+    VK_GPA_PERF_BLOCK_TCC_AMD         = 11,
+    VK_GPA_PERF_BLOCK_TCA_AMD         = 12,
+    VK_GPA_PERF_BLOCK_DB_AMD          = 13,
+    VK_GPA_PERF_BLOCK_CB_AMD          = 14,
+    VK_GPA_PERF_BLOCK_GDS_AMD         = 15,
+    VK_GPA_PERF_BLOCK_SRBM_AMD        = 16,
+    VK_GPA_PERF_BLOCK_GRBM_AMD        = 17,
+    VK_GPA_PERF_BLOCK_GRBM_SE_AMD     = 18,
+    VK_GPA_PERF_BLOCK_RLC_AMD         = 19,
+    VK_GPA_PERF_BLOCK_DMA_AMD         = 20,
+    VK_GPA_PERF_BLOCK_MC_AMD          = 21,
+    VK_GPA_PERF_BLOCK_CPG_AMD         = 22,
+    VK_GPA_PERF_BLOCK_CPC_AMD         = 23,
+    VK_GPA_PERF_BLOCK_WD_AMD          = 24,
+    VK_GPA_PERF_BLOCK_TCS_AMD         = 25,
+    VK_GPA_PERF_BLOCK_ATC_AMD         = 26,
+    VK_GPA_PERF_BLOCK_ATC_L2_AMD      = 27,
+    VK_GPA_PERF_BLOCK_MC_VM_L2_AMD    = 28,
+    VK_GPA_PERF_BLOCK_EA_AMD          = 29,
+    VK_GPA_PERF_BLOCK_RPB_AMD         = 30,
+    VK_GPA_PERF_BLOCK_RMI_AMD         = 31,
+    VK_GPA_PERF_BLOCK_UMCCH_AMD       = 32,
+    VK_GPA_PERF_BLOCK_GE_AMD          = 33,
+    VK_GPA_PERF_BLOCK_GL1A_AMD        = 34,
+    VK_GPA_PERF_BLOCK_GL1C_AMD        = 35,
+    VK_GPA_PERF_BLOCK_GL1CG_AMD       = 36,
+    VK_GPA_PERF_BLOCK_GL2A_AMD        = 37,
+    VK_GPA_PERF_BLOCK_GL2C_AMD        = 38,
+    VK_GPA_PERF_BLOCK_CHA_AMD         = 39,
+    VK_GPA_PERF_BLOCK_CHC_AMD         = 40,
+    VK_GPA_PERF_BLOCK_CHCG_AMD        = 41,
+    VK_GPA_PERF_BLOCK_GUS_AMD         = 42,
+    VK_GPA_PERF_BLOCK_GCR_AMD         = 43,
+    VK_GPA_PERF_BLOCK_PH_AMD          = 44,
+    VK_GPA_PERF_BLOCK_UTCL1_AMD       = 45,
+    VK_GPA_PERF_BLOCK_GE1_AMD         = VK_GPA_PERF_BLOCK_GE_AMD,
+    VK_GPA_PERF_BLOCK_GE_DIST_AMD     = 46,
+    VK_GPA_PERF_BLOCK_GE_SE_AMD       = 47,
+    VK_GPA_PERF_BLOCK_DF_MALL_AMD     = 48,
+    VK_GPA_PERF_BLOCK_SQWGP_AMD       = 49,
+    VK_GPA_PERF_BLOCK_PC_AMD          = 50,
+    VK_GPA_PERF_BLOCK_BEGIN_RANGE_AMD = VK_GPA_PERF_BLOCK_CPF_AMD,
+    VK_GPA_PERF_BLOCK_END_RANGE_AMD   = VK_GPA_PERF_BLOCK_PC_AMD,
+    VK_GPA_PERF_BLOCK_RANGE_SIZE_AMD  = (VK_GPA_PERF_BLOCK_END_RANGE_AMD - VK_GPA_PERF_BLOCK_BEGIN_RANGE_AMD + 1),
+    VK_GPA_PERF_BLOCK_MAX_ENUM_AMD    = 0x7FFFFFFF
 } VkGpaPerfBlockAMD;
 
 typedef VkFlags VkGpaSqShaderStageFlagsAMD;
 
 typedef struct VkGpaPerfBlockPropertiesAMD
 {
-    VkGpaPerfBlockAMD               blockType;
-    VkFlags                         flags;
-    uint32_t                        instanceCount;
-    uint32_t                        maxEventID;
-    uint32_t                        maxGlobalOnlyCounters;
-    uint32_t                        maxGlobalSharedCounters;
-    uint32_t                        maxStreamingCounters;
+    VkGpaPerfBlockAMD blockType;
+    VkFlags           flags;
+    uint32_t          instanceCount;
+    uint32_t          maxEventID;
+    uint32_t          maxGlobalOnlyCounters;
+    uint32_t          maxGlobalSharedCounters;
+    uint32_t          maxStreamingCounters;
 } VkGpaPerfBlockPropertiesAMD;
 
 typedef struct VkPhysicalDeviceGpaFeaturesAMD
 {
-    VkStructureType                      sType;
-    const void*                          pNext;
+    VkStructureType sType;
+    const void*     pNext;
 
-    VkBool32                             perfCounters;
-    VkBool32                             streamingPerfCounters;
-    VkBool32                             sqThreadTracing;
-    VkBool32                             clockModes;
+    VkBool32 perfCounters;
+    VkBool32 streamingPerfCounters;
+    VkBool32 sqThreadTracing;
+    VkBool32 clockModes;
 } VkPhysicalDeviceGpaFeaturesAMD;
 
 typedef struct VkPhysicalDeviceGpaPropertiesAMD
 {
-    VkStructureType                      sType;
-    const void*                          pNext;
+    VkStructureType sType;
+    const void*     pNext;
 
-    VkFlags                              flags;
+    VkFlags flags;
 
-    VkDeviceSize                         maxSqttSeBufferSize;
-    uint32_t                             shaderEngineCount;
-    uint32_t                             perfBlockCount;
-    VkGpaPerfBlockPropertiesAMD*         pPerfBlocks;
+    VkDeviceSize                 maxSqttSeBufferSize;
+    uint32_t                     shaderEngineCount;
+    uint32_t                     perfBlockCount;
+    VkGpaPerfBlockPropertiesAMD* pPerfBlocks;
 } VkPhysicalDeviceGpaPropertiesAMD;
 
 typedef struct VkPhysicalDeviceGpaProperties2AMD
@@ -175,47 +175,47 @@ typedef enum VkGpaSampleTypeAMD
 
 typedef struct VkGpaPerfCounterAMD
 {
-    VkGpaPerfBlockAMD           blockType;
-    uint32_t                    blockInstance;
-    uint32_t                    eventID;
+    VkGpaPerfBlockAMD blockType;
+    uint32_t          blockInstance;
+    uint32_t          eventID;
 } VkGpaPerfCounterAMD;
 
 typedef VkFlags VkGpaSampleFlagsAMD;
 
 typedef struct VkGpaSampleBeginInfoAMD
 {
-    VkStructureType                    sType;
-    const void*                        pNext;
+    VkStructureType sType;
+    const void*     pNext;
 
-    VkGpaSampleTypeAMD                 sampleType;
+    VkGpaSampleTypeAMD sampleType;
 
-    VkBool32                           sampleInternalOperations;
-    VkBool32                           cacheFlushOnCounterCollection;
-    VkBool32                           sqShaderMaskEnable;
+    VkBool32 sampleInternalOperations;
+    VkBool32 cacheFlushOnCounterCollection;
+    VkBool32 sqShaderMaskEnable;
 
-    VkGpaSqShaderStageFlagsAMD         sqShaderMask;
+    VkGpaSqShaderStageFlagsAMD sqShaderMask;
 
-    uint32_t                           perfCounterCount;
-    const VkGpaPerfCounterAMD*         pPerfCounters;
-    uint32_t                           streamingPerfTraceSampleInterval;
-    VkDeviceSize                       perfCounterDeviceMemoryLimit;
+    uint32_t                   perfCounterCount;
+    const VkGpaPerfCounterAMD* pPerfCounters;
+    uint32_t                   streamingPerfTraceSampleInterval;
+    VkDeviceSize               perfCounterDeviceMemoryLimit;
 
-    VkBool32                           sqThreadTraceEnable;
-    VkBool32                           sqThreadTraceSuppressInstructionTokens;
-    VkDeviceSize                       sqThreadTraceDeviceMemoryLimit;
+    VkBool32     sqThreadTraceEnable;
+    VkBool32     sqThreadTraceSuppressInstructionTokens;
+    VkDeviceSize sqThreadTraceDeviceMemoryLimit;
 
-    VkPipelineStageFlagBits            timingPreSample;
-    VkPipelineStageFlagBits            timingPostSample;
+    VkPipelineStageFlagBits timingPreSample;
+    VkPipelineStageFlagBits timingPostSample;
 } VkGpaSampleBeginInfoAMD;
 
 typedef enum VkGpaDeviceClockModeAMD
 {
-    VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD     = 0,
-    VK_GPA_DEVICE_CLOCK_MODE_QUERY_AMD       = 1,
-    VK_GPA_DEVICE_CLOCK_MODE_PROFILING_AMD   = 2,
-    VK_GPA_DEVICE_CLOCK_MODE_MIN_MEMORY_AMD  = 3,
-    VK_GPA_DEVICE_CLOCK_MODE_MIN_ENGINE_AMD  = 4,
-    VK_GPA_DEVICE_CLOCK_MODE_PEAK_AMD        = 5,
+    VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD    = 0,
+    VK_GPA_DEVICE_CLOCK_MODE_QUERY_AMD      = 1,
+    VK_GPA_DEVICE_CLOCK_MODE_PROFILING_AMD  = 2,
+    VK_GPA_DEVICE_CLOCK_MODE_MIN_MEMORY_AMD = 3,
+    VK_GPA_DEVICE_CLOCK_MODE_MIN_ENGINE_AMD = 4,
+    VK_GPA_DEVICE_CLOCK_MODE_PEAK_AMD       = 5,
 
     VK_GPA_DEVICE_CLOCK_MODE_BEGIN_RANGE_AMD = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD,
     VK_GPA_DEVICE_CLOCK_MODE_END_RANGE_AMD   = VK_GPA_DEVICE_CLOCK_MODE_PEAK_AMD,
@@ -225,82 +225,57 @@ typedef enum VkGpaDeviceClockModeAMD
 
 typedef struct VkGpaDeviceClockModeInfoAMD
 {
-    VkStructureType                     sType;
-    const void*                         pNext;
+    VkStructureType sType;
+    const void*     pNext;
 
-    VkGpaDeviceClockModeAMD             clockMode;
-    float                               memoryClockRatioToPeak;
-    float                               engineClockRatioToPeak;
+    VkGpaDeviceClockModeAMD clockMode;
+    float                   memoryClockRatioToPeak;
+    float                   engineClockRatioToPeak;
 } VkGpaDeviceClockModeInfoAMD;
 
 VK_DEFINE_NON_DISPATCHABLE_HANDLE(VkGpaSessionAMD)
 
 typedef struct VkGpaSessionCreateInfoAMD
 {
-    VkStructureType         sType;
-    const void*             pNext;
+    VkStructureType sType;
+    const void*     pNext;
 
-    VkGpaSessionAMD         secondaryCopySource;
+    VkGpaSessionAMD secondaryCopySource;
 } VkGpaSessionCreateInfoAMD;
 
-typedef VkResult(VKAPI_PTR *PFN_vkCreateGpaSessionAMD)(
-    VkDevice                                    device,
-    const VkGpaSessionCreateInfoAMD*            pCreateInfo,
-    const VkAllocationCallbacks*                pAllocator,
-    VkGpaSessionAMD*                            pGpaSession);
+typedef VkResult(VKAPI_PTR* PFN_vkCreateGpaSessionAMD)(VkDevice                         device,
+                                                       const VkGpaSessionCreateInfoAMD* pCreateInfo,
+                                                       const VkAllocationCallbacks*     pAllocator,
+                                                       VkGpaSessionAMD*                 pGpaSession);
 
-typedef void (VKAPI_PTR *PFN_vkDestroyGpaSessionAMD)(
-    VkDevice                                    device,
-    VkGpaSessionAMD                             gpaSession,
-    const VkAllocationCallbacks*                pAllocator);
+typedef void(VKAPI_PTR* PFN_vkDestroyGpaSessionAMD)(VkDevice device, VkGpaSessionAMD gpaSession, const VkAllocationCallbacks* pAllocator);
 
-typedef VkResult (VKAPI_PTR *PFN_vkSetGpaDeviceClockModeAMD)(
-    VkDevice                                    device,
-    VkGpaDeviceClockModeInfoAMD*                pInfo);
+typedef VkResult(VKAPI_PTR* PFN_vkSetGpaDeviceClockModeAMD)(VkDevice device, VkGpaDeviceClockModeInfoAMD* pInfo);
 
-typedef VkResult (VKAPI_PTR *PFN_vkCmdBeginGpaSessionAMD)(
-    VkCommandBuffer                             commandBuffer,
-    VkGpaSessionAMD                             gpaSession);
+typedef VkResult(VKAPI_PTR* PFN_vkCmdBeginGpaSessionAMD)(VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession);
 
-typedef VkResult (VKAPI_PTR *PFN_vkCmdEndGpaSessionAMD)(
-    VkCommandBuffer                             commandBuffer,
-    VkGpaSessionAMD                             gpaSession);
+typedef VkResult(VKAPI_PTR* PFN_vkCmdEndGpaSessionAMD)(VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession);
 
-typedef VkResult (VKAPI_PTR *PFN_vkCmdBeginGpaSampleAMD)(
-    VkCommandBuffer                             commandBuffer,
-    VkGpaSessionAMD                             gpaSession,
-    const VkGpaSampleBeginInfoAMD*              pGpaSampleBeginInfo,
-    uint32_t*                                   pSampleID);
+typedef VkResult(VKAPI_PTR* PFN_vkCmdBeginGpaSampleAMD)(VkCommandBuffer                commandBuffer,
+                                                        VkGpaSessionAMD                gpaSession,
+                                                        const VkGpaSampleBeginInfoAMD* pGpaSampleBeginInfo,
+                                                        uint32_t*                      pSampleID);
 
-typedef void (VKAPI_PTR *PFN_vkCmdEndGpaSampleAMD)(
-    VkCommandBuffer                             commandBuffer,
-    VkGpaSessionAMD                             gpaSession,
-    uint32_t                                    sampleID);
+typedef void(VKAPI_PTR* PFN_vkCmdEndGpaSampleAMD)(VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession, uint32_t sampleID);
 
-typedef VkResult (VKAPI_PTR *PFN_vkGetGpaSessionStatusAMD)(
-    VkDevice                                    device,
-    VkGpaSessionAMD                             gpaSession);
+typedef VkResult(VKAPI_PTR* PFN_vkGetGpaSessionStatusAMD)(VkDevice device, VkGpaSessionAMD gpaSession);
 
-typedef VkResult (VKAPI_PTR *PFN_vkGetGpaSessionResultsAMD)(
-    VkDevice                                    device,
-    VkGpaSessionAMD                             gpaSession,
-    uint32_t                                    sampleID,
-    size_t*                                     pSizeInBytes,
-    void*                                       pData);
+typedef VkResult(VKAPI_PTR* PFN_vkGetGpaSessionResultsAMD)(VkDevice device, VkGpaSessionAMD gpaSession, uint32_t sampleID, size_t* pSizeInBytes, void* pData);
 
-typedef VkResult(VKAPI_PTR *PFN_vkResetGpaSessionAMD)(
-    VkDevice                                    device,
-    VkGpaSessionAMD                             gpaSession);
+typedef VkResult(VKAPI_PTR* PFN_vkResetGpaSessionAMD)(VkDevice device, VkGpaSessionAMD gpaSession);
 
-typedef void (VKAPI_PTR *PFN_vkCmdCopyGpaSessionResultsAMD)(
-    VkCommandBuffer                             commandBuffer,
-    VkGpaSessionAMD                             gpaSession);
+typedef void(VKAPI_PTR* PFN_vkCmdCopyGpaSessionResultsAMD)(VkCommandBuffer commandBuffer, VkGpaSessionAMD gpaSession);
 
-#define VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_FEATURES_AMD   VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 0)
+#define VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_FEATURES_AMD VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 0)
 #define VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES_AMD VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 1)
-#define VK_STRUCTURE_TYPE_GPA_SAMPLE_BEGIN_INFO_AMD          VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 2)
-#define VK_STRUCTURE_TYPE_GPA_SESSION_CREATE_INFO_AMD        VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 3)
-#define VK_STRUCTURE_TYPE_GPA_DEVICE_CLOCK_MODE_INFO_AMD     VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 4)
+#define VK_STRUCTURE_TYPE_GPA_SAMPLE_BEGIN_INFO_AMD VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 2)
+#define VK_STRUCTURE_TYPE_GPA_SESSION_CREATE_INFO_AMD VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 3)
+#define VK_STRUCTURE_TYPE_GPA_DEVICE_CLOCK_MODE_INFO_AMD VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 4)
 #define VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES2_AMD VK_AMD_GPA_INTERFACE_ENUM(VkStructureType, 5)
 
 #endif /* VK_AMD_GPA_H_ */

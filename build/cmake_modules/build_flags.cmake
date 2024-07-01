@@ -1,22 +1,15 @@
-## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 ## GPA has only Debug and Release
 set(CMAKE_CONFIGURATION_TYPES Debug Release)
 set(DEPTH "./")
 
+set(OUTPUT_SUFFIX "")
+
 if(NOT DEFINED usingscript)
     set(usingscript OFF CACHE BOOL "Turn on to indicate CMake is called using script" FORCE)
 endif()
-
-if(NOT DEFINED build-internal)
-    set(build-internal OFF CACHE BOOL "Turn on to generate internal build")
-endif()
-
-if(${build-internal})
-    set(AMDT_INTERNAL_BUILD_FLAG ON)
-endif()
-
 
 if(${usingscript})
     # Platform Control variable
@@ -40,9 +33,12 @@ endif()
 
 if(${build-32bit})
     set(CMAKE_SIZEOF_VOID_P 4)
+    set(OUTPUT_SUFFIX ${OUTPUT_SUFFIX}_x86)
 else()
     set(CMAKE_SIZEOF_VOID_P 8)
+    set(OUTPUT_SUFFIX ${OUTPUT_SUFFIX}_x64)
 endif()
+
 
 # DX11 variable
 if(NOT DEFINED skipdx11)

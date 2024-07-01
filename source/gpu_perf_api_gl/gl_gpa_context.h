@@ -118,6 +118,7 @@ private:
     bool                                           driver_supports_GUS_;        ///< Not all hardware supports the GUS block, so detect when it exists.
     bool                                           driver_supports_UMC_;        ///< Not all hardware supports the UMC block, so detect when it exists.
     bool                                           driver_supports_RPB_;        ///< Not all hardware supports the RPB block, so detect when it exists.
+    bool                                           driver_supports_PC_;         ///< Not all hardware supports the PC block, so detect when it exists.
     bool                                           driver_supports_GRBMSE_;     ///< Not all hardware supports the GRBMSE blocks, so detect when they exist.
 };
 

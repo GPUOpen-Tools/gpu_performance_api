@@ -516,7 +516,7 @@ bool GpaHelper::PrintGpaSampleResults(unsigned int profile_set, bool verify_coun
                                             CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
                                     }
                                 }
-                                else if (0 == local_counter_name.compare("PrimitivesIn") || 0 == local_counter_name.compare("VsGsPrimsIn"))
+                                else if (0 == local_counter_name.compare("PrimitivesIn"))
                                 {
                                     verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 1);
                                 }
@@ -566,6 +566,7 @@ GpaHelper::~GpaHelper()
 {
     gpa_log_file_stream_.close();
     counter_data_file_stream_.close();
+
     if (gpa_function_table_ != nullptr)
     {
         gpa_function_table_->GpaDestroy();

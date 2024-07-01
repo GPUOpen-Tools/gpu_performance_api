@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for CL GFX8_ELLESMERE.

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for DX11 GFX103.
@@ -376,6 +376,10 @@ void AutoDefinePublicDerivedCountersDx11Gfx103(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(103219);
+        internal_counters.push_back(103358);
+        internal_counters.push_back(103497);
+        internal_counters.push_back(103636);
         internal_counters.push_back(103181);
         internal_counters.push_back(103320);
         internal_counters.push_back(103459);
@@ -385,33 +389,7 @@ void AutoDefinePublicDerivedCountersDx11Gfx103(GpaDerivedCounters& c)
         internal_counters.push_back(26531);
         internal_counters.push_back(26863);
 
-        c.DefineDerivedCounter("VsGsVerticesIn", "VertexGeometry", "The number of unique vertices processed by the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,sum4,(0),4,5,6,7,sum4,ifnotzero", "17d0c775-3ed5-affb-d5ac-5391a198a4aa");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(103188);
-        internal_counters.push_back(103327);
-        internal_counters.push_back(103466);
-        internal_counters.push_back(103605);
-        internal_counters.push_back(25867);
-        internal_counters.push_back(26199);
-        internal_counters.push_back(26531);
-        internal_counters.push_back(26863);
-
-        c.DefineDerivedCounter("VsGsPrimsIn", "VertexGeometry", "The number of primitives passed into the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,sum4,(0),4,5,6,7,sum4,ifnotzero", "1bbdf2ec-cca3-4d9a-a243-94f4aec5409b");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(103219);
-        internal_counters.push_back(103358);
-        internal_counters.push_back(103497);
-        internal_counters.push_back(103636);
-        internal_counters.push_back(25867);
-        internal_counters.push_back(26199);
-        internal_counters.push_back(26531);
-        internal_counters.push_back(26863);
-
-        c.DefineDerivedCounter("GSVerticesOut", "VertexGeometry", "The number of vertices output by the GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,sum4,(0),4,5,6,7,sum4,ifnotzero", "775b9736-319a-bd8a-48c9-68db9c91d978");
+        c.DefineDerivedCounter("GSVerticesOut", "VertexGeometry", "The number of vertices output by the GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,ifnotzero,(0),8,9,10,11,sum4,ifnotzero", "775b9736-319a-bd8a-48c9-68db9c91d978");
     }
     {
         vector<GpaUInt32> internal_counters;

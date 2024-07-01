@@ -69,7 +69,7 @@ target_link_libraries(${GPA_PROJECT_NAME}
 if(${GPA_ALL_OPEN_SOURCE})
     set(GPA_DX11_GET_DEVICE_INFO ${COMMON_DIR_LIB}/AMD/GPUPerfAPI/3_13/Bin/${AMDTPlatform}/GPUPerfAPIDXGetAMDDeviceInfo)
     add_custom_command(TARGET ${GPA_PROJECT_NAME} POST_BUILD
-                       COMMAND ${CMAKE_COMMAND} -E copy ${GPA_DX11_GET_DEVICE_INFO}${AMDTPlatformSuffix}.dll ${GPA_OUTPUT_DIR}/$<CONFIG>/ VERBATIM
+                       COMMAND ${CMAKE_COMMAND} -E copy ${GPA_DX11_GET_DEVICE_INFO}${AMDTPlatformSuffix}.dll ${GPA_OUTPUT_DIR}/$<CONFIG>${OUTPUT_SUFFIX}/ VERBATIM
                        COMMENT "Copying GPUPerfAPIDXGetDeviceInfo to output folder...")
 endif()
 

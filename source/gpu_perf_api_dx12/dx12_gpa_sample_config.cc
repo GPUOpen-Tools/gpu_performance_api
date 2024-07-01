@@ -165,9 +165,8 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
                     AmdExtPerfCounterId this_counter = {block, instance, event_id};
                     counter_ids.push_back(this_counter);
 
-                    // If dealing with an SQ counter, check if the stage mask needs to be set
-                    if (hw_counter_desc->group_index >= hardware_counters->sq_counter_groups_[0].group_index &&
-                        hw_counter_desc->group_index <= hardware_counters->sq_counter_groups_[hardware_counters->sq_group_count_ - 1].group_index)
+                    // If dealing with an SQ counter, check if the stage mask needs to be set.
+                    if (block == AmdExtGpuBlock::Sq || block == AmdExtGpuBlock::SqWgp)
                     {
                         GpaSqShaderStage stage = kSqAll;
 

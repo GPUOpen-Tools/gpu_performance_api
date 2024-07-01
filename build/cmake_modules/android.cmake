@@ -1,4 +1,4 @@
-## Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2019-2024 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 if (NOT DEFINED ENV{ANDROID_SDK})
@@ -49,16 +49,6 @@ set(ANDROID_BUILD_TOOLS ${ANDROID_SDK_PATH}/build-tools/24.0.3)
 ## Build configurations
 set(CMAKE_TOOLCHAIN_FILE ${ANDROID_NDK_PATH}/build/cmake/android.toolchain.cmake)
 set(USE_DEFAULT_COMPILER OFF)
-set(USE_DEFAULT_OUTPUT_DIRECTORY OFF)
-set(GPA_OUTPUT_DIR ${CMAKE_CURRENT_SOURCE_DIR}/output/android)
-
-if(${AMDT_INTERNAL_BUILD_FLAG})
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${GPA_OUTPUT_DIR}${AMDTInternalSuffix})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${GPA_OUTPUT_DIR}${AMDTInternalSuffix})
-else()
-    set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${GPA_OUTPUT_DIR})
-    set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${GPA_OUTPUT_DIR})
-endif()
 
 set(ANDROID_INCLUDE_DIRECTORIES ${ANDROID_NDK_NATIVE_GLUE_DIR}
                                 ${ANDROID_NDK_INC})

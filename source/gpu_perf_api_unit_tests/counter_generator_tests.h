@@ -46,6 +46,7 @@ static const unsigned int kDevIdGfx10_3_4     = 0x743F;      ///< Gfx10_3_4.
 static const unsigned int kDevIdGfx11         = 0x744C;      ///< Gfx11.
 static const unsigned int kDevIdGfx11_0_3     = 0x15BF;      ///< Gfx11_0_3.
 static const unsigned int kDevIdGfx11_0_3B    = 0x15C8;      ///< Gfx11_0_3B.
+static const unsigned int kDevIdGfx11_5_0     = 0x150E;      ///< GFX11_5_0.
 static const unsigned int kDevIdUnsupported1  = 0x1506;      ///< An unsupported device id.
 static const unsigned int kDevIdUnsupported2  = 0x164e;      ///< An unsupported device id.
 

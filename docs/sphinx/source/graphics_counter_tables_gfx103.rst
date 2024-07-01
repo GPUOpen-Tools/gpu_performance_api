@@ -1,4 +1,4 @@
-.. Copyright(c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright(c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 .. Graphics Performance Counters for RDNA2
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
@@ -50,8 +50,6 @@ VertexGeometry Group
     :header: "Counter Name", "Usage", "Brief Description"
     :widths: 15, 10, 75
 
-    "VsGsVerticesIn", "Items", "The number of unique vertices processed by the VS and GS."
-    "VsGsPrimsIn", "Items", "The number of primitives passed into the VS and GS."
     "GSVerticesOut", "Items", "The number of vertices output by the GS."
 
 PreTessellation Group

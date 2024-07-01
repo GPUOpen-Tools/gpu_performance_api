@@ -121,9 +121,9 @@ GpaStatus GpaCounterSchedulerBase::GetEnabledIndex(GpaUInt32 enabled_index, GpaU
 {
     if (enabled_index >= static_cast<GpaUInt32>(enabled_public_indices_.size()))
     {
-        GPA_LOG_ERROR("Parameter 'enabled_index' is %u but must be less than the number of enabled counters (%zu)",
-            enabled_index, enabled_public_indices_.size());
-	return kGpaStatusErrorIndexOutOfRange;
+        GPA_LOG_ERROR(
+            "Parameter 'enabled_index' is %u but must be less than the number of enabled counters (%zu)", enabled_index, enabled_public_indices_.size());
+        return kGpaStatusErrorIndexOutOfRange;
     }
 
     (*counter_at_index) = static_cast<GpaUInt32>(enabled_public_indices_[enabled_index]);
@@ -135,9 +135,9 @@ GpaStatus GpaCounterSchedulerBase::IsCounterEnabled(GpaUInt32 counter_index) con
 {
     if (counter_index >= enabled_public_counter_bits_.size())
     {
-        GPA_LOG_ERROR("Parameter 'counter_index' is %u but must be less than the number of enabled counters (%zu)",
-            counter_index, enabled_public_counter_bits_.size());
-	return kGpaStatusErrorIndexOutOfRange;
+        GPA_LOG_ERROR(
+            "Parameter 'counter_index' is %u but must be less than the number of enabled counters (%zu)", counter_index, enabled_public_counter_bits_.size());
+        return kGpaStatusErrorIndexOutOfRange;
     }
 
     if (enabled_public_counter_bits_[counter_index])
@@ -147,7 +147,7 @@ GpaStatus GpaCounterSchedulerBase::IsCounterEnabled(GpaUInt32 counter_index) con
     else
     {
         GPA_LOG_MESSAGE("Parameter 'counter_index' (%d) is not an enabled counter.", counter_index);
-	return kGpaStatusErrorCounterNotFound;
+        return kGpaStatusErrorCounterNotFound;
     }
 
 #pragma region Previous method based on only using the enabled index list
@@ -270,7 +270,7 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
     // Create space for the number of HW groups.
     max_counters_per_group.reserve(hw_counters->internal_counter_groups_.size() + hw_counters->additional_group_count_);
 
-    // Add the HW groups max's.
+    // Add the HW groups maxes.
     for (unsigned int i = 0; i < hw_counters->internal_counter_groups_.size(); ++i)
     {
         auto count = hw_counters->internal_counter_groups_[i].max_active_discrete_counters;
@@ -282,7 +282,7 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
         max_counters_per_group.push_back(count);
     }
 
-    // Add the Additional groups max's.
+    // Add the additional groups maxes.
     for (unsigned int i = 0; i < hw_counters->additional_group_count_; ++i)
     {
         auto count = hw_counters->additional_groups_[i].max_active_discrete_counters;

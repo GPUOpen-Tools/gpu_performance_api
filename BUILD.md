@@ -72,9 +72,9 @@ this script everytime you pull new changes from GPA repository.
    * C# and Visual Basic Roslyn compilers
 
 ##### Build Instructions
- * Load cmake_bld\x64\GPUPerfAPI.sln into Visual Studio to build the 64-bit version of GPA.
- * Load cmake_bld\x86\GPUPerfAPI.sln into Visual Studio to build the 32-bit version of GPA.
- * After a successful build, the GPUPerfAPI binaries can be found in `gpu_performance_api\output\$(Configuration)` (e.g. gpu_performance_api\output\release).
+ * Load build\win\vs2022_x64\GPUPerfAPI-x64.sln into Visual Studio to build the 64-bit version of GPA.
+ * Load build\win\vs2022_x86\GPUPerfAPI-x86.sln into Visual Studio to build the 32-bit version of GPA.
+ * After a successful build, the GPUPerfAPI binaries can be found in `gpu_performance_api\build\output\(configuration)` (e.g. gpu_performance_api\build\output\debug_x64).
 
 #### Additional Information
  * The Windows projects each include a .rc file that embeds the VERSIONINFO resource into the final binary. Internally within AMD, a Jenkins build system will dynamically update.
@@ -87,9 +87,9 @@ this script everytime you pull new changes from GPA repository.
    * `sudo apt-get install mesa-common-dev`
 
 ##### Build Instructions
- * Execute "make" in the cmake_bld/x64/debug to build the 64-bit debug version of GPA.
- * Execute "make" in the cmake_bld/x64/release to build the 64-bit release version of GPA.
- * After a successful build, the GPUPerfAPI binaries can be found in `gpu_performance_api/output/$(Configuration)` (e.g. gpu_performance_api/output/release).
+ * Execute "make" in the build/linux/make_debug_x64 to build the 64-bit debug version of GPA.
+ * Execute "make" in the build/linux/make_release_x64 to build the 64-bit release version of GPA.
+ * After a successful build, the GPUPerfAPI binaries can be found in `gpu_performance_api/build/output/$(Configuration)` (e.g. gpu_performance_api/build/output/debug_x64).
 
 ## PublicCounterCompiler Tool
 The PublicCounterCompiler Tool is a C# utility that will generate C++ code to define the public (or derived) counters.

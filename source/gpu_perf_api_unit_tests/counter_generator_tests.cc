@@ -80,7 +80,10 @@ static std::map<GpaHwGeneration, unsigned int> generation_device_map = {{kGpaHwG
                                                                         {kGpaHwGenerationGfx9, kDevIdGfx9},
                                                                         {kGpaHwGenerationGfx10, kDevIdGfx10},
                                                                         {kGpaHwGenerationGfx103, kDevIdGfx10_3},
-                                                                        {kGpaHwGenerationGfx11, kDevIdGfx11}};
+                                                                        {kGpaHwGenerationGfx11, kDevIdGfx11},
+                                                                        {kGpaHwGenerationCdna, 0},
+                                                                        {kGpaHwGenerationCdna2, 0},
+                                                                        {kGpaHwGenerationCdna3, 0}};
 
 void UnloadLib(LibHandle lib_handle)
 {
@@ -131,14 +134,15 @@ void VerifyDerivedCounterCount(const GpaApiType api, GpaHwGeneration generation,
         {
             // Set counter parameters.
             counter_parameters.derived_counter_name = counter_desc.name;
-            EXPECT_EQ(kGpaStatusOk, fn_table.GpaCounterLibGetCounterIndex(counter_context, &counter_parameters, &counter_index));
+            EXPECT_EQ(kGpaStatusOk, fn_table.GpaCounterLibGetCounterIndex(counter_context, &counter_parameters, &counter_index)) << "Failed to get counter index for " << counter_desc.name;
 
             // Get counter information.
-            EXPECT_EQ(kGpaStatusOk, fn_table.GpaCounterLibGetCounterInfo(counter_context, counter_index, &counter_info));
+            EXPECT_EQ(kGpaStatusOk, fn_table.GpaCounterLibGetCounterInfo(counter_context, counter_index, &counter_info))
+                << "Failed to get counter info for " << counter_desc.name;
             EXPECT_NE(nullptr, counter_info);
             if (counter_info != nullptr)
             {
-                EXPECT_EQ(counter_info->gpa_derived_counter->gpa_hw_counter_count, counter_desc.num_hardware_counters);
+                EXPECT_EQ(counter_info->gpa_derived_counter->gpa_hw_counter_count, counter_desc.num_hardware_counters) << "Received incorrect number of hardware counters for " << counter_desc.name;
             }
         }
     }
@@ -330,6 +334,10 @@ void VerifyCounterNames(GpaApiType               api,
                                                                                           TRUE,
                                                                                           &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
+        if (gpa_status != kGpaStatusOk)
+        {
+            continue;
+        }
 
         GpaUInt32 num_counters = 0u;
         gpa_status             = gpa_counter_lib_func_table.GpaCounterLibGetNumCounters(gpa_counter_context, &num_counters);
@@ -354,9 +362,12 @@ void VerifyCounterNames(GpaApiType               api,
                 EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterDescription(gpa_counter_context, i, &temp_str));
                 EXPECT_NE((const char*)nullptr, temp_str);
 
-                EXPECT_NE(0, strcmp("", temp_str));
-                // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
-                EXPECT_NE('#', temp_str[0]);
+                if (temp_str != nullptr)
+                {
+                    EXPECT_NE(0, strcmp("", temp_str));
+                    // the format of the description used to be "#GROUP#counter description", but isn't any longer, so make sure the description does NOT start with '#'
+                    EXPECT_NE('#', temp_str[0]);
+                }
             }
         }
 
@@ -595,100 +606,103 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
             api, counter_context_hardware_info, kGpaOpenContextDefaultBit, TRUE, &gpa_counter_context);
         EXPECT_EQ(kGpaStatusOk, gpa_status);
 
-        const GpaCounterInfo* temp_ptr = nullptr;
-        EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, 8, &temp_ptr));
+        if (gpa_status == kGpaStatusOk)
+        {
+            const GpaCounterInfo* temp_ptr = nullptr;
+            EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, 8, &temp_ptr));
 
-        if ((device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B) &&
-            (kGpaApiDirectx11 == api || kGpaApiOpengl == api || kGpaApiDirectx12 == api || kGpaApiVulkan == api))
-        {
-            GpaCounterParam counter_param;
-            counter_param.is_derived_counter   = true;
-            counter_param.derived_counter_name = "PSVALUInstCount";
-            GpaUInt32 counter_index            = 0;
-            gpa_status                         = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
-            EXPECT_EQ(kGpaStatusErrorCounterNotFound, gpa_status)
-                << "If PSVALUInstCount has been added back in for Gfx11, this conditional codepath can be removed.";
-        }
-        else if (device_id == kDevIdGfx10_3)
-        {
-            GpaCounterParam counter_param;
-            counter_param.is_derived_counter   = true;
-            counter_param.derived_counter_name = "PSVALUInstCount";
-            GpaUInt32 counter_index            = 0;
-            gpa_status                         = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
-            EXPECT_EQ(kGpaStatusErrorCounterNotFound, gpa_status)
-                << "If PSVALUInstCount has been added back in for Gfx10_3, this conditional codepath can be removed.";
-        }
-        else if (kGpaApiDirectx11 == api || kGpaApiOpengl == api || kGpaApiDirectx12 == api || kGpaApiVulkan == api)
-        {
+            if ((device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B || device_id == kDevIdGfx11_5_0) &&
+                (kGpaApiDirectx11 == api || kGpaApiOpengl == api || kGpaApiDirectx12 == api || kGpaApiVulkan == api))
             {
-                // Graphics SQ-derived counters use a shader mask
                 GpaCounterParam counter_param;
                 counter_param.is_derived_counter   = true;
                 counter_param.derived_counter_name = "PSVALUInstCount";
-                GpaUInt32 counter_index            = GPA_UINT32_MAX;
-                EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index));
-                EXPECT_NE(counter_index, GPA_UINT32_MAX);
-                if (counter_index != GPA_UINT32_MAX)
-                {
-                    EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, counter_index, &temp_ptr));
-                    if (temp_ptr != nullptr)
-                    {
-                        EXPECT_TRUE(temp_ptr->is_derived_counter);
-                        for (GpaUInt32 i = 0; i < temp_ptr->gpa_derived_counter->gpa_hw_counter_count; i++)
-                        {
-                            EXPECT_EQ(kGpaShaderMaskPs, temp_ptr->gpa_derived_counter->gpa_hw_counters[i].gpa_shader_mask);
-                        }
-                    }
-                }
+                GpaUInt32 counter_index            = 0;
+                gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
+                EXPECT_EQ(kGpaStatusErrorCounterNotFound, gpa_status)
+                    << "If PSVALUInstCount has been added back in for Gfx11, this conditional codepath can be removed.";
             }
-
+            else if (device_id == kDevIdGfx10 || device_id == kDevIdGfx10_3)
             {
                 GpaCounterParam counter_param;
                 counter_param.is_derived_counter   = true;
-                counter_param.derived_counter_name = "PSTime";
+                counter_param.derived_counter_name = "PSVALUInstCount";
                 GpaUInt32 counter_index            = 0;
-                EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index));
-                EXPECT_NE(counter_index, GPA_UINT32_MAX);
-                if (counter_index != GPA_UINT32_MAX)
+                gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
+                EXPECT_EQ(kGpaStatusErrorCounterNotFound, gpa_status)
+                    << "If PSVALUInstCount has been added back in for Gfx10 or Gfx10_3, this conditional codepath can be removed.";
+            }
+            else if (kGpaApiDirectx11 == api || kGpaApiOpengl == api || kGpaApiDirectx12 == api || kGpaApiVulkan == api)
+            {
                 {
-                    EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, counter_index, &temp_ptr));
-                    if (temp_ptr != nullptr)
+                    // Graphics SQ-derived counters use a shader mask
+                    GpaCounterParam counter_param;
+                    counter_param.is_derived_counter   = true;
+                    counter_param.derived_counter_name = "PSVALUInstCount";
+                    GpaUInt32 counter_index            = GPA_UINT32_MAX;
+                    EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index));
+                    EXPECT_NE(counter_index, GPA_UINT32_MAX);
+                    if (counter_index != GPA_UINT32_MAX)
                     {
-                        EXPECT_TRUE(temp_ptr->is_derived_counter);
-
-                        bool does_gpu_time_block_exist = false;
-                        for (GpaUInt32 i = 0; i < temp_ptr->gpa_derived_counter->gpa_hw_counter_count; i++)
+                        EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, counter_index, &temp_ptr));
+                        if (temp_ptr != nullptr)
                         {
-                            does_gpu_time_block_exist |= temp_ptr->gpa_derived_counter->gpa_hw_counters[i].is_timing_block;
+                            EXPECT_TRUE(temp_ptr->is_derived_counter);
+                            for (GpaUInt32 i = 0; i < temp_ptr->gpa_derived_counter->gpa_hw_counter_count; i++)
+                            {
+                                EXPECT_EQ(kGpaShaderMaskPs, temp_ptr->gpa_derived_counter->gpa_hw_counters[i].gpa_shader_mask);
+                            }
                         }
+                    }
+                }
 
-                        EXPECT_TRUE(does_gpu_time_block_exist);
+                {
+                    GpaCounterParam counter_param;
+                    counter_param.is_derived_counter   = true;
+                    counter_param.derived_counter_name = "PSTime";
+                    GpaUInt32 counter_index            = 0;
+                    EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index));
+                    EXPECT_NE(counter_index, GPA_UINT32_MAX);
+                    if (counter_index != GPA_UINT32_MAX)
+                    {
+                        EXPECT_EQ(kGpaStatusOk, gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, counter_index, &temp_ptr));
+                        if (temp_ptr != nullptr)
+                        {
+                            EXPECT_TRUE(temp_ptr->is_derived_counter);
+
+                            bool does_gpu_time_block_exist = false;
+                            for (GpaUInt32 i = 0; i < temp_ptr->gpa_derived_counter->gpa_hw_counter_count; i++)
+                            {
+                                does_gpu_time_block_exist |= temp_ptr->gpa_derived_counter->gpa_hw_counters[i].is_timing_block;
+                            }
+
+                            EXPECT_TRUE(does_gpu_time_block_exist);
+                        }
                     }
                 }
             }
-        }
-        else if (kGpaApiOpencl == api)
-        {
-            // OpenCL SQ-derived counters do not use a shader mask
-            GpaCounterParam counter_param;
-            counter_param.is_derived_counter   = true;
-            counter_param.derived_counter_name = "VALUInsts";
-            GpaUInt32 counter_index            = 0;
-            gpa_status                         = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
-            EXPECT_EQ(kGpaStatusOk, gpa_status);
-            gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, counter_index, &temp_ptr);
-            EXPECT_EQ(kGpaStatusOk, gpa_status);
-            EXPECT_TRUE(temp_ptr->is_derived_counter);
-            for (GpaUInt32 i = 0; i < temp_ptr->gpa_derived_counter->gpa_hw_counter_count; i++)
+            else if (kGpaApiOpencl == api)
             {
-                EXPECT_TRUE(kGpaShaderMaskAll == temp_ptr->gpa_derived_counter->gpa_hw_counters[i].gpa_shader_mask);
+                // OpenCL SQ-derived counters do not use a shader mask
+                GpaCounterParam counter_param;
+                counter_param.is_derived_counter   = true;
+                counter_param.derived_counter_name = "VALUInsts";
+                GpaUInt32 counter_index            = 0;
+                gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
+                EXPECT_EQ(kGpaStatusOk, gpa_status);
+                gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterInfo(gpa_counter_context, counter_index, &temp_ptr);
+                EXPECT_EQ(kGpaStatusOk, gpa_status);
+                EXPECT_TRUE(temp_ptr->is_derived_counter);
+                for (GpaUInt32 i = 0; i < temp_ptr->gpa_derived_counter->gpa_hw_counter_count; i++)
+                {
+                    EXPECT_TRUE(kGpaShaderMaskAll == temp_ptr->gpa_derived_counter->gpa_hw_counters[i].gpa_shader_mask);
+                }
             }
-        }
 
-        gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
-        EXPECT_EQ(kGpaStatusOk, gpa_status);
-        gpa_counter_context = nullptr;
+            gpa_status = gpa_counter_lib_func_table.GpaCounterLibCloseCounterContext(gpa_counter_context);
+            EXPECT_EQ(kGpaStatusOk, gpa_status);
+            gpa_counter_context = nullptr;
+        }
     }
     {
         GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, revision_id, nullptr, 0};
@@ -703,7 +717,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
             GpaCounterParam counter_param;
             counter_param.is_derived_counter = false;
 
-            if (device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B)
+            if (device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B || device_id == kDevIdGfx11_5_0)
             {
                 // On Gfx11, the previous SQ block was renamed to SQG, and the actual underlying SQ blocks were introduced as SQWGP.
                 // This test is intended to ensure that we can access the SQ_PERF_SEL_WAVES event, which is now on the SQWGP blocks.
@@ -764,7 +778,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
         {
             GpaCounterParam counter_param;
 
-            if (device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B)
+            if (device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B || device_id == kDevIdGfx11_5_0)
             {
                 // On Gfx11, the previous SQ block was renamed to SQG, and the actual underlying SQ blocks were introduced as SQWGP.
                 // This test is intended to ensure that we can access the SQ_PERF_SEL_WAVES event, which is now on the SQWGP blocks.
@@ -811,7 +825,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
                     EXPECT_EQ(temp_ptr->gpa_hw_counter->gpa_shader_mask, counter_param.gpa_hw_counter.gpa_shader_mask);
                 }
 
-                if (device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B)
+                if (device_id == kDevIdGfx11 || device_id == kDevIdGfx11_0_3 || device_id == kDevIdGfx11_0_3B || device_id == kDevIdGfx11_5_0)
                 {
                     // On Gfx11, the previous SQ block was renamed to SQG, and the actual underlying SQ blocks were introduced as SQWGP.
                     // This test is intended to ensure that we can access the SQ_PERF_SEL_WAVES event, which is now on the SQWGP blocks.

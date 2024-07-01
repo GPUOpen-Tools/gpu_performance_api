@@ -37,7 +37,9 @@ target_link_libraries(${GPA_PROJECT_NAME} dxgi.lib
 
 # CMake copy command doesn't supports wildcards, we need to specify fully-qualified file names
 add_custom_command(TARGET ${GPA_PROJECT_NAME} POST_BUILD
-                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/dx11_triangle_shaders.hlsl ${GPA_OUTPUT_DIR}/$<CONFIG>/ VERBATIM)
+                   COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_LIST_DIR}/dx11_triangle_shaders.hlsl ${GPA_OUTPUT_DIR}/$<CONFIG>${OUTPUT_SUFFIX}/
+                   COMMENT "Copying ${CMAKE_CURRENT_LIST_DIR}/dx11_triangle_shaders.hlsl to ${GPA_OUTPUT_DIR}/$<CONFIG>${OUTPUT_SUFFIX}/"
+                   VERBATIM)
 
 set_target_properties(${GPA_PROJECT_NAME} PROPERTIES FOLDER "Examples/DX11")
 

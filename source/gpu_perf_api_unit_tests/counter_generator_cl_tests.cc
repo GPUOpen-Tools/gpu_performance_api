@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit Tests for CL Counter Generator.
@@ -145,6 +145,9 @@ TEST(CounterDllTests, OpenClUnsupportedHardwareGenerations)
     VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationIntel);
     VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationGfx6);
     VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationGfx7);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationCdna);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationCdna2);
+    VerifyHardwareNotSupported(kGpaApiOpencl, kGpaHwGenerationCdna3);
 }
 
 TEST(CounterDllTests, OpenClVerifyInvalidOpenContextParameters)
@@ -193,6 +196,7 @@ TEST(CounterDllTests, OpenClCounterNamesByDeviceId)
     std::vector<const char*> empty_list_to_skip_tests;
     VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11_0_3, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11_0_3B, derived_counter_names, empty_list_to_skip_tests);
+    VerifyCounterNames(kGpaApiOpencl, kDevIdGfx11_5_0, derived_counter_names, empty_list_to_skip_tests);
 }
 
 // Test the openCL counter names on each generation
@@ -248,36 +252,49 @@ TEST(CounterDllTests, ClOpenCounterContext)
 TEST(CounterDllTests, ClCounterLibTestGfx8)
 {
     VerifyCounterLibInterface(kGpaApiOpencl, kDevIdVI, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpencl, kDevIdVI, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx9)
 {
     VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx9, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpencl, kDevIdGfx9, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx10)
 {
     VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx10, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpencl, kDevIdGfx10, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx103)
 {
     VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx10_3, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpencl, kDevIdGfx10_3, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx11)
 {
     VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpencl, kDevIdGfx11, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx1103)
 {
     VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11_0_3, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpencl, kDevIdGfx11_0_3, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterLibTestGfx1103B)
 {
     VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11_0_3B, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpencl, kDevIdGfx11_0_3B, REVISION_ID_ANY);
+}
+
+TEST(CounterDllTests, ClCounterLibTestGfx1150)
+{
+    VerifyCounterLibInterface(kGpaApiOpencl, kDevIdGfx11_5_0, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiOpencl, kDevIdGfx11_5_0, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, ClCounterFormulaTest)

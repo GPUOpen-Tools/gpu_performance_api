@@ -25,6 +25,7 @@ GlGpaContext::GlGpaContext(GlContextPtr context, GpaHwInfo& hw_info, GpaOpenCont
     , driver_supports_GUS_(false)
     , driver_supports_UMC_(false)
     , driver_supports_RPB_(false)
+    , driver_supports_PC_(false)
     , driver_supports_GRBMSE_(false)
 {
 }
@@ -299,7 +300,11 @@ bool GlGpaContext::PopulateDriverCounterGroupInfo()
                 {
                     driver_supports_RPB_ = true;
                 }
-                else if (strncmp(group_data.group_name, "GRBM_SE", 6) == 0)
+                else if (strncmp(group_data.group_name, "PC", 2) == 0)
+                {
+                    driver_supports_PC_ = true;
+                }
+                else if (strncmp(group_data.group_name, "GRBM_SE", 7) == 0)
                 {
                     driver_supports_GRBMSE_ = true;
                 }
@@ -380,7 +385,7 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                     GpaCounterGroupDesc* gpa_group = &hardware_counters->internal_counter_groups_.at(gpa_group_index);
                     std::string          gpa_group_name(gpa_group->name);
 
-                    // These groups (GL1CG, ATCL2, CHCG, GUS, UMC, RPB, GRBMSE) only exist (and are only exposed) on some hardware but GPA expects that they always exist.
+                    // These groups (GL1CG, ATCL2, CHCG, GUS, UMC, RPB, PC, GRBMSE) only exist (and are only exposed) on some hardware but GPA expects that they always exist.
                     // If they don't exist then skip this GPA group and continue to the next group.
                     if (!driver_supports_GL1CG_ && gpa_group_name.find("GL1CG") == 0)
                     {
@@ -403,6 +408,10 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                         continue;
                     }
                     if (!driver_supports_RPB_ && gpa_group_name.find("RPB") == 0)
+                    {
+                        continue;
+                    }
+                    if (!driver_supports_PC_ && gpa_group_name.find("PC") == 0)
                     {
                         continue;
                     }

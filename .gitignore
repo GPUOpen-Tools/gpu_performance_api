@@ -28,6 +28,9 @@ Doc/public
 *.a
 *.pyc
 build/CMakeBuild*/
+build/win/
+build/mac/
+build/linux/
 
 # Visual Studo 2015 cache/options directory
 .vs/

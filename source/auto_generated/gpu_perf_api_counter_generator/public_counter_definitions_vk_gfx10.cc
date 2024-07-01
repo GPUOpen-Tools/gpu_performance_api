@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for VK GFX10.
@@ -279,104 +279,7 @@ void AutoDefinePublicDerivedCountersVkGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(5561);
         internal_counters.push_back(5890);
 
-        c.DefineDerivedCounter("VsGsVerticesIn", "VertexGeometry", "The number of unique vertices processed by the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,1,ifnotzero,(0),2,3,sum2,ifnotzero", "17d0c775-3ed5-affb-d5ac-5391a198a4aa");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(48);
-        internal_counters.push_back(314);
-        internal_counters.push_back(580);
-        internal_counters.push_back(846);
-        internal_counters.push_back(50365);
-        internal_counters.push_back(5561);
-        internal_counters.push_back(5890);
-
-        c.DefineDerivedCounter("VsGsPrimsIn", "VertexGeometry", "The number of primitives passed into the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,sum4,4,4,ifnotzero,(0),5,6,sum2,ifnotzero", "1bbdf2ec-cca3-4d9a-a243-94f4aec5409b");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(50419);
-        internal_counters.push_back(50355);
-        internal_counters.push_back(5561);
-        internal_counters.push_back(5890);
-
         c.DefineDerivedCounter("GSVerticesOut", "VertexGeometry", "The number of vertices output by the GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,ifnotzero,(0),2,3,sum2,ifnotzero", "775b9736-319a-bd8a-48c9-68db9c91d978");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(9314);
-        internal_counters.push_back(9826);
-        internal_counters.push_back(9254);
-        internal_counters.push_back(9766);
-        internal_counters.push_back(8290);
-        internal_counters.push_back(8802);
-        internal_counters.push_back(8230);
-        internal_counters.push_back(8742);
-        internal_counters.push_back(5561);
-        internal_counters.push_back(5890);
-
-        c.DefineDerivedCounter("VsGsVALUInstCount", "VertexGeometry", "Average number of vector ALU instructions executed for the VS and GS in a VS-[GS-]PS pipeline. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,sum2,2,3,sum2,/,2,3,sum2,ifnotzero,4,5,sum2,6,7,sum2,/,6,7,sum2,ifnotzero,(0),8,9,sum2,ifnotzero", "9f5e6407-3b8c-e0a8-9987-a59586b45ea8");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(9310);
-        internal_counters.push_back(9822);
-        internal_counters.push_back(9254);
-        internal_counters.push_back(9766);
-        internal_counters.push_back(8286);
-        internal_counters.push_back(8798);
-        internal_counters.push_back(8230);
-        internal_counters.push_back(8742);
-        internal_counters.push_back(5561);
-        internal_counters.push_back(5890);
-
-        c.DefineDerivedCounter("VsGsSALUInstCount", "VertexGeometry", "Average number of scalar ALU instructions executed for the VS and GS. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,sum2,2,3,sum2,/,2,3,sum2,ifnotzero,4,5,sum2,6,7,sum2,/,6,7,sum2,ifnotzero,(0),8,9,sum2,ifnotzero", "67fe9696-8428-cf74-09d9-9133ea0f148c");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(9367);
-        internal_counters.push_back(9879);
-        internal_counters.push_back(8343);
-        internal_counters.push_back(8855);
-        internal_counters.push_back(24);
-        internal_counters.push_back(5561);
-        internal_counters.push_back(5890);
-
-        c.DefineDerivedCounter("VsGsVALUBusy", "VertexGeometry", "The percentage of GPUTime vector ALU instructions are being processed for the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,sum2,2,3,sum2,+,NUM_SIMDS,/,4,/,(100),*,(0),5,6,sum2,ifnotzero", "0e98794e-d570-20a5-671c-b65c3991d358");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(9367);
-        internal_counters.push_back(9879);
-        internal_counters.push_back(8343);
-        internal_counters.push_back(8855);
-        internal_counters.push_back(5561);
-        internal_counters.push_back(5890);
-
-        c.DefineDerivedCounter("VsGsVALUBusyCycles", "VertexGeometry", "Number of GPU cycles where vector ALU instructions are being processed for the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,sum2,2,3,sum2,+,NUM_SIMDS,/,(0),4,5,sum2,ifnotzero", "3558535c-e727-e459-4484-bcb683fcac2f");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(9310);
-        internal_counters.push_back(9822);
-        internal_counters.push_back(8286);
-        internal_counters.push_back(8798);
-        internal_counters.push_back(24);
-        internal_counters.push_back(5561);
-        internal_counters.push_back(5890);
-
-        c.DefineDerivedCounter("VsGsSALUBusy", "VertexGeometry", "The percentage of GPUTime scalar ALU instructions are being processed for the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,sum2,2,3,sum2,+,NUM_CUS,/,4,/,(100),*,(0),5,6,sum2,ifnotzero", "49521e07-5a41-0c17-38d9-450718dcb5ab");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(9310);
-        internal_counters.push_back(9822);
-        internal_counters.push_back(8286);
-        internal_counters.push_back(8798);
-        internal_counters.push_back(5561);
-        internal_counters.push_back(5890);
-
-        c.DefineDerivedCounter("VsGsSALUBusyCycles", "VertexGeometry", "Number of GPU cycles where scalar ALU instructions are being processed for the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,sum2,2,3,sum2,+,NUM_CUS,/,(0),4,5,sum2,ifnotzero", "c4f78496-7f24-cb3d-3108-e9e8c761cf07");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -694,54 +597,6 @@ void AutoDefinePublicDerivedCountersVkGfx10(GpaDerivedCounters& c)
         internal_counters.push_back(15074);
 
         c.DefineDerivedCounter("PSExportStallsCycles", "PixelShader", "Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16", "47c72aad-64e6-0864-d533-d8e0bc27c156");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(10338);
-        internal_counters.push_back(10850);
-        internal_counters.push_back(10278);
-        internal_counters.push_back(10790);
-
-        c.DefineDerivedCounter("PSVALUInstCount", "PixelShader", "Average number of vector ALU instructions executed in the PS. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,sum2,2,3,sum2,/", "eb74389e-435c-4137-ecf1-39eb5bc1cbfe");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(10334);
-        internal_counters.push_back(10846);
-        internal_counters.push_back(10278);
-        internal_counters.push_back(10790);
-
-        c.DefineDerivedCounter("PSSALUInstCount", "PixelShader", "Average number of scalar ALU instructions executed in the PS. Affected by flow control.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,sum2,2,3,sum2,/", "e6a06580-8a82-96d6-976c-acc121fc5516");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(10391);
-        internal_counters.push_back(10903);
-        internal_counters.push_back(24);
-
-        c.DefineDerivedCounter("PSVALUBusy", "PixelShader", "The percentage of GPUTime vector ALU instructions are being processed by the PS.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,sum2,NUM_SIMDS,/,2,/,(100),*", "6ce6fef7-8e33-10b4-f351-af755e177e85");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(10391);
-        internal_counters.push_back(10903);
-
-        c.DefineDerivedCounter("PSVALUBusyCycles", "PixelShader", "Number of GPU cycles where vector ALU instructions are being processed by the PS.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,sum2,NUM_SIMDS,/", "1e276f86-cd2a-72e7-fc9d-004f666f2981");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(10334);
-        internal_counters.push_back(10846);
-        internal_counters.push_back(24);
-
-        c.DefineDerivedCounter("PSSALUBusy", "PixelShader", "The percentage of GPUTime scalar ALU instructions are being processed by the PS.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,sum2,NUM_CUS,/,2,/,(100),*", "2ff9f34f-e94b-af4d-18c2-5fbbf6d1727a");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(10334);
-        internal_counters.push_back(10846);
-
-        c.DefineDerivedCounter("PSSALUBusyCycles", "PixelShader", "Number of GPU cycles where scalar ALU instructions are being processed by the PS.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,sum2,NUM_CUS,/", "29808906-f128-b078-fc79-820a4b3b3b8d");
     }
     {
         vector<GpaUInt32> internal_counters;

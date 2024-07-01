@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit Tests for Dx11 Counter Generator.
@@ -143,6 +143,9 @@ TEST(CounterDllTests, Dx11UnsupportedHardwareGenerations)
     VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationIntel);
     VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationGfx6);
     VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationGfx7);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationCdna);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationCdna2);
+    VerifyHardwareNotSupported(kGpaApiDirectx11, kGpaHwGenerationCdna3);
 }
 
 TEST(CounterDllTests, Dx11VerifyInvalidOpenContextParameters)
@@ -207,6 +210,7 @@ TEST(CounterDllTests, Dx11CounterNamesByDeviceId)
     std::vector<const char*> empty_list_to_skip_tests;
     VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11_0_3, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11_0_3B, derived_counter_names, empty_list_to_skip_tests);
+    VerifyCounterNames(kGpaApiDirectx11, kDevIdGfx11_5_0, derived_counter_names, empty_list_to_skip_tests);
 }
 
 TEST(CounterDllTests, Dx11CounterNamesGfx8)
@@ -315,6 +319,12 @@ TEST(CounterDllTests, Dx11CounterLibTestGfx1103B)
 {
     VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_0_3B, REVISION_ID_ANY);
     VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_0_3B, REVISION_ID_ANY);
+}
+
+TEST(CounterDllTests, Dx11CounterLibTestGfx1150)
+{
+    VerifyCounterLibInterface(kGpaApiDirectx11, kDevIdGfx11_5_0, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiDirectx11, kDevIdGfx11_5_0, REVISION_ID_ANY);
 }
 
 TEST(CounterDllTests, Dx11CounterFormulaTest)

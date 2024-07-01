@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Maintains a set of hardware counters.
@@ -81,6 +81,7 @@ public:
         kGpaInternalHwBlockGese,                                     ///< The Gpa hardware block is GESE.
         kGpaInternalHwBlockDfmall,                                   ///< The Gpa hardware block is DFMALL.
         kGpaInternalHwBlockSqWgp,                                    ///< The Gpa hardware block is SQWGP.
+        kGpaInternalHwBlockPc,                                       ///< The Gpa hardware block is PC.
         kGpaInternalHwBlockSqFirst,                                  ///< The Gpa hardware block is SQ_PS.
         kGpaInternalHwBlockSqPs = kGpaInternalHwBlockSqFirst,        ///< The Gpa hardware block is SQ_PS.
         kGpaInternalHwBlockSqVs,                                     ///< The Gpa hardware block is SQ_VS.
@@ -161,6 +162,7 @@ public:
             static_assert(kGpaHwBlockGese == static_cast<GpaHwBlock>(kGpaInternalHwBlockGese), "Mismatched block");
             static_assert(kGpaHwBlockDfmall == static_cast<GpaHwBlock>(kGpaInternalHwBlockDfmall), "Mismatched block");
             static_assert(kGpaHwBlockSqWgp == static_cast<GpaHwBlock>(kGpaInternalHwBlockSqWgp), "Mismatched block");
+            static_assert(kGpaHwBlockPc == static_cast<GpaHwBlock>(kGpaInternalHwBlockPc), "Mismatched block");
             static_assert(kGpaHwBlockCount == static_cast<GpaHwBlock>(kGpaInternalHwBlockSqFirst), "Mismatched block");
 
             kHardwareBlockString = {GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpf, "CPF"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockIa, "IA"),
@@ -187,15 +189,16 @@ public:
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGus, "GUS"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGcr, "GCR"),
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPh, "PA_PH"),      GPA_ENUM_STRING_VAL(kGpaInternalHwBlockUtcl1, "UTCL1"),
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGedist, "GEDIST"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGese, "GESE"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDfmall, "DFMALL"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqWgp, "SQWGP"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQ_PS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqVs, "SQ_VS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQ_GS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqEs, "SQ_ES"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQ_HS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqLs, "SQ_LS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQ_CS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQG_PS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQG_GS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQG_HS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQG_CS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQWGP_PS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQWGP_GS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQWGP_HS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqG, "SQG")};
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDfmall, "DFMALL"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPc, "SQWGP"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqWgp, "PC"),      GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQ_PS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqVs, "SQ_VS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQ_GS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqEs, "SQ_ES"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQ_HS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqLs, "SQ_LS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQ_CS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQG_PS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQG_GS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQG_HS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQG_CS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQWGP_PS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQWGP_GS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQWGP_HS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqG, "SQG")};
         }
 
         Clear();
@@ -236,7 +239,7 @@ public:
         padded_counter_count_                             = 0;
 
         hardware_exposed_counters_.clear();
-        hardware_exposed_counter_groups_      = nullptr;
+        hardware_exposed_counter_groups_ = nullptr;
         hardware_exposed_counters_list_.clear();
         hardware_exposed_counter_internal_indices_list_.clear();
         hardware_exposed_counters_generated_ = false;
@@ -362,10 +365,39 @@ public:
 
         GpaInternalHardwareBlock gpa_internal_hardware_block_mapped;
 
-        if (kGpaHwBlockSq == gpa_hardware_block)
+        std::string sqg_string = "SQG";
+        auto        it         = std::find_if(
+            internal_counter_groups_.begin(), internal_counter_groups_.end(), [&sqg_string](const GpaCounterGroupDesc& c) { return c.name == sqg_string; });
+        if (kGpaHwBlockSq == gpa_hardware_block && it != internal_counter_groups_.end())
+        {
+            GpaInternalHardwareBlock sq_internal_block = static_cast<GpaInternalHardwareBlock>(kGpaInternalHwBlockSqG);
+
+            switch (sq_shader_mask)
+            {
+            case kGpaShaderMaskCs:
+                sq_internal_block = kGpaInternalHwBlockSqGCs;
+                break;
+            case kGpaShaderMaskPs:
+                sq_internal_block = kGpaInternalHwBlockSqGPs;
+                break;
+            case kGpaShaderMaskGs:
+                sq_internal_block = kGpaInternalHwBlockSqGGs;
+                break;
+            case kGpaShaderMaskHs:
+                sq_internal_block = kGpaInternalHwBlockSqGHs;
+                break;
+            case kGpaShaderMaskAll:
+                break;
+            default:
+                assert(!"Invalid SQG shader mask specified.");
+            }
+
+            gpa_internal_hardware_block_mapped = sq_internal_block;
+        }
+        else if (kGpaHwBlockSq == gpa_hardware_block)
         {
             static_assert((unsigned int)kGpaHwBlockSq == (unsigned int)kGpaInternalHwBlockSq,
-                          "Make sure the Sq hardware block indexes are consistent with eachother");
+                          "Make sure the Sq hardware block indexes are consistent with each other");
             GpaInternalHardwareBlock sq_internal_block = static_cast<GpaInternalHardwareBlock>(kGpaHwBlockSq);
 
             switch (sq_shader_mask)
@@ -402,7 +434,7 @@ public:
         else if (kGpaHwBlockSqWgp == gpa_hardware_block)
         {
             static_assert((unsigned int)kGpaHwBlockSqWgp == (unsigned int)kGpaInternalHwBlockSqWgp,
-                          "Make sure the SqWgp hardware block indexes are consistent with eachother");
+                          "Make sure the SqWgp hardware block indexes are consistent with each other");
             GpaInternalHardwareBlock sqwgp_internal_block = static_cast<GpaInternalHardwareBlock>(kGpaHwBlockSqWgp);
 
             switch (sq_shader_mask)
@@ -645,6 +677,11 @@ public:
                 {
                     assert(!"Invalid SQWGP wave type requested.");
                 }
+            }
+            else if (internal_hw_block == kGpaInternalHwBlockSqG)
+            {
+                gpa_hw_block    = kGpaHwBlockSq;
+                gpa_shader_mask = kGpaShaderMaskAll;
             }
             else
             {

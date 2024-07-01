@@ -16,7 +16,7 @@ is used by [Radeon GPU Profiler](https://github.com/GPUOpen-Tools/radeon_gpu_pro
 * [Known Issues](#known-issues)
 * [Building the Source Code](BUILD.md)
 * [License](LICENSE.txt)
-* [Historical Release Notes](RELEASE_NOTES.txt)
+* [Historical Release Notes](ReleaseNotes.md)
 * [Style and Format Change](#Style-and-Format-Change)
 
 ## Downloads
@@ -31,13 +31,18 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-### Version 3.15 (12/06/2023)
-* Updated minimum CMake version to 3.10 from 3.05.
-* Updated equation for MemUnitBusyCycles.
-* Updated description of LocalVidMemBytes.
-* Renamed *.inc files to .hpp files.
-* Reduced size of static buffer when logging messages to avoid compiler warning.
-* Fixed an issue on some variant hardware that would prevent enabling certain hardware counters when kGpaOpenContextExposeHardwareCountersBit was specified to GpaOpenContext() by always generating asic-specific counters.
+### Version 3.16 (07/01/2024)
+* Added support for additional RDNA 3 based APUs.
+  * GPA's OpenCL support has been temporarily disabled on RDNA 3 hardware.
+* Updated error checking in counter splitting to report error if counter group max is zero.
+* Disabled the following counters on RDNA 3 based hardware due to inconsistent results:
+  * CBMemRead, CBColorAndMaskRead, CBMemWritten, CBColorAndMaskWritten
+* Disabled the following counters on RDNA 2 based hardware due to inconsistent results:
+  * VsGsVerticesIn, VsGsPrimsIn
+* Disabled the following counters on RDNA based hardware due to inconsistent results:
+  * VsGsSALUBusy, VsGsSALUBusyCycles, VsGsVALUBusy, VsGsVALUBusyCycles, VsGsVALUInstCount, VsGsSALUInstCount, PSVALUBusy, PSVALUBusyCycles, PSVALUInstCount, PSSALUBusy, PSSALUBusyCycles, PSSALUInstCount
+* Output from pre_build.py script is now generated into build\|win,linux|\ directory.
+* Compiled binaries are now generated into build\output\ directory.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.

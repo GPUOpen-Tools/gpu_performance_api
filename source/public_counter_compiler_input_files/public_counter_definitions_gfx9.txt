@@ -411,7 +411,7 @@ eqn=0,1,1,ifnotzero,(0),2,ifnotzero
 VGT*_PERF_VGT_SPI_VSVERT_VALID[0..3]
 VGT*_PERF_VGT_SPI_ESVERT_VALID[0..3]
 SPI*_PERF_HS_WAVE[0..3]
-eqn=0..3,sum4,4..7,sum4,,4..7,sum4,ifnotzero,(0),8..11,sum4,ifnotzero
+eqn=0..3,sum4,4..7,sum4,4..7,sum4,ifnotzero,(0),8..11,sum4,ifnotzero
 
 name=VsGsPrimsIn
 desc=#VertexGeometry#The number of primitives passed into the VS and GS.
@@ -429,7 +429,7 @@ eqn=0,1,1,ifnotzero,(0),2,ifnotzero
 PA_SU*_PERF_PAPC_PA_INPUT_PRIM[0..3]
 VGT*_PERF_VGT_SPI_GSPRIM_VALID[0..3]
 SPI*_PERF_HS_WAVE[0..3]
-eqn=0..3,sum4,4..7,sum4,,4..7,sum4,ifnotzero,(0),8..11,sum4,ifnotzero
+eqn=0..3,sum4,4..7,sum4,4..7,sum4,ifnotzero,(0),8..11,sum4,ifnotzero
 
 name=GSVerticesOut
 desc=#VertexGeometry#The number of vertices output by the GS.
@@ -448,6 +448,7 @@ VGT*_PERF_VGT_SPI_VSVERT_VALID[0..3]
 VGT*_PERF_VGT_SPI_ESVERT_VALID[0..3]
 SPI*_PERF_HS_WAVE[0..3]
 eqn=(0),0..3,sum4,4..7,sum4,ifnotzero,(0),8..11,sum4,ifnotzero
+
 
 name=VsGsVALUInstCount
 desc=#VertexGeometry#Average number of vector ALU instructions executed in the VS and GS in a VS-[GS-]PS pipeline. Affected by flow control.

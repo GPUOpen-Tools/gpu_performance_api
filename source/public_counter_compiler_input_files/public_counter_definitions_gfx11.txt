@@ -1089,52 +1089,6 @@ DB*_PERF_SEL_TILE_WR_SENDS[0..23]
 DB*_PERF_SEL_QUAD_WR_SENDS[0..23]
 eqn=0..23,sum24,(32),*,24..47,sum24,(32),*,+
 
-name=CBMemRead
-desc=#ColorBuffer#Number of bytes read from the color buffer.
-type=gpa_float64
-usage=bytes
-[OGLPGfx11]
-[DX11Gfx11]
-[DX12Gfx11]
-[VKGfx11]
-CB*_PERF_SEL_CC_MA_READ_REQUEST[0..23]
-eqn=0..23,sum24,(32),*
-
-name=CBColorAndMaskRead
-desc=#ColorBuffer#Total number of bytes read from the color and mask buffers.
-type=gpa_float64
-usage=bytes
-[OGLPGfx11]
-[DX11Gfx11]
-[DX12Gfx11]
-[VKGfx11]
-CB*_PERF_SEL_DC_MA_READ_REQUEST[0..23]
-CB*_PERF_SEL_CC_MA_READ_REQUEST[0..23]
-eqn=0..23,sum24,24..47,sum24,+,(32),*
-
-name=CBMemWritten
-desc=#ColorBuffer#Number of bytes written to the color buffer.
-type=gpa_float64
-usage=bytes
-[OGLPGfx11]
-[DX11Gfx11]
-[DX12Gfx11]
-[VKGfx11]
-CB*_PERF_SEL_CC_MA_WRITE_REQUEST[0..23]
-eqn=0..23,sum24,(32),*
-
-name=CBColorAndMaskWritten
-desc=#ColorBuffer#Total number of bytes written to the color and mask buffers.
-type=gpa_float64
-usage=bytes
-[OGLPGfx11]
-[DX11Gfx11]
-[DX12Gfx11]
-[VKGfx11]
-CB*_PERF_SEL_DC_MA_WRITE_REQUEST[0..23]
-CB*_PERF_SEL_CC_MA_WRITE_REQUEST[0..23]
-eqn=0..23,sum24,24..47,sum24,+,(32),*
-
 ; Cache counters
 ;
 ; L0 data (TCP) and L1 (GL1) provide only a requests and misses counter. Scalar and Instruction caches (SQC) and L2 (GL2C) all provide a requests,

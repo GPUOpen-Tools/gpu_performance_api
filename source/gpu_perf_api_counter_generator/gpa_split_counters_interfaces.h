@@ -127,11 +127,11 @@ public:
     /// @param [in] isolated_from_sq_groups The list of counter groups that must be isolated from SQ counter groups.
     IGpaSplitCounters(const std::set<unsigned int>& timestamp_block_ids,
                       const std::set<unsigned int>& time_counter_indices,
-                      unsigned int                  max_sq_counters,
-                      unsigned int                  num_sq_groups,
-                      GpaSqCounterGroupDesc*        sq_counter_block_info,
-                      unsigned int                  num_isolated_from_sq_groups,
-                      const unsigned int*           isolated_from_sq_groups)
+                      unsigned int           max_sq_counters,
+                      unsigned int           num_sq_groups,
+                      GpaSqCounterGroupDesc* sq_counter_block_info,
+                      unsigned int           num_isolated_from_sq_groups,
+                      const unsigned int*    isolated_from_sq_groups)
         : timestamp_block_ids_(timestamp_block_ids)
         , time_counter_indices_(time_counter_indices)
         , max_sq_counters_(max_sq_counters)
@@ -186,7 +186,7 @@ public:
     }
 
 protected:
-    std::set<unsigned int> timestamp_block_ids_;   ///< Set of timestamp block id's.
+    std::set<unsigned int> timestamp_block_ids_;  ///< Set of timestamp block id's.
     std::set<unsigned int> time_counter_indices_;  ///< Set of timestamp counter indices.
 
     unsigned int max_sq_counters_;  ///< The maximum number of counters that can be enabled in the SQ group.
@@ -222,7 +222,6 @@ protected:
     {
         return time_counter_indices_.find(counter_index) != time_counter_indices_.end();
     }
-
 
     /// @brief Adds a counter result location.
     ///
@@ -383,9 +382,6 @@ protected:
             GPA_LOG_DEBUG_ERROR("Group(%d) counter limit is zero.", group_index);
             return false;
         }
-
-        // This should never occur. It indicates the counter relies on a block without any collectible events.
-        assert(group_limit > 0);
 
         return new_group_used_count <= group_limit;
     }

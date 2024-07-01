@@ -1,5 +1,5 @@
 #! /usr/bin/python3
-# Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+# Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 #
 # Simple script to update a set of common directories that are needed as dependencies of the GPUPerfAPI
 # Usage:
@@ -20,8 +20,14 @@ import subprocess
 import sys
 import time
 import zipfile
-import gpa_utils as GpaUtils
-import dependencies_map as DependencyMap
+
+# Prevent script from leaving a compiled .pyc file in the directory.
+sys.dont_write_bytecode = True
+
+# to allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file
+script_root = os.path.dirname(os.path.realpath(__file__))
+gpa_root = os.path.normpath(os.path.join(script_root, ".."))
+sys.path.append(gpa_root)
 
 MACHINE_OS = ""
 VULKAN_LIB_FILENAME = ""
@@ -34,11 +40,12 @@ elif "linux" in platform.system().lower():
     MACHINE_OS = "Linux"
     VULKAN_LIB_FILENAME = "libvulkan.so"
 else:
-    print("Operating system not recognized correctly")
+    print("Operating system not recognized correctly.")
     sys.exit(1)
 
-# to allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file
-scriptRoot = os.path.dirname(os.path.realpath(__file__))
+import gpa_utils as GpaUtils
+import dependencies_map as DependencyMap
+
 
 # When running this script on Windows (and not under cygwin), we need to set the Shell=True argument to Popen and similar calls
 # Without this option, Jenkins builds fail to find the correct version of git
@@ -48,22 +55,6 @@ SHELLTYPE = os.environ.get('SHELL')
 if SHELLTYPE is None:
     # running on windows under default shell
     SHELLARG = True
-
-# Print the version of git being used. This also confirms that the script can find git
-try:
-     subprocess.call(["git","--version"], shell=SHELLARG)
-except OSError:
-    # likely to be due to inability to find git command
-    print("Error calling command: git --version")
-
-parser = argparse.ArgumentParser(description='fetch_dependencies args')
-parser.add_argument('--showrevisions', action='store_true', default=False, help='Show git revisions of HEAD in dependent repo')
-parser.add_argument('--gitserver', help='Git Server')
-parser.add_argument('--usebranch', action='store', help='Branch to use when cloning dependencies instead of the script default branch.')
-
-# To allow the script to be run from anywhere - not just the cwd - store the absolute path to the script file.
-scriptRoot = os.path.dirname(os.path.realpath(__file__))
-gpaRoot = os.path.normpath(os.path.join(scriptRoot, ".."))
 
 # Wait up to a certain number of seconds for a file to become available for deletion, re-trying once a second.
 # os.remove raises a PermissionError on Windows if the file is currently open elsewhere, and we rethrow this
@@ -87,7 +78,7 @@ def TryRemoveFile(filepath):
 def UpdateGitHubRepo(repoRootUrl, location, commit):
     # Convert targetPath to OS specific format.
     # Add script directory to targetPath.
-    targetPath = os.path.realpath(os.path.join(gpaRoot, location))
+    targetPath = os.path.realpath(os.path.join(gpa_root, location))
 
     reqdCommit = commit
 
@@ -100,7 +91,7 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
                     print("Directory " + targetPath + " exists and is at expected commit. Nothing to do.")
                     sys.stdout.flush()
                     return
-            print("Directory " + targetPath + " exists but is not at the required commit. \n\tUsing 'git fetch' and 'git checkout' to move the workspace to " + reqdCommit[0:7])
+            print("Directory " + targetPath + " exists but is not at the required commit. \n\tUsing 'git fetch' and 'git checkout' to move the workspace to " + reqdCommit)
             sys.stdout.flush()
             subprocess.check_call(["git", "-C", targetPath, "fetch", "--tags", "-f", "origin"], shell=SHELLARG)
         except subprocess.CalledProcessError as e:
@@ -114,23 +105,26 @@ def UpdateGitHubRepo(repoRootUrl, location, commit):
         # Directory doesn't exist - clone from git.
         ghRepoSource = repoRootUrl
 
-        print("Directory " + targetPath + " does not exist. \n\tUsing 'git clone' to get from " + ghRepoSource)
-        sys.stdout.flush()
-
+        print("Directory " + targetPath + " does not exist. \n\tUsing 'git clone' to get from " + ghRepoSource, flush=True)
         if not GpaUtils.CloneGitRepo(ghRepoSource, reqdCommit, targetPath):
             sys.exit(1)
 
 def ShowRevisions():
     repos_revision_map={}
 
+    gpaRevisionStr = GpaUtils.GetGitLocalRepoHead(gpa_root)
+    if gpaRevisionStr is not None:
+            repos_revision_map["gpu_performance_api (this repo)"] = gpaRevisionStr
+
     for key in DependencyMap.gitMapping:
-        local_git_repo_path = os.path.join(gpaRoot, DependencyMap.gitMapping[key][0])
+        local_git_repo_path = os.path.join(gpa_root, DependencyMap.gitMapping[key][0])
         revision_str = GpaUtils.GetGitLocalRepoHead(local_git_repo_path)
         if revision_str is not None:
             repos_revision_map[key] = revision_str
 
     for repo in repos_revision_map:
-        print ('{0:35}    :    {1}'.format(repo, repos_revision_map[repo]))
+        print ('{0:35}    :    {1}'.format(repo, repos_revision_map[repo]), flush=True)
+
 
 def HandleVulkan(vulkanSrc, VulkanDest, vulkanInstallerFileName, version, installationPath):
     VULKAN_SDK = os.environ.get("VULKAN_SDK")
@@ -150,12 +144,8 @@ def HandleVulkan(vulkanSrc, VulkanDest, vulkanInstallerFileName, version, instal
         else:
             installationPath = LINUX_HOME
     else:
-        TEMP_DIR=os.environ.get("TEMP")
-        if TEMP_DIR is None:
-            DEST_PATH=scriptRoot
-        else:
-            DEST_PATH=TEMP_DIR
-        installationPath = scriptRoot
+        DEST_PATH = script_root
+        installationPath = script_root
 
     VulkanSDKInstaller = os.path.join(DEST_PATH, VulkanSDKFile)
 
@@ -200,22 +190,19 @@ def HandleVulkan(vulkanSrc, VulkanDest, vulkanInstallerFileName, version, instal
                 print("The Vulkan SDK has been installed")
 
         TryRemoveFile(VulkanSDKInstaller)
-        os.chdir(scriptRoot)
+        os.chdir(script_root)
         return
 
 def HandleGpaDx11GetDeviceInfo(src, dest, fileName, version, copyDest):
-    TEMP_DIR=os.environ.get("TEMP")
-    if TEMP_DIR is None:
-        DEST_PATH=scriptRoot
-    else:
-        DEST_PATH=TEMP_DIR
+    DEST_PATH = script_root
+
     GpaDx11GetDeviceInfoArchiveFileName = fileName
     GpaDx11GetDeviceInfoArchiveAbsPath = os.path.join(DEST_PATH, GpaDx11GetDeviceInfoArchiveFileName)
 
     if dest != "default":
         DEST_PATH = dest
 
-    copyArchive = os.path.join(gpaRoot, copyDest)
+    copyArchive = os.path.join(gpa_root, copyDest)
     dx11DeviceInfoPlatform64File= version + "/Bin/x64/GPUPerfAPIDXGetAMDDeviceInfo-x64.dll"
     dx11DeviceInfoPlatformFile= version + "/Bin/x86/GPUPerfAPIDXGetAMDDeviceInfo.dll"
     dx11DeviceInfoPlatform64FileAbsPath = os.path.join(copyArchive, dx11DeviceInfoPlatform64File)
@@ -243,6 +230,18 @@ def HandleGpaDx11GetDeviceInfo(src, dest, fileName, version, copyDest):
         return
 
 if __name__ == "__main__":
+    # Print the version of git being used. This also confirms that the script can find git
+    try:
+         subprocess.call(["git","--version"], shell=SHELLARG)
+    except OSError:
+        # likely to be due to inability to find git command
+        print("Error calling command: git --version")
+
+    parser = argparse.ArgumentParser(description='fetch_dependencies args')
+    parser.add_argument('--showrevisions', action='store_true', default=False, help='Show git revisions of HEAD in dependent repo')
+    parser.add_argument('--gitserver', help='Git Server')
+    parser.add_argument('--usebranch', action='store', help='Branch to use when cloning dependencies instead of the script default branch.')
+
 
     git_tools_remote_server = "https://github.com/GPUOpen-Tools/"
 
@@ -255,13 +254,22 @@ if __name__ == "__main__":
     if args.gitserver is not None:
         git_tools_remote_server = args.gitserver
 
+    print("Fetching dependencies from: " + git_tools_remote_server + "\n")
+
+    default_branch = "master"
+    if args.usebranch is not None:
+        default_branch = args.usebranch
+
     for key in DependencyMap.gitMapping:
-        default_branch = DependencyMap.gitMapping[key][1]
-        if args.usebranch is not None:
-            if key != "googletest":
-                if GpaUtils.VerifyBranch((git_tools_remote_server + key), args.usebranch):
-                    default_branch = args.usebranch
-        UpdateGitHubRepo((git_tools_remote_server + key), DependencyMap.gitMapping[key][0], default_branch)
+        dependent_repo_url = git_tools_remote_server + key
+        local_path         = DependencyMap.gitMapping[key][0]
+        dependent_branch   = DependencyMap.gitMapping[key][1]
+
+        if dependent_branch == None:
+            if GpaUtils.VerifyBranch((git_tools_remote_server + key), args.usebranch):
+                dependent_branch = args.usebranch
+
+        UpdateGitHubRepo(dependent_repo_url, local_path, dependent_branch)
 
     if "Windows" == MACHINE_OS:
         for key in DependencyMap.downloadWin:
@@ -270,3 +278,4 @@ if __name__ == "__main__":
 
             if key == "GPADX11GetDeviceInfo":
                 HandleGpaDx11GetDeviceInfo(keyList[0], keyList[1], FileName, keyList[2], keyList[3])
+

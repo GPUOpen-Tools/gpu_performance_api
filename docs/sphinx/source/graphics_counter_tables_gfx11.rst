@@ -1,4 +1,4 @@
-.. Copyright(c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright(c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 .. Graphics Performance Counters for RDNA3
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
@@ -163,18 +163,6 @@ DepthAndStencil Group
     "ZUnitStalledCycles", "Cycles", "Number of GPU cycles the depth buffer spends waiting for the color buffer to be ready to accept data. Larger numbers indicate a bottleneck in color buffer operations."
     "DBMemRead", "Bytes", "Number of bytes read from the depth buffer."
     "DBMemWritten", "Bytes", "Number of bytes written to the depth buffer."
-
-ColorBuffer Group
-%%%%%%%%%%%%%%%%%
-
-.. csv-table::
-    :header: "Counter Name", "Usage", "Brief Description"
-    :widths: 15, 10, 75
-
-    "CBMemRead", "Bytes", "Number of bytes read from the color buffer."
-    "CBColorAndMaskRead", "Bytes", "Total number of bytes read from the color and mask buffers."
-    "CBMemWritten", "Bytes", "Number of bytes written to the color buffer."
-    "CBColorAndMaskWritten", "Bytes", "Total number of bytes written to the color and mask buffers."
 
 MemoryCache Group
 %%%%%%%%%%%%%%%%%

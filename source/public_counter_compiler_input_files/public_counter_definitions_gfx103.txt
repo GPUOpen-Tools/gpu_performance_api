@@ -426,53 +426,23 @@ SPI*_PERF_CSN_WAVE[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=SPI*_PERF_CSGN_BUSY,SPI*_PERF_CSGN_WAVE,comparemax4,SPI*_PERF_CSN_BUSY,SPI*_PERF_CSN_WAVE,comparemax4,max,CPF_PERF_SEL_CPF_STAT_BUSY,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
 
-name=VsGsVerticesIn
-desc=#VertexGeometry#The number of unique vertices processed by the VS and GS.
-type=gpa_float64
-usage=items
-[GLGfx103]
-GE_SE_SPI_ESVERT_VALID
-SPI_PERF_HS_WAVE
-eqn=0,(0),1,ifnotzero
-[DX11Gfx103]
-[DX12Gfx103]
-[OGLPGfx103]
-[VKGfx103]
-GE_SE*_SPI_ESVERT_VALID[0..3]
-SPI*_PERF_HS_WAVE[0..3]
-eqn=0..3,sum4,(0),4..7,sum4,ifnotzero
-
-name=VsGsPrimsIn
-desc=#VertexGeometry#The number of primitives passed into the VS and GS.
-type=gpa_float64
-usage=items
-[GLGfx103]
-GE_SE_SPI_GSPRIM_VALID
-SPI_PERF_HS_WAVE
-eqn=0,(0),1,ifnotzero
-[DX11Gfx103]
-[DX12Gfx103]
-[OGLPGfx103]
-[VKGfx103]
-GE_SE*_SPI_GSPRIM_VALID[0..3]
-SPI*_PERF_HS_WAVE[0..3]
-eqn=0..3,sum4,(0),4..7,sum4,ifnotzero
-
 name=GSVerticesOut
 desc=#VertexGeometry#The number of vertices output by the GS.
 type=gpa_float64
 usage=items
 [GLGfx103]
 GE_SE_SPI_VSVERT_VALID
+GE_SE_SPI_ESVERT_VALID
 SPI_PERF_HS_WAVE
-eqn=0,(0),1,ifnotzero
+eqn=(0),0,1,ifnotzero,(0),2,ifnotzero
 [DX11Gfx103]
 [DX12Gfx103]
 [OGLPGfx103]
 [VKGfx103]
 GE_SE*_SPI_VSVERT_VALID[0..3]
+GE_SE*_SPI_ESVERT_VALID[0..3]
 SPI*_PERF_HS_WAVE[0..3]
-eqn=0..3,sum4,(0),4..7,sum4,ifnotzero
+eqn=(0),0..3,sum4,4..7,sum4,ifnotzero,(0),8..11,sum4,ifnotzero
 
 
 name=PreTessVerticesIn

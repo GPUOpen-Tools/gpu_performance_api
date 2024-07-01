@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions ASIC file for VK_GFX11
@@ -15,6 +15,7 @@
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx11.h"
 
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_vk_gfx11_gfx1103.h"
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_vk_gfx11_gfx1150.h"
 
 namespace vk_gfx11_asics
 {
@@ -31,6 +32,11 @@ namespace vk_gfx11_asics
         counter_vk_gfx11::OverrideMaxBlockEvents(asic_type);
 
         if (vk_gfx11_gfx1103::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
+        {
+            return;
+        }
+
+        if (vk_gfx11_gfx1150::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
         {
             return;
         }

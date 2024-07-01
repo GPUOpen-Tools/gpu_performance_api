@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../../../")
@@ -64,10 +64,10 @@ ADD_LINKER_FLAGS()
 
 if(WIN32)
     add_custom_command(TARGET ${GPA_PROJECT_NAME} POST_BUILD
-                       COMMAND compile_shaders.bat ${GPA_OUTPUT_DIR}/$<CONFIG>/
+                       COMMAND compile_shaders.bat ${GPA_OUTPUT_DIR}/$<CONFIG>${OUTPUT_SUFFIX}/
                        BYPRODUCTS vk_color_cube_shader.vert.spv vk_color_cube_shader.frag.spv vk_color_cube_wireframe_shader.frag.spv
                        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
-                       COMMENT "Compiling Vulkan Shaders vk_color_cube_shader.vert vk_color_cube_shader.frag vk_color_cube_wireframe_shader.frag")
+                       COMMENT "Compiling Vulkan Shaders vk_color_cube_shader.vert vk_color_cube_shader.frag vk_color_cube_wireframe_shader.frag to ${GPA_OUTPUT_DIR}/$<CONFIG>${OUTPUT_SUFFIX}/")
 
     set_target_properties(${GPA_PROJECT_NAME} PROPERTIES FOLDER "Examples/Vulkan")
     SET_EXECUTABLE_NAME(${GPA_PROJECT_NAME})
@@ -128,7 +128,7 @@ elseif(ANDROID)
 
 elseif(UNIX)
     add_custom_command(TARGET ${GPA_PROJECT_NAME} PRE_BUILD
-                       COMMAND ${CMAKE_CURRENT_LIST_DIR}/compile_shaders.sh ${GPA_OUTPUT_DIR}/$<CONFIG>/ ${VK_TOOLS_DIR}
+                       COMMAND ${CMAKE_CURRENT_LIST_DIR}/compile_shaders.sh ${GPA_OUTPUT_DIR}/$<CONFIG>${OUTPUT_SUFFIX}/ ${VK_TOOLS_DIR}
                        BYPRODUCTS vk_color_cube_shader.vert.spv vk_color_cube_shader.frag.spv vk_color_cube_wireframe_shader.frag.spv
                        WORKING_DIRECTORY ${CMAKE_CURRENT_LIST_DIR}
                        COMMENT "Compiling Vulkan Shaders vk_color_cube_shader.vert vk_color_cube_shader.frag vk_color_cube_wireframe_shader.frag")

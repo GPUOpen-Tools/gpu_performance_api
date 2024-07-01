@@ -1,4 +1,4 @@
-.. Copyright(c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+.. Copyright(c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 .. Graphics Performance Counters for RDNA
 
 .. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.
@@ -50,15 +50,7 @@ VertexGeometry Group
     :header: "Counter Name", "Usage", "Brief Description"
     :widths: 15, 10, 75
 
-    "VsGsVerticesIn", "Items", "The number of unique vertices processed by the VS and GS."
-    "VsGsPrimsIn", "Items", "The number of primitives passed into the VS and GS."
     "GSVerticesOut", "Items", "The number of vertices output by the GS."
-    "VsGsVALUInstCount", "Items", "Average number of vector ALU instructions executed for the VS and GS in a VS-[GS-]PS pipeline. Affected by flow control."
-    "VsGsSALUInstCount", "Items", "Average number of scalar ALU instructions executed for the VS and GS. Affected by flow control."
-    "VsGsVALUBusy", "Percentage", "The percentage of GPUTime vector ALU instructions are being processed for the VS and GS."
-    "VsGsVALUBusyCycles", "Cycles", "Number of GPU cycles where vector ALU instructions are being processed for the VS and GS."
-    "VsGsSALUBusy", "Percentage", "The percentage of GPUTime scalar ALU instructions are being processed for the VS and GS."
-    "VsGsSALUBusyCycles", "Cycles", "Number of GPU cycles where scalar ALU instructions are being processed for the VS and GS."
 
 PreTessellation Group
 %%%%%%%%%%%%%%%%%%%%%
@@ -113,12 +105,6 @@ PixelShader Group
     "PSPixelsOut", "Items", "Pixels exported from shader to color buffers. Does not include killed or alpha tested pixels; if there are multiple render targets, each render target receives one export, so this will be 2 for 1 pixel written to two RTs."
     "PSExportStalls", "Percentage", "Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer."
     "PSExportStallsCycles", "Cycles", "Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer."
-    "PSVALUInstCount", "Items", "Average number of vector ALU instructions executed in the PS. Affected by flow control."
-    "PSSALUInstCount", "Items", "Average number of scalar ALU instructions executed in the PS. Affected by flow control."
-    "PSVALUBusy", "Percentage", "The percentage of GPUTime vector ALU instructions are being processed by the PS."
-    "PSVALUBusyCycles", "Cycles", "Number of GPU cycles where vector ALU instructions are being processed by the PS."
-    "PSSALUBusy", "Percentage", "The percentage of GPUTime scalar ALU instructions are being processed by the PS."
-    "PSSALUBusyCycles", "Cycles", "Number of GPU cycles where scalar ALU instructions are being processed by the PS."
 
 ComputeShader Group
 %%%%%%%%%%%%%%%%%%%

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2006-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2006-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Utility routines for retrieving ASIC information.
@@ -86,9 +86,13 @@ namespace ogl_utils
         kAsicIdLast  = kAsicIdUnknown   ///< Last place holder.
     } AsicId;
 
+
+    // All entries in the device_info GDT_HW_ASIC_TYPE enum should be represented in the AsicRevisionEnum below.
+    static_assert(GDT_LAST == 50, "GDT_HW_ASIC_TYPE enum has changed, make sure to add necessary entry for AsicRevision below.");
+
     /// @brief AsicRevision enumeration from PAL.
     ///
-    /// The open source version can be found here: https://github.com/GPUOpen-Drivers/pal/blob/dev/inc/core/palDevice.h
+    /// The open source version can be found here: https://github.com/GPUOpen-Drivers/pal/blob/dev/inc/core/palLib.h
     typedef enum AsicRevisionEnum
     {
         kUnknown = 0x00,
@@ -138,17 +142,19 @@ namespace ogl_utils
         kNavi23       = 0x26,
         kNavi24       = 0x27,
         kNavi21Lite   = 0x28,
+        kGfx1033      = 0x29,
         kPlaceholder6 = 0x2A,
         kNavi14Lite   = 0x2B,
         kGfx1100      = 0x2C,
         kGfx1101      = 0x2D,
         kGfx1102      = 0x2E,
         kGfx1035      = 0x2F,
+        kGfx1150      = 0x33,
         kGfx1103      = 0x35,
         kGfx1103B     = 0x38,
         kGfx1103HP1   = 0x39,
         kGfx1103HP2   = 0x3A,
-	kAsicRevisionLast
+        kAsicRevisionLast
     } AsicRevision;
 
     /// @brief ASIC Id specific information

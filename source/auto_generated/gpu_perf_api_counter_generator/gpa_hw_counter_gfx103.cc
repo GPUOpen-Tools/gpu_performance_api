@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX103.
@@ -31,6 +31,7 @@ namespace counter_gfx103
         {73, "GE_SE0_SPI_ESVERT_VALID", "GE_SE0", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {80, "GE_SE0_SPI_GSPRIM_VALID", "GE_SE0", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {86, "GE_SE0_SPI_HSVERT_VALID", "GE_SE0", "HS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {107, "GE_SE0_VSVERT_API_SEND", "GE_SE0", "number of API VS verts sent across the vsvert interface. only valid when tessellation and GS are off.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {111, "GE_SE0_SPI_VSVERT_VALID", "GE_SE0", "number of valid VS verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kGeSe1CountersGfx103 = {
@@ -38,6 +39,7 @@ namespace counter_gfx103
         {73, "GE_SE1_SPI_ESVERT_VALID", "GE_SE1", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {80, "GE_SE1_SPI_GSPRIM_VALID", "GE_SE1", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {86, "GE_SE1_SPI_HSVERT_VALID", "GE_SE1", "HS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {107, "GE_SE1_VSVERT_API_SEND", "GE_SE1", "number of API VS verts sent across the vsvert interface. only valid when tessellation and GS are off.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {111, "GE_SE1_SPI_VSVERT_VALID", "GE_SE1", "number of valid VS verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kGeSe2CountersGfx103 = {
@@ -45,6 +47,7 @@ namespace counter_gfx103
         {73, "GE_SE2_SPI_ESVERT_VALID", "GE_SE2", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {80, "GE_SE2_SPI_GSPRIM_VALID", "GE_SE2", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {86, "GE_SE2_SPI_HSVERT_VALID", "GE_SE2", "HS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {107, "GE_SE2_VSVERT_API_SEND", "GE_SE2", "number of API VS verts sent across the vsvert interface. only valid when tessellation and GS are off.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {111, "GE_SE2_SPI_VSVERT_VALID", "GE_SE2", "number of valid VS verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kGeSe3CountersGfx103 = {
@@ -52,6 +55,7 @@ namespace counter_gfx103
         {73, "GE_SE3_SPI_ESVERT_VALID", "GE_SE3", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {80, "GE_SE3_SPI_GSPRIM_VALID", "GE_SE3", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {86, "GE_SE3_SPI_HSVERT_VALID", "GE_SE3", "HS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {107, "GE_SE3_VSVERT_API_SEND", "GE_SE3", "number of API VS verts sent across the vsvert interface. only valid when tessellation and GS are off.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {111, "GE_SE3_SPI_VSVERT_VALID", "GE_SE3", "number of valid VS verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kPaSu0CountersGfx103 = {

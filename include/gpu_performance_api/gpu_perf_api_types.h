@@ -283,6 +283,9 @@ typedef enum
     kGpaHwGenerationGfx10,                                  ///< GFX IP 10.
     kGpaHwGenerationGfx103,                                 ///< GFX IP 10.3.
     kGpaHwGenerationGfx11,                                  ///< GFX IP 11.
+    kGpaHwGenerationCdna,                                   ///< CDNA
+    kGpaHwGenerationCdna2,                                  ///< CDNA 2
+    kGpaHwGenerationCdna3,                                  ///< CDNA 3
     kGpaHwGenerationLast                                    ///< Marker indicating last element.
 } GpaHwGeneration;
 

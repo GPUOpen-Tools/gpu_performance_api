@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit Tests for VK Counter Generator.
@@ -143,6 +143,9 @@ TEST(CounterDllTests, VkUnsupportedHardwareGenerations)
     VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationIntel);
     VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx6);
     VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationGfx7);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationCdna);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationCdna2);
+    VerifyHardwareNotSupported(kGpaApiVulkan, kGpaHwGenerationCdna3);
 }
 
 TEST(CounterDllTests, VkVerifyInvalidOpenContextParameters)
@@ -193,6 +196,7 @@ TEST(CounterDllTests, VkCounterNamesByDeviceId)
     std::vector<const char*> empty_list_to_skip_tests;
     VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11_0_3, derived_counter_names, empty_list_to_skip_tests);
     VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11_0_3B, derived_counter_names, empty_list_to_skip_tests);
+    VerifyCounterNames(kGpaApiVulkan, kDevIdGfx11_5_0, derived_counter_names, empty_list_to_skip_tests);
 }
 
 TEST(CounterDllTests, VkCounterNamesGfx8)
@@ -302,6 +306,12 @@ TEST(CounterDllTests, VkCounterLibTestGfx1103B)
 {
     VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_0_3B, REVISION_ID_ANY);
     VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_0_3B, REVISION_ID_ANY);
+}
+
+TEST(CounterDllTests, VkCounterLibTestGfx1150)
+{
+    VerifyCounterLibInterface(kGpaApiVulkan, kDevIdGfx11_5_0, REVISION_ID_ANY);
+    VerifyCounterByPassCounterLibEntry(kGpaApiVulkan, kDevIdGfx11_5_0, REVISION_ID_ANY);
 }
 #endif
 

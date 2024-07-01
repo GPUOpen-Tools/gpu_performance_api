@@ -72,6 +72,7 @@ enum class AmdExtGpuBlock : UINT32
     GeSe   = 0x2F,
     DfMall = 0x30,
     SqWgp  = 0x31,
+    Pc     = 0x32,
     Count
 };
 

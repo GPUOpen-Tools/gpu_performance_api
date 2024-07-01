@@ -1,5 +1,18 @@
 ﻿# GPU Performance API Release Notes
 ---
+# Version 3.16 (07/01/2024)
+* Added support for additional RDNA 3 based APUs.
+  * GPA's OpenCL support has been temporarily disabled on RDNA 3 hardware.
+* Updated error checking in counter splitting to report error if counter group max is zero.
+* Disabled the following counters on RDNA 3 based hardware due to inconsistent results:
+  * CBMemRead, CBColorAndMaskRead, CBMemWritten, CBColorAndMaskWritten
+* Disabled the following counters on RDNA 2 based hardware due to inconsistent results:
+  * VsGsVerticesIn, VsGsPrimsIn
+* Disabled the following counters on RDNA based hardware due to inconsistent results:
+  * VsGsSALUBusy, VsGsSALUBusyCycles, VsGsVALUBusy, VsGsVALUBusyCycles, VsGsVALUInstCount, VsGsSALUInstCount, PSVALUBusy, PSVALUBusyCycles, PSVALUInstCount, PSSALUBusy, PSSALUBusyCycles, PSSALUInstCount
+* Output from pre_build.py script is now generated into build\|win,linux|\ directory.
+* Compiled binaries are now generated into build\output\ directory.
+
 # Version 3.15 (12/06/2023)
 * Updated minimum CMake version to 3.10 from 3.05.
 * Updated equation for MemUnitBusyCycles.

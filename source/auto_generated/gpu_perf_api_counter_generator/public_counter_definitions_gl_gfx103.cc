@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for GL GFX103.
@@ -196,24 +196,11 @@ void AutoDefinePublicDerivedCountersGlGfx103(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(25587);
         internal_counters.push_back(25549);
         internal_counters.push_back(4955);
 
-        c.DefineDerivedCounter("VsGsVerticesIn", "VertexGeometry", "The number of unique vertices processed by the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,(0),1,ifnotzero", "17d0c775-3ed5-affb-d5ac-5391a198a4aa");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(25556);
-        internal_counters.push_back(4955);
-
-        c.DefineDerivedCounter("VsGsPrimsIn", "VertexGeometry", "The number of primitives passed into the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,(0),1,ifnotzero", "1bbdf2ec-cca3-4d9a-a243-94f4aec5409b");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(25587);
-        internal_counters.push_back(4955);
-
-        c.DefineDerivedCounter("GSVerticesOut", "VertexGeometry", "The number of vertices output by the GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,(0),1,ifnotzero", "775b9736-319a-bd8a-48c9-68db9c91d978");
+        c.DefineDerivedCounter("GSVerticesOut", "VertexGeometry", "The number of vertices output by the GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "(0),0,1,ifnotzero,(0),2,ifnotzero", "775b9736-319a-bd8a-48c9-68db9c91d978");
     }
     {
         vector<GpaUInt32> internal_counters;

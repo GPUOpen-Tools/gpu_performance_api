@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface to access to the available counters in GPUPerfAPI.
@@ -94,6 +94,7 @@ typedef enum
     kGpaHwBlockGese,     ///< The GPA hardware block is GESE.
     kGpaHwBlockDfmall,   ///< The GPA hardware block is DFMALL.
     kGpaHwBlockSqWgp,    ///< The GPA hardware block is SQWGP.
+    kGpaHwBlockPc,       ///< The GPA hardware block is PC.
     kGpaHwBlockCount,    ///< Count.
 } GpaHwBlock;
 

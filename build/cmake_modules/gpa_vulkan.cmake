@@ -2,7 +2,7 @@
 cmake_minimum_required(VERSION 3.10)
 
 if(${GPA_ALL_OPEN_SOURCE})
-    find_package(Vulkan REQUIRED)
+    find_package(Vulkan)
     if(${Vulkan_FOUND})
         set(VK_INC_DIRS ${Vulkan_INCLUDE_DIRS})
         set(VK_LIB ${Vulkan_LIBRARIES})
@@ -22,7 +22,8 @@ if(${GPA_ALL_OPEN_SOURCE})
         set(ADDITIONAL_INCLUDE_DIRECTORIES  ${ADDITIONAL_INCLUDE_DIRECTORIES}
                                             ${VK_INC_DIRS})
     else()
-        message(STATUS "Vulkan SDK not found")
+        message(STATUS "Vulkan SDK not found on system, using repo-provided Vulkan.")
+        include(${CMAKE_COMMON_LIB_GLOBAL_EXT_VULKAN})
     endif()
 else()
     include(${CMAKE_COMMON_LIB_GLOBAL_EXT_VULKAN})

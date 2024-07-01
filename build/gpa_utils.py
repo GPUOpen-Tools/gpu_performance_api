@@ -1,13 +1,15 @@
 #!/usr/bin/python
-## Copyright (c) 2019 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2019-2024 Advanced Micro Devices, Inc. All rights reserved.
 # Utility Python Script for gpa
 
 import sys
-import zipfile
-import tarfile
+import shutil
 import os
 import subprocess
 import urllib
+
+# Prevent script from leaving a compiled .pyc file in the directory.
+sys.dont_write_bytecode = True
 
 SHELLARG = False
 # The environment variable SHELL is only set for Cygwin or Linux
@@ -19,29 +21,9 @@ if ( SHELLTYPE == None ):
 if sys.version_info.major == 3:
     import urllib.request
 
-# Write files to a valid archive
-def WriteFileToArchive(archive_handle, file_absolute_path, file_path_in_archive):
-    print("Adding file to archive %s: %s (as %s)" % (archive_handle, file_absolute_path, file_path_in_archive))
-    if archive_handle is not None:
-        if sys.platform == "win32":
-            archive_handle.write(file_absolute_path, file_path_in_archive)
-        else:
-            archive_handle.add(file_absolute_path, file_path_in_archive)
-
-# Creates an archive handle for given archive name
-def CreateArchive(archive_file_name):
-    if sys.platform == "win32":
-        archive_handle = zipfile.ZipFile(archive_file_name, 'w', zipfile.ZIP_DEFLATED)
-    else:
-        archive_handle = tarfile.open(archive_file_name, 'w:gz')
-    print("Created archive %s at %s" % (archive_handle, archive_file_name))
-    return archive_handle
-
 # Returns the SHA of the HEAD of the repo on local machine
 def GetGitLocalRepoHead(git_local_repo_path):
     if os.path.isdir(git_local_repo_path):
-        # current_dir = os.getcwd()
-        # os.chdir(git_local_repo_path)
         try:
             git_process = subprocess.Popen(["git", "-C", git_local_repo_path,   \
              "rev-list", "-1", "HEAD"], shell=False, stdout=subprocess.PIPE)
@@ -52,7 +34,6 @@ def GetGitLocalRepoHead(git_local_repo_path):
         revision = git_process.communicate()[0]
         revision_str = revision.decode()
         revision_str = revision_str.strip()
-        # os.chdir(current_dir)
         return revision_str
     return None
 

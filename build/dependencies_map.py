@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+# Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 # dependencies_map.py
 #
 #    Map of GitHub project names to clone target paths, relative to the GPUPerfAPI
@@ -10,14 +10,14 @@
 # "git repo name"  : ["Directory for clone relative to parent project directory",  "branch or commit to checkout (or None for top of tree)"]
 gitMapping = {
  # Lib.
-    "adl"              : ["external/Lib/AMD/ADL",               "da98d7a9d2b8a6222d32c82952ee44bdfc827b2e"],
+    "adl"              : ["external/Lib/AMD/ADL",               "7fa9b7fd59bff687be0a40f0178a956c223b2a1e"],
     "appsdk"           : ["external/Lib/AMD/APPSDK",            "55a6940ebc963daec69152314a1bb94943287d4c"],
     "opengl"           : ["external/Lib/Ext/OpenGL",            "792c2291a4443ebef17ca5a7e3e24a1f854f0d1d"],
     "windows_kits"     : ["external/Lib/Ext/Windows-Kits",      "51845a3771122a9dc1406b8617e9a67d9a2f55b6"],
     "googletest"       : ["external/Lib/Ext/GoogleTest",        "191f9336bc9212b5f5410ab663176f685cafed2a"],
 # Src.
     "adl_util"                 : ["external/Src/ADLUtil",               "d62c94514326775c83fc129bb89d299c8749ebd1"],
-    "device_info"              : ["external/Src/DeviceInfo",            "190ec95f2ce1d715231f2ee5e17a65217fc59f6c"],
+    "device_info"              : ["external/Src/DeviceInfo",            "00b23198e748e3d235f249cfee6604fce0d43c29"],
     "dynamic_library_module"   : ["external/Src/DynamicLibraryModule",  "e6451ce26b8509cf724c7cf5d007878791143a58"],
     "tsingleton"               : ["external/Src/TSingleton",            "02e8fa7d98f33cdbd0e1f77d1a8a403a32e35882"],
 }
