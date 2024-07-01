@@ -1,12 +1,12 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief CL GPA Implementation declarations
 //==============================================================================
 
-#ifndef _CL_GPA_IMPLEMENTOR_H_
-#define _CL_GPA_IMPLEMENTOR_H_
+#ifndef GPU_PERF_API_CL_CL_GPA_IMPLEMENTOR_H_
+#define GPU_PERF_API_CL_CL_GPA_IMPLEMENTOR_H_
 
 // Common
 #include "TSingleton.h"
@@ -47,7 +47,7 @@ private:
     /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
     GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
 
-    bool init_perf_counter_amd_extension_;  ///< flag indicating if the CL extension function pointers have been initialized
+    bool init_perf_counter_amd_extension_;  ///< Flag indicating if the CL extension function pointers have been initialized.
 };
 
-#endif  // _CL_GPA_IMPLEMENTOR_H_
+#endif  // GPU_PERF_API_CL_CL_GPA_IMPLEMENTOR_H_

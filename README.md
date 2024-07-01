@@ -15,8 +15,8 @@ is used by [Radeon GPU Profiler](https://github.com/GPUOpen-Tools/radeon_gpu_pro
 * [Raw Hardware Counters](#raw-hardware-counters)
 * [Known Issues](#known-issues)
 * [Building the Source Code](BUILD.md)
-* [License](LICENSE)
-* [Historical Release Notes](ReleaseNotes.md)
+* [License](LICENSE.txt)
+* [Historical Release Notes](RELEASE_NOTES.txt)
 * [Style and Format Change](#Style-and-Format-Change)
 
 ## Downloads
@@ -31,23 +31,20 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-### Version 3.12 (12/14/22)
-* Add support for AMD Radeon™ RX 7900 XTX and AMD Radeon™ RX 7900 XT GPUs.
-* Add support for compiling with Visual Studio 2022.
-* Reduced binary sizes by an average of 75%.
-* Bug Fixes:
-  * AMD Radeon RX 6800, DX12: HiZ and PreZ counters are now reporting correct values (requires Adrenalin 22.7.1 or newer driver).
-  * AMD Radeon RX 6800: CSThreadgroups is now reporting the correct values (requires Adrenalin 22.7.1 or newer driver).
-  * AMD Radeon RX 6000 Series: PostTessellation counters now only show results in pipelines using tessellation.
-  * AMD Radeon RX 5000 Series: PreTessellation counters now only show results in pipelines using tessellation.
-  * Sample apps: Fix implementation of passes in D3D11Triangle, and improve general error handling.
+### Version 3.15 (12/06/2023)
+* Updated minimum CMake version to 3.10 from 3.05.
+* Updated equation for MemUnitBusyCycles.
+* Updated description of LocalVidMemBytes.
+* Renamed *.inc files to .hpp files.
+* Reduced size of static buffer when logging messages to avoid compiler warning.
+* Fixed an issue on some variant hardware that would prevent enabling certain hardware counters when kGpaOpenContextExposeHardwareCountersBit was specified to GpaOpenContext() by always generating asic-specific counters.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.
 * Windows: Radeon Software Adrenalin 2020 Edition 20.11.2 or later (Driver Packaging Version 20.45 or later).
 * Linux: Radeon Software for Linux Revision 20.45 or later.
 * Radeon GPUs or APUs based on Graphics IP version 6 and 7 are no longer supported by GPUPerfAPI. Please use an older version ([3.3](https://github.com/GPUOpen-Tools/gpu_performance_api/releases/tag/v3.3)) with older hardware.
-* Windows 7, 8.1, and 10.
+* Windows 7, 8.1, 10, or 11.
 * Ubuntu (16.04 and later) and CentOS/RHEL (7 and later) distributions.
 
 ## Cloning the Repository
@@ -103,12 +100,10 @@ It was discovered that the improvements introduced in Vega, RDNA, and RDNA2 arch
 There are some counters that are returning unexpected results on specific hardware with certain APIs.
 * AMD Radeon RX 6700M, DX11: CSLDSBankConflict and CSLDSBankConflictCycles may consistently report as much as 30x higher than expected.
 * AMD Radeon RX 480, DX12: CulledPrims and PSPixelsOut may inconsistently report higher than expected.
+* VsGsVerticesIn is incorrectly reporting zero when using Vulkan on Linux for some hardware.
 
 ### Counter Validation Errors in D3D12ColorCube Sample App
 Due to the extensive counter validation now being done in the D3D12ColorCube sample application, and some expected variation in nondeterministic counters across a wide range of systems, the sample app may report errors on some systems. Likewise, some counters are marked as known issues and we are investigating the underlying causes of the inconsistent results.
-
-### Support for OpenCL is not enabled for Radeon 7000 Series GPUs
-This should be resolved in a future release.
 
 ### OpenCL Performance Counter Accuracy For Radeon 6000 Series GPUs
 The following performance counter values may not be accurate for OpenCL applications running on Radeon 6000 Series GPUs:

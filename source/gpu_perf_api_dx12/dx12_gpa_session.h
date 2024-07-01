@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 GPA Session declaration
@@ -51,10 +51,19 @@ public:
     /// @return AMD GPA extension interface.
     IAmdExtGpaInterface* GetAmdExtInterface() const;
 
+    /// @brief Returns the driver version.
+    ///
+    /// @param [out] major Driver major version number.
+    /// @param [out] minor Driver minor version number.
+    /// @param [out] sub_minor Driver sub_minor version number.
+    void GetDriverVersion(uint32_t& major, uint32_t& minor, uint32_t& sub_minor);
+
 private:
+
     /// @copydoc GpaSession::CreateApiPass()
     GpaPass* CreateApiPass(PassIndex pass_index) override;
 
     IAmdExtGpaInterface* amd_ext_gpa_interface_;  ///< AMD Extension Interface.
+
 };
 #endif  // GPU_PERF_API_DX12_DX12_GPA_SESSION_H_

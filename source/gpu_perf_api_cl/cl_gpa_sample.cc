@@ -157,7 +157,7 @@ bool ClGpaSample::BeginRequest()
         assert(cl_counter_blocks_.size() == counter_group_size);
 
         if (CL_SUCCESS != my_cl_enqueue_begin_perf_counter_amd(
-                              cl_gpa_context_->GetClCommandQueue(), static_cast<cl_uint>(cl_counter_list_.size()), &cl_counter_list_[0], 0, 0, 0))
+                              cl_gpa_context_->GetClCommandQueue(), static_cast<cl_uint>(cl_counter_list_.size()), cl_counter_list_.data(), 0, 0, 0))
         {
             //Reset(selectionID, pCounters);
             return false;

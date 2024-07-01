@@ -1,12 +1,12 @@
 ﻿// =====================================================================
 // <copyright file="GpaUtility.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2019-2020 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
 // </author>
 // <summary>
-//      GPA Utility class
+//    GPA Utility class
 // </summary>
 // =====================================================================
 

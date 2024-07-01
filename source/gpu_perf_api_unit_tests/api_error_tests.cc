@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Unit tests to validate error handling/reporting from GPA APIs
@@ -85,7 +85,7 @@ void GpaApiErrorTest::SetUp()
     ASSERT_NE(0u, api_name_map.count(api_)) << "API name out of range.";
     const char* api_name = api_name_map.find(api_)->second;
 
-    EXPECT_EQ(kGpaStatusOk, GpaApiManager::Instance()->LoadApi(api_)) << "GPAApiManager failed to load API: " << api_name;
+    EXPECT_EQ(kGpaStatusOk, GpaApiManager::Instance()->LoadApi(api_)) << "GpaApiManager failed to load API: " << api_name;
     gpa_function_table_ = GpaApiManager::Instance()->GetFunctionTable(GetParam());
     ASSERT_NE(nullptr, gpa_function_table_);
 

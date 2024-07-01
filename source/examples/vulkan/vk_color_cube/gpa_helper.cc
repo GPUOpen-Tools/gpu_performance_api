@@ -1,11 +1,12 @@
 //==============================================================================
-// Copyright (c) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA API Helper class Implementation
 //==============================================================================
 
 #include "examples/vulkan/vk_color_cube/gpa_helper.h"
+#include "examples/vulkan/vk_color_cube/vk_util.h"
 
 #include <assert.h>
 
@@ -20,6 +21,20 @@
 #endif
 
 #define REVISION_ID_ANY 0xFFFFFFFF
+
+#ifdef _WIN32
+/// @brief Converts string from wide to utf-8 encoding.
+///
+/// @return The converted utf-8 encoded string.
+static std::string wide_to_utf8_converter(const std::wstring wide)
+{
+    int         num_bytes_needed = WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), nullptr, 0, nullptr, nullptr);
+    std::string utf8;
+    utf8.resize(num_bytes_needed);
+    WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), utf8.data(), num_bytes_needed, nullptr, nullptr);
+    return utf8;
+}
+#endif
 
 GpaHelper::GpaHelper()
     : gpa_function_table_(nullptr)
@@ -80,7 +95,7 @@ void GpaHelper::PrintGPACounterInfo(GpaContextId context_id) const
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get device and revision id.\n";
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get device and revision id.");
         return;
     }
 
@@ -88,21 +103,21 @@ void GpaHelper::PrintGPACounterInfo(GpaContextId context_id) const
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get the device name.\n";
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the device name.");
         return;
     }
     std::string device_name_string(device_name_ptr);
 
-    std::cout << "Device Id: " << std::showbase << std::hex << device_id << std::endl;
-    std::cout << "Revision Id: " << FormatRevisionId(revision_id) << std::endl;
-    std::cout << "Device Name: " << device_name_string.c_str() << std::endl;
+    AMDVulkanDemoVkUtils::Log("Device Id: 0x%04X", device_id);
+    AMDVulkanDemoVkUtils::Log("Revision Id: %s", FormatRevisionId(revision_id).c_str());
+    AMDVulkanDemoVkUtils::Log("Device Name: %s", device_name_string.c_str());
 
     GpaUInt32 num_counters = 0;
     gpa_status             = gpa_function_table_->GpaGetNumCounters(context_id, &num_counters);
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get the number of available counters." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the number of available counters.");
         return;
     }
 
@@ -119,11 +134,11 @@ void GpaHelper::PrintGPACounterInfo(GpaContextId context_id) const
 
         if (kGpaStatusOk == name_status && kGpaStatusOk == group_status && kGpaStatusOk == description_status)
         {
-            std::cout << counter_index << ": " << name << " \"" << group << "\" - " << description << std::endl;
+            AMDVulkanDemoVkUtils::Log("%d: %s \"%s\" - %s", counter_index, name, group, description);
         }
         else
         {
-            std::cout << "ERROR: Failed to get counter name, group, or description." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get counter name, group, or description.");
         }
     }
 }
@@ -139,9 +154,7 @@ std::string GpaHelper::GetExecutablePath()
 
     std::wstring executable_path = std::wstring(module_string.begin(), module_string.begin() + (last_slash_position + 1));
 
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
-
-    std::string utf8_executable_path = wide_to_utf8_converter.to_bytes(executable_path);
+    std::string utf8_executable_path = wide_to_utf8_converter(executable_path);
 #else
     int  len;
     char module_path[GPA_MAX_PATH];
@@ -174,10 +187,10 @@ std::string GpaHelper::GetCSVFileName() const
 #ifdef ANDROID
     // This path is dedicated to the app.
     std::string temp_string("/sdcard/Android/data/com.amd.gpa.vkcolorcube/");
-    temp_string.append(csv_file_name_);
+    temp_string.append(csv_file_name);
     return temp_string;
 #else
-    return GetExecutablePath().append(csv_file_name_);
+    return GetExecutablePath().append(csv_file_name);
 #endif
 }
 
@@ -202,6 +215,23 @@ bool GpaHelper::OpenCSVFile()
 void GpaHelper::CloseCSVFile()
 {
     csv_file_.close();
+}
+
+void GpaHelper::LogStatus(GpaStatus status, const char* msg)
+{
+    assert(gpa_function_table_ != nullptr);
+    if (gpa_function_table_ != nullptr)
+    {
+        auto status_as_str = gpa_function_table_->GpaGetStatusAsStr(status);
+        if (msg != nullptr)
+        {
+            AMDVulkanDemoVkUtils::Log("%s %s", msg, status_as_str);
+        }
+        else
+        {
+            AMDVulkanDemoVkUtils::Log("%s", status_as_str);
+        }
+    }
 }
 
 void GpaHelper::gpaLoggingCallback(GpaLoggingType type, const char* msg)
@@ -233,6 +263,11 @@ void GpaHelper::gpaLoggingCallback(GpaLoggingType type, const char* msg)
     }
 
     gpa_log_file_stream << log_message << std::endl;
+
+#ifdef ANDROID
+    // Write the message to logcat
+    AMDVulkanDemoVkUtils::Log("%s", log_message.c_str());
+#endif
 }
 
 bool GpaHelper::CounterValueCompare(unsigned int profile_set,
@@ -411,16 +446,16 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         }
         else if (0 == local_counter_name.compare("PSBusy") || 0 == local_counter_name.compare("PSBusyCycles") || 0 == local_counter_name.compare("PSTime"))
         {
-            // Sanity Check
+            // Sanity check
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
-        else if (0 == local_counter_name.compare("PSVALUInstCount") || 0 == local_counter_name.compare("PSVALUBusy") ||
+        else if (0 == local_counter_name.compare("PSVALUInstCount") || 0 == local_counter_name.compare("PSVALUBusyCycles") ||
                  0 == local_counter_name.compare("PSVALUBusy"))
         {
-            // Sanity Check
+            // Sanity check
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
-        else if (0 == local_counter_name.compare("PSSALUInstCount") || 0 == local_counter_name.compare("PSSALUBusy") ||
+        else if (0 == local_counter_name.compare("PSSALUInstCount") || 0 == local_counter_name.compare("PSSALUBusyCycles") ||
                  0 == local_counter_name.compare("PSSALUBusy"))
         {
             if (sample_index == 1)
@@ -437,12 +472,23 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         {
             if (generation == kGpaHwGenerationGfx11)
             {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 35.0f, confirm_success);
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 85.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx103)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 85.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx10)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 82.0f, confirm_success);
             }
             else
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
             }
         }
         else if (0 == local_counter_name.compare("L0CacheHitCount"))
@@ -452,169 +498,219 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
                 return_value =
                     CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 6.0f, confirm_success);
             }
+            else if (generation == kGpaHwGenerationGfx103)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 35.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx10)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 28.0f, confirm_success);
+            }
             else
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
             }
         }
         else if (0 == local_counter_name.compare("L0CacheRequestCount") || 0 == local_counter_name.compare("L0CacheMissCount"))
         {
-            // Sanity Check
+            // Sanity check
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L1CacheRequestCount"))
         {
-            // Sanity Check
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            // Sanity check
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 800.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L1CacheHit") || 0 == local_counter_name.compare("L1CacheHitCount"))
         {
-            if (generation < kGpaHwGenerationGfx11)
+            if (generation == kGpaHwGenerationGfx9)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 8.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 250.0f, confirm_success);
             }
-            else 
+            else if (generation == kGpaHwGenerationGfx8 || generation == kGpaHwGenerationGfx10 || generation == kGpaHwGenerationGfx103)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 20.0f, confirm_success);
+            }
+            else
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 20.0f, confirm_success);
             }
         }
         else if (0 == local_counter_name.compare("L1CacheMissCount"))
         {
-            if (sample_index == 1 && generation == kGpaHwGenerationGfx9)
-            {
-                // This sample may or may not return 0. This is obvious since they UINTs, but these are valid results.
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 0.0f, 0.0f, confirm_success);
-            }
-            else
-            {
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
-            }
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 800.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L2CacheHit") || 0 == local_counter_name.compare("L2CacheRequestCount") ||
                  0 == local_counter_name.compare("L2CacheHitCount"))
         {
-            // Sanity Check
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 800.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L2CacheMiss"))
         {
-            if (generation == kGpaHwGenerationGfx9 && sample_index == 2)
+            if (generation == kGpaHwGenerationGfx9)
             {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 98.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx10)
             {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 65.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx103)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx11)
             {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 37.0f, confirm_success);
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 80.0f, confirm_success);
             }
             else
             {
-                // Sanity Check
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
             }
         }
         else if (0 == local_counter_name.compare("L2CacheMissCount"))
         {
-            if (generation == kGpaHwGenerationGfx9 && sample_index == 2)
+            if (generation == kGpaHwGenerationGfx9)
             {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 1200.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx10)
             {
-                return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 15.0f, confirm_success);
+            }
+            else if (generation == kGpaHwGenerationGfx103)
+            {
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 290.0f, confirm_success);
             }
             else if (generation == kGpaHwGenerationGfx11)
             {
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 60.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 300.0f, confirm_success);
             }
             else
             {
-                // Sanity Check
                 return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 60.0f, confirm_success);
             }
         }
-        else if (include_known_issues && 0 == local_counter_name.compare("VSVerticesIn"))
+        else if (0 == local_counter_name.compare("TessellatorBusy") || 0 == local_counter_name.compare("TessellatorBusyCycles"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+        }
+#ifdef _WIN32
+        else if (0 == local_counter_name.compare("VsGsVerticesIn"))
         {
             // Sample 0
-            GpaFloat64 expected_vertex_count = 36;
-
+            GpaFloat64 vertex_count = 36;
             if (sample_index == 1)
-            {
-                expected_vertex_count = 36;
-            }
+                vertex_count = 36;
             else if (sample_index == 2)
-            {
                 // In this example, sample 2 vertices = sample 0 vertices + sample 1 vertices.
-                expected_vertex_count = 72;
-            }
+                vertex_count = 72;
 
-            return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_vertex_count, 0.0f, confirm_success);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, vertex_count, 0.0f, confirm_success);
+        }
+#endif
+        else if (0 == local_counter_name.compare("GSVerticesOut"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("PreTessVerticesIn"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("GSPrimsIn"))
+        {
+            // Sample 0
+            GpaFloat64 prim_count = 12;
+            if (sample_index == 1)
+                prim_count = 12;
+            else if (sample_index == 2)
+                // In this example, sample 2 prims = sample 0 prims + sample 1 prims.
+                prim_count = 24;
+
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("TexTriFilteringPct") || 0 == local_counter_name.compare("TexTriFilteringCount") ||
+                 0 == local_counter_name.compare("NoTexTriFilteringCount") || 0 == local_counter_name.compare("TexVolFilteringPct") ||
+                 0 == local_counter_name.compare("TexVolFilteringCount") || 0 == local_counter_name.compare("NoTexVolFilteringCount"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
         }
         else if (include_known_issues && 0 == local_counter_name.compare("PSPixelsOut"))
         {
             // Sample 0
-            GpaFloat64 expected_pixel_count = 11662;
-
+            GpaFloat64 pixel_count = 11662;
             if (sample_index == 1)
-            {
-                expected_pixel_count = 2820;
-            }
+                pixel_count = 2820;
             else if (sample_index == 2)
-            {
                 // In this example, sample 2 pixels = sample 0 pixels + sample 1 pixels.
-                expected_pixel_count = 14482;
+                pixel_count = 14482;
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, pixel_count, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("VsGsPrimsIn"))
+        {
+            // Samples 0 and 1
+            GpaFloat64 prim_count = 12;
+            // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
+            if (sample_index == 2)
+                prim_count = 24;
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("PrimitivesIn"))
+        {
+            if (generation == kGpaHwGenerationGfx10 || generation >= kGpaHwGenerationGfx11)
+            {
+                // Samples 0 and 1
+                GpaFloat64 prim_count = 12;
+                // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
+                if (sample_index == 2)
+                    prim_count = 24;
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
             }
-
-            return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_pixel_count, 0.0f, confirm_success);
+            else
+            {
+                // Sample 0
+                GpaFloat64 prim_count = 4;
+                // No backface culling on wireframe so twice the number of primitives.
+                if (sample_index == 1)
+                    prim_count = 8;
+                // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
+                else if (sample_index == 2)
+                    prim_count = 12;
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
+            }
         }
         else if (include_known_issues && 0 == local_counter_name.compare("PreZSamplesPassing"))
         {
             // Sample 0
-            GpaFloat64 expected_passing = 11662;
-
+            GpaFloat64 expected = 11662;
             if (sample_index == 1)
-            {
-                expected_passing = 2820;
-            }
+                expected = 2820;
             else if (sample_index == 2)
-            {
                 // In this example, sample 2 passing = sample 0 passing + sample 1 passing.
-                expected_passing = 14482;
-            }
+                expected = 14482;
 
-            return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_passing, 0.0f, confirm_success);
-        }
-        else if (include_known_issues && 0 == local_counter_name.compare("PrimitivesIn"))
-        {
-            // Sample 0
-            GpaFloat64 expected_primitive_count = 12;
-
-            if (sample_index == 1)
-            {
-                expected_primitive_count = 12;
-            }
-            else if (sample_index == 2)
-            {
-                // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
-                expected_primitive_count = 24;
-            }
-
-            return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected_primitive_count, 0.0f, confirm_success);
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected, 0.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("CSTime") || 0 == local_counter_name.compare("CSBusy") || 0 == local_counter_name.compare("CSBusyCycles") ||
                  0 == local_counter_name.compare("PAStalledOnRasterizerCycles") || 0 == local_counter_name.compare("CSThreadGroups") ||
@@ -655,7 +751,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get device and revision id.\n";
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get device and revision id.");
         return;
     }
 
@@ -663,7 +759,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get the device name.\n";
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the device name.");
         return;
     }
 
@@ -671,7 +767,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
     gpa_status                          = gpa_function_table_->GpaGetDeviceGeneration(context_id, &hardware_generation);
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get the device generation.\n";
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the device generation.");
         return;
     }
 
@@ -679,12 +775,11 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (output_to_console)
     {
-        std::cout << "--------------------------------------------------" << std::endl;
-        std::cout << "Device Id: " << std::showbase << std::hex << device_id << std::endl;
-        std::cout << "Revision Id: " << FormatRevisionId(revision_id) << std::endl;
-        std::cout << "Device Name: " << device_name_string.c_str() << std::endl;
-        std::cout << "--------------------------------------------------" << std::endl;
-        std::cout << "Profile " << profile_set << ", Sample ID: " << sample_id << std::endl;
+        AMDVulkanDemoVkUtils::Log("Device Id: 0x%04X", device_id);
+        AMDVulkanDemoVkUtils::Log("Revision Id: %s", FormatRevisionId(revision_id).c_str());
+        AMDVulkanDemoVkUtils::Log("Device Name: %s", device_name_string.c_str());
+        AMDVulkanDemoVkUtils::Log("--------------------------------------------------");
+        AMDVulkanDemoVkUtils::Log("Profile %d, Sample ID: %d", profile_set, sample_id);
     }
 
     std::stringstream csv_header;
@@ -698,7 +793,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get GPA sample result size." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get GPA sample result size.");
         return;
     }
 
@@ -706,7 +801,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (results_buffer == nullptr)
     {
-        std::cout << "ERROR: Failed to allocate memory for GPA results." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to allocate memory for GPA results.");
         return;
     }
 
@@ -714,7 +809,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
     if (kGpaStatusOk != gpa_status)
     {
-        std::cout << "ERROR: Failed to get GPA sample results." << std::endl;
+        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get GPA sample results.");
     }
     else
     {
@@ -723,7 +818,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
         if (kGpaStatusOk != gpa_status)
         {
-            std::cout << "ERROR: Failed to get the number of enabled counters from GPA." << std::endl;
+            AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the number of enabled counters from GPA.");
         }
         else
         {
@@ -740,7 +835,7 @@ void GpaHelper::PrintGpaSampleResults(GpaContextId context_id,
 
                 if (kGpaStatusOk != gpa_status)
                 {
-                    std::cout << "ERROR: Failed to get the exposed GPA counter id of the enabled counter at index " << counter_index << "." << std::endl;
+                    AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the exposed GPA counter id of the enabled counter at index %d.", counter_index);
                 }
                 else
                 {

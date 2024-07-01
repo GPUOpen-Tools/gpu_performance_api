@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX103.
@@ -12,21 +12,15 @@
 
 // clang-format off
 
+#include <vector>
+
 struct GpaHardwareCounterDesc;
+
 
 namespace counter_gfx103
 {
-    extern std::vector<GpaHardwareCounterDesc> kSdma0CountersGfx103; ///< Array of internal counters for Sdma0 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kSdma1CountersGfx103; ///< Array of internal counters for Sdma1 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kCpgCountersGfx103; ///< Array of internal counters for Cpg block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kCpcCountersGfx103; ///< Array of internal counters for Cpc block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kCpfCountersGfx103; ///< Array of internal counters for Cpf block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGrbmCountersGfx103; ///< Array of internal counters for Grbm block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGrbmse0CountersGfx103; ///< Array of internal counters for Grbmse0 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGrbmse1CountersGfx103; ///< Array of internal counters for Grbmse1 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGrbmse2CountersGfx103; ///< Array of internal counters for Grbmse2 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGrbmse3CountersGfx103; ///< Array of internal counters for Grbmse3 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGeCountersGfx103; ///< Array of internal counters for Ge block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGe2DistCountersGfx103; ///< Array of internal counters for Ge2Dist block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGeSe0CountersGfx103; ///< Array of internal counters for GeSe0 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGeSe1CountersGfx103; ///< Array of internal counters for GeSe1 block for Gfx103 family
@@ -96,7 +90,6 @@ namespace counter_gfx103
     extern std::vector<GpaHardwareCounterDesc> kSx5CountersGfx103; ///< Array of internal counters for Sx5 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kSx6CountersGfx103; ///< Array of internal counters for Sx6 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kSx7CountersGfx103; ///< Array of internal counters for Sx7 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGdsCountersGfx103; ///< Array of internal counters for Gds block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kTa0CountersGfx103; ///< Array of internal counters for Ta0 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kTa1CountersGfx103; ///< Array of internal counters for Ta1 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kTa2CountersGfx103; ///< Array of internal counters for Ta2 block for Gfx103 family
@@ -337,14 +330,6 @@ namespace counter_gfx103
     extern std::vector<GpaHardwareCounterDesc> kTcp77CountersGfx103; ///< Array of internal counters for Tcp77 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kTcp78CountersGfx103; ///< Array of internal counters for Tcp78 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kTcp79CountersGfx103; ///< Array of internal counters for Tcp79 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUtcl10CountersGfx103; ///< Array of internal counters for Utcl10 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUtcl11CountersGfx103; ///< Array of internal counters for Utcl11 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUtcl12CountersGfx103; ///< Array of internal counters for Utcl12 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUtcl13CountersGfx103; ///< Array of internal counters for Utcl13 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUtcl14CountersGfx103; ///< Array of internal counters for Utcl14 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUtcl15CountersGfx103; ///< Array of internal counters for Utcl15 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUtcl16CountersGfx103; ///< Array of internal counters for Utcl16 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUtcl17CountersGfx103; ///< Array of internal counters for Utcl17 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGl2c0CountersGfx103; ///< Array of internal counters for Gl2c0 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGl2c1CountersGfx103; ///< Array of internal counters for Gl2c1 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGl2c2CountersGfx103; ///< Array of internal counters for Gl2c2 block for Gfx103 family
@@ -369,10 +354,6 @@ namespace counter_gfx103
     extern std::vector<GpaHardwareCounterDesc> kGl2c21CountersGfx103; ///< Array of internal counters for Gl2c21 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGl2c22CountersGfx103; ///< Array of internal counters for Gl2c22 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGl2c23CountersGfx103; ///< Array of internal counters for Gl2c23 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2a0CountersGfx103; ///< Array of internal counters for Gl2a0 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2a1CountersGfx103; ///< Array of internal counters for Gl2a1 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2a2CountersGfx103; ///< Array of internal counters for Gl2a2 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl2a3CountersGfx103; ///< Array of internal counters for Gl2a3 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGl1c0CountersGfx103; ///< Array of internal counters for Gl1c0 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGl1c1CountersGfx103; ///< Array of internal counters for Gl1c1 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGl1c2CountersGfx103; ///< Array of internal counters for Gl1c2 block for Gfx103 family
@@ -405,43 +386,6 @@ namespace counter_gfx103
     extern std::vector<GpaHardwareCounterDesc> kGl1c29CountersGfx103; ///< Array of internal counters for Gl1c29 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGl1c30CountersGfx103; ///< Array of internal counters for Gl1c30 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGl1c31CountersGfx103; ///< Array of internal counters for Gl1c31 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg0CountersGfx103; ///< Array of internal counters for Gl1cg0 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg1CountersGfx103; ///< Array of internal counters for Gl1cg1 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg2CountersGfx103; ///< Array of internal counters for Gl1cg2 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg3CountersGfx103; ///< Array of internal counters for Gl1cg3 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg4CountersGfx103; ///< Array of internal counters for Gl1cg4 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg5CountersGfx103; ///< Array of internal counters for Gl1cg5 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg6CountersGfx103; ///< Array of internal counters for Gl1cg6 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg7CountersGfx103; ///< Array of internal counters for Gl1cg7 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg8CountersGfx103; ///< Array of internal counters for Gl1cg8 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg9CountersGfx103; ///< Array of internal counters for Gl1cg9 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg10CountersGfx103; ///< Array of internal counters for Gl1cg10 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg11CountersGfx103; ///< Array of internal counters for Gl1cg11 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg12CountersGfx103; ///< Array of internal counters for Gl1cg12 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg13CountersGfx103; ///< Array of internal counters for Gl1cg13 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg14CountersGfx103; ///< Array of internal counters for Gl1cg14 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg15CountersGfx103; ///< Array of internal counters for Gl1cg15 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg16CountersGfx103; ///< Array of internal counters for Gl1cg16 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg17CountersGfx103; ///< Array of internal counters for Gl1cg17 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg18CountersGfx103; ///< Array of internal counters for Gl1cg18 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg19CountersGfx103; ///< Array of internal counters for Gl1cg19 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg20CountersGfx103; ///< Array of internal counters for Gl1cg20 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg21CountersGfx103; ///< Array of internal counters for Gl1cg21 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg22CountersGfx103; ///< Array of internal counters for Gl1cg22 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg23CountersGfx103; ///< Array of internal counters for Gl1cg23 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg24CountersGfx103; ///< Array of internal counters for Gl1cg24 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg25CountersGfx103; ///< Array of internal counters for Gl1cg25 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg26CountersGfx103; ///< Array of internal counters for Gl1cg26 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg27CountersGfx103; ///< Array of internal counters for Gl1cg27 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg28CountersGfx103; ///< Array of internal counters for Gl1cg28 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg29CountersGfx103; ///< Array of internal counters for Gl1cg29 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg30CountersGfx103; ///< Array of internal counters for Gl1cg30 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1cg31CountersGfx103; ///< Array of internal counters for Gl1cg31 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kChc0CountersGfx103; ///< Array of internal counters for Chc0 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kChc1CountersGfx103; ///< Array of internal counters for Chc1 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kChc2CountersGfx103; ///< Array of internal counters for Chc2 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kChc3CountersGfx103; ///< Array of internal counters for Chc3 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kChcgCountersGfx103; ///< Array of internal counters for Chcg block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kCb0CountersGfx103; ///< Array of internal counters for Cb0 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kCb1CountersGfx103; ///< Array of internal counters for Cb1 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kCb2CountersGfx103; ///< Array of internal counters for Cb2 block for Gfx103 family
@@ -474,62 +418,6 @@ namespace counter_gfx103
     extern std::vector<GpaHardwareCounterDesc> kDb13CountersGfx103; ///< Array of internal counters for Db13 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kDb14CountersGfx103; ///< Array of internal counters for Db14 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kDb15CountersGfx103; ///< Array of internal counters for Db15 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi0CountersGfx103; ///< Array of internal counters for Rmi0 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi1CountersGfx103; ///< Array of internal counters for Rmi1 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi2CountersGfx103; ///< Array of internal counters for Rmi2 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi3CountersGfx103; ///< Array of internal counters for Rmi3 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi4CountersGfx103; ///< Array of internal counters for Rmi4 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi5CountersGfx103; ///< Array of internal counters for Rmi5 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi6CountersGfx103; ///< Array of internal counters for Rmi6 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi7CountersGfx103; ///< Array of internal counters for Rmi7 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi8CountersGfx103; ///< Array of internal counters for Rmi8 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi9CountersGfx103; ///< Array of internal counters for Rmi9 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi10CountersGfx103; ///< Array of internal counters for Rmi10 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi11CountersGfx103; ///< Array of internal counters for Rmi11 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi12CountersGfx103; ///< Array of internal counters for Rmi12 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi13CountersGfx103; ///< Array of internal counters for Rmi13 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi14CountersGfx103; ///< Array of internal counters for Rmi14 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi15CountersGfx103; ///< Array of internal counters for Rmi15 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi16CountersGfx103; ///< Array of internal counters for Rmi16 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi17CountersGfx103; ///< Array of internal counters for Rmi17 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi18CountersGfx103; ///< Array of internal counters for Rmi18 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi19CountersGfx103; ///< Array of internal counters for Rmi19 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi20CountersGfx103; ///< Array of internal counters for Rmi20 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi21CountersGfx103; ///< Array of internal counters for Rmi21 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi22CountersGfx103; ///< Array of internal counters for Rmi22 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi23CountersGfx103; ///< Array of internal counters for Rmi23 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi24CountersGfx103; ///< Array of internal counters for Rmi24 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi25CountersGfx103; ///< Array of internal counters for Rmi25 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi26CountersGfx103; ///< Array of internal counters for Rmi26 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi27CountersGfx103; ///< Array of internal counters for Rmi27 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi28CountersGfx103; ///< Array of internal counters for Rmi28 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi29CountersGfx103; ///< Array of internal counters for Rmi29 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi30CountersGfx103; ///< Array of internal counters for Rmi30 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRmi31CountersGfx103; ///< Array of internal counters for Rmi31 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc0CountersGfx103; ///< Array of internal counters for Umc0 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc1CountersGfx103; ///< Array of internal counters for Umc1 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc2CountersGfx103; ///< Array of internal counters for Umc2 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc3CountersGfx103; ///< Array of internal counters for Umc3 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc4CountersGfx103; ///< Array of internal counters for Umc4 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc5CountersGfx103; ///< Array of internal counters for Umc5 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc6CountersGfx103; ///< Array of internal counters for Umc6 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc7CountersGfx103; ///< Array of internal counters for Umc7 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc8CountersGfx103; ///< Array of internal counters for Umc8 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc9CountersGfx103; ///< Array of internal counters for Umc9 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc10CountersGfx103; ///< Array of internal counters for Umc10 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc11CountersGfx103; ///< Array of internal counters for Umc11 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc12CountersGfx103; ///< Array of internal counters for Umc12 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc13CountersGfx103; ///< Array of internal counters for Umc13 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc14CountersGfx103; ///< Array of internal counters for Umc14 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc15CountersGfx103; ///< Array of internal counters for Umc15 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc16CountersGfx103; ///< Array of internal counters for Umc16 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc17CountersGfx103; ///< Array of internal counters for Umc17 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc18CountersGfx103; ///< Array of internal counters for Umc18 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kUmc19CountersGfx103; ///< Array of internal counters for Umc19 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRlcCountersGfx103; ///< Array of internal counters for Rlc block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGcrCountersGfx103; ///< Array of internal counters for Gcr block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kAtcCountersGfx103; ///< Array of internal counters for Atc block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kAtcl2CountersGfx103; ///< Array of internal counters for Atcl2 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGcea0CountersGfx103; ///< Array of internal counters for Gcea0 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGcea1CountersGfx103; ///< Array of internal counters for Gcea1 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGcea2CountersGfx103; ///< Array of internal counters for Gcea2 block for Gfx103 family
@@ -546,22 +434,7 @@ namespace counter_gfx103
     extern std::vector<GpaHardwareCounterDesc> kGcea13CountersGfx103; ///< Array of internal counters for Gcea13 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGcea14CountersGfx103; ///< Array of internal counters for Gcea14 block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGcea15CountersGfx103; ///< Array of internal counters for Gcea15 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kRpbCountersGfx103; ///< Array of internal counters for Rpb block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kMcvml2CountersGfx103; ///< Array of internal counters for Mcvml2 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGusCountersGfx103; ///< Array of internal counters for Gus block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kPaPhCountersGfx103; ///< Array of internal counters for PaPh block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1a0CountersGfx103; ///< Array of internal counters for Gl1a0 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1a1CountersGfx103; ///< Array of internal counters for Gl1a1 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1a2CountersGfx103; ///< Array of internal counters for Gl1a2 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1a3CountersGfx103; ///< Array of internal counters for Gl1a3 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1a4CountersGfx103; ///< Array of internal counters for Gl1a4 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1a5CountersGfx103; ///< Array of internal counters for Gl1a5 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1a6CountersGfx103; ///< Array of internal counters for Gl1a6 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGl1a7CountersGfx103; ///< Array of internal counters for Gl1a7 block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kChaCountersGfx103; ///< Array of internal counters for Cha block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGpuTimestampCountersGfx103; ///< Array of internal counters for GpuTimestamp block for Gfx103 family
     extern std::vector<GpaHardwareCounterDesc> kGpuTimeCountersGfx103; ///< Array of internal counters for GpuTime block for Gfx103 family
-    extern std::vector<GpaHardwareCounterDesc> kGpinCountersGfx103; ///< Array of internal counters for Gpin block for Gfx103 family
 } // counter_gfx103
 
 // clang-format on

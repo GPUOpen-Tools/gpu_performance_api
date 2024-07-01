@@ -5,6 +5,9 @@
 /// @brief Utility functions to handle vulkan loading, and initializing vulkan entry points.
 //==============================================================================
 
+#include <cstdarg>
+#include <cstdio>
+
 #include "examples/vulkan/vk_color_cube/vk_util.h"
 
 #ifdef _LINUX
@@ -13,6 +16,10 @@
 #else
 #include <Windows.h>
 #define LOAD_SYMBOL GetProcAddress
+#endif
+
+#ifdef ANDROID
+#include <android/log.h>
 #endif
 
 #define DEFINE_VK_FUNC(X) PFN_##X _##X = nullptr;
@@ -123,4 +130,17 @@ bool AMDVulkanDemoVkUtils::InitDeviceFunctions(VkDevice vk_device)
     }
 
     return false;
+}
+
+void AMDVulkanDemoVkUtils::Log(const char *format, ...)
+{
+    va_list args;
+    va_start(args, format);
+#ifdef ANDROID
+    __android_log_vprint(ANDROID_LOG_INFO, "GPA VkColorCube", format, args);
+#else
+    vfprintf(stdout, format, args);
+    puts("\n");
+#endif
+    va_end (args);
 }

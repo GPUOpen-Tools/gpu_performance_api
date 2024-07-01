@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Context Counter Mediator Header.
@@ -35,8 +35,7 @@ public:
     ///
     /// @param [in] gpa_context GPA context.
     /// @param [in] flags Flags used to initialize the context. Should be a combination of GPA_OpenContext_Bits.
-    /// @param [in] generate_asic_specific_counters Flag that indicates whether the counters should be ASIC specific, if available.
-    GpaStatus GenerateCounters(const IGpaContext* gpa_context, GpaOpenContextFlags flags, GpaUInt8 generate_asic_specific_counters);
+    GpaStatus GenerateCounters(const IGpaContext* gpa_context, GpaOpenContextFlags flags);
 
     /// @brief Checks whether the counter scheduling is supported or not for the given context.
     ///
@@ -121,7 +120,7 @@ private:
     };
 
     using GpaCtxStatusInfoPair = std::pair<const IGpaContext*, GpaContextStatus>;  ///< Type alias for GPA context and its status info pair.
-    using GpaCtxStatusInfoMap  = std::map<const IGpaContext*, GpaContextStatus>;   ///< Type alias for GPA context and its status info map.
+    using GpaCtxStatusInfoMap = std::map<const IGpaContext*, GpaContextStatus>;   ///< Type alias for GPA context and its status info map.
 
     GpaCtxStatusInfoMap context_info_map_;        ///< Map of context and its info.
     mutable std::mutex  context_info_map_mutex_;  ///< Mutex for context info map.

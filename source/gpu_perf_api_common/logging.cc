@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Logging utility.
@@ -51,7 +51,7 @@ void GpaTracer::EnterFunction(const char* function_name)
         message << function_name;
         message << ".";
 
-        GPA_LOG_TRACE(message.str().c_str());
+        GPA_LOG_TRACE("%s", message.str().c_str());
     }
 
     ++tab_counter->second;
@@ -81,7 +81,7 @@ void GpaTracer::LeaveFunction(const char* function_name)
         message << function_name;
         message << ".";
 
-        GPA_LOG_TRACE(message.str().c_str());
+        GPA_LOG_TRACE("%s", message.str().c_str());
     }
 }
 
@@ -103,7 +103,7 @@ void GpaTracer::OutputFunctionData(const char* data)
         message << data;
         message << ".";
 
-        GPA_LOG_TRACE(message.str().c_str());
+        GPA_LOG_TRACE("%s", message.str().c_str());
     }
 }
 

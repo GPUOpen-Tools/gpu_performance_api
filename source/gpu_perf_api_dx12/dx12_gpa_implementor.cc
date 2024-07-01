@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Implementation
@@ -10,18 +10,30 @@
 #include <locale>
 #include <codecvt>
 
-#include "DeviceInfoUtils.h"
+#include <ADLUtil.h>
+#include <DeviceInfoUtils.h>
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12.h"
-#include "gpu_perf_api_counter_generator/gpa_counter_generator_dx12_non_amd.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_scheduler_dx12.h"
 
 #include "gpu_perf_api_dx12/dx12_utils.h"
 
 IGpaImplementor*                     gpa_imp = Dx12GpaImplementor::Instance();
+
 static GpaCounterGeneratorDx12       counter_generator_dx12;          ///< Static instance of DX12 generator.
-static GpaCounterGeneratorDx12NonAmd counter_generator_dx12_non_amd;  ///< Static instance of DX12 non-AMD generator.
 static GpaCounterSchedulerDx12       counter_scheduler_dx12;          ///< Static instance of DX12 scheduler.
+
+/// @brief Converts string from wide to utf-8 encoding.
+///
+/// @return The converted utf-8 encoded string.
+static std::string wide_to_utf8_converter(const std::wstring wide)
+{
+    int         num_bytes_needed = WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), nullptr, 0, nullptr, nullptr);
+    std::string utf8;
+    utf8.resize(num_bytes_needed);
+    WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), utf8.data(), num_bytes_needed, nullptr, nullptr);
+    return utf8;
+}
 
 Dx12GpaImplementor::~Dx12GpaImplementor()
 {
@@ -57,9 +69,7 @@ bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
             hw_info.SetRevisionId(adapter_desc.Revision);
             std::wstring adapter_name_wide_string(adapter_desc.Description);
 
-            std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
-
-            std::string adapter_name = wide_to_utf8_converter.to_bytes(adapter_name_wide_string);
+            std::string adapter_name = wide_to_utf8_converter(adapter_name_wide_string);
 
             hw_info.SetDeviceName(adapter_name.c_str());
             GDT_HW_GENERATION hw_gen = GDT_HW_GENERATION_NONE;
@@ -120,6 +130,29 @@ bool Dx12GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info
     if (dx12_utils::GetD3D12Device(unknown_ptr, &d3d12_device) && dx12_utils::IsFeatureLevelSupported(d3d12_device))
     {
         success = true;
+
+        if (hw_info.IsAmd())
+        {
+            unsigned int   major_ver     = 0;
+            unsigned int   minor_ver     = 0;
+            unsigned int   sub_minor_ver = 0;
+            ADLUtil_Result adl_result    = AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
+            AMDTADLUtils::DeleteInstance();
+
+            if ((ADL_SUCCESS == adl_result || ADL_WARNING == adl_result))
+            {
+                GpaUInt32 device_id = 0;
+                if (hw_info.GetDeviceId(device_id) && (device_id == 0x15BF || device_id == 0x15C8))
+                {
+                    // The 22.40 driver does not properly support GPA on these devices.
+                    if ((major_ver < 22 || (major_ver == 22 && minor_ver <= 40)) && (0 != major_ver || 0 != minor_ver || 0 != sub_minor_ver))
+                    {
+                        success = false;
+                        GPA_LOG_ERROR("The current DX12 driver does not support GPUPerfAPI on this hardware, please update to a newer driver.");
+                    }
+                }
+            }
+        }
     }
 
     return success;

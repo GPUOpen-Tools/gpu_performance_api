@@ -24,6 +24,8 @@ GlGpaContext::GlGpaContext(GlContextPtr context, GpaHwInfo& hw_info, GpaOpenCont
     , driver_supports_CHCG_(false)
     , driver_supports_GUS_(false)
     , driver_supports_UMC_(false)
+    , driver_supports_RPB_(false)
+    , driver_supports_GRBMSE_(false)
 {
 }
 
@@ -256,6 +258,7 @@ bool GlGpaContext::PopulateDriverCounterGroupInfo()
                 ogl_utils::ogl_get_perf_monitor_groups_amd(nullptr, num_groups, perf_groups);
             }
 
+            // Iterate over all performance monitor groups and populate driver_counter_group_info_ with data returned from these groups.
             for (GLint index = 0; index < num_groups; ++index)
             {
                 GpaGlPerfMonitorGroupData group_data;
@@ -292,11 +295,23 @@ bool GlGpaContext::PopulateDriverCounterGroupInfo()
                 {
                     driver_supports_UMC_ = true;
                 }
+                else if (strncmp(group_data.group_name, "RPB", 3) == 0)
+                {
+                    driver_supports_RPB_ = true;
+                }
+                else if (strncmp(group_data.group_name, "GRBM_SE", 6) == 0)
+                {
+                    driver_supports_GRBMSE_ = true;
+                }
             }
 
             delete[] perf_groups;
             delete[] group_instances;
         }
+    }
+    else
+    {
+        GPA_LOG_DEBUG_MESSAGE("Driver counter group info is not empty and has already been populated.");
     }
 
     return true;
@@ -310,9 +325,9 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
     GpaUInt32         revision_id = 0;
     GpaUInt32         vendor_id   = 0;
 
-    GpaHwInfo hwInfo = *(GetHwInfo());
+    const GpaHwInfo hwInfo = *(GetHwInfo());
 
-    if (!hwInfo.GetHwGeneration(generation) && !hwInfo.GetDeviceId(device_id) && !hwInfo.GetVendorId(vendor_id) && !hwInfo.GetRevisionId(revision_id))
+    if (!hwInfo.GetHwGeneration(generation) || !hwInfo.GetDeviceId(device_id) || !hwInfo.GetVendorId(vendor_id) || !hwInfo.GetRevisionId(revision_id))
     {
         GPA_LOG_ERROR("Unable to get necessary hardware info.");
     }
@@ -324,110 +339,84 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
         }
         else
         {
-            // A const_cast is a feasible and simple workaround here, as GL is the only API in which we are changing the hardware counter info.
+            // Use const_cast to GpaHardwareCounters* here as a feasible and simple workaround. OpenGL is the only API in which we are changing the hardware counter info.
             IGpaCounterAccessor* counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(this);
             GpaHardwareCounters* hardware_counters = const_cast<GpaHardwareCounters*>(counter_accessor->GetHardwareCounters());
-            unsigned int         expected_driver_groups =
-                static_cast<unsigned int>(hardware_counters->counter_groups_array_.size() + hardware_counters->additional_group_count_) - 1;
+            GpaUInt32            expected_driver_groups =
+                static_cast<GpaUInt32>(hardware_counters->counter_groups_array_.size() + hardware_counters->additional_group_count_) - 1;
 
-            // Calculate the total number of block instances available, since that is what GPA uses internally.
-            // Since the driver only exposes what is actually on the current hardware, it will be less than what GPA expects
-            // if lower-end hardware is being used. The extra block instances in GPA will be ignored when profiling.
-            unsigned int total_group_instances = 0;
-            for (size_t i = 0; i < driver_counter_group_info_.size(); ++i)
-            {
-                total_group_instances += driver_counter_group_info_[i].num_instances;
-            }
+            // Accumulate the total number of block instances available, since that is what GPA uses internally.
+            // The driver only exposes block instances on the current hardware, so this total will be less than what GPA expects if lower-end hardware is used.
+            // The extra block instances in GPA will be ignored when profiling.
+            GpaUInt32 total_group_instances = std::accumulate(
+                driver_counter_group_info_.begin(), driver_counter_group_info_.end(), 0, [](GpaUInt32 total, const GpaGlPerfMonitorGroupData& data) {
+                    return total + data.num_instances;
+                });
 
             if (ogl_utils::IsUglDriver() && total_group_instances < expected_driver_groups)
             {
-                // We should not proceed if the driver exposes less groups that we expect
-                std::stringstream error;
-                error << "GL_AMD_performance_monitor exposes " << total_group_instances << " counter group instances, but GPUPerfAPI requires at least "
-                      << expected_driver_groups << ".";
-                GPA_LOG_ERROR(error.str().c_str());
+                // Return failure and log error if the driver exposes less groups that we expect.
+                GPA_LOG_ERROR("GL_AMD_performance_monitor exposes %d counter group instances, but GPUPerfAPI requires at least %d.",
+                              total_group_instances,
+                              expected_driver_groups);
             }
             else
             {
                 if (ogl_utils::IsUglDriver() && total_group_instances > expected_driver_groups)
                 {
-                    // Report an message if the driver exposes more groups than we expect, but allow the code to continue.
-                    std::stringstream error;
-                    error << "GL_AMD_performance_monitor exposes " << total_group_instances << " counter group instances, but GPUPerfAPI expected "
-                          << expected_driver_groups << ". This is acceptable.";
-                    GPA_LOG_MESSAGE(error.str().c_str());
+                    // Report a message if the driver exposes more groups than expected but allow the code to continue.
+                    GPA_LOG_MESSAGE("GL_AMD_performance_monitor exposes %d counter group instances, but GPUPerfAPI expected %d.",
+                                    total_group_instances,
+                                    expected_driver_groups);
                 }
 
-                // Iterate through all of GPA's expanded groups, verify the order, and
-                // then update the group Id based on what was returned from the driver.
+                // Iterate through all of GPA's expanded groups, verify the order, and then update the group ID based on what was returned from the driver.
                 std::map<GpaUInt32, GpaHardwareCounterDescExt>::iterator hardware_counter_iter = hardware_counters->hardware_counters_.begin();
                 GpaGlPerfGroupVector::const_iterator                     driver_group_iter     = driver_counter_group_info_.cbegin();
+                GpaUInt32 internal_counter_groups_count = static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size());
 
-                for (unsigned int gpa_group_index = 0; gpa_group_index < static_cast<unsigned int>(hardware_counters->internal_counter_groups_.size());
-                     ++gpa_group_index)
+                for (GpaUInt32 gpa_group_index = 0; gpa_group_index < internal_counter_groups_count; ++gpa_group_index)
                 {
                     GpaCounterGroupDesc* gpa_group = &hardware_counters->internal_counter_groups_.at(gpa_group_index);
                     std::string          gpa_group_name(gpa_group->name);
 
-                    if (gpa_group_name.find("GPUTime") == 0)
+                    // These groups (GL1CG, ATCL2, CHCG, GUS, UMC, RPB, GRBMSE) only exist (and are only exposed) on some hardware but GPA expects that they always exist.
+                    // If they don't exist then skip this GPA group and continue to the next group.
+                    if (!driver_supports_GL1CG_ && gpa_group_name.find("GL1CG") == 0)
                     {
-                        // This is the last group that GPA needs support from the driver, so we can exit here.
-                        // The driver may expose more groups, but GPA doesn't reference them, so it is safe to exit early.
-                        success = true;
-                        break;
+                        continue;
+                    }
+                    if (!driver_supports_ATCL2_ && gpa_group_name.find("ATCL2") == 0)
+                    {
+                        continue;
+                    }
+                    if (!driver_supports_CHCG_ && gpa_group_name.find("CHCG") == 0)
+                    {
+                        continue;
+                    }
+                    if (!driver_supports_GUS_ && gpa_group_name.find("GUS") == 0)
+                    {
+                        continue;
+                    }
+                    if (!driver_supports_UMC_ && gpa_group_name.find("UMC") == 0)
+                    {
+                        continue;
+                    }
+                    if (!driver_supports_RPB_ && gpa_group_name.find("RPB") == 0)
+                    {
+                        continue;
+                    }
+                    if (!driver_supports_GRBMSE_ && gpa_group_name.find("GRBMSE") == 0)
+                    {
+                        continue;
                     }
 
-                    if (!driver_supports_GL1CG_)
-                    {
-                        // The GL1CG group only exists (and is only exposed) on some hardware,
-                        // but GPA expects that it might always exist. If it doesn't exist, then skip this gpa group and continue to the next one.
-                        if (gpa_group_name.find("GL1CG") == 0)
-                        {
-                            continue;
-                        }
-                    }
-                    if (!driver_supports_ATCL2_)
-                    {
-                        // The ATCL2 group only exists (and is only exposed) on some hardware,
-                        // but GPA expects that it might always exist. If it doesn't exist, then skip this gpa group and continue to the next one.
-                        if (gpa_group_name.find("ATCL2") == 0)
-                        {
-                            continue;
-                        }
-                    }
-                    if (!driver_supports_CHCG_)
-                    {
-                        // The CHCG group only exists (and is only exposed) on some hardware,
-                        // but GPA expects that it might always exist. If it doesn't exist, then skip this gpa group and continue to the next one.
-                        if (gpa_group_name.find("CHCG") == 0)
-                        {
-                            continue;
-                        }
-                    }
-                    if (!driver_supports_GUS_)
-                    {
-                        // The GUS group only exists (and is only exposed) on some hardware,
-                        // but GPA expects that it might always exist. If it doesn't exist, then skip this gpa group and continue to the next one.
-                        if (gpa_group_name.find("GUS") == 0)
-                        {
-                            continue;
-                        }
-                    }
-                    if (!driver_supports_UMC_)
-                    {
-                        if (gpa_group_name.find("UMC") == 0)
-                        {
-                            continue;
-                        }
-                    }
-
-                    // Advance the driver_group_iter if this is not the very first iteration of the loop.
+                    // Increment the driver_group_iter if this is not the first iteration of the loop.
                     if (gpa_group_index != 0)
                     {
                         if (ogl_utils ::IsOglpDriver())
                         {
-                            // If this is the OGLP driver and the gpa_group has a block instance of 0. This means the incrementing block instance has
-                            // reset back to 0 because a new block has started.
+                            // Block instance index reset back to 0 because a new block has started.
                             if (gpa_group->block_instance == 0)
                             {
                                 ++driver_group_iter;
@@ -435,45 +424,30 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                         }
                         else
                         {
-                            // On other drivers, GPA should match the driver 1:1, so always increment to the next driver group.
+                            // On other drivers, GPA should match the driver 1:1 so always increment to the next driver group.
                             ++driver_group_iter;
                         }
 
                         if (driver_group_iter == driver_counter_group_info_.cend())
                         {
-                            // Should be done now!
-                            // There will be other GPA groups (such as GPUTime), but those are not exposed by the driver.
+                            // Exit loop now, but note there will be other GPA groups (such as GPUTime) that are not exposed by the driver.
                             success = true;
                             break;
                         }
                     }
 
-                    // Make sure the name from GPA's group index matches the name from the driver,
-                    // accounting for the fact that GPA will have the block instance in the group name, and may include more block instances.
-                    bool should_validate_and_update = false;
-
-                    // Get the driver group name, extended to include the block instance.
+                    // Get the driver group name and then extend it to include the block instance.
                     std::string driver_group_name_extended(driver_group_iter->group_name);
 
                     // GPA does not yet support DF_MALL.
                     if (driver_group_name_extended.find("DF_MALL") == 0)
                     {
-                        // "Rewinding" index for GPA group so that same group is used on next iteration of loop.
-                        gpa_group_index -= 1;
-                        continue;
-                    }
-
-                    // GPA does not yet support GE_DIST or GE_SE on GFX11.
-                    if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 &&
-                        (driver_group_name_extended.find("GE_DIST") == 0 || driver_group_name_extended.find("GE_SE") == 0))
-                    {
-                        // "Rewinding" index for GPA group so that same group is used on next iteration of loop.
+                        // Decrement index for GPA group so that same group is used on next iteration of loop.
                         gpa_group_index -= 1;
                         continue;
                     }
 
                     // On GFX11, OGLP may expose SQ_ES, SQ_VS, and SQ_LS, even though they are not actually supported on the hardware.
-                    // Skip these blocks and "rewind" the gpa group index so that it used again on the next iteration of the loop.
                     if (generation == GDT_HW_GENERATION::GDT_HW_GENERATION_GFX11 &&
                         (driver_group_name_extended.find("SQ_ES") == 0 || driver_group_name_extended.find("SQ_VS") == 0 ||
                          driver_group_name_extended.find("SQ_LS") == 0))
@@ -482,7 +456,7 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                         continue;
                     }
 
-                    // Some blocks have slighty different names, so address them here.
+                    // Address blocks with slightly different names in the following conditionals.
                     if (driver_group_name_extended == "PA")
                     {
                         driver_group_name_extended = "PA_SU";
@@ -550,56 +524,33 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
 
                     if (ogl_utils::IsOglpDriver() && driver_group_iter->num_instances > 1)
                     {
-                        // This intentionally combines the driver group name, with GPA's block instance.
+                        // Append the current GPA block instance to the current driver group name on OGLP driver when the hardware has more than one instance of this group.
                         driver_group_name_extended.append(std::to_string(gpa_group->block_instance));
                     }
 
-                    if (gpa_group_name == driver_group_name_extended)
+                    // Check if current gpa_group_name matches current driver_group_name and then validate and update if match is found.
+                    // The first condition will occur if the groups are an exact match and the second condition will occur if GPA knows about multiple block instances but the current hardware only has one.
+                    if (gpa_group_name == driver_group_name_extended || gpa_group_name.find(driver_group_name_extended) == 0)
                     {
-                        // This group is an exact match.
-                        // GPA and the driver agree that this block exists.
-                        should_validate_and_update = true;
-                    }
-                    else if (gpa_group_name.find(driver_group_name_extended) == 0)
-                    {
-                        // This GPA group name starts with the driver group name.
-                        // This will happen if GPA knows about multiple block instances, but the current hardware only has one.
-                        should_validate_and_update = true;
-                    }
-                    else
-                    {
-                        // This is an error.
-                        std::stringstream error;
-                        error << "GPA is expecting group " << gpa_group_name << " but the driver is exposing group " << driver_group_iter->group_name
-                              << ". This GPA group will not be updated." << std::endl;
-                        GPA_LOG_ERROR(error.str().c_str());
-
-                        break;
-                    }
-
-                    if (should_validate_and_update)
-                    {
-                        // Make sure the num_counters, and Max Active Counters matches for this block (regardless of which block instance).
+                        // Make sure the GPA number of counters and maximum active counters match for this block (regardless of which block instance).
                         const GpaUInt32 gpa_num_counters = gpa_group->num_counters;
                         if (static_cast<GpaUInt32>(driver_group_iter->num_counters) != gpa_num_counters)
                         {
-                            std::stringstream error;
-                            error << "GPA's group " << gpa_group_name << " is expecting " << gpa_num_counters << " counters but the driver is reporting "
-                                  << driver_group_iter->num_counters << ".";
-                            GPA_LOG_MESSAGE(error.str().c_str());
+                            GPA_LOG_MESSAGE("GPA's group %s is expecting %d counters but the driver is reporting %d.",
+                                            gpa_group_name.c_str(),
+                                            gpa_num_counters,
+                                            driver_group_iter->num_counters);
                         }
-
                         const GpaUInt32 gpa_num_max_active = gpa_group->max_active_discrete_counters;
                         if (static_cast<GpaUInt32>(driver_group_iter->max_active_discrete_counters_per_instance) != gpa_num_max_active)
                         {
-                            std::stringstream error;
-                            error << "GPA's group " << gpa_group_name << " is expecting " << gpa_num_max_active
-                                  << " max active discrete counters, but the driver is reporting "
-                                  << driver_group_iter->max_active_discrete_counters_per_instance << ".";
-                            GPA_LOG_MESSAGE(error.str().c_str());
+                            GPA_LOG_MESSAGE("GPA's group %s is expecting %d max active discrete counters, but the driver is reporting %d.",
+                                            gpa_group_name.c_str(),
+                                            gpa_num_max_active,
+                                            driver_group_iter->max_active_discrete_counters_per_instance);
                         }
 
-                        // Iterate through each counter within this group and update the driver group id.
+                        // Iterate through each counter within this group and update the driver group ID.
                         while ((hardware_counter_iter != hardware_counters->hardware_counters_.end()) &&
                                strncmp(gpa_group_name.c_str(), hardware_counter_iter->second.hardware_counters->name, gpa_group_name.size()) == 0)
                         {
@@ -609,6 +560,10 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
                     }
                     else
                     {
+                        GPA_LOG_ERROR("GPA is expecting group %s but the driver is exposing group %s. This GPA group will not be updated.",
+                                      gpa_group_name.c_str(),
+                                      driver_group_iter->group_name);
+
                         break;
                     }
                 }
@@ -622,32 +577,28 @@ bool GlGpaContext::ValidateAndUpdateGlCounters() const
 GpaUInt32 GlGpaContext::GetNumInstances(unsigned int driver_group_id) const
 {
     GpaUInt32 num_instances = 0;
-
-    for (GpaGlPerfGroupVector::const_iterator group = driver_counter_group_info_.cbegin(); group != driver_counter_group_info_.cend(); ++group)
+    for (const GpaGlPerfMonitorGroupData& group : driver_counter_group_info_)
     {
-        if (driver_group_id == group->group_id)
+        if (driver_group_id == group.group_id)
         {
-            num_instances = static_cast<GpaUInt32>(group->num_instances);
+            num_instances = static_cast<GpaUInt32>(group.num_instances);
             break;
         }
     }
-
     return num_instances;
 }
 
 GpaUInt32 GlGpaContext::GetMaxEventId(unsigned int driver_group_id) const
 {
     GpaUInt32 max_event_id = 0;
-
-    for (GpaGlPerfGroupVector::const_iterator group = driver_counter_group_info_.cbegin(); group != driver_counter_group_info_.cend(); ++group)
+    for (const GpaGlPerfMonitorGroupData& group : driver_counter_group_info_)
     {
-        if (driver_group_id == group->group_id)
+        if (driver_group_id == group.group_id)
         {
-            // Subtract one to get the maximum event Id (0-based) from the number of counters (1-based).
-            max_event_id = static_cast<GpaUInt32>(group->num_counters - 1);
+            // Subtract one to get the maximum event ID (0-based) from the number of counters (1-based).
+            max_event_id = static_cast<GpaUInt32>(group.num_counters - 1);
             break;
         }
     }
-
     return max_event_id;
 }

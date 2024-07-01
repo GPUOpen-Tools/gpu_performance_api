@@ -1,4 +1,4 @@
-# Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
+# Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 # dependencies_map.py
 #
 #    Map of GitHub project names to clone target paths, relative to the GPUPerfAPI
@@ -14,17 +14,17 @@ gitMapping = {
     "appsdk"           : ["external/Lib/AMD/APPSDK",            "55a6940ebc963daec69152314a1bb94943287d4c"],
     "opengl"           : ["external/Lib/Ext/OpenGL",            "792c2291a4443ebef17ca5a7e3e24a1f854f0d1d"],
     "windows_kits"     : ["external/Lib/Ext/Windows-Kits",      "51845a3771122a9dc1406b8617e9a67d9a2f55b6"],
-    "googletest"       : ["external/Lib/Ext/GoogleTest",        "542e057c6c5bf45454b43764b881397b71164d62"],
+    "googletest"       : ["external/Lib/Ext/GoogleTest",        "191f9336bc9212b5f5410ab663176f685cafed2a"],
 # Src.
     "adl_util"                 : ["external/Src/ADLUtil",               "d62c94514326775c83fc129bb89d299c8749ebd1"],
-    "device_info"              : ["external/Src/DeviceInfo",            "5e6c83cc74e4588bdf44e1f3c74d419b46bb1a0c"],
+    "device_info"              : ["external/Src/DeviceInfo",            "190ec95f2ce1d715231f2ee5e17a65217fc59f6c"],
     "dynamic_library_module"   : ["external/Src/DynamicLibraryModule",  "e6451ce26b8509cf724c7cf5d007878791143a58"],
     "tsingleton"               : ["external/Src/TSingleton",            "02e8fa7d98f33cdbd0e1f77d1a8a403a32e35882"],
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
 downloadWin = {
-    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/gpu_performance_api/releases/download/v3.10/GPUPerfAPI-3.10.0.77.zip" , "default", "3_10", "external/Lib/AMD/GPUPerfAPI"]
+    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/gpu_performance_api/releases/download/v3.13/GPUPerfAPI-3.13.0.28.zip" , "default", "3_13", "external/Lib/AMD/GPUPerfAPI"]
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root

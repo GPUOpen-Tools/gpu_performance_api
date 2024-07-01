@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2006-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2006-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Utility routines for retrieving ASIC information
@@ -108,7 +108,7 @@ namespace ogl_utils
 
     AsicIdInfo GetAsicInfoForAsicRevision(AsicRevision asic_revision)
     {
-        static_assert(kAsicRevisionLast == 0x30, "AsicRevision has changed, add necessary entry for asic info.");
+        static_assert(kAsicRevisionLast == 0x3B, "AsicRevision has changed, add necessary entry for asic info.");
 
         AsicIdInfo asic_id_info = {};
 
@@ -346,7 +346,47 @@ namespace ogl_utils
             asic_id_info.default_device_id = 0x73A8;
             break;
 
-        default:
+        case kGfx1101:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_1;
+            asic_id_info.default_device_id = 0x73C8;
+            break;
+
+        case kGfx1102:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_2;
+            asic_id_info.default_device_id = 0x7480;
+            break;
+
+        case kGfx1103:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_3;
+            asic_id_info.default_device_id = 0x15BF;
+            asic_id_info.is_apu            = true;
+            break;
+
+        case kGfx1103B:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_3B;
+            asic_id_info.default_device_id = 0x15C8;
+            asic_id_info.is_apu            = true;
+            break;
+
+        case kGfx1103HP1:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_3;
+            asic_id_info.default_device_id = 0x1900;
+            asic_id_info.is_apu            = true;
+            break;
+
+        case kGfx1103HP2:
+            asic_id_info.asic_generation   = kAsicGfx11;
+            asic_id_info.gdt_asic_type     = GDT_GFX11_0_3B;
+            asic_id_info.default_device_id = 0x1901;
+            asic_id_info.is_apu            = true;
+            break;
+
+	default:
             assert(!"Unhandled AsicRevision type");
             asic_id_info.asic_generation   = kAsicUnknown;
             asic_id_info.gdt_asic_type     = GDT_ASIC_TYPE_NONE;
@@ -527,9 +567,7 @@ namespace ogl_utils
         default:
             revision = kUnknown;
 
-            std::stringstream error_message;
-            error_message << "Unrecognized asic Id: " << asic_id << ".";
-            GPA_LOG_ERROR(error_message.str().c_str());
+            GPA_LOG_ERROR("Unrecognized asic Id: %d.", asic_id);
             assert(!"Unrecognized AsicId");
             break;
         }
@@ -547,24 +585,19 @@ namespace ogl_utils
         {
             ret_val = info.asic_generation;
 
-            std::stringstream ss;
             if (info.is_apu)
             {
-                ss << "Recognized an APU with " << kAsicGenerationStrings[ret_val] << " graphics.";
+                GPA_LOG_MESSAGE("Recognized an APU with %s graphics.", kAsicGenerationStrings[ret_val]);
             }
             else
             {
-                ss << "Recognized a " << kAsicGenerationStrings[ret_val] << " card.";
+                GPA_LOG_MESSAGE("Recognized a %s card.", kAsicGenerationStrings[ret_val]);
             }
-
-            GPA_LOG_MESSAGE(ss.str().c_str());
         }
         else
         {
             assert(!"Unknown AsicRevision, may need to update enum list from PAL.");
-            std::stringstream error_message;
-            error_message << "Unrecognized asic revision: " << asic_revision << ".";
-            GPA_LOG_ERROR(error_message.str().c_str());
+            GPA_LOG_ERROR("Unrecognized asic revision: %d.", asic_revision);
             ret_val = kAsicUnknown;
         }
 
@@ -632,11 +665,8 @@ namespace ogl_utils
             // Pre-GCN devices were removed from the driver starting with version 13452.
             // If the driver version is earlier than that we will return an error.
 #ifndef GLES
-            const GLubyte* gl_version_string      = ogl_get_string(GL_VERSION);
-            std::string    driver_version_message = "GL_VERSION: '";
-            driver_version_message.append((const char*)gl_version_string);
-            driver_version_message.append("'.");
-            GPA_LOG_ERROR(driver_version_message.c_str());
+            const GLubyte* gl_version_string = ogl_get_string(GL_VERSION);
+            GPA_LOG_ERROR("GL_VERSION: %s.", (const char*)gl_version_string);
 #endif
             GPA_LOG_ERROR("OpenGL driver version is too old. Please update your driver.");
             return false;
@@ -739,7 +769,8 @@ namespace ogl_utils
                             if (nullptr != counter_data)
                             {
                                 // Get the counter results.
-                                ogl_get_perf_monitor_counter_data_amd(monitor, GL_PERFMON_RESULT_AMD, result_size, reinterpret_cast<GLuint*>(counter_data), nullptr);
+                                ogl_get_perf_monitor_counter_data_amd(
+                                    monitor, GL_PERFMON_RESULT_AMD, result_size, reinterpret_cast<GLuint*>(counter_data), nullptr);
 
                                 for (int i = 0; i < num_counters; i++)
                                 {
@@ -817,9 +848,7 @@ namespace ogl_utils
                                         if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                                         {
                                             asic_info.device_id = value;
-
-                                            message << "Retrieved ASIC device ID: " << std::hex << std::showbase << value << ".";
-                                            GPA_LOG_MESSAGE(message.str().c_str());
+                                            GPA_LOG_MESSAGE("Retrieved ASIC device ID: 0x%04x.", value);
                                         }
                                         break;
 
@@ -827,9 +856,7 @@ namespace ogl_utils
                                         if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
                                         {
                                             asic_info.device_rev = value;
-
-                                            message << "Retrieved ASIC device revision: " << std::hex << std::showbase << value << ".";
-                                            GPA_LOG_MESSAGE(message.str().c_str());
+                                            GPA_LOG_MESSAGE("Retrieved ASIC device revision: 0x%04x.", value);
                                         }
                                         break;
                                     }
@@ -861,16 +888,12 @@ namespace ogl_utils
         {
             if (found_ugl_entrypoints)
             {
-                std::stringstream message;
-                message << "ASIC ID returned from driver is: " << ugl_asic_id << " and GL_VERSION is: " << asic_info.driver_version << ".";
-                GPA_LOG_MESSAGE(message.str().c_str());
+                GPA_LOG_MESSAGE("ASIC ID returned from driver is: %d and GL_VERSION is: %d.", ugl_asic_id, asic_info.driver_version);
             }
             else if (found_oglp_entrypoints)
             {
-                std::stringstream message;
-                message << "ASIC revision returned from driver is: " << asic_info.asic_revision << " (decimal) and GL_VERSION is: " << asic_info.driver_version
-                        << ".";
-                GPA_LOG_MESSAGE(message.str().c_str());
+                GPA_LOG_MESSAGE(
+                    "ASIC revision returned from driver is: %d (decimal) and GL_VERSION is: %d.", asic_info.asic_revision, asic_info.driver_version);
 
                 if (asic_info.asic_revision == kUnknown)
                 {

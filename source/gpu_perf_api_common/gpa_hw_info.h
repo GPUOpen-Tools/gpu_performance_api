@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2011-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  A class for managing hardware information.
@@ -8,6 +8,7 @@
 #ifndef GPU_PERF_API_COMMON_GPA_HW_INFO_H_
 #define GPU_PERF_API_COMMON_GPA_HW_INFO_H_
 
+#include <algorithm>
 #include <string>
 #include <vector>
 
@@ -41,8 +42,8 @@ public:
 
     /// @brief Sets the vendor ID.
     ///
-    /// @param [in] vid The vendor ID of the available device.
-    void SetVendorId(const GpaUInt32& vid);
+    /// @param [in] vendor_id The vendor ID of the available device.
+    void SetVendorId(const GpaUInt32& vendor_id);
 
     /// @brief Sets the hardware generation that the device belongs to.
     ///
@@ -156,12 +157,24 @@ public:
     /// @return True if the device ID is available; false otherwise.
     bool GetDeviceId(GpaUInt32& id) const;
 
-    /// @brief Gets the vendor id.
+    /// @brief Checks if the current card is unsupported based on the device ID.
     ///
-    /// @param [out] vid The vendor id.
+    /// @return True if the current device ID is in the unsupported card list; false otherwise.
+    bool IsUnsupportedDeviceId() const;
+
+    /// @brief Checks if card is unsupported based on the device ID.
     ///
-    /// @return True if the vendor id is available; false otherwise.
-    bool GetVendorId(GpaUInt32& vid) const;
+    /// @param [in] id The device ID.
+    ///
+    /// @return True if the device ID is in the unsupported card list; false otherwise.
+    bool IsUnsupportedDeviceId(const GpaUInt32& id) const;
+
+    /// @brief Gets the vendor ID.
+    ///
+    /// @param [out] vendor_id The vendor ID.
+    ///
+    /// @return True if the vendor ID is available; false otherwise.
+    bool GetVendorId(GpaUInt32& vendor_id) const;
 
     /// @brief Gets the device name.
     ///
@@ -257,8 +270,9 @@ public:
     bool operator==(GpaHwInfo other_hw_info) const;
 
 private:
-    GpaUInt32 device_id_;      ///< The device ID.
-    bool      device_id_set_;  ///< Indicates if the Device ID has been set.
+    GpaUInt32              device_id_;               ///< The device ID.
+    bool                   device_id_set_;           ///< Indicates if the Device ID has been set.
+    std::vector<GpaUInt32> unsupported_device_ids_;  ///< List of unsupported cards by device ID.
 
     GpaUInt32 revision_id_;      ///< The revision ID.
     bool      revision_id_set_;  ///< Indicates if the Revision ID has been set.

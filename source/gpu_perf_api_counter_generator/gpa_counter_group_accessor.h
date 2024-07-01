@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Counter group accessor class.
@@ -43,9 +43,10 @@ public:
     /// @copydoc IGpaCounterGroupAccessor::SetCounterIndex()
     void SetCounterIndex(unsigned int index) override
     {
+
         // Count the number of counters that belong to groups that do not include the desired index.
         unsigned int prev_group_counters = 0;
-        unsigned int tmp_sum            = 0;
+        unsigned int tmp_sum             = 0;
 
         is_hw_            = false;
         is_additional_hw_ = false;
@@ -147,12 +148,6 @@ public:
     bool IsHwCounter() const override
     {
         return is_hw_;
-    }
-
-    /// @copydoc IGpaCounterGroupAccessor::IsSwCounter()
-    bool IsSwCounter() const override
-    {
-        return is_sw_;
     }
 
     /// @copydoc IGpaCounterGroupAccessor::GlobalGroupIndex()

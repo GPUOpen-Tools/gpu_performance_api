@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPUPerfAPI Counter Generator function.
@@ -121,10 +121,6 @@ void UpdateMaxSpmBlockEvents(BlockMap* block_map, const char* block_name, uint32
         {
             // If the block is not found, and max events are zero, it's not an error.
         }
-        else
-        {
-            assert(0);
-        }
     }
     else
     {
@@ -140,7 +136,6 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
                            GpaUInt32              device_id,
                            GpaUInt32              revision_id,
                            GpaOpenContextFlags    flags,
-                           GpaUInt8               generate_asic_specific_counters,
                            IGpaCounterAccessor**  counter_accessor_out,
                            IGpaCounterScheduler** counter_scheduler_out)
 {
@@ -195,13 +190,11 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
         return kGpaStatusErrorHardwareNotSupported;
     }
 
-    bool allow_public           = (flags & kGpaOpenContextHidePublicCountersBit) == 0;
-    bool allow_software         = (flags & kGpaOpenContextHideSoftwareCountersBit) == 0;
-    bool allow_hardware_exposed = (flags & kGpaOpenContextEnableHardwareCountersBit) == kGpaOpenContextEnableHardwareCountersBit;
-    bool enable_hardware        = allow_hardware_exposed;
+    bool allow_public   = (flags & kGpaOpenContextHidePublicCountersBit) == 0;
+    bool allow_hardware = (flags & kGpaOpenContextEnableHardwareCountersBit) == kGpaOpenContextEnableHardwareCountersBit;
 
-    tmp_accessor->SetAllowedCounters(allow_public, enable_hardware, allow_software);
-    status = tmp_accessor->GenerateCounters(desired_generation, card_info.m_asicType, generate_asic_specific_counters);
+    tmp_accessor->SetAllowedCounters(allow_public, allow_hardware);
+    status = tmp_accessor->GenerateCounters(desired_generation, card_info.m_asicType);
 
     if (status == kGpaStatusOk)
     {

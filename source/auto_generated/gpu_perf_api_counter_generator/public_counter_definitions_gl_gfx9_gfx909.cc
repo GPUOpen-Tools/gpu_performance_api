@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for GL GFX9_GFX909.
@@ -26,6 +26,14 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
 
     counter_gfx9_gfx909::OverrideBlockInstanceCounters(asic_type);
 
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(3182);
+        internal_counters.push_back(16301);
+        internal_counters.push_back(4055);
+
+        c.UpdateAsicSpecificDerivedCounter("VsGsPrimsIn", internal_counters, "0,1,1,ifnotzero,(0),2,ifnotzero");
+    }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(3279);

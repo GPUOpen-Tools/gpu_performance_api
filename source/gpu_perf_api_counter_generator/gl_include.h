@@ -76,3 +76,4 @@ namespace ogl_utils
 }  // namespace ogl_utils
 
 #endif  // GPA_COUNTER_GENERATOR_GL_INCLUDE_H_
+

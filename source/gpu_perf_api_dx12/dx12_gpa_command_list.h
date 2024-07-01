@@ -86,7 +86,7 @@ public:
     IAmdExtGpaSession* GetBundleResultAmdExtSession(ClientSampleId client_sample_id) const;
 
     /// @brief Release the graphics command list.
-    void ReleaseNonGPAResources();
+    void ReleaseNonGpaResources();
 
 private:
     /// @copydoc GpaCommandList::BeginCommandListRequest()
@@ -109,23 +109,10 @@ private:
     /// @return true upon successful Operation otherwise false.
     bool OpenHwSample(ClientSampleId client_sample_id, DriverSampleId* driver_sample_id) const;
 
-    /// @brief Creates a hardware sample.
-    ///
-    /// @param [in] client_sample_id Client sample id.
-    /// @param [out] driver_sample_id Pointer to write the driver generated sample id.
-    ///
-    /// @return True upon successful operation otherwise false.
-    bool OpenSwSample(ClientSampleId client_sample_id, DriverSampleId* driver_sample_id = nullptr) const;
-
     /// @brief Closes the previously opened hardware sample.
     ///
     /// @return True upon successful operation otherwise false.
     bool CloseHwSample() const;
-
-    /// @brief Closes the previously opened software sample.
-    ///
-    /// @return True upon successful operation otherwise false.
-    bool CloseSwSample();
 
     /// Type alias for set of client sample id for bundle samples.
     using BundleSamplesOnPrimaryCmd = std::unordered_set<ClientSampleId>;

@@ -1,5 +1,5 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
 
@@ -12,13 +12,11 @@ include(${CMAKE_COMMON_SRC_GLOBAL_AMD_DX_EXT})
 
 set(COUNTER_GENERATOR_HEADERS_DX12
     gpa_counter_generator_dx12.h
-    gpa_counter_generator_dx12_base.h
-    gpa_counter_generator_dx12_non_amd.h)
+    gpa_counter_generator_dx12_base.h)
 
 set(COUNTER_GENERATOR_SRC_DX12
     gpa_counter_generator_dx12.cc
-    gpa_counter_generator_dx12_base.cc
-    gpa_counter_generator_dx12_non_amd.cc)
+    gpa_counter_generator_dx12_base.cc)
 
 set(COUNTER_SCHEDULER_HEADERS_DX12
     gpa_counter_scheduler_dx12.h)

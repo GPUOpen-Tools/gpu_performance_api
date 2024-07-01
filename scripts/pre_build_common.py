@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
+# Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
 # Utility Python Script to generate GPA projects on Windows and Linux
 
 import os
@@ -106,7 +106,7 @@ def define_cmake_arguments():
     # parse the command line arguments
     script_parser = argparse.ArgumentParser(description="Utility script to generate GPA Unix/Windows projects")
     if sys.platform == "win32":
-        script_parser.add_argument("--vs", default="2019", choices=["2015", "2017", "2019", "2022"], help="specify the version of Visual Studio to be used with this script (default: 2019; overrides --ninja)")
+        script_parser.add_argument("--vs", default="2022", choices=["2015", "2017", "2019", "2022"], help="specify the version of Visual Studio to be used with this script (default: 2022; overrides --ninja)")
 
     script_parser.add_argument("--ninja", action="store_true", help="generate build files for the Ninja build system")
     script_parser.add_argument("--config", choices=["debug", "release"], help="specify the build config for Makefiles (default: both)")

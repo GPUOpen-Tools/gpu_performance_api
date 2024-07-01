@@ -1,5 +1,5 @@
-## Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
 
@@ -95,7 +95,7 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_session.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_unique_object.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api_deprecated.inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api_deprecated.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/logging.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/utility.cc)
 

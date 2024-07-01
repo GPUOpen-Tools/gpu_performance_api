@@ -1,12 +1,12 @@
 ﻿// =====================================================================
-// <copyright file="FileNameAndPaths.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2019-2022 Advanced Micro Devices, Inc. All rights reserved.
+// <copyright file="FileNameAndPath.cs" company="Advanced Micro Devices, Inc.">
+//    Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
 // </author>
 // <summary>
-//      GPA file name and paths
+//    GPA file name and paths.
 // </summary>
 // =====================================================================
 
@@ -42,9 +42,7 @@ namespace GpaTools
         public const string autoGenPublicCounterInputDir = "source\\auto_generated\\public_counter_compiler_input_files\\";
         public const string autoGenCounterGeneratorOutDir = "source\\auto_generated\\gpu_perf_api_counter_generator\\";
         public const string publicStr = "Public";
-        public const string internalStr = "Internal";
         public const string publicFilePrefix = "public_";
-        public const string internalFilePrefix = "internal_";
         public const string counterFileNamePrefix = "counter_names_";
         public const string counterListOutDir = "..\\counter_list_files\\";
         public const string autoGenTestOutDir = "source\\auto_generated\\gpu_perf_api_unit_tests\\counters\\";
@@ -54,7 +52,6 @@ namespace GpaTools
         public const string derivedCounterOutFileName = "derived_counters_";
         public const string gpaCounterHeaderFileStr = "gpu_perf_api_counter_generator/gpa_counter.h";
         public const string gpaHwCounterFilenamePrefix = "gpa_hw_counter_";
-        public const string hardwareExposedCounterFileSuffix = "gpa_hw_exposed_counters_";
         public const string counterNameListFilePrefix = "counter_name_list_";
         public const string DX12 = "dx12";
         public const string DX11 = "dx11";

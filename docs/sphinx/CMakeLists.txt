@@ -1,5 +1,5 @@
-## Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../")
 
@@ -25,5 +25,5 @@ target_link_libraries(${GPA_PROJECT_NAME}
                       GPUPerfAPI-Common)
 
 add_custom_command(TARGET ${GPA_PROJECT_NAME} PRE_BUILD
-                   COMMAND ${SPHINX_EXECUTABLE} ${CMAKE_CURRENT_LIST_DIR}/source ${GPA_OUTPUT_DIR}/docs/
+                   COMMAND ${SPHINX_EXECUTABLE} -M html ${CMAKE_CURRENT_LIST_DIR}/source ${GPA_OUTPUT_DIR}/docs
                    COMMENT "Generating sphinx documentation..." )

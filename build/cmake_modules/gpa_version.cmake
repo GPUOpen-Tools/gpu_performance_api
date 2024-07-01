@@ -1,5 +1,5 @@
 ## Copyright (c) 2020-2022 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+cmake_minimum_required(VERSION 3.10)
 
 include(${CMAKE_CURRENT_LIST_DIR}/defs.cmake)
 

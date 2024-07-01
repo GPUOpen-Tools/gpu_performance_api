@@ -1,5 +1,5 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
 
@@ -13,13 +13,11 @@ include(${GPA_CMAKE_MODULES_DIR}/gpa_vulkan.cmake)
 
 set(COUNTER_GENERATOR_HEADERS_VK
     gpa_counter_generator_vk.h
-    gpa_counter_generator_vk_base.h
-    gpa_counter_generator_vk_non_amd.h)
+    gpa_counter_generator_vk_base.h)
 
 set(COUNTER_GENERATOR_SRC_VK
     gpa_counter_generator_vk.cc
-    gpa_counter_generator_vk_base.cc
-    gpa_counter_generator_vk_non_amd.cc)
+    gpa_counter_generator_vk_base.cc)
 
 set(COUNTER_SCHEDULER_HEADERS_VK
     gpa_counter_scheduler_vk.h)

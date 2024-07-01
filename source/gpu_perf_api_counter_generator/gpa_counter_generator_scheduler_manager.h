@@ -15,8 +15,8 @@
 
 #include "gpu_performance_api/gpu_perf_api_types.h"
 
-class GpaCounterGeneratorBase;
-class IGpaCounterScheduler;
+#include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_scheduler_interface.h"
 
 /// @brief Class that will get the correct Generator and Scheduler for an API/Generation combination.
 class CounterGeneratorSchedulerManager : public TSingleton<CounterGeneratorSchedulerManager>

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Counter splitter that puts one hardware counter per pass -- not used
@@ -32,14 +32,14 @@ public:
     GpaSplitCountersOnePerPass(const std::set<unsigned int>& timestamp_block_ids,
                                const std::set<unsigned int>& time_counter_indices,
                                unsigned int                  max_sq_counters,
-                               unsigned int                  num_sq_blocks,
+                               unsigned int                  num_sq_groups,
                                GpaSqCounterGroupDesc*        sq_counter_block_info,
                                unsigned int                  num_isolated_from_sq_groups,
                                const unsigned int*           isolated_from_sq_groups)
         : IGpaSplitCounters(timestamp_block_ids,
                             time_counter_indices,
                             max_sq_counters,
-                            num_sq_blocks,
+                            num_sq_groups,
                             sq_counter_block_info,
                             num_isolated_from_sq_groups,
                             isolated_from_sq_groups){};
@@ -51,7 +51,6 @@ public:
     ///
     /// @param [in] public_counters_to_split The set of public counters that need to be split into passes.
     /// @param [in] internal_counters_to_schedule Additional internal counters that need to be scheduled (used by internal builds).
-    /// @param [in] software_counters_to_schedule Additional software counters that need to be scheduled.
     /// @param [in] counter_group_accessor A class to access the internal counters.
     /// @param [in] max_counters_per_group The maximum number of counters that can be enabled in a single pass on each HW block or SW group.
     /// @param [out] num_scheduled_counters Indicates the total number of internal counters that were assigned to a pass.
@@ -59,12 +58,10 @@ public:
     /// @return The list of passes that the counters are separated into.
     std::list<GpaCounterPass> SplitCounters(const std::vector<const GpaDerivedCounterInfoClass*>& public_counters_to_split,
                                             const std::vector<GpaHardwareCounterIndices>  internal_counters_to_schedule,
-                                            const std::vector<GpaSoftwareCounterIndices>  software_counters_to_schedule,
                                             IGpaCounterGroupAccessor*                     accessor,
                                             const std::vector<unsigned int>&              max_counters_per_group,
                                             unsigned int&                                 num_scheduled_counters) override
     {
-        UNREFERENCED_PARAMETER(software_counters_to_schedule);
         // This will be the return value.
         std::list<GpaCounterPass> pass_partitions;
 

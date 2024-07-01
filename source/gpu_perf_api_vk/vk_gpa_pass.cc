@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Vulkan GPA Pass Object Implementation
@@ -14,7 +14,6 @@
 #include "gpu_perf_api_vk/vk_gpa_command_list.h"
 #include "gpu_perf_api_vk/vk_gpa_context.h"
 #include "gpu_perf_api_vk/vk_gpa_hardware_sample.h"
-#include "gpu_perf_api_vk/vk_gpa_software_sample.h"
 
 VkGpaPass::VkGpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSource counter_source, CounterList* pass_counters)
     : GpaPass(gpa_session, pass_index, counter_source, pass_counters)
@@ -33,10 +32,6 @@ GpaSample* VkGpaPass::CreateApiSpecificSample(IGpaCommandList* command_list, Gpa
     if (GpaSampleType::kHardware == sample_type)
     {
         sample = new (std::nothrow) VkGpaHardwareSample(this, command_list, sample_id, context->GetVkDevice());
-    }
-    else if (GpaSampleType::kSoftware == sample_type)
-    {
-        sample = new (std::nothrow) VkGpaSoftwareSample(this, command_list, sample_id);
     }
 
     return sample;
@@ -213,11 +208,6 @@ void VkGpaPass::InitializeSampleConfig()
 
             is_sample_begin_info_initialized_ = true;
         }
-    }
-    else  // Software counter.
-    {
-        // Enable all desired counters.
-        EnableAllCountersForPass();
     }
 }
 

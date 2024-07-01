@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2020-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Utility functions to handle vulkan loading, and initializing vulkan entry points.
@@ -25,6 +25,12 @@
 #endif  // __linux__
 
 #endif
+
+#ifdef __GNUC__
+#define GPA_ATTRIBUTE_PRINTF(msg, args) __attribute__((format(printf, msg, args)))
+#else
+#define GPA_ATTRIBUTE_PRINTF(msg, args)
+#endif  // !__GNUC__
 
 #include <vulkan/vulkan.h>
 
@@ -126,6 +132,15 @@ namespace AMDVulkanDemoVkUtils
     ///
     /// @return True upon success otherwise false.
     bool InitDeviceFunctions(VkDevice vk_device);
+
+    /// @brief Log a message
+    ///
+    //  On Android, the message is written to logcat. On all other
+    //  platforms, the message is written to stdout.
+    //
+    /// @param [in] format printf style format string
+    /// @param [in] ... arguments to format string, if any
+    void Log(const char* format, ...)  GPA_ATTRIBUTE_PRINTF(1, 2);
 
     extern bool are_vk_entry_points_initialized;  ///< Flag indicating the initialization status of vulkan entry points.
 

@@ -116,7 +116,9 @@ void GpaSample::AllocateSampleResultSpace()
 {
     if (nullptr == sample_result_)
     {
-        sample_result_ = new (std::nothrow) GpaCounterSampleResult(gpa_pass_->GetEnabledCounterCount());
+        {
+            sample_result_ = new (std::nothrow) GpaCounterSampleResult(gpa_pass_->GetEnabledCounterCount());
+        }
     }
 }
 

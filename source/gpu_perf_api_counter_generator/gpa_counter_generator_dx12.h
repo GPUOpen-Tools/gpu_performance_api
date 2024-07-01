@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for DX12 counter generation.
@@ -40,19 +40,16 @@ protected:
     /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
     virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
                                              GDT_HW_ASIC_TYPE    asic_type,
-                                             GpaUInt8            generate_asic_specific_counters,
                                              GpaDerivedCounters* public_counters) override;
 
     /// @copydoc GpaCounterGeneratorBase::GenerateHardwareCounters()
     virtual GpaStatus GenerateHardwareCounters(GDT_HW_GENERATION    desired_generation,
                                                GDT_HW_ASIC_TYPE     asic_type,
-                                               GpaUInt8             generate_asic_specific_counters,
                                                GpaHardwareCounters* hardware_counters) override;
 
     /// @copydoc GpaCounterGeneratorBase::GenerateHardwareExposedCounters()
     GpaStatus GenerateHardwareExposedCounters(GDT_HW_GENERATION    desired_generation,
                                               GDT_HW_ASIC_TYPE     asic_type,
-                                              GpaUInt8             generate_asic_specific_counters,
                                               GpaHardwareCounters* hardware_counters) override;
 
 private:

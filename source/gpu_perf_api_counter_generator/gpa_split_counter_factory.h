@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief A factory which can produce various counter splitting implementations.
@@ -64,22 +64,22 @@ public:
         if (kMaxPerPass == algorithm)
         {
             splitter = new (std::nothrow) GpaSplitCountersMaxPerPass(timestamp_block_ids,
-                                                                      time_counter_indices,
-                                                                      max_sq_counters,
-                                                                      num_sq_groups,
-                                                                      sq_counter_block_info,
-                                                                      num_isolated_from_sq_groups,
-                                                                      isolated_from_sq_groups);
+                                                                     time_counter_indices,
+                                                                     max_sq_counters,
+                                                                     num_sq_groups,
+                                                                     sq_counter_block_info,
+                                                                     num_isolated_from_sq_groups,
+                                                                     isolated_from_sq_groups);
         }
         else if (kOnePublicCounterPerPass == algorithm)
         {
             splitter = new (std::nothrow) GpaSplitCountersOnePerPass(timestamp_block_ids,
-                                                                      time_counter_indices,
-                                                                      max_sq_counters,
-                                                                      num_sq_groups,
-                                                                      sq_counter_block_info,
-                                                                      num_isolated_from_sq_groups,
-                                                                      isolated_from_sq_groups);
+                                                                     time_counter_indices,
+                                                                     max_sq_counters,
+                                                                     num_sq_groups,
+                                                                     sq_counter_block_info,
+                                                                     num_isolated_from_sq_groups,
+                                                                     isolated_from_sq_groups);
         }
         else if (kConsolidated == algorithm)
         {
@@ -93,7 +93,7 @@ public:
         }
         else
         {
-            assert(!"Unhandled GPACounterSplitAlgorithm supplied to factory.");
+            assert(!"Unhandled GpaCounterSplitAlgorithm supplied to factory.");
         }
 
         if (nullptr == splitter)

@@ -1,5 +1,5 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 include(${GPA_CMAKE_MODULES_DIR}/clang_utils.cmake)
 
@@ -78,8 +78,9 @@ macro(REMOVE_CPP_COMPILE_OPTIONS)
     foreach(OPTION IN ITEMS ${NATIVE_C_BUILD_OPTIONS})
         if(OPTION STREQUAL "-std=c++11")
             continue()
-        endif()
-        if(OPTION STREQUAL "-Wno-non-virtual-dtor")
+        elseif(OPTION STREQUAL "-std=c++17")
+            continue()
+        elseif(OPTION STREQUAL "-Wno-non-virtual-dtor")
             continue()
         endif()
         set(USE_COMPILE_OPTIONS ${USE_COMPILE_OPTIONS} ${OPTION})

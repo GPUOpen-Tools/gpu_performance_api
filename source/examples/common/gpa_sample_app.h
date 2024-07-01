@@ -103,6 +103,9 @@ namespace gpa_example
 
         /// @brief A path to a file to which GPA counter data will be written.
         std::string datafile_;
+
+        /// @brief The name of the test mode.
+        std::string testmode_;
     };
 
 }  // namespace gpa_example

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  This is the header file that must be included by an application that
@@ -213,9 +213,9 @@ GPA_LIB_DECL GpaStatus GpaGetSupportedSampleTypes(GpaContextId gpa_context_id, G
 ///
 /// @ingroup gpa_context_interrogation
 ///
-/// @param[in] gpa_context_id Unique identifier of the opened context.
-/// @param[out] device_id The value that will be set to the device id upon successful execution.
-/// @param[out] revision_id The value that will be set to the device revision id upon successful execution.
+/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [out] device_id The value that will be set to the device id upon successful execution.
+/// @param [out] revision_id The value that will be set to the device revision id upon successful execution.
 ///
 /// @return The GPA result status of the operation.
 /// @retval kGpaStatusOk If the operation is successful.
@@ -230,8 +230,8 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceAndRevisionId(GpaContextId gpa_context_id, Gp
 ///
 /// @ingroup gpa_context_interrogation
 ///
-/// @param[in] gpa_context_id Unique identifier of the opened context.
-/// @param[out] device_name The value that will be set to the device name upon successful execution.
+/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [out] device_name The value that will be set to the device name upon successful execution.
 ///
 /// @return The GPA result status of the operation.
 /// @retval kGpaStatusOk If the operation is successful.
@@ -246,8 +246,8 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceName(GpaContextId gpa_context_id, const char*
 ///
 /// @ingroup gpa_context_interrogation
 ///
-/// @param[in] gpa_context_id Unique identifier of the opened context.
-/// @param[out] hardware_generation The value that will be set to the hardware generation upon successful execution.
+/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [out] hardware_generation The value that will be set to the hardware generation upon successful execution.
 ///
 /// @return The GPA result status of the operation.
 /// @retval kGpaStatusOk If the operation is successful.
@@ -264,8 +264,8 @@ GPA_LIB_DECL GpaStatus GpaGetDeviceGeneration(GpaContextId gpa_context_id, GpaHw
 ///
 /// @ingroup gpa_counter_interrogation
 ///
-/// @param[in] gpa_context_id Unique identifier of the opened context.
-/// @param[out] number_of_counters The value which will hold the count upon successful execution.
+/// @param [in] gpa_context_id Unique identifier of a context.
+/// @param [out] number_of_counters The value which will hold the count upon successful execution.
 ///
 /// @return The GPA result status of the operation.
 /// @retval kGpaStatusOk If the operation is successful.
@@ -280,9 +280,9 @@ GPA_LIB_DECL GpaStatus GpaGetNumCounters(GpaContextId gpa_context_id, GpaUInt32*
 ///
 /// @ingroup gpa_counter_interrogation
 ///
-/// @param[in] gpa_context_id Unique identifier of the opened context.
-/// @param[in] index The index of the counter whose name is needed. Must lie between 0 and (GpaGetNumCounters result - 1).
-/// @param[out] counter_name The address which will hold the name upon successful execution.
+/// @param [in] gpa_context_id Unique identifier of a context.
+/// @param [in] index The index of the counter whose name is needed. Must lie between 0 and (GpaGetNumCounters result - 1).
+/// @param [out] counter_name The address which will hold the name upon successful execution.
 ///
 /// @return The GPA result status of the operation.
 /// @retval kGpaStatusOk If the operation is successful.
@@ -298,7 +298,7 @@ GPA_LIB_DECL GpaStatus GpaGetCounterName(GpaContextId gpa_context_id, GpaUInt32 
 ///
 /// @ingroup gpa_counter_interrogation
 ///
-/// @param [in] gpa_context_id Unique identifier of the session.
+/// @param [in] gpa_context_id Unique identifier of a context.
 /// @param [in] counter_name The name of the counter whose index is needed.
 /// @param [out] counter_index The address which will hold the index upon successful execution.
 ///
@@ -315,7 +315,7 @@ GPA_LIB_DECL GpaStatus GpaGetCounterIndex(GpaContextId gpa_context_id, const cha
 ///
 /// @ingroup gpa_counter_interrogation
 ///
-/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [in] gpa_context_id Unique identifier of a context.
 /// @param [in] index The index of the counter whose group is needed. Must lie between 0 and (GpaGetNumCounters result - 1).
 /// @param [out] counter_group The address which will hold the group string upon successful execution.
 ///
@@ -333,7 +333,7 @@ GPA_LIB_DECL GpaStatus GpaGetCounterGroup(GpaContextId gpa_context_id, GpaUInt32
 ///
 /// @ingroup gpa_counter_interrogation
 ///
-/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [in] gpa_context_id Unique identifier of a context.
 /// @param [in] index The index of the counter whose description is needed. Must lie between 0 and (GpaGetNumCounters result - 1).
 /// @param [out] counter_description The address which will hold the description upon successful execution.
 ///
@@ -351,7 +351,7 @@ GPA_LIB_DECL GpaStatus GpaGetCounterDescription(GpaContextId gpa_context_id, Gpa
 ///
 /// @ingroup gpa_counter_interrogation
 ///
-/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [in] gpa_context_id Unique identifier of a context.
 /// @param [in] index The index of the counter whose data type is needed. Must lie between 0 and (GpaGetNumCounters result - 1).
 /// @param [out] counter_data_type The value which will hold the counter data type upon successful execution.
 ///
@@ -369,7 +369,7 @@ GPA_LIB_DECL GpaStatus GpaGetCounterDataType(GpaContextId gpa_context_id, GpaUIn
 ///
 /// @ingroup gpa_counter_interrogation
 ///
-/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [in] gpa_context_id Unique identifier of a context.
 /// @param [in] index The index of the counter whose usage type is needed. Must lie between 0 and (GpaGetNumCounters result - 1).
 /// @param [out] counter_usage_type The value which will hold the counter usage type upon successful execution.
 ///
@@ -387,7 +387,7 @@ GPA_LIB_DECL GpaStatus GpaGetCounterUsageType(GpaContextId gpa_context_id, GpaUI
 ///
 /// @ingroup gpa_counter_interrogation
 ///
-/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [in] gpa_context_id Unique identifier of a context.
 /// @param [in] index The index of the counter whose UUID is needed. Must lie between 0 and (GpaGetNumCounters result - 1).
 /// @param [out] counter_uuid The value which will hold the counter UUID upon successful execution.
 ///
@@ -407,7 +407,7 @@ GPA_LIB_DECL GpaStatus GpaGetCounterUuid(GpaContextId gpa_context_id, GpaUInt32 
 ///
 /// @ingroup gpa_counter_interrogation
 ///
-/// @param [in] gpa_context_id Unique identifier of the opened context.
+/// @param [in] gpa_context_id Unique identifier of a context.
 /// @param [in] index The index of the counter whose sample type is needed. Must lie between 0 and (GpaGetNumCounters result - 1).
 /// @param [out] counter_sample_type The value which will hold the counter's supported sample type upon successful execution.
 ///

@@ -132,15 +132,18 @@ void vk_utils::DebugReportQueueFamilyTimestampBits(VkPhysicalDevice vk_physical_
 
                 for (unsigned int i = 0; i < queue_family_count; ++i)
                 {
-                    if (queue_family_properties[i].timestampValidBits == 0)
+                    if ((queue_family_properties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) || (queue_family_properties[i].queueFlags & VK_QUEUE_COMPUTE_BIT))
                     {
-                        GPA_LOG_ERROR("QueueFamily Does NOT have valid timestamp bits.");
-                        GPA_LOG_DEBUG_MESSAGE("QueueFamily %u does not have any valid timestamp bits; cannot support profiling.", i);
-                    }
-                    else
-                    {
-                        GPA_LOG_DEBUG_MESSAGE(
-                            "QueueFamily %u has %u valid timestamp bits; it will support profiling.", i, queue_family_properties[i].timestampValidBits);
+                        // GPA is only really applicable to queues that support graphics or compute.
+                        if (queue_family_properties[i].timestampValidBits == 0)
+                        {
+                            GPA_LOG_ERROR("QueueFamily %u supports Graphics or Compute, but does NOT have any valid timestamp bits; it cannot support profiling.", i);
+                        }
+                        else
+                        {
+                            GPA_LOG_DEBUG_MESSAGE(
+                                "QueueFamily %u supports Graphics or Compute, and has %u valid timestamp bits; it will support profiling.", i, queue_family_properties[i].timestampValidBits);
+                        }
                     }
                 }
 

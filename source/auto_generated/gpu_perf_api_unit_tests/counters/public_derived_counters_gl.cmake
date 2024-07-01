@@ -1,5 +1,5 @@
-## Copyright (c) 2022 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PUBLIC_DERIVED_COUNTERS_API_HEADERS_GL

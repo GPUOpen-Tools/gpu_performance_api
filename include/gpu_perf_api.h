@@ -157,7 +157,7 @@ GPA_LIB_DECL GPA_Status GPA_GetCounterName(GPA_ContextId contextId, gpa_uint32 i
 
 /// \brief Gets index of a counter given its name (case insensitive).
 ///
-/// \param[in] contextId Unique identifier of the session.
+/// \param[in] contextId Unique identifier of the opened context.
 /// \param[in] pCounterName The name of the counter whose index is needed.
 /// \param[out] pIndex The address which will hold the index upon successful execution.
 /// \return The GPA result status of the operation. GPA_STATUS_OK is returned if the operation is successful.

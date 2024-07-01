@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX9_GFX904.
@@ -12,9 +12,11 @@
 
 // clang-format off
 
+#include <vector>
 #include <set>
 
 struct GpaHardwareCounterDesc;
+
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx9.h"
 
 namespace counter_gfx9_gfx904
@@ -28,12 +30,7 @@ inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
 {
     static std::set<GDT_HW_ASIC_TYPE> asics_supported = { GDT_GFX9_0_4 };
 
-    if (asics_supported.find(asic_type) == asics_supported.end())
-    {
-        return false;
-    }
-
-    return true;
+    return asics_supported.find(asic_type) != asics_supported.end();
 }
 
     extern std::vector<GpaHardwareCounterDesc> kPaSu0CountersGfx9_gfx904; ///< Array of internal counters for PaSu0 block for Gfx9_gfx904 family
@@ -44,8 +41,6 @@ inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
     extern std::vector<GpaHardwareCounterDesc> kPaSc1CountersGfx9_gfx904; ///< Array of internal counters for PaSc1 block for Gfx9_gfx904 family
     extern std::vector<GpaHardwareCounterDesc> kPaSc2CountersGfx9_gfx904; ///< Array of internal counters for PaSc2 block for Gfx9_gfx904 family
     extern std::vector<GpaHardwareCounterDesc> kPaSc3CountersGfx9_gfx904; ///< Array of internal counters for PaSc3 block for Gfx9_gfx904 family
-    extern std::vector<GpaHardwareCounterDesc> kIa0CountersGfx9_gfx904; ///< Array of internal counters for Ia0 block for Gfx9_gfx904 family
-    extern std::vector<GpaHardwareCounterDesc> kIa1CountersGfx9_gfx904; ///< Array of internal counters for Ia1 block for Gfx9_gfx904 family
     extern std::vector<GpaHardwareCounterDesc> kGcea0CountersGfx9_gfx904; ///< Array of internal counters for Gcea0 block for Gfx9_gfx904 family
     extern std::vector<GpaHardwareCounterDesc> kGcea1CountersGfx9_gfx904; ///< Array of internal counters for Gcea1 block for Gfx9_gfx904 family
     extern std::vector<GpaHardwareCounterDesc> kGcea2CountersGfx9_gfx904; ///< Array of internal counters for Gcea2 block for Gfx9_gfx904 family
@@ -110,8 +105,6 @@ inline bool OverrideBlockInstanceCounters(GDT_HW_ASIC_TYPE asic_type)
     ReplaceBlockInstanceCounters(counter_gfx9::kPaSc1CountersGfx9, kPaSc1CountersGfx9_gfx904);
     ReplaceBlockInstanceCounters(counter_gfx9::kPaSc2CountersGfx9, kPaSc2CountersGfx9_gfx904);
     ReplaceBlockInstanceCounters(counter_gfx9::kPaSc3CountersGfx9, kPaSc3CountersGfx9_gfx904);
-    ReplaceBlockInstanceCounters(counter_gfx9::kIa0CountersGfx9, kIa0CountersGfx9_gfx904);
-    ReplaceBlockInstanceCounters(counter_gfx9::kIa1CountersGfx9, kIa1CountersGfx9_gfx904);
     ReplaceBlockInstanceCounters(counter_gfx9::kGcea0CountersGfx9, kGcea0CountersGfx9_gfx904);
     ReplaceBlockInstanceCounters(counter_gfx9::kGcea1CountersGfx9, kGcea1CountersGfx9_gfx904);
     ReplaceBlockInstanceCounters(counter_gfx9::kGcea2CountersGfx9, kGcea2CountersGfx9_gfx904);

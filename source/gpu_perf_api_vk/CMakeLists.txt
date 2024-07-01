@@ -1,5 +1,5 @@
-## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
 
@@ -29,8 +29,6 @@ include_directories(${ADDITIONAL_INCLUDE_DIRECTORIES}
                     ${GPA_SRC})
 
 set(HEADER_FILES ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_vk.h
-                 ${CMAKE_CURRENT_SOURCE_DIR}/vk_command_list_sw_queries.h
-                 ${CMAKE_CURRENT_SOURCE_DIR}/vk_command_list_sw_query_group.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_entry_points.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_command_list.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_context.h
@@ -39,14 +37,10 @@ set(HEADER_FILES ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_vk.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_pass.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_sample.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_session.h
-                 ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_software_sample.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_includes.h
-                 ${CMAKE_CURRENT_SOURCE_DIR}/vk_software_counters_results.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_utils.h)
 
-set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vk_command_list_sw_queries.cc
-                 ${CMAKE_CURRENT_SOURCE_DIR}/vk_command_list_sw_query_group.cc
-                 ${CMAKE_CURRENT_SOURCE_DIR}/vk_entry_points.cc
+set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vk_entry_points.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_command_list.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_context.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_hardware_sample.cc
@@ -54,7 +48,6 @@ set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/vk_command_list_sw_queries.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_pass.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_sample.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_session.cc
-                 ${CMAKE_CURRENT_SOURCE_DIR}/vk_gpa_software_sample.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/vk_utils.cc)
 
 set(SOURCES

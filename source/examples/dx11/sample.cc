@@ -28,7 +28,7 @@ gpa_example::Dx11SampleApp::Dx11SampleApp(const std::string app_name, CmdlinePar
     : GpaSampleApp(app_name, cmdline_parser)
     , nogpa_(false)
 {
-    cmdline_parser_.AddArg("--nogpa", &nogpa_, ArgType::ARG_TYPE_BOOL, "Do not use GPUPerfAPI to collect performance counters");
+    cmdline_parser_.AddArg("--nogpa", &nogpa_, ArgType::kArgTypeBool, "Do not use GPUPerfAPI to collect performance counters");
 }
 
 bool gpa_example::Dx11SampleApp::NoGpa()
@@ -43,7 +43,7 @@ int WINAPI WinMain(_In_ HINSTANCE instance, _In_opt_ HINSTANCE prev_instance, _I
 
     gpa_example::CmdlineParser parser(__argc, __argv);
 
-    gpa_example::Dx11SampleApp app("Dx11Triangle", parser);
+    gpa_example::Dx11SampleApp app(AMDT_PROJECT_NAME, parser);
 
     if (!app.Initialize())
     {

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface representing the GPA context.
@@ -154,21 +154,6 @@ public:
     /// @return True if the exposedCounterIndex is in the valid range; false otherwise.
     virtual bool GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, GpaCounterSource* counter_source, GpaUInt32* source_local_index) const = 0;
 
-    /// @brief Check to see if public counters should be exposed.
-    ///
-    /// @return True if public counters should be exposed; false otherwise.
-    virtual bool ArePublicCountersExposed() const = 0;
-
-    /// @brief Check to see if software counters should be exposed.
-    ///
-    /// @return True if software counters should be exposed; false otherwise.
-    virtual bool AreHardwareCountersExposed() const = 0;
-
-    /// @brief Check to see if hardware counters should be exposed.
-    ///
-    /// @return True if hardware counters should be exposed; false otherwise.
-    virtual bool AreSoftwareCountersExposed() const = 0;
-
     /// @brief Gets the source (origin) of the specified internal counter (ie, either hardware or software).
     ///
     /// @param internal_counter_index The index of the counter to find, must be in range of 0 to (NumHwCounters + NumSwCounters).
@@ -178,6 +163,16 @@ public:
     /// @retval Hardware If the counter comes from our internal extension.
     /// @retval Software If the counter comes from an API-level entry point (ie, queries).
     virtual GpaCounterSource GetCounterSource(GpaUInt32 internal_counter_index) const = 0;
+
+    /// @brief Check to see if public counters should be exposed.
+    ///
+    /// @return True if public counters should be exposed; false otherwise.
+    virtual bool ArePublicCountersExposed() const = 0;
+
+    /// @brief Check to see if hardware counters should be exposed.
+    ///
+    /// @return True if hardware counters should be exposed; false otherwise.
+    virtual bool AreHardwareCountersExposed() const = 0;
 
     /// @brief Sets a flag to invalidate and flush the L2 cache around the next counter sample.
     ///
@@ -219,9 +214,10 @@ public:
     /// @brief Ends the session on current context.
     ///
     /// @param [in] gpa_session Pointer to previously created session object.
+    /// @param [in] force_end true to ignore errors and force an end to the session. Default usage is false.
     ///
     /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus EndSession(IGpaSession* gpa_session) = 0;
+    virtual GpaStatus EndSession(IGpaSession* gpa_session, bool force_end) = 0;
 
     /// @brief Returns the active session for the context.
     ///

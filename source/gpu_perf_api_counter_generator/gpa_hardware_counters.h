@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Maintains a set of hardware counters.
@@ -10,10 +10,10 @@
 
 #include <sstream>
 
-#include "gpa_counter.h"
 #include "gpu_perf_api_common/gpa_common_defs.h"
-#include "gpa_split_counters_interfaces.h"
-#include "gpa_counter_scheduler_interface.h"
+#include "gpu_perf_api_counter_generator/gpa_counter.h"
+#include "gpu_perf_api_counter_generator/gpa_split_counters_interfaces.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_scheduler_interface.h"
 
 /// @brief Struct to describe a hardware counter.
 struct GpaHardwareCounterDescExt
@@ -102,10 +102,11 @@ public:
         kGpaInternalHwBlockSqWgpHs,                                  ///< The Gpa hardware block is SQWGP_HS.
         kGpaInternalHwBlockSqWgpCs,                                  ///< The Gpa hardware block is SQWGP_CS.
         kGpaInternalHwBlockSqWgpLast = kGpaInternalHwBlockSqWgpCs,   ///< The Gpa hardware block is SQWGP_CS.
+        kGpaInternalHwBlockSqG,                                      ///< The Gpa hardware block is SQG.
         kGpaInternalHwBlockCount,                                    ///< Count.
     };
 
-    /// @brief Initializes an instance of the GPA_HardwareCounters class.
+    /// @brief Initializes an instance of the GpaHardwareCounters class.
     GpaHardwareCounters()
     {
         if (kHardwareBlockString.empty())
@@ -194,7 +195,7 @@ public:
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQG_GS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQG_HS"),
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQG_CS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQWGP_PS"),
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQWGP_GS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQWGP_HS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS")};
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqG, "SQG")};
         }
 
         Clear();
@@ -231,10 +232,11 @@ public:
         counters_generated_                               = false;
         isolated_groups_                                  = nullptr;
         isolated_group_count_                             = 0;
+        padded_counters_                                  = nullptr;
+        padded_counter_count_                             = 0;
 
         hardware_exposed_counters_.clear();
         hardware_exposed_counter_groups_      = nullptr;
-        hardware_exposed_counter_group_count_ = 0;
         hardware_exposed_counters_list_.clear();
         hardware_exposed_counter_internal_indices_list_.clear();
         hardware_exposed_counters_generated_ = false;
@@ -292,58 +294,65 @@ public:
                 }
             }
 
+            if ((size_t)gpa_internal_hardware_block >= kHardwareBlockString.size())
+            {
+                // The supplied hardware block is out of range, so it cannot be added to the cache, nor found in the cache.
+                return false;
+            }
+
+            // Iterate through all the individual block instances to find the matching hardware block.
+            // Then build up a vector of counter index offsets to each of the block instances so it can be cached.
+            // The idea here is that if GPA enables a counter in the first instance of a block, it will likely
+            // follow up with the same counter in the other block instances. Caching the offsets to the start of each
+            // instance makes it faster to find the other indices.
+            // Example: pretend TA has 31 counters, and TD has 10, and a counter is being enabled in TD.
+            // The internal_counter_groups_ may be [ TA0, TA1, TD0, TD1 ...]
+            // The outer loop will skip over the two TA's and calculate the counter offset as 31+31 = 62.
+            // Then "TD0" would match.
+            // The block_instance_counter_offsets would then get populated with [62, 72] as the starting counter index for TD0 and TD1, and added to the cache.
             bool      found_block    = false;
             GpaUInt32 group_iter     = 0u;
             GpaUInt32 counter_offset = 0u;
 
-            std::string hardware_block_string = kHardwareBlockString[gpa_internal_hardware_block];
-            std::string current_block_string;
+            // Setup strings to find the first hardware block instance. If there is only 1 instance, then it won't
+            // have the "0" afterwards to indicate the block instance number, but if there are multiple instances
+            // then the first one will end with a "0". Taking this approach allows us to search for an exact match.
+            // There are some hardware blocks with similar names that shouldn't be accidentally matched ie: ATC / ATCL2,
+            // GE / GESE / GEDIST, SQ / SQ_GS (etc) / SQG / SQG_GS (etc) / SQWGP / SQWGP_GS (etc).
+            const std::string hardware_block_to_find               = kHardwareBlockString[gpa_internal_hardware_block];
+            const std::string hardware_block_to_find_instance_zero = hardware_block_to_find + "0";
 
             const GpaUInt32 internal_groups_size = static_cast<GpaUInt32>(internal_counter_groups_.size());
             while (!found_block && group_iter < internal_groups_size)
             {
-                current_block_string.clear();
-                current_block_string = std::string(internal_counter_groups_[group_iter].name);
+                const std::string current_block_string(internal_counter_groups_[group_iter].name);
 
-                if (current_block_string.find(hardware_block_string) != std::string::npos)
+                if (current_block_string.compare(hardware_block_to_find) == 0 || current_block_string.compare(hardware_block_to_find_instance_zero) == 0)
                 {
-                    found_block                                                       = true;
-                    auto                                 instance_iter                = 0u;
-                    auto                                 group_id_with_first_instance = group_iter;
+                    found_block = true;
+
+                    const GpaUInt32                      group_id_with_first_instance = group_iter;
                     std::vector<BlockCounterIndexOffset> block_instance_counter_offsets;
-                    bool                                 updated_all_instance = false;
+
+                    // Loop through each block instance to update its counter offset.
+                    // Use the fact that block instances will reset to 0 when a new set of HW block instances start.
                     do
                     {
                         block_instance_counter_offsets.push_back(counter_offset);
                         counter_offset += internal_counter_groups_[group_iter].num_counters;
-                        ++instance_iter;
+
                         ++group_iter;
-                        current_block_string.clear();
-                        current_block_string = std::string(internal_counter_groups_[group_iter].name);
 
-                        if (hardware_block_string.find("SQ") != std::string::npos || hardware_block_string.find("GL1C") != std::string::npos)
-                        {
-                            std::stringstream hardware_block_str_with_instance;
-                            hardware_block_str_with_instance << hardware_block_string.c_str() << instance_iter;
-
-                            if (hardware_block_str_with_instance.str().find(current_block_string) == std::string::npos)
-                            {
-                                updated_all_instance = true;
-                            }
-                        }
-                        else if (current_block_string.find(hardware_block_string) == std::string::npos)
-                        {
-                            updated_all_instance = true;
-                        }
-
-                    } while (!updated_all_instance);
+                    } while (group_iter < internal_groups_size && internal_counter_groups_[group_iter].block_instance > 0);
 
                     block_instance_counters_index_cache_[gpa_internal_hardware_block]     = block_instance_counter_offsets;
                     gpa_hw_block_hardware_block_group_cache_[gpa_internal_hardware_block] = group_id_with_first_instance;
                 }
-
-                counter_offset += internal_counter_groups_[group_iter].num_counters;
-                ++group_iter;
+                else
+                {
+                    counter_offset += internal_counter_groups_[group_iter].num_counters;
+                    ++group_iter;
+                }
             }
 
             return found_block;
@@ -934,14 +943,14 @@ public:
     }
 
     std::vector<std::vector<GpaHardwareCounterDesc>*>
-                                     counter_groups_array_;           ///< List of counter groups as defined by the list of internal counters in each group.
-    std::vector<GpaCounterGroupDesc> internal_counter_groups_;        ///< List of internal counter groups.
-    GpaCounterGroupDesc*             additional_groups_;              ///< List of internal counter groups exposed by the driver, but not known by GPA.
-    unsigned int                     additional_group_count_;         ///< The number of internal counter groups exposed by the driver, but not known by GPA.
-    GpaSqCounterGroupDesc*           sq_counter_groups_;              ///< List of GpaSqCounterGroupDesc.
-    unsigned int                     sq_group_count_;                 ///< The number of internal SQ counter groups.
-    std::set<unsigned int>           timestamp_block_ids_;            ///< Set of timestamp block id's.
-    std::set<unsigned int>           time_counter_indices_;           ///< Set of timestamp counter indices.
+                                     counter_groups_array_;     ///< List of counter groups as defined by the list of internal counters in each group.
+    std::vector<GpaCounterGroupDesc> internal_counter_groups_;  ///< List of internal counter groups.
+    GpaCounterGroupDesc*             additional_groups_;        ///< List of internal counter groups exposed by the driver, but not known by GPA.
+    unsigned int                     additional_group_count_;   ///< The number of internal counter groups exposed by the driver, but not known by GPA.
+    GpaSqCounterGroupDesc*           sq_counter_groups_;        ///< List of GpaSqCounterGroupDesc.
+    unsigned int                     sq_group_count_;           ///< The number of internal SQ counter groups.
+    std::set<unsigned int>           timestamp_block_ids_;      ///< Set of timestamp block id's.
+    std::set<unsigned int> time_counter_indices_;  ///< Set of timestamp counter indices.
     unsigned int gpu_time_bottom_to_bottom_duration_counter_index_;   ///< The index of the GPUTime Bottom-to-Bottom duration counter (-1 if it doesn't exist).
     unsigned int gpu_time_bottom_to_bottom_start_counter_index_;      ///< The index of the GPUTime Bottom-to-Bottom start counter (-1 if it doesn't exist).
     unsigned int gpu_time_bottom_to_bottom_end_counter_index_;        ///< The index of the GPUTime Bottom-to-Bottom end counter (-1 if it doesn't exist).
@@ -966,7 +975,6 @@ public:
     std::vector<std::vector<GpaHardwareCounterDesc>*>
         hardware_exposed_counters_;  ///< List of counter groups as defined by the list of hardware exposed counters counters in each group.
     GpaCounterGroupExposedCounterDesc*  hardware_exposed_counter_groups_;                 ///< List of hardware exposed counter groups.
-    unsigned int                        hardware_exposed_counter_group_count_;            ///< The number of hardware exposed counter groups.
     std::vector<GpaHardwareCounterDesc> hardware_exposed_counters_list_;                  ///< Vector of hardware exposed counters.
     std::vector<GpaUInt32>              hardware_exposed_counter_internal_indices_list_;  ///< Internal hardware index for the hardware exposed counter.
     bool                                hardware_exposed_counters_generated_;             ///< Indicates that the hardware exposed counters have been generated.

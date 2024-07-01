@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Vk API implementation
@@ -15,7 +15,6 @@
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_vk.h"
-#include "gpu_perf_api_counter_generator/gpa_counter_generator_vk_non_amd.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_scheduler_vk.h"
 
 #include "gpu_perf_api_common/gpa_command_list_interface.h"
@@ -28,7 +27,6 @@
 
 IGpaImplementor*                   gpa_imp = VkGpaImplementor::Instance();
 static GpaCounterGeneratorVk       generator_vk;          ///< Static instance of VK generator.
-static GpaCounterGeneratorVkNonAmd generator_vk_non_amd;  ///< Static instance of Vulkan non-AMD generator.
 static GpaCounterSchedulerVk       scheduler_vk;          ///< Static instance of VK scheduler.
 
 GpaApiType VkGpaImplementor::GetApiType() const
@@ -64,14 +62,14 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                     shader_core_properties_amd.sType                                   = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_CORE_PROPERTIES_AMD;
                     shader_core_properties_amd.pNext                                   = &shader_core_properties_2_amd;
 
-                    VkPhysicalDeviceProperties2KHR physical_device_properties = {};
-                    physical_device_properties.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
-                    physical_device_properties.pNext                          = &shader_core_properties_amd;
-
                     VkPhysicalDeviceGpaProperties2AMD physical_device_properties2 = {};
                     physical_device_properties2.sType                             = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_GPA_PROPERTIES2_AMD;
                     physical_device_properties2.revisionId                        = REVISION_ID_ANY;
-                    physical_device_properties2.pNext                             = &physical_device_properties;
+                    physical_device_properties2.pNext                             = &shader_core_properties_amd;
+
+                    VkPhysicalDeviceProperties2KHR physical_device_properties = {};
+                    physical_device_properties.sType                          = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2_KHR;
+                    physical_device_properties.pNext                          = &physical_device_properties2;
 
                     _vkGetPhysicalDeviceProperties2KHR(vk_context_info->physical_device, &physical_device_properties);
 

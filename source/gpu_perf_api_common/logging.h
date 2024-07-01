@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Logging utility.
@@ -53,6 +53,12 @@
 #define TRACE_PRIVATE_FUNCTION_WITH_ARGS(func, ...)  ///< Macro used for tracing private function with parameters.
 #endif                                               // trace functions.
 
+#ifdef __GNUC__
+#define GPA_ATTRIBUTE_PRINTF(msg, args) __attribute__((format(printf, msg, args)))
+#else
+#define GPA_ATTRIBUTE_PRINTF(msg, args)
+#endif  // !__GNUC__
+
 /// @brief Internal GPA logger function.
 ///
 /// @param [in] log_type Logging type.
@@ -81,140 +87,120 @@ public:
     /// @param [in] log_message The message to pass along.
     void Log(GpaLoggingType log_type, const char* log_message);
 
+    /// @brief Passes the supplied formatted message to the callback function if the user has accepted that type of message.
+    ///
+    /// @param [in] type The type of message being supplied.
+    /// @param [in] msg_fmt The message to format.
+    /// @param [in] args Variable arguments supplied for the message.
+    void Logfv(GpaLoggingType type, const char* msg_fmt, va_list args)
+    {
+        // If the supplied message type is among those that the user wants be notified of,
+        // then pass the message along.
+        if (type & logging_type_)
+        {
+            EnterCriticalSection(&lock_handle);
+
+            // Format string.
+            char    buffer[1024 * 5];
+            buffer[0] = '\0';
+#ifdef WIN32
+            vsnprintf_s(buffer, sizeof(buffer), msg_fmt, args);
+#else
+            vsnprintf(buffer, sizeof(buffer), msg_fmt, args);
+#endif
+            Log(type, buffer);
+
+            LeaveCriticalSection(&lock_handle);
+        }
+    }
+
+    /// @brief Passes the supplied formatted message to the callback function if the user has accepted that type of message.
+    ///
+    /// @param [in] type The type of message being supplied.
+    /// @param [in] msg_fmt The message to format.
+    void Logf(GpaLoggingType type, const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(3, 4)
+    {
+        va_list args;
+        va_start(args, msg_fmt);
+        Logfv(type, msg_fmt, args);
+        va_end(args);
+    }
+
     /// @brief Logs an error message.
     ///
-    /// @param [in] message The message to pass along.
-    inline void LogError(const char* message)
+    /// @param [in] msg_fmt The message to format and pass along.
+    inline void LogError(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
-        Log(kGpaLoggingError, message);
+        va_list args;
+        va_start(args, msg_fmt);
+        Logfv(kGpaLoggingError, msg_fmt, args);
+        va_end(args);
     }
 
     /// @brief Logs an informational message.
     ///
-    /// @param [in] message The message to pass along.
-    inline void LogMessage(const char* message)
+    /// @param [in] msg_fmt The message to format and pass along.
+    inline void LogMessage(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
-        Log(kGpaLoggingMessage, message);
+        va_list args;
+        va_start(args, msg_fmt);
+        Logfv(kGpaLoggingMessage, msg_fmt, args);
+        va_end(args);
     }
 
     /// @brief Logs a trace message.
     ///
-    /// @param [in] message The message to pass along.
-    inline void LogTrace(const char* message)
+    /// @param [in] msg_fmt The message to format and pass along.
+    inline void LogTrace(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
-        Log(kGpaLoggingTrace, message);
+        va_list args;
+        va_start(args, msg_fmt);
+        Logfv(kGpaLoggingTrace, msg_fmt, args);
+        va_end(args);
     }
 
     /// @brief Logs a formatted message in internal builds; does nothing in release.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugMessage(const char* msg_fmt, ...)
+    void LogDebugMessage(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
-        // If the supplied message type is among those that the user wants be notified of,
-        // then pass the message along.
-        if (kGpaLoggingDebugMessage & logging_type_)
-        {
-            EnterCriticalSection(&lock_handle);
-
-            // Format string.
-            char    buffer[1024 * 50];
-            va_list arg_list;
-            va_start(arg_list, msg_fmt);
-#ifdef WIN32
-            vsprintf_s(buffer, msg_fmt, arg_list);
-#else
-            vsprintf(buffer, msg_fmt, arg_list);
-#endif
-            va_end(arg_list);
-
-            Log(kGpaLoggingDebugMessage, buffer);
-
-            LeaveCriticalSection(&lock_handle);
-        }
+        va_list args;
+        va_start(args, msg_fmt);
+        Logfv(kGpaLoggingDebugMessage, msg_fmt, args);
+        va_end(args);
     }
 
     /// @brief Logs a formatted error message in debug builds; does nothing in release.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugError(const char* msg_fmt, ...)
+    void LogDebugError(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
-        // If the supplied message type is among those that the user wants be notified of,
-        // then pass the message along.
-        if (kGpaLoggingDebugError & logging_type_)
-        {
-            EnterCriticalSection(&lock_handle);
-
-            // Format string.
-            char    buffer[1024 * 50];
-            va_list arg_list;
-            va_start(arg_list, msg_fmt);
-#ifdef WIN32
-            vsprintf_s(buffer, msg_fmt, arg_list);
-#else
-            vsprintf(buffer, msg_fmt, arg_list);
-#endif
-            va_end(arg_list);
-
-            Log(kGpaLoggingDebugError, buffer);
-
-            LeaveCriticalSection(&lock_handle);
-        }
+        va_list args;
+        va_start(args, msg_fmt);
+        Logfv(kGpaLoggingDebugError, msg_fmt, args);
+        va_end(args);
     }
 
     /// @brief Logs a formatted error message in debug builds; does nothing in release.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugTrace(const char* msg_fmt, ...)
+    void LogDebugTrace(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
-        // If the supplied message type is among those that the user wants be notified of,
-        // then pass the message along.
-        if (kGpaLoggingDebugTrace & logging_type_)
-        {
-            EnterCriticalSection(&lock_handle);
-
-            // Format string.
-            char    buffer[1024 * 50];
-            va_list arg_list;
-            va_start(arg_list, msg_fmt);
-#ifdef WIN32
-            vsprintf_s(buffer, msg_fmt, arg_list);
-#else
-            vsprintf(buffer, msg_fmt, arg_list);
-#endif
-            va_end(arg_list);
-
-            Log(kGpaLoggingDebugTrace, buffer);
-
-            LeaveCriticalSection(&lock_handle);
-        }
+        va_list args;
+        va_start(args, msg_fmt);
+        Logfv(kGpaLoggingDebugTrace, msg_fmt, args);
+        va_end(args);
     }
 
     /// @brief Logs a formatted message in internal builds; does nothing in public builds.
     ///
     /// @param [in] msg_fmt The message to format and pass along.
-    void LogDebugCounterDefs(const char* msg_fmt, ...)
+    void LogDebugCounterDefs(const char* msg_fmt, ...) GPA_ATTRIBUTE_PRINTF(2, 3)
     {
-        // If the supplied message type is among those that the user wants be notified of,
-        // then pass the message along.
-        if (kGpaLoggingDebugCounterDefinitions & logging_type_)
-        {
-            EnterCriticalSection(&lock_handle);
-
-            // Format string.
-            char    buffer[1024 * 50];
-            va_list arg_list;
-            va_start(arg_list, msg_fmt);
-#ifdef WIN32
-            vsprintf_s(buffer, msg_fmt, arg_list);
-#else
-            vsprintf(buffer, msg_fmt, arg_list);
-#endif
-            va_end(arg_list);
-
-            Log(kGpaLoggingDebugCounterDefinitions, buffer);
-
-            LeaveCriticalSection(&lock_handle);
-        }
+        va_list args;
+        va_start(args, msg_fmt);
+        Logfv(kGpaLoggingDebugCounterDefinitions, msg_fmt, args);
+        va_end(args);
     }
 
     /// @brief Checks whether the tracing is enabled or not.

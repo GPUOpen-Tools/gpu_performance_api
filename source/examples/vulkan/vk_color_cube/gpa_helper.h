@@ -74,6 +74,12 @@ public:
     /// @param [in] msg The message.
     static void gpaLoggingCallback(GpaLoggingType type, const char* msg);
 
+    /// @brief Output a log message and GpaStatus.
+    ///
+    /// @param [in] status The GpaStatus to output.
+    /// @param [in] msg Optional, the message to log alongside the status.
+    void LogStatus(GpaStatus status, const char* msg = nullptr);
+
     /// @brief Enum to define type of counter validation to perform
     typedef enum
     {
@@ -135,7 +141,7 @@ public:
     GpaFunctionTable* gpa_function_table_;
 
     /// The name of the csv file that will be written.
-    std::string csv_file_name_ = "VkColorCube_counter_data.csv";
+    static std::string csv_file_name;
 
     /// The name of the GPA Log file that will be written.
     static std::string gpa_log_file_name;

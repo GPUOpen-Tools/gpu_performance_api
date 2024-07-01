@@ -1,5 +1,5 @@
-## Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
 
@@ -29,7 +29,7 @@ set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/api_error_tests.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api_loader_tests.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api_unit_tests.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/counter_generator_tests.cc
-                 ${GPA_SRC_COUNTER_GENERATOR}/gpa_derived_counter_evaluator.inc
+                 ${GPA_SRC_COUNTER_GENERATOR}/gpa_derived_counter_evaluator.hpp
                  ${ADDITIONAL_UNIT_TEST_SOURCES})
 
 
@@ -63,8 +63,7 @@ set(INTERNAL_COUNTERS_SRC
     ${UNITTEST_COUNTER_DIR}/get_internal_derived_counters.cc)
 
 set(HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/counter_generator_tests.h
-                 ${CMAKE_CURRENT_SOURCE_DIR}/counters/gpa_counter_desc.h
-)
+                 ${CMAKE_CURRENT_SOURCE_DIR}/counters/gpa_counter_desc.h)
 
 foreach(API GL DX11 DX12 VK CL)
     if(NOT WIN32 AND (${API} STREQUAL "DX11" OR ${API} STREQUAL DX12))
@@ -156,3 +155,4 @@ SET_EXECUTABLE_NAME(${GPA_PROJECT_NAME})
 if(WIN32)
     source_group("Utils" FILES ${UTIL_FILES})
 endif()
+

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Vulkan GPA Command List Object Implementation
@@ -10,7 +10,6 @@
 #include "gpu_perf_api_vk/vk_entry_points.h"
 #include "gpu_perf_api_vk/vk_gpa_context.h"
 #include "gpu_perf_api_vk/vk_gpa_session.h"
-#include "gpu_perf_api_vk/vk_gpa_software_sample.h"
 
 VkGpaCommandList::VkGpaCommandList(VkGpaSession* gpa_session, GpaPass* pass, void* command, CommandListId command_list_id, GpaCommandListType command_list_type)
     : GpaCommandList(gpa_session, pass, command_list_id, command_list_type)
@@ -113,11 +112,6 @@ bool VkGpaCommandList::BeginCommandListRequest()
             }
         }
     }
-    else  // Software Sample.
-    {
-        VkGpaContext* vk_gpa_context = reinterpret_cast<VkGpaContext*>(GetParentSession()->GetParentContext());
-        began                        = sw_queries_.Initialize(vk_gpa_context->GetVkPhysicalDevice(), vk_gpa_context->GetVkDevice(), vk_command_buffer_);
-    }
 
     return began;
 }
@@ -151,12 +145,6 @@ bool VkGpaCommandList::BeginSampleRequest(ClientSampleId client_sample_id, GpaSa
 {
     UNREFERENCED_PARAMETER(client_sample_id);
     UNREFERENCED_PARAMETER(gpa_sample);
-
-    if (GpaCounterSource::kSoftware == GetPass()->GetCounterSource())
-    {
-        VkGpaSoftwareSample* gpa_software_sample = reinterpret_cast<VkGpaSoftwareSample*>(gpa_sample);
-        gpa_software_sample->AssignQueries(&sw_queries_);
-    }
 
     return true;
 }
@@ -236,27 +224,6 @@ bool VkGpaCommandList::CopySecondarySamples(VkGpaCommandList*            primary
             _vkCmdCopyGpaSessionResultsAMD(primary_command_list->GetVkCommandBuffer(), session_copy);
             copied = true;
         }
-    }
-    else  // Software counters.
-    {
-        vk_command_list_mutex_.lock();
-
-        unsigned int sample_index             = 0;
-        auto         process_client_sample_id = [&](ClientSampleIdGpaSamplePair clientSampleIdGpaSamplePair) -> bool {
-            ClientSampleId original_sample_id = clientSampleIdGpaSamplePair.second->GetClientSampleId();
-            original_sample_ids.push_back(original_sample_id);
-
-            CopiedSampleInfo copied_info                     = {};
-            copied_info.original_sample_id                   = original_sample_id;
-            copied_info.copied_amd_ext_session               = VK_NULL_HANDLE;
-            copied_sample_map_[new_sample_ids[sample_index]] = copied_info;
-            sample_index++;
-            return true;
-        };
-
-        IterateSampleUnorderedMap(process_client_sample_id);
-        vk_command_list_mutex_.unlock();
-        copied = false;
     }
 
     return copied;

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Interfaces used for counter splitting.
@@ -67,13 +67,6 @@ struct GpaHardwareCounterIndices
     unsigned int hardware_index;  ///< The 0-based index of the hardware counter.
 };
 
-/// @brief Stores the counter indices for software counters.
-struct GpaSoftwareCounterIndices
-{
-    unsigned int public_index;    ///< The index of the software counter as exposed by GPUPerfAPI (first sw counter is after all public counters).
-    unsigned int software_index;  ///< The 0-based index of the software counter.
-};
-
 /// @brief Records where to locate the results of a counter query in session requests.
 class GpaCounterResultLocation
 {
@@ -112,15 +105,11 @@ public:
     /// @return True if the counter is a hardware counter.
     virtual bool IsHwCounter() const = 0;
 
-    /// @brief Get the software counter bool.
-    ///
-    /// @return True if the counter is a software counter.
-    virtual bool IsSwCounter() const = 0;
-
     /// @brief Get the global group group index (the full index of the software groups that come after the hardware groups).
     ///
     /// @return The total number of groups.
     virtual unsigned int GlobalGroupIndex() const = 0;
+
 };
 
 /// @brief Interface for a class that can split public and internal counters into separate passes.
@@ -177,7 +166,6 @@ public:
     ///
     /// @param [in] public_counters_to_split The set of public counters that need to be split into passes.
     /// @param [in] internal_counters_to_schedule Additional internal counters that need to be scheduled (used by internal builds).
-    /// @param [in] software_counters_to_schedule Additional software counters that need to be scheduled.
     /// @param [in] counter_group_accessor A class to access the internal counters.
     /// @param [in] max_counters_per_group The maximum number of counters that can be enabled in a single pass on each HW block or SW group.
     /// @param [out] num_scheduled_counters Indicates the total number of internal counters that were assigned to a pass.
@@ -185,7 +173,6 @@ public:
     /// @return The list of passes that the counters are separated into.
     virtual std::list<GpaCounterPass> SplitCounters(const std::vector<const GpaDerivedCounterInfoClass*>& public_counters_to_split,
                                                     const std::vector<GpaHardwareCounterIndices>          internal_counters_to_schedule,
-                                                    const std::vector<GpaSoftwareCounterIndices>          software_counters_to_schedule,
                                                     IGpaCounterGroupAccessor*                             counter_group_accessor,
                                                     const std::vector<unsigned int>&                      max_counters_per_group,
                                                     unsigned int&                                         num_scheduled_counters) = 0;
@@ -235,6 +222,7 @@ protected:
     {
         return time_counter_indices_.find(counter_index) != time_counter_indices_.end();
     }
+
 
     /// @brief Adds a counter result location.
     ///
@@ -395,6 +383,9 @@ protected:
             GPA_LOG_DEBUG_ERROR("Group(%d) counter limit is zero.", group_index);
             return false;
         }
+
+        // This should never occur. It indicates the counter relies on a block without any collectible events.
+        assert(group_limit > 0);
 
         return new_group_used_count <= group_limit;
     }

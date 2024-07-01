@@ -211,7 +211,7 @@ public:
 
     std::fstream gpa_log_file_stream_;  ///< Log file stream.
     std::string  gpa_log_file_name_;    ///< Log file name.
-    std::string  counter_data_name_;    ///< Counter data file name.
+    std::string  gpa_counter_file_name_;    ///< Counter data file name.
     bool         has_error_occurred_;   ///< Flag indicating if any GPA error occurred.
     int          num_errors_occurred_;  ///< Indicates the number of errors that have occurred.
 

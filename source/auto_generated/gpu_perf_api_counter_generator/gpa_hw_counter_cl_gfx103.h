@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief CL counter definitions for GFX103.
@@ -20,7 +20,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_cl_gfx103
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kClExposedCountersGroupArrayGfx103; ///< Array of hardware exposed counter groups for Cl for Gfx103 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kClCounterGroupArrayGfx103; ///< Array of hardware counter groups for Cl for Gfx103 family
     extern std::vector<GpaCounterGroupDesc>                           kHwClGroupsGfx103; ///< Array of counter groups for Cl for Gfx103 family
     extern GpaCounterGroupExposedCounterDesc                          kHwClExposedCountersByGroupGfx103[]; ///< Array of exposed counter groups for Cl for Gfx103 family
     extern GpaPaddedCounterDesc                                       kClPaddedCounterByGroupGfx103[]; ///< Array of reserved counter for Cl for Gfx103 family
@@ -29,7 +29,6 @@ namespace counter_cl_gfx103
     extern const std::set<unsigned int>                               kHwClTimestampBlockIdsGfx103; ///< Timestamp block id's for Cl for Gfx103 family
     extern const std::set<unsigned int>                               kHwClTimeCounterIndicesGfx103; ///< Timestamp counter indices for Cl for Gfx103 family
     extern const unsigned int                                         kHwClGroupCountGfx103; ///< Hardware Group Count for Cl for Gfx103 family
-    extern const unsigned int                                         kHwClExposedCountersGroupCountGfx103; ///< Whitelist hardware counter Group Count for Cl for Gfx103 family
     extern const unsigned int                                         kClPaddedCounterGroupCountGfx103; ///< reserved counter group count for Cl for Gfx103 family
     extern const unsigned int                                         kHwClSqGroupCountGfx103; ///< Hardware SQ Group Count for Cl for Gfx103 family
     extern const unsigned int                                         kHwClSqIsolatedGroupCountGfx103; ///< Hardware Isolated Group Count for Cl for Gfx103 family

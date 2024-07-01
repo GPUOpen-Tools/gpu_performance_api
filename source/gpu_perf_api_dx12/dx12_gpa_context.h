@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA DX12 Context declarations
@@ -74,11 +74,18 @@ public:
     /// @copydoc IGpaContext::SetStableClocks()
     GpaStatus SetStableClocks(bool use_profiling_clocks) override;
 
+    /// @brief Returns the driver version according to ADLUtil.
+    ///
+    /// @param [out] major Driver major version number.
+    /// @param [out] minor Driver minor version number.
+    /// @param [out] sub_minor Driver sub_minor version number.
+    void GetDriverVersion(uint32_t& major, uint32_t& minor, uint32_t& sub_minor);
+
 private:
     /// @brief Initializes the AMD Driver extension objects for the context.
     ///
     /// @return True upon successful initialization otherwise false.
-    bool InitializeAMDExtension();
+    bool InitializeAmdExtension();
 
     /// @brief Destroys all the allocated resources for the context.
     void CleanUp();
@@ -90,6 +97,9 @@ private:
     IAmdExtGpaInterface2*          gpa_interface2_;              ///< The GPA Interface2 from the driver.
     AmdExtPerfExperimentProperties amd_device_props_;            ///< Device properties reported by the driver.
     AmdExtDeviceClockMode          clock_mode_;                  ///< GPU Clock mode.
+    uint32_t                       driver_major_ver_;            ///< ADL driver major version.
+    uint32_t                       driver_minor_ver_;            ///< ADL driver minor version.
+    uint32_t                       driver_sub_minor_ver_;        ///< ADL driver sub_minor version.
 };
 
 #endif  // GPU_PERF_API_DX12_DX12_GPA_CONTEXT_H_

@@ -1,13 +1,11 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 GPA Command List Implementation
 //==============================================================================
 
 #include "gpu_perf_api_dx12/dx12_gpa_command_list.h"
-
-#include "ADLUtil.h"
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
 #include "gpu_perf_api_common/logging.h"
@@ -42,7 +40,10 @@ Dx12GpaCommandList::Dx12GpaCommandList(Dx12GpaSession*    dx12_gpa_session,
     uint32_t major_ver     = 0;
     uint32_t minor_ver     = 0;
     uint32_t sub_minor_ver = 0;
-    AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
+    if (dx12_gpa_session != nullptr)
+    {
+        dx12_gpa_session->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
+    }
 
     // If the driver is unsigned, or the version is >= 22.40 use the default configuration.
     if (!(major_ver || minor_ver || sub_minor_ver) || (major_ver > 22) || (major_ver == 22 && minor_ver >= 40))
@@ -66,7 +67,7 @@ Dx12GpaCommandList::Dx12GpaCommandList(Dx12GpaSession*    dx12_gpa_session,
 
 Dx12GpaCommandList::~Dx12GpaCommandList()
 {
-    ReleaseNonGPAResources();
+    ReleaseNonGpaResources();
 }
 
 bool Dx12GpaCommandList::BeginCommandListRequest()
@@ -154,13 +155,6 @@ bool Dx12GpaCommandList::BeginSampleRequest(ClientSampleId client_sample_id, Gpa
             success = true;
         }
     }
-    else if (GpaCounterSource::kSoftware == counter_source)
-    {
-        if (OpenSwSample(client_sample_id, &driver_sample_id))
-        {
-            success = true;
-        }
-    }
 
     if (success)
     {
@@ -181,10 +175,6 @@ bool Dx12GpaCommandList::CloseLastSampleRequest()
     if (GpaCounterSource::kHardware == counter_source)
     {
         CloseHwSample();
-    }
-    else if (GpaCounterSource::kSoftware == counter_source)
-    {
-        CloseSwSample();
     }
 
     return true;
@@ -286,24 +276,23 @@ bool Dx12GpaCommandList::OpenHwSample(ClientSampleId client_sample_id, DriverSam
 
             if (has_any_hardware_counters_)
             {
+                const Dx12GpaSampleConfig& sample_config = reinterpret_cast<Dx12GpaPass*>(GetPass())->GetAmdExtSampleConfig();
                 if (use_pre2240_config_)
                 {
                     // Pre-22.40 config struct.
-                    auto older_config = reinterpret_cast<Dx12GpaPass*>(GetPass())->GetPre2240DriverExtSampleConfig();
-
-                    *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, *(AmdExtGpaSampleConfig*)(&older_config));
+                    AmdExtGpaSampleConfigPre2240 older_config = sample_config.GetPre2240DriverExtSampleConfig();
+                    *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, *(reinterpret_cast<AmdExtGpaSampleConfig*>(&older_config)));
                 }
                 else if (use_pre1850_config_)
                 {
                     // Pre-18.50 config struct.
-                    auto older_config = reinterpret_cast<Dx12GpaPass*>(GetPass())->GetPre1850DriverExtSampleConfig();
-
-                    *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, *(AmdExtGpaSampleConfig*)(&older_config));
+                    AmdExtGpaSampleConfigPre1850 older_config = sample_config.GetPre1850DriverExtSampleConfig();
+                    *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, *(reinterpret_cast<AmdExtGpaSampleConfig*>(&older_config)));
                 }
                 else
                 {
                     // Latest config struct.
-                    *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, reinterpret_cast<Dx12GpaPass*>(GetPass())->GetDriverExtSampleConfig());
+                    *driver_sample_id = amd_ext_session_->BeginSample(cmd_list_, sample_config.GetDriverExtSampleConfig());
                 }
 
                 if (*driver_sample_id == kSInvalidSampleIndex)
@@ -339,21 +328,7 @@ bool Dx12GpaCommandList::CloseHwSample() const
     return success;
 }
 
-bool Dx12GpaCommandList::OpenSwSample(ClientSampleId client_sample_id, DriverSampleId* driver_sample_id) const
-{
-    GPA_STUB_FUNCTION;
-    UNREFERENCED_PARAMETER(client_sample_id);
-    UNREFERENCED_PARAMETER(driver_sample_id);
-    return true;
-}
-
-bool Dx12GpaCommandList::CloseSwSample()
-{
-    GPA_STUB_FUNCTION;
-    return true;
-}
-
-void Dx12GpaCommandList::ReleaseNonGPAResources()
+void Dx12GpaCommandList::ReleaseNonGpaResources()
 {
     if (!is_non_gpa_resource_released_)
     {
@@ -362,10 +337,14 @@ void Dx12GpaCommandList::ReleaseNonGPAResources()
         cmd_list_                     = nullptr;
         is_non_gpa_resource_released_ = true;
 
-        // We won't rely on Release() to delete extension session objects because of an issue in older drivers,
-        // rather we will use DestroyGpaSession to delete the session object.
         Dx12GpaSession* dx12_gpa_session = reinterpret_cast<Dx12GpaSession*>(GetParentSession());
-        dx12_gpa_session->GetAmdExtInterface()->DestroyGpaSession(amd_ext_session_);
+        ULONG           session_ref_count = amd_ext_session_->Release();
+        if (session_ref_count != 0)
+        {
+            // Very early drivers did not properly support Release() on the session,
+            // as a fallback, use DestroyGpaSession to delete the session object.
+            dx12_gpa_session->GetAmdExtInterface()->DestroyGpaSession(amd_ext_session_);
+        }
         amd_ext_session_ = nullptr;
 
         for (auto iter = secondary_sample_amd_ext_session_map_.begin(); iter != secondary_sample_amd_ext_session_map_.end(); ++iter)

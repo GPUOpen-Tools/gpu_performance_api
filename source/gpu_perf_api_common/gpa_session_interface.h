@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface representing the GPA Session.
@@ -36,6 +36,7 @@ enum GpaSessionState : uint8_t
 class IGpaSession : public IGpaInterfaceTrait
 {
 public:
+
     /// @brief Virtual Destructor.
     virtual ~IGpaSession() = default;
 
@@ -291,6 +292,7 @@ public:
     ///
     /// @return Counter list for the given pass.
     virtual std::vector<unsigned int>* GetCountersForPass(unsigned int pass_index) = 0;
+
 };
 
 #endif  // GPU_PERF_API_COMMON_GPA_SESSION_INTERFACE_H_

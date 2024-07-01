@@ -142,6 +142,13 @@ public:
     /// Default window height.
     const uint32_t kDefaultWindowHeight = 300;
 
+    /// Note that GPA sample IDs are client defined. However, the Vulkan GPA
+    /// extension assigns an ID to each sample (they are not client defined).
+    /// The GPA library manages the mapping between them. These are the former.
+    static constexpr GpaUInt32 kGpaSampleIdCube = 0;
+    static constexpr GpaUInt32 kGpaSampleIdWireframe = 1;
+    static constexpr GpaUInt32 kGpaSampleIdCubeAndWireframe = 2;
+
 #ifdef ANDROID
     inline void SetWindow(ANativeWindow* native_window)
     {
@@ -199,10 +206,9 @@ private:
 #endif
 
     VkInstance                       vk_instance_;                        ///< The instance of the Vulkan API.
-    const uint32_t                   default_physical_device_index_ = 0;  ///< The default index of the physical device (ie: GPU) to use when running this demo.
     VkPhysicalDevice                 default_physical_device_;            ///< The selected physical device that will execute this demo.
     VkPhysicalDeviceProperties       physical_device_properties_;         ///< Properties of the selected physical device.
-    VkPhysicalDeviceFeatures         phsyical_device_features_;           ///< Available features of the selected physical device.
+    VkPhysicalDeviceFeatures         physical_device_features_;           ///< Available features of the selected physical device.
     VkPhysicalDeviceMemoryProperties physical_device_memory_properties_;  ///< Properties of the selected physical device.
     VkDevice                         vk_device_;                          ///< The logical device that will be used to render.
     VkQueue                          vk_queue_;                           ///< The queue on which rendering commands will be scheduled.
@@ -242,7 +248,7 @@ private:
 
             /// Sample Id that the application (not GPA) assigns to the cube.
             /// The cube will have this same sample_id in all passes.
-            const GpaUInt32 gpa_sample_id = 0;
+            const GpaUInt32 gpa_sample_id = kGpaSampleIdCube;
         } cube_;
 
         /// @brief Container for objects related to drawing the wireframe.
@@ -256,7 +262,7 @@ private:
 
             /// Sample Id that the application (not GPA) assigns to the wireframe.
             /// The wireframe will have this same sample_id in all passes.
-            const GpaUInt32 gpa_sample_id = 1;
+            const GpaUInt32 gpa_sample_id = kGpaSampleIdWireframe;
         } wire_frame_;
 
         /// @brief Container for objects related to drawing the cube and wireframe.
@@ -279,7 +285,7 @@ private:
 
             /// Sample Id that the application (not GPA) assigns to the cube wireframe.
             /// The combined cube + wireframe sample will have this same sample_id in all passes.
-            const GpaUInt32 gpa_sample_id = 2;
+            const GpaUInt32 gpa_sample_id = kGpaSampleIdCubeAndWireframe;
         } cube_and_wire_frame_;
     };
 

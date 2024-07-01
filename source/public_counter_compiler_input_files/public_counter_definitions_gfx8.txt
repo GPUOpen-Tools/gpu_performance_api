@@ -1,5 +1,5 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Copyright (c) 2010-2021 Advanced Micro Devices, Inc. All rights reserved.
+;; Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 ;;
 ;; Counter definitions for DX/VK/GL for Gfx8 (GFX IP v8)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -245,7 +245,6 @@ SPI*_PERF_HS_BUSY[0..3]
 SPI*_PERF_HS_WAVE[0..3]
 GRBM_PERF_SEL_GUI_ACTIVE
 eqn=(0),1,5,ifnotzero,(0),2,6,ifnotzero,max,(0),3,7,ifnotzero,max,(0),4,8,ifnotzero,max,9,/,(1),min,GPUTime_Bottom_To_Bottom_Duration,TS_FREQ,/,(1000000000),*,*
-
 
 name=DSBusy
 desc=#Timing#The percentage of time the ShaderUnit has domain shader work to do.
@@ -2508,6 +2507,48 @@ eqn=0..3,sum4
 CB*_PERF_SEL_EXPORT_32_ABGR_QUAD_FRAGMENT[0..15]
 eqn=0..15,sum16
 
+name=L0TagConflictReadStalledCycles
+desc=#MemoryCache#The number of cycles read operations from the L0 cache are stalled due to tag conflicts.
+type=gpa_float64
+usage=items
+[GLGfx8]
+TCP*_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES[0..15]
+eqn=0..15,sum16
+[DX11Gfx8]
+[DX12Gfx8]
+[OGLPGfx8]
+[VKGfx8]
+TCP*_PERF_SEL_READ_TAGCONFLICT_STALL_CYCLES[0..63]
+eqn=0..63,max64
+
+name=L0TagConflictWriteStalledCycles
+desc=#MemoryCache#The number of cycles write operations to the L0 cache are stalled due to tag conflicts.
+type=gpa_float64
+usage=items
+[GLGfx8]
+TCP*_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES[0..15]
+eqn=0..15,sum16
+[DX11Gfx8]
+[DX12Gfx8]
+[OGLPGfx8]
+[VKGfx8]
+TCP*_PERF_SEL_WRITE_TAGCONFLICT_STALL_CYCLES[0..63]
+eqn=0..63,max64
+
+name=L0TagConflictAtomicStalledCycles
+desc=#MemoryCache#The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts.
+type=gpa_float64
+usage=items
+[GLGfx8]
+TCP*_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES[0..15]
+eqn=0..15,sum16
+[DX11Gfx8]
+[DX12Gfx8]
+[OGLPGfx8]
+[VKGfx8]
+TCP*_PERF_SEL_ATOMIC_TAGCONFLICT_STALL_CYCLES[0..63]
+eqn=0..63,max64
+
 name=FetchSize
 desc=#GlobalMemory#The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.
 type=gpa_float64
@@ -2604,7 +2645,7 @@ type=gpa_float64
 usage=cycles
 [GLGfx8]
 TA*_PERF_SEL_TA_BUSY[0..15]
-eqn=0..15,max16
+eqn=0..15,max16,NUM_SHADER_ENGINES,/
 [DX11Gfx8]
 [DX12Gfx8]
 [OGLPGfx8]

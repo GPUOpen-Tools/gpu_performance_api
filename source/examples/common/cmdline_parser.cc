@@ -14,10 +14,10 @@
 namespace
 {
     template <typename T>
-    gpa_example::ArgEntry<T>* MakeArgEntry(void* p_destination, const gpa_example::ArgType arg_type, const std::string& doc_string)
+    gpa_example::ArgEntry<T>* MakeArgEntry(void* destination, const gpa_example::ArgType arg_type, const std::string& doc_string)
     {
-        T& destination = *(reinterpret_cast<T*>(p_destination));
-        return new gpa_example::ArgEntry<T>(destination, arg_type, doc_string);
+        T& typed_destination = *(reinterpret_cast<T*>(destination));
+        return new gpa_example::ArgEntry<T>(typed_destination, arg_type, doc_string);
     }
 
     template <typename T>
@@ -50,7 +50,7 @@ namespace gpa_example
     {
     }
 
-    void CmdlineParser::AddArg(const std::string& name, void* p_destination, const ArgType arg_type, const std::string& doc_string)
+    void CmdlineParser::AddArg(const std::string& name, void* destination, const ArgType arg_type, const std::string& doc_string)
     {
         std::string message;
 
@@ -63,18 +63,18 @@ namespace gpa_example
             return;
         }
 
-        ArgEntryBase* p_entry = nullptr;
+        ArgEntryBase* entry = nullptr;
 
         switch (arg_type)
         {
-        case ArgType::ARG_TYPE_BOOL:
-            p_entry = MakeArgEntry<bool>(p_destination, arg_type, doc_string);
+        case ArgType::kArgTypeBool:
+            entry = MakeArgEntry<bool>(destination, arg_type, doc_string);
             break;
-        case ArgType::ARG_TYPE_INT:
-            p_entry = MakeArgEntry<int>(p_destination, arg_type, doc_string);
+        case ArgType::kArgTypeInt:
+            entry = MakeArgEntry<int>(destination, arg_type, doc_string);
             break;
-        case ArgType::ARG_TYPE_FILEPATH:
-            p_entry = MakeArgEntry<std::string>(p_destination, arg_type, doc_string);
+        case ArgType::kArgTypeString:
+            entry = MakeArgEntry<std::string>(destination, arg_type, doc_string);
             break;
         default:
             message = "Unknown ArgType provided for ";
@@ -83,7 +83,7 @@ namespace gpa_example
             std::cout << message.c_str() << std::endl;
         }
 
-        if (p_entry == nullptr)
+        if (entry == nullptr)
         {
             message = "Failed to allocate storage for the following argument: ";
             message += name;
@@ -92,7 +92,7 @@ namespace gpa_example
         }
         else
         {
-            accepted_args_.emplace(std::make_pair(name, std::unique_ptr<ArgEntryBase>(p_entry)));
+            accepted_args_.emplace(std::make_pair(name, std::unique_ptr<ArgEntryBase>(entry)));
         }
     }
 
@@ -114,7 +114,7 @@ namespace gpa_example
                 return false;
             }
 
-            if (entry->second->arg_type != ArgType::ARG_TYPE_BOOL)
+            if (entry->second->arg_type != ArgType::kArgTypeBool)
             {
                 ++i;
                 if (i >= argc_)
@@ -125,13 +125,13 @@ namespace gpa_example
 
             switch (entry->second->arg_type)
             {
-            case ArgType::ARG_TYPE_BOOL:
+            case ArgType::kArgTypeBool:
                 SetDestinationVal<bool>(entry->second, true);
                 break;
-            case ArgType::ARG_TYPE_INT:
+            case ArgType::kArgTypeInt:
                 SetDestinationVal<int>(entry->second, ParseArgument<int>(parse_success, argv_, i));
                 break;
-            case ArgType::ARG_TYPE_FILEPATH:
+            case ArgType::kArgTypeString:
                 SetDestinationVal<std::string>(entry->second, ParseArgument<std::string>(parse_success, argv_, i));
                 break;
             default:
@@ -166,12 +166,12 @@ namespace gpa_example
             summary_message << " [" << entry.first;
             detailed_message << entry.first;
 
-            if (entry.second->arg_type == ArgType::ARG_TYPE_INT)
+            if (entry.second->arg_type == ArgType::kArgTypeInt)
             {
                 summary_message << " #";
                 detailed_message << " #";
             }
-            else if (entry.second->arg_type == ArgType::ARG_TYPE_FILEPATH)
+            else if (entry.second->arg_type == ArgType::kArgTypeString)
             {
                 summary_message << " <file>";
                 detailed_message << " <file>";

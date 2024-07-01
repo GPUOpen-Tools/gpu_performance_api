@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions ASIC file for DX12_GFX10
@@ -28,6 +28,7 @@ namespace dx12_gfx10_asics
         UNREFERENCED_PARAMETER(desired_generation);
         UNREFERENCED_PARAMETER(asic_type);
         UNREFERENCED_PARAMETER(c);
+
     }
 
 }  // namespace dx12_gfx10asics

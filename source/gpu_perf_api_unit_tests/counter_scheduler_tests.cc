@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit tests for Counter Scheduler.
@@ -48,7 +48,7 @@ TEST(CounterDllTests, OpenCLCounterSchedulingVi)
     counters.push_back(1);
     counters.push_back(2);
 
-    VerifyPassCount(kGpaApiOpencl, kDevIdVI, FALSE, counters, 1);
+    VerifyPassCount(kGpaApiOpencl, kDevIdVI, counters, 1);
 }
 
 // Counters to enable (Wavefronts, VALUInsts, SALUInsts, VFetchInsts, SFetchInsts, VWriteInsts, VALUUtilization, VALUBusy, SALUBusy).
@@ -129,7 +129,7 @@ TEST(CounterDllTests, OpenClResultLocations)
             {VALUBUSY_PUBLIC_CL_GFX8, expected_locations_valu_busy},
             {SALUBUSY_PUBLIC_CL_GFX8, expected_locations_salu_busy}};
 
-        VerifyCountersInPass(kGpaApiOpencl, kDevIdGfx8, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+        VerifyCountersInPass(kGpaApiOpencl, kDevIdGfx8, counters, expected_hw_counters_per_pass, expected_result_locations);
     }
 #pragma endregion
 
@@ -267,7 +267,7 @@ TEST(CounterDllTests, OpenClResultLocations)
                                                                                                        {VALUBUSY_PUBLIC_CL_GFX9, expected_locations7},
                                                                                                        {SALUBUSY_PUBLIC_CL_GFX9, expected_locations8}};
 
-        VerifyCountersInPass(kGpaApiOpencl, kDevIdGfx9, FALSE, counters, expected_counters_per_pass, expected_result_locations);
+        VerifyCountersInPass(kGpaApiOpencl, kDevIdGfx9, counters, expected_counters_per_pass, expected_result_locations);
     }
 #pragma endregion
 }
@@ -279,7 +279,7 @@ TEST(CounterDllTests, OpenGlCounterScheduling)
     counters.push_back(GPUTIME_PUBLIC_GL_GFX8);
     counters.push_back(GPUBUSY_PUBLIC_GL_GFX8);
     counters.push_back(TESSELLATORBUSY_PUBLIC_GL_GFX8);
-    VerifyPassCount(kGpaApiOpengl, kDevIdVI, FALSE, counters, 2);
+    VerifyPassCount(kGpaApiOpengl, kDevIdVI, counters, 2);
 }
 
 #ifdef _WIN32
@@ -290,7 +290,7 @@ TEST(CounterDllTests, Dx11CounterScheduling)
     counters.push_back(GPUTIME_PUBLIC_DX11_GFX8);
     counters.push_back(GPUBUSY_PUBLIC_DX11_GFX8);
     counters.push_back(TESSELLATORBUSY_PUBLIC_DX11_GFX8);
-    VerifyPassCount(kGpaApiDirectx11, kDevIdVI, FALSE, counters, 2);
+    VerifyPassCount(kGpaApiDirectx11, kDevIdVI, counters, 2);
 }
 
 TEST(CounterDllTests, Dx11Gfx8BusyCounters)
@@ -383,7 +383,7 @@ TEST(CounterDllTests, Dx11Gfx8BusyCounters)
             {PSBUSY_PUBLIC_DX11_GFX8, expected_location_psbusy},
             {CSBUSY_PUBLIC_DX11_GFX8, expected_locations_csbusy}};
 
-        VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx8, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+        VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx8, counters, expected_hw_counters_per_pass, expected_result_locations);
 #pragma endregion
     }
 }
@@ -498,7 +498,7 @@ TEST(CounterDllTests, Dx11Gfx9BusyCounters)
             {CSBUSY_PUBLIC_DX11_GFX9, expected_locations4},
         };
 
-        VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx9, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+        VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx9, counters, expected_hw_counters_per_pass, expected_result_locations);
 #pragma endregion
     }
 }
@@ -565,7 +565,7 @@ std::map<uint32_t, std::map<uint32_t, GpaCounterResultLocation> > expected_resul
                                                                                                {HSTIME_PUBLIC_DX11_GFX8, expected_locations_hstime},
                                                                                                {GSTIME_PUBLIC_DX11_GFX8, expected_locations_gstime}};
 
-VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx8, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx8, counters, expected_hw_counters_per_pass, expected_result_locations);
 }
 #pragma endregion
 }
@@ -628,7 +628,7 @@ std::vector<std::vector<uint32_t> > expected_hw_counters_per_pass = {
 std::map<uint32_t, std::map<uint32_t, GpaCounterResultLocation> > expected_result_locations = {{PRETESSELLATIONTIME_PUBLIC_DX11_GFX9, expected_locations0},
                                                                                                {POSTTESSELLATIONTIME_PUBLIC_DX11_GFX9, expected_locations1}};
 
-VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx9, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx9, counters, expected_hw_counters_per_pass, expected_result_locations);
 }
 #pragma endregion
 }
@@ -685,7 +685,7 @@ std::vector<std::vector<uint32_t> > expected_hw_counters_per_pass = {
 std::map<unsigned int, std::map<unsigned int, GpaCounterResultLocation> > expected_result_locations;
 expected_result_locations[VSBUSY_PUBLIC_DX11_GFX8] = expected_locations_vsbusy;
 
-VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx8, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx8, counters, expected_hw_counters_per_pass, expected_result_locations);
 }
 #pragma endregion
 }
@@ -715,7 +715,7 @@ TEST(CounterDllTests, DX11Gfx9VsBusy)
 
         std::map<unsigned int, std::map<unsigned int, GpaCounterResultLocation> > expected_result_locations = {{VSGSBUSY_PUBLIC_DX11_GFX9, expected_locations0}};
 
-        VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx9, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+        VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx9, counters, expected_hw_counters_per_pass, expected_result_locations);
     }
 #pragma endregion
 }
@@ -745,40 +745,40 @@ void TestGpuTimeVSBusyVSTimeCountersForDevice(unsigned int device_id)
     }
 
     // counters to enable (GPUTime, VSBusy)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{gpu_time_index, vs_busy_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{gpu_time_index, vs_busy_index}, expected_passes);
 
     // counters to enable (VSBusy, GPUTime)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{vs_busy_index, gpu_time_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{vs_busy_index, gpu_time_index}, expected_passes);
 
     // counters to enable (VSBusy, VSTime)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{vs_busy_index, vs_time_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{vs_busy_index, vs_time_index}, expected_passes);
 
     // counters to enable (VSTime, VSBusy)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{vs_time_index, vs_busy_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{vs_time_index, vs_busy_index}, expected_passes);
 
     // counters to enable (GPUTime, VSTime)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{gpu_time_index, vs_time_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{gpu_time_index, vs_time_index}, expected_passes);
 
     // counters to enable (VSTime, GPUTime)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{vs_time_index, gpu_time_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{vs_time_index, gpu_time_index}, expected_passes);
 
     // counters to enable (GPUTime, VSBusy, VSTime)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{gpu_time_index, vs_busy_index, vs_time_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{gpu_time_index, vs_busy_index, vs_time_index}, expected_passes);
 
     // counters to enable (GPUTime, VSTime, VSBusy)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{gpu_time_index, vs_time_index, vs_busy_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{gpu_time_index, vs_time_index, vs_busy_index}, expected_passes);
 
     // counters to enable (VSTime, GPUTime, VSBusy)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{vs_time_index, gpu_time_index, vs_busy_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{vs_time_index, gpu_time_index, vs_busy_index}, expected_passes);
 
     // counters to enable (VSTime, VSBusy, GPUTime)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{vs_time_index, vs_busy_index, gpu_time_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{vs_time_index, vs_busy_index, gpu_time_index}, expected_passes);
 
     // counters to enable (VSBusy, GPUTime, VSTime)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{vs_busy_index, gpu_time_index, vs_time_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{vs_busy_index, gpu_time_index, vs_time_index}, expected_passes);
 
     // counters to enable (VSBusy, VSTime, GPUTime)
-    VerifyPassCount(kGpaApiDirectx11, device_id, FALSE, std::vector<uint32_t>{vs_busy_index, vs_time_index, gpu_time_index}, expected_passes);
+    VerifyPassCount(kGpaApiDirectx11, device_id, std::vector<uint32_t>{vs_busy_index, vs_time_index, gpu_time_index}, expected_passes);
 }
 
 TEST(CounterDllTests, Dx11ViGpuTimeVsBusyVsTimeCounters)
@@ -852,7 +852,7 @@ void TestD3D11QueryCounter(unsigned int device_id,
 
     expected_result_locations[query_counter_index] = expected_locations_d3d_query;
 
-    VerifyCountersInPass(kGpaApiDirectx11, device_id, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+    VerifyCountersInPass(kGpaApiDirectx11, device_id, counters, expected_hw_counters_per_pass, expected_result_locations);
 }
 
 TEST(CounterDllTests, Dx11ViPsFBusyCounterResult)
@@ -864,29 +864,32 @@ TEST(CounterDllTests, Dx11ViPsFBusyCounterResult)
     // each result is 64 bit, so 8 chars.
     GpaUInt64* all_results = new (std::nothrow) GpaUInt64[required_count * 8];
     ASSERT_TRUE(nullptr != all_results);
-    memset(all_results, 0, required_count * 8);
-
-    all_results[0 * 8] = 1;
-    all_results[1 * 8] = 1;
-    all_results[2 * 8] = 1;
-    all_results[3 * 8] = 1;
-    all_results[4 * 8] = 1;
-    all_results[5 * 8] = 1;
-    all_results[6 * 8] = 1;
-    all_results[7 * 8] = 1;
-    all_results[8 * 8] = 2;  // GUI_ACTIVE
-
-    // copy results into the vector
-    std::vector<const GpaUInt64*> sample_results;
-
-    for (unsigned int i = 0; i < required_count; i++)
+    if (all_results != nullptr)
     {
-        sample_results.push_back(&(all_results[i * 8]));
+        memset(all_results, 0, required_count * 8);
+
+        all_results[0 * 8] = 1;
+        all_results[1 * 8] = 1;
+        all_results[2 * 8] = 1;
+        all_results[3 * 8] = 1;
+        all_results[4 * 8] = 1;
+        all_results[5 * 8] = 1;
+        all_results[6 * 8] = 1;
+        all_results[7 * 8] = 1;
+        all_results[8 * 8] = 2;  // GUI_ACTIVE
+
+        // copy results into the vector
+        std::vector<const GpaUInt64*> sample_results;
+
+        for (unsigned int i = 0; i < required_count; i++)
+        {
+            sample_results.push_back(&(all_results[i * 8]));
+        }
+
+        VerifyCounterCalculation(kGpaApiDirectx11, kDevIdVI, "PSBusy", sample_results, 50);
+
+        delete[] all_results;
     }
-
-    VerifyCounterCalculation(kGpaApiDirectx11, kDevIdVI, FALSE, "PSBusy", sample_results, 50);
-
-    delete[] all_results;
 }
 
 TEST(CounterDllTests, Dx11EnableAndDisable)
@@ -896,6 +899,10 @@ TEST(CounterDllTests, Dx11EnableAndDisable)
 
     HMODULE dll = LoadLibraryA("GPUPerfAPICounters" AMDT_PROJECT_SUFFIX ".dll");
     ASSERT_NE((HMODULE) nullptr, dll);
+    if (dll == nullptr)
+    {
+        return;
+    }
 
     GpaCounterLibGetFuncTablePtrType get_func_table_ptr = reinterpret_cast<GpaCounterLibGetFuncTablePtrType>(GetProcAddress(dll, "GpaCounterLibGetFuncTable"));
     ASSERT_NE((GpaCounterLibGetFuncTablePtrType) nullptr, get_func_table_ptr);
@@ -906,7 +913,7 @@ TEST(CounterDllTests, Dx11EnableAndDisable)
 
     GpaCounterContextHardwareInfo counter_context_hardware_info = {kAmdVendorId, device_id, REVISION_ID_ANY, nullptr, 0};
     GpaCounterContext gpa_counter_context;
-    gpa_status = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(api, counter_context_hardware_info, kGpaOpenContextDefaultBit, FALSE, &gpa_counter_context);
+    gpa_status = gpa_counter_lib_func_table.GpaCounterLibOpenCounterContext(api, counter_context_hardware_info, kGpaOpenContextDefaultBit, TRUE, &gpa_counter_context);
     EXPECT_EQ(kGpaStatusOk, gpa_status);
 
     std::vector<GpaUInt32> enable_counter_list;
@@ -1060,7 +1067,7 @@ TEST(CounterDllTests, SqIsolatedCounterSplitScheduler)
     std::map<unsigned int, std::map<unsigned int, GpaCounterResultLocation> > expected_result_locations = {
         {CSVFETCHINSTS_PUBLIC_DX11_GFX8, expected_locations0}};
 
-    VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx8, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+    VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx8, counters, expected_hw_counters_per_pass, expected_result_locations);
 }
 
 /// GPA-159 Validation Test
@@ -1131,7 +1138,7 @@ TEST(CounterDllTests, Gpa159MultipleTimingCounters)
                                                                                                    {PSBUSYCYCLES_PUBLIC_DX12_GFX8, expected_locations2},
                                                                                                    {PSTIME_PUBLIC_DX12_GFX8, expected_locations3}};
 
-    VerifyCountersInPass(kGpaApiDirectx12, kDevIdGfx8, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+    VerifyCountersInPass(kGpaApiDirectx12, kDevIdGfx8, counters, expected_hw_counters_per_pass, expected_result_locations);
 }
 
 TEST(CounterDllTests, Gpa85MultipleTimingCounters)
@@ -1461,7 +1468,7 @@ TEST(CounterDllTests, Gpa85MultipleTimingCounters)
         {VSTIME_PUBLIC_DX12_GFX8, expected_locations22},
     };
 
-    VerifyCountersInPass(kGpaApiDirectx12, kDevIdGfx8, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+    VerifyCountersInPass(kGpaApiDirectx12, kDevIdGfx8, counters, expected_hw_counters_per_pass, expected_result_locations);
 }
 
 // GPA-83: Consolidated counter scheduler no longer schedules multi-pass public
@@ -1522,7 +1529,7 @@ TEST(CounterDllTests, Gpa83ThreePassTest)
     std::map<unsigned int, std::map<unsigned int, GpaCounterResultLocation> > expected_result_locations = {
         {VSVERTICESIN_PUBLIC_DX12_GFX8, expected_locations0}, {GPUTIME_PUBLIC_DX12_GFX8, expected_locations1}, {VSBUSY_PUBLIC_DX12_GFX8, expected_locations2}};
 
-    VerifyCountersInPass(kGpaApiDirectx12, kDevIdGfx8, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+    VerifyCountersInPass(kGpaApiDirectx12, kDevIdGfx8, counters, expected_hw_counters_per_pass, expected_result_locations);
 }
 
 // SWDEV-140743: DX11 Vega L1 Cache Counters (TCP Block Instance) Always Zero
@@ -1888,7 +1895,7 @@ TEST(CounterDllTests, SwDev140743)
 
     std::map<uint32_t, std::map<uint32_t, GpaCounterResultLocation> > expected_result_locations = {{L1CACHEHITCOUNT_PUBLIC_DX11_GFX9, expected_locations0}};
 
-    VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx9, FALSE, counters, expected_hw_counters_per_pass, expected_result_locations);
+    VerifyCountersInPass(kGpaApiDirectx11, kDevIdGfx9, counters, expected_hw_counters_per_pass, expected_result_locations);
 }
 
 #endif  // _WIN32s

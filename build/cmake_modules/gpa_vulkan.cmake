@@ -1,5 +1,5 @@
-## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.7.2)
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 if(${GPA_ALL_OPEN_SOURCE})
     find_package(Vulkan REQUIRED)

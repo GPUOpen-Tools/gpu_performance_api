@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Pass Object Implementation
@@ -18,10 +18,11 @@
 
 Dx12GpaPass::Dx12GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSource counter_source, CounterList* pass_counters)
     : GpaPass(gpa_session, pass_index, counter_source, pass_counters)
-    , amd_ext_sample_config_()
-    , is_sample_config_initialized_(false)
 {
-    InitializeSampleConfig();
+    if (!amd_ext_sample_config_.Initialize(gpa_session, GetCounterSource(), counter_list_, this, IsTimingPass()))
+    {
+        GPA_LOG_ERROR("Sample configuration failed to initialize for pass %u.", pass_index);
+    }
 }
 
 GpaSample* Dx12GpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
@@ -232,187 +233,7 @@ bool Dx12GpaPass::CopySecondarySamples(std::vector<ClientSampleId> client_sample
 
 Dx12GpaPass::~Dx12GpaPass()
 {
-    if (AmdExtGpaSampleType::Timing != amd_ext_sample_config_.type)
-    {
-        delete[] amd_ext_sample_config_.perfCounters.pIds;
-    }
-
     ResetPass();
-}
-
-void Dx12GpaPass::InitializeSampleConfig()
-{
-    if (!is_sample_config_initialized_ && GpaCounterSource::kHardware == GetCounterSource())
-    {
-        std::vector<AmdExtPerfCounterId> counter_ids;
-
-        IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
-        const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
-
-        if (!counter_list_->empty())
-        {
-            if (IsTimingPass())
-            {
-                amd_ext_sample_config_.type         = AmdExtGpaSampleType::Timing;
-                amd_ext_sample_config_.flags.u32All = 1;
-                amd_ext_sample_config_.sqShaderMask = PerfShaderMaskAll;
-                amd_ext_sample_config_.perfCounters = {};
-                amd_ext_sample_config_.sqtt         = {};
-
-                if (hardware_counters->IsBottomOfPipeCounterIndex(counter_list_->at(0)))
-                {
-                    amd_ext_sample_config_.timing.preSample = AmdExtHwPipePoint::HwPipeBottom;
-                }
-                else if (hardware_counters->IsTopOfPipeCounterIndex(counter_list_->at(0)))
-                {
-                    amd_ext_sample_config_.timing.preSample = AmdExtHwPipePoint::HwPipeTop;
-                }
-
-                amd_ext_sample_config_.timing.postSample = AmdExtHwPipePoint::HwPipeBottom;
-                EnableCounterForPass(counter_list_->at(0));
-            }
-            else
-            {
-                AmdExtPerfExperimentShaderFlags mask_value = PerfShaderMaskAll;
-
-                amd_ext_sample_config_.type         = AmdExtGpaSampleType::Cumulative;
-                amd_ext_sample_config_.flags.u32All = 0;
-
-                // Add all desired counters.
-                for (size_t i = 0; i < counter_list_->size(); i++)
-                {
-                    const GpaHardwareCounterDescExt* counter = &hardware_counters->hardware_counters_.at(counter_list_->at(i));
-                    AmdExtGpuBlock                   block   = static_cast<AmdExtGpuBlock>(counter->group_id_driver);
-                    UINT32 instance = static_cast<UINT32>(hardware_counters->internal_counter_groups_[counter->group_index].block_instance);
-                    UINT32 event_id = static_cast<UINT32>(counter->hardware_counters->counter_index_in_group);
-
-                    if (reinterpret_cast<Dx12GpaContext*>(GetGpaSession()->GetParentContext())->GetNumInstances(block) <= instance)
-                    {
-                        DisableCounterForPass(counter_list_->at(i));
-                        GPA_LOG_DEBUG_MESSAGE("Disabling counter at index %s as number of block instances is less than the current instance.", i);
-                        continue;
-                    }
-
-                    if (reinterpret_cast<Dx12GpaContext*>(GetGpaSession()->GetParentContext())->GetMaxEventId(block) <= event_id)
-                    {
-                        DisableCounterForPass(counter_list_->at(i));
-                        GPA_LOG_DEBUG_MESSAGE("Disabling counter at index %s as max event ID in context is less than the current event ID.", i);
-                        continue;
-                    }
-
-                    // Validate requested counter vs number of actual hardware counters and group index.
-                    uint32_t group_index = counter->group_index;
-
-                    uint32_t counters = 0;
-
-                    if (group_index < static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size()))
-                    {
-                        counters = hardware_counters->internal_counter_groups_[group_index].num_counters;
-                    }
-                    else
-                    {
-                        counters = hardware_counters->additional_groups_[group_index- static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size())].num_counters;
-                    }
-
-                    if (counter->hardware_counters->counter_index_in_group > counters)
-                    {
-                        assert(counter->hardware_counters->counter_index_in_group <= counters);
-                        DisableCounterForPass(counter_list_->at(i));
-                        continue;
-                    }
-
-                    if (group_index > (static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size()) + hardware_counters->additional_group_count_))
-                    {
-                        assert(group_index <= (static_cast<GpaUInt32>(hardware_counters->internal_counter_groups_.size()) + hardware_counters->additional_group_count_));
-                        DisableCounterForPass(counter_list_->at(i));
-                        continue;
-                    }
-
-                    // Add counter to valid vector.
-                    AmdExtPerfCounterId this_counter = {block, instance, event_id};
-                    counter_ids.push_back(this_counter);
-
-                    // If dealing with an SQ or SqWgp counter, check if the the stage mask needs to be set.
-                    if (counter->group_index >= hardware_counters->sq_counter_groups_[0].group_index &&
-                        counter->group_index <= hardware_counters->sq_counter_groups_[hardware_counters->sq_group_count_ - 1].group_index)
-                    {
-                        GpaSqShaderStage stage = kSqAll;
-
-                        for (unsigned int j = 0; j < hardware_counters->sq_group_count_ - 1; j++)
-                        {
-                            if (hardware_counters->sq_counter_groups_[j].group_index == counter->group_index)
-                            {
-                                stage = hardware_counters->sq_counter_groups_[j].sq_shader_stage;
-                                break;
-                            }
-                        }
-
-                        if (kSqEs == stage)
-                        {
-                            mask_value = PerfShaderMaskEs;
-                        }
-                        else if (kSqGs == stage)
-                        {
-                            mask_value = PerfShaderMaskGs;
-                        }
-                        else if (kSqVs == stage)
-                        {
-                            mask_value = PerfShaderMaskVs;
-                        }
-                        else if (kSqPs == stage)
-                        {
-                            mask_value = PerfShaderMaskPs;
-                        }
-                        else if (kSqLs == stage)
-                        {
-                            mask_value = PerfShaderMaskLs;
-                        }
-                        else if (kSqHs == stage)
-                        {
-                            mask_value = PerfShaderMaskHs;
-                        }
-                        else if (kSqCs == stage)
-                        {
-                            mask_value = PerfShaderMaskCs;
-                        }
-                    }
-
-                    EnableCounterForPass(counter_list_->at(i));
-                }
-
-                amd_ext_sample_config_.perfCounters.numCounters = GetNumEnabledCountersForPass();
-                AmdExtPerfCounterId* amd_ext_perf_counter_id    = new (std::nothrow) AmdExtPerfCounterId[counter_list_->size()];
-
-                if (nullptr != amd_ext_perf_counter_id)
-                {
-                    memcpy(amd_ext_perf_counter_id, counter_ids.data(), sizeof(AmdExtPerfCounterId) * counter_ids.size());
-                }
-
-                amd_ext_sample_config_.perfCounters.pIds                   = amd_ext_perf_counter_id;
-                amd_ext_sample_config_.perfCounters.spmTraceSampleInterval = 0;
-                amd_ext_sample_config_.perfCounters.gpuMemoryLimit         = 0;
-                amd_ext_sample_config_.sqtt                                = {};
-                amd_ext_sample_config_.timing                              = {};
-
-                // Set SQ shader mask.
-                amd_ext_sample_config_.flags.sqShaderMask = 1;
-                amd_ext_sample_config_.sqShaderMask       = mask_value;
-
-                // Set SqWgp shader mask to the same value.
-                // GPA's counter scheduler will make sure the same wave types get scheduled in the same passes.
-                amd_ext_sample_config_.flags.sqWgpShaderMask = 1;
-                amd_ext_sample_config_.sqWgpShaderMask       = mask_value;
-            }
-
-            // Insert L2 cache invalidate and flush around counter sample.
-            if (GetGpaSession()->GetParentContext()->IsInvalidateAndFlushL2CacheEnabled())
-            {
-                amd_ext_sample_config_.flags.cacheFlushOnCounterCollection = 1;
-            }
-
-            is_sample_config_initialized_ = true;
-        }
-    }
 }
 
 void Dx12GpaPass::ResetPass() const
@@ -422,8 +243,13 @@ void Dx12GpaPass::ResetPass() const
     for (auto it = GetCmdList().begin(); it != GetCmdList().end(); ++it)
     {
         Dx12GpaCommandList* dx12_cmd_list = reinterpret_cast<Dx12GpaCommandList*>(*it);
-        dx12_cmd_list->ReleaseNonGPAResources();
+        dx12_cmd_list->ReleaseNonGpaResources();
     }
 
     UnlockCommandListMutex();
+}
+
+const Dx12GpaSampleConfig& Dx12GpaPass::GetAmdExtSampleConfig()
+{
+    return amd_ext_sample_config_;
 }

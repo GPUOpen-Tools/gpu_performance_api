@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief OGLP counter definitions for GFX8.
@@ -20,7 +20,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_oglp_gfx8
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kOglpExposedCountersGroupArrayGfx8; ///< Array of hardware exposed counter groups for Oglp for Gfx8 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kOglpCounterGroupArrayGfx8; ///< Array of hardware counter groups for Oglp for Gfx8 family
     extern std::vector<GpaCounterGroupDesc>                           kHwOglpGroupsGfx8; ///< Array of counter groups for Oglp for Gfx8 family
     extern GpaCounterGroupExposedCounterDesc                          kHwOglpExposedCountersByGroupGfx8[]; ///< Array of exposed counter groups for Oglp for Gfx8 family
     extern GpaPaddedCounterDesc                                       kOglpPaddedCounterByGroupGfx8[]; ///< Array of reserved counter for Oglp for Gfx8 family
@@ -35,7 +35,6 @@ namespace counter_oglp_gfx8
     extern const std::set<unsigned int>                               kHwOglpTimestampBlockIdsGfx8; ///< Timestamp block id's for Oglp for Gfx8 family
     extern const std::set<unsigned int>                               kHwOglpTimeCounterIndicesGfx8; ///< Timestamp counter indices for Oglp for Gfx8 family
     extern const unsigned int                                         kHwOglpGroupCountGfx8; ///< Hardware Group Count for Oglp for Gfx8 family
-    extern const unsigned int                                         kHwOglpExposedCountersGroupCountGfx8; ///< Whitelist hardware counter Group Count for Oglp for Gfx8 family
     extern const unsigned int                                         kOglpPaddedCounterGroupCountGfx8; ///< reserved counter group count for Oglp for Gfx8 family
     extern const unsigned int                                         kHwOglpSqGroupCountGfx8; ///< Hardware SQ Group Count for Oglp for Gfx8 family
     extern const unsigned int                                         kHwOglpSqIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for Oglp for Gfx8 family

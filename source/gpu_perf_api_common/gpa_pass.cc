@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Pass Object Implementation.
@@ -36,6 +36,7 @@ GpaPass::GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSourc
             is_timing_pass_ = true;
         }
     }
+
 }
 
 GpaPass::~GpaPass()
@@ -97,10 +98,6 @@ GpaSample* GpaPass::CreateAndBeginSample(ClientSampleId client_sample_id, IGpaCo
         {
             sample = CreateApiSpecificSample(gpa_cmd_list, GpaSampleType::kHardware, client_sample_id);
         }
-        else if (GpaCounterSource::kSoftware == counter_source_)
-        {
-            sample = CreateApiSpecificSample(gpa_cmd_list, GpaSampleType::kSoftware, client_sample_id);
-        }
 
         if (nullptr != sample)
         {
@@ -144,6 +141,8 @@ bool GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* prim
     // We will mark the parent sample as to be continued by the client.
 
     bool       success       = false;
+
+    {
     GpaSample* parent_sample = GetSampleByIdNotThreadSafe(src_sample_id);
 
     if (nullptr != parent_sample)
@@ -194,6 +193,7 @@ bool GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* prim
     else
     {
         GPA_LOG_ERROR("Unable to continue sample: The specified sample id was not found in this pass.");
+    }
     }
 
     return success;

@@ -1,15 +1,61 @@
 ﻿# GPU Performance API Release Notes
 ---
+# Version 3.15 (12/06/2023)
+* Updated minimum CMake version to 3.10 from 3.05.
+* Updated equation for MemUnitBusyCycles.
+* Updated description of LocalVidMemBytes.
+* Renamed *.inc files to .hpp files.
+* Reduced size of static buffer when logging messages to avoid compiler warning.
+* Fixed an issue on some variant hardware that would prevent enabling certain hardware counters when kGpaOpenContextExposeHardwareCountersBit was specified to GpaOpenContext() by always generating asic-specific counters.
+* Known Issues:
+  * VsGsVerticesIn is incorrectly reporting zero when using Vulkan on Linux for some hardware.
 
-## Version 3.12 (12/14/22)
-  * Add support for AMD Radeon™ RX 7900 XTX and AMD Radeon™ RX 7900 XT GPUs.
+## Version 3.14 (09/21/2023)
+* Added support for AMD Radeon RX 7700 XT and AMD Radeon RX 7800 XT graphics cards.
+* Added support for additional AMD Radeon 700M Series devices.
+* Added counters back to Gfx9, Gfx10, Gfx103, and Gfx11 hardware generations. These restored counters are listed below by group:
+  * Timing: TessellatorBusy, TessellatorBusyCycles, VsGsBusy, VsGsBusyCycles, VsGsTime, PreTessellationBusy, PreTessellationBusyCycles, PreTessellationTime, PostTessellationBusy, PostTessellationBusyCycles, PostTessellationTime
+  * VertexGeometry: VsGsVerticesIn, VsGsPrimsIn, GSVerticesOut
+  * PreTessellation: PreTessVerticesIn
+  * PostTessellation: PostTessPrimsOut
+  * PrimitiveAssembly: PrimitivesIn
+  * TextureUnit: TexTriFilteringPct, TexTriFilteringCount, NoTexTriFilteringCount, TexVolFilteringPct, TexVolFilteringCount, NoTexVolFilteringCount
+* New counters added:
+  * MemoryCache: L0TagConflictReadStalledCycles, L0TagConflictWriteStalledCycles, L0TagConflictAtomicStalledCycles
+* Changed to Visual Studio 2022 as the default build environment on Windows (previously Visual Studio 2019).
+* Added improved support for multi-GPU systems.
+* Removed code related to software counters on non-AMD hardware.
+
+## Version 3.13.1 (06/22/2023)
+* Add support for additional AMD Radeon RX 7000 Series hardware.
+* Add support for AMD Radeon 700M Series APUs.
+  * Vulkan and OpenGL are supported on existing drivers; DX12, DX11, and OpenCL will be enabled by an upcoming driver.
+* Bug Fixes:
+  * Fixed performance regression in GPUPerfAPIDX12[-x64].dll
+
+## Version 3.13 (04/27/2023)
+* Add support for AMD Radeon RX 7000M Series hardware.
+* Add support for AMD Radeon RX 7000S Series hardware.
+* OpenCL support for AMD Radeon RX 7000 Series hardware has been restored if using Adrenalin 23.3.2 or newer.
+* Removed implementation related to supporting software counters. They have not been supported since GPA 3.0.
+* Update C++ language standard to C++ 17.
+* CMake 3.19 or newer is now required.
+* 32-bit Linux builds are no longer supported.
+* Bug Fixes:
+  * Fixed a regression that resulted in a crash on certain hardware variants.
+  * Fix a memory leak in the GpaInterfaceLoader if multiple APIs were loaded.
+  * Fix a memory leak in GPUPerfAPIUnitTests caused by not closing a context.
+  * Marked kGpaOpenContextHideSoftwareCountersBit as obsolete.
+  * Marked kGpaOpenContextHideHardwareCountesrBit as obsolete.
+
+## Version 3.12 (12/14/2022)
+  * Add support for AMD Radeon RX 7000 Series hardware.
   * Add support for compiling with Visual Studio 2022.
-  * Reduced binary sizes by an average of 75%.
+  * Reduced binary sizes by an average of 45%.
   * Bug Fixes:
     * AMD Radeon RX 6800, DX12: HiZ and PreZ counters are now reporting correct values (requires Adrenalin 22.7.1 or newer driver).
     * AMD Radeon RX 6800: CSThreadgroups is now reporting the correct values (requires Adrenalin 22.7.1 or newer driver).
     * AMD Radeon RX 6000 Series: PostTessellation counters now only show results in pipelines using tessellation.
-    * AMD Radeon RX 5000 Series: PreTessellation counters now only show results in pipelines using tessellation.
     * Sample apps: Fix implementation of passes in D3D11Triangle, and improve general error handling.
 
 ## Version 3.11.1 (07/27/22)

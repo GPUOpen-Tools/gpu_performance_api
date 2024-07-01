@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for GL GFX8.
@@ -1602,6 +1602,69 @@ void AutoDefinePublicDerivedCountersGlGfx8(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(11786);
+        internal_counters.push_back(11966);
+        internal_counters.push_back(12146);
+        internal_counters.push_back(12326);
+        internal_counters.push_back(12506);
+        internal_counters.push_back(12686);
+        internal_counters.push_back(12866);
+        internal_counters.push_back(13046);
+        internal_counters.push_back(13226);
+        internal_counters.push_back(13406);
+        internal_counters.push_back(13586);
+        internal_counters.push_back(13766);
+        internal_counters.push_back(13946);
+        internal_counters.push_back(14126);
+        internal_counters.push_back(14306);
+        internal_counters.push_back(14486);
+
+        c.DefineDerivedCounter("L0TagConflictReadStalledCycles", "MemoryCache", "The number of cycles read operations from the L0 cache are stalled due to tag conflicts.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "e2412737-e2bf-c791-5f2f-64abd4ba47cf");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(11787);
+        internal_counters.push_back(11967);
+        internal_counters.push_back(12147);
+        internal_counters.push_back(12327);
+        internal_counters.push_back(12507);
+        internal_counters.push_back(12687);
+        internal_counters.push_back(12867);
+        internal_counters.push_back(13047);
+        internal_counters.push_back(13227);
+        internal_counters.push_back(13407);
+        internal_counters.push_back(13587);
+        internal_counters.push_back(13767);
+        internal_counters.push_back(13947);
+        internal_counters.push_back(14127);
+        internal_counters.push_back(14307);
+        internal_counters.push_back(14487);
+
+        c.DefineDerivedCounter("L0TagConflictWriteStalledCycles", "MemoryCache", "The number of cycles write operations to the L0 cache are stalled due to tag conflicts.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "0c2571f3-f084-f351-99ba-0d9e23b47e8e");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(11788);
+        internal_counters.push_back(11968);
+        internal_counters.push_back(12148);
+        internal_counters.push_back(12328);
+        internal_counters.push_back(12508);
+        internal_counters.push_back(12688);
+        internal_counters.push_back(12868);
+        internal_counters.push_back(13048);
+        internal_counters.push_back(13228);
+        internal_counters.push_back(13408);
+        internal_counters.push_back(13588);
+        internal_counters.push_back(13768);
+        internal_counters.push_back(13948);
+        internal_counters.push_back(14128);
+        internal_counters.push_back(14308);
+        internal_counters.push_back(14488);
+
+        c.DefineDerivedCounter("L0TagConflictAtomicStalledCycles", "MemoryCache", "The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,sum16", "f13f8563-4151-1533-f42f-0f9c08a20210");
+    }
+    {
+        vector<GpaUInt32> internal_counters;
         internal_counters.push_back(7862);
         internal_counters.push_back(8054);
         internal_counters.push_back(8246);
@@ -1799,7 +1862,7 @@ void AutoDefinePublicDerivedCountersGlGfx8(GpaDerivedCounters& c)
         internal_counters.push_back(7534);
         internal_counters.push_back(7653);
 
-        c.DefineDerivedCounter("MemUnitBusyCycles", "GlobalMemory", "Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalledCycles). This is measured with all extra fetches and writes and any cache or memory effects taken into account.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16", "168f077c-4797-b2f5-717f-105c725266c8");
+        c.DefineDerivedCounter("MemUnitBusyCycles", "GlobalMemory", "Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalledCycles). This is measured with all extra fetches and writes and any cache or memory effects taken into account.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,NUM_SHADER_ENGINES,/", "168f077c-4797-b2f5-717f-105c725266c8");
     }
     {
         vector<GpaUInt32> internal_counters;

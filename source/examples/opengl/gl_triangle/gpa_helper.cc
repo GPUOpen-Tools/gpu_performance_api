@@ -21,6 +21,20 @@ GpaApiManager*    GpaApiManager::gpa_api_manager_ = nullptr;
 GpaHelper*        GpaHelper::gpa_helper_          = nullptr;
 GpaFuncTableInfo* gpa_function_table_info         = nullptr;
 
+#ifdef _WIN32
+/// @brief Converts string from wide to utf-8 encoding.
+///
+/// @return The converted utf-8 encoded string.
+static std::string wide_to_utf8_converter(const std::wstring wide)
+{
+    int         num_bytes_needed = WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), nullptr, 0, nullptr, nullptr);
+    std::string utf8;
+    utf8.resize(num_bytes_needed);
+    WideCharToMultiByte(CP_UTF8, 0, wide.data(), (int)wide.size(), utf8.data(), num_bytes_needed, nullptr, nullptr);
+    return utf8;
+}
+#endif
+
 GpaHelper* GpaHelper::Instance()
 {
     if (nullptr == gpa_helper_)
@@ -98,7 +112,7 @@ void GpaLogger(GpaLoggingType log_type, const char* log_msg)
 bool GpaHelper::ParseCommandLine(int argc, char* argv[])
 {
     gpa_example::CmdlineParser cmdline_parser(argc, argv);
-    app_ = new (std::nothrow) gpa_example::GpaSampleApp("GLTriangle", cmdline_parser);
+    app_ = new (std::nothrow) gpa_example::GpaSampleApp(AMDT_PROJECT_NAME, cmdline_parser);
 
     if (app_ == nullptr)
     {
@@ -457,9 +471,31 @@ bool GpaHelper::PrintGpaSampleResults(unsigned int profile_set, bool verify_coun
                                     verification_success &=
                                         CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThan, 0.0f);
                                 }
-                                else if (0 == local_counter_name.compare("VSVerticesIn"))
+                                else if (0 == local_counter_name.compare("TessellatorBusy") || 0 == local_counter_name.compare("TessellatorBusyCycles"))
                                 {
-                                    verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 3);
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("VsGsVerticesIn"))
+                                {
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 3.0f);
+                                }
+                                else if (0 == local_counter_name.compare("GSVerticesOut"))
+                                {
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("PreTessVerticesIn"))
+                                {
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("GSPrimsIn"))
+                                {
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 0.0f);
+                                }
+                                else if (0 == local_counter_name.compare("TexTriFilteringPct") || 0 == local_counter_name.compare("TexTriFilteringCount") ||
+                                         0 == local_counter_name.compare("NoTexTriFilteringCount") || 0 == local_counter_name.compare("TexVolFilteringPct") ||
+                                         0 == local_counter_name.compare("TexVolFilteringCount") || 0 == local_counter_name.compare("NoTexVolFilteringCount"))
+                                {
+                                    verification_success = CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 0.0f);
                                 }
                                 else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PSPixelsOut"))
                                 {
@@ -468,10 +504,19 @@ bool GpaHelper::PrintGpaSampleResults(unsigned int profile_set, bool verify_coun
                                 }
                                 else if (app_->IncludeKnownIssues() && 0 == local_counter_name.compare("PreZSamplesPassing"))
                                 {
-                                    verification_success &=
-                                        CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
+                                    if (gpa_hw_generation_ == kGpaHwGenerationGfx11)
+                                    {
+                                        verification_success &=
+                                            (CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeGreaterThanOrEqualTo, 0.0f) &&
+                                             CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeLessThanOrEqualTo, 18000.0f));
+                                    }
+                                    else
+                                    {
+                                        verification_success &=
+                                            CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 180000);
+                                    }
                                 }
-                                else if (0 == local_counter_name.compare("PrimitivesIn"))
+                                else if (0 == local_counter_name.compare("PrimitivesIn") || 0 == local_counter_name.compare("VsGsPrimsIn"))
                                 {
                                     verification_success &= CounterValueCompare(profile_set, *sample_iter, counter_name, float_result, kCompareTypeEqual, 1);
                                 }
@@ -559,9 +604,7 @@ void GpaHelper::InitializeIO()
 
     std::wstring executable_path = std::wstring(module_string.begin(), module_string.begin() + (last_slash_position + 1));
 
-    std::wstring_convert<std::codecvt_utf8<wchar_t>, wchar_t> wide_to_utf8_converter;
-
-    std::string utf8_executable_path = wide_to_utf8_converter.to_bytes(executable_path);
+    std::string utf8_executable_path = wide_to_utf8_converter(executable_path);
 
 #else
     int  len;
@@ -587,9 +630,9 @@ void GpaHelper::InitializeIO()
     utf8_executable_path.append(executable_path.begin(), executable_path.end());
 #endif
 
-    counter_data_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Datafile());
-    gpa_log_file_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Logfile());
-    std::remove(counter_data_name_.c_str());
+    gpa_counter_file_name_ = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Datafile());
+    gpa_log_file_name_     = std::string(utf8_executable_path.begin(), utf8_executable_path.end()).append(app_->Logfile());
+    std::remove(gpa_counter_file_name_.c_str());
     std::remove(gpa_log_file_name_.c_str());
-    counter_data_file_stream_.open(counter_data_name_.c_str(), std::ios_base::out | std::ios_base::app);
+    counter_data_file_stream_.open(gpa_counter_file_name_.c_str(), std::ios_base::out | std::ios_base::app);
 }

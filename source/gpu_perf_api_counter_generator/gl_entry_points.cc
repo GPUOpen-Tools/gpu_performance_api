@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL entry points.
@@ -124,7 +124,7 @@ namespace ogl_utils
             case GL_STACK_UNDERFLOW:
             case GL_OUT_OF_MEMORY:
                 error_found = true;
-                GPA_LOG_ERROR(error_message.c_str());
+                GPA_LOG_ERROR("%s", error_message.c_str());
                 break;
 
             default:
@@ -870,3 +870,9 @@ bool ogl_utils::InitializeGlFunctions()
     are_gl_functions_initialized = ret_val;
     return ret_val;
 }
+
+void ogl_utils::Cleanup()
+{
+    GpaLogger::DeleteInstance();
+}
+

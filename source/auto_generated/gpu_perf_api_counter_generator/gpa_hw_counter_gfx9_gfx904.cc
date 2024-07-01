@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX9_GFX904.
@@ -14,6 +14,7 @@
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx9_gfx904.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
+
 namespace counter_gfx9_gfx904
 {
     std::vector<GpaHardwareCounterDesc> kPaSu0CountersGfx9_gfx904 = {
@@ -119,10 +120,6 @@ namespace counter_gfx9_gfx904
         {237, "PA_SC3_P2_HIZ_QUAD_COUNT", "PA_SC3", "total quads surviving hi-z; db pipe 2 (DEPRECATED only valid for NUM_DB_PER_PACKER=4)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {238, "PA_SC3_P3_HIZ_QUAD_COUNT", "PA_SC3", "total quads surviving hi-z; db pipe 3 (DEPRECATED only valid for NUM_DB_PER_PACKER=4)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {259, "PA_SC3_EARLYZ_QUAD_COUNT", "PA_SC3", "total quads surviving early-z;Where measured: sc_tileaccum (sc_quadaccum if 1db per packer) inputs to packer;increment rate 1 to 2 quads per clock;range-1/clk;CONTEXT_STATE_SENSITIVE=YES;Results reported per SE, INSTANCE_INDEX=0 to num_packer_per_sc-1.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kIa0CountersGfx9_gfx904 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kIa1CountersGfx9_gfx904 = {
     };
     std::vector<GpaHardwareCounterDesc> kGcea0CountersGfx9_gfx904 = {
         {55, "GCEA0_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA0", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},

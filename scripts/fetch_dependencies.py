@@ -87,11 +87,7 @@ def TryRemoveFile(filepath):
 def UpdateGitHubRepo(repoRootUrl, location, commit):
     # Convert targetPath to OS specific format.
     # Add script directory to targetPath.
-    targetPath = os.path.join(gpaRoot, location)
-
-    # 'location' has forward slashes even on Windows. Clean up the final path
-    # for purely aesthetical reasons (script output)
-    targetPath = os.path.realpath(targetPath)
+    targetPath = os.path.realpath(os.path.join(gpaRoot, location))
 
     reqdCommit = commit
 

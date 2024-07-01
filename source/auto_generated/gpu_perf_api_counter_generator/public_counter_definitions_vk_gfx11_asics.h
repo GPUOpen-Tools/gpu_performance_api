@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions ASIC file for VK_GFX11
@@ -14,6 +14,8 @@
 
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_vk_gfx11.h"
 
+#include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_vk_gfx11_gfx1103.h"
+
 namespace vk_gfx11_asics
 {
     /// @brief Updates default GPU generation derived counters with ASIC specific derived counters if available.
@@ -25,9 +27,14 @@ namespace vk_gfx11_asics
     /// @return True if the ASIC matched one available, and c was updated.
     inline void UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaDerivedCounters& c)
     {
-        UNREFERENCED_PARAMETER(desired_generation);
-        UNREFERENCED_PARAMETER(asic_type);
-        UNREFERENCED_PARAMETER(c);
+        // Override max block events first so we could chain these if we want
+        counter_vk_gfx11::OverrideMaxBlockEvents(asic_type);
+
+        if (vk_gfx11_gfx1103::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
+        {
+            return;
+        }
+
     }
 
 }  // namespace vk_gfx11asics

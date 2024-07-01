@@ -1,5 +1,5 @@
-## Copyright (c) 2018 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 if(NOT DEFINED AMDTPlatform)
     set(AMDTPlatform "x86")
@@ -22,10 +22,10 @@ if(NOT DEFINED AMDTPlatformSuffixNumBitsOnly)
 endif()
 
 if(WIN32)
-    set(COMMON_LINKER_FLAGS             /MACHINE:X86)
+    set(COMMON_LINKER_FLAGS /MACHINE:X86)
 else()
-    set(COMMON_COMPILATION_FLAGS        -m32)
-    set(COMMON_LINKER_FLAGS             -m32)
+    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -m32)
+    set(COMMON_LINKER_FLAGS -m32)
 endif(WIN32)
 
-set(COMMON_PREPROCESSOR_DEFINITION X86)
+set(COMMON_PREPROCESSOR_DEFINITION ${COMMON_PREPROCESSOR_DEFINITION} X86)

@@ -1,5 +1,5 @@
-## Copyright (c) 2018-2019 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 include(${CMAKE_CURRENT_LIST_DIR}/Global-Internal.cmake)
 
@@ -42,7 +42,7 @@ set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 if(WIN32)
     set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} /W4 /WX)
 else()
-    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -std=c++11 -D_LINUX -fPIC -Wall -Werror)
+    set(COMMON_COMPILATION_FLAGS ${COMMON_COMPILATION_FLAGS} -std=c++17 -D_LINUX -fPIC -Wall -Werror)
 endif()
 
 ## Set Global defintions

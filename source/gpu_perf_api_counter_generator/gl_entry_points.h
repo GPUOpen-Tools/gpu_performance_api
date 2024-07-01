@@ -224,6 +224,9 @@ namespace ogl_utils
     /// @return True upon success otherwise false.
     bool InitPlatformExtFunctions();
 
+    /// @brief Delete objects that are no longer needed.
+    void Cleanup();
+
     extern const char* kAmdRendererString;            ///< AMD Renderer string.
     extern const char* kRadeonRendererString;         ///< Radeon Renderer string.
     extern const char* kAtiRendererString;            ///< ATI Renderer string (legacy).
@@ -239,3 +242,4 @@ namespace ogl_utils
 }  // namespace ogl_utils
 
 #endif  // GPA_COUNTER_GENERATOR_GL_GL_ENTRY_POINTS_H_
+

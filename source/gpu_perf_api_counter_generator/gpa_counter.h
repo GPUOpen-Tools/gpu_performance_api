@@ -23,7 +23,6 @@ struct GpaCounterGroupExposedCounterDesc
 {
     GpaUInt32              group_index;                 ///< Index of the exposed counter group.
     GpaUInt32              hardware_block_start_index;  ///< Start index of the counter in this counter group.
-    std::vector<GpaUInt32> white_list_counters;         ///< List of the exposed counters in the group.
 };
 
 /// @brief Contains the GPA padded counter information.

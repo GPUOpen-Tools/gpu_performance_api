@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base Class for counter scheduling.
@@ -75,12 +75,9 @@ GpaStatus GpaCounterSchedulerBase::EnableCounter(GpaUInt32 index)
 #pragma endregion
     if (enabled_public_counter_bits_[index])
     {
-        std::stringstream message;
-        message << "Counter index " << index << " has already been enabled.";
-
         // We will log this as a debug message rather than an error at this point,
         // this error will be reported to the logger from the caller.
-        GPA_LOG_DEBUG_MESSAGE(message.str().c_str());
+        GPA_LOG_DEBUG_MESSAGE("Counter index %d has already been enabled.", index);
         return kGpaStatusErrorAlreadyEnabled;
     }
 
@@ -108,9 +105,7 @@ GpaStatus GpaCounterSchedulerBase::DisableCounter(GpaUInt32 index)
         }
     }
 
-    std::stringstream message;
-    message << "Counter index " << index << " was not previously enabled, so it could not be disabled.";
-    GPA_LOG_ERROR(message.str().c_str());
+    GPA_LOG_ERROR("Counter index %d was not previously enabled, so it could not be disabled.", index);
     return kGpaStatusErrorNotEnabled;
 }
 
@@ -126,11 +121,9 @@ GpaStatus GpaCounterSchedulerBase::GetEnabledIndex(GpaUInt32 enabled_index, GpaU
 {
     if (enabled_index >= static_cast<GpaUInt32>(enabled_public_indices_.size()))
     {
-        std::stringstream message;
-        message << "Parameter 'enabled_index' is " << enabled_index << " but must be less than the number of enabled counters ("
-                << enabled_public_indices_.size() << ").";
-        GPA_LOG_ERROR(message.str().c_str());
-        return kGpaStatusErrorIndexOutOfRange;
+        GPA_LOG_ERROR("Parameter 'enabled_index' is %u but must be less than the number of enabled counters (%zu)",
+            enabled_index, enabled_public_indices_.size());
+	return kGpaStatusErrorIndexOutOfRange;
     }
 
     (*counter_at_index) = static_cast<GpaUInt32>(enabled_public_indices_[enabled_index]);
@@ -142,11 +135,9 @@ GpaStatus GpaCounterSchedulerBase::IsCounterEnabled(GpaUInt32 counter_index) con
 {
     if (counter_index >= enabled_public_counter_bits_.size())
     {
-        std::stringstream message;
-        message << "Parameter 'counter_index' is " << counter_index << " but must be less than the number of enabled counters ("
-                << enabled_public_counter_bits_.size() << ").";
-        GPA_LOG_ERROR(message.str().c_str());
-        return kGpaStatusErrorIndexOutOfRange;
+        GPA_LOG_ERROR("Parameter 'counter_index' is %u but must be less than the number of enabled counters (%zu)",
+            counter_index, enabled_public_counter_bits_.size());
+	return kGpaStatusErrorIndexOutOfRange;
     }
 
     if (enabled_public_counter_bits_[counter_index])
@@ -155,10 +146,8 @@ GpaStatus GpaCounterSchedulerBase::IsCounterEnabled(GpaUInt32 counter_index) con
     }
     else
     {
-        std::stringstream message;
-        message << "Parameter 'counter_index' (" << counter_index << ") is not an enabled counter.";
-        GPA_LOG_MESSAGE(message.str().c_str());
-        return kGpaStatusErrorCounterNotFound;
+        GPA_LOG_MESSAGE("Parameter 'counter_index' (%d) is not an enabled counter.", counter_index);
+	return kGpaStatusErrorCounterNotFound;
     }
 
 #pragma region Previous method based on only using the enabled index list
@@ -235,7 +224,6 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
     // Build the list of counters to split.
     std::vector<const GpaDerivedCounterInfoClass*> public_counters_to_split;
     std::vector<GpaHardwareCounterIndices>         internal_counters_to_schedule;
-    std::vector<GpaSoftwareCounterIndices>         software_counters_to_schedule;
 
     for (std::vector<GpaUInt32>::const_iterator counter_iter = enabled_public_indices_.cbegin(); counter_iter != enabled_public_indices_.cend(); ++counter_iter)
     {
@@ -266,26 +254,6 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
             break;
         }
 
-        case GpaCounterSource::kSoftware:
-        {
-            // Software counter.
-            std::vector<unsigned int> required_counters = counter_accessor_->GetInternalCountersRequired(*counter_iter);
-            assert(required_counters.size() == 1);
-
-            if (required_counters.size() == 1)
-            {
-                GpaSoftwareCounterIndices indices = {};
-                indices.public_index              = *counter_iter;
-
-                indices.software_index = required_counters
-                    [0];  // -pHWCounters->GetNumCounters(); // Subtract the number of HW counters to convert from the internal index to the software index.
-
-                software_counters_to_schedule.push_back(indices);
-            }
-
-            break;
-        }
-
         case GpaCounterSource::kUnknown:
         default:
         {
@@ -296,14 +264,11 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
         }
     }
 
-    // Get the Sw counters.
-    const GpaSoftwareCounters* sw_counters = counter_generator_base->GetSoftwareCounters();
-
     // Build the list of max counters per group (includes both hardware and software groups).
     std::vector<unsigned int> max_counters_per_group;
 
-    // Create space for the number of HW and SW groups.
-    max_counters_per_group.reserve(hw_counters->internal_counter_groups_.size()+ hw_counters->additional_group_count_ + sw_counters->group_count_);
+    // Create space for the number of HW groups.
+    max_counters_per_group.reserve(hw_counters->internal_counter_groups_.size() + hw_counters->additional_group_count_);
 
     // Add the HW groups max's.
     for (unsigned int i = 0; i < hw_counters->internal_counter_groups_.size(); ++i)
@@ -329,18 +294,6 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
         max_counters_per_group.push_back(count);
     }
 
-    // TODO: properly handle software groups -- right now, this works because there is only ever a single group defined.
-    if (sw_counters->group_count_ == 1)
-    {
-        auto count = DoGetNumSoftwareCounters();
-        if (count == 0)
-        {
-            GPA_LOG_DEBUG_ERROR("Software counter group has zero for max-counters-per-group.");
-            return kGpaStatusErrorInvalidCounterGroupData;
-        }
-        max_counters_per_group.push_back(count);
-    }
-
     GpaCounterGroupAccessor accessor(hw_counters->internal_counter_groups_,
                                      static_cast<GpaUInt32>(hw_counters->internal_counter_groups_.size()),
                                      hw_counters->additional_groups_,
@@ -350,7 +303,6 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
 
     pass_partitions_ = splitter->SplitCounters(public_counters_to_split,
                                                internal_counters_to_schedule,
-                                               software_counters_to_schedule,
                                                reinterpret_cast<IGpaCounterGroupAccessor*>(&accessor),
                                                max_counters_per_group,
                                                num_internal_counters_scheduled);
@@ -441,25 +393,6 @@ GpaStatus GpaCounterSchedulerBase::DoDisableCounter(GpaUInt32 index)
 {
     enabled_public_counter_bits_[index] = false;
     return kGpaStatusOk;
-}
-
-GpaUInt32 GpaCounterSchedulerBase::DoGetNumSoftwareCounters() const
-{
-    GpaUInt32 ret_val = 0;
-
-    GpaCounterGeneratorBase* counter_generator_base = reinterpret_cast<GpaCounterGeneratorBase*>(counter_accessor_);
-
-    if (nullptr != counter_generator_base)
-    {
-        const GpaSoftwareCounters* sw_counters = counter_generator_base->GetSoftwareCounters();
-
-        if (nullptr != sw_counters)
-        {
-            ret_val = static_cast<GpaUInt32>(sw_counters->software_counter_list_.size());
-        }
-    }
-
-    return ret_val;
 }
 
 GpaStatus GpaCounterSchedulerBase::DoBeginProfile()

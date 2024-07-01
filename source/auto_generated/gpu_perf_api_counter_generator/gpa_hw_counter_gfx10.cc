@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX10.
@@ -12,16 +12,9 @@
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/gpa_hw_counter_gfx10.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
+
 namespace counter_gfx10
 {
-    std::vector<GpaHardwareCounterDesc> kSdma0CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kSdma1CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kCpgCountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kCpcCountersGfx10 = {
-    };
     std::vector<GpaHardwareCounterDesc> kCpfCountersGfx10 = {
         {0, "CPF_PERF_SEL_ALWAYS_COUNT", "CPF", "Always Count.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {24, "CPF_PERF_SEL_CPF_STAT_BUSY", "CPF", "CPF Busy.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -30,15 +23,11 @@ namespace counter_gfx10
         {0, "GRBM_PERF_SEL_COUNT", "GRBM", "Tie High - Count Number of Clocks", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {2, "GRBM_PERF_SEL_GUI_ACTIVE", "GRBM", "The GUI is Active", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kGrbmse0CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGrbmse1CountersGfx10 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGeCountersGfx10 = {
         {211, "GE_SPI_ESVERT_VALID", "GE", "number of valid ES verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {221, "GE_SPI_GSPRIM_VALID", "GE", "number of valid GS prims", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {227, "GE_SPI_HSVERT_VALID", "GE", "HS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {233, "GE_SPI_LSVERT_VALID", "GE", "LS Vert is valid. Sensitive to PERF_SEID_IGNORE_MASK", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {247, "GE_TE11_BUSY", "GE", "Counts number of cycles the TE11 block is busy. (DX11 Tessellation Fixed Function Logic)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {275, "GE_SPI_VSVERT_VALID", "GE", "number of valid VS verts", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kPaSu0CountersGfx10 = {
@@ -680,8 +669,6 @@ namespace counter_gfx10
         {24, "SX3_PERF_SEL_DB2_PIXEL_STALL", "SX3", "Number of cycles where pixel traffic is stalled due to the DB2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {27, "SX3_PERF_SEL_DB3_PIXELS", "SX3", "Number of pixels sent to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SX3_PERF_SEL_DB3_PIXEL_STALL", "SX3", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGdsCountersGfx10 = {
     };
     std::vector<GpaHardwareCounterDesc> kTa0CountersGfx10 = {
         {15, "TA0_PERF_SEL_TA_BUSY", "TA0", "TA block is busy. Perf_Windowing not supported for this counter.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1403,293 +1390,325 @@ namespace counter_gfx10
         {101, "TA39_PERF_SEL_FLAT_READ_WAVEFRONTS", "TA39", "Number of flat opcode read vec32 packets processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {102, "TA39_PERF_SEL_FLAT_WRITE_WAVEFRONTS", "TA39", "Number of flat opcode write vec32 packets processed by the TA.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kTd0CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd1CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd2CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd3CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd4CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd5CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd6CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd7CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd8CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd9CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd10CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd11CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd12CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd13CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd14CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd15CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd16CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd17CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd18CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd19CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd20CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd21CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd22CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd23CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd24CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd25CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd26CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd27CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd28CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd29CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd30CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd31CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd32CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd33CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd34CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd35CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd36CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd37CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd38CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kTd39CountersGfx10 = {
-    };
     std::vector<GpaHardwareCounterDesc> kTcp0CountersGfx10 = {
         {9, "TCP0_PERF_SEL_REQ", "TCP0", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP0_PERF_SEL_REQ_MISS", "TCP0", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP0_PERF_SEL_TCP_TA_REQ_STALL", "TCP0", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP0_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP0", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP0_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP0", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP0_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP0", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp1CountersGfx10 = {
         {9, "TCP1_PERF_SEL_REQ", "TCP1", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP1_PERF_SEL_REQ_MISS", "TCP1", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP1_PERF_SEL_TCP_TA_REQ_STALL", "TCP1", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP1_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP1", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP1_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP1", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP1_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP1", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp2CountersGfx10 = {
         {9, "TCP2_PERF_SEL_REQ", "TCP2", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP2_PERF_SEL_REQ_MISS", "TCP2", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP2_PERF_SEL_TCP_TA_REQ_STALL", "TCP2", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP2_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP2", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP2_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP2", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP2_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP2", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp3CountersGfx10 = {
         {9, "TCP3_PERF_SEL_REQ", "TCP3", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP3_PERF_SEL_REQ_MISS", "TCP3", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP3_PERF_SEL_TCP_TA_REQ_STALL", "TCP3", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP3_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP3", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP3_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP3", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP3_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP3", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp4CountersGfx10 = {
         {9, "TCP4_PERF_SEL_REQ", "TCP4", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP4_PERF_SEL_REQ_MISS", "TCP4", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP4_PERF_SEL_TCP_TA_REQ_STALL", "TCP4", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP4_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP4", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP4_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP4", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP4_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP4", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp5CountersGfx10 = {
         {9, "TCP5_PERF_SEL_REQ", "TCP5", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP5_PERF_SEL_REQ_MISS", "TCP5", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP5_PERF_SEL_TCP_TA_REQ_STALL", "TCP5", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP5_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP5", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP5_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP5", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP5_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP5", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp6CountersGfx10 = {
         {9, "TCP6_PERF_SEL_REQ", "TCP6", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP6_PERF_SEL_REQ_MISS", "TCP6", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP6_PERF_SEL_TCP_TA_REQ_STALL", "TCP6", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP6_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP6", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP6_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP6", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP6_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP6", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp7CountersGfx10 = {
         {9, "TCP7_PERF_SEL_REQ", "TCP7", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP7_PERF_SEL_REQ_MISS", "TCP7", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP7_PERF_SEL_TCP_TA_REQ_STALL", "TCP7", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP7_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP7", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP7_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP7", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP7_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP7", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp8CountersGfx10 = {
         {9, "TCP8_PERF_SEL_REQ", "TCP8", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP8_PERF_SEL_REQ_MISS", "TCP8", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP8_PERF_SEL_TCP_TA_REQ_STALL", "TCP8", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP8_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP8", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP8_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP8", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP8_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP8", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp9CountersGfx10 = {
         {9, "TCP9_PERF_SEL_REQ", "TCP9", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP9_PERF_SEL_REQ_MISS", "TCP9", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP9_PERF_SEL_TCP_TA_REQ_STALL", "TCP9", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP9_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP9", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP9_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP9", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP9_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP9", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp10CountersGfx10 = {
         {9, "TCP10_PERF_SEL_REQ", "TCP10", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP10_PERF_SEL_REQ_MISS", "TCP10", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP10_PERF_SEL_TCP_TA_REQ_STALL", "TCP10", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP10_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP10", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP10_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP10", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP10_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP10", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp11CountersGfx10 = {
         {9, "TCP11_PERF_SEL_REQ", "TCP11", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP11_PERF_SEL_REQ_MISS", "TCP11", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP11_PERF_SEL_TCP_TA_REQ_STALL", "TCP11", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP11_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP11", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP11_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP11", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP11_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP11", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp12CountersGfx10 = {
         {9, "TCP12_PERF_SEL_REQ", "TCP12", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP12_PERF_SEL_REQ_MISS", "TCP12", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP12_PERF_SEL_TCP_TA_REQ_STALL", "TCP12", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP12_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP12", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP12_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP12", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP12_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP12", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp13CountersGfx10 = {
         {9, "TCP13_PERF_SEL_REQ", "TCP13", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP13_PERF_SEL_REQ_MISS", "TCP13", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP13_PERF_SEL_TCP_TA_REQ_STALL", "TCP13", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP13_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP13", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP13_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP13", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP13_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP13", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp14CountersGfx10 = {
         {9, "TCP14_PERF_SEL_REQ", "TCP14", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP14_PERF_SEL_REQ_MISS", "TCP14", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP14_PERF_SEL_TCP_TA_REQ_STALL", "TCP14", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP14_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP14", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP14_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP14", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP14_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP14", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp15CountersGfx10 = {
         {9, "TCP15_PERF_SEL_REQ", "TCP15", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP15_PERF_SEL_REQ_MISS", "TCP15", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP15_PERF_SEL_TCP_TA_REQ_STALL", "TCP15", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP15_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP15", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP15_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP15", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP15_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP15", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp16CountersGfx10 = {
         {9, "TCP16_PERF_SEL_REQ", "TCP16", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP16_PERF_SEL_REQ_MISS", "TCP16", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP16_PERF_SEL_TCP_TA_REQ_STALL", "TCP16", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP16_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP16", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP16_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP16", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP16_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP16", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp17CountersGfx10 = {
         {9, "TCP17_PERF_SEL_REQ", "TCP17", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP17_PERF_SEL_REQ_MISS", "TCP17", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP17_PERF_SEL_TCP_TA_REQ_STALL", "TCP17", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP17_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP17", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP17_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP17", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP17_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP17", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp18CountersGfx10 = {
         {9, "TCP18_PERF_SEL_REQ", "TCP18", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP18_PERF_SEL_REQ_MISS", "TCP18", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP18_PERF_SEL_TCP_TA_REQ_STALL", "TCP18", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP18_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP18", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP18_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP18", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP18_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP18", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp19CountersGfx10 = {
         {9, "TCP19_PERF_SEL_REQ", "TCP19", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP19_PERF_SEL_REQ_MISS", "TCP19", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP19_PERF_SEL_TCP_TA_REQ_STALL", "TCP19", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP19_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP19", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP19_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP19", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP19_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP19", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp20CountersGfx10 = {
         {9, "TCP20_PERF_SEL_REQ", "TCP20", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP20_PERF_SEL_REQ_MISS", "TCP20", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP20_PERF_SEL_TCP_TA_REQ_STALL", "TCP20", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP20_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP20", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP20_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP20", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP20_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP20", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp21CountersGfx10 = {
         {9, "TCP21_PERF_SEL_REQ", "TCP21", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP21_PERF_SEL_REQ_MISS", "TCP21", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP21_PERF_SEL_TCP_TA_REQ_STALL", "TCP21", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP21_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP21", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP21_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP21", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP21_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP21", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp22CountersGfx10 = {
         {9, "TCP22_PERF_SEL_REQ", "TCP22", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP22_PERF_SEL_REQ_MISS", "TCP22", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP22_PERF_SEL_TCP_TA_REQ_STALL", "TCP22", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP22_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP22", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP22_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP22", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP22_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP22", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp23CountersGfx10 = {
         {9, "TCP23_PERF_SEL_REQ", "TCP23", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP23_PERF_SEL_REQ_MISS", "TCP23", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP23_PERF_SEL_TCP_TA_REQ_STALL", "TCP23", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP23_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP23", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP23_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP23", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP23_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP23", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp24CountersGfx10 = {
         {9, "TCP24_PERF_SEL_REQ", "TCP24", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP24_PERF_SEL_REQ_MISS", "TCP24", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP24_PERF_SEL_TCP_TA_REQ_STALL", "TCP24", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP24_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP24", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP24_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP24", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP24_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP24", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp25CountersGfx10 = {
         {9, "TCP25_PERF_SEL_REQ", "TCP25", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP25_PERF_SEL_REQ_MISS", "TCP25", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP25_PERF_SEL_TCP_TA_REQ_STALL", "TCP25", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP25_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP25", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP25_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP25", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP25_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP25", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp26CountersGfx10 = {
         {9, "TCP26_PERF_SEL_REQ", "TCP26", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP26_PERF_SEL_REQ_MISS", "TCP26", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP26_PERF_SEL_TCP_TA_REQ_STALL", "TCP26", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP26_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP26", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP26_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP26", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP26_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP26", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp27CountersGfx10 = {
         {9, "TCP27_PERF_SEL_REQ", "TCP27", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP27_PERF_SEL_REQ_MISS", "TCP27", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP27_PERF_SEL_TCP_TA_REQ_STALL", "TCP27", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP27_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP27", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP27_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP27", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP27_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP27", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp28CountersGfx10 = {
         {9, "TCP28_PERF_SEL_REQ", "TCP28", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP28_PERF_SEL_REQ_MISS", "TCP28", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP28_PERF_SEL_TCP_TA_REQ_STALL", "TCP28", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP28_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP28", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP28_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP28", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP28_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP28", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp29CountersGfx10 = {
         {9, "TCP29_PERF_SEL_REQ", "TCP29", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP29_PERF_SEL_REQ_MISS", "TCP29", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP29_PERF_SEL_TCP_TA_REQ_STALL", "TCP29", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP29_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP29", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP29_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP29", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP29_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP29", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp30CountersGfx10 = {
         {9, "TCP30_PERF_SEL_REQ", "TCP30", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP30_PERF_SEL_REQ_MISS", "TCP30", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP30_PERF_SEL_TCP_TA_REQ_STALL", "TCP30", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP30_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP30", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP30_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP30", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP30_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP30", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp31CountersGfx10 = {
         {9, "TCP31_PERF_SEL_REQ", "TCP31", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP31_PERF_SEL_REQ_MISS", "TCP31", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP31_PERF_SEL_TCP_TA_REQ_STALL", "TCP31", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP31_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP31", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP31_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP31", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP31_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP31", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp32CountersGfx10 = {
         {9, "TCP32_PERF_SEL_REQ", "TCP32", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP32_PERF_SEL_REQ_MISS", "TCP32", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP32_PERF_SEL_TCP_TA_REQ_STALL", "TCP32", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP32_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP32", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP32_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP32", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP32_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP32", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp33CountersGfx10 = {
         {9, "TCP33_PERF_SEL_REQ", "TCP33", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP33_PERF_SEL_REQ_MISS", "TCP33", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP33_PERF_SEL_TCP_TA_REQ_STALL", "TCP33", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP33_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP33", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP33_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP33", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP33_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP33", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp34CountersGfx10 = {
         {9, "TCP34_PERF_SEL_REQ", "TCP34", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP34_PERF_SEL_REQ_MISS", "TCP34", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP34_PERF_SEL_TCP_TA_REQ_STALL", "TCP34", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP34_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP34", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP34_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP34", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP34_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP34", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp35CountersGfx10 = {
         {9, "TCP35_PERF_SEL_REQ", "TCP35", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP35_PERF_SEL_REQ_MISS", "TCP35", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP35_PERF_SEL_TCP_TA_REQ_STALL", "TCP35", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP35_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP35", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP35_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP35", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP35_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP35", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp36CountersGfx10 = {
         {9, "TCP36_PERF_SEL_REQ", "TCP36", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP36_PERF_SEL_REQ_MISS", "TCP36", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP36_PERF_SEL_TCP_TA_REQ_STALL", "TCP36", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP36_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP36", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP36_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP36", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP36_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP36", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp37CountersGfx10 = {
         {9, "TCP37_PERF_SEL_REQ", "TCP37", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP37_PERF_SEL_REQ_MISS", "TCP37", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP37_PERF_SEL_TCP_TA_REQ_STALL", "TCP37", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP37_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP37", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP37_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP37", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP37_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP37", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp38CountersGfx10 = {
         {9, "TCP38_PERF_SEL_REQ", "TCP38", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP38_PERF_SEL_REQ_MISS", "TCP38", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP38_PERF_SEL_TCP_TA_REQ_STALL", "TCP38", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {44, "TCP38_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP38", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP38_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP38", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP38_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP38", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kTcp39CountersGfx10 = {
         {9, "TCP39_PERF_SEL_REQ", "TCP39", "Total cache line accesses", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "TCP39_PERF_SEL_REQ_MISS", "TCP39", "Total cache requests that missed", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {36, "TCP39_PERF_SEL_TCP_TA_REQ_STALL", "TCP39", "TCP stalls TA req interface.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl10CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl11CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl12CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUtcl13CountersGfx10 = {
+        {44, "TCP39_PERF_SEL_READ_TAGCONFLICT_STALL", "TCP39", "Tag conflict stall on a read", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {45, "TCP39_PERF_SEL_WRITE_TAGCONFLICT_STALL", "TCP39", "Tag conflict stall on a write", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {46, "TCP39_PERF_SEL_ATOMIC_TAGCONFLICT_STALL", "TCP39", "Tag conflict stall on an atomic", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kGl2c0CountersGfx10 = {
         {3, "GL2C0_PERF_SEL_REQ", "GL2C0", "Number of requests of all types. This is measured at the tag block. This may be more than the number of requests arriving at the GL2C, but it is a good indication of the total amount of work that needs to be performed.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1955,14 +1974,6 @@ namespace counter_gfx10
         {91, "GL2C23_PERF_SEL_EA_RDREQ_96B", "GL2C23", "Number of 96-byte GL2C/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {92, "GL2C23_PERF_SEL_EA_RDREQ_128B", "GL2C23", "Number of 128-byte GL2C/EA read requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kGl2a0CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl2a1CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl2a2CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl2a3CountersGfx10 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGl1c0CountersGfx10 = {
         {14, "GL1C0_PERF_SEL_REQ", "GL1C0", "Read, writes, atomics, nop. Invalids are not counted as requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "GL1C0_PERF_SEL_REQ_MISS", "GL1C0", "Count of requests that miss in the cache. Writes and atomics always miss. Partial miss counts as miss.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2026,48 +2037,6 @@ namespace counter_gfx10
     std::vector<GpaHardwareCounterDesc> kGl1c15CountersGfx10 = {
         {14, "GL1C15_PERF_SEL_REQ", "GL1C15", "Read, writes, atomics, nop. Invalids are not counted as requests.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {18, "GL1C15_PERF_SEL_REQ_MISS", "GL1C15", "Count of requests that miss in the cache. Writes and atomics always miss. Partial miss counts as miss.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg0CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg1CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg2CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg3CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg4CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg5CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg6CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg7CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg8CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg9CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg10CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg11CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg12CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg13CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg14CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1cg15CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc0CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc1CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc2CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChc3CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChcgCountersGfx10 = {
     };
     std::vector<GpaHardwareCounterDesc> kCb0CountersGfx10 = {
         {7, "CB0_PERF_SEL_DRAWN_QUAD_FRAGMENT", "CB0", "This is the number of drawn quad fragments. Use CB_PERF_SEL_DRAWN_BUSY as denominator to get per clock rates. Filtering using CB_PERFCOUNTER_FILTER fields has an effect in this mode.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2533,86 +2502,6 @@ namespace counter_gfx10
         {178, "DB15_PERF_SEL_PREZ_SAMPLES_FAILING_Z", "DB15", "Samples failing Z test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {179, "DB15_PERF_SEL_PREZ_SAMPLES_FAILING_S", "DB15", "Samples failing Stencil test during a PreZ pass", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kRmi0CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi1CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi2CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi3CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi4CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi5CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi6CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi7CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi8CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi9CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi10CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi11CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi12CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi13CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi14CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRmi15CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc0CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc1CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc2CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc3CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc4CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc5CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc6CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc7CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc8CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc9CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc10CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc11CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc12CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc13CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc14CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc15CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc16CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc17CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc18CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kUmc19CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kRlcCountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGcrCountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kAtcCountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kAtcl2CountersGfx10 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGcea0CountersGfx10 = {
         {55, "GCEA0_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA0", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {57, "GCEA0_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA0", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2677,34 +2566,6 @@ namespace counter_gfx10
         {55, "GCEA15_PERF_SEL_SARB_DRAM_SIZED_REQUESTS", "GCEA15", "DRAM sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {57, "GCEA15_PERF_SEL_SARB_IO_SIZED_REQUESTS", "GCEA15", "I/O sized (in 32 byte increments) requests", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kRpbCountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kMcvml2CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGusCountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kPaPhCountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a0CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a1CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a2CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a3CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a4CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a5CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a6CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGl1a7CountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kChaCountersGfx10 = {
-    };
-    std::vector<GpaHardwareCounterDesc> kGpuTimestampCountersGfx10 = {
-    };
     std::vector<GpaHardwareCounterDesc> kGpuTimeCountersGfx10 = {
         {0, "GPUTime_BOTTOM_TO_BOTTOM_DURATION", "GPUTime", "delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {1, "GPUTime_BOTTOM_TO_BOTTOM_START", "GPUTime", "time of the previous command reaching bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2712,8 +2573,6 @@ namespace counter_gfx10
         {3, "GPUTime_TOP_TO_BOTTOM_DURATION", "GPUTime", "execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {4, "GPUTime_TOP_TO_BOTTOM_START", "GPUTime", "time that the current command reaches the top of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "GPUTime_TOP_TO_BOTTOM_END", "GPUTime", "time that the current command reaches the bottom of pipe", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kGpinCountersGfx10 = {
     };
 } // counter_gfx10
 

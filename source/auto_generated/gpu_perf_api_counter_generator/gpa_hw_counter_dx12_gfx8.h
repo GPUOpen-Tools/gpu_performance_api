@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 counter definitions for GFX8.
@@ -26,7 +26,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_dx12_gfx8
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kDx12ExposedCountersGroupArrayGfx8; ///< Array of hardware exposed counter groups for Dx12 for Gfx8 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kDx12CounterGroupArrayGfx8; ///< Array of hardware counter groups for Dx12 for Gfx8 family
     extern std::vector<GpaCounterGroupDesc>                           kHwDx12GroupsGfx8; ///< Array of counter groups for Dx12 for Gfx8 family
     extern GpaCounterGroupExposedCounterDesc                          kHwDx12ExposedCountersByGroupGfx8[]; ///< Array of exposed counter groups for Dx12 for Gfx8 family
     extern GpaPaddedCounterDesc                                       kDx12PaddedCounterByGroupGfx8[]; ///< Array of reserved counter for Dx12 for Gfx8 family
@@ -42,7 +42,6 @@ namespace counter_dx12_gfx8
     extern const std::set<unsigned int>                               kHwDx12TimestampBlockIdsGfx8; ///< Timestamp block id's for Dx12 for Gfx8 family
     extern const std::set<unsigned int>                               kHwDx12TimeCounterIndicesGfx8; ///< Timestamp counter indices for Dx12 for Gfx8 family
     extern const unsigned int                                         kHwDx12GroupCountGfx8; ///< Hardware Group Count for Dx12 for Gfx8 family
-    extern const unsigned int                                         kHwDx12ExposedCountersGroupCountGfx8; ///< Whitelist hardware counter Group Count for Dx12 for Gfx8 family
     extern const unsigned int                                         kDx12PaddedCounterGroupCountGfx8; ///< reserved counter group count for Dx12 for Gfx8 family
     extern const unsigned int                                         kHwDx12SqGroupCountGfx8; ///< Hardware SQ Group Count for Dx12 for Gfx8 family
     extern const unsigned int                                         kHwDx12SqIsolatedGroupCountGfx8; ///< Hardware Isolated Group Count for Dx12 for Gfx8 family
@@ -55,47 +54,6 @@ namespace counter_dx12_gfx8
 inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
 {
     UNREFERENCED_PARAMETER(asic_type);
-
-    // dx12 specific max event overrides
-    auto block_map = BuildBlockMap(kHwDx12GroupsGfx8, kHwDx12GroupCountGfx8);
-
-    UpdateMaxSpmBlockEvents(block_map.get(), "CPF", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "IA", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "VGT", 6);
-    UpdateMaxSpmBlockEvents(block_map.get(), "PA_SU", 6);
-    UpdateMaxSpmBlockEvents(block_map.get(), "PA_SC", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "SPI", 16);
-    UpdateMaxSpmBlockEvents(block_map.get(), "SQ", 16);
-    UpdateMaxSpmBlockEvents(block_map.get(), "SX", 8);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TA", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TD", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TCP", 6);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TCC", 8);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TCA", 8);
-    UpdateMaxSpmBlockEvents(block_map.get(), "DB", 6);
-    UpdateMaxSpmBlockEvents(block_map.get(), "CB", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GDS", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "SRBM", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GRBM", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GRBMSE", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "RLC", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "SDMA", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "MC", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "CPG", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "CPC", 4);
-    UpdateMaxSpmBlockEvents(block_map.get(), "WD", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "TCS", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "ATC", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "ATCL2", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "MCVML2", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GCEA", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "RPB", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "RMI", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "IH", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GPIN", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GPUTimeStamp", 0);
-    UpdateMaxSpmBlockEvents(block_map.get(), "GPUTime", 0);
-
 
     return true;
 }

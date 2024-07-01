@@ -1,5 +1,5 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
 
@@ -30,6 +30,7 @@ set(HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_command_list.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_pass.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_sample.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_session.h
+                 ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_sample_config.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/dx12_utils.h)
 
 set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_command_list.cc
@@ -38,6 +39,7 @@ set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_command_list.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_pass.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_sample.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_session.cc
+                 ${CMAKE_CURRENT_SOURCE_DIR}/dx12_gpa_sample_config.cc
                  ${CMAKE_CURRENT_SOURCE_DIR}/dx12_utils.cc)
 
 set(SOURCES
@@ -45,6 +47,7 @@ set(SOURCES
     ${HEADER_FILES})
 
 ADD_SHARED_LIBRARY(${GPA_PROJECT_NAME} ${GPA_SRC_COMMON}/gpa_function_exports.def ${SOURCES})
+
 INCLUDE_WIN_RESOURCE(gpu_perf_api_dx12)
 
 target_link_libraries(${GPA_PROJECT_NAME}

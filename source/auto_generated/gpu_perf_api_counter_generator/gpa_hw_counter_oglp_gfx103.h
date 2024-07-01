@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief OGLP counter definitions for GFX103.
@@ -20,7 +20,7 @@ struct GpaSqCounterGroupDesc;
 
 namespace counter_oglp_gfx103
 {
-    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kOglpExposedCountersGroupArrayGfx103; ///< Array of hardware exposed counter groups for Oglp for Gfx103 family
+    extern std::vector<std::vector<GpaHardwareCounterDesc>*>          kOglpCounterGroupArrayGfx103; ///< Array of hardware counter groups for Oglp for Gfx103 family
     extern std::vector<GpaCounterGroupDesc>                           kHwOglpGroupsGfx103; ///< Array of counter groups for Oglp for Gfx103 family
     extern GpaCounterGroupExposedCounterDesc                          kHwOglpExposedCountersByGroupGfx103[]; ///< Array of exposed counter groups for Oglp for Gfx103 family
     extern GpaPaddedCounterDesc                                       kOglpPaddedCounterByGroupGfx103[]; ///< Array of reserved counter for Oglp for Gfx103 family
@@ -35,7 +35,6 @@ namespace counter_oglp_gfx103
     extern const std::set<unsigned int>                               kHwOglpTimestampBlockIdsGfx103; ///< Timestamp block id's for Oglp for Gfx103 family
     extern const std::set<unsigned int>                               kHwOglpTimeCounterIndicesGfx103; ///< Timestamp counter indices for Oglp for Gfx103 family
     extern const unsigned int                                         kHwOglpGroupCountGfx103; ///< Hardware Group Count for Oglp for Gfx103 family
-    extern const unsigned int                                         kHwOglpExposedCountersGroupCountGfx103; ///< Whitelist hardware counter Group Count for Oglp for Gfx103 family
     extern const unsigned int                                         kOglpPaddedCounterGroupCountGfx103; ///< reserved counter group count for Oglp for Gfx103 family
     extern const unsigned int                                         kHwOglpSqGroupCountGfx103; ///< Hardware SQ Group Count for Oglp for Gfx103 family
     extern const unsigned int                                         kHwOglpSqIsolatedGroupCountGfx103; ///< Hardware Isolated Group Count for Oglp for Gfx103 family

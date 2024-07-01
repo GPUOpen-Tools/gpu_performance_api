@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief An accessor interface for the GpaCounterGeneratorBase class.
@@ -14,12 +14,11 @@
 #include "gpu_performance_api/gpu_perf_api_counters.h"
 #include "gpu_performance_api/gpu_perf_api_types.h"
 
+#include "gpu_perf_api_counter_generator/gpa_derived_counter.h"
+#include "gpu_perf_api_counter_generator/gpa_hardware_counters.h"
+
 struct GpaHardwareCounterDescExt;
-class GpaHwInfo;
 class GpaHardwareCounters;
-class GpaSoftwareCounters;
-class GpaDerivedCounterInfoClass;
-class GpaCounterResultLocation;
 
 /// @brief Indicates the source or origin of a counter.
 enum class GpaCounterSource : uint32_t
@@ -27,7 +26,6 @@ enum class GpaCounterSource : uint32_t
     kUnknown,   ///< Invalid or unknown counter.
     kPublic,    ///< Counter is defined by GPA using other Hardware counters or hardware info.
     kHardware,  ///< Counter comes from the hardware.
-    kSoftware,  ///< Counter comes from software (ie, an API-level query).
 };
 
 /// @brief Stores the source of the counter and its local index into that family of counters.
@@ -55,8 +53,7 @@ public:
     ///
     /// @param [in] allow_public_counters Flag indicating whether or not public counters are allowed.
     /// @param [in] allow_hardware_counters Flag indicating whether or not hardware counters are allowed.
-    /// @param [in] allow_software_counters Flag indicating whether or not software counters are allowed.
-    virtual void SetAllowedCounters(bool allow_public_counters, bool allow_hardware_counters, bool allow_software_counters) = 0;
+    virtual void SetAllowedCounters(bool allow_public_counters, bool allow_hardware_counters) = 0;
 
     /// @brief Get the number of available counters.
     ///
@@ -203,11 +200,6 @@ public:
     ///
     /// @return The hardware counters.
     virtual const GpaHardwareCounters* GetHardwareCounters() const = 0;
-
-    /// @brief Get the software counters.
-    ///
-    /// @return The software counters.
-    virtual const GpaSoftwareCounters* GetSoftwareCounters() const = 0;
 
     /// @brief Get the counter info.
     ///
