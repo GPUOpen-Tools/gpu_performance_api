@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL GPA Implementation declarations
@@ -32,7 +32,7 @@ private:
     GlGpaImplementor();
 
     /// @brief Destructor.
-    ~GlGpaImplementor(){};
+    virtual ~GlGpaImplementor(){};
 
     /// @brief Singleton; don't allow copies.
     GlGpaImplementor(const GlGpaImplementor&) = delete;
@@ -48,13 +48,6 @@ private:
 
     /// @copydoc GpaImplementor::GetDeviceIdentifierFromContextInfo()
     GpaDeviceIdentifier GetDeviceIdentifierFromContextInfo(GpaContextInfoPtr context_info) const override final;
-
-    /// @brief Attempt to retrieve the device ID from platform-specific OpenGL extensions.
-    ///
-    /// @param [out] driver_device_id If the calls to the extensions are successful, this will be set to the device ID.
-    ///
-    /// @return True if the driver_device_id has been set, and false otherwise.
-    bool GetDeviceIdFromPlatformExt(unsigned int& driver_device_id) const;
 
     /// @brief Checks whether the driver is supported.
     ///

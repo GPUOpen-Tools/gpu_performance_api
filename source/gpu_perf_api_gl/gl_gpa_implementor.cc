@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL GPA Implementation
@@ -85,110 +85,51 @@ bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
     {
         hw_info.SetVendorId(kAmdVendorId);
 
-        bool         is_device_id_known = false;
-        unsigned int driver_device_id;
+        // Use the GPIN counters exposed by the driver to identify the hardware.
+        ogl_utils::AsicInfo asic_info;
 
-        // First we attempt to retrieve the device ID from platform extensions.
-        if (GetDeviceIdFromPlatformExt(driver_device_id))
+        if (!ogl_utils::GetAsicInfoFromDriver(asic_info))
         {
-            // Check to make sure the device id returned is found in the device info table.
-            GDT_HW_GENERATION hw_generation;
-            is_device_id_known = AMDTDeviceInfoUtils::Instance()->GetHardwareGeneration(driver_device_id, hw_generation);
+            GPA_LOG_ERROR("Unable to obtain asic information.");
+            return false;
+        }
 
-            if (is_device_id_known)
+        gl_driver_version_ = asic_info.driver_version;
+
+        if (ogl_utils::AsicInfo::kUnassignedAsicInfo != asic_info.device_id)
+        {
+            hw_info.SetDeviceId(asic_info.device_id);
+
+            if (ogl_utils::AsicInfo::kUnassignedAsicInfo != asic_info.device_rev)
             {
-                hw_info.SetDeviceId(driver_device_id);
+                hw_info.SetRevisionId(asic_info.device_rev);
 
-                if (!hw_info.UpdateRevisionIdBasedOnDeviceIdAndName())
+                GDT_GfxCardInfo card_info = {};
+                if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(asic_info.device_id, asic_info.device_rev, card_info))
                 {
-                    // We didn't find a revision Id, set it to REVISION_ID_ANY.
-                    hw_info.SetRevisionId(REVISION_ID_ANY);
+                    hw_info.SetHwGeneration(card_info.m_generation);
                 }
             }
         }
 
-        // If we were unable to retrieve the device ID using platform extensions,
-        // then fall back to the GPIN counters exposed by the driver.
-        if (!is_device_id_known)
+        if (ogl_utils::AsicInfo::kUnassignedAsicInfo != asic_info.num_se)
         {
-            ogl_utils::AsicInfo asic_info;
+            hw_info.SetNumberShaderEngines(static_cast<size_t>(asic_info.num_se));
 
-            if (!ogl_utils::GetAsicInfoFromDriver(asic_info))
+            if (ogl_utils::AsicInfo::kUnassignedAsicInfo != asic_info.num_sa_per_se)
             {
-                GPA_LOG_ERROR("Unable to obtain asic information.");
-                return false;
+                hw_info.SetNumberShaderArrays(static_cast<size_t>(asic_info.num_sa_per_se * asic_info.num_se));
             }
+        }
 
-            gl_driver_version_ = asic_info.driver_version;
+        if (ogl_utils::AsicInfo::kUnassignedAsicInfo != asic_info.num_cu)
+        {
+            hw_info.SetNumberCus(static_cast<size_t>(asic_info.num_cu));
+        }
 
-            bool is_hw_info_valid = false;
-
-            if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.device_id)
-            {
-                hw_info.SetDeviceId(asic_info.device_id);
-
-                if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.device_rev)
-                {
-                    GDT_GfxCardInfo card_info = {};
-
-                    if (AMDTDeviceInfoUtils::Instance()->GetDeviceInfo(asic_info.device_id, asic_info.device_rev, card_info))
-                    {
-                        is_hw_info_valid = true;
-                        hw_info.SetRevisionId(asic_info.device_rev);
-                    }
-                }
-
-                if (!is_hw_info_valid)
-                {
-                    is_hw_info_valid = hw_info.UpdateRevisionIdBasedOnDeviceIdAndName();
-                }
-            }
-
-            if (!is_hw_info_valid)
-            {
-                // This is now a fall-back path when using drivers where the
-                // additional GPIN counters are not supported. This if block
-                // can be removed once we no longer need to support drivers older
-                // than 19.30.
-                GDT_HW_ASIC_TYPE asic_type = GDT_ASIC_TYPE_NONE;
-                uint32_t         device_id;
-
-                if (ogl_utils::GetFallbackAsicInfo(asic_info.asic_revision, asic_type, device_id))
-                {
-                    hw_info.SetDeviceId(static_cast<GpaUInt32>(device_id));
-                }
-                else
-                {
-                    GPA_LOG_ERROR("Unsupported asic ID.");
-                    return false;
-                }
-
-                if (!hw_info.UpdateDeviceInfoBasedOnAsicTypeAndName(asic_type))
-                {
-                    // We didn't find a revision Id, set it to REVISION_ID_ANY.
-                    hw_info.SetRevisionId(REVISION_ID_ANY);
-                }
-            }
-
-            if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_se)
-            {
-                hw_info.SetNumberShaderEngines(static_cast<size_t>(asic_info.num_se));
-
-                if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_sa_per_se)
-                {
-                    hw_info.SetNumberShaderArrays(static_cast<size_t>(asic_info.num_sa_per_se * asic_info.num_se));
-                }
-            }
-
-            if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_cu)
-            {
-                hw_info.SetNumberCus(static_cast<size_t>(asic_info.num_cu));
-            }
-
-            if (ogl_utils::AsicInfo::unassigned_asic_info != asic_info.num_simd)
-            {
-                hw_info.SetNumberSimds(static_cast<size_t>(asic_info.num_simd));
-            }
+        if (ogl_utils::AsicInfo::kUnassignedAsicInfo != asic_info.num_simd)
+        {
+            hw_info.SetNumberSimds(static_cast<size_t>(asic_info.num_simd));
         }
 
         // GPUTime information is returned in nanoseconds, so set the frequency to convert it into seconds.
@@ -297,38 +238,4 @@ bool GlGpaImplementor::IsDriverSupported(GpaContextInfoPtr context_info) const
         is_supported = false;
     }
     return is_supported;
-}
-
-
-bool GlGpaImplementor::GetDeviceIdFromPlatformExt(unsigned int& driver_device_id) const
-{
-    bool device_id_retrieved = false;
-#ifdef _LINUX
-#ifndef GLES
-    if (nullptr != ogl_utils::ogl_x_query_current_renderer_integer_mesa)
-    {
-        if (ogl_utils::ogl_x_query_current_renderer_integer_mesa(GLX_RENDERER_DEVICE_ID_MESA, &driver_device_id))
-        {
-            GPA_LOG_MESSAGE("GLX renderer device ID is 0x%04X.", driver_device_id);
-            device_id_retrieved = true;
-        }
-        else
-        {
-            GPA_LOG_TRACE(
-                "glXQueryCurrentRendererIntegerMESA extension is available, but was unable "
-                "to retrieve the renderer device ID.");
-        }
-    }
-    else
-    {
-        GPA_LOG_TRACE("glXQueryCurrentRendererIntegerMESA extension is unavailable.");
-    }
-#else
-    UNREFERENCED_PARAMETER(driver_device_id);
-#endif
-#else
-    UNREFERENCED_PARAMETER(driver_device_id);
-#endif
-
-    return device_id_retrieved;
 }

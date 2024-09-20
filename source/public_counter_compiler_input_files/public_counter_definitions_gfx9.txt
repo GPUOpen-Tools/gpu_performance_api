@@ -1116,8 +1116,8 @@ eqn=0,NUM_CUS,/
 SQ_PS*_PERF_SEL_INST_CYCLES_SALU[0..3]
 eqn=0..3,sum4,NUM_CUS,/
 
-name=CSThreadGroups
-desc=#ComputeShader#Total number of thread groups.
+name=CSThreadGroupsLaunched
+desc=#ComputeShader#Total number of thread groups launched.
 type=gpa_float64
 usage=items
 [GLGfx9]
@@ -1132,8 +1132,8 @@ SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
 SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
 eqn=0..7,sum8
 
-name=CSWavefronts
-desc=#ComputeShader#The total number of wavefronts used for the CS.
+name=CSWavefrontsLaunched
+desc=#ComputeShader#The total number of wavefronts launched for the CS.
 type=gpa_float64
 usage=items
 [GLGfx9]
@@ -1147,8 +1147,8 @@ SPI*_PERF_CSG_WAVE[0..3]
 SPI*_PERF_CSN_WAVE[0..3]
 eqn=0..7,sum8
 
-name=CSThreads
-desc=#ComputeShader#The number of CS threads processed by the hardware.
+name=CSThreadsLaunched
+desc=#ComputeShader#The number of CS threads launched and processed by the hardware.
 type=gpa_float64
 usage=items
 [GLGfx9]
@@ -1379,120 +1379,6 @@ SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
 SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
 eqn=(0),0..3,sum4,NUM_CUS,/,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
 
-name=CSMemUnitBusy
-desc=#ComputeShader#The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).
-type=gpa_float64
-usage=percentage
-[GLGfx9]
-TA*_PERF_SEL_TA_BUSY[0..15]
-CPF_PERF_SEL_CPF_STAT_BUSY
-SPI_PERF_CSG_NUM_THREADGROUPS
-SPI_PERF_CSN_NUM_THREADGROUPS
-eqn=(0),TA*_PERF_SEL_TA_BUSY,max16,CPF_PERF_SEL_CPF_STAT_BUSY,/,NUM_SHADER_ENGINES,/,(100),*,SPI_PERF_CSG_NUM_THREADGROUPS,SPI_PERF_CSN_NUM_THREADGROUPS,+,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[OGLPGfx9]
-[VKGfx9]
-TA*_PERF_SEL_TA_BUSY[0..63]
-CPF_PERF_SEL_CPF_STAT_BUSY
-SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),TA*_PERF_SEL_TA_BUSY,max64,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
-
-name=CSMemUnitBusyCycles
-desc=#ComputeShader#Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account.
-type=gpa_float64
-usage=cycles
-[GLGfx9]
-TA*_PERF_SEL_TA_BUSY[0..15]
-SPI_PERF_CSG_NUM_THREADGROUPS
-SPI_PERF_CSN_NUM_THREADGROUPS
-eqn=(0),0..15,max16,NUM_SHADER_ENGINES,/,SPI_PERF_CSG_NUM_THREADGROUPS,SPI_PERF_CSN_NUM_THREADGROUPS,+,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[OGLPGfx9]
-[VKGfx9]
-TA*_PERF_SEL_TA_BUSY[0..63]
-SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..63,max64,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
-
-name=CSMemUnitStalled
-desc=#ComputeShader#The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).
-type=gpa_float64
-usage=percentage
-[GLGfx9]
-TCP*_PERF_SEL_TCP_TA_DATA_STALL_CYCLES[0..15]
-CPF_PERF_SEL_CPF_STAT_BUSY
-SPI_PERF_CSG_NUM_THREADGROUPS
-SPI_PERF_CSN_NUM_THREADGROUPS
-eqn=(0),TCP*_PERF_SEL_TCP_TA_DATA_STALL_CYCLES,max16,CPF_PERF_SEL_CPF_STAT_BUSY,/,NUM_SHADER_ENGINES,/,(100),*,SPI_PERF_CSG_NUM_THREADGROUPS,SPI_PERF_CSN_NUM_THREADGROUPS,+,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[OGLPGfx9]
-[VKGfx9]
-TCP*_PERF_SEL_TCP_TA_DATA_STALL_CYCLES[0..63]
-CPF_PERF_SEL_CPF_STAT_BUSY
-SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),TCP*_PERF_SEL_TCP_TA_DATA_STALL_CYCLES,max64,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
-
-name=CSMemUnitStalledCycles
-desc=#ComputeShader#Number of GPU cycles the memory unit is stalled. Try reducing the number or size of fetches and writes if possible.
-type=gpa_float64
-usage=cycles
-[GLGfx9]
-TCP*_PERF_SEL_TCP_TA_DATA_STALL_CYCLES[0..15]
-SPI_PERF_CSG_NUM_THREADGROUPS
-SPI_PERF_CSN_NUM_THREADGROUPS
-eqn=(0),0..15,max16,NUM_SHADER_ENGINES,/,SPI_PERF_CSG_NUM_THREADGROUPS,SPI_PERF_CSN_NUM_THREADGROUPS,+,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[OGLPGfx9]
-[VKGfx9]
-TCP*_PERF_SEL_TCP_TA_DATA_STALL_CYCLES[0..63]
-SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..63,max64,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
-
-name=CSWriteUnitStalled
-desc=#ComputeShader#The percentage of GPUTime the write unit is stalled.
-type=gpa_float64
-usage=percentage
-[GLGfx9]
-TCC*_PERF_SEL_EA_WRREQ_STALL[0..15]
-CPF_PERF_SEL_CPF_STAT_BUSY
-SPI_PERF_CSG_NUM_THREADGROUPS
-SPI_PERF_CSN_NUM_THREADGROUPS
-eqn=(0),0..15,max16,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI_PERF_CSG_NUM_THREADGROUPS,SPI_PERF_CSN_NUM_THREADGROUPS,+,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[OGLPGfx9]
-[VKGfx9]
-TCC*_PERF_SEL_EA_WRREQ_STALL[0..15]
-CPF_PERF_SEL_CPF_STAT_BUSY
-SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..15,max16,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
-
-name=CSWriteUnitStalledCycles
-desc=#ComputeShader#Number of GPU cycles the write unit is stalled.
-type=gpa_float64
-usage=cycles
-[GLGfx9]
-TCC*_PERF_SEL_EA_WRREQ_STALL[0..15]
-SPI_PERF_CSG_NUM_THREADGROUPS
-SPI_PERF_CSN_NUM_THREADGROUPS
-eqn=(0),0..15,max16,SPI_PERF_CSG_NUM_THREADGROUPS,SPI_PERF_CSN_NUM_THREADGROUPS,+,ifnotzero
-[DX11Gfx9]
-[DX12Gfx9]
-[OGLPGfx9]
-[VKGfx9]
-TCC*_PERF_SEL_EA_WRREQ_STALL[0..15]
-SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
-SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..15,max16,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
-
 name=CSGDSInsts
 desc=#ComputeShader#The average number of GDS read or GDS write instructions executed per work item (affected by flow control).
 type=gpa_float64
@@ -1554,10 +1440,10 @@ desc=#ComputeShader#The percentage of GPUTime ALU units are stalled by the LDS i
 type=gpa_float64
 usage=percentage
 [GLGfx9]
-SQ_PERF_SEL_WAIT_INST_LDS
-SQ_PERF_SEL_WAVES
+SQ_CS_PERF_SEL_WAIT_INST_LDS
+SQ_CS_PERF_SEL_WAVES
 CPF_PERF_SEL_CPF_STAT_BUSY
-eqn=(0),0,1,/,2,/,NUM_SHADER_ENGINES,/,(100),*,1,ifnotzero
+eqn=0,1,/,2,/,(100),*
 [DX11Gfx9]
 [DX12Gfx9]
 [OGLPGfx9]
@@ -1567,23 +1453,25 @@ SQ_CS*_PERF_SEL_WAVES[0..3]
 CPF_PERF_SEL_CPF_STAT_BUSY
 SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
 SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),SQ_CS*_PERF_SEL_WAIT_INST_LDS,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,CPF_PERF_SEL_CPF_STAT_BUSY,/,NUM_SHADER_ENGINES,/,(100),*,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+eqn=(0),SQ_CS*_PERF_SEL_WAIT_INST_LDS,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
 
 name=CSALUStalledByLDSCycles
-desc=#ComputeShader#Number of GPU cycles the ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible.
+desc=#ComputeShader#Number of GPU cycles each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible.
 type=gpa_float64
 usage=cycles
 [GLGfx9]
-SQ_PERF_SEL_WAIT_INST_LDS
-eqn=0,NUM_SHADER_ENGINES,/
+SQ_CS_PERF_SEL_WAIT_INST_LDS
+SQ_CS_PERF_SEL_WAVES
+eqn=0,1,/
 [DX11Gfx9]
 [DX12Gfx9]
 [OGLPGfx9]
 [VKGfx9]
 SQ_CS*_PERF_SEL_WAIT_INST_LDS[0..3]
+SQ_CS*_PERF_SEL_WAVES[0..3]
 SPI*_PERF_CSG_NUM_THREADGROUPS[0..3]
 SPI*_PERF_CSN_NUM_THREADGROUPS[0..3]
-eqn=(0),0..3,sum4,NUM_SHADER_ENGINES,/,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
+eqn=(0),SQ_CS*_PERF_SEL_WAIT_INST_LDS,sum4,SQ_CS*_PERF_SEL_WAVES,sum4,/,SPI*_PERF_CSG_NUM_THREADGROUPS,SPI*_PERF_CSN_NUM_THREADGROUPS,sum8,ifnotzero
 
 name=CSLDSBankConflict
 desc=#ComputeShader#The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad).

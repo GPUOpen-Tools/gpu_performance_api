@@ -882,6 +882,8 @@ bool AMDVulkanDemo::InitializeVulkan()
             return false;
         }
 
+        gpu_perf_api_helper_.SetHardwareInfo(device_id, revision_id, device_name);
+
         if (print_gpa_counter_info_)
         {
             gpu_perf_api_helper_.PrintGPACounterInfo(gpa_context_id_);

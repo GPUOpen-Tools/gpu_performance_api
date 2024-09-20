@@ -670,7 +670,7 @@ namespace counter_oglp_gfx9
         {382, "UMC29", 29, 40, 5, 0},
         {383, "UMC30", 30, 40, 5, 0},
         {384, "UMC31", 31, 40, 5, 0},
-        {385, "GPIN", 0, 5, 5, 0},
+        {385, "GPIN", 0, 9, 9, 0},
         {386, "GPUTime", 0, 6, 2, 0},
     };
 
@@ -937,7 +937,7 @@ namespace counter_oglp_gfx9
         {341, 54319},
         {342, 54402},
         {343, 54485},
-        {386, 58004},
+        {386, 58008},
     };
 
     GpaPaddedCounterDesc kOglpPaddedCounterByGroupGfx9[] = {
@@ -1265,14 +1265,14 @@ namespace counter_oglp_gfx9
         264, // Tca
     };
 
-    const unsigned int kHwOglpGpuTimeBottomToBottomDurationIndexGfx9 = 58004; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx9 family
+    const unsigned int kHwOglpGpuTimeBottomToBottomDurationIndexGfx9 = 58008; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx9 family
     const unsigned int kHwOglpGpuTimeBottomToBottomStartIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for Oglp for Gfx9 family
     const unsigned int kHwOglpGpuTimeBottomToBottomEndIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for Oglp for Gfx9 family
-    const unsigned int kHwOglpGpuTimeTopToBottomDurationIndexGfx9 = 58007; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Oglp for Gfx9 family
+    const unsigned int kHwOglpGpuTimeTopToBottomDurationIndexGfx9 = 58011; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Oglp for Gfx9 family
     const unsigned int kHwOglpGpuTimeTopToBottomStartIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the top of pipe for Oglp for Gfx9 family
     const unsigned int kHwOglpGpuTimeTopToBottomEndIndexGfx9 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the bottom of pipe for Oglp for Gfx9 family
     const std::set<unsigned int> kHwOglpTimestampBlockIdsGfx9 =       {386}; ///< Timestamp block id's for OGLP for gfx9 family
-    const std::set<unsigned int> kHwOglpTimeCounterIndicesGfx9 =      {58004, 58005, 58006, 58007, 58008, 58009}; ///< Timestamp counter indices for OGLP for gfx9 family
+    const std::set<unsigned int> kHwOglpTimeCounterIndicesGfx9 =      {58008, 58009, 58010, 58011, 58012, 58013}; ///< Timestamp counter indices for OGLP for gfx9 family
     const unsigned int           kHwOglpGroupCountGfx9                = static_cast<unsigned int>(kHwOglpGroupsGfx9.size());
     const unsigned int           kOglpPaddedCounterGroupCountGfx9 = 73;
     const unsigned int           kHwOglpSqGroupCountGfx9              = sizeof(kHwOglpSqGroupsGfx9) / sizeof(GpaSqCounterGroupDesc);

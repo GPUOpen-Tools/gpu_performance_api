@@ -1284,8 +1284,8 @@ internal_counters, "0,1,2,3,sum4,NUM_CUS,/", "29808906-f128-b078-fc79-820a4b3b3b
         internal_counters.push_back(3314);
         internal_counters.push_back(3511);
 
-        c.DefineDerivedCounter("CSThreadGroups", "ComputeShader", "Total number of thread groups.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,sum8", "8ce3fc80-56b2-97f9-8e70-2e8c747cea68");
+        c.DefineDerivedCounter("CSThreadGroupsLaunched", "ComputeShader", "Total number of thread groups launched.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
+internal_counters, "0,1,2,3,4,5,6,7,sum8", "e1e2f302-868a-1d2e-ca81-9901bbc8b58f");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -1298,8 +1298,8 @@ internal_counters, "0,1,2,3,4,5,6,7,sum8", "8ce3fc80-56b2-97f9-8e70-2e8c747cea68
         internal_counters.push_back(3317);
         internal_counters.push_back(3514);
 
-        c.DefineDerivedCounter("CSWavefronts", "ComputeShader", "The total number of wavefronts used for the CS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,sum8", "42379c6e-369b-c237-8b25-cdb9cdc65c4d");
+        c.DefineDerivedCounter("CSWavefrontsLaunched", "ComputeShader", "The total number of wavefronts launched for the CS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
+internal_counters, "0,1,2,3,4,5,6,7,sum8", "00c49129-6ae5-f6a0-1753-4738cbe17938");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -1316,8 +1316,8 @@ internal_counters, "0,1,2,3,4,5,6,7,sum8", "42379c6e-369b-c237-8b25-cdb9cdc65c4d
         internal_counters.push_back(3314);
         internal_counters.push_back(3511);
 
-        c.DefineDerivedCounter("CSThreads", "ComputeShader", "The number of CS threads processed by the hardware.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,8,9,10,11,sum8,ifnotzero", "7a648013-6eac-2665-ac36-13c6f4ac9c26");
+        c.DefineDerivedCounter("CSThreadsLaunched", "ComputeShader", "The number of CS threads launched and processed by the hardware.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
+internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,8,9,10,11,sum8,ifnotzero", "cbbbf1ba-d164-1c90-9df0-6120c1660fb1");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -1695,381 +1695,6 @@ internal_counters, "(0),0,1,2,3,sum4,NUM_CUS,/,4,5,6,7,8,9,10,11,sum8,ifnotzero"
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(13362);
-        internal_counters.push_back(13481);
-        internal_counters.push_back(13600);
-        internal_counters.push_back(13719);
-        internal_counters.push_back(13838);
-        internal_counters.push_back(13957);
-        internal_counters.push_back(14076);
-        internal_counters.push_back(14195);
-        internal_counters.push_back(14314);
-        internal_counters.push_back(14433);
-        internal_counters.push_back(14552);
-        internal_counters.push_back(14671);
-        internal_counters.push_back(14790);
-        internal_counters.push_back(14909);
-        internal_counters.push_back(15028);
-        internal_counters.push_back(15147);
-        internal_counters.push_back(15266);
-        internal_counters.push_back(15385);
-        internal_counters.push_back(15504);
-        internal_counters.push_back(15623);
-        internal_counters.push_back(15742);
-        internal_counters.push_back(15861);
-        internal_counters.push_back(15980);
-        internal_counters.push_back(16099);
-        internal_counters.push_back(16218);
-        internal_counters.push_back(16337);
-        internal_counters.push_back(16456);
-        internal_counters.push_back(16575);
-        internal_counters.push_back(16694);
-        internal_counters.push_back(16813);
-        internal_counters.push_back(16932);
-        internal_counters.push_back(17051);
-        internal_counters.push_back(17170);
-        internal_counters.push_back(17289);
-        internal_counters.push_back(17408);
-        internal_counters.push_back(17527);
-        internal_counters.push_back(17646);
-        internal_counters.push_back(17765);
-        internal_counters.push_back(17884);
-        internal_counters.push_back(18003);
-        internal_counters.push_back(18122);
-        internal_counters.push_back(18241);
-        internal_counters.push_back(18360);
-        internal_counters.push_back(18479);
-        internal_counters.push_back(18598);
-        internal_counters.push_back(18717);
-        internal_counters.push_back(18836);
-        internal_counters.push_back(18955);
-        internal_counters.push_back(19074);
-        internal_counters.push_back(19193);
-        internal_counters.push_back(19312);
-        internal_counters.push_back(19431);
-        internal_counters.push_back(19550);
-        internal_counters.push_back(19669);
-        internal_counters.push_back(19788);
-        internal_counters.push_back(19907);
-        internal_counters.push_back(20026);
-        internal_counters.push_back(20145);
-        internal_counters.push_back(20264);
-        internal_counters.push_back(20383);
-        internal_counters.push_back(20502);
-        internal_counters.push_back(20621);
-        internal_counters.push_back(20740);
-        internal_counters.push_back(20859);
-        internal_counters.push_back(49743);
-        internal_counters.push_back(2914);
-        internal_counters.push_back(3111);
-        internal_counters.push_back(3308);
-        internal_counters.push_back(3505);
-        internal_counters.push_back(2920);
-        internal_counters.push_back(3117);
-        internal_counters.push_back(3314);
-        internal_counters.push_back(3511);
-
-        c.DefineDerivedCounter("CSMemUnitBusy", "ComputeShader", "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64,64,/,(100),*,65,66,67,68,69,70,71,72,sum8,ifnotzero", "42ab96e1-0a24-96c8-c4ff-098fa267d78e");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(13362);
-        internal_counters.push_back(13481);
-        internal_counters.push_back(13600);
-        internal_counters.push_back(13719);
-        internal_counters.push_back(13838);
-        internal_counters.push_back(13957);
-        internal_counters.push_back(14076);
-        internal_counters.push_back(14195);
-        internal_counters.push_back(14314);
-        internal_counters.push_back(14433);
-        internal_counters.push_back(14552);
-        internal_counters.push_back(14671);
-        internal_counters.push_back(14790);
-        internal_counters.push_back(14909);
-        internal_counters.push_back(15028);
-        internal_counters.push_back(15147);
-        internal_counters.push_back(15266);
-        internal_counters.push_back(15385);
-        internal_counters.push_back(15504);
-        internal_counters.push_back(15623);
-        internal_counters.push_back(15742);
-        internal_counters.push_back(15861);
-        internal_counters.push_back(15980);
-        internal_counters.push_back(16099);
-        internal_counters.push_back(16218);
-        internal_counters.push_back(16337);
-        internal_counters.push_back(16456);
-        internal_counters.push_back(16575);
-        internal_counters.push_back(16694);
-        internal_counters.push_back(16813);
-        internal_counters.push_back(16932);
-        internal_counters.push_back(17051);
-        internal_counters.push_back(17170);
-        internal_counters.push_back(17289);
-        internal_counters.push_back(17408);
-        internal_counters.push_back(17527);
-        internal_counters.push_back(17646);
-        internal_counters.push_back(17765);
-        internal_counters.push_back(17884);
-        internal_counters.push_back(18003);
-        internal_counters.push_back(18122);
-        internal_counters.push_back(18241);
-        internal_counters.push_back(18360);
-        internal_counters.push_back(18479);
-        internal_counters.push_back(18598);
-        internal_counters.push_back(18717);
-        internal_counters.push_back(18836);
-        internal_counters.push_back(18955);
-        internal_counters.push_back(19074);
-        internal_counters.push_back(19193);
-        internal_counters.push_back(19312);
-        internal_counters.push_back(19431);
-        internal_counters.push_back(19550);
-        internal_counters.push_back(19669);
-        internal_counters.push_back(19788);
-        internal_counters.push_back(19907);
-        internal_counters.push_back(20026);
-        internal_counters.push_back(20145);
-        internal_counters.push_back(20264);
-        internal_counters.push_back(20383);
-        internal_counters.push_back(20502);
-        internal_counters.push_back(20621);
-        internal_counters.push_back(20740);
-        internal_counters.push_back(20859);
-        internal_counters.push_back(2914);
-        internal_counters.push_back(3111);
-        internal_counters.push_back(3308);
-        internal_counters.push_back(3505);
-        internal_counters.push_back(2920);
-        internal_counters.push_back(3117);
-        internal_counters.push_back(3314);
-        internal_counters.push_back(3511);
-
-        c.DefineDerivedCounter("CSMemUnitBusyCycles", "ComputeShader", "Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64,64,65,66,67,68,69,70,71,sum8,ifnotzero", "39d5687f-c727-7c0c-af82-bb711d3897ed");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(24486);
-        internal_counters.push_back(24666);
-        internal_counters.push_back(24846);
-        internal_counters.push_back(25026);
-        internal_counters.push_back(25206);
-        internal_counters.push_back(25386);
-        internal_counters.push_back(25566);
-        internal_counters.push_back(25746);
-        internal_counters.push_back(25926);
-        internal_counters.push_back(26106);
-        internal_counters.push_back(26286);
-        internal_counters.push_back(26466);
-        internal_counters.push_back(26646);
-        internal_counters.push_back(26826);
-        internal_counters.push_back(27006);
-        internal_counters.push_back(27186);
-        internal_counters.push_back(27366);
-        internal_counters.push_back(27546);
-        internal_counters.push_back(27726);
-        internal_counters.push_back(27906);
-        internal_counters.push_back(28086);
-        internal_counters.push_back(28266);
-        internal_counters.push_back(28446);
-        internal_counters.push_back(28626);
-        internal_counters.push_back(28806);
-        internal_counters.push_back(28986);
-        internal_counters.push_back(29166);
-        internal_counters.push_back(29346);
-        internal_counters.push_back(29526);
-        internal_counters.push_back(29706);
-        internal_counters.push_back(29886);
-        internal_counters.push_back(30066);
-        internal_counters.push_back(30246);
-        internal_counters.push_back(30426);
-        internal_counters.push_back(30606);
-        internal_counters.push_back(30786);
-        internal_counters.push_back(30966);
-        internal_counters.push_back(31146);
-        internal_counters.push_back(31326);
-        internal_counters.push_back(31506);
-        internal_counters.push_back(31686);
-        internal_counters.push_back(31866);
-        internal_counters.push_back(32046);
-        internal_counters.push_back(32226);
-        internal_counters.push_back(32406);
-        internal_counters.push_back(32586);
-        internal_counters.push_back(32766);
-        internal_counters.push_back(32946);
-        internal_counters.push_back(33126);
-        internal_counters.push_back(33306);
-        internal_counters.push_back(33486);
-        internal_counters.push_back(33666);
-        internal_counters.push_back(33846);
-        internal_counters.push_back(34026);
-        internal_counters.push_back(34206);
-        internal_counters.push_back(34386);
-        internal_counters.push_back(34566);
-        internal_counters.push_back(34746);
-        internal_counters.push_back(34926);
-        internal_counters.push_back(35106);
-        internal_counters.push_back(35286);
-        internal_counters.push_back(35466);
-        internal_counters.push_back(35646);
-        internal_counters.push_back(35826);
-        internal_counters.push_back(49743);
-        internal_counters.push_back(2914);
-        internal_counters.push_back(3111);
-        internal_counters.push_back(3308);
-        internal_counters.push_back(3505);
-        internal_counters.push_back(2920);
-        internal_counters.push_back(3117);
-        internal_counters.push_back(3314);
-        internal_counters.push_back(3511);
-
-        c.DefineDerivedCounter("CSMemUnitStalled", "ComputeShader", "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64,64,/,(100),*,65,66,67,68,69,70,71,72,sum8,ifnotzero", "f18e8679-1511-d533-d9ee-4365197f7d0c");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(24486);
-        internal_counters.push_back(24666);
-        internal_counters.push_back(24846);
-        internal_counters.push_back(25026);
-        internal_counters.push_back(25206);
-        internal_counters.push_back(25386);
-        internal_counters.push_back(25566);
-        internal_counters.push_back(25746);
-        internal_counters.push_back(25926);
-        internal_counters.push_back(26106);
-        internal_counters.push_back(26286);
-        internal_counters.push_back(26466);
-        internal_counters.push_back(26646);
-        internal_counters.push_back(26826);
-        internal_counters.push_back(27006);
-        internal_counters.push_back(27186);
-        internal_counters.push_back(27366);
-        internal_counters.push_back(27546);
-        internal_counters.push_back(27726);
-        internal_counters.push_back(27906);
-        internal_counters.push_back(28086);
-        internal_counters.push_back(28266);
-        internal_counters.push_back(28446);
-        internal_counters.push_back(28626);
-        internal_counters.push_back(28806);
-        internal_counters.push_back(28986);
-        internal_counters.push_back(29166);
-        internal_counters.push_back(29346);
-        internal_counters.push_back(29526);
-        internal_counters.push_back(29706);
-        internal_counters.push_back(29886);
-        internal_counters.push_back(30066);
-        internal_counters.push_back(30246);
-        internal_counters.push_back(30426);
-        internal_counters.push_back(30606);
-        internal_counters.push_back(30786);
-        internal_counters.push_back(30966);
-        internal_counters.push_back(31146);
-        internal_counters.push_back(31326);
-        internal_counters.push_back(31506);
-        internal_counters.push_back(31686);
-        internal_counters.push_back(31866);
-        internal_counters.push_back(32046);
-        internal_counters.push_back(32226);
-        internal_counters.push_back(32406);
-        internal_counters.push_back(32586);
-        internal_counters.push_back(32766);
-        internal_counters.push_back(32946);
-        internal_counters.push_back(33126);
-        internal_counters.push_back(33306);
-        internal_counters.push_back(33486);
-        internal_counters.push_back(33666);
-        internal_counters.push_back(33846);
-        internal_counters.push_back(34026);
-        internal_counters.push_back(34206);
-        internal_counters.push_back(34386);
-        internal_counters.push_back(34566);
-        internal_counters.push_back(34746);
-        internal_counters.push_back(34926);
-        internal_counters.push_back(35106);
-        internal_counters.push_back(35286);
-        internal_counters.push_back(35466);
-        internal_counters.push_back(35646);
-        internal_counters.push_back(35826);
-        internal_counters.push_back(2914);
-        internal_counters.push_back(3111);
-        internal_counters.push_back(3308);
-        internal_counters.push_back(3505);
-        internal_counters.push_back(2920);
-        internal_counters.push_back(3117);
-        internal_counters.push_back(3314);
-        internal_counters.push_back(3511);
-
-        c.DefineDerivedCounter("CSMemUnitStalledCycles", "ComputeShader", "Number of GPU cycles the memory unit is stalled. Try reducing the number or size of fetches and writes if possible.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,max64,64,65,66,67,68,69,70,71,sum8,ifnotzero", "51991c84-ed2b-bf31-c4ab-8f8e9eb8f29f");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(36031);
-        internal_counters.push_back(36223);
-        internal_counters.push_back(36415);
-        internal_counters.push_back(36607);
-        internal_counters.push_back(36799);
-        internal_counters.push_back(36991);
-        internal_counters.push_back(37183);
-        internal_counters.push_back(37375);
-        internal_counters.push_back(37567);
-        internal_counters.push_back(37759);
-        internal_counters.push_back(37951);
-        internal_counters.push_back(38143);
-        internal_counters.push_back(38335);
-        internal_counters.push_back(38527);
-        internal_counters.push_back(38719);
-        internal_counters.push_back(38911);
-        internal_counters.push_back(49743);
-        internal_counters.push_back(2914);
-        internal_counters.push_back(3111);
-        internal_counters.push_back(3308);
-        internal_counters.push_back(3505);
-        internal_counters.push_back(2920);
-        internal_counters.push_back(3117);
-        internal_counters.push_back(3314);
-        internal_counters.push_back(3511);
-
-        c.DefineDerivedCounter("CSWriteUnitStalled", "ComputeShader", "The percentage of GPUTime the write unit is stalled.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*,17,18,19,20,21,22,23,24,sum8,ifnotzero", "55118f7a-8f92-726f-78c6-407f689a2eb4");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(36031);
-        internal_counters.push_back(36223);
-        internal_counters.push_back(36415);
-        internal_counters.push_back(36607);
-        internal_counters.push_back(36799);
-        internal_counters.push_back(36991);
-        internal_counters.push_back(37183);
-        internal_counters.push_back(37375);
-        internal_counters.push_back(37567);
-        internal_counters.push_back(37759);
-        internal_counters.push_back(37951);
-        internal_counters.push_back(38143);
-        internal_counters.push_back(38335);
-        internal_counters.push_back(38527);
-        internal_counters.push_back(38719);
-        internal_counters.push_back(38911);
-        internal_counters.push_back(2914);
-        internal_counters.push_back(3111);
-        internal_counters.push_back(3308);
-        internal_counters.push_back(3505);
-        internal_counters.push_back(2920);
-        internal_counters.push_back(3117);
-        internal_counters.push_back(3314);
-        internal_counters.push_back(3511);
-
-        c.DefineDerivedCounter("CSWriteUnitStalledCycles", "ComputeShader", "Number of GPU cycles the write unit is stalled.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,17,18,19,20,21,22,23,sum8,ifnotzero", "be164c60-5e48-acac-9622-29616d09aa9a");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
         internal_counters.push_back(12050);
         internal_counters.push_back(12349);
         internal_counters.push_back(12648);
@@ -2159,7 +1784,7 @@ internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,8,9,10,11,12,13,14,15,sum8,i
         internal_counters.push_back(3511);
 
         c.DefineDerivedCounter("CSALUStalledByLDS", "ComputeShader", "The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,8,/,NUM_SHADER_ENGINES,/,(100),*,9,10,11,12,13,14,15,16,sum8,ifnotzero", "6dc4f1c2-bad0-c9ff-156e-883b319a752a");
+internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,8,/,(100),*,9,10,11,12,13,14,15,16,sum8,ifnotzero", "6dc4f1c2-bad0-c9ff-156e-883b319a752a");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -2167,6 +1792,10 @@ internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,8,/,NUM_SHADER_ENGINES,/,(10
         internal_counters.push_back(12375);
         internal_counters.push_back(12674);
         internal_counters.push_back(12973);
+        internal_counters.push_back(12019);
+        internal_counters.push_back(12318);
+        internal_counters.push_back(12617);
+        internal_counters.push_back(12916);
         internal_counters.push_back(2914);
         internal_counters.push_back(3111);
         internal_counters.push_back(3308);
@@ -2176,8 +1805,8 @@ internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,8,/,NUM_SHADER_ENGINES,/,(10
         internal_counters.push_back(3314);
         internal_counters.push_back(3511);
 
-        c.DefineDerivedCounter("CSALUStalledByLDSCycles", "ComputeShader", "Number of GPU cycles the ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "(0),0,1,2,3,sum4,NUM_SHADER_ENGINES,/,4,5,6,7,8,9,10,11,sum8,ifnotzero", "8f3d5f25-2159-0374-fafe-e26a7799b6c8");
+        c.DefineDerivedCounter("CSALUStalledByLDSCycles", "ComputeShader", "Number of GPU cycles each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
+internal_counters, "(0),0,1,2,3,sum4,4,5,6,7,sum4,/,8,9,10,11,12,13,14,15,sum8,ifnotzero", "1d9b1104-b732-bb38-6812-876fdd9737ad");
     }
     {
         vector<GpaUInt32> internal_counters;

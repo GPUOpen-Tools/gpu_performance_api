@@ -965,7 +965,7 @@ namespace counter_oglp_gfx103
         {532, "GE_SE1", 1, 139, 4, 0},
         {533, "GE_SE2", 2, 139, 4, 0},
         {534, "GE_SE3", 3, 139, 4, 0},
-        {535, "GPIN", 0, 5, 5, 0},
+        {535, "GPIN", 0, 9, 9, 0},
         {536, "GPUTime", 0, 6, 2, 0},
     };
 
@@ -1377,7 +1377,7 @@ namespace counter_oglp_gfx103
         {532, 104303},
         {533, 104442},
         {534, 104581},
-        {536, 104725},
+        {536, 104729},
     };
 
     GpaPaddedCounterDesc kOglpPaddedCounterByGroupGfx103[] = {
@@ -1663,14 +1663,14 @@ namespace counter_oglp_gfx103
         304, // Tcp
     };
 
-    const unsigned int kHwOglpGpuTimeBottomToBottomDurationIndexGfx103 = 104725; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx103 family
+    const unsigned int kHwOglpGpuTimeBottomToBottomDurationIndexGfx103 = 104729; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx103 family
     const unsigned int kHwOglpGpuTimeBottomToBottomStartIndexGfx103 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for Oglp for Gfx103 family
     const unsigned int kHwOglpGpuTimeBottomToBottomEndIndexGfx103 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for Oglp for Gfx103 family
-    const unsigned int kHwOglpGpuTimeTopToBottomDurationIndexGfx103 = 104728; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Oglp for Gfx103 family
+    const unsigned int kHwOglpGpuTimeTopToBottomDurationIndexGfx103 = 104732; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Oglp for Gfx103 family
     const unsigned int kHwOglpGpuTimeTopToBottomStartIndexGfx103 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the top of pipe for Oglp for Gfx103 family
     const unsigned int kHwOglpGpuTimeTopToBottomEndIndexGfx103 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the bottom of pipe for Oglp for Gfx103 family
     const std::set<unsigned int> kHwOglpTimestampBlockIdsGfx103 =       {536}; ///< Timestamp block id's for OGLP for gfx103 family
-    const std::set<unsigned int> kHwOglpTimeCounterIndicesGfx103 =      {104725, 104726, 104727, 104728, 104729, 104730}; ///< Timestamp counter indices for OGLP for gfx103 family
+    const std::set<unsigned int> kHwOglpTimeCounterIndicesGfx103 =      {104729, 104730, 104731, 104732, 104733, 104734}; ///< Timestamp counter indices for OGLP for gfx103 family
     const unsigned int           kHwOglpGroupCountGfx103                = static_cast<unsigned int>(kHwOglpGroupsGfx103.size());
     const unsigned int           kOglpPaddedCounterGroupCountGfx103 = 0;
     const unsigned int           kHwOglpSqGroupCountGfx103              = sizeof(kHwOglpSqGroupsGfx103) / sizeof(GpaSqCounterGroupDesc);

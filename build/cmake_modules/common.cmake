@@ -1,5 +1,5 @@
-## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
-cmake_minimum_required(VERSION 3.5.1)
+## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+cmake_minimum_required(VERSION 3.10)
 
 include (${GPA_CMAKE_MODULES_DIR}/utils.cmake)
 

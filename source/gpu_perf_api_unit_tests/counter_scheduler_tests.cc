@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Unit tests for Counter Scheduler.
@@ -271,7 +271,8 @@ TEST(CounterDllTests, OpenClResultLocations)
     }
 #pragma endregion
 }
-#endif
+
+#endif // _WIN32
 
 TEST(CounterDllTests, OpenGlCounterScheduling)
 {
@@ -947,7 +948,7 @@ TEST(CounterDllTests, Dx11EnableAndDisable)
     FreeLibrary(dll);
 }
 
-#endif
+#endif // _WIN32
 
 /// GPA-127 Validation test.
 /// SQ counters must be isolated from TCC/TA/TCP/TCA/TD counters because PAL is now setting the

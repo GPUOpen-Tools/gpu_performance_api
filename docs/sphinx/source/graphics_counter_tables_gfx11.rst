@@ -102,20 +102,14 @@ ComputeShader Group
     :header: "Counter Name", "Usage", "Brief Description"
     :widths: 15, 10, 75
 
-    "CSThreadGroups", "Items", "Total number of thread groups."
-    "CSWavefronts", "Items", "The total number of wavefronts used for the CS."
-    "CSThreads", "Items", "The number of CS threads processed by the hardware."
+    "CSThreadGroupsLaunched", "Items", "The total number of thread groups launched."
+    "CSWavefrontsLaunched", "Items", "The total number of wavefronts launched for the CS."
+    "CSThreadsLaunched", "Items", "The number of CS threads launched and processed by the hardware."
     "CSThreadGroupSize", "Items", "The number of CS threads within each thread group."
-    "CSMemUnitBusy", "Percentage", "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound)."
-    "CSMemUnitBusyCycles", "Cycles", "Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account."
-    "CSMemUnitStalled", "Percentage", "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad)."
-    "CSMemUnitStalledCycles", "Cycles", "Number of GPU cycles the memory unit is stalled. Try reducing the number or size of fetches and writes if possible."
-    "CSWriteUnitStalled", "Percentage", "The percentage of GPUTime the write unit is stalled."
-    "CSWriteUnitStalledCycles", "Cycles", "Number of GPU cycles the write unit is stalled."
-    "CSALUStalledByLDS", "Percentage", "The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad)."
-    "CSALUStalledByLDSCycles", "Cycles", "Number of GPU cycles the ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible."
-    "CSLDSBankConflict", "Percentage", "The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad)."
-    "CSLDSBankConflictCycles", "Cycles", "Number of GPU cycles the LDS is stalled by bank conflicts. Value range: 0 (optimal) to GPUBusyCycles (bad)."
+    "CSALUStalledByLDS", "Percentage", "The average percentage of GPUTime each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad)."
+    "CSALUStalledByLDSCycles", "Cycles", "The average number of GPU cycles each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad)."
+    "CSLDSBankConflict", "Percentage", "The average percentage of GPUTime an LDS is stalled due to bank conflicts. Value range: 0% (optimal) to 100% (bad)."
+    "CSLDSBankConflictCycles", "Cycles", "The average number of GPU cycles an LDS is stalled by bank conflicts. Value range: 0 (optimal) to GPUBusyCycles (bad)."
 
 TextureUnit Group
 %%%%%%%%%%%%%%%%%

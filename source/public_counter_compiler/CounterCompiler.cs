@@ -2488,4 +2488,3 @@ namespace PublicCounterCompiler
         }
     }
 }
-

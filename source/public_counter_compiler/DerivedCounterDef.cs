@@ -1,6 +1,6 @@
 // =====================================================================
 // <copyright file="DerivedCounterDef.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2024 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team

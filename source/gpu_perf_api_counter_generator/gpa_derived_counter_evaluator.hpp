@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Functions for evaluating derived counter formula.
@@ -403,8 +403,6 @@ static GpaStatus EvaluateExpression(const char*                          express
         {
             stack.push_back(static_cast<T>(hw_info->GetNumberCus()));
         }
-// START_REMOVE_DURING_SANITIZATION
-// END_REMOVE_DURING_SANITIZATION
         else if (_strcmpi(pch, "TS_FREQ") == 0)
         {
             GpaUInt64 freq = 1u;
@@ -598,7 +596,7 @@ static GpaStatus EvaluateExpression(const char*                          express
                 assert(errno == 0);
             }
             assert(stack.size() >= static_cast<std::size_t>(value_count));
-            SumN(stack, value_count);
+            SumN<T>(stack, value_count);
         }
         else if ((tolower(pch[0]) == 'v') && (tolower(pch[1]) == 'e') && (tolower(pch[2]) == 'c') && (tolower(pch[3]) == 's') && (tolower(pch[4]) == 'u') &&
                  (tolower(pch[5]) == 'm') && ((pch[6] == '\0') || isdigit(pch[6])))
@@ -665,7 +663,7 @@ static GpaStatus EvaluateExpression(const char*                          express
                 assert(errno == 0);
             }
             assert(stack.size() >= static_cast<std::size_t>(value_count));
-            AvgN(stack, value_count);
+            AvgN<T>(stack, value_count);
         }
         else if ((tolower(pch[0]) == 's') && (tolower(pch[1]) == 'c') && (tolower(pch[2]) == 'a') && (tolower(pch[3]) == 'l') && (tolower(pch[4]) == 'a') &&
                  (tolower(pch[5]) == 'r') && (tolower(pch[6]) == 's') && (tolower(pch[7]) == 'u') && (tolower(pch[8]) == 'b') &&

@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 ## GPA has only Debug and Release
@@ -98,6 +98,3 @@ endif()
 if(NOT ${skipdocs})
     add_subdirectory(${GPA_SPHINX_DOCS} ${CMAKE_BINARY_DIR}/${GPA_SPHINX_DOCS_REL_PATH})
 endif()
-
-
-

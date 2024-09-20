@@ -14,7 +14,7 @@ void AutoDefinePublicDerivedCountersGlGfx9(GpaDerivedCounters& c)
 {
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16630);
+        internal_counters.push_back(16634);
 
         c.DefineDerivedCounter("GPUTime", "Timing", "Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, internal_counters, "0,TS_FREQ,/,(1000000000),*", "cbd338f2-de6c-7b14-92ad-ba724ca2e501");
     }
@@ -63,7 +63,7 @@ void AutoDefinePublicDerivedCountersGlGfx9(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16630);
+        internal_counters.push_back(16634);
         internal_counters.push_back(4018);
         internal_counters.push_back(4037);
         internal_counters.push_back(4055);
@@ -88,7 +88,7 @@ void AutoDefinePublicDerivedCountersGlGfx9(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16630);
+        internal_counters.push_back(16634);
         internal_counters.push_back(4049);
         internal_counters.push_back(4055);
         internal_counters.push_back(1799);
@@ -114,7 +114,7 @@ void AutoDefinePublicDerivedCountersGlGfx9(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16630);
+        internal_counters.push_back(16634);
         internal_counters.push_back(4018);
         internal_counters.push_back(4037);
         internal_counters.push_back(4055);
@@ -139,7 +139,7 @@ void AutoDefinePublicDerivedCountersGlGfx9(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16630);
+        internal_counters.push_back(16634);
         internal_counters.push_back(4071);
         internal_counters.push_back(4076);
         internal_counters.push_back(1799);
@@ -167,7 +167,7 @@ void AutoDefinePublicDerivedCountersGlGfx9(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(16630);
+        internal_counters.push_back(16634);
         internal_counters.push_back(4059);
         internal_counters.push_back(4063);
         internal_counters.push_back(4065);
@@ -497,19 +497,19 @@ void AutoDefinePublicDerivedCountersGlGfx9(GpaDerivedCounters& c)
         internal_counters.push_back(4060);
         internal_counters.push_back(4066);
 
-        c.DefineDerivedCounter("CSThreadGroups", "ComputeShader", "Total number of thread groups.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,+", "8ce3fc80-56b2-97f9-8e70-2e8c747cea68");
+        c.DefineDerivedCounter("CSThreadGroupsLaunched", "ComputeShader", "Total number of thread groups launched.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0,1,+", "e1e2f302-868a-1d2e-ca81-9901bbc8b58f");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(6835);
 
-        c.DefineDerivedCounter("CSWavefronts", "ComputeShader", "The total number of wavefronts used for the CS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0", "42379c6e-369b-c237-8b25-cdb9cdc65c4d");
+        c.DefineDerivedCounter("CSWavefrontsLaunched", "ComputeShader", "The total number of wavefronts launched for the CS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0", "00c49129-6ae5-f6a0-1753-4738cbe17938");
     }
     {
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(6845);
 
-        c.DefineDerivedCounter("CSThreads", "ComputeShader", "The number of CS threads processed by the hardware.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0", "7a648013-6eac-2665-ac36-13c6f4ac9c26");
+        c.DefineDerivedCounter("CSThreadsLaunched", "ComputeShader", "The number of CS threads launched and processed by the hardware.", kGpaDataTypeFloat64, kGpaUsageTypeItems, internal_counters, "0", "cbbbf1ba-d164-1c90-9df0-6120c1660fb1");
     }
     {
         vector<GpaUInt32> internal_counters;
@@ -628,147 +628,6 @@ void AutoDefinePublicDerivedCountersGlGfx9(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(7428);
-        internal_counters.push_back(7547);
-        internal_counters.push_back(7666);
-        internal_counters.push_back(7785);
-        internal_counters.push_back(7904);
-        internal_counters.push_back(8023);
-        internal_counters.push_back(8142);
-        internal_counters.push_back(8261);
-        internal_counters.push_back(8380);
-        internal_counters.push_back(8499);
-        internal_counters.push_back(8618);
-        internal_counters.push_back(8737);
-        internal_counters.push_back(8856);
-        internal_counters.push_back(8975);
-        internal_counters.push_back(9094);
-        internal_counters.push_back(9213);
-        internal_counters.push_back(1799);
-        internal_counters.push_back(4060);
-        internal_counters.push_back(4066);
-
-        c.DefineDerivedCounter("CSMemUnitBusy", "ComputeShader", "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*,17,18,+,ifnotzero", "42ab96e1-0a24-96c8-c4ff-098fa267d78e");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(7428);
-        internal_counters.push_back(7547);
-        internal_counters.push_back(7666);
-        internal_counters.push_back(7785);
-        internal_counters.push_back(7904);
-        internal_counters.push_back(8023);
-        internal_counters.push_back(8142);
-        internal_counters.push_back(8261);
-        internal_counters.push_back(8380);
-        internal_counters.push_back(8499);
-        internal_counters.push_back(8618);
-        internal_counters.push_back(8737);
-        internal_counters.push_back(8856);
-        internal_counters.push_back(8975);
-        internal_counters.push_back(9094);
-        internal_counters.push_back(9213);
-        internal_counters.push_back(4060);
-        internal_counters.push_back(4066);
-
-        c.DefineDerivedCounter("CSMemUnitBusyCycles", "ComputeShader", "Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,NUM_SHADER_ENGINES,/,16,17,+,ifnotzero", "39d5687f-c727-7c0c-af82-bb711d3897ed");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(14817);
-        internal_counters.push_back(14902);
-        internal_counters.push_back(14987);
-        internal_counters.push_back(15072);
-        internal_counters.push_back(15157);
-        internal_counters.push_back(15242);
-        internal_counters.push_back(15327);
-        internal_counters.push_back(15412);
-        internal_counters.push_back(15497);
-        internal_counters.push_back(15582);
-        internal_counters.push_back(15667);
-        internal_counters.push_back(15752);
-        internal_counters.push_back(15837);
-        internal_counters.push_back(15922);
-        internal_counters.push_back(16007);
-        internal_counters.push_back(16092);
-        internal_counters.push_back(1799);
-        internal_counters.push_back(4060);
-        internal_counters.push_back(4066);
-
-        c.DefineDerivedCounter("CSMemUnitStalled", "ComputeShader", "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,NUM_SHADER_ENGINES,/,(100),*,17,18,+,ifnotzero", "f18e8679-1511-d533-d9ee-4365197f7d0c");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(14817);
-        internal_counters.push_back(14902);
-        internal_counters.push_back(14987);
-        internal_counters.push_back(15072);
-        internal_counters.push_back(15157);
-        internal_counters.push_back(15242);
-        internal_counters.push_back(15327);
-        internal_counters.push_back(15412);
-        internal_counters.push_back(15497);
-        internal_counters.push_back(15582);
-        internal_counters.push_back(15667);
-        internal_counters.push_back(15752);
-        internal_counters.push_back(15837);
-        internal_counters.push_back(15922);
-        internal_counters.push_back(16007);
-        internal_counters.push_back(16092);
-        internal_counters.push_back(4060);
-        internal_counters.push_back(4066);
-
-        c.DefineDerivedCounter("CSMemUnitStalledCycles", "ComputeShader", "Number of GPU cycles the memory unit is stalled. Try reducing the number or size of fetches and writes if possible.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,NUM_SHADER_ENGINES,/,16,17,+,ifnotzero", "51991c84-ed2b-bf31-c4ab-8f8e9eb8f29f");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(9420);
-        internal_counters.push_back(9702);
-        internal_counters.push_back(9984);
-        internal_counters.push_back(10266);
-        internal_counters.push_back(10548);
-        internal_counters.push_back(10830);
-        internal_counters.push_back(11112);
-        internal_counters.push_back(11394);
-        internal_counters.push_back(11676);
-        internal_counters.push_back(11958);
-        internal_counters.push_back(12240);
-        internal_counters.push_back(12522);
-        internal_counters.push_back(12804);
-        internal_counters.push_back(13086);
-        internal_counters.push_back(13368);
-        internal_counters.push_back(13650);
-        internal_counters.push_back(1799);
-        internal_counters.push_back(4060);
-        internal_counters.push_back(4066);
-
-        c.DefineDerivedCounter("CSWriteUnitStalled", "ComputeShader", "The percentage of GPUTime the write unit is stalled.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*,17,18,+,ifnotzero", "55118f7a-8f92-726f-78c6-407f689a2eb4");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(9420);
-        internal_counters.push_back(9702);
-        internal_counters.push_back(9984);
-        internal_counters.push_back(10266);
-        internal_counters.push_back(10548);
-        internal_counters.push_back(10830);
-        internal_counters.push_back(11112);
-        internal_counters.push_back(11394);
-        internal_counters.push_back(11676);
-        internal_counters.push_back(11958);
-        internal_counters.push_back(12240);
-        internal_counters.push_back(12522);
-        internal_counters.push_back(12804);
-        internal_counters.push_back(13086);
-        internal_counters.push_back(13368);
-        internal_counters.push_back(13650);
-        internal_counters.push_back(4060);
-        internal_counters.push_back(4066);
-
-        c.DefineDerivedCounter("CSWriteUnitStalledCycles", "ComputeShader", "Number of GPU cycles the write unit is stalled.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,17,+,ifnotzero", "be164c60-5e48-acac-9622-29616d09aa9a");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
         internal_counters.push_back(6866);
         internal_counters.push_back(6835);
 
@@ -791,17 +650,18 @@ void AutoDefinePublicDerivedCountersGlGfx9(GpaDerivedCounters& c)
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(4276);
-        internal_counters.push_back(4217);
+        internal_counters.push_back(6894);
+        internal_counters.push_back(6835);
         internal_counters.push_back(1799);
 
-        c.DefineDerivedCounter("CSALUStalledByLDS", "ComputeShader", "The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "(0),0,1,/,2,/,NUM_SHADER_ENGINES,/,(100),*,1,ifnotzero", "6dc4f1c2-bad0-c9ff-156e-883b319a752a");
+        c.DefineDerivedCounter("CSALUStalledByLDS", "ComputeShader", "The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, internal_counters, "0,1,/,2,/,(100),*", "6dc4f1c2-bad0-c9ff-156e-883b319a752a");
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(4276);
+        internal_counters.push_back(6894);
+        internal_counters.push_back(6835);
 
-        c.DefineDerivedCounter("CSALUStalledByLDSCycles", "ComputeShader", "Number of GPU cycles the ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,NUM_SHADER_ENGINES,/", "8f3d5f25-2159-0374-fafe-e26a7799b6c8");
+        c.DefineDerivedCounter("CSALUStalledByLDSCycles", "ComputeShader", "Number of GPU cycles each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, internal_counters, "0,1,/", "1d9b1104-b732-bb38-6812-876fdd9737ad");
     }
     {
         vector<GpaUInt32> internal_counters;

@@ -630,7 +630,7 @@ void VerifyCounterLibInterface(GpaApiType api, unsigned device_id, unsigned revi
                 GpaUInt32 counter_index            = 0;
                 gpa_status = gpa_counter_lib_func_table.GpaCounterLibGetCounterIndex(gpa_counter_context, &counter_param, &counter_index);
                 EXPECT_EQ(kGpaStatusErrorCounterNotFound, gpa_status)
-                    << "If PSVALUInstCount has been added back in for Gfx10 or Gfx10_3, this conditional codepath can be removed.";
+                    << "If PSVALUInstCount has been added back in for Gfx10, this conditional codepath can be removed.";
             }
             else if (kGpaApiDirectx11 == api || kGpaApiOpengl == api || kGpaApiDirectx12 == api || kGpaApiVulkan == api)
             {

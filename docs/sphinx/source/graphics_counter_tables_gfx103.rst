@@ -59,6 +59,12 @@ PreTessellation Group
     :header: "Counter Name", "Usage", "Brief Description"
     :widths: 15, 10, 75
 
+    "PreTessVALUInstCount", "Items", "Average number of vector ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control."
+    "PreTessSALUInstCount", "Items", "Average number of scalar ALU instructions executed for the VS and HS in a pipeline that uses tessellation. Affected by flow control."
+    "PreTessVALUBusy", "Percentage", "The percentage of GPUTime vector ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation."
+    "PreTessVALUBusyCycles", "Cycles", "Number of GPU cycles vector where ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation."
+    "PreTessSALUBusy", "Percentage", "The percentage of GPUTime scalar ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation."
+    "PreTessSALUBusyCycles", "Cycles", "Number of GPU cycles where scalar ALU instructions are being processed for the VS and HS in a pipeline that uses tessellation."
     "PreTessVerticesIn", "Items", "The number of vertices processed by the VS and HS when using tessellation."
 
 PostTessellation Group
@@ -69,6 +75,12 @@ PostTessellation Group
     :widths: 15, 10, 75
 
     "PostTessPrimsOut", "Items", "The number of primitives output by the DS and GS when using tessellation."
+    "PostTessVALUInstCount", "Items", "Average number of vector ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control."
+    "PostTessSALUInstCount", "Items", "Average number of scalar ALU instructions executed for the DS and GS in a pipeline that uses tessellation. Affected by flow control."
+    "PostTessVALUBusy", "Percentage", "The percentage of GPUTime vector ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation."
+    "PostTessVALUBusyCycles", "Cycles", "Number of GPU cycles vector where ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation."
+    "PostTessSALUBusy", "Percentage", "The percentage of GPUTime scalar ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation."
+    "PostTessSALUBusyCycles", "Cycles", "Number of GPU cycles where scalar ALU instructions are being processed for the DS and GS in a pipeline that uses tessellation."
 
 PrimitiveAssembly Group
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -101,20 +113,20 @@ ComputeShader Group
     :header: "Counter Name", "Usage", "Brief Description"
     :widths: 15, 10, 75
 
-    "CSThreadGroups", "Items", "Total number of thread groups."
-    "CSWavefronts", "Items", "The total number of wavefronts used for the CS."
-    "CSThreads", "Items", "The number of CS threads processed by the hardware."
+    "CSThreadGroupsLaunched", "Items", "Total number of thread groups launched."
+    "CSWavefrontsLaunched", "Items", "The total number of wavefronts launched for the CS."
+    "CSThreadsLaunched", "Items", "The number of CS threads launched and processed by the hardware."
     "CSThreadGroupSize", "Items", "The number of CS threads within each thread group."
-    "CSMemUnitBusy", "Percentage", "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound)."
-    "CSMemUnitBusyCycles", "Cycles", "Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account."
-    "CSMemUnitStalled", "Percentage", "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad)."
-    "CSMemUnitStalledCycles", "Cycles", "Number of GPU cycles the memory unit is stalled. Try reducing the number or size of fetches and writes if possible."
-    "CSWriteUnitStalled", "Percentage", "The percentage of GPUTime the write unit is stalled."
-    "CSWriteUnitStalledCycles", "Cycles", "Number of GPU cycles the write unit is stalled."
+    "CSVALUInsts", "Items", "The average number of vector ALU instructions executed per work-item (affected by flow control)."
+    "CSVALUUtilization", "Percentage", "The percentage of active vector ALU threads in a wave. A lower number can mean either more thread divergence in a wave or that the work-group size is not a multiple of the wave size. Value range: 0% (bad), 100% (ideal - no thread divergence)."
+    "CSSALUInsts", "Items", "The average number of scalar ALU instructions executed per work-item (affected by flow control)."
+    "CSVFetchInsts", "Items", "The average number of vector fetch instructions from the video memory executed per work-item (affected by flow control)."
+    "CSSFetchInsts", "Items", "The average number of scalar fetch instructions from the video memory executed per work-item (affected by flow control)."
+    "CSVWriteInsts", "Items", "The average number of vector write instructions to the video memory executed per work-item (affected by flow control)."
     "CSGDSInsts", "Items", "The average number of GDS read or GDS write instructions executed per work item (affected by flow control)."
     "CSLDSInsts", "Items", "The average number of LDS read/write instructions executed per work-item (affected by flow control)."
     "CSALUStalledByLDS", "Percentage", "The percentage of GPUTime ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad)."
-    "CSALUStalledByLDSCycles", "Cycles", "Number of GPU cycles the ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible."
+    "CSALUStalledByLDSCycles", "Cycles", "The average number of GPU cycles the each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible."
     "CSLDSBankConflict", "Percentage", "The percentage of GPUTime LDS is stalled by bank conflicts. Value range: 0% (optimal) to 100% (bad)."
     "CSLDSBankConflictCycles", "Cycles", "Number of GPU cycles the LDS is stalled by bank conflicts. Value range: 0 (optimal) to GPUBusyCycles (bad)."
 

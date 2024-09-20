@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2006-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2006-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Utility routines for retrieving ASIC information
@@ -20,7 +20,6 @@
 
 #include "ADLUtil.h"
 #include "asic_info.h"
-#include "DeviceInfo.h"
 
 #include "gpu_perf_api_common/logging.h"
 
@@ -106,522 +105,6 @@ namespace ogl_utils
         return -1;
     }
 
-    AsicIdInfo GetAsicInfoForAsicRevision(AsicRevision asic_revision)
-    {
-        static_assert(kAsicRevisionLast == 0x3B, "AsicRevision has changed, add necessary entry for asic info below.");
-
-        AsicIdInfo asic_id_info = {};
-
-        // Default to not being an APU. Gets set to true as needed below.
-        asic_id_info.is_apu = false;
-
-        switch (asic_revision)
-        {
-        case kTahiti:
-            asic_id_info.asic_generation   = kAsicGfx6;
-            asic_id_info.gdt_asic_type     = GDT_TAHITI_PRO;
-            asic_id_info.default_device_id = 0x679A;
-            break;
-
-        case kPitcairn:
-            asic_id_info.asic_generation   = kAsicGfx6;
-            asic_id_info.gdt_asic_type     = GDT_PITCAIRN_PRO;
-            asic_id_info.default_device_id = 0x6819;
-            break;
-
-        case kCapeverde:
-            asic_id_info.asic_generation   = kAsicGfx6;
-            asic_id_info.gdt_asic_type     = GDT_CAPEVERDE_PRO;
-            asic_id_info.default_device_id = 0x6822;
-            break;
-
-        case kOland:
-            asic_id_info.asic_generation   = kAsicGfx6;
-            asic_id_info.gdt_asic_type     = GDT_OLAND;
-            asic_id_info.default_device_id = 0x6610;
-            break;
-
-        case kHainan:
-            asic_id_info.asic_generation   = kAsicGfx6;
-            asic_id_info.gdt_asic_type     = GDT_HAINAN;
-            asic_id_info.default_device_id = 0x6660;
-            break;
-
-        case kBonaire:
-            asic_id_info.asic_generation   = kAsicGfx7;
-            asic_id_info.gdt_asic_type     = GDT_BONAIRE;
-            asic_id_info.default_device_id = 0x665C;
-            break;
-
-        case kHawaii:
-        case kHawaiiPro:
-            asic_id_info.asic_generation   = kAsicGfx7;
-            asic_id_info.gdt_asic_type     = GDT_HAWAII;
-            asic_id_info.default_device_id = 0x67B0;
-            break;
-
-        case kKalindi:
-            asic_id_info.asic_generation   = kAsicGfx7;
-            asic_id_info.gdt_asic_type     = GDT_KALINDI;
-            asic_id_info.default_device_id = 0x9830;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kGodavari:
-            asic_id_info.asic_generation   = kAsicGfx7;
-            asic_id_info.gdt_asic_type     = GDT_KALINDI;
-            asic_id_info.default_device_id = 0x9855;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kSpectre:
-            asic_id_info.asic_generation   = kAsicGfx7;
-            asic_id_info.gdt_asic_type     = GDT_SPECTRE;
-            asic_id_info.default_device_id = 0x130C;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kSpooky:
-            asic_id_info.asic_generation   = kAsicGfx7;
-            asic_id_info.gdt_asic_type     = GDT_SPOOKY;
-            asic_id_info.default_device_id = 0x130B;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kIceland:
-            asic_id_info.asic_generation   = kAsicGfx8;
-            asic_id_info.gdt_asic_type     = GDT_ICELAND;
-            asic_id_info.default_device_id = 0x6900;
-            break;
-
-        case kTonga:
-            asic_id_info.asic_generation   = kAsicGfx8;
-            asic_id_info.gdt_asic_type     = GDT_TONGA;
-            asic_id_info.default_device_id = 0x6920;
-            break;
-
-        case kFiji:
-            asic_id_info.asic_generation   = kAsicGfx8;
-            asic_id_info.gdt_asic_type     = GDT_FIJI;
-            asic_id_info.default_device_id = 0x7300;
-            break;
-
-        case kPolaris10:
-            asic_id_info.asic_generation   = kAsicGfx8;
-            asic_id_info.gdt_asic_type     = GDT_ELLESMERE;
-            asic_id_info.default_device_id = 0x67DF;
-            break;
-
-        case kPolaris11:
-            asic_id_info.asic_generation   = kAsicGfx8;
-            asic_id_info.gdt_asic_type     = GDT_BAFFIN;
-            asic_id_info.default_device_id = 0x67FF;
-            break;
-
-        case kPolaris12:
-            asic_id_info.asic_generation   = kAsicGfx8;
-            asic_id_info.gdt_asic_type     = GDT_GFX8_0_4;
-            asic_id_info.default_device_id = 0x699F;
-            break;
-
-        case kPolaris22:
-            asic_id_info.asic_generation   = kAsicGfx8;
-            asic_id_info.gdt_asic_type     = GDT_VEGAM1;
-            asic_id_info.default_device_id = 0x694C;
-            break;
-
-        case kCarrizo:
-            asic_id_info.asic_generation   = kAsicGfx8;
-            asic_id_info.gdt_asic_type     = GDT_CARRIZO;
-            asic_id_info.default_device_id = 0x9874;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kStoney:
-            asic_id_info.asic_generation   = kAsicGfx8;
-            asic_id_info.gdt_asic_type     = GDT_STONEY;
-            asic_id_info.default_device_id = 0x98E4;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kVega10:
-            asic_id_info.asic_generation   = kAsicGfx9;
-            asic_id_info.gdt_asic_type     = GDT_GFX9_0_0;
-            asic_id_info.default_device_id = 0x687F;
-            break;
-
-        case kRaven:
-            asic_id_info.asic_generation   = kAsicGfx9;
-            asic_id_info.gdt_asic_type     = GDT_GFX9_0_2;
-            asic_id_info.default_device_id = 0x15DD;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kRaven2:
-            asic_id_info.asic_generation   = kAsicGfx9;
-            asic_id_info.gdt_asic_type     = GDT_ASIC_TYPE_NONE;
-            asic_id_info.default_device_id = 0x0000;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kVega12:
-            asic_id_info.asic_generation   = kAsicGfx9;
-            asic_id_info.gdt_asic_type     = GDT_GFX9_0_4;
-            asic_id_info.default_device_id = 0x69A0;
-            break;
-
-        case kVega20:
-            asic_id_info.asic_generation   = kAsicGfx9;
-            asic_id_info.gdt_asic_type     = GDT_GFX9_0_6;
-            asic_id_info.default_device_id = 0x66AF;
-            break;
-
-        case kRenoir:
-            asic_id_info.asic_generation   = kAsicGfx9;
-            asic_id_info.gdt_asic_type     = GDT_GFX9_0_C;
-            asic_id_info.default_device_id = 0x1636;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kNavi10:
-            asic_id_info.asic_generation   = kAsicGfx10;
-            asic_id_info.gdt_asic_type     = GDT_GFX10_1_0;
-            asic_id_info.default_device_id = 0x731F;
-            break;
-
-        case kNavi12:
-        case kNavi12Lite:
-            asic_id_info.asic_generation   = kAsicGfx10;
-            asic_id_info.gdt_asic_type     = GDT_GFX10_1_1;
-            asic_id_info.default_device_id = 0x7360;
-            break;
-
-        case kNavi14:
-        case kNavi14Lite:
-            asic_id_info.asic_generation   = kAsicGfx10;
-            asic_id_info.gdt_asic_type     = GDT_GFX10_1_2;
-            asic_id_info.default_device_id = 0x7340;
-            break;
-
-        case kNavi21:
-        case kNavi21Lite:
-            asic_id_info.asic_generation   = kAsicGfx103;
-            asic_id_info.gdt_asic_type     = GDT_GFX10_3_0;
-            asic_id_info.default_device_id = 0x73BF;
-            break;
-
-        case kPlaceholder6:
-            asic_id_info.asic_generation   = kAsicGfx103;
-            asic_id_info.gdt_asic_type     = GDT_GFX10_3_0;
-            asic_id_info.default_device_id = 0x0000;
-            break;
-
-        case kNavi22:
-            asic_id_info.asic_generation   = kAsicGfx103;
-            asic_id_info.gdt_asic_type     = GDT_GFX10_3_1;
-            asic_id_info.default_device_id = 0x73DF;
-            break;
-
-        case kNavi23:
-            asic_id_info.asic_generation   = kAsicGfx103;
-            asic_id_info.gdt_asic_type     = GDT_GFX10_3_2;
-            asic_id_info.default_device_id = 0x73FF;
-            break;
-
-        case kNavi24:
-            asic_id_info.asic_generation   = kAsicGfx103;
-            asic_id_info.gdt_asic_type     = GDT_GFX10_3_4;
-            asic_id_info.default_device_id = 0x743F;
-            break;
-
-        case kGfx1035:
-            asic_id_info.asic_generation   = kAsicGfx103;
-            asic_id_info.gdt_asic_type     = GDT_GFX10_3_5;
-            asic_id_info.default_device_id = 0x164D;
-            break;
-
-        case kGfx1100:
-            asic_id_info.asic_generation   = kAsicGfx11;
-            asic_id_info.gdt_asic_type     = GDT_GFX11_0_0;
-            asic_id_info.default_device_id = 0x73A8;
-            break;
-
-        case kGfx1101:
-            asic_id_info.asic_generation   = kAsicGfx11;
-            asic_id_info.gdt_asic_type     = GDT_GFX11_0_1;
-            asic_id_info.default_device_id = 0x73C8;
-            break;
-
-        case kGfx1102:
-            asic_id_info.asic_generation   = kAsicGfx11;
-            asic_id_info.gdt_asic_type     = GDT_GFX11_0_2;
-            asic_id_info.default_device_id = 0x7480;
-            break;
-
-        case kGfx1103:
-            asic_id_info.asic_generation   = kAsicGfx11;
-            asic_id_info.gdt_asic_type     = GDT_GFX11_0_3;
-            asic_id_info.default_device_id = 0x15BF;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kGfx1103B:
-            asic_id_info.asic_generation   = kAsicGfx11;
-            asic_id_info.gdt_asic_type     = GDT_GFX11_0_3B;
-            asic_id_info.default_device_id = 0x15C8;
-            asic_id_info.is_apu            = true;
-            break;
-
-        case kGfx1103HP1:
-            asic_id_info.asic_generation   = kAsicGfx11;
-            asic_id_info.gdt_asic_type     = GDT_GFX11_0_3;
-            asic_id_info.default_device_id = 0x1900;
-            break;
-
-        case kGfx1103HP2:
-            asic_id_info.asic_generation   = kAsicGfx11;
-            asic_id_info.gdt_asic_type     = GDT_GFX11_0_3B;
-            asic_id_info.default_device_id = 0x1901;
-            break;
-
-        case kGfx1150:
-            asic_id_info.asic_generation   = kAsicGfx11;
-            asic_id_info.gdt_asic_type     = GDT_GFX11_0_0;
-            asic_id_info.default_device_id = 0x150E;
-            break;
-
-        default:
-            assert(!"Unhandled AsicRevision type");
-            asic_id_info.asic_generation   = kAsicUnknown;
-            asic_id_info.gdt_asic_type     = GDT_ASIC_TYPE_NONE;
-            asic_id_info.default_device_id = 0x0000;
-            break;
-        }
-
-        return asic_id_info;
-    }
-
-    AsicRevision GetAsicRevisionFromAsicId(AsicId asic_id)
-    {
-        AsicRevision revision = kUnknown;
-
-        // This static assert will help to find error when we update the AsicIdEnum for new hardware.
-        // Upon failure, we need to add suitable entry for public device and update the static assert for update count.
-        static_assert(kAsicIdLast == 43, "AsicIdEnum has changed, add suitable entry for asic info.");
-
-        switch (asic_id)
-        {
-        case kAsicIdTahitiP:
-            revision = kTahiti;
-            break;
-
-        case kAsicIdPitcairnPm:
-            revision = kPitcairn;
-            break;
-
-        case kAsicIdCapeverdeM:
-            revision = kCapeverde;
-            break;
-
-        case kAsicIdOlandM:
-            revision = kOland;
-            break;
-
-        case kAsicIdHainanM:
-            revision = kHainan;
-            break;
-
-        case kAsicIdBonaireM:
-            revision = kBonaire;
-            break;
-
-        case kAsicIdHawaiiP:
-            revision = kHawaiiPro;
-            break;
-
-        case kAsicIdKalindi:
-            revision = kKalindi;
-            break;
-
-        case kAsicIdGodavari:
-            revision = kGodavari;
-            break;
-
-        case kAsicIdSpectre:
-            revision = kSpectre;
-            break;
-
-        case kAsicIdSpooky:
-            revision = kSpooky;
-            break;
-
-        case kAsicIdIcelandM:
-            revision = kIceland;
-            break;
-
-        case kAsicIdTongaP:
-            revision = kTongaPro;
-            break;
-
-        case kAsicIdFijiP:
-            revision = kFiji;
-            break;
-
-        case kAsicIdEllesmere:
-            revision = kPolaris10;
-            break;
-
-        case kAsicIdBaffin:
-            revision = kPolaris11;
-            break;
-
-        case kAsicIdLexa:
-            revision = kPolaris12;
-            break;
-
-        case kAsicIdVegaM:
-            revision = kPolaris22;
-            break;
-
-        case kAsicIdCarrizo:
-            revision = kCarrizo;
-            break;
-
-        case kAsicIdStoney:
-            revision = kStoney;
-            break;
-
-        case kAsicIdGfx900:
-            revision = kVega10;
-            break;
-
-        case kAsicIdGfx902:
-            revision = kRaven;
-            break;
-
-        case kAsicIdPlaceholder:
-            revision = kUnknown;
-            break;
-
-        case kAsicIdGfx904:
-            revision = kVega12;
-            break;
-
-        case kAsicIdGfx906:
-            revision = kVega20;
-            break;
-
-        case kAsicIdGfx90C:
-            revision = kRenoir;
-            break;
-
-        case kAsicIdPlaceholder3:
-            revision = kUnknown;
-            break;
-
-        case kAsicIdGfx1010:
-        case kAsicIdGfx1010Lite:
-            revision = kNavi10;
-            break;
-
-        case kAsicIdGfx1011:
-            revision = kNavi12;
-            break;
-
-        case kAsicIdGfx1011Lite:
-            revision = kNavi12Lite;
-            break;
-
-        case kAsicIdGfx1012:
-            revision = kNavi14;
-            break;
-
-        case kAsicIdGfx1030:
-            revision = kNavi21;
-            break;
-
-        case kAsicIdGfx1030Lite:
-            revision = kNavi21Lite;
-            break;
-
-        case kAsicIdPlaceholder6:
-            revision = kPlaceholder6;
-            break;
-
-        case kAsicIdGfx1031:
-            revision = kNavi22;
-            break;
-
-        case kAsicIdGfx1032:
-            revision = kNavi23;
-            break;
-
-        case kAsicIdGfx1034:
-            revision = kNavi24;
-            break;
-
-        case kAsicIdGfx1035:
-            revision = kGfx1035;
-            break;
-
-        case kAsicIdPlaceholder10:
-        case kAsicIdPlaceholder11:
-            revision = kUnknown;
-            break;
-        default:
-            revision = kUnknown;
-
-            GPA_LOG_ERROR("Unrecognized asic Id: %d.", asic_id);
-            assert(!"Unrecognized AsicId");
-            break;
-        }
-
-        return revision;
-    }
-
-    AsicGeneration GetAsicTypeFromAsicRevision(AsicRevision asic_revision)
-    {
-        AsicGeneration ret_val = kAsicUnknown;
-
-        AsicIdInfo info = GetAsicInfoForAsicRevision(asic_revision);
-
-        if (info.asic_generation != kAsicUnknown)
-        {
-            ret_val = info.asic_generation;
-
-            if (info.is_apu)
-            {
-                GPA_LOG_MESSAGE("Recognized an APU with %s graphics.", kAsicGenerationStrings[ret_val]);
-            }
-            else
-            {
-                GPA_LOG_MESSAGE("Recognized a %s card.", kAsicGenerationStrings[ret_val]);
-            }
-        }
-        else
-        {
-            assert(!"Unknown AsicRevision, may need to update enum list from PAL.");
-            GPA_LOG_ERROR("Unrecognized asic revision: %d.", asic_revision);
-            ret_val = kAsicUnknown;
-        }
-
-        return ret_val;
-    }
-
-    bool GetFallbackAsicInfo(const AsicRevision& asic_revision, GDT_HW_ASIC_TYPE& gdt_hw_asic_type, uint32_t& default_device_id)
-    {
-        AsicIdInfo info = GetAsicInfoForAsicRevision(asic_revision);
-
-        if (info.asic_generation != kAsicUnknown)
-        {
-            gdt_hw_asic_type  = info.gdt_asic_type;
-            default_device_id = info.default_device_id;
-            return true;
-        }
-
-        return false;
-    }
-
     bool GetAsicInfoFromDriver(AsicInfo& asic_info)
     {
         if (nullptr == ogl_get_perf_monitor_counters_amd || nullptr == ogl_get_perf_monitor_group_string_amd ||
@@ -692,8 +175,6 @@ namespace ogl_utils
             GPA_LOG_ERROR("Error getting the number of GPIN counters.");
             return false;
         }
-
-        AsicId ugl_asic_id = kAsicIdUnknown;
 
         GLuint* counter_list = new (std::nothrow) GLuint[num_counters];
 
@@ -794,16 +275,7 @@ namespace ogl_utils
                                     switch (i)
                                     {
                                     case kAsicRevisionIndex:
-                                        if (found_ugl_entrypoints)
-                                        {
-                                            ugl_asic_id             = static_cast<AsicId>(value);
-                                            asic_info.asic_revision = GetAsicRevisionFromAsicId(ugl_asic_id);
-                                        }
-                                        else
-                                        {
-                                            asic_info.asic_revision = static_cast<AsicRevision>(value);
-                                        }
-                                        asic_info.asic_generation = GetAsicTypeFromAsicRevision(asic_info.asic_revision);
+                                        asic_info.asic_revision = value;
                                         break;
 
                                     case kAsicNumSimdIndex:
@@ -875,8 +347,11 @@ namespace ogl_utils
                                     }
                                 }
 
-                                result = true;
                                 delete[] counter_data;
+
+                                // Treat this as successful if there were 9 counters available.
+                                // This makes the assumption that we successfully read all values and they mean what we think they do.
+                                result = (9 == num_counters);
                             }
                         }
                     }
@@ -890,19 +365,14 @@ namespace ogl_utils
 
         if (result)
         {
-            if (found_ugl_entrypoints)
+            if (asic_info.device_rev == asic_info.kUnassignedAsicInfo || asic_info.device_id == asic_info.kUnassignedAsicInfo)
             {
-                GPA_LOG_MESSAGE("ASIC ID returned from driver is: %d and GL_VERSION is: %d.", ugl_asic_id, asic_info.driver_version);
+                GPA_LOG_MESSAGE("WARNING: Did not receive either a Device ID or Revision ID from the OpenGL implementation.");
             }
-            else if (found_oglp_entrypoints)
+            else
             {
                 GPA_LOG_MESSAGE(
-                    "ASIC revision returned from driver is: %d (decimal) and GL_VERSION is: %d.", asic_info.asic_revision, asic_info.driver_version);
-
-                if (asic_info.asic_revision == kUnknown)
-                {
-                    GPA_LOG_MESSAGE("WARNING: Received an 'Unknown' ASIC Revision from the OpenGL implementation.");
-                }
+                    "Driver version %d returned Device ID 0x%04X and Revision ID 0x%02X.", asic_info.driver_version, asic_info.device_id, asic_info.device_rev);
             }
         }
 

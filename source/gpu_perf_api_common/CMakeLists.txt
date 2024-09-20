@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
@@ -7,7 +7,9 @@ set(GPA_PROJECT_NAME GPUPerfAPI-Common)
 set(ProjectName ${GPA_PROJECT_NAME})
 
 include(${GPA_CMAKE_MODULES_DIR}/common.cmake)
+if(NOT ${skipvulkan})
 include(${GPA_CMAKE_MODULES_DIR}/gpa_vulkan.cmake)
+endif()
 include(${CMAKE_COMMON_LIB_GLOBAL_AMD_ADL})
 include(${CMAKE_COMMON_SRC_GLOBAL_ADL_UTIL})
 include(${CMAKE_COMMON_SRC_GLOBAL_TSINGLETON})

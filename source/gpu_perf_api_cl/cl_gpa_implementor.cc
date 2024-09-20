@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief CL GPA Implementation
@@ -307,8 +307,41 @@ bool ClGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, 
 
     if (generation == GDT_HW_GENERATION_GFX11)
     {
-        GPA_LOG_ERROR("Known Issue: This OpenCL driver version does not properly support GPUPerfAPI on GFX11 hardware.");
-        is_supported = false;
+        unsigned int   major_ver     = 0;
+        unsigned int   minor_ver     = 0;
+        unsigned int   sub_minor_ver = 0;
+        ADLUtil_Result adl_result    = AMDTADLUtils::Instance()->GetDriverVersion(major_ver, minor_ver, sub_minor_ver);
+        AMDTADLUtils::DeleteInstance();
+
+        if (ADL_WARNING == adl_result && major_ver == 0 && minor_ver == 0 && sub_minor_ver == 0)
+        {
+            GPA_LOG_MESSAGE("WARNING: Unversioned driver detected. It may or may not properly support GPUPerfAPI on this hardware.");
+        }
+        else if (ADL_SUCCESS == adl_result)
+        {
+            // 22.40.43 is the first driver that properly supports perf counters on GFX11.
+            static const unsigned int kMinMajorVersionForGfx11Support = 22;
+            static const unsigned int kMinMinorVersionForGfx11Support = 40;
+            static const unsigned int kMinSubMinorVersionForGfx11Support = 43;
+
+            if (major_ver < kMinMajorVersionForGfx11Support || (major_ver == kMinMajorVersionForGfx11Support && minor_ver < kMinMinorVersionForGfx11Support) ||
+                (major_ver == kMinMajorVersionForGfx11Support && minor_ver == kMinMinorVersionForGfx11Support && sub_minor_ver < kMinSubMinorVersionForGfx11Support))
+            {
+                GPA_LOG_ERROR("Known Issue: This driver version does not properly support GPUPerfAPI on GFX11 hardware.");
+                is_supported = false;
+            }
+
+            // Check for GFX11_5_0 hardware and report HW not supported if using 24.10 driver.
+            GDT_HW_ASIC_TYPE asic_type = GDT_ASIC_TYPE_NONE;
+            if (hw_info.GetHwAsicType(asic_type))
+            {
+                if (asic_type == GDT_GFX11_5_0 && major_ver == 24 && minor_ver == 10)
+                {
+                    GPA_LOG_ERROR("Known Issue: This driver version does not properly support GPUPerfAPI on GFX11_5_0 hardware.");
+                    is_supported = false;
+                }
+            }
+        }
     }
 
     return is_supported;

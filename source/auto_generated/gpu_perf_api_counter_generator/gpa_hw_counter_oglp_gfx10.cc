@@ -562,7 +562,7 @@ namespace counter_oglp_gfx10
         {331, "UTCL11", 1, 15, 2, 0},
         {332, "UTCL12", 2, 15, 2, 0},
         {333, "UTCL13", 3, 15, 2, 0},
-        {334, "GPIN", 0, 5, 5, 0},
+        {334, "GPIN", 0, 9, 9, 0},
         {335, "GPUTime", 0, 6, 2, 0},
     };
 
@@ -772,7 +772,7 @@ namespace counter_oglp_gfx10
         {318, 57678},
         {319, 57913},
         {320, 58148},
-        {335, 59898},
+        {335, 59902},
     };
 
     GpaPaddedCounterDesc kOglpPaddedCounterByGroupGfx10[] = {
@@ -922,14 +922,14 @@ namespace counter_oglp_gfx10
         154, // Tcp
     };
 
-    const unsigned int kHwOglpGpuTimeBottomToBottomDurationIndexGfx10 = 59898; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx10 family
+    const unsigned int kHwOglpGpuTimeBottomToBottomDurationIndexGfx10 = 59902; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Oglp for Gfx10 family
     const unsigned int kHwOglpGpuTimeBottomToBottomStartIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for Oglp for Gfx10 family
     const unsigned int kHwOglpGpuTimeBottomToBottomEndIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for Oglp for Gfx10 family
-    const unsigned int kHwOglpGpuTimeTopToBottomDurationIndexGfx10 = 59901; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Oglp for Gfx10 family
+    const unsigned int kHwOglpGpuTimeTopToBottomDurationIndexGfx10 = 59905; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Oglp for Gfx10 family
     const unsigned int kHwOglpGpuTimeTopToBottomStartIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the top of pipe for Oglp for Gfx10 family
     const unsigned int kHwOglpGpuTimeTopToBottomEndIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the bottom of pipe for Oglp for Gfx10 family
     const std::set<unsigned int> kHwOglpTimestampBlockIdsGfx10 =       {335}; ///< Timestamp block id's for OGLP for gfx10 family
-    const std::set<unsigned int> kHwOglpTimeCounterIndicesGfx10 =      {59898, 59899, 59900, 59901, 59902, 59903}; ///< Timestamp counter indices for OGLP for gfx10 family
+    const std::set<unsigned int> kHwOglpTimeCounterIndicesGfx10 =      {59902, 59903, 59904, 59905, 59906, 59907}; ///< Timestamp counter indices for OGLP for gfx10 family
     const unsigned int           kHwOglpGroupCountGfx10                = static_cast<unsigned int>(kHwOglpGroupsGfx10.size());
     const unsigned int           kOglpPaddedCounterGroupCountGfx10 = 0;
     const unsigned int           kHwOglpSqGroupCountGfx10              = sizeof(kHwOglpSqGroupsGfx10) / sizeof(GpaSqCounterGroupDesc);

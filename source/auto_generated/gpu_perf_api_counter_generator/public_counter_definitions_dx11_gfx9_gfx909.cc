@@ -166,65 +166,6 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
     }
     {
         vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(46186);
-        internal_counters.push_back(46468);
-        internal_counters.push_back(46750);
-        internal_counters.push_back(47032);
-        internal_counters.push_back(47314);
-        internal_counters.push_back(47596);
-        internal_counters.push_back(47878);
-        internal_counters.push_back(48160);
-        internal_counters.push_back(48442);
-        internal_counters.push_back(48724);
-        internal_counters.push_back(49006);
-        internal_counters.push_back(49288);
-        internal_counters.push_back(49570);
-        internal_counters.push_back(49852);
-        internal_counters.push_back(50134);
-        internal_counters.push_back(50416);
-        internal_counters.push_back(23);
-        internal_counters.push_back(16740);
-        internal_counters.push_back(16936);
-        internal_counters.push_back(17132);
-        internal_counters.push_back(17328);
-        internal_counters.push_back(16746);
-        internal_counters.push_back(16942);
-        internal_counters.push_back(17138);
-        internal_counters.push_back(17334);
-
-        c.UpdateAsicSpecificDerivedCounter("CSWriteUnitStalled", internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,/,(100),*,17,18,19,20,21,22,23,24,sum8,ifnotzero");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
-        internal_counters.push_back(46186);
-        internal_counters.push_back(46468);
-        internal_counters.push_back(46750);
-        internal_counters.push_back(47032);
-        internal_counters.push_back(47314);
-        internal_counters.push_back(47596);
-        internal_counters.push_back(47878);
-        internal_counters.push_back(48160);
-        internal_counters.push_back(48442);
-        internal_counters.push_back(48724);
-        internal_counters.push_back(49006);
-        internal_counters.push_back(49288);
-        internal_counters.push_back(49570);
-        internal_counters.push_back(49852);
-        internal_counters.push_back(50134);
-        internal_counters.push_back(50416);
-        internal_counters.push_back(16740);
-        internal_counters.push_back(16936);
-        internal_counters.push_back(17132);
-        internal_counters.push_back(17328);
-        internal_counters.push_back(16746);
-        internal_counters.push_back(16942);
-        internal_counters.push_back(17138);
-        internal_counters.push_back(17334);
-
-        c.UpdateAsicSpecificDerivedCounter("CSWriteUnitStalledCycles", internal_counters, "(0),0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,max16,16,17,18,19,20,21,22,23,sum8,ifnotzero");
-    }
-    {
-        vector<GpaUInt32> internal_counters;
         internal_counters.push_back(14056);
         internal_counters.push_back(14548);
         internal_counters.push_back(15040);

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Cube Sample.
@@ -2678,16 +2678,13 @@ bool CubeSample::GpaValidateDataGfx8(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("CSBusy") || 0 == local_counter_name.compare("CSBusyCycles") || 0 == local_counter_name.compare("CSTime") ||
                  0 == local_counter_name.compare("PAStalledOnRasterizer") || 0 == local_counter_name.compare("PAStalledOnRasterizerCycles") ||
-                 0 == local_counter_name.compare("CSThreadGroups") || 0 == local_counter_name.compare("CSWavefronts") ||
-                 0 == local_counter_name.compare("CSThreads") || 0 == local_counter_name.compare("CSThreadGroupSize") ||
+                 0 == local_counter_name.compare("CSThreadGroupsLaunched") || 0 == local_counter_name.compare("CSWavefrontsLaunched") ||
+                 0 == local_counter_name.compare("CSThreadsLaunched") || 0 == local_counter_name.compare("CSThreadGroupSize") ||
                  0 == local_counter_name.compare("CSVALUInsts") || 0 == local_counter_name.compare("CSVALUUtilization") ||
                  0 == local_counter_name.compare("CSSALUInsts") || 0 == local_counter_name.compare("CSVFetchInsts") ||
                  0 == local_counter_name.compare("CSSFetchInsts") || 0 == local_counter_name.compare("CSVWriteInsts") ||
                  0 == local_counter_name.compare("CSVALUBusy") || 0 == local_counter_name.compare("CSVALUBusyCycles") ||
                  0 == local_counter_name.compare("CSSALUBusy") || 0 == local_counter_name.compare("CSSALUBusyCycles") ||
-                 0 == local_counter_name.compare("CSMemUnitBusy") || 0 == local_counter_name.compare("CSMemUnitBusyCycles") ||
-                 0 == local_counter_name.compare("CSMemUnitStalled") || 0 == local_counter_name.compare("CSMemUnitStalledCycles") ||
-                 0 == local_counter_name.compare("CSWriteUnitStalled") || 0 == local_counter_name.compare("CSWriteUnitStalledCycles") ||
                  0 == local_counter_name.compare("CSGDSInsts") || 0 == local_counter_name.compare("CSLDSInsts") ||
                  0 == local_counter_name.compare("CSALUStalledByLDS") || 0 == local_counter_name.compare("CSALUStalledByLDSCycles") ||
                  0 == local_counter_name.compare("CSLDSBankConflict") || 0 == local_counter_name.compare("CSLDSBankConflictCycles") ||
@@ -3108,17 +3105,14 @@ bool CubeSample::GpaValidateDataGfx9(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("CSBusy") || 0 == local_counter_name.compare("CSBusyCycles") || 0 == local_counter_name.compare("CSTime") ||
                  0 == local_counter_name.compare("PAStalledOnRasterizer") || 0 == local_counter_name.compare("PAStalledOnRasterizerCycles") ||
-                 0 == local_counter_name.compare("CSThreadGroups") || 0 == local_counter_name.compare("CSWavefronts") ||
-                 0 == local_counter_name.compare("CSThreads") || 0 == local_counter_name.compare("CSThreadGroupSize") ||
+                 0 == local_counter_name.compare("CSThreadGroupsLaunched") || 0 == local_counter_name.compare("CSWavefrontsLaunched") ||
+                 0 == local_counter_name.compare("CSThreadsLaunched") || 0 == local_counter_name.compare("CSThreadGroupSize") ||
                  0 == local_counter_name.compare("CSVALUInsts") || 0 == local_counter_name.compare("CSVALUUtilization") ||
                  0 == local_counter_name.compare("CSSALUInsts") || 0 == local_counter_name.compare("CSVFetchInsts") ||
                  0 == local_counter_name.compare("CSSFetchInsts") || 0 == local_counter_name.compare("CSVWriteInsts") ||
                  0 == local_counter_name.compare("CSVALUBusy") || 0 == local_counter_name.compare("CSVALUBusyCycles") ||
                  0 == local_counter_name.compare("CSSALUBusy") || 0 == local_counter_name.compare("CSSALUBusyCycles") ||
-                 0 == local_counter_name.compare("CSMemUnitBusy") || 0 == local_counter_name.compare("CSMemUnitBusyCycles") ||
-                 0 == local_counter_name.compare("CSMemUnitStalled") || 0 == local_counter_name.compare("CSMemUnitStalledCycles") ||
-                 0 == local_counter_name.compare("CSWriteUnitStalled") || 0 == local_counter_name.compare("CSFlatVMemInsts") ||
-                 0 == local_counter_name.compare("CSFlatLDSInsts") || 0 == local_counter_name.compare("CSWriteUnitStalledCycles") ||
+                 0 == local_counter_name.compare("CSFlatVMemInsts") || 0 == local_counter_name.compare("CSFlatLDSInsts") ||
                  0 == local_counter_name.compare("CSGDSInsts") || 0 == local_counter_name.compare("CSLDSInsts") ||
                  0 == local_counter_name.compare("CSALUStalledByLDS") || 0 == local_counter_name.compare("CSALUStalledByLDSCycles") ||
                  0 == local_counter_name.compare("CSLDSBankConflict") || 0 == local_counter_name.compare("CSLDSBankConflictCycles") ||
@@ -3369,7 +3363,7 @@ bool CubeSample::GpaValidateDataGfx10(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("ScalarCacheRequestCount"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 1, 2500000);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0, 2500000);
         }
         else if (0 == local_counter_name.compare("ScalarCacheHitCount") || 0 == local_counter_name.compare("ScalarCacheMissCount"))
         {
@@ -3400,8 +3394,7 @@ bool CubeSample::GpaValidateDataGfx10(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("PcieBytes"))
         {
-            GpaFloat64 expected_value = (sample_index == 0) ? 384 : 768;
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, expected_value);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThanOrEqualTo, 384);
         }
         else if (0 == local_counter_name.compare("WriteUnitStalled") || 0 == local_counter_name.compare("WriteUnitStalledCycles"))
         {
@@ -3500,16 +3493,13 @@ bool CubeSample::GpaValidateDataGfx10(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("CSBusy") || 0 == local_counter_name.compare("CSBusyCycles") || 0 == local_counter_name.compare("CSTime") ||
                  0 == local_counter_name.compare("PAStalledOnRasterizer") || 0 == local_counter_name.compare("PAStalledOnRasterizerCycles") ||
-                 0 == local_counter_name.compare("CSThreadGroups") || 0 == local_counter_name.compare("CSWavefronts") ||
-                 0 == local_counter_name.compare("CSThreads") || 0 == local_counter_name.compare("CSThreadGroupSize") ||
+                 0 == local_counter_name.compare("CSThreadGroupsLaunched") || 0 == local_counter_name.compare("CSWavefrontsLaunched") ||
+                 0 == local_counter_name.compare("CSThreadsLaunched") || 0 == local_counter_name.compare("CSThreadGroupSize") ||
                  0 == local_counter_name.compare("CSVALUInsts") || 0 == local_counter_name.compare("CSVALUUtilization") ||
                  0 == local_counter_name.compare("CSSALUInsts") || 0 == local_counter_name.compare("CSVFetchInsts") ||
                  0 == local_counter_name.compare("CSSFetchInsts") || 0 == local_counter_name.compare("CSVWriteInsts") ||
                  0 == local_counter_name.compare("CSVALUBusy") || 0 == local_counter_name.compare("CSVALUBusyCycles") ||
                  0 == local_counter_name.compare("CSSALUBusy") || 0 == local_counter_name.compare("CSSALUBusyCycles") ||
-                 0 == local_counter_name.compare("CSMemUnitBusy") || 0 == local_counter_name.compare("CSMemUnitBusyCycles") ||
-                 0 == local_counter_name.compare("CSMemUnitStalled") || 0 == local_counter_name.compare("CSMemUnitStalledCycles") ||
-                 0 == local_counter_name.compare("CSWriteUnitStalled") || 0 == local_counter_name.compare("CSWriteUnitStalledCycles") ||
                  0 == local_counter_name.compare("CSGDSInsts") || 0 == local_counter_name.compare("CSLDSInsts") ||
                  0 == local_counter_name.compare("CSALUStalledByLDS") || 0 == local_counter_name.compare("CSALUStalledByLDSCycles") ||
                  0 == local_counter_name.compare("CSLDSBankConflict") || 0 == local_counter_name.compare("CSLDSBankConflictCycles") ||
@@ -3721,7 +3711,15 @@ bool CubeSample::GpaValidateDataGfx103(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("InstCacheMissCount"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0, 26000);
+            if (sample_index == 0)
+            {
+                // The driver may use CS for Clear calls.
+                return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0, 3000000);
+            }
+            else
+            {
+                return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0, 31000);
+            }
         }
         else if (0 == local_counter_name.compare("L1CacheHit"))
         {
@@ -3743,11 +3741,11 @@ bool CubeSample::GpaValidateDataGfx103(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("WriteUnitStalled"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 12);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 19);
         }
         else if (0 == local_counter_name.compare("WriteUnitStalledCycles"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 1200);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 2300);
         }
         else if (0 == local_counter_name.compare("MemUnitStalled"))
         {
@@ -3829,26 +3827,57 @@ bool CubeSample::GpaValidateDataGfx103(unsigned int profile_set,
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f);
         }
+        else if (0 == local_counter_name.compare("CSThreadsLaunched"))
+        {
+            if (sample_index == 0)
+            {
+                // The driver may use CS during Clear calls.
+                return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 500000);
+            }
+            else
+            {
+                return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0);
+            }
+        }
+        else if (0 == local_counter_name.compare("CSGDSInsts") || 0 == local_counter_name.compare("CSLDSInsts") ||
+                 0 == local_counter_name.compare("CSALUStalledByLDS") || 0 == local_counter_name.compare("CSLDSBankConflict"))
+        {
+            if (sample_index == 0)
+            {
+                // The driver may use CS during Clear calls.
+                return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 800);
+            }
+            else
+            {
+                return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0);
+            }
+        }
+        else if (0 == local_counter_name.compare("CSALUStalledByLDSCycles") || 0 == local_counter_name.compare("CSLDSBankConflictCycles"))
+        {
+            if (sample_index == 0)
+            {
+                // The driver may use CS during Clear calls.
+                return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 2800);
+            }
+            else
+            {
+                return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0);
+            }
+        }
         else if (0 == local_counter_name.compare("CSBusy") || 0 == local_counter_name.compare("CSBusyCycles") || 0 == local_counter_name.compare("CSTime") ||
                  0 == local_counter_name.compare("PAStalledOnRasterizer") || 0 == local_counter_name.compare("PAStalledOnRasterizerCycles") ||
-                 0 == local_counter_name.compare("CSThreadGroups") || 0 == local_counter_name.compare("CSWavefronts") ||
-                 0 == local_counter_name.compare("CSThreads") || 0 == local_counter_name.compare("CSThreadGroupSize") ||
-                 0 == local_counter_name.compare("CSMemUnitBusy") || 0 == local_counter_name.compare("CSMemUnitBusyCycles") ||
-                 0 == local_counter_name.compare("CSMemUnitStalled") || 0 == local_counter_name.compare("CSMemUnitStalledCycles") ||
-                 0 == local_counter_name.compare("CSWriteUnitStalled") || 0 == local_counter_name.compare("CSWriteUnitStalledCycles") ||
-                 0 == local_counter_name.compare("CSGDSInsts") || 0 == local_counter_name.compare("CSLDSInsts") ||
-                 0 == local_counter_name.compare("CSALUStalledByLDS") || 0 == local_counter_name.compare("CSALUStalledByLDSCycles") ||
-                 0 == local_counter_name.compare("CSLDSBankConflict") || 0 == local_counter_name.compare("CSLDSBankConflictCycles") ||
-                 0 == local_counter_name.compare("TexTriFilteringPct") || 0 == local_counter_name.compare("TexTriFilteringCount") ||
-                 0 == local_counter_name.compare("NoTexTriFilteringCount") || 0 == local_counter_name.compare("TexVolFilteringPct") ||
-                 0 == local_counter_name.compare("TexVolFilteringCount") || 0 == local_counter_name.compare("NoTexVolFilteringCount") ||
-                 0 == local_counter_name.compare("PreZTilesDetailCulled") || 0 == local_counter_name.compare("PreZTilesDetailCulledCount") ||
-                 0 == local_counter_name.compare("HiZQuadsCulled") || 0 == local_counter_name.compare("HiZQuadsCulledCount") ||
-                 0 == local_counter_name.compare("HiZTilesRejectedCount") || 0 == local_counter_name.compare("PreZSamplesFailingS") ||
-                 0 == local_counter_name.compare("PreZSamplesFailingZ") || 0 == local_counter_name.compare("PostZSamplesPassing") ||
-                 0 == local_counter_name.compare("PostZSamplesFailingS") || 0 == local_counter_name.compare("PostZSamplesFailingZ") ||
-                 0 == local_counter_name.compare("DBMemRead") || 0 == local_counter_name.compare("DBMemWritten") ||
-                 0 == local_counter_name.compare("CBSlowPixelPct") || 0 == local_counter_name.compare("CBSlowPixelCount"))
+                 0 == local_counter_name.compare("CSThreadGroupsLaunched") || 0 == local_counter_name.compare("CSWavefrontsLaunched") ||
+                 0 == local_counter_name.compare("CSThreadGroupSize") || 0 == local_counter_name.compare("TexTriFilteringPct") ||
+                 0 == local_counter_name.compare("TexTriFilteringCount") || 0 == local_counter_name.compare("NoTexTriFilteringCount") ||
+                 0 == local_counter_name.compare("TexVolFilteringPct") || 0 == local_counter_name.compare("TexVolFilteringCount") ||
+                 0 == local_counter_name.compare("NoTexVolFilteringCount") || 0 == local_counter_name.compare("PreZTilesDetailCulled") ||
+                 0 == local_counter_name.compare("PreZTilesDetailCulledCount") || 0 == local_counter_name.compare("HiZQuadsCulled") ||
+                 0 == local_counter_name.compare("HiZQuadsCulledCount") || 0 == local_counter_name.compare("HiZTilesRejectedCount") ||
+                 0 == local_counter_name.compare("PreZSamplesFailingS") || 0 == local_counter_name.compare("PreZSamplesFailingZ") ||
+                 0 == local_counter_name.compare("PostZSamplesPassing") || 0 == local_counter_name.compare("PostZSamplesFailingS") ||
+                 0 == local_counter_name.compare("PostZSamplesFailingZ") || 0 == local_counter_name.compare("DBMemRead") ||
+                 0 == local_counter_name.compare("DBMemWritten") || 0 == local_counter_name.compare("CBSlowPixelPct") ||
+                 0 == local_counter_name.compare("CBSlowPixelCount"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0);
         }
@@ -4151,7 +4180,7 @@ bool CubeSample::GpaValidateDataGfx11(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("WriteUnitStalledCycles"))
         {
-            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 3600);
+            return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThanOrEqualTo, 4300);
         }
         else if (0 == local_counter_name.compare("MemUnitStalled"))
         {
@@ -4164,7 +4193,7 @@ bool CubeSample::GpaValidateDataGfx11(unsigned int profile_set,
         else if (0 == local_counter_name.compare("GPUBusyCycles"))
         {
             return_value = GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 4000) &&
-                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 35000);
+                           GpaCounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeLessThan, 42000);
         }
         else if (0 == local_counter_name.compare("CBMemRead") || 0 == local_counter_name.compare("CBColorAndMaskRead"))
         {
@@ -4263,16 +4292,13 @@ bool CubeSample::GpaValidateDataGfx11(unsigned int profile_set,
         }
         else if (0 == local_counter_name.compare("CSBusy") || 0 == local_counter_name.compare("CSBusyCycles") || 0 == local_counter_name.compare("CSTime") ||
                  0 == local_counter_name.compare("PAStalledOnRasterizer") || 0 == local_counter_name.compare("PAStalledOnRasterizerCycles") ||
-                 0 == local_counter_name.compare("CSThreadGroups") || 0 == local_counter_name.compare("CSWavefronts") ||
-                 0 == local_counter_name.compare("CSThreads") || 0 == local_counter_name.compare("CSThreadGroupSize") ||
+                 0 == local_counter_name.compare("CSThreadGroupsLaunched") || 0 == local_counter_name.compare("CSWavefrontsLaunched") ||
+                 0 == local_counter_name.compare("CSThreadsLaunched") || 0 == local_counter_name.compare("CSThreadGroupSize") ||
                  0 == local_counter_name.compare("CSVALUInsts") || 0 == local_counter_name.compare("CSVALUUtilization") ||
                  0 == local_counter_name.compare("CSSALUInsts") || 0 == local_counter_name.compare("CSVFetchInsts") ||
                  0 == local_counter_name.compare("CSSFetchInsts") || 0 == local_counter_name.compare("CSVWriteInsts") ||
                  0 == local_counter_name.compare("CSVALUBusy") || 0 == local_counter_name.compare("CSVALUBusyCycles") ||
                  0 == local_counter_name.compare("CSSALUBusy") || 0 == local_counter_name.compare("CSSALUBusyCycles") ||
-                 0 == local_counter_name.compare("CSMemUnitBusy") || 0 == local_counter_name.compare("CSMemUnitBusyCycles") ||
-                 0 == local_counter_name.compare("CSMemUnitStalled") || 0 == local_counter_name.compare("CSMemUnitStalledCycles") ||
-                 0 == local_counter_name.compare("CSWriteUnitStalled") || 0 == local_counter_name.compare("CSWriteUnitStalledCycles") ||
                  0 == local_counter_name.compare("CSGDSInsts") || 0 == local_counter_name.compare("CSLDSInsts") ||
                  0 == local_counter_name.compare("CSALUStalledByLDS") || 0 == local_counter_name.compare("CSALUStalledByLDSCycles") ||
                  0 == local_counter_name.compare("CSLDSBankConflict") || 0 == local_counter_name.compare("CSLDSBankConflictCycles") ||

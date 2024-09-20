@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2019-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA API Helper class Implementation
@@ -39,6 +39,8 @@ static std::string wide_to_utf8_converter(const std::wstring wide)
 GpaHelper::GpaHelper()
     : gpa_function_table_(nullptr)
     , is_header_written_(false)
+    , device_id_(0)
+    , revision_id_(0)
 {
 }
 
@@ -85,35 +87,21 @@ void GpaHelper::Unload()
     gpa_function_table_ = nullptr;
 }
 
+void GpaHelper::SetHardwareInfo(GpaUInt32 device_id, GpaUInt32 revision_id, const char* device_name)
+{
+    device_id_   = device_id;
+    revision_id_ = revision_id;
+    device_name_ = device_name;
+}
+
 void GpaHelper::PrintGPACounterInfo(GpaContextId context_id) const
 {
-    GpaUInt32   device_id, revision_id;
-    char        device_name[255];
-    const char* device_name_ptr = device_name;
-
-    GpaStatus gpa_status = gpa_function_table_->GpaGetDeviceAndRevisionId(context_id, &device_id, &revision_id);
-
-    if (kGpaStatusOk != gpa_status)
-    {
-        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get device and revision id.");
-        return;
-    }
-
-    gpa_status = gpa_function_table_->GpaGetDeviceName(context_id, &device_name_ptr);
-
-    if (kGpaStatusOk != gpa_status)
-    {
-        AMDVulkanDemoVkUtils::Log("ERROR: Failed to get the device name.");
-        return;
-    }
-    std::string device_name_string(device_name_ptr);
-
-    AMDVulkanDemoVkUtils::Log("Device Id: 0x%04X", device_id);
-    AMDVulkanDemoVkUtils::Log("Revision Id: %s", FormatRevisionId(revision_id).c_str());
-    AMDVulkanDemoVkUtils::Log("Device Name: %s", device_name_string.c_str());
+    AMDVulkanDemoVkUtils::Log("Device Id: 0x%04X", device_id_);
+    AMDVulkanDemoVkUtils::Log("Revision Id: %s", FormatRevisionId(revision_id_).c_str());
+    AMDVulkanDemoVkUtils::Log("Device Name: %s", device_name_.c_str());
 
     GpaUInt32 num_counters = 0;
-    gpa_status             = gpa_function_table_->GpaGetNumCounters(context_id, &num_counters);
+    GpaStatus gpa_status   = gpa_function_table_->GpaGetNumCounters(context_id, &num_counters);
 
     if (kGpaStatusOk != gpa_status)
     {
@@ -509,16 +497,20 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         }
         else if (0 == local_counter_name.compare("L0CacheRequestCount") || 0 == local_counter_name.compare("L0CacheMissCount"))
         {
-            // Sanity check
-            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeGreaterThan, 0.0f, 0.0f, confirm_success);
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 100000.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L1CacheRequestCount"))
         {
-            // Sanity check
             return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 800.0f, confirm_success);
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 1000.0f, confirm_success);
         }
-        else if (0 == local_counter_name.compare("L1CacheHit") || 0 == local_counter_name.compare("L1CacheHitCount"))
+        else if (0 == local_counter_name.compare("L1CacheHit"))
+        {
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 100.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("L1CacheHitCount"))
         {
             if (generation == kGpaHwGenerationGfx9)
             {
@@ -534,13 +526,18 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
         else if (0 == local_counter_name.compare("L1CacheMissCount"))
         {
             return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 800.0f, confirm_success);
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 1100.0f, confirm_success);
         }
-        else if (0 == local_counter_name.compare("L2CacheHit") || 0 == local_counter_name.compare("L2CacheRequestCount") ||
-                 0 == local_counter_name.compare("L2CacheHitCount"))
+        else if (0 == local_counter_name.compare("L2CacheHit"))
         {
             return_value =
-                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 1000.0f, confirm_success);
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 100.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("L2CacheRequestCount") || 0 == local_counter_name.compare("L2CacheHitCount") ||
+                 0 == local_counter_name.compare("L2CacheMissCount"))
+        {
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 1200.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("L2CacheMiss"))
         {
@@ -568,34 +565,6 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
             {
                 return_value =
                     CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
-            }
-        }
-        else if (0 == local_counter_name.compare("L2CacheMissCount"))
-        {
-            if (generation == kGpaHwGenerationGfx9)
-            {
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 1200.0f, confirm_success);
-            }
-            else if (generation == kGpaHwGenerationGfx10)
-            {
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 50.0f, confirm_success);
-            }
-            else if (generation == kGpaHwGenerationGfx103)
-            {
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 290.0f, confirm_success);
-            }
-            else if (generation == kGpaHwGenerationGfx11)
-            {
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 300.0f, confirm_success);
-            }
-            else
-            {
-                return_value =
-                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 60.0f, confirm_success);
             }
         }
         else if (0 == local_counter_name.compare("TessellatorBusy") || 0 == local_counter_name.compare("TessellatorBusyCycles"))
@@ -667,7 +636,26 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
                 // Samples 0 and 1
                 GpaFloat64 prim_count = 12;
                 if (sample_index == 2)
+                {
                     prim_count = 24;
+                }
+                return_value =
+                    CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
+            }
+            else if (device_id_ == 0x164D || device_id_ == 0x1681 || device_id_ == 0x743F)
+            {
+                // Samples 0
+                GpaFloat64 prim_count = 12;
+                if (sample_index == 1)
+                {
+                    // No backface culling on wireframe so twice the number of primitives.
+                    prim_count = 8;
+                }
+                else if (sample_index == 2)
+                {
+                    // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
+                    prim_count = 20;
+                }
                 return_value =
                     CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
             }
@@ -675,12 +663,16 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
             {
                 // Sample 0
                 GpaFloat64 prim_count = 4;
-                // No backface culling on wireframe so twice the number of primitives.
                 if (sample_index == 1)
+                {
+                    // No backface culling on wireframe so twice the number of primitives.
                     prim_count = 8;
-                // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
+                }
                 else if (sample_index == 2)
+                {
+                    // In this example, sample 2 primitives = sample 0 primitives + sample 1 primitives.
                     prim_count = 12;
+                }
                 return_value =
                     CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, prim_count, 0.0f, confirm_success);
             }
@@ -690,28 +682,48 @@ bool GpaHelper::ValidateData(GpaHwGeneration generation,
             // Sample 0
             GpaFloat64 expected = 11662;
             if (sample_index == 1)
+            {
                 expected = 2820;
+            }
             else if (sample_index == 2)
+            {
                 // In this example, sample 2 passing = sample 0 passing + sample 1 passing.
                 expected = 14482;
+            }
 
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, expected, 0.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("CSVALUUtilization"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 100.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("CSLDSBankConflict"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 40.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("CSLDSBankConflictCycles"))
+        {
+            return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 6000.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("CSALUStalledByLDS"))
+        {
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 1.0f, confirm_success);
+        }
+        else if (0 == local_counter_name.compare("CSALUStalledByLDSCycles"))
+        {
+            return_value =
+                CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeRangeInclusive, 0.0f, 5.0f, confirm_success);
         }
         else if (0 == local_counter_name.compare("CSTime") || 0 == local_counter_name.compare("CSBusy") || 0 == local_counter_name.compare("CSBusyCycles") ||
                  0 == local_counter_name.compare("PAStalledOnRasterizerCycles") || 0 == local_counter_name.compare("CSThreadGroups") ||
                  0 == local_counter_name.compare("CSWavefronts") || 0 == local_counter_name.compare("CSThreads") ||
                  0 == local_counter_name.compare("CSThreadGroupSize") || 0 == local_counter_name.compare("CSVALUInsts") ||
-                 0 == local_counter_name.compare("CSVALUUtilization") || 0 == local_counter_name.compare("CSSALUInsts") ||
-                 0 == local_counter_name.compare("CSVFetchInsts") || 0 == local_counter_name.compare("CSSFetchInsts") ||
-                 0 == local_counter_name.compare("CSVWriteInsts") || 0 == local_counter_name.compare("CSVALUBusy") ||
-                 0 == local_counter_name.compare("CSVALUBusyCycles") || 0 == local_counter_name.compare("CSSALUBusy") ||
-                 0 == local_counter_name.compare("CSSALUBusyCycles") || 0 == local_counter_name.compare("CSMemUnitBusy") ||
-                 0 == local_counter_name.compare("CSMemUnitBusyCycles") || 0 == local_counter_name.compare("CSMemUnitStalled") ||
-                 0 == local_counter_name.compare("CSMemUnitStalledCycles") || 0 == local_counter_name.compare("CSWriteUnitStalled") ||
-                 0 == local_counter_name.compare("CSWriteUnitStalledCycles") || 0 == local_counter_name.compare("CSGDSInsts") ||
-                 0 == local_counter_name.compare("CSLDSInsts") || 0 == local_counter_name.compare("CSALUStalledByLDS") ||
-                 0 == local_counter_name.compare("CSALUStalledByLDSCycles") || 0 == local_counter_name.compare("CSLDSBankConflict") ||
-                 0 == local_counter_name.compare("CSLDSBankConflictCycles"))
+                 0 == local_counter_name.compare("CSSALUInsts") || 0 == local_counter_name.compare("CSVFetchInsts") ||
+                 0 == local_counter_name.compare("CSSFetchInsts") || 0 == local_counter_name.compare("CSVWriteInsts") ||
+                 0 == local_counter_name.compare("CSVALUBusy") || 0 == local_counter_name.compare("CSVALUBusyCycles") ||
+                 0 == local_counter_name.compare("CSSALUBusy") || 0 == local_counter_name.compare("CSSALUBusyCycles") ||
+                 0 == local_counter_name.compare("CSGDSInsts") || 0 == local_counter_name.compare("CSLDSInsts"))
         {
             return_value = CounterValueCompare(profile_set, sample_index, counter_name, counter_value, kCompareTypeEqual, 0.0f, 0.0f, confirm_success);
         }

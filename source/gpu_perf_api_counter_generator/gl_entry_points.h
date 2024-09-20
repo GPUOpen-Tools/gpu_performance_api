@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GL entry points.
@@ -242,4 +242,3 @@ namespace ogl_utils
 }  // namespace ogl_utils
 
 #endif  // GPA_COUNTER_GENERATOR_GL_GL_ENTRY_POINTS_H_
-

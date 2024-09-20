@@ -47,7 +47,7 @@ bool Dx12GpaSampleConfig::Initialize(IGpaSession*       session,
     uint32_t sample_offset = 0;
 
     sample_type_ = session->GetSampleType();
-
+    
     if (GpaCounterSource::kHardware == counter_source)
     {
         if (kGpaSessionSampleTypeDiscreteCounter == sample_type_ && nullptr == gpa_pass)

@@ -207,7 +207,7 @@ namespace counter_gl_gfx10
         {108, "RMI5", 5, 258, 4, 0},
         {109, "RMI6", 6, 258, 4, 0},
         {110, "RMI7", 7, 258, 4, 0},
-        {111, "GPIN", 0, 5, 5, 0},
+        {111, "GPIN", 0, 9, 9, 0},
         {112, "GPUTime", 0, 6, 2, 0},
     };
 
@@ -285,7 +285,7 @@ namespace counter_gl_gfx10
         {95, 19360},
         {96, 19595},
         {97, 19830},
-        {112, 23224},
+        {112, 23228},
     };
 
     GpaPaddedCounterDesc kGlPaddedCounterByGroupGfx10[] = {
@@ -355,14 +355,14 @@ namespace counter_gl_gfx10
         71, // Tcp
     };
 
-    const unsigned int kHwGlGpuTimeBottomToBottomDurationIndexGfx10 = 23224; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Gl for Gfx10 family
+    const unsigned int kHwGlGpuTimeBottomToBottomDurationIndexGfx10 = 23228; ///< Index of delta between the previous command reaching bottom of pipe and the current command reaching bottom of pipe, will not include latency of first data to travel through pipeline, best for large data sets. for Gl for Gfx10 family
     const unsigned int kHwGlGpuTimeBottomToBottomStartIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time of the previous command reaching bottom of pipe for Gl for Gfx10 family
     const unsigned int kHwGlGpuTimeBottomToBottomEndIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time of the current command reaching bottom of pipe for Gl for Gfx10 family
-    const unsigned int kHwGlGpuTimeTopToBottomDurationIndexGfx10 = 23227; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Gl for Gfx10 family
+    const unsigned int kHwGlGpuTimeTopToBottomDurationIndexGfx10 = 23231; ///< Index of execution duration of the current command from top of pipe to bottom of pipe, may include overhead of time in queue for Gl for Gfx10 family
     const unsigned int kHwGlGpuTimeTopToBottomStartIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the top of pipe for Gl for Gfx10 family
     const unsigned int kHwGlGpuTimeTopToBottomEndIndexGfx10 = static_cast<unsigned int>(-1); ///< Index of time that the current command reaches the bottom of pipe for Gl for Gfx10 family
     const std::set<unsigned int> kHwGlTimestampBlockIdsGfx10 =       {112}; ///< Timestamp block id's for GL for gfx10 family
-    const std::set<unsigned int> kHwGlTimeCounterIndicesGfx10 =      {23224, 23225, 23226, 23227, 23228, 23229}; ///< Timestamp counter indices for GL for gfx10 family
+    const std::set<unsigned int> kHwGlTimeCounterIndicesGfx10 =      {23228, 23229, 23230, 23231, 23232, 23233}; ///< Timestamp counter indices for GL for gfx10 family
     const unsigned int           kHwGlGroupCountGfx10                = static_cast<unsigned int>(kHwGlGroupsGfx10.size());
     const unsigned int           kGlPaddedCounterGroupCountGfx10 = 0;
     const unsigned int           kHwGlSqGroupCountGfx10              = sizeof(kHwGlSqGroupsGfx10) / sizeof(GpaSqCounterGroupDesc);

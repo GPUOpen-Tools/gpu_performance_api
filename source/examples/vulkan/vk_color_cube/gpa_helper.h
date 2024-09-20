@@ -137,6 +137,13 @@ public:
     /// @param [in] confirm_success Flag indicating whether or not to confirm successful counter verifications.
     void PrintGpaSampleResults(GpaContextId context_id, GpaSessionId session_id, unsigned int profile_set, GpaUInt32 sample_id, bool output_to_console, bool verify_counters, bool confirm_success);
 
+    /// @brief Set information about the hardware being profiled.
+    ///
+    /// @param device_id The device ID.
+    /// @param revision_id The revision ID.
+    /// @param device_name The name of the device.
+    void SetHardwareInfo(GpaUInt32 device_id, GpaUInt32 revision_id, const char* device_name);
+
     /// GPA function table pointer.
     GpaFunctionTable* gpa_function_table_;
 
@@ -171,6 +178,15 @@ private:
 
     /// Flag to indicate if the header has been written in the csv file.
     bool is_header_written_;
+
+    /// Device ID of the hardware being profiled.
+    GpaUInt32 device_id_;
+
+    /// Revision ID of the hardware being profiled.
+    GpaUInt32 revision_id_;
+
+    /// Name the hardware being profiled.
+    std::string device_name_;
 };
 
 #endif  // GPU_PERF_API_EXAMPLES_VULKAN_VK_COLOR_CUBE_GPA_HELPER_H_

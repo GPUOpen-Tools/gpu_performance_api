@@ -31,18 +31,16 @@ Prebuilt binaries can be downloaded from the Releases page: https://github.com/G
 * Provides access to some raw hardware counters. See [Raw Hardware Counters](#raw-hardware-counters) for more information.
 
 ## What's New
-### Version 3.16 (07/01/2024)
-* Added support for additional RDNA 3 based APUs.
-  * GPA's OpenCL support has been temporarily disabled on RDNA 3 hardware.
-* Updated error checking in counter splitting to report error if counter group max is zero.
-* Disabled the following counters on RDNA 3 based hardware due to inconsistent results:
-  * CBMemRead, CBColorAndMaskRead, CBMemWritten, CBColorAndMaskWritten
-* Disabled the following counters on RDNA 2 based hardware due to inconsistent results:
-  * VsGsVerticesIn, VsGsPrimsIn
-* Disabled the following counters on RDNA based hardware due to inconsistent results:
-  * VsGsSALUBusy, VsGsSALUBusyCycles, VsGsVALUBusy, VsGsVALUBusyCycles, VsGsVALUInstCount, VsGsSALUInstCount, PSVALUBusy, PSVALUBusyCycles, PSVALUInstCount, PSSALUBusy, PSSALUBusyCycles, PSSALUInstCount
-* Output from pre_build.py script is now generated into build\|win,linux|\ directory.
-* Compiled binaries are now generated into build\output\ directory.
+### Version 3.17 (09/20/2024)
+* OpenGL: GPA is no longer supporting Adrenalin 19.6.3 and older drivers.
+* On all hardware and APIs, the following counters were renamed for clarity:
+  * CSWavefronts was renamed to CSWavefrontsLaunched
+  * CSThreads was renamed to CSThreadsLaunched
+  * CSThreadGroups was renamed to CSThreadGroupsLaunched
+* On all hardware and APIs the following counters were removed, there are already matching counters in the GlobalMemory group:
+  * CSMemUnitBusy, CSMemUnitBusyCycles, CSMemUnitStalled, CSMemUnitStalledCycles, CSWriteUnitStalled, CSWriteUnitStalledCycles
+* CSALUStalledByLDS and CSALUStalledByLDSCycles are now based on per-wave cycle counts.
+* On Radeon RX 5000 Series and newer hardware, counters in the ComputeShader group now have simplified equations.
 
 ## System Requirements
 * An AMD Radeon GPU or APU based on Graphics IP version 8 and newer.

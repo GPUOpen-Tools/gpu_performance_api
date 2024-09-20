@@ -189,7 +189,7 @@ namespace counter_cl_gfx8
         {94, "WD", 0, 37, 4, 0},
         {95, "CPG", 0, 48, 2, 0},
         {96, "CPC", 0, 24, 2, 0},
-        {97, "GPIN", 0, 5, 5, 0},
+        {97, "GPIN", 0, 9, 9, 0},
     };
 
     GpaCounterGroupExposedCounterDesc kHwClExposedCountersByGroupGfx8[] = {
