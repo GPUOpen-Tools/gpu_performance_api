@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2014-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2014-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief This file implements the "consolidated" counter splitter.
@@ -30,21 +30,24 @@ public:
     /// @brief Initialize an instance of the GPASplitCountersConsolidated class.
     ///
     /// @param [in] timestamp_block_ids Set of timestamp block id's.
-    /// @param [in] time_counter_indices Set of timestamp counter indices.
+    /// @param [in] eopTimeCounterIndices Set of End Of Pipeline timestamp counter indices.
+    /// @param [in] topTimeCounterIndices Set of Top Of Pipeline timestamp counter indices.
     /// @param [in] max_sq_counters The maximum number of counters that can be simultaneously enabled on the SQ block.
     /// @param [in] num_sq_groups The number of SQ counter groups.
     /// @param [in] sq_counter_block_info The list of SQ counter groups.
     /// @param [in] num_isolated_from_sq_groups The number of counter groups that must be isolated from SQ counter groups.
     /// @param [in] isolated_from_sq_groups The list of counter groups that must be isolated from SQ counter groups.
     GpaSplitCountersConsolidated(const std::set<unsigned int>& timestamp_block_ids,
-                               const std::set<unsigned int>& time_counter_indices,
+                               const std::set<unsigned int>& eop_time_counter_indices,
+                               const std::set<unsigned int>& top_time_counter_indices,
                                unsigned int                  max_sq_counters,
                                unsigned int                  num_sq_groups,
                                GpaSqCounterGroupDesc*        sq_counter_block_info,
                                unsigned int                  num_isolated_from_sq_groups,
                                const unsigned int*           isolated_from_sq_groups)
         : IGpaSplitCounters(timestamp_block_ids,
-                            time_counter_indices,
+                            eop_time_counter_indices,
+                            top_time_counter_indices,
                             max_sq_counters,
                             num_sq_groups,
                             sq_counter_block_info,
@@ -250,7 +253,7 @@ private:
                         counter_accessor->SetCounterIndex(*internal_counter_iter);
                         unsigned int group_index = counter_accessor->GroupIndex();
 
-                        if (CheckForTimestampCounters(counter_accessor, **tmp_counter_pass_iter) == false ||  // Use tmpCounterPassIter.
+                        if (CheckForTimestampCounters(counter_accessor, **tmp_counter_pass_iter) == false ||  // Use tmp_counter_pass_iter.
                             CanCounterBeAdded(counter_accessor, tmp_cur_counters_used, max_counters_per_group) == false ||
                             CheckForSQCounters(counter_accessor, tmp_cur_counters_used, max_sq_counters_) == false ||
                             CheckCountersAreCompatible(counter_accessor, tmp_cur_counters_used) == false)

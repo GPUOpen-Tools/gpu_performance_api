@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPUPerfAPI Counter Generator function.
@@ -132,6 +132,7 @@ void UpdateMaxSpmBlockEvents(BlockMap* block_map, const char* block_name, uint32
 }
 
 GpaStatus GenerateCounters(GpaApiType             desired_api,
+                           GpaSessionSampleType   sample_type,
                            GpaUInt32              vendor_id,
                            GpaUInt32              device_id,
                            GpaUInt32              revision_id,
@@ -143,6 +144,12 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
     {
         GPA_LOG_ERROR("Parameter 'counter_accessor_out' is NULL.");
         return kGpaStatusErrorNullPointer;
+    }
+
+    // SQTT doesn't support counters - not an error
+    if (kGpaSessionSampleTypeSqtt == sample_type)
+    {
+        return kGpaStatusOk;
     }
 
     // Get hardware generation from device Id.
@@ -164,12 +171,14 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
         {
             desired_generation = card_info.m_generation;
 
-            if ((kGpaApiDirectx12 == desired_api || (kGpaApiVulkan == desired_api)) && GDT_HW_GENERATION_VOLCANICISLAND > desired_generation)
+            if ((kGpaApiDirectx12 == desired_api || (kGpaApiVulkan == desired_api)) && GDT_HW_GENERATION_GFX10 > desired_generation)
             {
                 GPA_LOG_ERROR("Desired generation is too old and no longer supported.");
                 return kGpaStatusErrorHardwareNotSupported;
             }
         }
+
+        AMDTDeviceInfoUtils::DeleteInstance();
     }
 
     if (desired_generation == GDT_HW_GENERATION_NONE)
@@ -182,7 +191,7 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
     GpaCounterGeneratorBase* tmp_accessor  = nullptr;
     IGpaCounterScheduler*    tmp_scheduler = nullptr;
 
-    bool ret_code = CounterGeneratorSchedulerManager::Instance()->GetCounterGenerator(desired_api, desired_generation, tmp_accessor);
+    bool ret_code = CounterGeneratorSchedulerManager::Instance()->GetCounterGenerator(desired_api, sample_type, desired_generation, tmp_accessor);
 
     if (!ret_code)
     {
@@ -202,7 +211,7 @@ GpaStatus GenerateCounters(GpaApiType             desired_api,
 
         if (nullptr != counter_scheduler_out)
         {
-            ret_code = CounterGeneratorSchedulerManager::Instance()->GetCounterScheduler(desired_api, desired_generation, tmp_scheduler);
+            ret_code = CounterGeneratorSchedulerManager::Instance()->GetCounterScheduler(desired_api, sample_type, desired_generation, tmp_scheduler);
 
             if (!ret_code)
             {

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA DX12 Context implementation
@@ -21,14 +21,14 @@
 Dx12GpaContext::Dx12GpaContext(ID3D12Device* d3d12_device, GpaHwInfo& hw_info, GpaOpenContextFlags flags)
     : GpaContext(hw_info, flags)
 {
-    d3d12_device_ = d3d12_device;
+    supported_sample_types_ = kGpaContextSampleTypeDiscreteCounter | kGpaContextSampleTypeSqtt | kGpaContextSampleTypeStreamingCounter;
+    d3d12_device_           = d3d12_device;
     d3d12_device_->AddRef();
     amd_device_props_           = {};
     amd_ext_d3d_factory_object_ = nullptr;
     gpa_interface_              = nullptr;
     gpa_interface2_             = nullptr;
     clock_mode_                 = AmdExtDeviceClockMode::Default;
-    supported_sample_types_     = kGpaContextSampleTypeDiscreteCounter;
 
     AMDTADLUtils::Instance()->GetDriverVersion(driver_major_ver_, driver_minor_ver_, driver_sub_minor_ver_);
     AMDTADLUtils::DeleteInstance();
@@ -50,10 +50,6 @@ bool Dx12GpaContext::Initialize()
         if (!InitializeAmdExtension())
         {
             GPA_LOG_ERROR("Unabled to initialize AMD profiling extension for DX12.");
-        }
-        else if (!OpenCounters())
-        {
-            GPA_LOG_ERROR("Unabled to open counters for DX12.");
         }
         else
         {
@@ -278,7 +274,8 @@ void Dx12GpaContext::CleanUp()
     // Release AMD D3D Factory.
     if (nullptr != amd_ext_d3d_factory_object_)
     {
-        amd_ext_d3d_factory_object_->Release();
+        ULONG remaining_refs = amd_ext_d3d_factory_object_->Release();
+        UNREFERENCED_PARAMETER(remaining_refs);
         amd_ext_d3d_factory_object_ = nullptr;
     }
 }

@@ -50,7 +50,6 @@ void GpaInterfaceLoaderTest::SetUp()
     api_name_[kGpaApiDirectx11] = "DX11";
     api_name_[kGpaApiDirectx12] = "DX12";
     api_name_[kGpaApiOpengl]    = "OpenGL";
-    api_name_[kGpaApiOpencl]    = "OpenCL";
     api_name_[kGpaApiVulkan]    = "Vulkan";
     api_name_[kGpaApiNoSupport] = "ApiNotSupported";
 }
@@ -70,14 +69,6 @@ void GpaInterfaceLoaderTest::Run()
     ASSERT_NE(0u, api_name_.count(Api)) << "API name out of range.";
     const char* api_name = api_name_.find(Api)->second;
 
-    // Skip OpenCL on linux.
-#ifndef _WIN32
-    if (kGpaApiOpencl == Api)
-    {
-        return;
-    }
-#endif
-
     // Check if API loading succeeds.
     EXPECT_EQ(kGpaStatusOk, GpaApiManager::Instance()->LoadApi(Api)) << "GpaApiManager failed to load API: " << api_name;
 
@@ -85,11 +76,6 @@ void GpaInterfaceLoaderTest::Run()
     // It is assumed the GpaApiType enum values increment by one.
     for (int i = kGpaApiStart; i < kGpaApiLast; i++)
     {
-        if (kGpaApiDeprecated == i)
-        {
-            continue;
-        }
-
         ASSERT_NE(0u, api_name_.count(static_cast<GpaApiType>(i))) << "API name out of range.";
 
         if (Api == i)
@@ -114,11 +100,6 @@ TEST_F(GpaInterfaceLoaderTest, TestGetLibraryFileName)
     {
         GpaApiType api_type = static_cast<GpaApiType>(i);
 
-        if (kGpaApiDeprecated == api_type)
-        {
-            continue;
-        }
-
         LocaleString lib_file_name = GpaApiManager::Instance()->GetLibraryFileName(api_type);
 
 #ifdef _WIN32
@@ -129,7 +110,7 @@ TEST_F(GpaInterfaceLoaderTest, TestGetLibraryFileName)
 
 #else
 
-        if (kGpaApiDirectx11 == api_type || kGpaApiDirectx12 == api_type || kGpaApiOpencl == api_type)
+        if (kGpaApiDirectx11 == api_type || kGpaApiDirectx12 == api_type)
         {
             EXPECT_TRUE(lib_file_name.empty());
         }
@@ -151,11 +132,6 @@ TEST_F(GpaInterfaceLoaderTest, TestGetLibraryFullPath)
     {
         GpaApiType api_type = static_cast<GpaApiType>(i);
 
-        if (kGpaApiDeprecated == api_type)
-        {
-            continue;
-        }
-
         LocaleString lib_file_name = GpaApiManager::Instance()->GetLibraryFullPath(api_type, TFORMAT("c:/test/"));
 
 #ifdef _WIN32
@@ -167,7 +143,7 @@ TEST_F(GpaInterfaceLoaderTest, TestGetLibraryFullPath)
 
 #else
 
-        if (kGpaApiDirectx11 == api_type || kGpaApiDirectx12 == api_type || kGpaApiOpencl == api_type)
+        if (kGpaApiDirectx11 == api_type || kGpaApiDirectx12 == api_type)
         {
             EXPECT_TRUE(lib_file_name.empty());
         }
@@ -272,7 +248,7 @@ TEST_P(GpaInterfaceLoaderTest, Api)
 }
 
 #ifdef _WIN32
-INSTANTIATE_TEST_CASE_P(WindowsAPI, GpaInterfaceLoaderTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpencl, kGpaApiOpengl));
+INSTANTIATE_TEST_CASE_P(WindowsAPI, GpaInterfaceLoaderTest, ::testing::Values(kGpaApiDirectx11, kGpaApiDirectx12, kGpaApiVulkan, kGpaApiOpengl));
 #else
 INSTANTIATE_TEST_CASE_P(LinuxAPI, GpaInterfaceLoaderTest, ::testing::Values(kGpaApiVulkan, kGpaApiOpengl));
 #endif

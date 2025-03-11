@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX103.
@@ -24,6 +24,7 @@ namespace counter_gfx103
         {2, "GRBM_PERF_SEL_GUI_ACTIVE", "GRBM", "The GUI is Active", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kGe2DistCountersGfx103 = {
+        {39, "GE2_DIST_GE_DIST_PC_SPACE_ZERO", "GE2_DIST", "GE cannot launch a new wave because the Parameter cache has no space left", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {42, "GE2_DIST_GE_DIST_WD_TE11_BUSY", "GE2_DIST", "Counts number of cycles the TE11 block is busy. (DX11 Tessellation Fixed Function Logic)", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kGeSe0CountersGfx103 = {
@@ -315,6 +316,36 @@ namespace counter_gfx103
         {81, "SPI0_PERF_PS1_WAVE", "SPI0", "SPI_PERF_SEL_PS1_WAVE       Number of waves ,PACKER1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {82, "SPI0_PERF_PS2_WAVE", "SPI0", "SPI_PERF_SEL_PS2_WAVE       Number of waves ,PACKER2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {83, "SPI0_PERF_PS3_WAVE", "SPI0", "SPI_PERF_SEL_PS3_WAVE       Number of waves ,PACKER3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {160, "SPI0_PERF_RA_TMP_STALL_PS", "SPI0", "SPI_PERF_SEL_RA_TMP_STALL_PS Cycles where ps wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {161, "SPI0_PERF_RA_TMP_STALL_VS", "SPI0", "SPI_PERF_SEL_RA_TMP_STALL_VS Cycles where vs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {162, "SPI0_PERF_RA_TMP_STALL_ES", "SPI0", "SPI_PERF_SEL_RA_TMP_STALL_ES Cycles where es wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {163, "SPI0_PERF_RA_TMP_STALL_GS", "SPI0", "SPI_PERF_SEL_RA_TMP_STALL_GS Cycles where gs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {164, "SPI0_PERF_RA_TMP_STALL_LS", "SPI0", "SPI_PERF_SEL_RA_TMP_STALL_LS Cycles where ls wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {165, "SPI0_PERF_RA_TMP_STALL_HS", "SPI0", "SPI_PERF_SEL_RA_TMP_STALL_HS Cycles where hs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {166, "SPI0_PERF_RA_TMP_STALL_CSG", "SPI0", "SPI_PERF_SEL_RA_TMP_STALL_CSG Cycles where csg wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {168, "SPI0_PERF_RA_WAVE_SIMD_FULL_PS", "SPI0", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_PS Sum of SIMD where WAVE resource full when !ps_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {169, "SPI0_PERF_RA_WAVE_SIMD_FULL_VS", "SPI0", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_VS Sum of SIMD where WAVE resource full when !vs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {170, "SPI0_PERF_RA_WAVE_SIMD_FULL_ES", "SPI0", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_ES Sum of SIMD where WAVE resource full when !es_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {171, "SPI0_PERF_RA_WAVE_SIMD_FULL_GS", "SPI0", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_GS Sum of SIMD where WAVE resource full when !gs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {172, "SPI0_PERF_RA_WAVE_SIMD_FULL_LS", "SPI0", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_LS Sum of SIMD where WAVE can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {173, "SPI0_PERF_RA_WAVE_SIMD_FULL_HS", "SPI0", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_HS Sum of SIMD where WAVE can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {174, "SPI0_PERF_RA_WAVE_SIMD_FULL_CSG", "SPI0", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_CSG Sum of SIMD where WAVE can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {176, "SPI0_PERF_RA_VGPR_SIMD_FULL_PS", "SPI0", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_PS Sum of SIMD where VGPR can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {177, "SPI0_PERF_RA_VGPR_SIMD_FULL_VS", "SPI0", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_VS Sum of SIMD where VGPR can`t take vs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {178, "SPI0_PERF_RA_VGPR_SIMD_FULL_ES", "SPI0", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_ES Sum of SIMD where VGPR can`t take es wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {179, "SPI0_PERF_RA_VGPR_SIMD_FULL_GS", "SPI0", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_GS Sum of SIMD where VGPR can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {180, "SPI0_PERF_RA_VGPR_SIMD_FULL_HS", "SPI0", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_HS Sum of SIMD where VGPR can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {181, "SPI0_PERF_RA_VGPR_SIMD_FULL_LS", "SPI0", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_LS Sum of SIMD where VGPR can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {182, "SPI0_PERF_RA_VGPR_SIMD_FULL_CSG", "SPI0", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_CSG Sum of SIMD where VGPR can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {192, "SPI0_PERF_RA_LDS_CU_FULL_PS", "SPI0", "SPI_PERF_SEL_RA_LDS_CU_FULL_PS Sum of CU where LDS can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {193, "SPI0_PERF_RA_LDS_CU_FULL_LS", "SPI0", "SPI_PERF_SEL_RA_LDS_CU_FULL_LS Sum of CU where LDS can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {194, "SPI0_PERF_RA_LDS_CU_FULL_HS", "SPI0", "SPI_PERF_SEL_RA_LDS_CU_FULL_HS Sum of CU where LDS can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {195, "SPI0_PERF_RA_LDS_CU_FULL_ES", "SPI0", "SPI_PERF_SEL_RA_LDS_CU_FULL_ES Sum of CU where LDS can`t take es wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {196, "SPI0_PERF_RA_LDS_CU_FULL_GS", "SPI0", "SPI_PERF_SEL_RA_LDS_CU_FULL_GS Sum of CU where LDS can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {197, "SPI0_PERF_RA_LDS_CU_FULL_CSG", "SPI0", "SPI_PERF_SEL_RA_LDS_CU_FULL_CSG Sum of CU where LDS can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {199, "SPI0_PERF_RA_BAR_CU_FULL_HS", "SPI0", "SPI_PERF_SEL_RA_BAR_CU_FULL_HS Sum of CU where BARRIER can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {200, "SPI0_PERF_RA_BAR_CU_FULL_CSG", "SPI0", "SPI_PERF_SEL_RA_BAR_CU_FULL_CSG Sum of CU where BARRIER can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {204, "SPI0_PERF_RA_TGLIM_CU_FULL_CSG", "SPI0", "SPI_PERF_SEL_RA_TGLIM_CU_FULL_CSG Cycles where csg wants to req but all CU are at tg_limit", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {308, "SPI0_PERF_ES_BUSY", "SPI0", "SPI_PERF_SEL_ES_BUSY Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {314, "SPI0_PERF_ES_WAVE", "SPI0", "SPI_PERF_SEL_ES_WAVE Number of waves.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {320, "SPI0_PERF_LS_BUSY", "SPI0", "SPI_PERF_SEL_LS_BUSY Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -341,6 +372,36 @@ namespace counter_gfx103
         {81, "SPI1_PERF_PS1_WAVE", "SPI1", "SPI_PERF_SEL_PS1_WAVE       Number of waves ,PACKER1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {82, "SPI1_PERF_PS2_WAVE", "SPI1", "SPI_PERF_SEL_PS2_WAVE       Number of waves ,PACKER2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {83, "SPI1_PERF_PS3_WAVE", "SPI1", "SPI_PERF_SEL_PS3_WAVE       Number of waves ,PACKER3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {160, "SPI1_PERF_RA_TMP_STALL_PS", "SPI1", "SPI_PERF_SEL_RA_TMP_STALL_PS Cycles where ps wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {161, "SPI1_PERF_RA_TMP_STALL_VS", "SPI1", "SPI_PERF_SEL_RA_TMP_STALL_VS Cycles where vs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {162, "SPI1_PERF_RA_TMP_STALL_ES", "SPI1", "SPI_PERF_SEL_RA_TMP_STALL_ES Cycles where es wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {163, "SPI1_PERF_RA_TMP_STALL_GS", "SPI1", "SPI_PERF_SEL_RA_TMP_STALL_GS Cycles where gs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {164, "SPI1_PERF_RA_TMP_STALL_LS", "SPI1", "SPI_PERF_SEL_RA_TMP_STALL_LS Cycles where ls wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {165, "SPI1_PERF_RA_TMP_STALL_HS", "SPI1", "SPI_PERF_SEL_RA_TMP_STALL_HS Cycles where hs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {166, "SPI1_PERF_RA_TMP_STALL_CSG", "SPI1", "SPI_PERF_SEL_RA_TMP_STALL_CSG Cycles where csg wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {168, "SPI1_PERF_RA_WAVE_SIMD_FULL_PS", "SPI1", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_PS Sum of SIMD where WAVE resource full when !ps_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {169, "SPI1_PERF_RA_WAVE_SIMD_FULL_VS", "SPI1", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_VS Sum of SIMD where WAVE resource full when !vs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {170, "SPI1_PERF_RA_WAVE_SIMD_FULL_ES", "SPI1", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_ES Sum of SIMD where WAVE resource full when !es_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {171, "SPI1_PERF_RA_WAVE_SIMD_FULL_GS", "SPI1", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_GS Sum of SIMD where WAVE resource full when !gs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {172, "SPI1_PERF_RA_WAVE_SIMD_FULL_LS", "SPI1", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_LS Sum of SIMD where WAVE can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {173, "SPI1_PERF_RA_WAVE_SIMD_FULL_HS", "SPI1", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_HS Sum of SIMD where WAVE can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {174, "SPI1_PERF_RA_WAVE_SIMD_FULL_CSG", "SPI1", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_CSG Sum of SIMD where WAVE can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {176, "SPI1_PERF_RA_VGPR_SIMD_FULL_PS", "SPI1", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_PS Sum of SIMD where VGPR can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {177, "SPI1_PERF_RA_VGPR_SIMD_FULL_VS", "SPI1", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_VS Sum of SIMD where VGPR can`t take vs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {178, "SPI1_PERF_RA_VGPR_SIMD_FULL_ES", "SPI1", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_ES Sum of SIMD where VGPR can`t take es wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {179, "SPI1_PERF_RA_VGPR_SIMD_FULL_GS", "SPI1", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_GS Sum of SIMD where VGPR can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {180, "SPI1_PERF_RA_VGPR_SIMD_FULL_HS", "SPI1", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_HS Sum of SIMD where VGPR can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {181, "SPI1_PERF_RA_VGPR_SIMD_FULL_LS", "SPI1", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_LS Sum of SIMD where VGPR can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {182, "SPI1_PERF_RA_VGPR_SIMD_FULL_CSG", "SPI1", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_CSG Sum of SIMD where VGPR can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {192, "SPI1_PERF_RA_LDS_CU_FULL_PS", "SPI1", "SPI_PERF_SEL_RA_LDS_CU_FULL_PS Sum of CU where LDS can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {193, "SPI1_PERF_RA_LDS_CU_FULL_LS", "SPI1", "SPI_PERF_SEL_RA_LDS_CU_FULL_LS Sum of CU where LDS can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {194, "SPI1_PERF_RA_LDS_CU_FULL_HS", "SPI1", "SPI_PERF_SEL_RA_LDS_CU_FULL_HS Sum of CU where LDS can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {195, "SPI1_PERF_RA_LDS_CU_FULL_ES", "SPI1", "SPI_PERF_SEL_RA_LDS_CU_FULL_ES Sum of CU where LDS can`t take es wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {196, "SPI1_PERF_RA_LDS_CU_FULL_GS", "SPI1", "SPI_PERF_SEL_RA_LDS_CU_FULL_GS Sum of CU where LDS can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {197, "SPI1_PERF_RA_LDS_CU_FULL_CSG", "SPI1", "SPI_PERF_SEL_RA_LDS_CU_FULL_CSG Sum of CU where LDS can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {199, "SPI1_PERF_RA_BAR_CU_FULL_HS", "SPI1", "SPI_PERF_SEL_RA_BAR_CU_FULL_HS Sum of CU where BARRIER can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {200, "SPI1_PERF_RA_BAR_CU_FULL_CSG", "SPI1", "SPI_PERF_SEL_RA_BAR_CU_FULL_CSG Sum of CU where BARRIER can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {204, "SPI1_PERF_RA_TGLIM_CU_FULL_CSG", "SPI1", "SPI_PERF_SEL_RA_TGLIM_CU_FULL_CSG Cycles where csg wants to req but all CU are at tg_limit", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {308, "SPI1_PERF_ES_BUSY", "SPI1", "SPI_PERF_SEL_ES_BUSY Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {314, "SPI1_PERF_ES_WAVE", "SPI1", "SPI_PERF_SEL_ES_WAVE Number of waves.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {320, "SPI1_PERF_LS_BUSY", "SPI1", "SPI_PERF_SEL_LS_BUSY Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -367,6 +428,36 @@ namespace counter_gfx103
         {81, "SPI2_PERF_PS1_WAVE", "SPI2", "SPI_PERF_SEL_PS1_WAVE       Number of waves ,PACKER1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {82, "SPI2_PERF_PS2_WAVE", "SPI2", "SPI_PERF_SEL_PS2_WAVE       Number of waves ,PACKER2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {83, "SPI2_PERF_PS3_WAVE", "SPI2", "SPI_PERF_SEL_PS3_WAVE       Number of waves ,PACKER3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {160, "SPI2_PERF_RA_TMP_STALL_PS", "SPI2", "SPI_PERF_SEL_RA_TMP_STALL_PS Cycles where ps wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {161, "SPI2_PERF_RA_TMP_STALL_VS", "SPI2", "SPI_PERF_SEL_RA_TMP_STALL_VS Cycles where vs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {162, "SPI2_PERF_RA_TMP_STALL_ES", "SPI2", "SPI_PERF_SEL_RA_TMP_STALL_ES Cycles where es wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {163, "SPI2_PERF_RA_TMP_STALL_GS", "SPI2", "SPI_PERF_SEL_RA_TMP_STALL_GS Cycles where gs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {164, "SPI2_PERF_RA_TMP_STALL_LS", "SPI2", "SPI_PERF_SEL_RA_TMP_STALL_LS Cycles where ls wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {165, "SPI2_PERF_RA_TMP_STALL_HS", "SPI2", "SPI_PERF_SEL_RA_TMP_STALL_HS Cycles where hs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {166, "SPI2_PERF_RA_TMP_STALL_CSG", "SPI2", "SPI_PERF_SEL_RA_TMP_STALL_CSG Cycles where csg wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {168, "SPI2_PERF_RA_WAVE_SIMD_FULL_PS", "SPI2", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_PS Sum of SIMD where WAVE resource full when !ps_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {169, "SPI2_PERF_RA_WAVE_SIMD_FULL_VS", "SPI2", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_VS Sum of SIMD where WAVE resource full when !vs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {170, "SPI2_PERF_RA_WAVE_SIMD_FULL_ES", "SPI2", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_ES Sum of SIMD where WAVE resource full when !es_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {171, "SPI2_PERF_RA_WAVE_SIMD_FULL_GS", "SPI2", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_GS Sum of SIMD where WAVE resource full when !gs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {172, "SPI2_PERF_RA_WAVE_SIMD_FULL_LS", "SPI2", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_LS Sum of SIMD where WAVE can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {173, "SPI2_PERF_RA_WAVE_SIMD_FULL_HS", "SPI2", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_HS Sum of SIMD where WAVE can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {174, "SPI2_PERF_RA_WAVE_SIMD_FULL_CSG", "SPI2", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_CSG Sum of SIMD where WAVE can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {176, "SPI2_PERF_RA_VGPR_SIMD_FULL_PS", "SPI2", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_PS Sum of SIMD where VGPR can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {177, "SPI2_PERF_RA_VGPR_SIMD_FULL_VS", "SPI2", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_VS Sum of SIMD where VGPR can`t take vs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {178, "SPI2_PERF_RA_VGPR_SIMD_FULL_ES", "SPI2", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_ES Sum of SIMD where VGPR can`t take es wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {179, "SPI2_PERF_RA_VGPR_SIMD_FULL_GS", "SPI2", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_GS Sum of SIMD where VGPR can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {180, "SPI2_PERF_RA_VGPR_SIMD_FULL_HS", "SPI2", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_HS Sum of SIMD where VGPR can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {181, "SPI2_PERF_RA_VGPR_SIMD_FULL_LS", "SPI2", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_LS Sum of SIMD where VGPR can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {182, "SPI2_PERF_RA_VGPR_SIMD_FULL_CSG", "SPI2", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_CSG Sum of SIMD where VGPR can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {192, "SPI2_PERF_RA_LDS_CU_FULL_PS", "SPI2", "SPI_PERF_SEL_RA_LDS_CU_FULL_PS Sum of CU where LDS can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {193, "SPI2_PERF_RA_LDS_CU_FULL_LS", "SPI2", "SPI_PERF_SEL_RA_LDS_CU_FULL_LS Sum of CU where LDS can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {194, "SPI2_PERF_RA_LDS_CU_FULL_HS", "SPI2", "SPI_PERF_SEL_RA_LDS_CU_FULL_HS Sum of CU where LDS can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {195, "SPI2_PERF_RA_LDS_CU_FULL_ES", "SPI2", "SPI_PERF_SEL_RA_LDS_CU_FULL_ES Sum of CU where LDS can`t take es wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {196, "SPI2_PERF_RA_LDS_CU_FULL_GS", "SPI2", "SPI_PERF_SEL_RA_LDS_CU_FULL_GS Sum of CU where LDS can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {197, "SPI2_PERF_RA_LDS_CU_FULL_CSG", "SPI2", "SPI_PERF_SEL_RA_LDS_CU_FULL_CSG Sum of CU where LDS can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {199, "SPI2_PERF_RA_BAR_CU_FULL_HS", "SPI2", "SPI_PERF_SEL_RA_BAR_CU_FULL_HS Sum of CU where BARRIER can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {200, "SPI2_PERF_RA_BAR_CU_FULL_CSG", "SPI2", "SPI_PERF_SEL_RA_BAR_CU_FULL_CSG Sum of CU where BARRIER can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {204, "SPI2_PERF_RA_TGLIM_CU_FULL_CSG", "SPI2", "SPI_PERF_SEL_RA_TGLIM_CU_FULL_CSG Cycles where csg wants to req but all CU are at tg_limit", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {308, "SPI2_PERF_ES_BUSY", "SPI2", "SPI_PERF_SEL_ES_BUSY Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {314, "SPI2_PERF_ES_WAVE", "SPI2", "SPI_PERF_SEL_ES_WAVE Number of waves.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {320, "SPI2_PERF_LS_BUSY", "SPI2", "SPI_PERF_SEL_LS_BUSY Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -393,6 +484,36 @@ namespace counter_gfx103
         {81, "SPI3_PERF_PS1_WAVE", "SPI3", "SPI_PERF_SEL_PS1_WAVE       Number of waves ,PACKER1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {82, "SPI3_PERF_PS2_WAVE", "SPI3", "SPI_PERF_SEL_PS2_WAVE       Number of waves ,PACKER2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {83, "SPI3_PERF_PS3_WAVE", "SPI3", "SPI_PERF_SEL_PS3_WAVE       Number of waves ,PACKER3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {160, "SPI3_PERF_RA_TMP_STALL_PS", "SPI3", "SPI_PERF_SEL_RA_TMP_STALL_PS Cycles where ps wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {161, "SPI3_PERF_RA_TMP_STALL_VS", "SPI3", "SPI_PERF_SEL_RA_TMP_STALL_VS Cycles where vs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {162, "SPI3_PERF_RA_TMP_STALL_ES", "SPI3", "SPI_PERF_SEL_RA_TMP_STALL_ES Cycles where es wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {163, "SPI3_PERF_RA_TMP_STALL_GS", "SPI3", "SPI_PERF_SEL_RA_TMP_STALL_GS Cycles where gs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {164, "SPI3_PERF_RA_TMP_STALL_LS", "SPI3", "SPI_PERF_SEL_RA_TMP_STALL_LS Cycles where ls wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {165, "SPI3_PERF_RA_TMP_STALL_HS", "SPI3", "SPI_PERF_SEL_RA_TMP_STALL_HS Cycles where hs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {166, "SPI3_PERF_RA_TMP_STALL_CSG", "SPI3", "SPI_PERF_SEL_RA_TMP_STALL_CSG Cycles where csg wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {168, "SPI3_PERF_RA_WAVE_SIMD_FULL_PS", "SPI3", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_PS Sum of SIMD where WAVE resource full when !ps_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {169, "SPI3_PERF_RA_WAVE_SIMD_FULL_VS", "SPI3", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_VS Sum of SIMD where WAVE resource full when !vs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {170, "SPI3_PERF_RA_WAVE_SIMD_FULL_ES", "SPI3", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_ES Sum of SIMD where WAVE resource full when !es_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {171, "SPI3_PERF_RA_WAVE_SIMD_FULL_GS", "SPI3", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_GS Sum of SIMD where WAVE resource full when !gs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {172, "SPI3_PERF_RA_WAVE_SIMD_FULL_LS", "SPI3", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_LS Sum of SIMD where WAVE can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {173, "SPI3_PERF_RA_WAVE_SIMD_FULL_HS", "SPI3", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_HS Sum of SIMD where WAVE can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {174, "SPI3_PERF_RA_WAVE_SIMD_FULL_CSG", "SPI3", "SPI_PERF_SEL_RA_WAVE_SIMD_FULL_CSG Sum of SIMD where WAVE can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {176, "SPI3_PERF_RA_VGPR_SIMD_FULL_PS", "SPI3", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_PS Sum of SIMD where VGPR can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {177, "SPI3_PERF_RA_VGPR_SIMD_FULL_VS", "SPI3", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_VS Sum of SIMD where VGPR can`t take vs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {178, "SPI3_PERF_RA_VGPR_SIMD_FULL_ES", "SPI3", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_ES Sum of SIMD where VGPR can`t take es wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {179, "SPI3_PERF_RA_VGPR_SIMD_FULL_GS", "SPI3", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_GS Sum of SIMD where VGPR can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {180, "SPI3_PERF_RA_VGPR_SIMD_FULL_HS", "SPI3", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_HS Sum of SIMD where VGPR can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {181, "SPI3_PERF_RA_VGPR_SIMD_FULL_LS", "SPI3", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_LS Sum of SIMD where VGPR can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {182, "SPI3_PERF_RA_VGPR_SIMD_FULL_CSG", "SPI3", "SPI_PERF_SEL_RA_VGPR_SIMD_FULL_CSG Sum of SIMD where VGPR can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {192, "SPI3_PERF_RA_LDS_CU_FULL_PS", "SPI3", "SPI_PERF_SEL_RA_LDS_CU_FULL_PS Sum of CU where LDS can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {193, "SPI3_PERF_RA_LDS_CU_FULL_LS", "SPI3", "SPI_PERF_SEL_RA_LDS_CU_FULL_LS Sum of CU where LDS can`t take ls wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {194, "SPI3_PERF_RA_LDS_CU_FULL_HS", "SPI3", "SPI_PERF_SEL_RA_LDS_CU_FULL_HS Sum of CU where LDS can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {195, "SPI3_PERF_RA_LDS_CU_FULL_ES", "SPI3", "SPI_PERF_SEL_RA_LDS_CU_FULL_ES Sum of CU where LDS can`t take es wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {196, "SPI3_PERF_RA_LDS_CU_FULL_GS", "SPI3", "SPI_PERF_SEL_RA_LDS_CU_FULL_GS Sum of CU where LDS can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {197, "SPI3_PERF_RA_LDS_CU_FULL_CSG", "SPI3", "SPI_PERF_SEL_RA_LDS_CU_FULL_CSG Sum of CU where LDS can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {199, "SPI3_PERF_RA_BAR_CU_FULL_HS", "SPI3", "SPI_PERF_SEL_RA_BAR_CU_FULL_HS Sum of CU where BARRIER can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {200, "SPI3_PERF_RA_BAR_CU_FULL_CSG", "SPI3", "SPI_PERF_SEL_RA_BAR_CU_FULL_CSG Sum of CU where BARRIER can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {204, "SPI3_PERF_RA_TGLIM_CU_FULL_CSG", "SPI3", "SPI_PERF_SEL_RA_TGLIM_CU_FULL_CSG Cycles where csg wants to req but all CU are at tg_limit", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {308, "SPI3_PERF_ES_BUSY", "SPI3", "SPI_PERF_SEL_ES_BUSY Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {314, "SPI3_PERF_ES_WAVE", "SPI3", "SPI_PERF_SEL_ES_WAVE Number of waves.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {320, "SPI3_PERF_LS_BUSY", "SPI3", "SPI_PERF_SEL_LS_BUSY Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -401,6 +522,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSq0CountersGfx103 = {
         {4, "SQ0_PERF_SEL_WAVES", "SQ0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ0_PERF_SEL_WAVES_32", "SQ0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ0_PERF_SEL_LEVEL_WAVES", "SQ0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ0_PERF_SEL_ITEMS", "SQ0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ0_PERF_SEL_WAIT_INST_LDS", "SQ0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ0_PERF_SEL_INSTS_GDS", "SQ0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -426,6 +548,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSq1CountersGfx103 = {
         {4, "SQ1_PERF_SEL_WAVES", "SQ1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ1_PERF_SEL_WAVES_32", "SQ1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ1_PERF_SEL_LEVEL_WAVES", "SQ1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ1_PERF_SEL_ITEMS", "SQ1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ1_PERF_SEL_WAIT_INST_LDS", "SQ1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ1_PERF_SEL_INSTS_GDS", "SQ1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -451,6 +574,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSq2CountersGfx103 = {
         {4, "SQ2_PERF_SEL_WAVES", "SQ2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ2_PERF_SEL_WAVES_32", "SQ2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ2_PERF_SEL_LEVEL_WAVES", "SQ2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ2_PERF_SEL_ITEMS", "SQ2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ2_PERF_SEL_WAIT_INST_LDS", "SQ2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ2_PERF_SEL_INSTS_GDS", "SQ2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -476,6 +600,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSq3CountersGfx103 = {
         {4, "SQ3_PERF_SEL_WAVES", "SQ3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ3_PERF_SEL_WAVES_32", "SQ3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ3_PERF_SEL_LEVEL_WAVES", "SQ3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ3_PERF_SEL_ITEMS", "SQ3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ3_PERF_SEL_WAIT_INST_LDS", "SQ3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ3_PERF_SEL_INSTS_GDS", "SQ3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -501,6 +626,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqEs0CountersGfx103 = {
         {4, "SQ_ES0_PERF_SEL_WAVES", "SQ_ES0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_ES0_PERF_SEL_WAVES_32", "SQ_ES0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_ES0_PERF_SEL_LEVEL_WAVES", "SQ_ES0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_ES0_PERF_SEL_ITEMS", "SQ_ES0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_ES0_PERF_SEL_WAIT_INST_LDS", "SQ_ES0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_ES0_PERF_SEL_INSTS_GDS", "SQ_ES0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -526,6 +652,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqEs1CountersGfx103 = {
         {4, "SQ_ES1_PERF_SEL_WAVES", "SQ_ES1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_ES1_PERF_SEL_WAVES_32", "SQ_ES1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_ES1_PERF_SEL_LEVEL_WAVES", "SQ_ES1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_ES1_PERF_SEL_ITEMS", "SQ_ES1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_ES1_PERF_SEL_WAIT_INST_LDS", "SQ_ES1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_ES1_PERF_SEL_INSTS_GDS", "SQ_ES1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -551,6 +678,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqEs2CountersGfx103 = {
         {4, "SQ_ES2_PERF_SEL_WAVES", "SQ_ES2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_ES2_PERF_SEL_WAVES_32", "SQ_ES2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_ES2_PERF_SEL_LEVEL_WAVES", "SQ_ES2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_ES2_PERF_SEL_ITEMS", "SQ_ES2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_ES2_PERF_SEL_WAIT_INST_LDS", "SQ_ES2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_ES2_PERF_SEL_INSTS_GDS", "SQ_ES2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -576,6 +704,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqEs3CountersGfx103 = {
         {4, "SQ_ES3_PERF_SEL_WAVES", "SQ_ES3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_ES3_PERF_SEL_WAVES_32", "SQ_ES3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_ES3_PERF_SEL_LEVEL_WAVES", "SQ_ES3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_ES3_PERF_SEL_ITEMS", "SQ_ES3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_ES3_PERF_SEL_WAIT_INST_LDS", "SQ_ES3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_ES3_PERF_SEL_INSTS_GDS", "SQ_ES3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -601,6 +730,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqGs0CountersGfx103 = {
         {4, "SQ_GS0_PERF_SEL_WAVES", "SQ_GS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_GS0_PERF_SEL_WAVES_32", "SQ_GS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_GS0_PERF_SEL_LEVEL_WAVES", "SQ_GS0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_GS0_PERF_SEL_ITEMS", "SQ_GS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_GS0_PERF_SEL_WAIT_INST_LDS", "SQ_GS0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_GS0_PERF_SEL_INSTS_GDS", "SQ_GS0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -626,6 +756,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqGs1CountersGfx103 = {
         {4, "SQ_GS1_PERF_SEL_WAVES", "SQ_GS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_GS1_PERF_SEL_WAVES_32", "SQ_GS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_GS1_PERF_SEL_LEVEL_WAVES", "SQ_GS1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_GS1_PERF_SEL_ITEMS", "SQ_GS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_GS1_PERF_SEL_WAIT_INST_LDS", "SQ_GS1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_GS1_PERF_SEL_INSTS_GDS", "SQ_GS1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -651,6 +782,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqGs2CountersGfx103 = {
         {4, "SQ_GS2_PERF_SEL_WAVES", "SQ_GS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_GS2_PERF_SEL_WAVES_32", "SQ_GS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_GS2_PERF_SEL_LEVEL_WAVES", "SQ_GS2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_GS2_PERF_SEL_ITEMS", "SQ_GS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_GS2_PERF_SEL_WAIT_INST_LDS", "SQ_GS2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_GS2_PERF_SEL_INSTS_GDS", "SQ_GS2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -676,6 +808,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqGs3CountersGfx103 = {
         {4, "SQ_GS3_PERF_SEL_WAVES", "SQ_GS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_GS3_PERF_SEL_WAVES_32", "SQ_GS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_GS3_PERF_SEL_LEVEL_WAVES", "SQ_GS3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_GS3_PERF_SEL_ITEMS", "SQ_GS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_GS3_PERF_SEL_WAIT_INST_LDS", "SQ_GS3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_GS3_PERF_SEL_INSTS_GDS", "SQ_GS3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -701,6 +834,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqVs0CountersGfx103 = {
         {4, "SQ_VS0_PERF_SEL_WAVES", "SQ_VS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_VS0_PERF_SEL_WAVES_32", "SQ_VS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_VS0_PERF_SEL_LEVEL_WAVES", "SQ_VS0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_VS0_PERF_SEL_ITEMS", "SQ_VS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_VS0_PERF_SEL_WAIT_INST_LDS", "SQ_VS0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_VS0_PERF_SEL_INSTS_GDS", "SQ_VS0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -726,6 +860,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqVs1CountersGfx103 = {
         {4, "SQ_VS1_PERF_SEL_WAVES", "SQ_VS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_VS1_PERF_SEL_WAVES_32", "SQ_VS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_VS1_PERF_SEL_LEVEL_WAVES", "SQ_VS1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_VS1_PERF_SEL_ITEMS", "SQ_VS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_VS1_PERF_SEL_WAIT_INST_LDS", "SQ_VS1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_VS1_PERF_SEL_INSTS_GDS", "SQ_VS1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -751,6 +886,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqVs2CountersGfx103 = {
         {4, "SQ_VS2_PERF_SEL_WAVES", "SQ_VS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_VS2_PERF_SEL_WAVES_32", "SQ_VS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_VS2_PERF_SEL_LEVEL_WAVES", "SQ_VS2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_VS2_PERF_SEL_ITEMS", "SQ_VS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_VS2_PERF_SEL_WAIT_INST_LDS", "SQ_VS2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_VS2_PERF_SEL_INSTS_GDS", "SQ_VS2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -776,6 +912,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqVs3CountersGfx103 = {
         {4, "SQ_VS3_PERF_SEL_WAVES", "SQ_VS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_VS3_PERF_SEL_WAVES_32", "SQ_VS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_VS3_PERF_SEL_LEVEL_WAVES", "SQ_VS3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_VS3_PERF_SEL_ITEMS", "SQ_VS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_VS3_PERF_SEL_WAIT_INST_LDS", "SQ_VS3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_VS3_PERF_SEL_INSTS_GDS", "SQ_VS3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -801,6 +938,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqPs0CountersGfx103 = {
         {4, "SQ_PS0_PERF_SEL_WAVES", "SQ_PS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_PS0_PERF_SEL_WAVES_32", "SQ_PS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_PS0_PERF_SEL_LEVEL_WAVES", "SQ_PS0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_PS0_PERF_SEL_ITEMS", "SQ_PS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_PS0_PERF_SEL_WAIT_INST_LDS", "SQ_PS0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_PS0_PERF_SEL_INSTS_GDS", "SQ_PS0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -826,6 +964,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqPs1CountersGfx103 = {
         {4, "SQ_PS1_PERF_SEL_WAVES", "SQ_PS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_PS1_PERF_SEL_WAVES_32", "SQ_PS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_PS1_PERF_SEL_LEVEL_WAVES", "SQ_PS1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_PS1_PERF_SEL_ITEMS", "SQ_PS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_PS1_PERF_SEL_WAIT_INST_LDS", "SQ_PS1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_PS1_PERF_SEL_INSTS_GDS", "SQ_PS1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -851,6 +990,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqPs2CountersGfx103 = {
         {4, "SQ_PS2_PERF_SEL_WAVES", "SQ_PS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_PS2_PERF_SEL_WAVES_32", "SQ_PS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_PS2_PERF_SEL_LEVEL_WAVES", "SQ_PS2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_PS2_PERF_SEL_ITEMS", "SQ_PS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_PS2_PERF_SEL_WAIT_INST_LDS", "SQ_PS2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_PS2_PERF_SEL_INSTS_GDS", "SQ_PS2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -876,6 +1016,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqPs3CountersGfx103 = {
         {4, "SQ_PS3_PERF_SEL_WAVES", "SQ_PS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_PS3_PERF_SEL_WAVES_32", "SQ_PS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_PS3_PERF_SEL_LEVEL_WAVES", "SQ_PS3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_PS3_PERF_SEL_ITEMS", "SQ_PS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_PS3_PERF_SEL_WAIT_INST_LDS", "SQ_PS3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_PS3_PERF_SEL_INSTS_GDS", "SQ_PS3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -901,6 +1042,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqLs0CountersGfx103 = {
         {4, "SQ_LS0_PERF_SEL_WAVES", "SQ_LS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_LS0_PERF_SEL_WAVES_32", "SQ_LS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_LS0_PERF_SEL_LEVEL_WAVES", "SQ_LS0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_LS0_PERF_SEL_ITEMS", "SQ_LS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_LS0_PERF_SEL_WAIT_INST_LDS", "SQ_LS0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_LS0_PERF_SEL_INSTS_GDS", "SQ_LS0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -926,6 +1068,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqLs1CountersGfx103 = {
         {4, "SQ_LS1_PERF_SEL_WAVES", "SQ_LS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_LS1_PERF_SEL_WAVES_32", "SQ_LS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_LS1_PERF_SEL_LEVEL_WAVES", "SQ_LS1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_LS1_PERF_SEL_ITEMS", "SQ_LS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_LS1_PERF_SEL_WAIT_INST_LDS", "SQ_LS1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_LS1_PERF_SEL_INSTS_GDS", "SQ_LS1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -951,6 +1094,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqLs2CountersGfx103 = {
         {4, "SQ_LS2_PERF_SEL_WAVES", "SQ_LS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_LS2_PERF_SEL_WAVES_32", "SQ_LS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_LS2_PERF_SEL_LEVEL_WAVES", "SQ_LS2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_LS2_PERF_SEL_ITEMS", "SQ_LS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_LS2_PERF_SEL_WAIT_INST_LDS", "SQ_LS2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_LS2_PERF_SEL_INSTS_GDS", "SQ_LS2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -976,6 +1120,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqLs3CountersGfx103 = {
         {4, "SQ_LS3_PERF_SEL_WAVES", "SQ_LS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_LS3_PERF_SEL_WAVES_32", "SQ_LS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_LS3_PERF_SEL_LEVEL_WAVES", "SQ_LS3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_LS3_PERF_SEL_ITEMS", "SQ_LS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_LS3_PERF_SEL_WAIT_INST_LDS", "SQ_LS3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_LS3_PERF_SEL_INSTS_GDS", "SQ_LS3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1001,6 +1146,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqHs0CountersGfx103 = {
         {4, "SQ_HS0_PERF_SEL_WAVES", "SQ_HS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_HS0_PERF_SEL_WAVES_32", "SQ_HS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_HS0_PERF_SEL_LEVEL_WAVES", "SQ_HS0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_HS0_PERF_SEL_ITEMS", "SQ_HS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_HS0_PERF_SEL_WAIT_INST_LDS", "SQ_HS0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_HS0_PERF_SEL_INSTS_GDS", "SQ_HS0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1026,6 +1172,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqHs1CountersGfx103 = {
         {4, "SQ_HS1_PERF_SEL_WAVES", "SQ_HS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_HS1_PERF_SEL_WAVES_32", "SQ_HS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_HS1_PERF_SEL_LEVEL_WAVES", "SQ_HS1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_HS1_PERF_SEL_ITEMS", "SQ_HS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_HS1_PERF_SEL_WAIT_INST_LDS", "SQ_HS1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_HS1_PERF_SEL_INSTS_GDS", "SQ_HS1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1051,6 +1198,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqHs2CountersGfx103 = {
         {4, "SQ_HS2_PERF_SEL_WAVES", "SQ_HS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_HS2_PERF_SEL_WAVES_32", "SQ_HS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_HS2_PERF_SEL_LEVEL_WAVES", "SQ_HS2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_HS2_PERF_SEL_ITEMS", "SQ_HS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_HS2_PERF_SEL_WAIT_INST_LDS", "SQ_HS2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_HS2_PERF_SEL_INSTS_GDS", "SQ_HS2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1076,6 +1224,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqHs3CountersGfx103 = {
         {4, "SQ_HS3_PERF_SEL_WAVES", "SQ_HS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_HS3_PERF_SEL_WAVES_32", "SQ_HS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_HS3_PERF_SEL_LEVEL_WAVES", "SQ_HS3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_HS3_PERF_SEL_ITEMS", "SQ_HS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_HS3_PERF_SEL_WAIT_INST_LDS", "SQ_HS3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_HS3_PERF_SEL_INSTS_GDS", "SQ_HS3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1101,6 +1250,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqCs0CountersGfx103 = {
         {4, "SQ_CS0_PERF_SEL_WAVES", "SQ_CS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_CS0_PERF_SEL_WAVES_32", "SQ_CS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_CS0_PERF_SEL_LEVEL_WAVES", "SQ_CS0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_CS0_PERF_SEL_ITEMS", "SQ_CS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_CS0_PERF_SEL_WAIT_INST_LDS", "SQ_CS0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_CS0_PERF_SEL_INSTS_GDS", "SQ_CS0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1126,6 +1276,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqCs1CountersGfx103 = {
         {4, "SQ_CS1_PERF_SEL_WAVES", "SQ_CS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_CS1_PERF_SEL_WAVES_32", "SQ_CS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_CS1_PERF_SEL_LEVEL_WAVES", "SQ_CS1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_CS1_PERF_SEL_ITEMS", "SQ_CS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_CS1_PERF_SEL_WAIT_INST_LDS", "SQ_CS1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_CS1_PERF_SEL_INSTS_GDS", "SQ_CS1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1151,6 +1302,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqCs2CountersGfx103 = {
         {4, "SQ_CS2_PERF_SEL_WAVES", "SQ_CS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_CS2_PERF_SEL_WAVES_32", "SQ_CS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_CS2_PERF_SEL_LEVEL_WAVES", "SQ_CS2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_CS2_PERF_SEL_ITEMS", "SQ_CS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_CS2_PERF_SEL_WAIT_INST_LDS", "SQ_CS2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_CS2_PERF_SEL_INSTS_GDS", "SQ_CS2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1176,6 +1328,7 @@ namespace counter_gfx103
     std::vector<GpaHardwareCounterDesc> kSqCs3CountersGfx103 = {
         {4, "SQ_CS3_PERF_SEL_WAVES", "SQ_CS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQ_CS3_PERF_SEL_WAVES_32", "SQ_CS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQ_CS3_PERF_SEL_LEVEL_WAVES", "SQ_CS3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQ_CS3_PERF_SEL_ITEMS", "SQ_CS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {31, "SQ_CS3_PERF_SEL_WAIT_INST_LDS", "SQ_CS3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {55, "SQ_CS3_PERF_SEL_INSTS_GDS", "SQ_CS3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1199,6 +1352,8 @@ namespace counter_gfx103
         {337, "SQ_CS3_SQC_PERF_SEL_DCACHE_MISSES_DUPLICATE", "SQ_CS3", "Number of misses that were duplicates (access to a non-resident, miss pending CL). {per-Bank, nondeterministic, C2}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSx0CountersGfx103 = {
+        {3, "SX0_PERF_SEL_CLOCK", "SX0", "Nr of clocks where SX was busy in any way shape or form", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {10, "SX0_PERF_SEL_SH_POS_STALL", "SX0", "Nr of clocks SX is being stalled by PA", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {12, "SX0_PERF_SEL_DB0_PIXELS", "SX0", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {14, "SX0_PERF_SEL_DB0_PIXEL_STALL", "SX0", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {17, "SX0_PERF_SEL_DB1_PIXELS", "SX0", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1209,6 +1364,8 @@ namespace counter_gfx103
         {29, "SX0_PERF_SEL_DB3_PIXEL_STALL", "SX0", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSx1CountersGfx103 = {
+        {3, "SX1_PERF_SEL_CLOCK", "SX1", "Nr of clocks where SX was busy in any way shape or form", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {10, "SX1_PERF_SEL_SH_POS_STALL", "SX1", "Nr of clocks SX is being stalled by PA", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {12, "SX1_PERF_SEL_DB0_PIXELS", "SX1", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {14, "SX1_PERF_SEL_DB0_PIXEL_STALL", "SX1", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {17, "SX1_PERF_SEL_DB1_PIXELS", "SX1", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1219,6 +1376,8 @@ namespace counter_gfx103
         {29, "SX1_PERF_SEL_DB3_PIXEL_STALL", "SX1", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSx2CountersGfx103 = {
+        {3, "SX2_PERF_SEL_CLOCK", "SX2", "Nr of clocks where SX was busy in any way shape or form", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {10, "SX2_PERF_SEL_SH_POS_STALL", "SX2", "Nr of clocks SX is being stalled by PA", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {12, "SX2_PERF_SEL_DB0_PIXELS", "SX2", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {14, "SX2_PERF_SEL_DB0_PIXEL_STALL", "SX2", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {17, "SX2_PERF_SEL_DB1_PIXELS", "SX2", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1229,6 +1388,8 @@ namespace counter_gfx103
         {29, "SX2_PERF_SEL_DB3_PIXEL_STALL", "SX2", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSx3CountersGfx103 = {
+        {3, "SX3_PERF_SEL_CLOCK", "SX3", "Nr of clocks where SX was busy in any way shape or form", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {10, "SX3_PERF_SEL_SH_POS_STALL", "SX3", "Nr of clocks SX is being stalled by PA", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {12, "SX3_PERF_SEL_DB0_PIXELS", "SX3", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {14, "SX3_PERF_SEL_DB0_PIXEL_STALL", "SX3", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {17, "SX3_PERF_SEL_DB1_PIXELS", "SX3", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1239,6 +1400,8 @@ namespace counter_gfx103
         {29, "SX3_PERF_SEL_DB3_PIXEL_STALL", "SX3", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSx4CountersGfx103 = {
+        {3, "SX4_PERF_SEL_CLOCK", "SX4", "Nr of clocks where SX was busy in any way shape or form", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {10, "SX4_PERF_SEL_SH_POS_STALL", "SX4", "Nr of clocks SX is being stalled by PA", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {12, "SX4_PERF_SEL_DB0_PIXELS", "SX4", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {14, "SX4_PERF_SEL_DB0_PIXEL_STALL", "SX4", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {17, "SX4_PERF_SEL_DB1_PIXELS", "SX4", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1249,6 +1412,8 @@ namespace counter_gfx103
         {29, "SX4_PERF_SEL_DB3_PIXEL_STALL", "SX4", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSx5CountersGfx103 = {
+        {3, "SX5_PERF_SEL_CLOCK", "SX5", "Nr of clocks where SX was busy in any way shape or form", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {10, "SX5_PERF_SEL_SH_POS_STALL", "SX5", "Nr of clocks SX is being stalled by PA", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {12, "SX5_PERF_SEL_DB0_PIXELS", "SX5", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {14, "SX5_PERF_SEL_DB0_PIXEL_STALL", "SX5", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {17, "SX5_PERF_SEL_DB1_PIXELS", "SX5", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1259,6 +1424,8 @@ namespace counter_gfx103
         {29, "SX5_PERF_SEL_DB3_PIXEL_STALL", "SX5", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSx6CountersGfx103 = {
+        {3, "SX6_PERF_SEL_CLOCK", "SX6", "Nr of clocks where SX was busy in any way shape or form", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {10, "SX6_PERF_SEL_SH_POS_STALL", "SX6", "Nr of clocks SX is being stalled by PA", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {12, "SX6_PERF_SEL_DB0_PIXELS", "SX6", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {14, "SX6_PERF_SEL_DB0_PIXEL_STALL", "SX6", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {17, "SX6_PERF_SEL_DB1_PIXELS", "SX6", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1269,6 +1436,8 @@ namespace counter_gfx103
         {29, "SX6_PERF_SEL_DB3_PIXEL_STALL", "SX6", "Number of cycles where pixel traffic is stalled due to the DB3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSx7CountersGfx103 = {
+        {3, "SX7_PERF_SEL_CLOCK", "SX7", "Nr of clocks where SX was busy in any way shape or form", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {10, "SX7_PERF_SEL_SH_POS_STALL", "SX7", "Nr of clocks SX is being stalled by PA", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {12, "SX7_PERF_SEL_DB0_PIXELS", "SX7", "Number of pixels sent to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {14, "SX7_PERF_SEL_DB0_PIXEL_STALL", "SX7", "Number of cycles where pixel traffic is stalled due to the DB0", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {17, "SX7_PERF_SEL_DB1_PIXELS", "SX7", "Number of pixels sent to the DB1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},

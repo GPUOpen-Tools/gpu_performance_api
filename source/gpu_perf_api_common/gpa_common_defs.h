@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Common Internal usage definitions.
@@ -18,25 +18,6 @@
 // Macro to make string.
 #define GPA_STRING(X) #X
 #define GPA_STRINGIFY(X) GPA_STRING(X)
-
-// The following will be merged into gpu_perf_api_types.h in a future version that supports streaming counters and sqtt data.
-#define GPA_INITIALIZE_SIMULTANEOUS_QUEUES_ENABLE_BIT \
-    static_cast<GpaInitializeBits>(1)  ///< Define for GPA_Initialize bit for enabling sqtt collection from all hardware queues.
-#define GPA_SESSION_SAMPLE_TYPE_SQTT static_cast<GpaSessionSampleType>(1)                        ///< Define for sqtt session sample type.
-#define GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER static_cast<GpaSessionSampleType>(2)           ///< Define for streaming counter session sample type.
-#define GPA_SESSION_SAMPLE_TYPE_STREAMING_COUNTER_AND_SQTT static_cast<GpaSessionSampleType>(3)  ///< Define for streaming counter and sqtt session sample type.
-#define GPA_CONTEXT_SAMPLE_TYPE_SQTT static_cast<GpaContextSampleTypeBits>(2)                    ///< Define for sqtt context sample type.
-#define GPA_CONTEXT_SAMPLE_TYPE_STREAMING_COUNTER static_cast<GpaContextSampleTypeBits>(4)       ///< Define for streaming counter context sample type.
-
-/// @brief Type used to define the mask of instructions included in SQTT data.
-typedef enum
-{
-    kGpaSqttInstructionTypeNone = 0x00,        ///< Exclude all instructions from SQTT data.
-    kGpaSqttInstructionTypeAll  = 0x7FFFFFFF,  ///< Include all instructions in SQTT data.
-} GpaSqttInstructionBits;
-
-/// Allows GpaSqttInstructionBits to be combined into a single parameter.
-typedef GpaFlags GpaSqttInstructionFlags;
 
 #define GPA_NOT_THREAD_SAFE_OBJECT    ///< Use this to declare non thread safe classes/structs.
 #define GPA_THREAD_SAFE_OBJECT        ///< Use this to declare thread safe classes/structs.

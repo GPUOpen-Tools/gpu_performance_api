@@ -23,6 +23,7 @@ using DriverSampleId = unsigned int;  ///< Type alias for index of the sample cr
 
 /// @brief Stores counter results after they are returned from the sample.
 struct GpaCounterSampleResult;
+struct GpaTraceSampleResult;
 
 /// @brief Pure virtual base class for sample results.
 ///
@@ -39,6 +40,12 @@ struct GpaSampleResult
     /// @return A counter sample result, or nullptr if the sample result is not a valid counter sample result.
     virtual GpaCounterSampleResult* GetAsCounterSampleResult()
     {
+        return nullptr;
+    }
+
+    virtual GpaTraceSampleResult* GetAsTraceSampleResult()
+    {
+        assert(0);
         return nullptr;
     }
 
@@ -108,11 +115,51 @@ private:
     std::vector<GpaUInt64> result_buffer_;  ///< An array of counter results.
 };
 
+/// Stores trace data after it is return from the sample
+struct GpaTraceSampleResult : public GpaSampleResult
+{
+    /// Constructor
+    GpaTraceSampleResult()
+    {
+    }
+
+    /// Destructor
+    virtual ~GpaTraceSampleResult()
+    {
+    }
+
+    virtual GpaTraceSampleResult* GetAsTraceSampleResult() override
+    {
+        return this;
+    }
+
+    virtual size_t GetBufferBytes() const override
+    {
+        return m_resultBuffer.size();
+    }
+
+    void SetResultBufferSize(size_t numberOfBytes)
+    {
+        assert(numberOfBytes);
+        m_resultBuffer.resize(numberOfBytes);
+    }
+
+    uint8_t* GetResultBuffer()
+    {
+        return m_resultBuffer.data();
+    }
+
+private:
+    std::vector<uint8_t> m_resultBuffer;
+};
+
 /// @brief Enum for GPA Sample type.
 enum class GpaSampleType
 {
     kSoftware,  ///< Enum value for software samples.
     kHardware,  ///< Enum value for hardware samples.
+    kSqtt,      ///< Enum value for SQTT samples.
+    kSpm        ///< Enum value for SPM samples.
 };
 
 /// @brief Enum for the state of the GPA Sample.

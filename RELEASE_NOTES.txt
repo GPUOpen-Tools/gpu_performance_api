@@ -1,5 +1,18 @@
 ﻿# GPU Performance API Release Notes
 ---
+# Version 4.0 (03/11/2025)
+* Added support for Radeon RX 9070 Series GPUs.
+  * See README.md for known issue related to Vulkan on Linux.
+* Added support for additional RDNA 3 based APUs.
+* Counter interrogation entrypoints now accept a GpaSessionId instead of a GpaContextId.
+* GPUPerfAPI now includes additional entrypoints and enums to support querying streaming counters and SQTT data. These are only intended to support the AmdRadeonPlugin in Microsoft PIX on Windows. No support will be offered on how to use these entrypoints.
+* GPUPerfAPI is now only being distributed as 64-bit binaries. 32-bit builds are no longer supported.
+* Removed support for OpenCL.
+* Removed support for GCN-based hardware (ie: GFX8 and GFX9).
+* Example applications have been removed from the repository.
+* The directory structure in the released zip/tgz packages have been changed slightly.
+* Fixed GitHub Issue #84 - Public Counter Compiler fails awkwardly if public counter definition file contains an uppercase character.
+
 # Version 3.17 (09/20/2024)
 * OpenGL: GPA is no longer supporting Adrenalin 19.6.3 and older drivers.
 * On all hardware and APIs, the following counters were renamed for clarity:

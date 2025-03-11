@@ -1,10 +1,11 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for OGLP GFX11_GFX1103.
 //==============================================================================
 
+// clang-format off
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_oglp_gfx11_gfx1103.h"
 
@@ -30,4 +31,6 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
 }
 
 }  // namespace oglp_gfx11_gfx1103
+
+// clang-format on
 

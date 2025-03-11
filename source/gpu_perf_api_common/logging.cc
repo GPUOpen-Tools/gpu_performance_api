@@ -1,13 +1,13 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
-/// @brief  Logging utility.
+/// @brief Logging utility.
 //==============================================================================
 
 #include "gpu_perf_api_common/logging.h"
 
-#include <assert.h>
+#include <cassert>
 
 #include "gpu_perf_api_common/utility.h"
 
@@ -160,11 +160,7 @@ GpaLogger::GpaLogger()
     pthread_mutexattr_t mutex_attr;
     pthread_mutexattr_init(&mutex_attr);
     // Set the mutex as a recursive mutex.
-#ifdef __APPLE__
-    pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE);
-#else
     pthread_mutexattr_settype(&mutex_attr, PTHREAD_MUTEX_RECURSIVE_NP);
-#endif
     // Create the mutex with the attributes set.
     pthread_mutex_init(&lock_handle, &mutex_attr);
 

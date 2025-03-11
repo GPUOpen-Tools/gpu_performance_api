@@ -23,6 +23,7 @@ EXPORTS
     GpaCreateSession
     GpaDeleteSession
     GpaBeginSession
+    GpaResetSession
     GpaEndSession
     GpaEnableCounter
     GpaDisableCounter
@@ -48,51 +49,20 @@ EXPORTS
     GpaGetStatusAsStr
     GpaGetSampleId
     GpaGetVersion
-    GPA_GetFuncTable
-    GPA_RegisterLoggingCallback
-    GPA_Initialize
-    GPA_Destroy
-    GPA_OpenContext
-    GPA_CloseContext
-    GPA_GetSupportedSampleTypes
-    GPA_GetNumCounters
-    GPA_GetCounterName
-    GPA_GetCounterIndex
-    GPA_GetCounterGroup
-    GPA_GetCounterDescription
-    GPA_GetCounterDataType
-    GPA_GetCounterUsageType
-    GPA_GetCounterUuid
-    GPA_GetCounterSampleType
-    GPA_GetDataTypeAsStr
-    GPA_GetUsageTypeAsStr
-    GPA_CreateSession
-    GPA_DeleteSession
-    GPA_BeginSession
-    GPA_EndSession
-    GPA_EnableCounter
-    GPA_DisableCounter
-    GPA_EnableCounterByName
-    GPA_DisableCounterByName
-    GPA_EnableAllCounters
-    GPA_DisableAllCounters
-    GPA_GetPassCount
-    GPA_GetNumEnabledCounters
-    GPA_GetEnabledIndex
-    GPA_IsCounterEnabled
-    GPA_BeginCommandList
-    GPA_EndCommandList
-    GPA_BeginSample
-    GPA_EndSample
-    GPA_ContinueSampleOnCommandList
-    GPA_CopySecondarySamples
-    GPA_GetSampleCount
-    GPA_IsSessionComplete
-    GPA_IsPassComplete
-    GPA_GetSampleResultSize
-    GPA_GetSampleResult
-    GPA_GetStatusAsStr
-    GPA_GetDeviceAndRevisionId
-    GPA_GetDeviceName
-    GPA_GetSampleId
-    GPA_GetVersion
+    GpaAbortSession
+    GpaUpdateDeviceInformation
+    GpaSqttGetInstructionMask
+    GpaSqttSetInstructionMask
+    GpaSqttGetComputeUnitId
+    GpaSqttSetComputeUnitId
+    GpaSqttBegin
+    GpaSqttEnd
+    GpaSqttGetSampleResultSize
+    GpaSqttGetSampleResult
+    GpaSpmSetSampleInterval
+    GpaSpmSetDuration
+    GpaSpmBegin
+    GpaSpmEnd
+    GpaSpmGetSampleResultSize
+    GpaSpmGetSampleResult
+    GpaSpmCalculateDerivedCounters

@@ -1,6 +1,6 @@
 ﻿// =============================================================================
 // <copyright file="form1.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2024 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -15,6 +15,7 @@ namespace PublicCounterCompiler
     using System.ComponentModel;
     using System.Threading;
     using System.Windows.Forms;
+    using GpaTools;
     using Microsoft.Win32;
 
     /// <summary>
@@ -284,23 +285,18 @@ namespace PublicCounterCompiler
             {
                 foreach (var gpu in args.gpus)
                 {
-                    if (api.ToLower() == "gl" && gpu.ToLower() == "gfx11")
-                    {
-                        DisplayMessageHandler("\nSkipping GL on Gfx11 because the ugl driver does not support Gfx11.");
-                    }
-                    else
-                    {
-                        DisplayMessageHandler("\nCompiling API " + api + " for GPU Family " + gpu);
+                    DisplayMessageHandler("\nCompiling API " + api + " for GPU Family " + gpu);
 
-                        if (false == _counterCompiler.CompileCounters(api, gpu, DisplayMessageHandler, ErrorHandler))
-                        {
-                            e.Cancel = true;
-                            worker.CancelAsync();
-                            return;
-                        }
+                    if (false == _counterCompiler.CompileCounters(api, gpu, DisplayMessageHandler, ErrorHandler))
+                    {
+                        e.Cancel = true;
+                        worker.CancelAsync();
+                        return;
                     }
                 }
             }
+
+            DisplayMessageHandler("\nAll counter generation completed");
         }
 
         /// <summary>

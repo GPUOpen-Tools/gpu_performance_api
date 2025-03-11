@@ -1,6 +1,6 @@
 ﻿// =====================================================================
 // <copyright file="FileNameAndPath.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2019-2024 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -24,16 +24,14 @@ namespace GpaTools
         DX11,
         VK,
         GL,
-        CL,
     };
 
     enum GfxGeneration
     {
-        Gfx8,
-        Gfx9,
         Gfx10,
         Gfx103,
         Gfx11,
+        Gfx12,
         Unknown
     };
 
@@ -46,7 +44,7 @@ namespace GpaTools
         public const string counterFileNamePrefix = "counter_names_";
         public const string counterListOutDir = "..\\counter_list_files\\";
         public const string autoGenTestOutDir = "source\\auto_generated\\gpu_perf_api_unit_tests\\counters\\";
-        public const string gpaDocSourceDir = "docs\\sphinx\\source\\";
+        public const string gpaDocSourceDir = "documentation\\sphinx\\source\\";
         public const string counterDefDir = "source\\public_counter_compiler_input_files\\";
         public const string counterDefinitionsStr = "counter_definitions_";
         public const string derivedCounterOutFileName = "derived_counters_";
@@ -56,13 +54,11 @@ namespace GpaTools
         public const string DX12 = "dx12";
         public const string DX11 = "dx11";
         public const string GL = "gl";
-        public const string CL = "cl";
         public const string VK = "vk";
-        public const string gfx8Str = "gfx8";
-        public const string gfx9Str = "gfx9";
         public const string gfx10Str = "gfx10";
         public const string gfx103Str = "gfx103";
         public const string gfx11Str = "gfx11";
+        public const string gfx12Str = "gfx12";
         public static Dictionary<GfxGeneration, string> gfxGenAsStr = new Dictionary<GfxGeneration, string>();
         public static Dictionary<Api, string> apiAsStr = new Dictionary<Api, string>();
         public static Dictionary<GfxGeneration, string> gfxGenerationDisplayName = new Dictionary<GfxGeneration, string>();
@@ -168,23 +164,20 @@ namespace GpaTools
                 Directory.CreateDirectory(pathName);
             }
 
+            gfxGenAsStr.Add(GfxGeneration.Gfx12, gfx12Str);
             gfxGenAsStr.Add(GfxGeneration.Gfx11, gfx11Str);
             gfxGenAsStr.Add(GfxGeneration.Gfx103, gfx103Str);
             gfxGenAsStr.Add(GfxGeneration.Gfx10, gfx10Str);
-            gfxGenAsStr.Add(GfxGeneration.Gfx9, gfx9Str);
-            gfxGenAsStr.Add(GfxGeneration.Gfx8, gfx8Str);
 
+            gfxGenerationDisplayName.Add(GfxGeneration.Gfx12, "RDNA4");
             gfxGenerationDisplayName.Add(GfxGeneration.Gfx11, "RDNA3");
             gfxGenerationDisplayName.Add(GfxGeneration.Gfx103, "RDNA2");
             gfxGenerationDisplayName.Add(GfxGeneration.Gfx10, "RDNA");
-            gfxGenerationDisplayName.Add(GfxGeneration.Gfx9, "Vega");
-            gfxGenerationDisplayName.Add(GfxGeneration.Gfx8, "Graphics IP v8");
 
             apiAsStr.Add(Api.DX11, DX11);
             apiAsStr.Add(Api.DX12, DX12);
             apiAsStr.Add(Api.VK, VK);
             apiAsStr.Add(Api.GL, GL);
-            apiAsStr.Add(Api.CL, CL);
         }
 
         /// <summary>
@@ -212,11 +205,6 @@ namespace GpaTools
             if (fileName.Contains(GL))
             {
                 return GL;
-            }
-
-            if (fileName.Contains(CL))
-            {
-                return CL;
             }
 
             return null;

@@ -1,7 +1,7 @@
 /*
 ***************************************************************************************************
 *
-*  Copyright (c) 2017-2022 Advanced Micro Devices, Inc. All rights reserved.
+*  Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
 *
 ***************************************************************************************************
 */
@@ -58,8 +58,8 @@ enum class AmdExtGpuBlock : UINT32
     Gl1a   = 0x22,
     Gl1c   = 0x23,
     Gl1cg  = 0x24,
-    Gl2a   = 0x25, // TCA is used in Gfx9, and changed to GL2A in Gfx10
-    Gl2c   = 0x26, // TCC is used in Gfx9, and changed to GL2C in Gfx10
+    Gl2a   = 0x25,  // TCA is used in Gfx9, and changed to GL2A in Gfx10
+    Gl2c   = 0x26,  // TCC is used in Gfx9, and changed to GL2C in Gfx10
     Cha    = 0x27,
     Chc    = 0x28,
     Chcg   = 0x29,
@@ -73,6 +73,11 @@ enum class AmdExtGpuBlock : UINT32
     DfMall = 0x30,
     SqWgp  = 0x31,
     Pc     = 0x32,
+    Gl1xa  = 0x33,
+    Gl1xc  = 0x34,
+    Wgs    = 0x35,
+    EaCpwd = 0x36,
+    EaSe   = 0x37,
     Count
 };
 
@@ -92,20 +97,20 @@ enum AmdExtPerfExperimentShaderFlags
 /// Specifies the point in the GPU pipeline where an action should take place.
 enum AmdExtHwPipePoint : UINT32
 {
-    HwPipeTop              = 0x0,                   ///< Earliest possible point in the GPU pipeline (CP PFP).
-    HwPipeBottom           = 0x7,                   ///< All prior GPU work (graphics, compute, or BLT) has completed.
+    HwPipeTop    = 0x0,  ///< Earliest possible point in the GPU pipeline (CP PFP).
+    HwPipeBottom = 0x7,  ///< All prior GPU work (graphics, compute, or BLT) has completed.
 };
 
 /// Reports properties of a specific GPU block required for interpreting performance experiment data from that block.
 /// See @ref AmdExtPerfExperimentProperties.
 struct AmdExtGpuBlockPerfProperties
 {
-    bool   available;                ///< If performance data is available for this block.
-    UINT32 instanceCount;            ///< How many instances of this block are in the device.
-    UINT32 maxEventId;               ///< Maximum event ID for this block.
-    UINT32 maxGlobalOnlyCounters;    ///< Number of counters available only for global counts.
-    UINT32 maxCounters;              ///< Total counters available.
-    UINT32 maxSpmCounters;           ///< Counters available for streaming only.
+    bool   available;              ///< If performance data is available for this block.
+    UINT32 instanceCount;          ///< How many instances of this block are in the device.
+    UINT32 maxEventId;             ///< Maximum event ID for this block.
+    UINT32 maxGlobalOnlyCounters;  ///< Number of counters available only for global counts.
+    UINT32 maxCounters;            ///< Total counters available.
+    UINT32 maxSpmCounters;         ///< Counters available for streaming only.
 };
 
 /// Reports performance experiment capabilities of a device.  Returned by GetPerfExperimentProperties().
@@ -115,20 +120,20 @@ struct AmdExtPerfExperimentProperties
     {
         struct
         {
-            UINT32 counters    : 1;     ///< Device supports performance counters.
-            UINT32 threadTrace : 1;     ///< Device supports thread traces.
-            UINT32 spmTrace    : 1;     ///< Device supports streaming perf monitor
-                                        ///  traces.
-            UINT32 reserved    : 29;    ///< Reserved for future use.
+            UINT32 counters : 1;     ///< Device supports performance counters.
+            UINT32 threadTrace : 1;  ///< Device supports thread traces.
+            UINT32 spmTrace : 1;     ///< Device supports streaming perf monitor
+                                     ///  traces.
+            UINT32 reserved : 29;    ///< Reserved for future use.
         };
-        UINT32 u32All;                  ///< Flags packed as 32-bit uint.
-    } features;                         ///< Performance experiment feature flags.
+        UINT32 u32All;  ///< Flags packed as 32-bit uint.
+    } features;         ///< Performance experiment feature flags.
 
-    size_t           maxSqttSeBufferSize; ///< SQTT buffer size per shader engine.
-    UINT32           shaderEngineCount;   ///< Number of shader engines.
-    AmdExtGpuBlockPerfProperties blocks[static_cast<size_t>(AmdExtGpuBlock::Count)]; ///< Reports availability and
-                                                                                     ///  properties of each device
-                                                                                     ///  block.
+    size_t                       maxSqttSeBufferSize;                                 ///< SQTT buffer size per shader engine.
+    UINT32                       shaderEngineCount;                                   ///< Number of shader engines.
+    AmdExtGpuBlockPerfProperties blocks[static_cast<size_t>(AmdExtGpuBlock::Count)];  ///< Reports availability and
+                                                                                      ///  properties of each device
+                                                                                      ///  block.
 };
 
 /// Specifies basic type of sample to perform - either a normal set of "global" perf counters, or a trace consisting
@@ -138,11 +143,11 @@ enum class AmdExtGpaSampleType : UINT32
     Cumulative = 0x0,  ///< One 64-bit result will be returned per performance counter representing the cumulative delta
                        ///  for that counter over the sample period.  Cumulative samples must begin and end in the same
                        ///  command buffer.
-    Trace      = 0x1,  ///< A GPU memory buffer will be filled with hw-specific SQ thread trace and/or streaming
+    Trace = 0x1,       ///< A GPU memory buffer will be filled with hw-specific SQ thread trace and/or streaming
                        ///  performance counter data.  Trace samples may span multiple command buffers.
-    Timing     = 0x2,  ///< Two 64-bit results will be recorded in beginTs and endTs to gather timestamp data.
-    Query      = 0x3,  ///< A set of 11 pipeline stats will be collected.
-    None       = 0xf,  ///< No profile will be done.
+    Timing = 0x2,      ///< Two 64-bit results will be recorded in beginTs and endTs to gather timestamp data.
+    Query  = 0x3,      ///< A set of 11 pipeline stats will be collected.
+    None   = 0xf,      ///< No profile will be done.
 };
 
 /// Specifies a specific performance counter to be sampled with IAmdExtGpaSession::BeginSample() and
@@ -152,13 +157,13 @@ enum class AmdExtGpaSampleType : UINT32
 /// to the client to know the meaning of a particular counter.
 struct AmdExtPerfCounterId
 {
-    AmdExtGpuBlock block; ///< Which GPU block to reference (e.g., CB, DB, TCC).
-    UINT32   instance;    ///< Which instance of the specified GPU block to sample.
-                          ///  (this number is returned per-block in the @ref AmdExtGpuBlockPerfProperties structure).
-                          ///  There is no shortcut to get results for all instances of block in the whole chip, the
-                          ///  client must explicitly sample each instance and sum the results.
-    UINT32   eventId;     ///< Counter ID to sample.  Note that the meaning of a particular eventId for a block can
-                          ///  change between chips.
+    AmdExtGpuBlock block;     ///< Which GPU block to reference (e.g., CB, DB, TCC).
+    UINT32         instance;  ///< Which instance of the specified GPU block to sample.
+                              ///  (this number is returned per-block in the @ref AmdExtGpuBlockPerfProperties structure).
+                              ///  There is no shortcut to get results for all instances of block in the whole chip, the
+                              ///  client must explicitly sample each instance and sum the results.
+    UINT32 eventId;           ///< Counter ID to sample.  Note that the meaning of a particular eventId for a block can
+                              ///  change between chips.
 };
 
 /// Input structure for CmdBeginGpuProfilerSample.
@@ -175,20 +180,20 @@ struct AmdExtGpaSampleConfig
     {
         struct
         {
-            UINT32 sampleInternalOperations      : 1;  ///< Include BLTs and internal driver operations in the
+            UINT32 sampleInternalOperations : 1;       ///< Include BLTs and internal driver operations in the
                                                        ///  results.
             UINT32 cacheFlushOnCounterCollection : 1;  ///< Insert cache flush and invalidate events before and
                                                        ///  after every sample.
-            UINT32 sqShaderMask                  : 1;  ///< Whether or not the contents of sqShaderMask are valid.
-            UINT32 sqWgpShaderMask               : 1;  ///< Whether or not the contents of sqWgpShaderMask are valid.
-            UINT32 reserved                      : 28; ///< Reserved for future use.
+            UINT32 sqShaderMask : 1;                   ///< Whether or not the contents of sqShaderMask are valid.
+            UINT32 sqWgpShaderMask : 1;                ///< Whether or not the contents of sqWgpShaderMask are valid.
+            UINT32 reserved : 28;                      ///< Reserved for future use.
         };
-        UINT32 u32All;                                 ///< Bit flags packed as uint32.
-    } flags;                                           ///< Bit flags controlling sample operation for all sample
-                                                       ///  types.
+        UINT32 u32All;  ///< Bit flags packed as uint32.
+    } flags;            ///< Bit flags controlling sample operation for all sample
+                        ///  types.
 
-    AmdExtPerfExperimentShaderFlags sqShaderMask;      ///< Indicates which hardware shader stages should be
-                                                       ///  sampled. Only valid if flags.sqShaderMask is set to 1.
+    AmdExtPerfExperimentShaderFlags sqShaderMask;  ///< Indicates which hardware shader stages should be
+                                                   ///  sampled. Only valid if flags.sqShaderMask is set to 1.
 
     struct
     {
@@ -205,7 +210,7 @@ struct AmdExtGpaSampleConfig
         const AmdExtPerfCounterId* pIds;
 
         /// Period for SPM sample collection in cycles.  Only relevant for _trace_ samples.
-        UINT32  spmTraceSampleInterval;
+        UINT32 spmTraceSampleInterval;
 
         /// Maximum amount of GPU memory in bytes this sample can allocate for SPM data.  Only relevant for _trace_
         /// samples.
@@ -218,18 +223,18 @@ struct AmdExtGpaSampleConfig
         {
             struct
             {
-                UINT32 enable                   : 1;  ///< Include SQTT data in the trace.
+                UINT32 enable : 1;                    ///< Include SQTT data in the trace.
                 UINT32 supressInstructionTokens : 1;  ///< Prevents capturing instruction-level SQTT tokens,
                                                       ///  significantly reducing the amount of sample data.
-                UINT32 reserved                 : 30; ///< Reserved for future use.
+                UINT32 reserved : 30;                 ///< Reserved for future use.
             };
-            UINT32 u32All;                            ///< Bit flags packed as uint32.
-        } flags;                                      ///< Bit flags controlling SQTT samples.
-        UINT32 seMask;                                ///< Mask that determines which specific SEs to run thread trace on.
-                                                      ///  If 0, all SEs are enabled
-        UINT64 gpuMemoryLimit;                        ///< Maximum amount of GPU memory in bytes this sample can allocate for the SQTT
-                                                      ///  buffer.  If 0, allocate maximum size to prevent dropping tokens toward the
-                                                      ///  end of the sample.
+            UINT32 u32All;      ///< Bit flags packed as uint32.
+        } flags;                ///< Bit flags controlling SQTT samples.
+        UINT32 seMask;          ///< Mask that determines which specific SEs to run thread trace on.
+                                ///  If 0, all SEs are enabled
+        UINT64 gpuMemoryLimit;  ///< Maximum amount of GPU memory in bytes this sample can allocate for the SQTT
+                                ///  buffer.  If 0, allocate maximum size to prevent dropping tokens toward the
+                                ///  end of the sample.
 
     } sqtt;  ///< SQ thread trace configuration (only valid for _trace_ samples).
 
@@ -237,7 +242,7 @@ struct AmdExtGpaSampleConfig
     {
         AmdExtHwPipePoint preSample;   ///< The point in the GPU pipeline where the begin timestamp should take place.
         AmdExtHwPipePoint postSample;  ///< The point in the GPU pipeline where the end timestamp should take place.
-    } timing;   ///< Timestamp configuration. (only valid for timing samples)
+    } timing;                          ///< Timestamp configuration. (only valid for timing samples)
 
     AmdExtPerfExperimentShaderFlags sqWgpShaderMask;  ///< Indicates which hardware shader stages should be
                                                       ///  sampled. Only valid if flags.sqWgpShaderMask is set to 1.
@@ -245,16 +250,16 @@ struct AmdExtGpaSampleConfig
 
 enum class AmdExtDeviceClockMode : UINT32
 {
-    Default       = 0,  ///< Device clocks and other power settings are restored to default.
-    Query         = 1,  ///< Queries the current device clock ratios. Leaves the clock mode of the device unchanged.
-    Profiling     = 2,  ///< Scale down from peak ratio. Clocks are set to a constant amount which is
+    Default   = 0,      ///< Device clocks and other power settings are restored to default.
+    Query     = 1,      ///< Queries the current device clock ratios. Leaves the clock mode of the device unchanged.
+    Profiling = 2,      ///< Scale down from peak ratio. Clocks are set to a constant amount which is
                         ///  known to be power and thermal sustainable. The engine/memory clock ratio
                         ///  will be kept the same as much as possible.
     MinimumMemory = 3,  ///< Memory clock is set to the lowest available level. Engine clock is set to
                         ///  thermal and power sustainable level.
     MinimumEngine = 4,  ///< Engine clock is set to the lowest available level. Memory clock is set to
                         ///  thermal and power sustainable level.
-    Peak          = 5,  ///< Clocks set to maximum when possible. Fan set to maximum. Note: Under power
+    Peak = 5,           ///< Clocks set to maximum when possible. Fan set to maximum. Note: Under power
                         ///  and thermal constraints device will clock down.
     Count
 };

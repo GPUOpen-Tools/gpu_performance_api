@@ -17,6 +17,6 @@
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
 
-#define PE_BLOCK_ID_MAX PE_BLOCK_MAX_GFX11  ///< Macro for count of DX11 block id; needs an update every generation.
+#define PE_BLOCK_ID_MAX PE_BLOCK_MAX_GFX12  ///< Macro for count of DX11 block id; needs an update every generation.
 
 #endif  // GPU_PERF_API_DX11_DX11_INCLUDE_H_

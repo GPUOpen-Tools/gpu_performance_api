@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Base Class for counter scheduling.
@@ -15,11 +15,13 @@
 class GpaCounterSchedulerBase : public IGpaCounterScheduler
 {
 public:
-    /// @brief Constructor.
-    GpaCounterSchedulerBase();
+    /// @brief Constructor
+    ///
+    /// @param [in] sample_type The type of samples for which to schedule counters.
+    GpaCounterSchedulerBase(GpaSessionSampleType sample_type);
 
     /// @brief Destructor.
-    ~GpaCounterSchedulerBase() = default;
+    virtual ~GpaCounterSchedulerBase() = default;
 
     /// @copydoc IGpaCounterScheduler::Reset()
     void Reset() override;
@@ -71,6 +73,12 @@ public:
 
     /// @copydoc IGpaCounterScheduler::SetDrawCallCounts()
     void SetDrawCallCounts(int internal_counts) override;
+
+    /// @copydoc IGPACounterScheduler::GetSampleType()
+    GpaSessionSampleType GetSampleType() const override
+    {
+        return sample_type_;
+    }
 
 protected:
     /// @brief Gets the preferred counter splitting algorithm.
@@ -144,6 +152,12 @@ protected:
     /// As the profile is happening, this tracks the current pass.
     unsigned int pass_index_;
 
+    /// Context sample type to generate counters for.
+    GpaSessionSampleType sample_type_;
+
+private:
+    /// @brief Delete default constructor.
+    GpaCounterSchedulerBase() = delete;
 };
 
 #endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_SCHEDULER_BASE_H_

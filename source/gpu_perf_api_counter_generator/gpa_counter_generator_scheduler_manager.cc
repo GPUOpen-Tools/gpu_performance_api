@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class that will get the correct Generator and Scheduler for an API/Generation combination.
@@ -12,35 +12,29 @@ void CounterGeneratorSchedulerManager::RegisterCounterGenerator(GpaApiType      
                                                                 GpaCounterGeneratorBase* counter_generator,
                                                                 bool                     replace_existing)
 {
-    GenerationGeneratorMap local_map;
+    ApiGenerationSampleType type{ api_type, generation, counter_generator->GetGeneratorSampleType()};
 
-    if (0 < counter_generator_items_.count(api_type))
+    auto iter = counter_generator_items_.find(type);
+    if (counter_generator_items_.end() == iter || replace_existing)
     {
-        local_map = counter_generator_items_[api_type];
+        counter_generator_items_[type] = counter_generator;
     }
-
-    if (0 == local_map.count(generation) || replace_existing)
-    {
-        local_map[generation] = counter_generator;
-    }
-
-    counter_generator_items_[api_type] = local_map;
 }
 
-bool CounterGeneratorSchedulerManager::GetCounterGenerator(GpaApiType api_type, GDT_HW_GENERATION generation, GpaCounterGeneratorBase*& counter_generator_out)
+bool CounterGeneratorSchedulerManager::GetCounterGenerator(GpaApiType                api_type,
+                                                           GpaSessionSampleType      sample_type,
+                                                           GDT_HW_GENERATION         generation,
+                                                           GpaCounterGeneratorBase*& counter_generator_out)
 {
-    bool ret_val = false;
+    ApiGenerationSampleType type{api_type, generation, sample_type };
 
-    if (0 < counter_generator_items_.count(api_type))
+    auto iter = counter_generator_items_.find(type);
+    if (counter_generator_items_.end() != iter)
     {
-        if (0 < counter_generator_items_[api_type].count(generation))
-        {
-            counter_generator_out = counter_generator_items_[api_type][generation];
-            ret_val               = true;
-        }
+        counter_generator_out = iter->second;
     }
 
-    return ret_val;
+    return counter_generator_items_.end() != iter;
 }
 
 void CounterGeneratorSchedulerManager::RegisterCounterScheduler(GpaApiType            api_type,
@@ -48,33 +42,26 @@ void CounterGeneratorSchedulerManager::RegisterCounterScheduler(GpaApiType      
                                                                 IGpaCounterScheduler* counter_scheduler,
                                                                 bool                  replace_existing)
 {
-    GenerationSchedulerMap local_map;
+    ApiGenerationSampleType type{ api_type, generation, counter_scheduler->GetSampleType() };
 
-    if (0 < counter_scheduler_items_.count(api_type))
+    auto iter = counter_scheduler_items_.find(type);
+    if (counter_scheduler_items_.end() == iter || replace_existing)
     {
-        local_map = counter_scheduler_items_[api_type];
+        counter_scheduler_items_[type] = counter_scheduler;
     }
-
-    if (0 == local_map.count(generation) || replace_existing)
-    {
-        local_map[generation] = counter_scheduler;
-    }
-
-    counter_scheduler_items_[api_type] = local_map;
 }
 
-bool CounterGeneratorSchedulerManager::GetCounterScheduler(GpaApiType api_type, GDT_HW_GENERATION generation, IGpaCounterScheduler*& counter_scheduler_out)
+bool CounterGeneratorSchedulerManager::GetCounterScheduler(GpaApiType             api_type,
+                                                           GpaSessionSampleType   sample_type,
+                                                           GDT_HW_GENERATION      generation,
+                                                           IGpaCounterScheduler*& counter_scheduler_out)
 {
-    bool ret_val = false;
-
-    if (0 < counter_scheduler_items_.count(api_type))
+    ApiGenerationSampleType type{ api_type, generation, sample_type };
+    auto                    iter = counter_scheduler_items_.find(type);
+    if (counter_scheduler_items_.end() != iter)
     {
-        if (0 < counter_scheduler_items_[api_type].count(generation))
-        {
-            counter_scheduler_out = counter_scheduler_items_[api_type][generation];
-            ret_val               = true;
-        }
+        counter_scheduler_out = iter->second;
     }
 
-    return ret_val;
+    return counter_scheduler_items_.end() != iter;
 }

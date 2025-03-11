@@ -19,9 +19,36 @@
 #include "gpu_perf_api_gl/asic_info.h"
 #include "gpu_perf_api_gl/gl_gpa_context.h"
 
-IGpaImplementor*             gpa_imp = GlGpaImplementor::Instance();
-static GpaCounterGeneratorGl counter_generator_gl;  ///< Static instance of GL generator.
-static GpaCounterSchedulerGl counter_scheduler_gl;  ///< Static instance of GL scheduler.
+static GpaCounterGeneratorGl* counter_generator_gl = nullptr;  ///< Static instance of GL generator.
+static GpaCounterSchedulerGl* counter_scheduler_gl = nullptr;  ///< Static instance of GL scheduler.
+
+IGpaImplementor* CreateImplementor()
+{
+    counter_generator_gl = new GpaCounterGeneratorGl(kGpaSessionSampleTypeDiscreteCounter);
+    counter_scheduler_gl = new GpaCounterSchedulerGl(kGpaSessionSampleTypeDiscreteCounter);
+
+    return GlGpaImplementor::Instance();
+}
+
+void DestroyImplementor(IGpaImplementor* impl)
+{
+    if (counter_generator_gl != nullptr)
+    {
+        delete counter_generator_gl;
+        counter_generator_gl = nullptr;
+    }
+
+    if (counter_scheduler_gl != nullptr)
+    {
+        delete counter_scheduler_gl;
+        counter_scheduler_gl = nullptr;
+    }
+
+    if (nullptr != impl)
+    {
+        GlGpaImplementor::DeleteInstance();
+    }
+}
 
 GpaApiType GlGpaImplementor::GetApiType() const
 {
@@ -110,6 +137,8 @@ bool GlGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                     hw_info.SetHwGeneration(card_info.m_generation);
                 }
             }
+
+            AMDTDeviceInfoUtils::DeleteInstance();
         }
 
         if (ogl_utils::AsicInfo::kUnassignedAsicInfo != asic_info.num_se)
@@ -225,11 +254,9 @@ bool GlGpaImplementor::IsDriverSupported(GpaContextInfoPtr context_info) const
     bool is_supported = true;
     if (context_info != nullptr)
     {
-        const GLubyte* driver_byte = ogl_utils::ogl_get_string(GL_VERSION);
-        std::string driver_string(reinterpret_cast<const char *>(driver_byte));
-        if (driver_string.find("Mesa") != std::string::npos)
+        if (ogl_utils::IsMesaDriver())
         {
-            GPA_LOG_ERROR("The Mesa driver is not currently supported.");
+            GPA_LOG_ERROR("The Mesa driver is not supported.");
             return false;
         }
     }

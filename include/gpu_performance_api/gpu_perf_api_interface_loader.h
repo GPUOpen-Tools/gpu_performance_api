@@ -19,7 +19,6 @@
 // the "USE_DEBUG_GPA" preprocessor macro should be defined before
 // including this header file
 
-
 #ifndef GPU_PERFORMANCE_API_GPU_PERF_API_INTERFACE_LOADER_H_
 #define GPU_PERFORMANCE_API_GPU_PERF_API_INTERFACE_LOADER_H_
 
@@ -68,7 +67,7 @@ typedef std::wstring LocaleString;  ///< Typedef for ANSI vs. Unicode string.
 #define MEM_SET(ptr, wc, num) wmemset(ptr, wc, num)
 
 #else
-typedef char        LocaleChar;    ///< Typedef for ANSI vs. Unicode character.
+typedef char LocaleChar;  ///< Typedef for ANSI vs. Unicode character.
 #ifdef __cplusplus
 typedef std::string LocaleString;  ///< Typedef for ANSI vs. Unicode string.
 #endif
@@ -83,7 +82,6 @@ typedef std::string LocaleString;  ///< Typedef for ANSI vs. Unicode string.
 #define MEM_SET(ptr, wc, num) memset(ptr, wc, num)
 #endif
 
-#define GPA_OPENCL_LIB TFORMAT("GPUPerfAPICL")       ///< Macro for base name of GPA OpenCL library.
 #define GPA_OPENGL_LIB TFORMAT("GPUPerfAPIGL")       ///< Macro for base name of GPA OpenGL library.
 #define GPA_DIRECTX11_LIB TFORMAT("GPUPerfAPIDX11")  ///< Macro for base name of GPA DirectX 11 library.
 #define GPA_DIRECTX12_LIB TFORMAT("GPUPerfAPIDX12")  ///< Macro for base name of GPA DirectX 12 library.
@@ -210,10 +208,6 @@ static inline const LocaleChar* GpaInterfaceLoaderGetLibraryFileName(GpaApiType 
     case kGpaApiDirectx12:
         STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_DIRECTX12_LIB);
         break;
-
-    case kGpaApiOpencl:
-        STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_OPENCL_LIB);
-        break;
 #endif
 
     case kGpaApiOpengl:
@@ -238,7 +232,6 @@ static inline const LocaleChar* GpaInterfaceLoaderGetLibraryFileName(GpaApiType 
 #ifdef USE_DEBUG_GPA
     STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_DEBUG_SUFFIX);
 #endif
-
 
     STR_CAT(filename_static_string, ARRAY_LENGTH(filename_static_string), GPA_LIB_SUFFIX);
 
@@ -277,17 +270,20 @@ static inline const LocaleChar* GpaInterfaceLoaderGetLibraryFullPath(GpaApiType 
             Win2UnixPathSeparator(temp_working_directory, NULL);
         }
 
-        size_t stringLength = STR_LEN(temp_working_directory, ARRAY_LENGTH(temp_working_directory));
+        size_t string_length = STR_LEN(temp_working_directory, ARRAY_LENGTH(temp_working_directory));
 
-        if (temp_working_directory[stringLength - 1] != '/')
+        if (string_length > 1 && string_length <= GPA_MAX_PATH - 1)
         {
-            temp_working_directory[stringLength]     = '/';
-            temp_working_directory[stringLength + 1] = '\0';
-        }
+            if (temp_working_directory[string_length - 1] != '/')
+            {
+                temp_working_directory[string_length]     = '/';
+                temp_working_directory[string_length + 1] = '\0';
+            }
 
-        MEM_SET(lib_path_static_string, 0, ARRAY_LENGTH(lib_path_static_string));
-        STR_COPY(lib_path_static_string, ARRAY_LENGTH(lib_path_static_string), temp_working_directory);
-        STR_CAT(lib_path_static_string, ARRAY_LENGTH(lib_path_static_string), temp_lib_file_name);
+            MEM_SET(lib_path_static_string, 0, ARRAY_LENGTH(lib_path_static_string));
+            STR_COPY(lib_path_static_string, ARRAY_LENGTH(lib_path_static_string), temp_working_directory);
+            STR_CAT(lib_path_static_string, ARRAY_LENGTH(lib_path_static_string), temp_lib_file_name);
+        }
     }
 
     return lib_path_static_string;
@@ -368,7 +364,7 @@ static inline GpaStatus GpaInterfaceLoaderLoadApi(GpaApiType api_type, const Loc
             LibHandle         lib_handle    = NULL;
 
 #ifdef _WIN32
-            lib_handle                      = LoadLibrary(lib_full_path);
+            lib_handle = LoadLibrary(lib_full_path);
 #else
 
 #ifdef UNICODE
@@ -587,7 +583,7 @@ static inline void GpaInterfaceLoaderClearLoader()
 class GpaApiManager
 {
 public:
-    /// @brief Returns the instance of the GPAApiManger.
+    /// @brief Returns the instance of the GpaApiManager.
     ///
     /// @return The instance of the GpiApiManager.
     static GpaApiManager* Instance()
@@ -672,7 +668,7 @@ public:
     LocaleString GetLibraryFullPath(const GpaApiType& api_type, const LocaleString lib_path = LocaleString()) const
     {
         LocaleChar lib_path_as_char[GPA_MAX_PATH] = {0};
-        bool       local_path_given              = false;
+        bool       local_path_given               = false;
 
         if (!lib_path.empty())
         {

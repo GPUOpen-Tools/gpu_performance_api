@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for common DX12 counter generation.
@@ -15,7 +15,10 @@ class GpaCounterGeneratorDx12Base : public GpaCounterGeneratorBase
 {
 public:
     /// @brief Constructor.
-    GpaCounterGeneratorDx12Base() = default;
+    GpaCounterGeneratorDx12Base(GpaSessionSampleType sample_type)
+        : GpaCounterGeneratorBase(sample_type)
+    {
+    }
 
     /// @brief Virtual Destructor.
     virtual ~GpaCounterGeneratorDx12Base() = default;
@@ -32,6 +35,9 @@ protected:
                                                GpaHardwareCounters* hardware_counters) override;
 
 private:
+    /// @brief Delete default constructor.
+    GpaCounterGeneratorDx12Base() = delete;
+
     /// @brief Copy constructor - private override to prevent usage.
     GpaCounterGeneratorDx12Base(const GpaCounterGeneratorDx12Base&) = delete;
 

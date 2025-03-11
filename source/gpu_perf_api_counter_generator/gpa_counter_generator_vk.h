@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for VK counter generation.
@@ -15,7 +15,9 @@ class GpaCounterGeneratorVk : public GpaCounterGeneratorVkBase
 {
 public:
     /// @brief Construct a GPA VK counter generator.
-    GpaCounterGeneratorVk();
+    ///
+    /// @param [in] sample_type The type of samples for which to generate counters.
+    GpaCounterGeneratorVk(GpaSessionSampleType sample_type);
 
     /// @brief Destroy this GPA VK counter generator.
     virtual ~GpaCounterGeneratorVk() = default;
@@ -53,6 +55,9 @@ protected:
                                               GpaHardwareCounters* hardware_counters) override;
 
 private:
+    /// @brief Delete default constructor.
+    GpaCounterGeneratorVk() = delete;
+
     /// @brief Checks if the given hw generation represents an AMD GPU.
     ///
     /// @param [in] generation The hardware generation to check.

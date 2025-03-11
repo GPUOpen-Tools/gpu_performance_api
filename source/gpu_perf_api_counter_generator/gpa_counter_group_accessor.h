@@ -22,15 +22,16 @@ public:
     /// @param [in] hardware_additional_groups The additional hardware counter groups.
     /// @param [in] hardware_additional_group_count The number of additional hardware counter groups.
     GpaCounterGroupAccessor(std::vector<GpaCounterGroupDesc> hardware_groups,
-                            unsigned int         hardware_group_count,
-                            GpaCounterGroupDesc* hardware_additional_groups,
-                            unsigned int         hardware_additional_group_count)
+                            unsigned int                     hardware_group_count,
+                            GpaCounterGroupDesc*             hardware_additional_groups,
+                            unsigned int                     hardware_additional_group_count)
         : hardware_groups_(hardware_groups)
         , hardware_group_count_(hardware_group_count)
         , hardware_additional_groups_(hardware_additional_groups)
         , hardware_additional_group_count_(hardware_additional_group_count)
         , group_index_(0)
         , counter_index_(0)
+        , m_globalCounterIndex(0)
     {
         is_hw_            = false;
         is_additional_hw_ = false;
@@ -43,6 +44,7 @@ public:
     /// @copydoc IGpaCounterGroupAccessor::SetCounterIndex()
     void SetCounterIndex(unsigned int index) override
     {
+        m_globalCounterIndex = index;
 
         // Count the number of counters that belong to groups that do not include the desired index.
         unsigned int prev_group_counters = 0;
@@ -178,16 +180,23 @@ public:
         return is_additional_hw_;
     }
 
+    /// @copydoc IGpaCounterGroupAccessor::GetGlobalCounterIndex()
+    unsigned int GetGlobalCounterIndex() const override
+    {
+        return m_globalCounterIndex;
+    }
+
 private:
     std::vector<GpaCounterGroupDesc> hardware_groups_;                  ///< Points to the array of internal hardware counter groups.
-    unsigned int         hardware_group_count_;             ///< Stores the number of hardware counter groups in the array.
-    GpaCounterGroupDesc* hardware_additional_groups_;       ///< Points to the array of internal additional hardware counter groups.
-    unsigned int         hardware_additional_group_count_;  ///< Stores the number of additional hardware counter groups in the array.
-    unsigned int         group_index_;                      ///< Stores the group index of the set counter index.
-    unsigned int         counter_index_;                    ///< Stores the counter index within the group of the set counter index.
-    bool                 is_hw_;                            ///< Flag to record if the counter is hardware or not.
-    bool                 is_additional_hw_;  ///< Flag to record if the counter is an additional HW counter (one exposed by the driver but not by GPA).
-    bool                 is_sw_;             ///< Flag to record if the counter is SW.
+    unsigned int                     hardware_group_count_;             ///< Stores the number of hardware counter groups in the array.
+    GpaCounterGroupDesc*             hardware_additional_groups_;       ///< Points to the array of internal additional hardware counter groups.
+    unsigned int                     hardware_additional_group_count_;  ///< Stores the number of additional hardware counter groups in the array.
+    unsigned int                     group_index_;                      ///< Stores the group index of the set counter index.
+    unsigned int                     counter_index_;                    ///< Stores the counter index within the group of the set counter index.
+    bool                             is_hw_;                            ///< Flag to record if the counter is hardware or not.
+    bool         is_additional_hw_;     ///< Flag to record if the counter is an additional HW counter (one exposed by the driver but not by GPA).
+    bool         is_sw_;                ///< Flag to record if the counter is SW.
+    unsigned int m_globalCounterIndex;  ///< Global counter index
 };
 
 #endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_COUNTER_GROUP_ACCESSOR_H_

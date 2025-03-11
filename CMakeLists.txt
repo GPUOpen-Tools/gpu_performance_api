@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "./")
@@ -28,6 +28,7 @@ if (WIN32)
     endif()
 endif()
 
+
 set(GPA_ALL_OPEN_SOURCE ON)
 
 if(${BUILD_ANDROID})
@@ -38,4 +39,5 @@ endif()
 project(GPUPerfAPI${PlatformSuffix} VERSION ${GPA_MAJOR_VERSION}.${GPA_MINOR_VERSION} LANGUAGES C CXX)
 
 include(${GPA_CMAKE_MODULES_DIR}/targets.cmake)
+
 message(STATUS "Finished generating project files for GPA.")

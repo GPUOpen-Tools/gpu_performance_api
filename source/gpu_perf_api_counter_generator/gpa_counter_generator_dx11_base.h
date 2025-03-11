@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base class for DX11 counter generation.
@@ -15,7 +15,9 @@ class GpaCounterGeneratorDx11Base : public GpaCounterGeneratorBase
 {
 public:
     /// @brief Constructor.
-    GpaCounterGeneratorDx11Base();
+    ///
+    /// @param [in] sample_type The type of samples for which to generate counters.
+    GpaCounterGeneratorDx11Base(GpaSessionSampleType sample_type);
 
     /// @copydoc GpaCounterGeneratorBase::GeneratePublicCounters()
     virtual GpaStatus GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
@@ -35,6 +37,9 @@ public:
     static bool IsAmdGpu(GDT_HW_GENERATION generation);
 
 private:
+    /// @brief Delete default constructor.
+    GpaCounterGeneratorDx11Base() = delete;
+
     GpaCounterGroupDesc d3d_counter_group_ = {0, "D3D11", 0, 0, 0};  ///< Description for D3D11 counter group.
 };
 

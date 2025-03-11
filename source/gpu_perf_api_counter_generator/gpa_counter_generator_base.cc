@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base class for counter generation.
@@ -7,10 +7,11 @@
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
 
-GpaCounterGeneratorBase::GpaCounterGeneratorBase()
+GpaCounterGeneratorBase::GpaCounterGeneratorBase(GpaSessionSampleType sample_type)
     : do_allow_public_counters_(false)
     , do_allow_hardware_counters_(false)
     , do_allow_hardware_exposed_counters_(false)
+    , sample_type_(sample_type)
 {
 }
 
@@ -28,6 +29,8 @@ GpaStatus GpaCounterGeneratorBase::GenerateCounters(GDT_HW_GENERATION desired_ge
 
     public_counters_.Clear();
     hardware_counters_.Clear();
+
+    public_counters_.SetSampleType(sample_type_);
 
     if (do_allow_public_counters_)
     {

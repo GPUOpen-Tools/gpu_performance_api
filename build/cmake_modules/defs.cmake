@@ -1,9 +1,9 @@
-## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.19)
 
 ## Define the GPA version
-set(GPA_MAJOR_VERSION 3)
-set(GPA_MINOR_VERSION 17)
+set(GPA_MAJOR_VERSION 4)
+set(GPA_MINOR_VERSION 0)
 set(GPA_UPDATE_VERSION 0)
 
 if(NOT DEFINED GPA_BUILD_NUMBER)
@@ -43,8 +43,6 @@ set(GPA_SRC_DX12_REL_PATH                                   "source/gpu_perf_api
 set(GPA_SRC_DX12                                            "${GPA_ROOT}/${GPA_SRC_DX12_REL_PATH}")
 set(GPA_SRC_VK_REL_PATH                                     "source/gpu_perf_api_vk")
 set(GPA_SRC_VK                                              "${GPA_ROOT}/${GPA_SRC_VK_REL_PATH}")
-set(GPA_SRC_CL_REL_PATH                                     "source/gpu_perf_api_cl")
-set(GPA_SRC_CL                                              "${GPA_ROOT}/${GPA_SRC_CL_REL_PATH}")
 set(GPA_SRC_TESTS_REL_PATH                                  "source/gpu_perf_api_unit_tests")
 set(GPA_SRC_TESTS                                           "${GPA_ROOT}/${GPA_SRC_TESTS_REL_PATH}")
 set(GPA_AUTOGEN_SRC_TESTS_REL_PATH                          "source/auto_generated/gpu_perf_api_unit_tests")
@@ -53,22 +51,12 @@ set(GPA_SRC_PUBLIC_COUNTER_COMPILER_REL_PATH                "source/public_count
 set(GPA_SRC_PUBLIC_COUNTER_COMPILER                         "${GPA_ROOT}/${GPA_SRC_PUBLIC_COUNTER_COMPILER_REL_PATH}")
 set(GPA_SRC_PUBLIC_COUNTER_INPUT_FILES_REL_PATH             "source/public_counter_compiler_input_files")
 set(GPA_SRC_PUBLIC_COUNTER_INPUT_FILES                      "${GPA_ROOT}/${GPA_SRC_PUBLIC_COUNTER_INPUT_FILES_REL_PATH}")
-set(GPA_SRC_EXAMPLE_COMMON_REL_PATH                         "source/examples/common")
-set(GPA_SRC_EXAMPLE_COMMON_PATH                             "${GPA_ROOT}/${GPA_SRC_EXAMPLE_COMMON_REL_PATH}")
-set(GPA_SRC_D3D12_COLOR_CUBE_REL_PATH                       "source/examples/dx12/dx12_color_cube")
-set(GPA_SRC_D3D12_COLOR_CUBE                                "${GPA_ROOT}/${GPA_SRC_D3D12_COLOR_CUBE_REL_PATH}")
-set(GPA_SRC_VK_COLOR_CUBE_REL_PATH                          "source/examples/vulkan/vk_color_cube")
-set(GPA_SRC_VK_COLOR_CUBE                                   "${GPA_ROOT}/${GPA_SRC_VK_COLOR_CUBE_REL_PATH}")
-set(GPA_SPHINX_DOCS_REL_PATH                                "docs/sphinx")
+set(GPA_SPHINX_DOCS_REL_PATH                                "documentation/sphinx")
 set(GPA_SPHINX_DOCS                                         "${GPA_ROOT}/${GPA_SPHINX_DOCS_REL_PATH}")
 set(GPA_SRC_GOOGLE_TEST_REL_PATH                            "source/google_test")
 set(GPA_SRC_GOOGLE_TEST                                     "${GPA_ROOT}/${GPA_SRC_GOOGLE_TEST_REL_PATH}")
 set(GPA_AUTOGEN_PUBLIC_COUNTER_INPUT_FILES_REL_PATH         "source/auto_generated/public_counter_compiler_input_files")
 set(GPA_AUTOGEN_PUBLIC_COUNTER_INPUT_FILES                  "${GPA_ROOT}/${GPA_AUTOGEN_PUBLIC_COUNTER_INPUT_FILES_REL_PATH}")
-set(GPA_SRC_GL_TRIANGLE_REL_PATH                            "source/examples/opengl/gl_triangle")
-set(GPA_SRC_GL_TRIANGLE                                     "${GPA_ROOT}/${GPA_SRC_GL_TRIANGLE_REL_PATH}")
-set(GPA_SRC_D3D11_TRIANGLE_REL_PATH                         "source/examples/dx11/dx11_triangle")
-set(GPA_SRC_D3D11_TRIANGLE                                  "${GPA_ROOT}/${GPA_SRC_D3D11_TRIANGLE_REL_PATH}")
 set(GPA_SRC_THIRD_PARTY_REL_PATH                            "source/third_party")
 set(GPA_SRC_THIRD_PARTY                                     "${GPA_ROOT}/${GPA_SRC_THIRD_PARTY_REL_PATH}")
 
@@ -85,8 +73,6 @@ set(CMAKE_COMMON_SRC_GLOBAL_DYNAMIC_LIBRARY_MODULE          ${COMMON_DIR_SRC}/Dy
 set(CMAKE_COMMON_SRC_GLOBAL_TSINGLETON                      ${COMMON_DIR_SRC}/TSingleton/Global-TSingleton.cmake)
 
 set(CMAKE_COMMON_LIB_GLOBAL_AMD_ADL                         ${COMMON_DIR_LIB}/AMD/ADL/Global-ADL.cmake)
-set(CMAKE_COMMON_LIB_GLOBAL_AMD_OPENCL_NO_LIB               ${COMMON_DIR_LIB}/AMD/APPSDK/Global-OpenCL-NoLib.cmake)
-set(CMAKE_COMMON_LIB_GLOBAL_AMD_OPENCL                      ${COMMON_DIR_LIB}/AMD/APPSDK/Global-OpenCL.cmake)
 set(CMAKE_COMMON_LIB_GLOBAL_EXT_OPENGL                      ${COMMON_DIR_LIB}/Ext/OpenGL/Global-OpenGL.cmake)
 set(CMAKE_COMMON_LIB_GLOBAL_EXT_VULKAN                      ${GPA_SRC_THIRD_PARTY}/Vulkan/Global-Vulkan.cmake)
 set(CMAKE_COMMON_LIB_GLOBAL_EXT_WINDOWS_SDK                 ${COMMON_DIR_LIB}/Ext/Windows-Kits/Global-WindowsSDK.cmake)

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA VK Context Definition
@@ -26,11 +26,11 @@
 VkGpaContext::VkGpaContext(const GpaVkContextOpenInfo* open_info, GpaHwInfo& hw_info, GpaOpenContextFlags flags)
     : GpaContext(hw_info, flags)
 {
-    physical_device_ = open_info->physical_device;
-    device_          = open_info->device;
-
-    amd_device_properties_ = {};
-    clock_mode_            = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
+    supported_sample_types_ = kGpaContextSampleTypeDiscreteCounter;
+    physical_device_        = open_info->physical_device;
+    device_                 = open_info->device;
+    amd_device_properties_  = {};
+    clock_mode_             = VK_GPA_DEVICE_CLOCK_MODE_DEFAULT_AMD;
 }
 
 VkGpaContext::~VkGpaContext()
@@ -85,16 +85,7 @@ GpaStatus VkGpaContext::Open()
 #endif  // __linux__
         }
 
-        if (OpenCounters())
-        {
-            SetAsOpened(true);
-        }
-        else
-        {
-            result = kGpaStatusErrorFailed;
-
-            vk_utils::ReleasePhysicalDeviceGpaPropertiesAMD(&amd_device_properties_);
-        }
+        SetAsOpened(true);
     }
     else
     {

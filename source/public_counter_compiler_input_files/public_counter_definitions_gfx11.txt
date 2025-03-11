@@ -8,6 +8,7 @@ name=GPUTime
 desc=#Timing#Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.
 type=gpa_float64
 usage=nanoseconds
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -19,6 +20,7 @@ name=ExecutionDuration
 desc=#Timing#GPU command execution duration in nanoseconds, from the time the command enters the top of the pipeline (TOP) to the time the command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.
 type=gpa_float64
 usage=nanoseconds
+spm=0
 [DX12Gfx11]
 [VKGfx11]
 GPUTime_Top_To_Bottom_Duration
@@ -28,6 +30,7 @@ name=ExecutionStart
 desc=#Timing#GPU command execution start time in nanoseconds. This is the time the command enters the top of the pipeline (TOP).
 type=gpa_float64
 usage=nanoseconds
+spm=0
 [DX12Gfx11]
 [VKGfx11]
 GPUTime_Top_To_Bottom_Start
@@ -37,6 +40,7 @@ name=ExecutionEnd
 desc=#Timing#GPU command execution end time in nanoseconds. This is the time the command reaches the bottom of the pipeline (BOP).
 type=gpa_float64
 usage=nanoseconds
+spm=0
 [DX12Gfx11]
 [VKGfx11]
 GPUTime_Top_To_Bottom_End
@@ -117,6 +121,7 @@ name=VsGsTime
 desc=#Timing#Time VS or GS are busy in nanoseconds in a VS-[GS-]PS pipeline.
 type=gpa_float64
 usage=nanoseconds
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -156,6 +161,7 @@ name=PreTessellationTime
 desc=#Timing#Time VS and HS are busy in nanoseconds in a pipeline that uses tessellation.
 type=gpa_float64
 usage=nanoseconds
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -195,6 +201,7 @@ name=PostTessellationTime
 desc=#Timing#Time DS or GS are busy in nanoseconds in a pipeline that uses tessellation.
 type=gpa_float64
 usage=nanoseconds
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -246,6 +253,7 @@ name=PSTime
 desc=#Timing#Time pixel shaders are busy in nanoseconds.
 type=gpa_float64
 usage=nanoseconds
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -295,6 +303,7 @@ name=CSTime
 desc=#Timing#Time compute shaders are busy in nanoseconds.
 type=gpa_float64
 usage=nanoseconds
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -362,6 +371,7 @@ name=PrimitiveAssemblyBusy
 desc=#Timing#The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.
 type=gpa_float64
 usage=percentage
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -379,6 +389,7 @@ name=PrimitiveAssemblyBusyCycles
 desc=#Timing#Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.
 type=gpa_float64
 usage=cycles
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -406,6 +417,7 @@ name=CulledPrims
 desc=#PrimitiveAssembly#The number of culled primitives. Typical reasons include scissor, the primitive having zero area, and back or front face culling.
 type=gpa_float64
 usage=items
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -421,6 +433,7 @@ name=ClippedPrims
 desc=#PrimitiveAssembly#The number of primitives that required one or more clipping operations due to intersecting the view volume or user clip planes.
 type=gpa_float64
 usage=items
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -533,6 +546,7 @@ name=CSThreadGroupSize
 desc=#ComputeShader#The number of CS threads within each thread group.
 type=gpa_float64
 usage=items
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -546,6 +560,7 @@ name=CSALUStalledByLDS
 desc=#ComputeShader#The average percentage of GPUTime each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).
 type=gpa_float64
 usage=percentage
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -555,11 +570,23 @@ SQWGP_CS*_SQ_PERF_SEL_WAVES[0..47]
 CPF_PERF_SEL_CPF_STAT_BUSY
 eqn=SQWGP_CS*_SQ_PERF_SEL_WAIT_INST_LDS,sum48,SQWGP_CS*_SQ_PERF_SEL_WAVES,sum48,/,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*
 
+name=CSALUStalledByLDSPerWave
+desc=#ComputeShader#The average percentage of GPUTime each wavefront's ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SQWGP_CS*_SQ_PERF_SEL_WAIT_INST_LDS[0..47]
+SQWGP_CS*_SQ_PERF_SEL_LEVEL_WAVES[0..47]
+CPF_PERF_SEL_CPF_STAT_BUSY
+eqn=SQWGP_CS*_SQ_PERF_SEL_WAIT_INST_LDS,sum48,SQWGP_CS*_SQ_PERF_SEL_LEVEL_WAVES,sum48,/,CPF_PERF_SEL_CPF_STAT_BUSY,/,(100),*
 
 name=CSALUStalledByLDSCycles
 desc=#ComputeShader#The average number of GPU cycles each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).
 type=gpa_float64
 usage=cycles
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -686,6 +713,7 @@ name=TexAveAnisotropy
 desc=#TextureUnit#The average degree of anisotropy applied. A number between 1 and 16. The anisotropic filtering algorithm only applies samples where they are required (e.g. there will be no extra anisotropic samples if the view vector is perpendicular to the surface) so this can be much lower than the requested anisotropy.
 type=gpa_float64
 usage=Items
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -797,6 +825,7 @@ name=HiZQuadsCulled
 desc=#DepthAndStencil#Percentage of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.
 type=gpa_float64
 usage=percentage
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -809,6 +838,7 @@ name=HiZQuadsCulledCount
 desc=#DepthAndStencil#Count of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.
 type=gpa_float64
 usage=items
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -832,6 +862,7 @@ name=PreZQuadsCulled
 desc=#DepthAndStencil#Percentage of quads rejected based on the detailZ and earlyZ tests.
 type=gpa_float64
 usage=percentage
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -845,6 +876,7 @@ name=PreZQuadsCulledCount
 desc=#DepthAndStencil#Count of quads rejected based on the detailZ and earlyZ tests.
 type=gpa_float64
 usage=items
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -868,6 +900,7 @@ name=PostZQuads
 desc=#DepthAndStencil#Percentage of quads for which the pixel shader will run and may be postZ tested.
 type=gpa_float64
 usage=percentage
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -1170,6 +1203,7 @@ name=L1CacheRequestCount
 desc=#MemoryCache#The number of read or write requests made to the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.
 type=gpa_float64
 usage=items
+spm=0
 [OGLPGfx11]
 [DX11Gfx11]
 [DX12Gfx11]
@@ -1390,6 +1424,7 @@ name=LocalVidMemBytes
 desc=#GlobalMemory#Number of bytes read from or written to the Infinity Cache (if available) or local video memory
 type=gpa_float64
 usage=bytes
+spm=0
 [OGLPGfx11]
 [DX12Gfx11]
 [VKGfx11]
@@ -1448,4 +1483,188 @@ usage=items
 [VKGfx11]
 TD*_PERF_SEL_TOTAL_NUM_RAY_TRACING_BVH4_INSTR[0..95]
 eqn=0..95,sum96
+
+name=WaveOccupancyPct
+desc=#WaveDistribution#The percentage of the maximum wavefront occupancy that is currently being used.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SQWGP*_SQ_PERF_SEL_LEVEL_WAVES[0..47]
+eqn=0..47,sum48,MAX_WAVES,/,(100),*
+
+name=HSLimitedByVgpr
+desc=#WaveOccupancyLimiters#The percentage of HS wave scheduling requests that are limited by VGPR availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_VGPR_SIMD_FULL_HS[0..5]
+SPI*_PERF_HS_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,NUM_SIMDS,/,(100),*
+
+name=HSLimitedByLds
+desc=#WaveOccupancyLimiters#The percentage of HS wave scheduling requests that are limited by LDS availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_LDS_CU_FULL_HS[0..5]
+SPI*_PERF_HS_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,NUM_CUS,/,(100),*
+
+name=HSLimitedByScratch
+desc=#WaveOccupancyLimiters#The percentage of HS wave scheduling requests that are limited by scratch space availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_TMP_STALL_HS[0..5]
+SPI*_PERF_HS_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,(100),*
+
+name=HSLimitedByBarriers
+desc=#WaveOccupancyLimiters#The percentage of HS wave scheduling requests that are limited by barriers.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_BAR_CU_FULL_HS[0..5]
+SPI*_PERF_HS_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,NUM_CUS,/,(100),*
+
+name=GSLimitedByVgpr
+desc=#WaveOccupancyLimiters#The percentage of GS wave scheduling requests that are limited by VGPR availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_VGPR_SIMD_FULL_GS[0..5]
+SPI*_PERF_GS_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,NUM_SIMDS,/,(100),*
+
+name=GSLimitedByLds
+desc=#WaveOccupancyLimiters#The percentage of GS wave scheduling requests that are limited by LDS availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_LDS_CU_FULL_GS[0..5]
+SPI*_PERF_GS_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,NUM_CUS,/,(100),*
+
+name=GSLimitedByScratch
+desc=#WaveOccupancyLimiters#The percentage of GS wave scheduling requests that are limited by scratch space availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_TMP_STALL_GS[0..5]
+SPI*_PERF_GS_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,(100),*
+
+name=PSLimitedByLds
+desc=#WaveOccupancyLimiters#The percentage of PS wave scheduling requests that are limited by LDS availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_LDS_CU_FULL_PS[0..5]
+SPI*_PERF_PS0_BUSY[0..5]
+SPI*_PERF_PS1_BUSY[0..5]
+SPI*_PERF_PS2_BUSY[0..5]
+SPI*_PERF_PS3_BUSY[0..5]
+eqn=0..5,sum6,6..29,max24,/,NUM_CUS,/,(100),*
+
+name=PSLimitedByVgpr
+desc=#WaveOccupancyLimiters#The percentage of PS wave scheduling requests that are limited by VGPR availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_VGPR_SIMD_FULL_PS[0..5]
+SPI*_PERF_PS0_BUSY[0..5]
+SPI*_PERF_PS1_BUSY[0..5]
+SPI*_PERF_PS2_BUSY[0..5]
+SPI*_PERF_PS3_BUSY[0..5]
+eqn=0..5,sum6,6..29,max24,/,NUM_SIMDS,/,(100),*
+
+name=PSLimitedByScratch
+desc=#WaveOccupancyLimiters#The percentage of PS wave scheduling requests that are limited by scratch space availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_TMP_STALL_PS[0..5]
+SPI*_PERF_PS0_BUSY[0..5]
+SPI*_PERF_PS1_BUSY[0..5]
+SPI*_PERF_PS2_BUSY[0..5]
+SPI*_PERF_PS3_BUSY[0..5]
+eqn=0..5,sum6,6..29,max24,/,(100),*
+
+name=CSLimitedByLds
+desc=#WaveOccupancyLimiters#The percentage of CS wave scheduling requests that are limited by LDS availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_LDS_CU_FULL_CSG[0..5]
+SPI*_PERF_CSGN_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,NUM_CUS,/,(100),*
+
+name=CSLimitedByVgpr
+desc=#WaveOccupancyLimiters#The percentage of CS wave scheduling requests that are limited by VGPR availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_VGPR_SIMD_FULL_CSG[0..5]
+SPI*_PERF_CSGN_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,NUM_SIMDS,/,(100),*
+
+name=CSLimitedByScratch
+desc=#WaveOccupancyLimiters#The percentage of CS wave scheduling requests that are limited by scratch space availability.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_TMP_STALL_CSG[0..5]
+SPI*_PERF_CSGN_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,(100),*
+
+name=CSLimitedByBarriers
+desc=#WaveOccupancyLimiters#The percentage of CS wave scheduling requests that are limited by barriers.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_BAR_CU_FULL_CSG[0..5]
+SPI*_PERF_CSGN_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,NUM_CUS,/,(100),*
+
+name=CSLimitedByThreadGroupLimit
+desc=#WaveOccupancyLimiters#The percentage of CS wave scheduling requests that are limited by the thread group limit.
+type=gpa_float64
+usage=percentage
+spm=1
+discrete=0
+[DX12Gfx11]
+SPI*_PERF_RA_TGLIM_CU_FULL_CSG[0..5]
+SPI*_PERF_CSGN_BUSY[0..5]
+eqn=0..5,sum6,6..11,max6,/,NUM_CUS,/,(100),*
 

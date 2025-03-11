@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2021 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
@@ -45,11 +45,6 @@ endif()
 if(NOT ${skipopengl})
     set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-GL)
     add_definitions(-DENABLE_GPA_GL)
-endif()
-
-if(NOT ${skipopencl})
-    set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-CL)
-    add_definitions(-DENABLE_GPA_CL)
 endif()
 
 if(WIN32)

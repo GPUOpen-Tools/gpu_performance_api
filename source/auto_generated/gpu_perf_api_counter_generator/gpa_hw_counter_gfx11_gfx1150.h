@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX11_GFX1150.
@@ -28,7 +28,7 @@ namespace counter_gfx11_gfx1150
 /// @return True if the ASIC is matched by this file.
 inline bool MatchAsic(GDT_HW_ASIC_TYPE asic_type)
 {
-    static std::set<GDT_HW_ASIC_TYPE> asics_supported = { GDT_GFX11_5_0 };
+    static std::set<GDT_HW_ASIC_TYPE> asics_supported = { GDT_GFX11_5_0, GDT_GFX11_5_1, GDT_GFX11_5_2 };
 
     return asics_supported.find(asic_type) != asics_supported.end();
 }

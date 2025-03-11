@@ -61,12 +61,6 @@ typedef void* LibHandle;
         (varName) = reinterpret_cast<decltype(type)*>(LOAD_SYMBOL(ogl_utils::gl_lib_handle, #type)); \
     }
 
-// Declarations for GLX_MESA_query_renderer extension (subset -- just what is needed for GPA GL).
-#ifndef GLX_MESA_query_renderer
-#define GLX_MESA_query_renderer 1           /// Constant used to query the renderer using the MESA extension.
-#define GLX_RENDERER_DEVICE_ID_MESA 0x8184  /// Constant used to query the device id using the MESA extension.
-#endif
-
 #ifdef GLES
 // GL_EXT_disjoint_timer_query.
 #define PFNGLGENQUERIESPROC PFNGLGENQUERIESEXTPROC
@@ -99,7 +93,7 @@ namespace ogl_utils
     extern PFNGLGETQUERYOBJECTUI64VEXTPROC ogl_get_query_object_ui_64_v_ext;  // Exists in GL and GLES as extension.
 
     /// AMD perf monitor extensions.
-    extern PFNGLGETPERFMONITORGROUPSAMDPROC        ogl_get_perf_monitor_groups_amd;
+    extern PFNGLGETPERFMONITORCOUNTERDATAAMDPROC   ogl_get_perf_monitor_groups_amd;
     extern PFNGLGETPERFMONITORCOUNTERSAMDPROC      ogl_get_perf_monitor_counters_amd;
     extern PFNGLGETPERFMONITORGROUPSTRINGAMDPROC   ogl_get_perf_monitor_group_string_amd;
     extern PFNGLGETPERFMONITORCOUNTERSTRINGAMDPROC ogl_get_perf_monitor_counter_string_amd;
@@ -121,7 +115,6 @@ namespace ogl_utils
     extern PFN_OGL_GLGETDEBUGMESSAGELOGARB   ogl_get_debug_message_log_arb;
 #endif
 
-    extern PFN_GLX_QUERYCURRENTRENDERERINTEGERMESA ogl_x_query_current_renderer_integer_mesa;  ///< Function pointer for glxQueryCurrentRendererIntegerMesa.
     extern PFN_GL_SETGPADEVICECLOCKMODEAMDX        ogl_set_gpa_device_clock_mode_amd_x;        ///< Function pointer for glSetGpaDeviceClockModeAMDX.
 
     /// @brief Different OpenGL drivers that must be recognized by GPA and may or may not be fully supported.
@@ -129,8 +122,7 @@ namespace ogl_utils
     {
         kUnknown = 0,
         kMesa    = 1,
-        kUgl     = 2,
-        kOglp    = 3,
+        kOglp    = 2,
     };
 
     extern GpaGlDriverType gl_driver_type;     ///< The type of driver that is recognized based on various GL strings.
@@ -151,7 +143,6 @@ namespace ogl_utils
     ///    -- GL_ARB_timer_query (OpenGL)
     ///    -- GL_EXT_disjoint_timer_query (OpenGLES)
     ///    -- GL_AMD_debug_output
-    ///    -- GLX_MESA_query_renderer
     ///
     /// @retval false If the GL_AMD_performance_monitor or GL_ARB_timer_query extension entry points are not found.
     /// @retval true Otherwise.
@@ -173,14 +164,6 @@ namespace ogl_utils
     /// @return True if the Mesa driver is being used; false otherwise.
     bool IsMesaDriver();
 
-    /// @brief Indicates if the current driver is a UGL driver.
-    ///
-    /// This will query and parse the GL_VERSION string if it has not already been done, which imposes the restriction
-    /// that this function will only work correctly after the GL context has been created.
-    ///
-    /// @return True if the UGL driver is being used; false otherwise.
-    bool IsUglDriver();
-
     /// @brief Indicates if the current driver is an OGLP driver.
     ///
     /// This will query and parse the GL_VERSION string if it has not already been done, which imposes the restriction
@@ -188,14 +171,6 @@ namespace ogl_utils
     ///
     /// @return True if the OGLP driver is being used; false otherwise.
     bool IsOglpDriver();
-
-    /// @brief Indicates if the current driver cannot be identified in the event that the GL context cannot be created.
-    ///
-    /// This will check if the gl_version_string is a null pointer, and if so will return false to indicate that no driver
-    /// can be successfully found.
-    ///
-    /// @return True if an unidentifiable driver is being used; false otherwise.
-    bool IsNoDriver();
 
     /// @brief Gets the driver version number.
     ///
@@ -207,22 +182,12 @@ namespace ogl_utils
     /// @retval 0 If there was an error determining the driver version.
     int GetDriverVersion();
 
-    /// @brief Initializes the GL_AMD_performance_monitor extension functions to use with current rendering context.
-    ///
-    /// @return True upon successful otherwise false.
-    bool InitContextGlAmdPerfMonitorExtensionFunctions();
-
     /// @brief Initializes the GL_AMD_performance_monitor_2 extension functions to use with current rendering context.
     ///
     /// This extension is currently a private extension and is not actually exposed as a named extension string.
     ///
     /// @return True upon successful otherwise false.
     bool InitContextGlAmdPerfMonitor2ExtensionFunctions();
-
-    /// @brief Initialize platform-specific OpenGL extensions.
-    ///
-    /// @return True upon success otherwise false.
-    bool InitPlatformExtFunctions();
 
     /// @brief Delete objects that are no longer needed.
     void Cleanup();
@@ -232,7 +197,6 @@ namespace ogl_utils
     extern const char* kAtiRendererString;            ///< ATI Renderer string (legacy).
     extern const char* kNvidiaRendererString;         ///< NVIDIA Renderer string.
     extern const char* kIntelRendererString;          ///< Intel Renderer string.
-    extern const char* kMesaString;                   ///< Mesa string.
     extern bool        are_gl_functions_initialized;  ///< Flag indicating if the GL extensions and functions have been initialized.
     extern LibHandle   gl_lib_handle;                 ///< Handle to the GL lib.
 

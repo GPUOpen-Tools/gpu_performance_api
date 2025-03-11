@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Implements Gpa counter context related functionality.
@@ -41,9 +41,11 @@
 #endif
 
 GpaCounterContextHandler::GpaCounterContextHandler(const GpaApiType&                    api_type,
+                                                   const GpaSessionSampleType           sample_type,
                                                    const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
                                                    const GpaOpenContextFlags&           context_flags)
     : gpa_api_type_(api_type)
+    , sample_type_(sample_type)
     , gpa_open_context_flags_(context_flags)
     , initialized_(false)
     , gpa_counter_accessor_(nullptr)
@@ -108,6 +110,7 @@ bool GpaCounterContextHandler::InitCounters()
             {
                 const GpaStatus status = GenerateCounters(
                     gpa_api_type_,
+                    sample_type_,
                     vendorId, deviceId, revisionId, gpa_open_context_flags_, &gpa_counter_accessor_, &gpa_counter_scheduler_);
 
                 if (kGpaStatusOk == status)
@@ -191,14 +194,16 @@ GpaCounterContextManager::~GpaCounterContextManager()
 }
 
 GpaStatus GpaCounterContextManager::OpenCounterContext(const GpaApiType&                    api_type,
+                                                       const GpaSessionSampleType           sample_type,
                                                        const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
                                                        const GpaOpenContextFlags&           context_flags,
                                                        GpaCounterContext*                   gpa_counter_context)
 {
-    Init(api_type);
+    Init(api_type, sample_type);
 
     GpaCounterContextHandler* gpa_new_counter_context =
         new (std::nothrow) GpaCounterContextHandler(api_type,
+            sample_type,
             gpa_counter_context_hardware_info, context_flags);
 
     if (nullptr != gpa_new_counter_context)
@@ -276,14 +281,13 @@ bool GpaCounterContextManager::IsCounterContextOpen(GpaCounterContext gpa_counte
     return false;
 }
 
-void GpaCounterContextManager::Init(const GpaApiType& api_type)
+void GpaCounterContextManager::Init(const GpaApiType& api_type, const GpaSessionSampleType sample_type)
 {
     if (gpa_counter_scheduler_map_.empty())
     {
         gpa_counter_scheduler_map_.insert(std::pair<GpaApiType, IGpaCounterScheduler*>(kGpaApiDirectx11, nullptr));
         gpa_counter_scheduler_map_.insert(std::pair<GpaApiType, IGpaCounterScheduler*>(kGpaApiDirectx12, nullptr));
         gpa_counter_scheduler_map_.insert(std::pair<GpaApiType, IGpaCounterScheduler*>(kGpaApiOpengl, nullptr));
-        gpa_counter_scheduler_map_.insert(std::pair<GpaApiType, IGpaCounterScheduler*>(kGpaApiOpencl, nullptr));
         gpa_counter_scheduler_map_.insert(std::pair<GpaApiType, IGpaCounterScheduler*>(kGpaApiVulkan, nullptr));
     }
 
@@ -292,15 +296,14 @@ void GpaCounterContextManager::Init(const GpaApiType& api_type)
         gpa_counter_accessor_map_.insert(std::pair<GpaApiType, IGpaCounterAccessor*>(kGpaApiDirectx11, nullptr));
         gpa_counter_accessor_map_.insert(std::pair<GpaApiType, IGpaCounterAccessor*>(kGpaApiDirectx12, nullptr));
         gpa_counter_accessor_map_.insert(std::pair<GpaApiType, IGpaCounterAccessor*>(kGpaApiOpengl, nullptr));
-        gpa_counter_accessor_map_.insert(std::pair<GpaApiType, IGpaCounterAccessor*>(kGpaApiOpencl, nullptr));
         gpa_counter_accessor_map_.insert(std::pair<GpaApiType, IGpaCounterAccessor*>(kGpaApiVulkan, nullptr));
     }
 
-    InitCounterAccessor(api_type);
-    InitCounterScheduler(api_type);
+    InitCounterAccessor(api_type, sample_type);
+    InitCounterScheduler(api_type, sample_type);
 }
 
-void GpaCounterContextManager::InitCounterAccessor(const GpaApiType& api_type)
+void GpaCounterContextManager::InitCounterAccessor(const GpaApiType& api_type, const GpaSessionSampleType sample_type)
 {
     if (nullptr != gpa_counter_accessor_map_[api_type])
     {
@@ -311,27 +314,22 @@ void GpaCounterContextManager::InitCounterAccessor(const GpaApiType& api_type)
     {
     case kGpaApiDirectx11:
 #ifdef ENABLE_GPA_DX11
-        gpa_counter_accessor_map_[kGpaApiDirectx11] = new GpaCounterGeneratorDx11();
+        gpa_counter_accessor_map_[kGpaApiDirectx11] = new GpaCounterGeneratorDx11(sample_type);
 #endif
         break;
     case kGpaApiDirectx12:
 #ifdef ENABLE_GPA_DX12
-        gpa_counter_accessor_map_[kGpaApiDirectx12] = new GpaCounterGeneratorDx12();
+        gpa_counter_accessor_map_[kGpaApiDirectx12] = new GpaCounterGeneratorDx12(sample_type);
 #endif
         break;
     case kGpaApiOpengl:
 #ifdef ENABLE_GPA_GL
-        gpa_counter_accessor_map_[kGpaApiOpengl] = new GpaCounterGeneratorGl();
-#endif
-        break;
-    case kGpaApiOpencl:
-#ifdef ENABLE_GPA_CL
-        gpa_counter_accessor_map_[kGpaApiOpencl] = new GpaCounterGeneratorCl();
+        gpa_counter_accessor_map_[kGpaApiOpengl] = new GpaCounterGeneratorGl(sample_type);
 #endif
         break;
     case kGpaApiVulkan:
 #ifdef ENABLE_GPA_VK
-        gpa_counter_accessor_map_[kGpaApiVulkan] = new GpaCounterGeneratorVk();
+        gpa_counter_accessor_map_[kGpaApiVulkan] = new GpaCounterGeneratorVk(sample_type);
 #endif
         break;
     default:
@@ -339,7 +337,7 @@ void GpaCounterContextManager::InitCounterAccessor(const GpaApiType& api_type)
     }
 }
 
-void GpaCounterContextManager::InitCounterScheduler(const GpaApiType& api_type)
+void GpaCounterContextManager::InitCounterScheduler(const GpaApiType& api_type, const GpaSessionSampleType sample_type)
 {
     if (nullptr != gpa_counter_scheduler_map_[api_type])
     {
@@ -350,27 +348,22 @@ void GpaCounterContextManager::InitCounterScheduler(const GpaApiType& api_type)
     {
     case kGpaApiDirectx11:
 #ifdef ENABLE_GPA_DX11
-        gpa_counter_scheduler_map_[kGpaApiDirectx11] = new GpaCounterSchedulerDx11();
+        gpa_counter_scheduler_map_[kGpaApiDirectx11] = new GpaCounterSchedulerDx11(sample_type);
 #endif
         break;
     case kGpaApiDirectx12:
 #ifdef ENABLE_GPA_DX12
-        gpa_counter_scheduler_map_[kGpaApiDirectx12] = new GpaCounterSchedulerDx12();
+        gpa_counter_scheduler_map_[kGpaApiDirectx12] = new GpaCounterSchedulerDx12(sample_type);
 #endif
         break;
     case kGpaApiOpengl:
 #ifdef ENABLE_GPA_GL
-        gpa_counter_scheduler_map_[kGpaApiOpengl] = new GpaCounterSchedulerGl();
-#endif
-        break;
-    case kGpaApiOpencl:
-#ifdef ENABLE_GPA_CL
-        gpa_counter_scheduler_map_[kGpaApiOpencl] = new GpaCounterSchedulerCl();
+        gpa_counter_scheduler_map_[kGpaApiOpengl] = new GpaCounterSchedulerGl(sample_type);
 #endif
         break;
     case kGpaApiVulkan:
 #ifdef ENABLE_GPA_VK
-        gpa_counter_scheduler_map_[kGpaApiVulkan] = new GpaCounterSchedulerVk();
+        gpa_counter_scheduler_map_[kGpaApiVulkan] = new GpaCounterSchedulerVk(sample_type);
 #endif
         break;
     default:

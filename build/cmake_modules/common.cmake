@@ -1,13 +1,13 @@
-## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
-include (${GPA_CMAKE_MODULES_DIR}/utils.cmake)
+include(${GPA_CMAKE_MODULES_DIR}/utils.cmake)
 
 # Include global cmake common file
 include(${CMAKE_COMMON_SRC_GLOBAL_CMAKE_MODULE})
 
 # Check for required variables from other cmake files.
-if (${GPA_OUTPUT_DIR} STREQUAL "")
+if(${GPA_OUTPUT_DIR} STREQUAL "")
     message(FATAL_ERROR "No output directory is defined, make sure defs.cmake is included before common.cmake")
 endif()
 
@@ -62,9 +62,7 @@ if(NOT WIN32)
         set(CMAKE_CXX_COMPILER g++)
     endif()
 
-if(NOT APPLE)
     set(GPA_COMMON_LINK_ARCHIVE_FLAG -Wl,--whole-archive)
     set(GPA_COMMON_LINK_NO_ARCHIVE_FLAG -Wl,--no-whole-archive)
-endif()
     add_compile_options(-Wno-unknown-pragmas -Wno-strict-aliasing -Wno-non-virtual-dtor -Wno-unused-value -msse -fvisibility=hidden)
 endif()

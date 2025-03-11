@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Implementation
@@ -18,10 +18,60 @@
 
 #include "gpu_perf_api_dx12/dx12_utils.h"
 
-IGpaImplementor*                     gpa_imp = Dx12GpaImplementor::Instance();
+static GpaCounterGeneratorDx12* counter_generator_dx12 = nullptr;  ///< Static instance of DX12 generator.
+static GpaCounterSchedulerDx12* counter_scheduler_dx12 = nullptr;  ///< Static instance of DX12 scheduler.
 
-static GpaCounterGeneratorDx12       counter_generator_dx12;          ///< Static instance of DX12 generator.
-static GpaCounterSchedulerDx12       counter_scheduler_dx12;          ///< Static instance of DX12 scheduler.
+static GpaCounterGeneratorDx12* generator_dx12_streaming = nullptr;  ///< Static instance of DX12 generator.
+static GpaCounterSchedulerDx12* scheduler_dx12_streaming = nullptr;  ///< Static instance of DX12 scheduler.
+
+IGpaImplementor* CreateImplementor()
+{
+    counter_generator_dx12 = new GpaCounterGeneratorDx12(kGpaSessionSampleTypeDiscreteCounter);
+    counter_scheduler_dx12 = new GpaCounterSchedulerDx12(kGpaSessionSampleTypeDiscreteCounter);
+
+    generator_dx12_streaming = new GpaCounterGeneratorDx12(kGpaSessionSampleTypeStreamingCounter);
+    scheduler_dx12_streaming = new GpaCounterSchedulerDx12(kGpaSessionSampleTypeStreamingCounter);
+
+    return Dx12GpaImplementor::Instance();
+}
+
+void DestroyImplementor(IGpaImplementor* impl)
+{
+    if (counter_generator_dx12 != nullptr)
+    {
+        delete counter_generator_dx12;
+        counter_generator_dx12 = nullptr;
+    }
+
+    if (counter_scheduler_dx12 != nullptr)
+    {
+        delete counter_scheduler_dx12;
+        counter_scheduler_dx12 = nullptr;
+    }
+
+    if (generator_dx12_streaming != nullptr)
+    {
+        delete generator_dx12_streaming;
+        generator_dx12_streaming = nullptr;
+    }
+
+    if (scheduler_dx12_streaming != nullptr)
+    {
+        delete scheduler_dx12_streaming;
+        scheduler_dx12_streaming = nullptr;
+    }
+
+    if (nullptr != impl)
+    {
+        Dx12GpaImplementor::DeleteInstance();
+    }
+}
+GpaStatus Dx12GpaImplementor::Initialize(GpaInitializeFlags flags)
+{
+    GpaStatus status = GpaImplementor::Initialize(flags);
+
+    return status;
+}
 
 /// @brief Converts string from wide to utf-8 encoding.
 ///
@@ -90,8 +140,8 @@ bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
                 {
                     hw_gen = card_info.m_generation;
 
-                    // GPA DX12 requires GFX8 or above (but also works on Hawaii).
-                    if (GDT_HW_GENERATION_VOLCANICISLAND > hw_gen && GDT_HAWAII != card_info.m_asicType)
+                    // GPA DX12 requires GFX10.
+                    if (GDT_HW_GENERATION_GFX10 > hw_gen)
                     {
                         GPA_LOG_ERROR("Hardware not supported.");
                     }
@@ -109,6 +159,8 @@ bool Dx12GpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, 
                         }
                     }
                 }
+
+                AMDTDeviceInfoUtils::DeleteInstance();
             }
 
             hw_info.SetHwGeneration(hw_gen);
@@ -160,6 +212,7 @@ bool Dx12GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info
 
 GpaStatus Dx12GpaImplementor::Destroy()
 {
+
     DeleteContexts();
     return GpaImplementor::Destroy();
 }

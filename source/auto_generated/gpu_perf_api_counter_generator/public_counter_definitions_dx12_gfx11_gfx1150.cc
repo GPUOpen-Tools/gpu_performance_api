@@ -1,10 +1,11 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for DX12 GFX11_GFX1150.
 //==============================================================================
 
+// clang-format off
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_dx12_gfx11_gfx1150.h"
 
@@ -26,7 +27,7 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
 
     counter_gfx11_gfx1150::OverrideBlockInstanceCounters(asic_type);
 
-    {
+    { // Index:0
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72260);
         internal_counters.push_back(72653);
@@ -54,9 +55,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(81299);
         internal_counters.push_back(24);
 
-        c.UpdateAsicSpecificDerivedCounter("DepthStencilTestBusy", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("DepthStencilTestBusy",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*");
     }
-    {
+    { // Index:1
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72260);
         internal_counters.push_back(72653);
@@ -83,9 +86,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80906);
         internal_counters.push_back(81299);
 
-        c.UpdateAsicSpecificDerivedCounter("DepthStencilTestBusyCycles", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24");
+        c.UpdateAsicSpecificDerivedCounter("DepthStencilTestBusyCycles",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24");
     }
-    {
+    { // Index:2
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72131);
         internal_counters.push_back(72524);
@@ -136,9 +141,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80766);
         internal_counters.push_back(81159);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZTilesAccepted", internal_counters, "24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,-,(0),max,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("HiZTilesAccepted",
+                                           internal_counters,
+                                           "24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,-,(0),max,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*");
     }
-    {
+    { // Index:3
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72120);
         internal_counters.push_back(72513);
@@ -189,9 +196,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80777);
         internal_counters.push_back(81170);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZTilesAcceptedCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("HiZTilesAcceptedCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max");
     }
-    {
+    { // Index:4
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72131);
         internal_counters.push_back(72524);
@@ -218,9 +227,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80777);
         internal_counters.push_back(81170);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZTilesRejectedCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("HiZTilesRejectedCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:5
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72120);
         internal_counters.push_back(72513);
@@ -271,9 +282,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80790);
         internal_counters.push_back(81183);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZTilesDetailCulled", internal_counters, "24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("PreZTilesDetailCulled",
+                                           internal_counters,
+                                           "24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,(100),*");
     }
-    {
+    { // Index:6
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72144);
         internal_counters.push_back(72537);
@@ -300,9 +313,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80790);
         internal_counters.push_back(81183);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZTilesDetailCulledCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("PreZTilesDetailCulledCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:7
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72120);
         internal_counters.push_back(72513);
@@ -329,9 +344,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80766);
         internal_counters.push_back(81159);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZTilesDetailSurvivingCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("PreZTilesDetailSurvivingCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:8
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2069);
         internal_counters.push_back(2744);
@@ -382,9 +399,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(16995);
         internal_counters.push_back(17670);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulled", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulled",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,(100),*");
     }
-    {
+    { // Index:9
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2069);
         internal_counters.push_back(2744);
@@ -435,9 +454,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(16995);
         internal_counters.push_back(17670);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulledCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("HiZQuadsCulledCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max");
     }
-    {
+    { // Index:10
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2145);
         internal_counters.push_back(2820);
@@ -464,9 +485,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(16995);
         internal_counters.push_back(17670);
 
-        c.UpdateAsicSpecificDerivedCounter("HiZQuadsAcceptedCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("HiZQuadsAcceptedCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:11
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2145);
         internal_counters.push_back(2820);
@@ -541,9 +564,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(16919);
         internal_counters.push_back(17594);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulled", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,sum24,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulled",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,sum24,/,(100),*");
     }
-    {
+    { // Index:12
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2145);
         internal_counters.push_back(2820);
@@ -594,9 +619,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(17019);
         internal_counters.push_back(17694);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulledCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsCulledCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max");
     }
-    {
+    { // Index:13
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2169);
         internal_counters.push_back(2844);
@@ -623,9 +650,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(17019);
         internal_counters.push_back(17694);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZQuadsSurvivingCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("PreZQuadsSurvivingCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:14
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2169);
         internal_counters.push_back(2844);
@@ -676,9 +705,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(16919);
         internal_counters.push_back(17594);
 
-        c.UpdateAsicSpecificDerivedCounter("PostZQuads", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("PostZQuads",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*");
     }
-    {
+    { // Index:15
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2169);
         internal_counters.push_back(2844);
@@ -705,9 +736,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(17019);
         internal_counters.push_back(17694);
 
-        c.UpdateAsicSpecificDerivedCounter("PostZQuadCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("PostZQuadCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:16
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72293);
         internal_counters.push_back(72686);
@@ -734,9 +767,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80939);
         internal_counters.push_back(81332);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZSamplesPassing", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("PreZSamplesPassing",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:17
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72295);
         internal_counters.push_back(72688);
@@ -763,9 +798,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80941);
         internal_counters.push_back(81334);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZSamplesFailingS", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("PreZSamplesFailingS",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:18
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72294);
         internal_counters.push_back(72687);
@@ -792,9 +829,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80940);
         internal_counters.push_back(81333);
 
-        c.UpdateAsicSpecificDerivedCounter("PreZSamplesFailingZ", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("PreZSamplesFailingZ",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:19
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72290);
         internal_counters.push_back(72683);
@@ -821,9 +860,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80936);
         internal_counters.push_back(81329);
 
-        c.UpdateAsicSpecificDerivedCounter("PostZSamplesPassing", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("PostZSamplesPassing",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:20
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72292);
         internal_counters.push_back(72685);
@@ -850,9 +891,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80938);
         internal_counters.push_back(81331);
 
-        c.UpdateAsicSpecificDerivedCounter("PostZSamplesFailingS", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("PostZSamplesFailingS",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:21
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72291);
         internal_counters.push_back(72684);
@@ -879,9 +922,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80937);
         internal_counters.push_back(81330);
 
-        c.UpdateAsicSpecificDerivedCounter("PostZSamplesFailingZ", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
+        c.UpdateAsicSpecificDerivedCounter("PostZSamplesFailingZ",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24");
     }
-    {
+    { // Index:22
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72162);
         internal_counters.push_back(72555);
@@ -909,9 +954,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(81201);
         internal_counters.push_back(24);
 
-        c.UpdateAsicSpecificDerivedCounter("ZUnitStalled", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("ZUnitStalled",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*");
     }
-    {
+    { // Index:23
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72162);
         internal_counters.push_back(72555);
@@ -938,9 +985,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80808);
         internal_counters.push_back(81201);
 
-        c.UpdateAsicSpecificDerivedCounter("ZUnitStalledCycles", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24");
+        c.UpdateAsicSpecificDerivedCounter("ZUnitStalledCycles",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24");
     }
-    {
+    { // Index:24
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72164);
         internal_counters.push_back(72557);
@@ -991,9 +1040,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80817);
         internal_counters.push_back(81210);
 
-        c.UpdateAsicSpecificDerivedCounter("DBMemRead", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(256),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(32),*,+");
+        c.UpdateAsicSpecificDerivedCounter("DBMemRead",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(256),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(32),*,+");
     }
-    {
+    { // Index:25
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72176);
         internal_counters.push_back(72569);
@@ -1044,9 +1095,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(80825);
         internal_counters.push_back(81218);
 
-        c.UpdateAsicSpecificDerivedCounter("DBMemWritten", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(32),*,+");
+        c.UpdateAsicSpecificDerivedCounter("DBMemWritten",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(32),*,+");
     }
-    {
+    { // Index:26
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64541);
         internal_counters.push_back(64620);
@@ -1241,9 +1294,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(71975);
         internal_counters.push_back(72054);
 
-        c.UpdateAsicSpecificDerivedCounter("L0CacheHit", internal_counters, "(0),(1),96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,ifnotzero");
+        c.UpdateAsicSpecificDerivedCounter("L0CacheHit",
+                                           internal_counters,
+                                           "(0),(1),96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,ifnotzero");
     }
-    {
+    { // Index:27
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64541);
         internal_counters.push_back(64620);
@@ -1342,9 +1397,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(71967);
         internal_counters.push_back(72046);
 
-        c.UpdateAsicSpecificDerivedCounter("L0CacheRequestCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96");
+        c.UpdateAsicSpecificDerivedCounter("L0CacheRequestCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96");
     }
-    {
+    { // Index:28
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64541);
         internal_counters.push_back(64620);
@@ -1539,9 +1596,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(71975);
         internal_counters.push_back(72054);
 
-        c.UpdateAsicSpecificDerivedCounter("L0CacheHitCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,-");
+        c.UpdateAsicSpecificDerivedCounter("L0CacheHitCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,-");
     }
-    {
+    { // Index:29
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64549);
         internal_counters.push_back(64628);
@@ -1640,9 +1699,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(71975);
         internal_counters.push_back(72054);
 
-        c.UpdateAsicSpecificDerivedCounter("L0CacheMissCount", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96");
+        c.UpdateAsicSpecificDerivedCounter("L0CacheMissCount",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96");
     }
-    {
+    { // Index:30
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64578);
         internal_counters.push_back(64657);
@@ -1741,9 +1802,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(72004);
         internal_counters.push_back(72083);
 
-        c.UpdateAsicSpecificDerivedCounter("L0TagConflictReadStalledCycles", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96");
+        c.UpdateAsicSpecificDerivedCounter("L0TagConflictReadStalledCycles",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96");
     }
-    {
+    { // Index:31
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64579);
         internal_counters.push_back(64658);
@@ -1842,9 +1905,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(72005);
         internal_counters.push_back(72084);
 
-        c.UpdateAsicSpecificDerivedCounter("L0TagConflictWriteStalledCycles", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96");
+        c.UpdateAsicSpecificDerivedCounter("L0TagConflictWriteStalledCycles",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96");
     }
-    {
+    { // Index:32
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64580);
         internal_counters.push_back(64659);
@@ -1943,9 +2008,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(72006);
         internal_counters.push_back(72085);
 
-        c.UpdateAsicSpecificDerivedCounter("L0TagConflictAtomicStalledCycles", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96");
+        c.UpdateAsicSpecificDerivedCounter("L0TagConflictAtomicStalledCycles",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96");
     }
-    {
+    { // Index:33
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64571);
         internal_counters.push_back(64650);
@@ -2045,9 +2112,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(72076);
         internal_counters.push_back(24);
 
-        c.UpdateAsicSpecificDerivedCounter("MemUnitStalled", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96,96,/,(100),*");
+        c.UpdateAsicSpecificDerivedCounter("MemUnitStalled",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96,96,/,(100),*");
     }
-    {
+    { // Index:34
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64571);
         internal_counters.push_back(64650);
@@ -2146,9 +2215,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(71997);
         internal_counters.push_back(72076);
 
-        c.UpdateAsicSpecificDerivedCounter("MemUnitStalledCycles", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96");
+        c.UpdateAsicSpecificDerivedCounter("MemUnitStalledCycles",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96");
     }
-    {
+    { // Index:35
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(44682);
         internal_counters.push_back(44890);
@@ -2247,9 +2318,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(64234);
         internal_counters.push_back(64442);
 
-        c.UpdateAsicSpecificDerivedCounter("RayTriTests", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96");
+        c.UpdateAsicSpecificDerivedCounter("RayTriTests",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96");
     }
-    {
+    { // Index:36
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(44680);
         internal_counters.push_back(44888);
@@ -2444,9 +2517,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(64233);
         internal_counters.push_back(64441);
 
-        c.UpdateAsicSpecificDerivedCounter("RayBoxTests", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,sum2");
+        c.UpdateAsicSpecificDerivedCounter("RayBoxTests",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,sum2");
     }
-    {
+    { // Index:37
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(44682);
         internal_counters.push_back(44890);
@@ -2737,9 +2812,11 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(64233);
         internal_counters.push_back(64441);
 
-        c.UpdateAsicSpecificDerivedCounter("TotalRayTests", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,sum2,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum96,sum2");
+        c.UpdateAsicSpecificDerivedCounter("TotalRayTests",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,sum2,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum96,sum2");
     }
-    {
+    { // Index:38
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(44646);
         internal_counters.push_back(44854);
@@ -2838,10 +2915,14 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
         internal_counters.push_back(64198);
         internal_counters.push_back(64406);
 
-        c.UpdateAsicSpecificDerivedCounter("RayTestsPerWave", internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96");
+        c.UpdateAsicSpecificDerivedCounter("RayTestsPerWave",
+                                           internal_counters,
+                                           "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96");
     }
     return true;
 }
 
 }  // namespace dx12_gfx11_gfx1150
+
+// clang-format on
 

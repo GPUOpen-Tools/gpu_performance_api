@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief A factory which can produce various counter splitting implementations.
@@ -42,7 +42,8 @@ public:
     ///
     /// @param [in] algorithm The type of algorithm to generate a splitter for.
     /// @param [in] timestamp_block_ids Set of timestamp block id's.
-    /// @param [in] time_counter_indices Set of timestamp counter indices.
+    /// @param [in] eop_time_counter_indices Set of End Of Pipeline timestamp counter indices.
+    /// @param [in] top_time_counter_indices Set of Top Of Pipeline timestamp counter indices.
     /// @param [in] max_sq_counters The maximum number of simultaneous counters in the SQ block.
     /// @param [in] num_sq_groups The number of SQ counter groups.
     /// @param [in] sq_counter_block_info The list of SQ counter groups.
@@ -52,7 +53,8 @@ public:
     /// @return The counter splitter.
     static IGpaSplitCounters* GetNewCounterSplitter(GpaCounterSplitterAlgorithm   algorithm,
                                                     const std::set<unsigned int>& timestamp_block_ids,
-                                                    const std::set<unsigned int>& time_counter_indices,
+                                                    const std::set<unsigned int>& eop_time_counter_indices,
+                                                    const std::set<unsigned int>& top_time_counter_indices,
                                                     unsigned int                  max_sq_counters,
                                                     unsigned int                  num_sq_groups,
                                                     GpaSqCounterGroupDesc*        sq_counter_block_info,
@@ -64,7 +66,8 @@ public:
         if (kMaxPerPass == algorithm)
         {
             splitter = new (std::nothrow) GpaSplitCountersMaxPerPass(timestamp_block_ids,
-                                                                     time_counter_indices,
+                                                                     eop_time_counter_indices,
+                                                                     top_time_counter_indices,
                                                                      max_sq_counters,
                                                                      num_sq_groups,
                                                                      sq_counter_block_info,
@@ -74,7 +77,8 @@ public:
         else if (kOnePublicCounterPerPass == algorithm)
         {
             splitter = new (std::nothrow) GpaSplitCountersOnePerPass(timestamp_block_ids,
-                                                                     time_counter_indices,
+                                                                     eop_time_counter_indices,
+                                                                     top_time_counter_indices,
                                                                      max_sq_counters,
                                                                      num_sq_groups,
                                                                      sq_counter_block_info,
@@ -84,12 +88,13 @@ public:
         else if (kConsolidated == algorithm)
         {
             splitter = new (std::nothrow) GpaSplitCountersConsolidated(timestamp_block_ids,
-                                                                        time_counter_indices,
-                                                                        max_sq_counters,
-                                                                        num_sq_groups,
-                                                                        sq_counter_block_info,
-                                                                        num_isolated_from_sq_groups,
-                                                                        isolated_from_sq_groups);
+                                                                       eop_time_counter_indices,
+                                                                       top_time_counter_indices,
+                                                                       max_sq_counters,
+                                                                       num_sq_groups,
+                                                                       sq_counter_block_info,
+                                                                       num_isolated_from_sq_groups,
+                                                                       isolated_from_sq_groups);
         }
         else
         {
@@ -106,10 +111,10 @@ public:
 
 private:
     /// @brief Private constructor to enforce use of static factory method.
-    GpaSplitCounterFactory(void){};
+    GpaSplitCounterFactory(void) {};
 
     /// @brief Private virtual destructor.
-    virtual ~GpaSplitCounterFactory(void){};
+    virtual ~GpaSplitCounterFactory(void) {};
 };
 
 #endif  // GPU_PERF_API_COUNTER_GENERATOR_COMMON_GPA_SPLIT_COUNTER_FACTORY_H_

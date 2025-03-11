@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Maintains a set of hardware counters.
@@ -82,6 +82,11 @@ public:
         kGpaInternalHwBlockDfmall,                                   ///< The Gpa hardware block is DFMALL.
         kGpaInternalHwBlockSqWgp,                                    ///< The Gpa hardware block is SQWGP.
         kGpaInternalHwBlockPc,                                       ///< The Gpa hardware block is PC.
+        kGpaInternalHwBlockGl1XA,                                    ///< The Gpa hardware block is GL1XA.
+        kGpaInternalHwBlockGl1XC,                                    ///< The Gpa hardware block is GL1XC.
+        kGpaInternalHwBlockWgs,                                      ///< The Gpa hardware block is WGS.
+        kGpaInternalHwBlockEaCpwd,                                   ///< The Gpa hardware block is EA_CPWD.
+        kGpaInternalHwBlockEaSe,                                     ///< The Gpa hardware block is EA_SE.
         kGpaInternalHwBlockSqFirst,                                  ///< The Gpa hardware block is SQ_PS.
         kGpaInternalHwBlockSqPs = kGpaInternalHwBlockSqFirst,        ///< The Gpa hardware block is SQ_PS.
         kGpaInternalHwBlockSqVs,                                     ///< The Gpa hardware block is SQ_VS.
@@ -163,41 +168,84 @@ public:
             static_assert(kGpaHwBlockDfmall == static_cast<GpaHwBlock>(kGpaInternalHwBlockDfmall), "Mismatched block");
             static_assert(kGpaHwBlockSqWgp == static_cast<GpaHwBlock>(kGpaInternalHwBlockSqWgp), "Mismatched block");
             static_assert(kGpaHwBlockPc == static_cast<GpaHwBlock>(kGpaInternalHwBlockPc), "Mismatched block");
+            static_assert(kGpaHwBlockGl1XA == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1XA), "Mismatched block");
+            static_assert(kGpaHwBlockGl1XC == static_cast<GpaHwBlock>(kGpaInternalHwBlockGl1XC), "Mismatched block");
+            static_assert(kGpaHwBlockWgs == static_cast<GpaHwBlock>(kGpaInternalHwBlockWgs), "Mismatched block");
+            static_assert(kGpaHwBlockEaCpwd == static_cast<GpaHwBlock>(kGpaInternalHwBlockEaCpwd), "Mismatched block");
+            static_assert(kGpaHwBlockEaSe == static_cast<GpaHwBlock>(kGpaInternalHwBlockEaSe), "Mismatched block");
             static_assert(kGpaHwBlockCount == static_cast<GpaHwBlock>(kGpaInternalHwBlockSqFirst), "Mismatched block");
 
-            kHardwareBlockString = {GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpf, "CPF"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockIa, "IA"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockVgt, "VGT"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPa, "PA_SU"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSc, "PA_SC"),      GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSpi, "SPI"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSq, "SQ"),         GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSx, "SX"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTa, "TA"),         GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTd, "TD"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcp, "TCP"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcc, "TCC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTca, "TCA"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDb, "DB"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCb, "CB"),         GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGds, "GDS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSrbm, "SRBM"),     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGrbm, "GRBM"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGrbmse, "GRBMSE"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRlc, "RLC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDma, "DMA"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockMc, "MC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpg, "CPG"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpc, "CPC"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockWd, "WD"),         GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcs, "TCS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockAtc, "ATC"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockAtcl2, "ATCL2"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockMcvml2, "MCVML2"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockEa, "GCEA"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRpb, "RPB"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRmi, "RMI"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockUmcch, "UMC"),     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGe, "GE"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1A, "GL1A"),     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1C, "GL1C"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1Cg, "GL1CG"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl2A, "GL2A"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl2C, "GL2C"),     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCha, "CHA"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockChc, "CHC"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockChcg, "CHCG"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGus, "GUS"),       GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGcr, "GCR"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPh, "PA_PH"),      GPA_ENUM_STRING_VAL(kGpaInternalHwBlockUtcl1, "UTCL1"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGedist, "GEDIST"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGese, "GESE"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDfmall, "DFMALL"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqWgp, "SQWGP"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPc, "PC"),         GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQ_PS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqVs, "SQ_VS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQ_GS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqEs, "SQ_ES"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQ_HS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqLs, "SQ_LS"),    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQ_CS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQG_PS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQG_GS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQG_HS"),   GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQG_CS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQWGP_PS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQWGP_GS"),
-                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQWGP_HS"), GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS"),
+            kHardwareBlockString = {GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpf, "CPF"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockIa, "IA"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockVgt, "VGT"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPa, "PA_SU"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSc, "PA_SC"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSpi, "SPI"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSq, "SQ"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSx, "SX"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTa, "TA"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTd, "TD"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcp, "TCP"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcc, "TCC"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTca, "TCA"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDb, "DB"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCb, "CB"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGds, "GDS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSrbm, "SRBM"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGrbm, "GRBM"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGrbmse, "GRBMSE"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRlc, "RLC"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDma, "DMA"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockMc, "MC"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpg, "CPG"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCpc, "CPC"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockWd, "WD"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockTcs, "TCS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockAtc, "ATC"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockAtcl2, "ATCL2"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockMcvml2, "MCVML2"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockEa, "GCEA"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRpb, "RPB"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockRmi, "RMI"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockUmcch, "UMC"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGe, "GE"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1A, "GL1A"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1C, "GL1C"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1Cg, "GL1CG"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl2A, "GL2A"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl2C, "GL2C"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockCha, "CHA"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockChc, "CHC"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockChcg, "CHCG"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGus, "GUS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGcr, "GCR"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPh, "PA_PH"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockUtcl1, "UTCL1"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGedist, "GEDIST"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGese, "GESE"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockDfmall, "DFMALL"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqWgp, "SQWGP"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockPc, "PC"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1XA, "GL1XA"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockGl1XC, "GL1XC"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockWgs, "WGS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockEaCpwd, "GC_EA_CPWD"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockEa, "GC_EA_SE"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQ_PS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqVs, "SQ_VS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQ_GS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqEs, "SQ_ES"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQ_HS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqLs, "SQ_LS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQ_CS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQG_PS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQG_GS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQG_HS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQG_CS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqPs, "SQWGP_PS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqGs, "SQWGP_GS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqHs, "SQWGP_HS"),
+                                    GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqCs, "SQWGP_CS"),
                                     GPA_ENUM_STRING_VAL(kGpaInternalHwBlockSqG, "SQG")};
         }
 
@@ -945,7 +993,27 @@ public:
     /// @return True if the counter index is a timestamp counter.
     bool IsTimeCounterIndex(unsigned int counter_index) const
     {
-        return time_counter_indices_.find(counter_index) != time_counter_indices_.end();
+        return IsBottomToBottomTimeCounterIndex(counter_index) || IsTopToBottomTimeCounterIndex(counter_index);
+    }
+
+    /// Determines whether the indicated counter index is needed as a bottom-to-bottom timestamp counter.
+    ///
+    /// @param [in] counter_index The counter index to check.
+    ///
+    /// @return True if the counter index is a bottom-to-bottom timestamp counter.
+    bool IsBottomToBottomTimeCounterIndex(unsigned int counter_index) const
+    {
+        return eop_time_counter_indices_.find(counter_index) != eop_time_counter_indices_.end();
+    }
+
+    /// Determines whether the indicated counter index is needed as a top-to-bottom timestamp counter.
+    ///
+    /// @param [in] counter_index The counter index to check.
+    ///
+    /// @return True if the counter index is a top-to-bottom timestamp counter.
+    bool IsTopToBottomTimeCounterIndex(unsigned int counter_index) const
+    {
+        return top_time_counter_indices_.find(counter_index) != top_time_counter_indices_.end();
     }
 
     /// @brief Finds and returns the hardware timing counter with the minimum index in the set.
@@ -953,41 +1021,22 @@ public:
     /// @return The hardware timing counter with the minimum index in the set.
     unsigned int GetFirstHardwareTimeCounterIndex() const
     {
-        auto iter = std::min_element(time_counter_indices_.begin(), time_counter_indices_.end());
-        return *iter;
-    }
-
-    /// @brief Determines whether the indicated counter index is a bottom of pipe counter index.
-    ///
-    /// @param [in] counter_index The counter index to check.
-    ///
-    /// @return True if the counter index is a bottom of pipe counter.
-    bool IsBottomOfPipeCounterIndex(unsigned int counter_index) const
-    {
-        return counter_index == gpu_time_bottom_to_bottom_duration_counter_index_ || counter_index == gpu_time_bottom_to_bottom_start_counter_index_ ||
-               counter_index == gpu_time_bottom_to_bottom_end_counter_index_;
-    }
-
-    /// @brief Determines whether the indicated counter index is a top of pipe counter index.
-    ///
-    /// @param [in] counter_index The counter index to check.
-    ///
-    /// @return True if the counter index is a top of pipe counter.
-    bool IsTopOfPipeCounterIndex(unsigned int counter_index) const
-    {
-        return counter_index == gpu_time_top_to_bottom_duration_counter_index_ || counter_index == gpu_time_top_to_bottom_start_counter_index_ ||
-               counter_index == gpu_time_top_to_bottom_end_counter_index_;
+        return std::min(*std::min_element(eop_time_counter_indices_.begin(), eop_time_counter_indices_.end()),
+                        *std::min_element(top_time_counter_indices_.begin(), top_time_counter_indices_.end()));
     }
 
     std::vector<std::vector<GpaHardwareCounterDesc>*>
-                                     counter_groups_array_;     ///< List of counter groups as defined by the list of internal counters in each group.
-    std::vector<GpaCounterGroupDesc> internal_counter_groups_;  ///< List of internal counter groups.
-    GpaCounterGroupDesc*             additional_groups_;        ///< List of internal counter groups exposed by the driver, but not known by GPA.
-    unsigned int                     additional_group_count_;   ///< The number of internal counter groups exposed by the driver, but not known by GPA.
-    GpaSqCounterGroupDesc*           sq_counter_groups_;        ///< List of GpaSqCounterGroupDesc.
-    unsigned int                     sq_group_count_;           ///< The number of internal SQ counter groups.
-    std::set<unsigned int>           timestamp_block_ids_;      ///< Set of timestamp block id's.
-    std::set<unsigned int> time_counter_indices_;  ///< Set of timestamp counter indices.
+                                     counter_groups_array_;      ///< List of counter groups as defined by the list of internal counters in each group.
+    std::vector<GpaCounterGroupDesc> internal_counter_groups_;   ///< List of internal counter groups.
+    GpaCounterGroupDesc*             additional_groups_;         ///< List of internal counter groups exposed by the driver, but not known by GPA.
+    unsigned int                     additional_group_count_;    ///< The number of internal counter groups exposed by the driver, but not known by GPA.
+    GpaSqCounterGroupDesc*           sq_counter_groups_;         ///< List of GpaSqCounterGroupDesc.
+    unsigned int                     sq_group_count_;            ///< The number of internal SQ counter groups.
+    std::set<unsigned int>           timestamp_block_ids_;       ///< Set of timestamp block id's.
+    std::set<unsigned int>           eop_time_counter_indices_;  ///< Set of End-Of-Pipeline timestamp counter indices.
+    std::set<unsigned int>           top_time_counter_indices_;  ///< Set of Top-Of-Pipeline timestamp counter indices.
+
+    std::set<unsigned int> level_waves_indices_;                      ///< Set of LEVEL_WAVES counter indices.
     unsigned int gpu_time_bottom_to_bottom_duration_counter_index_;   ///< The index of the GPUTime Bottom-to-Bottom duration counter (-1 if it doesn't exist).
     unsigned int gpu_time_bottom_to_bottom_start_counter_index_;      ///< The index of the GPUTime Bottom-to-Bottom start counter (-1 if it doesn't exist).
     unsigned int gpu_time_bottom_to_bottom_end_counter_index_;        ///< The index of the GPUTime Bottom-to-Bottom end counter (-1 if it doesn't exist).
@@ -1008,9 +1057,9 @@ public:
     using CounterIndex = GpaUInt32;
     mutable std::map<CounterIndex, GpaHwCounter> counter_hardware_info_map_;  ///< Cache of the counter index and hardware info.
 
-    /// Hardware exposed counters.
+    // Hardware exposed counters.
     std::vector<std::vector<GpaHardwareCounterDesc>*>
-        hardware_exposed_counters_;  ///< List of counter groups as defined by the list of hardware exposed counters counters in each group.
+        hardware_exposed_counters_;  ///< List of counter groups as defined by the list of hardware exposed counters in each group.
     GpaCounterGroupExposedCounterDesc*  hardware_exposed_counter_groups_;                 ///< List of hardware exposed counter groups.
     std::vector<GpaHardwareCounterDesc> hardware_exposed_counters_list_;                  ///< Vector of hardware exposed counters.
     std::vector<GpaUInt32>              hardware_exposed_counter_internal_indices_list_;  ///< Internal hardware index for the hardware exposed counter.

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief A base-class implementation of the GPA Session interface.
@@ -46,6 +46,39 @@ public:
     /// @copydoc IGpaSession::GetState()
     GpaSessionState GetState() const override;
 
+    /// @copydoc IGpaSession::GetNumCounters()
+    GpaStatus GetNumCounters(GpaUInt32* counter_count) const override;
+
+    /// @copydoc IGpaSession::GetCounterName()
+    GpaStatus GetCounterName(GpaUInt32 index, const char** counter_name) const override;
+
+    /// @copydoc IGpaSession::GetCounterGroup()
+    GpaStatus GetCounterGroup(GpaUInt32 index, const char** counter_group) const override;
+
+    /// @copydoc IGpaSession::GetCounterDescription()
+    GpaStatus GetCounterDescription(GpaUInt32 index, const char** counter_description) const override;
+
+    /// @copydoc IGpaSession::GetCounterDataType()
+    GpaStatus GetCounterDataType(GpaUInt32 index, GpaDataType* counter_data_type) const override;
+
+    /// @copydoc IGpaSession::GetCounterUsageType()
+    GpaStatus GetCounterUsageType(GpaUInt32 index, GpaUsageType* counter_usage_type) const override;
+
+    /// @copydoc IGpaSession::GetCounterUuid()
+    GpaStatus GetCounterUuid(GpaUInt32 index, GpaUuid* counter_uuid) const override;
+
+    /// @copydoc IGpaSession::GetCounterSampleType()
+    GpaStatus GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType* counter_sample_type) const override;
+
+    /// @copydoc IGpaSession::GetCounterIndex()
+    GpaStatus GetCounterIndex(const char* counter_name, GpaUInt32* counter_index) const override;
+
+    /// @copydoc IGpaSession::GetCounterSourceLocalIndex()
+    bool GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, GpaCounterSource* counter_source, GpaUInt32* source_local_index) const override;
+
+    /// @copydoc IGpaSession::GetCounterSource()
+    GpaCounterSource GetCounterSource(GpaUInt32 internal_counter_index) const override;
+
     /// @copydoc IGpaSession::EnableCounter()
     GpaStatus EnableCounter(GpaUInt32 index) override;
 
@@ -72,6 +105,9 @@ public:
 
     /// @copydoc IGpaSession::End()
     GpaStatus End() override;
+
+    /// @copydoc IGpaSession::Reset()
+    GpaStatus Reset() override;
 
     /// @copydoc IGpaSession::CreateCommandList()
     GpaCommandListId CreateCommandList(GpaUInt32 pass_index, void* cmd_list, GpaCommandListType cmd_type) override;
@@ -130,6 +166,39 @@ public:
     /// @copydoc IGpaSession::GetSpmInterval()
     GpaUInt32 GetSpmInterval() const override;
 
+    /// @copydoc IGpaSession::SqttBegin()
+    virtual GpaStatus SqttBegin(void* command_list) override;
+
+    /// @copydoc IGpaSession::SqttEnd()
+    virtual GpaStatus SqttEnd(void* command_list) override;
+
+    /// @copydoc IGpaSession::SqttGetSampleResultSize()
+    virtual GpaStatus SqttGetSampleResultSize(size_t* sample_result_size_in_bytes) override;
+
+    /// @copydoc IGpaSession::(SqttGetSampleResult()
+    virtual GpaStatus SqttGetSampleResult(size_t sample_result_size_in_bytes, void* sqtt_results) override;
+
+    /// @copydoc IGpaSession::SpmSetSampleInterval()
+    virtual GpaStatus SpmSetSampleInterval(GpaUInt32 interval) override;
+
+    /// @copydoc IGpaSession::SpmSetDuration()
+    virtual GpaStatus SpmSetDuration(GpaUInt32 nanosecond_duration) override;
+
+    /// @copydoc IGpaSession::SpmBegin()
+    virtual GpaStatus SpmBegin(void* command_list) override;
+
+    /// @copydoc IGpaSession::SpmEnd()
+    virtual GpaStatus SpmEnd(void* command_list) override;
+
+    /// @copydoc IGpaSession::SpmGetSampleResultSize()
+    virtual GpaStatus SpmGetSampleResultSize(size_t* sample_result_size_in_bytes) override;
+
+    /// @copydoc IGpaSession::SpmGetSampleResult()
+    virtual GpaStatus SpmGetSampleResult(size_t sample_result_size_in_bytes, void* spm_results) override;
+
+    /// @copydoc IGpaSession::SpmCalculateDerivedCounters()
+    virtual GpaStatus SpmCalculateDerivedCounters(const GpaSpmData* spm_data, GpaUInt32 derived_counter_count, GpaUInt64* derived_counter_results) override;
+
     /// @copydoc IGpaSession::SetSpmInterval()
     void SetSpmInterval(GpaUInt32 interval) override;
 
@@ -160,6 +229,9 @@ public:
     /// @copydoc IGpaSession::GetCountersForPass()
     CounterList* GetCountersForPass(PassIndex pass_index) override;
 
+    /// @copydoc IGpaSession::OpenCounters()
+    bool OpenCounters() override;
+
 protected:
     /// @brief Checks whether the multiple passes in the session have same number of samples.
     ///
@@ -172,6 +244,30 @@ protected:
     ///
     /// @return API specific pass object pointer.
     virtual GpaPass* CreateApiPass(PassIndex pass_index) = 0;
+
+    /// Gets the pass information.
+    ///
+    /// @return Pass information.
+    const PassInfo& GetPasses() const
+    {
+        return passes_;
+    }
+
+    /// Gets the counter result locations.
+    ///
+    /// @return Counter result locations.
+    const CounterResultLocations& GetCounterResultLocations() const
+    {
+        return counter_result_locations_;
+    }
+
+    /// Gets the parent context.
+    ///
+    /// @return The parent context.
+    IGpaContext* GetParentContext()
+    {
+        return parent_context_;
+    }
 
 private:
     /// @brief Waits for all data requests to be complete (blocking).
@@ -208,6 +304,7 @@ private:
     bool                    counter_set_changed_;       ///< Flag indicating the counter selection has changed or not for the pass.
     CounterResultLocations  counter_result_locations_;  ///< Counter result location for the scheduled counter in the session.
     PassCountersMap         pass_counters_map_;         ///< Map for the pass and its counters.
+    GpaOpenContextFlags     context_flags_;             ///< Flags used to open the context.
 };
 
 #endif  // GPU_PERF_API_COMMON_GPA_SESSION_H_

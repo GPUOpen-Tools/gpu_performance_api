@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base class for DX11 counter generation -- add D3D11 Query counters which are supported on all hardware.
@@ -18,9 +18,9 @@
 
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_scheduler_manager.h"
 
-GpaCounterGeneratorDx11Base::GpaCounterGeneratorDx11Base()
+GpaCounterGeneratorDx11Base::GpaCounterGeneratorDx11Base(GpaSessionSampleType sampleType)
+    : GpaCounterGeneratorBase(sampleType)
 {
-    GpaCounterGeneratorBase::SetAllowedCounters(false, false);
 }
 
 GpaStatus GpaCounterGeneratorDx11Base::GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,

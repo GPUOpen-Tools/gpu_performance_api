@@ -1,6 +1,6 @@
 // =====================================================================
 // <copyright file="CounterCompiler.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2024 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2025 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -22,6 +22,7 @@ namespace PublicCounterCompiler
     using CounterGroup = System.String;
     using CounterName = System.String;
     using CounterDescription = System.String;
+    using System.Runtime.Serialization;
 
     /// <summary>
     /// Compiles the derived counters definitions into C++ files.
@@ -74,19 +75,11 @@ namespace PublicCounterCompiler
         /// </summary>
         public DerivedCounterFileInput derivedCounterFileInput = null;
 
-
         /// <summary>
         /// A map of Counter Group to a map of counter name to documentation info for Graphics Counters
         /// </summary>
         private Dictionary<GfxGeneration, Dictionary<CounterGroup, Dictionary<string, DerivedCounterDef>>>
             docInfoMapGraphicsByGeneration =
-                new Dictionary<GfxGeneration, Dictionary<CounterGroup, Dictionary<string, DerivedCounterDef>>>();
-
-        /// <summary>
-        /// A map of Counter Group to a map of counter name to documentation info for Graphics Counters
-        /// </summary>
-        private Dictionary<GfxGeneration, Dictionary<CounterGroup, Dictionary<string, DerivedCounterDef>>>
-            docInfoMapComputeByGeneration =
                 new Dictionary<GfxGeneration, Dictionary<CounterGroup, Dictionary<string, DerivedCounterDef>>>();
 
         /// <summary>
@@ -144,6 +137,14 @@ namespace PublicCounterCompiler
 
                 foreach (string counterNamesFile in baseGfxFileNames)
                 {
+                    // Enforce that only lowercase file names are used.
+                    string filename = Path.GetFileName(counterNamesFile);
+                    if (filename != filename.ToLower())
+                    {
+                        errorHandler("Public counter name file has uppercase characters in it: " + counterNamesFile + ". Only lowercase names are currently supported.");
+                        return false;
+                    }
+
                     fileNames.Add(counterNamesFile);
                 }
 
@@ -183,10 +184,6 @@ namespace PublicCounterCompiler
 
                     // Suffix
                     string suffix = string.Empty;
-                    if (api.ToLower() == "cl")
-                    {
-                        suffix = "compute_";
-                    }
 
                     string derivedCounterDefsFile = derivedCounterFileInput.compilerInputPath +
                                                     derivedCounterFileInput.rootFilename +
@@ -345,14 +342,23 @@ namespace PublicCounterCompiler
                 includeFile.WriteLine("        UNREFERENCED_PARAMETER(desired_generation);");
                 includeFile.WriteLine("        UNREFERENCED_PARAMETER(asic_type);");
                 includeFile.WriteLine("        UNREFERENCED_PARAMETER(c);");
+                if ("dx12" == api.ToLower())
+                {
+                    includeFile.WriteLine();
+                    includeFile.WriteLine("        // Assign default max block events.");
+                    includeFile.WriteLine("        counter_{0}::OverrideMaxBlockEvents(asic_type);", section.ToLower());
+                }
             }
             else
             {
-                includeFile.WriteLine("        // Override max block events first so we could chain these if we want");
-                includeFile.WriteLine("        counter_{0}::OverrideMaxBlockEvents(asic_type);", section.ToLower());
-                includeFile.WriteLine();
+                if ("dx12" == api.ToLower())
+                {
+                    includeFile.WriteLine("        // Override max block events first so we could chain these if we want");
+                    includeFile.WriteLine("        counter_{0}::OverrideMaxBlockEvents(asic_type);", section.ToLower());
+                    includeFile.WriteLine();
+                }
 
-                for (int i = 0; i < asicSpecificFiles.Count; ++i)
+                    for (int i = 0; i < asicSpecificFiles.Count; ++i)
                 {
                     includeFile.WriteLine("        if ({0}_{1}::Update{2}AsicSpecificCounters(desired_generation, asic_type, c))", section.ToLower(), asicSpecificFiles[i].ToLower(), derivedCounterFileInput.compiler_type_str);
                     includeFile.WriteLine("        {");
@@ -854,7 +860,7 @@ namespace PublicCounterCompiler
             // Validate stack contains a single result
             if (rpnStack.Count != 1)
             {
-                errorHandler(counter.Name + " stack incorrectly contains " + rpnStack.Count.ToString() + " entries instead a single result");
+                errorHandler(counter.Name + " stack incorrectly contains " + rpnStack.Count.ToString() + " entries instead of a single result");
                 retVal = false;
             }
 
@@ -959,14 +965,29 @@ namespace PublicCounterCompiler
                     continue;
                 }
 
+                string sampleType = "";
+                if (counter.IsDiscreteCounter && !counter.IsSpmCounter)
+                {
+                    sampleType = "Discrete";
+                }
+                else if (!counter.IsDiscreteCounter && counter.IsSpmCounter)
+                {
+                    sampleType = "Streaming";
+                }
+                else
+                {
+                    sampleType = "Discrete + Streaming";
+                }
+
                 if (outputCsv)
                 {
                     string desc = counter.Desc.Replace(',', ' ');
-                    docStream.WriteLine(counter.Name + "," + counter.Usage + "," + desc);
+                    docStream.WriteLine(counter.Name + "," + sampleType + "," + counter.Usage + "," + desc);
                 }
                 else
                 {
                     docStream.WriteLine(counter.Name);
+                    docStream.WriteLine(sampleType);
                     docStream.WriteLine(counter.Usage);
                     docStream.WriteLine(counter.Desc);
                     docStream.WriteLine(counter.CompReadable);
@@ -993,7 +1014,11 @@ namespace PublicCounterCompiler
         {
             GfxGeneration gfxGen = GfxGeneration.Unknown;
 
-            if ("Gfx11" == generation)
+            if ("Gfx12" == generation)
+            {
+                gfxGen = GfxGeneration.Gfx12;
+            }
+            else if ("Gfx11" == generation)
             {
                 gfxGen = GfxGeneration.Gfx11;
             }
@@ -1004,14 +1029,6 @@ namespace PublicCounterCompiler
             else if ("Gfx10" == generation)
             {
                 gfxGen = GfxGeneration.Gfx10;
-            }
-            else if ("Gfx9" == generation)
-            {
-                gfxGen = GfxGeneration.Gfx9;
-            }
-            else if ("Gfx8" == generation)
-            {
-                gfxGen = GfxGeneration.Gfx8;
             }
             else
             {
@@ -1130,6 +1147,19 @@ namespace PublicCounterCompiler
                 return false;
             }
 
+            if ("dx12" != api.ToLower())
+            {
+                // Non-DX12 only supports discrete counters. Enforce this.
+                // Remove SPM-only counters if they happen to exist.
+                publicCounterDerivedList.RemoveAll(x => (x.IsSpmCounter && !x.IsDiscreteCounter));
+
+                // Force the counters to not indicate they are SPM counters. This simplifies a lot of logic later.
+                foreach (var counter in publicCounterDerivedList)
+                {
+                    counter.IsSpmCounter = false;
+                }
+            }
+
             if (publicCounterDerivedList.Count == 0)
             {
                 infoHandler("0 counters were exposed by the counter definitions file.");
@@ -1165,11 +1195,8 @@ namespace PublicCounterCompiler
                 GenerateDerivedCounterDocFile(true, ref publicCounterDerivedList, ref internalCounterList, outputDir, api, generation, asic, infoHandler, errorHandler);
                 GenerateDerivedCounterDocFile(false, ref publicCounterDerivedList, ref internalCounterList, outputDir, api, generation, asic, infoHandler, errorHandler);
             }
-
-            bool isGraphicsAPI = (api != "CL");
-
             {
-                AddInfoToRSTDocInfo(ref publicCounterDerivedList, generation, isGraphicsAPI ? docInfoMapGraphicsByGeneration : docInfoMapComputeByGeneration, infoHandler);
+                AddInfoToRSTDocInfo(ref publicCounterDerivedList, generation, docInfoMapGraphicsByGeneration, infoHandler);
             }
 
             return true;
@@ -1591,6 +1618,18 @@ namespace PublicCounterCompiler
                             errorHandler("Type not recognized. Line='" + s + "'");
                             return false;
                         }
+                    }
+                    else if (lineSplit[0].Equals("spm", StringComparison.OrdinalIgnoreCase))
+                    {
+                        uint value = Convert.ToUInt32(lineSplit[1]);
+
+                        counterDef.IsSpmCounter = (0 != value);
+                    }
+                    else if (lineSplit[0].Equals("discrete", StringComparison.OrdinalIgnoreCase))
+                    {
+                        uint value = Convert.ToUInt32(lineSplit[1]);
+
+                        counterDef.IsDiscreteCounter = (0 != value);
                     }
                     else if (lineSplit[0].Equals("usage", StringComparison.OrdinalIgnoreCase))
                     {
@@ -2050,6 +2089,7 @@ namespace PublicCounterCompiler
             includeFile.WriteLine("#define {0}_AUTO_GEN_COUNTER_GEN_{1}COUNTER_DEFINITIONS_{2}_{3}{4}_H_", baseDirForHeaderGuard, rootFilename.ToUpper(), api.ToUpper(), generation.ToUpper(), asic_prefix_str.ToUpper());
             includeFile.WriteLine();
 
+            includeFile.WriteLine("// clang-format off");
 
             includeFile.WriteLine("//*** Note, this is an auto-generated file. Do not edit. Execute {0}CounterCompiler to rebuild.", derivedCounterFileInput.compiler_type_str);
             includeFile.WriteLine();
@@ -2081,7 +2121,7 @@ namespace PublicCounterCompiler
 
             includeFile.WriteLine();
 
-
+            includeFile.WriteLine("// clang-format on");
             includeFile.WriteLine("#endif  // {0}_AUTO_GEN_COUNTER_GEN_{1}COUNTER_DEFINITIONS_{2}_{3}{4}_H_",
                 baseDirForHeaderGuard, rootFilename.ToUpper(), api.ToUpper(), generation.ToUpper(),
                 asic_prefix_str.ToUpper());
@@ -2111,6 +2151,7 @@ namespace PublicCounterCompiler
             cppFile.WriteLine("//==============================================================================");
             cppFile.WriteLine();
 
+            cppFile.WriteLine("// clang-format off");
 
             cppFile.WriteLine("#include \"{0}\"", Gpa.gpaCounterHeaderFileStr);
             cppFile.WriteLine("#include \"auto_generated/gpu_perf_api_counter_generator/{0}counter_definitions_{1}_{2}{3}.h\"", rootFilename.ToLower(), api.ToLower(), generation.ToLower(), asic_prefix_str.ToLower());
@@ -2161,6 +2202,7 @@ namespace PublicCounterCompiler
                 }
             }
 
+            int counter_index = 0;
             foreach (DerivedCounterDef c in counterDefList)
             {
                 if (asicSpecific && !DerivedCounterReferencesAsicRegisters(ref internalCounterList, c))
@@ -2173,8 +2215,8 @@ namespace PublicCounterCompiler
                     lsw.WriteLine("{0} - {1}", c.Name, c.Desc);
                 }
 
-                cppFile.WriteLine("    {");
-
+                cppFile.WriteLine("    {{ // Index:{0}", counter_index);
+                counter_index++;
 
                 cppFile.WriteLine("        vector<GpaUInt32> internal_counters;");
                 foreach (DerivedCounterDef.HardwareCounterDef counter in c.GetCounters())
@@ -2186,13 +2228,22 @@ namespace PublicCounterCompiler
 
                 if (!asicSpecific)
                 {
-                    cppFile.Write("        c.DefineDerivedCounter(\"{0}\", \"{1}\", \"{2}\", {3}, {4}, ", c.Name, c.Group, c.Desc, c.Type, c.Usage);
-                    cppFile.WriteLine("internal_counters, \"{0}\", \"{1}\");", c.Comp, c.GuidHash.ToString("D"));
+                    cppFile.WriteLine("        c.DefineDerivedCounter(\"{0}\",", c.Name);
+                    cppFile.WriteLine("                               \"{0}\",", c.Group);
+                    cppFile.WriteLine("                               \"{0}\",", c.Desc);
+                    cppFile.WriteLine("                               {0},", c.Type);
+                    cppFile.WriteLine("                               {0},", c.Usage);
+                    cppFile.WriteLine("                               {0},", c.IsDiscreteCounter ? "true" : "false");
+                    cppFile.WriteLine("                               {0},", c.IsSpmCounter ? "true" : "false");
+                    cppFile.WriteLine("                               internal_counters,");
+                    cppFile.WriteLine("                               \"{0}\",", c.Comp);
+                    cppFile.WriteLine("                               \"{0}\");", c.GuidHash.ToString("D"));
                 }
                 else
                 {
-                    cppFile.WriteLine("        c.UpdateAsicSpecificDerivedCounter(\"{0}\", internal_counters, \"{1}\");",
-                    c.Name, c.Comp);
+                    cppFile.WriteLine("        c.UpdateAsicSpecificDerivedCounter(\"{0}\",", c.Name);
+                    cppFile.WriteLine("                                           internal_counters,");
+                    cppFile.WriteLine("                                           \"{0}\");", c.Comp);
                 }
 
                 cppFile.WriteLine("    }");
@@ -2212,6 +2263,8 @@ namespace PublicCounterCompiler
                 cppFile.WriteLine();
             }
 
+            cppFile.WriteLine("// clang-format on");
+            cppFile.WriteLine();
 
             cppFile.Close();
             if (lsw != null)
@@ -2292,10 +2345,12 @@ namespace PublicCounterCompiler
             cppStream.WriteLine("/// @brief {0}CounterDefinitions for {1} {2} {3} for testing.", derivedCounterFileInput.compiler_type_str, api.ToUpper(), generation.ToUpper(), asic);
             cppStream.WriteLine("//==============================================================================");
             cppStream.WriteLine();
+            cppStream.WriteLine("// clang-format off");
             cppStream.WriteLine("// *** Note, this is an auto-generated file. Do not edit. Execute {0}CounterCompiler to rebuild.", derivedCounterFileInput.compiler_type_str);
             cppStream.WriteLine();
             cppStream.WriteLine("#include \"auto_generated/gpu_perf_api_unit_tests/counters/{0}\"", headerFileName);
             cppStream.WriteLine();
+
             string derivedCountersConstant = "k" + api.ToCamelCase('_') + generation.ToCamelCase('_') + asic.ToCamelCase('_') + derivedCounterFileInput.compiler_type_str.ToCamelCase('_') + "Counters";
             string derivedCounterCountConstant = "k" + api.ToCamelCase('_') + generation.ToCamelCase('_') + asic.ToCamelCase('_') + derivedCounterFileInput.compiler_type_str.ToCamelCase('_') + "CounterCount";
             cppStream.WriteLine("const GpaCounterDesc {0}[{1}] = {{", derivedCountersConstant, derivedCounterCountConstant);
@@ -2339,20 +2394,66 @@ namespace PublicCounterCompiler
             headerStream.WriteLine("#include \"gpu_perf_api_unit_tests/counters/gpa_counter_desc.h\"");
             headerStream.WriteLine();
             headerStream.WriteLine("/// Macros for {0}{1} {2} counter index", activeSectionLabel, asic, derivedCounterFileInput.compiler_type_str);
+            headerStream.WriteLine("// clang-format off");
 
             int numExposedCounters = 0;
+            int numDiscreteCounters = 0;
+            int numStreamingCounters = 0;
             foreach (DerivedCounterDef exposedCounter in counterDefList)
             {
-                int counterIndex = numExposedCounters;
-                    ++numExposedCounters;
+                ++numExposedCounters;
 
-                cppStream.WriteLine("    {{\"{0}\", \"{1}\", \"{2}\", \"{3}\", {4}, {5}, {6}, {7}}},", exposedCounter.Name,
-                    exposedCounter.Group, exposedCounter.Desc, exposedCounter.Comp, exposedCounter.GetCounterCount(), exposedCounter.Type, exposedCounter.Usage, exposedCounter.GuidHash.ToString("X").Replace(",", ", "));
-                headerStream.WriteLine("#define {0}_{1}_{2}_{3}{4} {5}", exposedCounter.Name.ToUpper(), derivedCounterFileInput.compiler_type_str.ToUpper(), api.ToUpper(), generation.ToUpper(), asicStr, counterIndex);
+                int discreteCounterIndex = numDiscreteCounters;
+                if (exposedCounter.IsDiscreteCounter)
+                {
+                    ++numDiscreteCounters;
+                }
+
+                int streamingCounterIndex = numStreamingCounters;
+                if (exposedCounter.IsSpmCounter)
+                {
+                    ++numStreamingCounters;
+                }
+
+                if (exposedCounter.IsDiscreteCounter && !exposedCounter.IsSpmCounter)
+                {
+                    // Discrete-only counter.
+                    cppStream.WriteLine("    {{// Discrete Counter Index: {0}", discreteCounterIndex);
+                }
+                else if (!exposedCounter.IsDiscreteCounter && exposedCounter.IsSpmCounter)
+                {
+                    // Streaming-only counter.
+                    cppStream.WriteLine("    {{// Streaming Counter Index: {0}", streamingCounterIndex);
+                }
+                else
+                {
+                    // Both a discrete and streaming counter.
+                    cppStream.WriteLine("    {{// Discrete Counter Index: {0}; Streaming Counter Index: {1}", discreteCounterIndex, streamingCounterIndex);
+                }
+                cppStream.WriteLine("    \"{0}\",", exposedCounter.Name);
+                cppStream.WriteLine("    \"{0}\",", exposedCounter.Group);
+                cppStream.WriteLine("    \"{0}\",", exposedCounter.Desc);
+                cppStream.WriteLine("    \"{0}\",", exposedCounter.Comp);
+                cppStream.WriteLine("    {0},", exposedCounter.GetCounterCount());
+                cppStream.WriteLine("    {0},", exposedCounter.Type);
+                cppStream.WriteLine("    {0},", exposedCounter.Usage);
+                cppStream.WriteLine("    {0},", exposedCounter.IsDiscreteCounter ? "true" : "false");
+                cppStream.WriteLine("    {0},", exposedCounter.IsSpmCounter ? "true" : "false");
+
+                cppStream.WriteLine("    {0}}},", exposedCounter.GuidHash.ToString("X").Replace(",", ", "));
+                if (exposedCounter.IsDiscreteCounter)
+                {
+                    headerStream.WriteLine("#define DISCRETE_{0}_{1}_{2}_{3}{4} {5}", exposedCounter.Name.ToUpper(), derivedCounterFileInput.compiler_type_str.ToUpper(), api.ToUpper(), generation.ToUpper(), asicStr, discreteCounterIndex);
+                }
+
+                if (exposedCounter.IsSpmCounter)
+                {
+                    headerStream.WriteLine("#define STREAMING_{0}_{1}_{2}_{3}{4} {5}", exposedCounter.Name.ToUpper(), derivedCounterFileInput.compiler_type_str.ToUpper(), api.ToUpper(), generation.ToUpper(), asicStr, streamingCounterIndex);
+                }
             }
 
-
             cppStream.WriteLine("};");
+            cppStream.WriteLine("// clang-format on");
             cppStream.Close();
 
             headerStream.WriteLine();
@@ -2362,6 +2463,7 @@ namespace PublicCounterCompiler
             headerStream.WriteLine("/// Array of public counters for {0} {1} {2}", api.ToUpper(), generation.ToUpper(), asic, asicStr);
             headerStream.WriteLine("extern const GpaCounterDesc {0}[{1}];", derivedCountersConstant, derivedCounterCountConstant);
             headerStream.WriteLine();
+            headerStream.WriteLine("// clang-format on");
             headerStream.WriteLine("#endif  // {0}", headerGuard);
             headerStream.Close();
             return true;
@@ -2373,7 +2475,6 @@ namespace PublicCounterCompiler
         public void StartRSTDocumentation()
         {
             docInfoMapGraphicsByGeneration.Clear();
-            docInfoMapComputeByGeneration.Clear();
         }
 
         /// <summary>
@@ -2383,25 +2484,36 @@ namespace PublicCounterCompiler
         /// <param name="groupKvp">the data to use to write the counter data</param>
         private void WriteRSTCounterTable(StreamWriter docStream, KeyValuePair<string, Dictionary<string, DerivedCounterDef>> groupKvp)
         {
-
             docStream.WriteLine();
             string groupHeading = string.Format("{0} Group", groupKvp.Key);
             docStream.WriteLine(groupHeading);
             docStream.WriteLine(new String('%', groupHeading.Length));
             docStream.WriteLine();
             docStream.WriteLine(".. csv-table::");
-            docStream.WriteLine("    :header: \"Counter Name\", \"Usage\", \"Brief Description\"");
-            docStream.WriteLine("    :widths: 15, 10, 75");
+            docStream.WriteLine("    :header: \"Counter Name\", \"Sample Type\", \"Usage\", \"Brief Description\"");
+            docStream.WriteLine("    :widths: 15, 10, 10, 65");
             docStream.WriteLine();
 
-            foreach (KeyValuePair<string, DerivedCounterDef> deriveCounterDef in groupKvp.Value)
+            foreach (KeyValuePair<string, DerivedCounterDef> counter in groupKvp.Value)
             {
-
-                string usage = deriveCounterDef.Value.Usage;
+                string usage = counter.Value.Usage;
                 const string kPrefix = "kGpaUsageType";
                 usage = usage.Remove(0, kPrefix.Length);
+                string sampleType = "";
+                if (counter.Value.IsDiscreteCounter && !counter.Value.IsSpmCounter)
+                {
+                    sampleType = "Discrete";
+                }
+                else if (!counter.Value.IsDiscreteCounter && counter.Value.IsSpmCounter)
+                {
+                    sampleType = "Streaming";
+                }
+                else
+                {
+                    sampleType = "Discrete, Streaming";
+                }
 
-                docStream.WriteLine("    \"{0}\", \"{1}\", \"{2}\"", deriveCounterDef.Key, usage, deriveCounterDef.Value.Desc);
+                docStream.WriteLine("    \"{0}\", \"{1}\", \"{2}\", \"{3}\"", counter.Key, sampleType, usage, counter.Value.Desc);
             }
         }
 
@@ -2430,44 +2542,6 @@ namespace PublicCounterCompiler
 
                         docStream.WriteLine(".. Copyright(c) 2018-{0} Advanced Micro Devices, Inc. All rights reserved.", DateTime.Now.Year.ToString());
                         docStream.WriteLine(".. Graphics Performance Counters for {0}", gfxGenerationDisplayName[counterGroupByGfxGen.Key]);
-                        docStream.WriteLine();
-                        docStream.WriteLine(".. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.");
-
-                        docStream.WriteLine();
-                        string gfxHeading = string.Format("{0} Counters", gfxGenerationDisplayName[counterGroupByGfxGen.Key]);
-                        docStream.WriteLine(gfxHeading);
-                        docStream.WriteLine(new String('+', gfxHeading.Length));
-
-                        foreach (KeyValuePair<string, Dictionary<string, DerivedCounterDef>> groupKvp in counterGroupByGfxGen.Value)
-                        {
-                            WriteRSTCounterTable(docStream, groupKvp);
-                        }
-
-                        docStream.Close();
-                    }
-                }
-
-                { // Compute Counters
-                    foreach (var counterGroupByGfxGen in docInfoMapComputeByGeneration)
-                    {
-                        string docOutputFileName = "compute_counter_tables_" + gfxGenAsStr[counterGroupByGfxGen.Key] + ".rst";
-                        string docOutputFile = GpaTools.Gpa.GetGpuPerfApiPath() +
-                                               GpaTools.Gpa.gpaDocSourceDir + docOutputFileName;
-
-                        StreamWriter docStream = null;
-                        try
-                        {
-                            docStream = new StreamWriter(docOutputFile);
-                        }
-                        catch
-                        {
-                            errorHandler("Failed to open file for writing: " + docOutputFile);
-                            return;
-                        }
-
-                        docStream.WriteLine(".. Copyright(c) 2018-{0} Advanced Micro Devices, Inc. All rights reserved.",
-                            DateTime.Now.Year.ToString());
-                        docStream.WriteLine(".. Compute Performance Counters for {0}", gfxGenerationDisplayName[counterGroupByGfxGen.Key]);
                         docStream.WriteLine();
                         docStream.WriteLine(".. *** Note, this is an auto-generated file. Do not edit. Execute PublicCounterCompiler to rebuild.");
 

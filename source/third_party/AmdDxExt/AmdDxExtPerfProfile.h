@@ -1,7 +1,7 @@
 /*
 ***************************************************************************************************
 *
-*  Copyright (c) 2011-2016 Advanced Micro Devices, Inc. All rights reserved.
+*  Copyright (c) 2011-2024 Advanced Micro Devices, Inc. All rights reserved.
 *
 ***************************************************************************************************
 */
@@ -9,7 +9,7 @@
 ***************************************************************************************************
 * @file  amddxextperfprofile.h
 * @brief
-*    AMD D3D Exension API include file. This is a helper include file for extensions. It
+*    AMD D3D Extension API include file. This is a helper include file for extensions. It
 *    provides a common base class for all extension interfaces
 ***************************************************************************************************
 */
@@ -263,6 +263,13 @@ enum PE_BLOCK_ID : UINT
     PE_BLOCK_SQWGP,
     PE_BLOCK_PC,
     PE_BLOCK_MAX_GFX11,
+    PE_BLOCK_GL1XA,
+    PE_BLOCK_GL1XC,
+    PE_BLOCK_WGS,
+    PE_BLOCK_EA_CPWD,
+    PE_BLOCK_EA_SE,
+    PE_BLOCK_MAX_GFX12,
+    PE_BLOCK_ID_MAX
 };
 
 // Counter parameters

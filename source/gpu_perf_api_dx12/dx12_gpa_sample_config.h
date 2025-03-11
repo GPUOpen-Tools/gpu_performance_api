@@ -243,7 +243,8 @@ class Dx12GpaSampleConfig
 {
 public:
     Dx12GpaSampleConfig()
-        : is_sample_config_initialized_(false)
+        : session_(nullptr)
+        , is_sample_config_initialized_(false)
         , sample_type_(kGpaSessionSampleTypeDiscreteCounter)
     {
         amd_ext_sample_config_ = {};
@@ -252,6 +253,8 @@ public:
     ~Dx12GpaSampleConfig();
 
     bool Initialize(IGpaSession* session, GpaCounterSource counter_source, const CounterList* counter_list, GpaPass* gpa_pass, bool is_timing_pass);
+
+    bool UpdateSettings();
 
     const AmdExtGpaSampleConfig& GetDriverExtSampleConfig() const
     {
@@ -281,6 +284,8 @@ public:
     }
 
 private:
+    bool                  UpdateSpmSettings(const IGpaSession* session);
+    const IGpaSession*    session_;                       ///< The GpaSession this sample is being configured for.
     AmdExtGpaSampleConfig amd_ext_sample_config_;         ///< AMD Extension configuration for hardware samples.
     bool                  is_sample_config_initialized_;  ///< Flag indicating whether the sample config is initialized for the hardware samples.
     GpaSessionSampleType  sample_type_;                   ///< The type of samples being collected in this configuration.

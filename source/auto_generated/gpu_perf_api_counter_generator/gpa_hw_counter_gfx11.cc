@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Hardware counter info for GFX11.
@@ -303,6 +303,25 @@ namespace counter_gfx11
         {74, "SPI0_PERF_PS1_WAVE", "SPI0", "Number of waves ,PACKER1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {75, "SPI0_PERF_PS2_WAVE", "SPI0", "Number of waves ,PACKER2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {76, "SPI0_PERF_PS3_WAVE", "SPI0", "Number of waves ,PACKER3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {155, "SPI0_PERF_RA_TMP_STALL_PS", "SPI0", "Cycles where ps wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {156, "SPI0_PERF_RA_TMP_STALL_GS", "SPI0", "Cycles where gs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {157, "SPI0_PERF_RA_TMP_STALL_HS", "SPI0", "Cycles where hs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {158, "SPI0_PERF_RA_TMP_STALL_CSG", "SPI0", "Cycles where csg wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {160, "SPI0_PERF_RA_WAVE_SIMD_FULL_PS", "SPI0", "Sum of SIMD where WAVE resource full when !ps_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {161, "SPI0_PERF_RA_WAVE_SIMD_FULL_GS", "SPI0", "Sum of SIMD where WAVE resource full when !gs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {162, "SPI0_PERF_RA_WAVE_SIMD_FULL_HS", "SPI0", "Sum of SIMD where WAVE can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {163, "SPI0_PERF_RA_WAVE_SIMD_FULL_CSG", "SPI0", "Sum of SIMD where WAVE can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {165, "SPI0_PERF_RA_VGPR_SIMD_FULL_PS", "SPI0", "Sum of SIMD where VGPR can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {166, "SPI0_PERF_RA_VGPR_SIMD_FULL_GS", "SPI0", "Sum of SIMD where VGPR can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {167, "SPI0_PERF_RA_VGPR_SIMD_FULL_HS", "SPI0", "Sum of SIMD where VGPR can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {168, "SPI0_PERF_RA_VGPR_SIMD_FULL_CSG", "SPI0", "Sum of SIMD where VGPR can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {170, "SPI0_PERF_RA_LDS_CU_FULL_PS", "SPI0", "Sum of CU where LDS can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {171, "SPI0_PERF_RA_LDS_CU_FULL_HS", "SPI0", "Sum of CU where LDS can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {172, "SPI0_PERF_RA_LDS_CU_FULL_GS", "SPI0", "Sum of CU where LDS can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {173, "SPI0_PERF_RA_LDS_CU_FULL_CSG", "SPI0", "Sum of CU where LDS can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {177, "SPI0_PERF_RA_BAR_CU_FULL_HS", "SPI0", "Sum of CU where BARRIER can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {178, "SPI0_PERF_RA_BAR_CU_FULL_CSG", "SPI0", "Sum of CU where BARRIER can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {182, "SPI0_PERF_RA_TGLIM_CU_FULL_CSG", "SPI0", "Cycles where csg wants to req but all CU are at tg_limit", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSpi1CountersGfx11 = {
         {2, "SPI1_PERF_GS_BUSY", "SPI1", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -323,6 +342,25 @@ namespace counter_gfx11
         {74, "SPI1_PERF_PS1_WAVE", "SPI1", "Number of waves ,PACKER1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {75, "SPI1_PERF_PS2_WAVE", "SPI1", "Number of waves ,PACKER2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {76, "SPI1_PERF_PS3_WAVE", "SPI1", "Number of waves ,PACKER3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {155, "SPI1_PERF_RA_TMP_STALL_PS", "SPI1", "Cycles where ps wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {156, "SPI1_PERF_RA_TMP_STALL_GS", "SPI1", "Cycles where gs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {157, "SPI1_PERF_RA_TMP_STALL_HS", "SPI1", "Cycles where hs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {158, "SPI1_PERF_RA_TMP_STALL_CSG", "SPI1", "Cycles where csg wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {160, "SPI1_PERF_RA_WAVE_SIMD_FULL_PS", "SPI1", "Sum of SIMD where WAVE resource full when !ps_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {161, "SPI1_PERF_RA_WAVE_SIMD_FULL_GS", "SPI1", "Sum of SIMD where WAVE resource full when !gs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {162, "SPI1_PERF_RA_WAVE_SIMD_FULL_HS", "SPI1", "Sum of SIMD where WAVE can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {163, "SPI1_PERF_RA_WAVE_SIMD_FULL_CSG", "SPI1", "Sum of SIMD where WAVE can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {165, "SPI1_PERF_RA_VGPR_SIMD_FULL_PS", "SPI1", "Sum of SIMD where VGPR can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {166, "SPI1_PERF_RA_VGPR_SIMD_FULL_GS", "SPI1", "Sum of SIMD where VGPR can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {167, "SPI1_PERF_RA_VGPR_SIMD_FULL_HS", "SPI1", "Sum of SIMD where VGPR can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {168, "SPI1_PERF_RA_VGPR_SIMD_FULL_CSG", "SPI1", "Sum of SIMD where VGPR can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {170, "SPI1_PERF_RA_LDS_CU_FULL_PS", "SPI1", "Sum of CU where LDS can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {171, "SPI1_PERF_RA_LDS_CU_FULL_HS", "SPI1", "Sum of CU where LDS can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {172, "SPI1_PERF_RA_LDS_CU_FULL_GS", "SPI1", "Sum of CU where LDS can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {173, "SPI1_PERF_RA_LDS_CU_FULL_CSG", "SPI1", "Sum of CU where LDS can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {177, "SPI1_PERF_RA_BAR_CU_FULL_HS", "SPI1", "Sum of CU where BARRIER can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {178, "SPI1_PERF_RA_BAR_CU_FULL_CSG", "SPI1", "Sum of CU where BARRIER can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {182, "SPI1_PERF_RA_TGLIM_CU_FULL_CSG", "SPI1", "Cycles where csg wants to req but all CU are at tg_limit", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSpi2CountersGfx11 = {
         {2, "SPI2_PERF_GS_BUSY", "SPI2", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -343,6 +381,25 @@ namespace counter_gfx11
         {74, "SPI2_PERF_PS1_WAVE", "SPI2", "Number of waves ,PACKER1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {75, "SPI2_PERF_PS2_WAVE", "SPI2", "Number of waves ,PACKER2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {76, "SPI2_PERF_PS3_WAVE", "SPI2", "Number of waves ,PACKER3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {155, "SPI2_PERF_RA_TMP_STALL_PS", "SPI2", "Cycles where ps wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {156, "SPI2_PERF_RA_TMP_STALL_GS", "SPI2", "Cycles where gs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {157, "SPI2_PERF_RA_TMP_STALL_HS", "SPI2", "Cycles where hs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {158, "SPI2_PERF_RA_TMP_STALL_CSG", "SPI2", "Cycles where csg wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {160, "SPI2_PERF_RA_WAVE_SIMD_FULL_PS", "SPI2", "Sum of SIMD where WAVE resource full when !ps_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {161, "SPI2_PERF_RA_WAVE_SIMD_FULL_GS", "SPI2", "Sum of SIMD where WAVE resource full when !gs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {162, "SPI2_PERF_RA_WAVE_SIMD_FULL_HS", "SPI2", "Sum of SIMD where WAVE can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {163, "SPI2_PERF_RA_WAVE_SIMD_FULL_CSG", "SPI2", "Sum of SIMD where WAVE can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {165, "SPI2_PERF_RA_VGPR_SIMD_FULL_PS", "SPI2", "Sum of SIMD where VGPR can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {166, "SPI2_PERF_RA_VGPR_SIMD_FULL_GS", "SPI2", "Sum of SIMD where VGPR can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {167, "SPI2_PERF_RA_VGPR_SIMD_FULL_HS", "SPI2", "Sum of SIMD where VGPR can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {168, "SPI2_PERF_RA_VGPR_SIMD_FULL_CSG", "SPI2", "Sum of SIMD where VGPR can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {170, "SPI2_PERF_RA_LDS_CU_FULL_PS", "SPI2", "Sum of CU where LDS can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {171, "SPI2_PERF_RA_LDS_CU_FULL_HS", "SPI2", "Sum of CU where LDS can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {172, "SPI2_PERF_RA_LDS_CU_FULL_GS", "SPI2", "Sum of CU where LDS can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {173, "SPI2_PERF_RA_LDS_CU_FULL_CSG", "SPI2", "Sum of CU where LDS can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {177, "SPI2_PERF_RA_BAR_CU_FULL_HS", "SPI2", "Sum of CU where BARRIER can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {178, "SPI2_PERF_RA_BAR_CU_FULL_CSG", "SPI2", "Sum of CU where BARRIER can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {182, "SPI2_PERF_RA_TGLIM_CU_FULL_CSG", "SPI2", "Cycles where csg wants to req but all CU are at tg_limit", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSpi3CountersGfx11 = {
         {2, "SPI3_PERF_GS_BUSY", "SPI3", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -363,6 +420,25 @@ namespace counter_gfx11
         {74, "SPI3_PERF_PS1_WAVE", "SPI3", "Number of waves ,PACKER1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {75, "SPI3_PERF_PS2_WAVE", "SPI3", "Number of waves ,PACKER2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {76, "SPI3_PERF_PS3_WAVE", "SPI3", "Number of waves ,PACKER3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {155, "SPI3_PERF_RA_TMP_STALL_PS", "SPI3", "Cycles where ps wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {156, "SPI3_PERF_RA_TMP_STALL_GS", "SPI3", "Cycles where gs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {157, "SPI3_PERF_RA_TMP_STALL_HS", "SPI3", "Cycles where hs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {158, "SPI3_PERF_RA_TMP_STALL_CSG", "SPI3", "Cycles where csg wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {160, "SPI3_PERF_RA_WAVE_SIMD_FULL_PS", "SPI3", "Sum of SIMD where WAVE resource full when !ps_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {161, "SPI3_PERF_RA_WAVE_SIMD_FULL_GS", "SPI3", "Sum of SIMD where WAVE resource full when !gs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {162, "SPI3_PERF_RA_WAVE_SIMD_FULL_HS", "SPI3", "Sum of SIMD where WAVE can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {163, "SPI3_PERF_RA_WAVE_SIMD_FULL_CSG", "SPI3", "Sum of SIMD where WAVE can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {165, "SPI3_PERF_RA_VGPR_SIMD_FULL_PS", "SPI3", "Sum of SIMD where VGPR can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {166, "SPI3_PERF_RA_VGPR_SIMD_FULL_GS", "SPI3", "Sum of SIMD where VGPR can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {167, "SPI3_PERF_RA_VGPR_SIMD_FULL_HS", "SPI3", "Sum of SIMD where VGPR can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {168, "SPI3_PERF_RA_VGPR_SIMD_FULL_CSG", "SPI3", "Sum of SIMD where VGPR can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {170, "SPI3_PERF_RA_LDS_CU_FULL_PS", "SPI3", "Sum of CU where LDS can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {171, "SPI3_PERF_RA_LDS_CU_FULL_HS", "SPI3", "Sum of CU where LDS can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {172, "SPI3_PERF_RA_LDS_CU_FULL_GS", "SPI3", "Sum of CU where LDS can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {173, "SPI3_PERF_RA_LDS_CU_FULL_CSG", "SPI3", "Sum of CU where LDS can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {177, "SPI3_PERF_RA_BAR_CU_FULL_HS", "SPI3", "Sum of CU where BARRIER can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {178, "SPI3_PERF_RA_BAR_CU_FULL_CSG", "SPI3", "Sum of CU where BARRIER can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {182, "SPI3_PERF_RA_TGLIM_CU_FULL_CSG", "SPI3", "Cycles where csg wants to req but all CU are at tg_limit", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSpi4CountersGfx11 = {
         {2, "SPI4_PERF_GS_BUSY", "SPI4", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -383,6 +459,25 @@ namespace counter_gfx11
         {74, "SPI4_PERF_PS1_WAVE", "SPI4", "Number of waves ,PACKER1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {75, "SPI4_PERF_PS2_WAVE", "SPI4", "Number of waves ,PACKER2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {76, "SPI4_PERF_PS3_WAVE", "SPI4", "Number of waves ,PACKER3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {155, "SPI4_PERF_RA_TMP_STALL_PS", "SPI4", "Cycles where ps wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {156, "SPI4_PERF_RA_TMP_STALL_GS", "SPI4", "Cycles where gs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {157, "SPI4_PERF_RA_TMP_STALL_HS", "SPI4", "Cycles where hs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {158, "SPI4_PERF_RA_TMP_STALL_CSG", "SPI4", "Cycles where csg wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {160, "SPI4_PERF_RA_WAVE_SIMD_FULL_PS", "SPI4", "Sum of SIMD where WAVE resource full when !ps_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {161, "SPI4_PERF_RA_WAVE_SIMD_FULL_GS", "SPI4", "Sum of SIMD where WAVE resource full when !gs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {162, "SPI4_PERF_RA_WAVE_SIMD_FULL_HS", "SPI4", "Sum of SIMD where WAVE can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {163, "SPI4_PERF_RA_WAVE_SIMD_FULL_CSG", "SPI4", "Sum of SIMD where WAVE can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {165, "SPI4_PERF_RA_VGPR_SIMD_FULL_PS", "SPI4", "Sum of SIMD where VGPR can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {166, "SPI4_PERF_RA_VGPR_SIMD_FULL_GS", "SPI4", "Sum of SIMD where VGPR can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {167, "SPI4_PERF_RA_VGPR_SIMD_FULL_HS", "SPI4", "Sum of SIMD where VGPR can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {168, "SPI4_PERF_RA_VGPR_SIMD_FULL_CSG", "SPI4", "Sum of SIMD where VGPR can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {170, "SPI4_PERF_RA_LDS_CU_FULL_PS", "SPI4", "Sum of CU where LDS can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {171, "SPI4_PERF_RA_LDS_CU_FULL_HS", "SPI4", "Sum of CU where LDS can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {172, "SPI4_PERF_RA_LDS_CU_FULL_GS", "SPI4", "Sum of CU where LDS can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {173, "SPI4_PERF_RA_LDS_CU_FULL_CSG", "SPI4", "Sum of CU where LDS can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {177, "SPI4_PERF_RA_BAR_CU_FULL_HS", "SPI4", "Sum of CU where BARRIER can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {178, "SPI4_PERF_RA_BAR_CU_FULL_CSG", "SPI4", "Sum of CU where BARRIER can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {182, "SPI4_PERF_RA_TGLIM_CU_FULL_CSG", "SPI4", "Cycles where csg wants to req but all CU are at tg_limit", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSpi5CountersGfx11 = {
         {2, "SPI5_PERF_GS_BUSY", "SPI5", "Number of clocks with outstanding waves (SPI or SH).", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -403,6 +498,25 @@ namespace counter_gfx11
         {74, "SPI5_PERF_PS1_WAVE", "SPI5", "Number of waves ,PACKER1", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {75, "SPI5_PERF_PS2_WAVE", "SPI5", "Number of waves ,PACKER2", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {76, "SPI5_PERF_PS3_WAVE", "SPI5", "Number of waves ,PACKER3", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {155, "SPI5_PERF_RA_TMP_STALL_PS", "SPI5", "Cycles where ps wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {156, "SPI5_PERF_RA_TMP_STALL_GS", "SPI5", "Cycles where gs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {157, "SPI5_PERF_RA_TMP_STALL_HS", "SPI5", "Cycles where hs wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {158, "SPI5_PERF_RA_TMP_STALL_CSG", "SPI5", "Cycles where csg wants to req but does not fit in temp space.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {160, "SPI5_PERF_RA_WAVE_SIMD_FULL_PS", "SPI5", "Sum of SIMD where WAVE resource full when !ps_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {161, "SPI5_PERF_RA_WAVE_SIMD_FULL_GS", "SPI5", "Sum of SIMD where WAVE resource full when !gs_fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {162, "SPI5_PERF_RA_WAVE_SIMD_FULL_HS", "SPI5", "Sum of SIMD where WAVE can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {163, "SPI5_PERF_RA_WAVE_SIMD_FULL_CSG", "SPI5", "Sum of SIMD where WAVE can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {165, "SPI5_PERF_RA_VGPR_SIMD_FULL_PS", "SPI5", "Sum of SIMD where VGPR can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {166, "SPI5_PERF_RA_VGPR_SIMD_FULL_GS", "SPI5", "Sum of SIMD where VGPR can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {167, "SPI5_PERF_RA_VGPR_SIMD_FULL_HS", "SPI5", "Sum of SIMD where VGPR can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {168, "SPI5_PERF_RA_VGPR_SIMD_FULL_CSG", "SPI5", "Sum of SIMD where VGPR can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {170, "SPI5_PERF_RA_LDS_CU_FULL_PS", "SPI5", "Sum of CU where LDS can`t take ps wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {171, "SPI5_PERF_RA_LDS_CU_FULL_HS", "SPI5", "Sum of CU where LDS can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {172, "SPI5_PERF_RA_LDS_CU_FULL_GS", "SPI5", "Sum of CU where LDS can`t take gs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {173, "SPI5_PERF_RA_LDS_CU_FULL_CSG", "SPI5", "Sum of CU where LDS can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {177, "SPI5_PERF_RA_BAR_CU_FULL_HS", "SPI5", "Sum of CU where BARRIER can`t take hs wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {178, "SPI5_PERF_RA_BAR_CU_FULL_CSG", "SPI5", "Sum of CU where BARRIER can`t take csg wave when !fits.", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {182, "SPI5_PERF_RA_TGLIM_CU_FULL_CSG", "SPI5", "Cycles where csg wants to req but all CU are at tg_limit", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSqg0CountersGfx11 = {
         {20, "SQG0_PERF_SEL_WAVES", "SQG0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -434,36 +548,6 @@ namespace counter_gfx11
         {21, "SQG5_PERF_SEL_WAVES_32", "SQG5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {24, "SQG5_PERF_SEL_ITEMS", "SQG5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kSqgEs0CountersGfx11 = {
-        {20, "SQG_ES0_PERF_SEL_WAVES", "SQG_ES0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_ES0_PERF_SEL_WAVES_32", "SQG_ES0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_ES0_PERF_SEL_ITEMS", "SQG_ES0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgEs1CountersGfx11 = {
-        {20, "SQG_ES1_PERF_SEL_WAVES", "SQG_ES1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_ES1_PERF_SEL_WAVES_32", "SQG_ES1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_ES1_PERF_SEL_ITEMS", "SQG_ES1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgEs2CountersGfx11 = {
-        {20, "SQG_ES2_PERF_SEL_WAVES", "SQG_ES2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_ES2_PERF_SEL_WAVES_32", "SQG_ES2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_ES2_PERF_SEL_ITEMS", "SQG_ES2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgEs3CountersGfx11 = {
-        {20, "SQG_ES3_PERF_SEL_WAVES", "SQG_ES3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_ES3_PERF_SEL_WAVES_32", "SQG_ES3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_ES3_PERF_SEL_ITEMS", "SQG_ES3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgEs4CountersGfx11 = {
-        {20, "SQG_ES4_PERF_SEL_WAVES", "SQG_ES4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_ES4_PERF_SEL_WAVES_32", "SQG_ES4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_ES4_PERF_SEL_ITEMS", "SQG_ES4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgEs5CountersGfx11 = {
-        {20, "SQG_ES5_PERF_SEL_WAVES", "SQG_ES5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_ES5_PERF_SEL_WAVES_32", "SQG_ES5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_ES5_PERF_SEL_ITEMS", "SQG_ES5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
     std::vector<GpaHardwareCounterDesc> kSqgGs0CountersGfx11 = {
         {20, "SQG_GS0_PERF_SEL_WAVES", "SQG_GS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {21, "SQG_GS0_PERF_SEL_WAVES_32", "SQG_GS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -494,36 +578,6 @@ namespace counter_gfx11
         {21, "SQG_GS5_PERF_SEL_WAVES_32", "SQG_GS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {24, "SQG_GS5_PERF_SEL_ITEMS", "SQG_GS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
-    std::vector<GpaHardwareCounterDesc> kSqgVs0CountersGfx11 = {
-        {20, "SQG_VS0_PERF_SEL_WAVES", "SQG_VS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_VS0_PERF_SEL_WAVES_32", "SQG_VS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_VS0_PERF_SEL_ITEMS", "SQG_VS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgVs1CountersGfx11 = {
-        {20, "SQG_VS1_PERF_SEL_WAVES", "SQG_VS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_VS1_PERF_SEL_WAVES_32", "SQG_VS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_VS1_PERF_SEL_ITEMS", "SQG_VS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgVs2CountersGfx11 = {
-        {20, "SQG_VS2_PERF_SEL_WAVES", "SQG_VS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_VS2_PERF_SEL_WAVES_32", "SQG_VS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_VS2_PERF_SEL_ITEMS", "SQG_VS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgVs3CountersGfx11 = {
-        {20, "SQG_VS3_PERF_SEL_WAVES", "SQG_VS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_VS3_PERF_SEL_WAVES_32", "SQG_VS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_VS3_PERF_SEL_ITEMS", "SQG_VS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgVs4CountersGfx11 = {
-        {20, "SQG_VS4_PERF_SEL_WAVES", "SQG_VS4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_VS4_PERF_SEL_WAVES_32", "SQG_VS4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_VS4_PERF_SEL_ITEMS", "SQG_VS4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgVs5CountersGfx11 = {
-        {20, "SQG_VS5_PERF_SEL_WAVES", "SQG_VS5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_VS5_PERF_SEL_WAVES_32", "SQG_VS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_VS5_PERF_SEL_ITEMS", "SQG_VS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
     std::vector<GpaHardwareCounterDesc> kSqgPs0CountersGfx11 = {
         {20, "SQG_PS0_PERF_SEL_WAVES", "SQG_PS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {21, "SQG_PS0_PERF_SEL_WAVES_32", "SQG_PS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -553,36 +607,6 @@ namespace counter_gfx11
         {20, "SQG_PS5_PERF_SEL_WAVES", "SQG_PS5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {21, "SQG_PS5_PERF_SEL_WAVES_32", "SQG_PS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {24, "SQG_PS5_PERF_SEL_ITEMS", "SQG_PS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgLs0CountersGfx11 = {
-        {20, "SQG_LS0_PERF_SEL_WAVES", "SQG_LS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_LS0_PERF_SEL_WAVES_32", "SQG_LS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_LS0_PERF_SEL_ITEMS", "SQG_LS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgLs1CountersGfx11 = {
-        {20, "SQG_LS1_PERF_SEL_WAVES", "SQG_LS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_LS1_PERF_SEL_WAVES_32", "SQG_LS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_LS1_PERF_SEL_ITEMS", "SQG_LS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgLs2CountersGfx11 = {
-        {20, "SQG_LS2_PERF_SEL_WAVES", "SQG_LS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_LS2_PERF_SEL_WAVES_32", "SQG_LS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_LS2_PERF_SEL_ITEMS", "SQG_LS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgLs3CountersGfx11 = {
-        {20, "SQG_LS3_PERF_SEL_WAVES", "SQG_LS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_LS3_PERF_SEL_WAVES_32", "SQG_LS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_LS3_PERF_SEL_ITEMS", "SQG_LS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgLs4CountersGfx11 = {
-        {20, "SQG_LS4_PERF_SEL_WAVES", "SQG_LS4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_LS4_PERF_SEL_WAVES_32", "SQG_LS4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_LS4_PERF_SEL_ITEMS", "SQG_LS4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-    };
-    std::vector<GpaHardwareCounterDesc> kSqgLs5CountersGfx11 = {
-        {20, "SQG_LS5_PERF_SEL_WAVES", "SQG_LS5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {21, "SQG_LS5_PERF_SEL_WAVES_32", "SQG_LS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
-        {24, "SQG_LS5_PERF_SEL_ITEMS", "SQG_LS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
     };
     std::vector<GpaHardwareCounterDesc> kSqgHs0CountersGfx11 = {
         {20, "SQG_HS0_PERF_SEL_WAVES", "SQG_HS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -647,6 +671,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp0CountersGfx11 = {
         {4, "SQWGP0_SQ_PERF_SEL_WAVES", "SQWGP0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP0_SQ_PERF_SEL_WAVES_32", "SQWGP0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP0_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP0_SQ_PERF_SEL_ITEMS", "SQWGP0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP0_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP0_SQ_PERF_SEL_INSTS_GDS", "SQWGP0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -672,6 +697,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp1CountersGfx11 = {
         {4, "SQWGP1_SQ_PERF_SEL_WAVES", "SQWGP1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP1_SQ_PERF_SEL_WAVES_32", "SQWGP1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP1_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP1_SQ_PERF_SEL_ITEMS", "SQWGP1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP1_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP1_SQ_PERF_SEL_INSTS_GDS", "SQWGP1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -697,6 +723,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp2CountersGfx11 = {
         {4, "SQWGP2_SQ_PERF_SEL_WAVES", "SQWGP2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP2_SQ_PERF_SEL_WAVES_32", "SQWGP2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP2_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP2_SQ_PERF_SEL_ITEMS", "SQWGP2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP2_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP2_SQ_PERF_SEL_INSTS_GDS", "SQWGP2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -722,6 +749,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp3CountersGfx11 = {
         {4, "SQWGP3_SQ_PERF_SEL_WAVES", "SQWGP3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP3_SQ_PERF_SEL_WAVES_32", "SQWGP3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP3_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP3_SQ_PERF_SEL_ITEMS", "SQWGP3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP3_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP3_SQ_PERF_SEL_INSTS_GDS", "SQWGP3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -747,6 +775,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp4CountersGfx11 = {
         {4, "SQWGP4_SQ_PERF_SEL_WAVES", "SQWGP4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP4_SQ_PERF_SEL_WAVES_32", "SQWGP4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP4_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP4", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP4_SQ_PERF_SEL_ITEMS", "SQWGP4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP4_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP4", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP4_SQ_PERF_SEL_INSTS_GDS", "SQWGP4", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -772,6 +801,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp5CountersGfx11 = {
         {4, "SQWGP5_SQ_PERF_SEL_WAVES", "SQWGP5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP5_SQ_PERF_SEL_WAVES_32", "SQWGP5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP5_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP5", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP5_SQ_PERF_SEL_ITEMS", "SQWGP5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP5_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP5", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP5_SQ_PERF_SEL_INSTS_GDS", "SQWGP5", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -797,6 +827,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp6CountersGfx11 = {
         {4, "SQWGP6_SQ_PERF_SEL_WAVES", "SQWGP6", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP6_SQ_PERF_SEL_WAVES_32", "SQWGP6", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP6_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP6", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP6_SQ_PERF_SEL_ITEMS", "SQWGP6", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP6_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP6", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP6_SQ_PERF_SEL_INSTS_GDS", "SQWGP6", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -822,6 +853,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp7CountersGfx11 = {
         {4, "SQWGP7_SQ_PERF_SEL_WAVES", "SQWGP7", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP7_SQ_PERF_SEL_WAVES_32", "SQWGP7", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP7_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP7", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP7_SQ_PERF_SEL_ITEMS", "SQWGP7", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP7_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP7", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP7_SQ_PERF_SEL_INSTS_GDS", "SQWGP7", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -847,6 +879,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp8CountersGfx11 = {
         {4, "SQWGP8_SQ_PERF_SEL_WAVES", "SQWGP8", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP8_SQ_PERF_SEL_WAVES_32", "SQWGP8", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP8_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP8", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP8_SQ_PERF_SEL_ITEMS", "SQWGP8", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP8_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP8", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP8_SQ_PERF_SEL_INSTS_GDS", "SQWGP8", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -872,6 +905,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp9CountersGfx11 = {
         {4, "SQWGP9_SQ_PERF_SEL_WAVES", "SQWGP9", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP9_SQ_PERF_SEL_WAVES_32", "SQWGP9", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP9_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP9", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP9_SQ_PERF_SEL_ITEMS", "SQWGP9", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP9_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP9", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP9_SQ_PERF_SEL_INSTS_GDS", "SQWGP9", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -897,6 +931,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp10CountersGfx11 = {
         {4, "SQWGP10_SQ_PERF_SEL_WAVES", "SQWGP10", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP10_SQ_PERF_SEL_WAVES_32", "SQWGP10", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP10_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP10", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP10_SQ_PERF_SEL_ITEMS", "SQWGP10", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP10_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP10", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP10_SQ_PERF_SEL_INSTS_GDS", "SQWGP10", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -922,6 +957,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp11CountersGfx11 = {
         {4, "SQWGP11_SQ_PERF_SEL_WAVES", "SQWGP11", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP11_SQ_PERF_SEL_WAVES_32", "SQWGP11", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP11_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP11", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP11_SQ_PERF_SEL_ITEMS", "SQWGP11", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP11_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP11", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP11_SQ_PERF_SEL_INSTS_GDS", "SQWGP11", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -947,6 +983,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp12CountersGfx11 = {
         {4, "SQWGP12_SQ_PERF_SEL_WAVES", "SQWGP12", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP12_SQ_PERF_SEL_WAVES_32", "SQWGP12", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP12_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP12", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP12_SQ_PERF_SEL_ITEMS", "SQWGP12", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP12_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP12", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP12_SQ_PERF_SEL_INSTS_GDS", "SQWGP12", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -972,6 +1009,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp13CountersGfx11 = {
         {4, "SQWGP13_SQ_PERF_SEL_WAVES", "SQWGP13", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP13_SQ_PERF_SEL_WAVES_32", "SQWGP13", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP13_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP13", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP13_SQ_PERF_SEL_ITEMS", "SQWGP13", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP13_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP13", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP13_SQ_PERF_SEL_INSTS_GDS", "SQWGP13", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -997,6 +1035,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp14CountersGfx11 = {
         {4, "SQWGP14_SQ_PERF_SEL_WAVES", "SQWGP14", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP14_SQ_PERF_SEL_WAVES_32", "SQWGP14", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP14_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP14", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP14_SQ_PERF_SEL_ITEMS", "SQWGP14", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP14_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP14", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP14_SQ_PERF_SEL_INSTS_GDS", "SQWGP14", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1022,6 +1061,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp15CountersGfx11 = {
         {4, "SQWGP15_SQ_PERF_SEL_WAVES", "SQWGP15", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP15_SQ_PERF_SEL_WAVES_32", "SQWGP15", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP15_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP15", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP15_SQ_PERF_SEL_ITEMS", "SQWGP15", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP15_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP15", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP15_SQ_PERF_SEL_INSTS_GDS", "SQWGP15", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1047,6 +1087,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp16CountersGfx11 = {
         {4, "SQWGP16_SQ_PERF_SEL_WAVES", "SQWGP16", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP16_SQ_PERF_SEL_WAVES_32", "SQWGP16", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP16_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP16", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP16_SQ_PERF_SEL_ITEMS", "SQWGP16", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP16_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP16", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP16_SQ_PERF_SEL_INSTS_GDS", "SQWGP16", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1072,6 +1113,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp17CountersGfx11 = {
         {4, "SQWGP17_SQ_PERF_SEL_WAVES", "SQWGP17", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP17_SQ_PERF_SEL_WAVES_32", "SQWGP17", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP17_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP17", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP17_SQ_PERF_SEL_ITEMS", "SQWGP17", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP17_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP17", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP17_SQ_PERF_SEL_INSTS_GDS", "SQWGP17", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1097,6 +1139,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp18CountersGfx11 = {
         {4, "SQWGP18_SQ_PERF_SEL_WAVES", "SQWGP18", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP18_SQ_PERF_SEL_WAVES_32", "SQWGP18", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP18_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP18", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP18_SQ_PERF_SEL_ITEMS", "SQWGP18", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP18_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP18", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP18_SQ_PERF_SEL_INSTS_GDS", "SQWGP18", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1122,6 +1165,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp19CountersGfx11 = {
         {4, "SQWGP19_SQ_PERF_SEL_WAVES", "SQWGP19", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP19_SQ_PERF_SEL_WAVES_32", "SQWGP19", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP19_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP19", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP19_SQ_PERF_SEL_ITEMS", "SQWGP19", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP19_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP19", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP19_SQ_PERF_SEL_INSTS_GDS", "SQWGP19", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1147,6 +1191,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp20CountersGfx11 = {
         {4, "SQWGP20_SQ_PERF_SEL_WAVES", "SQWGP20", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP20_SQ_PERF_SEL_WAVES_32", "SQWGP20", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP20_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP20", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP20_SQ_PERF_SEL_ITEMS", "SQWGP20", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP20_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP20", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP20_SQ_PERF_SEL_INSTS_GDS", "SQWGP20", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1172,6 +1217,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp21CountersGfx11 = {
         {4, "SQWGP21_SQ_PERF_SEL_WAVES", "SQWGP21", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP21_SQ_PERF_SEL_WAVES_32", "SQWGP21", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP21_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP21", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP21_SQ_PERF_SEL_ITEMS", "SQWGP21", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP21_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP21", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP21_SQ_PERF_SEL_INSTS_GDS", "SQWGP21", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1197,6 +1243,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp22CountersGfx11 = {
         {4, "SQWGP22_SQ_PERF_SEL_WAVES", "SQWGP22", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP22_SQ_PERF_SEL_WAVES_32", "SQWGP22", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP22_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP22", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP22_SQ_PERF_SEL_ITEMS", "SQWGP22", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP22_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP22", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP22_SQ_PERF_SEL_INSTS_GDS", "SQWGP22", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1222,6 +1269,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp23CountersGfx11 = {
         {4, "SQWGP23_SQ_PERF_SEL_WAVES", "SQWGP23", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP23_SQ_PERF_SEL_WAVES_32", "SQWGP23", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP23_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP23", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP23_SQ_PERF_SEL_ITEMS", "SQWGP23", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP23_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP23", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP23_SQ_PERF_SEL_INSTS_GDS", "SQWGP23", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1247,6 +1295,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp24CountersGfx11 = {
         {4, "SQWGP24_SQ_PERF_SEL_WAVES", "SQWGP24", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP24_SQ_PERF_SEL_WAVES_32", "SQWGP24", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP24_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP24", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP24_SQ_PERF_SEL_ITEMS", "SQWGP24", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP24_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP24", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP24_SQ_PERF_SEL_INSTS_GDS", "SQWGP24", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1272,6 +1321,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp25CountersGfx11 = {
         {4, "SQWGP25_SQ_PERF_SEL_WAVES", "SQWGP25", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP25_SQ_PERF_SEL_WAVES_32", "SQWGP25", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP25_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP25", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP25_SQ_PERF_SEL_ITEMS", "SQWGP25", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP25_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP25", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP25_SQ_PERF_SEL_INSTS_GDS", "SQWGP25", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1297,6 +1347,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp26CountersGfx11 = {
         {4, "SQWGP26_SQ_PERF_SEL_WAVES", "SQWGP26", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP26_SQ_PERF_SEL_WAVES_32", "SQWGP26", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP26_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP26", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP26_SQ_PERF_SEL_ITEMS", "SQWGP26", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP26_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP26", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP26_SQ_PERF_SEL_INSTS_GDS", "SQWGP26", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1322,6 +1373,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp27CountersGfx11 = {
         {4, "SQWGP27_SQ_PERF_SEL_WAVES", "SQWGP27", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP27_SQ_PERF_SEL_WAVES_32", "SQWGP27", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP27_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP27", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP27_SQ_PERF_SEL_ITEMS", "SQWGP27", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP27_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP27", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP27_SQ_PERF_SEL_INSTS_GDS", "SQWGP27", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1347,6 +1399,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp28CountersGfx11 = {
         {4, "SQWGP28_SQ_PERF_SEL_WAVES", "SQWGP28", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP28_SQ_PERF_SEL_WAVES_32", "SQWGP28", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP28_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP28", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP28_SQ_PERF_SEL_ITEMS", "SQWGP28", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP28_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP28", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP28_SQ_PERF_SEL_INSTS_GDS", "SQWGP28", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1372,6 +1425,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp29CountersGfx11 = {
         {4, "SQWGP29_SQ_PERF_SEL_WAVES", "SQWGP29", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP29_SQ_PERF_SEL_WAVES_32", "SQWGP29", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP29_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP29", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP29_SQ_PERF_SEL_ITEMS", "SQWGP29", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP29_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP29", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP29_SQ_PERF_SEL_INSTS_GDS", "SQWGP29", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1397,6 +1451,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp30CountersGfx11 = {
         {4, "SQWGP30_SQ_PERF_SEL_WAVES", "SQWGP30", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP30_SQ_PERF_SEL_WAVES_32", "SQWGP30", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP30_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP30", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP30_SQ_PERF_SEL_ITEMS", "SQWGP30", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP30_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP30", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP30_SQ_PERF_SEL_INSTS_GDS", "SQWGP30", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1422,6 +1477,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp31CountersGfx11 = {
         {4, "SQWGP31_SQ_PERF_SEL_WAVES", "SQWGP31", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP31_SQ_PERF_SEL_WAVES_32", "SQWGP31", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP31_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP31", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP31_SQ_PERF_SEL_ITEMS", "SQWGP31", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP31_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP31", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP31_SQ_PERF_SEL_INSTS_GDS", "SQWGP31", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1447,6 +1503,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp32CountersGfx11 = {
         {4, "SQWGP32_SQ_PERF_SEL_WAVES", "SQWGP32", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP32_SQ_PERF_SEL_WAVES_32", "SQWGP32", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP32_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP32", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP32_SQ_PERF_SEL_ITEMS", "SQWGP32", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP32_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP32", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP32_SQ_PERF_SEL_INSTS_GDS", "SQWGP32", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1472,6 +1529,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp33CountersGfx11 = {
         {4, "SQWGP33_SQ_PERF_SEL_WAVES", "SQWGP33", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP33_SQ_PERF_SEL_WAVES_32", "SQWGP33", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP33_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP33", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP33_SQ_PERF_SEL_ITEMS", "SQWGP33", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP33_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP33", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP33_SQ_PERF_SEL_INSTS_GDS", "SQWGP33", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1497,6 +1555,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp34CountersGfx11 = {
         {4, "SQWGP34_SQ_PERF_SEL_WAVES", "SQWGP34", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP34_SQ_PERF_SEL_WAVES_32", "SQWGP34", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP34_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP34", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP34_SQ_PERF_SEL_ITEMS", "SQWGP34", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP34_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP34", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP34_SQ_PERF_SEL_INSTS_GDS", "SQWGP34", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1522,6 +1581,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp35CountersGfx11 = {
         {4, "SQWGP35_SQ_PERF_SEL_WAVES", "SQWGP35", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP35_SQ_PERF_SEL_WAVES_32", "SQWGP35", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP35_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP35", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP35_SQ_PERF_SEL_ITEMS", "SQWGP35", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP35_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP35", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP35_SQ_PERF_SEL_INSTS_GDS", "SQWGP35", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1547,6 +1607,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp36CountersGfx11 = {
         {4, "SQWGP36_SQ_PERF_SEL_WAVES", "SQWGP36", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP36_SQ_PERF_SEL_WAVES_32", "SQWGP36", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP36_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP36", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP36_SQ_PERF_SEL_ITEMS", "SQWGP36", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP36_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP36", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP36_SQ_PERF_SEL_INSTS_GDS", "SQWGP36", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1572,6 +1633,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp37CountersGfx11 = {
         {4, "SQWGP37_SQ_PERF_SEL_WAVES", "SQWGP37", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP37_SQ_PERF_SEL_WAVES_32", "SQWGP37", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP37_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP37", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP37_SQ_PERF_SEL_ITEMS", "SQWGP37", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP37_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP37", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP37_SQ_PERF_SEL_INSTS_GDS", "SQWGP37", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1597,6 +1659,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp38CountersGfx11 = {
         {4, "SQWGP38_SQ_PERF_SEL_WAVES", "SQWGP38", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP38_SQ_PERF_SEL_WAVES_32", "SQWGP38", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP38_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP38", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP38_SQ_PERF_SEL_ITEMS", "SQWGP38", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP38_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP38", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP38_SQ_PERF_SEL_INSTS_GDS", "SQWGP38", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1622,6 +1685,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp39CountersGfx11 = {
         {4, "SQWGP39_SQ_PERF_SEL_WAVES", "SQWGP39", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP39_SQ_PERF_SEL_WAVES_32", "SQWGP39", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP39_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP39", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP39_SQ_PERF_SEL_ITEMS", "SQWGP39", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP39_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP39", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP39_SQ_PERF_SEL_INSTS_GDS", "SQWGP39", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1647,6 +1711,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp40CountersGfx11 = {
         {4, "SQWGP40_SQ_PERF_SEL_WAVES", "SQWGP40", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP40_SQ_PERF_SEL_WAVES_32", "SQWGP40", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP40_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP40", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP40_SQ_PERF_SEL_ITEMS", "SQWGP40", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP40_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP40", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP40_SQ_PERF_SEL_INSTS_GDS", "SQWGP40", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1672,6 +1737,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp41CountersGfx11 = {
         {4, "SQWGP41_SQ_PERF_SEL_WAVES", "SQWGP41", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP41_SQ_PERF_SEL_WAVES_32", "SQWGP41", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP41_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP41", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP41_SQ_PERF_SEL_ITEMS", "SQWGP41", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP41_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP41", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP41_SQ_PERF_SEL_INSTS_GDS", "SQWGP41", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1697,6 +1763,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp42CountersGfx11 = {
         {4, "SQWGP42_SQ_PERF_SEL_WAVES", "SQWGP42", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP42_SQ_PERF_SEL_WAVES_32", "SQWGP42", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP42_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP42", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP42_SQ_PERF_SEL_ITEMS", "SQWGP42", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP42_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP42", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP42_SQ_PERF_SEL_INSTS_GDS", "SQWGP42", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1722,6 +1789,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp43CountersGfx11 = {
         {4, "SQWGP43_SQ_PERF_SEL_WAVES", "SQWGP43", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP43_SQ_PERF_SEL_WAVES_32", "SQWGP43", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP43_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP43", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP43_SQ_PERF_SEL_ITEMS", "SQWGP43", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP43_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP43", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP43_SQ_PERF_SEL_INSTS_GDS", "SQWGP43", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1747,6 +1815,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp44CountersGfx11 = {
         {4, "SQWGP44_SQ_PERF_SEL_WAVES", "SQWGP44", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP44_SQ_PERF_SEL_WAVES_32", "SQWGP44", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP44_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP44", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP44_SQ_PERF_SEL_ITEMS", "SQWGP44", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP44_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP44", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP44_SQ_PERF_SEL_INSTS_GDS", "SQWGP44", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1772,6 +1841,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp45CountersGfx11 = {
         {4, "SQWGP45_SQ_PERF_SEL_WAVES", "SQWGP45", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP45_SQ_PERF_SEL_WAVES_32", "SQWGP45", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP45_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP45", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP45_SQ_PERF_SEL_ITEMS", "SQWGP45", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP45_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP45", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP45_SQ_PERF_SEL_INSTS_GDS", "SQWGP45", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1797,6 +1867,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp46CountersGfx11 = {
         {4, "SQWGP46_SQ_PERF_SEL_WAVES", "SQWGP46", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP46_SQ_PERF_SEL_WAVES_32", "SQWGP46", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP46_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP46", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP46_SQ_PERF_SEL_ITEMS", "SQWGP46", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP46_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP46", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP46_SQ_PERF_SEL_INSTS_GDS", "SQWGP46", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1822,6 +1893,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgp47CountersGfx11 = {
         {4, "SQWGP47_SQ_PERF_SEL_WAVES", "SQWGP47", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP47_SQ_PERF_SEL_WAVES_32", "SQWGP47", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP47_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP47", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP47_SQ_PERF_SEL_ITEMS", "SQWGP47", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP47_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP47", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP47_SQ_PERF_SEL_INSTS_GDS", "SQWGP47", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1847,6 +1919,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs0CountersGfx11 = {
         {4, "SQWGP_GS0_SQ_PERF_SEL_WAVES", "SQWGP_GS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS0_SQ_PERF_SEL_WAVES_32", "SQWGP_GS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS0_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS0_SQ_PERF_SEL_ITEMS", "SQWGP_GS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS0_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS0_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1872,6 +1945,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs1CountersGfx11 = {
         {4, "SQWGP_GS1_SQ_PERF_SEL_WAVES", "SQWGP_GS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS1_SQ_PERF_SEL_WAVES_32", "SQWGP_GS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS1_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS1_SQ_PERF_SEL_ITEMS", "SQWGP_GS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS1_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS1_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1897,6 +1971,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs2CountersGfx11 = {
         {4, "SQWGP_GS2_SQ_PERF_SEL_WAVES", "SQWGP_GS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS2_SQ_PERF_SEL_WAVES_32", "SQWGP_GS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS2_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS2_SQ_PERF_SEL_ITEMS", "SQWGP_GS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS2_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS2_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1922,6 +1997,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs3CountersGfx11 = {
         {4, "SQWGP_GS3_SQ_PERF_SEL_WAVES", "SQWGP_GS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS3_SQ_PERF_SEL_WAVES_32", "SQWGP_GS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS3_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS3_SQ_PERF_SEL_ITEMS", "SQWGP_GS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS3_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS3_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1947,6 +2023,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs4CountersGfx11 = {
         {4, "SQWGP_GS4_SQ_PERF_SEL_WAVES", "SQWGP_GS4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS4_SQ_PERF_SEL_WAVES_32", "SQWGP_GS4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS4_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS4", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS4_SQ_PERF_SEL_ITEMS", "SQWGP_GS4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS4_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS4", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS4_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS4", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1972,6 +2049,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs5CountersGfx11 = {
         {4, "SQWGP_GS5_SQ_PERF_SEL_WAVES", "SQWGP_GS5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS5_SQ_PERF_SEL_WAVES_32", "SQWGP_GS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS5_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS5", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS5_SQ_PERF_SEL_ITEMS", "SQWGP_GS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS5_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS5", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS5_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS5", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -1997,6 +2075,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs6CountersGfx11 = {
         {4, "SQWGP_GS6_SQ_PERF_SEL_WAVES", "SQWGP_GS6", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS6_SQ_PERF_SEL_WAVES_32", "SQWGP_GS6", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS6_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS6", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS6_SQ_PERF_SEL_ITEMS", "SQWGP_GS6", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS6_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS6", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS6_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS6", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2022,6 +2101,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs7CountersGfx11 = {
         {4, "SQWGP_GS7_SQ_PERF_SEL_WAVES", "SQWGP_GS7", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS7_SQ_PERF_SEL_WAVES_32", "SQWGP_GS7", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS7_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS7", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS7_SQ_PERF_SEL_ITEMS", "SQWGP_GS7", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS7_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS7", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS7_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS7", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2047,6 +2127,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs8CountersGfx11 = {
         {4, "SQWGP_GS8_SQ_PERF_SEL_WAVES", "SQWGP_GS8", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS8_SQ_PERF_SEL_WAVES_32", "SQWGP_GS8", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS8_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS8", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS8_SQ_PERF_SEL_ITEMS", "SQWGP_GS8", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS8_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS8", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS8_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS8", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2072,6 +2153,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs9CountersGfx11 = {
         {4, "SQWGP_GS9_SQ_PERF_SEL_WAVES", "SQWGP_GS9", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS9_SQ_PERF_SEL_WAVES_32", "SQWGP_GS9", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS9_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS9", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS9_SQ_PERF_SEL_ITEMS", "SQWGP_GS9", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS9_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS9", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS9_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS9", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2097,6 +2179,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs10CountersGfx11 = {
         {4, "SQWGP_GS10_SQ_PERF_SEL_WAVES", "SQWGP_GS10", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS10_SQ_PERF_SEL_WAVES_32", "SQWGP_GS10", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS10_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS10", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS10_SQ_PERF_SEL_ITEMS", "SQWGP_GS10", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS10_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS10", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS10_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS10", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2122,6 +2205,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs11CountersGfx11 = {
         {4, "SQWGP_GS11_SQ_PERF_SEL_WAVES", "SQWGP_GS11", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS11_SQ_PERF_SEL_WAVES_32", "SQWGP_GS11", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS11_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS11", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS11_SQ_PERF_SEL_ITEMS", "SQWGP_GS11", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS11_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS11", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS11_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS11", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2147,6 +2231,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs12CountersGfx11 = {
         {4, "SQWGP_GS12_SQ_PERF_SEL_WAVES", "SQWGP_GS12", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS12_SQ_PERF_SEL_WAVES_32", "SQWGP_GS12", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS12_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS12", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS12_SQ_PERF_SEL_ITEMS", "SQWGP_GS12", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS12_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS12", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS12_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS12", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2172,6 +2257,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs13CountersGfx11 = {
         {4, "SQWGP_GS13_SQ_PERF_SEL_WAVES", "SQWGP_GS13", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS13_SQ_PERF_SEL_WAVES_32", "SQWGP_GS13", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS13_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS13", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS13_SQ_PERF_SEL_ITEMS", "SQWGP_GS13", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS13_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS13", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS13_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS13", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2197,6 +2283,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs14CountersGfx11 = {
         {4, "SQWGP_GS14_SQ_PERF_SEL_WAVES", "SQWGP_GS14", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS14_SQ_PERF_SEL_WAVES_32", "SQWGP_GS14", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS14_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS14", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS14_SQ_PERF_SEL_ITEMS", "SQWGP_GS14", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS14_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS14", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS14_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS14", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2222,6 +2309,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs15CountersGfx11 = {
         {4, "SQWGP_GS15_SQ_PERF_SEL_WAVES", "SQWGP_GS15", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS15_SQ_PERF_SEL_WAVES_32", "SQWGP_GS15", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS15_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS15", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS15_SQ_PERF_SEL_ITEMS", "SQWGP_GS15", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS15_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS15", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS15_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS15", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2247,6 +2335,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs16CountersGfx11 = {
         {4, "SQWGP_GS16_SQ_PERF_SEL_WAVES", "SQWGP_GS16", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS16_SQ_PERF_SEL_WAVES_32", "SQWGP_GS16", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS16_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS16", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS16_SQ_PERF_SEL_ITEMS", "SQWGP_GS16", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS16_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS16", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS16_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS16", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2272,6 +2361,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs17CountersGfx11 = {
         {4, "SQWGP_GS17_SQ_PERF_SEL_WAVES", "SQWGP_GS17", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS17_SQ_PERF_SEL_WAVES_32", "SQWGP_GS17", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS17_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS17", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS17_SQ_PERF_SEL_ITEMS", "SQWGP_GS17", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS17_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS17", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS17_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS17", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2297,6 +2387,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs18CountersGfx11 = {
         {4, "SQWGP_GS18_SQ_PERF_SEL_WAVES", "SQWGP_GS18", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS18_SQ_PERF_SEL_WAVES_32", "SQWGP_GS18", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS18_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS18", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS18_SQ_PERF_SEL_ITEMS", "SQWGP_GS18", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS18_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS18", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS18_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS18", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2322,6 +2413,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs19CountersGfx11 = {
         {4, "SQWGP_GS19_SQ_PERF_SEL_WAVES", "SQWGP_GS19", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS19_SQ_PERF_SEL_WAVES_32", "SQWGP_GS19", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS19_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS19", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS19_SQ_PERF_SEL_ITEMS", "SQWGP_GS19", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS19_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS19", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS19_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS19", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2347,6 +2439,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs20CountersGfx11 = {
         {4, "SQWGP_GS20_SQ_PERF_SEL_WAVES", "SQWGP_GS20", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS20_SQ_PERF_SEL_WAVES_32", "SQWGP_GS20", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS20_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS20", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS20_SQ_PERF_SEL_ITEMS", "SQWGP_GS20", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS20_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS20", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS20_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS20", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2372,6 +2465,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs21CountersGfx11 = {
         {4, "SQWGP_GS21_SQ_PERF_SEL_WAVES", "SQWGP_GS21", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS21_SQ_PERF_SEL_WAVES_32", "SQWGP_GS21", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS21_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS21", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS21_SQ_PERF_SEL_ITEMS", "SQWGP_GS21", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS21_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS21", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS21_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS21", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2397,6 +2491,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs22CountersGfx11 = {
         {4, "SQWGP_GS22_SQ_PERF_SEL_WAVES", "SQWGP_GS22", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS22_SQ_PERF_SEL_WAVES_32", "SQWGP_GS22", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS22_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS22", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS22_SQ_PERF_SEL_ITEMS", "SQWGP_GS22", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS22_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS22", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS22_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS22", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2422,6 +2517,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs23CountersGfx11 = {
         {4, "SQWGP_GS23_SQ_PERF_SEL_WAVES", "SQWGP_GS23", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS23_SQ_PERF_SEL_WAVES_32", "SQWGP_GS23", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS23_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS23", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS23_SQ_PERF_SEL_ITEMS", "SQWGP_GS23", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS23_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS23", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS23_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS23", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2447,6 +2543,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs24CountersGfx11 = {
         {4, "SQWGP_GS24_SQ_PERF_SEL_WAVES", "SQWGP_GS24", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS24_SQ_PERF_SEL_WAVES_32", "SQWGP_GS24", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS24_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS24", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS24_SQ_PERF_SEL_ITEMS", "SQWGP_GS24", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS24_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS24", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS24_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS24", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2472,6 +2569,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs25CountersGfx11 = {
         {4, "SQWGP_GS25_SQ_PERF_SEL_WAVES", "SQWGP_GS25", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS25_SQ_PERF_SEL_WAVES_32", "SQWGP_GS25", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS25_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS25", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS25_SQ_PERF_SEL_ITEMS", "SQWGP_GS25", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS25_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS25", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS25_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS25", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2497,6 +2595,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs26CountersGfx11 = {
         {4, "SQWGP_GS26_SQ_PERF_SEL_WAVES", "SQWGP_GS26", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS26_SQ_PERF_SEL_WAVES_32", "SQWGP_GS26", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS26_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS26", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS26_SQ_PERF_SEL_ITEMS", "SQWGP_GS26", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS26_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS26", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS26_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS26", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2522,6 +2621,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs27CountersGfx11 = {
         {4, "SQWGP_GS27_SQ_PERF_SEL_WAVES", "SQWGP_GS27", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS27_SQ_PERF_SEL_WAVES_32", "SQWGP_GS27", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS27_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS27", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS27_SQ_PERF_SEL_ITEMS", "SQWGP_GS27", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS27_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS27", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS27_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS27", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2547,6 +2647,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs28CountersGfx11 = {
         {4, "SQWGP_GS28_SQ_PERF_SEL_WAVES", "SQWGP_GS28", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS28_SQ_PERF_SEL_WAVES_32", "SQWGP_GS28", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS28_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS28", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS28_SQ_PERF_SEL_ITEMS", "SQWGP_GS28", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS28_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS28", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS28_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS28", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2572,6 +2673,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs29CountersGfx11 = {
         {4, "SQWGP_GS29_SQ_PERF_SEL_WAVES", "SQWGP_GS29", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS29_SQ_PERF_SEL_WAVES_32", "SQWGP_GS29", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS29_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS29", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS29_SQ_PERF_SEL_ITEMS", "SQWGP_GS29", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS29_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS29", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS29_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS29", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2597,6 +2699,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs30CountersGfx11 = {
         {4, "SQWGP_GS30_SQ_PERF_SEL_WAVES", "SQWGP_GS30", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS30_SQ_PERF_SEL_WAVES_32", "SQWGP_GS30", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS30_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS30", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS30_SQ_PERF_SEL_ITEMS", "SQWGP_GS30", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS30_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS30", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS30_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS30", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2622,6 +2725,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs31CountersGfx11 = {
         {4, "SQWGP_GS31_SQ_PERF_SEL_WAVES", "SQWGP_GS31", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS31_SQ_PERF_SEL_WAVES_32", "SQWGP_GS31", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS31_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS31", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS31_SQ_PERF_SEL_ITEMS", "SQWGP_GS31", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS31_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS31", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS31_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS31", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2647,6 +2751,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs32CountersGfx11 = {
         {4, "SQWGP_GS32_SQ_PERF_SEL_WAVES", "SQWGP_GS32", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS32_SQ_PERF_SEL_WAVES_32", "SQWGP_GS32", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS32_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS32", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS32_SQ_PERF_SEL_ITEMS", "SQWGP_GS32", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS32_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS32", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS32_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS32", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2672,6 +2777,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs33CountersGfx11 = {
         {4, "SQWGP_GS33_SQ_PERF_SEL_WAVES", "SQWGP_GS33", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS33_SQ_PERF_SEL_WAVES_32", "SQWGP_GS33", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS33_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS33", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS33_SQ_PERF_SEL_ITEMS", "SQWGP_GS33", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS33_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS33", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS33_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS33", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2697,6 +2803,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs34CountersGfx11 = {
         {4, "SQWGP_GS34_SQ_PERF_SEL_WAVES", "SQWGP_GS34", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS34_SQ_PERF_SEL_WAVES_32", "SQWGP_GS34", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS34_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS34", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS34_SQ_PERF_SEL_ITEMS", "SQWGP_GS34", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS34_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS34", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS34_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS34", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2722,6 +2829,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs35CountersGfx11 = {
         {4, "SQWGP_GS35_SQ_PERF_SEL_WAVES", "SQWGP_GS35", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS35_SQ_PERF_SEL_WAVES_32", "SQWGP_GS35", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS35_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS35", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS35_SQ_PERF_SEL_ITEMS", "SQWGP_GS35", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS35_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS35", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS35_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS35", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2747,6 +2855,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs36CountersGfx11 = {
         {4, "SQWGP_GS36_SQ_PERF_SEL_WAVES", "SQWGP_GS36", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS36_SQ_PERF_SEL_WAVES_32", "SQWGP_GS36", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS36_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS36", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS36_SQ_PERF_SEL_ITEMS", "SQWGP_GS36", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS36_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS36", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS36_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS36", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2772,6 +2881,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs37CountersGfx11 = {
         {4, "SQWGP_GS37_SQ_PERF_SEL_WAVES", "SQWGP_GS37", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS37_SQ_PERF_SEL_WAVES_32", "SQWGP_GS37", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS37_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS37", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS37_SQ_PERF_SEL_ITEMS", "SQWGP_GS37", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS37_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS37", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS37_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS37", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2797,6 +2907,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs38CountersGfx11 = {
         {4, "SQWGP_GS38_SQ_PERF_SEL_WAVES", "SQWGP_GS38", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS38_SQ_PERF_SEL_WAVES_32", "SQWGP_GS38", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS38_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS38", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS38_SQ_PERF_SEL_ITEMS", "SQWGP_GS38", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS38_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS38", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS38_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS38", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2822,6 +2933,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs39CountersGfx11 = {
         {4, "SQWGP_GS39_SQ_PERF_SEL_WAVES", "SQWGP_GS39", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS39_SQ_PERF_SEL_WAVES_32", "SQWGP_GS39", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS39_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS39", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS39_SQ_PERF_SEL_ITEMS", "SQWGP_GS39", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS39_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS39", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS39_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS39", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2847,6 +2959,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs40CountersGfx11 = {
         {4, "SQWGP_GS40_SQ_PERF_SEL_WAVES", "SQWGP_GS40", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS40_SQ_PERF_SEL_WAVES_32", "SQWGP_GS40", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS40_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS40", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS40_SQ_PERF_SEL_ITEMS", "SQWGP_GS40", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS40_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS40", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS40_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS40", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2872,6 +2985,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs41CountersGfx11 = {
         {4, "SQWGP_GS41_SQ_PERF_SEL_WAVES", "SQWGP_GS41", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS41_SQ_PERF_SEL_WAVES_32", "SQWGP_GS41", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS41_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS41", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS41_SQ_PERF_SEL_ITEMS", "SQWGP_GS41", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS41_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS41", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS41_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS41", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2897,6 +3011,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs42CountersGfx11 = {
         {4, "SQWGP_GS42_SQ_PERF_SEL_WAVES", "SQWGP_GS42", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS42_SQ_PERF_SEL_WAVES_32", "SQWGP_GS42", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS42_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS42", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS42_SQ_PERF_SEL_ITEMS", "SQWGP_GS42", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS42_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS42", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS42_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS42", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2922,6 +3037,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs43CountersGfx11 = {
         {4, "SQWGP_GS43_SQ_PERF_SEL_WAVES", "SQWGP_GS43", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS43_SQ_PERF_SEL_WAVES_32", "SQWGP_GS43", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS43_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS43", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS43_SQ_PERF_SEL_ITEMS", "SQWGP_GS43", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS43_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS43", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS43_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS43", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2947,6 +3063,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs44CountersGfx11 = {
         {4, "SQWGP_GS44_SQ_PERF_SEL_WAVES", "SQWGP_GS44", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS44_SQ_PERF_SEL_WAVES_32", "SQWGP_GS44", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS44_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS44", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS44_SQ_PERF_SEL_ITEMS", "SQWGP_GS44", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS44_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS44", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS44_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS44", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2972,6 +3089,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs45CountersGfx11 = {
         {4, "SQWGP_GS45_SQ_PERF_SEL_WAVES", "SQWGP_GS45", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS45_SQ_PERF_SEL_WAVES_32", "SQWGP_GS45", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS45_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS45", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS45_SQ_PERF_SEL_ITEMS", "SQWGP_GS45", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS45_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS45", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS45_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS45", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -2997,6 +3115,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs46CountersGfx11 = {
         {4, "SQWGP_GS46_SQ_PERF_SEL_WAVES", "SQWGP_GS46", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS46_SQ_PERF_SEL_WAVES_32", "SQWGP_GS46", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS46_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS46", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS46_SQ_PERF_SEL_ITEMS", "SQWGP_GS46", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS46_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS46", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS46_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS46", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3022,6 +3141,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpGs47CountersGfx11 = {
         {4, "SQWGP_GS47_SQ_PERF_SEL_WAVES", "SQWGP_GS47", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_GS47_SQ_PERF_SEL_WAVES_32", "SQWGP_GS47", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_GS47_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_GS47", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_GS47_SQ_PERF_SEL_ITEMS", "SQWGP_GS47", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_GS47_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_GS47", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_GS47_SQ_PERF_SEL_INSTS_GDS", "SQWGP_GS47", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3047,6 +3167,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs0CountersGfx11 = {
         {4, "SQWGP_PS0_SQ_PERF_SEL_WAVES", "SQWGP_PS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS0_SQ_PERF_SEL_WAVES_32", "SQWGP_PS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS0_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS0_SQ_PERF_SEL_ITEMS", "SQWGP_PS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS0_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS0_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3072,6 +3193,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs1CountersGfx11 = {
         {4, "SQWGP_PS1_SQ_PERF_SEL_WAVES", "SQWGP_PS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS1_SQ_PERF_SEL_WAVES_32", "SQWGP_PS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS1_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS1_SQ_PERF_SEL_ITEMS", "SQWGP_PS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS1_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS1_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3097,6 +3219,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs2CountersGfx11 = {
         {4, "SQWGP_PS2_SQ_PERF_SEL_WAVES", "SQWGP_PS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS2_SQ_PERF_SEL_WAVES_32", "SQWGP_PS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS2_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS2_SQ_PERF_SEL_ITEMS", "SQWGP_PS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS2_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS2_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3122,6 +3245,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs3CountersGfx11 = {
         {4, "SQWGP_PS3_SQ_PERF_SEL_WAVES", "SQWGP_PS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS3_SQ_PERF_SEL_WAVES_32", "SQWGP_PS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS3_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS3_SQ_PERF_SEL_ITEMS", "SQWGP_PS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS3_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS3_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3147,6 +3271,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs4CountersGfx11 = {
         {4, "SQWGP_PS4_SQ_PERF_SEL_WAVES", "SQWGP_PS4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS4_SQ_PERF_SEL_WAVES_32", "SQWGP_PS4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS4_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS4", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS4_SQ_PERF_SEL_ITEMS", "SQWGP_PS4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS4_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS4", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS4_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS4", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3172,6 +3297,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs5CountersGfx11 = {
         {4, "SQWGP_PS5_SQ_PERF_SEL_WAVES", "SQWGP_PS5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS5_SQ_PERF_SEL_WAVES_32", "SQWGP_PS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS5_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS5", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS5_SQ_PERF_SEL_ITEMS", "SQWGP_PS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS5_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS5", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS5_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS5", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3197,6 +3323,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs6CountersGfx11 = {
         {4, "SQWGP_PS6_SQ_PERF_SEL_WAVES", "SQWGP_PS6", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS6_SQ_PERF_SEL_WAVES_32", "SQWGP_PS6", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS6_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS6", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS6_SQ_PERF_SEL_ITEMS", "SQWGP_PS6", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS6_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS6", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS6_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS6", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3222,6 +3349,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs7CountersGfx11 = {
         {4, "SQWGP_PS7_SQ_PERF_SEL_WAVES", "SQWGP_PS7", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS7_SQ_PERF_SEL_WAVES_32", "SQWGP_PS7", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS7_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS7", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS7_SQ_PERF_SEL_ITEMS", "SQWGP_PS7", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS7_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS7", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS7_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS7", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3247,6 +3375,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs8CountersGfx11 = {
         {4, "SQWGP_PS8_SQ_PERF_SEL_WAVES", "SQWGP_PS8", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS8_SQ_PERF_SEL_WAVES_32", "SQWGP_PS8", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS8_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS8", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS8_SQ_PERF_SEL_ITEMS", "SQWGP_PS8", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS8_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS8", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS8_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS8", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3272,6 +3401,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs9CountersGfx11 = {
         {4, "SQWGP_PS9_SQ_PERF_SEL_WAVES", "SQWGP_PS9", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS9_SQ_PERF_SEL_WAVES_32", "SQWGP_PS9", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS9_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS9", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS9_SQ_PERF_SEL_ITEMS", "SQWGP_PS9", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS9_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS9", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS9_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS9", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3297,6 +3427,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs10CountersGfx11 = {
         {4, "SQWGP_PS10_SQ_PERF_SEL_WAVES", "SQWGP_PS10", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS10_SQ_PERF_SEL_WAVES_32", "SQWGP_PS10", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS10_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS10", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS10_SQ_PERF_SEL_ITEMS", "SQWGP_PS10", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS10_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS10", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS10_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS10", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3322,6 +3453,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs11CountersGfx11 = {
         {4, "SQWGP_PS11_SQ_PERF_SEL_WAVES", "SQWGP_PS11", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS11_SQ_PERF_SEL_WAVES_32", "SQWGP_PS11", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS11_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS11", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS11_SQ_PERF_SEL_ITEMS", "SQWGP_PS11", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS11_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS11", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS11_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS11", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3347,6 +3479,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs12CountersGfx11 = {
         {4, "SQWGP_PS12_SQ_PERF_SEL_WAVES", "SQWGP_PS12", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS12_SQ_PERF_SEL_WAVES_32", "SQWGP_PS12", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS12_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS12", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS12_SQ_PERF_SEL_ITEMS", "SQWGP_PS12", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS12_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS12", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS12_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS12", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3372,6 +3505,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs13CountersGfx11 = {
         {4, "SQWGP_PS13_SQ_PERF_SEL_WAVES", "SQWGP_PS13", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS13_SQ_PERF_SEL_WAVES_32", "SQWGP_PS13", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS13_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS13", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS13_SQ_PERF_SEL_ITEMS", "SQWGP_PS13", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS13_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS13", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS13_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS13", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3397,6 +3531,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs14CountersGfx11 = {
         {4, "SQWGP_PS14_SQ_PERF_SEL_WAVES", "SQWGP_PS14", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS14_SQ_PERF_SEL_WAVES_32", "SQWGP_PS14", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS14_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS14", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS14_SQ_PERF_SEL_ITEMS", "SQWGP_PS14", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS14_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS14", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS14_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS14", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3422,6 +3557,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs15CountersGfx11 = {
         {4, "SQWGP_PS15_SQ_PERF_SEL_WAVES", "SQWGP_PS15", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS15_SQ_PERF_SEL_WAVES_32", "SQWGP_PS15", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS15_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS15", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS15_SQ_PERF_SEL_ITEMS", "SQWGP_PS15", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS15_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS15", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS15_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS15", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3447,6 +3583,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs16CountersGfx11 = {
         {4, "SQWGP_PS16_SQ_PERF_SEL_WAVES", "SQWGP_PS16", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS16_SQ_PERF_SEL_WAVES_32", "SQWGP_PS16", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS16_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS16", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS16_SQ_PERF_SEL_ITEMS", "SQWGP_PS16", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS16_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS16", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS16_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS16", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3472,6 +3609,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs17CountersGfx11 = {
         {4, "SQWGP_PS17_SQ_PERF_SEL_WAVES", "SQWGP_PS17", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS17_SQ_PERF_SEL_WAVES_32", "SQWGP_PS17", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS17_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS17", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS17_SQ_PERF_SEL_ITEMS", "SQWGP_PS17", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS17_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS17", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS17_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS17", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3497,6 +3635,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs18CountersGfx11 = {
         {4, "SQWGP_PS18_SQ_PERF_SEL_WAVES", "SQWGP_PS18", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS18_SQ_PERF_SEL_WAVES_32", "SQWGP_PS18", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS18_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS18", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS18_SQ_PERF_SEL_ITEMS", "SQWGP_PS18", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS18_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS18", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS18_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS18", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3522,6 +3661,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs19CountersGfx11 = {
         {4, "SQWGP_PS19_SQ_PERF_SEL_WAVES", "SQWGP_PS19", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS19_SQ_PERF_SEL_WAVES_32", "SQWGP_PS19", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS19_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS19", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS19_SQ_PERF_SEL_ITEMS", "SQWGP_PS19", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS19_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS19", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS19_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS19", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3547,6 +3687,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs20CountersGfx11 = {
         {4, "SQWGP_PS20_SQ_PERF_SEL_WAVES", "SQWGP_PS20", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS20_SQ_PERF_SEL_WAVES_32", "SQWGP_PS20", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS20_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS20", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS20_SQ_PERF_SEL_ITEMS", "SQWGP_PS20", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS20_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS20", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS20_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS20", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3572,6 +3713,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs21CountersGfx11 = {
         {4, "SQWGP_PS21_SQ_PERF_SEL_WAVES", "SQWGP_PS21", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS21_SQ_PERF_SEL_WAVES_32", "SQWGP_PS21", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS21_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS21", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS21_SQ_PERF_SEL_ITEMS", "SQWGP_PS21", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS21_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS21", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS21_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS21", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3597,6 +3739,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs22CountersGfx11 = {
         {4, "SQWGP_PS22_SQ_PERF_SEL_WAVES", "SQWGP_PS22", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS22_SQ_PERF_SEL_WAVES_32", "SQWGP_PS22", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS22_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS22", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS22_SQ_PERF_SEL_ITEMS", "SQWGP_PS22", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS22_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS22", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS22_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS22", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3622,6 +3765,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs23CountersGfx11 = {
         {4, "SQWGP_PS23_SQ_PERF_SEL_WAVES", "SQWGP_PS23", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS23_SQ_PERF_SEL_WAVES_32", "SQWGP_PS23", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS23_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS23", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS23_SQ_PERF_SEL_ITEMS", "SQWGP_PS23", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS23_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS23", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS23_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS23", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3647,6 +3791,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs24CountersGfx11 = {
         {4, "SQWGP_PS24_SQ_PERF_SEL_WAVES", "SQWGP_PS24", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS24_SQ_PERF_SEL_WAVES_32", "SQWGP_PS24", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS24_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS24", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS24_SQ_PERF_SEL_ITEMS", "SQWGP_PS24", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS24_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS24", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS24_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS24", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3672,6 +3817,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs25CountersGfx11 = {
         {4, "SQWGP_PS25_SQ_PERF_SEL_WAVES", "SQWGP_PS25", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS25_SQ_PERF_SEL_WAVES_32", "SQWGP_PS25", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS25_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS25", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS25_SQ_PERF_SEL_ITEMS", "SQWGP_PS25", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS25_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS25", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS25_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS25", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3697,6 +3843,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs26CountersGfx11 = {
         {4, "SQWGP_PS26_SQ_PERF_SEL_WAVES", "SQWGP_PS26", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS26_SQ_PERF_SEL_WAVES_32", "SQWGP_PS26", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS26_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS26", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS26_SQ_PERF_SEL_ITEMS", "SQWGP_PS26", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS26_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS26", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS26_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS26", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3722,6 +3869,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs27CountersGfx11 = {
         {4, "SQWGP_PS27_SQ_PERF_SEL_WAVES", "SQWGP_PS27", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS27_SQ_PERF_SEL_WAVES_32", "SQWGP_PS27", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS27_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS27", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS27_SQ_PERF_SEL_ITEMS", "SQWGP_PS27", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS27_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS27", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS27_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS27", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3747,6 +3895,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs28CountersGfx11 = {
         {4, "SQWGP_PS28_SQ_PERF_SEL_WAVES", "SQWGP_PS28", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS28_SQ_PERF_SEL_WAVES_32", "SQWGP_PS28", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS28_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS28", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS28_SQ_PERF_SEL_ITEMS", "SQWGP_PS28", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS28_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS28", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS28_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS28", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3772,6 +3921,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs29CountersGfx11 = {
         {4, "SQWGP_PS29_SQ_PERF_SEL_WAVES", "SQWGP_PS29", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS29_SQ_PERF_SEL_WAVES_32", "SQWGP_PS29", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS29_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS29", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS29_SQ_PERF_SEL_ITEMS", "SQWGP_PS29", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS29_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS29", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS29_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS29", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3797,6 +3947,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs30CountersGfx11 = {
         {4, "SQWGP_PS30_SQ_PERF_SEL_WAVES", "SQWGP_PS30", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS30_SQ_PERF_SEL_WAVES_32", "SQWGP_PS30", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS30_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS30", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS30_SQ_PERF_SEL_ITEMS", "SQWGP_PS30", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS30_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS30", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS30_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS30", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3822,6 +3973,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs31CountersGfx11 = {
         {4, "SQWGP_PS31_SQ_PERF_SEL_WAVES", "SQWGP_PS31", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS31_SQ_PERF_SEL_WAVES_32", "SQWGP_PS31", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS31_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS31", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS31_SQ_PERF_SEL_ITEMS", "SQWGP_PS31", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS31_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS31", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS31_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS31", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3847,6 +3999,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs32CountersGfx11 = {
         {4, "SQWGP_PS32_SQ_PERF_SEL_WAVES", "SQWGP_PS32", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS32_SQ_PERF_SEL_WAVES_32", "SQWGP_PS32", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS32_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS32", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS32_SQ_PERF_SEL_ITEMS", "SQWGP_PS32", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS32_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS32", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS32_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS32", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3872,6 +4025,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs33CountersGfx11 = {
         {4, "SQWGP_PS33_SQ_PERF_SEL_WAVES", "SQWGP_PS33", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS33_SQ_PERF_SEL_WAVES_32", "SQWGP_PS33", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS33_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS33", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS33_SQ_PERF_SEL_ITEMS", "SQWGP_PS33", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS33_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS33", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS33_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS33", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3897,6 +4051,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs34CountersGfx11 = {
         {4, "SQWGP_PS34_SQ_PERF_SEL_WAVES", "SQWGP_PS34", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS34_SQ_PERF_SEL_WAVES_32", "SQWGP_PS34", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS34_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS34", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS34_SQ_PERF_SEL_ITEMS", "SQWGP_PS34", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS34_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS34", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS34_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS34", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3922,6 +4077,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs35CountersGfx11 = {
         {4, "SQWGP_PS35_SQ_PERF_SEL_WAVES", "SQWGP_PS35", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS35_SQ_PERF_SEL_WAVES_32", "SQWGP_PS35", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS35_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS35", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS35_SQ_PERF_SEL_ITEMS", "SQWGP_PS35", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS35_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS35", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS35_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS35", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3947,6 +4103,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs36CountersGfx11 = {
         {4, "SQWGP_PS36_SQ_PERF_SEL_WAVES", "SQWGP_PS36", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS36_SQ_PERF_SEL_WAVES_32", "SQWGP_PS36", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS36_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS36", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS36_SQ_PERF_SEL_ITEMS", "SQWGP_PS36", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS36_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS36", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS36_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS36", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3972,6 +4129,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs37CountersGfx11 = {
         {4, "SQWGP_PS37_SQ_PERF_SEL_WAVES", "SQWGP_PS37", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS37_SQ_PERF_SEL_WAVES_32", "SQWGP_PS37", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS37_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS37", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS37_SQ_PERF_SEL_ITEMS", "SQWGP_PS37", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS37_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS37", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS37_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS37", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -3997,6 +4155,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs38CountersGfx11 = {
         {4, "SQWGP_PS38_SQ_PERF_SEL_WAVES", "SQWGP_PS38", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS38_SQ_PERF_SEL_WAVES_32", "SQWGP_PS38", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS38_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS38", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS38_SQ_PERF_SEL_ITEMS", "SQWGP_PS38", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS38_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS38", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS38_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS38", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4022,6 +4181,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs39CountersGfx11 = {
         {4, "SQWGP_PS39_SQ_PERF_SEL_WAVES", "SQWGP_PS39", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS39_SQ_PERF_SEL_WAVES_32", "SQWGP_PS39", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS39_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS39", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS39_SQ_PERF_SEL_ITEMS", "SQWGP_PS39", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS39_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS39", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS39_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS39", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4047,6 +4207,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs40CountersGfx11 = {
         {4, "SQWGP_PS40_SQ_PERF_SEL_WAVES", "SQWGP_PS40", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS40_SQ_PERF_SEL_WAVES_32", "SQWGP_PS40", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS40_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS40", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS40_SQ_PERF_SEL_ITEMS", "SQWGP_PS40", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS40_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS40", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS40_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS40", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4072,6 +4233,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs41CountersGfx11 = {
         {4, "SQWGP_PS41_SQ_PERF_SEL_WAVES", "SQWGP_PS41", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS41_SQ_PERF_SEL_WAVES_32", "SQWGP_PS41", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS41_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS41", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS41_SQ_PERF_SEL_ITEMS", "SQWGP_PS41", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS41_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS41", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS41_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS41", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4097,6 +4259,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs42CountersGfx11 = {
         {4, "SQWGP_PS42_SQ_PERF_SEL_WAVES", "SQWGP_PS42", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS42_SQ_PERF_SEL_WAVES_32", "SQWGP_PS42", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS42_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS42", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS42_SQ_PERF_SEL_ITEMS", "SQWGP_PS42", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS42_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS42", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS42_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS42", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4122,6 +4285,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs43CountersGfx11 = {
         {4, "SQWGP_PS43_SQ_PERF_SEL_WAVES", "SQWGP_PS43", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS43_SQ_PERF_SEL_WAVES_32", "SQWGP_PS43", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS43_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS43", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS43_SQ_PERF_SEL_ITEMS", "SQWGP_PS43", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS43_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS43", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS43_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS43", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4147,6 +4311,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs44CountersGfx11 = {
         {4, "SQWGP_PS44_SQ_PERF_SEL_WAVES", "SQWGP_PS44", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS44_SQ_PERF_SEL_WAVES_32", "SQWGP_PS44", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS44_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS44", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS44_SQ_PERF_SEL_ITEMS", "SQWGP_PS44", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS44_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS44", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS44_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS44", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4172,6 +4337,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs45CountersGfx11 = {
         {4, "SQWGP_PS45_SQ_PERF_SEL_WAVES", "SQWGP_PS45", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS45_SQ_PERF_SEL_WAVES_32", "SQWGP_PS45", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS45_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS45", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS45_SQ_PERF_SEL_ITEMS", "SQWGP_PS45", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS45_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS45", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS45_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS45", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4197,6 +4363,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs46CountersGfx11 = {
         {4, "SQWGP_PS46_SQ_PERF_SEL_WAVES", "SQWGP_PS46", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS46_SQ_PERF_SEL_WAVES_32", "SQWGP_PS46", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS46_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS46", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS46_SQ_PERF_SEL_ITEMS", "SQWGP_PS46", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS46_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS46", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS46_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS46", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4222,6 +4389,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpPs47CountersGfx11 = {
         {4, "SQWGP_PS47_SQ_PERF_SEL_WAVES", "SQWGP_PS47", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_PS47_SQ_PERF_SEL_WAVES_32", "SQWGP_PS47", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_PS47_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_PS47", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_PS47_SQ_PERF_SEL_ITEMS", "SQWGP_PS47", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_PS47_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_PS47", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_PS47_SQ_PERF_SEL_INSTS_GDS", "SQWGP_PS47", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4247,6 +4415,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs0CountersGfx11 = {
         {4, "SQWGP_HS0_SQ_PERF_SEL_WAVES", "SQWGP_HS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS0_SQ_PERF_SEL_WAVES_32", "SQWGP_HS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS0_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS0_SQ_PERF_SEL_ITEMS", "SQWGP_HS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS0_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS0_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4272,6 +4441,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs1CountersGfx11 = {
         {4, "SQWGP_HS1_SQ_PERF_SEL_WAVES", "SQWGP_HS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS1_SQ_PERF_SEL_WAVES_32", "SQWGP_HS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS1_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS1_SQ_PERF_SEL_ITEMS", "SQWGP_HS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS1_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS1_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4297,6 +4467,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs2CountersGfx11 = {
         {4, "SQWGP_HS2_SQ_PERF_SEL_WAVES", "SQWGP_HS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS2_SQ_PERF_SEL_WAVES_32", "SQWGP_HS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS2_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS2_SQ_PERF_SEL_ITEMS", "SQWGP_HS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS2_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS2_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4322,6 +4493,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs3CountersGfx11 = {
         {4, "SQWGP_HS3_SQ_PERF_SEL_WAVES", "SQWGP_HS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS3_SQ_PERF_SEL_WAVES_32", "SQWGP_HS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS3_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS3_SQ_PERF_SEL_ITEMS", "SQWGP_HS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS3_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS3_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4347,6 +4519,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs4CountersGfx11 = {
         {4, "SQWGP_HS4_SQ_PERF_SEL_WAVES", "SQWGP_HS4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS4_SQ_PERF_SEL_WAVES_32", "SQWGP_HS4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS4_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS4", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS4_SQ_PERF_SEL_ITEMS", "SQWGP_HS4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS4_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS4", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS4_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS4", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4372,6 +4545,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs5CountersGfx11 = {
         {4, "SQWGP_HS5_SQ_PERF_SEL_WAVES", "SQWGP_HS5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS5_SQ_PERF_SEL_WAVES_32", "SQWGP_HS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS5_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS5", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS5_SQ_PERF_SEL_ITEMS", "SQWGP_HS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS5_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS5", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS5_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS5", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4397,6 +4571,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs6CountersGfx11 = {
         {4, "SQWGP_HS6_SQ_PERF_SEL_WAVES", "SQWGP_HS6", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS6_SQ_PERF_SEL_WAVES_32", "SQWGP_HS6", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS6_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS6", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS6_SQ_PERF_SEL_ITEMS", "SQWGP_HS6", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS6_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS6", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS6_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS6", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4422,6 +4597,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs7CountersGfx11 = {
         {4, "SQWGP_HS7_SQ_PERF_SEL_WAVES", "SQWGP_HS7", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS7_SQ_PERF_SEL_WAVES_32", "SQWGP_HS7", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS7_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS7", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS7_SQ_PERF_SEL_ITEMS", "SQWGP_HS7", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS7_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS7", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS7_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS7", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4447,6 +4623,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs8CountersGfx11 = {
         {4, "SQWGP_HS8_SQ_PERF_SEL_WAVES", "SQWGP_HS8", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS8_SQ_PERF_SEL_WAVES_32", "SQWGP_HS8", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS8_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS8", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS8_SQ_PERF_SEL_ITEMS", "SQWGP_HS8", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS8_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS8", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS8_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS8", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4472,6 +4649,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs9CountersGfx11 = {
         {4, "SQWGP_HS9_SQ_PERF_SEL_WAVES", "SQWGP_HS9", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS9_SQ_PERF_SEL_WAVES_32", "SQWGP_HS9", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS9_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS9", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS9_SQ_PERF_SEL_ITEMS", "SQWGP_HS9", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS9_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS9", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS9_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS9", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4497,6 +4675,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs10CountersGfx11 = {
         {4, "SQWGP_HS10_SQ_PERF_SEL_WAVES", "SQWGP_HS10", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS10_SQ_PERF_SEL_WAVES_32", "SQWGP_HS10", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS10_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS10", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS10_SQ_PERF_SEL_ITEMS", "SQWGP_HS10", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS10_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS10", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS10_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS10", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4522,6 +4701,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs11CountersGfx11 = {
         {4, "SQWGP_HS11_SQ_PERF_SEL_WAVES", "SQWGP_HS11", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS11_SQ_PERF_SEL_WAVES_32", "SQWGP_HS11", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS11_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS11", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS11_SQ_PERF_SEL_ITEMS", "SQWGP_HS11", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS11_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS11", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS11_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS11", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4547,6 +4727,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs12CountersGfx11 = {
         {4, "SQWGP_HS12_SQ_PERF_SEL_WAVES", "SQWGP_HS12", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS12_SQ_PERF_SEL_WAVES_32", "SQWGP_HS12", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS12_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS12", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS12_SQ_PERF_SEL_ITEMS", "SQWGP_HS12", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS12_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS12", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS12_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS12", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4572,6 +4753,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs13CountersGfx11 = {
         {4, "SQWGP_HS13_SQ_PERF_SEL_WAVES", "SQWGP_HS13", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS13_SQ_PERF_SEL_WAVES_32", "SQWGP_HS13", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS13_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS13", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS13_SQ_PERF_SEL_ITEMS", "SQWGP_HS13", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS13_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS13", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS13_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS13", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4597,6 +4779,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs14CountersGfx11 = {
         {4, "SQWGP_HS14_SQ_PERF_SEL_WAVES", "SQWGP_HS14", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS14_SQ_PERF_SEL_WAVES_32", "SQWGP_HS14", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS14_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS14", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS14_SQ_PERF_SEL_ITEMS", "SQWGP_HS14", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS14_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS14", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS14_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS14", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4622,6 +4805,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs15CountersGfx11 = {
         {4, "SQWGP_HS15_SQ_PERF_SEL_WAVES", "SQWGP_HS15", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS15_SQ_PERF_SEL_WAVES_32", "SQWGP_HS15", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS15_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS15", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS15_SQ_PERF_SEL_ITEMS", "SQWGP_HS15", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS15_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS15", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS15_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS15", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4647,6 +4831,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs16CountersGfx11 = {
         {4, "SQWGP_HS16_SQ_PERF_SEL_WAVES", "SQWGP_HS16", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS16_SQ_PERF_SEL_WAVES_32", "SQWGP_HS16", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS16_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS16", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS16_SQ_PERF_SEL_ITEMS", "SQWGP_HS16", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS16_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS16", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS16_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS16", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4672,6 +4857,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs17CountersGfx11 = {
         {4, "SQWGP_HS17_SQ_PERF_SEL_WAVES", "SQWGP_HS17", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS17_SQ_PERF_SEL_WAVES_32", "SQWGP_HS17", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS17_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS17", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS17_SQ_PERF_SEL_ITEMS", "SQWGP_HS17", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS17_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS17", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS17_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS17", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4697,6 +4883,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs18CountersGfx11 = {
         {4, "SQWGP_HS18_SQ_PERF_SEL_WAVES", "SQWGP_HS18", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS18_SQ_PERF_SEL_WAVES_32", "SQWGP_HS18", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS18_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS18", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS18_SQ_PERF_SEL_ITEMS", "SQWGP_HS18", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS18_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS18", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS18_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS18", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4722,6 +4909,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs19CountersGfx11 = {
         {4, "SQWGP_HS19_SQ_PERF_SEL_WAVES", "SQWGP_HS19", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS19_SQ_PERF_SEL_WAVES_32", "SQWGP_HS19", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS19_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS19", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS19_SQ_PERF_SEL_ITEMS", "SQWGP_HS19", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS19_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS19", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS19_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS19", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4747,6 +4935,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs20CountersGfx11 = {
         {4, "SQWGP_HS20_SQ_PERF_SEL_WAVES", "SQWGP_HS20", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS20_SQ_PERF_SEL_WAVES_32", "SQWGP_HS20", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS20_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS20", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS20_SQ_PERF_SEL_ITEMS", "SQWGP_HS20", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS20_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS20", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS20_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS20", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4772,6 +4961,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs21CountersGfx11 = {
         {4, "SQWGP_HS21_SQ_PERF_SEL_WAVES", "SQWGP_HS21", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS21_SQ_PERF_SEL_WAVES_32", "SQWGP_HS21", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS21_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS21", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS21_SQ_PERF_SEL_ITEMS", "SQWGP_HS21", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS21_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS21", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS21_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS21", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4797,6 +4987,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs22CountersGfx11 = {
         {4, "SQWGP_HS22_SQ_PERF_SEL_WAVES", "SQWGP_HS22", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS22_SQ_PERF_SEL_WAVES_32", "SQWGP_HS22", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS22_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS22", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS22_SQ_PERF_SEL_ITEMS", "SQWGP_HS22", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS22_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS22", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS22_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS22", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4822,6 +5013,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs23CountersGfx11 = {
         {4, "SQWGP_HS23_SQ_PERF_SEL_WAVES", "SQWGP_HS23", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS23_SQ_PERF_SEL_WAVES_32", "SQWGP_HS23", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS23_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS23", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS23_SQ_PERF_SEL_ITEMS", "SQWGP_HS23", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS23_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS23", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS23_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS23", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4847,6 +5039,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs24CountersGfx11 = {
         {4, "SQWGP_HS24_SQ_PERF_SEL_WAVES", "SQWGP_HS24", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS24_SQ_PERF_SEL_WAVES_32", "SQWGP_HS24", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS24_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS24", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS24_SQ_PERF_SEL_ITEMS", "SQWGP_HS24", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS24_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS24", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS24_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS24", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4872,6 +5065,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs25CountersGfx11 = {
         {4, "SQWGP_HS25_SQ_PERF_SEL_WAVES", "SQWGP_HS25", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS25_SQ_PERF_SEL_WAVES_32", "SQWGP_HS25", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS25_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS25", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS25_SQ_PERF_SEL_ITEMS", "SQWGP_HS25", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS25_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS25", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS25_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS25", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4897,6 +5091,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs26CountersGfx11 = {
         {4, "SQWGP_HS26_SQ_PERF_SEL_WAVES", "SQWGP_HS26", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS26_SQ_PERF_SEL_WAVES_32", "SQWGP_HS26", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS26_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS26", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS26_SQ_PERF_SEL_ITEMS", "SQWGP_HS26", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS26_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS26", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS26_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS26", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4922,6 +5117,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs27CountersGfx11 = {
         {4, "SQWGP_HS27_SQ_PERF_SEL_WAVES", "SQWGP_HS27", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS27_SQ_PERF_SEL_WAVES_32", "SQWGP_HS27", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS27_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS27", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS27_SQ_PERF_SEL_ITEMS", "SQWGP_HS27", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS27_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS27", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS27_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS27", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4947,6 +5143,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs28CountersGfx11 = {
         {4, "SQWGP_HS28_SQ_PERF_SEL_WAVES", "SQWGP_HS28", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS28_SQ_PERF_SEL_WAVES_32", "SQWGP_HS28", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS28_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS28", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS28_SQ_PERF_SEL_ITEMS", "SQWGP_HS28", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS28_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS28", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS28_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS28", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4972,6 +5169,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs29CountersGfx11 = {
         {4, "SQWGP_HS29_SQ_PERF_SEL_WAVES", "SQWGP_HS29", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS29_SQ_PERF_SEL_WAVES_32", "SQWGP_HS29", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS29_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS29", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS29_SQ_PERF_SEL_ITEMS", "SQWGP_HS29", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS29_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS29", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS29_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS29", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -4997,6 +5195,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs30CountersGfx11 = {
         {4, "SQWGP_HS30_SQ_PERF_SEL_WAVES", "SQWGP_HS30", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS30_SQ_PERF_SEL_WAVES_32", "SQWGP_HS30", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS30_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS30", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS30_SQ_PERF_SEL_ITEMS", "SQWGP_HS30", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS30_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS30", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS30_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS30", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5022,6 +5221,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs31CountersGfx11 = {
         {4, "SQWGP_HS31_SQ_PERF_SEL_WAVES", "SQWGP_HS31", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS31_SQ_PERF_SEL_WAVES_32", "SQWGP_HS31", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS31_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS31", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS31_SQ_PERF_SEL_ITEMS", "SQWGP_HS31", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS31_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS31", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS31_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS31", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5047,6 +5247,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs32CountersGfx11 = {
         {4, "SQWGP_HS32_SQ_PERF_SEL_WAVES", "SQWGP_HS32", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS32_SQ_PERF_SEL_WAVES_32", "SQWGP_HS32", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS32_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS32", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS32_SQ_PERF_SEL_ITEMS", "SQWGP_HS32", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS32_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS32", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS32_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS32", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5072,6 +5273,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs33CountersGfx11 = {
         {4, "SQWGP_HS33_SQ_PERF_SEL_WAVES", "SQWGP_HS33", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS33_SQ_PERF_SEL_WAVES_32", "SQWGP_HS33", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS33_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS33", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS33_SQ_PERF_SEL_ITEMS", "SQWGP_HS33", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS33_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS33", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS33_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS33", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5097,6 +5299,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs34CountersGfx11 = {
         {4, "SQWGP_HS34_SQ_PERF_SEL_WAVES", "SQWGP_HS34", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS34_SQ_PERF_SEL_WAVES_32", "SQWGP_HS34", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS34_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS34", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS34_SQ_PERF_SEL_ITEMS", "SQWGP_HS34", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS34_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS34", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS34_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS34", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5122,6 +5325,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs35CountersGfx11 = {
         {4, "SQWGP_HS35_SQ_PERF_SEL_WAVES", "SQWGP_HS35", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS35_SQ_PERF_SEL_WAVES_32", "SQWGP_HS35", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS35_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS35", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS35_SQ_PERF_SEL_ITEMS", "SQWGP_HS35", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS35_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS35", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS35_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS35", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5147,6 +5351,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs36CountersGfx11 = {
         {4, "SQWGP_HS36_SQ_PERF_SEL_WAVES", "SQWGP_HS36", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS36_SQ_PERF_SEL_WAVES_32", "SQWGP_HS36", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS36_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS36", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS36_SQ_PERF_SEL_ITEMS", "SQWGP_HS36", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS36_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS36", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS36_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS36", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5172,6 +5377,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs37CountersGfx11 = {
         {4, "SQWGP_HS37_SQ_PERF_SEL_WAVES", "SQWGP_HS37", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS37_SQ_PERF_SEL_WAVES_32", "SQWGP_HS37", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS37_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS37", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS37_SQ_PERF_SEL_ITEMS", "SQWGP_HS37", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS37_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS37", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS37_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS37", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5197,6 +5403,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs38CountersGfx11 = {
         {4, "SQWGP_HS38_SQ_PERF_SEL_WAVES", "SQWGP_HS38", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS38_SQ_PERF_SEL_WAVES_32", "SQWGP_HS38", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS38_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS38", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS38_SQ_PERF_SEL_ITEMS", "SQWGP_HS38", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS38_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS38", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS38_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS38", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5222,6 +5429,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs39CountersGfx11 = {
         {4, "SQWGP_HS39_SQ_PERF_SEL_WAVES", "SQWGP_HS39", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS39_SQ_PERF_SEL_WAVES_32", "SQWGP_HS39", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS39_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS39", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS39_SQ_PERF_SEL_ITEMS", "SQWGP_HS39", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS39_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS39", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS39_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS39", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5247,6 +5455,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs40CountersGfx11 = {
         {4, "SQWGP_HS40_SQ_PERF_SEL_WAVES", "SQWGP_HS40", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS40_SQ_PERF_SEL_WAVES_32", "SQWGP_HS40", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS40_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS40", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS40_SQ_PERF_SEL_ITEMS", "SQWGP_HS40", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS40_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS40", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS40_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS40", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5272,6 +5481,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs41CountersGfx11 = {
         {4, "SQWGP_HS41_SQ_PERF_SEL_WAVES", "SQWGP_HS41", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS41_SQ_PERF_SEL_WAVES_32", "SQWGP_HS41", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS41_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS41", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS41_SQ_PERF_SEL_ITEMS", "SQWGP_HS41", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS41_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS41", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS41_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS41", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5297,6 +5507,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs42CountersGfx11 = {
         {4, "SQWGP_HS42_SQ_PERF_SEL_WAVES", "SQWGP_HS42", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS42_SQ_PERF_SEL_WAVES_32", "SQWGP_HS42", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS42_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS42", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS42_SQ_PERF_SEL_ITEMS", "SQWGP_HS42", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS42_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS42", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS42_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS42", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5322,6 +5533,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs43CountersGfx11 = {
         {4, "SQWGP_HS43_SQ_PERF_SEL_WAVES", "SQWGP_HS43", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS43_SQ_PERF_SEL_WAVES_32", "SQWGP_HS43", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS43_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS43", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS43_SQ_PERF_SEL_ITEMS", "SQWGP_HS43", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS43_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS43", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS43_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS43", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5347,6 +5559,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs44CountersGfx11 = {
         {4, "SQWGP_HS44_SQ_PERF_SEL_WAVES", "SQWGP_HS44", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS44_SQ_PERF_SEL_WAVES_32", "SQWGP_HS44", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS44_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS44", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS44_SQ_PERF_SEL_ITEMS", "SQWGP_HS44", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS44_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS44", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS44_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS44", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5372,6 +5585,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs45CountersGfx11 = {
         {4, "SQWGP_HS45_SQ_PERF_SEL_WAVES", "SQWGP_HS45", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS45_SQ_PERF_SEL_WAVES_32", "SQWGP_HS45", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS45_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS45", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS45_SQ_PERF_SEL_ITEMS", "SQWGP_HS45", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS45_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS45", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS45_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS45", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5397,6 +5611,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs46CountersGfx11 = {
         {4, "SQWGP_HS46_SQ_PERF_SEL_WAVES", "SQWGP_HS46", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS46_SQ_PERF_SEL_WAVES_32", "SQWGP_HS46", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS46_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS46", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS46_SQ_PERF_SEL_ITEMS", "SQWGP_HS46", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS46_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS46", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS46_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS46", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5422,6 +5637,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpHs47CountersGfx11 = {
         {4, "SQWGP_HS47_SQ_PERF_SEL_WAVES", "SQWGP_HS47", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_HS47_SQ_PERF_SEL_WAVES_32", "SQWGP_HS47", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_HS47_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_HS47", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_HS47_SQ_PERF_SEL_ITEMS", "SQWGP_HS47", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_HS47_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_HS47", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_HS47_SQ_PERF_SEL_INSTS_GDS", "SQWGP_HS47", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5447,6 +5663,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs0CountersGfx11 = {
         {4, "SQWGP_CS0_SQ_PERF_SEL_WAVES", "SQWGP_CS0", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS0_SQ_PERF_SEL_WAVES_32", "SQWGP_CS0", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS0_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS0", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS0_SQ_PERF_SEL_ITEMS", "SQWGP_CS0", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS0_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS0", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS0_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS0", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5472,6 +5689,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs1CountersGfx11 = {
         {4, "SQWGP_CS1_SQ_PERF_SEL_WAVES", "SQWGP_CS1", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS1_SQ_PERF_SEL_WAVES_32", "SQWGP_CS1", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS1_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS1", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS1_SQ_PERF_SEL_ITEMS", "SQWGP_CS1", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS1_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS1", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS1_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS1", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5497,6 +5715,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs2CountersGfx11 = {
         {4, "SQWGP_CS2_SQ_PERF_SEL_WAVES", "SQWGP_CS2", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS2_SQ_PERF_SEL_WAVES_32", "SQWGP_CS2", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS2_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS2", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS2_SQ_PERF_SEL_ITEMS", "SQWGP_CS2", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS2_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS2", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS2_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS2", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5522,6 +5741,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs3CountersGfx11 = {
         {4, "SQWGP_CS3_SQ_PERF_SEL_WAVES", "SQWGP_CS3", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS3_SQ_PERF_SEL_WAVES_32", "SQWGP_CS3", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS3_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS3", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS3_SQ_PERF_SEL_ITEMS", "SQWGP_CS3", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS3_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS3", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS3_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS3", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5547,6 +5767,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs4CountersGfx11 = {
         {4, "SQWGP_CS4_SQ_PERF_SEL_WAVES", "SQWGP_CS4", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS4_SQ_PERF_SEL_WAVES_32", "SQWGP_CS4", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS4_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS4", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS4_SQ_PERF_SEL_ITEMS", "SQWGP_CS4", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS4_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS4", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS4_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS4", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5572,6 +5793,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs5CountersGfx11 = {
         {4, "SQWGP_CS5_SQ_PERF_SEL_WAVES", "SQWGP_CS5", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS5_SQ_PERF_SEL_WAVES_32", "SQWGP_CS5", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS5_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS5", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS5_SQ_PERF_SEL_ITEMS", "SQWGP_CS5", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS5_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS5", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS5_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS5", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5597,6 +5819,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs6CountersGfx11 = {
         {4, "SQWGP_CS6_SQ_PERF_SEL_WAVES", "SQWGP_CS6", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS6_SQ_PERF_SEL_WAVES_32", "SQWGP_CS6", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS6_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS6", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS6_SQ_PERF_SEL_ITEMS", "SQWGP_CS6", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS6_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS6", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS6_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS6", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5622,6 +5845,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs7CountersGfx11 = {
         {4, "SQWGP_CS7_SQ_PERF_SEL_WAVES", "SQWGP_CS7", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS7_SQ_PERF_SEL_WAVES_32", "SQWGP_CS7", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS7_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS7", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS7_SQ_PERF_SEL_ITEMS", "SQWGP_CS7", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS7_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS7", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS7_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS7", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5647,6 +5871,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs8CountersGfx11 = {
         {4, "SQWGP_CS8_SQ_PERF_SEL_WAVES", "SQWGP_CS8", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS8_SQ_PERF_SEL_WAVES_32", "SQWGP_CS8", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS8_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS8", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS8_SQ_PERF_SEL_ITEMS", "SQWGP_CS8", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS8_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS8", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS8_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS8", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5672,6 +5897,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs9CountersGfx11 = {
         {4, "SQWGP_CS9_SQ_PERF_SEL_WAVES", "SQWGP_CS9", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS9_SQ_PERF_SEL_WAVES_32", "SQWGP_CS9", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS9_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS9", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS9_SQ_PERF_SEL_ITEMS", "SQWGP_CS9", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS9_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS9", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS9_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS9", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5697,6 +5923,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs10CountersGfx11 = {
         {4, "SQWGP_CS10_SQ_PERF_SEL_WAVES", "SQWGP_CS10", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS10_SQ_PERF_SEL_WAVES_32", "SQWGP_CS10", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS10_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS10", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS10_SQ_PERF_SEL_ITEMS", "SQWGP_CS10", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS10_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS10", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS10_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS10", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5722,6 +5949,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs11CountersGfx11 = {
         {4, "SQWGP_CS11_SQ_PERF_SEL_WAVES", "SQWGP_CS11", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS11_SQ_PERF_SEL_WAVES_32", "SQWGP_CS11", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS11_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS11", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS11_SQ_PERF_SEL_ITEMS", "SQWGP_CS11", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS11_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS11", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS11_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS11", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5747,6 +5975,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs12CountersGfx11 = {
         {4, "SQWGP_CS12_SQ_PERF_SEL_WAVES", "SQWGP_CS12", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS12_SQ_PERF_SEL_WAVES_32", "SQWGP_CS12", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS12_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS12", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS12_SQ_PERF_SEL_ITEMS", "SQWGP_CS12", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS12_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS12", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS12_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS12", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5772,6 +6001,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs13CountersGfx11 = {
         {4, "SQWGP_CS13_SQ_PERF_SEL_WAVES", "SQWGP_CS13", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS13_SQ_PERF_SEL_WAVES_32", "SQWGP_CS13", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS13_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS13", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS13_SQ_PERF_SEL_ITEMS", "SQWGP_CS13", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS13_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS13", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS13_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS13", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5797,6 +6027,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs14CountersGfx11 = {
         {4, "SQWGP_CS14_SQ_PERF_SEL_WAVES", "SQWGP_CS14", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS14_SQ_PERF_SEL_WAVES_32", "SQWGP_CS14", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS14_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS14", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS14_SQ_PERF_SEL_ITEMS", "SQWGP_CS14", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS14_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS14", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS14_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS14", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5822,6 +6053,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs15CountersGfx11 = {
         {4, "SQWGP_CS15_SQ_PERF_SEL_WAVES", "SQWGP_CS15", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS15_SQ_PERF_SEL_WAVES_32", "SQWGP_CS15", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS15_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS15", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS15_SQ_PERF_SEL_ITEMS", "SQWGP_CS15", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS15_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS15", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS15_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS15", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5847,6 +6079,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs16CountersGfx11 = {
         {4, "SQWGP_CS16_SQ_PERF_SEL_WAVES", "SQWGP_CS16", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS16_SQ_PERF_SEL_WAVES_32", "SQWGP_CS16", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS16_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS16", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS16_SQ_PERF_SEL_ITEMS", "SQWGP_CS16", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS16_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS16", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS16_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS16", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5872,6 +6105,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs17CountersGfx11 = {
         {4, "SQWGP_CS17_SQ_PERF_SEL_WAVES", "SQWGP_CS17", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS17_SQ_PERF_SEL_WAVES_32", "SQWGP_CS17", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS17_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS17", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS17_SQ_PERF_SEL_ITEMS", "SQWGP_CS17", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS17_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS17", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS17_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS17", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5897,6 +6131,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs18CountersGfx11 = {
         {4, "SQWGP_CS18_SQ_PERF_SEL_WAVES", "SQWGP_CS18", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS18_SQ_PERF_SEL_WAVES_32", "SQWGP_CS18", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS18_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS18", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS18_SQ_PERF_SEL_ITEMS", "SQWGP_CS18", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS18_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS18", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS18_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS18", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5922,6 +6157,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs19CountersGfx11 = {
         {4, "SQWGP_CS19_SQ_PERF_SEL_WAVES", "SQWGP_CS19", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS19_SQ_PERF_SEL_WAVES_32", "SQWGP_CS19", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS19_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS19", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS19_SQ_PERF_SEL_ITEMS", "SQWGP_CS19", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS19_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS19", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS19_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS19", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5947,6 +6183,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs20CountersGfx11 = {
         {4, "SQWGP_CS20_SQ_PERF_SEL_WAVES", "SQWGP_CS20", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS20_SQ_PERF_SEL_WAVES_32", "SQWGP_CS20", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS20_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS20", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS20_SQ_PERF_SEL_ITEMS", "SQWGP_CS20", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS20_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS20", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS20_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS20", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5972,6 +6209,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs21CountersGfx11 = {
         {4, "SQWGP_CS21_SQ_PERF_SEL_WAVES", "SQWGP_CS21", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS21_SQ_PERF_SEL_WAVES_32", "SQWGP_CS21", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS21_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS21", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS21_SQ_PERF_SEL_ITEMS", "SQWGP_CS21", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS21_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS21", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS21_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS21", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -5997,6 +6235,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs22CountersGfx11 = {
         {4, "SQWGP_CS22_SQ_PERF_SEL_WAVES", "SQWGP_CS22", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS22_SQ_PERF_SEL_WAVES_32", "SQWGP_CS22", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS22_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS22", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS22_SQ_PERF_SEL_ITEMS", "SQWGP_CS22", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS22_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS22", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS22_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS22", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6022,6 +6261,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs23CountersGfx11 = {
         {4, "SQWGP_CS23_SQ_PERF_SEL_WAVES", "SQWGP_CS23", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS23_SQ_PERF_SEL_WAVES_32", "SQWGP_CS23", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS23_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS23", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS23_SQ_PERF_SEL_ITEMS", "SQWGP_CS23", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS23_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS23", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS23_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS23", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6047,6 +6287,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs24CountersGfx11 = {
         {4, "SQWGP_CS24_SQ_PERF_SEL_WAVES", "SQWGP_CS24", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS24_SQ_PERF_SEL_WAVES_32", "SQWGP_CS24", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS24_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS24", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS24_SQ_PERF_SEL_ITEMS", "SQWGP_CS24", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS24_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS24", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS24_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS24", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6072,6 +6313,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs25CountersGfx11 = {
         {4, "SQWGP_CS25_SQ_PERF_SEL_WAVES", "SQWGP_CS25", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS25_SQ_PERF_SEL_WAVES_32", "SQWGP_CS25", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS25_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS25", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS25_SQ_PERF_SEL_ITEMS", "SQWGP_CS25", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS25_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS25", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS25_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS25", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6097,6 +6339,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs26CountersGfx11 = {
         {4, "SQWGP_CS26_SQ_PERF_SEL_WAVES", "SQWGP_CS26", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS26_SQ_PERF_SEL_WAVES_32", "SQWGP_CS26", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS26_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS26", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS26_SQ_PERF_SEL_ITEMS", "SQWGP_CS26", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS26_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS26", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS26_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS26", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6122,6 +6365,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs27CountersGfx11 = {
         {4, "SQWGP_CS27_SQ_PERF_SEL_WAVES", "SQWGP_CS27", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS27_SQ_PERF_SEL_WAVES_32", "SQWGP_CS27", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS27_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS27", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS27_SQ_PERF_SEL_ITEMS", "SQWGP_CS27", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS27_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS27", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS27_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS27", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6147,6 +6391,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs28CountersGfx11 = {
         {4, "SQWGP_CS28_SQ_PERF_SEL_WAVES", "SQWGP_CS28", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS28_SQ_PERF_SEL_WAVES_32", "SQWGP_CS28", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS28_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS28", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS28_SQ_PERF_SEL_ITEMS", "SQWGP_CS28", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS28_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS28", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS28_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS28", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6172,6 +6417,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs29CountersGfx11 = {
         {4, "SQWGP_CS29_SQ_PERF_SEL_WAVES", "SQWGP_CS29", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS29_SQ_PERF_SEL_WAVES_32", "SQWGP_CS29", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS29_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS29", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS29_SQ_PERF_SEL_ITEMS", "SQWGP_CS29", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS29_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS29", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS29_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS29", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6197,6 +6443,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs30CountersGfx11 = {
         {4, "SQWGP_CS30_SQ_PERF_SEL_WAVES", "SQWGP_CS30", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS30_SQ_PERF_SEL_WAVES_32", "SQWGP_CS30", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS30_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS30", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS30_SQ_PERF_SEL_ITEMS", "SQWGP_CS30", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS30_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS30", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS30_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS30", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6222,6 +6469,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs31CountersGfx11 = {
         {4, "SQWGP_CS31_SQ_PERF_SEL_WAVES", "SQWGP_CS31", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS31_SQ_PERF_SEL_WAVES_32", "SQWGP_CS31", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS31_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS31", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS31_SQ_PERF_SEL_ITEMS", "SQWGP_CS31", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS31_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS31", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS31_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS31", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6247,6 +6495,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs32CountersGfx11 = {
         {4, "SQWGP_CS32_SQ_PERF_SEL_WAVES", "SQWGP_CS32", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS32_SQ_PERF_SEL_WAVES_32", "SQWGP_CS32", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS32_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS32", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS32_SQ_PERF_SEL_ITEMS", "SQWGP_CS32", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS32_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS32", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS32_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS32", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6272,6 +6521,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs33CountersGfx11 = {
         {4, "SQWGP_CS33_SQ_PERF_SEL_WAVES", "SQWGP_CS33", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS33_SQ_PERF_SEL_WAVES_32", "SQWGP_CS33", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS33_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS33", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS33_SQ_PERF_SEL_ITEMS", "SQWGP_CS33", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS33_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS33", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS33_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS33", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6297,6 +6547,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs34CountersGfx11 = {
         {4, "SQWGP_CS34_SQ_PERF_SEL_WAVES", "SQWGP_CS34", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS34_SQ_PERF_SEL_WAVES_32", "SQWGP_CS34", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS34_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS34", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS34_SQ_PERF_SEL_ITEMS", "SQWGP_CS34", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS34_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS34", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS34_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS34", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6322,6 +6573,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs35CountersGfx11 = {
         {4, "SQWGP_CS35_SQ_PERF_SEL_WAVES", "SQWGP_CS35", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS35_SQ_PERF_SEL_WAVES_32", "SQWGP_CS35", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS35_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS35", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS35_SQ_PERF_SEL_ITEMS", "SQWGP_CS35", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS35_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS35", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS35_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS35", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6347,6 +6599,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs36CountersGfx11 = {
         {4, "SQWGP_CS36_SQ_PERF_SEL_WAVES", "SQWGP_CS36", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS36_SQ_PERF_SEL_WAVES_32", "SQWGP_CS36", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS36_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS36", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS36_SQ_PERF_SEL_ITEMS", "SQWGP_CS36", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS36_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS36", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS36_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS36", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6372,6 +6625,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs37CountersGfx11 = {
         {4, "SQWGP_CS37_SQ_PERF_SEL_WAVES", "SQWGP_CS37", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS37_SQ_PERF_SEL_WAVES_32", "SQWGP_CS37", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS37_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS37", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS37_SQ_PERF_SEL_ITEMS", "SQWGP_CS37", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS37_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS37", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS37_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS37", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6397,6 +6651,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs38CountersGfx11 = {
         {4, "SQWGP_CS38_SQ_PERF_SEL_WAVES", "SQWGP_CS38", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS38_SQ_PERF_SEL_WAVES_32", "SQWGP_CS38", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS38_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS38", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS38_SQ_PERF_SEL_ITEMS", "SQWGP_CS38", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS38_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS38", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS38_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS38", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6422,6 +6677,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs39CountersGfx11 = {
         {4, "SQWGP_CS39_SQ_PERF_SEL_WAVES", "SQWGP_CS39", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS39_SQ_PERF_SEL_WAVES_32", "SQWGP_CS39", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS39_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS39", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS39_SQ_PERF_SEL_ITEMS", "SQWGP_CS39", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS39_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS39", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS39_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS39", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6447,6 +6703,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs40CountersGfx11 = {
         {4, "SQWGP_CS40_SQ_PERF_SEL_WAVES", "SQWGP_CS40", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS40_SQ_PERF_SEL_WAVES_32", "SQWGP_CS40", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS40_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS40", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS40_SQ_PERF_SEL_ITEMS", "SQWGP_CS40", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS40_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS40", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS40_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS40", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6472,6 +6729,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs41CountersGfx11 = {
         {4, "SQWGP_CS41_SQ_PERF_SEL_WAVES", "SQWGP_CS41", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS41_SQ_PERF_SEL_WAVES_32", "SQWGP_CS41", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS41_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS41", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS41_SQ_PERF_SEL_ITEMS", "SQWGP_CS41", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS41_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS41", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS41_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS41", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6497,6 +6755,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs42CountersGfx11 = {
         {4, "SQWGP_CS42_SQ_PERF_SEL_WAVES", "SQWGP_CS42", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS42_SQ_PERF_SEL_WAVES_32", "SQWGP_CS42", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS42_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS42", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS42_SQ_PERF_SEL_ITEMS", "SQWGP_CS42", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS42_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS42", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS42_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS42", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6522,6 +6781,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs43CountersGfx11 = {
         {4, "SQWGP_CS43_SQ_PERF_SEL_WAVES", "SQWGP_CS43", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS43_SQ_PERF_SEL_WAVES_32", "SQWGP_CS43", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS43_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS43", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS43_SQ_PERF_SEL_ITEMS", "SQWGP_CS43", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS43_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS43", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS43_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS43", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6547,6 +6807,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs44CountersGfx11 = {
         {4, "SQWGP_CS44_SQ_PERF_SEL_WAVES", "SQWGP_CS44", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS44_SQ_PERF_SEL_WAVES_32", "SQWGP_CS44", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS44_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS44", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS44_SQ_PERF_SEL_ITEMS", "SQWGP_CS44", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS44_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS44", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS44_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS44", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6572,6 +6833,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs45CountersGfx11 = {
         {4, "SQWGP_CS45_SQ_PERF_SEL_WAVES", "SQWGP_CS45", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS45_SQ_PERF_SEL_WAVES_32", "SQWGP_CS45", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS45_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS45", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS45_SQ_PERF_SEL_ITEMS", "SQWGP_CS45", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS45_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS45", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS45_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS45", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6597,6 +6859,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs46CountersGfx11 = {
         {4, "SQWGP_CS46_SQ_PERF_SEL_WAVES", "SQWGP_CS46", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS46_SQ_PERF_SEL_WAVES_32", "SQWGP_CS46", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS46_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS46", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS46_SQ_PERF_SEL_ITEMS", "SQWGP_CS46", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS46_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS46", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS46_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS46", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
@@ -6622,6 +6885,7 @@ namespace counter_gfx11
     std::vector<GpaHardwareCounterDesc> kSqwgpCs47CountersGfx11 = {
         {4, "SQWGP_CS47_SQ_PERF_SEL_WAVES", "SQWGP_CS47", "Count number of waves sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {5, "SQWGP_CS47_SQ_PERF_SEL_WAVES_32", "SQWGP_CS47", "Count number of wave32s sent to SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
+        {7, "SQWGP_CS47_SQ_PERF_SEL_LEVEL_WAVES", "SQWGP_CS47", "Track the aggregated number of waves over certain period of time, Set next counter to ACCUM_PREV and divide by SQ_PERF_SEL_WAVES for average wave life cycle. {level, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {8, "SQWGP_CS47_SQ_PERF_SEL_ITEMS", "SQWGP_CS47", "Number of valid work items in SQs. {emulated, global, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {29, "SQWGP_CS47_SQ_PERF_SEL_WAIT_INST_LDS", "SQWGP_CS47", "Number of clock cycles spent waiting for LDS (indexed) instruction issue. In units of cycles. {nondeterministic, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},
         {54, "SQWGP_CS47_SQ_PERF_SEL_INSTS_GDS", "SQWGP_CS47", "Number of GDS instructions issued. {emulated, C1}", kGpaDataTypeUint64, 0, GPA_UINT64_MAX},

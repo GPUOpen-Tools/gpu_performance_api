@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Implements a library that allows access to the available counters
@@ -102,20 +102,14 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetFuncTable(void* gpa_counter
 }
 
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibOpenCounterContext(GpaApiType                    api,
+                                                                     GpaSessionSampleType          sample_type,
                                                                      GpaCounterContextHardwareInfo gpa_counter_context_hardware_info,
                                                                      GpaOpenContextFlags           context_flags,
-                                                                     GpaUInt8                      generate_asic_specific_counters_deprecated,
                                                                      GpaCounterContext*            gpa_virtual_context)
 {
     if (nullptr == gpa_virtual_context)
     {
         return kGpaStatusErrorNullPointer;
-    }
-
-    if (generate_asic_specific_counters_deprecated != TRUE)
-    {
-        // GPA always generates ASIC-Specific counters now, so passing in anything other than TRUE (1) is an invalid parameter.
-        return kGpaStatusErrorInvalidParameter;
     }
 
     if ((context_flags & kGpaOpenContextHideDerivedCountersBit) && !(context_flags & kGpaOpenContextEnableHardwareCountersBit))
@@ -125,6 +119,7 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibOpenCounterContext(GpaApiType 
 
     return GpaCounterContextManager::Instance()->OpenCounterContext(
         api,
+        sample_type,
         gpa_counter_context_hardware_info, context_flags, gpa_virtual_context);
 }
 

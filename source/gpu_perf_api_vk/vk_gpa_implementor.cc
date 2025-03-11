@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Vk API implementation
@@ -25,9 +25,36 @@
 #include "gpu_perf_api_vk/vk_includes.h"
 #include "gpu_perf_api_vk/vk_utils.h"
 
-IGpaImplementor*                   gpa_imp = VkGpaImplementor::Instance();
-static GpaCounterGeneratorVk       generator_vk;          ///< Static instance of VK generator.
-static GpaCounterSchedulerVk       scheduler_vk;          ///< Static instance of VK scheduler.
+static GpaCounterGeneratorVk* generator_vk = nullptr;  ///< Static instance of VK generator.
+static GpaCounterSchedulerVk* scheduler_vk = nullptr;  ///< Static instance of VK scheduler.
+
+IGpaImplementor* CreateImplementor()
+{
+    generator_vk = new GpaCounterGeneratorVk(kGpaSessionSampleTypeDiscreteCounter);
+    scheduler_vk = new GpaCounterSchedulerVk(kGpaSessionSampleTypeDiscreteCounter);
+
+    return VkGpaImplementor::Instance();
+}
+
+void DestroyImplementor(IGpaImplementor* impl)
+{
+    if (generator_vk != nullptr)
+    {
+        delete generator_vk;
+        generator_vk = nullptr;
+    }
+
+    if (scheduler_vk != nullptr)
+    {
+        delete scheduler_vk;
+        scheduler_vk = nullptr;
+    }
+
+    if (nullptr != impl)
+    {
+        VkGpaImplementor::DeleteInstance();
+    }
+}
 
 GpaApiType VkGpaImplementor::GetApiType() const
 {
@@ -102,8 +129,8 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                             {
                                 hardware_generation = card_info.m_generation;
 
-                                // GPA Vk requires GFX8 or above (but also works on Hawaii).
-                                if (GDT_HW_GENERATION_VOLCANICISLAND > hardware_generation && GDT_HAWAII != card_info.m_asicType)
+                                // GPA Vk requires GFX10 or above.
+                                if (GDT_HW_GENERATION_GFX10 > hardware_generation)
                                 {
                                     GPA_LOG_ERROR("Hardware not supported.");
                                 }
@@ -152,6 +179,8 @@ bool VkGpaImplementor::GetHwInfoFromApi(const GpaContextInfoPtr context_info, Gp
                             {
                                 GPA_LOG_ERROR("Unable to get device info from AMDTDeviceInfoUtils.");
                             }
+
+                            AMDTDeviceInfoUtils::DeleteInstance();
                         }
                         else
                         {
@@ -190,8 +219,9 @@ bool VkGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, 
 {
     bool is_supported = false;
 
+#ifdef _WIN32
     UNREFERENCED_PARAMETER(hardware_info);
-
+#endif
     if (nullptr != context_info)
     {
         GpaVkContextOpenInfo* vk_context_info = static_cast<GpaVkContextOpenInfo*>(context_info);
@@ -207,6 +237,15 @@ bool VkGpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info, 
             {
                 GPA_LOG_ERROR("Unable to initialize Vulkan entrypoints.");
             }
+
+#ifdef _LINUX
+            GpaUInt32 device_id = 0;
+            if (hardware_info.GetDeviceId(device_id) && (device_id == 0x7550))
+            {
+                GPA_LOG_ERROR("The current Vulkan driver does not properly support GPUPerfAPI on this hardware.");
+                is_supported = false;
+            }
+#endif
         }
         else
         {

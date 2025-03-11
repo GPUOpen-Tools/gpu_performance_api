@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
@@ -11,10 +11,6 @@ endif()
 
 if(NOT ${skipopengl})
     include ("counter_generator_gl.cmake")
-endif()
-
-if(NOT ${skipopencl})
-    include ("counter_generator_cl.cmake")
 endif()
 
 if(WIN32)

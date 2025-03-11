@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GL GPA Sample Implementation
@@ -28,6 +28,7 @@ GlGpaSample::~GlGpaSample()
     {
         DeleteGpuTimeQueries();
     }
+    gl_gpa_pass_ = nullptr;
 }
 
 bool GlGpaSample::UpdateResults()
@@ -192,125 +193,107 @@ bool GlGpaSample::CopyResults()
                     // Obtain the actual results.
                     GLuint* counter_data = reinterpret_cast<GLuint*>(malloc(result_size));
                     assert(nullptr != counter_data);
-
-                    GLsizei bytes_written = 0;
-                    ogl_utils::ogl_get_perf_monitor_counter_data_amd(perf_monitor_id, GL_PERFMON_RESULT_AMD, result_size, counter_data, &bytes_written);
-
-                    if (!ogl_utils::CheckForGlError("Unable to get the counter data."))
+                    if (counter_data == nullptr)
                     {
-                        // UGL and OGLP have two different result structures:
-                        // UGL:
-                        // +----------------------------------------+-----------
-                        // |  BlockID  |  CounterID  |  result data |  BlockID ...
-                        // +----------------------------------------+-----------
-                        //
-                        // OGLP:
-                        // +---------------------------------------------------------+-----------
-                        // |  BlockID  |  BlockInstance |  CounterID  |  result data |  BlockID ...
-                        // +---------------------------------------------------------+-----------
-                        //
-                        // So, it may not be in the same order it was specified.
+                        GPA_LOG_ERROR("Failed to allocate memory to copy results.");
+                    }
+                    else
+                    {
+                        GLsizei bytes_written = 0;
+                        ogl_utils::ogl_get_perf_monitor_counter_data_amd(perf_monitor_id, GL_PERFMON_RESULT_AMD, result_size, counter_data, &bytes_written);
 
-                        CounterCount num_counter_results = 0;
-                        if (ogl_utils::IsOglpDriver())
+                        if (!ogl_utils::CheckForGlError("Unable to get the counter data."))
                         {
+                            // OGLP returns a struct of 4 GLUInts for each counter:
+                            // +---------------------------------------------------------+-----------
+                            // |  BlockID  |  BlockInstance |  CounterID  |  result data |  BlockID ...
+                            // +---------------------------------------------------------+-----------
+                            //
+                            // Also, the returned data may not be in the same order that the counters were originally enabled.
+
                             // OGLP returns 4 GLuint values.
-                            num_counter_results = result_size / (4 * sizeof(GLuint));
-                        }
-                        else
-                        {
-                            // Other drivers return 3 GLuint values;
-                            num_counter_results = result_size / (3 * sizeof(GLuint));
-                        }
+                            CounterCount num_counter_results = result_size / (4 * sizeof(GLuint));
 
-                        if (num_counter_results != counter_count)
-                        {
-                            // This is not expected, but seems to be happening.
-                            // Update the counter_count to avoid reading past the end of the results buffer.
-                            counter_count = num_counter_results;
-                        }
-
-                        // Cycle through all the counters and store the data.
-                        GLsizei word_index = 0;
-
-                        for (CounterCount counter_count_iter = 0; counter_count_iter < counter_count; counter_count_iter++)
-                        {
-                            // GL may return the data in a different order than expected.
-                            // Find the correct counter to assign the data to.
-                            GLuint  group_id       = 0;
-                            GLuint  group_instance = 0;
-                            GLuint  counter_id     = 0;
-                            GLuint* data           = nullptr;
-
-                            if (ogl_utils::IsOglpDriver())
+                            if (num_counter_results != counter_count)
                             {
+                                // This is not expected, but seems to be happening.
+                                // Update the counter_count to avoid reading past the end of the results buffer.
+                                counter_count = num_counter_results;
+                            }
+
+                            // Cycle through all the counters and store the data.
+                            GLsizei word_index = 0;
+
+                            for (CounterCount counter_count_iter = 0; counter_count_iter < counter_count; counter_count_iter++)
+                            {
+                                // GL may return the data in a different order than expected.
+                                // Find the correct counter to assign the data to.
+                                GLuint  group_id       = 0;
+                                GLuint  group_instance = 0;
+                                GLuint  counter_id     = 0;
+                                GLuint* data           = nullptr;
+
                                 group_id       = counter_data[word_index++];
                                 group_instance = counter_data[word_index++];
                                 counter_id     = counter_data[word_index++];
                                 data           = &counter_data[word_index];
-                            }
-                            else
-                            {
-                                group_id       = counter_data[word_index++];
-                                group_instance = 0;
-                                counter_id     = counter_data[word_index++];
-                                data           = &counter_data[word_index];
-                            }
-                            unsigned int cur_counter_result_index = 0u;
 
-                            const GlCounter* gl_counter = gl_gpa_pass_->GetGLCounter(group_id, group_instance, counter_id, cur_counter_result_index);
+                                unsigned int cur_counter_result_index = 0u;
 
-                            if (nullptr != gl_counter)
-                            {
-                                GLuint* dest =
-                                    reinterpret_cast<GLuint*>(&sample_result->GetAsCounterSampleResult()->GetResultBuffer()[cur_counter_result_index]);
-                                dest[0] = 0;
-                                dest[1] = 0;
+                                const GlCounter* gl_counter = gl_gpa_pass_->GetGLCounter(group_id, group_instance, counter_id, cur_counter_result_index);
 
-                                if (gl_counter->counter_type == GL_UNSIGNED_INT64_AMD)
+                                if (nullptr != gl_counter)
                                 {
-                                    word_index += 2;
-                                    memcpy(dest, data, sizeof(GLuint) * 2);
-                                    success = true;
-                                }
-                                else if (gl_counter->counter_type == GL_FLOAT)
-                                {
-                                    word_index += 1;
-                                    memcpy(dest, data, sizeof(GLfloat));
-                                    success = true;
-                                }
-                                else if (gl_counter->counter_type == GL_UNSIGNED_INT)
-                                {
-                                    word_index += 1;
-                                    memcpy(dest, data, sizeof(GLuint));
-                                    success = true;
-                                }
-                                else if (gl_counter->counter_type == GL_PERCENTAGE_AMD)
-                                {
-                                    word_index += 1;
-                                    memcpy(dest, data, sizeof(GLfloat));
-                                    success = true;
-                                }
-                                else if (gl_counter->counter_type == GL_INT)
-                                {
-                                    word_index += 1;
-                                    memcpy(dest, data, sizeof(GLint));
-                                    success = true;
+                                    GLuint* dest =
+                                        reinterpret_cast<GLuint*>(&sample_result->GetAsCounterSampleResult()->GetResultBuffer()[cur_counter_result_index]);
+                                    dest[0] = 0;
+                                    dest[1] = 0;
+
+                                    if (gl_counter->counter_type == GL_UNSIGNED_INT64_AMD)
+                                    {
+                                        word_index += 2;
+                                        memcpy(dest, data, sizeof(GLuint) * 2);
+                                        success = true;
+                                    }
+                                    else if (gl_counter->counter_type == GL_FLOAT)
+                                    {
+                                        word_index += 1;
+                                        memcpy(dest, data, sizeof(GLfloat));
+                                        success = true;
+                                    }
+                                    else if (gl_counter->counter_type == GL_UNSIGNED_INT)
+                                    {
+                                        word_index += 1;
+                                        memcpy(dest, data, sizeof(GLuint));
+                                        success = true;
+                                    }
+                                    else if (gl_counter->counter_type == GL_PERCENTAGE_AMD)
+                                    {
+                                        word_index += 1;
+                                        memcpy(dest, data, sizeof(GLfloat));
+                                        success = true;
+                                    }
+                                    else if (gl_counter->counter_type == GL_INT)
+                                    {
+                                        word_index += 1;
+                                        memcpy(dest, data, sizeof(GLint));
+                                        success = true;
+                                    }
+                                    else
+                                    {
+                                        assert(!"CounterType not recognized.");
+                                    }
                                 }
                                 else
                                 {
-                                    assert(!"CounterType not recognized.");
+                                    // Probably indicates that invalid data was in the results buffer from the driver.
+                                    assert(!"GLCounter not found.");
                                 }
                             }
-                            else
-                            {
-                                // Probably indicates that invalid data was in the results buffer from the driver.
-                                assert(!"GLCounter not found.");
-                            }
                         }
-                    }
 
-                    free(counter_data);
+                        free(counter_data);
+                    }
                 }
             }
         }

@@ -1,9 +1,7 @@
-DO NOT TRANSLATE OR LOCALIZE
+Third-party licenses, acknowledgements
+======================================
 
-
-Third-Party Notices Report for GPUPerfAPI v3.16
-
-
+GPU Performance API (GPA) uses the following third-party software:
 
 afarkas-html5shiv v3.7.3 (MIT)
 This software is licensed under a dual license system (MIT or GPL version 2). This means you are free to choose with which of both licenses (MIT or GPL version 2) you want to use this library.

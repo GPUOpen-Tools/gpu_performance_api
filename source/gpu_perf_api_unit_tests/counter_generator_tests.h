@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Helper functions for Counter Generator Unit Tests.
@@ -47,8 +47,10 @@ static const unsigned int kDevIdGfx11         = 0x744C;      ///< Gfx11.
 static const unsigned int kDevIdGfx11_0_3     = 0x15BF;      ///< Gfx11_0_3.
 static const unsigned int kDevIdGfx11_0_3B    = 0x15C8;      ///< Gfx11_0_3B.
 static const unsigned int kDevIdGfx11_5_0     = 0x150E;      ///< GFX11_5_0.
+static const unsigned int kDevIdGfx12_0_1     = 0x7550;      ///< GFX12_0_1.
 static const unsigned int kDevIdUnsupported1  = 0x1506;      ///< An unsupported device id.
 static const unsigned int kDevIdUnsupported2  = 0x164e;      ///< An unsupported device id.
+static const unsigned int kDevIdUnsupported3  = 0x13C0;      ///< An unsupported device id.
 
 /// Name of the counter library.
 extern const char* kCountersLibName;
@@ -88,9 +90,7 @@ void* GetEntryPoint(LibHandle lib_handle, const char* entrypoint_name);
 /// @param [in] api The API being used in the test.
 /// @param [in] generation The hardware generation being used.
 /// @param [in] public_counters Public descriptions of the counter.
-void VerifyDerivedCounterCount(const GpaApiType                  api,
-                               const GpaHwGeneration             generation,
-                               const std::vector<GpaCounterDesc> counter_descriptions);
+void VerifyDerivedCounterCount(const GpaApiType api, const GpaHwGeneration generation, const std::vector<GpaCounterDesc> counter_descriptions);
 
 void VerifyNotImplemented(GpaApiType api, unsigned int device_id);
 
@@ -102,15 +102,9 @@ void VerifyHardwareNotSupported(GpaApiType api, unsigned int device_id);
 
 void VerifyHardwareNotSupported(GpaApiType api, GpaHwGeneration generation);
 
-void VerifyCounterNames(GpaApiType               api,
-                        unsigned int             device_id,
-                        std::vector<const char*> expected_names,
-                        std::vector<const char*> expected_hardware_names);
+void VerifyCounterNames(GpaApiType api, unsigned int device_id, std::vector<const char*> expected_names, std::vector<const char*> expected_hardware_names);
 
-void VerifyCounterNames(GpaApiType               api,
-                        GpaHwGeneration          generation,
-                        std::vector<const char*> expected_names,
-                        std::vector<const char*> expected_hardware_names);
+void VerifyCounterNames(GpaApiType api, GpaHwGeneration generation, std::vector<const char*> expected_names, std::vector<const char*> expected_hardware_names);
 
 void VerifyOpenCounterContext(GpaApiType api, GpaHwGeneration generation);
 
@@ -121,10 +115,7 @@ void VerifyCounterLibInterface(GpaApiType                         api,
 
 void VerifyCounterByPassCounterLibEntry(GpaApiType api, unsigned device_id, unsigned revision_id);
 
-void VerifyPassCount(GpaApiType                       api,
-                     unsigned int                     device_id,
-                     const std::vector<unsigned int>& counters_to_enable,
-                     unsigned int                     expected_num_passes);
+void VerifyPassCount(GpaApiType api, unsigned int device_id, const std::vector<unsigned int>& counters_to_enable, unsigned int expected_num_passes);
 
 /// @brief Verifies the number of passes, the counters in each pass, and the output result locations.
 ///

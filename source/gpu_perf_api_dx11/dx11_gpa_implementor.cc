@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX11 GPA Implementation
@@ -27,9 +27,35 @@
 #include "gpu_perf_api_dx11/dx11_utils.h"
 #include "gpu_perf_api_dx11/dxx_ext_utils.h"
 
-IGpaImplementor*                     gpa_imp = Dx11GpaImplementor::Instance();
-static GpaCounterGeneratorDx11       counter_generator_dx11;          ///< Static instance of DX11 generator.
-static GpaCounterSchedulerDx11       counter_scheduler_dx11;          ///< Static instance of DX11 scheduler.
+static GpaCounterGeneratorDx11* counter_generator_dx11 = nullptr;  ///< Static instance of DX11 generator.
+static GpaCounterSchedulerDx11* counter_scheduler_dx11 = nullptr;  ///< Static instance of DX11 scheduler.
+
+IGpaImplementor* CreateImplementor()
+{
+    counter_generator_dx11 = new GpaCounterGeneratorDx11(kGpaSessionSampleTypeDiscreteCounter);
+    counter_scheduler_dx11 = new GpaCounterSchedulerDx11(kGpaSessionSampleTypeDiscreteCounter);
+    return Dx11GpaImplementor::Instance();
+}
+
+void DestroyImplementor(IGpaImplementor* impl)
+{
+    if (counter_generator_dx11 != nullptr)
+    {
+        delete counter_generator_dx11;
+        counter_generator_dx11 = nullptr;
+    }
+
+    if (counter_scheduler_dx11 != nullptr)
+    {
+        delete counter_scheduler_dx11;
+        counter_scheduler_dx11 = nullptr;
+    }
+    
+    if (nullptr != impl)
+    {
+        Dx11GpaImplementor::DeleteInstance();
+    }
+}
 
 /// @brief Converts string from wide to utf-8 encoding.
 ///
@@ -170,8 +196,7 @@ bool Dx11GpaImplementor::VerifyApiHwSupport(const GpaContextInfoPtr context_info
                 if (hw_info.GetDeviceId(device_id) && (device_id == 0x15BF || device_id == 0x15C8))
                 {
                     // The 22.40 driver does not properly support GPA on these devices.
-                    if ((major_ver < 22 || (major_ver == 22 && minor_ver <= 40)) &&
-                        (0 != major_ver || 0 != minor_ver || 0 != sub_minor_ver))
+                    if ((major_ver < 22 || (major_ver == 22 && minor_ver <= 40)) && (0 != major_ver || 0 != minor_ver || 0 != sub_minor_ver))
                     {
                         status = kGpaStatusErrorDriverNotSupported;
                         GPA_LOG_ERROR("The current DX11 driver does not support GPUPerfAPI on this hardware, please update to a newer driver.");
@@ -282,6 +307,8 @@ bool Dx11GpaImplementor::GetAmdHwInfo(ID3D11Device* d3d11_device,
                         {
                             GPA_LOG_ERROR("Unable to get perf counter extension for GCN device.");
                         }
+
+                        AMDTDeviceInfoUtils::DeleteInstance();
                     }
                     else
                     {
@@ -405,6 +432,8 @@ bool Dx11GpaImplementor::GetAmdHwInfo(ID3D11Device* d3d11_device,
                                 hw_info.SetTimeStampFrequency(device_frequency);
                             }
 
+                            AMDTDeviceInfoUtils::DeleteInstance();
+
                             unsigned int   major_ver     = 0;
                             unsigned int   minor_ver     = 0;
                             unsigned int   sub_minor_ver = 0;
@@ -413,7 +442,7 @@ bool Dx11GpaImplementor::GetAmdHwInfo(ID3D11Device* d3d11_device,
 
                             if ((ADL_SUCCESS == adl_result || ADL_WARNING == adl_result))
                             {
-                                static const unsigned int kMinMajorVer = 19;
+                                static const unsigned int kMinMajorVer      = 19;
                                 static const unsigned int kMinMinorVerFor30 = 30;
 
                                 // Make sure the ADL version is greater than the expected version,

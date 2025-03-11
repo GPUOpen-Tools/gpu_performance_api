@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Manages a set of derived counters.
@@ -32,18 +32,22 @@ GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass()
     , counter_description_(nullptr)
     , data_type_(kGpaDataTypeLast)
     , usage_type_(kGpaUsageTypeLast)
+    , discrete_counter_(false)
+    , spm_counter_(false)
     , compute_expression_(nullptr)
     , counter_info_(nullptr)
     , derived_counter_info_init_(false)
 {
 }
 
-GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass(unsigned int index,
-                                                       const char*  counter_name,
-                                                       const char*  counter_group,
-                                                       const char*  counter_description,
-                                                       GpaDataType  data_type,
-                                                       GpaUsageType usage_type,
+GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass(unsigned int       index,
+                                                       const char*        counter_name,
+                                                       const char*        counter_group,
+                                                       const char*        counter_description,
+                                                       GpaDataType        data_type,
+                                                       GpaUsageType       usage_type,
+                                                       bool               discrete_counter,
+                                                       bool               spm_counter,
                                                        vector<GpaUInt32>& internal_counters_required,
                                                        const char*        compute_expression,
                                                        const char*        uuid)
@@ -53,6 +57,8 @@ GpaDerivedCounterInfoClass::GpaDerivedCounterInfoClass(unsigned int index,
     , counter_description_(counter_description)
     , data_type_(data_type)
     , usage_type_(usage_type)
+    , discrete_counter_(discrete_counter)
+    , spm_counter_(spm_counter)
     , internal_counters_required_(internal_counters_required)
     , compute_expression_(compute_expression)
     , counter_info_(nullptr)
@@ -127,7 +133,6 @@ bool GpaDerivedCounterInfoClass::InitializeDerivedCounterHardwareInfo(const IGpa
     bool counter_init = false;
     if (nullptr != counter_info_)
     {
-
         if (nullptr != counter_info_->gpa_derived_counter)
         {
             // The derived counter has already been initialized, return true.
@@ -154,11 +159,11 @@ bool GpaDerivedCounterInfoClass::InitializeDerivedCounterHardwareInfo(const IGpa
                 if (!hw_counter_info_list_.empty())
                 {
                     assert(internal_counters_required_.size() == hw_counter_info_list_.size());
-                    counter_info_->is_derived_counter = true;
+                    counter_info_->is_derived_counter                        = true;
                     counter_info_->gpa_derived_counter->gpa_hw_counter_count = static_cast<GpaUInt32>(internal_counters_required_.size());
-                    counter_info_->gpa_derived_counter->counter_usage_type = usage_type_;
-                    counter_info_->gpa_derived_counter->gpa_hw_counters = hw_counter_info_list_.data();
-                    counter_init = true;
+                    counter_info_->gpa_derived_counter->counter_usage_type   = usage_type_;
+                    counter_info_->gpa_derived_counter->gpa_hw_counters      = hw_counter_info_list_.data();
+                    counter_init                                             = true;
                 }
             }
         }
@@ -187,11 +192,13 @@ GpaCounterInfo* GpaDerivedCounterInfoClass::GetCounterInfo(const IGpaCounterAcce
     return nullptr;
 }
 
-void GpaDerivedCounters::DefineDerivedCounter(const char*  counter_name,
-                                              const char*  counter_group,
-                                              const char*  counter_description,
-                                              GpaDataType  data_type,
-                                              GpaUsageType usage_type,
+void GpaDerivedCounters::DefineDerivedCounter(const char*        counter_name,
+                                              const char*        counter_group,
+                                              const char*        counter_description,
+                                              GpaDataType        data_type,
+                                              GpaUsageType       usage_type,
+                                              bool               discrete_counter,
+                                              bool               spm_counter,
                                               vector<GpaUInt32>& internal_counters_required,
                                               const char*        compute_expression,
                                               const char*        uuid)
@@ -213,8 +220,24 @@ void GpaDerivedCounters::DefineDerivedCounter(const char*  counter_name,
         return;
     }
 #endif
-    derived_counter_list_.push_back(GpaDerivedCounterInfoClass(
-        index, counter_name, counter_group, counter_description, data_type, usage_type, internal_counters_required, compute_expression, uuid));
+
+    bool add_counter = ((kGpaSessionSampleTypeDiscreteCounter == sample_type_) && discrete_counter) ||
+                       ((kGpaSessionSampleTypeStreamingCounter == sample_type_) && spm_counter);
+
+    if (add_counter)
+    {
+        derived_counter_list_.push_back(GpaDerivedCounterInfoClass(index,
+                                                                   counter_name,
+                                                                   counter_group,
+                                                                   counter_description,
+                                                                   data_type,
+                                                                   usage_type,
+                                                                   discrete_counter,
+                                                                   spm_counter,
+                                                                   internal_counters_required,
+                                                                   compute_expression,
+                                                                   uuid));
+    }
 }
 
 void GpaDerivedCounters::UpdateAsicSpecificDerivedCounter(const char*        counter_name,
@@ -235,8 +258,7 @@ void GpaDerivedCounters::UpdateAsicSpecificDerivedCounter(const char*        cou
     // Errors aside, the counter will not be found if it's not supported on the ASIC.
     // e.g.: there's a discrete counter version, but not an SPM version.
     {
-        GPA_LOG_MESSAGE("Warning: unable to find counter for ASIC-specific update:%s . This may be an unsupported SPM counter.",
-            counter_name);
+        GPA_LOG_MESSAGE("Warning: unable to find counter for ASIC-specific update:%s . This may be an unsupported SPM counter.", counter_name);
     }
 }
 

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for VK Base counter generation.
@@ -15,7 +15,9 @@ class GpaCounterGeneratorVkBase : public GpaCounterGeneratorBase
 {
 public:
     /// @brief Constructor.
-    GpaCounterGeneratorVkBase() = default;
+    ///
+    /// @param [in] sample_type The type of samples for which to generate counters.
+    GpaCounterGeneratorVkBase(GpaSessionSampleType sample_type);
 
     /// @brief Virtual destructor.
     virtual ~GpaCounterGeneratorVkBase() = default;
@@ -32,6 +34,9 @@ protected:
                                                GpaHardwareCounters* hardware_counters) override;
 
 private:
+    /// @brief Delete default constructor.
+    GpaCounterGeneratorVkBase() = delete;
+
     /// @brief Copy constructor - private override to prevent usage.
     GpaCounterGeneratorVkBase(const GpaCounterGeneratorVkBase&) = delete;
 

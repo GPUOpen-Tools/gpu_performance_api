@@ -95,6 +95,11 @@ typedef enum
     kGpaHwBlockDfmall,   ///< The GPA hardware block is DFMALL.
     kGpaHwBlockSqWgp,    ///< The GPA hardware block is SQWGP.
     kGpaHwBlockPc,       ///< The GPA hardware block is PC.
+    kGpaHwBlockGl1XA,    ///< The GPA hardware block is GL1XA.
+    kGpaHwBlockGl1XC,    ///< The GPA hardware block is GL1XC.
+    kGpaHwBlockWgs,      ///< The GPA hardware block is WGS.
+    kGpaHwBlockEaCpwd,   ///< The GPA hardware block is EA_CPWD.
+    kGpaHwBlockEaSe,     ///< The GPA hardware block is EA_SE.
     kGpaHwBlockCount,    ///< Count.
 } GpaHwBlock;
 
@@ -240,10 +245,10 @@ typedef GpaStatus (*GpaCounterLibGetFuncTablePtrType)(void*);
 
 /// @brief Creates a virtual context to interrogate the counter information.
 ///
-/// @param [in] api the api whose available counters are requested.
+/// @param [in] api The api whose available counters are requested.
+/// @param [in] sample_type The type of sample to be collected.
 /// @param [in] gpa_counter_context_hardware_info counter context hardware info.
 /// @param [in] context_flags Flags used to initialize the context. Should be a combination of GpaOpenContextBits.
-/// @param [in] generate_asic_specific_counters_deprecated No longer supported, only acceptable value is 1 (true).
 /// @param [out] gpa_virtual_context Unique identifier of the opened virtual context.
 ///
 /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
@@ -251,14 +256,14 @@ typedef GpaStatus (*GpaCounterLibGetFuncTablePtrType)(void*);
 /// @retval kGpaStatusErrorInvalidParameter If any value other than 1 (true) is passed in for generate_asic_specific_counters_deprecated,
 ///         or if the context_flags specified would result in zero counters being exposed.
 GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibOpenCounterContext(GpaApiType                    api,
+                                                                     GpaSessionSampleType          sample_type,
                                                                      GpaCounterContextHardwareInfo gpa_counter_context_hardware_info,
                                                                      GpaOpenContextFlags           context_flags,
-                                                                     GpaUInt8                      generate_asic_specific_counters_deprecated,
                                                                      GpaCounterContext*            gpa_virtual_context);
 
 /// typedef for GpaCounterLibOpenCounterContext function pointer.
-typedef GpaStatus (*GpaCounterLibOpenCounterContextPtrType)(GpaApiType,
-    GpaCounterContextHardwareInfo, GpaOpenContextFlags, GpaUInt8, GpaCounterContext*);
+typedef GpaStatus (
+    *GpaCounterLibOpenCounterContextPtrType)(GpaApiType, GpaSessionSampleType, GpaCounterContextHardwareInfo, GpaOpenContextFlags, GpaCounterContext*);
 
 /// @brief Closes the specified context, which ends access to GPU performance counters.
 ///
@@ -467,8 +472,7 @@ GPU_PERF_API_COUNTERS_DECL GpaStatus GpaCounterLibGetCountersByPass(const GpaCou
                                                                     GpaPassCounter*         gpa_pass_counters);
 
 /// Typedef for GpaCounterLibGetPassCount function pointer.
-typedef GpaStatus (
-    *GpaCounterLibGetCountersByPassPtrType)(const GpaCounterContext, GpaUInt32, const GpaUInt32*, GpaUInt32*, GpaUInt32*, GpaPassCounter*);
+typedef GpaStatus (*GpaCounterLibGetCountersByPassPtrType)(const GpaCounterContext, GpaUInt32, const GpaUInt32*, GpaUInt32*, GpaUInt32*, GpaPassCounter*);
 
 #define GPA_COUNTER_LIB_FUNC(X)                 \
     X(GpaCounterLibGetVersion)                  \

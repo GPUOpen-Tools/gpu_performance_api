@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2011-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  A class for managing hardware information.
@@ -75,6 +75,11 @@ public:
     /// @param [in] num_cu The number of compute units.
     void SetNumberCus(const size_t& num_cu);
 
+    /// @brief Sets the number of waves per SIMD.
+    ///
+    /// @param [in] numWaves The number of waves per SIMD.
+    void SetWavesPerSimd(const size_t& numWaves);
+
     /// @brief Sets the number of shader engines.
     ///
     /// @param [in] num_se The number of shader engines.
@@ -125,6 +130,14 @@ public:
     size_t GetNumberCus() const
     {
         return num_cu_;
+    }
+
+    /// @brief Gets the max number of waves per SIMD.
+    ///
+    /// @return the number of waves per SIMD.
+    size_t GetWavesPerSimd() const
+    {
+        return num_waves_per_simd_;
     }
 
     /// @brief Gets the number of clocks per primitive.
@@ -296,7 +309,10 @@ private:
     bool   num_simd_set_;  ///< Indicates if the number of SIMDs has been set.
 
     size_t num_cu_;      ///< Number of Compute Units.
-    bool   num_cu_set_;  ///< Indicates if the Compute Untis has been set.
+    bool   num_cu_set_;  ///< Indicates if the Compute Units has been set.
+
+    size_t num_waves_per_simd_;      ///< Maximum number of waves per SIMD.
+    bool   num_waves_per_simd_set_;  ///< Indicates the WavesPerSimd has been set.
 
     GDT_HW_ASIC_TYPE asic_type_;  ///< Indicates the ASIC type of this device.
 
@@ -310,7 +326,7 @@ private:
     bool   su_clock_prim_set_;  ///< Indicates whether the SU Clock prim is set or not.
 
     size_t num_prim_pipes_;      ///< Number of primitive pipes.
-    bool   num_prim_pipes_set_;  ///< Indicates whether or not primitive pipes is set.
+    bool   num_prim_pipes_set_;  ///< Indicates whether primitive pipes is set or not.
 };
 
 #endif  // GPU_PERF_API_COMMON_GPA_HW_INFO_H_

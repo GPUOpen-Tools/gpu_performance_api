@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA DX11 Context Implementation
@@ -23,6 +23,7 @@ Dx11GpaContext::Dx11GpaContext(ID3D11Device* d3d11_device, GpaHwInfo& hw_info, G
     , gpu_caps_()
     , clock_mode_()
 {
+    supported_sample_types_ = kGpaContextSampleTypeDiscreteCounter;
 #ifdef _DEBUG
     D3D_SET_OBJECT_NAME_A(d3d11_device_, "GPA_DX11DeviceRef");
 #endif
@@ -119,11 +120,7 @@ bool Dx11GpaContext::Initialize()
 {
     bool is_success = false;
 
-    if (!OpenCounters())
-    {
-        GPA_LOG_ERROR("Unable to open counters for DX11.");
-    }
-    else if (!InitializeProfileAMDExtension())
+    if (!InitializeProfileAMDExtension())
     {
         GPA_LOG_ERROR("Unable to initialize AMD profile extension for DX11.");
     }
@@ -137,9 +134,9 @@ bool Dx11GpaContext::Initialize()
 
         // Even if the stable clocks could not be set, this is considered successful.
         is_success = true;
+        SetAsOpened(true);
     }
 
-    SetAsOpened(is_success);
     return is_success;
 }
 

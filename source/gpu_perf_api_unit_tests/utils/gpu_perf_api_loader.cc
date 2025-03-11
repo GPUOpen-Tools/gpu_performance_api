@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  class to load the GPA at run-time
@@ -166,10 +166,6 @@ std::string GpuPerfApiLoader::GetGPADllName(const std::string& dll_path, GpaApiT
 
     case kGpaApiOpengl:
         dll_full_path.append("GPUPerfAPIGL");
-        break;
-
-    case kGpaApiOpencl:
-        dll_full_path.append("GPUPerfAPICL");
         break;
 
     case kGpaApiVulkan:

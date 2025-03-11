@@ -30,6 +30,9 @@ public:
     /// @copydoc IGpaImplementor::Destroy()
     GpaStatus Destroy() override;
 
+    /// @copydoc Dx12GpaImplementor::Initialize(GpaInitializeFlags)
+    GpaStatus Initialize(GpaInitializeFlags flags);
+
     /// @copydoc IGpaImplementor::IsCommandListRequired()
     bool IsCommandListRequired() const override;
 

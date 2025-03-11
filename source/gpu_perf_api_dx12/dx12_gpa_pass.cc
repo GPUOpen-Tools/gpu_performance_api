@@ -251,5 +251,7 @@ void Dx12GpaPass::ResetPass() const
 
 const Dx12GpaSampleConfig& Dx12GpaPass::GetAmdExtSampleConfig()
 {
+    // Update settings in case the SPM durations or sampling interval has been changed.
+    amd_ext_sample_config_.UpdateSettings();
     return amd_ext_sample_config_;
 }

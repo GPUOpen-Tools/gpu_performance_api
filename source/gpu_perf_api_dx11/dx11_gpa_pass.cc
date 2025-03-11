@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX11 GPA Pass Object Implementation
@@ -22,7 +22,6 @@ Dx11GpaPass::Dx11GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCoun
 
 GpaSample* Dx11GpaPass::CreateApiSpecificSample(IGpaCommandList* cmd_list, GpaSampleType sample_type, ClientSampleId sample_id)
 {
-    // TODO: Handle software and hardware sample differently
     GpaSample* ret_sample = nullptr;
 
     Dx11GpaSample* dx11_gpa_sample = new (std::nothrow) Dx11GpaSample(this, cmd_list, sample_type, sample_id);
@@ -83,6 +82,12 @@ void Dx11GpaPass::InitializeCounterInfo()
 {
     Dx11GpaContext* dx11_gpa_context = reinterpret_cast<Dx11GpaContext*>(GetGpaSession()->GetParentContext());
 
+    if (counter_list_ == nullptr)
+    {
+        GPA_LOG_ERROR("Invalid counter list.");
+        return;
+    }
+
     if (IsTimingPass())
     {
         for (CounterIndex counter_iter = 0; counter_iter < counter_list_->size(); counter_iter++)
@@ -94,8 +99,33 @@ void Dx11GpaPass::InitializeCounterInfo()
     {
         if (nullptr != dx11_gpa_context)
         {
-            IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(dx11_gpa_context);
+            IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
+            assert(counter_accessor != nullptr);
+            if (counter_accessor == nullptr)
+            {
+                GPA_LOG_ERROR("Invalid counter accessor. Disabling all counters in pass.");
+                for (size_t i = 0; i < counter_list_->size(); ++i)
+                {
+                    CounterIndex counter_index = counter_list_->at(i);
+                    DisableCounterForPass(counter_index);
+                }
+
+                return;
+            }
+
             const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
+            assert(hardware_counters != nullptr);
+            if (hardware_counters == nullptr)
+            {
+                GPA_LOG_ERROR("Invalid hardware counters. Disabling all counters in pass.");
+                for (size_t i = 0; i < counter_list_->size(); ++i)
+                {
+                    CounterIndex counter_index = counter_list_->at(i);
+                    DisableCounterForPass(counter_index);
+                }
+
+                return;
+            }
 
             for (CounterIndex counter_iter = 0; counter_iter < counter_list_->size(); counter_iter++)
             {
@@ -136,8 +166,7 @@ void Dx11GpaPass::InitializeCounterInfo()
 
 void Dx11GpaPass::InitializeCounterExperimentParameters()
 {
-    Dx11GpaContext*            dx11_gpa_context  = reinterpret_cast<Dx11GpaContext*>(GetGpaSession()->GetParentContext());
-    IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(dx11_gpa_context);
+    IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
     const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
 
     auto PopulateExperimentParams = [&](const CounterIndex& counter_index) -> bool {

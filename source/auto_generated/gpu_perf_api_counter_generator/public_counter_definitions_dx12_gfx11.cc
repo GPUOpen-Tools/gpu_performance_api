@@ -1,10 +1,11 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for DX12 GFX11.
 //==============================================================================
 
+// clang-format off
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_dx12_gfx11.h"
 
@@ -12,65 +13,129 @@
 
 void AutoDefinePublicDerivedCountersDx12Gfx11(GpaDerivedCounters& c)
 {
-    {
+    { // Index:0
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(237514);
 
-        c.DefineDerivedCounter("GPUTime", "Timing", "Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, 
-internal_counters, "0,TS_FREQ,/,(1000000000),*", "cbd338f2-de6c-7b14-92ad-ba724ca2e501");
+        c.DefineDerivedCounter("GPUTime",
+                               "Timing",
+                               "Time this API command took to execute on the GPU in nanoseconds from the time the previous command reached the bottom of the pipeline (BOP) to the time this command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeNanoseconds,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,TS_FREQ,/,(1000000000),*",
+                               "cbd338f2-de6c-7b14-92ad-ba724ca2e501");
     }
-    {
+    { // Index:1
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(237517);
 
-        c.DefineDerivedCounter("ExecutionDuration", "Timing", "GPU command execution duration in nanoseconds, from the time the command enters the top of the pipeline (TOP) to the time the command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, 
-internal_counters, "0,TS_FREQ,/,(1000000000),*", "b2f08d0d-af13-cd66-d3b4-b290ad448e69");
+        c.DefineDerivedCounter("ExecutionDuration",
+                               "Timing",
+                               "GPU command execution duration in nanoseconds, from the time the command enters the top of the pipeline (TOP) to the time the command reaches the bottom of the pipeline (BOP). Does not include time that draw calls are processed in parallel.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeNanoseconds,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,TS_FREQ,/,(1000000000),*",
+                               "b2f08d0d-af13-cd66-d3b4-b290ad448e69");
     }
-    {
+    { // Index:2
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(237518);
 
-        c.DefineDerivedCounter("ExecutionStart", "Timing", "GPU command execution start time in nanoseconds. This is the time the command enters the top of the pipeline (TOP).", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, 
-internal_counters, "0,TS_FREQ,/,(1000000000),*", "a368f79d-fcfe-2158-71c4-2f0c4eef5aa4");
+        c.DefineDerivedCounter("ExecutionStart",
+                               "Timing",
+                               "GPU command execution start time in nanoseconds. This is the time the command enters the top of the pipeline (TOP).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeNanoseconds,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,TS_FREQ,/,(1000000000),*",
+                               "a368f79d-fcfe-2158-71c4-2f0c4eef5aa4");
     }
-    {
+    { // Index:3
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(237519);
 
-        c.DefineDerivedCounter("ExecutionEnd", "Timing", "GPU command execution end time in nanoseconds. This is the time the command reaches the bottom of the pipeline (BOP).", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, 
-internal_counters, "0,TS_FREQ,/,(1000000000),*", "0bce206a-0976-06a2-bf20-03fb351035a8");
+        c.DefineDerivedCounter("ExecutionEnd",
+                               "Timing",
+                               "GPU command execution end time in nanoseconds. This is the time the command reaches the bottom of the pipeline (BOP).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeNanoseconds,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,TS_FREQ,/,(1000000000),*",
+                               "0bce206a-0976-06a2-bf20-03fb351035a8");
     }
-    {
+    { // Index:4
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(24);
         internal_counters.push_back(0);
 
-        c.DefineDerivedCounter("GPUBusy", "Timing", "The percentage of time the GPU command processor was busy.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,/,(100),*,(100),min", "b1ba5363-1abc-fe66-2fdd-1fe6ee8989a0");
+        c.DefineDerivedCounter("GPUBusy",
+                               "Timing",
+                               "The percentage of time the GPU command processor was busy.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,/,(100),*,(100),min",
+                               "b1ba5363-1abc-fe66-2fdd-1fe6ee8989a0");
     }
-    {
+    { // Index:5
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("GPUBusyCycles", "Timing", "Number of GPU cycles that the GPU command processor was busy.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0", "451cb045-23af-ac44-4603-d5832fa041d9");
+        c.DefineDerivedCounter("GPUBusyCycles",
+                               "Timing",
+                               "Number of GPU cycles that the GPU command processor was busy.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0",
+                               "451cb045-23af-ac44-4603-d5832fa041d9");
     }
-    {
+    { // Index:6
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(113762);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("TessellatorBusy", "Timing", "The percentage of time the tessellation engine is busy.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,/,(100),*", "36af6c72-dcfb-8102-4fd4-ce8ddc573365");
+        c.DefineDerivedCounter("TessellatorBusy",
+                               "Timing",
+                               "The percentage of time the tessellation engine is busy.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,/,(100),*",
+                               "36af6c72-dcfb-8102-4fd4-ce8ddc573365");
     }
-    {
+    { // Index:7
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(113762);
 
-        c.DefineDerivedCounter("TessellatorBusyCycles", "Timing", "Number of GPU cycles that the tessellation engine is busy.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0", "60289dcb-7b33-46e7-26d1-8a2121605543");
+        c.DefineDerivedCounter("TessellatorBusyCycles",
+                               "Timing",
+                               "Number of GPU cycles that the tessellation engine is busy.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0",
+                               "60289dcb-7b33-46e7-26d1-8a2121605543");
     }
-    {
+    { // Index:8
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18112);
         internal_counters.push_back(18396);
@@ -86,10 +151,18 @@ internal_counters, "0", "60289dcb-7b33-46e7-26d1-8a2121605543");
         internal_counters.push_back(19557);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("VsGsBusy", "Timing", "The percentage of time the ShaderUnit has VS or GS work to do in a VS-[GS-]PS pipeline.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,max6,(0),6,7,8,9,10,11,sum6,ifnotzero,12,/,(100),*,(100),min", "969c41c7-eb0b-9706-a7a1-98f27c3af56b");
+        c.DefineDerivedCounter("VsGsBusy",
+                               "Timing",
+                               "The percentage of time the ShaderUnit has VS or GS work to do in a VS-[GS-]PS pipeline.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,max6,(0),6,7,8,9,10,11,sum6,ifnotzero,12,/,(100),*,(100),min",
+                               "969c41c7-eb0b-9706-a7a1-98f27c3af56b");
     }
-    {
+    { // Index:9
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18112);
         internal_counters.push_back(18396);
@@ -104,10 +177,18 @@ internal_counters, "0,1,2,3,4,5,max6,(0),6,7,8,9,10,11,sum6,ifnotzero,12,/,(100)
         internal_counters.push_back(19273);
         internal_counters.push_back(19557);
 
-        c.DefineDerivedCounter("VsGsBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has VS or GS work to do in a VS-[GS-]PS pipeline.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,max6,(0),6,7,8,9,10,11,sum6,ifnotzero", "a8420bb7-6bd8-930a-9088-d73b9c039851");
+        c.DefineDerivedCounter("VsGsBusyCycles",
+                               "Timing",
+                               "Number of GPU cycles that the ShaderUnit has VS or GS work to do in a VS-[GS-]PS pipeline.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,max6,(0),6,7,8,9,10,11,sum6,ifnotzero",
+                               "a8420bb7-6bd8-930a-9088-d73b9c039851");
     }
-    {
+    { // Index:10
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(237514);
         internal_counters.push_back(18112);
@@ -124,10 +205,18 @@ internal_counters, "0,1,2,3,4,5,max6,(0),6,7,8,9,10,11,sum6,ifnotzero", "a8420bb
         internal_counters.push_back(19557);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("VsGsTime", "Timing", "Time VS or GS are busy in nanoseconds in a VS-[GS-]PS pipeline.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, 
-internal_counters, "1,2,3,4,5,6,max6,(0),7,8,9,10,11,12,sum6,ifnotzero,13,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "3ce33b11-210d-b3de-9b6c-b9f3cd04beff");
+        c.DefineDerivedCounter("VsGsTime",
+                               "Timing",
+                               "Time VS or GS are busy in nanoseconds in a VS-[GS-]PS pipeline.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeNanoseconds,
+                               true,
+                               false,
+                               internal_counters,
+                               "1,2,3,4,5,6,max6,(0),7,8,9,10,11,12,sum6,ifnotzero,13,/,(1),min,0,TS_FREQ,/,(1000000000),*,*",
+                               "3ce33b11-210d-b3de-9b6c-b9f3cd04beff");
     }
-    {
+    { // Index:11
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18132);
         internal_counters.push_back(18416);
@@ -143,10 +232,18 @@ internal_counters, "1,2,3,4,5,6,max6,(0),7,8,9,10,11,12,sum6,ifnotzero,13,/,(1),
         internal_counters.push_back(19557);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("PreTessellationBusy", "Timing", "The percentage of time the ShaderUnit has VS and HS work to do in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,12,/,(100),*,(100),min", "346c7430-4666-7065-b5b7-1cb8cbb1c01c");
+        c.DefineDerivedCounter("PreTessellationBusy",
+                               "Timing",
+                               "The percentage of time the ShaderUnit has VS and HS work to do in a pipeline that uses tessellation.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,12,/,(100),*,(100),min",
+                               "346c7430-4666-7065-b5b7-1cb8cbb1c01c");
     }
-    {
+    { // Index:12
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18132);
         internal_counters.push_back(18416);
@@ -161,10 +258,18 @@ internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,12,/,(100)
         internal_counters.push_back(19273);
         internal_counters.push_back(19557);
 
-        c.DefineDerivedCounter("PreTessellationBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has VS and HS work to do in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero", "dac68e38-0e3a-9364-2674-308e63bee2d2");
+        c.DefineDerivedCounter("PreTessellationBusyCycles",
+                               "Timing",
+                               "Number of GPU cycles that the ShaderUnit has VS and HS work to do in a pipeline that uses tessellation.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero",
+                               "dac68e38-0e3a-9364-2674-308e63bee2d2");
     }
-    {
+    { // Index:13
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(237514);
         internal_counters.push_back(18132);
@@ -181,10 +286,18 @@ internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero", "dac68e3
         internal_counters.push_back(19557);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("PreTessellationTime", "Timing", "Time VS and HS are busy in nanoseconds in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, 
-internal_counters, "(0),1,2,3,4,5,6,max6,7,8,9,10,11,12,sum6,ifnotzero,13,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "d5e6c54c-5ffb-b173-6118-bece61f0281c");
+        c.DefineDerivedCounter("PreTessellationTime",
+                               "Timing",
+                               "Time VS and HS are busy in nanoseconds in a pipeline that uses tessellation.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeNanoseconds,
+                               true,
+                               false,
+                               internal_counters,
+                               "(0),1,2,3,4,5,6,max6,7,8,9,10,11,12,sum6,ifnotzero,13,/,(1),min,0,TS_FREQ,/,(1000000000),*,*",
+                               "d5e6c54c-5ffb-b173-6118-bece61f0281c");
     }
-    {
+    { // Index:14
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18112);
         internal_counters.push_back(18396);
@@ -200,10 +313,18 @@ internal_counters, "(0),1,2,3,4,5,6,max6,7,8,9,10,11,12,sum6,ifnotzero,13,/,(1),
         internal_counters.push_back(19557);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("PostTessellationBusy", "Timing", "The percentage of time the ShaderUnit has DS or GS work to do in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,12,/,(100),*,(100),min", "1a275c68-9340-f358-71c6-a2648390381d");
+        c.DefineDerivedCounter("PostTessellationBusy",
+                               "Timing",
+                               "The percentage of time the ShaderUnit has DS or GS work to do in a pipeline that uses tessellation.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,12,/,(100),*,(100),min",
+                               "1a275c68-9340-f358-71c6-a2648390381d");
     }
-    {
+    { // Index:15
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18112);
         internal_counters.push_back(18396);
@@ -218,10 +339,18 @@ internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,12,/,(100)
         internal_counters.push_back(19273);
         internal_counters.push_back(19557);
 
-        c.DefineDerivedCounter("PostTessellationBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has DS or GS work to do in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero", "a5ed943b-13ef-942b-56fb-6d519eeb7337");
+        c.DefineDerivedCounter("PostTessellationBusyCycles",
+                               "Timing",
+                               "Number of GPU cycles that the ShaderUnit has DS or GS work to do in a pipeline that uses tessellation.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero",
+                               "a5ed943b-13ef-942b-56fb-6d519eeb7337");
     }
-    {
+    { // Index:16
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(237514);
         internal_counters.push_back(18112);
@@ -238,10 +367,18 @@ internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero", "a5ed943
         internal_counters.push_back(19557);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("PostTessellationTime", "Timing", "Time DS or GS are busy in nanoseconds in a pipeline that uses tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, 
-internal_counters, "(0),1,2,3,4,5,6,max6,7,8,9,10,11,12,sum6,ifnotzero,13,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "9f8dfa40-faee-2014-3467-2630a7d95c1e");
+        c.DefineDerivedCounter("PostTessellationTime",
+                               "Timing",
+                               "Time DS or GS are busy in nanoseconds in a pipeline that uses tessellation.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeNanoseconds,
+                               true,
+                               false,
+                               internal_counters,
+                               "(0),1,2,3,4,5,6,max6,7,8,9,10,11,12,sum6,ifnotzero,13,/,(1),min,0,TS_FREQ,/,(1000000000),*,*",
+                               "9f8dfa40-faee-2014-3467-2630a7d95c1e");
     }
-    {
+    { // Index:17
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18167);
         internal_counters.push_back(18451);
@@ -293,10 +430,18 @@ internal_counters, "(0),1,2,3,4,5,6,max6,7,8,9,10,11,12,sum6,ifnotzero,13,/,(1),
         internal_counters.push_back(19606);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("PSBusy", "Timing", "The percentage of time the ShaderUnit has pixel shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,(0),12,13,14,15,16,17,max6,18,19,20,21,22,23,sum6,ifnotzero,(0),24,25,26,27,28,29,max6,30,31,32,33,34,35,sum6,ifnotzero,(0),36,37,38,39,40,41,max6,42,43,44,45,46,47,sum6,ifnotzero,max4,48,/,(100),*,(100),min", "7e772beb-d82c-bd9a-aed0-fe504d416ce5");
+        c.DefineDerivedCounter("PSBusy",
+                               "Timing",
+                               "The percentage of time the ShaderUnit has pixel shader work to do.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,(0),12,13,14,15,16,17,max6,18,19,20,21,22,23,sum6,ifnotzero,(0),24,25,26,27,28,29,max6,30,31,32,33,34,35,sum6,ifnotzero,(0),36,37,38,39,40,41,max6,42,43,44,45,46,47,sum6,ifnotzero,max4,48,/,(100),*,(100),min",
+                               "7e772beb-d82c-bd9a-aed0-fe504d416ce5");
     }
-    {
+    { // Index:18
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18167);
         internal_counters.push_back(18451);
@@ -347,10 +492,18 @@ internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,(0),12,13,
         internal_counters.push_back(19322);
         internal_counters.push_back(19606);
 
-        c.DefineDerivedCounter("PSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has pixel shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,(0),12,13,14,15,16,17,max6,18,19,20,21,22,23,sum6,ifnotzero,(0),24,25,26,27,28,29,max6,30,31,32,33,34,35,sum6,ifnotzero,(0),36,37,38,39,40,41,max6,42,43,44,45,46,47,sum6,ifnotzero,max4", "b58bea04-ce8e-2984-80f4-8aba7d4c817b");
+        c.DefineDerivedCounter("PSBusyCycles",
+                               "Timing",
+                               "Number of GPU cycles that the ShaderUnit has pixel shader work to do.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,(0),12,13,14,15,16,17,max6,18,19,20,21,22,23,sum6,ifnotzero,(0),24,25,26,27,28,29,max6,30,31,32,33,34,35,sum6,ifnotzero,(0),36,37,38,39,40,41,max6,42,43,44,45,46,47,sum6,ifnotzero,max4",
+                               "b58bea04-ce8e-2984-80f4-8aba7d4c817b");
     }
-    {
+    { // Index:19
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(237514);
         internal_counters.push_back(18167);
@@ -403,10 +556,18 @@ internal_counters, "(0),0,1,2,3,4,5,max6,6,7,8,9,10,11,sum6,ifnotzero,(0),12,13,
         internal_counters.push_back(19606);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("PSTime", "Timing", "Time pixel shaders are busy in nanoseconds.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, 
-internal_counters, "(0),1,2,3,4,5,6,max6,7,8,9,10,11,12,sum6,ifnotzero,(0),13,14,15,16,17,18,max6,19,20,21,22,23,24,sum6,ifnotzero,(0),25,26,27,28,29,30,max6,31,32,33,34,35,36,sum6,ifnotzero,(0),37,38,39,40,41,42,max6,43,44,45,46,47,48,sum6,ifnotzero,max4,49,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "edca7694-7416-e8a6-0c5a-63a5ad5f3d74");
+        c.DefineDerivedCounter("PSTime",
+                               "Timing",
+                               "Time pixel shaders are busy in nanoseconds.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeNanoseconds,
+                               true,
+                               false,
+                               internal_counters,
+                               "(0),1,2,3,4,5,6,max6,7,8,9,10,11,12,sum6,ifnotzero,(0),13,14,15,16,17,18,max6,19,20,21,22,23,24,sum6,ifnotzero,(0),25,26,27,28,29,30,max6,31,32,33,34,35,36,sum6,ifnotzero,(0),37,38,39,40,41,42,max6,43,44,45,46,47,48,sum6,ifnotzero,max4,49,/,(1),min,0,TS_FREQ,/,(1000000000),*,*",
+                               "edca7694-7416-e8a6-0c5a-63a5ad5f3d74");
     }
-    {
+    { // Index:20
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18148);
         internal_counters.push_back(18432);
@@ -434,10 +595,18 @@ internal_counters, "(0),1,2,3,4,5,6,max6,7,8,9,10,11,12,sum6,ifnotzero,(0),13,14
         internal_counters.push_back(19580);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("CSBusy", "Timing", "The percentage of time the ShaderUnit has compute shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,comparemax6,12,13,14,15,16,17,18,19,20,21,22,23,comparemax6,max,24,/,(100),*,(100),min", "493fdd90-8d2b-a055-5e4e-2d29c3396b8c");
+        c.DefineDerivedCounter("CSBusy",
+                               "Timing",
+                               "The percentage of time the ShaderUnit has compute shader work to do.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,comparemax6,12,13,14,15,16,17,18,19,20,21,22,23,comparemax6,max,24,/,(100),*,(100),min",
+                               "493fdd90-8d2b-a055-5e4e-2d29c3396b8c");
     }
-    {
+    { // Index:21
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18148);
         internal_counters.push_back(18432);
@@ -464,10 +633,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,comparemax6,12,13,14,15,16,17,18,1
         internal_counters.push_back(19296);
         internal_counters.push_back(19580);
 
-        c.DefineDerivedCounter("CSBusyCycles", "Timing", "Number of GPU cycles that the ShaderUnit has compute shader work to do.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,comparemax6,12,13,14,15,16,17,18,19,20,21,22,23,comparemax6,max", "39bcf1b8-f6b2-4c37-f9af-0a2bb59512f9");
+        c.DefineDerivedCounter("CSBusyCycles",
+                               "Timing",
+                               "Number of GPU cycles that the ShaderUnit has compute shader work to do.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,comparemax6,12,13,14,15,16,17,18,19,20,21,22,23,comparemax6,max",
+                               "39bcf1b8-f6b2-4c37-f9af-0a2bb59512f9");
     }
-    {
+    { // Index:22
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(237514);
         internal_counters.push_back(18148);
@@ -496,10 +673,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,comparemax6,12,13,14,15,16,17,18,1
         internal_counters.push_back(19580);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("CSTime", "Timing", "Time compute shaders are busy in nanoseconds.", kGpaDataTypeFloat64, kGpaUsageTypeNanoseconds, 
-internal_counters, "1,2,3,4,5,6,7,8,9,10,11,12,comparemax6,13,14,15,16,17,18,19,20,21,22,23,24,comparemax6,max,25,/,(1),min,0,TS_FREQ,/,(1000000000),*,*", "dbc24916-ecb2-7eef-8d63-7afadaaab6bc");
+        c.DefineDerivedCounter("CSTime",
+                               "Timing",
+                               "Time compute shaders are busy in nanoseconds.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeNanoseconds,
+                               true,
+                               false,
+                               internal_counters,
+                               "1,2,3,4,5,6,7,8,9,10,11,12,comparemax6,13,14,15,16,17,18,19,20,21,22,23,24,comparemax6,max,25,/,(1),min,0,TS_FREQ,/,(1000000000),*,*",
+                               "dbc24916-ecb2-7eef-8d63-7afadaaab6bc");
     }
-    {
+    { // Index:23
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(113836);
         internal_counters.push_back(113924);
@@ -514,10 +699,18 @@ internal_counters, "1,2,3,4,5,6,7,8,9,10,11,12,comparemax6,13,14,15,16,17,18,19,
         internal_counters.push_back(19273);
         internal_counters.push_back(19557);
 
-        c.DefineDerivedCounter("VsGsVerticesIn", "VertexGeometry", "The number of unique vertices processed by the VS and GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,sum6,(0),6,7,8,9,10,11,sum6,ifnotzero", "17d0c775-3ed5-affb-d5ac-5391a198a4aa");
+        c.DefineDerivedCounter("VsGsVerticesIn",
+                               "VertexGeometry",
+                               "The number of unique vertices processed by the VS and GS.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,(0),6,7,8,9,10,11,sum6,ifnotzero",
+                               "17d0c775-3ed5-affb-d5ac-5391a198a4aa");
     }
-    {
+    { // Index:24
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(113841);
         internal_counters.push_back(113929);
@@ -532,10 +725,18 @@ internal_counters, "0,1,2,3,4,5,sum6,(0),6,7,8,9,10,11,sum6,ifnotzero", "17d0c77
         internal_counters.push_back(19273);
         internal_counters.push_back(19557);
 
-        c.DefineDerivedCounter("VsGsPrimsIn", "VertexGeometry", "The number of primitives passed into the GS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,sum6,(0),6,7,8,9,10,11,sum6,ifnotzero", "d9fa5ce8-5329-f5d4-c378-8fbc7e80d9a6");
+        c.DefineDerivedCounter("VsGsPrimsIn",
+                               "VertexGeometry",
+                               "The number of primitives passed into the GS.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,(0),6,7,8,9,10,11,sum6,ifnotzero",
+                               "d9fa5ce8-5329-f5d4-c378-8fbc7e80d9a6");
     }
-    {
+    { // Index:25
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(113847);
         internal_counters.push_back(113935);
@@ -550,10 +751,18 @@ internal_counters, "0,1,2,3,4,5,sum6,(0),6,7,8,9,10,11,sum6,ifnotzero", "d9fa5ce
         internal_counters.push_back(19273);
         internal_counters.push_back(19557);
 
-        c.DefineDerivedCounter("PreTessVerticesIn", "PreTessellation", "The number of unique vertices processed by the VS and HS when using tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "(0),0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,ifnotzero", "84145f0c-ff96-0dfb-ffb7-ccf4c9b3f4c4");
+        c.DefineDerivedCounter("PreTessVerticesIn",
+                               "PreTessellation",
+                               "The number of unique vertices processed by the VS and HS when using tessellation.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "(0),0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,ifnotzero",
+                               "84145f0c-ff96-0dfb-ffb7-ccf4c9b3f4c4");
     }
-    {
+    { // Index:26
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(113824);
         internal_counters.push_back(113912);
@@ -568,10 +777,18 @@ internal_counters, "(0),0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,ifnotzero", "84145f0
         internal_counters.push_back(19273);
         internal_counters.push_back(19557);
 
-        c.DefineDerivedCounter("PostTessPrimsOut", "PostTessellation", "The number of primitives output by the DS and GS when using tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "(0),0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,ifnotzero", "d38dabe8-1f13-ea34-d3c1-eb5783b737f1");
+        c.DefineDerivedCounter("PostTessPrimsOut",
+                               "PostTessellation",
+                               "The number of primitives output by the DS and GS when using tessellation.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "(0),0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,ifnotzero",
+                               "d38dabe8-1f13-ea34-d3c1-eb5783b737f1");
     }
-    {
+    { // Index:27
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(149);
         internal_counters.push_back(460);
@@ -611,10 +828,18 @@ internal_counters, "(0),0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,ifnotzero", "d38dabe
         internal_counters.push_back(1673);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("PrimitiveAssemblyBusy", "Timing", "The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,vecsub6,SU_CLOCKS_PRIM,12,13,14,15,16,17,18,19,20,21,22,23,vecsum6,24,25,26,27,28,29,vecsum6,(2),30,31,32,33,34,35,scalarmul6,vecsum6,scalarmul6,vecsub6,max6,(0),max,36,/,(100),*,(100),min", "54ac5640-c4d7-95e2-20e0-6a9fdfc07333");
+        c.DefineDerivedCounter("PrimitiveAssemblyBusy",
+                               "Timing",
+                               "The percentage of GPUTime that primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,vecsub6,SU_CLOCKS_PRIM,12,13,14,15,16,17,18,19,20,21,22,23,vecsum6,24,25,26,27,28,29,vecsum6,(2),30,31,32,33,34,35,scalarmul6,vecsum6,scalarmul6,vecsub6,max6,(0),max,36,/,(100),*,(100),min",
+                               "54ac5640-c4d7-95e2-20e0-6a9fdfc07333");
     }
-    {
+    { // Index:28
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(149);
         internal_counters.push_back(460);
@@ -653,10 +878,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,vecsub6,SU_CLOCKS_PRIM,12,13,14,15
         internal_counters.push_back(1362);
         internal_counters.push_back(1673);
 
-        c.DefineDerivedCounter("PrimitiveAssemblyBusyCycles", "Timing", "Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,vecsub6,SU_CLOCKS_PRIM,12,13,14,15,16,17,18,19,20,21,22,23,vecsum6,24,25,26,27,28,29,vecsum6,(2),30,31,32,33,34,35,scalarmul6,vecsum6,scalarmul6,vecsub6,max6,(0),max", "99777f2d-9626-c78a-a97c-c4505eba1e5f");
+        c.DefineDerivedCounter("PrimitiveAssemblyBusyCycles",
+                               "Timing",
+                               "Number of GPU cycles the primitive assembly (clipping and culling) is busy. High values may be caused by having many small primitives; mid to low values may indicate pixel shader or output buffer bottleneck.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,vecsub6,SU_CLOCKS_PRIM,12,13,14,15,16,17,18,19,20,21,22,23,vecsum6,24,25,26,27,28,29,vecsum6,(2),30,31,32,33,34,35,scalarmul6,vecsum6,scalarmul6,vecsub6,max6,(0),max",
+                               "99777f2d-9626-c78a-a97c-c4505eba1e5f");
     }
-    {
+    { // Index:29
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(52);
         internal_counters.push_back(363);
@@ -665,10 +898,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,vecsub6,SU_CLOCKS_PRIM,12,13,14,15
         internal_counters.push_back(1296);
         internal_counters.push_back(1607);
 
-        c.DefineDerivedCounter("PrimitivesIn", "PrimitiveAssembly", "The number of primitives received by the hardware. This includes primitives generated by tessellation.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,sum6", "a515b80d-75c3-c7d2-0d2f-d7766b4759a6");
+        c.DefineDerivedCounter("PrimitivesIn",
+                               "PrimitiveAssembly",
+                               "The number of primitives received by the hardware. This includes primitives generated by tessellation.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6",
+                               "a515b80d-75c3-c7d2-0d2f-d7766b4759a6");
     }
-    {
+    { // Index:30
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(58);
         internal_counters.push_back(369);
@@ -701,10 +942,18 @@ internal_counters, "0,1,2,3,4,5,sum6", "a515b80d-75c3-c7d2-0d2f-d7766b4759a6");
         internal_counters.push_back(1345);
         internal_counters.push_back(1656);
 
-        c.DefineDerivedCounter("CulledPrims", "PrimitiveAssembly", "The number of culled primitives. Typical reasons include scissor, the primitive having zero area, and back or front face culling.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,+,12,13,14,15,16,17,sum6,+,18,19,20,21,22,23,sum6,+,24,25,26,27,28,29,sum6,+", "589bdf55-9192-280a-41c3-584bc94f2562");
+        c.DefineDerivedCounter("CulledPrims",
+                               "PrimitiveAssembly",
+                               "The number of culled primitives. Typical reasons include scissor, the primitive having zero area, and back or front face culling.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,+,12,13,14,15,16,17,sum6,+,18,19,20,21,22,23,sum6,+,24,25,26,27,28,29,sum6,+",
+                               "589bdf55-9192-280a-41c3-584bc94f2562");
     }
-    {
+    { // Index:31
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(65);
         internal_counters.push_back(376);
@@ -713,10 +962,18 @@ internal_counters, "0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,+,12,13,14,15,16,17,sum6
         internal_counters.push_back(1309);
         internal_counters.push_back(1620);
 
-        c.DefineDerivedCounter("ClippedPrims", "PrimitiveAssembly", "The number of primitives that required one or more clipping operations due to intersecting the view volume or user clip planes.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,sum6", "5ef6f9d5-155e-5baa-163f-8359d9ea9bbf");
+        c.DefineDerivedCounter("ClippedPrims",
+                               "PrimitiveAssembly",
+                               "The number of primitives that required one or more clipping operations due to intersecting the view volume or user clip planes.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6",
+                               "5ef6f9d5-155e-5baa-163f-8359d9ea9bbf");
     }
-    {
+    { // Index:32
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(153);
         internal_counters.push_back(464);
@@ -726,10 +983,18 @@ internal_counters, "0,1,2,3,4,5,sum6", "5ef6f9d5-155e-5baa-163f-8359d9ea9bbf");
         internal_counters.push_back(1708);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("PAStalledOnRasterizer", "PrimitiveAssembly", "Percentage of GPUTime that primitive assembly waits for rasterization to be ready to accept data. This roughly indicates for what percentage of time the pipeline is bottlenecked by pixel operations.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,max6,6,/,(100),*", "6f9f416b-53c1-0457-f88c-7b6ba8973974");
+        c.DefineDerivedCounter("PAStalledOnRasterizer",
+                               "PrimitiveAssembly",
+                               "Percentage of GPUTime that primitive assembly waits for rasterization to be ready to accept data. This roughly indicates for what percentage of time the pipeline is bottlenecked by pixel operations.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,max6,6,/,(100),*",
+                               "6f9f416b-53c1-0457-f88c-7b6ba8973974");
     }
-    {
+    { // Index:33
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(153);
         internal_counters.push_back(464);
@@ -738,10 +1003,18 @@ internal_counters, "0,1,2,3,4,5,max6,6,/,(100),*", "6f9f416b-53c1-0457-f88c-7b6b
         internal_counters.push_back(1397);
         internal_counters.push_back(1708);
 
-        c.DefineDerivedCounter("PAStalledOnRasterizerCycles", "PrimitiveAssembly", "Number of GPU cycles the primitive assembly waits for rasterization to be ready to accept data. Indicates the number of GPU cycles the pipeline is bottlenecked by pixel operations.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,max6", "7a8c492a-c566-9328-6805-760dbff5c0f2");
+        c.DefineDerivedCounter("PAStalledOnRasterizerCycles",
+                               "PrimitiveAssembly",
+                               "Number of GPU cycles the primitive assembly waits for rasterization to be ready to accept data. Indicates the number of GPU cycles the pipeline is bottlenecked by pixel operations.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,max6",
+                               "7a8c492a-c566-9328-6805-760dbff5c0f2");
     }
-    {
+    { // Index:34
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(20936);
         internal_counters.push_back(21018);
@@ -792,10 +1065,18 @@ internal_counters, "0,1,2,3,4,5,max6", "7a8c492a-c566-9328-6805-760dbff5c0f2");
         internal_counters.push_back(21771);
         internal_counters.push_back(21853);
 
-        c.DefineDerivedCounter("PSPixelsOut", "PixelShader", "Pixels exported from shader to color buffers. Does not include killed or alpha tested pixels; if there are multiple render targets, each render target receives one export, so this will be 2 for 1 pixel written to two RTs.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,sum12,12,13,14,15,16,17,18,19,20,21,22,23,sum12,24,25,26,27,28,29,30,31,32,33,34,35,sum12,36,37,38,39,40,41,42,43,44,45,46,47,sum12,sum4", "24cba16c-baa6-6ecd-95ad-92ecb1338da1");
+        c.DefineDerivedCounter("PSPixelsOut",
+                               "PixelShader",
+                               "Pixels exported from shader to color buffers. Does not include killed or alpha tested pixels; if there are multiple render targets, each render target receives one export, so this will be 2 for 1 pixel written to two RTs.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,sum12,12,13,14,15,16,17,18,19,20,21,22,23,sum12,24,25,26,27,28,29,30,31,32,33,34,35,sum12,36,37,38,39,40,41,42,43,44,45,46,47,sum12,sum4",
+                               "24cba16c-baa6-6ecd-95ad-92ecb1338da1");
     }
-    {
+    { // Index:35
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(20938);
         internal_counters.push_back(21020);
@@ -847,10 +1128,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,sum12,12,13,14,15,16,17,18,19,20,2
         internal_counters.push_back(21855);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("PSExportStalls", "PixelShader", "Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,max12,12,13,14,15,16,17,18,19,20,21,22,23,max12,24,25,26,27,28,29,30,31,32,33,34,35,36,37,max12,38,39,40,41,42,43,44,45,46,47,max12,max4,48,/,(100),*", "9b4f466c-ff97-22bb-557d-84d3c4c51895");
+        c.DefineDerivedCounter("PSExportStalls",
+                               "PixelShader",
+                               "Pixel shader output stalls. Percentage of GPUBusy. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,max12,12,13,14,15,16,17,18,19,20,21,22,23,max12,24,25,26,27,28,29,30,31,32,33,34,35,36,37,max12,38,39,40,41,42,43,44,45,46,47,max12,max4,48,/,(100),*",
+                               "9b4f466c-ff97-22bb-557d-84d3c4c51895");
     }
-    {
+    { // Index:36
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(20938);
         internal_counters.push_back(21020);
@@ -901,10 +1190,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,max12,12,13,14,15,16,17,18,19,20,2
         internal_counters.push_back(21773);
         internal_counters.push_back(21855);
 
-        c.DefineDerivedCounter("PSExportStallsCycles", "PixelShader", "Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,max12,12,13,14,15,16,17,18,19,20,21,22,23,max12,24,25,26,27,28,29,30,31,32,33,34,35,36,37,max12,38,39,40,41,42,43,44,45,46,47,max12,max4", "47c72aad-64e6-0864-d533-d8e0bc27c156");
+        c.DefineDerivedCounter("PSExportStallsCycles",
+                               "PixelShader",
+                               "Number of GPU cycles the pixel shader output stalls. Should be zero for PS or further upstream limited cases; if not zero, indicates a bottleneck in late Z testing or in the color buffer.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,max12,12,13,14,15,16,17,18,19,20,21,22,23,max12,24,25,26,27,28,29,30,31,32,33,34,35,36,37,max12,38,39,40,41,42,43,44,45,46,47,max12,max4",
+                               "47c72aad-64e6-0864-d533-d8e0bc27c156");
     }
-    {
+    { // Index:37
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18149);
         internal_counters.push_back(18433);
@@ -919,10 +1216,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,max12,12,13,14,15,16,17,18,19,20,2
         internal_counters.push_back(19293);
         internal_counters.push_back(19577);
 
-        c.DefineDerivedCounter("CSThreadGroupsLaunched", "ComputeShader", "The total number of thread groups launched.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,+", "9813b379-9095-5a24-8e13-4521ebfe0880");
+        c.DefineDerivedCounter("CSThreadGroupsLaunched",
+                               "ComputeShader",
+                               "The total number of thread groups launched.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,+",
+                               "9813b379-9095-5a24-8e13-4521ebfe0880");
     }
-    {
+    { // Index:38
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(18152);
         internal_counters.push_back(18436);
@@ -937,10 +1242,18 @@ internal_counters, "0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,+", "9813b379-9095-5a24-
         internal_counters.push_back(19296);
         internal_counters.push_back(19580);
 
-        c.DefineDerivedCounter("CSWavefrontsLaunched", "ComputeShader", "The total number of wavefronts launched for the CS.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,+", "00c49129-6ae5-f6a0-1753-4738cbe17938");
+        c.DefineDerivedCounter("CSWavefrontsLaunched",
+                               "ComputeShader",
+                               "The total number of wavefronts launched for the CS.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,+",
+                               "00c49129-6ae5-f6a0-1753-4738cbe17938");
     }
-    {
+    { // Index:39
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(20726);
         internal_counters.push_back(20763);
@@ -949,10 +1262,18 @@ internal_counters, "0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,+", "00c49129-6ae5-f6a0-
         internal_counters.push_back(20874);
         internal_counters.push_back(20911);
 
-        c.DefineDerivedCounter("CSThreadsLaunched", "ComputeShader", "The number of CS threads launched and processed by the hardware.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,sum6", "cbbbf1ba-d164-1c90-9df0-6120c1660fb1");
+        c.DefineDerivedCounter("CSThreadsLaunched",
+                               "ComputeShader",
+                               "The number of CS threads launched and processed by the hardware.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6",
+                               "cbbbf1ba-d164-1c90-9df0-6120c1660fb1");
     }
-    {
+    { // Index:40
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(20726);
         internal_counters.push_back(20763);
@@ -973,10 +1294,18 @@ internal_counters, "0,1,2,3,4,5,sum6", "cbbbf1ba-d164-1c90-9df0-6120c1660fb1");
         internal_counters.push_back(19293);
         internal_counters.push_back(19577);
 
-        c.DefineDerivedCounter("CSThreadGroupSize", "ComputeShader", "The number of CS threads within each thread group.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "(0),0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,12,13,14,15,16,17,sum6,+,/,6,7,8,9,10,11,sum6,12,13,14,15,16,17,sum6,+,ifnotzero", "8c65008a-9957-7ca6-4199-f6fe940420f6");
+        c.DefineDerivedCounter("CSThreadGroupSize",
+                               "ComputeShader",
+                               "The number of CS threads within each thread group.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               false,
+                               internal_counters,
+                               "(0),0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,12,13,14,15,16,17,sum6,+,/,6,7,8,9,10,11,sum6,12,13,14,15,16,17,sum6,+,ifnotzero",
+                               "8c65008a-9957-7ca6-4199-f6fe940420f6");
     }
-    {
+    { // Index:41
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(212685);
         internal_counters.push_back(213197);
@@ -1076,10 +1405,129 @@ internal_counters, "(0),0,1,2,3,4,5,sum6,6,7,8,9,10,11,sum6,12,13,14,15,16,17,su
         internal_counters.push_back(236724);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("CSALUStalledByLDS", "ComputeShader", "The average percentage of GPUTime each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,/,96,/,(100),*", "c31b924a-dbf3-ba89-155f-dbbdd4c51f32");
+        c.DefineDerivedCounter("CSALUStalledByLDS",
+                               "ComputeShader",
+                               "The average percentage of GPUTime each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,/,96,/,(100),*",
+                               "c31b924a-dbf3-ba89-155f-dbbdd4c51f32");
     }
-    {
+    { // Index:42
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(212685);
+        internal_counters.push_back(213197);
+        internal_counters.push_back(213709);
+        internal_counters.push_back(214221);
+        internal_counters.push_back(214733);
+        internal_counters.push_back(215245);
+        internal_counters.push_back(215757);
+        internal_counters.push_back(216269);
+        internal_counters.push_back(216781);
+        internal_counters.push_back(217293);
+        internal_counters.push_back(217805);
+        internal_counters.push_back(218317);
+        internal_counters.push_back(218829);
+        internal_counters.push_back(219341);
+        internal_counters.push_back(219853);
+        internal_counters.push_back(220365);
+        internal_counters.push_back(220877);
+        internal_counters.push_back(221389);
+        internal_counters.push_back(221901);
+        internal_counters.push_back(222413);
+        internal_counters.push_back(222925);
+        internal_counters.push_back(223437);
+        internal_counters.push_back(223949);
+        internal_counters.push_back(224461);
+        internal_counters.push_back(224973);
+        internal_counters.push_back(225485);
+        internal_counters.push_back(225997);
+        internal_counters.push_back(226509);
+        internal_counters.push_back(227021);
+        internal_counters.push_back(227533);
+        internal_counters.push_back(228045);
+        internal_counters.push_back(228557);
+        internal_counters.push_back(229069);
+        internal_counters.push_back(229581);
+        internal_counters.push_back(230093);
+        internal_counters.push_back(230605);
+        internal_counters.push_back(231117);
+        internal_counters.push_back(231629);
+        internal_counters.push_back(232141);
+        internal_counters.push_back(232653);
+        internal_counters.push_back(233165);
+        internal_counters.push_back(233677);
+        internal_counters.push_back(234189);
+        internal_counters.push_back(234701);
+        internal_counters.push_back(235213);
+        internal_counters.push_back(235725);
+        internal_counters.push_back(236237);
+        internal_counters.push_back(236749);
+        internal_counters.push_back(212663);
+        internal_counters.push_back(213175);
+        internal_counters.push_back(213687);
+        internal_counters.push_back(214199);
+        internal_counters.push_back(214711);
+        internal_counters.push_back(215223);
+        internal_counters.push_back(215735);
+        internal_counters.push_back(216247);
+        internal_counters.push_back(216759);
+        internal_counters.push_back(217271);
+        internal_counters.push_back(217783);
+        internal_counters.push_back(218295);
+        internal_counters.push_back(218807);
+        internal_counters.push_back(219319);
+        internal_counters.push_back(219831);
+        internal_counters.push_back(220343);
+        internal_counters.push_back(220855);
+        internal_counters.push_back(221367);
+        internal_counters.push_back(221879);
+        internal_counters.push_back(222391);
+        internal_counters.push_back(222903);
+        internal_counters.push_back(223415);
+        internal_counters.push_back(223927);
+        internal_counters.push_back(224439);
+        internal_counters.push_back(224951);
+        internal_counters.push_back(225463);
+        internal_counters.push_back(225975);
+        internal_counters.push_back(226487);
+        internal_counters.push_back(226999);
+        internal_counters.push_back(227511);
+        internal_counters.push_back(228023);
+        internal_counters.push_back(228535);
+        internal_counters.push_back(229047);
+        internal_counters.push_back(229559);
+        internal_counters.push_back(230071);
+        internal_counters.push_back(230583);
+        internal_counters.push_back(231095);
+        internal_counters.push_back(231607);
+        internal_counters.push_back(232119);
+        internal_counters.push_back(232631);
+        internal_counters.push_back(233143);
+        internal_counters.push_back(233655);
+        internal_counters.push_back(234167);
+        internal_counters.push_back(234679);
+        internal_counters.push_back(235191);
+        internal_counters.push_back(235703);
+        internal_counters.push_back(236215);
+        internal_counters.push_back(236727);
+        internal_counters.push_back(24);
+
+        c.DefineDerivedCounter("CSALUStalledByLDSPerWave",
+                               "ComputeShader",
+                               "The average percentage of GPUTime each wavefront's ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,/,96,/,(100),*",
+                               "5df8c003-fd53-db5a-61bc-78e23bd3df89");
+    }
+    { // Index:43
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(212685);
         internal_counters.push_back(213197);
@@ -1178,10 +1626,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(236212);
         internal_counters.push_back(236724);
 
-        c.DefineDerivedCounter("CSALUStalledByLDSCycles", "ComputeShader", "The average number of GPU cycles each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,/", "b03dc079-e12b-5402-257f-ba583d77cdeb");
+        c.DefineDerivedCounter("CSALUStalledByLDSCycles",
+                               "ComputeShader",
+                               "The average number of GPU cycles each wavefronts' ALU units are stalled by the LDS input queue being full or the output queue being not ready. If there are LDS bank conflicts, reduce them. Otherwise, try reducing the number of LDS accesses if possible. Value range: 0% (optimal) to 100% (bad).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,/",
+                               "b03dc079-e12b-5402-257f-ba583d77cdeb");
     }
-    {
+    { // Index:44
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(212912);
         internal_counters.push_back(213424);
@@ -1233,10 +1689,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(236976);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("CSLDSBankConflict", "ComputeShader", "The average percentage of GPUTime an LDS is stalled due to bank conflicts. Value range: 0% (optimal) to 100% (bad).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,NUM_SIMDS,/,48,/,(100),*", "5be87034-b768-ebaf-ba27-585790259ee8");
+        c.DefineDerivedCounter("CSLDSBankConflict",
+                               "ComputeShader",
+                               "The average percentage of GPUTime an LDS is stalled due to bank conflicts. Value range: 0% (optimal) to 100% (bad).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,NUM_SIMDS,/,48,/,(100),*",
+                               "5be87034-b768-ebaf-ba27-585790259ee8");
     }
-    {
+    { // Index:45
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(212912);
         internal_counters.push_back(213424);
@@ -1287,10 +1751,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(236464);
         internal_counters.push_back(236976);
 
-        c.DefineDerivedCounter("CSLDSBankConflictCycles", "ComputeShader", "The average number of GPU cycles an LDS is stalled by bank conflicts. Value range: 0 (optimal) to GPUBusyCycles (bad).", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,NUM_SIMDS,/", "63f2f701-1c1a-efb5-d3c1-06dfb033d608");
+        c.DefineDerivedCounter("CSLDSBankConflictCycles",
+                               "ComputeShader",
+                               "The average number of GPU cycles an LDS is stalled by bank conflicts. Value range: 0 (optimal) to GPUBusyCycles (bad).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,NUM_SIMDS,/",
+                               "63f2f701-1c1a-efb5-d3c1-06dfb033d608");
     }
-    {
+    { // Index:46
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21923);
         internal_counters.push_back(22159);
@@ -1390,10 +1862,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44343);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("TexUnitBusy", "Timing", "The percentage of GPUTime the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96,96,/,(100),*", "36afb8d9-42fc-aafe-66c5-449542153b2c");
+        c.DefineDerivedCounter("TexUnitBusy",
+                               "Timing",
+                               "The percentage of GPUTime the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96,96,/,(100),*",
+                               "36afb8d9-42fc-aafe-66c5-449542153b2c");
     }
-    {
+    { // Index:47
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21923);
         internal_counters.push_back(22159);
@@ -1492,10 +1972,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44107);
         internal_counters.push_back(44343);
 
-        c.DefineDerivedCounter("TexUnitBusyCycles", "Timing", "Number of GPU cycles the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96", "c68761f2-248c-4f39-6528-c308b1c0807c");
+        c.DefineDerivedCounter("TexUnitBusyCycles",
+                               "Timing",
+                               "Number of GPU cycles the texture unit is active. This is measured with all extra fetches and any cache or memory effects taken into account.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96",
+                               "c68761f2-248c-4f39-6528-c308b1c0807c");
     }
-    {
+    { // Index:48
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21977);
         internal_counters.push_back(22213);
@@ -1690,10 +2178,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44160);
         internal_counters.push_back(44396);
 
-        c.DefineDerivedCounter("TexTriFilteringPct", "TextureUnit", "Percentage of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,+,/,(100),*", "1affc3c8-b917-5c81-622b-7004527208ae");
+        c.DefineDerivedCounter("TexTriFilteringPct",
+                               "TextureUnit",
+                               "Percentage of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,+,/,(100),*",
+                               "1affc3c8-b917-5c81-622b-7004527208ae");
     }
-    {
+    { // Index:49
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21977);
         internal_counters.push_back(22213);
@@ -1792,10 +2288,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44161);
         internal_counters.push_back(44397);
 
-        c.DefineDerivedCounter("TexTriFilteringCount", "TextureUnit", "Count of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,(4),*", "5785b3a1-a513-18db-4b1c-bdeef75bb2b6");
+        c.DefineDerivedCounter("TexTriFilteringCount",
+                               "TextureUnit",
+                               "Count of pixels that received trilinear filtering. Note that not all pixels for which trilinear filtering is enabled will receive it (e.g. if the texture is magnified).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,(4),*",
+                               "5785b3a1-a513-18db-4b1c-bdeef75bb2b6");
     }
-    {
+    { // Index:50
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21976);
         internal_counters.push_back(22212);
@@ -1894,10 +2398,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44160);
         internal_counters.push_back(44396);
 
-        c.DefineDerivedCounter("NoTexTriFilteringCount", "TextureUnit", "Count of pixels that did not receive trilinear filtering.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,(4),*", "179da29a-81af-c06e-ce8c-a0a731ea030d");
+        c.DefineDerivedCounter("NoTexTriFilteringCount",
+                               "TextureUnit",
+                               "Count of pixels that did not receive trilinear filtering.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,(4),*",
+                               "179da29a-81af-c06e-ce8c-a0a731ea030d");
     }
-    {
+    { // Index:51
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21979);
         internal_counters.push_back(22215);
@@ -2092,10 +2604,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44162);
         internal_counters.push_back(44398);
 
-        c.DefineDerivedCounter("TexVolFilteringPct", "TextureUnit", "Percentage of pixels that received volume filtering.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,+,/,(100),*", "b5ff6bed-3178-aee4-42dd-c74391c02a2d");
+        c.DefineDerivedCounter("TexVolFilteringPct",
+                               "TextureUnit",
+                               "Percentage of pixels that received volume filtering.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,+,/,(100),*",
+                               "b5ff6bed-3178-aee4-42dd-c74391c02a2d");
     }
-    {
+    { // Index:52
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21979);
         internal_counters.push_back(22215);
@@ -2194,10 +2714,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44163);
         internal_counters.push_back(44399);
 
-        c.DefineDerivedCounter("TexVolFilteringCount", "TextureUnit", "Count of pixels that received volume filtering.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,(4),*", "4bddc587-d589-8128-e18c-762eab2c871f");
+        c.DefineDerivedCounter("TexVolFilteringCount",
+                               "TextureUnit",
+                               "Count of pixels that received volume filtering.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,(4),*",
+                               "4bddc587-d589-8128-e18c-762eab2c871f");
     }
-    {
+    { // Index:53
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21978);
         internal_counters.push_back(22214);
@@ -2296,10 +2824,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44162);
         internal_counters.push_back(44398);
 
-        c.DefineDerivedCounter("NoTexVolFilteringCount", "TextureUnit", "Count of pixels that did not receive volume filtering.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,(4),*", "9fe1a854-17c6-9d26-b2b9-80610cd5827d");
+        c.DefineDerivedCounter("NoTexVolFilteringCount",
+                               "TextureUnit",
+                               "Count of pixels that did not receive volume filtering.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,(4),*",
+                               "9fe1a854-17c6-9d26-b2b9-80610cd5827d");
     }
-    {
+    { // Index:54
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21997);
         internal_counters.push_back(22233);
@@ -3166,10 +3702,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44189);
         internal_counters.push_back(44425);
 
-        c.DefineDerivedCounter("TexAveAnisotropy", "TextureUnit", "The average degree of anisotropy applied. A number between 1 and 16. The anisotropic filtering algorithm only applies samples where they are required (e.g. there will be no extra anisotropic samples if the view vector is perpendicular to the surface) so this can be much lower than the requested anisotropy.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,(2),96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,*,+,(4),192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum96,*,+,(6),288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,sum96,*,+,(8),384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,sum96,*,+,(10),480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,sum96,*,+,(12),576,577,578,579,580,581,582,583,584,585,586,587,588,589,590,591,592,593,594,595,596,597,598,599,600,601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,633,634,635,636,637,638,639,640,641,642,643,644,645,646,647,648,649,650,651,652,653,654,655,656,657,658,659,660,661,662,663,664,665,666,667,668,669,670,671,sum96,*,+,(14),672,673,674,675,676,677,678,679,680,681,682,683,684,685,686,687,688,689,690,691,692,693,694,695,696,697,698,699,700,701,702,703,704,705,706,707,708,709,710,711,712,713,714,715,716,717,718,719,720,721,722,723,724,725,726,727,728,729,730,731,732,733,734,735,736,737,738,739,740,741,742,743,744,745,746,747,748,749,750,751,752,753,754,755,756,757,758,759,760,761,762,763,764,765,766,767,sum96,*,+,(16),768,769,770,771,772,773,774,775,776,777,778,779,780,781,782,783,784,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,810,811,812,813,814,815,816,817,818,819,820,821,822,823,824,825,826,827,828,829,830,831,832,833,834,835,836,837,838,839,840,841,842,843,844,845,846,847,848,849,850,851,852,853,854,855,856,857,858,859,860,861,862,863,sum96,*,+,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,+,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum96,+,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,sum96,+,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,sum96,+,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,sum96,+,576,577,578,579,580,581,582,583,584,585,586,587,588,589,590,591,592,593,594,595,596,597,598,599,600,601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,633,634,635,636,637,638,639,640,641,642,643,644,645,646,647,648,649,650,651,652,653,654,655,656,657,658,659,660,661,662,663,664,665,666,667,668,669,670,671,sum96,+,672,673,674,675,676,677,678,679,680,681,682,683,684,685,686,687,688,689,690,691,692,693,694,695,696,697,698,699,700,701,702,703,704,705,706,707,708,709,710,711,712,713,714,715,716,717,718,719,720,721,722,723,724,725,726,727,728,729,730,731,732,733,734,735,736,737,738,739,740,741,742,743,744,745,746,747,748,749,750,751,752,753,754,755,756,757,758,759,760,761,762,763,764,765,766,767,sum96,+,768,769,770,771,772,773,774,775,776,777,778,779,780,781,782,783,784,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,810,811,812,813,814,815,816,817,818,819,820,821,822,823,824,825,826,827,828,829,830,831,832,833,834,835,836,837,838,839,840,841,842,843,844,845,846,847,848,849,850,851,852,853,854,855,856,857,858,859,860,861,862,863,sum96,+,/", "7ca2a2b9-a4eb-ce23-d163-59147e672396");
+        c.DefineDerivedCounter("TexAveAnisotropy",
+                               "TextureUnit",
+                               "The average degree of anisotropy applied. A number between 1 and 16. The anisotropic filtering algorithm only applies samples where they are required (e.g. there will be no extra anisotropic samples if the view vector is perpendicular to the surface) so this can be much lower than the requested anisotropy.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,(2),96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,*,+,(4),192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum96,*,+,(6),288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,sum96,*,+,(8),384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,sum96,*,+,(10),480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,sum96,*,+,(12),576,577,578,579,580,581,582,583,584,585,586,587,588,589,590,591,592,593,594,595,596,597,598,599,600,601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,633,634,635,636,637,638,639,640,641,642,643,644,645,646,647,648,649,650,651,652,653,654,655,656,657,658,659,660,661,662,663,664,665,666,667,668,669,670,671,sum96,*,+,(14),672,673,674,675,676,677,678,679,680,681,682,683,684,685,686,687,688,689,690,691,692,693,694,695,696,697,698,699,700,701,702,703,704,705,706,707,708,709,710,711,712,713,714,715,716,717,718,719,720,721,722,723,724,725,726,727,728,729,730,731,732,733,734,735,736,737,738,739,740,741,742,743,744,745,746,747,748,749,750,751,752,753,754,755,756,757,758,759,760,761,762,763,764,765,766,767,sum96,*,+,(16),768,769,770,771,772,773,774,775,776,777,778,779,780,781,782,783,784,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,810,811,812,813,814,815,816,817,818,819,820,821,822,823,824,825,826,827,828,829,830,831,832,833,834,835,836,837,838,839,840,841,842,843,844,845,846,847,848,849,850,851,852,853,854,855,856,857,858,859,860,861,862,863,sum96,*,+,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,+,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum96,+,288,289,290,291,292,293,294,295,296,297,298,299,300,301,302,303,304,305,306,307,308,309,310,311,312,313,314,315,316,317,318,319,320,321,322,323,324,325,326,327,328,329,330,331,332,333,334,335,336,337,338,339,340,341,342,343,344,345,346,347,348,349,350,351,352,353,354,355,356,357,358,359,360,361,362,363,364,365,366,367,368,369,370,371,372,373,374,375,376,377,378,379,380,381,382,383,sum96,+,384,385,386,387,388,389,390,391,392,393,394,395,396,397,398,399,400,401,402,403,404,405,406,407,408,409,410,411,412,413,414,415,416,417,418,419,420,421,422,423,424,425,426,427,428,429,430,431,432,433,434,435,436,437,438,439,440,441,442,443,444,445,446,447,448,449,450,451,452,453,454,455,456,457,458,459,460,461,462,463,464,465,466,467,468,469,470,471,472,473,474,475,476,477,478,479,sum96,+,480,481,482,483,484,485,486,487,488,489,490,491,492,493,494,495,496,497,498,499,500,501,502,503,504,505,506,507,508,509,510,511,512,513,514,515,516,517,518,519,520,521,522,523,524,525,526,527,528,529,530,531,532,533,534,535,536,537,538,539,540,541,542,543,544,545,546,547,548,549,550,551,552,553,554,555,556,557,558,559,560,561,562,563,564,565,566,567,568,569,570,571,572,573,574,575,sum96,+,576,577,578,579,580,581,582,583,584,585,586,587,588,589,590,591,592,593,594,595,596,597,598,599,600,601,602,603,604,605,606,607,608,609,610,611,612,613,614,615,616,617,618,619,620,621,622,623,624,625,626,627,628,629,630,631,632,633,634,635,636,637,638,639,640,641,642,643,644,645,646,647,648,649,650,651,652,653,654,655,656,657,658,659,660,661,662,663,664,665,666,667,668,669,670,671,sum96,+,672,673,674,675,676,677,678,679,680,681,682,683,684,685,686,687,688,689,690,691,692,693,694,695,696,697,698,699,700,701,702,703,704,705,706,707,708,709,710,711,712,713,714,715,716,717,718,719,720,721,722,723,724,725,726,727,728,729,730,731,732,733,734,735,736,737,738,739,740,741,742,743,744,745,746,747,748,749,750,751,752,753,754,755,756,757,758,759,760,761,762,763,764,765,766,767,sum96,+,768,769,770,771,772,773,774,775,776,777,778,779,780,781,782,783,784,785,786,787,788,789,790,791,792,793,794,795,796,797,798,799,800,801,802,803,804,805,806,807,808,809,810,811,812,813,814,815,816,817,818,819,820,821,822,823,824,825,826,827,828,829,830,831,832,833,834,835,836,837,838,839,840,841,842,843,844,845,846,847,848,849,850,851,852,853,854,855,856,857,858,859,860,861,862,863,sum96,+,/",
+                               "7ca2a2b9-a4eb-ce23-d163-59147e672396");
     }
-    {
+    { // Index:55
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72260);
         internal_counters.push_back(72653);
@@ -3197,10 +3741,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(81299);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("DepthStencilTestBusy", "Timing", "Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*", "6834fb52-42e8-bb50-fd48-ec2f2904e7e0");
+        c.DefineDerivedCounter("DepthStencilTestBusy",
+                               "Timing",
+                               "Percentage of time GPU spent performing depth and stencil tests relative to GPUBusy.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*",
+                               "6834fb52-42e8-bb50-fd48-ec2f2904e7e0");
     }
-    {
+    { // Index:56
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72260);
         internal_counters.push_back(72653);
@@ -3227,10 +3779,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80906);
         internal_counters.push_back(81299);
 
-        c.DefineDerivedCounter("DepthStencilTestBusyCycles", "Timing", "Number of GPU cycles spent performing depth and stencil tests.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24", "07ad48f0-49d8-87e7-1ef5-1e24ff2cef49");
+        c.DefineDerivedCounter("DepthStencilTestBusyCycles",
+                               "Timing",
+                               "Number of GPU cycles spent performing depth and stencil tests.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24",
+                               "07ad48f0-49d8-87e7-1ef5-1e24ff2cef49");
     }
-    {
+    { // Index:57
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72131);
         internal_counters.push_back(72524);
@@ -3281,10 +3841,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80766);
         internal_counters.push_back(81159);
 
-        c.DefineDerivedCounter("HiZTilesAccepted", "DepthAndStencil", "Percentage of tiles accepted by HiZ and will be rendered to the depth or color buffers.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,-,(0),max,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*", "56176f45-d7ff-813d-4f05-3b2f046067e7");
+        c.DefineDerivedCounter("HiZTilesAccepted",
+                               "DepthAndStencil",
+                               "Percentage of tiles accepted by HiZ and will be rendered to the depth or color buffers.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,-,(0),max,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*",
+                               "56176f45-d7ff-813d-4f05-3b2f046067e7");
     }
-    {
+    { // Index:58
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72120);
         internal_counters.push_back(72513);
@@ -3335,10 +3903,18 @@ internal_counters, "24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,
         internal_counters.push_back(80777);
         internal_counters.push_back(81170);
 
-        c.DefineDerivedCounter("HiZTilesAcceptedCount", "DepthAndStencil", "Count of tiles accepted by HiZ and will be rendered to the depth or color buffers.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max", "95d4e3f6-b2f0-f26e-8423-aacdfaf79ea3");
+        c.DefineDerivedCounter("HiZTilesAcceptedCount",
+                               "DepthAndStencil",
+                               "Count of tiles accepted by HiZ and will be rendered to the depth or color buffers.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max",
+                               "95d4e3f6-b2f0-f26e-8423-aacdfaf79ea3");
     }
-    {
+    { // Index:59
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72131);
         internal_counters.push_back(72524);
@@ -3365,10 +3941,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80777);
         internal_counters.push_back(81170);
 
-        c.DefineDerivedCounter("HiZTilesRejectedCount", "DepthAndStencil", "Count of tiles not accepted by HiZ.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "156ba142-7eeb-aa6e-a00a-f8aea4e41e0b");
+        c.DefineDerivedCounter("HiZTilesRejectedCount",
+                               "DepthAndStencil",
+                               "Count of tiles not accepted by HiZ.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "156ba142-7eeb-aa6e-a00a-f8aea4e41e0b");
     }
-    {
+    { // Index:60
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72120);
         internal_counters.push_back(72513);
@@ -3419,10 +4003,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80790);
         internal_counters.push_back(81183);
 
-        c.DefineDerivedCounter("PreZTilesDetailCulled", "DepthAndStencil", "Percentage of tiles rejected because the associated prim had no contributing area.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,(100),*", "cad7f54d-a044-7574-c472-6f2065cbeeac");
+        c.DefineDerivedCounter("PreZTilesDetailCulled",
+                               "DepthAndStencil",
+                               "Percentage of tiles rejected because the associated prim had no contributing area.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,(100),*",
+                               "cad7f54d-a044-7574-c472-6f2065cbeeac");
     }
-    {
+    { // Index:61
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72144);
         internal_counters.push_back(72537);
@@ -3449,10 +4041,18 @@ internal_counters, "24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,
         internal_counters.push_back(80790);
         internal_counters.push_back(81183);
 
-        c.DefineDerivedCounter("PreZTilesDetailCulledCount", "DepthAndStencil", "Count of tiles rejected because the associated primitive had no contributing area.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "49262c8a-b1e6-90dd-f096-0fc4921715e9");
+        c.DefineDerivedCounter("PreZTilesDetailCulledCount",
+                               "DepthAndStencil",
+                               "Count of tiles rejected because the associated primitive had no contributing area.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "49262c8a-b1e6-90dd-f096-0fc4921715e9");
     }
-    {
+    { // Index:62
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72120);
         internal_counters.push_back(72513);
@@ -3479,10 +4079,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80766);
         internal_counters.push_back(81159);
 
-        c.DefineDerivedCounter("PreZTilesDetailSurvivingCount", "DepthAndStencil", "Count of tiles surviving because the associated primitive had contributing area.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "f803eaa4-bbed-bd39-775f-a64df92e2c08");
+        c.DefineDerivedCounter("PreZTilesDetailSurvivingCount",
+                               "DepthAndStencil",
+                               "Count of tiles surviving because the associated primitive had contributing area.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "f803eaa4-bbed-bd39-775f-a64df92e2c08");
     }
-    {
+    { // Index:63
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2069);
         internal_counters.push_back(2744);
@@ -3533,10 +4141,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(16995);
         internal_counters.push_back(17670);
 
-        c.DefineDerivedCounter("HiZQuadsCulled", "DepthAndStencil", "Percentage of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,(100),*", "fa0e319b-5573-6d34-5bab-904769925036");
+        c.DefineDerivedCounter("HiZQuadsCulled",
+                               "DepthAndStencil",
+                               "Percentage of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,(100),*",
+                               "fa0e319b-5573-6d34-5bab-904769925036");
     }
-    {
+    { // Index:64
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2069);
         internal_counters.push_back(2744);
@@ -3587,10 +4203,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(16995);
         internal_counters.push_back(17670);
 
-        c.DefineDerivedCounter("HiZQuadsCulledCount", "DepthAndStencil", "Count of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max", "73b0b39d-6df2-3e24-0b5c-7cb0ac8b6f39");
+        c.DefineDerivedCounter("HiZQuadsCulledCount",
+                               "DepthAndStencil",
+                               "Count of quads that did not have to continue on in the pipeline after HiZ. They may be written directly to the depth buffer, or culled completely. Consistently low values here may suggest that the Z-range is not being fully utilized.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max",
+                               "73b0b39d-6df2-3e24-0b5c-7cb0ac8b6f39");
     }
-    {
+    { // Index:65
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2145);
         internal_counters.push_back(2820);
@@ -3617,10 +4241,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(16995);
         internal_counters.push_back(17670);
 
-        c.DefineDerivedCounter("HiZQuadsAcceptedCount", "DepthAndStencil", "Count of quads that did continue on in the pipeline after HiZ.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "59049ad9-42b5-c7cb-3616-6a8f6a8e4894");
+        c.DefineDerivedCounter("HiZQuadsAcceptedCount",
+                               "DepthAndStencil",
+                               "Count of quads that did continue on in the pipeline after HiZ.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "59049ad9-42b5-c7cb-3616-6a8f6a8e4894");
     }
-    {
+    { // Index:66
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2145);
         internal_counters.push_back(2820);
@@ -3695,10 +4327,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(16919);
         internal_counters.push_back(17594);
 
-        c.DefineDerivedCounter("PreZQuadsCulled", "DepthAndStencil", "Percentage of quads rejected based on the detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,sum24,/,(100),*", "4e77547b-ec55-5663-f034-af59be66d77d");
+        c.DefineDerivedCounter("PreZQuadsCulled",
+                               "DepthAndStencil",
+                               "Percentage of quads rejected based on the detailZ and earlyZ tests.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,sum24,/,(100),*",
+                               "4e77547b-ec55-5663-f034-af59be66d77d");
     }
-    {
+    { // Index:67
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2145);
         internal_counters.push_back(2820);
@@ -3749,10 +4389,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(17019);
         internal_counters.push_back(17694);
 
-        c.DefineDerivedCounter("PreZQuadsCulledCount", "DepthAndStencil", "Count of quads rejected based on the detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max", "1bf169e6-9304-834e-df5f-0c44d7890a08");
+        c.DefineDerivedCounter("PreZQuadsCulledCount",
+                               "DepthAndStencil",
+                               "Count of quads rejected based on the detailZ and earlyZ tests.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(0),max",
+                               "1bf169e6-9304-834e-df5f-0c44d7890a08");
     }
-    {
+    { // Index:68
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2169);
         internal_counters.push_back(2844);
@@ -3779,10 +4427,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(17019);
         internal_counters.push_back(17694);
 
-        c.DefineDerivedCounter("PreZQuadsSurvivingCount", "DepthAndStencil", "Count of quads surviving detailZ and earlyZ tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "50e25e51-3713-89cb-7f92-559cde5e5532");
+        c.DefineDerivedCounter("PreZQuadsSurvivingCount",
+                               "DepthAndStencil",
+                               "Count of quads surviving detailZ and earlyZ tests.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "50e25e51-3713-89cb-7f92-559cde5e5532");
     }
-    {
+    { // Index:69
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2169);
         internal_counters.push_back(2844);
@@ -3833,10 +4489,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(16919);
         internal_counters.push_back(17594);
 
-        c.DefineDerivedCounter("PostZQuads", "DepthAndStencil", "Percentage of quads for which the pixel shader will run and may be postZ tested.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*", "58f0d34b-eeb8-e8db-abce-cb72584144be");
+        c.DefineDerivedCounter("PostZQuads",
+                               "DepthAndStencil",
+                               "Percentage of quads for which the pixel shader will run and may be postZ tested.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*",
+                               "58f0d34b-eeb8-e8db-abce-cb72584144be");
     }
-    {
+    { // Index:70
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(2169);
         internal_counters.push_back(2844);
@@ -3863,10 +4527,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(17019);
         internal_counters.push_back(17694);
 
-        c.DefineDerivedCounter("PostZQuadCount", "DepthAndStencil", "Count of quads for which the pixel shader will run and may be postZ tested.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "08404526-ce35-939b-34c8-a7a35a0ff4d6");
+        c.DefineDerivedCounter("PostZQuadCount",
+                               "DepthAndStencil",
+                               "Count of quads for which the pixel shader will run and may be postZ tested.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "08404526-ce35-939b-34c8-a7a35a0ff4d6");
     }
-    {
+    { // Index:71
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72293);
         internal_counters.push_back(72686);
@@ -3893,10 +4565,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80939);
         internal_counters.push_back(81332);
 
-        c.DefineDerivedCounter("PreZSamplesPassing", "DepthAndStencil", "Number of samples tested for Z before shading and passed.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "3bfe6c4d-7422-ca03-7ea5-e67ff1a00136");
+        c.DefineDerivedCounter("PreZSamplesPassing",
+                               "DepthAndStencil",
+                               "Number of samples tested for Z before shading and passed.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "3bfe6c4d-7422-ca03-7ea5-e67ff1a00136");
     }
-    {
+    { // Index:72
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72295);
         internal_counters.push_back(72688);
@@ -3923,10 +4603,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80941);
         internal_counters.push_back(81334);
 
-        c.DefineDerivedCounter("PreZSamplesFailingS", "DepthAndStencil", "Number of samples tested for Z before shading and failed stencil test.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "df7f705e-5162-d3b5-da8b-63466cf9c4e5");
+        c.DefineDerivedCounter("PreZSamplesFailingS",
+                               "DepthAndStencil",
+                               "Number of samples tested for Z before shading and failed stencil test.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "df7f705e-5162-d3b5-da8b-63466cf9c4e5");
     }
-    {
+    { // Index:73
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72294);
         internal_counters.push_back(72687);
@@ -3953,10 +4641,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80940);
         internal_counters.push_back(81333);
 
-        c.DefineDerivedCounter("PreZSamplesFailingZ", "DepthAndStencil", "Number of samples tested for Z before shading and failed Z test.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "4484e950-f7a4-3800-bc74-78dd297f017e");
+        c.DefineDerivedCounter("PreZSamplesFailingZ",
+                               "DepthAndStencil",
+                               "Number of samples tested for Z before shading and failed Z test.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "4484e950-f7a4-3800-bc74-78dd297f017e");
     }
-    {
+    { // Index:74
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72290);
         internal_counters.push_back(72683);
@@ -3983,10 +4679,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80936);
         internal_counters.push_back(81329);
 
-        c.DefineDerivedCounter("PostZSamplesPassing", "DepthAndStencil", "Number of samples tested for Z after shading and passed.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "4995d5d6-2330-b986-508b-fae24856f44c");
+        c.DefineDerivedCounter("PostZSamplesPassing",
+                               "DepthAndStencil",
+                               "Number of samples tested for Z after shading and passed.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "4995d5d6-2330-b986-508b-fae24856f44c");
     }
-    {
+    { // Index:75
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72292);
         internal_counters.push_back(72685);
@@ -4013,10 +4717,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80938);
         internal_counters.push_back(81331);
 
-        c.DefineDerivedCounter("PostZSamplesFailingS", "DepthAndStencil", "Number of samples tested for Z after shading and failed stencil test.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "ae558af4-f4be-3dd4-7316-b2c4dcf0def8");
+        c.DefineDerivedCounter("PostZSamplesFailingS",
+                               "DepthAndStencil",
+                               "Number of samples tested for Z after shading and failed stencil test.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "ae558af4-f4be-3dd4-7316-b2c4dcf0def8");
     }
-    {
+    { // Index:76
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72291);
         internal_counters.push_back(72684);
@@ -4043,10 +4755,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80937);
         internal_counters.push_back(81330);
 
-        c.DefineDerivedCounter("PostZSamplesFailingZ", "DepthAndStencil", "Number of samples tested for Z after shading and failed Z test.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "b3684c94-814a-c695-c85d-a5b6ab798b35");
+        c.DefineDerivedCounter("PostZSamplesFailingZ",
+                               "DepthAndStencil",
+                               "Number of samples tested for Z after shading and failed Z test.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "b3684c94-814a-c695-c85d-a5b6ab798b35");
     }
-    {
+    { // Index:77
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72162);
         internal_counters.push_back(72555);
@@ -4074,10 +4794,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(81201);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("ZUnitStalled", "DepthAndStencil", "The percentage of GPUTime the depth buffer spends waiting for the color buffer to be ready to accept data. High figures here indicate a bottleneck in color buffer operations.", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*", "5e86c3ad-1726-3157-1d01-7ed188bf854d");
+        c.DefineDerivedCounter("ZUnitStalled",
+                               "DepthAndStencil",
+                               "The percentage of GPUTime the depth buffer spends waiting for the color buffer to be ready to accept data. High figures here indicate a bottleneck in color buffer operations.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*",
+                               "5e86c3ad-1726-3157-1d01-7ed188bf854d");
     }
-    {
+    { // Index:78
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72162);
         internal_counters.push_back(72555);
@@ -4104,10 +4832,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80808);
         internal_counters.push_back(81201);
 
-        c.DefineDerivedCounter("ZUnitStalledCycles", "DepthAndStencil", "Number of GPU cycles the depth buffer spends waiting for the color buffer to be ready to accept data. Larger numbers indicate a bottleneck in color buffer operations.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24", "4351fa7f-6737-2c3e-3ffb-b3addbdceedd");
+        c.DefineDerivedCounter("ZUnitStalledCycles",
+                               "DepthAndStencil",
+                               "Number of GPU cycles the depth buffer spends waiting for the color buffer to be ready to accept data. Larger numbers indicate a bottleneck in color buffer operations.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24",
+                               "4351fa7f-6737-2c3e-3ffb-b3addbdceedd");
     }
-    {
+    { // Index:79
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72164);
         internal_counters.push_back(72557);
@@ -4158,10 +4894,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80817);
         internal_counters.push_back(81210);
 
-        c.DefineDerivedCounter("DBMemRead", "DepthAndStencil", "Number of bytes read from the depth buffer.", kGpaDataTypeFloat64, kGpaUsageTypeBytes, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(256),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(32),*,+", "dcdb4ee7-bd50-00f7-c028-9e5f4ce888c0");
+        c.DefineDerivedCounter("DBMemRead",
+                               "DepthAndStencil",
+                               "Number of bytes read from the depth buffer.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeBytes,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(256),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(32),*,+",
+                               "dcdb4ee7-bd50-00f7-c028-9e5f4ce888c0");
     }
-    {
+    { // Index:80
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(72176);
         internal_counters.push_back(72569);
@@ -4212,10 +4956,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(80825);
         internal_counters.push_back(81218);
 
-        c.DefineDerivedCounter("DBMemWritten", "DepthAndStencil", "Number of bytes written to the depth buffer.", kGpaDataTypeFloat64, kGpaUsageTypeBytes, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(32),*,+", "de5717f8-8a49-ee44-4645-10de51b37dcf");
+        c.DefineDerivedCounter("DBMemWritten",
+                               "DepthAndStencil",
+                               "Number of bytes written to the depth buffer.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeBytes,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(32),*,+",
+                               "de5717f8-8a49-ee44-4645-10de51b37dcf");
     }
-    {
+    { // Index:81
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64541);
         internal_counters.push_back(64620);
@@ -4410,10 +5162,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(71975);
         internal_counters.push_back(72054);
 
-        c.DefineDerivedCounter("L0CacheHit", "MemoryCache", "The percentage of read requests that hit the data in the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "(0),(1),96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,ifnotzero", "286c786e-9a42-3371-9dea-dd54e6e612e9");
+        c.DefineDerivedCounter("L0CacheHit",
+                               "MemoryCache",
+                               "The percentage of read requests that hit the data in the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "(0),(1),96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,ifnotzero",
+                               "286c786e-9a42-3371-9dea-dd54e6e612e9");
     }
-    {
+    { // Index:82
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64541);
         internal_counters.push_back(64620);
@@ -4512,10 +5272,18 @@ internal_counters, "(0),(1),96,97,98,99,100,101,102,103,104,105,106,107,108,109,
         internal_counters.push_back(71967);
         internal_counters.push_back(72046);
 
-        c.DefineDerivedCounter("L0CacheRequestCount", "MemoryCache", "The number of read requests made to the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96", "74983cae-ee57-2e1b-d990-5128fef84e1f");
+        c.DefineDerivedCounter("L0CacheRequestCount",
+                               "MemoryCache",
+                               "The number of read requests made to the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96",
+                               "74983cae-ee57-2e1b-d990-5128fef84e1f");
     }
-    {
+    { // Index:83
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64541);
         internal_counters.push_back(64620);
@@ -4710,10 +5478,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(71975);
         internal_counters.push_back(72054);
 
-        c.DefineDerivedCounter("L0CacheHitCount", "MemoryCache", "The number of read requests which result in a cache hit from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,-", "c0de7338-069b-c5ba-ead3-c65e030cd2ac");
+        c.DefineDerivedCounter("L0CacheHitCount",
+                               "MemoryCache",
+                               "The number of read requests which result in a cache hit from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,-",
+                               "c0de7338-069b-c5ba-ead3-c65e030cd2ac");
     }
-    {
+    { // Index:84
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64549);
         internal_counters.push_back(64628);
@@ -4812,10 +5588,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(71975);
         internal_counters.push_back(72054);
 
-        c.DefineDerivedCounter("L0CacheMissCount", "MemoryCache", "The number of read requests which result in a cache miss from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96", "a2f08766-ea1b-6eae-6eaf-faa04125d3e6");
+        c.DefineDerivedCounter("L0CacheMissCount",
+                               "MemoryCache",
+                               "The number of read requests which result in a cache miss from the L0 cache. The L0 cache contains vector data, which is data that may vary in each thread across the wavefront. Each request is 128 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96",
+                               "a2f08766-ea1b-6eae-6eaf-faa04125d3e6");
     }
-    {
+    { // Index:85
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(114646);
         internal_counters.push_back(115158);
@@ -4962,10 +5746,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(138200);
         internal_counters.push_back(138712);
 
-        c.DefineDerivedCounter("ScalarCacheHit", "MemoryCache", "The percentage of read requests made from executing shader code that hit the data in the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,sum48,+,/,(100),*", "3346d2cf-b7e4-45b6-c0a0-350ce18159c0");
+        c.DefineDerivedCounter("ScalarCacheHit",
+                               "MemoryCache",
+                               "The percentage of read requests made from executing shader code that hit the data in the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,sum48,+,/,(100),*",
+                               "3346d2cf-b7e4-45b6-c0a0-350ce18159c0");
     }
-    {
+    { // Index:86
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(114646);
         internal_counters.push_back(115158);
@@ -5112,10 +5904,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(138200);
         internal_counters.push_back(138712);
 
-        c.DefineDerivedCounter("ScalarCacheRequestCount", "MemoryCache", "The number of read requests made from executing shader code to the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,sum48,+", "b5ac4201-c4cd-caa5-6ca7-4bc9a3abee01");
+        c.DefineDerivedCounter("ScalarCacheRequestCount",
+                               "MemoryCache",
+                               "The number of read requests made from executing shader code to the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,sum48,+",
+                               "b5ac4201-c4cd-caa5-6ca7-4bc9a3abee01");
     }
-    {
+    { // Index:87
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(114646);
         internal_counters.push_back(115158);
@@ -5166,10 +5966,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(138198);
         internal_counters.push_back(138710);
 
-        c.DefineDerivedCounter("ScalarCacheHitCount", "MemoryCache", "The number of read requests made from executing shader code which result in a cache hit from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48", "beebef4f-8f6c-9363-eda9-bb385ffec363");
+        c.DefineDerivedCounter("ScalarCacheHitCount",
+                               "MemoryCache",
+                               "The number of read requests made from executing shader code which result in a cache hit from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48",
+                               "beebef4f-8f6c-9363-eda9-bb385ffec363");
     }
-    {
+    { // Index:88
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(114647);
         internal_counters.push_back(115159);
@@ -5268,10 +6076,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(138200);
         internal_counters.push_back(138712);
 
-        c.DefineDerivedCounter("ScalarCacheMissCount", "MemoryCache", "The number of read requests made from executing shader code which result in a cache miss from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+", "07f5afb2-75b2-4fc3-1a6a-579958f77dd3");
+        c.DefineDerivedCounter("ScalarCacheMissCount",
+                               "MemoryCache",
+                               "The number of read requests made from executing shader code which result in a cache miss from the Scalar cache. The Scalar cache contains data that does not vary in each thread across the wavefront. Each request is 64 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+",
+                               "07f5afb2-75b2-4fc3-1a6a-579958f77dd3");
     }
-    {
+    { // Index:89
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(114622);
         internal_counters.push_back(115134);
@@ -5418,10 +6234,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(138176);
         internal_counters.push_back(138688);
 
-        c.DefineDerivedCounter("InstCacheHit", "MemoryCache", "The percentage of read requests made that hit the data in the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,sum48,+,/,(100),*", "adf51399-597b-f017-8ec1-21817f92e91d");
+        c.DefineDerivedCounter("InstCacheHit",
+                               "MemoryCache",
+                               "The percentage of read requests made that hit the data in the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size. Value range: 0% (no hit) to 100% (optimal).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,sum48,+,/,(100),*",
+                               "adf51399-597b-f017-8ec1-21817f92e91d");
     }
-    {
+    { // Index:90
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(114622);
         internal_counters.push_back(115134);
@@ -5568,10 +6392,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(138176);
         internal_counters.push_back(138688);
 
-        c.DefineDerivedCounter("InstCacheRequestCount", "MemoryCache", "The number of read requests made to the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,sum48,+", "8c92ca8c-7dcc-88a0-3037-9704aa4f64ac");
+        c.DefineDerivedCounter("InstCacheRequestCount",
+                               "MemoryCache",
+                               "The number of read requests made to the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,sum48,+",
+                               "8c92ca8c-7dcc-88a0-3037-9704aa4f64ac");
     }
-    {
+    { // Index:91
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(114622);
         internal_counters.push_back(115134);
@@ -5622,10 +6454,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(138174);
         internal_counters.push_back(138686);
 
-        c.DefineDerivedCounter("InstCacheHitCount", "MemoryCache", "The number of read requests which result in a cache hit from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48", "778be78f-cf83-9558-e967-868e997e6743");
+        c.DefineDerivedCounter("InstCacheHitCount",
+                               "MemoryCache",
+                               "The number of read requests which result in a cache hit from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48",
+                               "778be78f-cf83-9558-e967-868e997e6743");
     }
-    {
+    { // Index:92
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(114623);
         internal_counters.push_back(115135);
@@ -5724,10 +6564,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(138176);
         internal_counters.push_back(138688);
 
-        c.DefineDerivedCounter("InstCacheMissCount", "MemoryCache", "The number of read requests which result in a cache miss from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+", "351650dc-d349-dca8-2b78-b14a1479cf26");
+        c.DefineDerivedCounter("InstCacheMissCount",
+                               "MemoryCache",
+                               "The number of read requests which result in a cache miss from the Instruction cache. The Instruction cache supplies shader code to an executing shader. Each request is 64 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,+",
+                               "351650dc-d349-dca8-2b78-b14a1479cf26");
     }
-    {
+    { // Index:93
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(100650);
         internal_counters.push_back(100734);
@@ -5826,10 +6674,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(104518);
         internal_counters.push_back(104602);
 
-        c.DefineDerivedCounter("L1CacheHit", "MemoryCache", "The percentage of read or write requests that hit the data in the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "(1),48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,/,-,(100),*", "5a34915a-24b8-8baf-2bf8-5878e7894ae3");
+        c.DefineDerivedCounter("L1CacheHit",
+                               "MemoryCache",
+                               "The percentage of read or write requests that hit the data in the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "(1),48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,/,-,(100),*",
+                               "5a34915a-24b8-8baf-2bf8-5878e7894ae3");
     }
-    {
+    { // Index:94
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(100650);
         internal_counters.push_back(100734);
@@ -5880,10 +6736,18 @@ internal_counters, "(1),48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66
         internal_counters.push_back(104514);
         internal_counters.push_back(104598);
 
-        c.DefineDerivedCounter("L1CacheRequestCount", "MemoryCache", "The number of read or write requests made to the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48", "29c76c67-4611-205d-0b88-d08668df03c5");
+        c.DefineDerivedCounter("L1CacheRequestCount",
+                               "MemoryCache",
+                               "The number of read or write requests made to the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48",
+                               "29c76c67-4611-205d-0b88-d08668df03c5");
     }
-    {
+    { // Index:95
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(100650);
         internal_counters.push_back(100734);
@@ -5982,10 +6846,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(104518);
         internal_counters.push_back(104602);
 
-        c.DefineDerivedCounter("L1CacheHitCount", "MemoryCache", "The number of read or write requests which result in a cache hit from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,-", "1ae150c3-f2d0-82c6-a51b-a77fd8d5fc33");
+        c.DefineDerivedCounter("L1CacheHitCount",
+                               "MemoryCache",
+                               "The number of read or write requests which result in a cache hit from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum48,-",
+                               "1ae150c3-f2d0-82c6-a51b-a77fd8d5fc33");
     }
-    {
+    { // Index:96
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(100654);
         internal_counters.push_back(100738);
@@ -6036,10 +6908,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(104518);
         internal_counters.push_back(104602);
 
-        c.DefineDerivedCounter("L1CacheMissCount", "MemoryCache", "The number of read or write requests which result in a cache miss from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48", "71bfec6d-257b-849d-e212-cdf5c1b1de65");
+        c.DefineDerivedCounter("L1CacheMissCount",
+                               "MemoryCache",
+                               "The number of read or write requests which result in a cache miss from the L1 cache. The L1 cache is shared across all WGPs in a single shader engine. Each request is 128 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48",
+                               "71bfec6d-257b-849d-e212-cdf5c1b1de65");
     }
-    {
+    { // Index:97
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(105103);
         internal_counters.push_back(105362);
@@ -6090,10 +6970,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(110841);
         internal_counters.push_back(111100);
 
-        c.DefineDerivedCounter("L2CacheHit", "MemoryCache", "The percentage of read or write requests that hit the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "(0),(1),24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,ifnotzero", "47694e4d-6ce6-f387-080d-b1f3d00b73ac");
+        c.DefineDerivedCounter("L2CacheHit",
+                               "MemoryCache",
+                               "The percentage of read or write requests that hit the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (no hit) to 100% (optimal).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "(0),(1),24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,/,-,(100),*,0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,ifnotzero",
+                               "47694e4d-6ce6-f387-080d-b1f3d00b73ac");
     }
-    {
+    { // Index:98
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(105143);
         internal_counters.push_back(105402);
@@ -6144,10 +7032,18 @@ internal_counters, "(0),(1),24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,4
         internal_counters.push_back(110801);
         internal_counters.push_back(111060);
 
-        c.DefineDerivedCounter("L2CacheMiss", "MemoryCache", "The percentage of read or write requests that miss the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (optimal) to 100% (all miss).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*", "8aee5458-a58e-11b6-5131-7f19ed070117");
+        c.DefineDerivedCounter("L2CacheMiss",
+                               "MemoryCache",
+                               "The percentage of read or write requests that miss the data in the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size. Value range: 0% (optimal) to 100% (all miss).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,/,(100),*",
+                               "8aee5458-a58e-11b6-5131-7f19ed070117");
     }
-    {
+    { // Index:99
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(105103);
         internal_counters.push_back(105362);
@@ -6174,10 +7070,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(110801);
         internal_counters.push_back(111060);
 
-        c.DefineDerivedCounter("L2CacheRequestCount", "MemoryCache", "The number of read or write requests made to the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "21e9219c-e725-0d96-06b1-b21698b736b2");
+        c.DefineDerivedCounter("L2CacheRequestCount",
+                               "MemoryCache",
+                               "The number of read or write requests made to the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "21e9219c-e725-0d96-06b1-b21698b736b2");
     }
-    {
+    { // Index:100
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(105103);
         internal_counters.push_back(105362);
@@ -6228,10 +7132,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(110841);
         internal_counters.push_back(111100);
 
-        c.DefineDerivedCounter("L2CacheHitCount", "MemoryCache", "The number of read or write requests which result in a cache hit from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-", "29ddcb92-d3dd-951b-1b23-efe52e4eeee4");
+        c.DefineDerivedCounter("L2CacheHitCount",
+                               "MemoryCache",
+                               "The number of read or write requests which result in a cache hit from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-",
+                               "29ddcb92-d3dd-951b-1b23-efe52e4eeee4");
     }
-    {
+    { // Index:101
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(105143);
         internal_counters.push_back(105402);
@@ -6258,10 +7170,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(110841);
         internal_counters.push_back(111100);
 
-        c.DefineDerivedCounter("L2CacheMissCount", "MemoryCache", "The number of read or write requests which result in a cache miss from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24", "376eec7b-ab25-9012-06b5-63291a17fd47");
+        c.DefineDerivedCounter("L2CacheMissCount",
+                               "MemoryCache",
+                               "The number of read or write requests which result in a cache miss from the L2 cache. The L2 cache is shared by many blocks across the GPU, including the Command Processor, Geometry Engine, all WGPs, all Render Backends, and others. Each request is 128 bytes in size.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24",
+                               "376eec7b-ab25-9012-06b5-63291a17fd47");
     }
-    {
+    { // Index:102
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64578);
         internal_counters.push_back(64657);
@@ -6360,10 +7280,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(72004);
         internal_counters.push_back(72083);
 
-        c.DefineDerivedCounter("L0TagConflictReadStalledCycles", "MemoryCache", "The number of cycles read operations from the L0 cache are stalled due to tag conflicts.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96", "e2412737-e2bf-c791-5f2f-64abd4ba47cf");
+        c.DefineDerivedCounter("L0TagConflictReadStalledCycles",
+                               "MemoryCache",
+                               "The number of cycles read operations from the L0 cache are stalled due to tag conflicts.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96",
+                               "e2412737-e2bf-c791-5f2f-64abd4ba47cf");
     }
-    {
+    { // Index:103
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64579);
         internal_counters.push_back(64658);
@@ -6462,10 +7390,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(72005);
         internal_counters.push_back(72084);
 
-        c.DefineDerivedCounter("L0TagConflictWriteStalledCycles", "MemoryCache", "The number of cycles write operations to the L0 cache are stalled due to tag conflicts.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96", "0c2571f3-f084-f351-99ba-0d9e23b47e8e");
+        c.DefineDerivedCounter("L0TagConflictWriteStalledCycles",
+                               "MemoryCache",
+                               "The number of cycles write operations to the L0 cache are stalled due to tag conflicts.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96",
+                               "0c2571f3-f084-f351-99ba-0d9e23b47e8e");
     }
-    {
+    { // Index:104
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64580);
         internal_counters.push_back(64659);
@@ -6564,10 +7500,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(72006);
         internal_counters.push_back(72085);
 
-        c.DefineDerivedCounter("L0TagConflictAtomicStalledCycles", "MemoryCache", "The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96", "f13f8563-4151-1533-f42f-0f9c08a20210");
+        c.DefineDerivedCounter("L0TagConflictAtomicStalledCycles",
+                               "MemoryCache",
+                               "The number of cycles atomic operations on the L0 cache are stalled due to tag conflicts.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96",
+                               "f13f8563-4151-1533-f42f-0f9c08a20210");
     }
-    {
+    { // Index:105
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(105199);
         internal_counters.push_back(105458);
@@ -6666,10 +7610,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(110900);
         internal_counters.push_back(111159);
 
-        c.DefineDerivedCounter("FetchSize", "GlobalMemory", "The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", kGpaDataTypeFloat64, kGpaUsageTypeBytes, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(64),*,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,sum24,(96),*,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum24,(128),*,sum4", "664bb3ef-6eca-86b1-1e2d-30cb897b5fa9");
+        c.DefineDerivedCounter("FetchSize",
+                               "GlobalMemory",
+                               "The total bytes fetched from the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeBytes,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(64),*,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,sum24,(96),*,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum24,(128),*,sum4",
+                               "664bb3ef-6eca-86b1-1e2d-30cb897b5fa9");
     }
-    {
+    { // Index:106
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(105183);
         internal_counters.push_back(105442);
@@ -6720,10 +7672,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(110883);
         internal_counters.push_back(111142);
 
-        c.DefineDerivedCounter("WriteSize", "GlobalMemory", "The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.", kGpaDataTypeFloat64, kGpaUsageTypeBytes, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(64),*,+", "f96f2c16-b1b4-4ec4-229c-fc82e6f80a82");
+        c.DefineDerivedCounter("WriteSize",
+                               "GlobalMemory",
+                               "The total bytes written to the video memory. This is measured with all extra fetches and any cache or memory effects taken into account.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeBytes,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,-,(32),*,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum24,(64),*,+",
+                               "f96f2c16-b1b4-4ec4-229c-fc82e6f80a82");
     }
-    {
+    { // Index:107
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21923);
         internal_counters.push_back(22159);
@@ -6823,10 +7783,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44343);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("MemUnitBusy", "GlobalMemory", "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96,96,/,(100),*", "a1efa380-4a72-e066-e06a-2ab71a488521");
+        c.DefineDerivedCounter("MemUnitBusy",
+                               "GlobalMemory",
+                               "The percentage of GPUTime the memory unit is active. The result includes the stall time (MemUnitStalled). This is measured with all extra fetches and writes and any cache or memory effects taken into account. Value range: 0% to 100% (fetch-bound).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96,96,/,(100),*",
+                               "a1efa380-4a72-e066-e06a-2ab71a488521");
     }
-    {
+    { // Index:108
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(21923);
         internal_counters.push_back(22159);
@@ -6925,10 +7893,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(44107);
         internal_counters.push_back(44343);
 
-        c.DefineDerivedCounter("MemUnitBusyCycles", "GlobalMemory", "Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalledCycles). This is measured with all extra fetches and writes and any cache or memory effects taken into account.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96", "168f077c-4797-b2f5-717f-105c725266c8");
+        c.DefineDerivedCounter("MemUnitBusyCycles",
+                               "GlobalMemory",
+                               "Number of GPU cycles the memory unit is active. The result includes the stall time (MemUnitStalledCycles). This is measured with all extra fetches and writes and any cache or memory effects taken into account.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96",
+                               "168f077c-4797-b2f5-717f-105c725266c8");
     }
-    {
+    { // Index:109
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64571);
         internal_counters.push_back(64650);
@@ -7028,10 +8004,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(72076);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("MemUnitStalled", "GlobalMemory", "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96,96,/,(100),*", "465ba54f-d250-1453-790a-731b10d230b1");
+        c.DefineDerivedCounter("MemUnitStalled",
+                               "GlobalMemory",
+                               "The percentage of GPUTime the memory unit is stalled. Try reducing the number or size of fetches and writes if possible. Value range: 0% (optimal) to 100% (bad).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96,96,/,(100),*",
+                               "465ba54f-d250-1453-790a-731b10d230b1");
     }
-    {
+    { // Index:110
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(64571);
         internal_counters.push_back(64650);
@@ -7130,10 +8114,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(71997);
         internal_counters.push_back(72076);
 
-        c.DefineDerivedCounter("MemUnitStalledCycles", "GlobalMemory", "Number of GPU cycles the memory unit is stalled.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96", "2745659a-0e40-bace-3b9b-86a54f8e4623");
+        c.DefineDerivedCounter("MemUnitStalledCycles",
+                               "GlobalMemory",
+                               "Number of GPU cycles the memory unit is stalled.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,max96",
+                               "2745659a-0e40-bace-3b9b-86a54f8e4623");
     }
-    {
+    { // Index:111
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(105188);
         internal_counters.push_back(105447);
@@ -7161,10 +8153,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(111145);
         internal_counters.push_back(24);
 
-        c.DefineDerivedCounter("WriteUnitStalled", "GlobalMemory", "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).", kGpaDataTypeFloat64, kGpaUsageTypePercentage, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*", "594ad3ce-d1ec-10fc-7d59-25738e397d72");
+        c.DefineDerivedCounter("WriteUnitStalled",
+                               "GlobalMemory",
+                               "The percentage of GPUTime the Write unit is stalled. Value range: 0% to 100% (bad).",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24,24,/,(100),*",
+                               "594ad3ce-d1ec-10fc-7d59-25738e397d72");
     }
-    {
+    { // Index:112
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(105188);
         internal_counters.push_back(105447);
@@ -7191,10 +8191,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(110886);
         internal_counters.push_back(111145);
 
-        c.DefineDerivedCounter("WriteUnitStalledCycles", "GlobalMemory", "Number of GPU cycles the Write unit is stalled.", kGpaDataTypeFloat64, kGpaUsageTypeCycles, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24", "ede3305e-abd4-d6bf-6b00-ffc57a29fce3");
+        c.DefineDerivedCounter("WriteUnitStalledCycles",
+                               "GlobalMemory",
+                               "Number of GPU cycles the Write unit is stalled.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeCycles,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,max24",
+                               "ede3305e-abd4-d6bf-6b00-ffc57a29fce3");
     }
-    {
+    { // Index:113
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(90315);
         internal_counters.push_back(90413);
@@ -7221,10 +8229,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(92471);
         internal_counters.push_back(92569);
 
-        c.DefineDerivedCounter("LocalVidMemBytes", "GlobalMemory", "Number of bytes read from or written to the Infinity Cache (if available) or local video memory", kGpaDataTypeFloat64, kGpaUsageTypeBytes, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*", "48207266-a1ef-290a-3c77-effd1260fa2c");
+        c.DefineDerivedCounter("LocalVidMemBytes",
+                               "GlobalMemory",
+                               "Number of bytes read from or written to the Infinity Cache (if available) or local video memory",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeBytes,
+                               true,
+                               false,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*",
+                               "48207266-a1ef-290a-3c77-effd1260fa2c");
     }
-    {
+    { // Index:114
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(90317);
         internal_counters.push_back(90415);
@@ -7251,10 +8267,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(92473);
         internal_counters.push_back(92571);
 
-        c.DefineDerivedCounter("PcieBytes", "GlobalMemory", "Number of bytes sent and received over the PCIe bus", kGpaDataTypeFloat64, kGpaUsageTypeBytes, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*", "4bbe92de-f79e-ed39-bfde-9e08390cdb21");
+        c.DefineDerivedCounter("PcieBytes",
+                               "GlobalMemory",
+                               "Number of bytes sent and received over the PCIe bus",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeBytes,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,sum24,(32),*",
+                               "4bbe92de-f79e-ed39-bfde-9e08390cdb21");
     }
-    {
+    { // Index:115
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(44682);
         internal_counters.push_back(44890);
@@ -7353,10 +8377,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(64234);
         internal_counters.push_back(64442);
 
-        c.DefineDerivedCounter("RayTriTests", "RayTracing", "The number of ray triangle intersection tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96", "20c646f5-fa99-51c2-b583-0a3d77d675a8");
+        c.DefineDerivedCounter("RayTriTests",
+                               "RayTracing",
+                               "The number of ray triangle intersection tests.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96",
+                               "20c646f5-fa99-51c2-b583-0a3d77d675a8");
     }
-    {
+    { // Index:116
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(44680);
         internal_counters.push_back(44888);
@@ -7551,10 +8583,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(64233);
         internal_counters.push_back(64441);
 
-        c.DefineDerivedCounter("RayBoxTests", "RayTracing", "The number of ray box intersection tests.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,sum2", "7769ceee-824d-b84a-8779-bb3f8e449582");
+        c.DefineDerivedCounter("RayBoxTests",
+                               "RayTracing",
+                               "The number of ray box intersection tests.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,sum2",
+                               "7769ceee-824d-b84a-8779-bb3f8e449582");
     }
-    {
+    { // Index:117
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(44682);
         internal_counters.push_back(44890);
@@ -7845,10 +8885,18 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(64233);
         internal_counters.push_back(64441);
 
-        c.DefineDerivedCounter("TotalRayTests", "RayTracing", "Total number of ray intersection tests, includes both box and triangle intersections.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,sum2,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum96,sum2", "ce6e4c7f-cf9d-6f8f-4456-70f670354bbe");
+        c.DefineDerivedCounter("TotalRayTests",
+                               "RayTracing",
+                               "Total number of ray intersection tests, includes both box and triangle intersections.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96,96,97,98,99,100,101,102,103,104,105,106,107,108,109,110,111,112,113,114,115,116,117,118,119,120,121,122,123,124,125,126,127,128,129,130,131,132,133,134,135,136,137,138,139,140,141,142,143,144,145,146,147,148,149,150,151,152,153,154,155,156,157,158,159,160,161,162,163,164,165,166,167,168,169,170,171,172,173,174,175,176,177,178,179,180,181,182,183,184,185,186,187,188,189,190,191,sum96,sum2,192,193,194,195,196,197,198,199,200,201,202,203,204,205,206,207,208,209,210,211,212,213,214,215,216,217,218,219,220,221,222,223,224,225,226,227,228,229,230,231,232,233,234,235,236,237,238,239,240,241,242,243,244,245,246,247,248,249,250,251,252,253,254,255,256,257,258,259,260,261,262,263,264,265,266,267,268,269,270,271,272,273,274,275,276,277,278,279,280,281,282,283,284,285,286,287,sum96,sum2",
+                               "ce6e4c7f-cf9d-6f8f-4456-70f670354bbe");
     }
-    {
+    { // Index:118
         vector<GpaUInt32> internal_counters;
         internal_counters.push_back(44646);
         internal_counters.push_back(44854);
@@ -7947,8 +8995,524 @@ internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,2
         internal_counters.push_back(64198);
         internal_counters.push_back(64406);
 
-        c.DefineDerivedCounter("RayTestsPerWave", "RayTracing", "The number of ray intersection tests per wave.", kGpaDataTypeFloat64, kGpaUsageTypeItems, 
-internal_counters, "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96", "45b0cd7f-3b43-6344-37d7-054062e50f60");
+        c.DefineDerivedCounter("RayTestsPerWave",
+                               "RayTracing",
+                               "The number of ray intersection tests per wave.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypeItems,
+                               true,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62,63,64,65,66,67,68,69,70,71,72,73,74,75,76,77,78,79,80,81,82,83,84,85,86,87,88,89,90,91,92,93,94,95,sum96",
+                               "45b0cd7f-3b43-6344-37d7-054062e50f60");
+    }
+    { // Index:119
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(114359);
+        internal_counters.push_back(114871);
+        internal_counters.push_back(115383);
+        internal_counters.push_back(115895);
+        internal_counters.push_back(116407);
+        internal_counters.push_back(116919);
+        internal_counters.push_back(117431);
+        internal_counters.push_back(117943);
+        internal_counters.push_back(118455);
+        internal_counters.push_back(118967);
+        internal_counters.push_back(119479);
+        internal_counters.push_back(119991);
+        internal_counters.push_back(120503);
+        internal_counters.push_back(121015);
+        internal_counters.push_back(121527);
+        internal_counters.push_back(122039);
+        internal_counters.push_back(122551);
+        internal_counters.push_back(123063);
+        internal_counters.push_back(123575);
+        internal_counters.push_back(124087);
+        internal_counters.push_back(124599);
+        internal_counters.push_back(125111);
+        internal_counters.push_back(125623);
+        internal_counters.push_back(126135);
+        internal_counters.push_back(126647);
+        internal_counters.push_back(127159);
+        internal_counters.push_back(127671);
+        internal_counters.push_back(128183);
+        internal_counters.push_back(128695);
+        internal_counters.push_back(129207);
+        internal_counters.push_back(129719);
+        internal_counters.push_back(130231);
+        internal_counters.push_back(130743);
+        internal_counters.push_back(131255);
+        internal_counters.push_back(131767);
+        internal_counters.push_back(132279);
+        internal_counters.push_back(132791);
+        internal_counters.push_back(133303);
+        internal_counters.push_back(133815);
+        internal_counters.push_back(134327);
+        internal_counters.push_back(134839);
+        internal_counters.push_back(135351);
+        internal_counters.push_back(135863);
+        internal_counters.push_back(136375);
+        internal_counters.push_back(136887);
+        internal_counters.push_back(137399);
+        internal_counters.push_back(137911);
+        internal_counters.push_back(138423);
+
+        c.DefineDerivedCounter("WaveOccupancyPct",
+                               "WaveDistribution",
+                               "The percentage of the maximum wavefront occupancy that is currently being used.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39,40,41,42,43,44,45,46,47,sum48,MAX_WAVES,/,(100),*",
+                               "6ff3d7f2-d585-9834-d335-9edba99113c8");
+    }
+    { // Index:120
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18277);
+        internal_counters.push_back(18561);
+        internal_counters.push_back(18845);
+        internal_counters.push_back(19129);
+        internal_counters.push_back(19413);
+        internal_counters.push_back(19697);
+        internal_counters.push_back(18132);
+        internal_counters.push_back(18416);
+        internal_counters.push_back(18700);
+        internal_counters.push_back(18984);
+        internal_counters.push_back(19268);
+        internal_counters.push_back(19552);
+
+        c.DefineDerivedCounter("HSLimitedByVgpr",
+                               "WaveOccupancyLimiters",
+                               "The percentage of HS wave scheduling requests that are limited by VGPR availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,NUM_SIMDS,/,(100),*",
+                               "50585d16-dd47-ed8a-ec13-5fd1f1b10196");
+    }
+    { // Index:121
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18281);
+        internal_counters.push_back(18565);
+        internal_counters.push_back(18849);
+        internal_counters.push_back(19133);
+        internal_counters.push_back(19417);
+        internal_counters.push_back(19701);
+        internal_counters.push_back(18132);
+        internal_counters.push_back(18416);
+        internal_counters.push_back(18700);
+        internal_counters.push_back(18984);
+        internal_counters.push_back(19268);
+        internal_counters.push_back(19552);
+
+        c.DefineDerivedCounter("HSLimitedByLds",
+                               "WaveOccupancyLimiters",
+                               "The percentage of HS wave scheduling requests that are limited by LDS availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,NUM_CUS,/,(100),*",
+                               "fdd67cc9-259e-4c41-b41f-57e57ce8c5cb");
+    }
+    { // Index:122
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18267);
+        internal_counters.push_back(18551);
+        internal_counters.push_back(18835);
+        internal_counters.push_back(19119);
+        internal_counters.push_back(19403);
+        internal_counters.push_back(19687);
+        internal_counters.push_back(18132);
+        internal_counters.push_back(18416);
+        internal_counters.push_back(18700);
+        internal_counters.push_back(18984);
+        internal_counters.push_back(19268);
+        internal_counters.push_back(19552);
+
+        c.DefineDerivedCounter("HSLimitedByScratch",
+                               "WaveOccupancyLimiters",
+                               "The percentage of HS wave scheduling requests that are limited by scratch space availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,(100),*",
+                               "b7fe9384-498b-8280-e330-c554e4cdc7a7");
+    }
+    { // Index:123
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18287);
+        internal_counters.push_back(18571);
+        internal_counters.push_back(18855);
+        internal_counters.push_back(19139);
+        internal_counters.push_back(19423);
+        internal_counters.push_back(19707);
+        internal_counters.push_back(18132);
+        internal_counters.push_back(18416);
+        internal_counters.push_back(18700);
+        internal_counters.push_back(18984);
+        internal_counters.push_back(19268);
+        internal_counters.push_back(19552);
+
+        c.DefineDerivedCounter("HSLimitedByBarriers",
+                               "WaveOccupancyLimiters",
+                               "The percentage of HS wave scheduling requests that are limited by barriers.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,NUM_CUS,/,(100),*",
+                               "93c71348-8437-1765-8c26-b9c6be2457a0");
+    }
+    { // Index:124
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18276);
+        internal_counters.push_back(18560);
+        internal_counters.push_back(18844);
+        internal_counters.push_back(19128);
+        internal_counters.push_back(19412);
+        internal_counters.push_back(19696);
+        internal_counters.push_back(18112);
+        internal_counters.push_back(18396);
+        internal_counters.push_back(18680);
+        internal_counters.push_back(18964);
+        internal_counters.push_back(19248);
+        internal_counters.push_back(19532);
+
+        c.DefineDerivedCounter("GSLimitedByVgpr",
+                               "WaveOccupancyLimiters",
+                               "The percentage of GS wave scheduling requests that are limited by VGPR availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,NUM_SIMDS,/,(100),*",
+                               "7da57982-3e1c-8515-1c92-d183721f4d15");
+    }
+    { // Index:125
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18282);
+        internal_counters.push_back(18566);
+        internal_counters.push_back(18850);
+        internal_counters.push_back(19134);
+        internal_counters.push_back(19418);
+        internal_counters.push_back(19702);
+        internal_counters.push_back(18112);
+        internal_counters.push_back(18396);
+        internal_counters.push_back(18680);
+        internal_counters.push_back(18964);
+        internal_counters.push_back(19248);
+        internal_counters.push_back(19532);
+
+        c.DefineDerivedCounter("GSLimitedByLds",
+                               "WaveOccupancyLimiters",
+                               "The percentage of GS wave scheduling requests that are limited by LDS availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,NUM_CUS,/,(100),*",
+                               "6bfbfae4-7b7e-112d-f35a-0691a75432d9");
+    }
+    { // Index:126
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18266);
+        internal_counters.push_back(18550);
+        internal_counters.push_back(18834);
+        internal_counters.push_back(19118);
+        internal_counters.push_back(19402);
+        internal_counters.push_back(19686);
+        internal_counters.push_back(18112);
+        internal_counters.push_back(18396);
+        internal_counters.push_back(18680);
+        internal_counters.push_back(18964);
+        internal_counters.push_back(19248);
+        internal_counters.push_back(19532);
+
+        c.DefineDerivedCounter("GSLimitedByScratch",
+                               "WaveOccupancyLimiters",
+                               "The percentage of GS wave scheduling requests that are limited by scratch space availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,(100),*",
+                               "7eea8eeb-6659-dbd5-c0c2-e404dbf7a97d");
+    }
+    { // Index:127
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18280);
+        internal_counters.push_back(18564);
+        internal_counters.push_back(18848);
+        internal_counters.push_back(19132);
+        internal_counters.push_back(19416);
+        internal_counters.push_back(19700);
+        internal_counters.push_back(18167);
+        internal_counters.push_back(18451);
+        internal_counters.push_back(18735);
+        internal_counters.push_back(19019);
+        internal_counters.push_back(19303);
+        internal_counters.push_back(19587);
+        internal_counters.push_back(18168);
+        internal_counters.push_back(18452);
+        internal_counters.push_back(18736);
+        internal_counters.push_back(19020);
+        internal_counters.push_back(19304);
+        internal_counters.push_back(19588);
+        internal_counters.push_back(18169);
+        internal_counters.push_back(18453);
+        internal_counters.push_back(18737);
+        internal_counters.push_back(19021);
+        internal_counters.push_back(19305);
+        internal_counters.push_back(19589);
+        internal_counters.push_back(18170);
+        internal_counters.push_back(18454);
+        internal_counters.push_back(18738);
+        internal_counters.push_back(19022);
+        internal_counters.push_back(19306);
+        internal_counters.push_back(19590);
+
+        c.DefineDerivedCounter("PSLimitedByLds",
+                               "WaveOccupancyLimiters",
+                               "The percentage of PS wave scheduling requests that are limited by LDS availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,max24,/,NUM_CUS,/,(100),*",
+                               "87e9d8b0-dae4-59e5-9797-b31084e4370c");
+    }
+    { // Index:128
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18275);
+        internal_counters.push_back(18559);
+        internal_counters.push_back(18843);
+        internal_counters.push_back(19127);
+        internal_counters.push_back(19411);
+        internal_counters.push_back(19695);
+        internal_counters.push_back(18167);
+        internal_counters.push_back(18451);
+        internal_counters.push_back(18735);
+        internal_counters.push_back(19019);
+        internal_counters.push_back(19303);
+        internal_counters.push_back(19587);
+        internal_counters.push_back(18168);
+        internal_counters.push_back(18452);
+        internal_counters.push_back(18736);
+        internal_counters.push_back(19020);
+        internal_counters.push_back(19304);
+        internal_counters.push_back(19588);
+        internal_counters.push_back(18169);
+        internal_counters.push_back(18453);
+        internal_counters.push_back(18737);
+        internal_counters.push_back(19021);
+        internal_counters.push_back(19305);
+        internal_counters.push_back(19589);
+        internal_counters.push_back(18170);
+        internal_counters.push_back(18454);
+        internal_counters.push_back(18738);
+        internal_counters.push_back(19022);
+        internal_counters.push_back(19306);
+        internal_counters.push_back(19590);
+
+        c.DefineDerivedCounter("PSLimitedByVgpr",
+                               "WaveOccupancyLimiters",
+                               "The percentage of PS wave scheduling requests that are limited by VGPR availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,max24,/,NUM_SIMDS,/,(100),*",
+                               "5327574d-a131-c833-44d2-ff4f10103502");
+    }
+    { // Index:129
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18265);
+        internal_counters.push_back(18549);
+        internal_counters.push_back(18833);
+        internal_counters.push_back(19117);
+        internal_counters.push_back(19401);
+        internal_counters.push_back(19685);
+        internal_counters.push_back(18167);
+        internal_counters.push_back(18451);
+        internal_counters.push_back(18735);
+        internal_counters.push_back(19019);
+        internal_counters.push_back(19303);
+        internal_counters.push_back(19587);
+        internal_counters.push_back(18168);
+        internal_counters.push_back(18452);
+        internal_counters.push_back(18736);
+        internal_counters.push_back(19020);
+        internal_counters.push_back(19304);
+        internal_counters.push_back(19588);
+        internal_counters.push_back(18169);
+        internal_counters.push_back(18453);
+        internal_counters.push_back(18737);
+        internal_counters.push_back(19021);
+        internal_counters.push_back(19305);
+        internal_counters.push_back(19589);
+        internal_counters.push_back(18170);
+        internal_counters.push_back(18454);
+        internal_counters.push_back(18738);
+        internal_counters.push_back(19022);
+        internal_counters.push_back(19306);
+        internal_counters.push_back(19590);
+
+        c.DefineDerivedCounter("PSLimitedByScratch",
+                               "WaveOccupancyLimiters",
+                               "The percentage of PS wave scheduling requests that are limited by scratch space availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,max24,/,(100),*",
+                               "399ee0f1-dce6-07fa-ccab-8bd96f2f50a4");
+    }
+    { // Index:130
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18283);
+        internal_counters.push_back(18567);
+        internal_counters.push_back(18851);
+        internal_counters.push_back(19135);
+        internal_counters.push_back(19419);
+        internal_counters.push_back(19703);
+        internal_counters.push_back(18148);
+        internal_counters.push_back(18432);
+        internal_counters.push_back(18716);
+        internal_counters.push_back(19000);
+        internal_counters.push_back(19284);
+        internal_counters.push_back(19568);
+
+        c.DefineDerivedCounter("CSLimitedByLds",
+                               "WaveOccupancyLimiters",
+                               "The percentage of CS wave scheduling requests that are limited by LDS availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,NUM_CUS,/,(100),*",
+                               "03b6b0e1-67eb-688c-a733-e4e31ceb86ae");
+    }
+    { // Index:131
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18278);
+        internal_counters.push_back(18562);
+        internal_counters.push_back(18846);
+        internal_counters.push_back(19130);
+        internal_counters.push_back(19414);
+        internal_counters.push_back(19698);
+        internal_counters.push_back(18148);
+        internal_counters.push_back(18432);
+        internal_counters.push_back(18716);
+        internal_counters.push_back(19000);
+        internal_counters.push_back(19284);
+        internal_counters.push_back(19568);
+
+        c.DefineDerivedCounter("CSLimitedByVgpr",
+                               "WaveOccupancyLimiters",
+                               "The percentage of CS wave scheduling requests that are limited by VGPR availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,NUM_SIMDS,/,(100),*",
+                               "7ad91320-c40d-6994-dc34-73101a7926f7");
+    }
+    { // Index:132
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18268);
+        internal_counters.push_back(18552);
+        internal_counters.push_back(18836);
+        internal_counters.push_back(19120);
+        internal_counters.push_back(19404);
+        internal_counters.push_back(19688);
+        internal_counters.push_back(18148);
+        internal_counters.push_back(18432);
+        internal_counters.push_back(18716);
+        internal_counters.push_back(19000);
+        internal_counters.push_back(19284);
+        internal_counters.push_back(19568);
+
+        c.DefineDerivedCounter("CSLimitedByScratch",
+                               "WaveOccupancyLimiters",
+                               "The percentage of CS wave scheduling requests that are limited by scratch space availability.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,(100),*",
+                               "664e8676-aa15-9861-14d5-c3e4ee208fa1");
+    }
+    { // Index:133
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18288);
+        internal_counters.push_back(18572);
+        internal_counters.push_back(18856);
+        internal_counters.push_back(19140);
+        internal_counters.push_back(19424);
+        internal_counters.push_back(19708);
+        internal_counters.push_back(18148);
+        internal_counters.push_back(18432);
+        internal_counters.push_back(18716);
+        internal_counters.push_back(19000);
+        internal_counters.push_back(19284);
+        internal_counters.push_back(19568);
+
+        c.DefineDerivedCounter("CSLimitedByBarriers",
+                               "WaveOccupancyLimiters",
+                               "The percentage of CS wave scheduling requests that are limited by barriers.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,NUM_CUS,/,(100),*",
+                               "ea835ad2-e28a-3d46-3e08-04d51e072a71");
+    }
+    { // Index:134
+        vector<GpaUInt32> internal_counters;
+        internal_counters.push_back(18292);
+        internal_counters.push_back(18576);
+        internal_counters.push_back(18860);
+        internal_counters.push_back(19144);
+        internal_counters.push_back(19428);
+        internal_counters.push_back(19712);
+        internal_counters.push_back(18148);
+        internal_counters.push_back(18432);
+        internal_counters.push_back(18716);
+        internal_counters.push_back(19000);
+        internal_counters.push_back(19284);
+        internal_counters.push_back(19568);
+
+        c.DefineDerivedCounter("CSLimitedByThreadGroupLimit",
+                               "WaveOccupancyLimiters",
+                               "The percentage of CS wave scheduling requests that are limited by the thread group limit.",
+                               kGpaDataTypeFloat64,
+                               kGpaUsageTypePercentage,
+                               false,
+                               true,
+                               internal_counters,
+                               "0,1,2,3,4,5,sum6,6,7,8,9,10,11,max6,/,NUM_CUS,/,(100),*",
+                               "fe65b54f-7d31-3c33-942f-b6ebcec7b037");
     }
 }
+
+// clang-format on
 

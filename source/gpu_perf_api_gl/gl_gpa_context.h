@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA GL Context declarations.
@@ -80,6 +80,13 @@ public:
     /// @return the max event id of the specified group. Could be zero if group does not exist.
     GpaUInt32 GetMaxEventId(unsigned int driver_group_id) const;
 
+    /// @brief Validates the counter from counter generator and GL driver counters and updates it if necessary.
+    ///
+    /// @return Success status of validation.
+    /// @retval True on success.
+    /// @retval False on failure.
+    bool ValidateAndUpdateGlCounters(IGpaSession* session) const;
+
 private:
     /// @brief Structure to store the information about a specific counter group exposed from the gl_amd_performance_monitor extension.
     struct GpaGlPerfMonitorGroupData
@@ -92,13 +99,6 @@ private:
         GLint  num_counters;                               ///< The number of counter events that are exposed by this group.
         GLint  max_active_discrete_counters_per_instance;  ///< The number of counters that can be enabled simultaneously.
     };
-
-    /// @brief Validates the counter from counter generator and GL driver counters and updates it if necessary.
-    ///
-    /// @return Success status of validation.
-    /// @retval True on success.
-    /// @retval False on failure.
-    bool ValidateAndUpdateGlCounters() const;
 
     /// @brief Queries the information exposed by the driver via the performance monitor extension and caches it for later use.
     ///

@@ -41,22 +41,6 @@ set(PUBLIC_HEADERS  ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api.h
                     ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_types.h
                     ${GPA_PUBLIC_HEADER}/gpu_performance_api/gpu_perf_api_vk.h)
 
-set(DEPRECATED_PUBLIC_HEADERS  ${GPA_PUBLIC_HEADER}/gpu_perf_api.h
-                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_counters.h
-                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_functions.h
-                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_function_types.h
-                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_interface_loader.h
-                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_stub.h
-                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_types.h
-                               ${GPA_PUBLIC_HEADER}/gpu_perf_api_vk.h
-                               ${GPA_PUBLIC_HEADER}/GPAFunctions.h
-                               ${GPA_PUBLIC_HEADER}/GPAInterfaceLoader.h
-                               ${GPA_PUBLIC_HEADER}/GPUPerfAPI.h
-                               ${GPA_PUBLIC_HEADER}/GPUPerfAPIFunctionTypes.h
-                               ${GPA_PUBLIC_HEADER}/GPUPerfAPIStub.h
-                               ${GPA_PUBLIC_HEADER}/GPUPerfAPITypes.h
-                               ${GPA_PUBLIC_HEADER}/GPUPerfAPI-VK.h)
-
 set(HEADER_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/adapter.h
     ${CMAKE_CURRENT_SOURCE_DIR}/api_rt_module_loader.h
@@ -97,7 +81,6 @@ set(SOURCE_FILES
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_session.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpa_unique_object.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api.cc
-    ${CMAKE_CURRENT_SOURCE_DIR}/gpu_perf_api_deprecated.hpp
     ${CMAKE_CURRENT_SOURCE_DIR}/logging.cc
     ${CMAKE_CURRENT_SOURCE_DIR}/utility.cc)
 
@@ -112,8 +95,7 @@ set(SOURCES
     ${HEADER_FILES}
     ${ADDITIONAL_SOURCE}
     ${ADDITIONAL_SOURCE_HEADERS}
-    ${PUBLIC_HEADERS}
-    ${DEPRECATED_PUBLIC_HEADERS})
+    ${PUBLIC_HEADERS})
 
 ADD_STATIC_LIBRARY(${GPA_PROJECT_NAME} ${SOURCES})
 target_link_libraries(${GPA_PROJECT_NAME}
@@ -124,6 +106,5 @@ ADD_LINKER_FLAGS()
 
 if(WIN32)
     source_group("Public Header Files" FILES ${PUBLIC_HEADERS})
-    source_group("Deprecated Header Files" FILES ${DEPRECATED_PUBLIC_HEADERS})
     source_group("Source Files" FILES ${SOURCE_FILES})
 endif()

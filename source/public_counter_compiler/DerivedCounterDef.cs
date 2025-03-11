@@ -329,6 +329,15 @@ namespace PublicCounterCompiler
             set;
         }
 
+        /// <summary>
+        /// Whether the counter is a valid discrete counter
+        /// </summary>
+        public bool IsDiscreteCounter = true;
+
+        /// <summary>
+        /// Whether the counter is a valid SPM counter
+        /// </summary>
+        public bool IsSpmCounter = true;
 
         /// <summary>
         /// Indicates if the usage has been set.

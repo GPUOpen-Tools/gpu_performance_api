@@ -1,6 +1,6 @@
-## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 #! /usr/bin/python
-# Utility Python Script to generate GPA projects on Windows and Linux
+# Utility Python script to generate GPA projects on Windows and Linux
 
 import os
 import sys
@@ -23,16 +23,15 @@ cmakelists_root = gpa_root
 fetch_dependencies_script = os.path.join(pre_bld_script_root, "fetch_dependencies.py")
 sys.path.append(gpa_root)
 
-# Specify the type of Build files to generate.
+# Specify the type of build files to generate
 cmake_generator = None
-cmake_generator_platforms = ["x86", "x64"]
 cmake_generator_configs = ["debug", "release"]
-cmake_vs2015_generators = {'x86':'Visual Studio 14 2015', 'x64':'Visual Studio 14 2015 Win64'}
-cmake_vs2017_generators = {'x86':'Visual Studio 15 2017', 'x64':'Visual Studio 15 2017 Win64'}
-cmake_vs2019_generators = {'x86':'Visual Studio 16 2019', 'x64':'Visual Studio 16 2019'}
-cmake_vs2022_generators = {'x86':'Visual Studio 17 2022', 'x64':'Visual Studio 17 2022'}
-cmake_make_file_generators = {'x86':'Unix Makefiles', 'x64':'Unix Makefiles'}
-cmake_ninja_file_generators = {'x86':'Ninja', 'x64':'Ninja'}
+cmake_vs2015_generator = 'Visual Studio 14 2015 Win64'
+cmake_vs2017_generator = 'Visual Studio 15 2017 Win64'
+cmake_vs2019_generator = 'Visual Studio 16 2019'
+cmake_vs2022_generator = 'Visual Studio 17 2022'
+cmake_make_file_generator = 'Unix Makefiles'
+cmake_ninja_file_generator = 'Ninja'
 
 cmake_cmd = "cmake"
 
@@ -70,7 +69,7 @@ def GenerateProjectFileUsingCmake(cmake_generator, target_platform,
         shutil.rmtree(cmake_build_file_dir, ignore_errors=True)
         Log("Deleting directory " + cmake_build_file_dir)
 
-    # Create Diretories if it doesn't exist
+    # Create directories if they don't exist
     if False == os.path.isdir(cmake_build_file_dir):
         os.makedirs(cmake_build_file_dir)
         Log("Creating creating " + cmake_build_file_dir)
@@ -79,12 +78,8 @@ def GenerateProjectFileUsingCmake(cmake_generator, target_platform,
     os.chdir(cmake_build_file_dir)
     Log("Changing directory to " + cmake_build_file_dir)
 
-    if target_platform == "x86":
-        cmake_platform_arg = "-Dbuild-32bit=ON"
-        architecture = "Win32"
-    else:
-        cmake_platform_arg = "-Dbuild-32bit=OFF"
-        architecture = "x64"
+    cmake_platform_arg = "-Dbuild-32bit=OFF"
+    architecture = "x64"
 
     if project_config == "debug":
         cmake_config_arg = "-Dbuild-debug=ON"
@@ -131,10 +126,14 @@ if sys.platform == "win32":
 
 script_parser.add_argument("--ninja", action="store_true", help="Generate build files for the Ninja build system")
 script_parser.add_argument("--config", choices=["debug", "release"], help="Specify the build config for Makefiles (default: both)")
-script_parser.add_argument("--platform", choices=["x86", "x64"], help="Specify the platform for the project has to be generated (default: both)" )
 script_parser.add_argument("--clean", action="store_true", help="Delete cmake-generated directories created by this script")
-script_parser.add_argument("--build", action="store", help="GPA Build number")
+script_parser.add_argument("--build-number", default="0", help="Specify the build number, primarily to be used by build machines to produce versioned builds")
+script_parser.add_argument("--build", action="store_true", help="Perform the GPA build after running CMake")
 script_parser.add_argument("--builddir", action="store", help="Directory where the cmake files will be generated and the build will be performed; if not given as an absolute path then this will be relative to the top-level pre_build script")
+script_parser.add_argument("--build-jobs", default="8", help="number of simultaneous jobs to run during a build (default = 8)")
+script_parser.add_argument("--package", action="store_true", help="Generate GPA packages")
+script_parser.add_argument("--package-suffix", action="store", help="Suffix to append to the generated GPA packages")
+
 
 if sys.platform == "win32":
     script_parser.add_argument("--skipdx11", action="store_true", help="Skip DX11 from the CMake generated project")
@@ -142,10 +141,10 @@ if sys.platform == "win32":
 
 script_parser.add_argument("--skipvulkan", action="store_true", help="Skip Vulkan from the CMake generated project")
 script_parser.add_argument("--skipopengl", action="store_true", help="Skip OpenGL from the CMake generated project")
-script_parser.add_argument("--skipopencl", action="store_true", help="Skip OpenCL from the CMake generated project")
 script_parser.add_argument("--skiptests", action="store_true", help="Skip Tests from the CMake generated project")
-script_parser.add_argument("--skipsamples", action="store_true", help="Skip Samples from the CMake generated project")
+script_parser.add_argument("--skipexamples", action="store_true", help="Skip examples from the CMake generated project")
 script_parser.add_argument("--skipdocs", action="store_true", help="Skip Docs from the CMake generated project")
+script_parser.add_argument("--skipcsharp", action="store_true", help="Skip C#-based projects from the CMake generation")
 script_parser.add_argument("--nofetch", action="store_true", help="Skip fetching repo dependencies")
 
 script_parser.add_argument("--cmakecmd", type=str, default="cmake", help="Command to use in place of 'cmake'")
@@ -175,6 +174,7 @@ if build_args.nofetch == False:
         print("ERROR: Unable to fetch all dependencies (return code: %d)"%fetch_dependencies_process.returncode)
         sys.exit(1)
 
+
 cmake_additional_args=[""]
 
 if build_args.verbose == True:
@@ -201,33 +201,25 @@ if build_args.skipopengl == True:
 else:
     cmake_additional_args.append("-Dskipopengl=OFF")
 
-if build_args.skipopencl == True:
-    cmake_additional_args.append("-Dskipopencl=ON")
-else:
-    cmake_additional_args.append("-Dskipopencl=OFF")
-
 if build_args.skiptests == True:
     cmake_additional_args.append("-Dskiptests=ON")
 else:
     cmake_additional_args.append("-Dskiptests=OFF")
 
-if build_args.skipsamples == True:
-    cmake_additional_args.append("-Dskipsamples=ON")
+if build_args.skipexamples == True:
+    cmake_additional_args.append("-Dskipexamples=ON")
 else:
-    cmake_additional_args.append("-Dskipsamples=OFF")
+    cmake_additional_args.append("-Dskipexamples=OFF")
 
 if build_args.skipdocs == True:
     cmake_additional_args.append("-Dskipdocs=ON")
 else:
     cmake_additional_args.append("-Dskipdocs=OFF")
 
-
-## If platform or config is not provided we will generate projects for both platforms and their both configs
-if build_args.platform == 'x86':
-    cmake_generator_platforms.remove('x64')
-
-if build_args.platform == 'x64':
-    cmake_generator_platforms.remove('x86')
+if build_args.skipcsharp == True:
+    cmake_additional_args.append("-Dskipcsharp=ON")
+else:
+    cmake_additional_args.append("-Dskipcsharp=OFF")
 
 if build_args.config == "debug":
     cmake_generator_configs.remove("release")
@@ -237,29 +229,28 @@ if build_args.config == "release":
 
 if sys.platform == "win32":
     if build_args.vs == "2015":
-        cmake_generator = cmake_vs2015_generators
+        cmake_generator = cmake_vs2015_generator
     if build_args.vs == "2017":
-        cmake_generator = cmake_vs2017_generators
+        cmake_generator = cmake_vs2017_generator
     elif build_args.vs == "2019":
-        cmake_generator = cmake_vs2019_generators
+        cmake_generator = cmake_vs2019_generator
     elif build_args.vs == "2022":
-        cmake_generator = cmake_vs2022_generators
+        cmake_generator = cmake_vs2022_generator
     elif build_args.ninja:
-        cmake_generator = cmake_ninja_file_generators
+        cmake_generator = cmake_ninja_file_generator
     else:
-        cmake_generator = cmake_vs2019_generators
+        cmake_generator = cmake_vs2019_generator
 else:
     if build_args.ninja:
-        cmake_generator = cmake_ninja_file_generators
+        cmake_generator = cmake_ninja_file_generator
     else:
-        cmake_generator = cmake_make_file_generators
+        cmake_generator = cmake_make_file_generator
 
 cmake_cmd = build_args.cmakecmd
 
 verbosity_enabled = build_args.verbose
 
 if build_args.android == True:
-    cmake_generator_platforms.remove('x86')
     android_ndk=os.environ["ANDROID_NDK"]
     if android_ndk == "":
         print("Android environment variable is not defined. Exiting.")
@@ -275,10 +266,7 @@ if build_args.android == True:
     cmake_additional_args.append("-Dbuild-32bit=OFF")
 
 # Set the BUILD version number.
-if build_args.build is not None:
-    cmake_additional_args.append("-Dbuild=" + build_args.build)
-else:
-    cmake_additional_args.append("-Dbuild=0")
+cmake_additional_args.append("-Dbuild=" + build_args.build_number)
 
 # Allow the build tool to emit a 'compile_commands.json' file for tools such as clang-tidy
 # Ignored by generators other than Make and Ninja, so no harm in leaving it always on
@@ -308,38 +296,85 @@ else:
 print(cmake_generator)
 
 if sys.platform == "win32":
-    cmake_generator_configs = ["debug"]
+    cmake_generator_configs = ["release"]
+
+cmake_build_configs = ["debug", "release"]
 
 print("configs: %s" % cmake_generator_configs)
 
-for platform in cmake_generator_platforms:
-    for config in cmake_generator_configs:
+for config in cmake_generator_configs:
 
-        if build_args.builddir != None:
-            cmake_output_path = build_args.builddir
+    platform = 'x64'
+
+    if build_args.builddir != None:
+        cmake_output_path = build_args.builddir
+    else:
+        if sys.platform == "win32":
+            cmake_output_path = os.path.join(pre_bld_script_root, "win", "vs" + build_args.vs)
         else:
-            if sys.platform == "win32":
-                cmake_output_path = os.path.join(pre_bld_script_root, "win", "vs" + build_args.vs)
-            elif sys.platform == "darwin":
-                cmake_output_path = os.path.join(pre_bld_script_root, "mac", "make_" + config)
-            else:
-                cmake_output_path = os.path.join(pre_bld_script_root, "linux", "make_" + config)
+            cmake_output_path = os.path.join(pre_bld_script_root, "linux", "make_" + config)
 
-            if platform == "x64":
-                cmake_output_path = cmake_output_path + "_x64"
-            else:
-                cmake_output_path = cmake_output_path + "_x86"
+        cmake_output_path = cmake_output_path + "_x64"
 
-            # Append _android to output dir if building for android
-            if build_args.android == True:
-                cmake_output_path = cmake_output_path + "_android"
+        # Append _android to output dir if building for android
+        if build_args.android == True:
+            cmake_output_path = cmake_output_path + "_android"
 
 
-        if GenerateProjectFileUsingCmake(cmake_generator[platform], platform,
-                                         config, cmake_additional_args, cmakelists_root,
-                                         build_args.clean, cmake_output_path) == False:
-            print("Unable to generate project files")
+    if GenerateProjectFileUsingCmake(cmake_generator, platform,
+                                        config, cmake_additional_args, cmakelists_root,
+                                        build_args.clean, cmake_output_path) == False:
+        print("Unable to generate project files")
+        sys.exit(1)
+
+if (build_args.build):
+    config_suffix = "_x64"
+    if build_args.android == True:
+        config_suffix = config_suffix + "_android"
+
+    for config in cmake_build_configs:
+        print( "\nBuilding " + config + " configuration\n")
+        build_dir = ""
+
+        cmake_output_dir = pre_bld_script_root
+        if build_args.builddir != None:
+            cmake_output_dir = build_args.builddir
+
+        if sys.platform == "win32":
+            cmake_output_dir = os.path.join(cmake_output_dir, "win", "vs" + build_args.vs + config_suffix)
+        else:
+            cmake_output_dir = os.path.join(cmake_output_dir, "linux", "make_" + config + config_suffix)
+
+        if build_args.ninja or sys.platform != "win32":
+            cmake_args = ["cmake", "--build", cmake_output_dir, "--parallel", build_args.build_jobs]
+
+        elif sys.platform == "win32":
+            # For Visual Studio, specify the config to build
+            cmake_args = ["cmake", "--build", cmake_output_dir, "--config", config, "--target", "ALL_BUILD", "--",  "/m:" + build_args.build_jobs, "/p:nodeReuse=false"]
+
+        p = subprocess.Popen(cmake_args, cwd=cmake_output_dir, stderr=subprocess.STDOUT)
+        p.wait()
+        sys.stdout.flush()
+
+        if(p.returncode != 0):
+            print("\nERROR: CMake build failed with %d" % p.returncode)
             sys.exit(1)
+
+if (build_args.package):
+    packaging_args = [sys.executable, os.path.join(pre_bld_script_root, "gpa_packaging.py"), "--build-number=" + build_args.build_number]
+    if (build_args.android == True):
+        packaging_args.append("--android")
+    if (build_args.package_suffix is not None):
+        packaging_args.append("--suffix=" + build_args.package_suffix)
+
+    p = subprocess.Popen(packaging_args, stderr=subprocess.STDOUT)
+    p.wait()
+    sys.stdout.flush()
+
+    if(p.returncode != 0):
+        print("\nERROR: GPA packaging script failed with %d" % p.returncode)
+        sys.exit(1)
+
 
 minutes, seconds = divmod(time.time() - start_time, 60)
 print("Successfully completed in {0:.0f} minutes, {1:.1f} seconds".format(minutes,seconds))

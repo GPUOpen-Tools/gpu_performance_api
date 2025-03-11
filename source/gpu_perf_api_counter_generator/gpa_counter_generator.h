@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPUPerfAPI Counter Generator function.
@@ -18,6 +18,7 @@
 /// Internal function. We don't want this exposed by the internal DLLs though, so it doesn't use GPALIB_DECL.
 ///
 /// @param [in] desired_api The API to generate counters for.
+/// @param [in] sample_type The type of samples to generate counters for.
 /// @param [in] vendor_id The vendor id to generate counters for.
 /// @param [in] device_id The device id to generate counters for.
 /// @param [in] revision_id The revision id to generate counters for.
@@ -31,6 +32,7 @@
 /// @retval kGpaStatusErrorHardwareNotSupported If the desired generation is not supported.
 /// @retval kGpaStatusOk If the desired API and generation are supported.
 GpaStatus GenerateCounters(GpaApiType             desired_api,
+                           GpaSessionSampleType   sample_type,
                            GpaUInt32              vendor_id,
                            GpaUInt32              device_id,
                            GpaUInt32              revision_id,

@@ -1,6 +1,6 @@
 ﻿// =============================================================================
 // <copyright file="form1.designer.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2011-2023 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2011-2024 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -171,7 +171,7 @@ namespace PublicCounterCompiler
             this.batchGpuFamilyList.Name = "batchGpuFamilyList";
             this.batchGpuFamilyList.Size = new System.Drawing.Size(268, 26);
             this.batchGpuFamilyList.TabIndex = 18;
-            this.batchGpuFamilyList.Text = "Gfx11,Gfx103,Gfx10,Gfx9,Gfx8";
+            this.batchGpuFamilyList.Text = "Gfx12,Gfx11,Gfx103,Gfx10";
             // 
             // label2
             // 
@@ -189,7 +189,7 @@ namespace PublicCounterCompiler
             this.batchApiList.Name = "batchApiList";
             this.batchApiList.Size = new System.Drawing.Size(268, 26);
             this.batchApiList.TabIndex = 1;
-            this.batchApiList.Text = "DX12,VK,DX11,GL,CL,OGLP";
+            this.batchApiList.Text = "DX12,VK,DX11,OGLP";
             // 
             // label1
             // 

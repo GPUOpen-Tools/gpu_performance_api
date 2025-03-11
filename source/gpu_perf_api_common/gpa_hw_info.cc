@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  A class for managing hardware information.
@@ -29,6 +29,8 @@ GpaHwInfo::GpaHwInfo()
     , num_simd_set_(false)
     , num_cu_(0)
     , num_cu_set_(false)
+    , num_waves_per_simd_(0)
+    , num_waves_per_simd_set_(false)
     , asic_type_(GDT_ASIC_TYPE_NONE)
     , num_shader_engines_(0)
     , num_shader_engines_set_(false)
@@ -45,6 +47,7 @@ GpaHwInfo::GpaHwInfo()
     // and GPA needs to avoid reporting an error about these unsupported devices.
     unsupported_device_ids_.push_back(0x1506);
     unsupported_device_ids_.push_back(0x164e);
+    unsupported_device_ids_.push_back(0x13c0);
 
     // These are MI (Machine Inferencing) devices that do not have a full graphics pipeline
     // and are not currently supported by GPA.
@@ -163,6 +166,12 @@ void GpaHwInfo::SetNumberCus(const size_t& num_cu)
     num_cu_     = num_cu;
 }
 
+void GpaHwInfo::SetWavesPerSimd(const size_t& numWaves)
+{
+    num_waves_per_simd_set_ = true;
+    num_waves_per_simd_    = numWaves;
+}
+
 void GpaHwInfo::SetNumberShaderEngines(const size_t& num_se)
 {
     num_shader_engines_set_ = true;
@@ -276,6 +285,11 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId()
             SetSuClocksPrim(device_info.m_suClocksPrim);
         }
 
+        if (!num_waves_per_simd_set_)
+        {
+            SetWavesPerSimd(device_info.m_nMaxWavePerSIMD);
+        }
+
         if (!num_prim_pipes_set_)
         {
             SetNumberPrimPipes(device_info.m_nNumPrimPipes);
@@ -298,7 +312,7 @@ bool GpaHwInfo::UpdateDeviceInfoBasedOnDeviceId()
             }
             else
             {
-                GPA_LOG_ERROR("Unrecognized device ID: 0x%04X.", device_id_);
+                GPA_LOG_ERROR("Unrecognized device ID: 0x%04X, rev 0x%02X.", device_id_, revision_id_);
             }
         }
 

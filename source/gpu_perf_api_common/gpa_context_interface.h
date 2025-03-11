@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface representing the GPA context.
@@ -73,97 +73,6 @@ public:
     /// @return kGpaStatusOk on successful execution.
     virtual GpaStatus GetSupportedSampleTypes(GpaContextSampleTypeFlags* sample_types) const = 0;
 
-    /// @brief Gets the number of available counters in the context.
-    ///
-    /// @param [out] counter_count Number of counters.
-    ///
-    /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus GetNumCounters(GpaUInt32* counter_count) const = 0;
-
-    /// @brief Gets the name of a counter.
-    ///
-    /// @param [in] index Index of the counter.
-    /// @param [out] counter_name Name of the counter.
-    ///
-    /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus GetCounterName(GpaUInt32 index, const char** counter_name) const = 0;
-
-    /// @brief Gets the name of the group that a specific counter belongs to.
-    ///
-    /// @param [in] index Index of the counter.
-    /// @param [out] counter_group Name of the group.
-    ///
-    /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus GetCounterGroup(GpaUInt32 index, const char** counter_group) const = 0;
-
-    /// @brief Gets the description of a counter.
-    ///
-    /// @param [in] index Index of the counter.
-    /// @param [out] counter_description Description of the counter.
-    ///
-    /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus GetCounterDescription(GpaUInt32 index, const char** counter_description) const = 0;
-
-    /// @brief Gets the data type of a counter.
-    ///
-    /// @param [in] index Index of the counter.
-    /// @param [out] counter_data_type Data type of the counter.
-    ///
-    /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus GetCounterDataType(GpaUInt32 index, GpaDataType* counter_data_type) const = 0;
-
-    /// @brief Gets the usage type of a counter.
-    ///
-    /// @param [in] index Index of the counter.
-    /// @param [out] counter_usage_type Counter usage type.
-    ///
-    /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus GetCounterUsageType(GpaUInt32 index, GpaUsageType* counter_usage_type) const = 0;
-
-    /// @brief Gets the UUID of the specified counter.
-    ///
-    /// @param [in] index Index of the counter.
-    /// @param [out] counter_uuid The value which will hold the counter UUID upon successful execution.
-    ///
-    /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus GetCounterUuid(GpaUInt32 index, GpaUuid* counter_uuid) const = 0;
-
-    /// @brief Gets the supported sample types of the specified counter.
-    ///
-    /// @param [in] index Index of the counter.
-    /// @param [out] counter_sample_type The value which will hold the counter's supported sample type upon successful execution.
-    ///
-    /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType* counter_sample_type) const = 0;
-
-    /// @brief Gets the index of a counter by its name.
-    ///
-    /// @param [in] counter_name Name of the counter.
-    /// @param [out] counter_index Index of the counter.
-    ///
-    /// @return kGpaStatusOk on successful execution.
-    virtual GpaStatus GetCounterIndex(const char* counter_name, GpaUInt32* counter_index) const = 0;
-
-    /// @brief Uses the exposed counter index to look up which source the counter comes from and the relative (local)
-    /// counter index into that source of counters.
-    ///
-    /// @param [in] exposed_counter_index The counter index of which to get the source and local index.
-    /// @param [out] counter_source Pointer to a variable that will hold the counter's source. Cannot be NULL.
-    /// @param [out] source_local_index Pointer to a variable that will hold the counters index relative to that source. Cannot be NULL.
-    ///
-    /// @return True if the exposedCounterIndex is in the valid range; false otherwise.
-    virtual bool GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, GpaCounterSource* counter_source, GpaUInt32* source_local_index) const = 0;
-
-    /// @brief Gets the source (origin) of the specified internal counter (ie, either hardware or software).
-    ///
-    /// @param internal_counter_index The index of the counter to find, must be in range of 0 to (NumHwCounters + NumSwCounters).
-    ///
-    /// @retval Unknown If the counterIndex is invalid.
-    /// @retval Public If the counter is defined by GPA.
-    /// @retval Hardware If the counter comes from our internal extension.
-    /// @retval Software If the counter comes from an API-level entry point (ie, queries).
-    virtual GpaCounterSource GetCounterSource(GpaUInt32 internal_counter_index) const = 0;
-
     /// @brief Check to see if public counters should be exposed.
     ///
     /// @return True if public counters should be exposed; false otherwise.
@@ -189,6 +98,14 @@ public:
     /// @return Pointer to the context hardware info.
     virtual const GpaHwInfo* GetHwInfo() const = 0;
 
+    /// @brief Update the hardware information.
+    ///
+    /// @param [in] numShaderEngines The number of shader engines to use for calculating counter equations.
+    /// @param [in] numComputeUnits The total number of compute units to use for calculating counter equations.
+    /// @param [in] numSimds The total number of SIMDs to use for calculating counter equations.
+    /// @param [in] numWavesPerSimd The maximum number of waves per SIMD to use for calculating counter equations.
+    virtual void UpdateHwInfo(GpaUInt32 numShaderEngines, GpaUInt32 numComputeUnits, GpaUInt32 numSimds, GpaUInt32 numWavesPerSimd) = 0;
+
     /// @brief Checks whether the context is open or not.
     ///
     /// @return True if context is open otherwise false.
@@ -198,11 +115,6 @@ public:
     ///
     /// @return DeviceClockMode enum indicating clock mode behavior.
     virtual DeviceClockMode GetDeviceClockMode() const = 0;
-
-    /// @brief Opens the counter for the context.
-    ///
-    /// @return True if successfully opens the counter otherwise false.
-    virtual bool OpenCounters() = 0;
 
     /// @brief Begins the session on current context.
     ///
@@ -223,6 +135,16 @@ public:
     ///
     /// @return Active session if any session is active otherwise nullptr.
     virtual const IGpaSession* GetActiveSession() const = 0;
+
+    /// Returns the number of GPU shader engines.
+    ///
+    /// @return number of GPU shader engines.
+    virtual uint32_t GetShaderEngineCount() const = 0;
+
+    /// Gets the flags that the context was created with.
+    ///
+    /// @return The context flags.
+    virtual GpaOpenContextFlags GetContextFlags() const = 0;
 
     /// @brief Enable/disable the stable power state, using the stable clock mode specified when opening the context.
     ///

@@ -1,7 +1,7 @@
 /*
  ***********************************************************************************************************************
  *
- *  Copyright (c) 2014-2019 Advanced Micro Devices, Inc. All Rights Reserved.
+ *  Copyright (c) 2014-2024 Advanced Micro Devices, Inc. All Rights Reserved.
  *
  *  Permission is hereby granted, free of charge, to any person obtaining a copy
  *  of this software and associated documentation files (the "Software"), to deal
@@ -110,8 +110,13 @@ typedef enum VkGpaPerfBlockAMD
     VK_GPA_PERF_BLOCK_DF_MALL_AMD     = 48,
     VK_GPA_PERF_BLOCK_SQWGP_AMD       = 49,
     VK_GPA_PERF_BLOCK_PC_AMD          = 50,
+    VK_GPA_PERF_BLOCK_GL1XA_AMD       = 51,
+    VK_GPA_PERF_BLOCK_GL1XC_AMD       = 52,
+    VK_GPA_PERF_BLOCK_WGS_AMD         = 53,
+    VK_GPA_PERF_BLOCK_EA_CPWD_AMD     = 54,
+    VK_GPA_PERF_BLOCK_EA_SE_AMD       = 55,
     VK_GPA_PERF_BLOCK_BEGIN_RANGE_AMD = VK_GPA_PERF_BLOCK_CPF_AMD,
-    VK_GPA_PERF_BLOCK_END_RANGE_AMD   = VK_GPA_PERF_BLOCK_PC_AMD,
+    VK_GPA_PERF_BLOCK_END_RANGE_AMD   = VK_GPA_PERF_BLOCK_EA_SE_AMD,
     VK_GPA_PERF_BLOCK_RANGE_SIZE_AMD  = (VK_GPA_PERF_BLOCK_END_RANGE_AMD - VK_GPA_PERF_BLOCK_BEGIN_RANGE_AMD + 1),
     VK_GPA_PERF_BLOCK_MAX_ENUM_AMD    = 0x7FFFFFFF
 } VkGpaPerfBlockAMD;

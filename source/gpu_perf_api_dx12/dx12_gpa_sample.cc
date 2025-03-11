@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX12 GPA Sample implementation
@@ -59,19 +59,63 @@ void Dx12GpaSample::ReleaseCounters()
 GpaSampleResult* Dx12GpaSample::PopulateSampleResult()
 {
     size_t sample_data_bytes = 0u;
-    // Validate result space.
-    sample_data_bytes = GetSampleResultLocation()->GetBufferBytes();
+
+    bool is_sqtt_sample = GpaSampleType::kSqtt == GetGpaSampleType();
+
+    bool is_spm_sample = GpaSampleType::kSpm == GetGpaSampleType();
+
+    // Validate result space
+    if (GetPass()->IsTimingPass())
+    {
+        // If the pass is timing, we will have one result space to return the result, although
+        // we need to get the result in twice space size from the driver
+        sample_data_bytes = GetSampleResultLocation()->GetBufferBytes();
+    }
+    else if (is_sqtt_sample || is_spm_sample)
+    {
+        Dx12GpaCommandList* dx12_gpa_cmd_list = reinterpret_cast<Dx12GpaCommandList*>(GetCmdList());
+
+        IAmdExtGpaSession* result_session = nullptr;
+
+        if (IsCopied())
+        {
+            result_session = dx12_gpa_cmd_list->GetBundleResultAmdExtSession(GetClientSampleId());
+        }
+        else
+        {
+            result_session = dx12_gpa_cmd_list->GetAmdExtSession();
+        }
+
+        //NOTE: resultSize is the size according to the driver. The actual number of results could be larger if the sample contains skipped/ignored counters?
+        HRESULT driver_result = result_session->GetResults(GetDriverSampleId(), &sample_data_bytes, nullptr);
+        if (FAILED(driver_result))
+        {
+            GPA_LOG_ERROR("Failed to retrieve driver result size");
+            return nullptr;
+        }
+
+        GetSampleResultLocation()->GetAsTraceSampleResult()->SetResultBufferSize(sample_data_bytes);
+    }
+    else
+    {
+        sample_data_bytes = GetSampleResultLocation()->GetBufferBytes();
+    }
+
     if (0 != sample_data_bytes)
     {
         if (GetSampleResultLocation()->GetBufferBytes())
         {
-            void*      result_buffer  = nullptr;
-            GpaUInt64  timing_data[2] = {};
+            void*     result_buffer  = nullptr;
+            GpaUInt64 timing_data[2] = {};
 
             if (GetPass()->IsTimingPass())
             {
                 result_buffer     = timing_data;
                 sample_data_bytes = sizeof(timing_data);
+            }
+            else if (is_sqtt_sample || is_spm_sample)
+            {
+                result_buffer = GetSampleResultLocation()->GetAsTraceSampleResult()->GetResultBuffer();
             }
             else
             {
@@ -150,8 +194,12 @@ GpaSampleResult* Dx12GpaSample::PopulateSampleResult()
 
 bool Dx12GpaSample::CopyResult(size_t sample_data_size, void* result_buffer) const
 {
-    bool is_data_ready                   = false;
-    bool should_driver_have_results = GetPass()->GetEnabledCounterCount() > 0;
+    bool is_data_ready = false;
+    // driver should have results if:
+    //  - we've collected thread trace OR
+    //  - we've collected counters and at least one counter is enabled
+    bool is_trace_sample            = (GpaSampleType::kSqtt == GetGpaSampleType()) || (GpaSampleType::kSpm == GetGpaSampleType());
+    bool should_driver_have_results = is_trace_sample || (GetPass()->GetEnabledCounterCount() > 0);
 
     if (nullptr != result_buffer)
     {

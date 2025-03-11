@@ -116,6 +116,11 @@ void GpaSample::AllocateSampleResultSpace()
 {
     if (nullptr == sample_result_)
     {
+        if (GpaSampleType::kSqtt == gpa_sample_type_ || GpaSampleType::kSpm == gpa_sample_type_)
+        {
+            sample_result_ = new (std::nothrow) GpaTraceSampleResult();
+        }
+        else
         {
             sample_result_ = new (std::nothrow) GpaCounterSampleResult(gpa_pass_->GetEnabledCounterCount());
         }

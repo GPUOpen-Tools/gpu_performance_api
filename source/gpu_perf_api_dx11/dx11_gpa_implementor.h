@@ -21,7 +21,7 @@ class Dx11GpaImplementor : public GpaImplementor, public TSingleton<Dx11GpaImple
 
 public:
     /// @brief Destructor.
-    ~Dx11GpaImplementor() = default;
+    virtual ~Dx11GpaImplementor() = default;
 
     /// @copydoc IGpaInterfaceTrait::GetApiType()
     GpaApiType GetApiType() const override final;

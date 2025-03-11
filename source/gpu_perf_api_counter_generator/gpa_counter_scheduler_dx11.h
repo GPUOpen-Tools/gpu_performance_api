@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base class to handle the scheduling of the D3D Query counters.
@@ -14,8 +14,10 @@
 class GpaCounterSchedulerDx11 : public GpaCounterSchedulerBase
 {
 public:
-    /// @brief Constructor.
-    GpaCounterSchedulerDx11();
+    /// @brief Constructor
+    ///
+    /// @param [in] sample_type The type of samples for which to schedule counters.
+    GpaCounterSchedulerDx11(GpaSessionSampleType sample_type);
 
     /// @copydoc GpaCounterSchedulerBase::EnableCounter()
     virtual GpaStatus EnableCounter(GpaUInt32 index) override;
@@ -33,6 +35,10 @@ protected:
     /// This keeps the overall number of passes down to a reasonable number, but splits the counters up
     /// in a manner that allows them to be more consistent.
     virtual GpaCounterSplitterAlgorithm GetPreferredSplittingAlgorithm() const override;
+
+private:
+    /// @brief Delete default constructor.
+    GpaCounterSchedulerDx11() = delete;
 };
 
 #endif  // GPU_PERF_API_COUNTER_GENERATOR_DX11_GPA_COUNTER_SCHEDULER_DX11_H_

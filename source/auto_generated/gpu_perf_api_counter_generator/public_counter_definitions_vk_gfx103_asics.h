@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions ASIC file for VK_GFX103
@@ -28,9 +28,6 @@ namespace vk_gfx103_asics
     /// @return True if the ASIC matched one available, and c was updated.
     inline void UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_HW_ASIC_TYPE asic_type, GpaDerivedCounters& c)
     {
-        // Override max block events first so we could chain these if we want
-        counter_vk_gfx103::OverrideMaxBlockEvents(asic_type);
-
         if (vk_gfx103_gfx1031_gfx1032::UpdatePublicAsicSpecificCounters(desired_generation, asic_type, c))
         {
             return;

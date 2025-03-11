@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base class for counter generation.
@@ -18,7 +18,9 @@ class GpaCounterGeneratorBase : public IGpaCounterAccessor
 {
 public:
     /// @brief Constructor.
-    GpaCounterGeneratorBase();
+    /// 
+    /// @param [in] sample_type The type of samples for which to generate counters.
+    GpaCounterGeneratorBase(GpaSessionSampleType sample_type);
 
     /// @brief Virtual destructor.
     virtual ~GpaCounterGeneratorBase() = default;
@@ -150,7 +152,14 @@ public:
     GpaDerivedCounters  public_counters_;    ///< The generated public counters.
     GpaHardwareCounters hardware_counters_;  ///< The generated hardware counters.
 
+    GpaSessionSampleType GetGeneratorSampleType() const
+    {
+        return sample_type_;
+    }
+
 private:
+    /// @brief Default constructor - not allowed.
+    GpaCounterGeneratorBase() = delete;
 
     bool do_allow_public_counters_;            ///< Flag indicating whether or not public counters are allowed.
     bool do_allow_hardware_counters_;          ///< Flag indicating whether or not hardware counters are allowed.
@@ -165,6 +174,8 @@ private:
     /// Cache of counter indexes, so we don't have to look up a counter more than once (it can be expensive).
     mutable CounterNameIndexMap counter_index_cache_;
 
+    /// Sample type.
+    GpaSessionSampleType sample_type_;
 };
 
 #endif  // GPU_PERF_API_COUNTER_GENERATOR_GPA_COUNTER_GENERATOR_BASE_H_

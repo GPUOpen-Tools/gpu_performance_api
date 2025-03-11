@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2020 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
@@ -9,20 +9,12 @@ set(ProjectName ${GPA_PROJECT_NAME})
 include (${GPA_CMAKE_MODULES_DIR}/common.cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-set(PUBLIC_COUNTER_DEFINITIONS  public_counter_definitions_gfx8.txt
-                                public_counter_definitions_gfx9.txt
-                                public_counter_definitions_gfx10.txt
+set(PUBLIC_COUNTER_DEFINITIONS  public_counter_definitions_gfx10.txt
                                 public_counter_definitions_gfx103.txt
-                                public_counter_definitions_gfx11.txt)
+                                public_counter_definitions_gfx11.txt
+                                public_counter_definitions_gfx12.txt)
 
-set(PUBLIC_COUNTER_DEFINITIONS_COMPUTE  public_counter_definitions_compute_gfx8.txt
-                                        public_counter_definitions_compute_gfx9.txt
-                                        public_counter_definitions_compute_gfx10.txt
-                                        public_counter_definitions_compute_gfx103.txt
-                                        public_counter_definitions_compute_gfx11.txt)
-
-set(SOURCES ${PUBLIC_COUNTER_DEFINITIONS}
-            ${PUBLIC_COUNTER_DEFINITIONS_COMPUTE})
+set(SOURCES ${PUBLIC_COUNTER_DEFINITIONS})
 
 add_executable(${GPA_PROJECT_NAME} ${SOURCES})
 target_link_libraries(${GPA_PROJECT_NAME}
@@ -38,7 +30,7 @@ include (${GPA_CMAKE_MODULES_DIR}/Common.cmake)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 if(EXISTS ${GPA_AUTOGEN_PUBLIC_COUNTER_INPUT_FILES})
-    foreach(API GL DX11 DX12 VK CL)
+    foreach(API GL DX11 DX12 VK)
         string(TOLOWER ${API} API_LOWER_STR)
         include(${GPA_AUTOGEN_PUBLIC_COUNTER_INPUT_FILES}/public_counter_names_${API_LOWER_STR}.cmake)
         set(SOURCES ${SOURCES}
@@ -55,4 +47,3 @@ target_link_libraries(${GPA_PROJECT_NAME}
 
 set_target_properties(${GPA_PROJECT_NAME} PROPERTIES FOLDER PublicCounterNames)
 REMOVE_TARGET_FROM_BUILD(${GPA_PROJECT_NAME})
-

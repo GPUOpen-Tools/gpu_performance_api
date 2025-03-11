@@ -1,6 +1,6 @@
 ﻿// =====================================================================
 // <copyright file="CounterDefCMakeGen.cs" company="Advanced Micro Devices, Inc.">
-//    Copyright (c) 2019-2023 Advanced Micro Devices, Inc. All rights reserved.
+//    Copyright (c) 2019-2024 Advanced Micro Devices, Inc. All rights reserved.
 // </copyright>
 // <author>
 //    AMD Developer Tools Team
@@ -30,7 +30,6 @@ namespace GpaTools
         /// </summary>
         public static ApiDictionary counterDefs = new ApiDictionary();
 
-
         /// <summary>
         /// Initializes the memory for the file lists
         /// </summary>
@@ -41,14 +40,12 @@ namespace GpaTools
             counterDefs.Add(Gpa.DX11, new FileList());
             counterDefs.Add(Gpa.VK, new FileList());
             counterDefs.Add(Gpa.GL, new FileList());
-            counterDefs.Add(Gpa.CL, new FileList());
 
             // PublicDerivedCounters - GPA
             derivedCounters.Add(Gpa.DX12, new FileList());
             derivedCounters.Add(Gpa.DX11, new FileList());
             derivedCounters.Add(Gpa.VK, new FileList());
             derivedCounters.Add(Gpa.GL, new FileList());
-            derivedCounters.Add(Gpa.CL, new FileList());
         }
 
         /// <summary>

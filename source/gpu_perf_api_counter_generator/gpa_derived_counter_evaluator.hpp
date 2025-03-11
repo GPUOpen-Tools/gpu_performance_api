@@ -268,10 +268,10 @@ void ScalarMulN(std::vector<T>& stack, int32_t vector_width)
 /// @return kGpaStatusOk on success, otherwise an error code.
 template <class T, class InternalCounterType>
 static GpaStatus EvaluateExpression(const char*                          expression,
-                             void*                                result,
-                             const std::vector<const GpaUInt64*>& results,
-                             GpaDataType                          result_type,
-                             const GpaHwInfo*                     hw_info)
+                                    void*                                result,
+                                    const std::vector<const GpaUInt64*>& results,
+                                    GpaDataType                          result_type,
+                                    const GpaHwInfo*                     hw_info)
 {
     GpaStatus status = kGpaStatusOk;
 
@@ -282,16 +282,16 @@ static GpaStatus EvaluateExpression(const char*                          express
     }
 
     size_t            expression_len = strlen(expression) + 1;
-    std::vector<char> pBuf(expression_len);
+    std::vector<char> buffer(expression_len);
 
-    strcpy_s(pBuf.data(), expression_len, expression);
+    strcpy_s(buffer.data(), expression_len, expression);
 
     vector<T> stack;
     T*        write_result = reinterpret_cast<T*>(result);
 
     char* context = nullptr;
     context;  //TODO: gcc is not considering unused in strtok_s
-    char* pch = strtok_s(pBuf.data(), " ,", &context);
+    char* pch = strtok_s(buffer.data(), " ,", &context);
 
     while (nullptr != pch)
     {
@@ -402,6 +402,10 @@ static GpaStatus EvaluateExpression(const char*                          express
         else if (_strcmpi(pch, "num_cus") == 0)
         {
             stack.push_back(static_cast<T>(hw_info->GetNumberCus()));
+        }
+        else if (_strcmpi(pch, "MAX_WAVES") == 0)
+        {
+            stack.push_back(static_cast<T>(hw_info->GetNumberSimds() * hw_info->GetWavesPerSimd()));
         }
         else if (_strcmpi(pch, "TS_FREQ") == 0)
         {

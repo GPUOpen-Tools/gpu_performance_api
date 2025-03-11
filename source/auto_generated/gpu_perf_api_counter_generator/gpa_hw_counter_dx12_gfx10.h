@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief DX12 counter definitions for GFX10.
@@ -45,6 +45,7 @@ namespace counter_dx12_gfx10
     extern const unsigned int                                         kDx12PaddedCounterGroupCountGfx10; ///< reserved counter group count for Dx12 for Gfx10 family
     extern const unsigned int                                         kHwDx12SqGroupCountGfx10; ///< Hardware SQ Group Count for Dx12 for Gfx10 family
     extern const unsigned int                                         kHwDx12SqIsolatedGroupCountGfx10; ///< Hardware Isolated Group Count for Dx12 for Gfx10 family
+    extern const std::set<unsigned int>                               kHwDx12LevelWavesCountersGfx10; ///< The LEVEL_WAVES counters for Dx12 for Gfx10 family.
 
 /// @brief If the requested ASIC type is supported, then the global GPU generation block instance counters are updated.
 ///
@@ -54,6 +55,7 @@ namespace counter_dx12_gfx10
 inline bool OverrideMaxBlockEvents(GDT_HW_ASIC_TYPE asic_type)
 {
     UNREFERENCED_PARAMETER(asic_type);
+
 
     return true;
 }

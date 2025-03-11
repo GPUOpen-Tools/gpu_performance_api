@@ -54,6 +54,7 @@ this script everytime you pull new changes from GPA repository.
    * `--skipopencl`: Does not generate build files for OpenCL version of GPA
    * `--skiptests`: Does not generate build files for unit tests
    * `--skipdocs`: Does not generate build files for documentation
+   * `--skipexamples`: Does not generate build files for GPA examples
    * `--cmakecmd="CMD"`: Override the "cmake" command with "CMD"
 
 ## Windows Build Information

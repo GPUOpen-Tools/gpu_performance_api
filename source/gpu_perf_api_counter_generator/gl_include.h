@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2018-2022 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GL include files and common util functions.
@@ -60,10 +60,7 @@ typedef unsigned __int64 uint64_t;
 
 namespace ogl_utils
 {
-    extern const int kGlDriverVerWithOnlyGcnSupport;           ///< GL driver version where pre-GCN hardware was dropped.
-    extern const int kGlDriverVerWithLinuxStableClockSupport;  ///< GL driver version where stable clocks are working on Linux.
-    extern const int kGlDriverVerWithGpinCounters;             ///< GL driver version where GPIN counters have been validated.
-    extern const int kGlDriverVerSwitchFromUgl;                ///< GL driver version where we switched from Ugl to Oglp.
+    extern const int kGlDriverVerSwitchToOglp;  ///< GL driver version where we switched from Ugl to Oglp.
 
     /// Checks for OpenGL errors, logs the specified message if there is an error, and return true / false to indicate an error.
     ///

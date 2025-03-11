@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2020-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2020-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA counter context handler.
@@ -21,9 +21,11 @@ public:
     /// Constructor.
     ///
     /// @param [in] api_type API.
+    /// @param [in] sample_type A sample type.
     /// @param [in] gpa_counter_context_hardware_info Context hardware info.
     /// @param [in] context_flags Context flags.
     GpaCounterContextHandler(const GpaApiType&                    api_type,
+                             const GpaSessionSampleType           sample_type,
                              const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
                              const GpaOpenContextFlags&           context_flags);
 
@@ -49,6 +51,7 @@ public:
 
 private:
     GpaApiType            gpa_api_type_;            ///< API type.
+    GpaSessionSampleType  sample_type_;             ///< GPA sample type.
     GpaHwInfo             gpa_hw_info_;             ///< Hardware info.
     GpaOpenContextFlags   gpa_open_context_flags_;  ///< Context flags.
     bool                  initialized_;             ///< Flag indicating context initialization status.
@@ -96,12 +99,14 @@ public:
     /// Creates a virtual context.
     ///
     /// @param [in] api_type the api whose available counters are requested.
+    /// @param [in] sample_type A sample type.
     /// @param [in] gpa_counter_context_hardware_info counter context hardware info.
     /// @param [in] context_flags Flags used to initialize the context. Should be a combination of GpaOpenContextBits.
     /// @param [out] gpa_counter_context Unique identifier of the opened virtual context.
     ///
     /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
     GpaStatus OpenCounterContext(const GpaApiType&                    api_type,
+                                 const GpaSessionSampleType           sample_type,
                                  const GpaCounterContextHardwareInfo& gpa_counter_context_hardware_info,
                                  const GpaOpenContextFlags&           context_flags,
                                  GpaCounterContext*                   gpa_counter_context);
@@ -141,17 +146,20 @@ private:
     /// Initializes the counter context.
     ///
     /// @param [in] api_type API type.
-    void Init(const GpaApiType& api_type);
+    /// @param [in] sample_type Sample type.
+    void Init(const GpaApiType& api_type, const GpaSessionSampleType sample_type);
 
     /// Initializes the counter accessor.
     ///
     /// @param [in] api_type API type.
-    void InitCounterAccessor(const GpaApiType& api_type);
+    /// @param [in] sample_type Sample type.
+    void InitCounterAccessor(const GpaApiType& api_type, const GpaSessionSampleType sample_type);
 
     /// Initializes the counter scheduler.
     ///
     /// @param [in] api_type API type.
-    void InitCounterScheduler(const GpaApiType& api_type);
+    /// @param [in] sample_type Sample type.
+    void InitCounterScheduler(const GpaApiType& api_type, const GpaSessionSampleType sample_type);
 
     /// Closes all the contexts.
     void CloseAllContext();

@@ -1,10 +1,11 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions for DX12 GFX103_GFX1031_GFX1032.
 //==============================================================================
 
+// clang-format off
 #include "gpu_perf_api_counter_generator/gpa_counter.h"
 #include "auto_generated/gpu_perf_api_counter_generator/public_counter_definitions_dx12_gfx103_gfx1031_gfx1032.h"
 
@@ -30,4 +31,6 @@ bool UpdatePublicAsicSpecificCounters(GDT_HW_GENERATION desired_generation, GDT_
 }
 
 }  // namespace dx12_gfx103_gfx1031_gfx1032
+
+// clang-format on
 

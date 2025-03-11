@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Interface representing the GPA Session.
@@ -14,6 +14,7 @@
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
 #include "gpu_perf_api_common/gpa_interface_trait_interface.h"
+#include "gpu_perf_api_counter_generator/gpa_counter_accessor_interface.h"
 
 class IGpaContext;
 
@@ -23,7 +24,7 @@ enum GpaSessionLimit : uint8_t
     kGpaSessionNoLimit = 0  ///< GPA session no limit enum value.
 };
 
-/// @brief Enum to track the state of a GPASession.
+/// @brief Enum to track the state of a GpaSession.
 enum GpaSessionState : uint8_t
 {
     kGpaSessionStateNotStarted = 0,       ///< Session has been created, but not yet started. This is when counters can be enabled and disabled.
@@ -36,7 +37,6 @@ enum GpaSessionState : uint8_t
 class IGpaSession : public IGpaInterfaceTrait
 {
 public:
-
     /// @brief Virtual Destructor.
     virtual ~IGpaSession() = default;
 
@@ -49,6 +49,97 @@ public:
     ///
     /// @return The state of the session.
     virtual GpaSessionState GetState() const = 0;
+
+    /// @brief Gets the number of available counters in the context.
+    ///
+    /// @param [out] counter_count Number of counters.
+    ///
+    /// @return kGpaStatusOk on successful execution.
+    virtual GpaStatus GetNumCounters(GpaUInt32* counter_count) const = 0;
+
+    /// @brief Gets the name of a counter.
+    ///
+    /// @param [in] index Index of the counter.
+    /// @param [out] counter_name Name of the counter.
+    ///
+    /// @return kGpaStatusOk on successful execution.
+    virtual GpaStatus GetCounterName(GpaUInt32 index, const char** counter_name) const = 0;
+
+    /// @brief Gets the name of the group that a specific counter belongs to.
+    ///
+    /// @param [in] index Index of the counter.
+    /// @param [out] counter_group Name of the group.
+    ///
+    /// @return kGpaStatusOk on successful execution.
+    virtual GpaStatus GetCounterGroup(GpaUInt32 index, const char** counter_group) const = 0;
+
+    /// @brief Gets the description of a counter.
+    ///
+    /// @param [in] index Index of the counter.
+    /// @param [out] counter_description Description of the counter.
+    ///
+    /// @return kGpaStatusOk on successful execution.
+    virtual GpaStatus GetCounterDescription(GpaUInt32 index, const char** counter_description) const = 0;
+
+    /// @brief Gets the data type of a counter.
+    ///
+    /// @param [in] index Index of the counter.
+    /// @param [out] counter_data_type Data type of the counter.
+    ///
+    /// @return kGpaStatusOk on successful execution.
+    virtual GpaStatus GetCounterDataType(GpaUInt32 index, GpaDataType* counter_data_type) const = 0;
+
+    /// @brief Gets the usage type of a counter.
+    ///
+    /// @param [in] index Index of the counter.
+    /// @param [out] counter_usage_type Counter usage type.
+    ///
+    /// @return kGpaStatusOk on successful execution.
+    virtual GpaStatus GetCounterUsageType(GpaUInt32 index, GpaUsageType* counter_usage_type) const = 0;
+
+    /// @brief Gets the UUID of the specified counter.
+    ///
+    /// @param [in] index Index of the counter.
+    /// @param [out] counter_uuid The value which will hold the counter UUID upon successful execution.
+    ///
+    /// @return kGpaStatusOk on successful execution.
+    virtual GpaStatus GetCounterUuid(GpaUInt32 index, GpaUuid* counter_uuid) const = 0;
+
+    /// @brief Gets the supported sample types of the specified counter.
+    ///
+    /// @param [in] index Index of the counter.
+    /// @param [out] counter_sample_type The value which will hold the counter's supported sample type upon successful execution.
+    ///
+    /// @return kGpaStatusOk on successful execution.
+    virtual GpaStatus GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType* counter_sample_type) const = 0;
+
+    /// @brief Gets the index of a counter by its name.
+    ///
+    /// @param [in] counter_name Name of the counter.
+    /// @param [out] counter_index Index of the counter.
+    ///
+    /// @return kGpaStatusOk on successful execution.
+    virtual GpaStatus GetCounterIndex(const char* counter_name, GpaUInt32* counter_index) const = 0;
+
+    /// @brief Uses the exposed counter index to look up which source the counter comes from and the relative (local)
+    /// counter index into that source of counters.
+    ///
+    /// @param [in] exposed_counter_index The counter index of which to get the source and local index.
+    /// @param [out] counter_source Pointer to a variable that will hold the counter's source. Cannot be NULL.
+    /// @param [out] source_local_index Pointer to a variable that will hold the counters index relative to that source. Cannot be NULL.
+    ///
+    /// @return True if the exposedCounterIndex is in the valid range; false otherwise.
+    virtual bool GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, GpaCounterSource* counter_source, GpaUInt32* source_local_index) const = 0;
+
+    /// @brief Gets the source (origin) of the specified internal counter (ie, either hardware or software).
+    ///
+    /// @param internal_counter_index The index of the counter to find, must be in range of 0 to (NumHwCounters + NumSwCounters).
+    ///
+    /// @retval kUnknown If the counterIndex is invalid.
+    /// @retval kPublic If the counter is defined by GPA.
+    /// @retval kHardware If the counter comes from our internal extension.
+    /// @retval kSoftware If the counter comes from an API-level entry point (ie, queries).
+    virtual GpaCounterSource GetCounterSource(GpaUInt32 internal_counter_index) const = 0;
 
     /// @brief Enables a counter by its index.
     ///
@@ -108,6 +199,13 @@ public:
     /// @return kGpaStatusOk if session ended successfully otherwise an error code.
     virtual GpaStatus End() = 0;
 
+    /// @brief Restarts the session.
+    ///
+    /// This function restarts the session, allowing for a new set of samples to be collected.
+    ///
+    /// @return kGpaStatusOk if the session is successfully restarted, otherwise an error code.
+    virtual GpaStatus Reset() = 0;
+
     /// @brief Creates a command list for sampling.
     ///
     /// @param [in] pass_index Index of the pass.
@@ -164,9 +262,9 @@ public:
     ///
     /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
     virtual GpaStatus CopySecondarySamples(GpaCommandListId secondary_cmd_list_id,
-                                            GpaCommandListId primary_cmd_list_id,
-                                            GpaUInt32        num_samples,
-                                            GpaUInt32*       new_sample_ids) = 0;
+                                           GpaCommandListId primary_cmd_list_id,
+                                           GpaUInt32        num_samples,
+                                           GpaUInt32*       new_sample_ids) = 0;
 
     /// @brief Returns the number of samples created in this session.
     ///
@@ -214,6 +312,91 @@ public:
     ///
     /// @return True if session is started but not yet ended otherwise false.
     virtual bool IsSessionRunning() const = 0;
+
+    /// Begin collecting SQTT data.
+    ///
+    /// @param [in] command_list The command list to begin collecting data.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SqttBegin(void* command_list) = 0;
+
+    /// End collecting SQTT data.
+    ///
+    /// @param [in] command_list the command list to end collection of data.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SqttEnd(void* command_list) = 0;
+
+    /// Get SQTT sample result size.
+    ///
+    /// @param [in] sample_result_size_in_bytes Returns the number of bytes of data collected.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SqttGetSampleResultSize(size_t* sample_result_size_in_bytes) = 0;
+
+    /// Gets the SQTT sample results.
+    ///
+    /// @param [in] sample_result_size_in_bytes Size of the sqtt_results buffer.
+    /// @param [out] sqtt_results Buffer to return results in.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SqttGetSampleResult(size_t sample_result_size_in_bytes, void* sqtt_results) = 0;
+
+    /// Sets the sample interval for SPM data.
+    ///
+    /// @param [in] interval sampling interval in millions of clock ticks of the GPU shader clock domain (SCLK). This ranges from [32 - 4096].
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SpmSetSampleInterval(GpaUInt32 interval) = 0;
+
+    /// [Optional] Sets the duration of the SPM sample.
+    ///
+    /// If the duration is set, this allows the driver to optimize the amount of memory that is allocated for
+    /// the SPM session. If the duration is not set, the recommended maximum amount of GPU memory will be
+    /// allocated for SPM collection.
+    ///
+    /// @param [in] nanosecond_duration Duration in nanoseconds.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SpmSetDuration(GpaUInt32 nanosecond_duration) = 0;
+
+    /// Begin collecting SPM data.
+    ///
+    /// @param [in] command_list The command list to begin collecting data.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SpmBegin(void* command_list) = 0;
+
+    /// End collecting SPM data.
+    ///
+    /// @param [in] command_list The command list to end collecting data.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SpmEnd(void* command_list) = 0;
+
+    /// Get SPM sample result size.
+    ///
+    /// @param [out] sample_result_size_in_bytes Returns the number of bytes of data collected.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SpmGetSampleResultSize(size_t* sample_result_size_in_bytes) = 0;
+
+    /// Gets the SPM sample results.
+    ///
+    /// @param [in] sample_result_size_in_bytes Size of the spm_results buffer.
+    /// @param [out] spm_results Buffer to return results in.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SpmGetSampleResult(size_t sample_result_size_in_bytes, void* spm_results) = 0;
+
+    /// Calculate derived counters from collected SPM data.
+    ///
+    /// @param [in] spm_data Collected SPM data.
+    /// @param [in] derived_counter_count Number of counters that were enabled.
+    /// @param [out] derived_counter_results Counter results of num_derived_counters * timestamps entries.
+    ///
+    /// @return The GPA result status of the operation. kGpaStatusOk is returned if the operation is successful.
+    virtual GpaStatus SpmCalculateDerivedCounters(const GpaSpmData* spm_data, GpaUInt32 derived_counter_count, GpaUInt64* derived_counter_results) = 0;
 
     /// @brief Returns the size of sample result in bytes.
     ///
@@ -293,6 +476,11 @@ public:
     /// @return Counter list for the given pass.
     virtual std::vector<unsigned int>* GetCountersForPass(unsigned int pass_index) = 0;
 
+protected:
+    /// Opens the counter for the session.
+    ///
+    /// @return True if successfully opens the counter otherwise false;
+    virtual bool OpenCounters() = 0;
 };
 
 #endif  // GPU_PERF_API_COMMON_GPA_SESSION_INTERFACE_H_

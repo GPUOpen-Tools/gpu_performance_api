@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief GPA Common Context class.
@@ -35,39 +35,6 @@ public:
     /// @copydoc IGpaContext::GetSupportedSampleTypes()
     GpaStatus GetSupportedSampleTypes(GpaContextSampleTypeFlags* sample_types) const override;
 
-    /// @copydoc IGpaContext::GetNumCounters()
-    GpaStatus GetNumCounters(GpaUInt32* counter_count) const override;
-
-    /// @copydoc IGpaContext::GetCounterName()
-    GpaStatus GetCounterName(GpaUInt32 index, const char** counter_name) const override;
-
-    /// @copydoc IGpaContext::GetCounterGroup()
-    GpaStatus GetCounterGroup(GpaUInt32 index, const char** counter_group) const override;
-
-    /// @copydoc IGpaContext::GetCounterDescription()
-    GpaStatus GetCounterDescription(GpaUInt32 index, const char** counter_description) const override;
-
-    /// @copydoc IGpaContext::GetCounterDataType()
-    GpaStatus GetCounterDataType(GpaUInt32 index, GpaDataType* counter_data_type) const override;
-
-    /// @copydoc IGpaContext::GetCounterUsageType()
-    GpaStatus GetCounterUsageType(GpaUInt32 index, GpaUsageType* counter_usage_type) const override;
-
-    /// @copydoc IGpaContext::GetCounterUuid()
-    GpaStatus GetCounterUuid(GpaUInt32 index, GpaUuid* counter_uuid) const override;
-
-    /// @copydoc IGpaContext::GetCounterSampleType()
-    GpaStatus GetCounterSampleType(GpaUInt32 index, GpaCounterSampleType* counter_sample_type) const override;
-
-    /// @copydoc IGpaContext::GetCounterIndex()
-    GpaStatus GetCounterIndex(const char* counter_name, GpaUInt32* counter_index) const override;
-
-    /// @copydoc IGpaContext::GetCounterSourceLocalIndex()
-    bool GetCounterSourceLocalIndex(GpaUInt32 exposed_counter_index, GpaCounterSource* counter_source, GpaUInt32* source_local_index) const override;
-
-    /// @copydoc IGpaContext::GetCounterSource()
-    GpaCounterSource GetCounterSource(GpaUInt32 internal_counter_index) const override;
-
     /// @copydoc IGpaContext::ArePublicCountersExposed()
     bool ArePublicCountersExposed() const override;
 
@@ -83,14 +50,14 @@ public:
     /// @copydoc IGpaContext::GetHwInfo()
     const GpaHwInfo* GetHwInfo() const override;
 
+    /// @copydoc IGpaContext::UpdateHwInfo()
+    void UpdateHwInfo(GpaUInt32 num_shader_engines, GpaUInt32 num_compute_units, GpaUInt32 num_simds, GpaUInt32 num_waves_per_simd) override;
+
     /// @copydoc IGpaContext::IsOpen()
     bool IsOpen() const override;
 
     /// @copydoc IGpaContext::GetDeviceClockMode()
     DeviceClockMode GetDeviceClockMode() const override;
-
-    /// @copydoc IGpaContext::OpenCounters()
-    bool OpenCounters() override;
 
     /// @copydoc IGpaInterfaceTrait::ObjectType()
     GpaObjectType ObjectType() const override;
@@ -106,6 +73,15 @@ public:
 
     /// @copydoc IGpaContext::EndSession()
     GpaStatus EndSession(IGpaSession* gpa_session, bool force_end) override;
+
+    /// @copydoc IGpaContext::GetShaderEngineCount()
+    uint32_t GetShaderEngineCount() const override;
+
+    /// @copydoc IGpaContext::GetContextFlags()
+    GpaOpenContextFlags GetContextFlags() const override
+    {
+        return context_flags_;
+    }
 
     /// @copydoc IGpaContext::GetActiveSession()
     const IGpaSession* GetActiveSession() const override;
@@ -153,18 +129,18 @@ protected:
     /// @return True if the index was found, false otherwise.
     bool GetIndex(IGpaSession* gpa_session, unsigned int* index = nullptr) const;
 
-    GpaContextSampleTypeFlags supported_sample_types_;  ///< The supported sample types.
+    GpaContextSampleTypeFlags supported_sample_types_;  ///< The supported sample types. Expected to be set by the derived class.
 
 private:
-    GpaOpenContextFlags  context_flags_;                          ///< Context flags.
-    GpaHwInfo            hw_info_;                                ///< Hw info.
-    bool                 invalidate_and_flush_l2_cache_enabled_;  ///< Flag indicating flush and invalidation of L2 cache is enabled or not.
-    bool                 is_open_;                                ///< Flag indicating context is open or not.
-    GpaSessionList       gpa_session_list_;                       ///< List of GPA sessions in the context.
-    bool                 is_amd_device_;                          ///< Flag indicating whether the device is AMD or not.
-    mutable std::mutex   gpa_session_list_mutex_;                 ///< Mutex for GPA session list.
-    IGpaSession*         active_session_;                         ///< Gpa session to keep track of active session.
-    mutable std::mutex   active_session_mutex_;                   ///< Mutex for the active session.
+    GpaOpenContextFlags context_flags_;                          ///< Context flags.
+    GpaHwInfo           hw_info_;                                ///< Hw info.
+    bool                invalidate_and_flush_l2_cache_enabled_;  ///< Flag indicating flush and invalidation of L2 cache is enabled or not.
+    bool                is_open_;                                ///< Flag indicating context is open or not.
+    GpaSessionList      gpa_session_list_;                       ///< List of GPA sessions in the context.
+    bool                is_amd_device_;                          ///< Flag indicating whether the device is AMD or not.
+    mutable std::mutex  gpa_session_list_mutex_;                 ///< Mutex for GPA session list.
+    IGpaSession*        active_session_;                         ///< Gpa session to keep track of active session.
+    mutable std::mutex  active_session_mutex_;                   ///< Mutex for the active session.
 };
 
 #endif  // GPU_PERF_API_COMMON_GPA_CONTEXT_H_

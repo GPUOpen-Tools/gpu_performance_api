@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2024 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Public Counter Definitions ASIC file for DX12_GFX10
@@ -29,6 +29,8 @@ namespace dx12_gfx10_asics
         UNREFERENCED_PARAMETER(asic_type);
         UNREFERENCED_PARAMETER(c);
 
+        // Assign default max block events.
+        counter_dx12_gfx10::OverrideMaxBlockEvents(asic_type);
     }
 
 }  // namespace dx12_gfx10asics

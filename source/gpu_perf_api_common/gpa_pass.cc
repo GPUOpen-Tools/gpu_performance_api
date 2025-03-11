@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Pass Object Implementation.
@@ -23,13 +23,14 @@ GpaPass::GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSourc
     , command_list_counter_(0U)
     , is_all_sample_valid_in_pass_(false)
     , is_pass_complete_(false)
+    , is_sqtt_pass_(false)
+    , is_spm_pass_(false)
 {
     counter_list_ = pass_counters;
 
     if (nullptr != counter_list_ && !counter_list_->empty())
     {
-        const GpaHardwareCounters* hardware_counters =
-            GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
+        const GpaHardwareCounters* hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
 
         if (hardware_counters->IsTimeCounterIndex(counter_list_->at(0)))
         {
@@ -37,6 +38,17 @@ GpaPass::GpaPass(IGpaSession* gpa_session, PassIndex pass_index, GpaCounterSourc
         }
     }
 
+    GpaSessionSampleType session_sample_type = gpa_session_->GetSampleType();
+
+    if (kGpaSessionSampleTypeSqtt == session_sample_type)
+    {
+        is_sqtt_pass_ = true;
+    }
+
+    if (kGpaSessionSampleTypeStreamingCounter == session_sample_type)
+    {
+        is_spm_pass_ = true;
+    }
 }
 
 GpaPass::~GpaPass()
@@ -94,7 +106,15 @@ GpaSample* GpaPass::CreateAndBeginSample(ClientSampleId client_sample_id, IGpaCo
 
     if (!DoesSampleExistNotThreadSafe(client_sample_id))
     {
-        if (GpaCounterSource::kHardware == counter_source_)
+        if (is_sqtt_pass_)
+        {
+            sample = CreateApiSpecificSample(gpa_cmd_list, GpaSampleType::kSqtt, client_sample_id);
+        }
+        else if (is_spm_pass_)
+        {
+            sample = CreateApiSpecificSample(gpa_cmd_list, GpaSampleType::kSpm, client_sample_id);
+        }
+        else if (GpaCounterSource::kHardware == counter_source_)
         {
             sample = CreateApiSpecificSample(gpa_cmd_list, GpaSampleType::kHardware, client_sample_id);
         }
@@ -140,60 +160,65 @@ bool GpaPass::ContinueSample(ClientSampleId src_sample_id, IGpaCommandList* prim
     // In this way, we do not need to synchronize the samples on different command list (in multi-thread application they might be on different thread).
     // We will mark the parent sample as to be continued by the client.
 
-    bool       success       = false;
+    bool success = false;
 
+    if (is_sqtt_pass_ || is_spm_pass_)
     {
-    GpaSample* parent_sample = GetSampleByIdNotThreadSafe(src_sample_id);
-
-    if (nullptr != parent_sample)
+        // Do nothing
+    }
+    else
     {
-        IGpaCommandList* parent_sample_cmd_list = parent_sample->GetCmdList();
+        GpaSample* parent_sample = GetSampleByIdNotThreadSafe(src_sample_id);
 
-        // Validate that both command list are different and passed command list is not secondary.
-        if (nullptr != parent_sample_cmd_list && nullptr != primary_gpa_cmd_list && kGpaCommandListSecondary != primary_gpa_cmd_list->GetCmdType() &&
-            primary_gpa_cmd_list != parent_sample_cmd_list)
+        if (nullptr != parent_sample)
         {
-            if (nullptr != parent_sample && primary_gpa_cmd_list->IsCommandListRunning() && primary_gpa_cmd_list->IsLastSampleClosed())
+            IGpaCommandList* parent_sample_cmd_list = parent_sample->GetCmdList();
+
+            // Validate that both command list are different and passed command list is not secondary.
+            if (nullptr != parent_sample_cmd_list && nullptr != primary_gpa_cmd_list && kGpaCommandListSecondary != primary_gpa_cmd_list->GetCmdType() &&
+                primary_gpa_cmd_list != parent_sample_cmd_list)
             {
-                GpaSampleType sample_type = (GpaCounterSource::kHardware == GetCounterSource()) ? GpaSampleType::kHardware : GpaSampleType::kSoftware;
-                // We don't need to add this sample to the sample map as it will be linked to the parent sample.
-                GpaSample* new_sample = CreateApiSpecificSample(primary_gpa_cmd_list, sample_type, src_sample_id);
-
-                if (nullptr != new_sample)
+                if (nullptr != parent_sample && primary_gpa_cmd_list->IsCommandListRunning() && primary_gpa_cmd_list->IsLastSampleClosed())
                 {
-                    if (!primary_gpa_cmd_list->BeginSample(src_sample_id, new_sample))
-                    {
-                        GPA_LOG_ERROR("Unable to begin continued sample in pass.");
-                        delete new_sample;
-                        new_sample = nullptr;
-                    }
-                    else
-                    {
-                        parent_sample->SetAsContinuedByClient();
-                        // Link the sample to the parent sample.
-                        parent_sample->LinkContinuingSample(new_sample);
+                    GpaSampleType sample_type = (GpaCounterSource::kHardware == GetCounterSource()) ? GpaSampleType::kHardware : GpaSampleType::kSoftware;
+                    // We don't need to add this sample to the sample map as it will be linked to the parent sample.
+                    GpaSample* new_sample = CreateApiSpecificSample(primary_gpa_cmd_list, sample_type, src_sample_id);
 
-                        success = true;
+                    if (nullptr != new_sample)
+                    {
+                        if (!primary_gpa_cmd_list->BeginSample(src_sample_id, new_sample))
+                        {
+                            GPA_LOG_ERROR("Unable to begin continued sample in pass.");
+                            delete new_sample;
+                            new_sample = nullptr;
+                        }
+                        else
+                        {
+                            parent_sample->SetAsContinuedByClient();
+                            // Link the sample to the parent sample.
+                            parent_sample->LinkContinuingSample(new_sample);
+
+                            success = true;
+                        }
                     }
+                }
+                else
+                {
+                    GPA_LOG_ERROR(
+                        "Unable to continue sample: Either the specified command list has already been closed or the previous sample has not been closed.");
                 }
             }
             else
             {
                 GPA_LOG_ERROR(
-                    "Unable to continue sample: Either the specified command list has already been closed or the previous sample has not been closed.");
+                    "Unable to continue sample: The specified command list must be a secondary command list and it must be different than the parent sample's "
+                    "command list.");
             }
         }
         else
         {
-            GPA_LOG_ERROR(
-                "Unable to continue sample: The specified command list must be a secondary command list and it must be different than the parent sample's "
-                "command list.");
+            GPA_LOG_ERROR("Unable to continue sample: The specified sample id was not found in this pass.");
         }
-    }
-    else
-    {
-        GPA_LOG_ERROR("Unable to continue sample: The specified sample id was not found in this pass.");
-    }
     }
 
     return success;
@@ -337,9 +362,9 @@ bool GpaPass::IsResultReady() const
     {
         is_ready = true;
 
-        for (auto cmdIter = gpa_cmd_lists_.cbegin(); cmdIter != gpa_cmd_lists_.cend() && is_ready; ++cmdIter)
+        for (auto cmd_iter = gpa_cmd_lists_.cbegin(); cmd_iter != gpa_cmd_lists_.cend() && is_ready; ++cmd_iter)
         {
-            is_ready &= (*cmdIter)->IsResultReady();
+            is_ready &= (*cmd_iter)->IsResultReady();
         }
 
         if (is_ready)
@@ -509,7 +534,7 @@ bool GpaPass::IsResultsCollectedFromDriver() const
 
 const IGpaCounterAccessor* GpaPass::GetSessionContextCounterAccessor() const
 {
-    return GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext());
+    return GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession());
 }
 
 void GpaPass::AddCommandList(IGpaCommandList* gpa_command_list)
@@ -569,8 +594,7 @@ void GpaPass::IterateSkippedCounterList(std::function<bool(const CounterIndex& c
 
 GpaUInt32 GpaPass::GetBottomToBottomTimingDurationCounterIndex() const
 {
-    const GpaHardwareCounters* hardware_counters =
-        GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
+    const GpaHardwareCounters* hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
 
     for (GpaUInt32 i = 0; i < static_cast<GpaUInt32>(counter_list_->size()); i++)
     {
@@ -585,8 +609,7 @@ GpaUInt32 GpaPass::GetBottomToBottomTimingDurationCounterIndex() const
 
 GpaUInt32 GpaPass::GetTopToBottomTimingDurationCounterIndex() const
 {
-    const GpaHardwareCounters* hardware_counters =
-        GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession()->GetParentContext())->GetHardwareCounters();
+    const GpaHardwareCounters* hardware_counters = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetGpaSession())->GetHardwareCounters();
 
     for (GpaUInt32 i = 0; i < static_cast<GpaUInt32>(counter_list_->size()); i++)
     {

@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Interfaces used for counter splitting.
@@ -110,6 +110,10 @@ public:
     /// @return The total number of groups.
     virtual unsigned int GlobalGroupIndex() const = 0;
 
+    /// @brief Get the global counter index.
+    ///
+    /// @return The global counter index.
+    virtual unsigned int GetGlobalCounterIndex() const = 0;
 };
 
 /// @brief Interface for a class that can split public and internal counters into separate passes.
@@ -119,21 +123,24 @@ public:
     /// @brief Initializes a new instance of the IGpaSplitCounters interface.
     ///
     /// @param [in] timestamp_block_ids Set of timestamp block id's.
-    /// @param [in] time_counter_indices Set of timestamp counter indices.
+    /// @param [in] eop_time_counter_indices Set of End Of Pipeline timestamp counter indices.
+    /// @param [in] top_time_counter_indices Set of Top Of Pipeline timestamp counter indices.
     /// @param [in] max_sq_counters The maximum number of counters that can be simultaneously enabled on the SQ block.
     /// @param [in] num_sq_groups The number of SQ counter groups.
     /// @param [in] sq_counter_block_info The list of SQ counter groups.
     /// @param [in] num_isolated_from_sq_groups The number of counter groups that must be isolated from SQ counter groups.
     /// @param [in] isolated_from_sq_groups The list of counter groups that must be isolated from SQ counter groups.
     IGpaSplitCounters(const std::set<unsigned int>& timestamp_block_ids,
-                      const std::set<unsigned int>& time_counter_indices,
-                      unsigned int           max_sq_counters,
-                      unsigned int           num_sq_groups,
-                      GpaSqCounterGroupDesc* sq_counter_block_info,
-                      unsigned int           num_isolated_from_sq_groups,
-                      const unsigned int*    isolated_from_sq_groups)
+                      const std::set<unsigned int>& eop_time_counter_indices,
+                      const std::set<unsigned int>& top_time_counter_indices,
+                      unsigned int                  max_sq_counters,
+                      unsigned int                  num_sq_groups,
+                      GpaSqCounterGroupDesc*        sq_counter_block_info,
+                      unsigned int                  num_isolated_from_sq_groups,
+                      const unsigned int*           isolated_from_sq_groups)
         : timestamp_block_ids_(timestamp_block_ids)
-        , time_counter_indices_(time_counter_indices)
+        , eop_time_counter_indices_(eop_time_counter_indices)
+        , top_time_counter_indices_(top_time_counter_indices)
         , max_sq_counters_(max_sq_counters)
     {
         for (unsigned int i = 0; i < num_sq_groups; i++)
@@ -186,8 +193,9 @@ public:
     }
 
 protected:
-    std::set<unsigned int> timestamp_block_ids_;  ///< Set of timestamp block id's.
-    std::set<unsigned int> time_counter_indices_;  ///< Set of timestamp counter indices.
+    std::set<unsigned int> timestamp_block_ids_;       ///< Set of timestamp block id's.
+    std::set<unsigned int> eop_time_counter_indices_;  ///< Set of EOP timestamp counter indices
+    std::set<unsigned int> top_time_counter_indices_;  ///< Set of TOP timestamp counter indices
 
     unsigned int max_sq_counters_;  ///< The maximum number of counters that can be enabled in the SQ group.
 
@@ -220,7 +228,27 @@ protected:
     /// @return True if the counter index is a timestamp counter.
     bool IsTimeCounterIndex(unsigned int counter_index)
     {
-        return time_counter_indices_.find(counter_index) != time_counter_indices_.end();
+        return IsBottomToBottomTimeCounterIndex(counter_index) || IsTopToBottomTimeCounterIndex(counter_index);
+    }
+
+    /// @brief Determines whether the indicated counter index is a Bottom-To-Bottom timestamp counter.
+    ///
+    /// @param counter_index The counter index to check.
+    ///
+    /// @return True if the counter index is a Bottom-To-Bottom timestamp counter.
+    bool IsBottomToBottomTimeCounterIndex(unsigned int counter_index)
+    {
+        return eop_time_counter_indices_.find(counter_index) != eop_time_counter_indices_.end();
+    }
+
+    /// @brief Determines whether the indicated counter index is a Top-to-Bottom timestamp counter.
+    ///
+    /// @param counter_index The counter index to check.
+    ///
+    /// @return True if the counter index is a Top-to-Bottom timestamp counter.
+    bool IsTopToBottomTimeCounterIndex(unsigned int counter_index)
+    {
+        return top_time_counter_indices_.find(counter_index) != top_time_counter_indices_.end();
     }
 
     /// @brief Adds a counter result location.
@@ -502,6 +530,45 @@ protected:
         {
             // It's the first counter so it's ok.
             return true;
+        }
+        else
+        {
+            bool all_timestamp_counters = false;
+
+            // TOP counters can share the same pass
+            // EOP counters can share the same pass
+            // However, they cannot be mixed together
+            if (IsBottomToBottomTimeCounterIndex(counter_group_accessor->GetGlobalCounterIndex()))
+            {
+                all_timestamp_counters = true;
+
+                for (const auto counter : current_pass_counters.pass_counter_list)
+                {
+                    if (!IsBottomToBottomTimeCounterIndex(counter))
+                    {
+                        all_timestamp_counters = false;
+                        break;
+                    }
+                }
+            }
+            else if (IsTopToBottomTimeCounterIndex(counter_group_accessor->GetGlobalCounterIndex()))
+            {
+                all_timestamp_counters = true;
+
+                for (const auto counter : current_pass_counters.pass_counter_list)
+                {
+                    if (!IsTopToBottomTimeCounterIndex(counter))
+                    {
+                        all_timestamp_counters = false;
+                        break;
+                    }
+                }
+            }
+
+            if (all_timestamp_counters)
+            {
+                return true;
+            }
         }
 
         return false;

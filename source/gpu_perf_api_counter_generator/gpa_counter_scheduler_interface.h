@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2012-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2012-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief An interface for scheduling counters in terms of enabling, disabling, and
@@ -125,6 +125,10 @@ public:
     /// @param [in] internal_draw_counts The count of draw calls.
     virtual void SetDrawCallCounts(int internal_draw_counts) = 0;
 
+    /// Gets the scheduler sample type.
+    ///
+    /// @return The sample type.
+    virtual GpaSessionSampleType GetSampleType() const = 0;
 };
 
 #endif  // GPU_PERF_API_COUNTER_GENERATOR_GPA_COUNTER_SCHEDULER_INTERFACE_H_

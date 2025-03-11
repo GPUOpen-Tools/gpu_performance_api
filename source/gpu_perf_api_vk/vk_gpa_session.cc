@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief A Vulkan-specific implementation of the GPA Session interface
@@ -93,13 +93,17 @@ GpaPass* VkGpaSession::CreateApiPass(PassIndex pass_index)
     GpaPass* ret_pass = nullptr;
 
     CounterList*     pass_counters  = GetCountersForPass(pass_index);
-    GpaCounterSource counter_source = GetParentContext()->GetCounterSource((*pass_counters)[0]);
-
-    VkGpaPass* vk_gpa_pass = new (std::nothrow) VkGpaPass(this, pass_index, counter_source, pass_counters);
-
-    if (nullptr != vk_gpa_pass)
+    assert(pass_counters != nullptr);
+    if (pass_counters != nullptr && pass_counters->size() > 0)
     {
-        ret_pass = vk_gpa_pass;
+        GpaCounterSource counter_source = GetCounterSource((*pass_counters)[0]);
+
+        VkGpaPass* vk_gpa_pass = new (std::nothrow) VkGpaPass(this, pass_index, counter_source, pass_counters);
+
+        if (nullptr != vk_gpa_pass)
+        {
+            ret_pass = vk_gpa_pass;
+        }
     }
 
     return ret_pass;

@@ -29,4 +29,4 @@ else()
     include(${CMAKE_COMMON_LIB_GLOBAL_EXT_VULKAN})
 endif()
 
-message(STATUS "Using vulkan headers from ${VK_INC_DIRS}, libraries from ${VK_LIB} and tools from ${VK_TOOLS_DIR}")
+message(STATUS "Using vulkan headers from ${VK_INC_DIRS}, libraries from ${VK_LIB} and tools from ${VK_TOOLS_DIR}.")

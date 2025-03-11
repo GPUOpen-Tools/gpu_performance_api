@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for GL counter generation.
@@ -15,7 +15,7 @@ class GpaCounterGeneratorGl : public GpaCounterGeneratorBase
 {
 public:
     /// @brief Constructor.
-    GpaCounterGeneratorGl();
+    GpaCounterGeneratorGl(GpaSessionSampleType sample_type);
 
     /// @brief Virtual destructor.
     virtual ~GpaCounterGeneratorGl();
@@ -37,6 +37,9 @@ protected:
                                               GpaHardwareCounters* hardware_counters) override;
 
 private:
+    /// @brief Delete default constructor.
+    GpaCounterGeneratorGl() = delete;
+
     /// @brief Helper function to generate the driver-supplied counters.
     ///
     /// @param [in] hardware_counters The list of hardware counters to augment with the driver-supplied counters.

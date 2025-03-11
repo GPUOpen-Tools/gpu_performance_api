@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2015-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2015-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for DX12 counter generation.
@@ -15,7 +15,9 @@ class GpaCounterGeneratorDx12 : public GpaCounterGeneratorDx12Base
 {
 public:
     /// @brief Constructor.
-    GpaCounterGeneratorDx12();
+    ///
+    /// @param [in] sample_type The type of samples for which to generate counters.
+    GpaCounterGeneratorDx12(GpaSessionSampleType sample_type);
 
     /// @brief Virtual destructor.
     virtual ~GpaCounterGeneratorDx12() = default;
@@ -53,6 +55,9 @@ protected:
                                               GpaHardwareCounters* hardware_counters) override;
 
 private:
+    /// @brief Default constructor not allowed.
+    GpaCounterGeneratorDx12() = delete;
+
     /// @brief Helper function to indicates whether the specified HW generation represents an AMD GPU.
     ///
     /// @param [in] generation The hw generation to check.

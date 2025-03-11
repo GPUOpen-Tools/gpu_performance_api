@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2010-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2010-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  Defines the data types and enumerations used by GPUPerfAPI.
@@ -22,7 +22,7 @@ typedef void* LibHandle;  ///< Typedef for void* for loading the library on linu
 /// @brief Structure for holding UUID.
 typedef struct _GpaUuid
 {
-    unsigned long  data_1;     ///< First part of the UUID data.
+    unsigned int   data_1;     ///< First part of the UUID data.
     unsigned short data_2;     ///< Second part of the UUID data.
     unsigned short data_3;     ///< Third part of the UUID data.
     unsigned char  data_4[8];  ///< Fourth part of the UUID data.
@@ -33,7 +33,7 @@ typedef struct _GpaUuid
     /// @param other_uuid The item being compared.
     ///
     /// @return True if UUIDs are equal otherwise false.
-    bool operator==(const _GpaUuid& other_uuid)
+    bool operator==(const _GpaUuid& other_uuid) const
     {
         bool is_equal = true;
         is_equal &= data_1 == other_uuid.data_1;
@@ -52,6 +52,7 @@ typedef struct _GpaUuid
 #endif
 } GpaUuid;
 #endif
+static_assert(sizeof(GpaUuid) == 16, "GpaUuid is expected to be a 16-byte packed structure");
 
 typedef float          GpaFloat32;  ///< GPA specific type for 32-bit float.
 typedef double         GpaFloat64;  ///< GPA specific type for 64-bit float.
@@ -181,7 +182,10 @@ typedef GpaUInt32 GpaFlags;
 /// @brief Flags to pass in when initializing GPA.
 typedef enum
 {
-    kGpaInitializeDefaultBit = 0,  ///< Initialize GPA using all default options.
+    kGpaInitializeDefaultBit                  = 0,     ///< Initialize GPA using all default options.
+    kGpaInitializeSimultaneousQueuesEnableBit = 0x01,  ///< Enable streaming counter and SQTT data to include data from all hardware queues.
+    kGpaInitializeEnableSqttBit =
+        0x03  ///< Perform extra initialization required in order to collect SQTT data -- this also enables the kGpaInitializeSimultaneousQueuesEnableBit.
 } GpaInitializeBits;
 
 /// Allows GpaInitializeBits to be combined into a single parameter.
@@ -192,11 +196,8 @@ typedef enum
 {
     kGpaOpenContextDefaultBit =
         0,  ///< Open contexts using all default options (all counters exposed, clocks are set to stable frequencies which are known to be power and thermal sustainable. The ratio between the engine and memory clock frequencies will be kept the same as much as possible).
-    kGpaOpenContextHideDerivedCountersBit           = 0x01,                                   ///< Prevent the derived counters from being exposed.
-    kGpaOpenContextHidePublicCountersBit            = kGpaOpenContextHideDerivedCountersBit,  ///< For backwards compatibility.
-    kGpaOpenContextHideSoftwareCountersBit_obsolete = 0x02,                                   ///< OBSOLETE: Software counters not supported as of GPA 3.0.
-    kGpaOpenContextHideHardwareCountersBit_obsolete =
-        0x04,                                  ///< OBSOLETE: Hardware counters hidden by default. kGpaOpenContextEnableHardwareCountersBit enables them.
+    kGpaOpenContextHideDerivedCountersBit = 0x01,                                   ///< Prevent the derived counters from being exposed.
+    kGpaOpenContextHidePublicCountersBit  = kGpaOpenContextHideDerivedCountersBit,  ///< For backwards compatibility.
     kGpaOpenContextClockModeNoneBit = 0x0008,  ///< Clock frequencies are not altered and may vary widely during profiling based on GPU usage and other factors.
     kGpaOpenContextClockModePeakBit =
         0x0010,  ///< Clocks are set to peak frequencies. In most cases this is safe to do for short periods of time while profiling. However, the GPU clock frequencies could still be reduced from peak level under power and thermal constraints.
@@ -260,8 +261,6 @@ typedef enum
     kGpaApiDirectx11 = kGpaApiStart,  ///< DirectX 11 API.
     kGpaApiDirectx12,                 ///< DirectX 12 API.
     kGpaApiOpengl,                    ///< OpenGL API.
-    kGpaApiOpencl,                    ///< OpenCL API.
-    kGpaApiDeprecated,                ///< API support has been deprecated.
     kGpaApiVulkan,                    ///< Vulkan API.
     kGpaApiNoSupport,                 ///< APIs which are not yet supported or for which support has been removed.
     kGpaApiLast                       ///< Marker indicating last element.
@@ -286,13 +285,14 @@ typedef enum
     kGpaHwGenerationCdna,                                   ///< CDNA
     kGpaHwGenerationCdna2,                                  ///< CDNA 2
     kGpaHwGenerationCdna3,                                  ///< CDNA 3
+    kGpaHwGenerationGfx12,                                  ///< GFX IP 12.
     kGpaHwGenerationLast                                    ///< Marker indicating last element.
 } GpaHwGeneration;
 
 /// @brief Command list / command buffer types.
 typedef enum
 {
-    kGpaCommandListNone,       ///< No command list, used for APIs that do not directly expose command lists or command buffers (DirectX 11, OpenGL, OpenCL).
+    kGpaCommandListNone,       ///< No command list, used for APIs that do not directly expose command lists or command buffers (DirectX 11, OpenGL).
     kGpaCommandListPrimary,    ///< Corresponds to DirectX 12 direct/compute/copy command list and Vulkan primary vkCommandBuffer.
     kGpaCommandListSecondary,  ///< Corresponds to DirectX 12 bundle and Vulkan secondary vkCommandBuffer.
     kGpaCommandListLast        ///< Marker indicating last element.
@@ -301,13 +301,18 @@ typedef enum
 /// @brief Counter sample types - used to indicate which sample types are supported by a counter.
 typedef enum
 {
-    kGpaCounterSampleTypeDiscrete = 0x1,  ///< Discrete counter type -- discrete counters provide a single value per workload measured.
+    kGpaCounterSampleTypeDiscrete  = 0x1,  ///< Discrete counter type -- discrete counters provide a single value per workload measured.
+    kGpaCounterSampleTypeStreaming = 0x2,  ///< Streaming counter type -- streaming counters provide interval-based multiple values per workload measured.
 } GpaCounterSampleType;
 
 /// @brief Context Sample types -- used to indicate which sample types are supported by a context. A context can support any combination of these.
 typedef enum
 {
-    kGpaContextSampleTypeDiscreteCounter,  ///< Discrete counters sample type -- discrete counters provide a single value per workload measured.
+    kGpaContextSampleTypeDiscreteCounter = 0x01,  ///< Discrete counters sample type -- discrete counters provide a single value per workload measured.
+    kGpaContextSampleTypeStreamingCounter =
+        0x02,  ///< Streaming counters sample type -- streaming counters provide interval-based multiple values per workload measured.
+    kGpaContextSampleTypeSqtt =
+        0x04,  ///< SQTT sample type -- provides detailed wave-level SQTT information per workload measured. For some driver stacks, the SQTT-data may be wrapped in an RGP-file format.
 } GpaContextSampleTypeBits;
 
 /// @brief Allows GpaContextSampleTypeBits to be combined into a single parameter.
@@ -317,8 +322,42 @@ typedef GpaFlags GpaContextSampleTypeFlags;
 typedef enum
 {
     kGpaSessionSampleTypeDiscreteCounter,  ///< Discrete counters sample type -- discrete counters provide a single value per workload measured.
+    kGpaSessionSampleTypeStreamingCounter,  ///< Streaming counters sample type -- streaming counters provide interval-based multiple values per workload measured.
+    kGpaSessionSampleTypeSqtt,  ///< SQTT sample type -- provides detailed wave-level SQTT information per workload measured. For some driver stacks, the SQTT-data may be wrapped in an RGP-file format.
+    kGpaSessionSampleTypeStreamingCounterAndSqtt,  ///< Streaming counters and SQTT are enabled.
     kGpaSessionSampleTypeLast                      ///< Marker indicating last element.
 
 } GpaSessionSampleType;
+
+/// @brief Type used to define the mask of instructions included in SQTT data.
+typedef enum
+{
+    kGpaSqttInstructionTypeNone = 0x00,        ///< Exclude all instructions from SQTT data.
+    kGpaSqttInstructionTypeAll  = 0x7FFFFFFF,  ///< Include all instructions in SQTT data.
+} GpaSqttInstructionBits;
+
+/// Allows GpaSqttInstructionBits to be combined into a single parameter.
+typedef GpaFlags GpaSqttInstructionFlags;
+
+/// GPA SPM counter info.
+typedef struct GpaSpmCounterInfo
+{
+    GpaUInt32 gpu_block_id;        ///< GPU block identifier.
+    GpaUInt32 gpu_block_instance;  ///< GPU block instance.
+    GpaUInt32 data_offset;         ///< Offset from the start of counterDeltaValues for the deltas for this counter instance.
+    GpaUInt32 event_index;         ///< Event index.
+} GpaSpmCounterInfo;
+
+/// GPA SPM data
+typedef struct GpaSpmData
+{
+    GpaUInt32                number_of_timestamps;              ///< Number of timestamps.
+    GpaUInt32                number_of_spm_counter_info;        ///< Number of SpmCounterInfo structs.
+    GpaUInt32                number_of_counter_data;            ///< Number of CounterData values.
+    GpaUInt32                number_of_bytes_per_counter_data;  ///< Number of bytes for each CounterData entry.
+    const GpaUInt64*         timestamps;                        ///< Array of number_of_timestamps number of timestamps.
+    const GpaSpmCounterInfo* spm_counter_info;                  ///< Array of number_of_spm_counter_info number of SpmCounterInfo.
+    const GpaUInt16* counter_data_16bit;  ///< Array of number_of_spm_counter_info * number_of_timestamps counter delta values (may be 16 or 32-bit values).
+} GpaSpmData;
 
 #endif  // GPU_PERFORMANCE_API_GPU_PERF_API_TYPES_H_

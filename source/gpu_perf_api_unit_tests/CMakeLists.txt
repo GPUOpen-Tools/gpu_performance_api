@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2023 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 set(DEPTH "../../")
@@ -33,10 +33,6 @@ set(SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/api_error_tests.cc
                  ${ADDITIONAL_UNIT_TEST_SOURCES})
 
 
-if(NOT ${skipopencl})
-    set(SOURCE_FILES ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/counter_generator_cl_tests.cc)
-endif()
-
 if(NOT ${skipopengl})
     set(SOURCE_FILES ${SOURCE_FILES} ${CMAKE_CURRENT_SOURCE_DIR}/counter_generator_gl_tests.cc)
 endif()
@@ -65,7 +61,7 @@ set(INTERNAL_COUNTERS_SRC
 set(HEADER_FILES ${CMAKE_CURRENT_SOURCE_DIR}/counter_generator_tests.h
                  ${CMAKE_CURRENT_SOURCE_DIR}/counters/gpa_counter_desc.h)
 
-foreach(API GL DX11 DX12 VK CL)
+foreach(API GL DX11 DX12 VK)
     if(NOT WIN32 AND (${API} STREQUAL "DX11" OR ${API} STREQUAL DX12))
         continue()
     endif()
@@ -117,11 +113,6 @@ endif()
 if(NOT ${skipopengl})
     set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-GL)
     add_definitions(-DGL)
-endif()
-
-if(NOT ${skipopencl})
-    set(LIB_NAMES ${LIB_NAMES} GPUPerfAPICounterGenerator-CL)
-    add_definitions(-DCL)
 endif()
 
 if(WIN32)

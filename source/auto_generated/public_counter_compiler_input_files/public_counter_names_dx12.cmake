@@ -1,4 +1,4 @@
-## Copyright (c) 2024 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2025 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -10,14 +10,4 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx103_gfx1033.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx11.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx11_gfx1103.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx11_gfx1150.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx8.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx8_baffin.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx8_carrizo.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx8_ellesmere.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx8_fiji.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx8_iceland.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx8_tonga.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx9.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx9_gfx904.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx9_gfx906.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx9_gfx909.txt)
+${CMAKE_CURRENT_LIST_DIR}/public_counter_names_dx12_gfx12.txt)

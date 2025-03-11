@@ -148,7 +148,7 @@ bool Dx12GpaCommandList::BeginSampleRequest(ClientSampleId client_sample_id, Gpa
     DriverSampleId   driver_sample_id = 0;
     GpaCounterSource counter_source   = GetPass()->GetCounterSource();
 
-    if (GpaCounterSource::kHardware == counter_source)
+    if (GpaCounterSource::kHardware == counter_source || GpaCounterSource::kUnknown == counter_source)  // kUnknown to check for sqtt here
     {
         if (OpenHwSample(client_sample_id, &driver_sample_id))
         {
@@ -172,7 +172,7 @@ bool Dx12GpaCommandList::CloseLastSampleRequest()
 {
     GpaCounterSource counter_source = GetPass()->GetCounterSource();
 
-    if (GpaCounterSource::kHardware == counter_source)
+    if (GpaCounterSource::kHardware == counter_source || GpaCounterSource::kUnknown == counter_source)  // kUnknown to check for sqtt here
     {
         CloseHwSample();
     }
@@ -274,7 +274,8 @@ bool Dx12GpaCommandList::OpenHwSample(ClientSampleId client_sample_id, DriverSam
         {
             success = true;
 
-            if (has_any_hardware_counters_)
+            GpaCounterSource counter_source = GetPass()->GetCounterSource();
+            if (has_any_hardware_counters_ || GpaCounterSource::kUnknown == counter_source)  // kUnknown indicates sqtt
             {
                 const Dx12GpaSampleConfig& sample_config = reinterpret_cast<Dx12GpaPass*>(GetPass())->GetAmdExtSampleConfig();
                 if (use_pre2240_config_)
@@ -317,7 +318,8 @@ bool Dx12GpaCommandList::CloseHwSample() const
 
     if (is_command_list_open_in_driver_ && nullptr != GetLastSample())
     {
-        if (has_any_hardware_counters_)
+        GpaCounterSource counter_source = GetPass()->GetCounterSource();
+        if (has_any_hardware_counters_ || GpaCounterSource::kUnknown == counter_source)  // kUnknown indicates sqtt
         {
             amd_ext_session_->EndSample(cmd_list_, GetLastSample()->GetDriverSampleId());
         }
@@ -337,7 +339,7 @@ void Dx12GpaCommandList::ReleaseNonGpaResources()
         cmd_list_                     = nullptr;
         is_non_gpa_resource_released_ = true;
 
-        Dx12GpaSession* dx12_gpa_session = reinterpret_cast<Dx12GpaSession*>(GetParentSession());
+        Dx12GpaSession* dx12_gpa_session  = reinterpret_cast<Dx12GpaSession*>(GetParentSession());
         ULONG           session_ref_count = amd_ext_session_->Release();
         if (session_ref_count != 0)
         {

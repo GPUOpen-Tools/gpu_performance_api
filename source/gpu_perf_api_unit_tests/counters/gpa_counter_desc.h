@@ -22,6 +22,8 @@ struct GpaCounterDesc
     GpaUInt32    num_hardware_counters;  ///< Number of hardware counters required.
     GpaDataType  data_type;              ///< Counter type.
     GpaUsageType usage_type;             ///< Counter usage.
+    bool         discrete_counter;       ///< Counter is a discrete sample counter.
+    bool         spm_counter;            ///< Counter is an SPM counter.
     GpaUuid      uuid;                   ///< Counter UUID.
 };
 

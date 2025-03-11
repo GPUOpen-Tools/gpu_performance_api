@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  DX11 GPA Sample Implementation
@@ -217,7 +217,7 @@ bool Dx11GpaSample::BeginRequest()
 
     if (nullptr != dx11_gpa_context)
     {
-        IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(dx11_gpa_context);
+        IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession());
         const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
 
         if (dx11_gpa_pass->IsTimingPass())
@@ -410,7 +410,7 @@ bool Dx11GpaSample::CreateSampleExperiment()
 
                 bool engine_param_set_success = true;
 
-                IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(dx11_gpa_context);
+                IGpaCounterAccessor*       counter_accessor  = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession());
                 const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
 
                 if (nullptr != amd_dx_ext_perf_experiment_)
@@ -476,7 +476,7 @@ bool Dx11GpaSample::CreateAndAddCounterToExperiment()
 
     if (nullptr != amd_dx_ext_perf_counters_)
     {
-        IGpaCounterAccessor*       counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession()->GetParentContext());
+        IGpaCounterAccessor*       counter_accessor = GpaContextCounterMediator::Instance()->GetCounterAccessor(GetPass()->GetGpaSession());
         const GpaHardwareCounters* hardware_counters = counter_accessor->GetHardwareCounters();
 
         auto add_counter_to_experiment = [&](CounterIndex counter_index) -> bool {

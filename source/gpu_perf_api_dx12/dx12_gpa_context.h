@@ -71,6 +71,18 @@ public:
     /// @return ID3D12Device pointer.
     ID3D12Device* GetD3D12Device() const;
 
+    /// @copydoc IGpaInterfaceTrait::GetShaderEngineCount()
+    uint32_t GetShaderEngineCount() const override
+    {
+        return amd_device_props_.shaderEngineCount;
+    }
+
+    /// @copydoc IGpaInterfaceTrait::GetExperimentProperties()
+    const AmdExtPerfExperimentProperties* GetExperimentProperties() const
+    {
+        return &amd_device_props_;
+    }
+
     /// @copydoc IGpaContext::SetStableClocks()
     GpaStatus SetStableClocks(bool use_profiling_clocks) override;
 

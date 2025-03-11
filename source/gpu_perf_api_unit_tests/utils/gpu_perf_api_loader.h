@@ -68,7 +68,7 @@ protected:
 
 private:
 
-    /// @brief Get the GPA DLL Name for the specified api.
+    /// @brief Get the GPA DLL name for the specified api.
     ///
     /// @param [in] dll_path The path to load GPA Dlls from.
     /// @param [in] api The API to load GPA for.

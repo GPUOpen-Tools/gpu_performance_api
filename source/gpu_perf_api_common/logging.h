@@ -2,7 +2,7 @@
 // Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
-/// @brief  Logging utility.
+/// @brief Logging utility.
 //==============================================================================
 
 #ifndef GPU_PERF_API_COMMON_LOGGING_H_

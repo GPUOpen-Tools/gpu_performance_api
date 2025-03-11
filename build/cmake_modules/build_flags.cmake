@@ -1,4 +1,4 @@
-## Copyright (c) 2018-2024 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2018-2025 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 ## GPA has only Debug and Release
@@ -33,22 +33,16 @@ endif()
 
 if(${build-32bit})
     set(CMAKE_SIZEOF_VOID_P 4)
-	set(OUTPUT_SUFFIX ${OUTPUT_SUFFIX}_x86)
+    set(OUTPUT_SUFFIX ${OUTPUT_SUFFIX}_x86)
 else()
     set(CMAKE_SIZEOF_VOID_P 8)
-	set(OUTPUT_SUFFIX ${OUTPUT_SUFFIX}_x64)
+    set(OUTPUT_SUFFIX ${OUTPUT_SUFFIX}_x64)
 endif()
 
 if(${BUILD_ANDROID})
-	set(OUTPUT_SUFFIX ${OUTPUT_SUFFIX}_android)
+    set(OUTPUT_SUFFIX ${OUTPUT_SUFFIX}_android)
 endif()
 
-# START_REMOVE_PIX_DURING_SANITIZATION
-if (${GPA_PIX_BUILD})
-    set(GPA_PIX_BUILD ON)
-	set(OUTPUT_SUFFIX ${OUTPUT_SUFFIX}_pix)
-endif()
-# END_REMOVE_PIX_DURING_SANITIZATION
 
 # DX11 variable
 if(NOT DEFINED skipdx11)
@@ -68,11 +62,6 @@ endif()
 # OpenGL variable
 if(NOT DEFINED skipopengl)
     set(skipopengl OFF CACHE BOOL "Turn on to skip OpenGL in the build" FORCE)
-endif()
-
-# OpenCL variable
-if(NOT DEFINED skipopencl)
-    set(skipopencl OFF CACHE BOOL "Turn on to skip OpenCL in the build" FORCE)
 endif()
 
 # Tests variable

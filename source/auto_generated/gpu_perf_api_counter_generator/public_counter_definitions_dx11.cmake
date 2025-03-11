@@ -1,4 +1,4 @@
-## Copyright (c) 2024 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2025 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -13,19 +13,8 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx11.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx11_asics.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx11_gfx1103.h
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx11_gfx1150.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_asics.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_baffin.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_carrizo.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_ellesmere.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_fiji.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_iceland.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_tonga.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx9.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx9_asics.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx9_gfx904.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx9_gfx906.h
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx9_gfx909.h)
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx12.h
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx12_asics.h)
 
 set(PUBLIC_COUNTER_DEF_SRC_DX11
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx10.cc
@@ -35,15 +24,5 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx103_gfx1033.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx11.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx11_gfx1103.cc
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx11_gfx1150.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_baffin.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_carrizo.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_ellesmere.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_fiji.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_iceland.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx8_tonga.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx9.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx9_gfx904.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx9_gfx906.cc
-${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx9_gfx909.cc)
+${CMAKE_CURRENT_LIST_DIR}/public_counter_definitions_dx11_gfx12.cc)
 

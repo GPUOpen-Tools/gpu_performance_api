@@ -10,7 +10,7 @@
 ***************************************************************************************************
 * @file  amddxextperfprofileapi.h
 * @brief
-*    AMD D3D Perf Profile Exension API include file.
+*    AMD D3D Perf Profile Extension API include file.
 *    This is the main include file for apps using perf profile extension.
 ***************************************************************************************************
 */

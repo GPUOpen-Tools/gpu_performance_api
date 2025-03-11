@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Common GPA Implementor.
@@ -29,7 +29,7 @@ GpaStatus GpaImplementor::Initialize(GpaInitializeFlags flags)
 
     GpaStatus gpa_status = kGpaStatusErrorGpaAlreadyInitialized;
 
-    if (kGpaInitializeDefaultBit != flags && GPA_INITIALIZE_SIMULTANEOUS_QUEUES_ENABLE_BIT != flags)
+    if (kGpaInitializeDefaultBit != flags && kGpaInitializeSimultaneousQueuesEnableBit != flags && kGpaInitializeEnableSqttBit != flags)
     {
         GPA_LOG_ERROR("Invalid flags passed to GpaInitialize.");
         gpa_status = kGpaStatusErrorInvalidParameter;
@@ -64,6 +64,7 @@ GpaStatus GpaImplementor::Destroy()
         is_initialized_ = false;
         GpaContextCounterMediator::DeleteInstance();
         gpa_status = kGpaStatusOk;
+        app_context_info_gpa_context_map_.clear();
     }
 
     return gpa_status;
@@ -94,16 +95,6 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
         num_clock_modes++;
     }
 
-    if (kGpaOpenContextHideSoftwareCountersBit_obsolete & flags)
-    {
-        GPA_LOG_ERROR("kGpaOpenContextHideSoftwareCountersBit has been marked obsolete. Software counters have not been supported since GPA 3.0.");
-    }
-
-    if (kGpaOpenContextHideHardwareCountersBit_obsolete & flags)
-    {
-        GPA_LOG_ERROR("kGpaOpenContextHideHardwareCountersBit has been marked obsolete. Hardware counters are not exposed by default.");
-    }
-
     if (1 < num_clock_modes)
     {
         GPA_LOG_ERROR("More than one clock mode specified.");
@@ -118,9 +109,9 @@ GpaStatus GpaImplementor::OpenContext(void* context, GpaOpenContextFlags flags, 
     {
         GpaHwInfo hw_info;
 
-        // driver not supported, logging error
         if (!IsDriverSupported(context))
         {
+            // Driver not supported, logging error.
             GPA_LOG_ERROR("Driver not supported.");
             return kGpaStatusErrorDriverNotSupported;
         }
@@ -293,7 +284,7 @@ bool GpaImplementor::IsDeviceGenerationSupported(const GpaHwInfo& hw_info) const
     GDT_HW_GENERATION device_generation = GDT_HW_GENERATION_NONE;
     if (hw_info.GetHwGeneration(device_generation))
     {
-        if (device_generation >= GDT_HW_GENERATION_VOLCANICISLAND)
+        if (device_generation >= GDT_HW_GENERATION_GFX10)
         {
             return true;
         }
@@ -348,13 +339,6 @@ GpaStatus GpaImplementor::IsDeviceSupported(GpaContextInfoPtr context_info, GpaH
             asic_hw_info.SetRevisionId(asic_info.revID);
             asic_hw_info.SetGpuIndex(asic_info.gpuIndex);
             asic_hw_info.UpdateDeviceInfoBasedOnDeviceId();
-
-            // Checking for integrated GPUs that are not supported.
-            if (asic_info.deviceID == 0x1506 || asic_info.deviceID == 0x164e)
-            {
-                GPA_LOG_ERROR("The current hardware does not properly support GPUPerfAPI.");
-                return kGpaStatusErrorHardwareNotSupported;
-            }
 
             if (CompareHwInfo(api_hw_info, asic_hw_info))
             {

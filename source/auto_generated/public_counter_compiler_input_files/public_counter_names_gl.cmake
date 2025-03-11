@@ -1,22 +1,8 @@
-## Copyright (c) 2024 Advanced Micro Devices, Inc. All rights reserved.
+## Copyright (c) 2025 Advanced Micro Devices, Inc. All rights reserved.
 cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(PUBLIC_COUNTER_NAMES_GL
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx10.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx103.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx103_gfx1033.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx8.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx8_baffin.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx8_carrizo.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx8_ellesmere.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx8_fiji.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx8_iceland.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx8_tonga.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx9.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx9_gfx904.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx9_gfx906.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_gl_gfx9_gfx909.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx10.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx103.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx103_gfx1031_gfx1032.txt
@@ -24,14 +10,4 @@ ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx103_gfx1033.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx11.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx11_gfx1103.txt
 ${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx11_gfx1150.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx8.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx8_baffin.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx8_carrizo.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx8_ellesmere.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx8_fiji.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx8_iceland.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx8_tonga.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx9.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx9_gfx904.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx9_gfx906.txt
-${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx9_gfx909.txt)
+${CMAKE_CURRENT_LIST_DIR}/public_counter_names_oglp_gfx12.txt)

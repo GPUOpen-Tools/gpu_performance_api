@@ -13,7 +13,7 @@
 
 #ifndef VULKAN_H_
 #include <vulkan/vulkan.h>
-#endif // VULKAN_H_
+#endif  // VULKAN_H_
 
 /// Define the AMD GPA extension name.
 #define VK_AMD_GPA_INTERFACE_EXTENSION_NAME "VK_AMD_gpa_interface"

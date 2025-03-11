@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2021 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief  GPA Pass Object Header.
@@ -358,6 +358,8 @@ private:
     mutable bool       is_all_sample_valid_in_pass_;  ///< Flag indicating all the sample in the pass is valid or not - for cache.
     mutable bool       is_pass_complete_;             ///< Flag indicating whether or not the command list and sample on them is complete.
 
+    bool is_sqtt_pass_;  ///< flag indicating pass is for SQTT data
+    bool is_spm_pass_;   ///< flag indicating pass is for SPM data
 };
 
 #endif  // GPU_PERF_API_COMMON_GPA_PASS_H_

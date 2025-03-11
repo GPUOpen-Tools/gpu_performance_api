@@ -45,19 +45,7 @@ namespace ogl_utils
         GLint num_groups = 0;
 
         // Get the number of performance counter groups.
-        if (ogl_get_perf_monitor_groups_amd != nullptr)
-        {
-            ogl_get_perf_monitor_groups_amd(&num_groups, 0, nullptr);
-        }
-        else if (ogl_get_perf_monitor_groups_2_amd != nullptr)
-        {
-            ogl_get_perf_monitor_groups_2_amd(&num_groups, 0, nullptr, nullptr);
-        }
-        else
-        {
-            assert(ogl_get_perf_monitor_groups_amd != nullptr || ogl_get_perf_monitor_groups_2_amd != nullptr);
-            return -1;
-        }
+        ogl_get_perf_monitor_groups_2_amd(&num_groups, 0, nullptr, nullptr);
 
         if (num_groups > 0)
         {
@@ -67,19 +55,7 @@ namespace ogl_utils
             if (nullptr != performance_counter_groups && nullptr != performance_counter_group_instances)
             {
                 // Get the group Ids.
-                if (ogl_get_perf_monitor_groups_amd != nullptr)
-                {
-                    ogl_get_perf_monitor_groups_amd(nullptr, num_groups, performance_counter_groups);
-                }
-                else if (ogl_get_perf_monitor_groups_2_amd != nullptr)
-                {
-                    ogl_get_perf_monitor_groups_2_amd(nullptr, num_groups, performance_counter_groups, performance_counter_group_instances);
-                }
-                else
-                {
-                    assert(ogl_get_perf_monitor_groups_amd != nullptr || ogl_get_perf_monitor_groups_2_amd != nullptr);
-                    return -1;
-                }
+                ogl_get_perf_monitor_groups_2_amd(nullptr, num_groups, performance_counter_groups, performance_counter_group_instances);
 
                 for (int i = 0; i < num_groups; i++)
                 {
@@ -117,13 +93,12 @@ namespace ogl_utils
             return false;
         }
 
-        bool found_ugl_entrypoints  = (nullptr != ogl_get_perf_monitor_groups_amd && nullptr != ogl_select_perf_monitor_counters_amd);
         bool found_oglp_entrypoints = (nullptr != ogl_get_perf_monitor_groups_2_amd && nullptr != ogl_select_perf_monitor_counters_2_amd);
 
-        if (!found_ugl_entrypoints && !found_oglp_entrypoints)
+        if (!found_oglp_entrypoints)
         {
             // One of the other AMD_performance_monitor extension entrypoints was missing.
-            GPA_LOG_ERROR("One or more of the other GL_AMD_performance_monitor functions were not found.");
+            GPA_LOG_ERROR("One or more of the other GL_AMD_performance_monitor_2 functions were not found.");
             return false;
         }
 
@@ -138,7 +113,7 @@ namespace ogl_utils
 
         if (ogl_utils::IsMesaDriver())
         {
-            GPA_LOG_ERROR("The Mesa driver is not currently supported.");
+            GPA_LOG_ERROR("The Mesa driver is not supported.");
             return false;
         }
 
@@ -147,10 +122,8 @@ namespace ogl_utils
         asic_info.driver_version = INT_MAX;
 #endif
 
-        if (asic_info.driver_version < kGlDriverVerWithOnlyGcnSupport)
+        if (!ogl_utils::IsOglpDriver())
         {
-            // Pre-GCN devices were removed from the driver starting with version 13452.
-            // If the driver version is earlier than that we will return an error.
 #ifndef GLES
             const GLubyte* gl_version_string = ogl_get_string(GL_VERSION);
             GPA_LOG_ERROR("GL_VERSION: %s.", (const char*)gl_version_string);
@@ -207,14 +180,7 @@ namespace ogl_utils
                 else
                 {
                     // Enable all GPIN counters.
-                    if (found_ugl_entrypoints)
-                    {
-                        ogl_select_perf_monitor_counters_amd(monitor, GL_TRUE, group, num_counters, &counter_list[0]);
-                    }
-                    else if (found_oglp_entrypoints)
-                    {
-                        ogl_select_perf_monitor_counters_2_amd(monitor, GL_TRUE, group, 0, num_counters, &counter_list[0]);
-                    }
+                    ogl_select_perf_monitor_counters_2_amd(monitor, GL_TRUE, group, 0, num_counters, &counter_list[0]);
 
                     // Begin / end the monitor so that the data is obtained.
                     ogl_begin_perf_monitor_amd(monitor);
@@ -239,14 +205,7 @@ namespace ogl_utils
                         // Result should be 4 GLuint per counter.
                         GLint expected_result_size = (4 * sizeof(GLuint)) * num_counters;
 
-                        if (found_ugl_entrypoints)
-                        {
-                            // Result is only 3 GLuint per counter on ugl.
-                            expected_result_size = (3 * sizeof(GLuint)) * num_counters;
-                        }
-
                         assert(static_cast<GLint>(result_size) == expected_result_size);
-
                         if (static_cast<GLint>(result_size) == expected_result_size)
                         {
                             GLubyte* counter_data = new (std::nothrow) GLubyte[result_size];
@@ -259,16 +218,8 @@ namespace ogl_utils
 
                                 for (int i = 0; i < num_counters; i++)
                                 {
-                                    // Index into the result array for each counter -- the result is the third GLuint out of the three.
-                                    unsigned int value = 0;
-                                    if (ogl_utils::IsUglDriver() || ogl_utils::IsMesaDriver())
-                                    {
-                                        value = (reinterpret_cast<GLuint*>(counter_data))[(i * 3) + 2];
-                                    }
-                                    else if (ogl_utils::IsOglpDriver())
-                                    {
-                                        value = (reinterpret_cast<GLuint*>(counter_data))[(i * 4) + 3];
-                                    }
+                                    // Index into the result array for each counter.
+                                    unsigned int value = (reinterpret_cast<GLuint*>(counter_data))[(i * 4) + 3];
 
                                     std::stringstream message;
 
@@ -279,72 +230,41 @@ namespace ogl_utils
                                         break;
 
                                     case kAsicNumSimdIndex:
-                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                                        {
-                                            asic_info.num_simd = value;
-                                        }
+                                        asic_info.num_simd = value;
                                         break;
 
                                     case kAsicNumRbIndex:
-                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                                        {
-                                            asic_info.num_rb = value;
-                                        }
+                                        asic_info.num_rb = value;
                                         break;
 
                                     case kAsicNumSpiIndex:
-                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                                        {
-                                            asic_info.num_spi = value;
-                                        }
+                                        asic_info.num_spi = value;
                                         break;
 
                                     case kAsicNumSeIndex:
-                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                                        {
-                                            asic_info.num_se = value;
-                                        }
+                                        asic_info.num_se = value;
                                         break;
 
                                     case kAsicNumSaIndex:
-                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                                        {
-                                            asic_info.num_sa_per_se = value;
-                                        }
+                                        asic_info.num_sa_per_se = value;
                                         break;
 
                                     case kAsicNumCuIndex:
-                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                                        {
-                                            asic_info.num_cu = value;
-                                        }
+                                        asic_info.num_cu = value;
                                         break;
 
                                     case kAsicDevIdIndex:
-                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                                        {
-                                            asic_info.device_id = value;
-                                            GPA_LOG_MESSAGE("Retrieved ASIC device ID: 0x%04x.", value);
-                                        }
+                                        asic_info.device_id = value;
+                                        GPA_LOG_MESSAGE("Retrieved ASIC device ID: 0x%04x.", value);
                                         break;
 
                                     case kAsicDevRevIndex:
-                                        if (kGlDriverVerWithGpinCounters <= asic_info.driver_version)
-                                        {
-                                            asic_info.device_rev = value;
-                                            GPA_LOG_MESSAGE("Retrieved ASIC device revision: 0x%04x.", value);
-                                        }
+                                        asic_info.device_rev = value;
+                                        GPA_LOG_MESSAGE("Retrieved ASIC device revision: 0x%04x.", value);
                                         break;
                                     }
 
-                                    if (ogl_utils::IsUglDriver() || ogl_utils::IsMesaDriver())
-                                    {
-                                        ogl_select_perf_monitor_counters_amd(monitor, GL_FALSE, group, 1, &counter_list[i]);
-                                    }
-                                    else if (ogl_utils::IsOglpDriver())
-                                    {
-                                        ogl_select_perf_monitor_counters_2_amd(monitor, GL_FALSE, group, 0, 1, &counter_list[i]);
-                                    }
+                                    ogl_select_perf_monitor_counters_2_amd(monitor, GL_FALSE, group, 0, 1, &counter_list[i]);
                                 }
 
                                 delete[] counter_data;

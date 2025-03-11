@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2016-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2016-2025 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Base Class for counter scheduling.
@@ -18,13 +18,14 @@
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_base.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_group_accessor.h"
 
-GpaCounterSchedulerBase::GpaCounterSchedulerBase()
+GpaCounterSchedulerBase::GpaCounterSchedulerBase(GpaSessionSampleType sample_type)
     : counter_accessor_(nullptr)
     , vendor_id_(0)
     , device_id_(0)
     , revision_id_(0)
     , counter_selection_changed_(false)
     , pass_index_(0)
+    , sample_type_(sample_type)
 {
 }
 
@@ -206,9 +207,12 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
         num_sq_max_counters = static_cast<unsigned int>(device_info.m_nNumSQMaxCounters);
     }
 
+    AMDTDeviceInfoUtils::DeleteInstance();
+
     IGpaSplitCounters* splitter = GpaSplitCounterFactory::GetNewCounterSplitter(GetPreferredSplittingAlgorithm(),
                                                                                 hw_counters->timestamp_block_ids_,
-                                                                                hw_counters->time_counter_indices_,
+                                                                                hw_counters->eop_time_counter_indices_,
+                                                                                hw_counters->top_time_counter_indices_,
                                                                                 num_sq_max_counters,
                                                                                 hw_counters->sq_group_count_,
                                                                                 hw_counters->sq_counter_groups_,
@@ -270,28 +274,55 @@ GpaStatus GpaCounterSchedulerBase::GetNumRequiredPasses(GpaUInt32* num_required_
     // Create space for the number of HW groups.
     max_counters_per_group.reserve(hw_counters->internal_counter_groups_.size() + hw_counters->additional_group_count_);
 
-    // Add the HW groups maxes.
-    for (unsigned int i = 0; i < hw_counters->internal_counter_groups_.size(); ++i)
+    // Set max events
+    if (kGpaSessionSampleTypeDiscreteCounter == sample_type_)
     {
-        auto count = hw_counters->internal_counter_groups_[i].max_active_discrete_counters;
-        if (count == 0)
+        // Add the HW groups maxes.
+        const unsigned int num_groups = static_cast<unsigned int>(hw_counters->internal_counter_groups_.size());
+        for (unsigned int i = 0; i < num_groups; ++i)
         {
-            GPA_LOG_DEBUG_ERROR("Hardware counter group '%s' has zero for max-counters-per-group.", hw_counters->internal_counter_groups_[i].name);
-            return kGpaStatusErrorInvalidCounterGroupData;
+            auto count = hw_counters->internal_counter_groups_[i].max_active_discrete_counters;
+            if (count == 0)
+            {
+                GPA_LOG_DEBUG_ERROR("Hardware counter group '%s' has zero for max-counters-per-group.", hw_counters->internal_counter_groups_[i].name);
+                return kGpaStatusErrorInvalidCounterGroupData;
+            }
+            max_counters_per_group.push_back(count);
         }
-        max_counters_per_group.push_back(count);
-    }
 
-    // Add the additional groups maxes.
-    for (unsigned int i = 0; i < hw_counters->additional_group_count_; ++i)
-    {
-        auto count = hw_counters->additional_groups_[i].max_active_discrete_counters;
-        if (count == 0)
+        // Add the additional groups maxes.
+        for (unsigned int i = 0; i < hw_counters->additional_group_count_; ++i)
         {
-            GPA_LOG_DEBUG_ERROR("Hardware counter additional group '%s' has zero for max-counters-per-group.", hw_counters->additional_groups_[i].name);
-            return kGpaStatusErrorInvalidCounterGroupData;
+            auto count = hw_counters->additional_groups_[i].max_active_discrete_counters;
+            if (count == 0)
+            {
+                GPA_LOG_DEBUG_ERROR("Hardware counter additional group '%s' has zero for max-counters-per-group.", hw_counters->additional_groups_[i].name);
+                return kGpaStatusErrorInvalidCounterGroupData;
+            }
+            max_counters_per_group.push_back(count);
         }
-        max_counters_per_group.push_back(count);
+    }
+    else if (kGpaSessionSampleTypeStreamingCounter == sample_type_)
+    {
+        // Add the HW groups max's.
+        const unsigned int num_groups = static_cast<unsigned int>(hw_counters->internal_counter_groups_.size());
+        for (unsigned int i = 0; i < num_groups; ++i)
+        {
+            auto count = hw_counters->internal_counter_groups_[i].max_active_spm_counters;
+            max_counters_per_group.push_back(count);
+        }
+
+        // Add the Additional groups max's.
+        for (unsigned int i = 0; i < hw_counters->additional_group_count_; ++i)
+        {
+            auto count = hw_counters->additional_groups_[i].max_active_spm_counters;
+            max_counters_per_group.push_back(count);
+        }
+    }
+    else
+    {
+        GPA_LOG_ERROR("Invalid counter scheduler sample type.");
+        return kGpaStatusErrorFailed;
     }
 
     GpaCounterGroupAccessor accessor(hw_counters->internal_counter_groups_,

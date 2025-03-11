@@ -1,5 +1,5 @@
 //==============================================================================
-// Copyright (c) 2017-2023 Advanced Micro Devices, Inc. All rights reserved.
+// Copyright (c) 2017-2024 Advanced Micro Devices, Inc. All rights reserved.
 /// @author AMD Developer Tools Team
 /// @file
 /// @brief Class for VK counter generation.
@@ -9,6 +9,11 @@
 
 #include "gpu_perf_api_common/gpa_common_defs.h"
 #include "gpu_perf_api_counter_generator/gpa_counter_generator_scheduler_manager.h"
+
+GpaCounterGeneratorVkBase::GpaCounterGeneratorVkBase(GpaSessionSampleType sample_type)
+    : GpaCounterGeneratorBase(sample_type)
+{
+}
 
 GpaStatus GpaCounterGeneratorVkBase::GeneratePublicCounters(GDT_HW_GENERATION   desired_generation,
                                                             GDT_HW_ASIC_TYPE    asic_type,
