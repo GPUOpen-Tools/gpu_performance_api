@@ -23,7 +23,7 @@ gitMapping = {
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
 downloadWin = {
-    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/gpu_performance_api/releases/download/v3.17-tag/GPUPerfAPI-3.17.0.18.zip" , "default", "3_17", "external/Lib/AMD/GPUPerfAPI"]
+    "GPADX11GetDeviceInfo" : [ "https://github.com/GPUOpen-Tools/gpu_performance_api/releases/download/v3.17-tag/GPUPerfAPI-3.17.0.19.zip" , "default", "3_17", "external/Lib/AMD/GPUPerfAPI"]
 }
 
 # Name : Source , Destination, version, Copied/Installation location wrt to Script root
